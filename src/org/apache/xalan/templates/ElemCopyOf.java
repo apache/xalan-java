@@ -30,21 +30,33 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.TreeWalker2Result;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
+import org.apache.xerces.impl.dv.XSSimpleType;
+import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.xerces.impl.xs.XSElementDecl;
+import org.apache.xerces.xs.XSAttributeDeclaration;
+import org.apache.xerces.xs.XSModel;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.ref.DTMTreeWalker;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
@@ -177,13 +189,20 @@ public class ElemCopyOf extends ElemTemplateElement
     if (transformer.getDebug())
     	transformer.getTraceManager().fireTraceEvent(this);
 
-    try
-    {
+    try {      
       XPathContext xctxt = transformer.getXPathContext();
-      
+        
       setXPathContext(xctxt);
-      
+        
       SourceLocator srcLocator = xctxt.getSAXLocator();
+      
+      QName type = getType();
+      String validationStr = getValidation();
+        
+      if ((type != null) && (validationStr != null)) {
+      	  throw new TransformerException("XTTE1540 : An xsl:copy-of instruction cannot have both the attributes "
+      	  																						+ "'type' and 'validation'.", srcLocator); 
+      }      
               
       int sourceNode = xctxt.getCurrentNode();
       
@@ -209,8 +228,17 @@ public class ElemCopyOf extends ElemTemplateElement
             String strVal = null;
     
             switch (xObjectType) {           
-                case XObject.CLASS_NODESET :          
-                  copyOfActionOnNodeSet((XNodeSet)value, transformer, handler, xctxt);          
+                case XObject.CLASS_NODESET :
+                  XNodeSet xNodeSet = (XNodeSet)value;
+                  xNodeSet.setTypeAttrForValidation(type);
+                  if (validationStr != null) {
+                	  if (!isValidationStrOk(validationStr)) {
+                		 throw new TransformerException("XTTE1540 : An xsl:copy-of instruction's attribute 'validation' can only have one of following "
+                                                                                                          + "values : strict, lax, preserve, strip.", srcLocator);  
+                	  }
+                  }
+                  xNodeSet.setValidationAttrForValidation(validationStr);
+                  copyOfActionOnNodeSet(xNodeSet, transformer, handler, xctxt);          
                   break;
                 case XObject.CLASS_RTREEFRAG :
                   SerializerUtils.outputResultTreeFragment(
@@ -307,20 +335,30 @@ public class ElemCopyOf extends ElemTemplateElement
       DTMIterator dtmIter = nodeSet.iter();
 
       DTMTreeWalker tw = new TreeWalker2Result(transformer, serializationHandler);
-      int pos;                 
+      int pos;
 
       while ((pos = dtmIter.nextNode()) != DTM.NULL) {
           DTM dtm = xctxt.getDTMManager().getDTM(pos);
           short nodeType = dtm.getNodeType(pos);
 
           if (nodeType == DTM.DOCUMENT_NODE) {
+        	 // From the 1st XML element node child of document node, validate all 
+        	 // these sibling element nodes if required by XSL stylesheet, and emit
+        	 // the node to XSL transform's output if validation succeeds.
              for (int child = dtm.getFirstChild(pos); child != DTM.NULL; 
                       child = dtm.getNextSibling(child)) {
-                 tw.traverse(child);
+                 validateAndEmitElementNode(nodeSet, xctxt, tw, child, dtm);
              }
+          }          
+          else if (nodeType == DTM.ELEMENT_NODE) {
+        	  // Validate an XML element node if required by XSL stylesheet, and emit 
+        	  // the node to XSL transform's output if validation succeeds.
+        	  validateAndEmitElementNode(nodeSet, xctxt, tw, pos, dtm);      		       		  
           }
           else if (nodeType == DTM.ATTRIBUTE_NODE) {
-              SerializerUtils.addAttribute(serializationHandler, pos);
+        	  // Validate an XML attribute node if required by XSL stylesheet, and emit 
+        	  // the node to XSL transform's output if validation succeeds.
+        	  validateAndEmitAttributeNode(nodeSet, serializationHandler, xctxt, pos, dtm);
           }
           else {
               tw.traverse(pos);
@@ -416,5 +454,229 @@ public class ElemCopyOf extends ElemTemplateElement
 	
 	 return rSeq;
   }
+  
+  /**
+   * This method does validation of an XML element node with a schema type or 
+   * schema element declaration. If an element node is valid with the schema 
+   * type or schema element declaration, then the node is emitted to XSL 
+   * transformation's output.
+   */
+  private static void validateAndEmitElementNode(XNodeSet nodeSet, XPathContext xctxt, 
+                                                 DTMTreeWalker tw, int nodeHandle, DTM dtm) throws TransformerException {	  
+
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+	  try {        		  
+		  Node node = dtm.getNode(nodeHandle);
+
+		  QName type = nodeSet.getTypeAttrForValidation();
+		  String validation = nodeSet.getValidationAttrForValidation();
+
+		  if (type != null) {
+			  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+			  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
+			  if (xsModel != null) {
+				  String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);        				  
+				  XSTypeDefinition xsTypeDefn = xsModel.getTypeDefinition(type.getLocalName(), type.getNamespace());
+				  if (SequenceTypeSupport.isXmlStrValid(xmlStr, null, xsTypeDefn)) {
+					  tw.traverse(nodeHandle); 
+				  }
+			  }
+			  else {
+				  throw new TransformerException("FODC0005 : xsl:copy-of instruction has 'type' attribute to request "
+																				  + "validation of xsl:copy-of's result, but an XML input document has not "
+																				  + "been validated using schema supplied via xsl:import-schema instruction.", 
+																				  srcLocator); 
+			  }
+		  }
+		  else if (validation != null) {
+			  if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
+				  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+				  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
+				  if (xsModel != null) {
+					  String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+					  String nodeLocalName = node.getLocalName();
+					  String nodeNamespace = node.getNamespaceURI();
+					  XSElementDecl schemaElemDecl = (XSElementDecl)(xsModel.getElementDeclaration(nodeLocalName, nodeNamespace));
+					  if (schemaElemDecl != null) {
+						  if (SequenceTypeSupport.isXmlStrValid(xmlStr, schemaElemDecl, null)) {
+							  tw.traverse(nodeHandle); 
+						  }
+					  }
+					  else {
+						  throw new TransformerException("FODC0005 : xsl:copy-of instruction has 'validation' attribute with value '" + 
+																				  Constants.XS_VALIDATION_STRICT_STRING + "' to request validation of "
+																				  + "xsl:copy-of's result, but the schema used to validate "
+																				  + "an XML input document doesn't have global element declaration for "
+																				  + "an element node produced by xsl:copy-of instruction.", srcLocator);
+					  }
+				  }
+				  else {
+					  throw new TransformerException("FODC0005 : xsl:copy-of instruction has 'validation' attribute to request "
+																				  + "validation of xsl:copy-of's result, but an XML input "
+																				  + "document has not been validated using schema supplied "
+																				  + "via xsl:import-schema instruction.", srcLocator); 
+				  }
+			  }
+			  else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
+				  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+				  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
+				  if (xsModel != null) {
+					  String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+					  String nodeLocalName = node.getLocalName();
+					  String nodeNamespace = node.getNamespaceURI();
+					  XSElementDecl schemaElemDecl = (XSElementDecl)(xsModel.getElementDeclaration(nodeLocalName, nodeNamespace));
+					  if (schemaElemDecl != null) {
+						  if (SequenceTypeSupport.isXmlStrValid(xmlStr, schemaElemDecl, null)) {
+							  tw.traverse(nodeHandle); 
+						  }
+					  }            				  
+				  }            			  
+			  }
+
+			  // The validation value 'strip' requires no validation.
+
+			  // The validation value 'preserve' is currently not implemented.
+		  }
+		  else {
+			  tw.traverse(nodeHandle); 
+		  }
+	  }
+	  catch (TransformerException ex) {
+		  throw new TransformerException(ex.getMessage(), srcLocator); 
+	  }
+	  catch (Exception ex) {
+		  String errMesg = ex.getMessage();
+		  throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
+																				  + "xsl:copy-of instruction." 
+																				  + ((errMesg != null) ? " " + errMesg : ""), srcLocator);
+	  }
+	  finally {
+		  nodeSet.setTypeAttrForValidation(null);
+		  nodeSet.setValidationAttrForValidation(null); 
+	  }
+   }
+  
+  /**
+   * This method does validation of an XML attribute node with a schema type or 
+   * schema attribute declaration. If an attribute node is valid with the schema 
+   * type or schema attribute declaration, then the node is emitted to XSL 
+   * transformation's output.
+   */
+   private static void validateAndEmitAttributeNode(XNodeSet nodeSet, SerializationHandler serializationHandler,
+												   XPathContext xctxt, int pos, DTM dtm) throws TransformerException {
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+
+	  try {
+		  Node node = dtm.getNode(pos);
+		  String attrLocalName = node.getLocalName();
+		  String attrNodeNs = node.getNamespaceURI();
+		  String attrStrValue = node.getNodeValue();
+		  
+		  QName type = nodeSet.getTypeAttrForValidation();
+		  String validation = nodeSet.getValidationAttrForValidation();
+
+		  if (type != null) {
+			  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+			  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
+			  if (xsModel != null) {
+				  XSTypeDefinition xsTypeDefn = xsModel.getTypeDefinition(type.getLocalName(), type.getNamespace());
+				  if (xsTypeDefn != null) {
+					  if (xsTypeDefn instanceof XSSimpleType) {
+						  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)xsTypeDefn;
+						  try {
+							  xsSimpleTypeDecl.validate(attrStrValue, null, null);
+						  } 
+						  catch (InvalidDatatypeValueException ex) {							
+							  throw new TransformerException("FODC0005 : An attribute '" + attrLocalName + "' that has to be emitted by xsl:copy-of "
+																						  + "instruction, has a value which is not valid with type '" + 
+																						  type.getLocalName() + "' referred by xsl:copy-of instruction's "
+																						  + "'type' attribute. " + ex.getMessage(), srcLocator);
+						  }
+					  }
+					  else {
+						  throw new TransformerException("FODC0005 : A xsl:copy-of instruction refers a type '" + type.getLocalName() + 
+																						  "' that is not a schema simpleType, which cannot be used to validate "
+																						  + "an attribute value.", srcLocator);
+					  }
+				  }
+				  else {
+					  throw new TransformerException("FODC0005 : A xsl:copy-of instruction has 'type' attribute with "
+																						  + "value '" + type.getLocalName() + "' to request "
+																						  + "validation of xsl:copy-of's result, but the schema referred via "
+																						  + "xsl:import-schema instruction does'nt have a global type definition "
+																						  + "with name '" + type.getLocalName() + "'.", srcLocator);
+				  }
+			  }
+			  else {
+				  throw new TransformerException("FODC0005 : A xsl:copy-of instruction has 'type' attribute to request "
+																						  + "validation of xsl:copy-of's result, but an XML input document has not "
+																						  + "been validated using schema supplied via xsl:import-schema instruction.", 
+																						  srcLocator); 
+			  } 
+		  }
+		  else if (validation != null) {
+			  if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
+				  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+				  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
+				  if (xsModel != null) {
+					  XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrLocalName, attrNodeNs);
+					  if (attrDecl != null) {
+						  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)attrDecl.getTypeDefinition();
+						  try {
+							  xsSimpleTypeDecl.validate(attrStrValue, null, null);
+						  } 
+						  catch (InvalidDatatypeValueException ex) {							
+							  throw new TransformerException("FODC0005 : An attribute '" + attrLocalName + "' that has to be emitted by xsl:copy-of "
+																							  + "instruction, has a value which is not valid with attribute "
+																							  + "declaration available in the schema." + ex.getMessage(), 
+																							  srcLocator);
+						  }
+					  }
+					  else {
+						  throw new TransformerException("FODC0005 : An attribute '" + attrLocalName + "' that has to be emitted by xsl:copy-of "
+																							  + "instruction, doesn't have a corresponding attribute declaration in the "
+																							  + "schema to validate with. The validation 'strict' has been requested.", srcLocator);
+					  }
+				  }
+				  else {
+					  throw new TransformerException("XTTE1540 : An xsl:copy-of instruction's attribute \"validation\" has value 'strict', but "
+																									  + "an XML input document has not been validated with a schema "
+																									  + "using xsl:import-schema instruction.", srcLocator);
+				  }
+			  }
+			  else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
+				  XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+				  if (xsModel != null) {
+					  XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrLocalName, attrNodeNs);
+					  if (attrDecl != null) {
+						  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)attrDecl.getTypeDefinition();
+						  try {
+							  xsSimpleTypeDecl.validate(attrStrValue, null, null);
+						  } 
+						  catch (InvalidDatatypeValueException ex) {							
+							  throw new TransformerException("FODC0005 : An attribute '" + attrLocalName + "' that has to be emitted by xsl:copy-of "
+																									  + "instruction, has a value which is not valid with attribute "
+																									  + "declaration available in the schema." + ex.getMessage(), 
+																									  srcLocator);
+						  }
+					  }
+				  }
+			  }
+
+			  // The validation value 'strip' requires no validation.
+
+			  // The validation value 'preserve' is currently not implemented.
+		  }
+
+		  // Emit attribute to XSL transformation's output
+		  SerializerUtils.addAttribute(serializationHandler, pos);
+	  }
+	  finally {
+		  nodeSet.setTypeAttrForValidation(null);
+		  nodeSet.setValidationAttrForValidation(null);
+	  }
+   }
 
 }

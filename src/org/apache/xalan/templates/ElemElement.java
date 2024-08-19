@@ -343,12 +343,15 @@ public class ElemElement extends ElemUse
       XPathContext xctxt = transformer.getXPathContext();
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
-      if ((m_type != null) && (m_validation != null)) {
+	  QName type = getType();
+      String validation = getValidation();
+      
+      if ((type != null) && (validation != null)) {
     	  throw new TransformerException("XTTE1540 : An xsl:element instruction cannot have both the attributes "
     	  																						+ "'type' and 'validation'.", srcLocator); 
       }
 
-      if (m_type != null) {
+      if (type != null) {
     	  // An xsl:element instruction has an attribute "type".
     	  
     	  // An element node constructed needs to be validated
@@ -369,9 +372,9 @@ public class ElemElement extends ElemUse
 				 		                                          							+ "xsl:element instruction.", srcLocator);
 			 }
     		 
-    		 if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(m_type.getNamespace())) {
+    		 if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(type.getNamespace())) {
     			// An element content needs to be validated with an XML Schema built-in type.    			 
-    			validateXslElementAttributeResultWithBuiltInSchemaType(xmlStr, m_type, xctxt, XSL_ELEMENT);
+    			validateXslElementAttributeResultWithBuiltInSchemaType(xmlStr, type, xctxt, XSL_ELEMENT);
        	     }
     		 else {    			 
     			 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
@@ -391,17 +394,17 @@ public class ElemElement extends ElemUse
     	     }
     	  }
       }
-      else if (m_validation != null) {
+      else if (validation != null) {
     	 // An xsl:element instruction has an attribute "validation".
     	  
     	 // An element node constructed needs to be validated
     	 // by an element declaration available in the schema.
     	  
-    	 if (!isValidationStrOk(m_validation)) {
+    	 if (!isValidationStrOk(validation)) {
     		 throw new TransformerException("XTTE1540 : An xsl:element instruction's attribute 'validation' can only have one of following "
     		 		                                                                        + "values : strict, lax, preserve, strip.", srcLocator);
     	 }
-    	 else if ("strict".equals(m_validation)) {
+    	 else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
     		 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
     		 if (xsModel != null) {    			 
     			 String nodeLocalName = QName.getLocalPart(nodeName);
@@ -421,7 +424,7 @@ public class ElemElement extends ElemUse
 																	                          + "a schema.", srcLocator);
     		 }
     	 }
-         else if ("lax".equals(m_validation)) {
+         else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
         	 // An attribute "validation"'s value 'lax' has the same effect as the value strict, except that 
 			 // whereas strict validation fails if there is no available top-level element declaration in 
 			 // the schema.
@@ -438,7 +441,7 @@ public class ElemElement extends ElemUse
     	 
     	 // The validation value 'strip' requires no validation.
     	 
-    	 // The validation value 'preserve' is presently not implemented.
+    	 // The validation value 'preserve' is currently not implemented.
       }
 
       // After any needed element node validation by xsl:element instruction's

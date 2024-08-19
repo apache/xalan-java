@@ -232,20 +232,23 @@ public class ElemAttribute extends ElemElement
                   attrVal = transformer.transformToString(this);
               }
               
-              if ((m_type != null) && (m_validation != null)) {
+              QName type = getType();
+              String validation = getValidation();
+              
+              if ((type != null) && (validation != null)) {
             	  throw new TransformerException("XTTE1540 : An xsl:attribute instruction cannot have both the attributes "
             	  																						+ "'type' and 'validation'.", srcLocator); 
               }
               
-              if (m_type != null) {
+              if (type != null) {
             	  // An xsl:attribute instruction has an attribute "type".
             	  
             	  // An attribute node constructed needs to be validated
             	  // by this type.
             	  
-            	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(m_type.getNamespace())) {
+            	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(type.getNamespace())) {
             		 // An attribute value needs to be validated with an XML Schema built-in type.    			 
-          			 validateXslElementAttributeResultWithBuiltInSchemaType(attrVal, m_type, xctxt, ATTRIBUTE); 
+          			 validateXslElementAttributeResultWithBuiltInSchemaType(attrVal, type, xctxt, ATTRIBUTE); 
             	  }
             	  else {
             		 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
@@ -256,7 +259,7 @@ public class ElemAttribute extends ElemElement
          				// An attribute value needs to be validated with an XML Schema 
          				// user-defined type.
          				 
-         				XSTypeDefinition typeDefn = xsModel.getTypeDefinition(m_type.getLocalName(), m_type.getNamespace());
+         				XSTypeDefinition typeDefn = xsModel.getTypeDefinition(type.getLocalName(), type.getNamespace());
          				if ((typeDefn != null) && (typeDefn instanceof XSSimpleType)) {
          					XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
          					try {
@@ -264,7 +267,7 @@ public class ElemAttribute extends ElemElement
 							} 
          					catch (InvalidDatatypeValueException ex) {
 								throw new TransformerException("XTTE1540 : An attribute value produced by the stylesheet, is not "
-										                                              + "valid with the schema type " + m_type.getLocalName() + ".", srcLocator);								
+										                                              + "valid with the schema type " + type.getLocalName() + ".", srcLocator);								
 							}
          				}
          				else {
@@ -280,17 +283,17 @@ public class ElemAttribute extends ElemElement
          			 } 
             	  }
               }
-              else if (m_validation != null) {
+              else if (validation != null) {
              	 // An xsl:attribute instruction has an attribute "validation".
             	  
              	 // An attribute node constructed needs to be validated
              	 // by an attribute declaration available in the schema.
              	  
-             	 if (!isValidationStrOk(m_validation)) {
+             	 if (!isValidationStrOk(validation)) {
              		 throw new TransformerException("XTTE1540 : An xsl:attribute instruction's attribute 'validation' can only have one of following "
              		 		                                                                        + "values : strict, lax, preserve, strip.", srcLocator);
              	 }
-             	 else if ("strict".equals(m_validation)) {
+             	 else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
              		 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
              		 if (xsModel != null) {
              			 String localName = QName.getLocalPart(nodeName);
@@ -319,7 +322,7 @@ public class ElemAttribute extends ElemElement
 																	             					 + "a schema.", srcLocator);
              		 }
            	     }
-             	 else if ("lax".equals(m_validation)) {
+             	 else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
              		 // An attribute "validation"'s value 'lax' has the same effect as the value strict, except that 
              		 // whereas strict validation fails if there is no available top-level attribute declaration in 
              		 // the schema.
@@ -345,7 +348,7 @@ public class ElemAttribute extends ElemElement
              	 
              	 // The validation value 'strip' requires no validation.
             	 
-            	 // The validation value 'preserve' is presently not implemented.
+            	 // The validation value 'preserve' is currently not implemented.
               }
               
               try {

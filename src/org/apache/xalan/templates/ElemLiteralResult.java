@@ -1403,7 +1403,10 @@ public class ElemLiteralResult extends ElemUse
             
             // Process xsl:type & xsl:validation attributes, if present
             
-            if ((m_type != null) && (m_validation != null)) {
+            QName type = getType();
+            String validation = getValidation();
+            
+            if ((type != null) && (validation != null)) {
           	   throw new TransformerException("XTTE1540 : A literal result element cannot have both the attributes "
           	   																							  + "'xsl:type' and 'xsl:validation'.", srcLocator); 
             }
@@ -1411,7 +1414,7 @@ public class ElemLiteralResult extends ElemUse
             String nodeName = getNodeName();            
             String nodeNamespace = getNamespace();
             
-            if (m_type != null) {
+            if (type != null) {
           	  // A literal result element has an attribute "xsl:type".
           	  // An element node constructed needs to be validated
           	  // by this type.    	      	  
@@ -1436,11 +1439,11 @@ public class ElemLiteralResult extends ElemUse
           		    prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
           	     }
           	     
-          		 String typeNsUri = XslTransformEvaluationHelper.getNsUriFromPrefix(m_type.getPrefix(), prefixTable);
+          		 String typeNsUri = XslTransformEvaluationHelper.getNsUriFromPrefix(type.getPrefix(), prefixTable);
           		 
           		 if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNsUri)) {
           			// An element content needs to be validated with an XML Schema built-in type.    			 
-          			validateXslElementAttributeResultWithBuiltInSchemaType(xmlStr, m_type, xctxt, LITERAL_RESULT_ELEMENT);
+          			validateXslElementAttributeResultWithBuiltInSchemaType(xmlStr, type, xctxt, LITERAL_RESULT_ELEMENT);
              	 }
           		 else {    			 
           			 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
@@ -1459,17 +1462,17 @@ public class ElemLiteralResult extends ElemUse
           	     }
           	  }
             }
-            else if (m_validation != null) {
+            else if (validation != null) {
             	// An XSL stylesheet literal result element has an attribute 
             	// "validation".
             	// An element node constructed needs to be validated
             	// by an element declaration available in the schema.
 
-            	if (!isValidationStrOk(m_validation)) {
+            	if (!isValidationStrOk(validation)) {
             		throw new TransformerException("XTTE1540 : A literal result element's attribute 'xsl:validation' can only have one of following "
             																									+ "values : strict, lax, preserve, strip.", srcLocator);
             	}
-            	else if ("strict".equals(m_validation)) {
+            	else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
             		XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
             		if (xsModel != null) {    			 
             			String nodeLocalName = QName.getLocalPart(nodeName);
@@ -1489,7 +1492,7 @@ public class ElemLiteralResult extends ElemUse
 																		            					+ "a schema.", srcLocator);
             		}
             	}
-            	else if ("lax".equals(m_validation)) {
+            	else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
             		// An attribute "validation"'s value 'lax' has the same effect as the value strict, except that 
             		// whereas strict validation fails if there is no available top-level element declaration in 
             		// the schema.
@@ -1506,7 +1509,7 @@ public class ElemLiteralResult extends ElemUse
 
             	// The validation value 'strip' requires no validation.
 
-            	// The validation value 'preserve' is presently not implemented.
+            	// The validation value 'preserve' is currently not implemented.
             }
             
             // After any needed element node validation by literal result element's 

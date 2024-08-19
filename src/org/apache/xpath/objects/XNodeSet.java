@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathContext;
@@ -54,6 +55,18 @@ public class XNodeSet extends NodeSequence
    * Default constructor for derived objects.
    */
   protected XNodeSet() { }
+  
+  /**
+   * Class field to store value of an attribute named 'type', for 
+   * validating this xdm node object.
+   */
+  private QName m_type = null;
+  
+  /**
+   * Class field to store value of an attribute named 'validation', for 
+   * validating this xdm node object.
+   */
+  private String m_validation = null;
 
   /**
    * Construct a XNodeSet object.
@@ -953,7 +966,7 @@ public class XNodeSet extends NodeSequence
     return compare(obj2, S_NEQ);
   }
   
-  /*
+  /**
    * Check whether fully qualified names of two XML nodes are equal.
    */
   private boolean isNodeNameEqual(Node node1, Node node2) {	 
@@ -983,7 +996,7 @@ public class XNodeSet extends NodeSequence
 	 return isNodeNameEqual;
   }
   
-  /*
+  /**
    * Check whether two XML namespace names are equal.
    */
   private boolean isNsNameEqual(String nsName1, String nsName2) {	 
@@ -999,6 +1012,23 @@ public class XNodeSet extends NodeSequence
 	 
 	 return isNsNameEqual;
   }
+
+  public void setTypeAttrForValidation(QName type) {
+	 m_type = type;	
+  }
+  
+  public QName getTypeAttrForValidation() {
+	 return m_type;  
+  }
+
+  public void setValidationAttrForValidation(String validation) {
+	 m_validation = validation;	
+  }
+  
+  public String getValidationAttrForValidation() {
+     return m_validation;  
+  }
+  
 }
 
 /**

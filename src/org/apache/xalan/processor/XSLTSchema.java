@@ -485,7 +485,9 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef xslCopyOf = new XSLTElementDef(this,
                                  Constants.S_XSLNAMESPACEURL, "copy-of",
                                  null /*alias */, null /* elements */,
-                                 new XSLTAttributeDef[]{ selectAttrRequired },
+                                 new XSLTAttributeDef[]{ selectAttrRequired,
+                                		                 typeAttrOpt,
+                                		                 validationAttrOpt },
                                  new ProcessorTemplateElem(),
                                  ElemCopyOf.class /* class object */, 20, true);
     XSLTElementDef xslNumber = new XSLTElementDef(this,

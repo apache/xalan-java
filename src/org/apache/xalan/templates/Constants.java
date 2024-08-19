@@ -197,7 +197,11 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_FUNCTION_STRING = "function",
       ELEMNAME_SEQUENCE_STRING = "sequence",
       ELEMNAME_IMPORT_SCHEMA_STRING = "import-schema",
-      ELEMNAME_EVALUATE_STRING = "evaluate";
+      ELEMNAME_EVALUATE_STRING = "evaluate",
+      XS_VALIDATION_STRICT_STRING = "strict",
+      XS_VALIDATION_LAX_STRING = "lax",
+      XS_VALIDATION_PRESERVE_STRING = "preserve",
+      XS_VALIDATION_STRIP_STRING = "strip";
   
   /**
    * Literals for EXSLT function elements.
