@@ -719,7 +719,9 @@ public class XSLTSchema extends XSLTElementDef
                          null /*alias */, templateElements /* elements */,  // %template;>
                           new XSLTAttributeDef[]{
                                                   spaceAttr,
-                                                  useAttributeSetsAttr }, 
+                                                  useAttributeSetsAttr,
+                                                  typeAttrOpt,
+                         		                  validationAttrOpt }, 
                                         new ProcessorTemplateElem(),
                           ElemCopy.class /* class object */, 20, true);
     XSLTElementDef xslMessage = new XSLTElementDef(this,

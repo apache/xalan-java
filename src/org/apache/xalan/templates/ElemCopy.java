@@ -20,30 +20,38 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Vector;
+
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.ClonerToResultTree;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xerces.impl.xs.XSElementDecl;
+import org.apache.xerces.xs.XSModel;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.QName;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XRTreeFrag;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
- * Implement xsl:copy.
- * <pre>
- * <!ELEMENT xsl:copy %template;>
- * <!ATTLIST xsl:copy
- *   %space-att;
- *   use-attribute-sets %qnames; #IMPLIED
- * >
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#copying">copying in XSLT Specification</a>
+ * Implement of XSLT xsl:copy instruction.
+ * 
  * @xsl.usage advanced
  */
 public class ElemCopy extends ElemUse
 {
-    static final long serialVersionUID = 5478580783896941384L;
+   static final long serialVersionUID = 5478580783896941384L;
 
   /**
    * Get an int constant identifying the type of element.
@@ -65,6 +73,30 @@ public class ElemCopy extends ElemUse
   {
     return Constants.ELEMNAME_COPY_STRING;
   }
+  
+  /**
+   * This class field is used during, XPath.fixupVariables(..) action 
+   * as performed within object of this class.  
+   */    
+  private Vector m_vars;
+  
+  /**
+   * This class field is used during, XPath.fixupVariables(..) action 
+   * as performed within object of this class.  
+   */
+  private int m_globals_size;
+  
+  public void compose(StylesheetRoot sroot) throws TransformerException
+  {
+	  super.compose(sroot);
+
+	  StylesheetRoot.ComposeState cstate = sroot.getComposeState();
+	  java.util.Vector vnames = cstate.getVariableNames();
+	  int golbalsSize = cstate.getGlobalsSize();
+
+	  m_vars = (java.util.Vector)(vnames.clone());
+	  m_globals_size = golbalsSize; 
+  }
 
   /**
    * The xsl:copy element provides an easy way of copying the current node.
@@ -85,63 +117,275 @@ public class ElemCopy extends ElemUse
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer)
-            throws TransformerException
+  public void execute(TransformerImpl transformer) throws TransformerException
   {
-                XPathContext xctxt = transformer.getXPathContext();
-      
-    try
-    {
-      int sourceNode = xctxt.getCurrentNode();
-      xctxt.pushCurrentNode(sourceNode);
-      DTM dtm = xctxt.getDTM(sourceNode);
-      short nodeType = dtm.getNodeType(sourceNode);
+	  XPathContext xctxt = transformer.getXPathContext();
 
-      if ((DTM.DOCUMENT_NODE != nodeType) && (DTM.DOCUMENT_FRAGMENT_NODE != nodeType))
-      {
-        SerializationHandler rthandler = transformer.getSerializationHandler();
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+	  try
+	  {
+		  int sourceNode = xctxt.getCurrentNode();
+		  xctxt.pushCurrentNode(sourceNode);
+		  DTM dtm = xctxt.getDTM(sourceNode);
+		  short nodeType = dtm.getNodeType(sourceNode);		  
 
-        if (transformer.getDebug())
-          transformer.getTraceManager().fireTraceEvent(this);
-            
-        // TODO: Process the use-attribute-sets stuff
-        ClonerToResultTree.cloneToResultTree(sourceNode, nodeType, dtm, 
-                                             rthandler, false);
+		  QName type = getType();
+		  String validation = getValidation();
 
-        if (DTM.ELEMENT_NODE == nodeType)
-        {
-          super.execute(transformer);
-          SerializerUtils.processNSDecls(rthandler, sourceNode, nodeType, dtm);
-          transformer.executeChildTemplates(this, true);
-          
-          String ns = dtm.getNamespaceURI(sourceNode);
-          String localName = dtm.getLocalName(sourceNode);
-          transformer.getResultTreeHandler().endElement(ns, localName,
-                                                        dtm.getNodeName(sourceNode));
-        }
-        if (transformer.getDebug())
-		  transformer.getTraceManager().fireTraceEndEvent(this);         
-      }
-      else
-      {
-        if (transformer.getDebug())
-          transformer.getTraceManager().fireTraceEvent(this);
+		  if ((type != null) && (validation != null)) {
+			  throw new TransformerException("XTTE1540 : A xsl:copy instruction cannot have both the attributes "
+					  																	  + "'type' and 'validation'.", srcLocator); 
+		  }
 
-        super.execute(transformer);
-        transformer.executeChildTemplates(this, true);
+		  if ((DTM.DOCUMENT_NODE != nodeType) && (DTM.DOCUMENT_FRAGMENT_NODE != nodeType))
+		  {
+			  SerializationHandler rthandler = transformer.getSerializationHandler();
 
-        if (transformer.getDebug())
-          transformer.getTraceManager().fireTraceEndEvent(this);
-      }
-    }
-    catch(org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se);
-    }
-    finally
-    {
-      xctxt.popCurrentNode();
-    }
+			  if (transformer.getDebug())
+				  transformer.getTraceManager().fireTraceEvent(this);
+
+			  ClonerToResultTree.cloneToResultTree(sourceNode, nodeType, dtm, 
+					  													rthandler, false);
+
+			  if (DTM.ELEMENT_NODE == nodeType)
+			  {
+				  super.execute(transformer);
+				  SerializerUtils.processNSDecls(rthandler, sourceNode, nodeType, dtm);
+
+				  if (type != null) {
+					  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+					  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
+					  if (xsModel != null) {
+						  XSTypeDefinition xsTypeDefn = xsModel.getTypeDefinition(type.getLocalName(), type.getNamespace());
+						  if (xsTypeDefn != null) {					  
+							  validateWithSchemaTypeAndEmitElement(sourceNode, dtm, xsTypeDefn, transformer, xctxt);
+						  }
+						  else {
+							  throw new TransformerException("FODC0005 : An xsl:copy instruction has 'type' attribute with "
+																				   + "value '" + type.getLocalName() + "' to request "
+																				   + "validation of xsl:copy's result, but the schema referred via "
+																				   + "xsl:import-schema instruction does'nt have a global type definition "
+																				   + "with name '" + type.getLocalName() + "'.", srcLocator); 
+						  }
+					  }
+					  else {
+						  throw new TransformerException("FODC0005 : An xsl:copy instruction has 'type' attribute to request "
+																				   + "validation of xsl:copy's result, but an XML input document has not "
+																				   + "been validated using schema supplied via xsl:import-schema instruction.", 
+																				   srcLocator); 
+					  }
+				  }
+				  else if (validation != null) {
+					  if (!isValidationStrOk(validation)) {
+						  throw new TransformerException("XTTE1540 : An xsl:copy instruction's attribute 'validation' can only have one of following "
+								  												   + "values : strict, lax, preserve, strip.", srcLocator);  
+					  }
+					  else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
+						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+						  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
+						  if (xsModel != null) {
+							  Node srcNode = dtm.getNode(sourceNode);
+							  String nodeLocalName = srcNode.getLocalName();
+							  String nodeNamespace = srcNode.getNamespaceURI();							  
+							  XSElementDecl schemaElemDecl = (XSElementDecl)(xsModel.getElementDeclaration(nodeLocalName, nodeNamespace));							  
+							  if (schemaElemDecl != null) {
+								  validateWithElemDeclAndEmitElement(sourceNode, nodeLocalName, schemaElemDecl, transformer, xctxt);								  
+							  }
+							  else {
+								  throw new TransformerException("FODC0005 : xsl:copy instruction has 'validation' attribute with value '" + 
+																							  Constants.XS_VALIDATION_STRICT_STRING + "' to request validation of "
+																							  + "xsl:copy's result, but the schema used to validate "
+																							  + "an XML input document doesn't have global element declaration for "
+																							  + "an element node produced by xsl:copy instruction.", srcLocator);
+							  }
+						  }
+						  else {
+							  throw new TransformerException("FODC0005 : xsl:copy instruction has 'validation' attribute to request "
+																						  + "validation of xsl:copy's result, but an XML input "
+																						  + "document has not been validated using schema supplied "
+																						  + "via xsl:import-schema instruction.", srcLocator); 
+						  }
+					  }
+					  else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
+						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+						  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
+						  if (xsModel != null) {
+							  Node srcNode = dtm.getNode(sourceNode);
+							  String nodeLocalName = srcNode.getLocalName();
+							  String nodeNamespace = srcNode.getNamespaceURI();							  
+							  XSElementDecl schemaElemDecl = (XSElementDecl)(xsModel.getElementDeclaration(nodeLocalName, nodeNamespace));							  
+							  if (schemaElemDecl != null) {
+								  validateWithElemDeclAndEmitElement(sourceNode, nodeLocalName, schemaElemDecl, transformer, xctxt);								  
+							  }							  
+						  }						  
+					  }
+					  
+					  // The validation value 'strip' requires no validation.
+
+					  // The validation value 'preserve' is currently not implemented.
+				  }
+				  else {
+					  transformer.executeChildTemplates(this, true);
+				  }
+
+				  String ns = dtm.getNamespaceURI(sourceNode);
+				  String localName = dtm.getLocalName(sourceNode);
+				  transformer.getResultTreeHandler().endElement(ns, localName, dtm.getNodeName(sourceNode));
+			  }
+			  if (transformer.getDebug())
+				  transformer.getTraceManager().fireTraceEndEvent(this);         
+		  }
+		  else
+		  {
+			  if (transformer.getDebug())
+				  transformer.getTraceManager().fireTraceEvent(this);
+
+			  super.execute(transformer);
+			  transformer.executeChildTemplates(this, true);
+
+			  if (transformer.getDebug())
+				  transformer.getTraceManager().fireTraceEndEvent(this);
+		  }
+	  }
+	  catch(org.xml.sax.SAXException se) {
+		  throw new TransformerException(se);
+	  }
+	  catch (TransformerException ex) {
+		  throw new TransformerException(ex.getMessage(), srcLocator); 
+	  }
+	  catch (Exception ex) {
+		  String errMesg = ex.getMessage();
+		  throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
+																				  + "xsl:copy instruction." 
+																				  + ((errMesg != null) ? " " + errMesg : ""), srcLocator);
+	  }
+	  finally
+	  {
+		  xctxt.popCurrentNode();
+	  }
   }
+
+  /**
+   * Validate an XML element with a schema type, and emit element to XSL transform's 
+   * output if validation succeeds.
+   */
+  private void validateWithSchemaTypeAndEmitElement(int sourceNode, DTM dtm, XSTypeDefinition xsTypeDefn, 
+		                                            TransformerImpl transformer, XPathContext xctxt) throws TransformerException {	
+	
+	  SourceLocator srcLocator = xctxt.getSAXLocator(); 
+
+	  Node srcNode = dtm.getNode(sourceNode);
+	  String nodeLocalName = srcNode.getLocalName();
+	  StringBuffer strBuff = new StringBuffer();
+	  strBuff.append("<" + nodeLocalName + " ");
+
+	  Node childElem = getFirstChild();
+	  while (childElem instanceof ElemAttribute) {
+		  ElemAttribute elemAttr = (ElemAttribute)childElem;
+		  AVT attrAvtName = elemAttr.getName();
+		  String attrName = attrAvtName.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
+		  String attrValue = null;
+		  Expression attrSelectExpr = elemAttr.getSelect();
+		  if (attrSelectExpr != null) {					            	  
+			  if (m_vars != null) {
+				  attrSelectExpr.fixupVariables(m_vars, m_globals_size);   
+			  }
+
+			  XObject xpathEvalResult = attrSelectExpr.execute(xctxt);
+			  attrValue = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
+		  }
+		  else {					                            
+			  attrValue = transformer.transformToString(elemAttr);
+		  }
+
+		  strBuff.append(attrName + "=\"" + attrValue + "\" ");
+		  childElem = childElem.getNextSibling();
+	  }
+
+	  String xmlStrValue = (strBuff.toString()).trim() + ">";
+
+	  int nodeHandle = transformer.transformToRTF(this);
+	  NodeList nodeList = (new XRTreeFrag(nodeHandle, xctxt, this)).convertToNodeset();
+	  if (nodeList != null) {
+		  Node node = nodeList.item(0);
+		  String xmlStr = null;    		 
+		  try {
+			  xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+			  xmlStrValue = xmlStrValue + xmlStr.substring(xmlStr.indexOf("?>") + 2);
+			  xmlStrValue += "</" + nodeLocalName + ">";
+			  xmlStrValue = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + xmlStrValue;
+			  if (SequenceTypeSupport.isXmlStrValid(xmlStrValue, null, xsTypeDefn)) {
+				  transformer.executeChildTemplates(this, true); 
+			  }									  
+		  } 
+		  catch (Exception ex) {
+			  String errMesg = ex.getMessage();
+			  throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
+																					  + "xsl:copy instruction." 
+																					  + ((errMesg != null) ? " " + errMesg : ""), srcLocator);
+		  }
+	  }
+  }
+
+  /**
+   * Validate an XML element with an element declaration available in schema, and emit element 
+   * to XSL transform's output if validation succeeds.
+   */
+  private void validateWithElemDeclAndEmitElement(int sourceNode, String nodeLocalName, XSElementDecl schemaElemDecl, 
+		                                          TransformerImpl transformer, XPathContext xctxt) throws TransformerException {
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+	  StringBuffer strBuff = new StringBuffer();
+	  strBuff.append("<" + nodeLocalName + " ");
+
+	  Node childElem = getFirstChild();
+	  while (childElem instanceof ElemAttribute) {
+		  ElemAttribute elemAttr = (ElemAttribute)childElem;
+		  AVT attrAvtName = elemAttr.getName();
+		  String attrName = attrAvtName.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
+		  String attrValue = null;
+		  Expression attrSelectExpr = elemAttr.getSelect();
+		  if (attrSelectExpr != null) {					            	  
+			  if (m_vars != null) {
+				  attrSelectExpr.fixupVariables(m_vars, m_globals_size);   
+			  }
+
+			  XObject xpathEvalResult = attrSelectExpr.execute(xctxt);
+			  attrValue = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
+		  }
+		  else {					                            
+			  attrValue = transformer.transformToString(elemAttr);
+		  }
+
+		  strBuff.append(attrName + "=\"" + attrValue + "\" ");
+		  childElem = childElem.getNextSibling();
+	  }
+
+	  String xmlStrValue = (strBuff.toString()).trim() + ">";
+
+	  int nodeHandle = transformer.transformToRTF(this);
+	  NodeList nodeList = (new XRTreeFrag(nodeHandle, xctxt, this)).convertToNodeset();
+	  if (nodeList != null) {
+		  Node node = nodeList.item(0);
+		  String xmlStr = null;    		 
+		  try {
+			  xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+			  xmlStrValue = xmlStrValue + xmlStr.substring(xmlStr.indexOf("?>") + 2);
+			  xmlStrValue += "</" + nodeLocalName + ">";
+			  xmlStrValue = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + xmlStrValue;
+			  if (SequenceTypeSupport.isXmlStrValid(xmlStrValue, schemaElemDecl, null)) {
+				  transformer.executeChildTemplates(this, true); 
+			  }									  
+		  } 
+		  catch (Exception ex) {
+			  String errMesg = ex.getMessage();
+			  throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
+																						  + "xsl:copy instruction." 
+																						  + ((errMesg != null) ? " " + errMesg : ""), srcLocator);
+		  }
+	  }
+  }
+
 }

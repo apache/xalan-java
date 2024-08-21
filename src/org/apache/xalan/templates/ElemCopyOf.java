@@ -327,7 +327,7 @@ public class ElemCopyOf extends ElemTemplateElement
   }
   
   /**
-   *  Method to perform xsl:copy-of instruction's action, on an XNodeSet object.
+   *  Given an an XNodeSet node object, this method does XSL copy-of action on the node.
    */
   public static void copyOfActionOnNodeSet(XNodeSet nodeSet, TransformerImpl transformer, 
                                                                       SerializationHandler serializationHandler, XPathContext xctxt) 
@@ -343,8 +343,8 @@ public class ElemCopyOf extends ElemTemplateElement
 
           if (nodeType == DTM.DOCUMENT_NODE) {
         	 // From the 1st XML element node child of document node, validate all 
-        	 // these sibling element nodes if required by XSL stylesheet, and emit
-        	 // the node to XSL transform's output if validation succeeds.
+        	 // these sibling element nodes individually if required by XSL stylesheet,
+        	 // and emit the nodes to XSL transform's output if validation succeeds.
              for (int child = dtm.getFirstChild(pos); child != DTM.NULL; 
                       child = dtm.getNextSibling(child)) {
                  validateAndEmitElementNode(nodeSet, xctxt, tw, child, dtm);
@@ -367,7 +367,7 @@ public class ElemCopyOf extends ElemTemplateElement
   }
   
   /**
-   * Method to perform xsl:copy-of instruction's action, on an ResultSequence object.
+   *  Given an XSL sequence object, this method does xsl:copy-of action on the sequence.
    */
   public static void copyOfActionOnResultSequence(ResultSequence resultSequence, TransformerImpl transformer, 
                                                   SerializationHandler serializationHandler, 
@@ -483,9 +483,9 @@ public class ElemCopyOf extends ElemTemplateElement
 				  }
 			  }
 			  else {
-				  throw new TransformerException("FODC0005 : xsl:copy-of instruction has 'type' attribute to request "
-																				  + "validation of xsl:copy-of's result, but an XML input document has not "
-																				  + "been validated using schema supplied via xsl:import-schema instruction.", 
+				  throw new TransformerException("FODC0005 : An xsl:copy-of instruction has 'type' attribute to request "
+																 				   + "validation of xsl:copy-of's result, but an XML input document has not "
+																				   + "been validated using schema supplied via xsl:import-schema instruction.", 
 																				  srcLocator); 
 			  }
 		  }
@@ -504,18 +504,18 @@ public class ElemCopyOf extends ElemTemplateElement
 						  }
 					  }
 					  else {
-						  throw new TransformerException("FODC0005 : xsl:copy-of instruction has 'validation' attribute with value '" + 
-																				  Constants.XS_VALIDATION_STRICT_STRING + "' to request validation of "
-																				  + "xsl:copy-of's result, but the schema used to validate "
-																				  + "an XML input document doesn't have global element declaration for "
-																				  + "an element node produced by xsl:copy-of instruction.", srcLocator);
+						  throw new TransformerException("FODC0005 : An xsl:copy-of instruction has 'validation' attribute with value '" + 
+																				     Constants.XS_VALIDATION_STRICT_STRING + "' to request validation of "
+																				     + "xsl:copy-of's result, but the schema used to validate "
+																				     + "an XML input document doesn't have global element declaration for "
+																				     + "an element node produced by xsl:copy-of instruction.", srcLocator);
 					  }
 				  }
 				  else {
-					  throw new TransformerException("FODC0005 : xsl:copy-of instruction has 'validation' attribute to request "
-																				  + "validation of xsl:copy-of's result, but an XML input "
-																				  + "document has not been validated using schema supplied "
-																				  + "via xsl:import-schema instruction.", srcLocator); 
+					  throw new TransformerException("FODC0005 : An xsl:copy-of instruction has 'validation' attribute to request "
+																	 			    + "validation of xsl:copy-of's result, but an XML input "
+																				    + "document has not been validated using schema supplied "
+																				    + "via xsl:import-schema instruction.", srcLocator); 
 				  }
 			  }
 			  else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
@@ -564,7 +564,7 @@ public class ElemCopyOf extends ElemTemplateElement
    * transformation's output.
    */
    private static void validateAndEmitAttributeNode(XNodeSet nodeSet, SerializationHandler serializationHandler,
-												   XPathContext xctxt, int pos, DTM dtm) throws TransformerException {
+												    XPathContext xctxt, int pos, DTM dtm) throws TransformerException {
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
@@ -596,13 +596,13 @@ public class ElemCopyOf extends ElemTemplateElement
 						  }
 					  }
 					  else {
-						  throw new TransformerException("FODC0005 : A xsl:copy-of instruction refers a type '" + type.getLocalName() + 
+						  throw new TransformerException("FODC0005 : An xsl:copy-of instruction refers a type '" + type.getLocalName() + 
 																						  "' that is not a schema simpleType, which cannot be used to validate "
 																						  + "an attribute value.", srcLocator);
 					  }
 				  }
 				  else {
-					  throw new TransformerException("FODC0005 : A xsl:copy-of instruction has 'type' attribute with "
+					  throw new TransformerException("FODC0005 : An xsl:copy-of instruction has 'type' attribute with "
 																						  + "value '" + type.getLocalName() + "' to request "
 																						  + "validation of xsl:copy-of's result, but the schema referred via "
 																						  + "xsl:import-schema instruction does'nt have a global type definition "
@@ -610,7 +610,7 @@ public class ElemCopyOf extends ElemTemplateElement
 				  }
 			  }
 			  else {
-				  throw new TransformerException("FODC0005 : A xsl:copy-of instruction has 'type' attribute to request "
+				  throw new TransformerException("FODC0005 : An xsl:copy-of instruction has 'type' attribute to request "
 																						  + "validation of xsl:copy-of's result, but an XML input document has not "
 																						  + "been validated using schema supplied via xsl:import-schema instruction.", 
 																						  srcLocator); 
