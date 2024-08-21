@@ -34,11 +34,14 @@ import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.w3c.dom.Node;
@@ -267,41 +270,20 @@ public class ElemCopy extends ElemUse
   }
 
   /**
-   * Validate an XML element with a schema type, and emit element to XSL transform's 
-   * output if validation succeeds.
+   * This method first constructs an XML string information, from which an XML 
+   * element node is formed. The method then validates the formed XML element node 
+   * with a schema type, and emits element to XSL transform's output if 
+   * validation succeeds.
    */
-  private void validateWithSchemaTypeAndEmitElement(int sourceNode, DTM dtm, XSTypeDefinition xsTypeDefn, 
-		                                            TransformerImpl transformer, XPathContext xctxt) throws TransformerException {	
-	
-	  SourceLocator srcLocator = xctxt.getSAXLocator(); 
+  private void validateWithSchemaTypeAndEmitElement(int contextNode, DTM dtm, XSTypeDefinition xsTypeDefn, 
+		                                            TransformerImpl transformer, XPathContext xctxt) throws TransformerException {		   
 
-	  Node srcNode = dtm.getNode(sourceNode);
+	  Node srcNode = dtm.getNode(contextNode);
 	  String nodeLocalName = srcNode.getLocalName();
-	  StringBuffer strBuff = new StringBuffer();
-	  strBuff.append("<" + nodeLocalName + " ");
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
-	  Node childElem = getFirstChild();
-	  while (childElem instanceof ElemAttribute) {
-		  ElemAttribute elemAttr = (ElemAttribute)childElem;
-		  AVT attrAvtName = elemAttr.getName();
-		  String attrName = attrAvtName.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
-		  String attrValue = null;
-		  Expression attrSelectExpr = elemAttr.getSelect();
-		  if (attrSelectExpr != null) {					            	  
-			  if (m_vars != null) {
-				  attrSelectExpr.fixupVariables(m_vars, m_globals_size);   
-			  }
-
-			  XObject xpathEvalResult = attrSelectExpr.execute(xctxt);
-			  attrValue = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
-		  }
-		  else {					                            
-			  attrValue = transformer.transformToString(elemAttr);
-		  }
-
-		  strBuff.append(attrName + "=\"" + attrValue + "\" ");
-		  childElem = childElem.getNextSibling();
-	  }
+	  StringBuffer strBuff = getAttrInformationStrBuff(nodeLocalName, contextNode, transformer, xctxt);
 
 	  String xmlStrValue = (strBuff.toString()).trim() + ">";
 
@@ -329,41 +311,19 @@ public class ElemCopy extends ElemUse
   }
 
   /**
-   * Validate an XML element with an element declaration available in schema, and emit element 
-   * to XSL transform's output if validation succeeds.
+   * This method first constructs an XML string information, from which an XML 
+   * element node is formed. The method then validates the formed XML element node 
+   * with a schema element declaration, and emits element to XSL transform's output 
+   * if validation succeeds.
    */
-  private void validateWithElemDeclAndEmitElement(int sourceNode, String nodeLocalName, XSElementDecl schemaElemDecl, 
-		                                          TransformerImpl transformer, XPathContext xctxt) throws TransformerException {
+  private void validateWithElemDeclAndEmitElement(int contextNode, String nodeLocalName, XSElementDecl schemaElemDecl, 
+		                                          TransformerImpl transformer, XPathContext xctxt) throws TransformerException {	  	  
 	  
-	  SourceLocator srcLocator = xctxt.getSAXLocator();
-	  
-	  StringBuffer strBuff = new StringBuffer();
-	  strBuff.append("<" + nodeLocalName + " ");
-
-	  Node childElem = getFirstChild();
-	  while (childElem instanceof ElemAttribute) {
-		  ElemAttribute elemAttr = (ElemAttribute)childElem;
-		  AVT attrAvtName = elemAttr.getName();
-		  String attrName = attrAvtName.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
-		  String attrValue = null;
-		  Expression attrSelectExpr = elemAttr.getSelect();
-		  if (attrSelectExpr != null) {					            	  
-			  if (m_vars != null) {
-				  attrSelectExpr.fixupVariables(m_vars, m_globals_size);   
-			  }
-
-			  XObject xpathEvalResult = attrSelectExpr.execute(xctxt);
-			  attrValue = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
-		  }
-		  else {					                            
-			  attrValue = transformer.transformToString(elemAttr);
-		  }
-
-		  strBuff.append(attrName + "=\"" + attrValue + "\" ");
-		  childElem = childElem.getNextSibling();
-	  }
+	  StringBuffer strBuff = getAttrInformationStrBuff(nodeLocalName, contextNode, transformer, xctxt);
 
 	  String xmlStrValue = (strBuff.toString()).trim() + ">";
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
 	  int nodeHandle = transformer.transformToRTF(this);
 	  NodeList nodeList = (new XRTreeFrag(nodeHandle, xctxt, this)).convertToNodeset();
@@ -379,13 +339,125 @@ public class ElemCopy extends ElemUse
 				  transformer.executeChildTemplates(this, true); 
 			  }									  
 		  } 
-		  catch (Exception ex) {
-			  String errMesg = ex.getMessage();
+		  catch (Exception ex) {			  
+			  String errMesg = ex.getMessage();			  
 			  throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
 																						  + "xsl:copy instruction." 
 																						  + ((errMesg != null) ? " " + errMesg : ""), srcLocator);
 		  }
 	  }
-  }
+   }
+  
+   /**
+   * This method analyzes xsl:copy instruction's child nodes that are adjacent 
+   * xsl:copy-of (that emits attributes) and xsl:attribute instructions, and string 
+   * information serialization of all such attributes is returned by this method.
+   */
+   private StringBuffer getAttrInformationStrBuff(String nodeLocalName, int sourceNode, 
+		                                          TransformerImpl transformer, XPathContext xctxt) throws TransformerException {
+		
+	   StringBuffer strBuff = new StringBuffer();
+
+	   strBuff.append("<" + nodeLocalName + " ");
+
+	   Node childElem = getFirstChild();
+	   int attrCount = 0;
+	   while (childElem instanceof ElemAttribute) {
+		   // xsl:copy's first child instruction is xsl:attribute  
+		   attrCount++;
+		   ElemAttribute elemAttr = (ElemAttribute)childElem;
+		   AVT attrAvtName = elemAttr.getName();
+		   String attrName = attrAvtName.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
+		   String attrValue = null;
+		   Expression attrSelectExpr = elemAttr.getSelect();
+		   if (attrSelectExpr != null) {					            	  
+			   if (m_vars != null) {
+				   attrSelectExpr.fixupVariables(m_vars, m_globals_size);   
+			   }
+
+			   XObject xpathEvalResult = attrSelectExpr.execute(xctxt);
+			   attrValue = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
+		   }
+		   else {					                            
+			   attrValue = transformer.transformToString(elemAttr);
+		   }
+
+		   strBuff.append(attrName + "=\"" + attrValue + "\" ");
+
+		   childElem = childElem.getNextSibling();
+		   if (childElem instanceof ElemCopyOf) {
+			   ElemCopyOf elemCopyOf = (ElemCopyOf)childElem;
+			   XPath copyOfSelectXPath = elemCopyOf.getSelect();
+			   Expression xpathExpr = copyOfSelectXPath.getExpression();
+			   XObject xObject = xpathExpr.execute(xctxt);
+			   if (xObject instanceof XNodeSet) {
+				   XNodeSet xNodeSet = (XNodeSet)xObject;
+				   DTMIterator dtmIter = xNodeSet.iter();
+				   int nodeHandle;
+				   while ((nodeHandle = dtmIter.nextNode()) != DTM.NULL) {
+					   DTM dtm1 = dtmIter.getDTM(nodeHandle);
+					   Node node = dtm1.getNode(nodeHandle);
+					   if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+						   attrCount++;
+						   attrName = node.getLocalName();
+						   attrValue = node.getNodeValue();
+						   strBuff.append(attrName + "=\"" + attrValue + "\" ");
+					   }
+				   }
+			   }
+		   }
+	   }
+
+	   if (attrCount == 0) {
+		   childElem = getFirstChild();
+		   String attrName = null;
+		   String attrValue = null;
+		   while (childElem instanceof ElemCopyOf) {
+			   // xsl:copy's first child instruction is xsl:copy-of
+			   ElemCopyOf elemCopyOf = (ElemCopyOf)childElem;
+			   XPath copyOfSelectXPath = elemCopyOf.getSelect();
+			   Expression xpathExpr = copyOfSelectXPath.getExpression();
+			   XObject xObject = xpathExpr.execute(xctxt);
+			   if (xObject instanceof XNodeSet) {				   				   
+				   XNodeSet xNodeSet = (XNodeSet)xObject;
+				   DTMIterator dtmIter = xNodeSet.iter();
+				   int nodeHandle;
+				   while ((nodeHandle = dtmIter.nextNode()) != DTM.NULL) {
+					   DTM dtm1 = dtmIter.getDTM(nodeHandle);
+					   Node node = dtm1.getNode(nodeHandle);
+					   if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+						   attrName = node.getLocalName();
+						   attrValue = node.getNodeValue();
+						   strBuff.append(attrName + "=\"" + attrValue + "\" ");
+					   }
+				   }
+			   }
+
+			   childElem = childElem.getNextSibling();
+			   if (childElem instanceof ElemAttribute) {
+				   ElemAttribute elemAttr = (ElemAttribute)childElem;
+				   AVT attrAvtName = elemAttr.getName();
+				   attrName = attrAvtName.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
+				   attrValue = null;
+				   Expression attrSelectExpr = elemAttr.getSelect();
+				   if (attrSelectExpr != null) {					            	  
+					   if (m_vars != null) {
+						   attrSelectExpr.fixupVariables(m_vars, m_globals_size);   
+					   }
+
+					   XObject xpathEvalResult = attrSelectExpr.execute(xctxt);
+					   attrValue = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
+				   }
+				   else {					                            
+					   attrValue = transformer.transformToString(elemAttr);
+				   }
+
+				   strBuff.append(attrName + "=\"" + attrValue + "\" "); 
+			   }
+		   }
+	   }
+
+	   return strBuff;
+	}
 
 }
