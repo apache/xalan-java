@@ -72,5 +72,37 @@ public class XslCopyValidationTests extends XSLTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
+    
+    @Test
+    public void xslCopyTest3() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslCopyTest4() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslCopyValidationTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";
+        
+        setXmlValidationProperty(true);
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
 
 }

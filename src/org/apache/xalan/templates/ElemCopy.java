@@ -384,8 +384,8 @@ public class ElemCopy extends ElemUse
 
 		   strBuff.append(attrName + "=\"" + attrValue + "\" ");
 
-		   childElem = childElem.getNextSibling();
-		   if (childElem instanceof ElemCopyOf) {
+		   childElem = childElem.getNextSibling();		   
+		   while (childElem instanceof ElemCopyOf) {
 			   ElemCopyOf elemCopyOf = (ElemCopyOf)childElem;
 			   XPath copyOfSelectXPath = elemCopyOf.getSelect();
 			   Expression xpathExpr = copyOfSelectXPath.getExpression();
@@ -405,6 +405,8 @@ public class ElemCopy extends ElemUse
 					   }
 				   }
 			   }
+			   
+			   childElem = childElem.getNextSibling();
 		   }
 	   }
 
@@ -433,8 +435,8 @@ public class ElemCopy extends ElemUse
 				   }
 			   }
 
-			   childElem = childElem.getNextSibling();
-			   if (childElem instanceof ElemAttribute) {
+			   childElem = childElem.getNextSibling();			   
+			   while (childElem instanceof ElemAttribute) {
 				   ElemAttribute elemAttr = (ElemAttribute)childElem;
 				   AVT attrAvtName = elemAttr.getName();
 				   attrName = attrAvtName.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
@@ -452,7 +454,9 @@ public class ElemCopy extends ElemUse
 					   attrValue = transformer.transformToString(elemAttr);
 				   }
 
-				   strBuff.append(attrName + "=\"" + attrValue + "\" "); 
+				   strBuff.append(attrName + "=\"" + attrValue + "\" ");
+				   
+				   childElem = childElem.getNextSibling();
 			   }
 		   }
 	   }
