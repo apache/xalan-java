@@ -32,10 +32,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 
-/*
+/**
  * An implementation of XPath 3.1 'if' expression.
- * 
- * Ref : https://www.w3.org/TR/xpath-31/#id-conditionals
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -45,7 +43,7 @@ public class XPathIfExpr extends Expression {
     
     private static final long serialVersionUID = 4057572946055830336L;
 
-    private String m_conditionalExprXPathStr;
+    private String m_branchConditionXPathStr;
     
     private String m_thenExprXPathStr;
     
@@ -57,12 +55,12 @@ public class XPathIfExpr extends Expression {
     private Vector m_vars;    
     private int m_globals_size;
 
-    public String getConditionalExprXPathStr() {
-        return m_conditionalExprXPathStr;
+    public String getBranchConditionXPathStr() {
+        return m_branchConditionXPathStr;
     }
 
-    public void setConditionalExprXPathStr(String conditionalExprXPathStr) {
-        this.m_conditionalExprXPathStr = conditionalExprXPathStr;
+    public void setBranchConditionXPathStr(String branchConditionXPathStr) {
+        this.m_branchConditionXPathStr = branchConditionXPathStr;
     }
 
     public String getThenExprXPathStr() {
@@ -101,19 +99,19 @@ public class XPathIfExpr extends Expression {
        }
        
        if (prefixTable != null) {
-          m_conditionalExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                    m_conditionalExprXPathStr, prefixTable);
+          m_branchConditionXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                    m_branchConditionXPathStr, prefixTable);
        }
        
-       XPath ifConditionalXPath = new XPath(m_conditionalExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+       XPath branchConditionXPath = new XPath(m_branchConditionXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                  XPath.SELECT, null);
        if (m_vars != null) {
-          ifConditionalXPath.fixupVariables(m_vars, m_globals_size);
+          branchConditionXPath.fixupVariables(m_vars, m_globals_size);
        }
        
-       XObject ifConditionalXPathResult = ifConditionalXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+       XObject branchConditionXPathResult = branchConditionXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        
-       if (ifConditionalXPathResult.bool()) {
+       if (branchConditionXPathResult.bool()) {
            if (prefixTable != null) {
               m_thenExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                         m_thenExprXPathStr, prefixTable);

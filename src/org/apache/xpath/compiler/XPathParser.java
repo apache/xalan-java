@@ -2152,40 +2152,71 @@ public class XPathParser
   {
       int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
       
-      nextToken();
-      
       insertOp(opPos, 2, OpCodes.OP_IF_EXPR);
       
-      XPathIfExpr ifExpr = new XPathIfExpr();            
+      XPathIfExpr ifExpr = new XPathIfExpr();
       
-      consumeExpected('(');
+      int tokenQueueSize = (m_ops.m_tokenQueue).size();
       
-      List<String> conditionalExprXPathStrPartsList = new ArrayList<String>();
-      
-      while (!tokenIs("then") && m_token != null)
-      {
-          conditionalExprXPathStrPartsList.add(m_token);
-          nextToken();
+      int thenTokenComputedIdx = 0;
+      for (int idx = 0; idx < tokenQueueSize; idx++) {
+    	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
+    	  String tokenStrValue = tokenObj.toString();
+    	  if ("then".equals(tokenStrValue)) {
+    		 thenTokenComputedIdx = idx;
+    		 break;
+    	  }
       }
+      
+      int elseTokenComputedIdx = 0;
+      for (int idx = (tokenQueueSize - 1); idx >= 0; idx--) {
+    	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
+    	  String tokenStrValue = tokenObj.toString();
+    	  if ("else".equals(tokenStrValue)) {
+    		 elseTokenComputedIdx = idx;
+    		 break;
+    	  }
+      }
+      
+      List<String> branchConditionXPathStrPartsList = new ArrayList<String>();
+      
+      int startIdx = (m_isXPathPredicateParsingActive ? 4 : 2);      
+      for (int idx = startIdx; idx < thenTokenComputedIdx; idx++) {
+    	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
+    	  String tokenStrValue = tokenObj.toString();
+    	  branchConditionXPathStrPartsList.add(tokenStrValue); 
+      }
+      
+      m_queueMark = thenTokenComputedIdx;
+      m_token = "then";
+      m_tokenChar = 't';
       
       consumeExpected("then");
       
-      conditionalExprXPathStrPartsList = conditionalExprXPathStrPartsList.subList(0, 
-                                                             conditionalExprXPathStrPartsList.size() - 1);
+      branchConditionXPathStrPartsList = branchConditionXPathStrPartsList.subList(0, 
+                                                             branchConditionXPathStrPartsList.size() - 1);
       
-      String conditionalXPathExprStr = getXPathStrFromComponentParts(conditionalExprXPathStrPartsList);
+      String branchConditionXPathExprStr = getXPathStrFromComponentParts(branchConditionXPathStrPartsList);
       
       List<String> thenExprXPathStrPartsList = new ArrayList<String>();
       
-      while (!tokenIs("else") && m_token != null)
-      {
-          thenExprXPathStrPartsList.add(m_token);
-          nextToken();
+      for (int idx = (thenTokenComputedIdx + 1); idx < elseTokenComputedIdx; idx++) {
+    	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
+    	  String tokenStrValue = tokenObj.toString();
+    	  thenExprXPathStrPartsList.add(tokenStrValue); 
       }
+      
+      m_queueMark = (elseTokenComputedIdx + 1);
+      m_token = "else";
+      m_tokenChar = 'e';
       
       consumeExpected("else");
       
-      String thenXPathExprStr = getXPathStrFromComponentParts(thenExprXPathStrPartsList);            
+      String thenXPathExprStr = getXPathStrFromComponentParts(thenExprXPathStrPartsList);
+      thenXPathExprStr = thenXPathExprStr.trim();
+      if (!thenXPathExprStr.equals("()") && thenXPathExprStr.startsWith("(") && thenXPathExprStr.endsWith(")")) {
+    	 thenXPathExprStr = thenXPathExprStr.substring(1, thenXPathExprStr.length() - 1);    	 
+      }
       
       List<String> elseExprXPathStrPartsList = new ArrayList<String>();
       
@@ -2205,7 +2236,7 @@ public class XPathParser
       
       String elseXPathExprStr = getXPathStrFromComponentParts(elseExprXPathStrPartsList);
       
-      ifExpr.setConditionalExprXPathStr(conditionalXPathExprStr);
+      ifExpr.setBranchConditionXPathStr(branchConditionXPathExprStr);
       ifExpr.setThenExprXPathStr(thenXPathExprStr);
       ifExpr.setElseExprXPathStr(elseXPathExprStr);
       
