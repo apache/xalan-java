@@ -2187,6 +2187,12 @@ public class XPathParser
     	  branchConditionXPathStrPartsList.add(tokenStrValue); 
       }
       
+      String thenPrevTokenStr = ((m_ops.m_tokenQueue).elementAt(
+    		                                                 thenTokenComputedIdx - 1)).toString();      
+      if (!(lookahead('(', 1) && ")".equals(thenPrevTokenStr))) {
+    	  error(XPATHErrorResources.ER_IF_EXPR, new Object[] {}); 
+      }
+      
       m_queueMark = thenTokenComputedIdx;
       m_token = "then";
       m_tokenChar = 't';
