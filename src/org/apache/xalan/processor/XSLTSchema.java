@@ -220,7 +220,7 @@ public class XSLTSchema extends XSLTElementDef
       
       
     // Required.                                       
-    // xsl:value-of, xsl:for-each, xsl:copy-of, xsl:for-each-group, xsl:analyze-string, xsl:iterate                             
+    // xsl:for-each, xsl:copy-of, xsl:for-each-group, xsl:analyze-string, xsl:iterate                             
     XSLTAttributeDef selectAttrRequired = new XSLTAttributeDef(null,
                                             "select",
                                             XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
@@ -279,7 +279,7 @@ public class XSLTSchema extends XSLTElementDef
                                                   XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
 
     // Optional.                                          
-    // xsl:variable, xsl:param, xsl:with-param, xsl:attribute, xsl:break, xsl:on-completion, xsl:sequence                                       
+    // xsl:variable, xsl:value-of, xsl:param, xsl:with-param, xsl:attribute, xsl:break, xsl:on-completion, xsl:sequence                                       
     XSLTAttributeDef selectAttrOpt = new XSLTAttributeDef(null, "select",
                                        XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
@@ -475,8 +475,8 @@ public class XSLTSchema extends XSLTElementDef
                                                  ElemUnknown.class /* class object */, 20, true);
     XSLTElementDef xslValueOf = new XSLTElementDef(this,
                                   Constants.S_XSLNAMESPACEURL, "value-of",
-                                  null /*alias */, null /* elements */,
-                                  new XSLTAttributeDef[]{ selectAttrRequired,
+                                  null /*alias */, templateElements /* elements */,
+                                  new XSLTAttributeDef[]{ selectAttrOpt,
                                 		                  separatorAttrOpt,
                                                           disableOutputEscapingAttr }, 
                                                new ProcessorTemplateElem(),

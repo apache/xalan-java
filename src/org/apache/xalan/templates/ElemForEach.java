@@ -463,13 +463,15 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         	Function func = locPathIterator.getFuncExpr();
         	XPathDynamicFunctionCall dfc = locPathIterator.getDynamicFuncCallExpr();
         	
-        	if (func != null) {
-        		// Evaluate an XPath path expression like /a/b/funcCall(..)
+        	if (func != null) {        		
         		inpSeq = new ResultSequence();
         		int nextNode;
         		while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         		{
         			XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+        			// Evaluate an XPath path expression like /a/b/funcCall(..).
+        			// Find one result item here for a sequence of items, 
+              	    // since this is within a loop.
         			xctxt.setXPath3ContextItem(singletonXPathNode);                              
         			XObject funcEvalResult = func.execute(xctxt);
         			inpSeq.add(funcEvalResult);
@@ -479,13 +481,15 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                 
                 return;
         	}
-        	else if (dfc != null) {
-        		// Evaluate an XPath path expression like /a/b/$funcCall(..)
+        	else if (dfc != null) {        		
         		inpSeq = new ResultSequence();
         		int nextNode;
         		while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         		{
         			XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+        			// Evaluate an XPath path expression like /a/b/$funcCall(..).
+        			// Find one result item here for a sequence of items, 
+              	    // since this is within a loop.
         			xctxt.setXPath3ContextItem(singletonXPathNode);                              
         			XObject dfcEvalResult = dfc.execute(xctxt);
         			inpSeq.add(dfcEvalResult);

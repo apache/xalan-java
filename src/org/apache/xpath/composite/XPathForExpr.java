@@ -190,23 +190,27 @@ public class XPathForExpr extends Expression {
             	   Function func = locPathIterator.getFuncExpr();
             	   XPathDynamicFunctionCall dfc = locPathIterator.getDynamicFuncCallExpr();
 
-            	   if (func != null) {
-            		   // Evaluate an XPath path expression like /a/b/funcCall(..)
+            	   if (func != null) {            		   
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
             			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            			   // Evaluate an XPath path expression like /a/b/funcCall(..).
+            			   // Find one result item here for a sequence of items, 
+                     	   // since this is within a loop.
             			   xctxt.setXPath3ContextItem(singletonXPathNode);                              
             			   XObject funcEvalResult = func.execute(xctxt);
             			   xsObjResultSeq.add(funcEvalResult);
             		   }
             	   }
-            	   else if (dfc != null) {
-            		   // Evaluate an XPath path expression like /a/b/$funcCall(..)
+            	   else if (dfc != null) {            		   
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
             			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            			   // Evaluate an XPath path expression like /a/b/$funcCall(..).
+            			   // Find one result item here for a sequence of items, 
+                     	   // since this is within a loop.
             			   xctxt.setXPath3ContextItem(singletonXPathNode);                              
             			   XObject dfcEvalResult = dfc.execute(xctxt);
             			   xsObjResultSeq.add(dfcEvalResult);

@@ -23,11 +23,11 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -49,6 +49,8 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyType;
@@ -217,6 +219,12 @@ public class ElemValueOf extends ElemTemplateElement {
   {
     return Constants.ELEMNAME_VALUEOF;
   }
+  
+  /**
+   * This class field's value denotes the constant string "XSL_SEQ" which 
+   * is used during processing of xsl:sequence instruction.
+   */
+  private static final String XSL_SEQ = "XSL_SEQ";
 
   /**
    * This function is called after everything else has been
@@ -294,7 +302,23 @@ public class ElemValueOf extends ElemTemplateElement {
 
         try
         {
-          Expression expr = m_selectExpression.getExpression();
+          Expression expr = null;
+          
+          if (m_selectExpression != null) {        	  
+        	 Node childNode = getFirstChild();
+        	 if (childNode != null) {
+                throw new TransformerException("XTSE0870 : An xsl:value-of instruction cannot have both a "
+                		                                    + "'select' attribute and non-empty content.", srcLocator);
+        	 }
+        	 else {
+        		expr = m_selectExpression.getExpression(); 
+        	 }
+          }          
+          else {
+        	  evaluateXslValueOfSeqConstructorAndEmitResult(transformer, xctxt, rth);
+        	  
+        	  return;
+          }
 
           if (transformer.getDebug())
           {
@@ -451,14 +475,16 @@ public class ElemValueOf extends ElemTemplateElement {
                            String resultStr = "";
                            if (func != null) {
                         	  // Evaluate an XPath path expression like /a/b/funcCall(..).
-                        	  // Find one result item, since this is within a loop.
+                        	  // Find one result item here for a sequence of items, 
+                        	  // since this is within a loop.
                               xctxt.setXPath3ContextItem(singletonXPathNode);                              
                               XObject funcEvalResult = func.execute(xctxt);
                               resultStr = XslTransformEvaluationHelper.getStrVal(funcEvalResult);                               
                            }
                            else if (dfc != null) {
                         	   // Evaluate an XPath path expression like /a/b/$funcCall(..).
-                        	   // Find one result item, since this is within a loop.
+                        	   // Find one result item here for a sequence of items, 
+                         	   // since this is within a loop.
                                xctxt.setXPath3ContextItem(singletonXPathNode);                              
                                XObject evalResult = dfc.execute(xctxt);
                                resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);                               
@@ -611,7 +637,7 @@ public class ElemValueOf extends ElemTemplateElement {
     }
   }
 
-/**
+  /**
    * Add a child to the child list.
    *
    * @param newChild Child to add to children list
@@ -622,13 +648,7 @@ public class ElemValueOf extends ElemTemplateElement {
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
-
-    error(XSLTErrorResources.ER_CANNOT_ADD,
-          new Object[]{ newChild.getNodeName(),
-                        this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-
-    //" to " + this.m_elemName);
-    return null;
+	  return super.appendChild(newChild);
   }
   
   /**
@@ -637,9 +657,9 @@ public class ElemValueOf extends ElemTemplateElement {
    */
   protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
   {
-  	if(callAttrs)
-  		m_selectExpression.getExpression().callVisitors(m_selectExpression, visitor);
-    super.callChildVisitors(visitor, callAttrs);
+  	  if(callAttrs)
+  		 m_selectExpression.getExpression().callVisitors(m_selectExpression, visitor);
+      super.callChildVisitors(visitor, callAttrs);
   }
   
   /**
@@ -673,5 +693,62 @@ public class ElemValueOf extends ElemTemplateElement {
 	
 	return strValue;
   }
+  
+  /**
+   * This method evaluates xsl:value-of instruction's contained sequence constructor,
+   * and emits the result of evaluation to XSL transform's output.
+   */
+  private void evaluateXslValueOfSeqConstructorAndEmitResult(TransformerImpl transformer, XPathContext xctxt, 
+		                                                     SerializationHandler rth) throws TransformerException, SAXException {
+	  
+	  int rtfNodeHandle = transformer.transformToRTF(this);
+	  DTMManager dtmMgr = xctxt.getDTMManager();        	  
+	  DTM dtm = dtmMgr.getDTM(rtfNodeHandle);        	  
+	  int nodeType = dtm.getNodeType(rtfNodeHandle);
+
+	  StringBuffer nodeStrValBuff = new StringBuffer();
+
+	  if (nodeType == DTM.DOCUMENT_NODE) {
+		  Node docNode = dtm.getNode(rtfNodeHandle);
+		  NodeList nodeList = docNode.getChildNodes();
+		  if ((nodeList != null) && (nodeList.getLength() > 0)) {
+			  for (int idx = 0; idx < nodeList.getLength(); idx++) {
+				  Node node = nodeList.item(idx);
+				  String nodeStrVal = node.getTextContent();
+				  if (idx < (nodeList.getLength() - 1)) {
+					  if (m_separator != null) {
+						  nodeStrValBuff.append(nodeStrVal + m_separator);
+					  }
+					  else {
+						  nodeStrValBuff.append(nodeStrVal); 
+					  }
+				  }
+				  else {
+					  nodeStrValBuff.append(nodeStrVal);
+				  }
+			  }
+		  }
+
+		  String nodeStrVal = (nodeStrValBuff.toString()).trim();
+		  if (nodeStrVal.contains(XSL_SEQ)) {
+			  nodeStrVal = nodeStrVal.replace(XSL_SEQ, "");
+			  if (m_separator != null) {        				
+				  nodeStrVal = nodeStrVal.replace(" ", m_separator);
+				  nodeStrVal = nodeStrVal.substring(0, (nodeStrVal.length() - 1));
+			  }
+			  else {
+				  nodeStrVal = nodeStrVal.trim();
+			  }
+		  }
+		  (new XString(nodeStrVal)).dispatchCharactersEvents(rth);
+	  }
+	  else {
+		  // xsl:value-of's 'separator' attribute is ignored 
+		  // in this case. 
+		  Node node = dtm.getNode(rtfNodeHandle);
+		  String nodeStrVal = node.getTextContent();
+		  (new XString(nodeStrVal)).dispatchCharactersEvents(rth);
+	  }
+   }
 
 }

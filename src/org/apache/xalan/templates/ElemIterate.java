@@ -201,13 +201,15 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                
                if (dtmIter != null) {
             	   ResultSequence rSeq = null;
-            	   if (func != null) {
-            		   // Evaluate an XPath path expression like /a/b/funcCall(..)
+            	   if (func != null) {            		   
             		   rSeq = new ResultSequence();
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
             			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            			   // Evaluate an XPath path expression like /a/b/funcCall(..).
+            			   // Find one result item here for a sequence of items, 
+                     	   // since this is within a loop.
             			   xctxt.setXPath3ContextItem(singletonXPathNode);                              
             			   XObject funcEvalResult = func.execute(xctxt);
             			   rSeq.add(funcEvalResult);
@@ -215,13 +217,15 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             		   
             		   inpXObject = rSeq;
             	   }
-            	   else if (dfc != null) {
-            		   // Evaluate an XPath path expression like /a/b/$funcCall(..)
+            	   else if (dfc != null) {            		   
             		   rSeq = new ResultSequence();
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
             			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            			   // Evaluate an XPath path expression like /a/b/$funcCall(..).
+            			   // Find one result item here for a sequence of items, 
+                     	   // since this is within a loop.
             			   xctxt.setXPath3ContextItem(singletonXPathNode);                              
             			   XObject funcEvalResult = dfc.execute(xctxt);
             			   rSeq.add(funcEvalResult);

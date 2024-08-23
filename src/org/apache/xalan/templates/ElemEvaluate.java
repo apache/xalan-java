@@ -487,11 +487,15 @@ public class ElemEvaluate extends ElemTemplateElement {
 				XObject evalResult = singletonXPathNode; 
 				if (func != null) {
 					// Evaluate an XPath path expression like /a/b/funcCall(..).
+					// Find one result item here for a sequence of items, 
+              	    // since this is within a loop.
 					xctxt.setXPath3ContextItem(singletonXPathNode);                              
 					evalResult = func.execute(xctxt);                              
 				}
 				else if (dfc != null) {
 					// Evaluate an XPath path expression like /a/b/$funcCall(..).
+					// Find one result item here for a sequence of items, 
+              	    // since this is within a loop.
 					xctxt.setXPath3ContextItem(singletonXPathNode);                              
 					evalResult = dfc.execute(xctxt);                             
 				}
