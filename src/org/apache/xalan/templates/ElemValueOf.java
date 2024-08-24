@@ -759,7 +759,7 @@ public class ElemValueOf extends ElemTemplateElement {
    }
   
    /**
-    * This method strips whitespace characaters from RHS of 
+    * Method definition to strip whitespace characters from RHS of 
     * an input string, and returns the resulting string.
     */
    private String strRtrim(String str) {
