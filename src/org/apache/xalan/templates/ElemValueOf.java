@@ -735,6 +735,13 @@ public class ElemValueOf extends ElemTemplateElement {
 			  if (m_separator != null) {        				
 				  nodeStrVal = nodeStrVal.replace(" ", m_separator);
 				  nodeStrVal = nodeStrVal.substring(0, (nodeStrVal.length() - 1));
+				  String rTrimmedSeparator = strRtrim(m_separator);
+				  if (!m_separator.equals(rTrimmedSeparator)) {
+					  int lIdx = nodeStrVal.lastIndexOf(rTrimmedSeparator);
+					  if (lIdx > 0) {
+						  nodeStrVal = nodeStrVal.substring(0, lIdx);
+					  } 
+				  }
 			  }
 			  else {
 				  nodeStrVal = nodeStrVal.trim();
@@ -749,6 +756,39 @@ public class ElemValueOf extends ElemTemplateElement {
 		  String nodeStrVal = node.getTextContent();
 		  (new XString(nodeStrVal)).dispatchCharactersEvents(rth);
 	  }
+   }
+  
+   /**
+    * This method strips whitespace characaters from RHS of 
+    * an input string, and returns the resulting string.
+    */
+   private String strRtrim(String str) {
+	  String resultStr = null;
+	  
+	  if (str.length() == 0) {
+		 resultStr = "";  
+	  }
+	  else if (str.length() == 1) {
+		 if (Character.isWhitespace(str.charAt(0))) {
+			resultStr = ""; 
+		 }
+		 else {
+			resultStr = str;
+		 }
+	  }
+	  else {
+		 char chr = str.charAt(str.length() - 1);
+		 if (Character.isWhitespace(chr)) {
+			resultStr = str.substring(0, str.length() - 1);
+			// Recursive call to this method
+			resultStr = strRtrim(resultStr); 
+		 }
+		 else {
+			resultStr = str; 
+		 }
+	  }
+	  
+	  return resultStr;
    }
 
 }

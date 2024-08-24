@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.xpath3;
+package org.apache.xalan.xslt3;
 
 import org.apache.xalan.util.XSLConstants;
 import org.apache.xalan.util.XSLTransformTestsUtil;
@@ -23,7 +23,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Xalan-J jira issues, test cases.
+ * Xalan-J jira issues, test cases for XSL 3 
+ * implementation work.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -63,6 +64,16 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslJiraIssuesTest3() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
