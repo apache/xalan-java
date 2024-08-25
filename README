@@ -31,11 +31,11 @@ is needed.
 
 Following are the steps to make Xalan-J's build from this git repos branch:
 
-1) Set JAVA_HOME environment variable, pointing to a local JDK installation folder.
+1) Set JAVA_HOME environment variable, referring to a local JDK installation folder.
 
-The codebase within this git repos branch, has been developed and tested using Java 1.8 version.
+The codebase within this git repos branch, has been developed and tested using Java version 1.8.
 
-2) The following two build actions are currently available, on this git repos branch.
+2) The following build actions are currently available, on this git repos branch.
 
 2.1) Command : build clean jar
 This command produces Xalan-J's binary implementation as Java jar files.
