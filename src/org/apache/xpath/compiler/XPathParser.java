@@ -2156,50 +2156,88 @@ public class XPathParser
       
       XPathIfExpr ifExpr = new XPathIfExpr();
       
+      if (!lookahead('(', 1)) {
+    	 error(XPATHErrorResources.ER_IF_EXPR, new Object[] {}); 
+      }
+      
       int tokenQueueSize = (m_ops.m_tokenQueue).size();
       
-      int thenTokenComputedIdx = 0;
+      int thenTokenEffectiveComputedIdx = 0;
+      
       for (int idx = 0; idx < tokenQueueSize; idx++) {
     	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
     	  String tokenStrValue = tokenObj.toString();
     	  if ("then".equals(tokenStrValue)) {
-    		 thenTokenComputedIdx = idx;
+    		 thenTokenEffectiveComputedIdx = idx;
     		 break;
     	  }
       }
       
-      int elseTokenComputedIdx = 0;
+      StringBuffer probableBranchConditionXPathStrBuff = new StringBuffer();
+      for (int idx = 1; idx < thenTokenEffectiveComputedIdx; idx++) {
+    	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
+    	  String tokenStrValue = tokenObj.toString();
+    	  probableBranchConditionXPathStrBuff.append(tokenStrValue);
+      }
+      
+      String probableBranchConditionExprStr = probableBranchConditionXPathStrBuff.toString();
+      int thenTokenComputedRevisedIdx = 0;
+      while (!isStrHasBalancedParentheses(probableBranchConditionExprStr, '(', ')')) {
+    	  boolean isBreak = false;
+    	  for (int idx = (thenTokenEffectiveComputedIdx + 1); idx < tokenQueueSize; idx++) {
+    		 Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
+        	 String tokenStrValue = tokenObj.toString();
+        	 if (!"then".equals(tokenStrValue)) {
+        	    probableBranchConditionExprStr += tokenStrValue;  
+        	 }
+        	 else if (isStrHasBalancedParentheses(probableBranchConditionExprStr, '(', ')')) {
+        		thenTokenComputedRevisedIdx = idx;
+        		isBreak = true;
+        		break; 
+        	 }
+    	  }
+    	  
+    	  if (isBreak) {
+    	     break;	  
+    	  }
+      }
+      
+      thenTokenEffectiveComputedIdx = (thenTokenComputedRevisedIdx != 0) ? 
+    		                                                    thenTokenComputedRevisedIdx : thenTokenEffectiveComputedIdx;
+      
+      int elseTokenEffectiveComputedIdx = 0;
+      
       for (int idx = (tokenQueueSize - 1); idx >= 0; idx--) {
     	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
     	  String tokenStrValue = tokenObj.toString();
     	  if ("else".equals(tokenStrValue)) {
-    		 elseTokenComputedIdx = idx;
+    		 elseTokenEffectiveComputedIdx = idx;
     		 break;
     	  }
       }
       
-      StringBuffer probablyElseExprStrBuff = new StringBuffer();
-      for (int idx = (elseTokenComputedIdx + 1); idx < tokenQueueSize; idx++) {
+      StringBuffer probableElseExprStrBuff = new StringBuffer();
+      for (int idx = (elseTokenEffectiveComputedIdx + 1); idx < tokenQueueSize; idx++) {
     	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
     	  String tokenStrValue = tokenObj.toString();
-    	  probablyElseExprStrBuff.append(tokenStrValue);
+    	  probableElseExprStrBuff.append(tokenStrValue);
       }
       
-      String probablyElseExprStr = probablyElseExprStrBuff.toString();
+      String probableElseExprStr = probableElseExprStrBuff.toString();
       int elseTokenComputedRevisedIdx = 0;
-      while (!isStrHasBalancedParentheses(probablyElseExprStr, '(', ')')) {
+      while (!isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {
     	  boolean isBreak = false;
-    	  for (int idx = (elseTokenComputedIdx - 1); idx >= 0; idx--) {
+    	  for (int idx = (elseTokenEffectiveComputedIdx - 1); idx >= 0; idx--) {
     		  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
         	  String tokenStrValue = tokenObj.toString();
         	  if ("else".equals(tokenStrValue)) {
-        		 probablyElseExprStr = "";
+        		 probableElseExprStr = "";
         		 for (int idx1 = (idx + 1); idx1 < tokenQueueSize; idx1++) {
         			tokenObj = (m_ops.m_tokenQueue).elementAt(idx1);
-        			probablyElseExprStr += (tokenObj.toString() + " "); 
+        			probableElseExprStr += (tokenObj.toString() + " "); 
         		 }
-        		 probablyElseExprStr = probablyElseExprStr.trim();
-        		 if (isStrHasBalancedParentheses(probablyElseExprStr, '(', ')')) {
+        		 probableElseExprStr = probableElseExprStr.trim();
+        		 if (isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {
         			elseTokenComputedRevisedIdx = idx; 
         			isBreak = true;
         			break; 
@@ -2212,24 +2250,25 @@ public class XPathParser
     	  }
       }
       
-      elseTokenComputedIdx = ((elseTokenComputedRevisedIdx != 0) ? elseTokenComputedRevisedIdx : elseTokenComputedIdx); 
+      elseTokenEffectiveComputedIdx = ((elseTokenComputedRevisedIdx != 0) ? 
+    		                                                     elseTokenComputedRevisedIdx : elseTokenEffectiveComputedIdx); 
       
       List<String> branchConditionXPathStrPartsList = new ArrayList<String>();
       
       int startIdx = (m_isXPathPredicateParsingActive ? 4 : 2);      
-      for (int idx = startIdx; idx < thenTokenComputedIdx; idx++) {
+      for (int idx = startIdx; idx < thenTokenEffectiveComputedIdx; idx++) {
     	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
     	  String tokenStrValue = tokenObj.toString();
     	  branchConditionXPathStrPartsList.add(tokenStrValue); 
       }
       
       String thenPrevTokenStr = ((m_ops.m_tokenQueue).elementAt(
-    		                                                 thenTokenComputedIdx - 1)).toString();      
-      if (!(lookahead('(', 1) && ")".equals(thenPrevTokenStr))) {
+    		                                                 thenTokenEffectiveComputedIdx - 1)).toString();      
+      if (!")".equals(thenPrevTokenStr)) {
     	  error(XPATHErrorResources.ER_IF_EXPR, new Object[] {}); 
       }
       
-      m_queueMark = thenTokenComputedIdx;
+      m_queueMark = thenTokenEffectiveComputedIdx;
       m_token = "then";
       m_tokenChar = 't';
       
@@ -2242,13 +2281,13 @@ public class XPathParser
       
       List<String> thenExprXPathStrPartsList = new ArrayList<String>();
       
-      for (int idx = (thenTokenComputedIdx + 1); idx < elseTokenComputedIdx; idx++) {
+      for (int idx = (thenTokenEffectiveComputedIdx + 1); idx < elseTokenEffectiveComputedIdx; idx++) {
     	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
     	  String tokenStrValue = tokenObj.toString();
     	  thenExprXPathStrPartsList.add(tokenStrValue); 
       }
       
-      m_queueMark = (elseTokenComputedIdx + 1);
+      m_queueMark = (elseTokenEffectiveComputedIdx + 1);
       m_token = "else";
       m_tokenChar = 'e';
       

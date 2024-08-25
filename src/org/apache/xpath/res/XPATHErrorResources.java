@@ -476,7 +476,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
      "Extra illegal tokens: {0}"},
   
   { ER_IF_EXPR,
-     "\"if\" keyword expected follow by \"(\" expr \")\"." },
+     "\"if\" keyword expected followed by \"(\" expr \")\"." },
 
   { ER_EXPECTED_DOUBLE_QUOTE,
       "misquoted literal... expected double quote!"},
