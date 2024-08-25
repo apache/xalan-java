@@ -2178,6 +2178,42 @@ public class XPathParser
     	  }
       }
       
+      StringBuffer probablyElseExprStrBuff = new StringBuffer();
+      for (int idx = (elseTokenComputedIdx + 1); idx < tokenQueueSize; idx++) {
+    	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
+    	  String tokenStrValue = tokenObj.toString();
+    	  probablyElseExprStrBuff.append(tokenStrValue);
+      }
+      
+      String probablyElseExprStr = probablyElseExprStrBuff.toString();
+      int elseTokenComputedRevisedIdx = 0;
+      while (!isStrHasBalancedParentheses(probablyElseExprStr, '(', ')')) {
+    	  boolean isBreak = false;
+    	  for (int idx = (elseTokenComputedIdx - 1); idx >= 0; idx--) {
+    		  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
+        	  String tokenStrValue = tokenObj.toString();
+        	  if ("else".equals(tokenStrValue)) {
+        		 probablyElseExprStr = "";
+        		 for (int idx1 = (idx + 1); idx1 < tokenQueueSize; idx1++) {
+        			tokenObj = (m_ops.m_tokenQueue).elementAt(idx1);
+        			probablyElseExprStr += (tokenObj.toString() + " "); 
+        		 }
+        		 probablyElseExprStr = probablyElseExprStr.trim();
+        		 if (isStrHasBalancedParentheses(probablyElseExprStr, '(', ')')) {
+        			elseTokenComputedRevisedIdx = idx; 
+        			isBreak = true;
+        			break; 
+        		 }
+        	  }
+    	  }
+    	  
+    	  if (isBreak) {
+    		 break; 
+    	  }
+      }
+      
+      elseTokenComputedIdx = ((elseTokenComputedRevisedIdx != 0) ? elseTokenComputedRevisedIdx : elseTokenComputedIdx); 
+      
       List<String> branchConditionXPathStrPartsList = new ArrayList<String>();
       
       int startIdx = (m_isXPathPredicateParsingActive ? 4 : 2);      
@@ -2240,11 +2276,18 @@ public class XPathParser
           }          
       }
       
-      String elseXPathExprStr = getXPathStrFromComponentParts(elseExprXPathStrPartsList);
+      String elseXPathStr = getXPathStrFromComponentParts(elseExprXPathStrPartsList);
+      elseXPathStr = elseXPathStr.trim();
+      if (!elseXPathStr.equals("()") && elseXPathStr.startsWith("(") && elseXPathStr.endsWith(")")) {
+    	 String probableElseXPathStr = (elseXPathStr.substring(1, elseXPathStr.length() - 1)).trim();
+    	 if (probableElseXPathStr.startsWith("if")) {
+    		elseXPathStr = probableElseXPathStr;	 
+    	 }
+      }
       
       ifExpr.setBranchConditionXPathStr(branchConditionXPathExprStr);
       ifExpr.setThenExprXPathStr(thenXPathExprStr);
-      ifExpr.setElseExprXPathStr(elseXPathExprStr);
+      ifExpr.setElseExprXPathStr(elseXPathStr);
       
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                     m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
