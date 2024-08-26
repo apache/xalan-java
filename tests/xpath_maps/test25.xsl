@@ -34,7 +34,7 @@
      <xsl:param name="elem1" as="element(decision)"/>
 	 <xsl:variable name="initKey" select="xs:integer($elem1/item[1]/id)" as="xs:integer"/>
 	 <xsl:variable name="initValue" select="xs:string($elem1/item[1]/value)" as="xs:string"/>
-	 <xsl:variable name="initMap" select="map {$initKey : $initValue}" as="map(*)"/> 
+	 <xsl:variable name="initMap" select="map {$initKey:$initValue}" as="map(*)"/> 
 	 <xsl:iterate select="$elem1/item[position() &gt; 1]">
 		<xsl:param name="map1" select="$initMap" as="map(*)"/>
 		<xsl:on-completion>

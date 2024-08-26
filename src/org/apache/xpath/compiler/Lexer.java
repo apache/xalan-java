@@ -22,6 +22,7 @@ package org.apache.xpath.compiler;
 
 import java.util.Vector;
 
+import org.apache.xml.utils.ObjectVector;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -132,7 +133,7 @@ class Lexer
 
     // Nesting of '[' so we can know if the given element should be
     // counted inside the m_patternMap.
-    int nesting = 0;
+    int nesting = 0;            
 
     // char[] chars = pat.toCharArray();
     for (int i = 0; i < nChars; i++)
@@ -279,7 +280,7 @@ class Lexer
       case '\\' :  // Unused at the moment
       case '^' :   // Unused at the moment
       case '!' :   // added for XPath 3.1
-      case '$' :
+      case '$' :    	  
       case '<' :
       case '>' :
         if (startSubstring != -1)
@@ -294,7 +295,20 @@ class Lexer
           }
           else
           {
-            addToTokenQueue(pat.substring(startSubstring, i));
+        	 String str = pat.substring(startSubstring, i);
+        	 ObjectVector tokenQueue = m_compiler.getTokenQueue();
+        	 int tokenQueueSize = tokenQueue.size();
+        	 boolean isAddToTokenQueue = true;
+        	 if ((tokenQueueSize - 2) > 0) {
+        		 String s1 = (tokenQueue.elementAt(tokenQueueSize - 2)).toString(); 
+        		 String s2 = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();
+        		 if (str.equals(s1 + s2)) {
+        			isAddToTokenQueue = false; 
+        		 }
+        	 }
+        	 if (isAddToTokenQueue) {
+                addToTokenQueue(pat.substring(startSubstring, i));
+        	 }
           }
 
           startSubstring = -1;
@@ -336,7 +350,64 @@ class Lexer
       case ':' :
         if (i>0)
         {
-          if (posOfNSSep == (i - 1))
+          boolean isXPathMapExpr = isXPathMapExpr(pat);          
+          if (isXPathMapExpr) {
+        	 ObjectVector tokenQueue = m_compiler.getTokenQueue();
+        	 int tokenQueueSize = tokenQueue.size();    	 
+        	 String str1 = (tokenQueue.elementAt(tokenQueueSize - 2)).toString();
+        	 String str2 = (tokenQueue.elementAt(tokenQueueSize - 3)).toString();
+        	 if (",".equals(str1) || "map".equals(str2)) {
+        		// The ':' is XPath map entry's key, value expression separator
+        		String str3 = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();
+        		if ("$".equals(str3)) {
+        			StringBuffer strBuff = new StringBuffer();
+        			for (int idx = (i - 1); idx >= 0; idx--) {
+        			   char c1 = pat.charAt(idx);
+        			   if (c1 != '$') {
+        				  strBuff.append(c1);  
+        			   }
+        			   else {
+        				  break; 
+        			   }
+        			}
+        			String str = strBuff.toString();
+        			strBuff = new StringBuffer();
+        			for (int idx = (str.length() - 1); idx >= 0; idx--) {
+        			   char c1 = str.charAt(idx);
+        			   strBuff.append(c1);
+        			}
+        			str = strBuff.toString();
+        			if (str.length() > 0) {
+        			   addToTokenQueue(str);
+        			}
+        		}
+        		
+        		addToTokenQueue(pat.substring(i, i + 1));
+        		
+        		break;
+        	 }
+        	 else if (posOfNSSep == (i - 1)) {
+        		if (startSubstring != -1)
+                {
+                   if (startSubstring < (i - 1))
+                     addToTokenQueue(pat.substring(startSubstring, i - 1));
+                }
+
+                isNum = false;
+                isAttrName = false;
+                startSubstring = -1;
+                posOfNSSep = -1;
+
+                addToTokenQueue(pat.substring(i - 1, i + 1));
+                
+                break;
+        	 }
+        	 else
+             {
+                posOfNSSep = i;
+             }
+          }
+          else if (posOfNSSep == (i - 1))
           {
             if (startSubstring != -1)
             {
@@ -372,7 +443,7 @@ class Lexer
         }
       }
     }
-
+    
     if (startSubstring != -1)
     {
       isNum = false;
@@ -704,4 +775,20 @@ class Lexer
 
     return -1;
   }
+  
+  /**
+   * Method definition to check whether an XPath expression string,
+   * represents an XPath 'map' expression.
+   */
+  private boolean isXPathMapExpr(String xpathStr) {
+	  boolean isXPathMapExpr = false;    
+	  
+	  if ((xpathStr.length() > 0) && java.util.regex.Pattern.matches(
+			                                                      "map[\\s]*[\\{].*", xpathStr.trim())) {
+		  isXPathMapExpr = true;	
+	  }
+	  
+	  return isXPathMapExpr;
+  }
+  
 }
