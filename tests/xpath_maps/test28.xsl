@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:map="http://www.w3.org/2005/xpath-functions/map"
-                exclude-result-prefixes="map"                
-				version="3.0">
-				
+                exclude-result-prefixes="map"				
+			    version="3.0">
+			    
   <!-- Author: mukulg@apache.org -->
   
-  <!-- An XSL stylesheet test case to test, XPath map expression. -->				
-				
+  <!-- An XSL stylesheet test case to test, XPath map expression.
+       This test case also tests that, XPath map entry's character ':' 
+       allows its adjacent character not to be a whitespace character.
+  -->			    
+  
   <xsl:output method="xml" indent="yes"/>
   
   <xsl:template match="/">
      <result>
-        <xsl:variable name="key1" select="'a'"/>
-        <xsl:variable name="value1" select="1"/>
-        <xsl:variable name="key2" select="'b'"/>
-        <xsl:variable name="value2" select="2"/>
-        <xsl:variable name="key3" select="'c'"/>
-        <xsl:variable name="value3" select="3"/>
-	    <xsl:variable name="map1" select="map {$key1:$value1, $key2:$value2, $key3:$value3}"/>
+	    <xsl:variable name="map1" select="map {1:'one',2:'two',3:'three'}"/>
 		<map>
-           <xsl:for-each select="sort(map:keys($map1))">
-              <entry>
-			     <key><xsl:value-of select="."/></key>
-				 <value><xsl:value-of select="map:get($map1, .)"/></value>
-			  </entry>
-           </xsl:for-each>
+		   <xsl:for-each select="sort(map:keys($map1))">
+		     <entry>
+			    <key><xsl:value-of select="."/></key>
+				<value><xsl:value-of select="map:get($map1,.)"/></value>
+			 </entry>
+		   </xsl:for-each>
 		</map>
-     </result>
+	 </result>
   </xsl:template>
   
   <!--

@@ -352,59 +352,110 @@ class Lexer
         {
           boolean isXPathMapExpr = isXPathMapExpr(pat);          
           if (isXPathMapExpr) {
+        	 // Handle ':' character as XPath map entry's key, value separator        	  
         	 ObjectVector tokenQueue = m_compiler.getTokenQueue();
-        	 int tokenQueueSize = tokenQueue.size();    	 
-        	 String str1 = (tokenQueue.elementAt(tokenQueueSize - 2)).toString();
-        	 String str2 = (tokenQueue.elementAt(tokenQueueSize - 3)).toString();
-        	 if (",".equals(str1) || "map".equals(str2)) {
-        		// The ':' is XPath map entry's key, value expression separator
-        		String str3 = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();
-        		if ("$".equals(str3)) {
-        			StringBuffer strBuff = new StringBuffer();
-        			for (int idx = (i - 1); idx >= 0; idx--) {
-        			   char c1 = pat.charAt(idx);
-        			   if (c1 != '$') {
-        				  strBuff.append(c1);  
-        			   }
-        			   else {
-        				  break; 
-        			   }
-        			}
-        			String str = strBuff.toString();
-        			strBuff = new StringBuffer();
-        			for (int idx = (str.length() - 1); idx >= 0; idx--) {
-        			   char c1 = str.charAt(idx);
-        			   strBuff.append(c1);
-        			}
-        			str = strBuff.toString();
-        			if (str.length() > 0) {
-        			   addToTokenQueue(str);
-        			}
-        		}
-        		
-        		addToTokenQueue(pat.substring(i, i + 1));
-        		
-        		break;
-        	 }
-        	 else if (posOfNSSep == (i - 1)) {
-        		if (startSubstring != -1)
-                {
-                   if (startSubstring < (i - 1))
-                     addToTokenQueue(pat.substring(startSubstring, i - 1));
+        	 int tokenQueueSize = tokenQueue.size();  
+        	 if (tokenQueueSize == 2) {
+                StringBuffer strBuff = new StringBuffer();
+                for (int idx = (i - 1); idx >= 0; idx--) {
+                   char c1 = pat.charAt(idx);
+                   if (c1 != '{') {
+                	   strBuff.append(c1); 
+                   }
+                   else {
+                	   break; 
+                   }
                 }
-
-                isNum = false;
-                isAttrName = false;
-                startSubstring = -1;
-                posOfNSSep = -1;
-
-                addToTokenQueue(pat.substring(i - 1, i + 1));
+                String tokenStr = strBuff.toString();
+                addToTokenQueue(tokenStr);
+                addToTokenQueue(pat.substring(i, i + 1));
                 
-                break;
+                startSubstring = -1;
+                
+                break;                
         	 }
-        	 else
-             {
-                posOfNSSep = i;
+        	 else {
+        		 String str1 = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();
+	        	 String str2 = (tokenQueue.elementAt(tokenQueueSize - 2)).toString();
+	        	 String str3 = (tokenQueue.elementAt(tokenQueueSize - 3)).toString();	        	 
+	        	 if (",".equals(str2) || "map".equals(str3)) {	        		
+	        		String str4 = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();
+	        		if ("$".equals(str4)) {
+	        			StringBuffer strBuff = new StringBuffer();
+	        			for (int idx = (i - 1); idx >= 0; idx--) {
+	        			   char c1 = pat.charAt(idx);
+	        			   if (c1 != '$') {
+	        				  strBuff.append(c1);  
+	        			   }
+	        			   else {
+	        				  break; 
+	        			   }
+	        			}
+	        			String str = strBuff.toString();
+	        			strBuff = new StringBuffer();
+	        			// Reverse the string
+	        			for (int idx = (str.length() - 1); idx >= 0; idx--) {
+	        			   char c1 = str.charAt(idx);
+	        			   strBuff.append(c1);
+	        			}
+	        			str = strBuff.toString();
+	        			if (str.length() > 0) {
+	        			   addToTokenQueue(str);
+	        			}
+	        		}
+	        		
+	        		addToTokenQueue(pat.substring(i, i + 1));
+	        		
+	        		break;
+	        	 }
+	        	 else if (",".equals(str1)) {
+	        		StringBuffer strBuff = new StringBuffer();
+	        		for (int idx = (i - 1); idx >= 0; idx--) {
+	        		   char c1 = pat.charAt(idx);
+	        		   if (c1 != ',') {
+	        			   strBuff.append(c1); 
+	        		   }
+	        		   else {
+	        			   break;
+	        		   }
+	        		}
+
+	        		String str = strBuff.toString();
+	        		strBuff = new StringBuffer();
+	        		// Reverse the string
+	        		for (int idx = (str.length() - 1); idx >= 0; idx--) {
+	        		   char c1 = str.charAt(idx);
+	        		   strBuff.append(c1);
+	        		}
+	        		
+	        		str = strBuff.toString();
+	        		addToTokenQueue(str);
+	        		addToTokenQueue(pat.substring(i, i + 1));
+	        		
+	        		startSubstring = -1;
+	        		
+	        		break;
+	        	 }
+	        	 else if (posOfNSSep == (i - 1)) {
+	        		if (startSubstring != -1)
+	                {
+	                   if (startSubstring < (i - 1))
+	                     addToTokenQueue(pat.substring(startSubstring, i - 1));
+	                }
+	
+	                isNum = false;
+	                isAttrName = false;
+	                startSubstring = -1;
+	                posOfNSSep = -1;
+	
+	                addToTokenQueue(pat.substring(i - 1, i + 1));
+	                
+	                break;
+	        	 }
+	        	 else
+	             {
+	                posOfNSSep = i;
+	             }
              }
           }
           else if (posOfNSSep == (i - 1))
