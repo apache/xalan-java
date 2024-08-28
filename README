@@ -52,5 +52,5 @@ xalan-j_a_b_c-src.tar.gz
 The Xalan-J distribution source archives shall also contain, Xalan-J's XSLT 3.0 and XPath 3.1 
 conformance test suite, within the folder "tests".
 
-The document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, contains
+The document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides
 details about Xalan-J's XSLT 3.0 and XPath 3.1 implementation status.
