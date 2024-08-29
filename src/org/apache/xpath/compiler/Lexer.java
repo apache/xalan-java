@@ -69,6 +69,16 @@ class Lexer
    * The number of elements that m_patternMap maps;
    */
   private int m_patternMapSize;
+  
+  private int startSubstring = -1;
+  
+  private int posOfNSSep = -1;
+  
+  private boolean isStartOfPat = true;
+  
+  private boolean isAttrName = false;
+  
+  private boolean isNum = false;
 
   /**
    * Create a Lexer object.
@@ -114,9 +124,9 @@ class Lexer
     m_compiler.m_currentPattern = pat;
     m_patternMapSize = 0; 
 
-    // This needs to grow too.  Use a conservative estimate that the OpMapVector
-    // needs about five time the length of the input path expression - to a
-    // maximum of MAXTOKENQUEUESIZE*5.  If the OpMapVector needs to grow, grow
+    // Use a conservative estimate that the OpMapVector needs about 
+    // five time the length of the input path expression, to a maximum 
+    // of MAXTOKENQUEUESIZE*5. If the OpMapVector needs to grow, grow
     // it freely (second argument to constructor).
     int initTokQueueSize = ((pat.length() < OpMap.MAXTOKENQUEUESIZE)
                                  ? pat.length() :  OpMap.MAXTOKENQUEUESIZE) * 5;
@@ -124,12 +134,7 @@ class Lexer
                                          OpMap.BLOCKTOKENQUEUESIZE * 5,
                                          OpMap.MAPINDEX_LENGTH);
 
-    int nChars = pat.length();
-    int startSubstring = -1; 
-    int posOfNSSep = -1;
-    boolean isStartOfPat = true;
-    boolean isAttrName = false;
-    boolean isNum = false;
+    int nChars = pat.length();    
 
     // Nesting of '[' so we can know if the given element should be
     // counted inside the m_patternMap.
@@ -235,7 +240,7 @@ class Lexer
       case '@' :
         isAttrName = true;
 
-      // fall-through on purpose
+        // fall-through on purpose
       case '-' :
         if ('-' == c)
         {
@@ -246,19 +251,18 @@ class Lexer
 
           isNum = false;
         }
-
-      // fall-through on purpose
+        
+        // fall-through on purpose
       case '(' :
       case '[' :
       case ')' :
       case ']' :
-      case '{' :   // added for XPath 3.1
-      case '}' :   // added for XPath 3.1
-      case '?' :   // added for XPath 3.1    
+      case '{' :
+      case '}' :
+      case '?' :    
       case '|' :
         if ((pat.length() > (i + 1)) && (pat.charAt(i + 1) == '|')) {
-          // added for XPath 3.1.
-          // to recognize the character sequence "||", as an XPath 
+          // To recognize the character sequence "||", as an XPath 
           // token.
           addToTokenQueue(pat.substring(i, i + 2));
           i += 1;
@@ -269,8 +273,7 @@ class Lexer
       case '+' :
       case '=' :
     	if ((pat.length() > (i + 1)) && (pat.charAt(i + 1) == '>')) {
-           // added for XPath 3.1.
-           // to recognize the character sequence "=>", as an XPath 
+           // To recognize the character sequence "=>", as an XPath 
            // token.
            addToTokenQueue(pat.substring(i, i + 2));
            i += 1;
@@ -279,7 +282,7 @@ class Lexer
       case ',' :      
       case '\\' :  // Unused at the moment
       case '^' :   // Unused at the moment
-      case '!' :   // added for XPath 3.1
+      case '!' :
       case '$' :    	  
       case '<' :
       case '>' :
@@ -352,111 +355,11 @@ class Lexer
         {
           boolean isXPathMapExpr = isXPathMapExpr(pat);          
           if (isXPathMapExpr) {
-        	 // Handle ':' character as XPath map entry's key, value separator        	  
-        	 ObjectVector tokenQueue = m_compiler.getTokenQueue();
-        	 int tokenQueueSize = tokenQueue.size();  
-        	 if (tokenQueueSize == 2) {
-                StringBuffer strBuff = new StringBuffer();
-                for (int idx = (i - 1); idx >= 0; idx--) {
-                   char c1 = pat.charAt(idx);
-                   if (c1 != '{') {
-                	   strBuff.append(c1); 
-                   }
-                   else {
-                	   break; 
-                   }
-                }
-                String tokenStr = strBuff.toString();
-                addToTokenQueue(tokenStr);
-                addToTokenQueue(pat.substring(i, i + 1));
-                
-                startSubstring = -1;
-                
-                break;                
+        	 // Handle ':' character as XPath map entry's key, value separator
+        	 boolean isBreakFromSwitch = handleColonWithXdmMap(pat, i);
+        	 if (isBreakFromSwitch) {
+        	    break; 
         	 }
-        	 else {
-        		 String str1 = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();
-	        	 String str2 = (tokenQueue.elementAt(tokenQueueSize - 2)).toString();
-	        	 String str3 = (tokenQueue.elementAt(tokenQueueSize - 3)).toString();	        	 
-	        	 if (",".equals(str2) || "map".equals(str3)) {	        		
-	        		String str4 = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();
-	        		if ("$".equals(str4)) {
-	        			StringBuffer strBuff = new StringBuffer();
-	        			for (int idx = (i - 1); idx >= 0; idx--) {
-	        			   char c1 = pat.charAt(idx);
-	        			   if (c1 != '$') {
-	        				  strBuff.append(c1);  
-	        			   }
-	        			   else {
-	        				  break; 
-	        			   }
-	        			}
-	        			String str = strBuff.toString();
-	        			strBuff = new StringBuffer();
-	        			// Reverse the string
-	        			for (int idx = (str.length() - 1); idx >= 0; idx--) {
-	        			   char c1 = str.charAt(idx);
-	        			   strBuff.append(c1);
-	        			}
-	        			str = strBuff.toString();
-	        			if (str.length() > 0) {
-	        			   addToTokenQueue(str);
-	        			}
-	        		}
-	        		
-	        		addToTokenQueue(pat.substring(i, i + 1));
-	        		
-	        		break;
-	        	 }
-	        	 else if (",".equals(str1)) {
-	        		StringBuffer strBuff = new StringBuffer();
-	        		for (int idx = (i - 1); idx >= 0; idx--) {
-	        		   char c1 = pat.charAt(idx);
-	        		   if (c1 != ',') {
-	        			   strBuff.append(c1); 
-	        		   }
-	        		   else {
-	        			   break;
-	        		   }
-	        		}
-
-	        		String str = strBuff.toString();
-	        		strBuff = new StringBuffer();
-	        		// Reverse the string
-	        		for (int idx = (str.length() - 1); idx >= 0; idx--) {
-	        		   char c1 = str.charAt(idx);
-	        		   strBuff.append(c1);
-	        		}
-	        		
-	        		str = strBuff.toString();
-	        		addToTokenQueue(str);
-	        		addToTokenQueue(pat.substring(i, i + 1));
-	        		
-	        		startSubstring = -1;
-	        		
-	        		break;
-	        	 }
-	        	 else if (posOfNSSep == (i - 1)) {
-	        		if (startSubstring != -1)
-	                {
-	                   if (startSubstring < (i - 1))
-	                     addToTokenQueue(pat.substring(startSubstring, i - 1));
-	                }
-	
-	                isNum = false;
-	                isAttrName = false;
-	                startSubstring = -1;
-	                posOfNSSep = -1;
-	
-	                addToTokenQueue(pat.substring(i - 1, i + 1));
-	                
-	                break;
-	        	 }
-	        	 else
-	             {
-	                posOfNSSep = i;
-	             }
-             }
           }
           else if (posOfNSSep == (i - 1))
           {
@@ -694,7 +597,6 @@ class Lexer
   /**
    * Add a token to the token queue.
    *
-   *
    * @param s The token.
    */
   private final void addToTokenQueue(String s)
@@ -740,7 +642,7 @@ class Lexer
         {
            if (((m_compiler.getTokenQueue()).indexOf("map") != -1)) 
            {
-        	   // To handle XPath 3.1 "map" expression 
+        	   // Handle XPath "map" expression string 
         	   addToTokenQueue(":");
         	   return -1;
            }
@@ -759,10 +661,9 @@ class Lexer
       uName = prefix;
     }
     
-    // To handle XPath 3.1 "let" expression variable binding strings like
-    // $varName := val, otherwise the character ':' as part of symbol :=
-    // used for "let" expression variable binding shall be treated for 
-    // XML namespace processing.
+    // Handle XPath "let" expression variable binding strings like $varName := val, 
+    // otherwise the character ':' as part of symbol := used for "let" expression 
+    // variable binding shall be treated for XML namespace processing.
     boolean isLetExprNsCheckOk = false;
     if (((m_compiler.getTokenQueue()).indexOf("let") != -1)) 
     {
@@ -789,12 +690,14 @@ class Lexer
           String xpathLetExprBindingVarNameStr = prefix; 
           if ("".equals(xpathLetExprBindingVarNameStr)) 
           {
-             // handles XPath "let" expression variable binding strings like $varName := val
+             // Handle XPath "let" expression variable binding strings 
+        	 // like $varName := val.
              addToTokenQueue(":");
           }
           else 
           {
-             // handles XPath "let" expression variable binding strings like $varName:= val
+             // Handle XPath "let" expression variable binding strings 
+        	 // like $varName:= val.
              addToTokenQueue(xpathLetExprBindingVarNameStr);
              addToTokenQueue(":");    
           }   
@@ -807,12 +710,14 @@ class Lexer
             String xpathLetExprBindingVarNameStr = prefix; 
             if ("".equals(xpathLetExprBindingVarNameStr)) 
             {
-               // handles XPath "let" expression variable binding strings like $varName := val
+               // Handle XPath "let" expression variable binding strings 
+               // like $varName := val.
                addToTokenQueue(":");
             }
             else 
             {
-               // handles XPath "let" expression variable binding strings like $varName:= val
+               // Handle XPath "let" expression variable binding strings 
+               // like $varName:= val.
                addToTokenQueue(xpathLetExprBindingVarNameStr);
                addToTokenQueue(":");    
             }    
@@ -828,18 +733,145 @@ class Lexer
   }
   
   /**
-   * Method definition to check whether an XPath expression string,
-   * represents an XPath 'map' expression.
+   * Method definition to check whether an XPath expression string
+   * represents a possible XPath 'map' expression, by doing a regex
+   * prefix check of an XPath expression pattern string. 
+   * 
+   * @param pat		An XPath expression pattern string that this Lexer 
+   *                is processing.
    */
-  private boolean isXPathMapExpr(String xpathStr) {
+  private boolean isXPathMapExpr(String pat) {
 	  boolean isXPathMapExpr = false;    
 	  
-	  if ((xpathStr.length() > 0) && java.util.regex.Pattern.matches(
-			                                                      "map[\\s]*[\\{].*", xpathStr.trim())) {
+	  if ((pat.length() > 0) && java.util.regex.Pattern.matches("map[\\s]*[\\{].*", 
+			                                                                  pat.trim())) {
 		  isXPathMapExpr = true;	
 	  }
 	  
 	  return isXPathMapExpr;
+  }
+  
+  /**
+   * Method definition to handle the occurrence of character ':', within 
+   * XPath map expression string.
+   * 
+   * @param pat   An XPath expression pattern string that this Lexer is 
+   *              processing. The string value of this variable never 
+   *              changes during this Lexer's processing session. 
+   * @param i     The current string index within XPath expression pattern 
+   *              string, during this Lexer's processing session.
+   * @return      true if the control needs to break from enclosing switch 
+   *              statement, false otherwise.
+   */
+  private boolean handleColonWithXdmMap(String pat, int i) {
+	  
+	 ObjectVector tokenQueue = m_compiler.getTokenQueue();
+ 	 
+	 int tokenQueueSize = tokenQueue.size();	 
+ 	 if (tokenQueueSize == 2) {
+         StringBuffer strBuff = new StringBuffer();
+         for (int idx = (i - 1); idx >= 0; idx--) {
+            char c1 = pat.charAt(idx);
+            if (c1 != '{') {
+         	   strBuff.append(c1); 
+            }
+            else {
+         	   break; 
+            }
+         }
+         String tokenStr = strBuff.toString();
+         addToTokenQueue(tokenStr);
+         addToTokenQueue(pat.substring(i, i + 1));
+         
+         startSubstring = -1;
+         
+         return true;                
+ 	 }
+ 	 else {
+ 		 String str1 = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();
+     	 String str2 = (tokenQueue.elementAt(tokenQueueSize - 2)).toString();
+     	 String str3 = (tokenQueue.elementAt(tokenQueueSize - 3)).toString();	        	 
+     	 if (",".equals(str2) || "map".equals(str3)) {	        		
+     		String str4 = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();
+     		if ("$".equals(str4)) {
+     			StringBuffer strBuff = new StringBuffer();
+     			for (int idx = (i - 1); idx >= 0; idx--) {
+     			   char c1 = pat.charAt(idx);
+     			   if (c1 != '$') {
+     				  strBuff.append(c1);  
+     			   }
+     			   else {
+     				  break; 
+     			   }
+     			}
+     			String str = strBuff.toString();
+     			strBuff = new StringBuffer();
+     			// Reverse the string
+     			for (int idx = (str.length() - 1); idx >= 0; idx--) {
+     			   char c1 = str.charAt(idx);
+     			   strBuff.append(c1);
+     			}
+     			str = strBuff.toString();
+     			if (str.length() > 0) {
+     			   addToTokenQueue(str);
+     			}
+     		}
+     		
+     		addToTokenQueue(pat.substring(i, i + 1));
+     		
+     		return true;
+     	 }
+     	 else if (",".equals(str1)) {
+     		StringBuffer strBuff = new StringBuffer();
+     		for (int idx = (i - 1); idx >= 0; idx--) {
+     		   char c1 = pat.charAt(idx);
+     		   if (c1 != ',') {
+     			   strBuff.append(c1); 
+     		   }
+     		   else {
+     			   break;
+     		   }
+     		}
+
+     		String str = strBuff.toString();
+     		strBuff = new StringBuffer();
+     		// Reverse the string
+     		for (int idx = (str.length() - 1); idx >= 0; idx--) {
+     		   char c1 = str.charAt(idx);
+     		   strBuff.append(c1);
+     		}
+     		
+     		str = strBuff.toString();
+     		addToTokenQueue(str);
+     		addToTokenQueue(pat.substring(i, i + 1));
+     		
+     		startSubstring = -1;
+     		
+     		return true;
+     	 }
+     	 else if (posOfNSSep == (i - 1)) {
+     		if (startSubstring != -1)
+             {
+                if (startSubstring < (i - 1))
+                  addToTokenQueue(pat.substring(startSubstring, i - 1));
+             }
+
+             isNum = false;
+             isAttrName = false;
+             startSubstring = -1;
+             posOfNSSep = -1;
+
+             addToTokenQueue(pat.substring(i - 1, i + 1));
+             
+             return true;
+     	 }
+     	 else
+         {
+             posOfNSSep = i;
+         }
+      }
+ 	 
+ 	  return false;
   }
   
 }
