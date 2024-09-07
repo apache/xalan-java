@@ -28,6 +28,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.dom.ElementImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.Constants;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
@@ -51,11 +52,7 @@ import xml.xpath31.processor.types.XSString;
  */
 public class FuncDeepEqual extends FunctionMultiArgs {
 
-  private static final long serialVersionUID = -7233896041672168880L;    
-  
-  private static final String JAXP_XML_DOCUMENT_BUILDER_FACTORY_NAME = "javax.xml.parsers.DocumentBuilderFactory";
-  
-  private static final String JAXP_XML_DOCUMENT_BUILDER_FACTORY_IMPL = "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl";
+  private static final long serialVersionUID = -7233896041672168880L;
   
   private XPathCollationSupport fXPathCollationSupport = null;
   
@@ -280,9 +277,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		                                                               throws Exception {
 	 boolean isTwoXmlDomElementNodesEqual = true;
 	 
-	 // Using Xerces-J DOM parser api, to construct an XML document object 
-	 // from an XML string value.
-	 System.setProperty(JAXP_XML_DOCUMENT_BUILDER_FACTORY_NAME, JAXP_XML_DOCUMENT_BUILDER_FACTORY_IMPL);
+	 System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
 	 
 	 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	 dbf.setNamespaceAware(true);

@@ -109,4 +109,18 @@ public class Constants
    * The minimum version of XSLT supported by this processor.
    */
   public static final double XSLTVERSUPPORTED = 1.0;
+  
+  /**
+   * The following values specify details about, Xerces-J's XML document builder factory and
+   * XML Schema factory that're used by Xalan-J. 
+   */
+  
+  public static final String XML_DOCUMENT_BUILDER_FACTORY_KEY = "javax.xml.parsers.DocumentBuilderFactory";
+  
+  public static final String XML_DOCUMENT_BUILDER_FACTORY_VALUE = "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl";
+
+  public static final String XML_SCHEMA_FACTORY_KEY = "javax.xml.validation.SchemaFactory";
+      
+  public static final String XML_SCHEMA_FACTORY_VALUE = "org.apache.xerces.jaxp.validation.XMLSchemaFactory";
+  
 }

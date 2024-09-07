@@ -1499,6 +1499,8 @@ public class StylesheetRoot extends StylesheetComposed
 		while (elemTemplateElem != null && !(Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {   
 			elemTemplateElem = elemTemplateElem.getNextSibling();
 		}
+		
+		System.setProperty(Constants.XML_SCHEMA_FACTORY_KEY, Constants.XML_SCHEMA_FACTORY_VALUE);
 
 		if (elemTemplateElem != null) {
 			NodeList nodeList = elemTemplateElem.getChildNodes();

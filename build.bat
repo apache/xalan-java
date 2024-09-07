@@ -18,7 +18,7 @@ rem = limitations under the License.
 rem ==========================================================================
 rem
 rem     build.bat: Build Xalan-J 2.x using Ant
-rem     Author: XalanJ team
+rem     Author: Xalan-J team
 rem 
 rem     Usage: build [ant-options] [targets]
 rem

@@ -20,8 +20,10 @@
  */
 package org.apache.xpath.functions.json;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
@@ -34,6 +36,7 @@ import javax.xml.validation.Validator;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.Constants;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
@@ -191,8 +194,8 @@ public class FuncXmlToJson extends FunctionMultiArgs
    	    }
    	    catch (Exception ex) {
  	       throw new javax.xml.transform.TransformerException("FOAP0001 : There was an issue, processing an xdm input "
- 	       		                                            + "node provided as an argument to function call "
- 	       		                                            + "fn:xml-to-json.", srcLocator);
+		 	       		                                            + "node provided as an argument to function call "
+		 	       		                                            + "fn:xml-to-json.", srcLocator);
  	    }
         
         return result;
@@ -214,10 +217,25 @@ public class FuncXmlToJson extends FunctionMultiArgs
     private boolean isXmlStrValidWithSchema(String xmlStr, String schemaFileName) throws 
                                                                        javax.xml.transform.TransformerException {
         boolean isXmlStrValid = false;
+        
+        System.setProperty(Constants.XML_SCHEMA_FACTORY_KEY, Constants.XML_SCHEMA_FACTORY_VALUE);
          
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);        
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
-			Schema schema = schemaFactory.newSchema(this.getClass().getResource(schemaFileName));
+        	File file = new File(schemaFileName);
+        	String absPath = file.getAbsolutePath();
+        	String filePathPrefix = absPath.substring(0, absPath.indexOf(schemaFileName));
+        	char fileSeparatorChar = File.separatorChar;        	
+        	File file2 = new File(filePathPrefix + fileSeparatorChar + "src");
+        	Schema schema = null;
+        	if (file2.exists()) {
+        	   schema = schemaFactory.newSchema(this.getClass().getResource(schemaFileName));	
+        	}
+        	else {
+        	   URL url = (file.toURI()).toURL();
+        	   schema = schemaFactory.newSchema(url);
+        	}        	
+        				
 			Validator validator = schema.newValidator();
 			StringReader xmlInputStrReader = new StringReader(xmlStr);
 			validator.validate(new StreamSource(xmlInputStrReader));

@@ -18,7 +18,7 @@
 
 <!-- ===================================================================
 
-   Build file for Xalan-J 2.x - for use with the Jakarta Ant java build tool
+   Build file for Xalan-J 3.x - for use with the Jakarta Ant java build tool
    
 Setup instructions: 
    Before running an Ant build, you must
@@ -55,7 +55,6 @@ Other Important Notes:
 Authors:
   Shane Curcuru <shane_curcuru@lotus.com>
   Don Leslie <donald_leslie@lotus.com>
-
 $Id$
 ==================================================================== -->
 
@@ -69,10 +68,10 @@ $Id$
   <property name="compiler.nowarn"        value="on"/>
 
   <!-- Xalan Java version information -->
-  <property name="version.VERSION"        value="2"/>
-  <property name="version.RELEASE"        value="7"/>
+  <property name="version.VERSION"        value="3"/>
+  <property name="version.RELEASE"        value="0"/>
   <property name="version.DEVELOPER"      value=""/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
-  <property name="version.MINOR"          value="4"/><!-- EITHER the developer release number, or a maintenance release number -->
+  <property name="version.MINOR"          value="1"/><!-- EITHER the developer release number, or a maintenance release number -->
   <property name="version"                value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
   <property name="impl.version"           value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
   
@@ -126,6 +125,10 @@ $Id$
   <property name="doclet.jar"             value="${tools.dir}/${doclet.jar.name}"/>
   <property name="taglet.jar.name"        value="xalan2jtaglet.jar"/>
   <property name="taglet.jar"             value="${tools.dir}/${taglet.jar.name}"/>
+  
+  <!-- Jars to build Xalan test cases -->
+  <property name="junit.jar.name"        value="${tests.dir}/bin/lib/org.junit_4.13.2.v20230809-1000.jar"/>
+  <property name="hamcrest.jar.name"     value="${tests.dir}/bin/lib/org.hamcrest_2.2.0.jar"/>
 
   <!-- Jars to build Xalan Java samples -->
   <property name="servlet-api.jar.name"   value="servlet-api-2.5.jar"/>
@@ -149,7 +152,9 @@ $Id$
   <property name="build.xalan-unbundled.jar"    value="${build.dir}/${name}-unbundled.jar"/>
   <property name="build.xalan-interpretive.jar" value="${build.dir}/${name}.jar"/>
   <property name="build.xsltc.jar"              value="${build.dir}/xsltc.jar"/>
+  <property name="build.xalan_xsl3_tests.jar"   value="${build.dir}/xalan_xsl3_tests.jar"/>
   <property name="build.classes"                value="${build.dir}/classes"/>
+  <property name="build.tests"                  value="${build.dir}/tests"/>
   <property name="build.docs"                   value="${build.dir}/docs"/>
   <property name="build.samples"                value="${build.dir}/samples"/>
   <property name="build.servlet"                value="${build.samples}/servlet"/>
@@ -309,10 +314,7 @@ $Id$
     <exclude name="${dist.file}/samples/xsltcservlet.jar"/>    
     <include name="${dist.file}/src/"/>
   	<include name="${dist.file}/tests/"/> 
-    <include name="${dist.file}/xdocs/"/>
-  	<!--<include name="${dist.file}/build_srcdist_xalan.xml"/>
-  	<include name="${dist.file}/build_srcdist_xalan_tests.xml"/>-->
-  	<!--<include name="${dist.file}/xalan-test/"/>-->	
+    <include name="${dist.file}/xdocs/"/>  		
   </patternset>
 
   <!-- XSLTC engine dependency .jar files -->    
@@ -1316,6 +1318,8 @@ $Id$
     <mkdir dir="${dist.dir}/samples"/>       
     <mkdir dir="${dist.dir}/src"/>
   	<mkdir dir="${dist.dir}/tests"/>
+  	<mkdir dir="${dist.dir}/tests/bin"/>
+  	<mkdir dir="${dist.dir}/tests/bin/lib"/>
     <mkdir dir="${dist.dir}/tools"/>     
     <mkdir dir="${dist.dir}/xdocs"/>
   </target>
@@ -1391,9 +1395,11 @@ $Id$
     
     <copy file="${xmlapis.jar}" todir="${dist.dir}" />  
     <copy file="${parser.jar}" todir="${dist.dir}" />
-  	
+  	  	
   	<copy file="${xpath31_types.jar}" todir="${dist.dir}" />
-  	<copy file="${json.jar}" todir="${dist.dir}" />  	  	
+  	<copy file="${json.jar}" todir="${dist.dir}" />
+  	<copy file="${build.xalan_xsl3_tests.jar}" todir="${dist.dir}/tests/bin/lib" />
+  	<copy file="src/org/apache/xpath/functions/json/schema-for-json.xsd" todir="${dist.dir}/tests/bin" />
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="readme.html,KEYS,build.xml,build.sh,deprecated_build.sh,build.bat,
@@ -1460,10 +1466,29 @@ $Id$
     <echo message="autodist is for automated build processes, without dependencies"/>
     <antcall target="autodist-mkdirs"/>
     <antcall target="autodist-mkdirs-docs"/>
+    <antcall target="autodist-compile-tests"/>
     <antcall target="autodist-copy-files"/>
     <antcall target="autodist-copy-files-docs"/>
-    <antcall target="autodist-create-bin-packages"/>
+    <antcall target="autodist-create-bin-packages"/>    
     <antcall target="autodist-create-src-packages"/>
+  </target>
+  
+  <target name="autodist-compile-tests">
+    <mkdir dir="${build.tests}"/>
+    <mkdir dir="${build.tests}/classes"/>
+    <javac srcdir="${tests.dir}"
+           classpath="${build.xalan.jar}:${junit.jar.name}:${hamcrest.jar.name}" 
+           destdir="${build.tests}/classes"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" 
+  	       target="${compiler.target}" source="${compiler.source}" 
+    	   nowarn="${compiler.nowarn}"/>
+    <jar jarfile="${build.xalan_xsl3_tests.jar}" basedir="${build.tests}/classes">
+       <patternset>                    
+          <include name="org/apache/xalan/tests/xslt3/**"/>
+          <include name="org/apache/xalan/tests/xpath3/**"/>
+          <include name="org/apache/xalan/tests/util/**"/>
+       </patternset>
+    </jar>        
   </target>
 
   <target name="autodist-nodocs">
