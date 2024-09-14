@@ -32,6 +32,11 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSAnyURI;
+import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSUntypedAtomic;
+
 /**
  * An implementation of XPath 3.1 'if' expression.
  * 
@@ -109,35 +114,47 @@ public class XPathIfExpr extends Expression {
           branchConditionXPath.fixupVariables(m_vars, m_globals_size);
        }
        
-       XObject branchConditionXPathResult = branchConditionXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+       XObject branchConditionXPathResult = branchConditionXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());       
        
-       if (branchConditionXPathResult.bool()) {
+       boolean branchConditionEvalResult = false;
+       boolean eagerBranchConditionCheck = false;
+       if ((branchConditionXPathResult instanceof XSString) || (branchConditionXPathResult instanceof XSAnyURI) || 
+    		                                                   (branchConditionXPathResult instanceof XSUntypedAtomic)) {
+    	   eagerBranchConditionCheck = true;
+    	   XSAnyType xsAnyType = (XSAnyType)branchConditionXPathResult;
+    	   String strVal = xsAnyType.stringValue();
+    	   if ((strVal != null) && (strVal.length() > 0)) {
+    		   branchConditionEvalResult = true;  
+    	   }
+       }
+       
+       if ((eagerBranchConditionCheck && branchConditionEvalResult) || (!eagerBranchConditionCheck && branchConditionXPathResult.bool())) {
            if (prefixTable != null) {
               m_thenExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                         m_thenExprXPathStr, prefixTable);
            }
            
-           XPath thenExprXpath = new XPath(m_thenExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+           XPath thenExprXPath = new XPath(m_thenExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                XPath.SELECT, null);
            if (m_vars != null) {
-              thenExprXpath.fixupVariables(m_vars, m_globals_size);
+              thenExprXPath.fixupVariables(m_vars, m_globals_size);
            }
            
-           evalResult = thenExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+           evalResult = thenExprXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        }
-       else {
+       else if ((eagerBranchConditionCheck && !branchConditionEvalResult) || (!eagerBranchConditionCheck && !branchConditionXPathResult.bool())) {
            if (prefixTable != null) {
               m_elseExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_elseExprXPathStr, 
                                                                                                           prefixTable);
            }
            
-           XPath elseExprXpath = new XPath(m_elseExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+           XPath elseExprXPath = new XPath(m_elseExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                               XPath.SELECT, null);
            if (m_vars != null) {
-              elseExprXpath.fixupVariables(m_vars, m_globals_size);
+              elseExprXPath.fixupVariables(m_vars, m_globals_size);
            }
            
-           evalResult = elseExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+           evalResult = elseExprXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        }
        
        return evalResult;
