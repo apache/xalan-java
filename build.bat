@@ -17,7 +17,7 @@ rem = See the License for the specific language governing permissions and
 rem = limitations under the License.
 rem ==========================================================================
 rem
-rem     build.bat: Build Xalan-J 2.x using Ant
+rem     build.bat: Build Xalan-J 3.x using Ant
 rem     Author: Xalan-J team
 rem 
 rem     Usage: build [ant-options] [targets]
@@ -28,7 +28,7 @@ rem
 rem        2) You can set ANT_HOME if you use your own Ant install
 
 echo.
-echo Xalan-J 2.x Build
+echo Xalan-J 3.x Build
 echo -----------------
 
 if "%JAVA_HOME%"=="" goto noJavaHome
