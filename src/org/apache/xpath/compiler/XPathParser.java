@@ -3203,13 +3203,15 @@ public class XPathParser
   /**
    * The context of the right hand side expressions is the context of the
    * left hand side expression. The results of the right hand side expressions
-   * are node sets. The result of the left hand side expr is the union/intersection
-   * of the results of the right hand side expressions.
+   * are node sets. The result of the left hand side expr is the 
+   * union/intersection/difference of the results of the right hand side 
+   * expressions.
    *
    * NodeCombiningExpr    ::=    PathExpr
    * |                           NodeCombiningExpr '|' PathExpr
    * |                           NodeCombiningExpr 'union' PathExpr
    * |                           NodeCombiningExpr 'intersect' PathExpr
+   * |                           NodeCombiningExpr 'except' PathExpr
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -3226,7 +3228,7 @@ public class XPathParser
 
       if ((tokenIs('|') && !tokenIs("||")) || tokenIs("union"))
       {
-    	  if (false == foundCombiningExpr)
+    	  if (foundCombiningExpr == false)
     	  {
     		  foundCombiningExpr = true;
 
@@ -3236,11 +3238,21 @@ public class XPathParser
     	  nextToken();
       }
       else if (tokenIs("intersect")) {
-    	  if (false == foundCombiningExpr)
+    	  if (foundCombiningExpr == false)
     	  {
     		  foundCombiningExpr = true;
 
     		  insertOp(opPos, 2, OpCodes.OP_INTERSECT);
+    	  }
+
+    	  nextToken();  
+      }
+      else if (tokenIs("except")) {
+    	  if (foundCombiningExpr == false)
+    	  {
+    		  foundCombiningExpr = true;
+
+    		  insertOp(opPos, 2, OpCodes.OP_EXCEPT);
     	  }
 
     	  nextToken();  

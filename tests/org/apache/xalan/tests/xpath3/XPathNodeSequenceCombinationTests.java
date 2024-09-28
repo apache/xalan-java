@@ -48,7 +48,7 @@ public class XPathNodeSequenceCombinationTests extends XSLTransformTestsUtil {
     }
 
     @Test
-    public void xslNodeSeqCombinationTest1() {
+    public void xslNodeseqCombinationTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
@@ -58,7 +58,7 @@ public class XPathNodeSequenceCombinationTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslNodeSeqCombinationTest2() {
+    public void xslNodeseqCombinationTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
@@ -68,7 +68,7 @@ public class XPathNodeSequenceCombinationTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslNodeSeqCombinationTest3() {
+    public void xslNodeseqCombinationTest3() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
@@ -78,7 +78,7 @@ public class XPathNodeSequenceCombinationTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslNodeSeqCombinationTest4() {
+    public void xslNodeseqCombinationTest4() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
@@ -88,7 +88,7 @@ public class XPathNodeSequenceCombinationTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslNodeSeqCombinationTest5() {
+    public void xslNodeseqCombinationTest5() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
@@ -98,11 +98,31 @@ public class XPathNodeSequenceCombinationTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslNodeSeqCombinationTest6() {
+    public void xslNodeseqCombinationTest6() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslNodeseqCombinationTest7() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslNodeseqCombinationTest8() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test8.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

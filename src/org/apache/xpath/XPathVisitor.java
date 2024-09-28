@@ -21,6 +21,7 @@
 package org.apache.xpath;
 
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.axes.NodeSequenceExceptIterator;
 import org.apache.xpath.axes.NodeSequenceIntersectIterator;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.functions.Function;
@@ -79,6 +80,14 @@ public class XPathVisitor
 	 * Visit an IntersectPath.
 	 */
 	public boolean visitIntersectPath(ExpressionOwner owner, NodeSequenceIntersectIterator path)
+	{
+		return true;
+	}
+	
+	/**
+	 * Visit an ExceptPath.
+	 */
+	public boolean visitExceptPath(ExpressionOwner owner, NodeSequenceExceptIterator path)
 	{
 		return true;
 	}

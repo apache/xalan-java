@@ -34,6 +34,7 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.Expression;
+import org.apache.xpath.axes.NodeSequenceExceptIterator;
 import org.apache.xpath.axes.NodeSequenceIntersectIterator;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
@@ -247,6 +248,8 @@ public class Compiler extends OpMap
       expr = union(opPos); break;
     case OpCodes.OP_INTERSECT :
         expr = intersect(opPos); break;
+    case OpCodes.OP_EXCEPT :
+        expr = except(opPos); break;
     case OpCodes.OP_LITERAL :
       expr = literal(opPos); break;
     case OpCodes.OP_VARIABLE :
@@ -956,6 +959,22 @@ public class Compiler extends OpMap
 	  try
 	  {
 		  return NodeSequenceIntersectIterator.createIntersectIterator(this, opPos);
+	  }
+	  finally
+	  {
+		  locPathDepth--;
+	  }
+  }
+  
+  /**
+   * Compile a node sequence combination 'except' operator.
+   */
+  protected Expression except(int opPos) throws TransformerException
+  {	  
+	  locPathDepth++;
+	  try
+	  {
+		  return NodeSequenceExceptIterator.createExceptIterator(this, opPos);
 	  }
 	  finally
 	  {

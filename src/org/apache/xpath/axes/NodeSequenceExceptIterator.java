@@ -21,12 +21,8 @@
 package org.apache.xpath.axes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
@@ -39,18 +35,18 @@ import org.apache.xpath.compiler.OpMap;
 
 /**
  * This class provides an iterator view of evaluation 
- * result of XPath 'intersect' operator.
+ * result of XPath 'except' operator.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class NodeSequenceIntersectIterator extends LocPathIterator implements Cloneable, 
+public class NodeSequenceExceptIterator extends LocPathIterator implements Cloneable, 
                                                                DTMIterator, java.io.Serializable, PathComponent 
 {
-  
-  private static final long serialVersionUID = -764531646697520864L;
-  
+	
+  private static final long serialVersionUID = 5190935486033583929L;
+
   private PredicatedNodeTest[] m_nodeTests = null;
   
   private Iterator<Integer> m_NodeRefIter = null;
@@ -59,7 +55,7 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
    * Constructor to create an instance which you can add 
    * location paths to.
    */
-  public NodeSequenceIntersectIterator()
+  public NodeSequenceExceptIterator()
   {
 	  super();
 	  m_iterators = null;
@@ -100,7 +96,7 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
   
   /**
    * Add DTMIterator object instance to an array of DTMIterator objects, 
-   * representing node sequences whose intersection needs to be found.
+   * representing node sequences whose set difference needs to be found.
    */
   public void addIterator(DTMIterator expr)
   {
@@ -147,7 +143,7 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
 
 
   /**
-   * Create a NodeSequenceIntersectIterator object, including creation 
+   * Create a NodeSequenceExceptIterator object, including creation 
    * of location path iterators from the opcode list, and call back 
    * into the Compiler to create predicate expressions.
    *
@@ -158,7 +154,7 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public NodeSequenceIntersectIterator(Compiler compiler, int opPos)
+  public NodeSequenceExceptIterator(Compiler compiler, int opPos)
           throws javax.xml.transform.TransformerException
   {
 
@@ -171,7 +167,7 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
   
   /**
    * This will return an iterator capable of handling the 
-   * intersection of XPath paths given.
+   * set difference of XPath paths given.
    * 
    * @param compiler The Compiler which is creating 
    * this expression.
@@ -182,19 +178,19 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public static LocPathIterator createIntersectIterator(Compiler compiler, int opPos)
-                                                     throws javax.xml.transform.TransformerException
+  public static LocPathIterator createExceptIterator(Compiler compiler, int opPos)
+          throws javax.xml.transform.TransformerException
   {  	
-	  NodeSequenceIntersectIterator nodeSeqIntersectIter = new NodeSequenceIntersectIterator(compiler, opPos);
-	  int nPaths = nodeSeqIntersectIter.m_exprs.length;
+	  NodeSequenceExceptIterator nodeSeqExceptIter = new NodeSequenceExceptIterator(compiler, opPos);
+	  int nPaths = nodeSeqExceptIter.m_exprs.length;
 
 	  for(int i = 0; i < nPaths; i++)
 	  {
-		  PredicatedNodeTest lpi = nodeSeqIntersectIter.m_exprs[i];
-		  nodeSeqIntersectIter.addNodeTest(lpi);
+		  PredicatedNodeTest lpi = nodeSeqExceptIter.m_exprs[i];
+		  nodeSeqExceptIter.addNodeTest(lpi);
 	  }
 	  
-	  return nodeSeqIntersectIter; 
+	  return nodeSeqExceptIter; 
   }
   
   private void addNodeTest(PredicatedNodeTest test)
@@ -276,7 +272,7 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
   public Object clone() throws CloneNotSupportedException
   {
 
-    NodeSequenceIntersectIterator clone = (NodeSequenceIntersectIterator) super.clone();
+    NodeSequenceExceptIterator clone = (NodeSequenceExceptIterator) super.clone();
     if (m_iterators != null)
     {
       int n = m_iterators.length;
@@ -392,48 +388,40 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
     			memberLists.add(memberList);
     		}
     		
-    		Set<Integer> intersectResultSet = null;
-    		
-    		// XPath 'intersect' operator result in document order
-    		List<Integer> intersectResultInDocOrder = null;
+    		List<Integer> exceptResultList = null;
     		
     		for (int idx = 0; idx < memberLists.size(); idx++) {
     			List<Integer> nodeRefList1 = null;
     			List<Integer> nodeRefList2 = null;    			
-    			if (intersectResultSet == null) {
+    			if (exceptResultList == null) {
     				nodeRefList1 = memberLists.get(idx);
     				if ((idx + 1) < memberLists.size()) {
     				   nodeRefList2 = memberLists.get(idx + 1);
-    				   intersectResultSet = nodeRefList1.stream()
-    						                            .distinct()
-    						                            .filter(nodeRefList2::contains)
-    						                            .collect(Collectors.toSet());
+    				   nodeRefList1.removeAll(nodeRefList2);
+    				   exceptResultList = new ArrayList<Integer>();
+    				   exceptResultList.addAll(nodeRefList1);
     				   idx++;
     				   continue;
     				}
     				else {
-    				   intersectResultSet = new HashSet<Integer>();
-    				   intersectResultSet.addAll(nodeRefList1);
+    				   exceptResultList = new ArrayList<Integer>();
+    				   exceptResultList.addAll(nodeRefList1);
     				}
     			}
     			else {    				
-    				nodeRefList1 = Arrays.asList(intersectResultSet.toArray(new Integer[0]));
-    				nodeRefList2 = memberLists.get(idx);
-    				intersectResultSet = nodeRefList1.stream()
-                             						 .distinct()
-                             						 .filter(nodeRefList2::contains)
-                             						 .collect(Collectors.toSet());
+    				nodeRefList1 = exceptResultList;
+    				nodeRefList2 = memberLists.get(idx);    				
+    				nodeRefList1.removeAll(nodeRefList2);
+    				exceptResultList = new ArrayList<Integer>();
+    				exceptResultList.addAll(nodeRefList1);    				
 					idx++;
 					continue;
     			}
-    		}
+    		}    		    		
     		
-    		List<Integer> list = Arrays.asList(intersectResultSet.toArray(new Integer[0]));
+    		exceptResultList.sort(null);
     		
-    		list.sort(null);
-    		intersectResultInDocOrder = list; 
-    		
-    		m_NodeRefIter = intersectResultInDocOrder.iterator();
+    		m_NodeRefIter = exceptResultList.iterator();
     		if (m_NodeRefIter.hasNext()) {
     		   result = m_NodeRefIter.next();    		    
     		}
@@ -455,7 +443,7 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
     	}
     }
 
-    return result;
+    return result;    
   }
             
   /**
@@ -479,14 +467,14 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
   
   /**
    * An array of LocPathIterator object instances, one for 
-   * each location path contained in the intersect expression.
+   * each location path contained in the except expression.
    */
   protected LocPathIterator[] m_exprs;
 
     
   /**
    * An array of DTMIterator object instances, one for each 
-   * location path contained in the intersect expression.
+   * location path contained in the except expression.
    */
   protected DTMIterator[] m_iterators;
       
@@ -531,13 +519,13 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
     		FilterExprWalker few = new FilterExprWalker(wi);
     		wi.setFirstWalker(few);
     		few.setInnerExpression(exp);
-    		wi.exprSetParent(NodeSequenceIntersectIterator.this);
+    		wi.exprSetParent(NodeSequenceExceptIterator.this);
     		few.exprSetParent(wi);
     		exp.exprSetParent(few);
     		exp = wi;
     	}
     	else
-    		exp.exprSetParent(NodeSequenceIntersectIterator.this);
+    		exp.exprSetParent(NodeSequenceExceptIterator.this);
     	m_exprs[m_index] = (LocPathIterator)exp;
     }
 
@@ -548,7 +536,7 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {
-	  if(visitor.visitIntersectPath(owner, this))
+	  if(visitor.visitExceptPath(owner, this))
 	  {
 		  if(m_exprs != null)
 		  {
@@ -569,7 +557,7 @@ public class NodeSequenceIntersectIterator extends LocPathIterator implements Cl
 	  if (!super.deepEquals(expr))
 		  return false;
 
-	  NodeSequenceIntersectIterator upi = (NodeSequenceIntersectIterator) expr;
+	  NodeSequenceExceptIterator upi = (NodeSequenceExceptIterator) expr;
 
 	  if (m_exprs != null)
 	  {

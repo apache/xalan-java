@@ -744,8 +744,10 @@ public class OpCodes
   public static final int OP_TREAT_AS = 81;
   
   public static final int OP_INTERSECT = 82;
+  
+  public static final int OP_EXCEPT = 83;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 83;
+  private static final int NEXT_FREE_ID = 84;
   
 }
