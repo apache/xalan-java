@@ -3109,9 +3109,8 @@ public class XPathParser
 
   /**
    *
-   * UnaryExpr  ::=  UnionExpr
+   * UnaryExpr  ::=  NodeCombiningExpr
    * | '-' UnaryExpr
-   *
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -3129,7 +3128,7 @@ public class XPathParser
       isNeg = true;
     }
 
-    UnionExpr();
+    NodeCombiningExpr();
 
     if (isNeg)
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
@@ -3204,44 +3203,52 @@ public class XPathParser
   /**
    * The context of the right hand side expressions is the context of the
    * left hand side expression. The results of the right hand side expressions
-   * are node sets. The result of the left hand side UnionExpr is the union
+   * are node sets. The result of the left hand side expr is the union/intersection
    * of the results of the right hand side expressions.
    *
-   *
-   * UnionExpr    ::=    PathExpr
-   * | UnionExpr '|' PathExpr
-   *
+   * NodeCombiningExpr    ::=    PathExpr
+   * |                           NodeCombiningExpr '|' PathExpr
+   * |                           NodeCombiningExpr 'union' PathExpr
+   * |                           NodeCombiningExpr 'intersect' PathExpr
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void UnionExpr() throws javax.xml.transform.TransformerException
+  protected void NodeCombiningExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     boolean continueOrLoop = true;
-    boolean foundUnion = false;
+    boolean foundCombiningExpr = false;
 
     do
     {
       PathExpr();
 
-      if (tokenIs('|') && !tokenIs("||"))
+      if ((tokenIs('|') && !tokenIs("||")) || tokenIs("union"))
       {
-        if (false == foundUnion)
-        {
-          foundUnion = true;
+    	  if (false == foundCombiningExpr)
+    	  {
+    		  foundCombiningExpr = true;
 
-          insertOp(opPos, 2, OpCodes.OP_UNION);
-        }
+    		  insertOp(opPos, 2, OpCodes.OP_UNION);
+    	  }
 
-        nextToken();
+    	  nextToken();
+      }
+      else if (tokenIs("intersect")) {
+    	  if (false == foundCombiningExpr)
+    	  {
+    		  foundCombiningExpr = true;
+
+    		  insertOp(opPos, 2, OpCodes.OP_INTERSECT);
+    	  }
+
+    	  nextToken();  
       }
       else
       {
-        break;
+    	  break;
       }
-
-      // this.m_testForDocOrder = true;
     }
     while (continueOrLoop);
 

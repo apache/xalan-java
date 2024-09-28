@@ -34,6 +34,7 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.Expression;
+import org.apache.xpath.axes.NodeSequenceIntersectIterator;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.compiler.XPathParser.XPathArrayConsFuncArgs;
@@ -244,6 +245,8 @@ public class Compiler extends OpMap
       expr = number(opPos); break;
     case OpCodes.OP_UNION :
       expr = union(opPos); break;
+    case OpCodes.OP_INTERSECT :
+        expr = intersect(opPos); break;
     case OpCodes.OP_LITERAL :
       expr = literal(opPos); break;
     case OpCodes.OP_VARIABLE :
@@ -942,6 +945,22 @@ public class Compiler extends OpMap
     {
       locPathDepth--;
     }
+  }
+  
+  /**
+   * Compile a node sequence combination 'intersect' operator.
+   */
+  protected Expression intersect(int opPos) throws TransformerException
+  {	  
+	  locPathDepth++;
+	  try
+	  {
+		  return NodeSequenceIntersectIterator.createIntersectIterator(this, opPos);
+	  }
+	  finally
+	  {
+		  locPathDepth--;
+	  }
   }
   
   private int locPathDepth = -1;

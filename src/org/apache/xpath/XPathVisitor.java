@@ -21,6 +21,7 @@
 package org.apache.xpath;
 
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.axes.NodeSequenceIntersectIterator;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XNumber;
@@ -70,6 +71,14 @@ public class XPathVisitor
 	 * @return true if the sub expressions should be traversed.
 	 */
 	public boolean visitUnionPath(ExpressionOwner owner, UnionPathIterator path)
+	{
+		return true;
+	}
+	
+	/**
+	 * Visit an IntersectPath.
+	 */
+	public boolean visitIntersectPath(ExpressionOwner owner, NodeSequenceIntersectIterator path)
 	{
 		return true;
 	}
