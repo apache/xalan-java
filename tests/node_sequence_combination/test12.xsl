@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:xs="http://www.w3.org/2001/XMLSchema"
-				exclude-result-prefixes="xs"
                 version="3.0">
                 
   <!-- Author: mukulg@apache.org -->
@@ -15,9 +13,9 @@
   
   <xsl:template match="/info">
      <result>
-        <xsl:for-each select="* intersect (abc[xs:integer(x) gt 1] intersect abc[2])">
-		   <xsl:copy-of select="."/>
-		</xsl:for-each>
+	    <xsl:variable name="seq1" select="(abc[1], abc[2], abc[3], mno[1])" as="element()*"/>
+		<xsl:variable name="seq2" select="abc[1] | mno[1]" as="element()*"/>		
+        <xsl:copy-of select="$seq1 except $seq2"/>
      </result>	 
   </xsl:template>
   

@@ -34,8 +34,6 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.Expression;
-import org.apache.xpath.axes.NodeSequenceExceptIterator;
-import org.apache.xpath.axes.NodeSequenceIntersectIterator;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.compiler.XPathParser.XPathArrayConsFuncArgs;
@@ -43,10 +41,10 @@ import org.apache.xpath.compiler.XPathParser.XPathSequenceConsFuncArgs;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.And;
@@ -55,9 +53,11 @@ import org.apache.xpath.operations.CastAs;
 import org.apache.xpath.operations.CastableAs;
 import org.apache.xpath.operations.Div;
 import org.apache.xpath.operations.Equals;
+import org.apache.xpath.operations.Except;
 import org.apache.xpath.operations.Gt;
 import org.apache.xpath.operations.Gte;
 import org.apache.xpath.operations.InstanceOf;
+import org.apache.xpath.operations.Intersect;
 import org.apache.xpath.operations.Lt;
 import org.apache.xpath.operations.Lte;
 import org.apache.xpath.operations.Minus;
@@ -951,35 +951,41 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile a node sequence combination 'intersect' operator.
+   * Compile an XPath node sequence 'intersect' operator.
    */
   protected Expression intersect(int opPos) throws TransformerException
   {	  
 	  locPathDepth++;
-	  try
-	  {
-		  return NodeSequenceIntersectIterator.createIntersectIterator(this, opPos);
+	  
+	  Expression result = null;
+	  
+	  try {
+	     result = compileOperation(new Intersect(), opPos);
 	  }
-	  finally
-	  {
-		  locPathDepth--;
-	  }
+	  finally {
+		 locPathDepth--;
+	  }	
+	  
+	  return result;
   }
   
   /**
-   * Compile a node sequence combination 'except' operator.
+   * Compile an XPath node sequence 'except' operator.
    */
   protected Expression except(int opPos) throws TransformerException
   {	  
-	  locPathDepth++;
-	  try
-	  {
-		  return NodeSequenceExceptIterator.createExceptIterator(this, opPos);
+      locPathDepth++;
+	  
+	  Expression result = null;
+	  
+	  try {
+	     result = compileOperation(new Except(), opPos);
 	  }
-	  finally
-	  {
-		  locPathDepth--;
-	  }
+	  finally {
+		 locPathDepth--;
+	  }	
+	  
+	  return result;
   }
   
   private int locPathDepth = -1;
