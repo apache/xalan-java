@@ -5307,6 +5307,17 @@ public class XPathParser
            xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
            consumeExpected(')');
        }
+       else if (tokenIs("document-node")) {
+    	   sequenceTypeKindTest = new SequenceTypeKindTest();
+           sequenceTypeKindTest.setKindVal(SequenceTypeSupport.DOCUMENT_KIND);          
+           nextToken();
+           consumeExpected('(');
+           consumeExpected(')');
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+           if (m_token != null) {
+              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse);  
+           }
+       }
        else {
     	   // Check possibility of user-defined schema type specified within the sequence type expression
     	   parseSequenceTypeExprWithUserDefinedType(xpathSequenceTypeExpr, null);                                                                                    

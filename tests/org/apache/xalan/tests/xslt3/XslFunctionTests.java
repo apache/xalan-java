@@ -228,5 +228,55 @@ public class XslFunctionTests extends XSLTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslFunctionTest19() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test19.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFunctionTest20() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test20.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test20.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFunctionTest21() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test21.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test21.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test21.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFunctionTest22() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test22.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFunctionTest23() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test23.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test23.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test23.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

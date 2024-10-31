@@ -207,6 +207,8 @@ public class SequenceTypeSupport {
     
     public static int SCHEMA_ATTRIBUTE_KIND = 108;
     
+    public static int DOCUMENT_KIND = 109;
+    
     /**
      * Sequence type occurrence indicator values, for Xalan-J 
      * implementation.
@@ -491,6 +493,19 @@ public class SequenceTypeSupport {
 	            		  return result;
 	            	   }
 	            	}
+	            	else if (sequenceTypeKindTest.getKindVal() == DOCUMENT_KIND) {
+	            	   if (srcValue instanceof XNodeSet) {
+	            		  XNodeSet nodeSet1 = (XNodeSet)srcValue;
+	            		  DTMManager dtmMgr = nodeSet1.getDTMManager();
+	            		  int nodeHandle = nodeSet1.nextNode();
+	            		  DTM dtm = dtmMgr.getDTM(nodeHandle);
+	            		  if (dtm.getNodeType(nodeHandle) == DTM.DOCUMENT_NODE) {
+	            			 result = srcValue;
+	            			 
+	            			 return result;
+	            		  }
+	            	   }
+	            	}	            	
             	}
             	else if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE) {
             		if (srcValue instanceof ResultSequence) {
@@ -500,7 +515,8 @@ public class SequenceTypeSupport {
             					                   (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) ||
             					                   (itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY))) {
             			   if (rSeq.item(0) instanceof XSAnyAtomicType) {
-            			      result = rSeq.item(0);            			      
+            			      result = rSeq.item(0);
+            			      
             			      return result;
             			   }
             			}
@@ -515,6 +531,7 @@ public class SequenceTypeSupport {
             			    }
             			    if (isSeqAnyAtomicType) {
             			       result = rSeq;
+            			       
             			       return result;
             			    }
             			}
@@ -522,10 +539,11 @@ public class SequenceTypeSupport {
             					 (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY)) {
             				// an input sequence is empty
             				result = rSeq;
+            				
          			        return result;
             			}
             		}            		
-            	}
+            	}            	
             }
             
             if (srcValue instanceof XString) {
@@ -1527,7 +1545,8 @@ public class SequenceTypeSupport {
                         }
                         
                         if (nodeSetLen == 1) {
-                           result = nodeSetItem;                           
+                           result = nodeSetItem;
+                           
                            return result;
                         }
                      }
@@ -1575,7 +1594,8 @@ public class SequenceTypeSupport {
                         }
                         
                         if (nodeSetLen == 1) {
-                           result = nodeSetItem;                            
+                           result = nodeSetItem;
+                           
                            return result;
                         }
                      }
@@ -1590,7 +1610,8 @@ public class SequenceTypeSupport {
                         }
                         
                         if (nodeSetLen == 1) {
-                           result = nodeSetItem;                            
+                           result = nodeSetItem;
+                           
                            return result;
                         }
                      }
@@ -1605,7 +1626,8 @@ public class SequenceTypeSupport {
                          }
                          
                          if (nodeSetLen == 1) {
-                            result = nodeSetItem;                             
+                            result = nodeSetItem;
+                            
                             return result;
                          }
                      }
@@ -1613,7 +1635,8 @@ public class SequenceTypeSupport {
                          convertedResultSeq.add(nodeSetItem);
                          
                          if (nodeSetLen == 1) {
-                            result = nodeSetItem;                             
+                            result = nodeSetItem;
+                            
                             return result;
                          }
                      }
@@ -1630,7 +1653,8 @@ public class SequenceTypeSupport {
                      XObject xObject = castXdmValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
                                                                                                                     seqExpectedTypeDataInp, xctxt);                     
                      if (nodeSetLen == 1) {
-                         result = xObject;                             
+                         result = xObject;
+                         
                          return result;
                      }
                      else {
