@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Created-By: @java.version@ (@java.vendor@)
 Main-Class: org.apache.xalan.xslt.Process
-Class-Path: xercesImpl.jar xml-apis.jar serializer.jar
+Class-Path: xercesImpl.jar xml-apis.jar serializer.jar xpath31_types.jar json-20240303.jar
 
 
 Name: org/apache/xalan/

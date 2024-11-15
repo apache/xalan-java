@@ -20,13 +20,14 @@
  */
 package org.apache.xpath.functions.json;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.net.URL;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -70,6 +71,8 @@ public class FuncXmlToJson extends FunctionMultiArgs
 {
 
 	private static final long serialVersionUID = -7072675375842927045L;
+	
+	private static final int CHAR_BUFF_SIZE = 512;   // size in bytes
 
 	/**
      * Implementation of the function. The function must return a valid object.
@@ -175,7 +178,7 @@ public class FuncXmlToJson extends FunctionMultiArgs
    	    
    	    try {
    	       xmlDocStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);   	       
-   	       if (isXmlStrValidWithSchema(xmlDocStr, XSLJsonConstants.XML_JSON_SCHEMA_DOCUMENT)) {
+   	       if (isXmlStrValidWithSchema(xmlDocStr, XSLJsonConstants.XML_JSON_SCHEMA_FILE_NAME)) {
    	    	  Object obj = getJsonFromXmlNode(node, null);
    	    	  if (obj instanceof JSONObject) {
    	    		 String jsonStr = jsonIndent ? ((JSONObject)obj).toString(XSLJsonConstants.JSON_INDENT_FACTOR) : 
@@ -206,15 +209,15 @@ public class FuncXmlToJson extends FunctionMultiArgs
      * to XML schema constraints. An XML schema used by this function, is constructed
      * from an XML Schema document file 'schema-for-json.xsd'.
      * 
-     * @param xmlStr           An XML document string that needs to be validated by an 
-     *                         XML Schema document.
-     * @param schemaFileName   XML Schema document's file name
+     * @param xmlDocumentStr              An XML document string that needs to be validated by an 
+     *                                    XML Schema document.
+     * @param xmlSchemaFileName           XML Schema document's file name
      * 
-     * @return                 true, or false indicating whether an XML input document is valid,
-     *                         or invalid when validated by an XML Schema document.
+     * @return                            true, or false indicating whether an XML input document is valid,
+     *                                    or invalid when validated by an XML Schema document.
      * @throws javax.xml.transform.TransformerException
      */
-    private boolean isXmlStrValidWithSchema(String xmlStr, String schemaFileName) throws 
+    private boolean isXmlStrValidWithSchema(String xmlDocumentStr, String xmlSchemaFileName) throws 
                                                                        javax.xml.transform.TransformerException {
         boolean isXmlStrValid = false;
         
@@ -222,22 +225,22 @@ public class FuncXmlToJson extends FunctionMultiArgs
          
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
-        	File file = new File(schemaFileName);
-        	String absPath = file.getAbsolutePath();
-        	String filePathPrefix = absPath.substring(0, absPath.indexOf(schemaFileName));
-        	char fileSeparatorChar = File.separatorChar;        	
-        	File file2 = new File(filePathPrefix + fileSeparatorChar + "src");
-        	Schema schema = null;
-        	if (file2.exists()) {
-        	   schema = schemaFactory.newSchema(this.getClass().getResource(schemaFileName));	
+        	BufferedReader buffReader = new BufferedReader(new InputStreamReader(
+        			                                                          getClass().getResourceAsStream(xmlSchemaFileName)));
+        	char[] charBuff = new char[CHAR_BUFF_SIZE];
+        	int bytesRead = 0;
+        	StringBuffer strBuff = new StringBuffer();
+        	while ((bytesRead = buffReader.read(charBuff)) != -1) {
+        		String str = new String(charBuff, 0, bytesRead);
+        		strBuff.append(str);
         	}
-        	else {
-        	   URL url = (file.toURI()).toURL();
-        	   schema = schemaFactory.newSchema(url);
-        	}        	
+        	
+        	Source xmlSchemaStr = new StreamSource(new StringReader(strBuff.toString()));
+        	
+        	Schema schema = schemaFactory.newSchema(xmlSchemaStr);
         				
 			Validator validator = schema.newValidator();
-			StringReader xmlInputStrReader = new StringReader(xmlStr);
+			StringReader xmlInputStrReader = new StringReader(xmlDocumentStr);
 			validator.validate(new StreamSource(xmlInputStrReader));
 			isXmlStrValid = true;
 		} 

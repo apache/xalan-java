@@ -85,7 +85,7 @@ $Id$
   <property name="build.dir"              value="./build"/> 
   <property name="lib.dir"                value="./lib"/>   
   <property name="endorsed.dir"           value="${lib.dir}/endorsed"/>   
-  <property name="samples.dir"            value="./samples"/>   
+  <property name="samples.dir"            value="./samples"/>
   <property name="src.dir"                value="./src"/>
   <property name="tests.dir"              value="./tests"/>
   <property name="tools.dir"              value="./tools"/> 
@@ -286,6 +286,8 @@ $Id$
     <include name="${dist.file}/xsltc.jar"/>    
     <include name="${dist.file}/${xmlapis.jar.name}"/>
     <include name="${dist.file}/${parser.jar.name}"/>
+  	<include name="${dist.file}/${xpath31_types.jar.name}"/>
+  	<include name="${dist.file}/${json.jar.name}"/>
     <include name="${dist.file}/${serializer.jar.name}"/>
     <include name="${dist.file}/samples/"/>        
     <include name="${dist.file}/samples/xalansamples.jar"/>
@@ -387,7 +389,7 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compile the DTM implementation and xml utilities                    -->
   <!-- =================================================================== -->
-    <target name="xml.compile" depends="prepare,serializer.jar">
+  <target name="xml.compile" depends="prepare,serializer.jar">
     <echo message="Compiling DTM implementation and utilities" />
     <javac srcdir="${src.dir}"
            destdir="${build.classes}"
@@ -719,6 +721,8 @@ $Id$
     <filter token="java.version" value="${java.version}"/>
     <filter token="java.vendor" value="${java.vendor}"/>     
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
+  	
+  	<copy todir="${build.dir}/classes/org/apache/xpath/functions/json" file="src/org/apache/xpath/functions/json/schema-for-json.xsd"/>
     
     <!-- make bundled jar named xalan.jar -->
     <jar jarfile="${build.xalan.jar}" manifest="${build.dir}/MANIFEST.MF"
@@ -726,7 +730,7 @@ $Id$
        <patternset>
          <exclude name="${xsltc.reldir}/util/JavaCupRedirect*" />
          <exclude name="${serializer.reldir}/**/*" />
-       </patternset>
+       </patternset>       
     </jar>  
  
   </target>
@@ -1315,7 +1319,7 @@ $Id$
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${dist.dir}/lib"/>
   	<mkdir dir="${dist.dir}/lib/endorsed"/>	
-    <mkdir dir="${dist.dir}/samples"/>       
+    <mkdir dir="${dist.dir}/samples"/>
     <mkdir dir="${dist.dir}/src"/>
   	<mkdir dir="${dist.dir}/tests"/>
   	<mkdir dir="${dist.dir}/tests/bin"/>
@@ -1399,7 +1403,6 @@ $Id$
   	<copy file="${xpath31_types.jar}" todir="${dist.dir}" />
   	<copy file="${json.jar}" todir="${dist.dir}" />
   	<copy file="${build.xalan_xsl3_tests.jar}" todir="${dist.dir}/tests/bin/lib" />
-  	<copy file="src/org/apache/xpath/functions/json/schema-for-json.xsd" todir="${dist.dir}/tests/bin" />
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="readme.html,KEYS,build.xml,build.sh,deprecated_build.sh,build.bat,
