@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -113,42 +114,42 @@ public class Variable extends Expression implements PathComponent
    */
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
-    m_fixUpWasCalled = true;
-    int sz = vars.size();
+	  m_fixUpWasCalled = true;
 
-    for (int i = vars.size()-1; i >= 0; i--) 
-    {
-      QName qn = (QName)vars.elementAt(i);
-      // System.out.println("qn: "+qn);
-      if(qn.equals(m_qname))
-      {
-        
-        if(i < globalsSize)
-        {
-          m_isGlobal = true;
-          m_index = i;
-        }
-        else
-        {
-          m_index = i-globalsSize;
-        }
-          
-        return;
-      }
-    }
-    
-    if (m_xpathVarList.contains(m_qname)) {
-       // this takes care of, variable references within, XPath 3.1 feature implementations
-       // like function item, "for", "let", 'quantified' expressions.
-       return;    
-    }
-    
-    java.lang.String msg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_COULD_NOT_FIND_VAR, 
-                                             new Object[]{m_qname.toString()});
-                                             
-    TransformerException te = new TransformerException(msg, this);
-                                             
-    throw new org.apache.xml.utils.WrappedRuntimeException(te);
+	  for (int i = vars.size()-1; i >= 0; i--) 
+	  {
+		  QName qn = (QName)vars.elementAt(i);
+		  if (qn.equals(m_qname))
+		  {
+
+			  if(i < globalsSize)
+			  {
+				  m_isGlobal = true;
+				  m_index = i;
+			  }
+			  else
+			  {
+				  m_index = i-globalsSize;
+			  }
+
+			  return;
+		  }
+	  }
+
+	  if (m_xpathVarList.contains(m_qname)) {
+		  // This takes care of variable references within, XPath 3.1 expressions
+		  // like function item, "for", "let", "quantified" expressions.
+		  return;    
+	  }
+	  
+	  if (XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff == null) {
+		  java.lang.String msg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_COULD_NOT_FIND_VAR, 
+				  																				   new Object[]{m_qname.toString()});
+
+		  TransformerException te = new TransformerException(msg, this);
+
+		  throw new org.apache.xml.utils.WrappedRuntimeException(te);
+	  }
     
   }
 
@@ -240,8 +241,16 @@ public class Variable extends Expression implements PathComponent
            if (m_qname == null) {
               throw ex;   
            }
+           else if (XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff != null) {
+        	   java.lang.String xpathExprStr = XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff.toString();        	   
+        	   XPath xpath = new XPath(xpathExprStr, xctxt.getSAXLocator(), xctxt.getNamespaceContext(), 
+        			                                                                                   XPath.SELECT, null);
+        	   result = xpath.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+        	   
+        	   XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff = null;
+           }
            else {
-              throw new javax.xml.transform.TransformerException("Variable $" + m_qname.toString() + " "
+               throw new javax.xml.transform.TransformerException("Variable $" + m_qname.toString() + " "
                                                                                                + "accessed before it is bound!."); 
            }
         }

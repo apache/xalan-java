@@ -3222,50 +3222,80 @@ public class XPathParser
     boolean continueOrLoop = true;
     boolean foundCombiningExpr = false;
 
-    do
-    {
-      PathExpr();
+    do 
+    {      
+    	String prevToken = getTokenRelative(-2);
+    	if (isTokenNodeCombining(prevToken) && tokenIs('(')) {
+    		TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
+    																				m_queueMark, m_tokenChar, m_token);
+    		StringBuffer seqExprStrBuff = new StringBuffer();
+    		while (m_token != null) {
+    			seqExprStrBuff.append(m_token);
+    			nextToken();
+    		}    	      	  
 
-      if ((tokenIs('|') && !tokenIs("||")) || tokenIs("union"))
-      {
-    	  if (foundCombiningExpr == false)
-    	  {
-    		  foundCombiningExpr = true;
+    		String seqExprStr = seqExprStrBuff.toString();
+    		if (seqExprStr.contains(",")) {
+    			XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff = seqExprStrBuff;
 
-    		  insertOp(opPos, 2, OpCodes.OP_UNION);
-    	  }
+    			int tokenQueueSize = m_ops.m_tokenQueue.size();
+    			for (int idx = (prevTokQueueScanPosition.getQueueMark() - 1); idx < tokenQueueSize; idx++) {
+    				m_ops.m_tokenQueue.removeElementAt(idx);  
+    			}
 
-    	  nextToken();
-      }
-      else if (tokenIs("intersect")) {
-    	  if (foundCombiningExpr == false)
-    	  {
-    		  foundCombiningExpr = true;
+    			m_queueMark = prevTokQueueScanPosition.getQueueMark();
+    			// Converting an XPath expression like (a,b) to a variable reference.
+    			// With this, an XPath expression like '* except (a,b)' is evaluated at run-time 
+    			// as '* except $varName' where the variable's value at run-time is retrieved
+    			// from the class field XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff.
+    			m_ops.m_tokenQueue.addElement("$");
+    			String tempVarName = "v1_" + System.currentTimeMillis();  // Producing a reliable random variable name string
+    			m_ops.m_tokenQueue.addElement(tempVarName);
+    			m_token = "$";
+    			m_tokenChar = '$';
+    		}
+    		else {    		
+    		    restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    		}
+    	}
 
-    		  insertOp(opPos, 2, OpCodes.OP_INTERSECT);
-    	  }
+    	PathExpr(); 
 
-    	  nextToken();  
-      }
-      else if (tokenIs("except")) {
-    	  if (foundCombiningExpr == false)
-    	  {
-    		  foundCombiningExpr = true;
+    	if ((tokenIs('|') && !tokenIs("||")) || tokenIs("union")) {
+    		if (!foundCombiningExpr) {
+    			foundCombiningExpr = true;
 
-    		  insertOp(opPos, 2, OpCodes.OP_EXCEPT);
-    	  }
+    			insertOp(opPos, 2, OpCodes.OP_UNION);
+    		}
 
-    	  nextToken();  
-      }
-      else
-      {
-    	  break;
-      }
+    		nextToken();
+    	}
+    	else if (tokenIs("intersect")) {
+    		if (!foundCombiningExpr) {
+    			foundCombiningExpr = true;
+
+    			insertOp(opPos, 2, OpCodes.OP_INTERSECT);
+    		}
+
+    		nextToken();  
+    	}
+    	else if (tokenIs("except")) {
+    		if (!foundCombiningExpr) {
+    			foundCombiningExpr = true;
+
+    			insertOp(opPos, 2, OpCodes.OP_EXCEPT);
+    		}
+
+    		nextToken();
+    	}
+    	else {
+    		break;
+    	}
     }
     while (continueOrLoop);
 
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-          m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+                                      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**
@@ -6032,6 +6062,23 @@ public class XPathParser
 	  }
 	  
 	  return isExclude;
+   }
+   
+   /**
+    * Check whether the token string is one of the node combining tokens.
+    */
+   private boolean isTokenNodeCombining(String tokenStr) {
+ 	  boolean result = false;	  
+ 	  
+ 	  if (tokenStr != null) {
+ 		  if (((tokenStr.equals("|") && !tokenStr.equals("||")) || tokenStr.equals("union"))
+ 				  										|| tokenStr.equals("intersect")
+ 				  										|| tokenStr.equals("except")) {
+ 			  result = true; 
+ 		  }
+ 	  }
+ 	  
+ 	  return result;
    }
   
 }

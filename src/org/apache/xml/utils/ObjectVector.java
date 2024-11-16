@@ -108,9 +108,9 @@ public class ObjectVector implements Cloneable
   }
   
   /**
-   * Get the length of the list.
+   * Set the length of the list.
    *
-   * @return length of the list
+   * @return void
    */
   public final void setSize(int sz)
   {

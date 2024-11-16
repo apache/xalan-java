@@ -87,5 +87,25 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslJiraIssuesTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslJiraIssuesTest6() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

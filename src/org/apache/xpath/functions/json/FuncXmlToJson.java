@@ -72,7 +72,7 @@ public class FuncXmlToJson extends FunctionMultiArgs
 
 	private static final long serialVersionUID = -7072675375842927045L;
 	
-	private static final int CHAR_BUFF_SIZE = 512;   // size in bytes
+	private static final int CHAR_BUFF_SIZE = 512;   // character buffer size in bytes
 
 	/**
      * Implementation of the function. The function must return a valid object.
@@ -235,9 +235,9 @@ public class FuncXmlToJson extends FunctionMultiArgs
         		strBuff.append(str);
         	}
         	
-        	Source xmlSchemaStr = new StreamSource(new StringReader(strBuff.toString()));
+        	Source xmlSchemaSource = new StreamSource(new StringReader(strBuff.toString()));
         	
-        	Schema schema = schemaFactory.newSchema(xmlSchemaStr);
+        	Schema schema = schemaFactory.newSchema(xmlSchemaSource);
         				
 			Validator validator = schema.newValidator();
 			StringReader xmlInputStrReader = new StringReader(xmlDocumentStr);

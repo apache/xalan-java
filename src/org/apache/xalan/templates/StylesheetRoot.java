@@ -114,9 +114,9 @@ public class StylesheetRoot extends StylesheetComposed
     private Map<QName, XPathInlineFunction> m_inlineFunctionVarMap = 
                                                   new HashMap<QName, XPathInlineFunction>();
     
-    /*
+    /**
      * Within an object of this class, this class field keeps reference of 
-     * an XSLT transformation wide TransformerImpl object.  
+     * an XSL transformation wide TransformerImpl object.  
      */
     private TransformerImpl m_transformerImpl = null;
     

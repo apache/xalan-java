@@ -22,9 +22,9 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 
 /**
- * This class, has few XSL stylesheet transformation-wide 
- * variables that're used during evaluation of specific XSLT 
- * instructions and XPath expressions.
+ * This class, has few XSL stylesheet transformation wide 
+ * variables that are used during evaluation of specific XSL 
+ * stylesheet instructions and XPath expressions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -63,5 +63,13 @@ public class XslTransformSharedDatastore {
      * of an XSL stylesheet.
      */
     public static StylesheetRoot stylesheetRoot;
+    
+    /**
+     * This class field represents, a string buffer value which is
+     * RHS of an XPath expression like '* except (a,b)' i.e (a,b) and when used 
+     * with a node combining operation like union (and equivalently '|'), 
+     * intersect or except.
+     */
+    public static StringBuffer xpathNodeCombiningExprRhsStrBuff;
 
 }
