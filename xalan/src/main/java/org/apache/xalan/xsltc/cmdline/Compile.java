@@ -45,7 +45,7 @@ public final class Compile {
  
 
     public static void printUsage() {
-        StringBuffer vers = new StringBuffer("XSLTC version " + VERSION_MAJOR
+        StringBuilder vers = new StringBuilder("XSLTC version " + VERSION_MAJOR
                 + "." + VERSION_MINOR
                 + ((VERSION_DELTA > 0) ? ("." + VERSION_DELTA) : ("")));
         System.err.println(vers + "\n"

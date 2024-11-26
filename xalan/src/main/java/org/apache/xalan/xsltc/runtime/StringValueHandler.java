@@ -107,7 +107,7 @@ public final class StringValueHandler extends EmptySerializer {
 
 	if (value.indexOf("?>") > 0) {
 	    final int n = value.length(); 
-	    final StringBuffer valueOfPI = new StringBuffer();
+	    final StringBuilder valueOfPI = new StringBuilder();
 
 	    for (int i = 0; i < n;) {
 		final char ch = value.charAt(i++);

@@ -192,7 +192,7 @@ class NumeratorFormatter
 
     if (val <= 3999L)
     {
-      StringBuffer romanBuffer = new StringBuffer();
+      StringBuilder romanBuffer = new StringBuilder();
       do
       {
         while (val >= m_romanConvertTable[place].m_postValue)

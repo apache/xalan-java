@@ -319,7 +319,7 @@ public final class BasisLibrary {
 	final int froml = from.length();
 	final int valuel = value.length();
 
-	final StringBuffer result = new StringBuffer();
+	final StringBuilder result = new StringBuilder();
 	for (int j, i = 0; i < valuel; i++) {
 	    final char ch = value.charAt(i);
 	    for (j = 0; j < froml; j++) {
@@ -347,7 +347,7 @@ public final class BasisLibrary {
      */
     public static String normalize_spaceF(String value) {
 	int i = 0, n = value.length();
-	StringBuffer result = new StringBuffer();
+	StringBuilder result = new StringBuilder();
 
 	while (i < n && isWhiteSpace(value.charAt(i)))
 	    i++;
@@ -1693,7 +1693,7 @@ public final class BasisLibrary {
 
     public static String replace(String base, String delim, String[] str) {
 	final int len = base.length();
-	final StringBuffer result = new StringBuffer();
+	final StringBuilder result = new StringBuilder();
 
 	for (int i = 0; i < len; i++) {
 	    final char ch = base.charAt(i);

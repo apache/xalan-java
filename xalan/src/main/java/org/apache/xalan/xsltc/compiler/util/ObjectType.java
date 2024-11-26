@@ -93,7 +93,7 @@ public final class ObjectType extends Type {
     }
 
     public String toSignature() {
-	final StringBuffer result = new StringBuffer("L");
+	final StringBuilder result = new StringBuilder("L");
 	result.append(_javaClassName.replace('.', '/')).append(';');
 	return result.toString();
     }

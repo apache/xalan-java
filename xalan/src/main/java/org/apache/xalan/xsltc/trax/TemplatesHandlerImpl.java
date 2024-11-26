@@ -258,7 +258,7 @@ public class TemplatesHandlerImpl
                 }
             }
             else {
-                StringBuffer errorMessage = new StringBuffer();
+                StringBuilder errorMessage = new StringBuilder();
                 Vector errors = _parser.getErrors();
                 final int count = errors.size();
                 for (int i = 0; i < count; i++) {

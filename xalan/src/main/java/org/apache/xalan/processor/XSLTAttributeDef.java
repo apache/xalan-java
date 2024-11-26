@@ -456,7 +456,7 @@ public class XSLTAttributeDef
         return m_setterString;
       }
 
-      StringBuffer outBuf = new StringBuffer();
+      StringBuilder outBuf = new StringBuilder();
 
       outBuf.append("set");
 
@@ -643,7 +643,7 @@ public class XSLTAttributeDef
     
 	if (retVal == StringToIntTable.INVALID_KEY) 
     {
-       StringBuffer enumNamesList = getListOfEnums();
+       StringBuilder enumNamesList = getListOfEnums();
        handleError(handler, XSLTErrorResources.INVALID_ENUM,new Object[]{name, value, enumNamesList.toString() },null);
        return null;
     }
@@ -706,7 +706,7 @@ public class XSLTAttributeDef
             if (objToReturn == null) objToReturn = qname;	
 	        
 			if (qname.getPrefix() == null) {
-	           StringBuffer enumNamesList = getListOfEnums();
+                StringBuilder enumNamesList = getListOfEnums();
 
  	           enumNamesList.append(" <qname-but-not-ncname>");
                handleError(handler,XSLTErrorResources.INVALID_ENUM,new Object[]{name, value, enumNamesList.toString() },null); 
@@ -716,7 +716,7 @@ public class XSLTAttributeDef
         }
         catch (IllegalArgumentException ie) 
         {
-           StringBuffer enumNamesList = getListOfEnums();
+            StringBuilder enumNamesList = getListOfEnums();
            enumNamesList.append(" <qname-but-not-ncname>");
            
            handleError(handler,XSLTErrorResources.INVALID_ENUM,new Object[]{name, value, enumNamesList.toString() },ie); 
@@ -725,7 +725,7 @@ public class XSLTAttributeDef
         }
         catch (RuntimeException re)
         {
-           StringBuffer enumNamesList = getListOfEnums();
+           StringBuilder enumNamesList = getListOfEnums();
            enumNamesList.append(" <qname-but-not-ncname>");
 
            handleError(handler,XSLTErrorResources.INVALID_ENUM,new Object[]{name, value, enumNamesList.toString() },re); 
@@ -1532,12 +1532,12 @@ public class XSLTAttributeDef
   }
   
   /**
-   * StringBuffer containing comma delimited list of valid values for ENUM type.
+   * StringBuilder containing comma delimited list of valid values for ENUM type.
    * Used to build error message.
    */
-  private StringBuffer getListOfEnums() 
+  private StringBuilder getListOfEnums()
   {
-     StringBuffer enumNamesList = new StringBuffer();            
+      StringBuilder enumNamesList = new StringBuilder();
      String [] enumValues = this.getEnumNames();
 
      for (int i = 0; i < enumValues.length; i++)

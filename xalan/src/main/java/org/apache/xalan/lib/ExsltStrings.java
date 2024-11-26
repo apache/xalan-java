@@ -116,7 +116,7 @@ public class ExsltStrings extends ExsltBase
    */
   public static String concat(NodeList nl)
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int i = 0; i < nl.getLength(); i++)
     {
       Node node = nl.item(i);
@@ -149,7 +149,7 @@ public class ExsltStrings extends ExsltBase
     if (pattern == null || pattern.length() == 0)
       return "";
     
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     int len = (int)length;
     int numAdded = 0;
     int index = 0;

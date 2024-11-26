@@ -507,7 +507,7 @@ final class Step extends RelativeLocationPath {
      * Returns a string representation of this step.
      */
     public String toString() {
-	final StringBuffer buffer = new StringBuffer("step(\"");
+	final StringBuilder buffer = new StringBuilder("step(\"");
     buffer.append(Axis.getNames(_axis)).append("\", ").append(_nodeType);
 	if (_predicates != null) {
 	    final int n = _predicates.size();

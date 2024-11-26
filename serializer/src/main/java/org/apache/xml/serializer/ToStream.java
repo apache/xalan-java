@@ -2799,7 +2799,7 @@ abstract public class ToStream extends SerializerBase
       Vector v = new Vector();
       int l = s.length();
       boolean inCurly = false;
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
 
       // parse through string, breaking on whitespaces.  I do this instead
       // of a tokenizer so I can track whitespace inside of curly brackets,
@@ -2883,7 +2883,7 @@ abstract public class ToStream extends SerializerBase
       final int len = URI_and_localNames.size() - 1;
       if (len > 0)
       {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < len; i += 2)
         {
           // whitspace separated "{uri1}local1 {uri2}local2 ..."

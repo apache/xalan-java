@@ -214,7 +214,7 @@ public class DTMException extends RuntimeException {
      */
     public String getMessageAndLocation() {
 
-        StringBuffer sbuffer = new StringBuffer();
+        StringBuilder sbuffer = new StringBuilder();
         String       message = super.getMessage();
 
         if (null != message) {
@@ -254,7 +254,7 @@ public class DTMException extends RuntimeException {
     public String getLocationAsString() {
 
         if (null != locator) {
-            StringBuffer sbuffer  = new StringBuffer();
+            StringBuilder sbuffer  = new StringBuilder();
             String       systemID = locator.getSystemId();
             int          line     = locator.getLineNumber();
             int          column   = locator.getColumnNumber();

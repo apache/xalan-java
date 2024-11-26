@@ -127,7 +127,7 @@ final class XslElement extends Instruction {
 		    }
 
 		    // Prepend prefix to local name
-		    final StringBuffer newName = new StringBuffer(prefix);
+		    final StringBuilder newName = new StringBuilder(prefix);
 		    if (prefix != EMPTYSTRING) {
 			newName.append(':');
 		    }
