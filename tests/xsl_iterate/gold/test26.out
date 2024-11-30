@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><result>
-  <factorial num="1">1</factorial>
-  <factorial num="2">2</factorial>
-  <factorial num="3">6</factorial>
-  <factorial num="4">24</factorial>
-  <factorial num="5">120</factorial>
-  <factorial num="6">720</factorial>
-  <factorial num="7">5040</factorial>
-</result>

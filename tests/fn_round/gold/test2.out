@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><result>
-  <val inp="2.5">3</val>
-  <val inp="2.4999">2</val>
-  <val inp="-2.5">-2</val>
-  <val inp="1.125">1.12</val>
-  <val inp="3.1415e0">3.14</val>
-</result>

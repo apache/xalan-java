@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<elem>
-  <item attr1="hello    world"/>
-  <item attr1="this  example    demonstrates"/>
-  <item attr1="using    xsl:analyze-string   instruction"/>
-</elem>

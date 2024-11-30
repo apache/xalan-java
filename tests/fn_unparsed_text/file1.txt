@@ -1,3 +1,0 @@
-hello world. this file shall be read by
-xpath 3.1 function unparsed-text().
-Thanks.

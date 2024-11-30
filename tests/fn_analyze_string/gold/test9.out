@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><analyze-string-result xmlns="http://www.w3.org/2005/xpath-functions">
-  <match>  </match>
-  <non-match>XSLT</non-match>
-  <match> </match>
-  <non-match>xsl:analyze-string</non-match>
-  <match> </match>
-  <non-match>instruction</non-match>
-</analyze-string-result>

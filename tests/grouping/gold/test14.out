@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><country name="Italia">
-  <city name="Milano"/>
-  <city name="Venezia"/>
-</country><country name="France">
-  <city name="Paris"/>
-  <city name="Lyon"/>
-</country><country name="Deutschland">
-  <city name="München"/>
-</country>

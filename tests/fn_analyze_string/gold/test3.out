@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><analyze-string-result xmlns="http://www.w3.org/2005/xpath-functions">
-  <non-match>??</non-match>
-  <match>The</match>
-  <non-match> </non-match>
-  <match>cat</match>
-  <non-match> </non-match>
-  <match>sat</match>
-</analyze-string-result>

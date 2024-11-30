@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><result>
-  <one>
-    <elem>test value</elem>
-  </one>
-  <two val1="abc"/>
-  <three/>
-  <four/>
-</result>

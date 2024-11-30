@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><result>
-  <detail inp="math:pow(a, 2)">math:pow(1, 2) = 1 , math:pow(2, 2) = 4 , math:pow(3, 2) = 9 , math:pow(4, 2) = 16 , math:pow(5, 2) = 25</detail>
-  <detail inp="math:pow(a, 3)">math:pow(1, 3) = 1 , math:pow(2, 3) = 8 , math:pow(3, 3) = 27 , math:pow(4, 3) = 64 , math:pow(5, 3) = 125</detail>
-  <detail inp="math:pow(a, 4)">math:pow(1, 4) = 1 , math:pow(2, 4) = 16 , math:pow(3, 4) = 81 , math:pow(4, 4) = 256 , math:pow(5, 4) = 625</detail>
-</result>

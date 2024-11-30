@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<parts>
-   <part discounted="yes" price="5"/>
-   <part discounted="no" price="2"/>
-   <part discounted="yes" price="5"/>
-   <part discounted="yes" price="10"/>
-   <part price="3"/>
-   <part discounted="yes" price="10"/>
-</parts>
