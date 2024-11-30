@@ -22,26 +22,26 @@ Authors:
    Joe Kesselman <jkesselm@apache.org>
    Mukul Gandhi <mukulg@apache.org>
 
-This GitHub repos branch contains source code provided as Maven build (https://maven.apache.org/), for 
-Xalan-J's implementation of XSLT 3.0 specification.
+This GitHub repos branch has src code provided as Maven (https://maven.apache.org/) build, for 
+Xalan-J's implementation of XSLT 3.0 and XPath 3.1 specifications.
 
-Following are the steps to produce Xalan-J's XSLT 3 jar file from this codebase repos:
+Following are the steps to produce Xalan-J's XSLT 3.0 jar file from this codebase repos:
 
-1) Set JAVA_HOME environment variable pointing to a local JDK installation folder. JDK 1.8 has been used
-to write and test Xalan-J's src code available in this codebase repos. But higher JDK releases would also 
-work fine to compile and run Xalan-J from this codebase repos.
+1) Set JAVA_HOME environment variable pointing to a local JDK installation folder. JDK 1.8/8 has been used
+to write and test Xalan-J's src code available within this codebase repos. Higher versioned JDK releases would also 
+work fine to compile and run Xalan-J XSL processor from this codebase repos.
 
-2) Please ensure that Maven build tool has been installed locally, which is using the JDK pointed by JAVA_HOME 
-environment variable.
+2) Please ensure that Maven build tool has been installed on local workstation, which is using the JDK specified by 
+JAVA_HOME environment variable.
 
 3) Run Maven build command 'mvn clean package', or 'mvn clean install' on the local workstation folder 
-where pom.xml file for this repos branch is located. This shall produce the Java jar file xalan-3.0.1-SNAPSHOT.jar 
+where pom.xml file for Xalan-J's maven project is located. This shall produce the Java jar file xalan-3.0.1-SNAPSHOT.jar 
 within local folder /target.
 
-The 'libs' folder of this GitHub repos branch contains various jar file dependencies as convenience to users, that 
-are needed by the main Xalan-J jar file xalan-3.0.1-SNAPSHOT.jar.
+The 'libs' file-system folder available within this GitHub repos branch contains various jar file dependencies as convenience 
+to users, that are needed by the main Xalan-J jar file xalan-3.0.1-SNAPSHOT.jar.
 
-To run Xalan-J's XSLT 3 processor, the jar file xalan-3.0.1-SNAPSHOT.jar and other jar files available within 
+To run Xalan-J's XSLT 3.0 processor, the jar file xalan-3.0.1-SNAPSHOT.jar and other jar files available within 
 'libs' folder need to be made available on Java run-time's classpath.   
 
 
