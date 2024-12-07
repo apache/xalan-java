@@ -1,0 +1,2 @@
+check 1 : all the xml elements '(test1 | test2)/a' contain an xml element 'e1'
+check 2 : all the xml elements '(test1 | test2)/a' contain an xml element 'e1'

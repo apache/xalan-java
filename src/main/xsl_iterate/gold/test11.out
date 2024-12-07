@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><account>
+  <balance value="12.00" date="2008-09-01"/>
+  <balance value="20.00" date="2008-09-01"/>
+  <balance value="18.00" date="2008-09-02"/>
+  <balance value="23.00" date="2008-09-02"/>
+</account>

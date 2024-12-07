@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+   <xs:element name="info" type="Type1"/>
+   
+   <xs:complexType name="Type1">
+      <xs:sequence> 
+		 <xs:element ref="a" maxOccurs="unbounded"/>
+	  </xs:sequence>
+   </xs:complexType>
+   
+   <xs:element name="a">
+     <xs:complexType>
+	   <xs:sequence>
+	      <xs:element name="p" type="xs:string"/>
+	   </xs:sequence>
+	   <xs:attribute name="val" type="xs:integer"/>
+	 </xs:complexType>
+   </xs:element>
+   
+   <xs:complexType name="newAType">
+     <xs:sequence>
+	   <xs:element name="p" type="xs:string"/>
+	 </xs:sequence>
+	 <xs:attribute name="val" type="xs:integer"/>
+	 <xs:attribute name="incr" type="xs:integer"/>
+	 <xs:attribute name="newVal" type="xs:integer"/>
+   </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><map>
+  <entry key="0">Sonntag</entry>
+  <entry key="1">Montag</entry>
+  <entry key="2">Dienstag</entry>
+  <entry key="3">Mittwoch</entry>
+  <entry key="4">Donnerstag</entry>
+  <entry key="5">Freitag</entry>
+  <entry key="6">Samstag</entry>
+  <entry key="7">Unbekannt</entry>
+</map>

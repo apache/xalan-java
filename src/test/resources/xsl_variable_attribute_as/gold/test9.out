@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <elem1>a1</elem1>
+    <elem2>b1</elem2>
+    <elem3>c1</elem3>
+  </one>
+  <two>
+    <elem1>p2</elem1>
+    <elem2>q2</elem2>
+    <elem3>r2</elem3>
+  </two>
+  <three>
+    <a1>m3</a1>
+    <a1>n3</a1>
+    <a1>o3</a1>
+  </three>
+</result>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <info lang="not_specified. using collation http://www.w3.org/2005/xpath-functions/collation/codepoint">
+    <distinctValues>
+      <val>hello</val>
+      <val>hello1</val>
+    </distinctValues>
+  </info>
+  <info lang="de">
+    <distinctValues>
+      <val>Strasse</val>
+    </distinctValues>
+  </info>
+</result>

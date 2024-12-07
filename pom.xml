@@ -1,19 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.xsl</groupId>
-  <artifactId>xalan</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
-  <name>Apache Xalan-J</name>
-  <description>Apache Xalan-J XSLT 3.0 maven project pom</description>
-  
-  <!--
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.apache.xsl</groupId>
+	<artifactId>xalan</artifactId>
+	<version>3.0.1-SNAPSHOT</version>
+	<name>Apache Xalan-J</name>
+	<description>Apache Xalan-J XSLT 3.0 maven project pom</description>
+
+	<!--
      Authors:
     	Gary Gregory <ggregory@apache.org>
     	Joe Kesselman <jkesselm@apache.org>
     	Mukul Gandhi <mukulg@apache.org>
   -->
-  
-  <dependencies>    
+
+	<dependencies>
 		<dependency>
 			<groupId>org.apache.xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
@@ -33,64 +35,92 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20240303</version>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>edu.princeton.cs</groupId>
 			<artifactId>java_cup</artifactId>
 			<version>1.0</version>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>edu.princeton.cs</groupId>
 			<artifactId>cup_runtime</artifactId>
 			<version>1.0</version>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>Jlex</groupId>
 			<artifactId>Jlex</artifactId>
 			<version>1.0</version>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.mozilla</groupId>
 			<artifactId>rhino</artifactId>
 			<version>1.7.14</version>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>bsf</artifactId>
 			<version>1.0</version>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.bcel</groupId>
 			<artifactId>bcel</artifactId>
 			<version>6.7.0</version>
-        </dependency>		
+		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.2</version>
-        </dependency>
-  </dependencies>
-  <build>
-  <plugins>
-    <plugin>    
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.13.0</version>
-        <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
-        </configuration>
-    </plugin>
-  </plugins>
-  </build>
-  <repositories>
-      <repository>
-         <id>xalan_maven_repos</id>
-         <name>Xalan-J in project repos</name>
-         <url>file://${project.basedir}/libs</url>
-      </repository>
-  </repositories>
-  
-  <!--
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit4</artifactId>
+						<version>2.22.0</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.22.0</version>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>xalan_maven_repos</id>
+			<name>Xalan-J in project repos</name>
+			<url>file://${project.basedir}/libs</url>
+		</repository>
+	</repositories>
+
+	<!--
       * Licensed to the Apache Software Foundation (ASF) under one
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information

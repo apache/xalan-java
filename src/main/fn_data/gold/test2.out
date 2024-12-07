@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <info count="8">
+    <val type="untypedAtomic">5</val>
+    <val type="untypedAtomic">3.2</val>
+    <val type="untypedAtomic">2</val>
+    <val type="untypedAtomic">3.2</val>
+    <val type="untypedAtomic">7</val>
+    <val type="untypedAtomic">3</val>
+    <val type="date">
+      <date_val/>
+    </val>
+    <val type="integer">5</val>
+  </info>
+</result>

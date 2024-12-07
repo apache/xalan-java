@@ -1,0 +1,64 @@
+{
+ "uptodate": true,
+ "cities": {
+  "Brussels": [
+   {
+    "distance": 322,
+    "to": "London"
+   },
+   {
+    "distance": 265,
+    "to": "Paris"
+   },
+   {
+    "distance": 173,
+    "to": "Amsterdam"
+   }
+  ],
+  "Amsterdam": [
+   {
+    "distance": 173,
+    "to": "Brussels"
+   },
+   {
+    "distance": 358,
+    "to": "London"
+   },
+   {
+    "distance": 431,
+    "to": "Paris"
+   }
+  ],
+  "London": [
+   {
+    "distance": 322,
+    "to": "Brussels"
+   },
+   {
+    "distance": 344,
+    "to": "Paris"
+   },
+   {
+    "distance": 358,
+    "to": "Amsterdam"
+   }
+  ],
+  "Paris": [
+   {
+    "distance": 265,
+    "to": "Brussels"
+   },
+   {
+    "distance": 344,
+    "to": "London"
+   },
+   {
+    "distance": 431,
+    "to": "Amsterdam"
+   }
+  ]
+ },
+ "author": null,
+ "updated": "2014-02-04T18:50:45",
+ "desc": "Distances between several cities, in kilometers."
+}

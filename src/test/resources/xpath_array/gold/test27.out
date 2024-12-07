@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <array>
+    <item>1</item>
+    <item>2 3 4</item>
+    <item>5</item>
+  </array>
+  <otherArrays>
+    <size>2</size>
+    <size>2</size>
+    <size>1</size>
+    <size>3</size>
+    <size>3</size>
+  </otherArrays>
+</result>

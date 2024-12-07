@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <pi>3.141592653589793</pi>
+  <pi_expr>1.04719755119659764</pi_expr>
+  <exp>1</exp>
+  <exp>2.718281828459045</exp>
+  <exp>7.38905609893065</exp>
+  <exp>0.3678794411714423</exp>
+  <exp>23.140692632779267</exp>
+  <exp>NaN</exp>
+  <exp>INF</exp>
+  <exp>0</exp>
+  <exp10>1</exp10>
+  <exp10>10</exp10>
+  <exp10>3.1622776601683795</exp10>
+  <exp10>0.1</exp10>
+  <exp10>NaN</exp10>
+  <exp10>INF</exp10>
+  <exp10>0</exp10>
+  <log>-INF</log>
+  <log>1</log>
+  <log>-6.907755278982137</log>
+  <log>0.6931471805599453</log>
+  <log>NaN</log>
+  <log>NaN</log>
+  <log>INF</log>
+  <log>NaN</log>
+  <log10>-INF</log10>
+  <log10>3</log10>
+  <log10>-3</log10>
+  <log10>0.3010299956639812</log10>
+  <log10>NaN</log10>
+  <log10>NaN</log10>
+  <log10>INF</log10>
+  <log10>NaN</log10>
+</result>

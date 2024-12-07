@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <map-test>
+    <map-instance-of-test>true</map-instance-of-test>
+  </map-test>
+  <array-test>
+    <array-instance-of-test>true</array-instance-of-test>
+  </array-test>
+  <string-test>
+    <string-value>foo</string-value>
+    <string-instance-of-test>true</string-instance-of-test>
+  </string-test>
+  <number-test>
+    <number-instance-of-test>true</number-instance-of-test>
+  </number-test>
+  <boolean-test>
+    <boolean-instance-of-test>true</boolean-instance-of-test>
+  </boolean-test>
+  <empty-seq-test>
+    <empty-seq-instance-of-test>true</empty-seq-instance-of-test>
+  </empty-seq-test>
+</result>

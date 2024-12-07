@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <grp numberClass="odd">
+    <num>1</num>
+    <num>3</num>
+    <num>5</num>
+    <num>7</num>
+    <num>9</num>
+  </grp>
+  <grp numberClass="even">
+    <num>2</num>
+    <num>4</num>
+    <num>6</num>
+    <num>8</num>
+    <num>10</num>
+  </grp>
+</result>

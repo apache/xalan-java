@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info xmlns:n1="http://ns0">
+  <a x="1" y="2" xmlns="http://ns0">
+    <b>
+      <c>hello</c>
+    </b>
+  </a>
+  <n1:a x="1" y="2">
+    <n1:b>
+      <n1:c>hello</n1:c>
+    </n1:b>
+  </n1:a>
+  <n2:a x="1" y="2" xmlns:n2="http://ns0">
+    <n2:b>
+      <n2:c>hello</n2:c>
+    </n2:b>
+  </n2:a>
+  <n1:a x="1" y="2">
+    <n1:b>
+      <c>hello</c>
+    </n1:b>
+  </n1:a>
+</info>

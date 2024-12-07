@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group grpKey="6">
+    <grpItem>
+      <a>
+    <p>x</p>
+    <p>y</p>
+    <p>y</p>
+    <p>y</p>
+    <p>y</p>
+    <p>x</p>
+  </a>
+    </grpItem>
+  </group>
+  <group grpKey="3">
+    <grpItem>
+      <a>
+    <p>m</p>
+    <p>m</p>
+    <p>n</p>
+  </a>
+    </grpItem>
+    <grpItem>
+      <a>
+    <p>a</p>
+    <p>a</p>
+    <p>b</p>
+  </a>
+    </grpItem>
+  </group>
+</result>

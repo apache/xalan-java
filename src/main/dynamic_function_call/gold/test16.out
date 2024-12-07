@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><factorial>
+  <inp val="0">
+    <result>1</result>
+  </inp>
+  <inp val="1">
+    <result>1</result>
+  </inp>
+  <inp val="2">
+    <result>2</result>
+  </inp>
+  <inp val="3">
+    <result>6</result>
+  </inp>
+  <inp val="4">
+    <result>24</result>
+  </inp>
+  <inp val="5">
+    <result>120</result>
+  </inp>
+  <inp val="6">
+    <result>720</result>
+  </inp>
+  <inp val="7">
+    <result>5040</result>
+  </inp>
+  <inp val="8">
+    <result>40320</result>
+  </inp>
+  <inp val="9">
+    <result>362880</result>
+  </inp>
+  <inp val="10">
+    <result>3628800</result>
+  </inp>
+</factorial>

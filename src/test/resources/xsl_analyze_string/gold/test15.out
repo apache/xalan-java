@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><stringRegexAnalysis>
+  <matchPart>  </matchPart>
+  <nonMatchPart>XSLT</nonMatchPart>
+  <matchPart> </matchPart>
+  <nonMatchPart>xsl:analyze-string</nonMatchPart>
+  <matchPart> </matchPart>
+  <nonMatchPart>instruction</nonMatchPart>
+</stringRegexAnalysis>

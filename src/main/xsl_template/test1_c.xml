@@ -1,0 +1,4 @@
+<root>
+  <p>This is a test</p>
+  <q attr1="123">hello there</q>
+</root>

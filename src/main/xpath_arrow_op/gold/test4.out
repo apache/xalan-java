@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>15</one>
+  <two>1 4 9 16 25</two>
+  <three>
+    <sum>15</sum>
+    <avg>3</avg>
+  </three>
+  <four>
+    <sum>15</sum>
+    <avg>3</avg>
+  </four>
+</result>

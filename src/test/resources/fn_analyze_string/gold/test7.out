@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><analyze-string-result xmlns="http://www.w3.org/2005/xpath-functions">
+  <match>
+    <group nr="1">A</group>-<group nr="2">1</group>
+  </match>
+  <non-match>,</non-match>
+  <match>
+    <group nr="1">C</group>-<group nr="2">15</group>
+  </match>
+  <non-match>,,</non-match>
+  <match>
+    <group nr="1">D</group>-<group nr="2">24</group>
+  </match>
+  <non-match>, </non-match>
+  <match>
+    <group nr="1">X</group>-<group nr="2">50</group>
+  </match>
+  <non-match>,</non-match>
+</analyze-string-result>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <attr value="10" isDeclaredInSchema="true" id="1">
+    <containedInElem>a</containedInElem>
+  </attr>
+  <attr value="11" isDeclaredInSchema="true" id="2">
+    <containedInElem>a</containedInElem>
+  </attr>
+  <attr value="12" isDeclaredInSchema="true" id="3">
+    <containedInElem>a</containedInElem>
+  </attr>
+  <attr value="13" isDeclaredInSchema="true" id="4">
+    <containedInElem>a</containedInElem>
+  </attr>
+  <attr value="14" isDeclaredInSchema="true" id="5">
+    <containedInElem>a</containedInElem>
+  </attr>
+</result>

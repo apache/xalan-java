@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+  <decision>
+    <item>
+	  <id>1</id>
+	  <value>yes</value>
+	</item>
+	<item>
+	  <id>2</id>
+	  <value>no</value>
+	</item>
+	<item>
+	  <id>3</id>
+	  <value>maybe</value>
+	</item>
+  </decision>
+  <details>
+     <person>
+	    <name>Mukul</name>
+		<decision>1</decision>
+	 </person>
+	 <person>
+	    <name>Joseph</name>
+		<decision>1</decision>
+	 </person>
+	 <person>
+	    <name>Gary</name>
+		<decision>2</decision>
+	 </person>
+	 <person>
+	    <name>James</name>
+		<decision>2</decision>
+	 </person>
+	 <person>
+	    <name>Michael</name>
+		<decision>3</decision>
+	 </person>
+  </details>
+</info>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <num value="2">
+    <square>4</square>
+  </num>
+  <num value="4">
+    <square>16</square>
+  </num>
+  <num value="6">
+    <square>36</square>
+  </num>
+  <num value="8">
+    <square>64</square>
+  </num>
+  <num value="10">
+    <square>100</square>
+  </num>
+</result>

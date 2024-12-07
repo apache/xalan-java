@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group groupingCriteria="1,3">
+    <a>
+    <itm1>hi</itm1>
+    <itm2>hello</itm2>
+    <itm3>there</itm3>
+  </a>
+    <b>
+    <itm1>this</itm1>
+    <itm2>is</itm2>
+    <itm3>nice</itm3>
+  </b>
+    <d>
+    <itm1>this is ok</itm1>
+  </d>
+  </group>
+  <group groupingCriteria="not(1,3)">
+    <c>
+    <itm1>hello</itm1>
+    <itm2>friends</itm2>
+  </c>
+  </group>
+</result>

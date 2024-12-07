@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<temp>
+  <val1>P2Y11M</val1>
+  <val2>
+    <num x1="2.3"/>
+    <num x1="3"/>
+    <num x1="2.75"/>
+    <num x1="0"/>
+    <num x1="-0"/>
+  </val2>
+</temp>

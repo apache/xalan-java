@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                version="3.0">
+                
+   <!-- Author: mukulg@apache.org -->
+   
+   <!-- An XSLT stylesheet test case, to test XPath 3.1 fn:sort function, and
+        post processing the fn:sort function result, with an XPath dynamic function
+        call to a function item.
+   -->                             
+
+   <xsl:output method="xml" indent="yes"/>
+   
+   <xsl:variable name="fnReverse" select="function($seq) { for $idx in (-1 * count($seq)) to -1 return $seq[abs($idx)]}"/>
+   
+   <xsl:template match="/">
+      <result>
+        <xsl:variable name="seq1" select="(10, 15, 16, 2, -2, 11, 12)"/>        
+        <xsl:variable name="sortedSequence" select="sort($seq1, (), function($num) { number($num) })"/>
+        <one>
+           <!-- process result of function call $fnReverse(..) with an xsl:for-each instruction. -->
+           <xsl:for-each select="$fnReverse($sortedSequence)">
+              <val><xsl:value-of select="."/></val>
+           </xsl:for-each>
+        </one>
+        <two>
+           <!-- process result of function call $fnReverse(..) with an xsl:iterate instruction. -->
+           <xsl:iterate select="$fnReverse($sortedSequence)">
+              <val><xsl:value-of select="."/></val>
+           </xsl:iterate>
+        </two>
+      </result>
+   </xsl:template>
+   
+   <!--
+      * Licensed to the Apache Software Foundation (ASF) under one
+      * or more contributor license agreements. See the NOTICE file
+      * distributed with this work for additional information
+      * regarding copyright ownership. The ASF licenses this file
+      * to you under the Apache License, Version 2.0 (the  "License");
+      * you may not use this file except in compliance with the License.
+      * You may obtain a copy of the License at
+      *
+      *     http://www.apache.org/licenses/LICENSE-2.0
+      *
+      * Unless required by applicable law or agreed to in writing, software
+      * distributed under the License is distributed on an "AS IS" BASIS,
+      * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      * See the License for the specific language governing permissions and
+      * limitations under the License.
+   -->
+
+</xsl:stylesheet>

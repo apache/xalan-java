@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <decision value="yes" id="1">
+    <name>Mukul</name>
+    <name>Joseph</name>
+  </decision>
+  <decision value="no" id="2">
+    <name>Gary</name>
+    <name>James</name>
+  </decision>
+  <decision value="maybe" id="3">
+    <name>Michael</name>
+  </decision>
+</result>

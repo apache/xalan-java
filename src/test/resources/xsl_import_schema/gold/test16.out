@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <attr value="10" id="1">
+    <containedInElem>a</containedInElem>
+  </attr>
+  <attr value="11" id="2">
+    <containedInElem>a</containedInElem>
+  </attr>
+  <attr value="12" id="3">
+    <containedInElem>a</containedInElem>
+  </attr>
+  <attr value="13" id="4">
+    <containedInElem>a</containedInElem>
+  </attr>
+  <attr value="14" id="5">
+    <containedInElem>a</containedInElem>
+  </attr>
+</result>

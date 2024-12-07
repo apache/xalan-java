@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+  <personList profession="Software Development">
+    <person>
+      <id>1</id>
+      <name>Michael Glavassevich</name>
+    </person>
+    <person>
+      <id>2</id>
+      <name>Joseph Kessselman</name>
+    </person>
+    <person>
+      <id>5</id>
+      <name>Mukul Gandhi</name>
+    </person>
+    <person>
+      <id>6</id>
+      <name>Gary Gregory</name>
+    </person>
+  </personList>
+  <personList profession="Finance">
+    <person>
+      <id>3</id>
+      <name>Dave Carver</name>
+    </person>
+  </personList>
+  <personList profession="IT Support">
+    <person>
+      <id>4</id>
+      <name>Mary Holstege</name>
+    </person>
+  </personList>
+</document>

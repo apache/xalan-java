@@ -1,0 +1,27 @@
+<info>
+  <person>
+    <fName>Gary</fName>
+    <lName>Gregory</lName>
+    <score>5</score>
+  </person>
+  <person>
+    <fName>Joseph</fName>
+    <lName>Kessselman</lName>
+    <score>2</score>
+  </person>
+  <person>
+    <fName>Michael</fName>
+    <lName>Glavassevich</lName>
+    <score>2</score>
+  </person>
+  <person>
+    <fName>Mukul</fName>
+    <lName>Gandhi</lName>
+    <score>7</score>
+  </person>
+  <person>
+    <fName>Noah</fName>
+    <lName>Mendelsohn</lName>
+    <score>2</score>
+  </person>
+</info>

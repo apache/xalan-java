@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>z a b c</one>
+  <two>z a b c</two>
+  <three>a z b c</three>
+  <four>a b z c</four>
+  <five>a b c z</five>
+</result>

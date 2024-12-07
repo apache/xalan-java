@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+  <data1>
+    <person id="2">
+      <name>Joseph</name>
+    </person>
+    <person id="3">
+      <name>Dave</name>
+    </person>
+    <person id="4">
+      <name>Mary</name>
+    </person>
+    <person id="5">
+      <name>Mukul</name>
+    </person>
+  </data1>
+  <data2>
+    <person id="2">
+      <profession>Software Development</profession>
+    </person>
+    <person id="3">
+      <profession>Finance</profession>
+    </person>
+    <person id="4">
+      <profession>IT Support</profession>
+    </person>
+    <person id="5">
+      <profession>Software Development</profession>
+    </person>
+  </data2>
+</document>

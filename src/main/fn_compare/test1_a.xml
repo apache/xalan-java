@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+   <elem>
+     <str1>abc</str1>
+     <str2>abc</str2>
+   </elem>
+   <elem>
+     <str1>Strasse</str1>
+     <str2>Straße</str2>
+   </elem>
+   <elem>
+     <str1>Strasse</str1>
+     <str2>Straße</str2>
+   </elem>
+   <elem>
+     <str1>Strassen</str1>
+     <str2>Straße</str2>
+   </elem>
+   <data str1="abc" str2="abc"/>
+   <data str1="Strasse" str2="Straße"/>
+   <data str1="Strasse" str2="Straße"/>
+   <data str1="Strassen" str2="Straße"/>
+</document>

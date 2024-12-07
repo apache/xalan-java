@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><academics>
+  <class value="3">
+    <student>
+      <name>Jack</name>
+      <subject>Physics</subject>
+    </student>
+  </class>
+  <class value="4">
+    <student>
+      <name>Irene</name>
+      <subject>Economics</subject>
+    </student>
+  </class>
+  <class value="2">
+    <student>
+      <name>Gary</name>
+      <subject>Computer Science</subject>
+    </student>
+    <student>
+      <name>Mary</name>
+      <subject>Arts</subject>
+    </student>
+  </class>
+  <class value="1">
+    <student>
+      <name>John</name>
+      <subject>Computer Science</subject>
+    </student>
+    <student>
+      <name>Joseph</name>
+      <subject>Computer Science</subject>
+    </student>
+    <student>
+      <name>Mukul</name>
+      <subject>Mathematics</subject>
+    </student>
+  </class>
+</academics>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <items countAfterFlatten="10" arrSizeBeforeFlatten="5">
+    <before>
+      <item>2</item>
+      <item>3</item>
+      <item>4</item>
+      <item>a b c p q r</item>
+      <item>5</item>
+    </before>
+    <after>
+      <item>2</item>
+      <item>3</item>
+      <item>4</item>
+      <item>a</item>
+      <item>b</item>
+      <item>c</item>
+      <item>p</item>
+      <item>q</item>
+      <item>r</item>
+      <item>5</item>
+    </after>
+  </items>
+</result>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><map xmlns="http://www.w3.org/2005/xpath-functions">
+  <number key="x">1</number>
+  <array key="y">
+    <map>
+      <string key="5">hello</string>
+    </map>
+    <map>
+      <string key="6">hi</string>
+    </map>
+    <map>
+      <string key="7">there</string>
+    </map>
+  </array>
+</map>

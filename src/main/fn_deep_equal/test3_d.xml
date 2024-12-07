@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+  <a x="1" y="2" xmlns="http://ns0">
+    <b>hello</b>
+  </a>
+  <a x="1" y="2" xmlns="http://ns0">
+    <b>hello</b>
+  </a>
+</info>

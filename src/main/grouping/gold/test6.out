@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <result1>
+    <group grpKey="6">
+      <a>
+    <p>x</p>
+    <p>y</p>
+    <p>y</p>
+    <p>y</p>
+    <p>y</p>
+    <p>x</p>
+  </a>
+    </group>
+    <group grpKey="3">
+      <a>
+    <p>m</p>
+    <p>m</p>
+    <p>n</p>
+  </a>
+      <a>
+    <p>a</p>
+    <p>a</p>
+    <p>b</p>
+  </a>
+    </group>
+  </result1>
+  <result2>
+    <group grpKey="6">
+      <a>
+    <p>x</p>
+    <p>y</p>
+    <p>y</p>
+    <p>y</p>
+    <p>y</p>
+    <p>x</p>
+  </a>
+    </group>
+    <group grpKey="3">
+      <a>
+    <p>m</p>
+    <p>m</p>
+    <p>n</p>
+  </a>
+      <a>
+    <p>a</p>
+    <p>a</p>
+    <p>b</p>
+  </a>
+    </group>
+  </result2>
+</result>

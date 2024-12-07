@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><elem>
+  <item>
+    <token>hello</token>
+    <token>world</token>
+  </item>
+  <item>
+    <token>this</token>
+    <token>example</token>
+    <token>demonstrates</token>
+  </item>
+  <item>
+    <token>using</token>
+    <token>xsl:analyze-string</token>
+    <token>instruction</token>
+  </item>
+</elem>

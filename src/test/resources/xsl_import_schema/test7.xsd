@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:types1="http://example1/customTypes"
+           targetNamespace="http://example1/customTypes">
+   
+   <xs:simpleType name="StringType1">
+     <xs:restriction base="xs:string">
+       <xs:pattern value="hello1"/>
+     </xs:restriction>
+   </xs:simpleType>
+   
+   <xs:simpleType name="StringType2">
+     <xs:restriction base="xs:string">
+       <xs:enumeration value="red"/>
+       <xs:enumeration value="blue"/>
+       <xs:enumeration value="green"/>
+     </xs:restriction>
+   </xs:simpleType>
+   
+   <xs:simpleType name="UnionType1">
+     <xs:union memberTypes="types1:StringType1 types1:StringType2"/>
+   </xs:simpleType>
+   
+</xs:schema>
+   

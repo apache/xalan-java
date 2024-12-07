@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>1 2</one>
+  <two>1 2</two>
+  <three>
+    <item isArray="true">A 1</item>
+    <item isArray="true">B 2</item>
+    <item isArray="true">C 3</item>
+  </three>
+</result>

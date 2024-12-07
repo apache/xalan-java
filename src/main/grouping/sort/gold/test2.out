@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><countries>
+  <country name="Italia">
+    <city name="Milano"/>
+  </country>
+  <country name="France">
+    <city name="Paris"/>
+    <city name="Lyon"/>
+  </country>
+  <country name="India">
+    <city name="Gurgaon"/>
+    <city name="Bengaluru"/>
+    <city name="New Delhi"/>
+  </country>
+</countries>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group score="2">
+    <person>
+      <fName>Joseph</fName>
+      <lName>Kessselman</lName>
+    </person>
+    <person>
+      <fName>Michael</fName>
+      <lName>Glavassevich</lName>
+    </person>
+    <person>
+      <fName>Noah</fName>
+      <lName>Mendelsohn</lName>
+    </person>
+  </group>
+  <group score="5">
+    <person>
+      <fName>Gary</fName>
+      <lName>Gregory</lName>
+    </person>
+  </group>
+  <group score="7">
+    <person>
+      <fName>Mukul</fName>
+      <lName>Gandhi</lName>
+    </person>
+  </group>
+</result>

@@ -1,0 +1,13 @@
+{
+	"id": "0001",
+	"type": "donut",
+	"name": "Cake",
+	"ppu": 0.55,
+	"batters": {
+		"1" : "Regular", 
+		"2" : "Chocolate", 
+		"3" : "Blueberry", 
+		"4" : "Devil's Food"
+	},
+	"topping": ["None", "Glazed", "Sugar", "Powdered Sugar", "Chocolate with Sprinkles", "Chocolate", "Maple"]
+}

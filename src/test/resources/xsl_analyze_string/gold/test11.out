@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><elem>
+  <group grpSize="2">
+    <grpMember>
+      <token>hello</token>
+      <token>world</token>
+    </grpMember>
+  </group>
+  <group grpSize="3">
+    <grpMember>
+      <token>this</token>
+      <token>example</token>
+      <token>demonstrates</token>
+    </grpMember>
+    <grpMember>
+      <token>using</token>
+      <token>xsl:analyze-string</token>
+      <token>instruction</token>
+    </grpMember>
+  </group>
+</elem>

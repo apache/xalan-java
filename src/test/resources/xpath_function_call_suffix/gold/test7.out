@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <value sqrt="1.414" inp="2"/>
+  <value sqrt="2" inp="4"/>
+  <value sqrt="2.449" inp="6"/>
+  <value sqrt="2.828" inp="8"/>
+  <value sqrt="3.162" inp="10"/>
+</result>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>3</one>
+  <two>7</two>
+  <three>2</three>
+  <four arrSize="3">1 2 3</four>
+  <five noOfMapEntries="3">
+    <entry1 isNestedMap="true">No of map entries within nested map : 5</entry1>
+    <entry2 isMap="false">Value : 2</entry2>
+  </five>
+  <six>6</six>
+</result>

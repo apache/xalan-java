@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <codepoints inpStr="hello">104 101 108 108 111</codepoints>
+  <codepoints inpStr="there">116 104 101 114 101</codepoints>
+  <codepoints inpStr="this">116 104 105 115</codepoints>
+  <codepoints inpStr="is">105 115</codepoints>
+  <codepoints inpStr="an">97 110</codepoints>
+  <codepoints inpStr="xml">120 109 108</codepoints>
+  <codepoints inpStr="test">116 101 115 116</codepoints>
+  <codepoints inpStr="document">100 111 99 117 109 101 110 116</codepoints>
+</result>

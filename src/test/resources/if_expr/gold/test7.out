@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <word>hello</word>
+    <word>world</word>
+    <word>xml</word>
+  </one>
+  <two>
+    <word>this</word>
+    <word>is</word>
+  </two>
+  <three>
+    <word>xml</word>
+    <word>document</word>
+  </three>
+</result>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<elem>
+   <item weight="1" ok="yes">A</item>
+   <item weight="2" ok="yes">B</item>
+   <item weight="3" ok="yes">C</item>
+   <item weight="4" ok="no">D</item>
+   <item weight="5" ok="yes">E</item>
+   <item weight="6" ok="no">F</item>
+   <item weight="7" ok="yes">G</item>
+   <item weight="8" ok="no">H</item>
+   <item weight="9" ok="yes">I</item>
+   <item weight="10" ok="yes">J</item>
+</elem>
