@@ -36,17 +36,17 @@ work fine to compile and run Xalan-J XSL processor from this codebase repos.
 JAVA_HOME environment variable.
 
 3) Run Maven build command 'mvn clean package', or 'mvn clean install' on the local workstation folder 
-where pom.xml file for Xalan-J's maven project is located. This shall produce the Java jar file xalan-3.0.1-SNAPSHOT.jar 
+where pom.xml file for Xalan-J's maven project is located. This shall produce the Java jar file xalanj-3.0.1.jar 
 within local folder /target.
 
 The 'libs' file-system folder available within this GitHub repos branch contains various jar file dependencies as convenience 
-to users, that are needed by the main Xalan-J jar file xalan-3.0.1-SNAPSHOT.jar.
+to users, that are needed by the main Xalan-J jar file xalanj-3.0.1.jar.
 
 3.1) By default, the Maven commands 'mvn clean package/mvn clean install' attempt to produce the build jar file and also run 
 the unit tests as well, and produces the status of the tests run-time results.
 
 As of this date, the Xalan-J XSL 3 build results like following appear (without producing the Xalan-J jar file 
-xalan-3.0.1-SNAPSHOT.jar, which is not the desired result of this build) after running a Maven build as described above:
+xalanj-3.0.1.jar, which is not the desired result of this build) after running a Maven build as described above:
 
 [ERROR] Tests run: 2587, Failures: 9, Errors: 1, Skipped: 0
 [INFO]
@@ -72,7 +72,7 @@ Please refer to ...\xalan-j_xslt3.0_mvn\target\surefire-reports for the individu
 Please refer to dump files (if any exist) [date]-jvmRun[N].dump, [date].dumpstream and [date]-jvmRun[N].dumpstream.
 [INFO]
 [INFO] --- jar:3.3.0:jar (default-jar) @ xalan ---
-[INFO] Building jar: ...\xalan-j_xslt3.0_mvn\target\xalan-3.0.1-SNAPSHOT.jar
+[INFO] Building jar: ...\xalan-j_xslt3.0_mvn\target\xalanj-3.0.1.jar
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
@@ -85,9 +85,12 @@ The Xalan-J team has verified successfully, that all Xalan-J XSL 3 tests pass wh
 development IDE. The Java class org.apache.xalan.tests.xslt3.AllXsl3Tests is an entry-point to run Xalan-J XSL 3 tests.
  
 
-To run Xalan-J's XSL 3 processor for invoking an XSL stylesheet transformation, the jar file xalan-3.0.1-SNAPSHOT.jar and other 
+To run Xalan-J's XSL 3 processor for invoking an XSL stylesheet transformation, the jar file xalanj-3.0.1.jar and other 
 jar files available within 'libs' folder need to be made available on Java run-time's classpath.   
 
+Please note that, unlike previous Xalan-J builds this build doesn't produce a separate serializer.jar file. Instead,
+the jar file xalanj-3.0.1.jar produced by this build contains all the run-time classes and resources of Xalan-J 
+XSL 3 transformation serializer.  
 
 The document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides
 latest details about Xalan-J's XSLT 3.0 and XPath 3.1 implementation status with respect to Xalan-J's 
