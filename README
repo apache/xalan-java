@@ -25,8 +25,8 @@ Authors:
 This GitHub repos branch has src code provided as Maven (https://maven.apache.org/) build, for 
 Xalan-J's implementation of XSLT 3.0 and XPath 3.1 specifications.
 
-Following are the steps to produce Xalan-J's XSL 3 jar file and run associated XSL tests from this 
-codebase repos (successfully verified on Windows environment):
+Following are the steps to produce Xalan-J's XSL 3 jar file (containing XSLT 3.0 and XPath 3.1 run-time processors),
+and running Xalan-J's XSL 3 conformance tests:
 
 1) Set JAVA_HOME environment variable pointing to a local JDK installation folder. JDK 1.8/8 has been used
 to write and test Xalan-J's src code available within this codebase repos. Higher versioned JDK releases would also 
@@ -35,55 +35,33 @@ work fine to compile and run Xalan-J XSL processor from this codebase repos.
 2) Please ensure that Maven build tool has been installed on local workstation, which is using the JDK specified by 
 JAVA_HOME environment variable.
 
-3) Run Maven build command 'mvn clean package', or 'mvn clean install' on the local workstation folder 
+3) Run Maven build command 'mvn clean package -DskipTests', or 'mvn clean install -DskipTests' on the local workstation folder 
 where pom.xml file for Xalan-J's maven project is located. This shall produce the Java jar file xalanj-3.0.1.jar 
 within local folder /target.
 
 The 'libs' file-system folder available within this GitHub repos branch contains various jar file dependencies as convenience 
 to users, that are needed by the main Xalan-J jar file xalanj-3.0.1.jar.
 
-3.1) By default, the Maven commands 'mvn clean package/mvn clean install' attempt to produce the build jar file and also run 
-the unit tests as well, and produces the status of the tests run-time results.
+Maven build tool may be used to run only Xalan-J XSL 3 tests, using the following command:
 
-As of this date, the Xalan-J XSL 3 build results like following appear (without producing the Xalan-J jar file 
-xalanj-3.0.1.jar, which is not the desired result of this build) after running a Maven build as described above:
+mvn clean test -Dtest=org/apache/xalan/tests/xslt3/AllXsl3Tests.java
 
-[ERROR] Tests run: 2587, Failures: 9, Errors: 1, Skipped: 0
+This produces build output completing like following,
+
+[INFO]
+[ERROR] Tests run: 869, Failures: 9, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  34.242 s
-
-This Xalan-J build failure is there because, few tests have failed. The failed tests are due to UTF-8 encoding issues
-while running few of the tests from command-line (which is not due to any issues with Xalan-J XSL 3 codebase). User may run 
-Xalan-J build with commands 'mvn clean package/mvn clean install' with option -Dmaven.test.failure.ignore=true, that 
-would always produce the Xalan-J jar file ignoring the test failures and also having Xalan-J build succeeding overall.
-
-Running the Xalan-J XSL 3 Maven build with command-line option -Dmaven.test.failure.ignore=true shall produce Xalan-J build 
-results similar to as shown below:
-
-[INFO]
-[ERROR] Tests run: 2587, Failures: 9, Errors: 1, Skipped: 0
-[INFO]
-[ERROR] There are test failures.
-
-Please refer to ...\xalan-j_xslt3.0_mvn\target\surefire-reports for the individual test results.
-Please refer to dump files (if any exist) [date]-jvmRun[N].dump, [date].dumpstream and [date]-jvmRun[N].dumpstream.
-[INFO]
-[INFO] --- jar:3.3.0:jar (default-jar) @ xalan ---
-[INFO] Building jar: ...\xalan-j_xslt3.0_mvn\target\xalanj-3.0.1.jar
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
+[INFO] Total time:  39.519 s
+[INFO] Finished at: 2024-12-08T20:16:36+05:30
 [INFO] ------------------------------------------------------------------------
 
+As of this writing few Xalan-J XSL 3 tests fail as shown within sample Maven tests build results above while running Maven build from 
+command-line, due to UTF-8 encoding issues for few of Xalan-J XSL 3 tests files. This happens only when running Xalan-J XSL 3 tests from 
+command-line, and not when running Xalan-J tests from within development IDE.
 
-User may also skip running the Xalan-J XSL 3 unit tests entirely, by using the Maven build command-line option -DskipTests.
-
-3.2) User may also only run Xalan-J XSL 3 tests without needing to produce the build jar file, from within development IDE.
-The Xalan-J team has verified successfully, that all Xalan-J XSL 3 tests pass when running the tests from within 
-development IDE. The Java class org.apache.xalan.tests.xslt3.AllXsl3Tests is an entry-point to run Xalan-J XSL 3 tests.
- 
 
 To run Xalan-J's XSL 3 processor for invoking an XSL stylesheet transformation, the jar file xalanj-3.0.1.jar and other 
 jar files available within 'libs' folder need to be made available on Java run-time's classpath.   
