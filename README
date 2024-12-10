@@ -48,20 +48,19 @@ mvn clean test -Dtest=org/apache/xalan/tests/xslt3/AllXsl3Tests.java
 
 This produces build output completing like following,
 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.apache.xalan.tests.xslt3.AllXsl3Tests
+[INFO] Tests run: 869, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 29.941 s - in org.apache.xalan.tests.xslt3.AllXsl3Tests
 [INFO]
-[ERROR] Tests run: 869, Failures: 9, Errors: 0, Skipped: 0
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 869, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
-[INFO] BUILD FAILURE
+[INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  39.519 s
-[INFO] Finished at: 2024-12-08T20:16:36+05:30
-[INFO] ------------------------------------------------------------------------
-
-As of this writing few Xalan-J XSL 3 tests fail as shown within sample Maven tests build results above while running Maven build from 
-command-line, due to UTF-8 encoding issues for few of Xalan-J XSL 3 tests files. This happens only when running Xalan-J XSL 3 tests from 
-command-line, and not when running Xalan-J tests from within development IDE.
-
 
 To run Xalan-J's XSL 3 processor for invoking an XSL stylesheet transformation, the jar file xalanj-3.0.1.jar and other 
 jar files available within 'libs' folder need to be made available on Java run-time's classpath.   
