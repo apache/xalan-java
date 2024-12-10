@@ -19,7 +19,7 @@ Copyright 1999-2024 The Apache Software Foundation
 
 Authors:
    Gary Gregory <ggregory@apache.org>
-   Joe Kesselman <jkesselm@apache.org>
+   Joseph Kesselman <jkesselm@apache.org>
    Mukul Gandhi <mukulg@apache.org>
 
 This GitHub repos branch has src code provided as Maven (https://maven.apache.org/) build, for 

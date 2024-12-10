@@ -8,10 +8,32 @@
 	<name>Apache Xalan-J</name>
 	<description>Apache Xalan-J XSLT 3.0 maven project pom</description>
 
-	<!--
-       Authors:
-          Mukul Gandhi <mukulg@apache.org>
-    -->
+	<developers>
+      <developer>
+        <name>Gary Gregory</name>
+        <email>ggregory@apache.org</email>
+        <roles>
+          <role>PMC Chair</role>
+          <role>Committer</role>           
+        </roles>
+      </developer>
+      <developer>
+        <name>Joseph Kesselman</name>
+        <email>jkesselm@apache.org</email>
+        <roles>
+          <role>PMC Member</role>
+          <role>Committer</role>           
+        </roles>
+      </developer>
+      <developer>
+        <name>Mukul Gandhi</name>
+        <email>mukulg@apache.org</email>
+        <roles>
+          <role>PMC Member</role>
+          <role>Committer</role>           
+        </roles>
+      </developer>
+    </developers>
 
 	<dependencies>
 		<dependency>
