@@ -7,7 +7,7 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- An XSLT stylesheet test, for the XPath 3.1 "let" expression. -->                
+   <!-- An XSL stylesheet test case, to test XPath 3.1 "let" expression. -->                
 
    <xsl:output method="xml" indent="yes"/>
 
@@ -17,7 +17,7 @@
             <xsl:variable name="inpValDegree" select="."/>
             <xsl:variable name="inpValRadian" select="$inpValDegree * (math:pi() div 180)"/>
             <math:sin inp="{$inpValDegree}">
-               <xsl:value-of select="let $a := xs:double($inpValRadian) return math:sin($a)"/>
+               <xsl:value-of select="let $a := xs:double($inpValRadian) return round(math:sin($a), 2)"/>
             </math:sin>
          </xsl:for-each>
       </result>

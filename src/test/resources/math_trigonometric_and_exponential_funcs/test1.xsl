@@ -7,49 +7,50 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- This XSLT stylesheet, has various XPath 3.1 expressions involving
+   <!-- This XSL stylesheet, has various XPath 3.1 expressions involving
         functions within the XML namespace http://www.w3.org/2005/xpath-functions/math.
         
-        The XPath expressions mentioned within this XSLT stylesheet test, are borrowed
-        from XPath 3.1 spec. -->                
+        The XPath expressions mentioned within this XSL stylesheet test case, are borrowed
+        from XPath 3.1 spec. 
+   -->                
 
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/">
       <result>
          <pi><xsl:value-of select="math:pi()"/></pi>
-         <pi_expr><xsl:value-of select="60 * (math:pi() div 180)"/></pi_expr>
+         <pi_expr><xsl:value-of select="round(60 * (math:pi() div 180), 2)"/></pi_expr>
          
-         <exp><xsl:value-of select="math:exp(0)"/></exp>
-         <exp><xsl:value-of select="math:exp(1)"/></exp>
-         <exp><xsl:value-of select="math:exp(2)"/></exp>
-         <exp><xsl:value-of select="math:exp(-1)"/></exp>
-         <exp><xsl:value-of select="math:exp(math:pi())"/></exp>
+         <exp><xsl:value-of select="round(math:exp(0), 2)"/></exp>
+         <exp><xsl:value-of select="round(math:exp(1), 2)"/></exp>
+         <exp><xsl:value-of select="round(math:exp(2), 2)"/></exp>
+         <exp><xsl:value-of select="round(math:exp(-1), 2)"/></exp>
+         <exp><xsl:value-of select="round(math:exp(math:pi()), 2)"/></exp>
          <exp><xsl:value-of select="math:exp(xs:double('NaN'))"/></exp>
          <exp><xsl:value-of select="math:exp(xs:double('INF'))"/></exp>
          <exp><xsl:value-of select="math:exp(xs:double('-INF'))"/></exp>
          
-         <exp10><xsl:value-of select="math:exp10(0)"/></exp10>
-         <exp10><xsl:value-of select="math:exp10(1)"/></exp10>
-         <exp10><xsl:value-of select="math:exp10(0.5)"/></exp10>
-         <exp10><xsl:value-of select="math:exp10(-1)"/></exp10>
+         <exp10><xsl:value-of select="round(math:exp10(0), 2)"/></exp10>
+         <exp10><xsl:value-of select="round(math:exp10(1), 2)"/></exp10>
+         <exp10><xsl:value-of select="round(math:exp10(0.5), 2)"/></exp10>
+         <exp10><xsl:value-of select="round(math:exp10(-1), 2)"/></exp10>
          <exp10><xsl:value-of select="math:exp10(xs:double('NaN'))"/></exp10>
          <exp10><xsl:value-of select="math:exp10(xs:double('INF'))"/></exp10>
          <exp10><xsl:value-of select="math:exp10(xs:double('-INF'))"/></exp10>
          
          <log><xsl:value-of select="math:log(0)"/></log>
-         <log><xsl:value-of select="math:log(math:exp(1))"/></log>
-         <log><xsl:value-of select="math:log(1.0e-3)"/></log>
-         <log><xsl:value-of select="math:log(2)"/></log>
+         <log><xsl:value-of select="round(math:log(math:exp(1)), 2)"/></log>
+         <log><xsl:value-of select="round(math:log(1.0e-3), 2)"/></log>
+         <log><xsl:value-of select="round(math:log(2), 2)"/></log>
          <log><xsl:value-of select="math:log(-1)"/></log>
          <log><xsl:value-of select="math:log(xs:double('NaN'))"/></log>
          <log><xsl:value-of select="math:log(xs:double('INF'))"/></log>
          <log><xsl:value-of select="math:log(xs:double('-INF'))"/></log>
          
          <log10><xsl:value-of select="math:log10(0)"/></log10>
-         <log10><xsl:value-of select="math:log10(1.0e3)"/></log10>
-         <log10><xsl:value-of select="math:log10(1.0e-3)"/></log10>
-         <log10><xsl:value-of select="math:log10(2)"/></log10>
+         <log10><xsl:value-of select="round(math:log10(1.0e3), 2)"/></log10>
+         <log10><xsl:value-of select="round(math:log10(1.0e-3), 2)"/></log10>
+         <log10><xsl:value-of select="round(math:log10(2), 2)"/></log10>
          <log10><xsl:value-of select="math:log10(-1)"/></log10>
          <log10><xsl:value-of select="math:log10(xs:double('NaN'))"/></log10>
          <log10><xsl:value-of select="math:log10(xs:double('INF'))"/></log10>

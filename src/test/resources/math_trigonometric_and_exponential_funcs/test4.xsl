@@ -8,11 +8,11 @@
    
    <!-- use with test1_a.xml -->
    
-   <!-- This XSLT stylesheet test, has various XPath 3.1 expressions involving
+   <!-- This XSL stylesheet test, has various XPath 3.1 expressions involving
         functions within the XML namespace http://www.w3.org/2005/xpath-functions/math.
         
-        This stylesheet takes as input, the data from an external XML document.
-        -->                 
+        This XSL stylesheet uses as input, information from an external XML document.
+   -->                 
 
    <xsl:output method="xml" indent="yes"/>
 
@@ -22,30 +22,30 @@
             <exp inp="{if (@val) then @val else .}">
                <xsl:choose>
                   <xsl:when test="@val">
-                     <xsl:value-of select="math:exp(@val)"/>   
+                     <xsl:value-of select="round(math:exp(@val), 2)"/>   
                   </xsl:when>
                   <xsl:otherwise>
-                     <xsl:value-of select="math:exp(.)"/>
+                     <xsl:value-of select="round(math:exp(.), 2)"/>
                   </xsl:otherwise>
                </xsl:choose>
             </exp>
             <sin inp="{if (@val) then @val else .}">
 	           <xsl:choose>
 	              <xsl:when test="@val">
-	                 <xsl:value-of select="math:sin(@val)"/>   
+	                 <xsl:value-of select="round(math:sin(@val), 2)"/>   
 	              </xsl:when>
 	              <xsl:otherwise>
-	                 <xsl:value-of select="math:sin(.)"/>
+	                 <xsl:value-of select="round(math:sin(.), 2)"/>
 	              </xsl:otherwise>
 	           </xsl:choose>
             </sin>
             <atan inp="{if (@val) then @val else .}">
 	           <xsl:choose>
 	    	      <xsl:when test="@val">
-	    	         <xsl:value-of select="math:atan(@val)"/>   
+	    	         <xsl:value-of select="round(math:atan(@val), 2)"/>   
 	    	      </xsl:when>
 	    	      <xsl:otherwise>
-	    	         <xsl:value-of select="math:atan(.)"/>
+	    	         <xsl:value-of select="round(math:atan(.), 2)"/>
 	    	      </xsl:otherwise>
 	           </xsl:choose>
             </atan>

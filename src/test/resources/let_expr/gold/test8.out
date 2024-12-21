@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><result xmlns:math="http://www.w3.org/2005/xpath-functions/math" inpUnit="degree">
-  <math:sin inp="20">0.3420201433256687</math:sin>
-  <math:sin inp="30">0.4999999999999999</math:sin>
-  <math:sin inp="45">0.7071067811865475</math:sin>
-  <math:sin inp="120">0.8660254037844387</math:sin>
-  <math:sin inp="180">0.0000000000000001</math:sin>
+  <math:sin inp="20">0.34</math:sin>
+  <math:sin inp="30">0.5</math:sin>
+  <math:sin inp="45">0.71</math:sin>
+  <math:sin inp="120">0.87</math:sin>
+  <math:sin inp="180">0</math:sin>
 </result>

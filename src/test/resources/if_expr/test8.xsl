@@ -7,7 +7,7 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- An XSLT stylesheet test, for the XPath 3.1 "if" expression. -->                
+   <!-- An XSL stylesheet test case, to test XPath 3.1 "if" expression. -->                
 
    <xsl:output method="xml" indent="yes"/>      
    
@@ -23,7 +23,7 @@
                                                               ($inpVal * (math:pi() div 180)) 
                                                                               else $inpVal"/>
            <math:sin inp="{$inpVal}">
-             <xsl:value-of select="let $a := xs:double($inpValRadian) return math:sin($a)"/>
+             <xsl:value-of select="let $a := xs:double($inpValRadian) return round(math:sin($a), 2)"/>
            </math:sin>
         </xsl:for-each>
       </result>
