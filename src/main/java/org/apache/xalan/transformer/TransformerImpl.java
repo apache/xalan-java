@@ -379,7 +379,8 @@ public class TransformerImpl extends Transformer
   
   /**
    * This Xalan-J transformation property is used, to determine whether 
-   * XML Schema validation of XML input document is enabled or not.
+   * XML Schema validation of XML input document is enabled or not for an
+   * XSL transformation instance.
    * 
    * Default value is 'disabled'.
    */
@@ -387,7 +388,8 @@ public class TransformerImpl extends Transformer
   
   /**
    * This Xalan-J transformation property is used, to determine whether 
-   * xsl:evaluate instruction's evaluation is enabled or not.
+   * xsl:evaluate instruction's evaluation is enabled or not for an 
+   * XSL transformation instance.
    * 
    * Default value is 'disabled'.
    */

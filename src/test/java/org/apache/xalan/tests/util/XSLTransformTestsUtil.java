@@ -42,8 +42,8 @@ import org.xml.sax.InputSource;
 import junit.framework.Assert;
 
 /**
- * A class providing, various common services to this JUnit test 
- * suite.
+ * A class providing, various common services for Xalan-J's 
+ * XSL 3 test suite.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * @author Vladimir Sitnikov <sitnikov.vladimir@gmail.com>
@@ -52,14 +52,35 @@ import junit.framework.Assert;
  */
 public class XSLTransformTestsUtil {        
     
+	/**
+	 * Class field representing an XML DocumentBuilderFactory object instance 
+	 * needed by this test suite. 
+	 */
     protected static DocumentBuilderFactory xmlDocumentBuilderFactory = null;
     
+    /**
+     * Class field representing an XML DocumentBuilder object instance 
+     * needed by this test suite.
+     */
     protected static DocumentBuilder xmlDocumentBuilder = null;
     
+    /**
+     * Class field representing an XSL TransformerFactory object instance 
+     * needed by this test suite.
+     */
     protected static TransformerFactory xslTransformerFactory = null;
     
+    /**
+     * Class field representing, whether XML Schema validation is enabled 
+     * for an XSL transformation instance invoked by this test suite.
+     */
     private boolean isXmlValidationEnabled = false;
     
+    /**
+     * Class field representing, whether an XSL xsl:evaluate instruction 
+     * processing is enabled for an XSL transformation instance invoked by 
+     * this test suite.
+     */
     private boolean isXslEvaluateEnabled = false;
     
     /**
@@ -111,7 +132,7 @@ public class XSLTransformTestsUtil {
     }
 
     /**
-     * This function is the primary function, that is invoked by all the XalanJ XSL3 test 
+     * This function is the primary function, that is invoked by all the Xalan-J XSL 3 test 
      * cases within this test suite.
      * 
      * This function does an XSLT transformation via JAXP XSL transformation API, and
@@ -128,7 +149,7 @@ public class XSLTransformTestsUtil {
        
            Transformer transformer = xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
            
-           enableXslTransformProperties(transformer);
+           setXslTransformProperties(transformer);
            
            if (xslTransformErrHandler != null) {
                transformer.setErrorListener(xslTransformErrHandler);  
@@ -214,24 +235,24 @@ public class XSLTransformTestsUtil {
     }
     
     /**
-     * Set an XSL transformation, XML validation property.
+     * Set an XSL transformation, XML Schema validation property.
      */
     protected void setXmlValidationProperty(boolean isEnableValidation) {
     	isXmlValidationEnabled = isEnableValidation;
     }
     
     /**
-     * Set an XSL transformation, xsl:evaluate instruction evaluation
-     * property.
+     * Set an XSL transformation, xsl:evaluate instruction evaluation property.
      */
     protected void setXslEvaluateProperty(boolean isXslEvaluateEnable) {
     	isXslEvaluateEnabled = isXslEvaluateEnable;
     }
     
     /**
-     * Enable few XSL transformation properties, on Xalan-J's TransformerImpl object. 
+     * Set XML Schema validation and xsl:evaluate XSL transformation properties, on 
+     * Xalan-J's TransformerImpl object. 
      */
-    private void enableXslTransformProperties(Transformer transformer) throws TransformerException {
+    private void setXslTransformProperties(Transformer transformer) throws TransformerException {
     	if (isXmlValidationEnabled) {
     		TransformerImpl transformerImpl = (TransformerImpl)transformer;
     		transformerImpl.setProperty(TransformerImpl.XML_VALIDATION_PROPERTY, Boolean.TRUE);
