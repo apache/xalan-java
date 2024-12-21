@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.xslt3;
+package org.apache.xalan.tests.main;
 
 import org.apache.xalan.tests.xpath3.FnAbsTests;
 import org.apache.xalan.tests.xpath3.FnAnalyzeStringTests;
@@ -55,13 +55,27 @@ import org.apache.xalan.tests.xpath3.XsDateTimeArithmeticTests;
 import org.apache.xalan.tests.xpath3.XsDateTimeTests;
 import org.apache.xalan.tests.xpath3.XsDurationSubtypes;
 import org.apache.xalan.tests.xpath3.XsTimeWithArithmeticTests;
+import org.apache.xalan.tests.xslt3.JiraIssuesTests;
+import org.apache.xalan.tests.xslt3.XmlDotComXslHigherOrderFunctionTests;
+import org.apache.xalan.tests.xslt3.XslAttributeValidationTests;
+import org.apache.xalan.tests.xslt3.XslCopyValidationTests;
+import org.apache.xalan.tests.xslt3.XslCopyofValidationTests;
+import org.apache.xalan.tests.xslt3.XslElementValidationTests;
+import org.apache.xalan.tests.xslt3.XslEvaluateTests;
+import org.apache.xalan.tests.xslt3.XslFunctionTests;
+import org.apache.xalan.tests.xslt3.XslHigherOrderFunctionTests;
+import org.apache.xalan.tests.xslt3.XslImportSchemaTests;
+import org.apache.xalan.tests.xslt3.XslLiteralResultElementValidationTests;
+import org.apache.xalan.tests.xslt3.XslRecursiveFunctionTests;
+import org.apache.xalan.tests.xslt3.XslTunnelParameterTests;
+import org.apache.xalan.tests.xslt3.XslValueofTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * An JUnit test suite, for XSLT 3.0 and XPath 3.1 
- * specification implementation.
+ * A JUnit 4 test suite for Xalan-J's, XSL 3 specification 
+ * implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

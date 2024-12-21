@@ -44,15 +44,15 @@ to users, that are needed by the main Xalan-J jar file xalanj-3.0.1.jar.
 
 Maven build tool may be used to run only Xalan-J XSL 3 tests, using the following command:
 
-mvn clean test -Dtest=org/apache/xalan/tests/xslt3/AllXsl3Tests.java
+mvn clean test -Dtest=org/apache/xalan/tests/main/AllXsl3Tests.java
 
-This produces build output completing like following,
+This produces Maven build output with trailing information like following:
 
 [INFO] -------------------------------------------------------
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
-[INFO] Running org.apache.xalan.tests.xslt3.AllXsl3Tests
-[INFO] Tests run: 869, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 29.941 s - in org.apache.xalan.tests.xslt3.AllXsl3Tests
+[INFO] Running org.apache.xalan.tests.main.AllXsl3Tests
+[INFO] Tests run: 869, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.781 s - in org.apache.xalan.tests.main.AllXsl3Tests
 [INFO]
 [INFO] Results:
 [INFO]
@@ -65,8 +65,8 @@ This produces build output completing like following,
 To run Xalan-J's XSL 3 processor for invoking an XSL stylesheet transformation, the jar file xalanj-3.0.1.jar and other 
 jar files available within 'libs' folder need to be made available on Java run-time's classpath.   
 
-Please note that, unlike previous Xalan-J builds this build doesn't produce a separate serializer.jar file. Instead,
-the jar file xalanj-3.0.1.jar produced by this build contains all the run-time classes and resources of Xalan-J 
+Please note that, unlike previous Xalan-J versions this build doesn't produce a separate serializer.jar file. Instead,
+the jar file xalanj-3.0.1.jar produced by this build contains all the run-time classes and resources of Xalan-J's 
 XSL 3 transformation serializer.  
 
 The document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides

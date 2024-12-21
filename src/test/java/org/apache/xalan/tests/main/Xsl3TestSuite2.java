@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.xslt3;
+package org.apache.xalan.tests.main;
 
 import org.apache.xalan.tests.xpath3.FnAvgTests;
 import org.apache.xalan.tests.xpath3.FnCodepointEqualTests;
@@ -56,12 +56,25 @@ import org.apache.xalan.tests.xpath3.XPathSequenceTests;
 import org.apache.xalan.tests.xpath3.XPathSimpleMapOperatorTests;
 import org.apache.xalan.tests.xpath3.XPathStringConcatExprTests;
 import org.apache.xalan.tests.xpath3.XsDurationComponentExtractionFunctionTests;
+import org.apache.xalan.tests.xslt3.W3c_xslt30_AxesTests;
+import org.apache.xalan.tests.xslt3.W3c_xslt30_IterateTests;
+import org.apache.xalan.tests.xslt3.XslAnalyzeStringTests;
+import org.apache.xalan.tests.xslt3.XslAttributeTests;
+import org.apache.xalan.tests.xslt3.XslGroupingTests;
+import org.apache.xalan.tests.xslt3.XslGroupingWithSortTests;
+import org.apache.xalan.tests.xslt3.XslIterateTests;
+import org.apache.xalan.tests.xslt3.XslRtfMigrationTests;
+import org.apache.xalan.tests.xslt3.XslSequenceInstTests;
+import org.apache.xalan.tests.xslt3.XslTemplateAttributeAsTests;
+import org.apache.xalan.tests.xslt3.XslTemplateTests;
+import org.apache.xalan.tests.xslt3.XslVariableAttributeAsTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * A JUnit 4 test suite, for XSLT 3.0 and XPath 3.1 tests.
+ * A JUnit 4 test suite for Xalan-J's, XSL 3 specification 
+ * implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
