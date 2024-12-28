@@ -327,5 +327,15 @@ public class XPathMapTests extends XSLTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslMapTest29() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test29.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test29.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test29.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }
