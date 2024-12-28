@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><bookDetailsMap>
+  <entry>
+    <key>author</key>
+    <value>Serge Abiteboul, Peter Buneman, Dan Suciu</value>
+  </entry>
+  <entry>
+    <key>price</key>
+    <value>
+      <value>39.95</value>
+    </value>
+  </entry>
+  <entry>
+    <key>publisher</key>
+    <value>
+      <value>Morgan Kaufmann Publishers</value>
+    </value>
+  </entry>
+  <entry>
+    <key>title</key>
+    <value>
+      <value>Data on the Web</value>
+    </value>
+  </entry>
+  <entry>
+    <key>year</key>
+    <value>
+      <value>2000</value>
+    </value>
+  </entry>
+</bookDetailsMap>

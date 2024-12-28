@@ -72,7 +72,7 @@ public class FuncXmlToJson extends FunctionMultiArgs
 
 	private static final long serialVersionUID = -7072675375842927045L;
 	
-	private static final int CHAR_BUFF_SIZE = 512;   // character buffer size in bytes
+	private static final int CHAR_BUFF_SIZE = 512;   // char buffer size in bytes
 
 	/**
      * Implementation of the function. The function must return a valid object.

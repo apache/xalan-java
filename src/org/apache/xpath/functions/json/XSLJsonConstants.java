@@ -16,8 +16,6 @@
  */
 package org.apache.xpath.functions.json;
 
-import java.io.File;
-
 /**
  * A class, specifying constant values needed by Xalan-J's
  * XSL JSON support.
@@ -54,6 +52,8 @@ public class XSLJsonConstants {
 	
 	public static final String DUPLICATES_RETAIN = "retain";
 		
+	// This refers to an XML Schema document provided within Xalan-J 
+	// XSL 3 codebase, as specified within XPath and XQuery F&O 3.1 spec.
 	public static final String XML_JSON_SCHEMA_FILE_NAME = "schema-for-json.xsd";
 	
 	public static final int JSON_INDENT_FACTOR = 1;
