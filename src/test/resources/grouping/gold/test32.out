@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group grpKey="false">1,2,3,4,5</group>
+  <group grpKey="true">6,7,8,9,10</group>
+</result>
