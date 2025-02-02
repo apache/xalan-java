@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <token>hello</token>
+  <token>world,</token>
+  <token>this</token>
+  <token>string</token>
+  <token>needs</token>
+  <token>to</token>
+  <token>be</token>
+  <token>tokenized</token>
+</result>

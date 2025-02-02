@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <out>
+    <token>hello</token>
+    <token>world,</token>
+    <token>this</token>
+    <token>string</token>
+    <token>needs</token>
+    <token>to</token>
+    <token>be</token>
+    <token>tokenized</token>
+  </out>
+  <out>
+    <token>hello</token>
+    <token>world,</token>
+    <token>this</token>
+    <token>string</token>
+    <token>needs</token>
+    <token>to</token>
+    <token>be</token>
+    <token>tokenized</token>
+  </out>
+</result>
