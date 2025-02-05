@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><result attr="string tokenization">
+  <str value="one: this is a test string">
+    <token>one:</token>
+    <token>this</token>
+    <token>is</token>
+    <token>a</token>
+    <token>test</token>
+    <token>string</token>
+  </str>
+  <str value="two: this is a test string">
+    <token>two:</token>
+    <token>this</token>
+    <token>is</token>
+    <token>a</token>
+    <token>test</token>
+    <token>string</token>
+  </str>
+  <str value="three: this is a test string">
+    <token>three:</token>
+    <token>this</token>
+    <token>is</token>
+    <token>a</token>
+    <token>test</token>
+    <token>string</token>
+  </str>
+  <str value="four: this is a test string">
+    <token>four:</token>
+    <token>this</token>
+    <token>is</token>
+    <token>a</token>
+    <token>test</token>
+    <token>string</token>
+  </str>
+  <str value="five: this is a test string">
+    <token>five:</token>
+    <token>this</token>
+    <token>is</token>
+    <token>a</token>
+    <token>test</token>
+    <token>string</token>
+  </str>
+</result>

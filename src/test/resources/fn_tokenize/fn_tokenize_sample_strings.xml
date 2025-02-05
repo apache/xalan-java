@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data attr="string tokenization">
+   <str>one: this is a test string</str>
+   <str>two: this is a test string</str>
+   <str>three: this is a test string</str>
+   <str>four: this is a test string</str>
+   <str>five: this is a test string</str>
+</data>

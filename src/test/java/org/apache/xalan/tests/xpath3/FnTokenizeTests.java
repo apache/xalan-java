@@ -18,6 +18,7 @@ package org.apache.xalan.tests.xpath3;
 
 import org.apache.xalan.tests.util.XSLConstants;
 import org.apache.xalan.tests.util.XSLTransformTestsUtil;
+import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -245,6 +246,76 @@ public class FnTokenizeTests extends XSLTransformTestsUtil {
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "fn_tokenize_test7.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslFnTokenizeTest21() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_sample_strings.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_test8.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "fn_tokenize_test8.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslFnTokenizeTest22() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_sample_strings.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_test9.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "fn_tokenize_test8.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslFnTokenizeTest23() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_sample_strings.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_test10.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "negative_test.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, new XslTestsErrorHandler());   
+    }
+    
+    @Test
+    public void xslFnTokenizeTest24() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_sample_strings.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_test11.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "negative_test.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, new XslTestsErrorHandler());   
+    }
+    
+    @Test
+    public void xslFnTokenizeTest25() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_sample_strings.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_test12.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "fn_tokenize_test8.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslFnTokenizeTest26() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_sample_strings.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_test13.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "fn_tokenize_test8.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslFnTokenizeTest27() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_sample_strings.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "fn_tokenize_test14.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "negative_test.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, new XslTestsErrorHandler());   
     }
 
 }
