@@ -256,10 +256,24 @@ public class XPathDynamicFunctionCall extends Expression {
 
      				  XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
      				  if (argValue instanceof XString) {
-     					  argValue = new XSString(((XString)argValue).str());  
+     					  argValue = new XSString(((XString)argValue).str());
+     					  evalResult = xpathMap.get(argValue);     					 
+     					  if (evalResult == null) {
+     						  throw new javax.xml.transform.TransformerException("XPTY0004 : XDM map doesn't have an entry with key name '" + 
+     								                                                              XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  xctxt.getSAXLocator()); 
+     					  }
      				  }
-
-     				  evalResult = xpathMap.get(argValue);
+     				  else if (argValue instanceof XSString) {
+     					  evalResult = xpathMap.get(argValue);     					 
+     					  if (evalResult == null) {
+     						  throw new javax.xml.transform.TransformerException("XPTY0004 : XDM map doesn't have an entry with key name '" + 
+     								                                                             XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  xctxt.getSAXLocator()); 
+     					  } 
+     				  }
+     				  else {
+     					  throw new javax.xml.transform.TransformerException("XPTY0004 : XDM map lookup is not done with a "
+     							                                                                + "string valued key.",  xctxt.getSAXLocator());
+     				  }
      			  }
      		   }    		   
      	    }

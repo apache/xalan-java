@@ -371,9 +371,10 @@ public class XSLFunctionService {
 	    				}
     			    }
     			    catch (Exception ex) {
+    			       String exceptionMesgStr = (ex.getMessage() != null) ? ex.getMessage() : "";
+    			       exceptionMesgStr = exceptionMesgStr.equals("") ? "" : (exceptionMesgStr + ".");
     			       throw new TransformerException("FODC0005 : A dynamic error has occured, evaluating XPath built-in "
-    			       		                                                              + "constructor function call. " + 
-    			    		                                                              ex.getMessage() + ".", srcLocator);
+    			       		                                                              + "constructor function call." + exceptionMesgStr, srcLocator);
     			    }
     			}
     			else {
