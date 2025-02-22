@@ -5,25 +5,29 @@
                 
   <!-- Author: mukulg@apache.org -->
    
-  <!-- use with test1_h.xml -->
+  <!-- use with test1_i.xml -->
   
-  <!-- An XSLT stylesheet to test, xsl:for-each-group instruction. Within this
-       stylesheet example, from an XML input document, all "part" elements are
-       transformed into two groups, with one group having part's expiryDate
-       xs:date value less than current date, and remaining XML "part" elements
-       are put into the second group.    
+  <!-- An XSL stylesheet test case to test xsl:for-each-group instruction. Within
+       this stylesheet example, an XML document input elements named 'parts' are
+       grouped as per "part" element's expiryDate xs:date value.   
   -->                
                 
   <xsl:output method="xml" indent="yes"/>
   
   <xsl:template match="/parts">     
      <RESULT>
-       <xsl:for-each-group select="part" group-by="xs:date(expiryDate) lt current-date()">
-          <PARTS expired="{current-grouping-key()}">           
-             <xsl:copy-of select="current-group()"/>
-          </PARTS>
-       </xsl:for-each-group>
+        <xsl:for-each-group select="part" group-by="xs:date(expiryDate)">
+           <PARTS expiryDate="{current-grouping-key()}">           
+              <xsl:apply-templates select="current-group()"/>
+           </PARTS>
+        </xsl:for-each-group>
      </RESULT>
+  </xsl:template>
+  
+  <xsl:template match="part">
+    <part>
+       <xsl:copy-of select="id | name"/>
+    </part>
   </xsl:template>
   
   <!--
@@ -42,6 +46,6 @@
       * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
       * See the License for the specific language governing permissions and
       * limitations under the License.
-  -->
+   -->
 
 </xsl:stylesheet>

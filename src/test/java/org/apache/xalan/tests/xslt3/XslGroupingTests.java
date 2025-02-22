@@ -24,7 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT xsl:for-each-group test cases.
+ * XSLT 3.0 xsl:for-each-group test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -32,9 +32,9 @@ import org.junit.Test;
  */
 public class XslGroupingTests extends XSLTransformTestsUtil {
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "grouping/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_grouping/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "grouping/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_grouping/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -367,6 +367,16 @@ public class XslGroupingTests extends XSLTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test32.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test32.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslGroupingTest33() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test33.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test33.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test33.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

@@ -4,8 +4,8 @@
                 
   <!-- Author: mukulg@apache.org -->
   
-  <!-- An XSL stylesheet grouping example for sequence of atomic 
-       integer values. -->                 
+  <!-- An XSL stylesheet test case, to test grouping of sequence of atomic 
+       integer values using xsl:for-each-group instruction. -->                 
   
   <xsl:output method="xml" indent="yes"/>
   

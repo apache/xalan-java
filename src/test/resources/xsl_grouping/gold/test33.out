@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group key="1976-10-12T10:30:00">
+    <info id="1">
+      <color>Red</color>
+      <timestamp>1976-10-12T10:30:00</timestamp>
+    </info>
+    <info id="3">
+      <color>Blue</color>
+      <timestamp>1976-10-12T10:30:00</timestamp>
+    </info>
+  </group>
+  <group key="2007-10-12T10:30:00">
+    <info id="2">
+      <color>Red</color>
+      <timestamp>2007-10-12T10:30:00</timestamp>
+    </info>
+  </group>
+</result>
