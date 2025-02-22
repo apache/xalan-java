@@ -390,5 +390,35 @@ public class XslGroupingTests extends XSLTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslGroupingTest35() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test35.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test35.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test35.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslGroupingTest36() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test36.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test36.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test36.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslGroupingTest37() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test37.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }
