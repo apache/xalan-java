@@ -45,6 +45,7 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnySimpleType;
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
@@ -830,6 +831,9 @@ public class XObject extends Expression implements Serializable, Cloneable
            
           return (comparisonResult < 0) ? true : false;
        }
+       else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
+    	  emitXsAnyAtomicTypeError(obj2, expressionOwner);   
+       }
        
        boolean isOperandNodeSet1 = false;
        boolean isOperandNodeSet2 = false;
@@ -908,7 +912,7 @@ public class XObject extends Expression implements Serializable, Cloneable
        }
        else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
           return ((XSDateTime)this).gt((XSDateTime)obj2);    
-       }
+       }       
        else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
           return ((XSTime)this).gt((XSTime)obj2);    
        }
@@ -982,6 +986,9 @@ public class XObject extends Expression implements Serializable, Cloneable
                                                                                             collationUri);
            
           return (comparisonResult > 0) ? true : false;
+       }       
+       else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
+    	  emitXsAnyAtomicTypeError(obj2, expressionOwner);   
        }
        
        boolean isOperandNodeSet1 = false;
@@ -1421,6 +1428,9 @@ public class XObject extends Expression implements Serializable, Cloneable
 			 result = false; 
 		  }
 	  }
+	  else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
+   	      emitXsAnyAtomicTypeError(obj2, expressionOwner);   
+      }
 	  else if (this.getType() == XObject.CLASS_NODESET) {
 		  if ((((XNodeSet)this).getLength() > 1)) {
 			  error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
@@ -1613,6 +1623,14 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   public boolean isTreatAs() {
 	 return isTreatAs; 
+  }
+  
+  private void emitXsAnyAtomicTypeError(XObject xObject, ExpressionNode expressionOwner) throws TransformerException {
+	 String typeName1 = ((XSAnyAtomicType)this).typeName();
+	 String typeName2 = ((XSAnyAtomicType)xObject).typeName();
+		   
+	 error(XPATHErrorResources.ER_TYPE_COMPARISON_ERROR, new Object[] {"xs:" + typeName1, 
+			                                                                         "xs:" + typeName2}, expressionOwner);
   }
 
 }

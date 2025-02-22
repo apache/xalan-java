@@ -387,6 +387,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   public static final String ER_LE_OPERAND_CARDINALITY_ERROR = "ER_LE_OPERAND_CARDINALITY_ERROR";
   
   public static final String ER_GE_OPERAND_CARDINALITY_ERROR = "ER_GE_OPERAND_CARDINALITY_ERROR";
+  
+  public static final String ER_TYPE_COMPARISON_ERROR = "ER_TYPE_COMPARISON_ERROR";
 
   // Error messages...
 
@@ -652,6 +654,9 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 
   { ER_FASTSTRINGBUFFER_CANNOT_BE_NULL,
       "The FastStringBuffer argument can not be null"},
+  
+  { ER_TYPE_COMPARISON_ERROR,
+      "Value of type {0} cannot be compared with value of type {1}"},
 
   { ER_ZERO, "0"},
   
