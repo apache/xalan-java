@@ -31,6 +31,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Document;
+import org.xml.sax.ErrorHandler;
 
 /**
  * Implementation of the parse-xml() function.
@@ -62,7 +63,7 @@ public class FuncParseXml extends FunctionOneArg {
         String argStrVal = XslTransformEvaluationHelper.getStrVal(xObject0);
             
         try {
-           result = getNodeSetFromStr(argStrVal, xctxt);
+           result = getNodeSetFromStr(argStrVal, xctxt, null);
         } 
         catch (Exception ex) {
            throw new javax.xml.transform.TransformerException("FODC0002 : The string value supplied as an "
@@ -76,21 +77,24 @@ public class FuncParseXml extends FunctionOneArg {
     /**
      * Get an xdm nodeset corresponding to an XML string value.
      */
-    public static XNodeSet getNodeSetFromStr(String strVal, XPathContext xctxt) throws Exception {
+    public static XNodeSet getNodeSetFromStr(String strVal, XPathContext xctxt, ErrorHandler errorHandler) throws Exception {
         XNodeSet nodeSet = null;
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             
-        // Enable the XML namespace processing, on an XML parse 
-        // of the string value.
+        // Enable XML namespace processing, for XML parse of the string value
         dbf.setNamespaceAware(true);         
             
         DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+        
+        if (errorHandler != null) {
+           dBuilder.setErrorHandler(errorHandler);
+        }
             
         InputStream inpStream = new ByteArrayInputStream(strVal.getBytes(StandardCharsets.UTF_8));
-        Document xmlDocument = dBuilder.parse(inpStream);
+        Document document = dBuilder.parse(inpStream);
             
-        DTM dtm = xctxt.getDTM(new DOMSource(xmlDocument), true, null, false, false);            
+        DTM dtm = xctxt.getDTM(new DOMSource(document), true, null, false, false);            
         int documentNodeHandleVal = dtm.getDocument();
             
         nodeSet = new XNodeSet(documentNodeHandleVal, xctxt.getDTMManager());

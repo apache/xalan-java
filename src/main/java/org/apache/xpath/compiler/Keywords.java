@@ -688,6 +688,9 @@ public class Keywords
   /** apply function string. */
   public static final String FUNC_APPLY = "apply";
   
+  /** doc-available function string. */
+  public static final String FUNC_DOC_AVAILABLE = "doc-available";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

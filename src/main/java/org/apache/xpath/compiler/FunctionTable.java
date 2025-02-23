@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xpath.functions.FuncDoc;
 import org.apache.xpath.functions.Function;
 
 /**
@@ -525,6 +526,9 @@ public class FunctionTable
   
   /** The 'array:flatten()' id. */
   public static final int FUNC_ARRAY_FLATTEN = 167;
+  
+  /** The 'doc-available()' id. */
+  public static final int FUNC_DOC_AVAILABLE = 168;
 
   // Proprietary
 
@@ -618,7 +622,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 168;
+  private static final int NUM_BUILT_IN_FUNCS = 169;
 
   /**
    * Number of built-in functions that may be added.
@@ -898,6 +902,8 @@ public class FunctionTable
     m_functions[FUNC_JSON_TO_XML] = org.apache.xpath.functions.json.FuncJsonToXml.class;
     m_functions[FUNC_XML_TO_JSON] = org.apache.xpath.functions.json.FuncXmlToJson.class;
     
+    m_functions[FUNC_DOC_AVAILABLE] = org.apache.xpath.functions.FuncDocAvailable.class;
+    
   }
 
   static{
@@ -1115,6 +1121,8 @@ public class FunctionTable
          
          m_functionId.put(Keywords.FUNC_DOC,
                          new Integer(FunctionTable.FUNC_DOC));
+         m_functionId.put(Keywords.FUNC_DOC_AVAILABLE,
+                         new Integer(FunctionTable.FUNC_DOC_AVAILABLE));
          
          m_functionId.put(Keywords.FUNC_NODE_NAME,
                          new Integer(FunctionTable.FUNC_NODE_NAME));
@@ -1277,8 +1285,14 @@ public class FunctionTable
           throws javax.xml.transform.TransformerException
   {
           try{
-              if (which < NUM_BUILT_IN_FUNCS) 
-                  return (Function) m_functions[which].newInstance();
+              if (which < NUM_BUILT_IN_FUNCS) {
+            	  if (which == FunctionTable.FUNC_DOC) {
+            		 return new FuncDoc(); 
+            	  }
+            	  else {
+                     return (Function) m_functions[which].newInstance();
+            	  }
+              }
               else 
                   return (Function) m_functions_customer[
                       which-NUM_BUILT_IN_FUNCS].newInstance();                  

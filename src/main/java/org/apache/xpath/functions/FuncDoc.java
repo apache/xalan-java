@@ -28,6 +28,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+import org.xml.sax.ErrorHandler;
 
 /**
  * Implementation of the doc() function.
@@ -39,6 +40,22 @@ import org.apache.xpath.objects.XObject;
 public class FuncDoc extends FunctionOneArg {
 
     private static final long serialVersionUID = -7132184569695971726L;
+    
+    private static ErrorHandler m_errorHandler = null;
+    
+    /**
+     * Default constructor.
+     */
+    public FuncDoc() {
+       // NO OP	
+    }
+    
+    /**
+     * Class constructor.
+     */
+    public FuncDoc(ErrorHandler errorHandler) {
+    	m_errorHandler = errorHandler;
+    }
 
     /**
      * Execute the function. The function must return a valid object.
@@ -60,31 +77,38 @@ public class FuncDoc extends FunctionOneArg {
             
         // If the first argument is a relative uri reference, then 
         // resolve that relative uri with base uri of the stylesheet
+        
         URL resolvedArg0Url = null;
 
         try {
-           URI arg0Uri = new URI(hrefStrVal);
-           String stylesheetSystemId = null;
-           if (srcLocator != null) {
-              stylesheetSystemId = srcLocator.getSystemId();
-           }
-           else {
-              ExpressionNode expressionNode = getExpressionOwner();
-              stylesheetSystemId = expressionNode.getSystemId(); 
-           }
-                        
-           if (!arg0Uri.isAbsolute() && (stylesheetSystemId != null)) {
-              URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
-              resolvedArg0Url = resolvedUriArg.toURL(); 
-           }
-                
-            if (resolvedArg0Url == null) {
-               resolvedArg0Url = new URL(hrefStrVal);   
-            }
-                
-            String urlStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
-                
-            result = FuncParseXml.getNodeSetFromStr(urlStrContents, xctxt);
+        	URI arg0Uri = new URI(hrefStrVal);        	
+
+        	if (arg0Uri.isAbsolute()) {
+        	    resolvedArg0Url = new URL(hrefStrVal); 
+        	}
+        	else {
+        		String stylesheetSystemId = null;
+            	
+        		if (srcLocator != null) {
+            		stylesheetSystemId = srcLocator.getSystemId();
+            	}
+            	else {
+            		ExpressionNode expressionNode = getExpressionOwner();
+            		stylesheetSystemId = expressionNode.getSystemId(); 
+            	}
+            	
+        		if (stylesheetSystemId != null) {
+        			URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
+        			resolvedArg0Url = resolvedUriArg.toURL();
+        		}
+        		else {
+        			resolvedArg0Url = new URL(hrefStrVal);
+        		}
+        	}
+
+        	String urlResourceStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
+
+        	result = FuncParseXml.getNodeSetFromStr(urlResourceStrContents, xctxt, m_errorHandler);
         }
         catch (URISyntaxException ex) {
            throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
@@ -99,11 +123,11 @@ public class FuncDoc extends FunctionOneArg {
                                                                                                                       + "retrieved.", srcLocator);
         }
         catch (javax.xml.transform.TransformerException ex) {
-           throw new javax.xml.transform.TransformerException("FODC0002 : The data from uri '" + hrefStrVal + "' cannot be successfully "
+           throw new javax.xml.transform.TransformerException("FODC0002 : The data from uri '" + hrefStrVal + "' cannot be "
                                                                                                                       + "parsed as an XML document.", srcLocator); 
         }
         catch (Exception ex) {
-           throw new javax.xml.transform.TransformerException("FODC0002 : The data from uri '" + hrefStrVal + "' cannot be successfully "
+           throw new javax.xml.transform.TransformerException("FODC0002 : The data from uri '" + hrefStrVal + "' cannot be "
                                                                                                                       + "parsed as an XML document.", srcLocator); 
         }
         
