@@ -188,7 +188,7 @@ public class ProcessorInclude extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
-    TransformerFactoryImpl processor = handler.getStylesheetProcessor();
+    XSL3TransformerFactoryImpl processor = handler.getStylesheetProcessor();
     URIResolver uriresolver = processor.getURIResolver();
 
     try
@@ -346,7 +346,7 @@ public class ProcessorInclude extends XSLTElementProcessor
   private Source getSourceFromUriResolver(StylesheetHandler handler)
             throws TransformerException {
         Source s = null;
-            TransformerFactoryImpl processor = handler.getStylesheetProcessor();
+            XSL3TransformerFactoryImpl processor = handler.getStylesheetProcessor();
             URIResolver uriresolver = processor.getURIResolver();
             if (uriresolver != null) {
                 String href = getHref();

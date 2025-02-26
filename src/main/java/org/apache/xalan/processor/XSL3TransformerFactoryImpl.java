@@ -61,7 +61,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * interface, processes XSLT stylesheets into a Templates object
  * (a StylesheetRoot).
  */
-public class TransformerFactoryImpl extends SAXTransformerFactory
+public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 {
   /** 
    * The path/filename of the property file: XSLTInfo.properties  
@@ -80,7 +80,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * Constructor TransformerFactoryImpl
    *
    */
-  public TransformerFactoryImpl()
+  public XSL3TransformerFactoryImpl()
   {
   }
 

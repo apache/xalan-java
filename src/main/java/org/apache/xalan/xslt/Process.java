@@ -967,7 +967,7 @@ public class Process
               }
               
               if (!useXSLTC)
-                stf.setAttribute(org.apache.xalan.processor.TransformerFactoryImpl.FEATURE_INCREMENTAL, 
+                stf.setAttribute(org.apache.xalan.processor.XSL3TransformerFactoryImpl.FEATURE_INCREMENTAL, 
                    Boolean.TRUE);
                  
               TransformerHandler th = stf.newTransformerHandler(stylesheet);

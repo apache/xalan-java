@@ -150,7 +150,7 @@ public class ProcessorImportSchema extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
-    TransformerFactoryImpl processor = handler.getStylesheetProcessor();
+    XSL3TransformerFactoryImpl processor = handler.getStylesheetProcessor();
     URIResolver uriresolver = processor.getURIResolver();
 
     try
@@ -307,7 +307,7 @@ public class ProcessorImportSchema extends XSLTElementProcessor
   private Source getSourceFromUriResolver(StylesheetHandler handler) throws TransformerException {
      Source src = null;
      
-     TransformerFactoryImpl processor = handler.getStylesheetProcessor();
+     XSL3TransformerFactoryImpl processor = handler.getStylesheetProcessor();
      URIResolver uriresolver = processor.getURIResolver();
      
      if (uriresolver != null) {

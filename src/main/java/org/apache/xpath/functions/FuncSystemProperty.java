@@ -39,7 +39,7 @@ public class FuncSystemProperty extends FunctionOneArg
   /**
    * The path/filename of the property file: XSLTInfo.properties
    * Maintenance note: see also
-   * org.apache.xalan.processor.TransformerFactoryImpl.XSLT_PROPERTIES
+   * org.apache.xalan.processor.XSL3TransformerFactoryImpl.XSLT_PROPERTIES
    */
   static final String XSLT_PROPERTIES = 
             "org/apache/xalan/res/XSLTInfo.properties";

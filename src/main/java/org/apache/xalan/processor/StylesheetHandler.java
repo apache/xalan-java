@@ -98,7 +98,7 @@ public class StylesheetHandler extends DefaultHandler
    * @throws TransformerConfigurationException if a StylesheetRoot
    * can not be constructed for some reason.
    */
-  public StylesheetHandler(TransformerFactoryImpl processor)
+  public StylesheetHandler(XSL3TransformerFactoryImpl processor)
           throws TransformerConfigurationException
   {
     Class func = org.apache.xalan.templates.FuncDocument.class;
@@ -111,11 +111,11 @@ public class StylesheetHandler extends DefaultHandler
     m_funcTable.installFunction("format-number", func);
 
     m_optimize =((Boolean) processor.getAttribute(
-            TransformerFactoryImpl.FEATURE_OPTIMIZE)).booleanValue();
+            XSL3TransformerFactoryImpl.FEATURE_OPTIMIZE)).booleanValue();
     m_incremental = ((Boolean) processor.getAttribute(
-            TransformerFactoryImpl.FEATURE_INCREMENTAL)).booleanValue();
+            XSL3TransformerFactoryImpl.FEATURE_INCREMENTAL)).booleanValue();
     m_source_location = ((Boolean) processor.getAttribute(
-            TransformerFactoryImpl.FEATURE_SOURCE_LOCATION)).booleanValue();
+            XSL3TransformerFactoryImpl.FEATURE_SOURCE_LOCATION)).booleanValue();
     // m_schema = new XSLTSchema();    
     init(processor);
   }
@@ -125,7 +125,7 @@ public class StylesheetHandler extends DefaultHandler
    *
    * @param processor non-null reference to the transformer factory that owns this handler.
    */
-  void init(TransformerFactoryImpl processor)
+  void init(XSL3TransformerFactoryImpl processor)
   {
     m_stylesheetProcessor = processor;
 
@@ -1104,7 +1104,7 @@ public class StylesheetHandler extends DefaultHandler
   /**
    *  The XSLT TransformerFactory for needed services.
    */
-  private TransformerFactoryImpl m_stylesheetProcessor;
+  private XSL3TransformerFactoryImpl m_stylesheetProcessor;
 
   /**
    * Get the XSLT TransformerFactoryImpl for needed services.
@@ -1112,7 +1112,7 @@ public class StylesheetHandler extends DefaultHandler
    *
    * @return The TransformerFactoryImpl that owns this handler.
    */
-  public TransformerFactoryImpl getStylesheetProcessor()
+  public XSL3TransformerFactoryImpl getStylesheetProcessor()
   {
     return m_stylesheetProcessor;
   }

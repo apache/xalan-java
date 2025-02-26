@@ -27,7 +27,7 @@ public class XSLConstants {
     
     public static final String XSLT_TRANSFORMER_FACTORY_KEY = "javax.xml.transform.TransformerFactory";
     
-    public static final String XSLT_TRANSFORMER_FACTORY_VALUE = "org.apache.xalan.processor.TransformerFactoryImpl";
+    public static final String XSLT_TRANSFORMER_FACTORY_VALUE = "org.apache.xalan.processor.XSL3TransformerFactoryImpl";
     
     public static final String XSL_TRANSFORM_INPUT_DIRPATH_PREFIX = "./src/test/resources/";
     
