@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <fileLine>hello world, this file is used</fileLine>
+  <fileLine>to test unparsed-text-lines function.</fileLine>
+  <fileLine>many thanks</fileLine>
+</result>

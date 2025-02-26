@@ -529,6 +529,9 @@ public class FunctionTable
   
   /** The 'doc-available()' id. */
   public static final int FUNC_DOC_AVAILABLE = 168;
+  
+  /** The 'unparsed-text-lines()' id. */
+  public static final int FUNC_UNPARSED_TEXT_LINES = 169;
 
   // Proprietary
 
@@ -622,7 +625,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 169;
+  private static final int NUM_BUILT_IN_FUNCS = 170;
 
   /**
    * Number of built-in functions that may be added.
@@ -721,6 +724,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncAnalyzeString.class;
     m_functions[FUNC_UNPARSED_TEXT] = 
       org.apache.xpath.functions.FuncUnparsedText.class;
+    m_functions[FUNC_UNPARSED_TEXT_LINES] = 
+      org.apache.xpath.functions.FuncUnparsedTextLines.class;
     m_functions[FUNC_STRING_JOIN] = 
       org.apache.xpath.functions.FuncStringJoin.class;
     m_functions[FUNC_CURRENT_DATETIME] = 
@@ -999,6 +1004,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_ANALYZE_STRING));
           m_functionId.put(Keywords.FUNC_UNPARSED_TEXT,
                           new Integer(FunctionTable.FUNC_UNPARSED_TEXT));
+          m_functionId.put(Keywords.FUNC_UNPARSED_TEXT_LINES,
+                          new Integer(FunctionTable.FUNC_UNPARSED_TEXT_LINES));
           m_functionId.put(Keywords.FUNC_STRING_JOIN,
                           new Integer(FunctionTable.FUNC_STRING_JOIN));
           m_functionId.put(Keywords.FUNC_CURRENT_DATETIME,

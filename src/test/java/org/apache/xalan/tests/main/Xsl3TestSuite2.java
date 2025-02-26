@@ -37,6 +37,7 @@ import org.apache.xalan.tests.xpath3.FnSortTests;
 import org.apache.xalan.tests.xpath3.FnStringJoinTests;
 import org.apache.xalan.tests.xpath3.FnStringToCodepointsTests;
 import org.apache.xalan.tests.xpath3.FnTokenizeTests;
+import org.apache.xalan.tests.xpath3.FnUnparsedTextLinesTests;
 import org.apache.xalan.tests.xpath3.FnUnparsedTextTests;
 import org.apache.xalan.tests.xpath3.W3c_xslt30_fn_deep_equalTests;
 import org.apache.xalan.tests.xpath3.XPathArithmeticOnDurationValuesTests;
@@ -100,7 +101,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XslTemplateTests.class, FnAvgTests.class, FnMaxTests.class, FnMinTests.class, FnContainsTokenTests.class,
                 XslVariableAttributeAsTests.class, XPathInstanceOfExprTests.class, XslTemplateAttributeAsTests.class,
                 FnRoundTests.class, XslSequenceInstTests.class, XPathNodeSequenceCombinationTests.class,
-                FnDocAvailableTests.class })
+                FnDocAvailableTests.class, FnUnparsedTextLinesTests.class })
 public class Xsl3TestSuite2 {
 
 }

@@ -691,6 +691,9 @@ public class Keywords
   /** doc-available function string. */
   public static final String FUNC_DOC_AVAILABLE = "doc-available";
   
+  /** unparsed-text-lines function string. */
+  public static final String FUNC_UNPARSED_TEXT_LINES = "unparsed-text-lines";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

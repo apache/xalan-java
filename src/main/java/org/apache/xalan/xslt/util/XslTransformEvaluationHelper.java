@@ -515,7 +515,7 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Get the string contents from an url.
+     * Get the string contents from an URL.
      */
     public static String getStringContentFromUrl(URL url) throws IOException {
         StringBuilder strBuilder = new StringBuilder();
