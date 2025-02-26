@@ -33,9 +33,21 @@ public class XSLConstants {
     
     public static final String XSL_TRANSFORM_GOLD_DIRPATH_PREFIX = "./src/test/resources/";
     
-    // Currently, one test each within files FnBaseUriTests.java and FnDocumentUriTests.java, require
-    // user workstation running these tests to be connected to web. Specify boolean value of following
-    // class variable to false to disable running these tests.
+    
+    /**
+     * Few XSL tests within this test suite, require the workstation where these tests 
+     * are running to be connected to web. To enable proper working of these tests, the 
+     * value of this class field needs to be set to boolean 'true'. 
+     */
     public static final boolean IS_TESTS_USING_ONLINE_URIS_ENABLED = true;
+    
+    /**
+     * Few XSL tests within this test suite, require specifying absolute URI of local files 
+     * with file: scheme. The following two class field variables are used for these XSL tests 
+     * within this test suite.
+     */    
+    public static final String LOCAL_BASE_URI_PREFIX_OF_TESTS1 = "file:/D:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/resources/";
+    
+    public static final String LOCAL_BASE_URI_PREFIX_OF_TESTS2 = "file:/D:///eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/resources/";
 
 }

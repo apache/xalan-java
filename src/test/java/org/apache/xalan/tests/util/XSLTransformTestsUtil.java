@@ -186,6 +186,61 @@ public class XSLTransformTestsUtil {
     
     /**
      * This function is similar to the function 'runXslTransformAndAssertOutput' except
+     * that, this function accepts a base uri prefix as argument for the purpose of running 
+     * few XSL tests within this test suite.
+     * 
+     * This function does an XSLT transformation via JAXP XSL transformation API, and
+     * compares the XSLT transformation's output with the corresponding expected output.
+     */
+     protected void runXslTransformAndAssertOutputWithXslParamBaseUri(String xmlFilePath, String xslFilePath, 
+			    		                                              String xslGoldFilePath, XslTestsErrorHandler 
+			    		                                              xslTransformErrHandler, String localBaseUriPrefix) {
+    	try {
+    		String xmlDocumentUriStr = ((new File(xmlFilePath)).toURI()).toString();
+    		String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
+
+    		Node xmlDomSource = xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
+
+    		Transformer transformer = xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
+
+    		setXslTransformProperties(transformer);
+
+    		if (xslTransformErrHandler != null) {
+    			transformer.setErrorListener(xslTransformErrHandler);  
+    		}
+
+    		StringWriter resultStrWriter = new StringWriter();
+
+    		DOMSource xmlDomSrc = new DOMSource(xmlDomSource, xmlDocumentUriStr);
+
+    		transformer.setParameter("localBaseUriPrefix", localBaseUriPrefix);    		
+    		transformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
+
+    		if (xslTransformErrHandler != null) {
+    			List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();
+    			List<String> trfFatalErrorList = xslTransformErrHandler.getTrfFatalErrorList();
+    			if (trfErrorList.size() > 0 || trfFatalErrorList.size() > 0) {
+    				// The test has passed
+    				return;
+    			}
+    			else {
+    				// The test has failed
+    				Assert.fail();  
+    			}
+    		}
+    		else {
+    			byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
+
+    			Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+    		}
+    	}
+    	catch (Exception ex) {
+    		Assert.fail();    
+    	}
+    }
+    
+    /**
+     * This function is similar to the function 'runXslTransformAndAssertOutput' except
      * that, this function accepts a document URI representing an XML document to
      * be transformed via an XSL stylesheet.
      * 

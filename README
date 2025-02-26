@@ -56,7 +56,7 @@ This produces Maven build output with trailing information like following:
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 900, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 903, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS

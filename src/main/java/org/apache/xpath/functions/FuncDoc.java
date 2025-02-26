@@ -76,7 +76,7 @@ public class FuncDoc extends FunctionOneArg {
         String hrefStrVal = XslTransformEvaluationHelper.getStrVal(xObject0);
             
         // If the first argument is a relative uri reference, then 
-        // resolve that relative uri with base uri of the stylesheet
+        // resolve that relative uri with base uri of the stylesheet.
         
         URL resolvedArg0Url = null;
 

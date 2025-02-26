@@ -1,0 +1,19 @@
+{
+	 "data": [
+		 {
+			"id" : 1,
+            "fName" : "Gary",
+            "lName" : "Gregory"			 
+		 },
+		 {
+			"id" : 2,
+            "fName" : "Mukul",
+            "lName" : "Gandhi"			
+		 },
+		 { 
+			"id" : 3,
+            "fName" : "Joseph",
+            "lName" : "Kesselman" 
+		 }
+    ]
+}

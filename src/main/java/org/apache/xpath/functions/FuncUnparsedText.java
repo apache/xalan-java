@@ -30,6 +30,7 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -77,32 +78,46 @@ public class FuncUnparsedText extends Function2Args {
       }
                                                          
       // If the first argument is a relative uri reference, then 
-      // resolve that relative uri with base uri of the stylesheet
+      // resolve that relative uri with base uri of the stylesheet.
+      
       URL resolvedArg0Url = null;
 
       try {
           URI arg0Uri = new URI(hrefStrVal);
-          String stylesheetSystemId = srcLocator.getSystemId();  // base uri of stylesheet, if available
-                  
-          if (!arg0Uri.isAbsolute() && (stylesheetSystemId != null)) {
-             URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
-             resolvedArg0Url = resolvedUriArg.toURL(); 
+          
+          if (arg0Uri.isAbsolute()) {
+        	  resolvedArg0Url = new URL(hrefStrVal); 
           }
-              
-          if (resolvedArg0Url == null) {
-             resolvedArg0Url = new URL(hrefStrVal);   
+          else {
+        	  String stylesheetSystemId = null;
+
+        	  if (srcLocator != null) {
+        		  stylesheetSystemId = srcLocator.getSystemId();
+        	  }
+        	  else {
+        		  ExpressionNode expressionNode = getExpressionOwner();
+        		  stylesheetSystemId = expressionNode.getSystemId(); 
+        	  }
+
+        	  if (stylesheetSystemId != null) {
+        		  URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
+        		  resolvedArg0Url = resolvedUriArg.toURL();
+        	  }
+        	  else {
+        		  resolvedArg0Url = new URL(hrefStrVal);
+        	  }
           }
               
           String urlStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
-              
+
           String resultStr = null;
           if (encodingStr != null) {
-             resultStr = new String(urlStrContents.getBytes(), encodingStr.toUpperCase());              
+        	  resultStr = new String(urlStrContents.getBytes(), encodingStr.toUpperCase());              
           }
           else {
-             resultStr = urlStrContents;  
+        	  resultStr = urlStrContents;  
           }
-              
+
           result = new XString(resultStr);
       }
       catch (URISyntaxException ex) {
