@@ -694,6 +694,9 @@ public class Keywords
   /** unparsed-text-lines function string. */
   public static final String FUNC_UNPARSED_TEXT_LINES = "unparsed-text-lines";
   
+  /** collection function string. */
+  public static final String FUNC_COLLECTION = "collection";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

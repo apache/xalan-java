@@ -532,6 +532,9 @@ public class FunctionTable
   
   /** The 'unparsed-text-lines()' id. */
   public static final int FUNC_UNPARSED_TEXT_LINES = 169;
+  
+  /** The 'collection()' id. */
+  public static final int FUNC_COLLECTION = 170;
 
   // Proprietary
 
@@ -625,7 +628,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 170;
+  private static final int NUM_BUILT_IN_FUNCS = 171;
 
   /**
    * Number of built-in functions that may be added.
@@ -726,6 +729,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncUnparsedText.class;
     m_functions[FUNC_UNPARSED_TEXT_LINES] = 
       org.apache.xpath.functions.FuncUnparsedTextLines.class;
+    m_functions[FUNC_COLLECTION] = 
+      org.apache.xpath.functions.FuncCollection.class;
     m_functions[FUNC_STRING_JOIN] = 
       org.apache.xpath.functions.FuncStringJoin.class;
     m_functions[FUNC_CURRENT_DATETIME] = 
@@ -1006,6 +1011,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_UNPARSED_TEXT));
           m_functionId.put(Keywords.FUNC_UNPARSED_TEXT_LINES,
                           new Integer(FunctionTable.FUNC_UNPARSED_TEXT_LINES));
+          m_functionId.put(Keywords.FUNC_COLLECTION,
+                          new Integer(FunctionTable.FUNC_COLLECTION));
           m_functionId.put(Keywords.FUNC_STRING_JOIN,
                           new Integer(FunctionTable.FUNC_STRING_JOIN));
           m_functionId.put(Keywords.FUNC_CURRENT_DATETIME,
