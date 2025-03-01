@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <xmlContents>
+    <info id="4">
+  <a/>
+  <b>hello</b>
+  <c/>
+</info>
+  </xmlContents>
+  <xmlContents>
+    <info id="5">
+  <p/>
+  <q/>
+  <r>hello</r>
+</info>
+  </xmlContents>
+  <xmlContents>
+    <info id="6">
+  <m>hello</m>
+  <n/>
+  <o/>
+</info>
+  </xmlContents>
+  <map>
+    <entry key="a">1</entry>
+    <entry key="b">2</entry>
+    <entry key="c">3</entry>
+    <entry key="d">4</entry>
+    <entry key="e">5</entry>
+  </map>
+  <txtContents>hello world. this is used&#13;
+to test xpath fn:collection function.</txtContents>
+  <xmlContents>
+    <info id="1">
+  <a/>
+  <b/>
+  <c/>
+</info>
+  </xmlContents>
+  <array>
+    <item>a1</item>
+    <item>b1</item>
+    <item>c1</item>
+    <item>d1</item>
+    <item>10</item>
+  </array>
+  <xmlContents>
+    <info id="2">
+  <p/>
+  <q/>
+  <r/>
+</info>
+  </xmlContents>
+  <xmlContents>
+    <info id="3">
+  <m/>
+  <n/>
+  <o/>
+</info>
+  </xmlContents>
+  <map>
+    <entry key="info">      </entry>
+  </map>
+  <xmlContents>
+    <info>
+  <a1>8</a1>
+  <b1>9</b1>
+  <c1>10</c1>
+  <d1>11</d1>
+  <e1>12</e1>
+  <f1>13</f1>
+  <g1>14</g1>
+</info>
+  </xmlContents>
+</result>

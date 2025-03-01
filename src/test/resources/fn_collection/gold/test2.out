@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><groups>
+  <group key="doesnt_contain_word_hello">
+    <a/>
+    <c/>
+    <p/>
+    <q/>
+    <n/>
+    <o/>
+  </group>
+  <group key="contains_word_hello">
+    <b>hello</b>
+    <r>hello</r>
+    <m>hello</m>
+  </group>
+</groups>

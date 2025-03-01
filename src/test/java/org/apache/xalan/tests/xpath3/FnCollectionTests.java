@@ -23,20 +23,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 function test cases, for math trigonometric and exponential functions
- * defined within XPath 3.1's XML namespace http://www.w3.org/2005/xpath-functions/math.
+ * XPath 3.1 function fn:collection test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPathMathTrignometricAndExponentialFunctionTests extends XSLTransformTestsUtil {        
+public class FnCollectionTests extends XSLTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + 
-    		                                                                                             "math_trigonometric_and_exponential_funcs/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "fn_collection/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + 
-    		                                                                                             "math_trigonometric_and_exponential_funcs/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "fn_collection/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -51,43 +48,51 @@ public class XPathMathTrignometricAndExponentialFunctionTests extends XSLTransfo
     }
 
     @Test
-    public void xslTrignometricAndExponentialFunctionTest1() {
+    public void xslFnCollectionTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+        String localBaseUriPrefix = XSLConstants.LOCAL_BASE_URI_PREFIX_OF_TESTS1; 
+        
+        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
     }
     
     @Test
-    public void xslTrignometricAndExponentialFunctionTest2() {
+    public void xslFnCollectionTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+        String localBaseUriPrefix = XSLConstants.LOCAL_BASE_URI_PREFIX_OF_TESTS1; 
+        
+        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
     }
     
     @Test
-    public void xslTrignometricAndExponentialFunctionTest3() {
+    public void xslFnCollectionTest3() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+        String localBaseUriPrefix = XSLConstants.LOCAL_BASE_URI_PREFIX_OF_TESTS1; 
+        
+        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
     }
     
     @Test
-    public void xslTrignometricAndExponentialFunctionTest4() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
+    public void xslFnCollectionTest4() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";                
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+        String localBaseUriPrefix = XSLConstants.LOCAL_BASE_URI_PREFIX_OF_TESTS1; 
+        
+        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
     }
 
 }

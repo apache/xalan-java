@@ -15,13 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
 import java.io.File;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -49,6 +45,13 @@ import xml.xpath31.processor.types.XSString;
 /**
  * Implementation of an XPath 3.1 function fn:collection.
  * 
+ * This function implementation, only supports local URI's
+ * with file: scheme. If there's a need to use online web URI's
+ * by this function implementation, one approach can be to code 
+ * a java application writing data information within local 
+ * files from online URI's, and as a second step use an XSL 
+ * stylesheet using fn:collection function on those local file(s).
+ * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
@@ -64,15 +67,21 @@ public class FuncCollection extends JsonFunction
 	
 	private static final String TEXT = "txt";
 	
+	private static final String CSV = "csv";
+	
 	private static final char PERIOD_CHAR = '.';
 	
-	private static final String SLAH_CHAR_STR = "/";
+	private static final String SLASH_CHAR_STR = "/";
 	
-	private static final String[] ALLOWED_FILE_EXTS = {XML, JSON, TEXT};
+	/**
+	 * A string array, specifying allowed file name extensions for Xalan-J
+	 * fn:collection function's implementation.
+	 */
+	private static final String[] ALLOWED_FILE_EXTS = {XML, JSON, TEXT, CSV};
 
 	/**
-	 * Execute the function. The function must return
-	 * a valid object.
+	 * Execute the function. The function must return a valid object.
+	 * 
 	 * @param xctxt The current execution context.
 	 * @return A valid XObject.
 	 *
@@ -86,6 +95,12 @@ public class FuncCollection extends JsonFunction
 		
 		XObject arg0XObj = m_arg0.execute(xctxt);
 		String arg0StrValue = XslTransformEvaluationHelper.getStrVal(arg0XObj);
+		
+		/**
+		 * Xalan-J fn:collection function's implementation as coded within this class,
+		 * supports local file system URI's beginning with prefixes that can only be 
+		 * 'file:///' or 'file:/' (both of which are equivalently correct). 
+		 */
 		
 		if (arg0StrValue.startsWith("file:///")) {
 			String fileSystemPathStr = arg0StrValue.substring(8);
@@ -115,13 +130,13 @@ public class FuncCollection extends JsonFunction
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
-		String[] filePathPartStringArr = fileSystemPathStr.split(SLAH_CHAR_STR);
+		String[] filePathPartStringArr = fileSystemPathStr.split(SLASH_CHAR_STR);
 		
 		String dirPathStr = "";			
 		for (int idx = 0; idx < (filePathPartStringArr.length - 1); idx++) {
 			dirPathStr += filePathPartStringArr[idx];
 			if (idx != (filePathPartStringArr.length - 2)) {
-				dirPathStr += SLAH_CHAR_STR;	
+				dirPathStr += SLASH_CHAR_STR;	
 			}
 		}
 		
@@ -147,43 +162,45 @@ public class FuncCollection extends JsonFunction
 					}
 					catch (Exception ex) {
 						throw new javax.xml.transform.TransformerException("FODC0004 : An XPath dynamic error occured while "
-								                                           + "constructing an XML document node for file " + 
-								                                           (dirPathStr + SLAH_CHAR_STR + fileNameStr) + " during processing "
-								                                           + "with XPath function fn:collection.", srcLocator); 
+								                                           		+ "constructing an XML document node for file " + 
+								                                           		(dirPathStr + SLASH_CHAR_STR + fileNameStr) + " during processing "
+								                                           		+ "with XPath function fn:collection.", srcLocator); 
 					}
 				}
 				else if (fileNameStr.endsWith(PERIOD_CHAR + JSON)) {
 					try {
-						byte[] byteArr = Files.readAllBytes(Paths.get(new URI(dirPathStr + SLAH_CHAR_STR + fileNameStr)));
+						File fileObj = new File(dirPathStr + SLASH_CHAR_STR + fileNameStr);
+						byte[] byteArr = Files.readAllBytes(Paths.get(fileObj.toURI()));
 						String strValue = new String(byteArr);							
 						XObject xObj = getJsonXdmValueFromStr(strValue);							
 						resultSeq.add(xObj);
 					}
 					catch (Exception ex) {
 						throw new javax.xml.transform.TransformerException("FODC0004 : An XPath dynamic error occured while "
-                                                                           + "constructing an XDM map/array for JSON file " + (dirPathStr + 
-                                                                           SLAH_CHAR_STR + fileNameStr) + " during processing "
-                                                                           + "with XPath function fn:collection." , srcLocator);
+                                                                           		+ "constructing an XDM map/array for JSON file " + (dirPathStr + 
+                                                                           		SLASH_CHAR_STR + fileNameStr) + " during processing "
+                                                                           		+ "with XPath function fn:collection." , srcLocator);
 					}
 				}
-				else if (fileNameStr.endsWith(PERIOD_CHAR + TEXT)) {
+				else if (fileNameStr.endsWith(PERIOD_CHAR + TEXT) || fileNameStr.endsWith(PERIOD_CHAR + CSV)) {
 					try {
-						byte[] byteArr = Files.readAllBytes(Paths.get(new URI(dirPathStr + SLAH_CHAR_STR + fileNameStr)));
+						File fileObj = new File(dirPathStr + SLASH_CHAR_STR + fileNameStr);
+						byte[] byteArr = Files.readAllBytes(Paths.get(fileObj.toURI()));
 						String strValue = new String(byteArr);
 						resultSeq.add(new XSString(strValue));
 					}
 					catch (Exception ex) {
 						throw new javax.xml.transform.TransformerException("FODC0004 : An XPath dynamic error occured while "
-                                                                           + "constructing string value from contents of text file " + 
-                                                                           (dirPathStr + SLAH_CHAR_STR + fileNameStr) + " during processing "
-                                                                           + "with XPath function fn:collection.", srcLocator);
+                                                                           		+ "constructing string value from contents of text/csv file " + 
+                                                                           		(dirPathStr + SLASH_CHAR_STR + fileNameStr) + " during processing "
+                                                                           		+ "with XPath function fn:collection.", srcLocator);
 					}
 				}
 				else {
-					throw new javax.xml.transform.TransformerException("FODC0004 : Only XML (ext .xml), JSON (ext .json) and text (ext .txt) "
-							                                           + "file documents are supported for processing by XPath function fn:collection. "
-							                                           + "Invalid file "+ (dirPathStr + SLAH_CHAR_STR + fileNameStr) + " is provided as "
-							                                           + "input for processing with function fn:collection.", srcLocator);
+					throw new javax.xml.transform.TransformerException("FODC0004 : Only XML (ext .xml), JSON (ext .json), text (ext .txt) and CSV (ext .csv)"
+							                                           		+ "file documents are supported for processing by XPath function fn:collection. "
+							                                           		+ "Invalid file "+ (dirPathStr + SLASH_CHAR_STR + fileNameStr) + " is provided as "
+							                                           		+ "input for processing with function fn:collection.", srcLocator);
 				}
 			}
 		}
@@ -208,8 +225,9 @@ public class FuncCollection extends JsonFunction
 	}
 	
 	/**
-	 * Method definition to get an XML DOM object instance, represented by an XML 
-	 * document java.io.File object instance.
+	 * Method definition to get an XML DOM object instance, represented by 
+	 * an XML document java.io.File object instance that is passed as an 
+	 * argument to this method call.
 	 */
 	private Document getXmlDomFromFileObj(File fileObj) throws Exception {
 		Document document = null;

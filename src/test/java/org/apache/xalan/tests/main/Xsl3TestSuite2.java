@@ -47,7 +47,7 @@ import org.apache.xalan.tests.xpath3.XPathForExprTests;
 import org.apache.xalan.tests.xpath3.XPathIfExprTests;
 import org.apache.xalan.tests.xpath3.XPathInstanceOfExprTests;
 import org.apache.xalan.tests.xpath3.XPathLetExprTests;
-import org.apache.xalan.tests.xpath3.XPathMathTrignometricAndExponentialFunctionTests;
+import org.apache.xalan.tests.xpath3.XPathMathFunctionTests;
 import org.apache.xalan.tests.xpath3.XPathNodeComparisonTests;
 import org.apache.xalan.tests.xpath3.XPathNodeSequenceCombinationTests;
 import org.apache.xalan.tests.xpath3.XPathQuantifiedExprTests;
@@ -91,7 +91,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 W3c_xslt30_fn_deep_equalTests.class, XslIterateTests.class,                 
                 FnFilterTests.class, XPathDynamicFunctionCallTests.class, XPathIfExprTests.class, 
                 XPathForExprTests.class, XPathLetExprTests.class, FnDistinctValuesTests.class,
-                XPathMathTrignometricAndExponentialFunctionTests.class, XPathBuiltinFunctionNamespceTests.class,
+                XPathMathFunctionTests.class, XPathBuiltinFunctionNamespceTests.class,
                 XPathSequenceConstructorTests.class, XPathStringConcatExprTests.class, 
                 XsDurationComponentExtractionFunctionTests.class, XPathArithmeticOnDurationValuesTests.class,
                 XPathNodeComparisonTests.class, XPathSimpleMapOperatorTests.class, FnFoldLeftTests.class,

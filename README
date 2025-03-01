@@ -25,22 +25,27 @@ Authors:
 This GitHub repos branch has src code provided as Maven (https://maven.apache.org/) build, for 
 Xalan-J's implementation of XSLT 3.0 and XPath 3.1 specifications.
 
-Following are the steps to produce Xalan-J's XSL 3 jar file (containing XSLT 3.0 and XPath 3.1 run-time processors),
-and running Xalan-J's XSL 3 conformance tests:
+Following are the steps to produce Xalan-J's XSL 3 jar file (containing Xalan's XSLT 3.0 and 
+XPath 3.1 run-time processors) and running Xalan-J's XSL 3 conformance tests:
 
 1) Set JAVA_HOME environment variable pointing to a local JDK installation folder. JDK 1.8/8 has been used
-to write and test Xalan-J's src code available within this codebase repos. Higher versioned JDK releases would also 
-work fine to compile and run Xalan-J XSL processor from this codebase repos.
+to write and test Xalan-J's src code available within this codebase repos. Higher JDK version releases shall also 
+work fine to compile and run Xalan-J's XSL processor from this codebase repos.
 
-2) Please ensure that Maven build tool has been installed on local workstation, which is using the JDK specified by 
+2) Java Maven build tool needs to be installed on local workstation, using JDK specified by 
 JAVA_HOME environment variable.
 
-3) Run Maven build command 'mvn clean package -DskipTests', or 'mvn clean install -DskipTests' on the local workstation folder 
-where pom.xml file for Xalan-J's maven project is located. This shall produce the Java jar file xalan-java-3.0.1.jar 
-within local folder /target.
+3) For running successfully few Xalan-J tests available within this test suite, within the Java file 
+org.apache.xalan.tests.util.XSLConstants available in this github code repos branch please change
+the value of Java class field variables LOCAL_BASE_URI_PREFIX_OF_TESTS1 and LOCAL_BASE_URI_PREFIX_OF_TESTS2
+as per local workstation where this test suite is running.
 
-The 'libs' file-system folder available within this GitHub repos branch contains various jar file dependencies as convenience 
-to users, that are needed by the main Xalan-J jar file xalan-java-3.0.1.jar.
+4) Run Maven build command 'mvn clean install -DskipTests' on the local workstation folder 
+where Maven's pom.xml file is located. This shall produce the Java jar file xalan-java-3.0.1.jar 
+within Maven build's local folder /target.
+
+The 'libs' file-system folder available within this GitHub repos branch contains various jar file dependencies 
+provided as convenience to users, that're needed by Xalan-J XSL 3 implementation's jar file xalan-java-3.0.1.jar.
 
 Maven build tool may be used to run only Xalan-J XSL 3 tests, using the following command:
 
@@ -52,11 +57,11 @@ This produces Maven build output with trailing information like following:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXsl3Tests
-[INFO] Tests run: 900, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 20.045 s - in org.apache.xalan.tests.main.AllXsl3Tests
+[INFO] Tests run: 907, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 28.405 s - in org.apache.xalan.tests.main.AllXsl3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 905, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 907, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS

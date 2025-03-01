@@ -44,7 +44,11 @@ public class XSLConstants {
     /**
      * Few XSL tests within this test suite, require specifying absolute URI of local files 
      * with file: scheme. The following two class field variables are used for these XSL tests 
-     * within this test suite.
+     * within this test suite. Both file local absolute URI prefixes file:/D:/ and file:/D:/// are 
+     * appropriate examples for Windows. For Linux, there are similar URI conventions. User running
+     * this test suite on Windows needs to change values of following two class field variables as 
+     * per Xalan-J src code's local folder. For Linux, an appropriate local absolute URI prefix 
+     * needs to be specified. 
      */    
     public static final String LOCAL_BASE_URI_PREFIX_OF_TESTS1 = "file:/D:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/resources/";
     
