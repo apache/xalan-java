@@ -26,6 +26,7 @@ import java.util.List;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xpath.XPathContext;
@@ -37,12 +38,10 @@ import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.PatternSyntaxException;
 import org.apache.xpath.res.XPATHErrorResources;
 
+import xml.xpath31.processor.types.XSString;
+
 /**
- * Execute the tokenize() function.
- * 
- * This function returns a sequence of strings constructed by splitting 
- * the input string wherever a separator is found. The separator is 
- * any substring that matches a given regular expression.
+ * Implementation of the fn:tokenize function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -70,13 +69,20 @@ public class FuncTokenize extends Function3Args {
       
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        XMLString inputStr = m_arg0.execute(xctxt).xstr();
+        String arg0Str = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+        
+        XMLString inputStr = new XString(arg0Str);
         
         if (m_arg1 == null && m_arg2 == null) {
-            // while calling this function, if only first argument is present, then this 
-            // function splits the supplied string at whitespace boundaries. i.e, fn:tokenize($input) is 
-            // equivalent to calling fn:tokenize(fn:normalize-space($input), ' ')) where the second 
-            // argument is a single space character (x20).
+        	// The function has been called with only the first argument supplied.
+        	
+        	/**
+        	 * While calling this function, if only first argument is supplied then this 
+             * function splits the supplied string at whitespace boundaries. i.e, fn:tokenize($input) is 
+             * equivalent to calling fn:tokenize(fn:normalize-space($input), ' ')) where the second 
+             * argument is a single space character (x20).
+        	 */
+            
             XMLString effectiveInpStr = inputStr.fixWhiteSpace(true, true, false);            
             char[] buf = new char[1];
             buf[0] = ' ';
@@ -86,57 +92,53 @@ public class FuncTokenize extends Function3Args {
             List<String> tokenList = null;
             
             try {
-               tokenList = tokenize(pattern.toString(), null, effectiveInpStr.toString());
+               tokenList = tokenize(effectiveInpStr.toString(), pattern.toString(), null);
             }
             catch (PatternSyntaxException ex) {
                 throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                          ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator);   
+                                                          									ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator);   
             }
             catch (Exception ex) {
                 throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator); 
             }
             
             for (int idx = 0; idx < tokenList.size(); idx++) {
-                resultSeq.add(new XString(tokenList.get(idx)));    
+                resultSeq.add(new XSString(tokenList.get(idx)));    
             }
-            
-            return resultSeq;
         }
-        
-        XMLString pattern = null;
-        
-        if (m_arg1 != null) {
-            pattern = m_arg1.execute(xctxt).xstr();  
-        }
-        
-        XMLString flags = null;
-        
-        if (m_arg2 != null) {
-           flags = m_arg2.execute(xctxt).xstr();
-           if (!RegexEvaluationSupport.isFlagStrValid(flags.toString())) {               
-              throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                                       ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }),
-                                                                       srcLocator); 
-           }
-        }
-        
-        String flagsStr = (flags != null) ? flags.toString() : null;
-        
-        List<String> tokenList = null;
-        
-        try {
-           tokenList = tokenize(pattern.toString(), flagsStr, inputStr.toString());
-        }
-        catch (PatternSyntaxException ex) {
-           throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                         ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator);  
-        }
-        catch (Exception ex) {
-           throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);   
-        }
-            
-        for (int idx = 0; idx < tokenList.size(); idx++) {
-            resultSeq.add(new XString(tokenList.get(idx)));    
+        else {
+        	String patternStr = null;
+
+        	if (m_arg1 != null) {
+        	    patternStr = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
+        	}
+
+        	String flagsStr = null;
+
+        	if (m_arg2 != null) {
+        		flagsStr = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
+        		if (!RegexEvaluationSupport.isFlagStrValid(flagsStr)) {               
+        			throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
+        																						ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), srcLocator); 
+        		}
+        	}
+
+        	List<String> tokenList = null;
+
+        	try {
+        		tokenList = tokenize(inputStr.toString(), patternStr, flagsStr);
+        	}
+        	catch (PatternSyntaxException ex) {
+        		throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
+        				ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator);  
+        	}
+        	catch (Exception ex) {
+        		throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);   
+        	}
+
+        	for (int idx = 0; idx < tokenList.size(); idx++) {
+        		resultSeq.add(new XSString(tokenList.get(idx)));    
+        	}
         }
         
         return resultSeq;
@@ -167,8 +169,11 @@ public class FuncTokenize extends Function3Args {
                                               XPATHErrorResources.ER_ONE_TWO_OR_THREE, null)); //"1, 2 or 3"
   }
   
-  private List<String> tokenize(String pattern, String flags, String inputStr) throws 
-                                                                PatternSyntaxException, Exception {
+  /**
+   * Tokenize a given input string, using the regex pattern and flags strings.
+   */
+  private List<String> tokenize(String inputStr, String pattern, String flags) throws 
+                                                                           PatternSyntaxException, Exception {
 
       List<String> tokens = new ArrayList<String>();
 
@@ -176,8 +181,8 @@ public class FuncTokenize extends Function3Args {
 
       try {
           regexMatcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(
-                                                  pattern.toString()), flags != null ? flags.toString() : 
-                                                                                  null, inputStr.toString());
+                                                                                            pattern.toString()), flags != null ? 
+                                                                                            flags.toString() : null, inputStr.toString());
       }
       catch (PatternSyntaxException ex) {
           throw ex;   

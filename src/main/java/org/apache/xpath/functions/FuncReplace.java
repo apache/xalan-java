@@ -46,7 +46,7 @@ public class FuncReplace extends Function4Args {
    private static final String FUNCTION_NAME = "replace()";
 
   /**
-   * Implementation of the function. The function must return a valid object.
+   * Execute the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
@@ -69,8 +69,8 @@ public class FuncReplace extends Function4Args {
            flagStr = XslTransformEvaluationHelper.getStrVal(m_arg3.execute(xctxt));
            if (!RegexEvaluationSupport.isFlagStrValid(flagStr)) {
                throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                                                            ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }),
-                                                                                            srcLocator);     
+                                                                                                                ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), 
+            		   																						    srcLocator);     
            }
         }
         
@@ -82,8 +82,8 @@ public class FuncReplace extends Function4Args {
         }
         catch (PatternSyntaxException ex) {
             throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                                                           ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
-                                                                                           srcLocator);   
+                                                                                                                ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
+                                                                                                                srcLocator);   
         }                
     
         return result;

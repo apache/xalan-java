@@ -20,12 +20,15 @@
  */
 package org.apache.xpath.functions;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSBoolean;
+
 /**
- * Execute the Contains() function.
+ * Implementation of fn:Contains function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncContains extends Function2Args
@@ -33,25 +36,29 @@ public class FuncContains extends Function2Args
     static final long serialVersionUID = 5084753781887919723L;
 
   /**
-   * Execute the function.  The function must return
-   * a valid object.
+   * Execute the function. The function must return a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-
-    String s1 = m_arg0.execute(xctxt).str();
-    String s2 = m_arg1.execute(xctxt).str();
-
-    // Add this check for JDK consistency for empty strings.
-    if (s1.length() == 0 && s2.length() == 0)
-      return XBoolean.S_TRUE;
-
-    int index = s1.indexOf(s2);
-
-    return (index > -1) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+  {    
+	    XObject result = null;
+	    
+	    String str1 = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+	    String str2 = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
+	
+	    // Add this check for JDK consistency for empty strings
+	    if ((str1.length() == 0) && (str2.length() == 0)) {
+	        result = new XSBoolean(true);
+	    }
+	    else {	
+	       int index = str1.indexOf(str2);
+	       result = ((index > -1) ? new XSBoolean(true) : new XSBoolean(false));
+	    }
+	
+	    return result;
   }
 }
