@@ -28,6 +28,7 @@ package org.apache.xml.serializer;
  * <ul>
  * <li>XML
  * <li>TEXT
+ * <li>JSON
  * <li>HTML
  * </ul>
  * These constants can be used as an argument to the
@@ -43,40 +44,45 @@ package org.apache.xml.serializer;
  */
 public final class Method
 {
-    /**
-     * A private constructor to prevent the creation of such a class.
-     */
-    private Method() {
-        
-    }
+	/**
+	 * A private constructor to prevent the creation of such a class.
+	 */
+	private Method() {
 
-  /**
-   * The output method type for XML documents: <tt>xml</tt>.
-   */
-  public static final String XML = "xml";
+	}
 
-  /**
-   * The output method type for HTML documents: <tt>html</tt>.
-   */
-  public static final String HTML = "html";
+	/**
+	 * The output method type for XML documents: <tt>xml</tt>.
+	 */
+	public static final String XML = "xml";
 
-  /**
-   * The output method for XHTML documents: <tt>xhtml</tt>.
-   * <p>
-   * This method type is not currently supported.
-   */
-  public static final String XHTML = "xhtml";
+	/**
+	 * The output method type for HTML documents: <tt>html</tt>.
+	 */
+	public static final String HTML = "html";
 
-  /**
-   * The output method type for text documents: <tt>text</tt>.
-   */
-  public static final String TEXT = "text";
-  
-  /**
-   * The "internal" method, just used when no method is 
-   * specified in the style sheet, and a serializer of this type wraps either an
-   * XML or HTML type (depending on the first tag in the output being html or
-   * not)
-   */  
-  public static final String UNKNOWN = "";
+	/**
+	 * The output method for XHTML documents: <tt>xhtml</tt>.
+	 * <p>
+	 * This method type is not currently supported.
+	 */
+	public static final String XHTML = "xhtml";
+
+	/**
+	 * The output method type for text documents: <tt>text</tt>.
+	 */
+	public static final String TEXT = "text";
+
+	/**
+	 * The output method type for text documents: <tt>json</tt>.
+	 */
+	public static final String JSON = "json";
+
+	/**
+	 * The "internal" method, just used when no method is 
+	 * specified in the style sheet, and a serializer of this type wraps either an
+	 * XML or HTML type (depending on the first tag in the output being html or
+	 * not)
+	 */  
+	public static final String UNKNOWN = "";
 }

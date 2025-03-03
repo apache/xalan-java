@@ -103,11 +103,6 @@ interface XSLOutputAttributes
      */    
     public String getVersion();
 
-
-
-
-
-
     /**
      * Sets the value coming from the xsl:output cdata-section-elements
      * stylesheet property.

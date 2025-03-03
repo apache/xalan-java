@@ -191,6 +191,8 @@ public final class OutputPropertiesFactory
     private static final String PROP_FILE_XML = "output_xml.properties";
     /** property file for default TEXT properties */
     private static final String PROP_FILE_TEXT = "output_text.properties";
+    /** property file for default JSON properties */
+    private static final String PROP_FILE_JSON = "output_json.properties";
     /** property file for default HTML properties */
     private static final String PROP_FILE_HTML = "output_html.properties";
     /** property file for default UNKNOWN (Either XML or HTML, to be determined later) properties */
@@ -286,6 +288,25 @@ public final class OutputPropertiesFactory
                 if (null == m_text_properties) // double check
                 {
                     fileName = PROP_FILE_TEXT;
+                    m_text_properties =
+                        loadPropertiesFile(fileName, m_xml_properties);
+                    if (null
+                        == m_text_properties.getProperty(OutputKeys.ENCODING))
+                    {
+                        String mimeEncoding = Encodings.getMimeEncoding(null);
+                        m_text_properties.put(
+                            OutputKeys.ENCODING,
+                            mimeEncoding);
+                    }
+                }
+
+                defaultProperties = m_text_properties;
+            }
+            else if (method.equals(Method.JSON))
+            {
+                if (null == m_text_properties) // double check
+                {
+                    fileName = PROP_FILE_JSON;
                     m_text_properties =
                         loadPropertiesFile(fileName, m_xml_properties);
                     if (null
