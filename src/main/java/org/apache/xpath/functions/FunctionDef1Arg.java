@@ -30,6 +30,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
+import xml.xpath31.processor.types.XSString;
+
 /**
  * Base class for functions that accept one argument that can be defaulted if
  * not specified.
@@ -109,6 +111,10 @@ public class FunctionDef1Arg extends FunctionOneArg
           resultVal = new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));
        }
     }
+    else if (m_arg0 instanceof XSString) {
+       String strVal = ((XSString)m_arg0).stringValue();
+       resultVal = new XString(strVal);
+    }
     else {
        XObject arg0XObject = m_arg0.execute(xctxt);
         
@@ -157,8 +163,16 @@ public class FunctionDef1Arg extends FunctionOneArg
     	   return m_arg0.execute(xctxt).num();
     	}
     }    	
-    else 
-       return m_arg0.execute(xctxt).num();
+    else {
+       XObject xObj = m_arg0.execute(xctxt);
+       if (xObj instanceof XSString) {
+    	   XString xStr = new XString(((XSString)xObj).stringValue());
+    	   return xStr.num();
+       }
+       else {
+    	   return m_arg0.execute(xctxt).num();   
+       }
+    }
   }
 
   /**

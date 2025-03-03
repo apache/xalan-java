@@ -352,7 +352,7 @@ public class XslTransformEvaluationHelper {
                xdmSequenceSize = ((ResultSequence)evalResult).size();
             }
             else {
-               // here evalResult is probably of types XSAnyAtomicType, XString, XNumber etc
+               // Here, evalResult is probably of types XSAnyAtomicType, XString, XNumber etc
           	   xdmSequenceSize = 1; 
             }
         }
@@ -365,7 +365,7 @@ public class XslTransformEvaluationHelper {
               xdmSequenceSize = ((ResultSequence)evalResult).size();
            }
            else {
-        	  // here evalResult is probably of types XSAnyAtomicType, XString, XNumber etc
+        	  // Here, evalResult is probably of types XSAnyAtomicType, XString, XNumber etc
         	  xdmSequenceSize = 1; 
            }
         }

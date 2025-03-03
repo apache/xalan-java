@@ -25,16 +25,17 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute the StringLength() function.
+ * Implementation of string-length() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncStringLength extends FunctionDef1Arg
 {
-    static final long serialVersionUID = -159616417996519839L;
+   static final long serialVersionUID = -159616417996519839L;
 
   /**
-   * Execute the function.  The function must return
-   * a valid object.
+   * Execute the function. The function must return a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *

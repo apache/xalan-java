@@ -21,6 +21,7 @@
 package org.apache.xpath.functions;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
@@ -29,9 +30,11 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 
 /**
- * Execute the Substring() function.
+ * Implementation of substring() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncSubstring extends Function3Args
@@ -39,8 +42,8 @@ public class FuncSubstring extends Function3Args
     static final long serialVersionUID = -5996676095024715502L;
 
   /**
-   * Execute the function.  The function must return
-   * a valid object.
+   * Execute the function. The function must return a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
@@ -48,8 +51,10 @@ public class FuncSubstring extends Function3Args
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-
-    XMLString s1 = m_arg0.execute(xctxt).xstr();
+	  
+	XObject xObj = m_arg0.execute(xctxt);
+	
+	XMLString s1 = new XString(XslTransformEvaluationHelper.getStrVal(xObj));
     
     double start = 0.0;
     
@@ -112,8 +117,8 @@ public class FuncSubstring extends Function3Args
         substr = s1.substring(startIndex);
       }
     }
-
-    return (XString)substr; // cast semi-safe
+    
+    return new XSString(substr.toString());
   }
 
   /**

@@ -20,21 +20,24 @@
  */
 package org.apache.xpath.functions;
 
+import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
+
+import xml.xpath31.processor.types.XSString;
 
 /**
- * Execute the String() function.
+ * Implementation of string() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncString extends FunctionDef1Arg
 {
-    static final long serialVersionUID = -2206677149497712883L;
+   static final long serialVersionUID = -2206677149497712883L;
 
   /**
-   * Execute the function.  The function must return
-   * a valid object.
+   * Execute the function. The function must return a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
@@ -42,6 +45,12 @@ public class FuncString extends FunctionDef1Arg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return (XString)getArg0AsString(xctxt);
+	  XObject result = null;
+	  
+	  XMLString xmlStr = getArg0AsString(xctxt);
+	  
+	  result = new XSString(xmlStr.toString()); 
+	  
+	  return result;
   }
 }
