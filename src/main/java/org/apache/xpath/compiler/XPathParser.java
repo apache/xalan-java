@@ -3518,6 +3518,37 @@ public class XPathParser
        
        matchFound = true;
     }
+    else if ((m_tokenChar == '$') && (lookahead('?', 2))) {
+       // XPath parse for unary lookup operation on map & array references.       
+       
+       // e.g, $map1?'a' (get map's entry value for key 'a'), 
+       // $array1?3 (get xdm item at array index 3).
+    	
+       // We translate these XPath expression syntax, to a 
+       // compiled form of XPath dynamic function call.
+    	
+       appendOp(2, OpCodes.OP_DYNAMIC_FUNCTION_CALL);
+        
+       nextToken();  // consume '$'
+        
+       String funcRefVarName = m_token;
+       List<String> argList = new ArrayList<>();
+       
+       nextToken();
+       consumeExpected('?');
+       
+       argList.add(m_token);
+       nextToken();
+       
+       m_dynamicFunctionCall = new XPathDynamicFunctionCall();
+       m_dynamicFunctionCall.setFuncRefVarName(funcRefVarName);
+       m_dynamicFunctionCall.setArgList(argList);
+       
+       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    	
+       matchFound = true;
+    }
     else if (m_tokenChar == '$')
     {
       nextToken();  // consume '$'
