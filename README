@@ -57,7 +57,7 @@ This produces Maven build output with trailing information like following:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXsl3Tests
-[INFO] Tests run: 908, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.758 s - in org.apache.xalan.tests.main.AllXsl3Tests
+[INFO] Tests run: 908, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 42.899 s - in org.apache.xalan.tests.main.AllXsl3Tests
 [INFO]
 [INFO] Results:
 [INFO]

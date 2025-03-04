@@ -118,5 +118,17 @@ public class FnCollectionTests extends XSLTransformTestsUtil {
         
         runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
     }
+    
+    @Test
+    public void xslFnCollectionTest7() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
+        
+        String localBaseUriPrefix = XSLConstants.LOCAL_BASE_URI_PREFIX_OF_TESTS1; 
+        
+        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
+    }
 
 }
