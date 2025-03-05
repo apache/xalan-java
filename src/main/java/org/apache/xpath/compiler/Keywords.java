@@ -444,6 +444,12 @@ public class Keywords
   /** xs:time data type string. */
   public static final String XS_TIME = "time";
   
+  /** xs:gYearMonth data type string. */
+  public static final String XS_GYEAR_MONTH = "gYearMonth";
+  
+  /** xs:gYear data type string. */
+  public static final String XS_GYEAR = "gYear";
+  
   /** xs:anyURI data type string. */
   public static final String XS_ANY_URI = "anyURI";
   

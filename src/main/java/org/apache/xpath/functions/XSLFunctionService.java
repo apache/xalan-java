@@ -51,6 +51,8 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.types.XSByte;
+import org.apache.xpath.types.XSGYear;
+import org.apache.xpath.types.XSGYearMonth;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
@@ -244,6 +246,12 @@ public class XSLFunctionService {
 		    				case Keywords.XS_UNSIGNED_BYTE :    					
 		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedByte.class, xctxt);
 		    					break;
+		    				case Keywords.XS_GYEAR_MONTH :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGYearMonth.class, xctxt);
+		    					break;
+		    				case Keywords.XS_GYEAR :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGYear.class, xctxt);
+		    					break;
 		    				case Keywords.FUNC_BOOLEAN_STRING :    					
 		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
 		    						Expression funcArg = funcObj.getArg(idx);    						
@@ -371,7 +379,15 @@ public class XSLFunctionService {
 	    				}
     			    }
     			    catch (Exception ex) {
-    			       String exceptionMesgStr = (ex.getMessage() != null) ? ex.getMessage() : "";
+    			       String exceptionMesgStr = null;
+    			       if (ex instanceof InvocationTargetException) {
+    			    	  Throwable throwable = ((InvocationTargetException)ex).getTargetException();
+    			    	  exceptionMesgStr = throwable.getMessage();
+    			       }
+    			       else {
+    			          exceptionMesgStr = (ex.getMessage() != null) ? ex.getMessage() : "";
+    			       }
+    			       
     			       exceptionMesgStr = exceptionMesgStr.equals("") ? "" : (exceptionMesgStr + ".");
     			       if (exceptionMesgStr.endsWith("..")) {
     			    	   exceptionMesgStr = exceptionMesgStr.substring(0, exceptionMesgStr.length() - 1); 
