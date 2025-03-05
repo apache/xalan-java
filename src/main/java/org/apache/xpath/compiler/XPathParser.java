@@ -3537,7 +3537,13 @@ public class XPathParser
        nextToken();
        consumeExpected('?');
        
-       argList.add(m_token);
+       StringBuffer argListNormalizedStrBuff = new StringBuffer();
+       while (m_token != null) {
+    	  argListNormalizedStrBuff.append(m_token);
+    	  nextToken();
+       }
+       
+       argList.add(argListNormalizedStrBuff.toString());          
        nextToken();
        
        m_dynamicFunctionCall = new XPathDynamicFunctionCall();

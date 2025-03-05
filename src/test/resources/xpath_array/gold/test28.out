@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <arrayValues all="true">a b c d e</arrayValues>
+  <arrayValues specific="true">
+    <one>c d e</one>
+    <two>c d e</two>
+    <three>c d e</three>
+  </arrayValues>
+  <arrayValues specific="true">c d e</arrayValues>
+</result>

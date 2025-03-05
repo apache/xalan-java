@@ -41,6 +41,7 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -239,7 +240,21 @@ public class XPathDynamicFunctionCall extends Expression {
      		   }
      		   else {
      			  String argXPathStr = m_argList.get(0);
-     			  if (".".equals(argXPathStr)) {
+     			  if ("*".equals(argXPathStr)) {
+     				 // This is XDM map's wild-card key specifier. To return 
+     				 // all the map entry values as typed sequence.     				  
+     				 Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
+     				 ResultSequence rSeq = new ResultSequence();
+     				 Set<XObject> keySet = nativeMap.keySet();
+     				 Iterator<XObject> iter = keySet.iterator();
+     				 while (iter.hasNext()) {
+     					XObject xObj = iter.next();
+     					rSeq.add(nativeMap.get(xObj));
+     				 }
+     				 
+     				 evalResult = rSeq;
+     			  }
+     			  else if (".".equals(argXPathStr)) {
      				 XObject contextItem = xctxt.getXPath3ContextItem();
      				 evalResult = xpathMap.get(contextItem);
      			  }
@@ -270,6 +285,16 @@ public class XPathDynamicFunctionCall extends Expression {
      								                                                             XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  xctxt.getSAXLocator()); 
      					  } 
      				  }
+     				  else if (argValue instanceof ResultSequence) {
+     					 ResultSequence rSeqArg = (ResultSequence)argValue;
+     					 ResultSequence rSeqAnswer = new ResultSequence(); 
+     					 for (int idx = 0; idx < rSeqArg.size(); idx++) {
+     						XObject oneArgValue = rSeqArg.item(idx);
+     						rSeqAnswer.add(xpathMap.get(oneArgValue));
+     					 }
+     					 
+     					 evalResult = rSeqAnswer;
+     				  }
      				  else {
      					  throw new javax.xml.transform.TransformerException("XPTY0004 : XDM map lookup is not done with a "
      							                                                                + "string valued key.",  xctxt.getSAXLocator());
@@ -285,8 +310,17 @@ public class XPathDynamicFunctionCall extends Expression {
                                                                              xctxt.getSAXLocator()); 
      		   }
      		   else {
-     			  String argXPathStr = m_argList.get(0);     			  
-     			  if (".".equals(argXPathStr)) {
+     			  String argXPathStr = m_argList.get(0);
+    			  if ("*".equals(argXPathStr)) {
+    				 // This is XDM array's wild-card key specifier. To return 
+      				 // all the array values as typed sequence. 
+    				 ResultSequence rSeq = new ResultSequence();
+    				 for (int idx = 0; idx < xpathArr.size(); idx++) {
+    					rSeq.add(xpathArr.get(idx));
+    				 }    				 
+    				 evalResult = rSeq;
+    			  }
+    			  else if (".".equals(argXPathStr)) {
      				  XObject contextItem = xctxt.getXPath3ContextItem();     				  
      				  evalResult = getArrayLookupResult(xctxt, xpathArr, contextItem);
      			  }
@@ -301,8 +335,22 @@ public class XPathDynamicFunctionCall extends Expression {
 	                     argXPath.fixupVariables(m_vars, m_globals_size);
 	                  }
 	
-	                  XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-	                  evalResult = getArrayLookupResult(xctxt, xpathArr, argValue);
+	                  XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());	                  
+	                  if (argValue instanceof ResultSequence) {
+	                	  ResultSequence rSeqArg = (ResultSequence)argValue;
+	                	  ResultSequence rSeqAnswer = new ResultSequence(); 
+	                	  for (int idx = 0; idx < rSeqArg.size(); idx++) {
+	                		  XObject oneArgValue = rSeqArg.item(idx);
+	                		  String strVal = XslTransformEvaluationHelper.getStrVal(oneArgValue);
+	                		  int arrQueryIndex = Integer.valueOf(strVal); 
+	                		  rSeqAnswer.add(xpathArr.get(arrQueryIndex - 1));
+	                	  }
+
+	                	  evalResult = rSeqAnswer;
+	                  }
+	                  else {
+	                     evalResult = getArrayLookupResult(xctxt, xpathArr, argValue);
+	                  }
      			  }
      		   }
     	    }

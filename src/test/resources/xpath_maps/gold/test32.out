@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <mapEntryValues all="true">5 4 3 2 1</mapEntryValues>
+  <mapEntryValues specific="true">
+    <one>3 2 1</one>
+    <two>3 2 1</two>
+    <three>3 2 1</three>
+  </mapEntryValues>
+  <mapEntryValues specific="true">5 4 3 2</mapEntryValues>
+</result>
