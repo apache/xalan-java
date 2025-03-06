@@ -1,8 +1,5 @@
 package org.apache.xpath.types;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -10,7 +7,6 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnySimpleType;
-import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
@@ -22,9 +18,9 @@ public class XSGYearMonth extends XSAnySimpleType {
 
 	private static final long serialVersionUID = 7570071303286900072L;
 	
-	private static XSInteger year;
+	private XSInteger year;
 	
-	private static XSInteger month;
+	private XSInteger month;
 	
 	private static final String XS_GYEAR_MONTH = "xs:gYearMonth";
 	
@@ -76,7 +72,9 @@ public class XSGYearMonth extends XSAnySimpleType {
 		String resultStr = null;
 		
 		String yearStr = year.stringValue();
+		yearStr = (yearStr.length() == 1) ? "0"+yearStr : yearStr; 
 		String monthStr = month.stringValue();
+		monthStr = (monthStr.length() == 1) ? "0"+monthStr : monthStr;
 		
 		resultStr = yearStr + "-" + monthStr;
 		
@@ -87,24 +85,14 @@ public class XSGYearMonth extends XSAnySimpleType {
 	 * Get the year component from this xs:gYearMonth object instance. 
 	 */
 	public XSInteger getYear() {
-		XSInteger yearValue = null;
-		
-		BigDecimal bigDecimal = year.getValue();
-		yearValue = new XSInteger(BigInteger.valueOf(bigDecimal.longValue()));
-		
-		return yearValue;
+		return year;
 	}
 	
 	/**
 	 * Get the month component from this xs:gYearMonth object instance. 
 	 */
 	public XSInteger getMonth() {
-		XSInteger monthValue = null;
-		
-		BigDecimal bigDecimal = month.getValue();
-		monthValue = new XSInteger(BigInteger.valueOf(bigDecimal.longValue()));
-		
-		return monthValue;
+		return month;
 	}
 	
 	public int getType() {
@@ -114,8 +102,8 @@ public class XSGYearMonth extends XSAnySimpleType {
 	/**
 	 * Implementation of operation equals, for the type xs:gYearMonth.
 	 */
-	public XSBoolean eq(XSGYearMonth value) {
-		XSBoolean result = null;
+	public boolean eq(XSGYearMonth value) {
+		boolean result = false;
 		
 		XSInteger thisYear = this.getYear();
 		XSInteger argYear = value.getYear();
@@ -123,10 +111,7 @@ public class XSGYearMonth extends XSAnySimpleType {
 		XSInteger thisMonth = this.getMonth();
 		XSInteger argMonth = value.getMonth();
 		
-		boolean boolResult = (thisYear.intValue() == argYear.intValue()) && 
-				                              (thisMonth.intValue() == argMonth.intValue());
-		
-		result = new XSBoolean(boolResult);
+		result = ((thisYear.intValue()).equals(argYear.intValue()) && (thisMonth.intValue()).equals(argMonth.intValue()));
 		
 		return result;
 	}
@@ -134,8 +119,8 @@ public class XSGYearMonth extends XSAnySimpleType {
 	/**
 	 * Implementation of operation not equals, for the type xs:gYearMonth.
 	 */
-	public XSBoolean ne(XSGYearMonth value) {
-		XSBoolean result = null;
+	public boolean ne(XSGYearMonth value) {
+		boolean result = false;
 		
 		XSInteger thisYear = this.getYear();
 		XSInteger argYear = value.getYear();
@@ -143,10 +128,7 @@ public class XSGYearMonth extends XSAnySimpleType {
 		XSInteger thisMonth = this.getMonth();
 		XSInteger argMonth = value.getMonth();
 		
-		boolean boolResult = (thisYear.intValue() != argYear.intValue()) || 
-				                              (thisMonth.intValue() != argMonth.intValue());
-		
-		result = new XSBoolean(boolResult);
+		result = (!(thisYear.intValue()).equals(argYear.intValue()) || !(thisMonth.intValue()).equals(argMonth.intValue()));
 		
 		return result;
 	}

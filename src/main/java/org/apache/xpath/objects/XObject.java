@@ -41,6 +41,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
 import org.w3c.dom.DocumentFragment;
@@ -344,6 +345,9 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   /** Constant for XPath 3.1 xs:gYear object type */
   public static final int CLASS_GYEAR = 38;
+  
+  /** Constant for XPath 3.1 xs:gMonthDay object type */
+  public static final int CLASS_GMONTHDAY = 39;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;
@@ -1438,7 +1442,7 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  }
 	  else if (this instanceof XSGYearMonth) {
 		  if (obj2 instanceof XSGYearMonth) {
-		     result = (((XSGYearMonth)this).eq((XSGYearMonth)obj2)).bool();
+		     result = ((XSGYearMonth)this).eq((XSGYearMonth)obj2);
 		  }
 		  else {
 			 result = false; 
@@ -1446,7 +1450,15 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  }
 	  else if (this instanceof XSGYear) {
 		  if (obj2 instanceof XSGYear) {
-		     result = (((XSGYear)this).eq((XSGYear)obj2)).bool();
+		     result = ((XSGYear)this).eq((XSGYear)obj2);
+		  }
+		  else {
+			 result = false; 
+		  }
+	  }
+	  else if (this instanceof XSGMonthDay) {
+		  if (obj2 instanceof XSGMonthDay) {
+		     result = ((XSGMonthDay)this).eq((XSGMonthDay)obj2);
 		  }
 		  else {
 			 result = false; 

@@ -64,6 +64,9 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.types.XSByte;
+import org.apache.xpath.types.XSGMonthDay;
+import org.apache.xpath.types.XSGYear;
+import org.apache.xpath.types.XSGYearMonth;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
@@ -185,6 +188,12 @@ public class SequenceTypeSupport {
     public static int XS_UNSIGNED_SHORT = 59;
     
     public static int XS_UNSIGNED_BYTE = 60;
+    
+    public static int XS_GYEAR_MONTH = 61;
+    
+    public static int XS_GYEAR = 62;
+    
+    public static int XS_GMONTH_DAY = 63;
     
     /** 
      * Following are constant int values denoting XPath 3.1 sequence
@@ -670,7 +679,37 @@ public class SequenceTypeSupport {
                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
                                                                                                    "xs:time", sequenceTypeXPathExprStr);
                }
-            }            
+            }
+            else if (srcValue instanceof XSGYearMonth) {
+            	String srcStrVal = ((XSGYearMonth)srcValue).stringValue();
+            	if (expectedType == XS_GYEAR_MONTH) {
+            		result = srcValue; 
+            	}
+            	else if (sequenceTypeKindTest != null) {
+            		result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+            																					   "xs:gYearMonth", sequenceTypeXPathExprStr);
+            	}
+            }
+            else if (srcValue instanceof XSGYear) {
+            	String srcStrVal = ((XSGYear)srcValue).stringValue();
+            	if (expectedType == XS_GYEAR) {
+            		result = srcValue; 
+            	}
+            	else if (sequenceTypeKindTest != null) {
+            		result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+            																					   "xs:gYear", sequenceTypeXPathExprStr);
+            	}
+            }
+            else if (srcValue instanceof XSGMonthDay) {
+            	String srcStrVal = ((XSGMonthDay)srcValue).stringValue();
+            	if (expectedType == XS_GMONTH_DAY) {
+            		result = srcValue; 
+            	}
+            	else if (sequenceTypeKindTest != null) {
+            		result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+            																					   "xs:gMonthDay", sequenceTypeXPathExprStr);
+            	}
+            }
             else if (srcValue instanceof XSDayTimeDuration) {
                String srcStrVal = ((XSDayTimeDuration)srcValue).stringValue();     
                if ((expectedType == XS_DAYTIME_DURATION) || (expectedType == XS_DURATION)) {

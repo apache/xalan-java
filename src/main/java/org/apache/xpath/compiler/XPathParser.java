@@ -5699,6 +5699,15 @@ public class XPathParser
  	     case Keywords.XS_TIME :
  	         xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_TIME);
  	         break;
+ 	     case Keywords.XS_GYEAR_MONTH :
+	         xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_GYEAR_MONTH);
+	         break;
+ 	     case Keywords.XS_GYEAR :
+	         xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_GYEAR);
+	         break;
+ 	     case Keywords.XS_GMONTH_DAY :
+	         xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_GMONTH_DAY);
+	         break;
  	     case Keywords.XS_ANY_URI :
  	         xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_ANY_URI);
  	         break;
@@ -5997,6 +6006,15 @@ public class XPathParser
  	    case Keywords.XS_TIME :
  	    	seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_TIME);
  	        break;
+ 	    case Keywords.XS_GYEAR_MONTH :
+	    	seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_GYEAR_MONTH);
+	        break;
+ 	    case Keywords.XS_GYEAR :
+	    	seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_GYEAR);
+	        break;
+ 	    case Keywords.XS_GMONTH_DAY :
+	    	seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_GMONTH_DAY);
+	        break;
  	    case Keywords.XS_ANY_URI :
  	    	seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_ANY_URI);
  	        break;

@@ -1,8 +1,5 @@
 package org.apache.xpath.types;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -10,7 +7,6 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnySimpleType;
-import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
@@ -22,7 +18,7 @@ public class XSGYear extends XSAnySimpleType {
 	
 	private static final long serialVersionUID = 4500652479945465195L;
 
-	private static XSInteger year;
+	private XSInteger year;
 	
 	private static final String XS_GYEAR = "xs:gYear";
 	
@@ -81,12 +77,7 @@ public class XSGYear extends XSAnySimpleType {
 	 * Get the year component from this xs:gYear object instance. 
 	 */
 	public XSInteger getYear() {
-		XSInteger yearValue = null;
-		
-		BigDecimal bigDecimal = year.getValue();
-		yearValue = new XSInteger(BigInteger.valueOf(bigDecimal.longValue()));
-		
-		return yearValue;
+		return year;
 	}
 	
 	public int getType() {
@@ -96,15 +87,13 @@ public class XSGYear extends XSAnySimpleType {
 	/**
 	 * Implementation of operation equals, for the type xs:gYear.
 	 */
-	public XSBoolean eq(XSGYear value) {
-		XSBoolean result = null;
+	public boolean eq(XSGYear value) {
+		boolean result = false;
 		
 		XSInteger thisYear = this.getYear();
 		XSInteger argYear = value.getYear();
 		
-		boolean boolResult = (thisYear.intValue() == argYear.intValue());
-		
-		result = new XSBoolean(boolResult);
+		result = (thisYear.intValue()).equals(argYear.intValue());
 		
 		return result;
 	}
@@ -112,15 +101,13 @@ public class XSGYear extends XSAnySimpleType {
 	/**
 	 * Implementation of operation not equals, for the type xs:gYear.
 	 */
-	public XSBoolean ne(XSGYear value) {
-        XSBoolean result = null;
+	public boolean ne(XSGYear value) {
+        boolean result = false;
 		
 		XSInteger thisYear = this.getYear();
 		XSInteger argYear = value.getYear();
 		
-		boolean boolResult = (thisYear.intValue() != argYear.intValue());
-		
-		result = new XSBoolean(boolResult);
+		result = !(thisYear.intValue()).equals(argYear.intValue());
 		
 		return result;
 	}

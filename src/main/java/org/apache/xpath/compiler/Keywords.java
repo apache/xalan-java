@@ -450,6 +450,9 @@ public class Keywords
   /** xs:gYear data type string. */
   public static final String XS_GYEAR = "gYear";
   
+  /** xs:gMonthDay data type string. */
+  public static final String XS_GMONTH_DAY = "gMonthDay";
+  
   /** xs:anyURI data type string. */
   public static final String XS_ANY_URI = "anyURI";
   

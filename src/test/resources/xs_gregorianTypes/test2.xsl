@@ -6,21 +6,18 @@
 				
     <!-- Author: mukulg@apache.org -->
     
-    <!-- An XSL stylesheet test case, to test XML Schema types xs:gYearMonth, 
-         xs:gYear. -->				
+    <!-- An XSL stylesheet test case, to test XML Schema type xs:gMonthDay -->					
 
 	<xsl:output method="xml" indent="yes"/>
 
 	<xsl:template match="/">
-	   <result>
-	      <xsl:variable name="val1" select="xs:gYearMonth('2000-10')" as="xs:gYearMonth"/>
-		  <xsl:variable name="val2" select="xs:gYearMonth('2005-10')" as="xs:gYearMonth"/>
-		  <one><xsl:value-of select="$val1 eq $val1"/></one>
-		  <two><xsl:value-of select="$val1 ne $val2"/></two>
-		  <xsl:variable name="val3" select="xs:gYear('2007')" as="xs:gYear"/>
-		  <xsl:variable name="val4" select="xs:gYear('2007')" as="xs:gYear"/>
-		  <three><xsl:value-of select="$val3 eq $val3"/></three>
-		  <four><xsl:value-of select="$val3 ne $val4"/></four>
+	   <result>	      
+		  <one><xsl:value-of select="xs:gMonthDay('--10-05') eq xs:gMonthDay('--10-05')"/></one>
+		  <two><xsl:value-of select="xs:gMonthDay('--10-05') ne xs:gMonthDay('--10-05')"/></two>
+          <xsl:variable name="val1" select="xs:gMonthDay('--10-05')" as="xs:gMonthDay"/>
+		  <xsl:variable name="val2" select="xs:gMonthDay('--11-05')" as="xs:gMonthDay"/>
+          <three><xsl:value-of select="$val1 eq $val2"/></three>
+		  <four><xsl:value-of select="$val1 ne $val2"/></four>		  
 	   </result>
 	</xsl:template>
 	
