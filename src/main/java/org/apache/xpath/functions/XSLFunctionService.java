@@ -51,6 +51,8 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.types.XSByte;
+import org.apache.xpath.types.XSGDay;
+import org.apache.xpath.types.XSGMonth;
 import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
@@ -255,6 +257,12 @@ public class XSLFunctionService {
 		    					break;
 		    				case Keywords.XS_GMONTH_DAY :    					
 		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGMonthDay.class, xctxt);
+		    					break;
+		    				case Keywords.XS_GDAY :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGDay.class, xctxt);
+		    					break;
+		    				case Keywords.XS_GMONTH :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGMonth.class, xctxt);
 		    					break;
 		    				case Keywords.FUNC_BOOLEAN_STRING :    					
 		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {

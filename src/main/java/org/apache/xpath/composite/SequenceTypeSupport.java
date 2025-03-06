@@ -64,6 +64,8 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.types.XSByte;
+import org.apache.xpath.types.XSGDay;
+import org.apache.xpath.types.XSGMonth;
 import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
@@ -194,6 +196,10 @@ public class SequenceTypeSupport {
     public static int XS_GYEAR = 62;
     
     public static int XS_GMONTH_DAY = 63;
+    
+    public static int XS_GDAY = 64;
+    
+    public static int XS_GMONTH = 65;
     
     /** 
      * Following are constant int values denoting XPath 3.1 sequence
@@ -708,6 +714,26 @@ public class SequenceTypeSupport {
             	else if (sequenceTypeKindTest != null) {
             		result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
             																					   "xs:gMonthDay", sequenceTypeXPathExprStr);
+            	}
+            }
+            else if (srcValue instanceof XSGDay) {
+            	String srcStrVal = ((XSGDay)srcValue).stringValue();
+            	if (expectedType == XS_GDAY) {
+            		result = srcValue; 
+            	}
+            	else if (sequenceTypeKindTest != null) {
+            		result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+            																					   "xs:gDay", sequenceTypeXPathExprStr);
+            	}
+            }
+            else if (srcValue instanceof XSGMonth) {
+            	String srcStrVal = ((XSGMonth)srcValue).stringValue();
+            	if (expectedType == XS_GMONTH) {
+            		result = srcValue; 
+            	}
+            	else if (sequenceTypeKindTest != null) {
+            		result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+            																					   "xs:gMonth", sequenceTypeXPathExprStr);
             	}
             }
             else if (srcValue instanceof XSDayTimeDuration) {

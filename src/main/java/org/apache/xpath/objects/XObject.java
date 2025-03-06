@@ -41,6 +41,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.types.XSGDay;
+import org.apache.xpath.types.XSGMonth;
 import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
@@ -348,6 +350,12 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   /** Constant for XPath 3.1 xs:gMonthDay object type */
   public static final int CLASS_GMONTHDAY = 39;
+  
+  /** Constant for XPath 3.1 xs:gDay object type */
+  public static final int CLASS_GDAY = 40;
+  
+  /** Constant for XPath 3.1 xs:gMonth object type */
+  public static final int CLASS_GMONTH = 41;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;
@@ -1459,6 +1467,22 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  else if (this instanceof XSGMonthDay) {
 		  if (obj2 instanceof XSGMonthDay) {
 		     result = ((XSGMonthDay)this).eq((XSGMonthDay)obj2);
+		  }
+		  else {
+			 result = false; 
+		  }
+	  }
+	  else if (this instanceof XSGDay) {
+		  if (obj2 instanceof XSGDay) {
+		     result = ((XSGDay)this).eq((XSGDay)obj2);
+		  }
+		  else {
+			 result = false; 
+		  }
+	  }
+	  else if (this instanceof XSGMonth) {
+		  if (obj2 instanceof XSGMonth) {
+		     result = ((XSGMonth)this).eq((XSGMonth)obj2);
 		  }
 		  else {
 			 result = false; 
