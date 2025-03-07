@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <test1 reason="comparison of xs:gYearMonth values">
+    <one>true</one>
+    <two>false</two>
+    <three>false</three>
+    <four>true</four>
+  </test1>
+  <test2 reason="comparison of xs:gYear values">
+    <one>true</one>
+    <two>false</two>
+    <three>false</three>
+    <four>true</four>
+  </test2>
+  <test3 reason="comparison of xs:gMonthDay values">
+    <one>true</one>
+    <two>false</two>
+    <three>false</three>
+    <four>true</four>
+  </test3>
+  <test4 reason="comparison of xs:gDay values">
+    <one>true</one>
+    <two>false</two>
+    <three>false</three>
+    <four>true</four>
+  </test4>
+  <test5 reason="comparison of xs:gMonth values">
+    <one>true</one>
+    <two>false</two>
+    <three>false</three>
+    <four>true</four>
+  </test5>
+</result>
