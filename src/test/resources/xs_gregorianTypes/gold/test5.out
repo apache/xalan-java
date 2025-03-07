@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <test1>
+    <one>true</one>
+    <two>true</two>
+  </test1>
+  <test2>
+    <one>true</one>
+    <two>true</two>
+  </test2>
+  <test3>
+    <one>true</one>
+    <two>true</two>
+  </test3>
+  <test4>
+    <one>true</one>
+    <two>true</two>
+  </test4>
+  <test5>
+    <one>true</one>
+    <two>true</two>
+  </test5>
+  <test6>
+    <one>false</one>
+    <two>false</two>
+  </test6>
+</result>

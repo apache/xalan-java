@@ -1140,6 +1140,21 @@ public class SequenceTypeSupport {
             else if (expectedType == XS_YEARMONTH_DURATION) {
                result = XSYearMonthDuration.parseYearMonthDuration(srcStrVal); 
             }
+            else if (expectedType == XS_GYEAR_MONTH) {
+               result = new XSGYearMonth(srcStrVal); 
+            }
+            else if (expectedType == XS_GYEAR) {
+               result = new XSGYear(srcStrVal); 
+            }
+            else if (expectedType == XS_GMONTH_DAY) {
+               result = new XSGMonthDay(srcStrVal); 
+            }
+            else if (expectedType == XS_GDAY) {
+               result = new XSGDay(srcStrVal); 
+            }
+            else if (expectedType == XS_GMONTH) {
+               result = new XSGMonth(srcStrVal); 
+            }
             else {
                throw new TransformerException("XTTE0570 : The string value '" + srcStrVal + "' cannot be "
                                                                                                   + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + "."); 
