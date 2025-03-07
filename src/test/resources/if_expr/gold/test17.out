@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <test1>
+    <one>emitStr1: arg0 was provided</one>
+    <two>emitStr1: arg1 was provided</two>
+    <three>emitStr1: arg-unknown value was provided</three>
+  </test1>
+  <test2>
+    <one>emitStr2: arg0 was provided</one>
+    <two>emitStr2: arg1 was provided</two>
+    <three>emitStr2: arg-unknown value was provided</three>
+  </test2>
+</result>

@@ -4,7 +4,7 @@
 				
   <!-- Author: mukulg@apache.org -->
   
-  <!-- An XSLT stylesheet test case, to test XPath 3.1 nested 
+  <!-- An XSL 3 stylesheet test case, to test XPath 3.1 nested 
        'if' expressions. -->				
 				
   <xsl:output method="xml" indent="yes"/>
