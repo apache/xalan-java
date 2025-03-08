@@ -417,10 +417,51 @@ public class SequenceTypeSupport {
             int expectedType = seqExpectedTypeData.getBuiltInSequenceType();            
             int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
             SequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
-
-            XSTypeDefinition xsTypeDefinition = seqExpectedTypeData.getXsTypeDefinition();
             
-            XNodeSet nodeSet = getNodeReference(srcValue);
+            if ((srcValue instanceof ResultSequence) && (sequenceTypeKindTest == null)) {
+            	ResultSequence rSeq = (ResultSequence)srcValue;
+            	for (int idx = 0; idx < rSeq.size(); idx++) {
+            		XObject xObj = rSeq.item(idx);
+            		if ((xObj instanceof XSGYearMonth) && (expectedType != XS_GYEAR_MONTH)) {
+            			String expectedTypeStr = sequenceTypeXPathExprStr; 
+            			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
+            				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
+            			}
+            			throw new TransformerException("XTTE0570 : An item of type xs:gYearMonth cannot be converted to " + expectedTypeStr + " as specified by stylesheet.");
+            		}
+            		else if ((xObj instanceof XSGYear) && (expectedType != XS_GYEAR)) {
+            			String expectedTypeStr = sequenceTypeXPathExprStr; 
+            			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
+            				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
+            			}
+            			throw new TransformerException("XTTE0570 : An item of type xs:gYear cannot be converted to " + expectedTypeStr + " as specified by stylesheet.");
+            		}
+            		else if ((xObj instanceof XSGMonthDay) && (expectedType != XS_GMONTH_DAY)) {
+            			String expectedTypeStr = sequenceTypeXPathExprStr; 
+            			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
+            				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
+            			}
+            			throw new TransformerException("XTTE0570 : An item of type xs:gMonthDay cannot be converted to " + expectedTypeStr + " as specified by stylesheet.");
+            		}
+            		else if ((xObj instanceof XSGDay) && (expectedType != XS_GDAY)) {
+            			String expectedTypeStr = sequenceTypeXPathExprStr; 
+            			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
+            				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
+            			}
+            			throw new TransformerException("XTTE0570 : An item of type xs:gDay cannot be converted to " + expectedTypeStr + " as specified by stylesheet.");
+            		}
+            		else if ((xObj instanceof XSGMonth) && (expectedType != XS_GMONTH)) {
+            			String expectedTypeStr = sequenceTypeXPathExprStr; 
+            			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
+            				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
+            			}
+            			throw new TransformerException("XTTE0570 : An item of type xs:gMonth cannot be converted to " + expectedTypeStr + " as specified by stylesheet.");
+            		}
+            	}
+            }
+            
+            XNodeSet nodeSet = getNodeReference(srcValue);            
+            XSTypeDefinition xsTypeDefinition = seqExpectedTypeData.getXsTypeDefinition();
             
             if ((nodeSet != null) && (xsTypeDefinition != null)) {
 	            boolean isNodeValid = isXdmElemNodeValidWithSchemaType(nodeSet, xctxt, xsTypeDefinition);	            
