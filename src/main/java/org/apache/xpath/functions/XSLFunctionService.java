@@ -95,8 +95,8 @@ import xml.xpath31.processor.types.XSToken;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * An object of this class supports evaluation of XPath 
- * constructor function and XSL stylesheet function calls.
+ * This class provides support to evaluate XPath 3.1's XML Schema 
+ * constructor function calls and XSL stylesheet function calls. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -405,8 +405,10 @@ public class XSLFunctionService {
     			    	   exceptionMesgStr = exceptionMesgStr.substring(0, exceptionMesgStr.length() - 1); 
     			       }
     			       
+    			       String errMesgStrTrailingSuffix = ((exceptionMesgStr != null) && (exceptionMesgStr.length() > 0)) ? " "+ exceptionMesgStr : ""; 
+    			       
     			       throw new TransformerException("FODC0005 : A dynamic error has occured, evaluating XPath built-in "
-    			       		                                            + "constructor function call for xs:" + funcName + ".\n" + exceptionMesgStr, 
+    			       		                                            + "constructor function call for xs:" + funcName + "." + errMesgStrTrailingSuffix, 
     			       		                                                   srcLocator);
     			    }
     			}

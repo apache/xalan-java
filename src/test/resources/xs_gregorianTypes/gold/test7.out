@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>2005-10</one>
+  <two>2005-10</two>
+  <three>2005</three>
+  <four>10</four>
+  <five inpGYearMonthVal="2005-10">2005</five>
+  <six inpGYearMonthVal="2005-10">10</six>
+</result>

@@ -17,9 +17,10 @@
 package org.apache.xpath.functions;
 
 /**
- * A class that provides a wrapper to instantiate, an object of 
- * class XSLFunctionService that supports evaluation of XPath
- * constructor function calls and XSL stylesheet function calls.
+ * This class provides a wrapper to instantiate an object of 
+ * class XSLFunctionService, that supports evaluation of XPath 3.1's
+ * XML Schema constructor function calls and XSL stylesheet function 
+ * calls.
  *
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

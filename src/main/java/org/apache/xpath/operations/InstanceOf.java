@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import java.io.IOException;
@@ -59,6 +56,11 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.types.XSByte;
+import org.apache.xpath.types.XSGDay;
+import org.apache.xpath.types.XSGMonth;
+import org.apache.xpath.types.XSGMonthDay;
+import org.apache.xpath.types.XSGYear;
+import org.apache.xpath.types.XSGYearMonth;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
@@ -147,9 +149,9 @@ public class InstanceOf extends Operation
   private boolean isInstanceOf(XObject xdmValue, SequenceTypeData seqTypeData) throws ParserConfigurationException, SAXException, 
                                                                                                              IOException, TransformerException, Exception {
     
-    boolean isInstanceOf = false;
+      boolean isInstanceOf = false;
       
-    if ((xdmValue instanceof XSUntypedAtomic) && 
+      if ((xdmValue instanceof XSUntypedAtomic) && 
           (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC)) {
           isInstanceOf = true;  
       }
@@ -295,6 +297,21 @@ public class InstanceOf extends Operation
     		                                                 (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
+      else if ((xdmValue instanceof XSGYearMonth) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GYEAR_MONTH)) {
+          isInstanceOf = true;  
+      }
+      else if ((xdmValue instanceof XSGYear) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GYEAR)) {
+          isInstanceOf = true;  
+      }
+      else if ((xdmValue instanceof XSGMonthDay) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GMONTH_DAY)) {
+          isInstanceOf = true;  
+      }
+      else if ((xdmValue instanceof XSGDay) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GDAY)) {
+          isInstanceOf = true;  
+      }
+      else if ((xdmValue instanceof XSGMonth) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GMONTH)) {
+          isInstanceOf = true;  
+      }
       else if (xdmValue instanceof XNodeSet) {
           isInstanceOf = isNodesetInstanceOfType((XNodeSet)xdmValue, seqTypeData);
       }
@@ -308,7 +325,7 @@ public class InstanceOf extends Operation
     	  isInstanceOf = isXdmArrayConformsWithSeqType((XPathArray)xdmValue, seqTypeData);
       }
     
-     return isInstanceOf;
+      return isInstanceOf;
   }
 
   /**
