@@ -9,7 +9,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
-import xml.xpath31.processor.types.XSAnySimpleType;
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
@@ -17,7 +17,7 @@ import xml.xpath31.processor.types.XSInteger;
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  */
-public class XSGMonthDay extends XSAnySimpleType {
+public class XSGMonthDay extends XSAnyAtomicType {
 
 	private static final long serialVersionUID = -3463438692413910274L;
 
@@ -242,6 +242,11 @@ public class XSGMonthDay extends XSAnySimpleType {
 		public void setNoOfDaysInMonth(Integer noOfDaysInMonth) {
 			this.noOfDaysInMonth = noOfDaysInMonth;
 		}
+	}
+
+	@Override
+	public String typeName() {
+		return "gMonthDay";
 	}
 
 }

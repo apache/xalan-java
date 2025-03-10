@@ -22,6 +22,7 @@ package org.apache.xpath.objects;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.xml.transform.TransformerException;
 
@@ -851,6 +852,97 @@ public class XObject extends Expression implements Serializable, Cloneable
            
           return (comparisonResult < 0) ? true : false;
        }
+       else if ((this instanceof XSGDay) && (obj2 instanceof XSGDay)) {
+    	  XSGDay val1 = (XSGDay)this;
+    	  XSGDay val2 = (XSGDay)obj2;
+    	  BigInteger date1 = (val1.getDate()).intValue();
+   	      BigInteger date2 = (val2.getDate()).intValue();
+   	      if (date1.compareTo(date2) < 0) {
+ 		     return true; 
+ 	      }
+ 	      else if (date1.compareTo(date2) > 0) {
+  		     return false; 
+  	      }
+ 	      else if (date1.compareTo(date2) == 0) {
+  		     return false; 
+  	      }
+       }
+       else if ((this instanceof XSGMonth) && (obj2 instanceof XSGMonth)) {
+    	   XSGMonth val1 = (XSGMonth)this;
+    	   XSGMonth val2 = (XSGMonth)obj2;
+    	   BigInteger month1 = (val1.getMonth()).intValue();
+    	   BigInteger month2 = (val2.getMonth()).intValue();
+    	   if (month1.compareTo(month2) < 0) {
+    		   return true; 
+    	   }
+    	   else if (month1.compareTo(month2) > 0) {
+    		   return false; 
+    	   }
+    	   else if (month1.compareTo(month2) == 0) {
+    		   return false; 
+    	   }
+       }
+       else if ((this instanceof XSGMonthDay) && (obj2 instanceof XSGMonthDay)) {
+    	   XSGMonthDay val1 = (XSGMonthDay)this;
+    	   XSGMonthDay val2 = (XSGMonthDay)obj2;
+    	   BigInteger month1 = (val1.getMonth()).intValue();
+    	   BigInteger month2 = (val2.getMonth()).intValue();
+    	   BigInteger day1 = (val1.getDay()).intValue();
+    	   BigInteger day2 = (val2.getDay()).intValue();
+    	   if (month1.compareTo(month2) < 0) {
+    		  return true; 
+    	   }
+    	   else if (month1.compareTo(month2) > 0) {
+     		  return false; 
+     	   }
+    	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) == 0)) {
+      		  return false; 
+      	   }
+    	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) < 0)) {
+       		  return true; 
+       	   }
+    	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) > 0)) {
+        	  return false; 
+           }
+       }
+       else if ((this instanceof XSGYear) && (obj2 instanceof XSGYear)) {
+    	   XSGYear val1 = (XSGYear)this;
+    	   XSGYear val2 = (XSGYear)obj2;
+    	   BigInteger year1 = (val1.getYear()).intValue();
+    	   BigInteger year2 = (val2.getYear()).intValue();
+    	   if (year1.compareTo(year2) < 0) {
+    		   return true; 
+    	   }
+    	   else if (year1.compareTo(year2) > 0) {
+    		   return false; 
+    	   }
+    	   else if (year1.compareTo(year2) == 0) {
+    		   return false; 
+    	   }
+       }
+       else if ((this instanceof XSGYearMonth) && (obj2 instanceof XSGYearMonth)) {
+    	   XSGYearMonth val1 = (XSGYearMonth)this;
+    	   XSGYearMonth val2 = (XSGYearMonth)obj2;
+    	   BigInteger year1 = (val1.getYear()).intValue();
+    	   BigInteger year2 = (val2.getYear()).intValue();
+    	   BigInteger month1 = (val1.getMonth()).intValue();
+    	   BigInteger month2 = (val2.getMonth()).intValue();
+    	   if (year1.compareTo(year2) < 0) {
+    		  return true; 
+    	   }
+    	   else if (year1.compareTo(year2) > 0) {
+     		  return false; 
+     	   }
+    	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) == 0)) {
+      		  return false; 
+      	   }
+    	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) < 0)) {
+       		  return true; 
+       	   }
+    	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) > 0)) {
+        	  return false; 
+           }
+       }
        else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
     	  emitXsAnyAtomicTypeError(obj2, expressionOwner);   
        }
@@ -1006,7 +1098,98 @@ public class XObject extends Expression implements Serializable, Cloneable
                                                                                             collationUri);
            
           return (comparisonResult > 0) ? true : false;
-       }       
+       }
+       else if ((this instanceof XSGDay) && (obj2 instanceof XSGDay)) {
+    	   XSGDay val1 = (XSGDay)this;
+    	   XSGDay val2 = (XSGDay)obj2;
+    	   BigInteger date1 = (val1.getDate()).intValue();
+    	   BigInteger date2 = (val2.getDate()).intValue();
+    	   if (date1.compareTo(date2) < 0) {
+    		   return false; 
+    	   }
+    	   else if (date1.compareTo(date2) > 0) {
+    		   return true; 
+    	   }
+    	   else if (date1.compareTo(date2) == 0) {
+    		   return false; 
+    	   }
+       }
+       else if ((this instanceof XSGMonth) && (obj2 instanceof XSGMonth)) {
+    	   XSGMonth val1 = (XSGMonth)this;
+    	   XSGMonth val2 = (XSGMonth)obj2;
+    	   BigInteger month1 = (val1.getMonth()).intValue();
+    	   BigInteger month2 = (val2.getMonth()).intValue();
+    	   if (month1.compareTo(month2) < 0) {
+    		   return false; 
+    	   }
+    	   else if (month1.compareTo(month2) > 0) {
+    		   return true; 
+    	   }
+    	   else if (month1.compareTo(month2) == 0) {
+    		   return false; 
+    	   }
+       }
+       else if ((this instanceof XSGMonthDay) && (obj2 instanceof XSGMonthDay)) {
+    	   XSGMonthDay val1 = (XSGMonthDay)this;
+    	   XSGMonthDay val2 = (XSGMonthDay)obj2;
+    	   BigInteger month1 = (val1.getMonth()).intValue();
+    	   BigInteger month2 = (val2.getMonth()).intValue();
+    	   BigInteger day1 = (val1.getDay()).intValue();
+    	   BigInteger day2 = (val2.getDay()).intValue();
+    	   if (month1.compareTo(month2) < 0) {
+    		  return false; 
+    	   }
+    	   else if (month1.compareTo(month2) > 0) {
+     		  return true; 
+     	   }
+    	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) == 0)) {
+      		  return false; 
+      	   }
+    	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) < 0)) {
+       		  return false; 
+       	   }
+    	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) > 0)) {
+        	  return true; 
+           }
+       }
+       else if ((this instanceof XSGYear) && (obj2 instanceof XSGYear)) {
+    	   XSGYear val1 = (XSGYear)this;
+    	   XSGYear val2 = (XSGYear)obj2;
+    	   BigInteger year1 = (val1.getYear()).intValue();
+    	   BigInteger year2 = (val2.getYear()).intValue();
+    	   if (year1.compareTo(year2) < 0) {
+    		   return false; 
+    	   }
+    	   else if (year1.compareTo(year2) > 0) {
+    		   return true; 
+    	   }
+    	   else if (year1.compareTo(year2) == 0) {
+    		   return false; 
+    	   }
+       }
+       else if ((this instanceof XSGYearMonth) && (obj2 instanceof XSGYearMonth)) {
+    	   XSGYearMonth val1 = (XSGYearMonth)this;
+    	   XSGYearMonth val2 = (XSGYearMonth)obj2;
+    	   BigInteger year1 = (val1.getYear()).intValue();
+    	   BigInteger year2 = (val2.getYear()).intValue();
+    	   BigInteger month1 = (val1.getMonth()).intValue();
+    	   BigInteger month2 = (val2.getMonth()).intValue();
+    	   if (year1.compareTo(year2) < 0) {
+    		  return false; 
+    	   }
+    	   else if (year1.compareTo(year2) > 0) {
+     		  return true; 
+     	   }
+    	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) == 0)) {
+      		  return false; 
+      	   }
+    	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) < 0)) {
+       		  return false; 
+       	   }
+    	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) > 0)) {
+        	  return true; 
+           }
+       }
        else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
     	  emitXsAnyAtomicTypeError(obj2, expressionOwner);   
        }

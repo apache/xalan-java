@@ -8,7 +8,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
-import xml.xpath31.processor.types.XSAnySimpleType;
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
@@ -16,7 +16,7 @@ import xml.xpath31.processor.types.XSInteger;
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  */
-public class XSGMonth extends XSAnySimpleType {
+public class XSGMonth extends XSAnyAtomicType {
 
 	private static final long serialVersionUID = -3607305468895616720L;
 
@@ -122,6 +122,11 @@ public class XSGMonth extends XSAnySimpleType {
 		result = !(thisMonth.intValue()).equals(argMonth.intValue());
 		
 		return result;
+	}
+
+	@Override
+	public String typeName() {
+		return "gMonth";
 	}
 
 }

@@ -8,7 +8,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
-import xml.xpath31.processor.types.XSAnySimpleType;
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
@@ -16,7 +16,7 @@ import xml.xpath31.processor.types.XSInteger;
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  */
-public class XSGDay extends XSAnySimpleType {
+public class XSGDay extends XSAnyAtomicType {
 
 	private static final long serialVersionUID = 5356100798451721396L;
 
@@ -86,7 +86,7 @@ public class XSGDay extends XSAnySimpleType {
 	}
 	
 	/**
-	 * Get the year component from this xs:gDay object instance. 
+	 * Get the days component from this xs:gDay object instance. 
 	 */
 	public XSInteger getDate() {
 		return date;
@@ -122,6 +122,11 @@ public class XSGDay extends XSAnySimpleType {
 		result = !(thisDate.intValue()).equals(argDate.intValue());
 		
 		return result;
+	}
+
+	@Override
+	public String typeName() {
+		return "gDay";
 	}
 
 }
