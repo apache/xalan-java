@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <items sortedOrder="ascending_by_yrMonth">
+    <item>
+      <id>2</id>
+      <yrMonth>2005-03</yrMonth>
+    </item>
+    <item>
+      <id>3</id>
+      <yrMonth>2005-07</yrMonth>
+    </item>
+    <item>
+      <id>1</id>
+      <yrMonth>2005-10</yrMonth>
+    </item>
+  </items>
+  <items sortedOrder="descending_by_yrMonth">
+    <item>
+      <id>1</id>
+      <yrMonth>2005-10</yrMonth>
+    </item>
+    <item>
+      <id>3</id>
+      <yrMonth>2005-07</yrMonth>
+    </item>
+    <item>
+      <id>2</id>
+      <yrMonth>2005-03</yrMonth>
+    </item>
+  </items>
+</result>
