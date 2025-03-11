@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<items>
+   <item>
+     <id>1</id>
+	 <year>2005-10</year>
+   </item>
+   <item>
+     <id>2</id>
+	 <year>2001-02</year>
+   </item>
+   <item>
+     <id>3</id>
+	 <year>2001</year>
+   </item>
+   <item>
+     <id>4</id>
+	 <year>2005-05</year>
+   </item>   
+</items>

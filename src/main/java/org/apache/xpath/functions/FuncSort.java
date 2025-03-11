@@ -135,7 +135,32 @@ public class FuncSort extends FunctionMultiArgs
               XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
               
               if (numOfArgs == 3) {
-            	  if (arg2 instanceof XPathInlineFunction) {
+            	  if (arg2 instanceof Variable) {
+            		  XObject arg2XObj = ((Variable)arg2).execute(xctxt);
+            		  if (arg2XObj instanceof XPathInlineFunction) {
+            			  XPathInlineFunction arg2InlineFunc = (XPathInlineFunction)arg2XObj;
+
+                		  List<InlineFunctionParameter> funcParamList = arg2InlineFunc.getFuncParamList();
+                		  inlineFunctionVarMap.put(new QName((funcParamList.get(0)).getParamName()), xNodeSetItem);
+
+                		  String sortKeyXPathStr = arg2InlineFunc.getFuncBodyXPathExprStr();
+
+                		  if (prefixTable != null) {
+                			  sortKeyXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(sortKeyXPathStr, 
+                					                                                                             prefixTable);
+                		  }
+
+                		  XPath sortKeyXPathExpr = new XPath(sortKeyXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+                				                             XPath.SELECT, null);
+                		  XObject sortKeyVal = sortKeyXPathExpr.execute(xctxt, nextNodeDtmHandle, xctxt.getNamespaceContext());
+
+                		  // Reset the function item argument reference value
+                		  inlineFunctionVarMap.put(new QName((funcParamList.get(0)).getParamName()), null);
+
+                		  inpSeqItemWithSortKeyValueList.add(new InpSeqItemWithSortKeyValue(xNodeSetItem, sortKeyVal)); 
+            		  }
+            	  }
+            	  else if (arg2 instanceof XPathInlineFunction) {
             		  XPathInlineFunction arg2InlineFunc = (XPathInlineFunction)arg2;
 
             		  List<InlineFunctionParameter> funcParamList = arg2InlineFunc.getFuncParamList();
