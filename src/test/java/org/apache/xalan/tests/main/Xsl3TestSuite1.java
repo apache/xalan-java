@@ -43,7 +43,7 @@ import org.apache.xalan.tests.xpath3.XPathArrowOpTests;
 import org.apache.xalan.tests.xpath3.XPathCastTests;
 import org.apache.xalan.tests.xpath3.XPathExprFunctionCallSuffixTests;
 import org.apache.xalan.tests.xpath3.XPathGeneralComparisonOpTests;
-import org.apache.xalan.tests.xpath3.XPathInlineFunctionItemExprTests;
+import org.apache.xalan.tests.xpath3.XPathInlineFunctionExprTests;
 import org.apache.xalan.tests.xpath3.XPathMapOtherTests;
 import org.apache.xalan.tests.xpath3.XPathMapTests;
 import org.apache.xalan.tests.xpath3.XPathNamedFunctionReferenceTests;
@@ -84,7 +84,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ FnDocTests.class, FnDataTests.class, XslRecursiveFunctionTests.class,
                 XslFunctionTests.class, XslHigherOrderFunctionTests.class, XsDateTimeTests.class,
-                XPathValueComparisonTests.class, XPathInlineFunctionItemExprTests.class, 
+                XPathValueComparisonTests.class, XPathInlineFunctionExprTests.class, 
                 FnForEachTests.class, XsConstructorFunctionTests.class,
                 FnAbsTests.class, XPathStringTests.class, XsDateTimeArithmeticTests.class,
                 XsTimeWithArithmeticTests.class, XsDurationSubtypes.class,

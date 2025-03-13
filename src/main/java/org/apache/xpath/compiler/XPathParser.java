@@ -3456,8 +3456,8 @@ public class XPathParser
       matchFound = true;
     }
     else if ((m_tokenChar == '$') && (lookahead('(', 2))) {
-       // XPath parse of dynamic function call, & map and array
-       // information lookup using function call syntax.
+       // XPath parse of dynamic function call, and map &
+       // array information lookup using function call syntax.
                      
        appendOp(2, OpCodes.OP_DYNAMIC_FUNCTION_CALL);
        

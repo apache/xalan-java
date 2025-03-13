@@ -29,11 +29,11 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XPathInlineFunctionItemExprTests extends XSLTransformTestsUtil {        
+public class XPathInlineFunctionExprTests extends XSLTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "inline_function_expr/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xpath_inline_function_expr/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "inline_function_expr/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xpath_inline_function_expr/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -163,6 +163,16 @@ public class XPathInlineFunctionItemExprTests extends XSLTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslInlineFunctionExprTest13() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
