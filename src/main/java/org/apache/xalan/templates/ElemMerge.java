@@ -66,7 +66,7 @@ public class ElemMerge extends ElemTemplateElement
   private static final long serialVersionUID = 5751562599003014575L;
   
   /**
-   * A class field vector referring to value of xsl:merge-source 
+   * A class field vector object, referring to value of xsl:merge-source 
    * elements within xsl:merge element.
    */
   private Vector m_mergeSourceElems = null;
@@ -221,7 +221,7 @@ public class ElemMerge extends ElemTemplateElement
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
-	  int type = ((ElemTemplateElement) newChild).getXSLToken();
+	  int type = ((ElemTemplateElement)newChild).getXSLToken();
 
 	  if (type == Constants.ELEMNAME_MERGE_SOURCE) 
 	  {
@@ -329,7 +329,9 @@ public class ElemMerge extends ElemTemplateElement
 		  }
 		  
 		  Expression mergeSourceSelectExpr = mergeSourceElem.getSelect();
-
+		  
+		  int contextNode = xctxt.getContextNode();
+		  
 		  XObject mergeSourceValue = mergeSourceSelectExpr.execute(xctxt);
 
 		  /**

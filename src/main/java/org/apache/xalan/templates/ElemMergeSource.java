@@ -206,11 +206,11 @@ public class ElemMergeSource extends ElemTemplateElement
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
-	  int type = ((ElemTemplateElement) newChild).getXSLToken();
+	  int type = ((ElemTemplateElement)newChild).getXSLToken();
 
 	  if (type == Constants.ELEMNAME_MERGE_KEY)
 	  {
-		  setMergeKeyElem((ElemMergeKey) newChild);
+		  setMergeKeyElem((ElemMergeKey)newChild);
 
 		  return newChild;
 	  }

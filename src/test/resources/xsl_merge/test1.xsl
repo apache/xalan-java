@@ -1,24 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"				
-				version="3.0">
-				
-    <!-- Author: mukulg@apache.org -->
-    
-    <!-- An XSL 3 stylesheet test case, to test xsl:output method="json" -->				
-
-	<xsl:output method="json"/>
-
-	<xsl:template match="/">
-	   {
-	      "a" : 1,
-		  "b" : 2,
-		  "c" : 3,
-		  "d" : 4,
-		  "e" " 5
-	   }
-	</xsl:template>
-	
-	<!--
+<?xml version="1.0"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 				
+                version="3.0">
+                
+   <!-- Author: mukulg@apache.org -->
+   
+   <!-- An XSL 3 stylesheet test case, to test xsl:merge instruction -->                
+                
+   <xsl:output method="xml" indent="yes"/>
+   
+   <xsl:template match="/">
+      <result>
+		 <xsl:merge>
+		    <xsl:merge-source name="one" select="1 to 5" sort-before-merge="yes">    
+			   <xsl:merge-key select="."/>
+		    </xsl:merge-source>
+		    <xsl:merge-source name="two" select="3 to 7" sort-before-merge="yes">
+			   <xsl:merge-key select="."/>
+		    </xsl:merge-source>
+		    <xsl:merge-action>
+			   <key value="{current-merge-key()}" occurenceCount="{count(current-merge-group())}"/>
+		    </xsl:merge-action>
+		 </xsl:merge>		 
+	  </result>
+   </xsl:template>
+   
+   <!--
       * Licensed to the Apache Software Foundation (ASF) under one
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
@@ -34,6 +40,6 @@
       * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
       * See the License for the specific language governing permissions and
       * limitations under the License.
-    -->
+   -->
 
 </xsl:stylesheet>
