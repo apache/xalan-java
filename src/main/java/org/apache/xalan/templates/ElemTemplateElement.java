@@ -49,6 +49,7 @@ import org.apache.xpath.WhitespaceStrippingElementMatcher;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
@@ -97,7 +98,17 @@ public class ElemTemplateElement extends UnImplNode
     * contents. An instance of this class, stores this value for a specific 
     * xsl:for-each-group element within an XSL stylesheet. 
     */
-   private List<Integer> m_groupNodesDtmHandles;
+   private List<Integer> m_groupNodesDtmHandles = null;
+   
+   /**
+    * This class field refers to xsl:merge evaluation's merge key
+    */
+   private Object m_mergeKey = null;
+   
+   /**
+    * This class field refers to xsl:merge evaluation's merge group
+    */
+   private ResultSequence m_mergeGroup = null;
    
    /**
     * This field supports implementation of, XSLT tunnel parameters.
@@ -1772,6 +1783,22 @@ public class ElemTemplateElement extends UnImplNode
 
   public void setGroupNodesDtmHandles(List<Integer> groupNodesDtmHandles) {
       this.m_groupNodesDtmHandles = groupNodesDtmHandles;
+  }
+  
+  public Object getMergeKey() {
+      return m_mergeKey;
+  }
+
+  public void setMergeKey(Object mergeKey) {
+      this.m_mergeKey = mergeKey;
+  }
+
+  public ResultSequence getMergeGroup() {
+      return m_mergeGroup;
+  }
+
+  public void setMergeGroup(ResultSequence mergeGroup) {
+      this.m_mergeGroup = mergeGroup;
   }
   
   /**

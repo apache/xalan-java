@@ -643,7 +643,7 @@ public class ElemForEachGroup extends ElemTemplateElement
                         xctxt.setSAXLocator(templateElem);
                         transformer.setCurrentElement(templateElem);                   
                         templateElem.execute(transformer);
-                     }
+                    }
                 }
             }
             else {
@@ -802,8 +802,8 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * This method, converts xsl:for-each-group grouping key's initially computed value, 
-   * into a normalized data typed value of type java.lang.Object.
+   * Method definition, to convert XSL xsl:for-each-group grouping key's initially 
+   * computed value, into a normalized typed value of type java.lang.Object.
    * 
    * For the purpose of, evaluating grouping key XPath expressions for xsl:for-each-group, 
    * the following data types are currently supported : string (xs:string and xalanj's XString), 
@@ -812,7 +812,8 @@ public class ElemForEachGroup extends ElemTemplateElement
    * grouping key is converted to a string value.
    */
   private Object getXPathEvaluationRawResult(XObject xpathEvalResult) {
-      Object xpathRawResult = null;
+      
+	  Object xpathRawResult = null;
       
       if (xpathEvalResult instanceof XString) {
           xpathRawResult = xpathEvalResult.str();    
@@ -851,7 +852,7 @@ public class ElemForEachGroup extends ElemTemplateElement
           xpathRawResult = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);  
       }
       
-      return xpathRawResult;
+      return xpathRawResult;      
   }
   
   /**

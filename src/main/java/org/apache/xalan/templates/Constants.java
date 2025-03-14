@@ -110,9 +110,17 @@ public class Constants extends org.apache.xml.utils.Constants
   
   ELEMNAME_IMPORT_SCHEMA = 100,
   
-  ELEMNAME_EVALUATE = 101;
+  ELEMNAME_EVALUATE = 101,
   
-  // next available number : 102
+  ELEMNAME_MERGE = 102,
+  
+  ELEMNAME_MERGE_SOURCE = 103,
+  
+  ELEMNAME_MERGE_KEY = 104,
+  
+  ELEMNAME_MERGE_ACTION = 105;
+  
+  // next available number : 106
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -154,6 +162,10 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_FALLBACK_STRING = "fallback",
       ELEMNAME_FOREACH_STRING = "for-each",
       ELEMNAME_FOREACHGROUP_STRING = "for-each-group",
+      ELEMNAME_MERGE_STRING = "merge",
+      ELEMNAME_MERGE_SOURCE_STRING = "merge-source",
+      ELEMNAME_MERGE_KEY_STRING = "merge-key",
+      ELEMNAME_MERGE_ACTION_STRING = "merge-action",
       ELEMNAME_ANALYZESTRING_STRING = "analyze-string",
       ELEMNAME_MATCHINGSUBSTRING_STRING = "matching-substring",
       ELEMNAME_NONMATCHINGSUBSTRING_STRING = "non-matching-substring",

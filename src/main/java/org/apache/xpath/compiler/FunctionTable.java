@@ -535,6 +535,12 @@ public class FunctionTable
   
   /** The 'collection()' id. */
   public static final int FUNC_COLLECTION = 170;
+  
+  /** The 'current-merge-group()' id (XSLT). */
+  public static final int FUNC_CURRENT_MERGE_GROUP = 171;
+  
+  /** The 'current-merge-key()' id (XSLT). */
+  public static final int FUNC_CURRENT_MERGE_KEY = 172;
 
   // Proprietary
 
@@ -628,7 +634,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 171;
+  private static final int NUM_BUILT_IN_FUNCS = 173;
 
   /**
    * Number of built-in functions that may be added.
@@ -713,10 +719,17 @@ public class FunctionTable
       org.apache.xpath.functions.FuncMatches.class;
     m_functions[FUNC_REPLACE] = 
       org.apache.xpath.functions.FuncReplace.class;
-    m_functions[FUNC_CURRENT_GROUPING_KEY] = 
-      org.apache.xalan.templates.FuncCurrentGroupingKey.class;
+    
     m_functions[FUNC_CURRENT_GROUP] = 
       org.apache.xalan.templates.FuncCurrentGroup.class;
+    m_functions[FUNC_CURRENT_GROUPING_KEY] = 
+      org.apache.xalan.templates.FuncCurrentGroupingKey.class;
+    
+    m_functions[FUNC_CURRENT_MERGE_GROUP] = 
+      org.apache.xalan.templates.FuncCurrentMergeGroup.class;
+    m_functions[FUNC_CURRENT_MERGE_KEY] = 
+      org.apache.xalan.templates.FuncCurrentMergeKey.class;
+    
     m_functions[FUNC_ABS] = 
       org.apache.xpath.functions.FuncAbs.class;
     m_functions[FUNC_REGEX_GROUP] = 
@@ -729,6 +742,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncUnparsedText.class;
     m_functions[FUNC_UNPARSED_TEXT_LINES] = 
       org.apache.xpath.functions.FuncUnparsedTextLines.class;
+    m_functions[FUNC_COLLECTION] = 
+      org.apache.xpath.functions.FuncCollection.class;
     m_functions[FUNC_COLLECTION] = 
       org.apache.xpath.functions.FuncCollection.class;
     m_functions[FUNC_STRING_JOIN] = 
@@ -994,11 +1009,18 @@ public class FunctionTable
           m_functionId.put(Keywords.FUNC_REPLACE_STRING,
                           new Integer(FunctionTable.FUNC_REPLACE));
           m_functionId.put(Keywords.FUNC_DOCLOCATION_STRING,
-                          new Integer(FunctionTable.FUNC_DOCLOCATION));          
-          m_functionId.put(Keywords.FUNC_CURRENT_GROUPING_KEY,
-                          new Integer(FunctionTable.FUNC_CURRENT_GROUPING_KEY));
+                          new Integer(FunctionTable.FUNC_DOCLOCATION));
+          
           m_functionId.put(Keywords.FUNC_CURRENT_GROUP,
                           new Integer(FunctionTable.FUNC_CURRENT_GROUP));
+          m_functionId.put(Keywords.FUNC_CURRENT_GROUPING_KEY,
+                          new Integer(FunctionTable.FUNC_CURRENT_GROUPING_KEY));
+          
+          m_functionId.put(Keywords.FUNC_CURRENT_MERGE_GROUP,
+                          new Integer(FunctionTable.FUNC_CURRENT_MERGE_GROUP));
+          m_functionId.put(Keywords.FUNC_CURRENT_MERGE_KEY,
+                          new Integer(FunctionTable.FUNC_CURRENT_MERGE_KEY));
+          
           m_functionId.put(Keywords.FUNC_ABS,
                           new Integer(FunctionTable.FUNC_ABS));
           m_functionId.put(Keywords.FUNC_REGEX_GROUP,

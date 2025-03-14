@@ -50,6 +50,10 @@ import org.apache.xalan.templates.ElemIterateNextIteration;
 import org.apache.xalan.templates.ElemIterateOnCompletion;
 import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemMatchingSubstring;
+import org.apache.xalan.templates.ElemMerge;
+import org.apache.xalan.templates.ElemMergeAction;
+import org.apache.xalan.templates.ElemMergeKey;
+import org.apache.xalan.templates.ElemMergeSource;
 import org.apache.xalan.templates.ElemMessage;
 import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
@@ -69,7 +73,7 @@ import org.apache.xalan.templates.ElemWithParam;
 import org.apache.xml.utils.QName;
 
 /**
- * This class defines the allowed structure for an XSLT stylesheet, and the
+ * This class defines the allowed structure for an XSLT 3 stylesheet, and the
  * mapping between Xalan classes and the markup elements in the stylesheet.
  * 
  * @see <a href="https://www.w3.org/TR/xslt-30/#xsd11-schema-for-xslt">XSD 1.1 Schema for XSLT Stylesheets</a>
@@ -78,7 +82,7 @@ public class XSLTSchema extends XSLTElementDef
 {
 
   /**
-   * Construct a XSLTSchema which represents the XSLT "schema".
+   * Construct an XSLTSchema object which represents the XSLT "schema".
    */
   XSLTSchema()
   {
@@ -144,6 +148,7 @@ public class XSLTSchema extends XSLTElementDef
     // xsl:function
     XSLTAttributeDef nameAttrRequired = new XSLTAttributeDef(null, "name",
                                           XSLTAttributeDef.T_QNAME, true, false,XSLTAttributeDef.ERROR);
+    
 	// Required.
     // Support AVT
     // xsl:element, xsl:attribute                                    
@@ -161,7 +166,17 @@ public class XSLTSchema extends XSLTElementDef
     // Static error if invalid
     // xsl:template, xsl:decimal-format                                      
     XSLTAttributeDef nameAttrOpt_ERROR = new XSLTAttributeDef(null, "name",
-                                     XSLTAttributeDef.T_QNAME, false, false,XSLTAttributeDef.ERROR);
+                                     XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional.
+    // xsl:merge-source
+    XSLTAttributeDef nameAttrOpt = new XSLTAttributeDef(null, "name",
+                                     XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.WARNING);
+    
+    // Optional.
+    // xsl:merge-source
+    XSLTAttributeDef sortBeforeMergeAttrOpt = new XSLTAttributeDef(null, "sort-before-merge",
+                                     XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
 
     // xsl:key                                 
     XSLTAttributeDef useAttr = new XSLTAttributeDef(null, "use",
@@ -220,7 +235,7 @@ public class XSLTSchema extends XSLTElementDef
       
       
     // Required.                                       
-    // xsl:for-each, xsl:copy-of, xsl:for-each-group, xsl:analyze-string, xsl:iterate                             
+    // xsl:for-each, xsl:copy-of, xsl:for-each-group, xsl:analyze-string, xsl:iterate, xsl:merge-source                            
     XSLTAttributeDef selectAttrRequired = new XSLTAttributeDef(null,
                                             "select",
                                             XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
@@ -427,26 +442,27 @@ public class XSLTSchema extends XSLTElementDef
     charData.setType(XSLTElementDef.T_PCDATA);
 
     XSLTElementDef whiteSpaceOnly = new XSLTElementDef(this, null, "text()",
-                                      null /*alias */, null /* elements */,
-                                      null,  /* attributes */
-                                      null,
-                                      ElemTextLiteral.class /* should be null? -sb */);
+				                                       null /*alias */, null /* elements */,
+				                                       null,  /* attributes */
+				                                       null,
+				                                       ElemTextLiteral.class /* should be null? -sb */);
 
     charData.setType(XSLTElementDef.T_PCDATA);
 
     XSLTAttributeDef resultAttr = new XSLTAttributeDef(null, "*",
-                                    XSLTAttributeDef.T_AVT, false, true,XSLTAttributeDef.WARNING);
-    XSLTAttributeDef xslResultAttr =
-      new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*",
-                           XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
+                                                       XSLTAttributeDef.T_AVT, false, true, 
+                                                       XSLTAttributeDef.WARNING);
+    XSLTAttributeDef xslResultAttr = new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*",
+                                                          XSLTAttributeDef.T_CDATA, false, false, 
+                                                          XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[34];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[35];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[35];
+    XSLTElementDef[] templateElements = new XSLTElementDef[38];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[39];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[39];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[35];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[39];
     
-    XSLTElementDef[] charTemplateElements = new XSLTElementDef[16];
+    XSLTElementDef[] charTemplateElements = new XSLTElementDef[20];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
                                      templateElements /* elements */,
@@ -556,6 +572,35 @@ public class XSLTSchema extends XSLTElementDef
                                                                      groupStartingWithAttrOpt, groupEndingWithAttrOpt, spaceAttr }, 
                                              new ProcessorTemplateElem(),
                                              ElemForEachGroup.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslMerge = new XSLTElementDef(this,
+								             Constants.S_XSLNAMESPACEURL, "merge",
+								             null /*alias */, templateElements,
+								             new XSLTAttributeDef[]{ spaceAttr }, 
+								             new ProcessorTemplateElem(),
+								             ElemMerge.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslMergeSource = new XSLTElementDef(this,
+								             Constants.S_XSLNAMESPACEURL, "merge-source",
+								             null /*alias */, templateElements,
+								             new XSLTAttributeDef[]{ nameAttrOpt, selectAttrRequired, 
+								            		                 sortBeforeMergeAttrOpt, spaceAttr }, 
+								             new ProcessorTemplateElem(),
+								             ElemMergeSource.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslMergeKey = new XSLTElementDef(this,
+								             Constants.S_XSLNAMESPACEURL, "merge-key",
+								             null /*alias */, templateElements,
+								             new XSLTAttributeDef[]{ selectAttrOpt, spaceAttr }, 
+								             new ProcessorTemplateElem(),
+								             ElemMergeKey.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslMergeAction = new XSLTElementDef(this,
+								             Constants.S_XSLNAMESPACEURL, "merge-action",
+								             null /*alias */, templateElements,
+								             new XSLTAttributeDef[]{ spaceAttr }, 
+								             new ProcessorTemplateElem(),
+								             ElemMergeAction.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslAnalyzeString = new XSLTElementDef(this,
                                                 Constants.S_XSLNAMESPACEURL, "analyze-string",
@@ -776,6 +821,10 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslForEach;
     templateElements[i++] = xslForEachGroup;
     templateElements[i++] = xslAnalyzeString;
+    templateElements[i++] = xslMerge;
+    templateElements[i++] = xslMergeSource;
+    templateElements[i++] = xslMergeKey;
+    templateElements[i++] = xslMergeAction;
     templateElements[i++] = xslMatchingSubstring;
     templateElements[i++] = xslNonMatchingSubstring;
     templateElements[i++] = xslIterate;
@@ -823,6 +872,10 @@ public class XSLTSchema extends XSLTElementDef
     charTemplateElements[i++] = xslApplyImports;
     charTemplateElements[i++] = xslForEach;
     charTemplateElements[i++] = xslForEachGroup;
+    charTemplateElements[i++] = xslMerge;
+    charTemplateElements[i++] = xslMergeSource;
+    charTemplateElements[i++] = xslMergeKey;
+    charTemplateElements[i++] = xslMergeAction;
     charTemplateElements[i++] = xslValueOf;
     charTemplateElements[i++] = xslCopyOf;
     charTemplateElements[i++] = xslNumber;

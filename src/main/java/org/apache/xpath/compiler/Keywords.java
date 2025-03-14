@@ -712,6 +712,12 @@ public class Keywords
   /** collection function string. */
   public static final String FUNC_COLLECTION = "collection";
   
+  /** current-merge-group function string (XSLT). */
+  public static final String FUNC_CURRENT_MERGE_GROUP = "current-merge-group";
+  
+  /** current-merge-key function string (XSLT). */
+  public static final String FUNC_CURRENT_MERGE_KEY = "current-merge-key";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

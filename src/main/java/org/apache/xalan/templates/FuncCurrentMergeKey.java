@@ -20,26 +20,25 @@
  */
 package org.apache.xalan.templates;
 
-import java.util.List;
 import java.util.Vector;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute xsl:for-each-group's current-group() function.
+ * Implementation of xsl:merge instruction's current-merge-key()
+ * function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncCurrentGroup extends Function
+public class FuncCurrentMergeKey extends Function
 {
 
-   private static final long serialVersionUID = -9147780878956514961L;
+   private static final long serialVersionUID = 8404013696862488459L;
 
    /**
      * Execute the function. The function must return a valid object.
@@ -51,20 +50,23 @@ public class FuncCurrentGroup extends Function
    */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {
-       XNodeSet nodes = null;
+	   TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            
+       ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();
        
-       TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            
-       ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();       
-      
-       List<Integer> groupNodesDtmHandles = currElemTemplateElement.getGroupNodesDtmHandles();
-       while (groupNodesDtmHandles == null) {
-           currElemTemplateElement = currElemTemplateElement.getParentElem();
-           groupNodesDtmHandles = currElemTemplateElement.getGroupNodesDtmHandles();
+       Object mergeKey = currElemTemplateElement.getMergeKey();
+       while (mergeKey == null && currElemTemplateElement != null) {            
+          currElemTemplateElement = currElemTemplateElement.getParentElem();
+          if (currElemTemplateElement != null) {
+        	  mergeKey = currElemTemplateElement.getMergeKey();
+          }
        }
        
-       nodes = new XNodeSet(groupNodesDtmHandles, xctxt);
-              
-       return nodes;
+       if (mergeKey == null) {
+          throw new javax.xml.transform.TransformerException("XTDE1071 : There is no current merge key.", 
+                                                                                          xctxt.getSAXLocator());    
+       }
+     
+       return XObject.create(mergeKey);
    }
 
    @Override
