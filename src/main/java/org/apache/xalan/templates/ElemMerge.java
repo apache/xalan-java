@@ -30,6 +30,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
@@ -113,7 +114,9 @@ public class ElemMerge extends ElemTemplateElement
   {
       if (m_mergeSourceElems == null)
     	  m_mergeSourceElems = new Vector();
-    
+      
+      mergeSourceElem.setParentElem(this);
+      
       m_mergeSourceElems.addElement(mergeSourceElem);
   }
   
@@ -124,7 +127,9 @@ public class ElemMerge extends ElemTemplateElement
    */
   public void setMergeActionElem(ElemMergeAction mergeActionElem)
   {    
-      m_mergeAction = mergeActionElem;
+	  mergeActionElem.setParentElem(this);
+	  
+      m_mergeAction = mergeActionElem;      
   }
   
   /**
@@ -313,7 +318,7 @@ public class ElemMerge extends ElemTemplateElement
 		  String mergeSrcName = mergeSourceElem.getName();
 		  if (mergeSrcNameList.contains(mergeSrcName)) {
 			  throw new TransformerException("XTSE1505 : Within an xsl:merge element, there are more than "
-			  		                                + "one xsl:merge-source elements with name '" + mergeSrcName + "'.", srcLocator);  
+			  		                                							+ "one xsl:merge-source elements with name '" + mergeSrcName + "'.", srcLocator);  
 		  }
 		  else {
 			  mergeSrcNameList.add(mergeSrcName); 
@@ -322,7 +327,7 @@ public class ElemMerge extends ElemTemplateElement
 		  isSortBeforeMergeRequired = mergeSourceElem.getSortBeforeMerge();
 		  if ((sortBeforeMergeList.size() > 0) && !sortBeforeMergeList.contains(isSortBeforeMergeRequired)) {
 			  throw new TransformerException("XTSE1505 : Within an xsl:merge element, all xsl:merge-source elements must "
-			  		                                + "have same boolean value (yes/no) for attribute 'sort-before-merge'.", srcLocator); 
+			  		                                						    + "have same boolean value (yes/no) for attribute 'sort-before-merge'.", srcLocator); 
 		  }
 		  else {			   
 			  sortBeforeMergeList.add(isSortBeforeMergeRequired);
@@ -332,7 +337,7 @@ public class ElemMerge extends ElemTemplateElement
 		  
 		  int contextNode = xctxt.getContextNode();
 		  
-		  XObject mergeSourceValue = mergeSourceSelectExpr.execute(xctxt);
+		  XObject mergeSourceObj = mergeSourceSelectExpr.execute(xctxt);
 
 		  /**
 		   * We consider only one merge key at the moment (otherwise, it'll be 
@@ -345,35 +350,39 @@ public class ElemMerge extends ElemTemplateElement
 		  int mergeKeyCount = mergeSourceElem.getMergeKeyElemCount();
 		  ElemMergeKey mergeKey = mergeSourceElem.getMergeKeyElem(0);		 
 		  Expression mergeKeySelectExpr = mergeKey.getSelect();
-
-		  if (mergeSourceValue instanceof ResultSequence) {
-			  ResultSequence rSeq = (ResultSequence)mergeSourceValue;
-			  for (int idx2 = 0; idx2 < rSeq.size(); idx2++) {
-				  XObject xObj = rSeq.item(idx2);			   
-				  XObject mergeKeyValue = null;
-				  if (mergeKeySelectExpr instanceof SelfIteratorNoPredicate) {			       
-					  mergeKeyValue = xObj; 
-				  }
-				  else {
-					  xctxt.setXPath3ContextItem(xObj);
-					  mergeKeyValue = mergeKeySelectExpr.execute(xctxt); 
-				  }
-
-				  Object mergeKeyNormalizedValue = getXPathEvaluationRawResult(mergeKeyValue);
-
-				  if (xslMergeResultMap.get(mergeKeyNormalizedValue) != null) {
-					  ResultSequence mergeGroup = xslMergeResultMap.get(mergeKeyNormalizedValue);
-					  mergeGroup.add(mergeKeyValue);
-				  } else {
-					  ResultSequence mergeGroup = new ResultSequence();
-					  mergeGroup.add(mergeKeyValue);
-					  xslMergeResultMap.put(mergeKeyNormalizedValue, mergeGroup);
-				  } 
+		  
+		  ResultSequence mergeSrcSequence = XslTransformEvaluationHelper.getResultSequenceFromXObject(mergeSourceObj, xctxt);
+		  
+		  for (int idx2 = 0; idx2 < mergeSrcSequence.size(); idx2++) {
+			  XObject mergeSrcItem = mergeSrcSequence.item(idx2);			   
+			  XObject mergeKeyValue = null;
+			  if (mergeKeySelectExpr instanceof SelfIteratorNoPredicate) {			       
+				  mergeKeyValue = mergeSrcItem; 
 			  }
+			  else if (mergeSrcItem instanceof XNodeSet) {
+				  XNodeSet xNodeSet = (XNodeSet)mergeSrcItem;
+				  DTMIterator dtmIter = xNodeSet.iterRaw();
+				  int nodeHandle = dtmIter.nextNode();
+				  xctxt.pushCurrentNode(nodeHandle);
+				  mergeKeyValue = mergeKeySelectExpr.execute(xctxt);
+				  xctxt.popCurrentNode();
+			  }
+			  else {
+				  xctxt.setXPath3ContextItem(mergeSrcItem);
+				  mergeKeyValue = mergeKeySelectExpr.execute(xctxt); 
+			  }
+
+			  Object mergeKeyNormalizedValue = getXPathEvaluationRawResult(mergeKeyValue);
+
+			  if (xslMergeResultMap.get(mergeKeyNormalizedValue) != null) {
+				  ResultSequence mergeGroup = xslMergeResultMap.get(mergeKeyNormalizedValue);
+				  mergeGroup.add(mergeSrcItem);
+			  } else {
+				  ResultSequence mergeGroup = new ResultSequence();
+				  mergeGroup.add(mergeSrcItem);
+				  xslMergeResultMap.put(mergeKeyNormalizedValue, mergeGroup);
+			  } 
 		  }
-		  else if (mergeSourceValue instanceof XNodeSet) {
-			  // TO DO 
-		  }		  
 	  }
 	  
 	  if (isSortBeforeMergeRequired.booleanValue()) {		 

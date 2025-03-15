@@ -1,24 +1,28 @@
 <?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 				
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                exclude-result-prefixes="xs"				
                 version="3.0">
                 
-   <!-- Author: mukulg@apache.org -->
+   <!-- Author: mukulg@apache.org -->                
+				
+   <!-- use with test2.xml -->
    
-   <!-- An XSL 3 stylesheet test case, to test xsl:merge instruction. -->                 
+   <!-- An XSL 3 stylesheet test case, to test xsl:merge instruction. -->				
                 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:template match="/">
+   <xsl:template match="/info">
       <result>
 		 <xsl:merge>
-		    <xsl:merge-source name="one" select="1 to 5" sort-before-merge="yes">    
-			   <xsl:merge-key select="."/>
+		    <xsl:merge-source name="one" select="seq[1]/person" sort-before-merge="yes">    
+			   <xsl:merge-key select="lName"/>
 		    </xsl:merge-source>
-		    <xsl:merge-source name="two" select="3 to 7" sort-before-merge="yes">
-			   <xsl:merge-key select="."/>
+		    <xsl:merge-source name="two" select="seq[2]/person" sort-before-merge="yes">
+			   <xsl:merge-key select="lName"/>
 		    </xsl:merge-source>
-			<xsl:merge-source name="three" select="(3,4,5,6,7,8,9,10)" sort-before-merge="yes">
-			   <xsl:merge-key select="."/>
+			<xsl:merge-source name="three" select="seq[3]/person" sort-before-merge="yes">
+			   <xsl:merge-key select="lName"/>
 		    </xsl:merge-source>
 		    <xsl:merge-action>
 			   <key value="{current-merge-key()}" occurenceCount="{count(current-merge-group())}"/>

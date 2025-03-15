@@ -4,7 +4,7 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- An XSL 3 stylesheet test case, to test xsl:merge instruction -->                
+   <!-- An XSL 3 stylesheet test case, to test xsl:merge instruction. -->                
                 
    <xsl:output method="xml" indent="yes"/>
    

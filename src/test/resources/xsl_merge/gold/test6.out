@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <key value="Gandhi">
+    <person>
+	    <id>4</id>
+		<fName>Mukul1</fName>
+		<lName>Gandhi</lName>
+	 </person>
+    <person>
+	    <id>6</id>
+		<fName>Mukul2</fName>
+		<lName>Gandhi</lName>
+	 </person>
+  </key>
+  <key value="Glavassevich">
+    <person>
+	    <id>3</id>
+		<fName>Michael</fName>
+		<lName>Glavassevich</lName>
+	 </person>
+  </key>
+  <key value="Gregory">
+    <person>
+	    <id>1</id>
+		<fName>Gary</fName>
+		<lName>Gregory</lName>
+	 </person>
+  </key>
+  <key value="Kay">
+    <person>
+	    <id>5</id>
+		<fName>Alan</fName>
+		<lName>Kay</lName>
+	 </person>
+  </key>
+  <key value="Kesselman">
+    <person>
+	    <id>2</id>
+		<fName>Joseph</fName>
+		<lName>Kesselman</lName>
+	 </person>
+  </key>
+</result>

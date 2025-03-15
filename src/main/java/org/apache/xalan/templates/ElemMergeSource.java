@@ -100,7 +100,8 @@ public class ElemMergeSource extends ElemTemplateElement
   {
       if (m_mergeKeyElems == null)
     	  m_mergeKeyElems = new Vector();
-    
+      
+      mergeKeyElem.setParentElem(this);    
       m_mergeKeyElems.addElement(mergeKeyElem);
   }
   
