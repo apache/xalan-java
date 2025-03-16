@@ -1,0 +1,22 @@
+<info>
+   <seq>
+     <person>
+	    <id>1</id>
+		<fName>Gary</fName>
+		<lName>Gregory</lName>
+                <country>USA</country>
+	 </person>
+	 <person>
+	    <id>2</id>
+		<fName>Joseph</fName>
+		<lName>Kesselman</lName>
+                <country>USA</country>
+	 </person>
+	 <person>
+	    <id>3</id>
+		<fName>Michael</fName>
+		<lName>Glavassevich</lName>
+                <country>Canada</country>
+	 </person>
+   </seq>
+</info>

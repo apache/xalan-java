@@ -335,6 +335,7 @@ public class ElemMerge extends ElemTemplateElement
 		  }
 		  
 		  isSortBeforeMergeRequired = mergeSourceElem.getSortBeforeMerge();
+		  
 		  if ((sortBeforeMergeList.size() > 0) && !sortBeforeMergeList.contains(isSortBeforeMergeRequired)) {
 			  throw new TransformerException("XTSE1505 : Within an xsl:merge element, all xsl:merge-source elements must "
 			  		                                						    + "have same boolean value (yes/no) for attribute 'sort-before-merge'.", srcLocator); 
@@ -402,7 +403,7 @@ public class ElemMerge extends ElemTemplateElement
 			  else {
 				  MergeKey xslMergeKey = new MergeKey(compositeMergeKey);
 				  
-				  String mergeKeyStr = getMergeKeyAsStr(xslMergeKey);
+				  String mergeKeyStr = getMergeKeyValueAsStr(xslMergeKey);
 
 				  if (xslMergeResultMap.get(mergeKeyStr) != null) {
 					  ResultSequence xslMergeGroup = xslMergeResultMap.get(mergeKeyStr);
@@ -418,73 +419,92 @@ public class ElemMerge extends ElemTemplateElement
 	  
 	  if (isSortBeforeMergeRequired.booleanValue()) {		 
 		 // Sort the overall xsl:merge result according to 
-		 // available merge key values.
+		 // available merge key values, and emit XSL transform output.
 		  
 		 if (xslSimpleMergeResultMap.size() > 0) {
-			 List<Object> mergeKeyList = new ArrayList<Object>();
-
-			 Set<Object> mapKeySet = xslSimpleMergeResultMap.keySet();	  
-			 Iterator<Object> mapKeyIter = mapKeySet.iterator();
-			 while (mapKeyIter.hasNext()) {
-				 Object currentMergeKey = mapKeyIter.next();
-				 mergeKeyList.add(currentMergeKey);
-			 }
-
-			 mergeKeyList.sort(null);
-
-			 for (int idx = 0; idx < mergeKeyList.size(); idx++) {
-				 Object currentMergeKey = mergeKeyList.get(idx);
-				 ResultSequence currentMergeGroup = xslSimpleMergeResultMap.get(currentMergeKey);
-				 for (ElemTemplateElement templateElem = m_mergeAction.m_firstChild; templateElem != null;
-						 														  templateElem = templateElem.m_nextSibling) {
-					 templateElem.setMergeKey(currentMergeKey);
-					 templateElem.setMergeGroup(currentMergeGroup);
-					 xctxt.setSAXLocator(templateElem);
-					 transformer.setCurrentElement(templateElem);                   
-					 templateElem.execute(transformer);
-				 }
-			 }
+			 transformXslItemsWithSingletonMergeKey(transformer, xctxt, xslSimpleMergeResultMap, true);
 		 }
 		 else {
-			 List<String> mergeKeyList = new ArrayList<String>();
-
-			 Set<String> mapKeySet = xslMergeResultMap.keySet();	  
-			 Iterator<String> mapKeyIter = mapKeySet.iterator();
-			 while (mapKeyIter.hasNext()) {
-				 String currentMergeKey = mapKeyIter.next();
-				 mergeKeyList.add(currentMergeKey);
-			 }
-
-			 mergeKeyList.sort(null);
-
-			 for (int idx = 0; idx < mergeKeyList.size(); idx++) {
-				 String currentMergeKey = mergeKeyList.get(idx);
-				 ResultSequence currentMergeGroup = xslMergeResultMap.get(currentMergeKey);
-				 for (ElemTemplateElement templateElem = m_mergeAction.m_firstChild; templateElem != null;
-						 templateElem = templateElem.m_nextSibling) {
-					 templateElem.setMergeKey(currentMergeKey);
-					 templateElem.setMergeGroup(currentMergeGroup);
-					 xctxt.setSAXLocator(templateElem);
-					 transformer.setCurrentElement(templateElem);                   
-					 templateElem.execute(transformer);
-				 }
-			 }
+			 transformXslItemsWithCompositeMergeKey(transformer, xctxt, xslMergeResultMap, true);
 		 }
 	  }
 	  else {
-		  Set<String> mapKeySet = xslMergeResultMap.keySet();	  
-		  Iterator<String> mapKeyIter = mapKeySet.iterator();
-		  while (mapKeyIter.hasNext()) {
-			  String currentMergeKey = mapKeyIter.next();
-			  ResultSequence currentMergeGroup = xslMergeResultMap.get(currentMergeKey);
-			  for (ElemTemplateElement templateElem = m_mergeAction.m_firstChild; templateElem != null;
-					  														   templateElem = templateElem.m_nextSibling) {
-				  templateElem.setMergeKey(currentMergeKey);
-				  templateElem.setMergeGroup(currentMergeGroup);
-				  xctxt.setSAXLocator(templateElem);
-				  transformer.setCurrentElement(templateElem);                   
-				  templateElem.execute(transformer);
-			  }
+		  if (xslSimpleMergeResultMap.size() > 0) {
+			  transformXslItemsWithSingletonMergeKey(transformer, xctxt, xslSimpleMergeResultMap, false);
+		  }
+		  else {
+			  transformXslItemsWithCompositeMergeKey(transformer, xctxt, xslMergeResultMap, false);
+		  }
+	  }
+  }
+  
+  /**
+   * Given an XSL xsl:merge stylesheet instruction with singleton merge keys and 
+   * an in-memory result of XSL transformation as java.util.Map object, emit XSL 
+   * transformation result to stylesheet's output. 
+   */
+  private void transformXslItemsWithSingletonMergeKey(TransformerImpl transformer, XPathContext xctxt,
+		  											         Map<Object, ResultSequence> xslSimpleMergeResultMap, 
+		  											         boolean isSortRequired) throws TransformerException {
+	  
+	  List<Object> mergeKeyList = new ArrayList<Object>();
+
+	  Set<Object> mapKeySet = xslSimpleMergeResultMap.keySet();	  
+	  Iterator<Object> mapKeyIter = mapKeySet.iterator();
+	  while (mapKeyIter.hasNext()) {
+		  Object currentMergeKey = mapKeyIter.next();
+		  mergeKeyList.add(currentMergeKey);
+	  }
+
+	  if (isSortRequired) {
+		  mergeKeyList.sort(null);
+	  }
+
+	  for (int idx = 0; idx < mergeKeyList.size(); idx++) {
+		  Object currentMergeKey = mergeKeyList.get(idx);
+		  ResultSequence currentMergeGroup = xslSimpleMergeResultMap.get(currentMergeKey);
+		  for (ElemTemplateElement templateElem = m_mergeAction.m_firstChild; templateElem != null;
+				  templateElem = templateElem.m_nextSibling) {
+			  templateElem.setMergeKey(currentMergeKey);
+			  templateElem.setMergeGroup(currentMergeGroup);
+			  xctxt.setSAXLocator(templateElem);
+			  transformer.setCurrentElement(templateElem);                   
+			  templateElem.execute(transformer);
+		  }
+	  }
+  }
+
+  /**
+   * Given an XSL xsl:merge stylesheet instruction with composite merge keys and 
+   * an in-memory result of XSL transformation as java.util.Map object, emit XSL 
+   * transformation result to stylesheet's output. 
+   */
+  private void transformXslItemsWithCompositeMergeKey(TransformerImpl transformer, XPathContext xctxt,
+		  												     Map<String, ResultSequence> xslMergeResultMap, 
+		  												     boolean isSortRequired) throws TransformerException {
+	  List<String> mergeKeyList = new ArrayList<String>();
+
+	  Set<String> mapKeySet = xslMergeResultMap.keySet();	  
+	  Iterator<String> mapKeyIter = mapKeySet.iterator();
+	  while (mapKeyIter.hasNext()) {
+		  String currentMergeKey = mapKeyIter.next();
+		  mergeKeyList.add(currentMergeKey);
+	  }
+
+	  if (isSortRequired) {
+	      mergeKeyList.sort(null);
+	  }
+
+	  for (int idx = 0; idx < mergeKeyList.size(); idx++) {
+		  String currentMergeKey = mergeKeyList.get(idx);
+		  ResultSequence currentMergeGroup = xslMergeResultMap.get(currentMergeKey);
+		  for (ElemTemplateElement templateElem = m_mergeAction.m_firstChild; templateElem != null;
+				  templateElem = templateElem.m_nextSibling) {
+			  templateElem.setMergeKey(currentMergeKey);
+			  templateElem.setMergeGroup(currentMergeGroup);
+			  xctxt.setSAXLocator(templateElem);
+			  transformer.setCurrentElement(templateElem);                   
+			  templateElem.execute(transformer);
 		  }
 	  }
   }
@@ -538,79 +558,10 @@ public class ElemMerge extends ElemTemplateElement
   }
   
   /**
-   * A class definition, to support composite merge 
-   * key for xsl:merge instruction.
-   */
-  class MergeKey implements Comparable<MergeKey> {
-	  
-    private List<Object> compositeMergeKey = null;
-    
-    private static final String STR_DELIM = "???????";
-    
-    /**
-     * Class constructor.
-     */
-    public MergeKey(List<Object> compositeMergeKey) {
-       this.compositeMergeKey = compositeMergeKey;
-    }
-
-	@Override
-	public int compareTo(MergeKey obj2) {		
-		int compareResult = 0;
-
-		StringBuffer strBuff1 = new StringBuffer(); 
-		for (int idx = 0; idx < compositeMergeKey.size(); idx++) {
-			Object obj = compositeMergeKey.get(idx);
-			if (idx < (compositeMergeKey.size() - 1)) {
-				strBuff1.append(obj.toString() + STR_DELIM);
-			}
-			else {
-				strBuff1.append(obj.toString()); 
-			}
-		}
-
-		String str1 = strBuff1.toString(); 
-
-		StringBuffer strBuff2 = new StringBuffer();
-		List<Object> compositeMergeKey2 = obj2.getCompositeMergeKey();
-
-		for (int idx = 0; idx < compositeMergeKey2.size(); idx++) {
-			Object obj = compositeMergeKey2.get(idx);
-			if (idx < (compositeMergeKey2.size() - 1)) {
-				strBuff2.append(obj.toString() + STR_DELIM);
-			}
-			else {
-				strBuff2.append(obj.toString()); 
-			}
-		}
-
-		String str2 = strBuff2.toString();
-
-		if (str1.compareTo(str2) < 0) {
-			compareResult = -1;
-		}
-		else if (str1.compareTo(str2) > 0) {
-			compareResult = 1;
-		}
-
-		return compareResult;
-	}
-
-	public List<Object> getCompositeMergeKey() {
-		return compositeMergeKey;
-	}
-
-	public void setCompositeMergeKey(List<Object> compositeMergeKey) {
-		this.compositeMergeKey = compositeMergeKey;
-	}
-	  
-  }
-  
-  /**
-   * Method definition, to get string value of MergeKey 
+   * Method definition, to get string value of XSL MergeKey 
    * composite object. 
    */
-  private String getMergeKeyAsStr(MergeKey mergeKey) {	 
+  private String getMergeKeyValueAsStr(MergeKey mergeKey) {	 
 	 String resultStr = null;
 	 
 	 StringBuffer strBuff = new StringBuffer();	 
@@ -623,6 +574,79 @@ public class ElemMerge extends ElemTemplateElement
 	 resultStr = (strBuff.toString()).trim();
 	 
 	 return resultStr;
+  }
+  
+  /**
+   * A class definition, to support XSL composite merge key for xsl:merge 
+   * instruction.
+   * 
+   * An XSL composite merge key definition, is sequence of two or more 
+   * xsl:merge-key stylesheet sibling elements within xsl:merge-source 
+   * element.
+   */
+  class MergeKey implements Comparable<MergeKey> {
+	  
+	  private List<Object> compositeMergeKey = null;
+
+	  private static final String STR_DELIM = "???????";
+
+	  /**
+	   * Class constructor.
+	   */
+	  public MergeKey(List<Object> compositeMergeKey) {
+		  this.compositeMergeKey = compositeMergeKey;
+	  }
+
+	  @Override
+	  public int compareTo(MergeKey obj2) {		
+		  int compareResult = 0;
+
+		  StringBuffer strBuff1 = new StringBuffer(); 
+		  for (int idx = 0; idx < compositeMergeKey.size(); idx++) {
+			  Object obj = compositeMergeKey.get(idx);
+			  if (idx < (compositeMergeKey.size() - 1)) {
+				  strBuff1.append(obj.toString() + STR_DELIM);
+			  }
+			  else {
+				  strBuff1.append(obj.toString()); 
+			  }
+		  }
+
+		  String str1 = strBuff1.toString(); 
+
+		  StringBuffer strBuff2 = new StringBuffer();
+		  List<Object> compositeMergeKey2 = obj2.getCompositeMergeKey();
+
+		  for (int idx = 0; idx < compositeMergeKey2.size(); idx++) {
+			  Object obj = compositeMergeKey2.get(idx);
+			  if (idx < (compositeMergeKey2.size() - 1)) {
+				  strBuff2.append(obj.toString() + STR_DELIM);
+			  }
+			  else {
+				  strBuff2.append(obj.toString()); 
+			  }
+		  }
+
+		  String str2 = strBuff2.toString();
+
+		  if (str1.compareTo(str2) < 0) {
+			  compareResult = -1;
+		  }
+		  else if (str1.compareTo(str2) > 0) {
+			  compareResult = 1;
+		  }
+
+		  return compareResult;
+	  }
+
+	  public List<Object> getCompositeMergeKey() {
+		  return compositeMergeKey;
+	  }
+
+	  public void setCompositeMergeKey(List<Object> compositeMergeKey) {
+		  this.compositeMergeKey = compositeMergeKey;
+	  }
+	  
   }
 
 }

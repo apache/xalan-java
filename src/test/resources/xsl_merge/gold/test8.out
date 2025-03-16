@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><info>
+  <!--The following emitted information, contains data grouped by fName and lName fields-->
+  <result1 desc="grp_by_fName_and_lName">
+    <name value="Alan Kay">
+      <person>
+	    <id>5</id>
+		<fName>Alan</fName>
+		<lName>Kay</lName>
+                <country>USA</country>
+	 </person>
+    </name>
+    <name value="Gary Gregory">
+      <person>
+	    <id>1</id>
+		<fName>Gary</fName>
+		<lName>Gregory</lName>
+                <country>USA</country>
+	 </person>
+    </name>
+    <name value="Joseph Kesselman">
+      <person>
+	    <id>2</id>
+		<fName>Joseph</fName>
+		<lName>Kesselman</lName>
+                <country>USA</country>
+	 </person>
+      <person>
+	    <id>7</id>
+		<fName>Joseph</fName>
+		<lName>Kesselman</lName>
+                <country>Germany</country>
+	 </person>
+    </name>
+    <name value="Michael Glavassevich">
+      <person>
+	    <id>3</id>
+		<fName>Michael</fName>
+		<lName>Glavassevich</lName>
+                <country>Canada</country>
+	 </person>
+    </name>
+    <name value="Mukul Gandhi">
+      <person>
+	    <id>4</id>
+		<fName>Mukul</fName>
+		<lName>Gandhi</lName>
+                <country>India</country>
+	 </person>
+      <person>
+	    <id>6</id>
+		<fName>Mukul</fName>
+		<lName>Gandhi</lName>
+                <country>USA</country>
+	 </person>
+    </name>
+  </result1>
+  <!--The following emitted information, contains data grouped by country name-->
+  <result2 desc="grp_by_country">
+    <country value="Canada">
+      <person>
+	    <id>3</id>
+		<fName>Michael</fName>
+		<lName>Glavassevich</lName>
+                <country>Canada</country>
+	 </person>
+    </country>
+    <country value="Germany">
+      <person>
+	    <id>7</id>
+		<fName>Joseph</fName>
+		<lName>Kesselman</lName>
+                <country>Germany</country>
+	 </person>
+    </country>
+    <country value="India">
+      <person>
+	    <id>4</id>
+		<fName>Mukul</fName>
+		<lName>Gandhi</lName>
+                <country>India</country>
+	 </person>
+    </country>
+    <country value="USA">
+      <person>
+	    <id>1</id>
+		<fName>Gary</fName>
+		<lName>Gregory</lName>
+                <country>USA</country>
+	 </person>
+      <person>
+	    <id>2</id>
+		<fName>Joseph</fName>
+		<lName>Kesselman</lName>
+                <country>USA</country>
+	 </person>
+      <person>
+	    <id>5</id>
+		<fName>Alan</fName>
+		<lName>Kay</lName>
+                <country>USA</country>
+	 </person>
+      <person>
+	    <id>6</id>
+		<fName>Mukul</fName>
+		<lName>Gandhi</lName>
+                <country>USA</country>
+	 </person>
+    </country>
+  </result2>
+</info>

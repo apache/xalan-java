@@ -1,0 +1,16 @@
+<info>
+   <seq>
+     <person>
+	    <id>4</id>
+		<fName>Mukul</fName>
+		<lName>Gandhi</lName>
+                <country>India</country>
+	 </person>
+	 <person>
+	    <id>5</id>
+		<fName>Alan</fName>
+		<lName>Kay</lName>
+                <country>USA</country>
+	 </person>
+   </seq>
+</info>
