@@ -1,0 +1,24 @@
+{
+   "info" : {
+      "personList" : [
+	     {
+            "id" : 1,
+			"fName" : "Gary",
+			"lName" : "Gregory",
+			"country" : "USA"
+         },
+         {
+            "id" : 2,
+			"fName" : "Joseph",
+			"lName" : "Kesselman",
+			"country" : "USA"
+         },
+         {
+            "id" : 3,
+			"fName" : "Michael",
+			"lName" : "Glavassevich",
+			"country" : "Canada"
+         }		 
+	  ]
+   }
+}

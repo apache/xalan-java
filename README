@@ -17,6 +17,8 @@
 
 Copyright 1999-2025 The Apache Software Foundation
 
+Document last modified : 2025-03-17
+
 Authors:
    Gary Gregory <ggregory@apache.org>
    Joseph Kesselman <jkesselm@apache.org>
@@ -57,11 +59,11 @@ This produces Maven build output with trailing information like following:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXsl3Tests
-[INFO] Tests run: 937, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 40.968 s - in org.apache.xalan.tests.main.AllXsl3Tests
+[INFO] Tests run: 939, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.189 s - in org.apache.xalan.tests.main.AllXsl3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 937, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 939, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
