@@ -607,16 +607,16 @@ public class XPathParser
   private final void nextToken()
   {
 
-    if (m_queueMark < m_ops.getTokenQueueSize())
-    {
-      m_token = (String) m_ops.m_tokenQueue.elementAt(m_queueMark++);      
-      m_tokenChar = m_token.charAt(0);
-    }
-    else
-    {
-      m_token = null;
-      m_tokenChar = 0;
-    }
+	  if (m_queueMark < m_ops.getTokenQueueSize())
+	  {
+		  m_token = (String) m_ops.m_tokenQueue.elementAt(m_queueMark++);      
+		  m_tokenChar = m_token.charAt(0);
+	  }
+	  else
+	  {
+		  m_token = null;
+		  m_tokenChar = 0;
+	  }
   }
 
   /**
@@ -4412,7 +4412,17 @@ public class XPathParser
     	   String xpathTwoStr = "";
     	   xpathOneStr = m_token;
     	   while (m_queueMark != scanOneEndPos) {
-    		   nextToken();
+    		   try {
+    		      nextToken();
+    		   }
+    		   catch (ClassCastException ex) { 
+    			  String str = ex.getMessage();
+    			  if ("org.apache.xpath.objects.XString cannot be cast to java.lang.String".equals(str)) {
+    				 Object tokenQueueObj1 = m_ops.m_tokenQueue.elementAt(m_queueMark - 1);
+    				 m_token = "'" + tokenQueueObj1.toString() + "'";      
+    				 m_tokenChar = m_token.charAt(0);
+    			  }
+    		   }
     		   xpathOneStr += m_token; 
     	   }
     	     
@@ -6120,8 +6130,9 @@ public class XPathParser
    
    /**
     * This method checks, whether there's an XPath built-in node pattern like 
-    * node()/text()/comment() at an end of XPath expression. XPath node checks for 
-    * these patterns with predicate as suffix also need to be similarly excluded.
+    * node(), text(), comment() at an end of XPath expression string. XPath node 
+    * checks for these patterns with predicate as suffix also need to be 
+    * similarly excluded.
     */
    private boolean isXPathPatternExcludeTrailingNodeFunctions() {
 	  boolean isExclude = false;
