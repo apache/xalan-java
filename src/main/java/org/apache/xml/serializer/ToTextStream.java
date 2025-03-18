@@ -88,7 +88,7 @@ public class ToTextStream extends ToStream
     flushPending();
     flushWriter();
     if (m_tracer != null)
-        super.fireEndDoc();
+        super.emitEndDoc();
   }
 
   /**
@@ -127,10 +127,10 @@ public class ToTextStream extends ToStream
           String namespaceURI, String localName, String name, Attributes atts)
             throws org.xml.sax.SAXException
   {
-    // time to fire off startElement event
+    // emit startElement event
     if (m_tracer != null) {
-        super.fireStartElem(name);
-        this.firePseudoAttributes();
+        super.emitStartElem(name);
+        this.emitPseudoAttributes();
     }
     return;
   }
@@ -164,7 +164,7 @@ public class ToTextStream extends ToStream
           throws org.xml.sax.SAXException
   {
         if (m_tracer != null)
-            super.fireEndElem(name);           
+            super.emitEndElem(name);           
   }
 
   /**
@@ -220,7 +220,7 @@ public class ToTextStream extends ToStream
         }
             
         if (m_tracer != null)
-            super.fireCharEvent(ch, start, length);      
+            super.emitCharEvent(ch, start, length);      
     }
     catch(IOException ioe)
     {
@@ -381,7 +381,7 @@ public class ToTextStream extends ToStream
     {
         writeNormalizedChars(ch, start, length, m_lineSepUse);
         if (m_tracer != null)
-            super.fireCDATAEvent(ch, start, length);              
+            super.emitCDATAEvent(ch, start, length);              
     }
     catch(IOException ioe)
     {
@@ -455,7 +455,7 @@ public class ToTextStream extends ToStream
     flushPending();  
     
     if (m_tracer != null)
-        super.fireEscapingEvent(target, data);  
+        super.emitEscapingEvent(target, data);  
   }
 
   /**
@@ -496,7 +496,7 @@ public class ToTextStream extends ToStream
 
     flushPending();
     if (m_tracer != null)
-        super.fireCommentEvent(ch, start, length);
+        super.emitCommentEvent(ch, start, length);
   }
 
   /**
@@ -509,7 +509,7 @@ public class ToTextStream extends ToStream
   public void entityReference(String name) throws org.xml.sax.SAXException
   {
         if (m_tracer != null)
-            super.fireEntityReference(name);    
+            super.emitEntityReference(name);    
   }
   
     /**
@@ -540,7 +540,7 @@ public class ToTextStream extends ToStream
     public void endElement(String elemName) throws SAXException
     {
         if (m_tracer != null)
-            super.fireEndElem(elemName);                       
+            super.emitEndElem(elemName);                       
     }
  
     /**
@@ -554,10 +554,10 @@ public class ToTextStream extends ToStream
     {
         if (m_needToCallStartDocument)
             startDocumentInternal();        
-        // time to fire off startlement event.
+        // emit startlement event.
         if (m_tracer != null) {
-            super.fireStartElem(elementName);
-            this.firePseudoAttributes();
+            super.emitStartElem(elementName);
+            this.emitPseudoAttributes();
         }
         
         return;

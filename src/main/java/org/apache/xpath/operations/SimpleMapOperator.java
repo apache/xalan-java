@@ -105,7 +105,7 @@ public class SimpleMapOperator extends Operation
            }
        }
        else {
-           // we're assuming here that, the XObject object instance expr1
+           // We're assuming here that, the XObject object instance expr1
            // represents a singleton value.
            xctxt.setXPath3ContextItem(expr1);
            XObject xsObj = m_right.execute(xctxt, DTM.NULL);

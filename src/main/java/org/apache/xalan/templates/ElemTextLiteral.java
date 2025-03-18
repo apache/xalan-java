@@ -207,7 +207,7 @@ public class ElemTextLiteral extends ElemTemplateElement
       if (transformer.getDebug()) {
         // flush any pending cached processing before the trace event.
         rth.flushPending();
-        transformer.getTraceManager().fireTraceEvent(this);
+        transformer.getTraceManager().emitTraceEvent(this);
       }
 
       if (m_disableOutputEscaping)
@@ -233,7 +233,7 @@ public class ElemTextLiteral extends ElemTemplateElement
         {
             // flush any pending cached processing before sending the trace event
             transformer.getResultTreeHandler().flushPending();
-            transformer.getTraceManager().fireTraceEndEvent(this);
+            transformer.getTraceManager().emitTraceEndEvent(this);
         }
         catch (SAXException se)
         {

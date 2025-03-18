@@ -205,7 +205,7 @@ public class ElemExtensionCall extends ElemLiteralResult
           new Object[] {getRawName()}));
           
     if (transformer.getDebug())
-		transformer.getTraceManager().fireTraceEvent(this);
+		transformer.getTraceManager().emitTraceEvent(this);
     try
     {
       transformer.getResultTreeHandler().flushPending();
@@ -268,7 +268,7 @@ public class ElemExtensionCall extends ElemLiteralResult
       throw new TransformerException(se);
     }
     if (transformer.getDebug())
-		transformer.getTraceManager().fireTraceEndEvent(this);
+		transformer.getTraceManager().emitTraceEndEvent(this);
   }
 
   /**

@@ -78,7 +78,7 @@ public class ElemApplyImport extends ElemTemplateElement
     }
 
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
     if (DTM.NULL != sourceNode)
@@ -93,7 +93,7 @@ public class ElemApplyImport extends ElemTemplateElement
         XSLTErrorResources.ER_NULL_SOURCENODE_APPLYIMPORTS);  //"sourceNode is null in xsl:apply-imports!");
     }
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEndEvent(this);
+      transformer.getTraceManager().emitTraceEndEvent(this);
   }
 
   /**

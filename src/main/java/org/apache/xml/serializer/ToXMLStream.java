@@ -199,7 +199,7 @@ public class ToXMLStream extends ToStream
         flushWriter();
         
         if (m_tracer != null)
-            super.fireEndDoc();
+            super.emitEndDoc();
     }
 
     /**
@@ -331,7 +331,7 @@ public class ToXMLStream extends ToStream
         }
         
         if (m_tracer != null)
-            super.fireEscapingEvent(target, data);  
+            super.emitEscapingEvent(target, data);  
     }
 
     /**
@@ -365,7 +365,7 @@ public class ToXMLStream extends ToStream
         }
         
         if (m_tracer != null)
-            super.fireEntityReference(name);            
+            super.emitEntityReference(name);            
     }
 
     /**

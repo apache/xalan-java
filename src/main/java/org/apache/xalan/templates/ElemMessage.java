@@ -115,7 +115,7 @@ public class ElemMessage extends ElemTemplateElement
   {
 
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
 
     String data = transformer.transformToString(this);
 
@@ -125,6 +125,6 @@ public class ElemMessage extends ElemTemplateElement
       transformer.getErrorListener().fatalError(new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_STYLESHEET_DIRECTED_TERMINATION, null))); //"Stylesheet directed termination"));
     
     if (transformer.getDebug())
-	  transformer.getTraceManager().fireTraceEndEvent(this); 
+	  transformer.getTraceManager().emitTraceEndEvent(this); 
   }
 }

@@ -80,7 +80,7 @@ public class ElemChoose extends ElemTemplateElement
   {
 
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
 
     boolean found = false;
 
@@ -104,15 +104,15 @@ public class ElemChoose extends ElemTemplateElement
             XObject test = when.getTest().execute(xctxt, sourceNode, when);
 
             if (transformer.getDebug())
-               transformer.getTraceManager().fireSelectedEvent(sourceNode, when,
+               transformer.getTraceManager().emitSelectedEvent(sourceNode, when,
                                                                         "test", when.getTest(), test);
             if (test.bool())
             {
-               transformer.getTraceManager().fireTraceEvent(when);
+               transformer.getTraceManager().emitTraceEvent(when);
             
                transformer.executeChildTemplates(when, true);
 
-	           transformer.getTraceManager().fireTraceEndEvent(when); 
+	           transformer.getTraceManager().emitTraceEndEvent(when); 
 	                  
                return;
             }
@@ -155,13 +155,13 @@ public class ElemChoose extends ElemTemplateElement
         found = true;
 
         if (transformer.getDebug())
-          transformer.getTraceManager().fireTraceEvent(childElem);
+          transformer.getTraceManager().emitTraceEvent(childElem);
 
         // xsl:otherwise                
         transformer.executeChildTemplates(childElem, true);
 
         if (transformer.getDebug())
-	      transformer.getTraceManager().fireTraceEndEvent(childElem); 
+	      transformer.getTraceManager().emitTraceEndEvent(childElem); 
         return;
       }
     }
@@ -171,7 +171,7 @@ public class ElemChoose extends ElemTemplateElement
         this, XSLTErrorResources.ER_CHOOSE_REQUIRES_WHEN);
         
     if (transformer.getDebug())
-	  transformer.getTraceManager().fireTraceEndEvent(this);         
+	  transformer.getTraceManager().emitTraceEndEvent(this);         
   }
 
   /**

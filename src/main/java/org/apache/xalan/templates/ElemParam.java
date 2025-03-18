@@ -134,7 +134,7 @@ public class ElemParam extends ElemVariable
   public void execute(TransformerImpl transformer) throws TransformerException
   {
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
       
     VariableStack vars = transformer.getXPathContext().getVarStack();
     
@@ -202,7 +202,7 @@ public class ElemParam extends ElemVariable
     }
     
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEndEvent(this);
+      transformer.getTraceManager().emitTraceEndEvent(this);
   }
   
   /**

@@ -310,7 +310,7 @@ public class ElemVariable extends ElemTemplateElement
   {
 
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
   
@@ -327,7 +327,7 @@ public class ElemVariable extends ElemTemplateElement
     }
     
     if (transformer.getDebug())
-	  transformer.getTraceManager().fireTraceEndEvent(this);         
+	  transformer.getTraceManager().emitTraceEndEvent(this);         
   }
 
   /**
@@ -645,7 +645,7 @@ public class ElemVariable extends ElemTemplateElement
            var.allowDetachToRelease(false);
 
            if (transformer.getDebug()) {
-               transformer.getTraceManager().fireSelectedEvent(sourceNode, this, "select", 
+               transformer.getTraceManager().emitSelectedEvent(sourceNode, this, "select", 
                                                                         m_selectPattern, var);
            }
         }

@@ -274,7 +274,7 @@ public class ElemWithParam extends ElemTemplateElement
         var.allowDetachToRelease(false);
 
         if (transformer.getDebug())
-          transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+          transformer.getTraceManager().emitSelectedEvent(sourceNode, this,
                   "select", m_selectPattern, var);
       }
       else if (null == getFirstChildElem())

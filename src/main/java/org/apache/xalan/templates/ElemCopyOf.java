@@ -187,7 +187,7 @@ public class ElemCopyOf extends ElemTemplateElement
   public void execute(TransformerImpl transformer) throws TransformerException
   {
     if (transformer.getDebug())
-    	transformer.getTraceManager().fireTraceEvent(this);
+    	transformer.getTraceManager().emitTraceEvent(this);
 
     try {      
       XPathContext xctxt = transformer.getXPathContext();
@@ -217,7 +217,7 @@ public class ElemCopyOf extends ElemTemplateElement
       }
 
       if (transformer.getDebug()) {
-         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+         transformer.getTraceManager().emitSelectedEvent(sourceNode, this,
                                                                         "select", m_selectExpression, value);
       }
 
@@ -291,7 +291,7 @@ public class ElemCopyOf extends ElemTemplateElement
     }
     finally {
       if (transformer.getDebug()) {
-         transformer.getTraceManager().fireTraceEndEvent(this);
+         transformer.getTraceManager().emitTraceEndEvent(this);
       }
     }
 

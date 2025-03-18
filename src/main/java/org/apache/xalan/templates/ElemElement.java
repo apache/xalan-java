@@ -205,7 +205,7 @@ public class ElemElement extends ElemUse
   {
 
        if (transformer.getDebug())
-         transformer.getTraceManager().fireTraceEvent(this);
+         transformer.getTraceManager().emitTraceEvent(this);
 
  	SerializationHandler rhandler = transformer.getSerializationHandler();
     XPathContext xctxt = transformer.getXPathContext();
@@ -292,7 +292,7 @@ public class ElemElement extends ElemUse
     constructNode(nodeName, prefix, nodeNamespace, transformer);
 
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEndEvent(this);
+      transformer.getTraceManager().emitTraceEndEvent(this);
   }
   
   /**

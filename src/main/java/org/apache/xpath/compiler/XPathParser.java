@@ -257,6 +257,8 @@ public class XPathParser
   
   private boolean m_isFunctionArgumentParse;
   
+  private static final String STRING_CLASSCAST_ERROR_MESSAGE = "org.apache.xpath.objects.XString cannot be cast to java.lang.String";
+  
   /**
    * The parser constructor.
    */
@@ -4416,12 +4418,7 @@ public class XPathParser
     		      nextToken();
     		   }
     		   catch (ClassCastException ex) { 
-    			  String str = ex.getMessage();
-    			  if ("org.apache.xpath.objects.XString cannot be cast to java.lang.String".equals(str)) {
-    				 Object tokenQueueObj1 = m_ops.m_tokenQueue.elementAt(m_queueMark - 1);
-    				 m_token = "'" + tokenQueueObj1.toString() + "'";      
-    				 m_tokenChar = m_token.charAt(0);
-    			  }
+    			  handleClassCastExceptionOnNextToken(ex);
     		   }
     		   xpathOneStr += m_token; 
     	   }
@@ -4495,6 +4492,21 @@ public class XPathParser
 	    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1,
 	      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
     }
+   }
+
+   /**
+    * There are few known XPath parse situations within an 
+    * object of this class, where during nextToken() method call 
+    * a java.lang.ClassCastException needs to be handled.
+    */
+   protected void handleClassCastExceptionOnNextToken(ClassCastException ex) {
+	  String str = ex.getMessage();
+	  
+	  if (STRING_CLASSCAST_ERROR_MESSAGE.equals(str)) {
+		  Object tokenQueueObj1 = m_ops.m_tokenQueue.elementAt(m_queueMark - 1);
+		  m_token = "'" + tokenQueueObj1.toString() + "'";      
+		  m_tokenChar = m_token.charAt(0);
+	  }
    }
 
   /**

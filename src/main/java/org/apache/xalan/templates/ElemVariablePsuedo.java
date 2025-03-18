@@ -58,7 +58,7 @@ public class ElemVariablePsuedo extends ElemVariable
   {
 
     // if (TransformerImpl.S_DEBUG)
-    //  transformer.getTraceManager().fireTraceEvent(this);
+    //  transformer.getTraceManager().emitTraceEvent(this);
 
     // transformer.getXPathContext().getVarStack().pushVariable(m_qname, var);
     transformer.getXPathContext().getVarStack().setLocalVariable(m_index, m_lazyVar);

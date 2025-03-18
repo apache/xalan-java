@@ -106,7 +106,7 @@ public class ElemAttributeSet extends ElemUse
   {
 
     if (transformer.getDebug())
-	  transformer.getTraceManager().fireTraceEvent(this);
+	  transformer.getTraceManager().emitTraceEvent(this);
 
     if (transformer.isRecursiveAttrSet(this))
     {
@@ -131,7 +131,7 @@ public class ElemAttributeSet extends ElemUse
     transformer.popElemAttributeSet();
    
     if (transformer.getDebug())
-	  transformer.getTraceManager().fireTraceEndEvent(this);
+	  transformer.getTraceManager().emitTraceEndEvent(this);
 
   }
 

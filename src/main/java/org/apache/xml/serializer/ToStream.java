@@ -1305,9 +1305,9 @@ abstract public class ToStream extends SerializerBase
                     closeCDATA();
             }
 
-            // time to fire off CDATA event
+            // time to emit CDATA event
             if (m_tracer != null)
-                super.fireCDATAEvent(ch, old_start, length);
+                super.emitCDATAEvent(ch, old_start, length);
         }
         catch (IOException ioe)
         {
@@ -1431,9 +1431,9 @@ abstract public class ToStream extends SerializerBase
         {
             charactersRaw(chars, start, length);
 
-            // time to fire off characters generation event
+            // time to emit characters generation event
             if (m_tracer != null)
-                super.fireCharEvent(chars, start, length);
+                super.emitCharEvent(chars, start, length);
 
             return;
         }
@@ -1631,9 +1631,9 @@ abstract public class ToStream extends SerializerBase
             throw new SAXException(e);
         }
 
-        // time to fire off characters generation event
+        // time to emit characters generation event
         if (m_tracer != null)
-            super.fireCharEvent(chars, start, length);
+            super.emitCharEvent(chars, start, length);
     }
 
 	private int processLineFeed(final char[] chars, int i, int lastProcessed, final Writer writer) throws IOException {
@@ -1956,7 +1956,7 @@ abstract public class ToStream extends SerializerBase
         m_isprevtext = false;
 
         if (m_tracer != null)
-            firePseudoAttributes();
+            emitPseudoAttributes();
     }
 
     /**
@@ -2216,7 +2216,7 @@ abstract public class ToStream extends SerializerBase
             if (m_elemContext.m_startTagOpen)
             {
                 if (m_tracer != null)
-                    super.fireStartElem(m_elemContext.m_elementName);
+                    super.emitStartElem(m_elemContext.m_elementName);
                 int nAttrs = m_attributes.getLength();
                 if (nAttrs > 0)
                 {
@@ -2259,9 +2259,9 @@ abstract public class ToStream extends SerializerBase
 
         m_isprevtext = false;
 
-        // fire off the end element event
+        // Emit an end element event
         if (m_tracer != null)
-            super.fireEndElem(name);
+            super.emitEndElem(name);
         m_elemContext = m_elemContext.m_prev;
     }
 
@@ -2459,7 +2459,7 @@ abstract public class ToStream extends SerializerBase
         m_startNewLine = true;
         // time to generate comment event
         if (m_tracer != null)
-            super.fireCommentEvent(ch, start_old,length);
+            super.emitCommentEvent(ch, start_old,length);
     }
 
     /**
@@ -2615,7 +2615,7 @@ abstract public class ToStream extends SerializerBase
             try
             {
                 if (m_tracer != null)
-                    super.fireStartElem(m_elemContext.m_elementName);
+                    super.emitStartElem(m_elemContext.m_elementName);
                 int nAttrs = m_attributes.getLength();
                 if (nAttrs > 0)
                 {
@@ -3038,7 +3038,7 @@ abstract public class ToStream extends SerializerBase
             m_attributes.setValue(index, value);
             was_added = false;
             if (old_value != null)
-                firePseudoAttributes();
+                emitPseudoAttributes();
 
         }
         else
@@ -3123,18 +3123,18 @@ abstract public class ToStream extends SerializerBase
             m_attributes.addAttribute(uri, localName, rawName, type, value);
             was_added = true;
             if (m_tracer != null)
-                firePseudoAttributes();
+                emitPseudoAttributes();
         }
         return was_added;
     }
 
     /**
-     * To fire off the pseudo characters of attributes, as they currently
+     * To emit an pseudo characters of attributes, as they currently
      * exist. This method should be called everytime an attribute is added,
      * or when an attribute value is changed, or an element is created.
      */
 
-    protected void firePseudoAttributes()
+    protected void emitPseudoAttributes()
     {
         if (m_tracer != null)
         {
@@ -3163,7 +3163,7 @@ abstract public class ToStream extends SerializerBase
                 // emit the trace event that these characters "might"
                 // be written                
                 char ch[] = sb.toString().toCharArray();
-                m_tracer.fireGenerateEvent(
+                m_tracer.emitGenerateEvent(
                     SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
                     ch,
                     0,

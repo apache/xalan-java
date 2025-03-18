@@ -286,7 +286,7 @@ public class ElemValueOf extends ElemTemplateElement {
     SerializationHandler rth = transformer.getResultTreeHandler();
 
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
 
     try
     {      
@@ -324,7 +324,7 @@ public class ElemValueOf extends ElemTemplateElement {
           {
             XObject obj = expr.execute(xctxt);
 
-            transformer.getTraceManager().fireSelectedEvent(current, this,
+            transformer.getTraceManager().emitSelectedEvent(current, this,
                                                        "select", m_selectExpression, obj);
             obj.dispatchCharactersEvents(rth);
           }
@@ -633,7 +633,7 @@ public class ElemValueOf extends ElemTemplateElement {
     finally
     {
       if (transformer.getDebug())
-	    transformer.getTraceManager().fireTraceEndEvent(this); 
+	    transformer.getTraceManager().emitTraceEndEvent(this); 
     }
   }
 

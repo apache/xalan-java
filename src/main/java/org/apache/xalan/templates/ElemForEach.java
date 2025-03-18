@@ -251,7 +251,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
     transformer.pushCurrentTemplateRuleIsNull(true);    
     if (transformer.getDebug()) {
-        transformer.getTraceManager().fireTraceEvent(this);   // invoke xsl:for-each element event
+        transformer.getTraceManager().emitTraceEvent(this);   // invoke xsl:for-each element event
     }
 
     try
@@ -261,7 +261,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     finally
     {
         if (transformer.getDebug()) {
-	       transformer.getTraceManager().fireTraceEndEvent(this);
+	       transformer.getTraceManager().emitTraceEndEvent(this);
         }
         
         transformer.popCurrentTemplateRuleIsNull();
@@ -623,7 +623,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
           Expression expr = m_xpath.getExpression();
           org.apache.xpath.objects.XObject xObject = expr.execute(xctxt);
           int current = xctxt.getCurrentNode();
-          transformer.getTraceManager().fireSelectedEvent(current, this, "select", 
+          transformer.getTraceManager().emitSelectedEvent(current, this, "select", 
                                                               m_xpath, xObject);
        }
 
@@ -659,10 +659,10 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         //final int exNodeType = dtm.getExpandedTypeID(child);
         final int nodeType = dtm.getNodeType(child); 
 
-        // Fire a trace event for the template.
+        // Emit a trace event for the template.
         if (transformer.getDebug())
         {
-           transformer.getTraceManager().fireTraceEvent(this);
+           transformer.getTraceManager().emitTraceEvent(this);
         }
 
         // And execute the child templates.
@@ -681,7 +681,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
          // We need to make sure an old current element is not 
           // on the stack.  See TransformerImpl#getElementCallstack.
           transformer.setCurrentElement(null);
-          transformer.getTraceManager().fireTraceEndEvent(this);
+          transformer.getTraceManager().emitTraceEndEvent(this);
         }
 
 
@@ -711,7 +711,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     finally
     {
       if (transformer.getDebug())
-        transformer.getTraceManager().fireSelectedEndEvent(sourceNode, this,
+        transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));
 

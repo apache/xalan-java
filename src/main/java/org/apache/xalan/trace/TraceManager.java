@@ -93,11 +93,11 @@ public class TraceManager
   }
 
   /**
-   * Fire a generate event.
+   * Emit a generate event.
    *
-   * @param te Generate Event to fire
+   * @param te Generate Event to emit
    */
-  public void fireGenerateEvent(GenerateEvent te)
+  public void emitGenerateEvent(GenerateEvent te)
   {
 
     if (null != m_traceListeners)
@@ -124,11 +124,11 @@ public class TraceManager
   }
 
   /**
-   * Fire a trace event.
+   * Emit a trace event.
    *
    * @param styleNode Stylesheet template node
    */
-  public void fireTraceEvent(ElemTemplateElement styleNode)
+  public void emitTraceEvent(ElemTemplateElement styleNode)
   {
 
     if (hasTraceListeners())
@@ -136,19 +136,19 @@ public class TraceManager
       int sourceNode = m_transformer.getXPathContext().getCurrentNode();
       Node source = getDOMNodeFromDTM(sourceNode);
 
-      fireTraceEvent(new TracerEvent(m_transformer, source, 
+      emitTraceEvent(new TracerEvent(m_transformer, source, 
                      m_transformer.getMode(),  /*sourceNode, mode,*/
                                      styleNode));
     }
   }
 
   /**
-   * Fire a end trace event, after all children of an element have been
+   * Emit an end trace event, after all children of an element have been
    * executed.
    *
    * @param styleNode Stylesheet template node
    */
-  public void fireTraceEndEvent(ElemTemplateElement styleNode)
+  public void emitTraceEndEvent(ElemTemplateElement styleNode)
   {
 
     if (hasTraceListeners())
@@ -156,18 +156,18 @@ public class TraceManager
       int sourceNode = m_transformer.getXPathContext().getCurrentNode();
       Node source = getDOMNodeFromDTM(sourceNode);
 
-      fireTraceEndEvent(new TracerEvent(m_transformer, source,
+      emitTraceEndEvent(new TracerEvent(m_transformer, source,
                      m_transformer.getMode(),  /*sourceNode, mode,*/
                                      styleNode));
     }
   }
 
   /**
-   * Fire a trace event.
+   * Emit a trace event.
    *
-   * @param te Trace event to fire
+   * @param te Trace event to emit
    */
-  public void fireTraceEndEvent(TracerEvent te)
+  public void emitTraceEndEvent(TracerEvent te)
   {
 
     if (hasTraceListeners())
@@ -188,11 +188,11 @@ public class TraceManager
 
 
   /**
-   * Fire a trace event.
+   * Emit a trace event.
    *
-   * @param te Trace event to fire
+   * @param te Trace event to emit
    */
-  public void fireTraceEvent(TracerEvent te)
+  public void emitTraceEvent(TracerEvent te)
   {
 
     if (hasTraceListeners())
@@ -209,7 +209,7 @@ public class TraceManager
   }
 
   /**
-   * Fire a selection event.
+   * Emit a selection event.
    *
    * @param sourceNode Current source node
    * @param styleNode node in the style tree reference for the event.
@@ -219,7 +219,7 @@ public class TraceManager
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void fireSelectedEvent(
+  public void emitSelectedEvent(
           int sourceNode, ElemTemplateElement styleNode, String attributeName, 
           XPath xpath, XObject selection)
             throws javax.xml.transform.TransformerException
@@ -229,13 +229,13 @@ public class TraceManager
     {
       Node source = getDOMNodeFromDTM(sourceNode);
         
-      fireSelectedEvent(new SelectionEvent(m_transformer, source, styleNode,
+      emitSelectedEvent(new SelectionEvent(m_transformer, source, styleNode,
                                            attributeName, xpath, selection));
     }
   }
   
   /**
-   * Fire a selection event.
+   * Emit a selection event.
    *
    * @param sourceNode Current source node
    * @param styleNode node in the style tree reference for the event.
@@ -245,7 +245,7 @@ public class TraceManager
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void fireSelectedEndEvent(
+  public void emitSelectedEndEvent(
           int sourceNode, ElemTemplateElement styleNode, String attributeName, 
           XPath xpath, XObject selection)
             throws javax.xml.transform.TransformerException
@@ -255,19 +255,19 @@ public class TraceManager
     {
       Node source = getDOMNodeFromDTM(sourceNode);
         
-      fireSelectedEndEvent(new EndSelectionEvent(m_transformer, source, styleNode,
+      emitSelectedEndEvent(new EndSelectionEvent(m_transformer, source, styleNode,
                                            attributeName, xpath, selection));
     }
   }
   
   /**
-   * Fire a selection event.
+   * Emit a selection event.
    *
-   * @param se Selection event to fire
+   * @param se Selection an event to emit
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void fireSelectedEndEvent(EndSelectionEvent se)
+  public void emitSelectedEndEvent(EndSelectionEvent se)
           throws javax.xml.transform.TransformerException
   {
 
@@ -286,13 +286,13 @@ public class TraceManager
   }
 
   /**
-   * Fire a selection event.
+   * Emit a selection event.
    *
-   * @param se Selection event to fire
+   * @param se Selection an event to emit
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void fireSelectedEvent(SelectionEvent se)
+  public void emitSelectedEvent(SelectionEvent se)
           throws javax.xml.transform.TransformerException
   {
 
@@ -311,7 +311,7 @@ public class TraceManager
   
 
   /**
-   * Fire an end extension event.
+   * Emit an end extension event.
    *
    * @see java.lang.reflect.Method#invoke
    * 
@@ -319,7 +319,7 @@ public class TraceManager
    * @param instance The instance the method will be executed on
    * @param arguments Parameters passed to the method.
    */
-  public void fireExtensionEndEvent(Method method, Object instance, Object[] arguments)
+  public void emitExtensionEndEvent(Method method, Object instance, Object[] arguments)
   {
       ExtensionEvent ee = new ExtensionEvent(m_transformer, method, instance, arguments);
 
@@ -339,7 +339,7 @@ public class TraceManager
   }
 
   /**
-   * Fire an end extension event.
+   * Emit an end extension event.
    *
    * @see java.lang.reflect.Method#invoke
    * 
@@ -347,7 +347,7 @@ public class TraceManager
    * @param instance The instance the method will be executed on
    * @param arguments Parameters passed to the method.
    */
-  public void fireExtensionEvent(Method method, Object instance, Object[] arguments)
+  public void emitExtensionEvent(Method method, Object instance, Object[] arguments)
   {
     ExtensionEvent ee = new ExtensionEvent(m_transformer, method, instance, arguments);
 
@@ -367,13 +367,13 @@ public class TraceManager
   }
 
   /**
-   * Fire an end extension event.
+   * Emit an end extension event.
    *
    * @see java.lang.reflect.Method#invoke
    * 
-   * @param ee the ExtensionEvent to fire
+   * @param ee the ExtensionEvent to emit
    */
-  public void fireExtensionEndEvent(ExtensionEvent ee)
+  public void emitExtensionEndEvent(ExtensionEvent ee)
   {
     if (hasTraceListeners())
     {
@@ -391,13 +391,13 @@ public class TraceManager
   }
 
   /**
-   * Fire an end extension event.
+   * Emit an end extension event.
    *
    * @see java.lang.reflect.Method#invoke
    * 
-   * @param ee the ExtensionEvent to fire
+   * @param ee the ExtensionEvent to emit
    */
-  public void fireExtensionEvent(ExtensionEvent ee)
+  public void emitExtensionEvent(ExtensionEvent ee)
   {    
       
     if (hasTraceListeners())

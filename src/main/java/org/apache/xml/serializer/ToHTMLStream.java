@@ -767,7 +767,7 @@ public class ToHTMLStream extends ToStream
 
         flushWriter();
         if (m_tracer != null)
-            super.fireEndDoc();
+            super.emitEndDoc();
     }
 
     /**
@@ -868,7 +868,7 @@ public class ToHTMLStream extends ToStream
 
 
             if (m_tracer != null)
-                firePseudoAttributes();
+                emitPseudoAttributes();
             
             if ((elemFlags & ElemDesc.EMPTY) != 0)  
             {
@@ -984,7 +984,7 @@ public class ToHTMLStream extends ToStream
                 // so we need to process it now.
                 
                 if (m_tracer != null)
-                    super.fireStartElem(name);
+                    super.emitStartElem(name);
 
                 // the starting tag was still open when we received this endElement() call
                 // so we need to process any gathered attributes NOW, before they go away.
@@ -1017,9 +1017,9 @@ public class ToHTMLStream extends ToStream
                 m_ispreserve = true;
             m_isprevtext = false;
 
-            // fire off the end element event
+            // emit an end element event
             if (m_tracer != null)
-                super.fireEndElem(name);            
+                super.emitEndElem(name);            
                            
             // OPTIMIZE-EMPTY                
             if (elemEmpty)
@@ -1547,7 +1547,7 @@ public class ToHTMLStream extends ToStream
                 
                 // time to generate characters event
                 if (m_tracer != null)
-                    super.fireCharEvent(chars, start, length);
+                    super.emitCharEvent(chars, start, length);
                 
                 return;
             }
@@ -1719,7 +1719,7 @@ public class ToHTMLStream extends ToStream
                
         // now generate the PI event
         if (m_tracer != null)
-            super.fireEscapingEvent(target, data);
+            super.emitEscapingEvent(target, data);
      }
 
     /**
@@ -1792,9 +1792,9 @@ public class ToHTMLStream extends ToStream
             try
             {
 
-            // finish processing attributes, time to fire off the start element event
+            // finish processing attributes, time to emit the start element event
             if (m_tracer != null)
-                super.fireStartElem(m_elemContext.m_elementName);  
+                super.emitStartElem(m_elemContext.m_elementName);  
             
             int nAttrs = m_attributes.getLength();   
             if (nAttrs>0)

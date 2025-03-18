@@ -33,7 +33,6 @@ public interface SerializerTrace {
     
   /**
    * Event type generated when a document begins.
-   *
    */
   public static final int EVENTTYPE_STARTDOCUMENT = 1;
 
@@ -86,7 +85,7 @@ public interface SerializerTrace {
    * Event type generated when characters might be written to an output stream,
    *  but  these characters never are. They will ultimately be written out via
    * EVENTTYPE_OUTPUT_CHARACTERS. This type is used as attributes are collected.
-   * Whenever the attributes change this event type is fired. At the very end
+   * Whenever the attributes change this event type is emitted. At the very end
    * however, when the attributes do not change anymore and are going to be
    * ouput to the document the real characters will be written out using the
    * EVENTTYPE_OUTPUT_CHARACTERS.
@@ -107,47 +106,47 @@ public interface SerializerTrace {
   public boolean hasTraceListeners();
   
   /**
-   * Fire startDocument, endDocument events.
+   * Emit startDocument, endDocument events.
    *
    * @param eventType One of the EVENTTYPE_XXX constants.
    */
-  public void fireGenerateEvent(int eventType);
+  public void emitGenerateEvent(int eventType);
   
   /**
-   * Fire startElement, endElement events.
+   * Emit startElement, endElement events.
    *
    * @param eventType One of the EVENTTYPE_XXX constants.
    * @param name The name of the element.
    * @param atts The SAX attribute list.
    */
-  public void fireGenerateEvent(int eventType, String name, Attributes atts);
+  public void emitGenerateEvent(int eventType, String name, Attributes atts);
   
   /**
-   * Fire characters, cdata events.
+   * Emit characters, cdata events.
    *
    * @param eventType One of the EVENTTYPE_XXX constants.
    * @param ch The char array from the SAX event.
    * @param start The start offset to be used in the char array.
    * @param length The end offset to be used in the chara array.
    */
-  public void fireGenerateEvent(int eventType, char ch[], int start, int length);
+  public void emitGenerateEvent(int eventType, char ch[], int start, int length);
   
   /**
-   * Fire processingInstruction events.
+   * Emit processingInstruction events.
    *
    * @param eventType One of the EVENTTYPE_XXX constants.
    * @param name The name of the processing instruction.
    * @param data The processing instruction data.
    */
-  public void fireGenerateEvent(int eventType, String name, String data);
+  public void emitGenerateEvent(int eventType, String name, String data);
   
 
   /**
-   * Fire comment and entity ref events.
+   * Emit comment and entity ref events.
    *
    * @param eventType One of the EVENTTYPE_XXX constants.
    * @param data The comment or entity ref data.
    */
-  public void fireGenerateEvent(int eventType, String data);
+  public void emitGenerateEvent(int eventType, String data);
   
 }

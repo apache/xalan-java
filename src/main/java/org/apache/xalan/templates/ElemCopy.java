@@ -146,7 +146,7 @@ public class ElemCopy extends ElemUse
 			  SerializationHandler rthandler = transformer.getSerializationHandler();
 
 			  if (transformer.getDebug())
-				  transformer.getTraceManager().fireTraceEvent(this);
+				  transformer.getTraceManager().emitTraceEvent(this);
 
 			  ClonerToResultTree.cloneToResultTree(sourceNode, nodeType, dtm, 
 					  													rthandler, false);
@@ -237,18 +237,18 @@ public class ElemCopy extends ElemUse
 				  transformer.getResultTreeHandler().endElement(ns, localName, dtm.getNodeName(sourceNode));
 			  }
 			  if (transformer.getDebug())
-				  transformer.getTraceManager().fireTraceEndEvent(this);         
+				  transformer.getTraceManager().emitTraceEndEvent(this);         
 		  }
 		  else
 		  {
 			  if (transformer.getDebug())
-				  transformer.getTraceManager().fireTraceEvent(this);
+				  transformer.getTraceManager().emitTraceEvent(this);
 
 			  super.execute(transformer);
 			  transformer.executeChildTemplates(this, true);
 
 			  if (transformer.getDebug())
-				  transformer.getTraceManager().fireTraceEndEvent(this);
+				  transformer.getTraceManager().emitTraceEndEvent(this);
 		  }
 	  }
 	  catch(org.xml.sax.SAXException se) {

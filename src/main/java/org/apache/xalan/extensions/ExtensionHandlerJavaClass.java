@@ -233,7 +233,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
           putToCache(methodKey, null, methodArgs, c);
         
         if (trans != null && trans.getDebug()) {            
-            trans.getTraceManager().fireExtensionEvent(new 
+            trans.getTraceManager().emitExtensionEvent(new 
                     ExtensionEvent(trans, c, convertedArgs[0]));
             Object result;
             try {            
@@ -241,7 +241,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
             } catch (Exception e) {
                 throw e;
             } finally {
-                trans.getTraceManager().fireExtensionEndEvent(new 
+                trans.getTraceManager().emitExtensionEndEvent(new 
                         ExtensionEvent(trans, c, convertedArgs[0]));
             }
             return result;
@@ -332,7 +332,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
 
         if (MethodResolver.DYNAMIC == resolveType) {         // First argument was object type
           if (trans != null && trans.getDebug()) {
-            trans.getTraceManager().fireExtensionEvent(m, targetObject, 
+            trans.getTraceManager().emitExtensionEvent(m, targetObject, 
                         convertedArgs[0]);
             Object result;
             try {
@@ -340,7 +340,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
             } catch (Exception e) {
                 throw e;
             } finally {
-                trans.getTraceManager().fireExtensionEndEvent(m, targetObject, 
+                trans.getTraceManager().emitExtensionEndEvent(m, targetObject, 
                         convertedArgs[0]);
             }
             return result;
@@ -351,7 +351,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
         {
           if (Modifier.isStatic(m.getModifiers())) {
             if (trans != null && trans.getDebug()) {
-              trans.getTraceManager().fireExtensionEvent(m, null, 
+              trans.getTraceManager().emitExtensionEvent(m, null, 
                         convertedArgs[0]);
               Object result;
               try {
@@ -359,7 +359,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
               } catch (Exception e) {
                 throw e;
               } finally {
-                trans.getTraceManager().fireExtensionEndEvent(m, null, 
+                trans.getTraceManager().emitExtensionEndEvent(m, null, 
                         convertedArgs[0]);
               }
               return result;
@@ -371,21 +371,21 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
             if (null == m_defaultInstance)
             {
               if (trans != null && trans.getDebug()) {
-                trans.getTraceManager().fireExtensionEvent(new 
+                trans.getTraceManager().emitExtensionEvent(new 
                         ExtensionEvent(trans, m_classObj));
                 try {
                     m_defaultInstance = m_classObj.newInstance();
                 } catch (Exception e) {
                     throw e;
                 } finally {
-                    trans.getTraceManager().fireExtensionEndEvent(new 
+                    trans.getTraceManager().emitExtensionEndEvent(new 
                         ExtensionEvent(trans, m_classObj));
                 }
               }    else
                   m_defaultInstance = m_classObj.newInstance();
             }
             if (trans != null && trans.getDebug()) {
-              trans.getTraceManager().fireExtensionEvent(m, m_defaultInstance, 
+              trans.getTraceManager().emitExtensionEvent(m, m_defaultInstance, 
                     convertedArgs[0]);
               Object result;
               try {
@@ -393,7 +393,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
               } catch (Exception e) {
                 throw e;
               } finally {
-                trans.getTraceManager().fireExtensionEndEvent(m, 
+                trans.getTraceManager().emitExtensionEndEvent(m, 
                         m_defaultInstance, convertedArgs[0]);
               }
               return result;
@@ -476,14 +476,14 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
         if ( (null == m_defaultInstance) && 
                 !Modifier.isStatic(m.getModifiers()) ) {
           if (transformer.getDebug()) {            
-            transformer.getTraceManager().fireExtensionEvent(
+            transformer.getTraceManager().emitExtensionEvent(
                     new ExtensionEvent(transformer, m_classObj));
             try {
               m_defaultInstance = m_classObj.newInstance();
             } catch (Exception e) {
               throw e;
             } finally {
-              transformer.getTraceManager().fireExtensionEndEvent(
+              transformer.getTraceManager().emitExtensionEndEvent(
                     new ExtensionEvent(transformer, m_classObj));
             }
           } else 
@@ -504,14 +504,14 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
     try
     {
       if (transformer.getDebug()) {
-        transformer.getTraceManager().fireExtensionEvent(m, m_defaultInstance, 
+        transformer.getTraceManager().emitExtensionEvent(m, m_defaultInstance, 
                 new Object[] {xpc, element});
         try {
           result = m.invoke(m_defaultInstance, new Object[] {xpc, element});
         } catch (Exception e) {
           throw e;
         } finally {
-          transformer.getTraceManager().fireExtensionEndEvent(m, 
+          transformer.getTraceManager().emitExtensionEndEvent(m, 
                 m_defaultInstance, new Object[] {xpc, element});
         }
       } else                  

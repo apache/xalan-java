@@ -128,7 +128,7 @@ public class ElemPI extends ElemTemplateElement
   {
 
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
 
     XPathContext xctxt = transformer.getXPathContext();
     int sourceNode = xctxt.getCurrentNode();
@@ -176,7 +176,7 @@ public class ElemPI extends ElemTemplateElement
     }
     
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEndEvent(this);
+      transformer.getTraceManager().emitTraceEndEvent(this);
   }
 
   /**

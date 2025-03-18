@@ -35,9 +35,8 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
-
 /**
- *This class wraps another SerializationHandler. The wrapped object will either
+ * This class wraps another SerializationHandler. The wrapped object will either
  * handler XML or HTML, which is not known until a little later when the first XML
  * tag is seen.  If the first tag is <html> then the wrapped object is an HTML
  * handler, otherwise it is an XML handler.
@@ -492,7 +491,7 @@ public final class ToUnknownStream extends SerializerBase
                 m_firstElementLocalName = localName;
 
                 if (m_tracer != null)
-                    firePseudoElement(elementName);
+                    emitPseudoElement(elementName);
                     
                 /* we don't want to call our own addAttributes, which
                  * merely delegates to the wrapped handler, but we want to
@@ -1285,7 +1284,7 @@ public final class ToUnknownStream extends SerializerBase
         m_handler.setSourceLocator(locator);
     }
 
-    protected void firePseudoElement(String elementName)
+    protected void emitPseudoElement(String elementName)
     {
         
         if (m_tracer != null) {
@@ -1298,7 +1297,7 @@ public final class ToUnknownStream extends SerializerBase
             // emit the trace event that these characters "might"
             // be written
             char ch[] = sb.toString().toCharArray();
-            m_tracer.fireGenerateEvent(
+            m_tracer.emitGenerateEvent(
                 SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
                 ch,
                 0,

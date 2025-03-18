@@ -167,14 +167,14 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
       }
       if (transformer.getDebug())
-        transformer.getTraceManager().fireTraceEvent(this);
+        transformer.getTraceManager().emitTraceEvent(this);
 
       transformSelectedNodes(transformer);
     }
     finally
     {
       if (transformer.getDebug())
-        transformer.getTraceManager().fireTraceEndEvent(this);
+        transformer.getTraceManager().emitTraceEndEvent(this);
 
       if (pushMode)
         transformer.popMode();
@@ -238,7 +238,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
             
       if (transformer.getDebug())
       {
-        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+        transformer.getTraceManager().emitSelectedEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));
       }
@@ -267,7 +267,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
         {
           ElemWithParam ewp = m_paramElems[i];
           if (transformer.getDebug())
-            transformer.getTraceManager().fireTraceEvent(ewp);
+            transformer.getTraceManager().emitTraceEvent(ewp);
           
           XObject obj = null;
           
@@ -279,7 +279,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
           }
           
           if (transformer.getDebug())
-            transformer.getTraceManager().fireTraceEndEvent(ewp);
+            transformer.getTraceManager().emitTraceEndEvent(ewp);
           
           String tunnelStrVal = ewp.getTunnel();
           obj.setTunnel(tunnelStrVal);
@@ -424,7 +424,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
 
         if (transformer.getDebug()) {
-           transformer.getTraceManager().fireTraceEvent(template);
+           transformer.getTraceManager().emitTraceEvent(template);
         }
 
         String templateAsAttrVal = template.getAs();
@@ -507,7 +507,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
         
         if (transformer.getDebug()) {
-	      transformer.getTraceManager().fireTraceEndEvent(template);
+	      transformer.getTraceManager().emitTraceEndEvent(template);
         }
 	    
         if(template.m_frameSize > 0)
@@ -527,7 +527,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
     finally
     {
       if (transformer.getDebug())
-        transformer.getTraceManager().fireSelectedEndEvent(sourceNode, this,
+        transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));
       

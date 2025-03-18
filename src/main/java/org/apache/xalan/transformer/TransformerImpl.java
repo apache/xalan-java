@@ -106,7 +106,7 @@ import org.xml.sax.ext.LexicalHandler;
 /**
  * This class implements the
  * {@link javax.xml.transform.Transformer} interface, and is the core
- * representation of the transformation execution.</p>
+ * representation of an XSL transformation implementation.</p>
  * @xsl.usage advanced
  */
 public class TransformerImpl extends Transformer
@@ -2382,10 +2382,10 @@ public class TransformerImpl extends Transformer
       else
       {
 
-        // Fire a trace event for the template.
+        // Emit a trace event for the template.
          
         if (m_debug)
-          getTraceManager().fireTraceEvent(template);
+          getTraceManager().emitTraceEvent(template);
         // And execute the child templates.
         // 9/11/00: If template has been compiled, hand off to it
         // since much (most? all?) of the processing has been inlined.
@@ -2401,7 +2401,7 @@ public class TransformerImpl extends Transformer
         executeChildTemplates(template, true);
         
         if (m_debug)
-          getTraceManager().fireTraceEndEvent(template);
+          getTraceManager().emitTraceEndEvent(template);
       }
     }
     catch (org.xml.sax.SAXException se)
@@ -2694,7 +2694,7 @@ public class TransformerImpl extends Transformer
       ElemSort sort = foreach.getSortElem(i);
       
       if (m_debug)
-        getTraceManager().fireTraceEvent(sort);
+        getTraceManager().emitTraceEvent(sort);
      
       String langString =
         (null != sort.getLang())
@@ -2756,7 +2756,7 @@ public class TransformerImpl extends Transformer
                                       descending, langString, caseOrderUpper,
                                       foreach));
       if (m_debug)
-        getTraceManager().fireTraceEndEvent(sort);
+        getTraceManager().emitTraceEndEvent(sort);
      }
 
     return keys;
@@ -2803,7 +2803,7 @@ public class TransformerImpl extends Transformer
               ElemSort sortElem = forEachGroup.getSortElem(idx);
               
               if (m_debug) {
-                 getTraceManager().fireTraceEvent(sortElem);
+                 getTraceManager().emitTraceEvent(sortElem);
               }
              
               String langString = (null != sortElem.getLang())
@@ -2858,7 +2858,7 @@ public class TransformerImpl extends Transformer
                                                            descending, langString, caseOrderUpper,
                                                            forEachGroup));
               if (m_debug) {
-                 getTraceManager().fireTraceEndEvent(sortElem);
+                 getTraceManager().emitTraceEndEvent(sortElem);
               }          
          }
     
@@ -3895,57 +3895,57 @@ public class TransformerImpl extends Transformer
    
      
 	/**
-	 * Fire off characters, cdate events.
-	 * @see org.apache.xml.serializer.SerializerTrace#fireGenerateEvent(int, char[], int, int)
+	 * Emit characters, cdate events.
+	 * @see org.apache.xml.serializer.SerializerTrace#emitGenerateEvent(int, char[], int, int)
 	 */
-	public void fireGenerateEvent(
+	public void emitGenerateEvent(
 		int eventType,
 		char[] ch,
 		int start,
 		int length) {
 			
 		GenerateEvent ge = new GenerateEvent(this, eventType, ch, start, length);
-		m_traceManager.fireGenerateEvent(ge);					
+		m_traceManager.emitGenerateEvent(ge);					
 	}
 
 	/**
-	 * Fire off startElement, endElement events.
-	 * @see org.apache.xml.serializer.SerializerTrace#fireGenerateEvent(int, String, Attributes)
+	 * Emit startElement, endElement events.
+	 * @see org.apache.xml.serializer.SerializerTrace#emitGenerateEvent(int, String, Attributes)
 	 */
-	public void fireGenerateEvent(
+	public void emitGenerateEvent(
 		int eventType,
 		String name,
 		Attributes atts) {
 			
 		GenerateEvent ge = new GenerateEvent(this, eventType, name, atts);
-		m_traceManager.fireGenerateEvent(ge);					
+		m_traceManager.emitGenerateEvent(ge);					
 	}
 
 	/**
-	 * Fire off processingInstruction events.
-	 * @see org.apache.xml.serializer.SerializerTrace#fireGenerateEvent(int, String, String)
+	 * Emit processingInstruction events.
+	 * @see org.apache.xml.serializer.SerializerTrace#emitGenerateEvent(int, String, String)
 	 */
-	public void fireGenerateEvent(int eventType, String name, String data) {
+	public void emitGenerateEvent(int eventType, String name, String data) {
 		GenerateEvent ge = new GenerateEvent(this, eventType, name,data);
-		m_traceManager.fireGenerateEvent(ge);				
+		m_traceManager.emitGenerateEvent(ge);				
 	}
 
 	/**
-	 * Fire off comment and entity ref events.
-	 * @see org.apache.xml.serializer.SerializerTrace#fireGenerateEvent(int, String)
+	 * Emit comment and entity ref events.
+	 * @see org.apache.xml.serializer.SerializerTrace#emitGenerateEvent(int, String)
 	 */
-	public void fireGenerateEvent(int eventType, String data) {
+	public void emitGenerateEvent(int eventType, String data) {
 		GenerateEvent ge = new GenerateEvent(this, eventType, data);
-		m_traceManager.fireGenerateEvent(ge);		
+		m_traceManager.emitGenerateEvent(ge);		
 	}
 
 	/**
-	 * Fire off startDocument, endDocument events.
-	 * @see org.apache.xml.serializer.SerializerTrace#fireGenerateEvent(int)
+	 * Emit startDocument, endDocument events.
+	 * @see org.apache.xml.serializer.SerializerTrace#emitGenerateEvent(int)
 	 */
-	public void fireGenerateEvent(int eventType) {
+	public void emitGenerateEvent(int eventType) {
 		GenerateEvent ge = new GenerateEvent(this, eventType);
-		m_traceManager.fireGenerateEvent(ge);
+		m_traceManager.emitGenerateEvent(ge);
 	}
 
     /**

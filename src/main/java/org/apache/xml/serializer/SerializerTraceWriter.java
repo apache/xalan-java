@@ -47,7 +47,7 @@ final class SerializerTraceWriter extends Writer implements WriterChain
 
     /** The real writer to immediately write to.
      * This reference may be null, in which case nothing is written out, but
-     * only the trace events are fired for output.
+     * only the trace events are emitted for output.
      */
     private final java.io.Writer m_writer;
 
@@ -120,7 +120,7 @@ final class SerializerTraceWriter extends Writer implements WriterChain
                 chars[i] = (char) buf[i];
 
             if (m_tracer != null)
-                m_tracer.fireGenerateEvent(
+                m_tracer.emitGenerateEvent(
                     SerializerTrace.EVENTTYPE_OUTPUT_CHARACTERS,
                     chars,
                     0,

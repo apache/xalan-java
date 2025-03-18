@@ -266,14 +266,14 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
           putToCache(methodKey, null, methodArgs, c);
         
         if (trans != null && trans.getDebug()) {
-            trans.getTraceManager().fireExtensionEvent(new ExtensionEvent(trans, c, convertedArgs[0]));            
+            trans.getTraceManager().emitExtensionEvent(new ExtensionEvent(trans, c, convertedArgs[0]));            
             Object result;
             try {
                 result = c.newInstance(convertedArgs[0]);
             } catch (Exception e) {
                 throw e;
             } finally {
-                trans.getTraceManager().fireExtensionEndEvent(new ExtensionEvent(trans, c, convertedArgs[0]));
+                trans.getTraceManager().emitExtensionEndEvent(new ExtensionEvent(trans, c, convertedArgs[0]));
             }
             return result;
         } else
@@ -328,14 +328,14 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
           putToCache(methodKey, null, methodArgs, m);
         
         if (trans != null && trans.getDebug()) {
-            trans.getTraceManager().fireExtensionEvent(m, null, convertedArgs[0]);            
+            trans.getTraceManager().emitExtensionEvent(m, null, convertedArgs[0]);            
             Object result;
             try {
                 result = m.invoke(null, convertedArgs[0]);
             } catch (Exception e) {
                 throw e;
             } finally {
-                trans.getTraceManager().fireExtensionEndEvent(m, null, convertedArgs[0]);
+                trans.getTraceManager().emitExtensionEndEvent(m, null, convertedArgs[0]);
             }
             return result;
         }
@@ -390,14 +390,14 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
           putToCache(methodKey, targetObject, methodArgs, m);
         
         if (trans != null && trans.getDebug()) {
-            trans.getTraceManager().fireExtensionEvent(m, targetObject, convertedArgs[0]);            
+            trans.getTraceManager().emitExtensionEvent(m, targetObject, convertedArgs[0]);            
             Object result;
             try {
                 result = m.invoke(targetObject, convertedArgs[0]);
             } catch (Exception e) {
                 throw e;
             } finally {
-                trans.getTraceManager().fireExtensionEndEvent(m, targetObject, convertedArgs[0]);
+                trans.getTraceManager().emitExtensionEndEvent(m, targetObject, convertedArgs[0]);
             }
             return result;
         } else       
@@ -522,13 +522,13 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
     try
     {
       if (transformer.getDebug()) {
-          transformer.getTraceManager().fireExtensionEvent(m, null, new Object[] {xpc, element});
+          transformer.getTraceManager().emitExtensionEvent(m, null, new Object[] {xpc, element});
         try {
             result = m.invoke(null, new Object[] {xpc, element});
         } catch (Exception e) {
             throw e;
         } finally {            
-            transformer.getTraceManager().fireExtensionEndEvent(m, null, new Object[] {xpc, element});
+            transformer.getTraceManager().emitExtensionEndEvent(m, null, new Object[] {xpc, element});
         }
       } else
         result = m.invoke(null, new Object[] {xpc, element});

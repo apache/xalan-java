@@ -73,7 +73,7 @@ public class ElemComment extends ElemTemplateElement
             throws TransformerException
   {
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
     try
     {
       // Note the content model is:
@@ -95,7 +95,7 @@ public class ElemComment extends ElemTemplateElement
     finally
     {
       if (transformer.getDebug())
-        transformer.getTraceManager().fireTraceEndEvent(this);
+        transformer.getTraceManager().emitTraceEndEvent(this);
     }
   }
 

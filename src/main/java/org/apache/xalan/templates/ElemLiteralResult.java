@@ -1325,7 +1325,7 @@ public class ElemLiteralResult extends ElemUse
                 // flush any buffered pending processing before
                 // the trace event.
                 rhandler.flushPending();
-                transformer.getTraceManager().fireTraceEvent(this);
+                transformer.getTraceManager().emitTraceEvent(this);
             }
 
             // JJK Bugzilla 3464, test namespace85 -- make sure LRE's
@@ -1538,7 +1538,7 @@ public class ElemLiteralResult extends ElemUse
                 // flush any buffered pending processing before
                 // the trace event.
                 //rhandler.flushPending();
-                transformer.getTraceManager().fireTraceEndEvent(this);
+                transformer.getTraceManager().emitTraceEndEvent(this);
             }
             rhandler.endElement(getNamespace(), getLocalName(), getRawName());
         }

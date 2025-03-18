@@ -138,14 +138,14 @@ public class ElemIf extends ElemTemplateElement
       XObject test = m_test.execute(xctxt, sourceNode, this);
 
       if (transformer.getDebug())
-        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+        transformer.getTraceManager().emitSelectedEvent(sourceNode, this,
                 "test", m_test, test);
     
-      // xsl:for-each now fires one trace event + one for every
-      // iteration; changing xsl:if to fire one regardless of true/false
+      // xsl:for-each now emits one trace event + one for every
+      // iteration; changing xsl:if to emit one regardless of true/false
 
       if (transformer.getDebug())
-        transformer.getTraceManager().fireTraceEvent(this);
+        transformer.getTraceManager().emitTraceEvent(this);
 
       if (test.bool())
       {
@@ -153,11 +153,11 @@ public class ElemIf extends ElemTemplateElement
       }
 
       if (transformer.getDebug())
-        transformer.getTraceManager().fireTraceEndEvent(this);
+        transformer.getTraceManager().emitTraceEndEvent(this);
 
       // I don't think we want this.  -sb
       //  if (transformer.getDebug())
-      //    transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+      //    transformer.getTraceManager().emitSelectedEvent(sourceNode, this,
       //            "endTest", m_test, test);
     }
     /*else if (m_test.bool(xctxt, sourceNode, this))

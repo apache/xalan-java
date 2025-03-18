@@ -36,7 +36,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * This class acts as a base class for the XML "serializers"
  * and the stream serializers.
@@ -89,42 +88,42 @@ public abstract class SerializerBase
     
 
     /**
-     * To fire off the end element trace event
+     * Emit an end element trace event.
      * @param name Name of element
      */
-    protected void fireEndElem(String name)
+    protected void emitEndElem(String name)
         throws org.xml.sax.SAXException
     {
         if (m_tracer != null)
         {
             flushMyWriter();
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENDELEMENT,name, (Attributes)null);
+            m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_ENDELEMENT,name, (Attributes)null);
         }     	        	    	
     }
 
     /**
-     * Report the characters trace event
+     * Report the characters trace event.
      * @param chars  content of characters
      * @param start  starting index of characters to output
      * @param length  number of characters to output
      */
-    protected void fireCharEvent(char[] chars, int start, int length)
+    protected void emitCharEvent(char[] chars, int start, int length)
         throws org.xml.sax.SAXException
     {
         if (m_tracer != null)
         {
             flushMyWriter();
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_CHARACTERS, chars, start,length);
+            m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_CHARACTERS, chars, start,length);
         }     	        	    	
     }
 
     /**
-     * true if we still need to call startDocumentInternal() 
+     * True if we still need to call startDocumentInternal(). 
 	 */
     protected boolean m_needToCallStartDocument = true; 
 
     /** True if a trailing "]]>" still needs to be written to be
-     * written out. Used to merge adjacent CDATA sections
+     * written out. Used to merge adjacent CDATA sections.
      */
     protected boolean m_cdataTagOpen = false;
 
@@ -189,7 +188,7 @@ public abstract class SerializerBase
     protected String m_version = null;
 
     /**
-     * The mediatype.  Not used right now.
+     * The mediatype. Not used right now.
      */
     protected String m_mediatype;
 
@@ -207,7 +206,7 @@ public abstract class SerializerBase
     protected NamespaceMappings m_prefixMap;
     
     /**
-     * Handle for firing generate events.  This interface may be implemented
+     * Handle for firing generate events. This interface may be implemented
      * by the referenced transformer object.
      */
     protected SerializerTrace m_tracer;
@@ -217,8 +216,8 @@ public abstract class SerializerBase
 
     /**
      * The writer to send output to. This field is only used in the ToStream
-     * serializers, but exists here just so that the fireStartDoc() and
-     * other fire... methods can flush this writer when tracing.
+     * serializers, but exists here just so that the emitStartDoc() and
+     * other emit... methods can flush this writer when tracing.
      */
     protected java.io.Writer m_writer = null;
     
@@ -435,7 +434,7 @@ public abstract class SerializerBase
   
 
     /**
-     *  Adds  the given attribute to the set of collected attributes, 
+     * Adds the given attribute to the set of collected attributes, 
      * but only if there is a currently open element.
      *
      * @param name the attribute's qualified name
@@ -529,7 +528,7 @@ public abstract class SerializerBase
         m_inEntityRef = false;
 
         if (m_tracer != null)
-            this.fireEndEntity(name);        
+            this.emitEndEntity(name);        
     }
 
     /**
@@ -543,7 +542,7 @@ public abstract class SerializerBase
     }
 
     /**
-     * Initialize global variables
+     * Initialize global variables.
      */
     protected void initCDATA()
     {
@@ -571,7 +570,7 @@ public abstract class SerializerBase
     }
 
     /**
-     * Sets the value coming from the xsl:output omit-xml-declaration stylesheet attribute
+     * Sets the value coming from the xsl:output omit-xml-declaration stylesheet attribute.
      * @param b true if the XML declaration is to be omitted from the output
      * document.
      */
@@ -618,7 +617,6 @@ public abstract class SerializerBase
      * as the system identifier in the document type declaration (DTD).
 	 * @return the system identifier to be used in the DOCTYPE declaration in
 	 * the output document.
-     *
      */    
     public String getDoctypeSystem()
     {
@@ -672,7 +670,7 @@ public abstract class SerializerBase
     }
 
     /**
-     * Gets the XSL standalone attribute
+     * Gets the XSL standalone attribute.
      * @return a value of "yes" if the <code>standalone</code> delaration is to
      * be included in the output document.
      *  @see XSLOutputAttributes#getStandalone()
@@ -824,7 +822,7 @@ public abstract class SerializerBase
     }
 
     /**
-     * Some users of the serializer may need the current namespace mappings
+     * Some users of the serializer may need the current namespace mappings.
      * @return the current namespace mappings (prefix/uri)
      * @see ExtendedContentHandler#getNamespaceMappings()
      */
@@ -877,7 +875,7 @@ public abstract class SerializerBase
     }
 
     /**
-     * Returns the URI of prefix (if any)
+     * Returns the URI of prefix (if any).
      * 
 	 * @param prefix the prefix whose URI is searched for
      * @return the namespace URI currently associated with the
@@ -907,11 +905,11 @@ public abstract class SerializerBase
         endEntity(name);
 
         if (m_tracer != null)
-		    fireEntityReference(name);
+		    emitEntityReference(name);
     }
 
     /**
-     * Sets the transformer associated with this serializer
+     * Sets the transformer associated with this serializer.
      * @param t the transformer associated with this serializer.
      * @see SerializationHandler#setTransformer(Transformer)
      */
@@ -921,7 +919,7 @@ public abstract class SerializerBase
         
         // If this transformer object implements the SerializerTrace interface
         // then assign m_tracer to the transformer object so it can be used
-        // to fire trace events.
+        // to emit trace events.
         if ((m_transformer instanceof SerializerTrace) &&
             (((SerializerTrace) m_transformer).hasTraceListeners())) {
            m_tracer = (SerializerTrace) m_transformer;
@@ -929,6 +927,7 @@ public abstract class SerializerBase
            m_tracer = null;
         }
     }
+    
     /**
      * Gets the transformer associated with this serializer
      * @return returns the transformer associated with this serializer.
@@ -986,36 +985,36 @@ public abstract class SerializerBase
     }
 
     /**
-     * To fire off start entity trace event
+     * Emit start entity trace event.
      * @param name Name of entity
      */
-    protected void fireStartEntity(String name)
+    protected void emitStartEntity(String name)
         throws org.xml.sax.SAXException
     {        
         if (m_tracer != null)
         {
             flushMyWriter();
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENTITYREF, name);
+            m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_ENTITYREF, name);
         }     	        	    	
     }
 
     /**
-     * Report the characters event
+     * Report the characters event.
      * @param chars  content of characters
      * @param start  starting index of characters to output
      * @param length  number of characters to output
      */
-//    protected void fireCharEvent(char[] chars, int start, int length)
+//    protected void emitCharEvent(char[] chars, int start, int length)
 //        throws org.xml.sax.SAXException
 //    {
 //        if (m_tracer != null)
-//            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_CHARACTERS, chars, start,length);     	        	    	
+//            m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_CHARACTERS, chars, start,length);     	        	    	
 //    }
 //        
 
     /**
      * This method is only used internally when flushing the writer from the
-     * various fire...() trace events.  Due to the writer being wrapped with 
+     * various emit...() trace events. Due to the writer being wrapped with 
      * SerializerTraceWriter it may cause the flush of these trace events:
      * EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS 
      * EVENTTYPE_OUTPUT_CHARACTERS
@@ -1036,44 +1035,45 @@ public abstract class SerializerBase
             }
         }
     }
+    
     /**
-     * Report the CDATA trace event
+     * Report the CDATA trace event.
      * @param chars  content of CDATA
      * @param start  starting index of characters to output
      * @param length  number of characters to output
      */
-    protected void fireCDATAEvent(char[] chars, int start, int length)
+    protected void emitCDATAEvent(char[] chars, int start, int length)
         throws org.xml.sax.SAXException
     {
 		if (m_tracer != null)
         {
             flushMyWriter();
-			m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_CDATA, chars, start,length);
+			m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_CDATA, chars, start,length);
         }     	        	    	
     }
 
     /**
-     * Report the comment trace event
+     * Report the comment trace event.
      * @param chars  content of comment
      * @param start  starting index of comment to output
      * @param length  number of characters to output
      */
-    protected void fireCommentEvent(char[] chars, int start, int length)
+    protected void emitCommentEvent(char[] chars, int start, int length)
         throws org.xml.sax.SAXException
     {
 		if (m_tracer != null)
         {
             flushMyWriter();
-			m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_COMMENT, new String(chars, start, length));
+			m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_COMMENT, new String(chars, start, length));
         }     	        	    	
     }
 
 
     /**
-     * To fire off end entity trace event
+     * Emit an end entity trace event.
      * @param name Name of entity
      */
-    public void fireEndEntity(String name)
+    public void emitEndEntity(String name)
         throws org.xml.sax.SAXException
     {
         if (m_tracer != null)
@@ -1082,29 +1082,29 @@ public abstract class SerializerBase
     }    
 
     /**
-     * To fire off start document trace  event
+     * Emit start document trace event.
      */
-     protected void fireStartDoc()
+     protected void emitStartDoc()
         throws org.xml.sax.SAXException
     {
         if (m_tracer != null)
         {
             flushMyWriter();
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_STARTDOCUMENT);
+            m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_STARTDOCUMENT);
         }     	    
     }    
 
 
     /**
-     * To fire off end document trace event
+     * Emit an end document trace event.
      */
-    protected void fireEndDoc()
+    protected void emitEndDoc()
         throws org.xml.sax.SAXException
     {
         if (m_tracer != null)
         {
             flushMyWriter();
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENDDOCUMENT);
+            m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_ENDDOCUMENT);
         }     	        	
     }    
     
@@ -1115,57 +1115,57 @@ public abstract class SerializerBase
      * @param elemName the qualified name of the element
      * 
      */
-    protected void fireStartElem(String elemName)
+    protected void emitStartElem(String elemName)
         throws org.xml.sax.SAXException
     {        
         if (m_tracer != null)
         {
             flushMyWriter();
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_STARTELEMENT,
+            m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_STARTELEMENT,
                 elemName, m_attributes);     	 
         }       	
     }    
 
 
     /**
-     * To fire off the end element event
+     * Emit an end element event.
      * @param name Name of element
      */
-//    protected void fireEndElem(String name)
+//    protected void emitEndElem(String name)
 //        throws org.xml.sax.SAXException
 //    {
 //        if (m_tracer != null)
-//            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENDELEMENT,name, (Attributes)null);     	        	    	
+//            m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_ENDELEMENT,name, (Attributes)null);     	        	    	
 //    }    
 
 
     /**
-     * To fire off the PI trace event
+     * Emit an PI trace event.
      * @param name Name of PI
      */
-    protected void fireEscapingEvent(String name, String data)
+    protected void emitEscapingEvent(String name, String data)
         throws org.xml.sax.SAXException
     {
 
         if (m_tracer != null)
         {
             flushMyWriter();
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_PI,name, data);
+            m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_PI,name, data);
         }     	        	    	
     }    
 
 
     /**
-     * To fire off the entity reference trace event
+     * Emit an entity reference trace event.
      * @param name Name of entity reference
      */
-    protected void fireEntityReference(String name)
+    protected void emitEntityReference(String name)
         throws org.xml.sax.SAXException
     {
         if (m_tracer != null)
         {
             flushMyWriter();
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENTITYREF,name, (Attributes)null);
+            m_tracer.emitGenerateEvent(SerializerTrace.EVENTTYPE_ENTITYREF,name, (Attributes)null);
         }     	        	    	
     }    
 
@@ -1211,8 +1211,9 @@ public abstract class SerializerBase
     protected void startDocumentInternal() throws org.xml.sax.SAXException
     {
         if (m_tracer != null)
-            this.fireStartDoc();
-    } 
+            this.emitStartDoc();
+    }
+    
     /**
      * This method is used to set the source locator, which might be used to
      * generated an error message.
@@ -1243,7 +1244,7 @@ public abstract class SerializerBase
     }
     
     /**
-     * Reset all of the fields owned by SerializerBase
+     * Reset all of the fields owned by SerializerBase.
      *
      */
     private void resetSerializerBase()
@@ -1617,6 +1618,7 @@ public abstract class SerializerBase
      * map will have what that attribute maps to.
      */
     private HashMap m_OutputProps;
+    
     /**
      * A mapping of keys to default values, for example if
      * the default value of the encoding is "UTF-8" then this
@@ -1675,13 +1677,12 @@ public abstract class SerializerBase
             else {
                 m_OutputProps.put(name,val);
             }
-        }
-        
+        }        
 
     }
 
     /**
-     * Get the first char of the local name
+     * Get the first char of the local name.
      * @param name Either a local name, or a local name
      * preceeded by a uri enclosed in curly braces.
      */

@@ -104,7 +104,7 @@ public class ElemExsltFunction extends ElemTemplate
     //  xctxt.pushRTFContext();
     
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
     
     vars.setStackFrame(nextFrame);
     transformer.executeChildTemplates(this, true);
@@ -113,7 +113,7 @@ public class ElemExsltFunction extends ElemTemplate
     vars.unlink(thisFrame);
 
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEndEvent(this);
+      transformer.getTraceManager().emitTraceEndEvent(this);
 
     // Following ElemTemplate 'pop' removed -- see above.
     // xctxt.popRTFContext(); 

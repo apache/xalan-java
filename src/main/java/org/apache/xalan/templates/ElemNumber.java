@@ -557,7 +557,7 @@ public class ElemNumber extends ElemTemplateElement
   {
 
      if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
     String countString = getCountString(transformer, sourceNode);
@@ -574,7 +574,7 @@ public class ElemNumber extends ElemTemplateElement
     finally
     {
       if (transformer.getDebug())
-	    transformer.getTraceManager().fireTraceEndEvent(this); 
+	    transformer.getTraceManager().emitTraceEndEvent(this); 
     }
   }
 

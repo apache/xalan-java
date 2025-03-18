@@ -406,7 +406,7 @@ public class ElemTemplate extends ElemTemplateElement
     xctxt.pushRTFContext();
 
     if (transformer.getDebug()) {
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
     }
 
     XObject templateEvalResultForAsAttr = null;
@@ -479,7 +479,7 @@ public class ElemTemplate extends ElemTemplateElement
     }
 
     if (transformer.getDebug()) {
-       transformer.getTraceManager().fireTraceEndEvent(this);
+       transformer.getTraceManager().emitTraceEndEvent(this);
     }
 
     xctxt.popRTFContext();

@@ -246,9 +246,9 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
         flushPending();
         m_saxHandler.endElement(uri, localName, qName);
         
-        // time to fire off endElement event
+        // time to emit endElement event
         if (m_tracer != null)
-            super.fireEndElem(qName);
+            super.emitEndElem(qName);
     }
 
     /**
@@ -293,10 +293,10 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
         flushPending();
         m_saxHandler.processingInstruction(target,data);
 
-		// time to fire off processing instruction event
+		// time to emit processing instruction event
 		
         if (m_tracer != null)		
-		    super.fireEscapingEvent(target,data);        
+		    super.emitEscapingEvent(target,data);        
     }
 
     /**
@@ -369,9 +369,9 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
         if (m_lexHandler != null)
             m_lexHandler.comment(ch, start, length);
 
-        // time to fire off comment event
+        // time to emit comment event
         if (m_tracer != null)
-            super.fireCommentEvent(ch, start, length);
+            super.emitCommentEvent(ch, start, length);
         return;
     }
 
@@ -432,7 +432,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
         m_saxHandler.endDocument();
 
         if (m_tracer != null)
-            super.fireEndDoc();        
+            super.emitEndDoc();        
     }
 
     /**
@@ -569,9 +569,9 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
         flushPending();
         m_saxHandler.endElement(EMPTYSTRING, elementName, elementName);
 
-        // time to fire off endElement event
+        // time to emit endElement event
 		if (m_tracer != null)
-            super.fireEndElem(elementName);        
+            super.emitEndElem(elementName);        
     }
 
     /**
@@ -609,9 +609,9 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
         flushPending();
         m_saxHandler.characters(ch, off, len);
 
-        // time to fire off characters event
+        // time to emit characters event
 		if (m_tracer != null)
-            super.fireCharEvent(ch, off, len);        
+            super.emitCharEvent(ch, off, len);        
     }
 
     /**

@@ -197,7 +197,7 @@ public class ElemCallTemplate extends ElemForEach
   {
 
     if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().emitTraceEvent(this);
 
     if (null != m_template)
     {
@@ -227,10 +227,10 @@ public class ElemCallTemplate extends ElemForEach
             if(ewp.m_index >= 0)
             {
               if (transformer.getDebug())
-                transformer.getTraceManager().fireTraceEvent(ewp);
+                transformer.getTraceManager().emitTraceEvent(ewp);
               XObject obj = ewp.getValue(transformer, currentNode);
               if (transformer.getDebug())
-                transformer.getTraceManager().fireTraceEndEvent(ewp);                            
+                transformer.getTraceManager().emitTraceEndEvent(ewp);                            
               
               String tunnelStrVal = ewp.getTunnel();
               obj.setTunnel(tunnelStrVal);
@@ -292,7 +292,7 @@ public class ElemCallTemplate extends ElemForEach
     }
     
     if (transformer.getDebug())
-	  transformer.getTraceManager().fireTraceEndEvent(this); 
+	  transformer.getTraceManager().emitTraceEndEvent(this); 
 
   }
   
