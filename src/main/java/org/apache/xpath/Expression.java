@@ -248,8 +248,12 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
     try
     {
       xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
+      
+      XObject xObj = execute(xctxt);
+      
+      DTMIterator dtmIter = xObj.iter(); 
 
-      return execute(xctxt).iter();
+      return dtmIter;
     }
     finally
     {

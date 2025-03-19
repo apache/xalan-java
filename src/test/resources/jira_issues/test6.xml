@@ -1,0 +1,20 @@
+<dir>
+    <cars>
+        <car vin="101" color="red"/>
+        <car vin="102" color="green"/>
+        <car vin="103" color="red"/>
+        <car vin="104" color="red"/>
+    </cars>
+    <lots>
+        <lot id="L">
+            <car vin="101"/>
+            <car vin="103"/>
+        </lot>
+        <lot id="M">
+            <car vin="102"/>
+        </lot>
+        <lot id="N">
+            <car vin="104"/>
+        </lot>
+    </lots>
+</dir>

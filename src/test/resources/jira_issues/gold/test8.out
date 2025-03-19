@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><set>
+  <problem>
+    <question>Which lots have red cars?</question>
+    <answer>
+      <lot id="L"/>
+      <lot id="N"/>
+    </answer>
+  </problem>
+</set>
