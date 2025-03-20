@@ -253,9 +253,26 @@ public class ElemApplyTemplates extends ElemCallTemplate
     		   }
     	   }
        }
+       else if (varEvalResult instanceof XSAnyAtomicType) {
+    	   // Added for XSLT 3.0    	   
+    	   final StylesheetRoot sroot1 = transformer.getStylesheet();
+    	   final TemplateList tlOne = sroot1.getTemplateListComposed();
+    	   ElemTemplate template = tlOne.getTemplate(".");
+    	   
+    	   xctxt.setXPath3ContextItem(varEvalResult);
+    	   
+    	   for (ElemTemplateElement t = template.m_firstChild; t != null; t = t.m_nextSibling) {
+    		   xctxt.setSAXLocator(t);
+    		   transformer.pushElemTemplateElement(t);    		   
+    		   t.execute(transformer);
+    		   transformer.popElemTemplateElement();
+    	   }
+
+    	   return; 
+       }
        else if (varEvalResult instanceof XNodeSet) {
     	   sourceNodes = ((XNodeSet)varEvalResult).asIterator(xctxt, sourceNode);
-       }
+       }       
        else {
     	   throw new TransformerException("XTTE0505 : xsl:apply-templates 'select' expression evaluation "
     	   		                                 + "resulted in a value that is not supported to be processed.", srcLocator);
