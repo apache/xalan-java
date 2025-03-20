@@ -106,8 +106,14 @@ public class TemplateList implements java.io.Serializable
     if (null != matchXPath)
     {
       Expression matchExpr = matchXPath.getExpression();
-
-      if (matchExpr instanceof StepPattern)
+      
+      XPath templateMatchXPath = template.getMatch();
+      String xpathPatternStr = templateMatchXPath.getPatternString();
+	  if (".".equalsIgnoreCase(xpathPatternStr)) {
+		 // added for XSLT 3.0		  
+		 m_patternTable.put(String.valueOf(xpathPatternStr), template);
+	  }
+	  else if (matchExpr instanceof StepPattern)
       {
         insertPatternInTable((StepPattern) matchExpr, template);
       }
@@ -124,7 +130,6 @@ public class TemplateList implements java.io.Serializable
       }
       else
       {
-
         // TODO: assert error
       }
     }
@@ -720,6 +725,11 @@ public class TemplateList implements java.io.Serializable
   public TemplateWalker getWalker()
   {
     return new TemplateWalker();
+  }
+  
+  public ElemTemplate getTemplate(String patternStr)
+  {
+	  return (ElemTemplate)m_patternTable.get(patternStr);
   }
 
   /**

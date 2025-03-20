@@ -550,6 +550,11 @@ public class OpCodes
    * @xsl.usage advanced
    */
   public static final int NODETYPE_FUNCTEST = 1034;
+  
+  /**
+   * Added for XSLT 3.0
+   */
+  public static final int NODETYPE_CONTEXT_ITEM = 1035;
 
   /**
    * [FROM_stepType]

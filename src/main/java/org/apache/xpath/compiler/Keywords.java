@@ -103,6 +103,9 @@ public class Keywords
 
   /** Any node test string. */
   private static final String NODETYPE_NODE_STRING = "node";
+  
+  /** Context item node test string. Added for XSLT 3.0. */
+  private static final String NODETYPE_CONTEXT_ITEM_STRING = ".";
 
   /** Wildcard element string. */
   private static final String NODETYPE_ANYELEMENT_STRING = "*";
@@ -761,6 +764,11 @@ public class Keywords
                     new Integer(OpCodes.NODETYPE_NODE));
     m_nodetypes.put(NODETYPE_ANYELEMENT_STRING,
                     new Integer(OpCodes.NODETYPE_ANYELEMENT));
+    
+    // added for XSLT 3.0
+    m_nodetypes.put(NODETYPE_CONTEXT_ITEM_STRING,
+                    new Integer(OpCodes.NODETYPE_CONTEXT_ITEM));
+    
     m_keywords.put(FROM_SELF_ABBREVIATED_STRING,
                    new Integer(OpCodes.FROM_SELF));
     m_keywords.put(FUNC_ID_STRING,
@@ -774,7 +782,7 @@ public class Keywords
     m_nodetests.put(NODETYPE_PI_STRING,
                     new Integer(OpCodes.NODETYPE_PI));
     m_nodetests.put(NODETYPE_NODE_STRING,
-                    new Integer(OpCodes.NODETYPE_NODE));    
+                    new Integer(OpCodes.NODETYPE_NODE));
   }
   
   static Object getAxisName(String key){

@@ -4579,9 +4579,23 @@ public class XPathParser
         consumeExpected(')');
       }
     }
+    else if (tokenIs('.')) 
+    {
+    	// Added for XSLT 3.0
+    	
+    	// This has been implemented to handle XSL match pattern 
+    	// strings, that represent XDM atomic values.
+    	Object nodeTestOp = Keywords.getNodeType(m_token);
+    	
+    	int nt = ((Integer) nodeTestOp).intValue();
+
+        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), nt);
+        m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+        
+        consumeExpected('.');
+    }
     else
     {
-
       // Assume name of attribute or element.
       m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.NODENAME);
       m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
