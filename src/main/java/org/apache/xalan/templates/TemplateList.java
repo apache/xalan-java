@@ -398,6 +398,21 @@ public class TemplateList implements java.io.Serializable
 	  TemplateSubPatternAssociation association =
 			  								new TemplateSubPatternAssociation(template, null, xpathMatchPatternStr);
 
+	  QName templateModeQname = template.getMode();
+	  String templateModeStr = null;
+	  if (templateModeQname != null) {
+		  templateModeStr = templateModeQname.toString();   
+	  }
+	  if (templateModeStr != null) {
+		  /**
+		   * This allows us to store within an Hashtable m_patternTable object, 
+		   * more than one xsl:template definition object instances having 
+		   * same value of "match" attribute but with different template 
+		   * definition mode names.
+		   */
+		  xpathMatchPatternStr = (xpathMatchPatternStr + Constants.XSL3_PATTERN_TABLE_DELIM + templateModeStr);  
+	  }
+	  
 	  m_patternTable.put(xpathMatchPatternStr, association);
   }
 

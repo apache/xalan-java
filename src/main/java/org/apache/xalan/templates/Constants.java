@@ -442,7 +442,9 @@ public class Constants extends org.apache.xml.utils.Constants
                              ATTRVAL_NAN = "NaN",
                              DEFAULT_DECIMAL_FORMAT = "#default";
 
+  public static final String XSL3_PATTERN_TABLE_DELIM = "#####";
   
   /** temp dummy         */
   public static final String ATTRNAME_XXXX = "XXXX";
+  
 }
