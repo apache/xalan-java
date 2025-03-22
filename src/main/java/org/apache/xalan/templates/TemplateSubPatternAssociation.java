@@ -63,12 +63,17 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    */
   TemplateSubPatternAssociation(ElemTemplate template, StepPattern pattern, String pat)
   {
-
-    m_pattern = pat;
-    m_template = template;
-    m_stepPattern = pattern;
-    m_targetString = m_stepPattern.getTargetString();
-    m_wild = m_targetString.equals("*");
+	  m_pattern = pat;
+	  m_template = template;
+	  m_stepPattern = pattern;	  
+	  if (m_stepPattern != null) {
+		  m_targetString = m_stepPattern.getTargetString();
+		  m_wild = m_targetString.equals("*");
+	  }
+	  else {
+		  m_targetString = m_pattern;
+		  m_wild = m_targetString.equals("*");
+	  }
   }
 
   /**

@@ -71,5 +71,11 @@ public class XslTransformSharedDatastore {
      * intersect or except.
      */
     public static StringBuffer xpathNodeCombiningExprRhsStrBuff;
+    
+    /**
+     * This class field represents, XPath predicate suffix of XSL 
+     * template definition like xsl:template match=".[..]".
+     */
+    public static String templateMatchDotPatternPredicateStr;
 
 }

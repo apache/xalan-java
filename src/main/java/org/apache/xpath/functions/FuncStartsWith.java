@@ -20,12 +20,15 @@
  */
 package org.apache.xpath.functions;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute the StartsWith() function.
+ * Implementation of XPath fn:starts-with function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncStartsWith extends Function2Args
@@ -33,8 +36,9 @@ public class FuncStartsWith extends Function2Args
     static final long serialVersionUID = 2194585774699567928L;
 
   /**
-   * Execute the function.  The function must return
+   * Execute the function. The function must return
    * a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
@@ -42,7 +46,23 @@ public class FuncStartsWith extends Function2Args
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return m_arg0.execute(xctxt).xstr().startsWith(m_arg1.execute(xctxt).xstr())
-           ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+	  XObject result = null;
+    
+	  XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+	  
+	  XObject arg1XObj = m_arg1.execute(xctxt);
+	  String arg1StrValue = XslTransformEvaluationHelper.getStrVal(arg1XObj);
+
+	  if ((m_arg0 instanceof SelfIteratorNoPredicate) && (xpath3ContextItem != null)) {
+		  String arg0StrValue = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);		  
+		  result = arg0StrValue.startsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;   
+	  }
+	  else {
+		  XObject xpathEvalResult = m_arg0.execute(xctxt);
+		  String arg0StrValue = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
+		  result = arg0StrValue.startsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+	  }
+    
+      return result;
   }
 }

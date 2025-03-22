@@ -27,6 +27,7 @@ import java.util.Vector;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -109,9 +110,10 @@ public class TemplateList implements java.io.Serializable
       
       XPath templateMatchXPath = template.getMatch();
       String xpathPatternStr = templateMatchXPath.getPatternString();
-	  if (".".equalsIgnoreCase(xpathPatternStr)) {
-		 // added for XSLT 3.0		  
-		 m_patternTable.put(String.valueOf(xpathPatternStr), template);
+	  if (".".equals(xpathPatternStr) || xpathPatternStr.startsWith(".[")) {		 		 
+		 insertPatternInTable(String.valueOf(xpathPatternStr), template);
+		 
+		 XslTransformSharedDatastore.templateMatchDotPatternPredicateStr = null;
 	  }
 	  else if (matchExpr instanceof StepPattern)
       {
@@ -135,7 +137,7 @@ public class TemplateList implements java.io.Serializable
     }
   }
 
-  /** Flag to indicate whether in DEBUG mode          */
+/** Flag to indicate whether in DEBUG mode          */
   final static boolean DEBUG = false;
 
   /**
@@ -196,7 +198,7 @@ public class TemplateList implements java.io.Serializable
       Enumeration associations = m_patternTable.elements();
 
       while (associations.hasMoreElements())
-      {
+      {    	
         TemplateSubPatternAssociation head =
           (TemplateSubPatternAssociation) associations.nextElement();
         TemplateSubPatternAssociation wild = m_wildCardPatterns;
@@ -381,6 +383,22 @@ public class TemplateList implements java.io.Serializable
         insertAssociationIntoList(head, association, false);
       }
     }
+  }
+  
+  /**
+   * Add a template to the template list.
+   * 
+   * This method definition supports, XSLT 3.0 xsl:template match pattern 
+   * strings ".", .[...].
+   *
+   * @param pattern
+   * @param template
+   */
+  private void insertPatternInTable(String xpathMatchPatternStr, ElemTemplate template) {		
+	  TemplateSubPatternAssociation association =
+			  								new TemplateSubPatternAssociation(template, null, xpathMatchPatternStr);
+
+	  m_patternTable.put(xpathMatchPatternStr, association);
   }
 
   /**
@@ -935,6 +953,10 @@ public class TemplateList implements java.io.Serializable
         }
       }
     }
+  }
+
+  public Hashtable getPatternTable() {
+	  return m_patternTable;
   }
 
 }

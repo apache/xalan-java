@@ -25,6 +25,7 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.PatternSyntaxException;
@@ -58,8 +59,15 @@ public class FuncReplace extends Function4Args {
         XObject result = null;
         
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
-        
-        String inputStr = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+	    
+	    XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+	    String inputStr = null;
+	    if ((m_arg0 instanceof SelfIteratorNoPredicate) && (xpath3ContextItem != null)) {
+	       inputStr = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem); 
+	    }
+	    else {
+           inputStr = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+	    }
         String patternStr = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
         String replacementStr = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
         

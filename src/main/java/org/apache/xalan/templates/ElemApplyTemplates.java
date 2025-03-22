@@ -20,7 +20,11 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
@@ -53,6 +57,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSBoolean;
 
 /**
  * Implementation of XSLT xsl:apply-templates element.
@@ -216,8 +221,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
     if (m_selectExpression instanceof XPathSequenceConstructor) {
     	resultSeq = (ResultSequence)(((XPathSequenceConstructor)m_selectExpression).execute(xctxt));
     	
-    	if (isAllSeqItemsXdmAtomicValues(resultSeq)) {
-    		// Added for XSLT 3.0    		
+    	if (isAllSeqItemsXdmAtomicValues(resultSeq)) {    		
     		executeXslTransformAtomicValueSeq(transformer, xctxt, resultSeq);
     		
     		return;
@@ -253,20 +257,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
     		   }
     	   }
        }
-       else if (varEvalResult instanceof XSAnyAtomicType) {
-    	   // Added for XSLT 3.0    	   
-    	   final StylesheetRoot sroot1 = transformer.getStylesheet();
-    	   final TemplateList tlOne = sroot1.getTemplateListComposed();
-    	   ElemTemplate template = tlOne.getTemplate(".");
-    	   
-    	   xctxt.setXPath3ContextItem(varEvalResult);
-    	   
-    	   for (ElemTemplateElement t = template.m_firstChild; t != null; t = t.m_nextSibling) {
-    		   xctxt.setSAXLocator(t);
-    		   transformer.pushElemTemplateElement(t);    		   
-    		   t.execute(transformer);
-    		   transformer.popElemTemplateElement();
-    	   }
+       else if (varEvalResult instanceof XSAnyAtomicType) {   	       	       	   
+    	   executeXslTransformAtomicValue(transformer, xctxt, varEvalResult);
 
     	   return; 
        }
@@ -302,20 +294,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
        else if (varEvalResult instanceof XNodeSet) {
     	   sourceNodes = ((XNodeSet)varEvalResult).asIterator(xctxt, sourceNode);
        }
-       else if (isXdmItemAtomicValue(varEvalResult)) {
-    	   // Added for XSLT 3.0    	   
-    	   final StylesheetRoot sroot1 = transformer.getStylesheet();
-    	   final TemplateList tlOne = sroot1.getTemplateListComposed();
-    	   ElemTemplate template = tlOne.getTemplate(".");
-    	   
-    	   xctxt.setXPath3ContextItem(varEvalResult);
-    	   
-    	   for (ElemTemplateElement t = template.m_firstChild; t != null; t = t.m_nextSibling) {
-    		   xctxt.setSAXLocator(t);
-    		   transformer.pushElemTemplateElement(t);    		   
-    		   t.execute(transformer);
-    		   transformer.popElemTemplateElement();
-    	   }
+       else if (isXdmItemAtomicValue(varEvalResult)) {    	   
+    	   executeXslTransformAtomicValue(transformer, xctxt, varEvalResult);
 
     	   return;
        }
@@ -657,27 +637,115 @@ public class ElemApplyTemplates extends ElemCallTemplate
   }
 
   /**
-   * This method definition does, an XSL transformation of a 
-   * sequence of XDM atomic values.
+   * This method definition does, an XSL transformation for a sequence of 
+   * XDM atomic values.
    */
   private void executeXslTransformAtomicValueSeq(TransformerImpl transformer, final XPathContext xctxt,
 		  														ResultSequence resultSeq) throws TransformerException {
 	  
 	  final StylesheetRoot sroot = transformer.getStylesheet();
 	  final TemplateList tl = sroot.getTemplateListComposed();
-	  ElemTemplate template = tl.getTemplate(".");    		    		
-
+	  
+	  Hashtable templateListHashTable = tl.getPatternTable();
+	  Set hashTableEntrySet = templateListHashTable.entrySet();
+	  Iterator iter = hashTableEntrySet.iterator();
+	  
 	  for (int idx = 0; idx < resultSeq.size(); idx++) {
 		  XObject xObj = resultSeq.item(idx);
-		  xctxt.setXPath3ContextItem(xObj);
-		  for (ElemTemplateElement t = template.m_firstChild; 
-				                                         t != null; t = t.m_nextSibling) {
-			  xctxt.setSAXLocator(t);
-			  transformer.pushElemTemplateElement(t);    		   
-			  t.execute(transformer);
-			  transformer.popElemTemplateElement();
-		  }
+		  executeXslTransformAtomicValue(transformer, xctxt, xObj, iter);
+		  
+		  // Reset an iterator object instance
+		  iter = hashTableEntrySet.iterator();		  
 	  }
+  }
+  
+  /**
+   * This method initializes few XSL transform context variables, and does 
+   * transformation for one XDM atomic value.
+   */
+  private void executeXslTransformAtomicValue(TransformerImpl transformer, final XPathContext xctxt,
+		  														XObject xObj) throws TransformerException {
+	  
+	  final StylesheetRoot sroot = transformer.getStylesheet();
+	  final TemplateList tl = sroot.getTemplateListComposed();
+
+	  Hashtable templateListHashTable = tl.getPatternTable();
+	  Set hashTableEntrySet = templateListHashTable.entrySet();
+	  Iterator iter = hashTableEntrySet.iterator();
+
+	  executeXslTransformAtomicValue(transformer, xctxt, xObj, iter);
+	  
+	  // Reset an iterator object instance
+	  iter = hashTableEntrySet.iterator();
+  }
+
+  /**
+   * This method definition does, an XSL transform for one XDM atomic value.
+   */
+  private void executeXslTransformAtomicValue(TransformerImpl transformer, final XPathContext xctxt, XObject xObj,
+		  									 		   Iterator iter) throws TransformerException {
+	  
+	  ElemTemplate template = null;
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+	  XObject prevCtxItem = xctxt.getXPath3ContextItem();
+	  
+	  while (iter.hasNext()) {
+		  Entry<Object, Object> hashTableEntry = (Entry<Object, Object>)iter.next();
+		  Object hTableKeyObj = hashTableEntry.getKey();
+		  TemplateSubPatternAssociation htValueObj = (TemplateSubPatternAssociation)(hashTableEntry.getValue());		
+		  template = htValueObj.getTemplate();
+		  
+		  xctxt.setXPath3ContextItem(xObj);
+		  
+		  String keyValueStr = (String)hTableKeyObj;
+		  if (keyValueStr.startsWith(".[")) {				  				  
+			  String xpathStr = keyValueStr.substring(2);
+			  xpathStr = xpathStr.substring(0, xpathStr.length() - 1);
+			  XPath xpath = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), 
+					  																XPath.SELECT, null);						
+			  XObject xpathEvalResult = xpath.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());						
+			  boolean isSuccess = false;
+			  if (xpathEvalResult instanceof XBooleanStatic) {
+				  XBooleanStatic xBoolStatic = (XBooleanStatic)xpathEvalResult;
+				  isSuccess = xBoolStatic.bool(); 
+			  }
+			  else if (xpathEvalResult instanceof XBoolean) {
+				  XBoolean xBoolean = (XBoolean)xpathEvalResult;
+				  isSuccess = xBoolean.bool(); 
+			  }
+			  else if (xpathEvalResult instanceof XSBoolean) {
+				  XSBoolean xsBoolean = (XSBoolean)xpathEvalResult;
+				  isSuccess = xsBoolean.bool();
+			  }
+
+			  if (isSuccess) {							  	 
+				  for (ElemTemplateElement t = template.m_firstChild; 
+						  									    t != null; t = t.m_nextSibling) {
+					  xctxt.setSAXLocator(t);
+					  transformer.pushElemTemplateElement(t);    		   
+					  t.execute(transformer);
+					  transformer.popElemTemplateElement();
+				  }
+				  
+				  break;
+			  }				  				  
+		  }
+		  else if (".".equals(keyValueStr)) {						 						  		 
+			  for (ElemTemplateElement t = template.m_firstChild; 
+					  										  t != null; t = t.m_nextSibling) {
+				  xctxt.setSAXLocator(t);
+				  transformer.pushElemTemplateElement(t);    		   
+				  t.execute(transformer);
+				  transformer.popElemTemplateElement();
+			  }
+			  
+			  break;
+		  }		  
+	  }
+	  
+	  xctxt.setXPath3ContextItem(prevCtxItem);
   }
 
   /**

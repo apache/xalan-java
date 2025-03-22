@@ -157,8 +157,8 @@ public class XPathParser
    * we translate that within this XPath parser implementation, to an XPath
    * range "to" expression using this class field (this equivalently produces
    * an xdm empty sequence). There may be other direct ways of implementing this.
-   * Pls review.
    */
+  // REVISIT
   public static final String XPATH_EXPR_STR_EMPTY_SEQUENCE = "1 to 0";
   
   private static final List<String> XPATH_OP_ARR_TOKENS_LIST = Arrays.asList(XPATH_OP_ARR);
@@ -1642,12 +1642,15 @@ public class XPathParser
    * For named function references specified with syntax functionNameString#integerLiteral,
    * check whether integerLiteral (i.e, function arity, of the function to be called) is 
    * an integer >= 0.
+   * 
+   * Function arity is defined as, "The number of arguments the function accepts".
    */
   private boolean isFuncArityWellFormedForNamedFuncRef(String funcRefStr) {	  
+	 
 	 boolean isFuncArityWellFormed = true;
 	 
 	 int idx = funcRefStr.indexOf('#');
-	 String intStr = funcRefStr.substring(idx+1);
+	 String intStr = funcRefStr.substring(idx + 1);
 	 Integer intVal = null;
 	 try {
 	    intVal = Integer.valueOf(intStr);
@@ -4587,12 +4590,28 @@ public class XPathParser
     	// strings, that represent XDM atomic values.
     	Object nodeTestOp = Keywords.getNodeType(m_token);
     	
-    	int nt = ((Integer) nodeTestOp).intValue();
+    	int nt = ((Integer)nodeTestOp).intValue();
 
         m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), nt);
         m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
         
         consumeExpected('.');
+        
+        if (tokenIs('[')) {
+           StringBuffer strBuff = new StringBuffer();
+           consumeExpected('[');
+           while (m_token != null) {
+        	  if (tokenIs(']')) {
+        		 consumeExpected(']');  
+        	  }
+        	  else {
+        		 strBuff.append(m_token);
+        		 nextToken();
+        	  }
+           }
+           
+           XslTransformSharedDatastore.templateMatchDotPatternPredicateStr = strBuff.toString();
+        }
     }
     else
     {
