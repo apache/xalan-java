@@ -20,6 +20,7 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -647,15 +648,15 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  
 	  Hashtable templateListHashTable = tl.getPatternTable();
 	  Set hashTableEntrySet = templateListHashTable.entrySet();
-	  Iterator iter = hashTableEntrySet.iterator();
+	  // Iterator iter = hashTableEntrySet.iterator();
 	  
 	  for (int idx = 0; idx < resultSeq.size(); idx++) {
 		  XObject xObj = resultSeq.item(idx);
 		  
-		  executeXslTransformAtomicValue(transformer, xctxt, xObj, iter, xslTemplateInvokeMode);
+		  executeXslTransformAtomicValue(transformer, xctxt, xObj, hashTableEntrySet, xslTemplateInvokeMode);
 		  
 		  // Reset an iterator object instance
-		  iter = hashTableEntrySet.iterator();		  
+		  // iter = hashTableEntrySet.iterator();		  
 	  }
   }
   
@@ -664,32 +665,59 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * transformation for one XDM atomic value.
    */
   private void executeXslTransformAtomicValue(TransformerImpl transformer, final XPathContext xctxt,
-		  														XObject xObj, QName xslTemplateInvokeMode) throws TransformerException {
+		  														XObject contextItem, QName xslTemplateInvokeMode) throws TransformerException {
 	  
 	  final StylesheetRoot sroot = transformer.getStylesheet();
 	  final TemplateList tl = sroot.getTemplateListComposed();
 
 	  Hashtable templateListHashTable = tl.getPatternTable();
 	  Set hashTableEntrySet = templateListHashTable.entrySet();
-	  Iterator iter = hashTableEntrySet.iterator();
+	  // Iterator iter = hashTableEntrySet.iterator();
 
-	  executeXslTransformAtomicValue(transformer, xctxt, xObj, iter, xslTemplateInvokeMode);
+	  executeXslTransformAtomicValue(transformer, xctxt, contextItem, hashTableEntrySet, xslTemplateInvokeMode);
 	  
 	  // Recreate an iterator object instance
-	  iter = hashTableEntrySet.iterator();
+	  //iter = hashTableEntrySet.iterator();
   }
 
   /**
    * This method definition does, an XSL transform for one XDM atomic value.
    */
-  private void executeXslTransformAtomicValue(TransformerImpl transformer, final XPathContext xctxt, XObject xObj,
-		  									 		   Iterator iter, QName xslTemplateInvokeMode) throws TransformerException {
+  private void executeXslTransformAtomicValue(TransformerImpl transformer, final XPathContext xctxt, XObject contextItem,
+		  													Set hashTableEntrySet, QName xslTemplateInvokeMode) throws TransformerException {
 	  
-	  ElemTemplate elemTemplate = null;
+	  Iterator iter = hashTableEntrySet.iterator();	  
 	  
-	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  ElemTemplate elemTemplate = null;	  
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();	  
 	  
 	  XObject prevCtxItem = xctxt.getXPath3ContextItem();
+	  
+	  xctxt.setXPath3ContextItem(contextItem);
+	  
+	  // A list of TemplateDefnPriorityPair object instances, is needed to sort 
+	  // ElemTemplate object instances by a numeric priority (if this priority 
+	  // is not specified within an XSL stylesheet, then its value is 
+	  // java double -Infinity which is the min value of java double as 
+	  // provided by jdk).  
+	  List<TemplateDefnPriorityPair> templateDefnPriorityPairList = new ArrayList<TemplateDefnPriorityPair>();
+	  
+	  // This while loop finds an ElemTemplate object instance, that will be
+	  // used to do an XSL transformation of an XPath data model atomic 
+	  // value (for e.g, xs:string, xs:integer etc) that has been passed as 
+	  // an argument to this method.
+	  
+	  // An xsl:template instance selected for this purpose, is chosen on the 
+	  // basis of xsl:template's mode and priority. Programmatically, an 
+	  // xsl:template instance will always have priority (which will be 
+	  // java lang -Infinity double value if not specified within an 
+	  // XSL stylesheet, otherwise it'll be a valid xs:decimal finite number). 
+	  // Programmatically, an xsl:template's mode will be null when not 
+	  // specified with an XML attribute named 'mode', otherwise it'll be 
+	  // an XML QName non-null typed value.
+	  
+	  boolean templateSelectedWithoutPriority = false;
 	  
 	  while (iter.hasNext()) {
 		  Entry<Object, Object> hashTableEntry = (Entry<Object, Object>)iter.next();
@@ -697,76 +725,117 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  TemplateSubPatternAssociation hashTableValueObj = (TemplateSubPatternAssociation)(hashTableEntry.getValue());		
 		  elemTemplate = hashTableValueObj.getTemplate();
 		  
-		  QName templateDefnMode = elemTemplate.getMode();
-		  boolean templateSelected = false;
+		  QName templateDefnMode = elemTemplate.getMode();		  		   		   
+		  
 		  if ((xslTemplateInvokeMode != null) && (templateDefnMode != null)) {
 			 if (xslTemplateInvokeMode.equals(templateDefnMode)) {			  
-				templateSelected = true;
+				templateSelectedWithoutPriority = true;
 			 }
 		  }
 		  else if ((xslTemplateInvokeMode != null) && (templateDefnMode == null)) {
-			 templateSelected = false; 
+			 templateSelectedWithoutPriority = false; 
 		  }
 		  else if ((xslTemplateInvokeMode == null) && (templateDefnMode != null)) {
-			 templateSelected = false; 
+			 templateSelectedWithoutPriority = false; 
 		  }
 		  else {
-			 templateSelected = true; 
+			 templateSelectedWithoutPriority = true; 
 		  }
 		  
-		  String keyValueStr = (String)hashTableKeyObj;
-		  int index1 = keyValueStr.indexOf(Constants.XSL3_PATTERN_TABLE_DELIM);
-		  if (index1 >= 0) {
-			 keyValueStr = keyValueStr.substring(0, index1);
-		  }		  
+		  if (!templateSelectedWithoutPriority) {
+			 continue;  
+		  }
 		  
-		  if (templateSelected) {
-			  xctxt.setXPath3ContextItem(xObj);
+		  String keyValueStr = (String)hashTableKeyObj;	  
+		  String[] strArray1 = keyValueStr.split(Constants.XSL3_PATTERN_TABLE_DELIM);
+		  if (keyValueStr.startsWith(".[") && (strArray1.length == 3)) {
+			  String xslTemplatePriorityStr = strArray1[2];			  
+			  String xpathStr = keyValueStr.substring(0, keyValueStr.indexOf(Constants.XSL3_PATTERN_TABLE_DELIM));
+			  xpathStr = xpathStr.substring(2);
+			  xpathStr = xpathStr.substring(0, xpathStr.length() - 1);
 			  
-			  if (keyValueStr.startsWith(".[")) {				  				  
-				  String xpathStr = keyValueStr.substring(2);
-				  xpathStr = xpathStr.substring(0, xpathStr.length() - 1);
-				  XPath xpath = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), 
-						  															  XPath.SELECT, null);						
-				  XObject xpathEvalResult = xpath.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());						
-				  boolean isSuccess = false;
-				  if (xpathEvalResult instanceof XBooleanStatic) {
-					  XBooleanStatic xBoolStatic = (XBooleanStatic)xpathEvalResult;
-					  isSuccess = xBoolStatic.bool(); 
-				  }
-				  else if (xpathEvalResult instanceof XBoolean) {
-					  XBoolean xBoolean = (XBoolean)xpathEvalResult;
-					  isSuccess = xBoolean.bool(); 
-				  }
-				  else if (xpathEvalResult instanceof XSBoolean) {
-					  XSBoolean xsBoolean = (XSBoolean)xpathEvalResult;
-					  isSuccess = xsBoolean.bool();
-				  }
-
-				  if (isSuccess) {							  	 
-					  for (ElemTemplateElement t = elemTemplate.m_firstChild; 
-							  											t != null; t = t.m_nextSibling) {
-						  xctxt.setSAXLocator(t);
-						  transformer.pushElemTemplateElement(t);    		   
-						  t.execute(transformer);
-						  transformer.popElemTemplateElement();
-					  }
-
-					  break;
-				  }				  				  
+			  XPath xpath = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), 
+					  															XPath.SELECT, null);						
+			  XObject xpathEvalResult = xpath.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());						
+			  if (xpathEvalResult instanceof XBooleanStatic) {
+				  XBooleanStatic xBoolStatic = (XBooleanStatic)xpathEvalResult;
+				  templateSelectedWithoutPriority = xBoolStatic.bool(); 
 			  }
-			  else if (".".equals(keyValueStr)) {						 						  		 
-				  for (ElemTemplateElement t = elemTemplate.m_firstChild; 
-						  											t != null; t = t.m_nextSibling) {
-					  xctxt.setSAXLocator(t);
-					  transformer.pushElemTemplateElement(t);    		   
-					  t.execute(transformer);
-					  transformer.popElemTemplateElement();
-				  }
-
-				  break;
+			  else if (xpathEvalResult instanceof XBoolean) {
+				  XBoolean xBoolean = (XBoolean)xpathEvalResult;
+				  templateSelectedWithoutPriority = xBoolean.bool(); 
+			  }
+			  else if (xpathEvalResult instanceof XSBoolean) {
+				  XSBoolean xsBoolean = (XSBoolean)xpathEvalResult;
+				  templateSelectedWithoutPriority = xsBoolean.bool();
+			  }
+			  
+			  if (templateSelectedWithoutPriority) {
+			     TemplateDefnPriorityPair templateDefnPriorityPair = new TemplateDefnPriorityPair(keyValueStr, elemTemplate, 
+                      																					(Double.valueOf(xslTemplatePriorityStr)).doubleValue());
+			     templateDefnPriorityPairList.add(templateDefnPriorityPair);
 			  }
 		  }
+		  
+	  } // while (iter.hasNext())
+	  
+	  if (templateDefnPriorityPairList.size() == 0) {		  
+		  // Reset iterator
+		  iter = hashTableEntrySet.iterator();
+		  
+		  while (iter.hasNext()) {
+			  Entry<Object, Object> hashTableEntry = (Entry<Object, Object>)iter.next();
+			  Object hashTableKeyObj = hashTableEntry.getKey();
+			  TemplateSubPatternAssociation hashTableValueObj = (TemplateSubPatternAssociation)(hashTableEntry.getValue());		
+			  elemTemplate = hashTableValueObj.getTemplate();
+			  
+			  QName templateDefnMode = elemTemplate.getMode();		  		   		   
+			  
+			  if ((xslTemplateInvokeMode != null) && (templateDefnMode != null)) {
+				 if (xslTemplateInvokeMode.equals(templateDefnMode)) {			  
+					templateSelectedWithoutPriority = true;
+				 }
+			  }
+			  else if ((xslTemplateInvokeMode != null) && (templateDefnMode == null)) {
+				 templateSelectedWithoutPriority = false; 
+			  }
+			  else if ((xslTemplateInvokeMode == null) && (templateDefnMode != null)) {
+				 templateSelectedWithoutPriority = false; 
+			  }
+			  else {
+				 templateSelectedWithoutPriority = true; 
+			  }
+			  
+			  if (!templateSelectedWithoutPriority) {
+				 continue;  
+			  }
+			  
+			  String keyValueStr = (String)hashTableKeyObj;			  
+			  String[] strArray1 = keyValueStr.split(Constants.XSL3_PATTERN_TABLE_DELIM);
+			  if (".".equals(strArray1[0]) && (strArray1.length == 3)) {
+				 String xslTemplatePriorityStr = strArray1[2];
+				 TemplateDefnPriorityPair templateDefnPriorityPair = new TemplateDefnPriorityPair(keyValueStr, elemTemplate, 
+	                   																					(Double.valueOf(xslTemplatePriorityStr)).doubleValue());
+				 templateDefnPriorityPairList.add(templateDefnPriorityPair);
+				  
+			  }
+			  
+		  } // while (iter.hasNext())
+	  }
+
+	  templateDefnPriorityPairList.sort(null);
+
+	  TemplateDefnPriorityPair templateDefnPriorityPair = templateDefnPriorityPairList.get(
+				  																		templateDefnPriorityPairList.size() - 1);
+	  
+	  elemTemplate = templateDefnPriorityPair.getElemTemplate();
+						 						  		 
+	  for (ElemTemplateElement t = elemTemplate.m_firstChild; 
+			  												t != null; t = t.m_nextSibling) {
+		  xctxt.setSAXLocator(t);
+		  transformer.pushElemTemplateElement(t);    		   
+		  t.execute(transformer);
+		  transformer.popElemTemplateElement();
 	  }
 	  
 	  xctxt.setXPath3ContextItem(prevCtxItem);
@@ -802,6 +871,77 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  }
 	  
 	  return result;
+  }
+  
+  /**
+   * A list containing objects of this class, is sortable in an ascending
+   * order by priority java's double value.
+   * 
+   * An xsl:template definition's priority is defined to have xs:decimal 
+   * data type, according to XSLT 3 spec.
+   */
+  class TemplateDefnPriorityPair implements Comparable<TemplateDefnPriorityPair> {
+	  
+	  private String keyValueStr = null;
+	  
+	  private ElemTemplate elemTemplate = null;
+	  
+	  private double priority;
+	  
+	  /**
+	   * Default class constructor.
+	   */
+	  public TemplateDefnPriorityPair() {
+		 // NO OP  
+	  }
+	  
+	  /**
+	   * Class constructor.
+	   */
+	  public TemplateDefnPriorityPair(String keyValueStr, ElemTemplate elemTemplate, double priority) {
+		 this.keyValueStr = keyValueStr;
+		 this.elemTemplate = elemTemplate;
+		 this.priority = priority;
+	  }
+
+	  public ElemTemplate getElemTemplate() {
+		  return elemTemplate;
+	  }
+
+	  public void setElemTemplate(ElemTemplate elemTemplate) {
+		  this.elemTemplate = elemTemplate;
+	  }
+
+	  public String getKeyValueStr() {
+		  return keyValueStr;
+	  }
+
+	  public void setKeyValueStr(String keyValueStr) {
+		  this.keyValueStr = keyValueStr;
+	  }
+
+	  public double getPriority() {
+		  return priority;
+	  }
+
+	  public void setPriority(double priority) {
+		  this.priority = priority;
+	  }
+
+	  @Override
+	  public int compareTo(TemplateDefnPriorityPair obj1) {
+		 int result = 0;
+		 
+		 if (this.priority < obj1.getPriority()) {
+			result = -1; 
+		 }
+		 else if (this.priority > obj1.getPriority()) {
+			result = 1;  
+		 }
+		 
+		 return result;
+	  }
+
   }
 
 }

@@ -4609,8 +4609,6 @@ public class XPathParser
         		 nextToken();
         	  }
            }
-           
-           XslTransformSharedDatastore.templateMatchDotPatternPredicateStr = strBuff.toString();
         }
     }
     else

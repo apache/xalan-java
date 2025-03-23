@@ -112,8 +112,6 @@ public class TemplateList implements java.io.Serializable
       String xpathPatternStr = templateMatchXPath.getPatternString();
 	  if (".".equals(xpathPatternStr) || xpathPatternStr.startsWith(".[")) {		 		 
 		 insertPatternInTable(String.valueOf(xpathPatternStr), template);
-		 
-		 XslTransformSharedDatastore.templateMatchDotPatternPredicateStr = null;
 	  }
 	  else if (matchExpr instanceof StepPattern)
       {
@@ -388,32 +386,40 @@ public class TemplateList implements java.io.Serializable
   /**
    * Add a template to the template list.
    * 
-   * This method definition supports, XSLT 3.0 xsl:template match pattern 
-   * strings ".", .[...].
+   * This method definition supports XSLT 3 xsl:template pattern strings 
+   * like ".", and .[...] (this is XPath pattern '.' followed by predicate 
+   * that imposes a boolean filter condition on context value '.'. Only 
+   * one predicate is supported here).
    *
    * @param pattern
    * @param template
    */
-  private void insertPatternInTable(String xpathMatchPatternStr, ElemTemplate template) {		
+  private void insertPatternInTable(String pattern, ElemTemplate template) {		
 	  TemplateSubPatternAssociation association =
-			  								new TemplateSubPatternAssociation(template, null, xpathMatchPatternStr);
+			  								new TemplateSubPatternAssociation(template, null, pattern);
+	  
+	  String patternTableKeyStr = pattern; 
 
 	  QName templateModeQname = template.getMode();
+	  
 	  String templateModeStr = null;
 	  if (templateModeQname != null) {
 		  templateModeStr = templateModeQname.toString();   
 	  }
+	  
 	  if (templateModeStr != null) {
-		  /**
-		   * This allows us to store within an Hashtable m_patternTable object, 
-		   * more than one xsl:template definition object instances having 
-		   * same value of "match" attribute but with different template 
-		   * definition mode names.
-		   */
-		  xpathMatchPatternStr = (xpathMatchPatternStr + Constants.XSL3_PATTERN_TABLE_DELIM + templateModeStr);  
+		  patternTableKeyStr = (patternTableKeyStr + Constants.XSL3_PATTERN_TABLE_DELIM + templateModeStr);  
+	  }
+	  else {
+		  patternTableKeyStr = (patternTableKeyStr + Constants.XSL3_PATTERN_TABLE_DELIM + "mode_unspecified");		  
 	  }
 	  
-	  m_patternTable.put(xpathMatchPatternStr, association);
+	  double templatePriority = template.getPriority();
+	  String templatePriorityStr = String.valueOf(templatePriority);
+	  
+	  patternTableKeyStr = (patternTableKeyStr + Constants.XSL3_PATTERN_TABLE_DELIM + templatePriorityStr);
+	  
+	  m_patternTable.put(patternTableKeyStr, association);
   }
 
   /**

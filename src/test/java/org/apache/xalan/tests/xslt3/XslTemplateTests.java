@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT test cases, to test xsl:template instruction.
+ * XSL 3 transformation test cases, to test xsl:template instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -224,6 +224,26 @@ public class XslTemplateTests extends XSLTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test18.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslTemplateTest19() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test19.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslTemplateTest20() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test20.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test20.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test20.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
