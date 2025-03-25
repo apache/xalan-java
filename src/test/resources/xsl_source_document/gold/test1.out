@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <book name="book1">
+    <chapter num="1">Chapter 1 text</chapter>
+    <chapter num="2">Chapter 2 text</chapter>
+    <chapter num="3">Chapter 3 text</chapter>
+    <chapter num="4">Chapter 4 text</chapter>
+    <chapter num="5">Chapter 5 text</chapter>
+  </book>
+</result>

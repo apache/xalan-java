@@ -62,6 +62,7 @@ import org.apache.xalan.templates.ElemPI;
 import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemSort;
+import org.apache.xalan.templates.ElemSourceDocument;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
@@ -95,7 +96,7 @@ public class XSLTSchema extends XSLTElementDef
    */
   void build()
   {
-	// xsl:import, xsl:include
+	// xsl:import, xsl:include, xsl:source-document
     XSLTAttributeDef hrefAttr = new XSLTAttributeDef(null, "href",
                                   XSLTAttributeDef.T_URL, true, false, XSLTAttributeDef.ERROR);
     
@@ -318,6 +319,12 @@ public class XSLTSchema extends XSLTElementDef
     // xsl:sort                                        
     XSLTAttributeDef selectAttrDefDot = new XSLTAttributeDef(null, "select",
                                           XSLTAttributeDef.T_EXPR, false,XSLTAttributeDef.ERROR, ".");
+    
+    // Optional.
+    // Default: "no"
+    // xsl:source-document
+    XSLTAttributeDef streamableAttr = new XSLTAttributeDef(null, "streamable",
+                                          XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     // xsl:key                                      
     XSLTAttributeDef matchAttrRequired = new XSLTAttributeDef(null, "match",
                                            XSLTAttributeDef.T_PATTERN, true, false,XSLTAttributeDef.ERROR);
@@ -456,13 +463,13 @@ public class XSLTSchema extends XSLTElementDef
                                                           XSLTAttributeDef.T_CDATA, false, false, 
                                                           XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[38];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[39];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[39];
+    XSLTElementDef[] templateElements = new XSLTElementDef[39];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[40];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[40];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[39];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[40];
     
-    XSLTElementDef[] charTemplateElements = new XSLTElementDef[20];
+    XSLTElementDef[] charTemplateElements = new XSLTElementDef[21];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
                                      templateElements /* elements */,
@@ -572,6 +579,13 @@ public class XSLTSchema extends XSLTElementDef
                                                                      groupStartingWithAttrOpt, groupEndingWithAttrOpt, spaceAttr }, 
                                              new ProcessorTemplateElem(),
                                              ElemForEachGroup.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslSourceDocument = new XSLTElementDef(this,
+								             Constants.S_XSLNAMESPACEURL, "source-document",
+								             null /*alias */, templateElements,
+								             new XSLTAttributeDef[]{ hrefAttr, streamableAttr, spaceAttr }, 
+								             new ProcessorTemplateElem(),
+								             ElemSourceDocument.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslMerge = new XSLTElementDef(this,
 								             Constants.S_XSLNAMESPACEURL, "merge",
@@ -820,6 +834,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslApplyImports;
     templateElements[i++] = xslForEach;
     templateElements[i++] = xslForEachGroup;
+    templateElements[i++] = xslSourceDocument;
     templateElements[i++] = xslAnalyzeString;
     templateElements[i++] = xslMerge;
     templateElements[i++] = xslMergeSource;
@@ -872,6 +887,7 @@ public class XSLTSchema extends XSLTElementDef
     charTemplateElements[i++] = xslApplyImports;
     charTemplateElements[i++] = xslForEach;
     charTemplateElements[i++] = xslForEachGroup;
+    charTemplateElements[i++] = xslSourceDocument;
     charTemplateElements[i++] = xslMerge;
     charTemplateElements[i++] = xslMergeSource;
     charTemplateElements[i++] = xslMergeKey;

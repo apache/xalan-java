@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.ExpressionNode;
@@ -31,7 +32,7 @@ import org.apache.xpath.objects.XObject;
 import org.xml.sax.ErrorHandler;
 
 /**
- * Implementation of the doc() function.
+ * Implementation of an fn:doc function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -68,14 +69,33 @@ public class FuncDoc extends FunctionOneArg {
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {        
         
         XObject result = null;
-        
-        SourceLocator srcLocator = xctxt.getSAXLocator();
 
         XObject xObject0 = m_arg0.execute(xctxt);
             
         String hrefStrVal = XslTransformEvaluationHelper.getStrVal(xObject0);
             
-        // If the first argument is a relative uri reference, then 
+        result = getDocumentNode(xctxt, hrefStrVal);
+        
+        return result;
+    }
+
+    /**
+     * Given a URL string as an argument to this method, fetch the document 
+     * contents from URL and return an XDM document node corresponding to URL's 
+     * document contents.
+     * 
+     * @param xctxt				XPath context object
+     * @param hrefStrVal		a URL's string value
+     * @return					an XDM document node corresponding to URL's contents
+     * @throws TransformerException
+     */
+	public XObject getDocumentNode(XPathContext xctxt, String hrefStrVal) throws TransformerException {
+		
+		XObject result = null;
+		
+		SourceLocator srcLocator = xctxt.getSAXLocator(); 
+		
+		// If the first argument is a relative uri reference, then 
         // resolve that relative uri with base uri of the stylesheet.
         
         URL resolvedArg0Url = null;
@@ -131,7 +151,8 @@ public class FuncDoc extends FunctionOneArg {
                                                                                                                       + "parsed as an XML document.", srcLocator); 
         }
         
-        return result;
-    }
+		return result;
+		
+	}
 
 }
