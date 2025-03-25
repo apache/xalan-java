@@ -38,7 +38,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
@@ -507,9 +507,9 @@ public class XslTransformEvaluationHelper {
     			newInstance()).getDOMImplementation("LS"));
     	LSSerializer lsSerializer = domImplLS.createLSSerializer();
     	DOMConfiguration domConfig = lsSerializer.getDomConfig();
-    	domConfig.setParameter(XSLFunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+    	domConfig.setParameter(XSL3FunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
     	resultStr = lsSerializer.writeToString(node);
-    	resultStr = resultStr.replaceFirst(XSLFunctionService.UTF_16, XSLFunctionService.UTF_8);
+    	resultStr = resultStr.replaceFirst(XSL3FunctionService.UTF_16, XSL3FunctionService.UTF_8);
 
     	return resultStr;
     }

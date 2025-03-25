@@ -30,7 +30,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 
 /**
  * Abstract base class for handling an extension namespace for XPath.
@@ -123,7 +123,7 @@ public abstract class ExtensionHandler
    * @throws TransformerException          if parsing trouble
    */
   public abstract Object callFunction(
-    XSLConstructorStylesheetOrExtensionFunction extFunction, Vector args,
+    XSL3ConstructorOrExtensionFunction extFunction, Vector args,
       ExpressionContext exprContext, TransformerImpl transformer) throws TransformerException;
 
   /**

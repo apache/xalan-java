@@ -44,7 +44,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
  * 
  * @xsl.usage advanced
  */
-public class XPathHigherOrderBuiltinFunctionsSupport extends Function3Args {
+public class XPathHigherOrderBuiltinFunction extends Function3Args {
     
     private static final long serialVersionUID = 5970365027214826130L;
 

@@ -42,7 +42,7 @@ import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xpath.XPathProcessorException;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -336,7 +336,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * @return the return value of the function evaluation.
    * @throws TransformerException
    */
-  public Object callFunction(XSLConstructorStylesheetOrExtensionFunction extFunction,
+  public Object callFunction(XSL3ConstructorOrExtensionFunction extFunction,
                              Vector args,
                              ExpressionContext exprContext,
                              TransformerImpl transformer)

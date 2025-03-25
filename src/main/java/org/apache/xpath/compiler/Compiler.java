@@ -44,7 +44,7 @@ import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.And;
@@ -1662,7 +1662,7 @@ private static final boolean DEBUG = false;
    * 
    * @param opPos The current position in the m_opMap array.
    *
-   * @return reference to {@link org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction} instance.
+   * @return reference to {@link org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction} instance.
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */
@@ -1687,7 +1687,7 @@ private static final boolean DEBUG = false;
     // can cache the object needed to invoke it.  This way, we only pay the
     // reflection overhead on the first call.
 
-    Function funcObj = new XSLConstructorStylesheetOrExtensionFunction(ns, funcName, String.valueOf(getNextMethodId()));
+    Function funcObj = new XSL3ConstructorOrExtensionFunction(ns, funcName, String.valueOf(getNextMethodId()));
 
     try
     {

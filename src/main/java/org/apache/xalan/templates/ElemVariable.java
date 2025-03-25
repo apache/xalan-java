@@ -42,8 +42,8 @@ import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
-import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
@@ -358,9 +358,9 @@ public class ElemVariable extends ElemTemplateElement
       if (m_selectPattern != null) {          
         selectExpression = m_selectPattern.getExpression();
         
-        if (selectExpression instanceof XSLConstructorStylesheetOrExtensionFunction) {        	
-        	XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)selectExpression;
-        	XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+        if (selectExpression instanceof XSL3ConstructorOrExtensionFunction) {        	
+        	XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)selectExpression;
+        	XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
             XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
             
             QName asAttrQName = null;
@@ -371,11 +371,11 @@ public class ElemVariable extends ElemTemplateElement
             }
             
             if (evalResult != null) {
-            	String funcName = ((XSLConstructorStylesheetOrExtensionFunction)selectExpression).getFunctionName();
-            	String funcNamespace = ((XSLConstructorStylesheetOrExtensionFunction)selectExpression).getNamespace();
+            	String funcName = ((XSL3ConstructorOrExtensionFunction)selectExpression).getFunctionName();
+            	String funcNamespace = ((XSL3ConstructorOrExtensionFunction)selectExpression).getNamespace();
             	
             	String evalResultStrValue = (evalResult instanceof XSString) ? ((XSString)evalResult).stringValue() : null;            	
-            	if (m_asAttr != null && !(XSLFunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
+            	if (m_asAttr != null && !(XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
                    evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {
                 	  String xpathPatternStr = m_selectPattern.getPatternString();
@@ -383,11 +383,11 @@ public class ElemVariable extends ElemTemplateElement
                 	  		                                               + "match the expected sequence type " + m_asAttr + ".", srcLocator); 
                    }
                 }
-            	else if (m_asAttr != null && (XSLFunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	else if (m_asAttr != null && (XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
             	   String typeName = asAttrQName.getLocalName();
             	   String typeNamespace = asAttrQName.getNamespace();
             	   if (funcName.equals(typeName) && typeNamespace.equals(funcNamespace)) {            		  
-            	      XObject valToBeValidated = (((XSLConstructorStylesheetOrExtensionFunction)selectExpression).getArg(0)).execute(xctxt);
+            	      XObject valToBeValidated = (((XSL3ConstructorOrExtensionFunction)selectExpression).getArg(0)).execute(xctxt);
             	      evalResult = valToBeValidated; 
             	   }
             	   else {
@@ -396,8 +396,8 @@ public class ElemVariable extends ElemTemplateElement
                  	  		                                               + "match the expected sequence type " + m_asAttr + ".", srcLocator); 
             	   }
             	}
-            	else if (m_asAttr == null && (XSLFunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
-            	   XObject valToBeValidated = (((XSLConstructorStylesheetOrExtensionFunction)selectExpression).getArg(0)).execute(xctxt);
+            	else if (m_asAttr == null && (XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	   XObject valToBeValidated = (((XSL3ConstructorOrExtensionFunction)selectExpression).getArg(0)).execute(xctxt);
           	       evalResult = valToBeValidated; 	
             	}
                 

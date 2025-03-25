@@ -54,7 +54,7 @@ import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.axes.SubContextList;
 import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.DTMXRTreeFrag;
 import org.apache.xpath.objects.XObject;
@@ -1497,7 +1497,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	  return m_default_collation;
   }
   
-  public XSLFunctionService getXSLFunctionService() {
+  public XSL3FunctionService getXSLFunctionService() {
 	  return XSLFunctionBuilder.getXSLFunctionService(); 
   }
   

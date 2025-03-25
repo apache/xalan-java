@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.compiler;
 
 import java.io.StringReader;
@@ -68,7 +65,7 @@ import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
-import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -5543,9 +5540,9 @@ public class XPathParser
 			   DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
 			   LSSerializer lsSerializer = domImplLS.createLSSerializer();
 			   DOMConfiguration domConfig = lsSerializer.getDomConfig();
-			   domConfig.setParameter(XSLFunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+			   domConfig.setParameter(XSL3FunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
 			   xmlSchemaDocumentStr = lsSerializer.writeToString((Document)xsSchemaTopMostNode);
-			   xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst(XSLFunctionService.UTF_16, XSLFunctionService.UTF_8);
+			   xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst(XSL3FunctionService.UTF_16, XSL3FunctionService.UTF_8);
 			   xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst("schema", "schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
 
 			   DOMInputImpl lsInput = new DOMInputImpl();

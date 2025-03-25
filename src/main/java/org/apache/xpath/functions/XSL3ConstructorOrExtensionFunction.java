@@ -48,9 +48,9 @@ import org.apache.xpath.res.XPATHMessages;
  * 
  * @xsl.usage advanced
  */
-public class XSLConstructorStylesheetOrExtensionFunction extends Function
+public class XSL3ConstructorOrExtensionFunction extends Function
 {
-    static final long serialVersionUID = 5196115554693708718L;
+  static final long serialVersionUID = 5196115554693708718L;
 
   /**
    * The namespace for the extension function, which should not normally
@@ -170,10 +170,9 @@ public class XSLConstructorStylesheetOrExtensionFunction extends Function
    *                  ExtensionsTable#extFunction in order to allow caching
    *                  of the method.
    */
-  public XSLConstructorStylesheetOrExtensionFunction(java.lang.String namespace,
-                         java.lang.String extensionName, Object methodKey)
+  public XSL3ConstructorOrExtensionFunction(java.lang.String namespace,
+                         										java.lang.String extensionName, Object methodKey)
   {
-    //try{throw new Exception("FuncExtFunction() " + namespace + " " + extensionName);} catch (Exception e){e.printStackTrace();}
     m_namespace = namespace;
     m_extensionName = extensionName;
     m_methodKey = methodKey;
@@ -199,9 +198,9 @@ public class XSLConstructorStylesheetOrExtensionFunction extends Function
     XObject result = null;
     
     try {
-       // Attempting to make a call to an XPath constructor function, or an XSL 
-       // stylesheet function.
-       XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+       // Making a call to an XPath constructor function, or XSL 
+       // stylesheet function implementations.
+       XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
        result = xslFunctionService.callFunction(this, null, xctxt);
     } 
     catch (TransformerException ex) {        
@@ -287,13 +286,12 @@ public class XSLConstructorStylesheetOrExtensionFunction extends Function
       return m_exp;
     }
 
-
     /**
      * @see ExpressionOwner#setExpression(Expression)
      */
     public void setExpression(Expression exp)
     {
-    	exp.exprSetParent(XSLConstructorStylesheetOrExtensionFunction.this);
+    	exp.exprSetParent(XSL3ConstructorOrExtensionFunction.this);
     	m_exp = exp;
     }
   }
@@ -321,7 +319,6 @@ public class XSLConstructorStylesheetOrExtensionFunction extends Function
    */
   public void exprSetParent(ExpressionNode n) 
   {
-	
     super.exprSetParent(n);
       
     int nArgs = m_argVec.size();

@@ -28,8 +28,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.XSLFunctionService;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -68,10 +68,10 @@ public class Range extends Operation
       XObject lObj = null;      
       XObject rObj = null;
       
-      XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+      XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
       
-      if (m_left instanceof XSLConstructorStylesheetOrExtensionFunction) {
-         XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)m_left;
+      if (m_left instanceof XSL3ConstructorOrExtensionFunction) {
+         XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)m_left;
          if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
             lObj = xslFunctionService.callFunction(xpathFunc, null, xctxt); 
          }
@@ -83,8 +83,8 @@ public class Range extends Operation
          lObj = m_left.execute(xctxt, true); 
       }
           
-      if (m_right instanceof XSLConstructorStylesheetOrExtensionFunction) {
-         XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)m_right;
+      if (m_right instanceof XSL3ConstructorOrExtensionFunction) {
+         XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)m_right;
          if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
             rObj = xslFunctionService.callFunction(xpathFunc, null, xctxt); 
          }

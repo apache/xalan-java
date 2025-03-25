@@ -53,7 +53,7 @@ public class FuncHoursFromDuration extends FunctionOneArg {
               return resultSeq;
            }
             
-           XSDuration xsDuration = (XSDuration)(((XSLConstructorStylesheetOrExtensionFunction)arg0).execute(xctxt));
+           XSDuration xsDuration = (XSDuration)(((XSL3ConstructorOrExtensionFunction)arg0).execute(xctxt));
             
            int hours = xsDuration.hours();
            if (xsDuration.negative()) {

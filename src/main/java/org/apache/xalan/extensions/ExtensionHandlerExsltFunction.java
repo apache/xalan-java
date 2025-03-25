@@ -38,7 +38,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
@@ -176,7 +176,7 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
    * @return the return value of the function evaluation.
    * @throws TransformerException
    */
-  public Object callFunction(XSLConstructorStylesheetOrExtensionFunction extFunction,
+  public Object callFunction(XSL3ConstructorOrExtensionFunction extFunction,
                              Vector args,
                              ExpressionContext exprContext,
                              TransformerImpl transformer)

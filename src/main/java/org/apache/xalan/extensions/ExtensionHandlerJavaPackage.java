@@ -35,9 +35,9 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.trace.ExtensionEvent;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -437,7 +437,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
    * @return                                the return value of the function evaluation
    * @throws TransformerException
    */
-  public Object callFunction(XSLConstructorStylesheetOrExtensionFunction funcObj,
+  public Object callFunction(XSL3ConstructorOrExtensionFunction funcObj,
                              Vector args,
                              ExpressionContext exprContext,
                              TransformerImpl transformer) throws TransformerException
@@ -447,7 +447,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
 	  
 	  XPathContext xctxt = transformer.getXPathContext();
 	  
-	  XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+	  XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
 
 	  XObject evalResult = xslFunctionService.callFunction(funcObj, transformer, xctxt);
 	  

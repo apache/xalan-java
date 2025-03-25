@@ -102,7 +102,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * 
  * @xsl.usage advanced
  */
-public class XSLFunctionService {
+public class XSL3FunctionService {
 	
 	/**
 	  * Class field declarations, specifying constant values used by this
@@ -129,7 +129,7 @@ public class XSLFunctionService {
 	 *                                    handled by this method.
 	 * @throws TransformerException
 	 */
-    public XObject callFunction(XSLConstructorStylesheetOrExtensionFunction xpathExpr,
+    public XObject callFunction(XSL3ConstructorOrExtensionFunction xpathExpr,
     		                    TransformerImpl transformerImpl,
     		                    XPathContext xctxt) throws TransformerException {        
     	
@@ -140,7 +140,7 @@ public class XSLFunctionService {
     	StylesheetRoot stylesheetRoot = null;
 
     	try {        
-    		XSLConstructorStylesheetOrExtensionFunction funcObj = xpathExpr;
+    		XSL3ConstructorOrExtensionFunction funcObj = xpathExpr;
     		
     		String funcName = funcObj.getFunctionName();
     		String funcNamespace = funcObj.getNamespace();
@@ -559,7 +559,7 @@ public class XSLFunctionService {
     /**
      * Evaluate the XPath built-in constructor function call.
      */
-    private XObject evaluateXPathBuiltInConstructorFunctionCall(XSLConstructorStylesheetOrExtensionFunction funcObj, 
+    private XObject evaluateXPathBuiltInConstructorFunctionCall(XSL3ConstructorOrExtensionFunction funcObj, 
     		                                                     Class dataType, XPathContext xctxt) throws TransformerException, 
                                                                                                  InstantiationException, IllegalAccessException, 
                                                                                                  NoSuchMethodException, SecurityException, 

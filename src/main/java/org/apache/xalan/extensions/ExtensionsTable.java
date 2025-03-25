@@ -28,7 +28,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathProcessorException;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 
 /**
  * Class holding a table registered extension namespace handlers
@@ -206,7 +206,7 @@ public class ExtensionsTable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public Object extFunction(XSLConstructorStylesheetOrExtensionFunction extFunction, Vector argVec, 
+  public Object extFunction(XSL3ConstructorOrExtensionFunction extFunction, Vector argVec, 
                             ExpressionContext exprContext, TransformerImpl transformer)
          throws javax.xml.transform.TransformerException
   {

@@ -53,7 +53,7 @@ public class FuncSecondsFromDuration extends FunctionOneArg {
               return resultSeq;
            }
             
-           XSDuration xsDuration = (XSDuration)(((XSLConstructorStylesheetOrExtensionFunction)arg0).execute(xctxt));
+           XSDuration xsDuration = (XSDuration)(((XSL3ConstructorOrExtensionFunction)arg0).execute(xctxt));
             
            double seconds = xsDuration.seconds();
            if (xsDuration.negative()) {

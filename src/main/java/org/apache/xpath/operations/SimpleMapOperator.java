@@ -23,8 +23,8 @@ import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
-import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
@@ -54,11 +54,11 @@ public class SimpleMapOperator extends Operation
        
        XObject expr1 = null; 
                
-       if (m_left instanceof XSLConstructorStylesheetOrExtensionFunction) {
-           XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)m_left;
+       if (m_left instanceof XSL3ConstructorOrExtensionFunction) {
+           XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)m_left;
            if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
                try {
-            	   XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+            	   XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
                    expr1 = xslFunctionService.callFunction(xpathFunc, null, xctxt);
                }
                catch (TransformerException ex) {

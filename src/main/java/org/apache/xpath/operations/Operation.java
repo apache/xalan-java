@@ -27,8 +27,8 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
-import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -124,10 +124,10 @@ public class Operation extends Expression implements ExpressionOwner
     
     m_xctxt = xctxt; 
     
-    XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+    XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
     
-    if (m_left instanceof XSLConstructorStylesheetOrExtensionFunction) {
-    	XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)m_left;
+    if (m_left instanceof XSL3ConstructorOrExtensionFunction) {
+    	XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)m_left;
     	if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
     		left = xslFunctionService.callFunction(xpathFunc, null, xctxt); 
     	}
@@ -148,8 +148,8 @@ public class Operation extends Expression implements ExpressionOwner
     	left = m_left.execute(xctxt, true); 
     }
 
-    if (m_right instanceof XSLConstructorStylesheetOrExtensionFunction) {
-    	XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)m_right;
+    if (m_right instanceof XSL3ConstructorOrExtensionFunction) {
+    	XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)m_right;
     	if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
     		right = xslFunctionService.callFunction(xpathFunc, null, xctxt); 
     	}

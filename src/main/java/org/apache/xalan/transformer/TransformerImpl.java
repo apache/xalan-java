@@ -93,7 +93,7 @@ import org.apache.xpath.Arg;
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -509,7 +509,7 @@ public class TransformerImpl extends Transformer
                                         getXPathContext().getExpressionContext());   
   }
 
-  public Object extFunction(XSLConstructorStylesheetOrExtensionFunction extFunction, Vector argVec)
+  public Object extFunction(XSL3ConstructorOrExtensionFunction extFunction, Vector argVec)
             throws javax.xml.transform.TransformerException
   {
     return getExtensionsTable().extFunction(extFunction, argVec,

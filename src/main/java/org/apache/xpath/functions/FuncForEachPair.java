@@ -43,7 +43,7 @@ import org.apache.xpath.operations.Variable;
  * 
  * @xsl.usage advanced
  */
-public class FuncForEachPair extends XPathHigherOrderBuiltinFunctionsSupport {
+public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
 
     private static final long serialVersionUID = 5864311267789581972L;
 

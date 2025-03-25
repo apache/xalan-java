@@ -37,8 +37,8 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
-import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
@@ -195,9 +195,9 @@ public class ElemSequence extends ElemTemplateElement
     	  
         selectExpression = m_selectPattern.getExpression();
         
-        if (selectExpression instanceof XSLConstructorStylesheetOrExtensionFunction) {
-        	XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)selectExpression;
-        	XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+        if (selectExpression instanceof XSL3ConstructorOrExtensionFunction) {
+        	XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)selectExpression;
+        	XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
             XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
             if (evalResult != null) {
                xslSequenceVal = evalResult;    

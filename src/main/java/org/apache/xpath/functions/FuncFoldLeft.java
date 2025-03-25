@@ -54,7 +54,7 @@ import org.apache.xpath.operations.Variable;
  * applying the supplied function repeatedly to each item in turn, together
  * with an accumulated result value.
  */
-public class FuncFoldLeft extends XPathHigherOrderBuiltinFunctionsSupport {
+public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
     
     private static final long serialVersionUID = -3772850377799360556L;
 

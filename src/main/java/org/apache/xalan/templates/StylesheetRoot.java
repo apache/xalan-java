@@ -62,7 +62,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
@@ -1515,9 +1515,9 @@ public class StylesheetRoot extends StylesheetComposed
 					DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
 					LSSerializer lsSerializer = domImplLS.createLSSerializer();
 					DOMConfiguration domConfig = lsSerializer.getDomConfig();
-					domConfig.setParameter(XSLFunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+					domConfig.setParameter(XSL3FunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
 					xmlSchemaDocumentStr = lsSerializer.writeToString((Document)xsSchemaTopMostNode);
-					xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst(XSLFunctionService.UTF_16, XSLFunctionService.UTF_8);
+					xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst(XSL3FunctionService.UTF_16, XSL3FunctionService.UTF_8);
 					xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst("schema", "schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
 					
 					// Validate an XML input document with the schema

@@ -399,7 +399,7 @@ public class XPathDynamicFunctionCall extends Expression {
     				                                                  + "within an array.", xctxt.getSAXLocator()); 
     	}
 
-    	evalResult = xpathArr.get(intVal-1);
+    	evalResult = xpathArr.get(intVal - 1);
     	
     	return evalResult;
 	}

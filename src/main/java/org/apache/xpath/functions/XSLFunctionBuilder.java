@@ -28,8 +28,8 @@ package org.apache.xpath.functions;
  */
 public class XSLFunctionBuilder {
 	
-	public static XSLFunctionService getXSLFunctionService() {
-	   return new XSLFunctionService();	
+	public static XSL3FunctionService getXSLFunctionService() {
+	   return new XSL3FunctionService();	
 	}
 
 }

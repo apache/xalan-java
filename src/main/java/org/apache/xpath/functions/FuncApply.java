@@ -51,6 +51,7 @@ public class FuncApply extends Function2Args {
    private static final long serialVersionUID = 1073550747347273561L;
 
    /**
+    * 
    * Implementation of the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
