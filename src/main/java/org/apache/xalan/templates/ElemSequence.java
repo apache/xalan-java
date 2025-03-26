@@ -61,7 +61,7 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of XSLT xsl:sequence element.
+ * Implementation of XSL 3 xsl:sequence element.
  * 
  * Ref : https://www.w3.org/TR/xslt-30/#element-sequence
  * 
@@ -73,11 +73,26 @@ public class ElemSequence extends ElemTemplateElement
 {
 
   private static final long serialVersionUID = 4299774714317634314L;
+  
+  /**
+   * Boolean value to indicate that, whether xsl:sequence instruction 
+   * is called from xsl:fork instruction. 
+   */
+  private boolean m_isCalledFromXslFork;
+  
+  /**
+   * xsl:sequence instruction's evaluation result. This is useful
+   * when xsl:sequence instruction is called from xsl:fork 
+   * instruction.
+   */
+  private XObject m_xslSequenceEvalResult = null;
 
   /**
-   * Constructor ElemSequence
+   * Default constructor.
    */
-  public ElemSequence(){}
+  public ElemSequence() {
+	  // NO OP
+  }
   
   /**
    * This class field is used during, XPath.fixupVariables(..) action 
@@ -342,59 +357,12 @@ public class ElemSequence extends ElemTemplateElement
                                                                                   null, XPath.SELECT, null);
           xslSequenceVal = emptySeqXPath.execute(xctxt, DTM.NULL, null);
       }
-            
-      if (xslSequenceVal != null) {
-    	  if (xslSequenceVal instanceof XPathInlineFunction) {
-    		  XslTransformSharedDatastore.xpathInlineFunction = (XPathInlineFunction)xslSequenceVal;   
-    	  }
-    	  else if (xslSequenceVal instanceof XPathMap) {
-    		  XslTransformSharedDatastore.xpathMap = (XPathMap)xslSequenceVal;
-    	  }
-    	  else {
-    		  SerializationHandler handler = transformer.getSerializationHandler();
-    		  
-	          int xObjectType = xslSequenceVal.getType();
-	          String strVal = null;
-	  
-	          switch (xObjectType) {           
-	              case XObject.CLASS_NODESET :          
-	                ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)xslSequenceVal, transformer, handler, xctxt);          
-	                break;
-	              case XObject.CLASS_RTREEFRAG :
-	                SerializerUtils.outputResultTreeFragment(handler, xslSequenceVal, xctxt);
-	                break;
-	              case XObject.CLASS_RESULT_SEQUENCE :         
-	                ResultSequence resultSequence = (ResultSequence)xslSequenceVal;          
-	                ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, true);          
-	                break;
-	              default :
-	                // no op
-	          }
-	          
-	          boolean isToAddStrValSerializationSuffix = isToAddStrValSerializationSuffix(xctxt); 
-	          
-	          if ((xslSequenceVal instanceof XBoolean) || (xslSequenceVal instanceof XNumber) || 
-	                                                                    (xslSequenceVal instanceof XString)) {
-	              if (isToAddStrValSerializationSuffix) {
-	                 strVal = xslSequenceVal.str() + STRING_VAL_SERIALIZATION_SUFFIX;
-	              }
-	              else {
-	                 strVal = xslSequenceVal.str();  
-	              }
-	              
-	              handler.characters(strVal.toCharArray(), 0, strVal.length());
-	          }
-	          else if (xslSequenceVal instanceof XSAnyAtomicType) {
-	              if (isToAddStrValSerializationSuffix) {
-	                 strVal = ((XSAnyAtomicType)xslSequenceVal).stringValue() + STRING_VAL_SERIALIZATION_SUFFIX;
-	              }
-	              else {
-	                 strVal = ((XSAnyAtomicType)xslSequenceVal).stringValue();
-	              }
-	              
-	              handler.characters(strVal.toCharArray(), 0, strVal.length());
-	          }
-    	  }          
+      
+      if (m_isCalledFromXslFork) {
+           m_xslSequenceEvalResult = xslSequenceVal;
+      }            
+      else if (xslSequenceVal != null) {
+    	  emitXslSequenceResultToSerializer(xctxt, transformer, xslSequenceVal);          
        }
     }
     catch (SAXException se) {
@@ -403,6 +371,73 @@ public class ElemSequence extends ElemTemplateElement
     finally {      
        xctxt.popCurrentNode();
     }   
+  }
+  
+  /**
+   * A method definition to emit contents of xsl:sequence instruction's 
+   * evaluation result, to XSL transformation serializer.
+   * 
+   * @param xctxt							an XPathContext object 
+   * @param transformer						an TransformerImpl object instance
+   * @param xslSequenceVal					an XObject object instance, representing 
+   *                                        result of evaluation of the xsl:sequence instruction
+   * @throws TransformerException
+   * @throws SAXException
+   */
+  public void emitXslSequenceResultToSerializer(XPathContext xctxt, TransformerImpl transformer, 
+		                                                                                  XObject xslSequenceVal)
+		                                                                         throws TransformerException, SAXException {
+	  if (xslSequenceVal instanceof XPathInlineFunction) {
+		  XslTransformSharedDatastore.xpathInlineFunction = (XPathInlineFunction)xslSequenceVal;   
+	  }
+	  else if (xslSequenceVal instanceof XPathMap) {
+		  XslTransformSharedDatastore.xpathMap = (XPathMap)xslSequenceVal;
+	  }
+	  else {
+		  SerializationHandler handler = transformer.getSerializationHandler();
+
+		  int xObjectType = xslSequenceVal.getType();
+		  String strVal = null;
+
+		  switch (xObjectType) {           
+		  case XObject.CLASS_NODESET :          
+			  ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)xslSequenceVal, transformer, handler, xctxt);          
+			  break;
+		  case XObject.CLASS_RTREEFRAG :
+			  SerializerUtils.outputResultTreeFragment(handler, xslSequenceVal, xctxt);
+			  break;
+		  case XObject.CLASS_RESULT_SEQUENCE :         
+			  ResultSequence resultSequence = (ResultSequence)xslSequenceVal;          
+			  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, true);          
+			  break;
+		  default :
+			  // NO OP
+		  }
+
+		  boolean isToAddStrValSerializationSuffix = isToAddStrValSerializationSuffix(xctxt); 
+
+		  if ((xslSequenceVal instanceof XBoolean) || (xslSequenceVal instanceof XNumber) || 
+				  (xslSequenceVal instanceof XString)) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = xslSequenceVal.str() + STRING_VAL_SERIALIZATION_SUFFIX;
+			  }
+			  else {
+				  strVal = xslSequenceVal.str();  
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xslSequenceVal instanceof XSAnyAtomicType) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = ((XSAnyAtomicType)xslSequenceVal).stringValue() + STRING_VAL_SERIALIZATION_SUFFIX;
+			  }
+			  else {
+				  strVal = ((XSAnyAtomicType)xslSequenceVal).stringValue();
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+	  }
   }
 
   /**
@@ -463,7 +498,7 @@ public class ElemSequence extends ElemTemplateElement
    * This method determines that, should a Xalan-J serialization suffix be added, when
    * emitting xdm atomic values to an XSLT result sequence.
    */
-  private boolean isToAddStrValSerializationSuffix(XPathContext xctxt) throws TransformerException {
+  public boolean isToAddStrValSerializationSuffix(XPathContext xctxt) throws TransformerException {
      
      boolean isToAddStrValSerializationSuffix = true;
      
@@ -501,6 +536,22 @@ public class ElemSequence extends ElemTemplateElement
      }
      
      return isToAddStrValSerializationSuffix; 
+  }
+
+  public boolean getIsCalledFromXslFork() {
+	  return m_isCalledFromXslFork;
+  }
+
+  public void setIsCalledFromXslFork(boolean isCalledFromXslFork) {
+	  this.m_isCalledFromXslFork = isCalledFromXslFork;
+  }
+
+  public XObject getXslSequenceEvalResult() {
+	  return m_xslSequenceEvalResult;
+  }
+
+  public void setXslSequenceEvalResult(XObject xslSequenceEvalResult) {
+	  this.m_xslSequenceEvalResult = xslSequenceEvalResult;
   }
 
 }

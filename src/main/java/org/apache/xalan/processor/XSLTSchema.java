@@ -41,6 +41,7 @@ import org.apache.xalan.templates.ElemExtensionScript;
 import org.apache.xalan.templates.ElemFallback;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
+import org.apache.xalan.templates.ElemFork;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemImportSchema;
@@ -463,13 +464,13 @@ public class XSLTSchema extends XSLTElementDef
                                                           XSLTAttributeDef.T_CDATA, false, false, 
                                                           XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[39];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[40];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[40];
+    XSLTElementDef[] templateElements = new XSLTElementDef[40];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[41];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[41];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[40];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[41];
     
-    XSLTElementDef[] charTemplateElements = new XSLTElementDef[21];
+    XSLTElementDef[] charTemplateElements = new XSLTElementDef[22];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
                                      templateElements /* elements */,
@@ -586,6 +587,13 @@ public class XSLTSchema extends XSLTElementDef
 								             new XSLTAttributeDef[]{ hrefAttr, streamableAttr, spaceAttr }, 
 								             new ProcessorTemplateElem(),
 								             ElemSourceDocument.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslFork = new XSLTElementDef(this,
+								             Constants.S_XSLNAMESPACEURL, "fork",
+								             null /*alias */, templateElements,
+								             new XSLTAttributeDef[]{ spaceAttr }, 
+								             new ProcessorTemplateElem(),
+								             ElemFork.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslMerge = new XSLTElementDef(this,
 								             Constants.S_XSLNAMESPACEURL, "merge",
@@ -835,6 +843,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslForEach;
     templateElements[i++] = xslForEachGroup;
     templateElements[i++] = xslSourceDocument;
+    templateElements[i++] = xslFork;
     templateElements[i++] = xslAnalyzeString;
     templateElements[i++] = xslMerge;
     templateElements[i++] = xslMergeSource;
@@ -888,6 +897,7 @@ public class XSLTSchema extends XSLTElementDef
     charTemplateElements[i++] = xslForEach;
     charTemplateElements[i++] = xslForEachGroup;
     charTemplateElements[i++] = xslSourceDocument;
+    charTemplateElements[i++] = xslFork;
     charTemplateElements[i++] = xslMerge;
     charTemplateElements[i++] = xslMergeSource;
     charTemplateElements[i++] = xslMergeKey;

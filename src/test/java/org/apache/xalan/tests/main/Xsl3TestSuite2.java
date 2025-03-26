@@ -63,6 +63,7 @@ import org.apache.xalan.tests.xslt3.W3c_xslt30_AxesTests;
 import org.apache.xalan.tests.xslt3.W3c_xslt30_IterateTests;
 import org.apache.xalan.tests.xslt3.XslAnalyzeStringTests;
 import org.apache.xalan.tests.xslt3.XslAttributeTests;
+import org.apache.xalan.tests.xslt3.XslForkTests;
 import org.apache.xalan.tests.xslt3.XslGroupingTests;
 import org.apache.xalan.tests.xslt3.XslGroupingWithSortTests;
 import org.apache.xalan.tests.xslt3.XslIterateTests;
@@ -106,7 +107,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 XslVariableAttributeAsTests.class, XPathInstanceOfExprTests.class, XslTemplateAttributeAsTests.class,
                 FnRoundTests.class, XslSequenceInstTests.class, XPathNodeSequenceCombinationTests.class,
                 FnDocAvailableTests.class, FnUnparsedTextLinesTests.class, XslMethodOutputJsonTests.class,
-                XsGregorianTypeTests.class, XslMergeTests.class, XslSourceDocumentTests.class })
+                XsGregorianTypeTests.class, XslMergeTests.class, XslSourceDocumentTests.class,
+                XslForkTests.class })
 public class Xsl3TestSuite2 {
 
 }
