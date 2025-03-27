@@ -36,6 +36,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XRTreeFrag;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -221,7 +223,27 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		
 	    		writeStringContentsToFile(hrefStr, textStrValue);
 	    	}
+	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_JSON).equals(methodQname.toString())) {
+	    		String jsonStrValue = transformer.transformToString(this);
+	    		
+	    		try {
+	    		   // Verify that, the string value represents a legible JSON 
+	    		   // document.
+	    		   JSONObject jsonObject = new JSONObject(jsonStrValue);
+	    		}
+	    		catch (JSONException ex) {
+	    		   throw new TransformerException("XPTY0004 : An xsl:result-document instruction within a stylesheet has attribute "
+	    		   		                                + "\"method\" with value 'json'. There was a JSON syntax error in "
+	    		   		                                + "an input string or there was a duplicate object key. Following "
+                                                        + "run-time error occured : " + ex.getMessage() + ".", srcLocator);
+	    		}
+	    		
+	    		writeStringContentsToFile(hrefStr, jsonStrValue.trim());
+	    	}
         }
+	    catch (TransformerException ex) {
+	        throw ex;	
+	    }
 	    catch (Exception ex) {
 	    	throw new TransformerException("XPTY0004 : An exception occured while evaluating an "
 	    			                                    + "xsl:result-document instruction. Following "

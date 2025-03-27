@@ -63,8 +63,8 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
         	String goldFileContentStr1 = getFileContentAsString(goldFilePath1);
         	String goldFileContentStr2 = getFileContentAsString(goldFilePath2);
 
-        	String[] goldFileStrArr = new String[] {goldFileContentStr1, goldFileContentStr2};        	            
-        	String[] goldFileNameArr = new String[] {goldFileName1, goldFileName2};
+        	String[] goldFileStrArr = new String[] { goldFileContentStr1, goldFileContentStr2 };        	            
+        	String[] goldFileNameArr = new String[] { goldFileName1, goldFileName2 };
         	
             runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFileStrArr, 
             		                                                              goldFileNameArr, null);                        
@@ -89,8 +89,80 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
         	String goldFileContentStr1 = getFileContentAsString(goldFilePath1);
         	String goldFileContentStr2 = getFileContentAsString(goldFilePath2);
 
-        	String[] goldFileStrArr = new String[] {goldFileContentStr1, goldFileContentStr2};        	            
-        	String[] goldFileNameArr = new String[] {goldFileName1, goldFileName2};
+        	String[] goldFileStrArr = new String[] { goldFileContentStr1, goldFileContentStr2 };        	            
+        	String[] goldFileNameArr = new String[] { goldFileName1, goldFileName2 };
+        	
+            runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFileStrArr, 
+            		                                                              goldFileNameArr, null);                        
+        }
+        catch (Exception ex) {
+        	ex.printStackTrace();
+        }
+    }
+    
+    @Test
+    public void xslResultDocumentTest3() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";        
+        
+        String goldFileName1 = "result1.json";
+        
+        String goldFilePath1 = XSL_TRANSFORM_GOLD_DIRPATH + goldFileName1;
+
+        
+        try {
+        	String goldFileContentStr1 = getFileContentAsString(goldFilePath1);
+
+        	String[] goldFileStrArr = new String[] { goldFileContentStr1 };        	            
+        	String[] goldFileNameArr = new String[] { goldFileName1 };
+        	
+            runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFileStrArr, 
+            		                                                              goldFileNameArr, null);                        
+        }
+        catch (Exception ex) {
+        	ex.printStackTrace();
+        }
+    }
+    
+    @Test
+    public void xslResultDocumentTest4() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";        
+        
+        String goldFileName1 = "result2.json";
+        
+        String goldFilePath1 = XSL_TRANSFORM_GOLD_DIRPATH + goldFileName1;
+
+        
+        try {
+        	String goldFileContentStr1 = getFileContentAsString(goldFilePath1);
+
+        	String[] goldFileStrArr = new String[] { goldFileContentStr1 };        	            
+        	String[] goldFileNameArr = new String[] { goldFileName1 };
+        	
+            runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFileStrArr, 
+            		                                                              goldFileNameArr, null);                        
+        }
+        catch (Exception ex) {
+        	ex.printStackTrace();
+        }
+    }
+    
+    @Test
+    public void xslResultDocumentTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";        
+        
+        String goldFileName1 = "result3.json";
+        
+        String goldFilePath1 = XSL_TRANSFORM_GOLD_DIRPATH + goldFileName1;
+
+        
+        try {
+        	String goldFileContentStr1 = getFileContentAsString(goldFilePath1);
+
+        	String[] goldFileStrArr = new String[] { goldFileContentStr1 };        	            
+        	String[] goldFileNameArr = new String[] { goldFileName1 };
         	
             runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFileStrArr, 
             		                                                              goldFileNameArr, null);                        

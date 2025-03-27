@@ -376,22 +376,26 @@ public class Constants extends org.apache.xml.utils.Constants
   /** Mnemonics for the possible values of the xsl:output element's
    * method= attribute:
    * <ul>
-   * <li>ATTRVAL_OUTPUT_METHOD_XML = Use an XML formatter to
+   * <li>ATTRVAL_OUTPUT_METHOD_XML: Use an XML formatter to
    * produce the output document (basic XSLT operation).</li>
    * <li>ATTRVAL_OUTPUT_METHOD_HTML: Use an HTML formatter to
    * produce the output document. When generating HTML documents,
    * this may yield better results; it does things like escaping
    * characters in href attributes.</li>
-   * </li>ATTRVAL_OUTPUT_METHOD_TEXT:  Use a Text formatter to
+   * <li>ATTRVAL_OUTPUT_METHOD_TEXT: Use a Text formatter to
    * produce the output document. Generally the right choice if your
    * stylesheet wants to take over _all_ the details of formatting,
    * most often when producing something that isn't an XML or HTML
    * document.</li>
+   * <li>ATTRVAL_OUTPUT_METHOD_JSON: Use a JSON text formatter to
+   * produce the output document. Added for XSLT 3.0 spec 
+   * implementation.</li>
    * </ul> 
    * */
   public static final String ATTRVAL_OUTPUT_METHOD_HTML = "html",
                              ATTRVAL_OUTPUT_METHOD_XML = "xml",
-                             ATTRVAL_OUTPUT_METHOD_TEXT = "text";
+                             ATTRVAL_OUTPUT_METHOD_TEXT = "text",
+                             ATTRVAL_OUTPUT_METHOD_JSON = "json";
 
   
   /* For space-att*/

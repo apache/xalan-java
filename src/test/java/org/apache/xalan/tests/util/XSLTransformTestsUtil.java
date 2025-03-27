@@ -195,11 +195,11 @@ public class XSLTransformTestsUtil {
      */
      protected void runXslTransformAndAssertOutput(String xmlFilePath, String xslFilePath, 
     		                                           String[] goldFileStrArr, String[] goldFileNameArr, 
-    		                                           XslTestsErrorHandler xslTransformErrHandler) {    	 
-    	 
-    	 String fileProducedName1 = goldFileNameArr[0];
- 		 String fileProducedName2 = goldFileNameArr[1];
+    		                                           XslTestsErrorHandler xslTransformErrHandler) {    	     	 
  		
+    	 String fileProducedName1 = null;
+    	 String fileProducedName2 = null;
+    	 
     	 try {
     		String xmlDocumentUriStr = ((new File(xmlFilePath)).toURI()).toString();
     		String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
@@ -220,12 +220,28 @@ public class XSLTransformTestsUtil {
 
     		transformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
     		
-        	String fileProducedStr1 = getFileContentAsString(fileProducedName1);
-        	String fileProducedStr2 = getFileContentAsString(fileProducedName2);
-        	
-        	if (!(goldFileStrArr[0].equals(fileProducedStr1) && goldFileStrArr[1].equals(fileProducedStr2))) {
-        	   Assert.fail();
-        	}
+    		if (goldFileNameArr.length == 2) {
+    			fileProducedName1 = goldFileNameArr[0];
+    			fileProducedName2 = goldFileNameArr[1];
+
+    			String fileProducedStr1 = getFileContentAsString(fileProducedName1);
+    			String fileProducedStr2 = getFileContentAsString(fileProducedName2);
+
+    			if (!(goldFileStrArr[0].equals(fileProducedStr1) && goldFileStrArr[1].equals(fileProducedStr2))) {
+    				Assert.fail();
+    			}
+    		}
+    		else {
+    			// Only one file is there to compare it's contents
+    			
+    			fileProducedName1 = goldFileNameArr[0];
+
+    			String fileProducedStr1 = getFileContentAsString(fileProducedName1);
+
+    			if (!(goldFileStrArr[0].equals(fileProducedStr1))) {
+    				Assert.fail();
+    			}
+    		}
     	}
     	catch (Exception ex) {
     		Assert.fail();    
@@ -234,7 +250,9 @@ public class XSLTransformTestsUtil {
     		// These statements delete the temporary files 
     		// produced while running a test case using this method.
     		(new File(fileProducedName1)).delete();
-    		(new File(fileProducedName2)).delete();
+    		if (fileProducedName2 != null) {
+    		   (new File(fileProducedName2)).delete();
+    		}
     	}
     }
     
