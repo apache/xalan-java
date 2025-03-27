@@ -149,7 +149,7 @@ public class ElemFork extends ElemTemplateElement
 	    		// and emit xsl:fork's evaluation result to an XSL transformation serializer 
 	    		// in a sequential order as per xsl:sequence element siblings (i.e, first 
 	    		// xsl:sequence's evaluation result will be emitted first, then for the 
-	    		// second xsl:sequence sibling element and so on.
+	    		// next xsl:sequence sibling element and so on).
 	    		
 	    		List<XslSequenceAndResultPair> xslSequenceEvalResultList = new ArrayList<XslSequenceAndResultPair>();
 	    		

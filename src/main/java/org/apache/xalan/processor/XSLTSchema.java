@@ -61,6 +61,7 @@ import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemPI;
 import org.apache.xalan.templates.ElemParam;
+import org.apache.xalan.templates.ElemResultDocument;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemSort;
 import org.apache.xalan.templates.ElemSourceDocument;
@@ -97,7 +98,7 @@ public class XSLTSchema extends XSLTElementDef
    */
   void build()
   {
-	// xsl:import, xsl:include, xsl:source-document
+	// xsl:import, xsl:include, xsl:source-document, xsl:result-document
     XSLTAttributeDef hrefAttr = new XSLTAttributeDef(null, "href",
                                   XSLTAttributeDef.T_URL, true, false, XSLTAttributeDef.ERROR);
     
@@ -114,34 +115,34 @@ public class XSLTSchema extends XSLTElementDef
                                       XSLTAttributeDef.T_SIMPLEPATTERNLIST,
                                       true, false, XSLTAttributeDef.ERROR);                                   
     
-    // xsl:output
+    // xsl:output, xsl:result-document
     XSLTAttributeDef methodAttr = new XSLTAttributeDef(null, "method",
-                                    XSLTAttributeDef.T_QNAME, false, false,XSLTAttributeDef.ERROR);
+                                    XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
     XSLTAttributeDef versionAttr = new XSLTAttributeDef(null, "version",
-                                     XSLTAttributeDef.T_NMTOKEN, false, false,XSLTAttributeDef.ERROR);
+                                     XSLTAttributeDef.T_NMTOKEN, false, false, XSLTAttributeDef.ERROR);
     XSLTAttributeDef encodingAttr = new XSLTAttributeDef(null, "encoding",
-                                      XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.ERROR);
+                                      XSLTAttributeDef.T_CDATA, false, false, XSLTAttributeDef.ERROR);
     XSLTAttributeDef omitXmlDeclarationAttr = new XSLTAttributeDef(null,
                                                 "omit-xml-declaration",
                                                 XSLTAttributeDef.T_YESNO,
                                                 false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef standaloneAttr = new XSLTAttributeDef(null,
                                         "standalone",
-                                        XSLTAttributeDef.T_YESNO, false, false,XSLTAttributeDef.ERROR);
+                                        XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     XSLTAttributeDef doctypePublicAttr = new XSLTAttributeDef(null,
                                            "doctype-public",
-                                           XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.ERROR);
+                                           XSLTAttributeDef.T_CDATA, false, false, XSLTAttributeDef.ERROR);
     XSLTAttributeDef doctypeSystemAttr = new XSLTAttributeDef(null,
                                            "doctype-system",
-                                           XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.ERROR);
+                                           XSLTAttributeDef.T_CDATA, false, false, XSLTAttributeDef.ERROR);
     XSLTAttributeDef cdataSectionElementsAttr = new XSLTAttributeDef(null,
                                                   "cdata-section-elements",
                                                   XSLTAttributeDef.T_QNAMES_RESOLVE_NULL,
-                                                  false, false,XSLTAttributeDef.ERROR);
+                                                  false, false, XSLTAttributeDef.ERROR);
     XSLTAttributeDef indentAttr = new XSLTAttributeDef(null, "indent",
-                                    XSLTAttributeDef.T_YESNO, false, false,XSLTAttributeDef.ERROR);
+                                    XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     XSLTAttributeDef mediaTypeAttr = new XSLTAttributeDef(null, "media-type",
-                                       XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.ERROR);
+                                       XSLTAttributeDef.T_CDATA, false, false, XSLTAttributeDef.ERROR);
                                        
                   
     // Required.
@@ -464,13 +465,13 @@ public class XSLTSchema extends XSLTElementDef
                                                           XSLTAttributeDef.T_CDATA, false, false, 
                                                           XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[40];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[41];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[41];
+    XSLTElementDef[] templateElements = new XSLTElementDef[41];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[42];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[42];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[41];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[42];
     
-    XSLTElementDef[] charTemplateElements = new XSLTElementDef[22];
+    XSLTElementDef[] charTemplateElements = new XSLTElementDef[23];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
                                      templateElements /* elements */,
@@ -587,6 +588,14 @@ public class XSLTSchema extends XSLTElementDef
 								             new XSLTAttributeDef[]{ hrefAttr, streamableAttr, spaceAttr }, 
 								             new ProcessorTemplateElem(),
 								             ElemSourceDocument.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslResultDocument = new XSLTElementDef(this,
+								             Constants.S_XSLNAMESPACEURL, "result-document",
+								             null /*alias */, templateElements,
+								             new XSLTAttributeDef[]{ hrefAttr, methodAttr, 
+								            		                 omitXmlDeclarationAttr, spaceAttr }, 
+								             new ProcessorTemplateElem(),
+								             ElemResultDocument.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslFork = new XSLTElementDef(this,
 								             Constants.S_XSLNAMESPACEURL, "fork",
@@ -844,6 +853,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslForEachGroup;
     templateElements[i++] = xslSourceDocument;
     templateElements[i++] = xslFork;
+    templateElements[i++] = xslResultDocument;
     templateElements[i++] = xslAnalyzeString;
     templateElements[i++] = xslMerge;
     templateElements[i++] = xslMergeSource;
@@ -898,6 +908,7 @@ public class XSLTSchema extends XSLTElementDef
     charTemplateElements[i++] = xslForEachGroup;
     charTemplateElements[i++] = xslSourceDocument;
     charTemplateElements[i++] = xslFork;
+    charTemplateElements[i++] = xslResultDocument;
     charTemplateElements[i++] = xslMerge;
     charTemplateElements[i++] = xslMergeSource;
     charTemplateElements[i++] = xslMergeKey;

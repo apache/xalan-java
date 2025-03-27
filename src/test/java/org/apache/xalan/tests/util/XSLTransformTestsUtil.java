@@ -17,6 +17,8 @@
 package org.apache.xalan.tests.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -132,7 +134,7 @@ public class XSLTransformTestsUtil {
     }
 
     /**
-     * This function is the primary function, that is invoked by all the Xalan-J XSL 3 test 
+     * This function is invoked by many of the Xalan-J XSL 3 test 
      * cases within this test suite.
      * 
      * This function does an XSLT transformation via JAXP XSL transformation API, and
@@ -185,13 +187,64 @@ public class XSLTransformTestsUtil {
      }
     
     /**
-     * This function is similar to the function 'runXslTransformAndAssertOutput' except
-     * that, this function accepts a base uri prefix as argument for the purpose of running 
-     * few XSL tests within this test suite.
+     * This function is invoked by many of the Xalan-J XSL 3 test 
+     * cases within this test suite.
      * 
      * This function does an XSLT transformation via JAXP XSL transformation API, and
      * compares the XSLT transformation's output with the corresponding expected output.
      */
+     protected void runXslTransformAndAssertOutput(String xmlFilePath, String xslFilePath, 
+    		                                           String[] goldFileStrArr, String[] goldFileNameArr, 
+    		                                           XslTestsErrorHandler xslTransformErrHandler) {    	 
+    	 
+    	 String fileProducedName1 = goldFileNameArr[0];
+ 		 String fileProducedName2 = goldFileNameArr[1];
+ 		
+    	 try {
+    		String xmlDocumentUriStr = ((new File(xmlFilePath)).toURI()).toString();
+    		String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
+
+    		Node xmlDomSource = xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
+
+    		Transformer transformer = xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
+
+    		setXslTransformProperties(transformer);
+
+    		if (xslTransformErrHandler != null) {
+    			transformer.setErrorListener(xslTransformErrHandler);  
+    		}
+
+    		StringWriter resultStrWriter = new StringWriter();
+
+    		DOMSource xmlDomSrc = new DOMSource(xmlDomSource, xmlDocumentUriStr);
+
+    		transformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
+    		
+        	String fileProducedStr1 = getFileContentAsString(fileProducedName1);
+        	String fileProducedStr2 = getFileContentAsString(fileProducedName2);
+        	
+        	if (!(goldFileStrArr[0].equals(fileProducedStr1) && goldFileStrArr[1].equals(fileProducedStr2))) {
+        	   Assert.fail();
+        	}
+    	}
+    	catch (Exception ex) {
+    		Assert.fail();    
+    	}
+    	finally {    		    		
+    		// These statements delete the temporary files 
+    		// produced while running a test case using this method.
+    		(new File(fileProducedName1)).delete();
+    		(new File(fileProducedName2)).delete();
+    	}
+    }
+    
+     /**
+      * This function is invoked by many of the Xalan-J XSL 3 test 
+      * cases within this test suite.
+      * 
+      * This function does an XSLT transformation via JAXP XSL transformation API, and
+      * compares the XSLT transformation's output with the corresponding expected output.
+      */
      protected void runXslTransformAndAssertOutputWithXslParamBaseUri(String xmlFilePath, String xslFilePath, 
 			    		                                              String xslGoldFilePath, XslTestsErrorHandler 
 			    		                                              xslTransformErrHandler, String localBaseUriPrefix) {
@@ -239,14 +292,13 @@ public class XSLTransformTestsUtil {
     	}
     }
     
-    /**
-     * This function is similar to the function 'runXslTransformAndAssertOutput' except
-     * that, this function accepts a document URI representing an XML document to
-     * be transformed via an XSL stylesheet.
-     * 
-     * This function does an XSLT transformation via JAXP XSL transformation API, and
-     * compares the XSLT transformation's output with the corresponding expected output.
-     */
+     /**
+      * This function is invoked by many of the Xalan-J XSL 3 test 
+      * cases within this test suite.
+      * 
+      * This function does an XSLT transformation via JAXP XSL transformation API, and
+      * compares the XSLT transformation's output with the corresponding expected output.
+      */
     protected void runXslUriTransformAndAssertOutput(String xmlDocumentUri, String xslFilePath, 
                                                                String xslGoldFilePath, 
                                                                XslTestsErrorHandler xslTransformErrHandler) {
@@ -301,6 +353,46 @@ public class XSLTransformTestsUtil {
      */
     protected void setXslEvaluateProperty(boolean isXslEvaluateEnable) {
     	isXslEvaluateEnabled = isXslEvaluateEnable;
+    }
+    
+    /**
+     * Get the file contents as String, given the 
+     * name of the file as an argument to this method.
+     */
+    protected String getFileContentAsString(String fileName) {
+    	
+    	String fileContentStr = null;
+    	
+    	FileInputStream fileInputStream = null;
+    	
+    	try {
+    		fileInputStream = new FileInputStream(fileName);
+    		StringBuffer strBuff = new StringBuffer();
+    		byte[] byteArr = new byte[512];
+    		int noOfCharsRead = -1;
+    		while ((noOfCharsRead = fileInputStream.read(byteArr)) != -1) {
+    			String strRead = new String(byteArr);
+    			strBuff.append(strRead);
+    		}
+    		
+    		fileContentStr = strBuff.toString();
+
+    		fileInputStream.close();
+    	}
+    	catch (Exception ex) {
+    		ex.printStackTrace();
+    	}
+    	finally {
+    		if (fileInputStream != null) {
+    			try {
+    				fileInputStream.close();
+    			} catch (IOException ex) {
+    				ex.printStackTrace();
+    			}
+    		}
+    	}
+    	
+    	return fileContentStr;
     }
     
     /**
