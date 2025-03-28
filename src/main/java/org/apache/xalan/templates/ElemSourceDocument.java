@@ -17,7 +17,10 @@
  */
 package org.apache.xalan.templates;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.sax.SAXSource;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTMIterator;
@@ -152,6 +155,20 @@ public class ElemSourceDocument extends ElemTemplateElement
   {
 	    
 	    XPathContext xctxt = transformer.getXPathContext();
+	    
+	    SourceLocator srcLocator = xctxt.getSAXLocator(); 
+	    
+	    if (m_streamable) {
+	       Source source = transformer.getSource();	       	       
+	       if (!(source instanceof SAXSource)) {
+	    	   String srcClassName = (source.getClass()).getName();
+	    	   throw new TransformerException("XTTE0505 : xsl:source-document instruction has attribute "
+	    	   		                                            + "\"streamable\" with value 'yes', but XSL transformation "
+	    	   		                                            + "has not been invoked with a SAXSource document input. "
+	    	   		                                            + "This XSL transformation has been invoked with " + 
+	    	   		                                               srcClassName + " document input.", srcLocator);  
+	       }
+	    }
 	  
 	    try {
 	    	transformer.pushCurrentTemplateRuleIsNull(true);

@@ -417,6 +417,12 @@ public class TransformerImpl extends Transformer
    * A stack of current template modes.
    */
   private Stack m_modes = new Stack();
+  
+  /**
+   * Reference to javax.xml.transform.Source object instance, 
+   * that is used for an XSL transformation.
+   */
+  private Source m_source;
 
   //==========================================================
   // SECTION: Constructor
@@ -670,8 +676,8 @@ public class TransformerImpl extends Transformer
    */
   public void transform(Source source) throws TransformerException
   {
-                transform(source, true); 
-        }
+    transform(source, true); 
+  }
 
   /**
    * Process the source tree to SAX parse events.
@@ -682,6 +688,8 @@ public class TransformerImpl extends Transformer
    */
   public void transform(Source source, boolean shouldRelease) throws TransformerException
   {
+	  
+	m_source = source;
 
     try
     {
@@ -1309,8 +1317,8 @@ public class TransformerImpl extends Transformer
   public void transform(Source xmlSource, Result outputTarget)
           throws TransformerException
   {
-                transform(xmlSource, outputTarget, true);
-        }
+    transform(xmlSource, outputTarget, true);
+  }
 
   /**
    * Process the source tree to the output result.
@@ -1323,7 +1331,8 @@ public class TransformerImpl extends Transformer
   public void transform(Source xmlSource, Result outputTarget, boolean shouldRelease)
           throws TransformerException
   {
-
+	m_source = xmlSource;
+	  
     synchronized (m_reentryGuard)
     {
       SerializationHandler xoh = createSerializationHandler(outputTarget);
@@ -3999,6 +4008,14 @@ public class TransformerImpl extends Transformer
     public void setXslIterateOnCompletionActive(boolean isXslIterateOnCompletionActive) {
         this.m_isXslIterateOnCompletionActive = isXslIterateOnCompletionActive;
     }
+
+	public Source getSource() {
+		return m_source;
+	}
+
+	public void setSource(Source source) {
+		this.m_source = source;
+	}
 
 }  // end TransformerImpl class
 

@@ -871,7 +871,6 @@ public class Process
           {
             if (flavor.equals("d2d"))
             {
-
               // Parse in the xml data into a DOM
               DocumentBuilderFactory dfactory =
                 DocumentBuilderFactory.newInstance();
@@ -918,6 +917,36 @@ public class Process
               }
               else
                 serializer.transform(new DOMSource(outNode), strResult);
+            }
+            else if (flavor.equals("s2s"))
+            {            	
+            	DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+                dfactory.setNamespaceAware(true);
+                
+                DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+                      
+            	Document doc = docBuilder.newDocument();
+                org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
+
+                transformer.transform(new SAXSource(new InputSource(inFileName)),
+                                      new DOMResult(outNode));
+                
+                // Now serialize output to disk with identity transformer
+                Transformer serializer = stf.newTransformer();
+                serializer.setErrorListener(new DefaultErrorHandler(false));
+                
+                Properties serializationProps = stylesheet.getOutputProperties();
+
+                serializer.setOutputProperties(serializationProps);
+
+                if (contentHandler != null)
+                {
+                  SAXResult result = new SAXResult(contentHandler);
+
+                  serializer.transform(new DOMSource(outNode), result);
+                }
+                else
+                  serializer.transform(new DOMSource(outNode), strResult);
             }
             else if (flavor.equals("th"))
             {
