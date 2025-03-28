@@ -77,5 +77,31 @@ public class XslForkTests extends XSLTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslForkTest4() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";        
+        
+        String goldFileName1 = "credits.xml";
+        String goldFileName2 = "debits.xml";
+        
+        String goldFilePath1 = XSL_TRANSFORM_GOLD_DIRPATH + goldFileName1;
+        String goldFilePath2 = XSL_TRANSFORM_GOLD_DIRPATH + goldFileName2;
+        
+        try {
+        	String goldFileContentStr1 = getFileContentAsString(goldFilePath1);
+        	String goldFileContentStr2 = getFileContentAsString(goldFilePath2);
+
+        	String[] goldFileStrArr = new String[] { goldFileContentStr1, goldFileContentStr2 };        	            
+        	String[] goldFileNameArr = new String[] { goldFileName1, goldFileName2 };
+        	
+            runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFileStrArr, 
+            		                                                              goldFileNameArr, null);                        
+        }
+        catch (Exception ex) {
+        	ex.printStackTrace();
+        }
+    }
 
 }
