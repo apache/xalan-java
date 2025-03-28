@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Properties;
 
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -233,17 +235,59 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		}
 	    		catch (JSONException ex) {
 	    		   throw new TransformerException("XPTY0004 : An xsl:result-document instruction within a stylesheet has attribute "
-	    		   		                                + "\"method\" with value 'json'. There was a JSON syntax error in "
-	    		   		                                + "an input string or there was a duplicate object key. Following "
-                                                        + "run-time error occured : " + ex.getMessage() + ".", srcLocator);
+	    		   		                                			+ "\"method\" with value 'json'. There's a JSON syntax error within "
+	    		   		                                			+ "an input string provided to the JSON parser, or there was a duplicate "
+	    		   		                                			+ "JSON object key. Following run-time error occured : " + 
+	    		   		                                			ex.getMessage() + ".", srcLocator);
 	    		}
 	    		
 	    		writeStringContentsToFile(hrefStr, jsonStrValue.trim());
 	    	}
+	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_HTML).equals(methodQname.toString())) {	    		
+	    		ElemTemplateElement t = this.m_firstChild;
+	    		if (!(t instanceof ElemLiteralResult)) {
+	    		   // error handling	
+	    		}
+	    		else {
+	    		   StylesheetRoot stylesheetRoot = t.getStylesheetRoot();
+	    		   
+	    		   // This object instance is a clone of related internal 
+	    		   // value within stylesheetRoot object. Therefore, this object
+	    		   // instance can be mutated with new information for this need.
+	    		   Properties xslNewOutputProps = stylesheetRoot.getOutputProperties();	    		   
+	    		   
+	    		   xslNewOutputProps.setProperty(OutputKeys.METHOD, Constants.ATTRVAL_OUTPUT_METHOD_HTML);
+
+	    		   stylesheetRoot.setOutputProps(xslNewOutputProps);
+
+	    		   int xdmNodeHandle = transformer.transformToRTF(this);
+
+	    		   NodeList nodeList = (new XRTreeFrag(xdmNodeHandle, xctxt, this)).convertToNodeset();		
+	    		   XNodeSetForDOM xNodeSetForDOM = new XNodeSetForDOM(nodeList, xctxt); 
+	    		   XNodeSet xNodeSet = (XNodeSet)xNodeSetForDOM;
+	    		   DTMIterator dtmIter = xNodeSet.iterRaw();
+	    		   int nodeHandle = dtmIter.nextNode();
+	    		   DTM dtm1 = xctxt.getDTM(nodeHandle);
+	    		   Node node = dtm1.getNode(nodeHandle);
+
+	    		   String htmlStrValue = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+	    		   int xmlPrologSuffixIdx = htmlStrValue.indexOf("?>");
+	    		   htmlStrValue = htmlStrValue.substring(xmlPrologSuffixIdx + 2);
+
+	    		   writeStringContentsToFile(hrefStr, htmlStrValue);
+
+	    		   // This is the original xsl:output information, that needs to be restored
+	    		   // on stylesheetRoot object for any further XSL transformation work after
+	    		   // this instance of xsl:result-document instruction has completed executing.
+	    		   Properties prevOutputProperties = stylesheetRoot.getDefaultOutputProps();
+
+	    		   stylesheetRoot.setOutputProps(prevOutputProperties);	    		   
+	    		}	    		
+	    	}
         }
 	    catch (TransformerException ex) {
 	        throw ex;	
-	    }
+	    }	    
 	    catch (Exception ex) {
 	    	throw new TransformerException("XPTY0004 : An exception occured while evaluating an "
 	    			                                    + "xsl:result-document instruction. Following "
@@ -291,8 +335,8 @@ public class ElemResultDocument extends ElemTemplateElement
   }
   
   /**
-   * This method creates a file specified by its name, 
-   * and writes a string value to the file.
+   * This method creates a physical file specified by its name within 
+   * local file system store, and writes a string value to the file.
    * 
    * @param hrefStr						url of the file 
    * @param strValue					string value that needs to be written to the file

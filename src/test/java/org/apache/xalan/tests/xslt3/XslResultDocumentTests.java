@@ -171,5 +171,28 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
         	ex.printStackTrace();
         }
     }
+    
+    @Test
+    public void xslResultDocumentTest6() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "transactions.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";        
+        
+        String goldFileName1 = "transactions.html";
+        
+        String goldFilePath1 = XSL_TRANSFORM_GOLD_DIRPATH + goldFileName1;
+        
+        try {
+        	String goldFileContentStr1 = getFileContentAsString(goldFilePath1);
+
+        	String[] goldFileStrArr = new String[] { goldFileContentStr1 };        	            
+        	String[] goldFileNameArr = new String[] { goldFileName1 };
+        	
+            runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFileStrArr, 
+            		                                                              goldFileNameArr, null);                        
+        }
+        catch (Exception ex) {
+        	ex.printStackTrace();
+        }
+    }
 
 }

@@ -253,10 +253,15 @@ public class StylesheetRoot extends StylesheetComposed
     return m_transformerImpl;
   }
   
-
   public Properties getDefaultOutputProps()
   {
     return m_outputProperties.getProperties();
+  }
+  
+  public void setOutputProps(Properties properties)
+  {
+	  Properties newCurrPropValue = m_outputProperties.getProperties();
+	  newCurrPropValue = properties; 
   }
   
   /**
