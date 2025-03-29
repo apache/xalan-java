@@ -60,7 +60,7 @@ public class ElemResultDocument extends ElemTemplateElement
   /**
    * The "href" string value.
    */
-  private String m_href = null;
+  private AVT m_href = null;
   
   /**
    * The "method" attribute's value.
@@ -80,9 +80,9 @@ public class ElemResultDocument extends ElemTemplateElement
   /**
    * Get the value of "href" attribute.
    *
-   * @return 	String value for the "href" attribute.
+   * @return 	avt value for the "href" attribute.
    */
-  public String getHref()
+  public AVT getHref()
   {
       return m_href;
   }
@@ -90,9 +90,9 @@ public class ElemResultDocument extends ElemTemplateElement
   /**
    * Set the value of "href" attribute.
    *
-   * @param href	String value for the "href" attribute.
+   * @param href	avt value for the "href" attribute.
    */
-  public void setHref(String href)
+  public void setHref(AVT href)
   {
       this.m_href = href;  
   }
@@ -198,9 +198,9 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		transformer.getTraceManager().emitTraceEvent(this);
 	    	}
 	    	
-	    	String hrefStr = m_href;   			// Mandatory	    	
-	    	QName methodQname = m_method;		// Optional, with default value "xml" 	    	
-	    	boolean omitXmlDeclarationAttr = m_omitXmlDeclaration;   // Optional, with default value "false"
+	    	String hrefStr = m_href.evaluate(xctxt, xctxt.getContextNode(), this);		// Mandatory	    	
+	    	QName methodQname = m_method;												// Optional, with default value "xml"	    	
+	    	boolean omitXmlDeclarationAttr = m_omitXmlDeclaration;   					// Optional, with default value "false"
 	    	
 	    	if ((methodQname == null) || ((Constants.ATTRVAL_OUTPUT_METHOD_XML).equals(methodQname.toString()))) {
 	    		int xdmNodeHandle = transformer.transformToRTF(this);

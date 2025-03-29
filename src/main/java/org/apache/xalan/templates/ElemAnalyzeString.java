@@ -33,24 +33,10 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
 
 /**
- * XSLT 3.0 analyze-string element.
+ * Implementation of the XSLT 3.0 xsl:analyze-string instruction.
  * 
- * <xsl:analyze-string
-            select = expression
-            regex = { string }
-            flags? = { string } >
-       <!-- Content: (xsl:matching-substring?, xsl:non-matching-substring?, xsl:fallback*) -->
-   </xsl:analyze-string>
-   
-   <xsl:matching-substring>
-      <!-- Content: sequence-constructor -->
-   </xsl:matching-substring>
-   
-   <xsl:non-matching-substring>
-      <!-- Content: sequence-constructor -->
-   </xsl:non-matching-substring>
-   
- *  
+ * Ref : https://www.w3.org/TR/xslt-30/#analyze-string
+ *   
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
