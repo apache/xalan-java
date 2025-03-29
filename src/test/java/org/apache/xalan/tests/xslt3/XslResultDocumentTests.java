@@ -51,7 +51,9 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
     @Test
     public void xslResultDocumentTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";        
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
+        
+        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
         String goldFileName1 = "credits.xml";
         String goldFileName2 = "debits.xml";
@@ -77,7 +79,9 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
     @Test
     public void xslResultDocumentTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";        
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
+        
+        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
         String goldFileName1 = "credits.txt";
         String goldFileName2 = "debits.txt";
@@ -103,7 +107,9 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
     @Test
     public void xslResultDocumentTest3() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";        
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
+        
+        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
         String goldFileName1 = "result1.json";
         
@@ -127,7 +133,9 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
     @Test
     public void xslResultDocumentTest4() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";        
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
+        
+        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
         String goldFileName1 = "result2.json";
         
@@ -151,7 +159,9 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
     @Test
     public void xslResultDocumentTest5() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";        
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
+        
+        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
         String goldFileName1 = "result3.json";
         
@@ -175,7 +185,9 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
     @Test
     public void xslResultDocumentTest6() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "transactions.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";        
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
+        
+        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
         String goldFileName1 = "transactions.html";
         

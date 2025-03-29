@@ -98,13 +98,13 @@ public class XSLTSchema extends XSLTElementDef
    */
   void build()
   {
-	// xsl:import, xsl:include, xsl:source-document
+	// xsl:import, xsl:include
     XSLTAttributeDef hrefAttr = new XSLTAttributeDef(null, "href",
                                   XSLTAttributeDef.T_URL, true, false, XSLTAttributeDef.ERROR);
     
     // Required.
     // Support AVT
-    // xsl:result-document                  
+    // xsl:result-document, xsl:source-document                  
     XSLTAttributeDef hrefAVTRequired = new XSLTAttributeDef(null, "href",
                                          XSLTAttributeDef.T_AVT, true, true, XSLTAttributeDef.WARNING);
     
@@ -591,7 +591,7 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef xslSourceDocument = new XSLTElementDef(this,
 								             Constants.S_XSLNAMESPACEURL, "source-document",
 								             null /*alias */, templateElements,
-								             new XSLTAttributeDef[]{ hrefAttr, streamableAttr, spaceAttr }, 
+								             new XSLTAttributeDef[]{ hrefAVTRequired, streamableAttr, spaceAttr }, 
 								             new ProcessorTemplateElem(),
 								             ElemSourceDocument.class /* class object */, true, false, true, 20, true);
     

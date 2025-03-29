@@ -17,6 +17,11 @@
  */
 package org.apache.xalan.templates;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -46,9 +51,9 @@ public class ElemSourceDocument extends ElemTemplateElement
   private static final long serialVersionUID = 3034441680350015299L;
 
   /**
-   * The "href" string value.
+   * The "href" avt value.
    */
-  private String m_href = null;
+  private AVT m_href = null;
   
   /**
    * The "streamable" boolean value.
@@ -61,23 +66,23 @@ public class ElemSourceDocument extends ElemTemplateElement
   public ElemSourceDocument() {}
 
   /**
-   * Set the value of "href" attribute.
+   * Get the value of "href" attribute.
    *
-   * @param href String value for the "href" attribute.
+   * @return 	avt value for the "href" attribute.
    */
-  public void setHref(String href)
+  public AVT getHref()
   {
-      this.m_href = href;  
+      return m_href;
   }
 
   /**
-   * Get the value of "href" attribute.
+   * Set the value of "href" attribute.
    *
-   * @return The string value for the "href" attribute.
+   * @param href	avt value for the "href" attribute.
    */
-  public String getHref()
+  public void setHref(AVT href)
   {
-      return m_href;
+      this.m_href = href;  
   }
   
   /**
@@ -177,7 +182,33 @@ public class ElemSourceDocument extends ElemTemplateElement
 	    		transformer.getTraceManager().emitTraceEvent(this);
 	    	}
 
-	    	String hrefStrVal = m_href;        
+	    	String hrefStrVal = m_href.evaluate(xctxt, xctxt.getContextNode(), this);		// Mandatory
+	    	
+	    	URL resolvedHrefUrl = null;
+
+			try {
+				URI url = new URI(hrefStrVal);
+				String stylesheetSystemId = srcLocator.getSystemId();      // base uri of stylesheet, if available
+
+				if (!url.isAbsolute() && (stylesheetSystemId != null)) {
+					URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
+					resolvedHrefUrl = resolvedUriArg.toURL(); 
+				}
+
+				if (resolvedHrefUrl == null) {
+					resolvedHrefUrl = new URL(hrefStrVal);   
+				}
+			}
+			catch (URISyntaxException ex) {
+				throw new javax.xml.transform.TransformerException("FODC0005 : An xsl:source-document instruction's href uri '" + hrefStrVal + "' "
+																					+ "is not a valid absolute uri, "
+																					+ "or cannot be resolved to an absolute uri.", srcLocator);  
+			}
+			catch (MalformedURLException ex) {
+				throw new javax.xml.transform.TransformerException("FODC0005 : An xsl:source-document instruction's href uri '" + hrefStrVal + "' "
+																					+ "is not a valid absolute uri, or cannot be resolved to "
+																					+ "an absolute uri.", srcLocator);
+			}
 
 	    	FuncDoc funcDoc = new FuncDoc();        
 	    	XObject xdmDocNode = funcDoc.getDocumentNode(xctxt, hrefStrVal);

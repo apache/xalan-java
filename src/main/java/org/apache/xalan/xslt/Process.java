@@ -769,20 +769,20 @@ public class Process
 
         if (null != outFileName)
         {
-          strResult = new StreamResult(new FileOutputStream(outFileName));
-          // One possible improvement might be to ensure this is 
-          //  a valid URI before setting the systemId, but that 
-          //  might have subtle changes that pre-existing users 
-          //  might notice; we can think about that later -sc r1.46
-          strResult.setSystemId(outFileName);
+        	strResult = new StreamResult(new FileOutputStream(outFileName));
+        	// One possible improvement might be to ensure this is 
+        	// a valid URI before setting the systemId, but that 
+        	// might have subtle changes that pre-existing users 
+        	// might notice. We can think about that later -sc r1.46
+        	strResult.setSystemId(outFileName);
         }
         else
         {
-          strResult = new StreamResult(System.out);
-	  // We used to default to incremental mode in this case.
-	  // We've since decided that since the -INCREMENTAL switch is
-	  // available, that default is probably not necessary nor
-	  // necessarily a good idea.
+        	strResult = new StreamResult(System.out);
+        	// We used to default to incremental mode in this case.
+        	// We've since decided that since the -INCREMENTAL switch is
+        	// available, that default is probably not necessary nor
+        	// necessarily a good idea.
         }
 
         SAXTransformerFactory stf = (SAXTransformerFactory) tfactory;

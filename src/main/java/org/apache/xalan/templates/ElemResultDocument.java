@@ -21,6 +21,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Properties;
 
 import javax.xml.transform.OutputKeys;
@@ -58,7 +62,7 @@ public class ElemResultDocument extends ElemTemplateElement
   private static final long serialVersionUID = -4338242968870823693L;
 
   /**
-   * The "href" string value.
+   * The "href" avt value.
    */
   private AVT m_href = null;
   
@@ -198,9 +202,38 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		transformer.getTraceManager().emitTraceEvent(this);
 	    	}
 	    	
-	    	String hrefStr = m_href.evaluate(xctxt, xctxt.getContextNode(), this);		// Mandatory	    	
+	    	String hrefStrVal = m_href.evaluate(xctxt, xctxt.getContextNode(), this);		// Mandatory
+	    	
+	    	URL resolvedHrefUrl = null;
+
+			try {
+				URI url = new URI(hrefStrVal);
+				String stylesheetSystemId = srcLocator.getSystemId();      // base uri of stylesheet, if available
+
+				if (!url.isAbsolute() && (stylesheetSystemId != null)) {
+					URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
+					resolvedHrefUrl = resolvedUriArg.toURL(); 
+				}
+
+				if (resolvedHrefUrl == null) {
+					resolvedHrefUrl = new URL(hrefStrVal);   
+				}
+			}
+			catch (URISyntaxException ex) {
+				throw new javax.xml.transform.TransformerException("FODC0005 : An xsl:result-document instruction's href uri '" + hrefStrVal + "' "
+																					+ "is not a valid absolute uri, "
+																					+ "or cannot be resolved to an absolute uri.", srcLocator);  
+			}
+			catch (MalformedURLException ex) {
+				throw new javax.xml.transform.TransformerException("FODC0005 : An xsl:result-document instruction's href uri '" + hrefStrVal + "' "
+																					+ "is not a valid absolute uri, or cannot be resolved to "
+																					+ "an absolute uri.", srcLocator);
+			}
+	    	
 	    	QName methodQname = m_method;												// Optional, with default value "xml"	    	
 	    	boolean omitXmlDeclarationAttr = m_omitXmlDeclaration;   					// Optional, with default value "false"
+	    	
+	    	String resolvedHrefStrVal = resolvedHrefUrl.toString();
 	    	
 	    	if ((methodQname == null) || ((Constants.ATTRVAL_OUTPUT_METHOD_XML).equals(methodQname.toString()))) {
 	    		int xdmNodeHandle = transformer.transformToRTF(this);
@@ -218,19 +251,20 @@ public class ElemResultDocument extends ElemTemplateElement
 	    			xmlStrValue = xmlStrValue.substring(xmlPrologEndStrIndex + 2); 
 	    		}
 	    		
-	    		writeStringContentsToFile(hrefStr, xmlStrValue);
+	    		writeStringContentsToFile(resolvedHrefStrVal, xmlStrValue);
 	    	}
 	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_TEXT).equals(methodQname.toString())) {
 	    		String textStrValue = transformer.transformToString(this);
 	    		
-	    		writeStringContentsToFile(hrefStr, textStrValue);
+	    		writeStringContentsToFile(resolvedHrefStrVal, textStrValue);
 	    	}
 	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_JSON).equals(methodQname.toString())) {
 	    		String jsonStrValue = transformer.transformToString(this);
 	    		
 	    		try {
-	    		   // Verify that, the string value represents a legible JSON 
-	    		   // document.
+	    		   /**
+	    		    * Verify that, the string value represents a legible JSON document.
+	    		    */
 	    		   JSONObject jsonObject = new JSONObject(jsonStrValue);
 	    		}
 	    		catch (JSONException ex) {
@@ -241,19 +275,23 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		   		                                			ex.getMessage() + ".", srcLocator);
 	    		}
 	    		
-	    		writeStringContentsToFile(hrefStr, jsonStrValue.trim());
+	    		writeStringContentsToFile(resolvedHrefStrVal, jsonStrValue.trim());
 	    	}
 	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_HTML).equals(methodQname.toString())) {	    		
 	    		ElemTemplateElement t = this.m_firstChild;
 	    		if (!(t instanceof ElemLiteralResult)) {
-	    		   // error handling	
+	    		   throw new TransformerException("XPTY0004 : An xsl:result-document instruction's serialization method is 'html', but "
+	    		   		                                           + "xsl:result-document's immmediate child content doesn't starts "
+	    		   		                                           + "constructing a legible HTML document.", srcLocator);	
 	    		}
 	    		else {
 	    		   StylesheetRoot stylesheetRoot = t.getStylesheetRoot();
 	    		   
-	    		   // This object instance is a clone of related internal 
-	    		   // value within stylesheetRoot object. Therefore, this object
-	    		   // instance can be mutated with new information for this need.
+	    		   /**
+	    		    * This object instance is a clone of related internal 
+	    		    * value within stylesheetRoot object. Therefore, this object
+	    		    * instance can be mutated with new information for this need.
+	    		    */
 	    		   Properties xslNewOutputProps = stylesheetRoot.getOutputProperties();	    		   
 	    		   
 	    		   xslNewOutputProps.setProperty(OutputKeys.METHOD, Constants.ATTRVAL_OUTPUT_METHOD_HTML);
@@ -274,11 +312,13 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		   int xmlPrologSuffixIdx = htmlStrValue.indexOf("?>");
 	    		   htmlStrValue = htmlStrValue.substring(xmlPrologSuffixIdx + 2);
 
-	    		   writeStringContentsToFile(hrefStr, htmlStrValue);
+	    		   writeStringContentsToFile(resolvedHrefStrVal, htmlStrValue);
 
-	    		   // This is the original xsl:output information, that needs to be restored
-	    		   // on stylesheetRoot object for any further XSL transformation work after
-	    		   // this instance of xsl:result-document instruction has completed executing.
+	    		   /**
+	    		    * This is an original xsl:output information that has to be restored
+	    		    * on stylesheetRoot object for any further XSL transformation work, after
+	    		    * this xsl:result-document instruction instance has completed executing.
+	    		    */
 	    		   Properties prevOutputProperties = stylesheetRoot.getDefaultOutputProps();
 
 	    		   stylesheetRoot.setOutputProps(prevOutputProperties);	    		   
@@ -338,13 +378,19 @@ public class ElemResultDocument extends ElemTemplateElement
    * This method creates a physical file specified by its name within 
    * local file system store, and writes a string value to the file.
    * 
-   * @param hrefStr						url of the file 
+   * @param hrefStr						local url of the file, with "file:/" scheme.
+   *                                    this url may point to any location within 
+   *                                    local file system, with write permissions to this JVM 
+   *                                    process.  
    * @param strValue					string value that needs to be written to the file
    * @throws FileNotFoundException
    * @throws IOException
    */
   private void writeStringContentsToFile(String hrefStr, String strValue) 
 		  													      throws FileNotFoundException, IOException {
+	  int localFileUrlPrefixLength = "file:/".length();
+	  hrefStr = hrefStr.substring(localFileUrlPrefixLength - 1);
+	  
 	  FileOutputStream fos = new FileOutputStream(new File(hrefStr));
 	  byte[] byteArr = strValue.getBytes();
 	  fos.write(byteArr);

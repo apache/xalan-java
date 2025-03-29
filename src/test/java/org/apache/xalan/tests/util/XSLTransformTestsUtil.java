@@ -73,6 +73,13 @@ public class XSLTransformTestsUtil {
     protected static TransformerFactory xslTransformerFactory = null;
     
     /**
+     * Class field representing file path prefix, that is used for test cases
+     * related to XSL instructions like xsl:result-document that have 'href' 
+     * attribute.
+     */
+    protected String xslTransformInpPath = null;
+    
+    /**
      * Class field representing, whether XML Schema validation is enabled 
      * for an XSL transformation instance invoked by this test suite.
      */
@@ -221,8 +228,10 @@ public class XSLTransformTestsUtil {
     		transformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
     		
     		if (goldFileNameArr.length == 2) {
-    			fileProducedName1 = goldFileNameArr[0];
-    			fileProducedName2 = goldFileNameArr[1];
+    			fileProducedName1 = (xslTransformInpPath != null) ? (xslTransformInpPath + 
+    					                                                          goldFileNameArr[0]) : goldFileNameArr[0];
+    			fileProducedName2 = (xslTransformInpPath != null) ? (xslTransformInpPath + 
+    					                                                          goldFileNameArr[1]) : goldFileNameArr[1];
 
     			String fileProducedStr1 = getFileContentAsString(fileProducedName1);
     			String fileProducedStr2 = getFileContentAsString(fileProducedName2);
@@ -234,7 +243,8 @@ public class XSLTransformTestsUtil {
     		else {
     			// Only one file is there to compare it's contents
     			
-    			fileProducedName1 = goldFileNameArr[0];
+    			fileProducedName1 = (xslTransformInpPath != null) ? (xslTransformInpPath + 
+                                                                                  goldFileNameArr[0]) : goldFileNameArr[0];
 
     			String fileProducedStr1 = getFileContentAsString(fileProducedName1);
 
@@ -247,8 +257,8 @@ public class XSLTransformTestsUtil {
     		Assert.fail();    
     	}
     	finally {    		    		
-    		// These statements delete the temporary files 
-    		// produced while running a test case using this method.
+    		// Delete the temporary files produced while running 
+    		// a test case using this method.
     		(new File(fileProducedName1)).delete();
     		if (fileProducedName2 != null) {
     		   (new File(fileProducedName2)).delete();

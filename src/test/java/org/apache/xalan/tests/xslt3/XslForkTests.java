@@ -81,7 +81,9 @@ public class XslForkTests extends XSLTransformTestsUtil {
     @Test
     public void xslForkTest4() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";        
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
+        
+        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
         String goldFileName1 = "credits.xml";
         String goldFileName2 = "debits.xml";
