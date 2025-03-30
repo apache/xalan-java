@@ -21,7 +21,7 @@
 package org.apache.xpath.objects;
 
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
@@ -146,7 +146,7 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
    *
    * @return The document fragment as a DTMIterator
    */
-  public DTMIterator asNodeIterator()
+  public DTMCursorIterator asNodeIterator()
   {
     throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_RTF_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER, null)); //"asNodeIterator() not supported by XRTreeFragSelectWrapper!");
   }

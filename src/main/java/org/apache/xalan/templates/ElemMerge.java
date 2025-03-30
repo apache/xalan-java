@@ -30,14 +30,14 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -370,10 +370,10 @@ public class ElemMerge extends ElemTemplateElement
 				  if (mergeKeySelectExpr instanceof SelfIteratorNoPredicate) {			       
 					  oneMergeKeyValue = mergeSrcItem; 
 				  }
-				  else if (mergeSrcItem instanceof XNodeSet) {
-					  XNodeSet xNodeSet = (XNodeSet)mergeSrcItem;
-					  xNodeSet = (XNodeSet)(xNodeSet.getFresh());
-					  DTMIterator dtmIter = xNodeSet.iterRaw();
+				  else if (mergeSrcItem instanceof XMLNodeCursorImpl) {
+					  XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)mergeSrcItem;
+					  xNodeSet = (XMLNodeCursorImpl)(xNodeSet.getFresh());
+					  DTMCursorIterator dtmIter = xNodeSet.iterRaw();
 					  int nodeHandle = dtmIter.nextNode();
 					  xctxt.pushCurrentNode(nodeHandle);
 					  oneMergeKeyValue = mergeKeySelectExpr.execute(xctxt);

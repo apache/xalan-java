@@ -22,7 +22,7 @@ package org.apache.xpath.axes;
 
 import java.util.ArrayList;
 
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.WrappedRuntimeException;
 
 /**
@@ -36,7 +36,7 @@ public final class IteratorPool implements java.io.Serializable
   /** 
    * Type of objects in this pool.
    */
-  private final DTMIterator m_orig;
+  private final DTMCursorIterator m_orig;
 
   /** 
    * Stack of given objects this points to.
@@ -48,7 +48,7 @@ public final class IteratorPool implements java.io.Serializable
    *
    * @param original The original iterator from which all others will be cloned.
    */
-  public IteratorPool(DTMIterator original)
+  public IteratorPool(DTMCursorIterator original)
   {
     m_orig = original;
     m_freeStack = new ArrayList();
@@ -59,7 +59,7 @@ public final class IteratorPool implements java.io.Serializable
    *
    * @return An instance of the given object
    */
-  public synchronized DTMIterator getInstanceOrThrow()
+  public synchronized DTMCursorIterator getInstanceOrThrow()
     throws CloneNotSupportedException
   {
     // Check if the pool is empty.
@@ -67,12 +67,12 @@ public final class IteratorPool implements java.io.Serializable
     {
 
       // Create a new object if so.
-      return (DTMIterator)m_orig.clone();
+      return (DTMCursorIterator)m_orig.clone();
     }
     else
     {
       // Remove object from end of free pool.
-      DTMIterator result = (DTMIterator)m_freeStack.remove(m_freeStack.size() - 1);
+      DTMCursorIterator result = (DTMCursorIterator)m_freeStack.remove(m_freeStack.size() - 1);
       return result;
     }
   }
@@ -82,7 +82,7 @@ public final class IteratorPool implements java.io.Serializable
    *
    * @return An instance of the given object
    */
-  public synchronized DTMIterator getInstance()
+  public synchronized DTMCursorIterator getInstance()
   {
     // Check if the pool is empty.
     if (m_freeStack.isEmpty())
@@ -91,7 +91,7 @@ public final class IteratorPool implements java.io.Serializable
       // Create a new object if so.
       try
       {
-        return (DTMIterator)m_orig.clone();
+        return (DTMCursorIterator)m_orig.clone();
       }
       catch (Exception ex)
       {
@@ -101,7 +101,7 @@ public final class IteratorPool implements java.io.Serializable
     else
     {
       // Remove object from end of free pool.
-      DTMIterator result = (DTMIterator)m_freeStack.remove(m_freeStack.size() - 1);
+      DTMCursorIterator result = (DTMCursorIterator)m_freeStack.remove(m_freeStack.size() - 1);
       return result;
     }
   }
@@ -112,7 +112,7 @@ public final class IteratorPool implements java.io.Serializable
    *
    * @param obj Object to add.
    */
-  public synchronized void freeInstance(DTMIterator obj)
+  public synchronized void freeInstance(DTMCursorIterator obj)
   {
     m_freeStack.add(obj);
   }

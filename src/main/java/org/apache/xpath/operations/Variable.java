@@ -34,7 +34,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.PathComponent;
 import org.apache.xpath.axes.WalkerFactory;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -214,8 +214,8 @@ public class Variable extends Expression implements PathComponent
         
         if (varValue != null) {
            // added for XPath 3.1
-           if (varValue instanceof XNodeSet) {
-              result = ((XNodeSet)varValue).getFresh();    
+           if (varValue instanceof XMLNodeCursorImpl) {
+              result = ((XMLNodeCursorImpl)varValue).getFresh();    
            }
            else {
               result = varValue;
@@ -259,7 +259,7 @@ public class Variable extends Expression implements PathComponent
            // This should now never happen...
            warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE, 
                                                                        new Object[]{ m_qname.getLocalPart() });            
-           result = new XNodeSet(xctxt.getDTMManager());
+           result = new XMLNodeCursorImpl(xctxt.getDTMManager());
         }
       
         return result;

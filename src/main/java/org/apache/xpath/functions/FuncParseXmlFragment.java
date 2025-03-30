@@ -28,7 +28,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -76,9 +76,9 @@ public class FuncParseXmlFragment extends FunctionOneArg {
     /**
      * Get an xdm nodeset corresponding to an XML fragment string value.
      */
-    private XNodeSet getNodeSetFromStr(String strVal, XPathContext xctxt) throws 
+    private XMLNodeCursorImpl getNodeSetFromStr(String strVal, XPathContext xctxt) throws 
                                                           javax.xml.transform.TransformerException {
-        XNodeSet nodeSet = null;
+        XMLNodeCursorImpl nodeSet = null;
         
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -110,7 +110,7 @@ public class FuncParseXmlFragment extends FunctionOneArg {
             DTM dtm = xctxt.getDTM(new DOMSource(xmlDocFragment), true, null, false, false);            
             int documentNodeHandleVal = dtm.getDocument();
             
-            nodeSet = new XNodeSet(documentNodeHandleVal, xctxt.getDTMManager());
+            nodeSet = new XMLNodeCursorImpl(documentNodeHandleVal, xctxt.getDTMManager());
         }
         catch (Exception ex) {
            throw new javax.xml.transform.TransformerException("FODC0002 : The string value supplied as an argument to function "

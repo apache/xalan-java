@@ -37,7 +37,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.SystemIDResolver;
@@ -287,9 +287,9 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
 
         argArray[i] = (o instanceof XObject) ? ((XObject) o).object() : o;
         o = argArray[i];
-        if(null != o && o instanceof DTMIterator)
+        if(null != o && o instanceof DTMCursorIterator)
         {
-          argArray[i] = new DTMNodeList((DTMIterator)o);
+          argArray[i] = new DTMNodeList((DTMCursorIterator)o);
         }
       }
 

@@ -21,7 +21,7 @@
 package org.apache.xalan.lib;
 
 import org.apache.xalan.extensions.ExpressionContext;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.ref.DTMNodeIterator;
 import org.apache.xpath.NodeSet;
 
@@ -68,7 +68,7 @@ public class ExsltCommon
       return "number";
     else if (obj instanceof DTMNodeIterator)
     {
-      DTMIterator dtmI = ((DTMNodeIterator)obj).getDTMIterator();
+      DTMCursorIterator dtmI = ((DTMNodeIterator)obj).getDTMIterator();
       if (dtmI instanceof org.apache.xpath.axes.RTFIterator)
       	return "RTF";
       else

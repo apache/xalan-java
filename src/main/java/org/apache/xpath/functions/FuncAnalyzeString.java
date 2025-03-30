@@ -29,7 +29,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.Pattern;
@@ -192,7 +192,7 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         
         DTMManager dtmMgr = xctxt.getDTMManager();
         int dtmHandleOfResultNode = dtmMgr.getDTMHandleFromNode(document.getFirstChild()); 
-        result = new XNodeSet(dtmHandleOfResultNode, dtmMgr); 
+        result = new XMLNodeCursorImpl(dtmHandleOfResultNode, dtmMgr); 
             
         return result;
     }

@@ -16,10 +16,10 @@
  */
 package org.apache.xpath.functions;
 
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -48,10 +48,10 @@ public class FuncHead extends FunctionOneArg {
         
         XObject xObject0 = m_arg0.execute(xctxt);
         
-        if (xObject0 instanceof XNodeSet) {
-           XNodeSet nodeSet = (XNodeSet)xObject0;
-           DTMIterator dtmIter = nodeSet.iterRaw();
-           result = new XNodeSet(dtmIter.nextNode(), xctxt);
+        if (xObject0 instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject0;
+           DTMCursorIterator dtmIter = nodeSet.iterRaw();
+           result = new XMLNodeCursorImpl(dtmIter.nextNode(), xctxt);
         }
         else if (xObject0 instanceof ResultSequence) {
            ResultSequence resultSeq = (ResultSequence)xObject0;

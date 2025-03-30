@@ -25,13 +25,13 @@ import java.util.Hashtable;
 import org.apache.xalan.transformer.KeyManager;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.functions.Function2Args;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -58,7 +58,7 @@ public class FuncKey extends Function2Args
 
     // TransformerImpl transformer = (TransformerImpl)xctxt;
     TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();
-    XNodeSet nodes = null;
+    XMLNodeCursorImpl nodes = null;
     int context = xctxt.getCurrentNode();
     DTM dtm = xctxt.getDTM(context);
     int docContext = dtm.getDocumentRoot(context);
@@ -78,7 +78,7 @@ public class FuncKey extends Function2Args
     // Don't bother with nodeset logic if the thing is only one node.
     if(argIsNodeSetDTM)
     {
-    	XNodeSet ns = (XNodeSet)arg;
+    	XMLNodeCursorImpl ns = (XMLNodeCursorImpl)arg;
     	ns.setShouldCacheNodes(true);
     	int len = ns.getLength();
     	if(len <= 1)
@@ -88,7 +88,7 @@ public class FuncKey extends Function2Args
     if (argIsNodeSetDTM)
     {
       Hashtable usedrefs = null;
-      DTMIterator ni = arg.iter();
+      DTMCursorIterator ni = arg.iter();
       int pos;
       UnionPathIterator upi = new UnionPathIterator();
       upi.exprSetParent(this);
@@ -115,7 +115,7 @@ public class FuncKey extends Function2Args
           usedrefs.put(ref, ISTRUE);
         }
 
-        XNodeSet nl =
+        XMLNodeCursorImpl nl =
           kmgr.getNodeSetDTMByKey(xctxt, docContext, keyname, ref,
                                xctxt.getNamespaceContext());
                                
@@ -135,7 +135,7 @@ public class FuncKey extends Function2Args
       int current = xctxt.getCurrentNode();
       upi.setRoot(current, xctxt);
 
-      nodes = new XNodeSet(upi);
+      nodes = new XMLNodeCursorImpl(upi);
     }
     else
     {

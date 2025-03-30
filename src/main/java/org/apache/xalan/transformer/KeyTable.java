@@ -27,13 +27,13 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.KeyDeclaration;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -76,7 +76,7 @@ public class KeyTable
    * The main iterator that will walk through the source  
    * tree for this key.
    */
-  private XNodeSet m_keyNodes;
+  private XMLNodeCursorImpl m_keyNodes;
   
   KeyIterator getKeyIterator()
   {
@@ -100,7 +100,7 @@ public class KeyTable
     m_keyDeclarations = keyDeclarations;
     KeyIterator ki = new KeyIterator(name, keyDeclarations);
 
-    m_keyNodes = new XNodeSet(ki);
+    m_keyNodes = new XMLNodeCursorImpl(ki);
     m_keyNodes.allowDetachToRelease(false);
     m_keyNodes.setRoot(doc, xctxt);
   }
@@ -112,16 +112,16 @@ public class KeyTable
    * @param ref The value that must match the value found by the 'match' attribute on xsl:key.
    * @return a set of nodes referenced by the key named <CODE>name</CODE> and the reference <CODE>ref</CODE>. If no node is referenced by this key, an empty node set is returned.
    */
-  public XNodeSet getNodeSetDTMByKey(QName name, XMLString ref)
+  public XMLNodeCursorImpl getNodeSetDTMByKey(QName name, XMLString ref)
 
   {
-    XNodeSet refNodes = (XNodeSet) getRefsTable().get(ref);
+    XMLNodeCursorImpl refNodes = (XMLNodeCursorImpl) getRefsTable().get(ref);
     // clone wiht reset the node set
    try
     {
       if (refNodes != null)
       {
-         refNodes = (XNodeSet) refNodes.cloneWithReset();
+         refNodes = (XMLNodeCursorImpl) refNodes.cloneWithReset();
        }
     }
     catch (CloneNotSupportedException e)
@@ -133,7 +133,7 @@ public class KeyTable
      //  create an empty XNodeSet
       KeyIterator ki = (KeyIterator) (m_keyNodes).getContainedIter();
       XPathContext xctxt = ki.getXPathContext();
-      refNodes = new XNodeSet(xctxt.getDTMManager()) {
+      refNodes = new XMLNodeCursorImpl(xctxt.getDTMManager()) {
         public void setRoot(int nodeHandle, Object environment) {
           // Root cannot be set on non-iterated node sets. Ignore it.
         }
@@ -210,7 +210,7 @@ public class KeyTable
               XMLString exprResult = xuse.xstr();
               addValueInRefsTable(xctxt, exprResult, currentNode);
             } else {
-              DTMIterator i = ((XNodeSet)xuse).iterRaw();
+              DTMCursorIterator i = ((XMLNodeCursorImpl)xuse).iterRaw();
               int currentNodeInUseClause;
 
               while (DTM.NULL != (currentNodeInUseClause = i.nextNode())) {
@@ -238,10 +238,10 @@ public class KeyTable
    */
   private void addValueInRefsTable(XPathContext xctxt, XMLString ref, int node) {
     
-    XNodeSet nodes = (XNodeSet) m_refsTable.get(ref);
+    XMLNodeCursorImpl nodes = (XMLNodeCursorImpl) m_refsTable.get(ref);
     if (nodes == null)
     {
-      nodes = new XNodeSet(node, xctxt.getDTMManager());
+      nodes = new XMLNodeCursorImpl(node, xctxt.getDTMManager());
       nodes.nextNode();
       m_refsTable.put(ref, nodes);
     }

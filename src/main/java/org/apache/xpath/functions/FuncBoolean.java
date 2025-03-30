@@ -26,7 +26,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -83,7 +83,7 @@ public class FuncBoolean extends FunctionOneArg
 		  if (rSeq.size() == 0) {
 			  result = new XSBoolean(false); 
 		  }
-		  else if (rSeq.item(0) instanceof XNodeSet) {
+		  else if (rSeq.item(0) instanceof XMLNodeCursorImpl) {
 			  result = new XSBoolean(true); 
 		  }
 		  else {
@@ -91,8 +91,8 @@ public class FuncBoolean extends FunctionOneArg
 					                                                            + "to function fn:boolean.", srcLocator);  
 		  }
 	  }
-	  else if (xObj instanceof XNodeSet) {
-		  if (((XNodeSet)xObj).getLength() == 0) {
+	  else if (xObj instanceof XMLNodeCursorImpl) {
+		  if (((XMLNodeCursorImpl)xObj).getLength() == 0) {
 			  result = new XSBoolean(false);
 		  }
 		  else {

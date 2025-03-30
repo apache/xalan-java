@@ -23,7 +23,7 @@ package org.apache.xpath.objects;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.OneStepIterator;
 
@@ -108,9 +108,9 @@ public class XObjectFactory
         int dtmRoot = dtm.getDocument();
         DTMAxisIterator iter = dtm.getAxisIterator(Axis.SELF);
         iter.setStartNode(dtmRoot);
-        DTMIterator iterator = new OneStepIterator(iter, Axis.SELF);
+        DTMCursorIterator iterator = new OneStepIterator(iter, Axis.SELF);
         iterator.setRoot(dtmRoot, xctxt);
-        result = new XNodeSet(iterator);
+        result = new XMLNodeCursorImpl(iterator);
       }
       catch(Exception ex)
       {
@@ -122,18 +122,18 @@ public class XObjectFactory
       DTMAxisIterator iter = (DTMAxisIterator)val;
       try
       {
-        DTMIterator iterator = new OneStepIterator(iter, Axis.SELF);
+        DTMCursorIterator iterator = new OneStepIterator(iter, Axis.SELF);
         iterator.setRoot(iter.getStartNode(), xctxt);
-        result = new XNodeSet(iterator);
+        result = new XMLNodeCursorImpl(iterator);
       }
       catch(Exception ex)
       {
         throw new org.apache.xml.utils.WrappedRuntimeException(ex);
       }
     }
-    else if (val instanceof DTMIterator)
+    else if (val instanceof DTMCursorIterator)
     {
-      result = new XNodeSet((DTMIterator) val);
+      result = new XMLNodeCursorImpl((DTMCursorIterator) val);
     }
     // This next three instanceofs are a little worrysome, since a NodeList 
     // might also implement a Node!

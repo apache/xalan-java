@@ -23,7 +23,7 @@ package org.apache.xpath;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -58,7 +58,7 @@ import org.w3c.dom.traversal.NodeIterator;
  * @xsl.usage advanced
  */
 public class NodeSetDTM extends NodeVector
-        implements /* NodeList, NodeIterator, */ DTMIterator, 
+        implements /* NodeList, NodeIterator, */ DTMCursorIterator, 
         Cloneable
 {
     static final long serialVersionUID = 7686480133331317070L;
@@ -112,7 +112,7 @@ public class NodeSetDTM extends NodeVector
     m_manager = nodelist.getDTMManager();
     m_root = nodelist.getRoot();
 
-    addNodes((DTMIterator) nodelist);
+    addNodes((DTMCursorIterator) nodelist);
   }
 
   /**
@@ -121,7 +121,7 @@ public class NodeSetDTM extends NodeVector
    *
    * @param ni Iterator which yields Nodes to be made members of the new set.
    */
-  public NodeSetDTM(DTMIterator ni)
+  public NodeSetDTM(DTMCursorIterator ni)
   {
 
     super();
@@ -267,7 +267,7 @@ public class NodeSetDTM extends NodeVector
    * @throws CloneNotSupportedException if this subclass of NodeSetDTM
    * does not support the clone() operation.
    */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMCursorIterator cloneWithReset() throws CloneNotSupportedException
   {
 
     NodeSetDTM clone = (NodeSetDTM) clone();
@@ -643,7 +643,7 @@ public class NodeSetDTM extends NodeVector
    * @throws RuntimeException thrown if this NodeSetDTM is not of 
    * a mutable type.
    */
-  public void addNodes(DTMIterator iterator)
+  public void addNodes(DTMCursorIterator iterator)
   {
 
     if (!m_mutable)
@@ -700,7 +700,7 @@ public class NodeSetDTM extends NodeVector
    * @throws RuntimeException thrown if this NodeSetDTM is not of 
    * a mutable type.
    */
-  public void addNodesInDocOrder(DTMIterator iterator, XPathContext support)
+  public void addNodesInDocOrder(DTMCursorIterator iterator, XPathContext support)
   {
 
     if (!m_mutable)

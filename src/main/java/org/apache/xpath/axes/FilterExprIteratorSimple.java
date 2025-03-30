@@ -28,7 +28,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 
 /**
  * Class to use for one-step iteration that doesn't have a predicate, and 
@@ -42,7 +42,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
   private Expression m_expr;
 
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
-  transient private XNodeSet m_exprObj;
+  transient private XMLNodeCursorImpl m_exprObj;
 
   private boolean m_mustHardReset = false;
   private boolean m_canDetachNodeset = true;
@@ -84,7 +84,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
    * Execute the expression.  Meant for reuse by other FilterExpr iterators 
    * that are not derived from this object.
    */
-  public static XNodeSet executeFilterExpr(int context, XPathContext xctxt, 
+  public static XMLNodeCursorImpl executeFilterExpr(int context, XPathContext xctxt, 
   												PrefixResolver prefixResolver,
   												boolean isTopLevel,
   												int stackFrame,
@@ -92,7 +92,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
     throws org.apache.xml.utils.WrappedRuntimeException
   {
     PrefixResolver savedResolver = xctxt.getNamespaceContext();
-    XNodeSet result = null;
+    XMLNodeCursorImpl result = null;
 
     try
     {
@@ -113,14 +113,14 @@ public class FilterExprIteratorSimple extends LocPathIterator
         int savedStart = vars.getStackFrame();
         vars.setStackFrame(stackFrame);
 
-        result = (org.apache.xpath.objects.XNodeSet) expr.execute(xctxt);
+        result = (org.apache.xpath.objects.XMLNodeCursorImpl) expr.execute(xctxt);
         result.setShouldCacheNodes(true);
 
         // These two statements need to be combined into one operation.
         vars.setStackFrame(savedStart);
       }
       else
-          result = (org.apache.xpath.objects.XNodeSet) expr.execute(xctxt);
+          result = (org.apache.xpath.objects.XMLNodeCursorImpl) expr.execute(xctxt);
 
     }
     catch (javax.xml.transform.TransformerException se)

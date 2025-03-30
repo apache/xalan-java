@@ -22,11 +22,11 @@ package org.apache.xpath.functions;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -76,7 +76,7 @@ public class FuncData extends FunctionDef1Arg
          }
          else {
             int contextNodeDtmHandle = xctxt.getContextNode();
-            fnDataEffectiveArgValue = new XNodeSet(contextNodeDtmHandle, xctxt); 
+            fnDataEffectiveArgValue = new XMLNodeCursorImpl(contextNodeDtmHandle, xctxt); 
          }
       }
       else {
@@ -85,13 +85,13 @@ public class FuncData extends FunctionDef1Arg
          fnDataEffectiveArgValue = m_arg0.execute(xctxt); 
       }
       
-      if (fnDataEffectiveArgValue instanceof XNodeSet) {
-         XNodeSet xNodeSet = (XNodeSet)fnDataEffectiveArgValue;
+      if (fnDataEffectiveArgValue instanceof XMLNodeCursorImpl) {
+         XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)fnDataEffectiveArgValue;
          
          int nextNodeDtmHandle;
-         DTMIterator dtmIter = xNodeSet.iterRaw();
+         DTMCursorIterator dtmIter = xNodeSet.iterRaw();
          while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {
-            XNodeSet inpNode = new XNodeSet(nextNodeDtmHandle, xctxt.getDTMManager());
+            XMLNodeCursorImpl inpNode = new XMLNodeCursorImpl(nextNodeDtmHandle, xctxt.getDTMManager());
             DTM nodeDtm = inpNode.getDTM(nextNodeDtmHandle);
             if (nodeDtm.getNodeType(nextNodeDtmHandle) == DTM.DOCUMENT_NODE) {
                // REVISIT
@@ -123,8 +123,8 @@ public class FuncData extends FunctionDef1Arg
                 (xdmItem instanceof XSUntypedAtomic) || (xdmItem instanceof XSUntyped)) {
                result.add(xdmItem); 
             }
-            else if (xdmItem instanceof XNodeSet) {
-               XNodeSet xdmNode = (XNodeSet)xdmItem;               
+            else if (xdmItem instanceof XMLNodeCursorImpl) {
+               XMLNodeCursorImpl xdmNode = (XMLNodeCursorImpl)xdmItem;               
                int nodeDtmHandle = (xdmNode.iterRaw()).item(0);
                DTM nodeDtm = xdmNode.getDTM(nodeDtmHandle);
                if (nodeDtm.getNodeType(nodeDtmHandle) == DTM.DOCUMENT_NODE) {

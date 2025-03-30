@@ -34,14 +34,14 @@ import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.w3c.dom.Node;
@@ -390,9 +390,9 @@ public class ElemCopy extends ElemUse
 			   XPath copyOfSelectXPath = elemCopyOf.getSelect();
 			   Expression xpathExpr = copyOfSelectXPath.getExpression();
 			   XObject xObject = xpathExpr.execute(xctxt);
-			   if (xObject instanceof XNodeSet) {
-				   XNodeSet xNodeSet = (XNodeSet)xObject;
-				   DTMIterator dtmIter = xNodeSet.iter();
+			   if (xObject instanceof XMLNodeCursorImpl) {
+				   XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObject;
+				   DTMCursorIterator dtmIter = xNodeSet.iter();
 				   int nodeHandle;
 				   while ((nodeHandle = dtmIter.nextNode()) != DTM.NULL) {
 					   DTM dtm1 = dtmIter.getDTM(nodeHandle);
@@ -420,9 +420,9 @@ public class ElemCopy extends ElemUse
 			   XPath copyOfSelectXPath = elemCopyOf.getSelect();
 			   Expression xpathExpr = copyOfSelectXPath.getExpression();
 			   XObject xObject = xpathExpr.execute(xctxt);
-			   if (xObject instanceof XNodeSet) {				   				   
-				   XNodeSet xNodeSet = (XNodeSet)xObject;
-				   DTMIterator dtmIter = xNodeSet.iter();
+			   if (xObject instanceof XMLNodeCursorImpl) {				   				   
+				   XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObject;
+				   DTMCursorIterator dtmIter = xNodeSet.iter();
 				   int nodeHandle;
 				   while ((nodeHandle = dtmIter.nextNode()) != DTM.NULL) {
 					   DTM dtm1 = dtmIter.getDTM(nodeHandle);

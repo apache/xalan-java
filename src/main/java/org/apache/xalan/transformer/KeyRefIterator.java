@@ -26,10 +26,10 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.KeyDeclaration;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -47,7 +47,7 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
    * @param ref Key value to match
    * @param ki The main key iterator used to walk the source tree 
    */
-  public KeyRefIterator(QName name, XMLString ref, Vector keyDecls, DTMIterator ki)
+  public KeyRefIterator(QName name, XMLString ref, Vector keyDecls, DTMCursorIterator ki)
   {
     super(null);
     m_name = name;
@@ -57,7 +57,7 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
     setWhatToShow(org.apache.xml.dtm.DTMFilter.SHOW_ALL);
   }
   
-  DTMIterator m_keysNodes;
+  DTMCursorIterator m_keysNodes;
   
   /**
    * Get the next node via getNextXXX.  Bottlenecked for derived class override.
@@ -68,7 +68,7 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
   	int next;   
     while(DTM.NULL != (next = m_keysNodes.nextNode()))
     {
-    	if(DTMIterator.FILTER_ACCEPT == filterNode(next))
+    	if(DTMCursorIterator.FILTER_ACCEPT == filterNode(next))
     		break;
     }
     m_lastFetched = next;
@@ -94,7 +94,7 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
     Vector keys = m_keyDeclarations;
 
     QName name = m_name;
-    KeyIterator ki = (KeyIterator)(((XNodeSet)m_keysNodes).getContainedIter());
+    KeyIterator ki = (KeyIterator)(((XMLNodeCursorImpl)m_keysNodes).getContainedIter());
     org.apache.xpath.XPathContext xctxt = ki.getXPathContext();
     
     if(null == xctxt)
@@ -129,11 +129,11 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
           XMLString exprResult = xuse.xstr();
 
           if (lookupKey.equals(exprResult))
-            return DTMIterator.FILTER_ACCEPT;
+            return DTMCursorIterator.FILTER_ACCEPT;
         }
         else
         {
-          DTMIterator nl = ((XNodeSet)xuse).iterRaw();
+          DTMCursorIterator nl = ((XMLNodeCursorImpl)xuse).iterRaw();
           int useNode;
           
           while (DTM.NULL != (useNode = nl.nextNode()))
@@ -141,7 +141,7 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
             DTM dtm = getDTM(useNode);
             XMLString exprResult = dtm.getStringValue(useNode);
             if ((null != exprResult) && lookupKey.equals(exprResult))
-              return DTMIterator.FILTER_ACCEPT;
+              return DTMCursorIterator.FILTER_ACCEPT;
           }
         }
 
@@ -157,7 +157,7 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
         XSLMessages.createMessage(
           XSLTErrorResources.ER_NO_XSLKEY_DECLARATION,
           new Object[] { name.getLocalName()}));
-    return DTMIterator.FILTER_REJECT;
+    return DTMCursorIterator.FILTER_REJECT;
   }
 
   protected XMLString m_ref;

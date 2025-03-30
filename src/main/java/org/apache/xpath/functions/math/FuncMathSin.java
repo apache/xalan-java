@@ -24,7 +24,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
@@ -75,8 +75,8 @@ public class FuncMathSin extends FunctionOneArg
           double resultVal = Math.sin((new XSDouble(strVal)).doubleValue());
           result = new XSDouble(resultVal);
        }
-       else if (arg0Result instanceof XNodeSet) {
-          XNodeSet xNodeSet = (XNodeSet)arg0Result;
+       else if (arg0Result instanceof XMLNodeCursorImpl) {
+          XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)arg0Result;
           if (xNodeSet.getLength() != 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : The argument to math:sin "
                                                                      + "function must be a sequence of length one.", srcLocator);    

@@ -29,7 +29,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -39,7 +39,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
@@ -107,7 +107,7 @@ public class FuncFilter extends Function2Args {
         Expression arg0 = getArg0();
         Expression arg1 = getArg1();                
         
-        DTMIterator arg0DtmIterator = null;
+        DTMCursorIterator arg0DtmIterator = null;
         
         XObject arg0XsObject = null;
                   
@@ -195,7 +195,7 @@ public class FuncFilter extends Function2Args {
    * Evaluate the function call fn:filter.
    */
   private ResultSequence evaluateFnFilter(XPathContext xctxt, XObject arg0XsObject, 
-                                                 DTMIterator arg0DtmIterator, XPathInlineFunction arg1) 
+                                                 DTMCursorIterator arg0DtmIterator, XPathInlineFunction arg1) 
                                                                                     throws TransformerException {
         ResultSequence resultSeq = new ResultSequence(); 
         
@@ -257,7 +257,7 @@ public class FuncFilter extends Function2Args {
            int dtmNodeHandle;
            
            while (DTM.NULL != (dtmNodeHandle = arg0DtmIterator.nextNode())) {               
-               XNodeSet inpSeqItem = new XNodeSet(dtmNodeHandle, xctxt.getDTMManager());
+               XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(dtmNodeHandle, xctxt.getDTMManager());
                
                if (varQname != null) {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);

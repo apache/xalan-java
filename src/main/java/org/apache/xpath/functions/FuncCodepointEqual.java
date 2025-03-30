@@ -21,7 +21,7 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyType;
@@ -65,8 +65,8 @@ public class FuncCodepointEqual extends Function2Args {
         
         String arg0Str = null;
         
-        if (xObject0 instanceof XNodeSet) {
-           XNodeSet nodeSet = (XNodeSet)xObject0;
+        if (xObject0 instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject0;
            if (nodeSet.getLength() == 0) {
               return result; 
            }
@@ -94,8 +94,8 @@ public class FuncCodepointEqual extends Function2Args {
         
         String arg1Str = null;
         
-        if (xObject1 instanceof XNodeSet) {
-           XNodeSet nodeSet = (XNodeSet)xObject1;
+        if (xObject1 instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject1;
            if (nodeSet.getLength() == 0) {
               return result; 
            }
@@ -146,8 +146,8 @@ public class FuncCodepointEqual extends Function2Args {
         for (int idx = 0; idx < resultSeq.size(); idx++) {
            XObject resultSeqItem = resultSeq.item(idx);
            
-           if (resultSeqItem instanceof XNodeSet) {
-              strBuff.append(((XNodeSet)resultSeqItem).str());
+           if (resultSeqItem instanceof XMLNodeCursorImpl) {
+              strBuff.append(((XMLNodeCursorImpl)resultSeqItem).str());
            }
            else if (resultSeqItem instanceof XSAnyType) {
               strBuff.append(((XSAnyType)resultSeqItem).stringValue()); 

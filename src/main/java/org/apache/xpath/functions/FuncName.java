@@ -20,11 +20,11 @@ package org.apache.xpath.functions;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
@@ -68,14 +68,14 @@ public class FuncName extends FunctionMultiArgs {
 	  }
 	  else if (arg0 instanceof SelfIteratorNoPredicate) {
 		  XObject contextItem = xctxt.getXPath3ContextItem();
-		  if ((contextItem != null) && (contextItem instanceof XNodeSet)) {
-			  nodeHandle = getNodeHandle((XNodeSet)contextItem);
+		  if ((contextItem != null) && (contextItem instanceof XMLNodeCursorImpl)) {
+			  nodeHandle = getNodeHandle((XMLNodeCursorImpl)contextItem);
 			  nodeNameStr = getNodeNameStrFromNodeHandle(nodeHandle, xctxt);
 		  }
 		  else {
 			  XObject xObject = m_arg0.execute(xctxt);
-			  if (xObject instanceof XNodeSet) {
-				  nodeHandle = getNodeHandle((XNodeSet)xObject);
+			  if (xObject instanceof XMLNodeCursorImpl) {
+				  nodeHandle = getNodeHandle((XMLNodeCursorImpl)xObject);
 				  nodeNameStr = getNodeNameStrFromNodeHandle(nodeHandle, xctxt);
 			  }
 		  }
@@ -83,9 +83,9 @@ public class FuncName extends FunctionMultiArgs {
 	  else {
 		 XObject nodeArg = arg0.execute(xctxt);
 		 
-		 if (nodeArg instanceof XNodeSet) {
-			XNodeSet nodeSet = (XNodeSet)nodeArg;
-			DTMIterator dtmIter = nodeSet.iterRaw();
+		 if (nodeArg instanceof XMLNodeCursorImpl) {
+			XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)nodeArg;
+			DTMCursorIterator dtmIter = nodeSet.iterRaw();
 			nodeHandle = dtmIter.nextNode();			
 			nodeNameStr = getNodeNameStrFromNodeHandle(nodeHandle, xctxt);
 		 }		 
@@ -104,10 +104,10 @@ public class FuncName extends FunctionMultiArgs {
   /**
    * Get dtm node handle of a node.
    */
-  private int getNodeHandle(XNodeSet nodeSet) {	 
+  private int getNodeHandle(XMLNodeCursorImpl nodeSet) {	 
 	 int nodeHandle;
 	 
-	 DTMIterator dtmIter = nodeSet.iterRaw();
+	 DTMCursorIterator dtmIter = nodeSet.iterRaw();
 	 nodeHandle = dtmIter.nextNode();
 	 
 	 return nodeHandle;

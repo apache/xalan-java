@@ -27,7 +27,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -68,8 +68,8 @@ public class FuncResolveQName extends Function2Args
     	else if (isXdmSequenceOfLengthOne(arg0, xctxt)) {    	   
     		Expression arg1 = getArg1();
     		XObject arg1Value = arg1.execute(xctxt);
-    		if (arg1Value instanceof XNodeSet) {
-    			XNodeSet nodeSet = (XNodeSet)arg1Value;    		  
+    		if (arg1Value instanceof XMLNodeCursorImpl) {
+    			XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)arg1Value;    		  
     			int nodeHandle = nodeSet.nextNode();
     			DTMManager dtmMgr = xctxt.getDTMManager();
     			DTM dtm = dtmMgr.getDTM(nodeHandle);
@@ -124,8 +124,8 @@ public class FuncResolveQName extends Function2Args
 				 isEmptySequence = true;  
 			  }
 		   }
-		   else if (seqExprValue instanceof XNodeSet) {
-			  if (((XNodeSet)seqExprValue).getLength() == 0) {
+		   else if (seqExprValue instanceof XMLNodeCursorImpl) {
+			  if (((XMLNodeCursorImpl)seqExprValue).getLength() == 0) {
 				 isEmptySequence = true;  
 			  }
 		   }
@@ -151,8 +151,8 @@ public class FuncResolveQName extends Function2Args
 			     isSequenceOfLengthOne = true;  
 			  }
 		   }
-		   else if (seqExprValue instanceof XNodeSet) {
-			  if (((XNodeSet)seqExprValue).getLength() == 1) {
+		   else if (seqExprValue instanceof XMLNodeCursorImpl) {
+			  if (((XMLNodeCursorImpl)seqExprValue).getLength() == 1) {
 			     isSequenceOfLengthOne = true;  
 			  }
 		   }

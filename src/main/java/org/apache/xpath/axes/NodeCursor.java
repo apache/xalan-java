@@ -24,7 +24,7 @@ import java.util.Vector;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.NodeSetDTM;
@@ -32,13 +32,23 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 /**
- * This class is the dynamic wrapper for a Xalan DTMIterator instance, and 
- * provides random access capabilities.
+ * This class is the dynamic wrapper for a Xalan DTMCursorIterator instance, 
+ * and provides random access capabilities.
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Joseph Kesselman <jkesselm@apache.org>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XPath 3.1 specific changes, to this class)
+ * 
+ * @xsl.usage general
  */
-public class NodeSequence extends XObject
-  implements DTMIterator, Cloneable, PathComponent
+public class NodeCursor extends XObject
+                                     implements DTMCursorIterator, Cloneable, PathComponent
 {
-    static final long serialVersionUID = 3866261934726581044L;
+	
+  static final long serialVersionUID = 3866261934726581044L;
+  
   /** The index of the last node in the iteration. */
   protected int m_last = -1;
   
@@ -126,13 +136,13 @@ public class NodeSequence extends XObject
   /**
    * The functional iterator that fetches nodes.
    */
-  protected DTMIterator m_iter;
+  protected DTMCursorIterator m_iter;
   
   /**
    * Set the functional iterator that fetches nodes.
    * @param iter The iterator that is to be contained.
    */
-  public final void setIter(DTMIterator iter)
+  public final void setIter(DTMCursorIterator iter)
   {
   	m_iter = iter;
   }
@@ -141,7 +151,7 @@ public class NodeSequence extends XObject
    * Get the functional iterator that fetches nodes.
    * @return The contained iterator.
    */
-  public final DTMIterator getContainedIter()
+  public final DTMCursorIterator getContainedIter()
   {
   	return m_iter;
   }
@@ -162,7 +172,7 @@ public class NodeSequence extends XObject
    * @param xctxt The execution context.
    * @param shouldCacheNodes True if this sequence can random access.
    */
-  private NodeSequence(DTMIterator iter, int context, XPathContext xctxt, boolean shouldCacheNodes)
+  private NodeCursor(DTMCursorIterator iter, int context, XPathContext xctxt, boolean shouldCacheNodes)
   {
   	setIter(iter);
   	setRoot(context, xctxt);
@@ -174,7 +184,7 @@ public class NodeSequence extends XObject
    * 
    * @param nodeVector
    */
-  public NodeSequence(Object nodeVector)
+  public NodeCursor(Object nodeVector)
   {
   	super(nodeVector);
     if (nodeVector instanceof NodeVector) {
@@ -184,10 +194,10 @@ public class NodeSequence extends XObject
   	{
   		assertion(nodeVector instanceof NodeVector, 
   			"Must have a NodeVector as the object for NodeSequence!");
-  		if(nodeVector instanceof DTMIterator)
+  		if(nodeVector instanceof DTMCursorIterator)
   		{
-  			setIter((DTMIterator)nodeVector);
-  			m_last = ((DTMIterator)nodeVector).getLength();
+  			setIter((DTMCursorIterator)nodeVector);
+  			m_last = ((DTMCursorIterator)nodeVector).getLength();
   		}
   		
   	}
@@ -197,7 +207,7 @@ public class NodeSequence extends XObject
    * Construct an empty XNodeSet object.  This is used to create a mutable 
    * nodeset to which random nodes may be added.
    */
-  private NodeSequence(DTMManager dtmMgr)
+  private NodeCursor(DTMManager dtmMgr)
   {
     super(new NodeVector());
     m_last = 0;
@@ -208,14 +218,14 @@ public class NodeSequence extends XObject
   /**
    * Create a new NodeSequence in an invalid (null) state.
    */
-  public NodeSequence()
+  public NodeCursor()
   {
       return;
   }
 
 
   /**
-   * @see DTMIterator#getDTM(int)
+   * @see DTMCursorIterator#getDTM(int)
    */
   public DTM getDTM(int nodeHandle)
   {
@@ -230,7 +240,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#getDTMManager()
+   * @see DTMCursorIterator#getDTMManager()
    */
   public DTMManager getDTMManager()
   {
@@ -238,7 +248,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#getRoot()
+   * @see DTMCursorIterator#getRoot()
    */
   public int getRoot()
   {
@@ -254,7 +264,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#setRoot(int, Object)
+   * @see DTMCursorIterator#setRoot(int, Object)
    */
   public void setRoot(int nodeHandle, Object environment)
   {
@@ -276,7 +286,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#reset()
+   * @see DTMCursorIterator#reset()
    */
   public void reset()
   {
@@ -285,7 +295,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#getWhatToShow()
+   * @see DTMCursorIterator#getWhatToShow()
    */
   public int getWhatToShow()
   {
@@ -294,7 +304,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#getExpandEntityReferences()
+   * @see DTMCursorIterator#getExpandEntityReferences()
    */
   public boolean getExpandEntityReferences()
   {
@@ -305,7 +315,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#nextNode()
+   * @see DTMCursorIterator#nextNode()
    */
   public int nextNode()
   {
@@ -367,7 +377,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#previousNode()
+   * @see DTMCursorIterator#previousNode()
    */
   public int previousNode()
   {
@@ -390,7 +400,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#detach()
+   * @see DTMCursorIterator#detach()
    */
   public void detach()
   {
@@ -402,7 +412,7 @@ public class NodeSequence extends XObject
   /**
    * Calling this with a value of false will cause the nodeset 
    * to be cached.
-   * @see DTMIterator#allowDetachToRelease(boolean)
+   * @see DTMCursorIterator#allowDetachToRelease(boolean)
    */
   public void allowDetachToRelease(boolean allowRelease)
   {
@@ -417,7 +427,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#getCurrentNode()
+   * @see DTMCursorIterator#getCurrentNode()
    */
   public int getCurrentNode()
   {
@@ -440,7 +450,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#isFresh()
+   * @see DTMCursorIterator#isFresh()
    */
   public boolean isFresh()
   {
@@ -448,7 +458,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#setShouldCacheNodes(boolean)
+   * @see DTMCursorIterator#setShouldCacheNodes(boolean)
    */
   public void setShouldCacheNodes(boolean b)
   {
@@ -466,7 +476,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#isMutable()
+   * @see DTMCursorIterator#isMutable()
    */
   public boolean isMutable()
   {
@@ -474,7 +484,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#getCurrentPos()
+   * @see DTMCursorIterator#getCurrentPos()
    */
   public int getCurrentPos()
   {
@@ -482,7 +492,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#runTo(int)
+   * @see DTMCursorIterator#runTo(int)
    */
   public void runTo(int index)
   {
@@ -514,7 +524,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#setCurrentPos(int)
+   * @see DTMCursorIterator#setCurrentPos(int)
    */
   public void setCurrentPos(int i)
   {
@@ -522,7 +532,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#item(int)
+   * @see DTMCursorIterator#item(int)
    */
   public int item(int index)
   {
@@ -533,7 +543,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#setItem(int, int)
+   * @see DTMCursorIterator#setItem(int, int)
    */
   public void setItem(int node, int index)
   {
@@ -582,7 +592,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#getLength()
+   * @see DTMCursorIterator#getLength()
    */
   public int getLength()
   {
@@ -622,11 +632,11 @@ public class NodeSequence extends XObject
 
   /**
    * Note: Not a deep clone.
-   * @see DTMIterator#cloneWithReset()
+   * @see DTMCursorIterator#cloneWithReset()
    */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMCursorIterator cloneWithReset() throws CloneNotSupportedException
   {
-  	NodeSequence seq = (NodeSequence)super.clone();
+  	NodeCursor seq = (NodeCursor)super.clone();
     seq.m_next = 0;
     if (m_cache != null) {
         // In making this clone of an iterator we are making
@@ -651,8 +661,8 @@ public class NodeSequence extends XObject
    */
   public Object clone() throws CloneNotSupportedException
   {
-          NodeSequence clone = (NodeSequence) super.clone();
-          if (null != m_iter) clone.m_iter = (DTMIterator) m_iter.clone();
+          NodeCursor clone = (NodeCursor) super.clone();
+          if (null != m_iter) clone.m_iter = (DTMCursorIterator) m_iter.clone();
           if (m_cache != null) {
               // In making this clone of an iterator we are making
               // another NodeSequence object it has a reference
@@ -667,7 +677,7 @@ public class NodeSequence extends XObject
 
 
   /**
-   * @see DTMIterator#isDocOrdered()
+   * @see DTMCursorIterator#isDocOrdered()
    */
   public boolean isDocOrdered()
   {
@@ -678,7 +688,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see DTMIterator#getAxis()
+   * @see DTMCursorIterator#getAxis()
    */
   public int getAxis()
   {

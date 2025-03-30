@@ -32,7 +32,7 @@ import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Document;
@@ -391,10 +391,10 @@ public class ExsltDynamic extends ExsltBase
                                        XPath.SELECT);
         object = dynamicXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
         
-        if (object instanceof XNodeSet)
+        if (object instanceof XMLNodeCursorImpl)
         {
           NodeList nodelist = null;
-          nodelist = ((XNodeSet)object).nodelist();
+          nodelist = ((XMLNodeCursorImpl)object).nodelist();
         
           for (int k = 0; k < nodelist.getLength(); k++)
           {
@@ -475,7 +475,7 @@ public class ExsltDynamic extends ExsltBase
       }
       catch (TransformerException e)
       {
-        return new XNodeSet(xctxt.getDTMManager());
+        return new XMLNodeCursorImpl(xctxt.getDTMManager());
       }
     }
     else
@@ -562,10 +562,10 @@ public class ExsltDynamic extends ExsltBase
                                          XPath.SELECT);
           object = dynamicXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
           
-          if (object instanceof XNodeSet)
+          if (object instanceof XMLNodeCursorImpl)
           {
             NodeList nodelist = null;
-            nodelist = ((XNodeSet)object).nodelist();
+            nodelist = ((XMLNodeCursorImpl)object).nodelist();
         
             for (int k = 0; k < nodelist.getLength(); k++)
             {

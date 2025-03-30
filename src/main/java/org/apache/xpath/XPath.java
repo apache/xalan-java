@@ -33,7 +33,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.axes.LocPathIterator;
@@ -754,7 +754,7 @@ public class XPath implements Serializable, ExpressionOwner
 	  if (m_mainExp instanceof LocPathIterator) {
 		  LocPathIterator locPathIterator = (LocPathIterator)m_mainExp;
 
-		  DTMIterator dtmIter = null;                     
+		  DTMCursorIterator dtmIter = null;                     
 		  try {
 			  dtmIter = locPathIterator.asIterator(xctxt, contextNode);
 		  }

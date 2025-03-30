@@ -26,9 +26,9 @@ import java.util.Vector;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -70,7 +70,7 @@ public class NodeSorter
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void sort(DTMIterator v, Vector keys, XPathContext support)
+  public void sort(DTMCursorIterator v, Vector keys, XPathContext support)
           throws javax.xml.transform.TransformerException
   {
 
@@ -515,7 +515,7 @@ public class NodeSorter
         if (r.getType() == XObject.CLASS_NODESET)
         {
           // %REVIEW%
-          DTMIterator ni = ((XNodeSet)r).iterRaw();
+          DTMCursorIterator ni = ((XMLNodeCursorImpl)r).iterRaw();
           int current = ni.getCurrentNode();
           if(DTM.NULL == current)
             current = ni.nextNode();

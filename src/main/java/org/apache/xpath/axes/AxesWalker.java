@@ -25,7 +25,7 @@ import java.util.Vector;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisTraverser;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
@@ -369,7 +369,7 @@ public class AxesWalker extends PredicatedNodeTest
       }
       else
       {
-        if (walker.acceptNode(nextNode) != DTMIterator.FILTER_ACCEPT)
+        if (walker.acceptNode(nextNode) != DTMCursorIterator.FILTER_ACCEPT)
         {
           continue;
         }

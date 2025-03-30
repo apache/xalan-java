@@ -25,7 +25,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.ExpressionOwner;
@@ -34,7 +34,7 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -51,7 +51,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  * @xsl.usage advanced
  */
 public abstract class LocPathIterator extends PredicatedNodeTest
-        implements Cloneable, DTMIterator, java.io.Serializable, PathComponent
+        implements Cloneable, DTMCursorIterator, java.io.Serializable, PathComponent
 {
     static final long serialVersionUID = -4602476357268405754L;
     
@@ -226,7 +226,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
           throws javax.xml.transform.TransformerException
   {
 
-    XNodeSet iter = new XNodeSet((LocPathIterator)m_clones.getInstance());
+    XMLNodeCursorImpl iter = new XMLNodeCursorImpl((LocPathIterator)m_clones.getInstance());
 
     iter.setRoot(xctxt.getCurrentNode(), xctxt);
 
@@ -279,11 +279,11 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    * @throws javax.xml.transform.TransformerException
    * @xsl.usage experimental
    */
-  public DTMIterator asIterator(
+  public DTMCursorIterator asIterator(
           XPathContext xctxt, int contextNode)
             throws javax.xml.transform.TransformerException
   {
-    XNodeSet iter = new XNodeSet((LocPathIterator)m_clones.getInstance());
+    XMLNodeCursorImpl iter = new XMLNodeCursorImpl((LocPathIterator)m_clones.getInstance());
 
     iter.setRoot(contextNode, xctxt);
 
@@ -312,7 +312,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   public int asNode(XPathContext xctxt)
     throws javax.xml.transform.TransformerException
   {
-    DTMIterator iter = (DTMIterator)m_clones.getInstance();
+    DTMCursorIterator iter = (DTMCursorIterator)m_clones.getInstance();
     
     int current = xctxt.getCurrentNode();
     
@@ -727,7 +727,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    *
    * @throws CloneNotSupportedException
    */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMCursorIterator cloneWithReset() throws CloneNotSupportedException
   {
     LocPathIterator clone;
 //    clone = (LocPathIterator) clone();

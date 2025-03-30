@@ -26,10 +26,10 @@ import java.util.List;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -59,15 +59,15 @@ public class Except extends Operation
     XObject expr1 = m_left.execute(xctxt);
     XObject expr2 = m_right.execute(xctxt);
     
-    if ((expr1 instanceof XNodeSet) && (expr2 instanceof XNodeSet)) {
-    	DTMIterator dtmIter = ((XNodeSet)expr1).iterRaw();
+    if ((expr1 instanceof XMLNodeCursorImpl) && (expr2 instanceof XMLNodeCursorImpl)) {
+    	DTMCursorIterator dtmIter = ((XMLNodeCursorImpl)expr1).iterRaw();
         int nextNode;
         List<Integer> nodeHandleList1 = new ArrayList<Integer>();
         while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
         	nodeHandleList1.add(Integer.valueOf(nextNode)); 
         }
         
-        dtmIter = ((XNodeSet)expr2).iterRaw();
+        dtmIter = ((XMLNodeCursorImpl)expr2).iterRaw();
         List<Integer> nodeHandleList2 = new ArrayList<Integer>();
         while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
         	nodeHandleList2.add(Integer.valueOf(nextNode)); 
@@ -76,7 +76,7 @@ public class Except extends Operation
 		nodeHandleList1.removeAll(nodeHandleList2);
 		
 		nodeHandleList1.sort(null);
-		result = new XNodeSet(nodeHandleList1, xctxt.getDTMManager());
+		result = new XMLNodeCursorImpl(nodeHandleList1, xctxt.getDTMManager());
     }
     else if ((expr1 instanceof ResultSequence) && (expr2 instanceof ResultSequence)) {
     	ResultSequence seq1 = (ResultSequence)expr1;
@@ -85,8 +85,8 @@ public class Except extends Operation
     	List<Integer> nodeHandleList2 = new ArrayList<Integer>();
     	for (int idx = 0; idx < seq1.size(); idx++) {
     	   XObject xObj = seq1.item(idx);
-    	   if (xObj instanceof XNodeSet) {
-    		  int nodeDtmHandle = ((XNodeSet)xObj).nextNode();
+    	   if (xObj instanceof XMLNodeCursorImpl) {
+    		  int nodeDtmHandle = ((XMLNodeCursorImpl)xObj).nextNode();
     		  nodeHandleList1.add(Integer.valueOf(nodeDtmHandle));
     	   }
     	   else {
@@ -97,8 +97,8 @@ public class Except extends Operation
     	
     	for (int idx = 0; idx < seq2.size(); idx++) {
      	   XObject xObj = seq2.item(idx);
-     	   if (xObj instanceof XNodeSet) {
-     		  int nodeDtmHandle = ((XNodeSet)xObj).nextNode();
+     	   if (xObj instanceof XMLNodeCursorImpl) {
+     		  int nodeDtmHandle = ((XMLNodeCursorImpl)xObj).nextNode();
      		  nodeHandleList2.add(Integer.valueOf(nodeDtmHandle));
      	   }
      	   else {
@@ -110,10 +110,10 @@ public class Except extends Operation
         nodeHandleList1.removeAll(nodeHandleList2);
 		
 		nodeHandleList1.sort(null);
-		result = new XNodeSet(nodeHandleList1, xctxt.getDTMManager());
+		result = new XMLNodeCursorImpl(nodeHandleList1, xctxt.getDTMManager());
     }
-    else if ((expr1 instanceof XNodeSet) && (expr2 instanceof ResultSequence)) {    	
-    	DTMIterator dtmIter = ((XNodeSet)expr1).iterRaw();
+    else if ((expr1 instanceof XMLNodeCursorImpl) && (expr2 instanceof ResultSequence)) {    	
+    	DTMCursorIterator dtmIter = ((XMLNodeCursorImpl)expr1).iterRaw();
         int nextNode;
         List<Integer> nodeHandleList1 = new ArrayList<Integer>();
         while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
@@ -124,8 +124,8 @@ public class Except extends Operation
         List<Integer> nodeHandleList2 = new ArrayList<Integer>();
     	for (int idx = 0; idx < seq2.size(); idx++) {
      	   XObject xObj = seq2.item(idx);
-     	   if (xObj instanceof XNodeSet) {
-     		  int nodeDtmHandle = ((XNodeSet)xObj).nextNode();
+     	   if (xObj instanceof XMLNodeCursorImpl) {
+     		  int nodeDtmHandle = ((XMLNodeCursorImpl)xObj).nextNode();
      		  nodeHandleList2.add(Integer.valueOf(nodeDtmHandle));
      	   }
      	   else {
@@ -137,15 +137,15 @@ public class Except extends Operation
         nodeHandleList1.removeAll(nodeHandleList2);
 		
 		nodeHandleList1.sort(null);
-		result = new XNodeSet(nodeHandleList1, xctxt.getDTMManager());
+		result = new XMLNodeCursorImpl(nodeHandleList1, xctxt.getDTMManager());
     }
-    else if ((expr1 instanceof ResultSequence) && (expr2 instanceof XNodeSet)) {    	
+    else if ((expr1 instanceof ResultSequence) && (expr2 instanceof XMLNodeCursorImpl)) {    	
         ResultSequence seq1 = (ResultSequence)expr1;
         List<Integer> nodeHandleList1 = new ArrayList<Integer>();
     	for (int idx = 0; idx < seq1.size(); idx++) {
      	   XObject xObj = seq1.item(idx);
-     	   if (xObj instanceof XNodeSet) {
-     		  int nodeDtmHandle = ((XNodeSet)xObj).nextNode();
+     	   if (xObj instanceof XMLNodeCursorImpl) {
+     		  int nodeDtmHandle = ((XMLNodeCursorImpl)xObj).nextNode();
      		  nodeHandleList1.add(Integer.valueOf(nodeDtmHandle));
      	   }
      	   else {
@@ -154,7 +154,7 @@ public class Except extends Operation
      	   }
      	}
     	
-    	DTMIterator dtmIter = ((XNodeSet)expr2).iterRaw();
+    	DTMCursorIterator dtmIter = ((XMLNodeCursorImpl)expr2).iterRaw();
         int nextNode;
         List<Integer> nodeHandleList2 = new ArrayList<Integer>();
         while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
@@ -164,7 +164,7 @@ public class Except extends Operation
         nodeHandleList1.removeAll(nodeHandleList2);
 		
 		nodeHandleList1.sort(null);
-		result = new XNodeSet(nodeHandleList1, xctxt.getDTMManager());
+		result = new XMLNodeCursorImpl(nodeHandleList1, xctxt.getDTMManager());
     }
     
     return result;

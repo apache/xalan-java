@@ -33,9 +33,9 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.GroupingKeyAndGroupPair;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -404,7 +404,7 @@ public class ForEachGroupXslSortSorter
                     }
             
                     if (r.getType() == XObject.CLASS_NODESET) {
-                          DTMIterator ni = ((XNodeSet)r).iterRaw();
+                          DTMCursorIterator ni = ((XMLNodeCursorImpl)r).iterRaw();
                           int current = ni.getCurrentNode();
                           if(DTM.NULL == current) {
                              current = ni.nextNode();

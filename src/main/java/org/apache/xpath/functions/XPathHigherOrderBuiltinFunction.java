@@ -18,7 +18,7 @@ package org.apache.xpath.functions;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
@@ -26,7 +26,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.Variable;
@@ -74,16 +74,16 @@ public class XPathHigherOrderBuiltinFunction extends Function3Args {
         else if (xpathExpr instanceof Variable) {
             XObject xObj = ((Variable)xpathExpr).execute(xctxt);
 
-            if (xObj instanceof XNodeSet) {               
+            if (xObj instanceof XMLNodeCursorImpl) {               
                 DTMManager dtmMgr = (DTMManager)xctxt;
 
-                XNodeSet xNodeSet = (XNodeSet)xObj;           
-                DTMIterator sourceNodes = xNodeSet.iter();
+                XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObj;           
+                DTMCursorIterator sourceNodes = xNodeSet.iter();
 
                 int nextNodeDtmHandle;
 
                 while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-                    XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
+                    XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);
                     String nodeStrValue = xNodeSetItem.str();
 
                     DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
@@ -114,12 +114,12 @@ public class XPathHigherOrderBuiltinFunction extends Function3Args {
         }
         else if (xpathExpr instanceof LocPathIterator) {            
             DTMManager dtmMgr = (DTMManager)xctxt;        
-            DTMIterator arg0DtmIterator = xpathExpr.asIterator(xctxt, contextNode);        
+            DTMCursorIterator arg0DtmIterator = xpathExpr.asIterator(xctxt, contextNode);        
 
             int nextNodeDtmHandle;
 
             while ((nextNodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
-                XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);            
+                XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);            
                 String nodeStrValue = xNodeSetItem.str();
 
                 DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);

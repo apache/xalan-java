@@ -34,12 +34,12 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.json.JSONException;
@@ -240,8 +240,8 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		
 	    		NodeList nodeList = (new XRTreeFrag(xdmNodeHandle, xctxt, this)).convertToNodeset();		
 	    		XNodeSetForDOM xNodeSetForDOM = new XNodeSetForDOM(nodeList, xctxt); 
-	    		XNodeSet xNodeSet = (XNodeSet)xNodeSetForDOM;
-	    		DTMIterator dtmIter = xNodeSet.iterRaw();
+	    		XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xNodeSetForDOM;
+	    		DTMCursorIterator dtmIter = xNodeSet.iterRaw();
 	    		int nodeHandle = dtmIter.nextNode();
 	    		DTM dtm1 = xctxt.getDTM(nodeHandle);
 	    		Node node = dtm1.getNode(nodeHandle);
@@ -302,8 +302,8 @@ public class ElemResultDocument extends ElemTemplateElement
 
 	    		   NodeList nodeList = (new XRTreeFrag(xdmNodeHandle, xctxt, this)).convertToNodeset();		
 	    		   XNodeSetForDOM xNodeSetForDOM = new XNodeSetForDOM(nodeList, xctxt); 
-	    		   XNodeSet xNodeSet = (XNodeSet)xNodeSetForDOM;
-	    		   DTMIterator dtmIter = xNodeSet.iterRaw();
+	    		   XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xNodeSetForDOM;
+	    		   DTMCursorIterator dtmIter = xNodeSet.iterRaw();
 	    		   int nodeHandle = dtmIter.nextNode();
 	    		   DTM dtm1 = xctxt.getDTM(nodeHandle);
 	    		   Node node = dtm1.getNode(nodeHandle);

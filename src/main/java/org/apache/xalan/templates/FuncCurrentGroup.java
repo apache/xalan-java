@@ -26,7 +26,7 @@ import java.util.Vector;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -51,7 +51,7 @@ public class FuncCurrentGroup extends Function
    */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {
-       XNodeSet nodes = null;
+       XMLNodeCursorImpl nodes = null;
        
        TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            
        ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();       
@@ -62,7 +62,7 @@ public class FuncCurrentGroup extends Function
            groupNodesDtmHandles = currElemTemplateElement.getGroupNodesDtmHandles();
        }
        
-       nodes = new XNodeSet(groupNodesDtmHandles, xctxt);
+       nodes = new XMLNodeCursorImpl(groupNodesDtmHandles, xctxt);
               
        return nodes;
    }

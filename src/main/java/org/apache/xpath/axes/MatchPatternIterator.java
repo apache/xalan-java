@@ -23,7 +23,7 @@ package org.apache.xpath.axes;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisTraverser;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpMap;
@@ -236,7 +236,7 @@ public class MatchPatternIterator extends LocPathIterator
   
         if (DTM.NULL != next)
         {
-          if(DTMIterator.FILTER_ACCEPT == acceptNode(next, m_execContext))
+          if(DTMCursorIterator.FILTER_ACCEPT == acceptNode(next, m_execContext))
             break;
           else
             continue;
@@ -311,8 +311,8 @@ public class MatchPatternIterator extends LocPathIterator
       }
 
       // System.out.println("\n::acceptNode - score: "+score.num()+"::");
-      return (score == NodeTest.SCORE_NONE) ? DTMIterator.FILTER_SKIP 
-                    : DTMIterator.FILTER_ACCEPT;
+      return (score == NodeTest.SCORE_NONE) ? DTMCursorIterator.FILTER_SKIP 
+                    : DTMCursorIterator.FILTER_ACCEPT;
     }
     catch (javax.xml.transform.TransformerException se)
     {

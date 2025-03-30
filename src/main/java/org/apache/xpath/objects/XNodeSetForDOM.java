@@ -31,7 +31,7 @@ import org.w3c.dom.traversal.NodeIterator;
  * This class overrides the XNodeSet#object() method to provide the original 
  * Node object, NodeList object, or NodeIterator.
  */
-public class XNodeSetForDOM extends XNodeSet
+public class XNodeSetForDOM extends XMLNodeCursorImpl
 {
     static final long serialVersionUID = -8396190713754624640L;
   Object m_origObj;
@@ -50,7 +50,7 @@ public class XNodeSetForDOM extends XNodeSet
    *
    * @param val Value of the XNodeSet object
    */
-  public XNodeSetForDOM(XNodeSet val)
+  public XNodeSetForDOM(XMLNodeCursorImpl val)
   {
   	super(val);
   	if(val instanceof XNodeSetForDOM)

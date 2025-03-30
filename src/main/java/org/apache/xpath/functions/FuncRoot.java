@@ -23,10 +23,10 @@ package org.apache.xpath.functions;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -64,11 +64,11 @@ public class FuncRoot extends FunctionMultiArgs {
 		   
 		   if (m_arg0 != null) {
 		       XObject firstArgEvalResult = m_arg0.execute(xctxt);
-		       if (firstArgEvalResult instanceof XNodeSet) {
-		    	   XNodeSet xObject = (XNodeSet)firstArgEvalResult;
+		       if (firstArgEvalResult instanceof XMLNodeCursorImpl) {
+		    	   XMLNodeCursorImpl xObject = (XMLNodeCursorImpl)firstArgEvalResult;
 		    	   if (xObject.getLength() == 1) {
-		    		   XNodeSet nodeSet = (XNodeSet)xObject;
-				       DTMIterator dtmIter = nodeSet.iterRaw();
+		    		   XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject;
+				       DTMCursorIterator dtmIter = nodeSet.iterRaw();
 				       nodeHandle = dtmIter.nextNode(); 
 		    	   }
 		    	   else {
@@ -95,7 +95,7 @@ public class FuncRoot extends FunctionMultiArgs {
 			   DTM dtm = dtmMgr.getDTM(nodeHandle);		       
 		       
 			   int docRoot = dtm.getDocumentRoot(nodeHandle);		       
-		       result = new XNodeSet(docRoot, dtmMgr);
+		       result = new XMLNodeCursorImpl(docRoot, dtmMgr);
 		   }
 		    
 		   return result; 		    

@@ -23,7 +23,7 @@ package org.apache.xpath.axes;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Compiler;
@@ -153,7 +153,7 @@ public class OneStepIterator extends ChildTestIterator
    * 
    *  @throws CloneNotSupportedException
    */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMCursorIterator cloneWithReset() throws CloneNotSupportedException
   {
 
     OneStepIterator clone = (OneStepIterator) super.cloneWithReset();

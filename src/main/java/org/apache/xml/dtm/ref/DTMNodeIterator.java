@@ -22,7 +22,7 @@ package org.apache.xml.dtm.ref;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMDOMException;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;
@@ -57,7 +57,7 @@ import org.w3c.dom.traversal.NodeFilter;
  * */
 public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
 {
-  private DTMIterator dtm_iter;
+  private DTMCursorIterator dtm_iter;
   private boolean valid=true;
 
   //================================================================
@@ -66,11 +66,11 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
   /** Public constructor: Wrap a DTMNodeIterator around an existing
    * and preconfigured DTMIterator
    * */
-  public DTMNodeIterator(DTMIterator dtmIterator)
+  public DTMNodeIterator(DTMCursorIterator dtmIterator)
     {
       try
       {
-        dtm_iter=(DTMIterator)dtmIterator.clone();
+        dtm_iter=(DTMCursorIterator)dtmIterator.clone();
       }
       catch(CloneNotSupportedException cnse)
       {
@@ -81,7 +81,7 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
   /** Access the wrapped DTMIterator. I'm not sure whether anyone will
    * need this or not, but let's write it and think about it.
    * */
-  public DTMIterator getDTMIterator()
+  public DTMCursorIterator getDTMIterator()
     {
       return dtm_iter;
     }

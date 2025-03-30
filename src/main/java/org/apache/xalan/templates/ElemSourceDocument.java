@@ -28,12 +28,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FuncDoc;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -213,9 +213,9 @@ public class ElemSourceDocument extends ElemTemplateElement
 	    	FuncDoc funcDoc = new FuncDoc();        
 	    	XObject xdmDocNode = funcDoc.getDocumentNode(xctxt, hrefStrVal);
 	    	
-	    	if (xdmDocNode instanceof XNodeSet) {
-	    		XNodeSet xNodeSet = (XNodeSet)xdmDocNode;
-	    		DTMIterator dtmIterator = xNodeSet.iterRaw();
+	    	if (xdmDocNode instanceof XMLNodeCursorImpl) {
+	    		XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xdmDocNode;
+	    		DTMCursorIterator dtmIterator = xNodeSet.iterRaw();
 	    		int hrefDocNodeHandle = dtmIterator.nextNode();
 	    		xctxt.pushCurrentNode(hrefDocNodeHandle);
 	    		

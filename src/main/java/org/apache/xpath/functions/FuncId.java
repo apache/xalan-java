@@ -23,11 +23,11 @@ package org.apache.xpath.functions;
 import java.util.StringTokenizer;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.StringVector;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -115,12 +115,12 @@ public class FuncId extends FunctionOneArg
 
     XObject arg = m_arg0.execute(xctxt);
     int argType = arg.getType();
-    XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
+    XMLNodeCursorImpl nodes = new XMLNodeCursorImpl(xctxt.getDTMManager());
     NodeSetDTM nodeSet = nodes.mutableNodeset();
 
     if (XObject.CLASS_NODESET == argType)
     {
-      DTMIterator ni = arg.iter();
+      DTMCursorIterator ni = arg.iter();
       StringVector usedrefs = null;
       int pos = ni.nextNode();
 

@@ -25,13 +25,13 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -79,15 +79,15 @@ public class FuncContainsToken extends FunctionMultiArgs {
         
         List<String> arg0StrList = new ArrayList<String>();
         
-        if (arg0EvalResult instanceof XNodeSet) {
-           XNodeSet nodeSet = (XNodeSet)arg0EvalResult;
+        if (arg0EvalResult instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)arg0EvalResult;
            if (nodeSet.getLength() > 0) {
                DTMManager dtmMgr = (DTMManager)xctxt;                        
-               DTMIterator sourceNodes = nodeSet.iter();
+               DTMCursorIterator sourceNodes = nodeSet.iter();
                
                int nextNodeDtmHandle;
                while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-                  XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
+                  XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);
                   String strVal = xNodeSetItem.str();
                   arg0StrList.add(strVal);
                }

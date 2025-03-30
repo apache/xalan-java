@@ -384,7 +384,7 @@ public class XString extends XObject implements XMLString
       // In order to handle the 'all' semantics of 
       // nodeset comparisons, we always call the 
       // nodeset function.
-    else if (obj2 instanceof XNodeSet)
+    else if (obj2 instanceof XMLNodeCursorImpl)
       return obj2.equals(this);
     else if (obj2 instanceof XNumber)
       return obj2.equals(this);

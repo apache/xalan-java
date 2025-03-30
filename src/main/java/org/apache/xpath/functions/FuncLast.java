@@ -21,7 +21,7 @@
 package org.apache.xpath.functions;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SubContextList;
 import org.apache.xpath.compiler.Compiler;
@@ -79,7 +79,7 @@ public class FuncLast extends Function
     if (null != iter)
       return iter.getLastPos(xctxt);
 
-    DTMIterator cnl = xctxt.getContextNodeList();
+    DTMCursorIterator cnl = xctxt.getContextNodeList();
     int count;
     if(null != cnl)
     {

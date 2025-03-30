@@ -19,11 +19,11 @@ package org.apache.xpath.functions;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -105,8 +105,8 @@ public class FuncCodePointsToString extends FunctionOneArg {
                                                                                                   + "or cannot be cast to xs:integer.", srcLocator);   
                  }
               }
-              else if (inpSeqObj instanceof XNodeSet) {
-                 XNodeSet inpSeqItem = (XNodeSet)inpSeqObj;
+              else if (inpSeqObj instanceof XMLNodeCursorImpl) {
+                 XMLNodeCursorImpl inpSeqItem = (XMLNodeCursorImpl)inpSeqObj;
                  if (inpSeqItem.getLength() == 1) {
                     String itemStrVal = inpSeqItem.str();
                     double dblVal = (Double.valueOf(itemStrVal)).doubleValue();
@@ -146,16 +146,16 @@ public class FuncCodePointsToString extends FunctionOneArg {
               }
            }
         }
-        else if (xObj instanceof XNodeSet) {
+        else if (xObj instanceof XMLNodeCursorImpl) {
            DTMManager dtmMgr = (DTMManager)xctxt;
             
-           XNodeSet xNodeSet = (XNodeSet)xObj;           
-           DTMIterator sourceNodes = xNodeSet.iter();
+           XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObj;           
+           DTMCursorIterator sourceNodes = xNodeSet.iter();
             
            int nextNodeDtmHandle;
            
            while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-               XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
+               XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);
                String nodeStrValue = xNodeSetItem.str();
                
                double dblVal = (Double.valueOf(nodeStrValue)).doubleValue();

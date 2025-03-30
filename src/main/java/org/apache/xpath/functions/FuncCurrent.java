@@ -27,7 +27,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.PredicatedNodeTest;
 import org.apache.xpath.axes.SubContextList;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.patterns.StepPattern;
 
@@ -67,7 +67,7 @@ public class FuncCurrent extends Function
         // not predicate => ContextNode == CurrentNode
         currentNode = xctxt.getContextNode();
     }
-    return new XNodeSet(currentNode, xctxt.getDTMManager());
+    return new XMLNodeCursorImpl(currentNode, xctxt.getDTMManager());
   }
   
   /**

@@ -31,7 +31,7 @@ import javax.xml.xpath.XPathFunctionResolver;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -131,8 +131,8 @@ public class JAXPExtensionsProvider implements ExtensionsProvider {
                 Object argument = argVec.elementAt( i );
                 // XNodeSet object() returns NodeVector and not NodeList
                 // Explicitly getting NodeList by using nodelist()
-                if ( argument instanceof XNodeSet ) {
-                    argList.add ( i, ((XNodeSet)argument).nodelist() );
+                if ( argument instanceof XMLNodeCursorImpl ) {
+                    argList.add ( i, ((XMLNodeCursorImpl)argument).nodelist() );
                 } else if ( argument instanceof XObject ) {
                     Object passedArgument = ((XObject)argument).object();
                     argList.add ( i, passedArgument );
@@ -182,8 +182,8 @@ public class JAXPExtensionsProvider implements ExtensionsProvider {
                 Object argument = argVec.elementAt( i );
                 // XNodeSet object() returns NodeVector and not NodeList
                 // Explicitly getting NodeList by using nodelist()
-                if ( argument instanceof XNodeSet ) {
-                    argList.add ( i, ((XNodeSet)argument).nodelist() );
+                if ( argument instanceof XMLNodeCursorImpl ) {
+                    argList.add ( i, ((XMLNodeCursorImpl)argument).nodelist() );
                 } else if ( argument instanceof XObject ) {
                     Object passedArgument = ((XObject)argument).object();
                     argList.add ( i, passedArgument );

@@ -28,7 +28,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
@@ -40,7 +40,7 @@ import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -214,13 +214,13 @@ public class XslTransformEvaluationHelper {
         
         ResultSequence resultSeq = new ResultSequence();
         
-        if (xObject instanceof XNodeSet) {
-           XNodeSet nodeSet = (XNodeSet)xObject;
+        if (xObject instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject;
             
-           DTMIterator dtmIter = nodeSet.iterRaw();
+           DTMCursorIterator dtmIter = nodeSet.iterRaw();
            int nextNode;
            while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
-              XNodeSet xdmNode = new XNodeSet(nextNode, xctxt);
+              XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(nextNode, xctxt);
               resultSeq.add(xdmNode);
            }
         }
@@ -245,16 +245,16 @@ public class XslTransformEvaluationHelper {
      * If all the items within the supplied ResultSequence object instance are not xdm nodes,
      * then this method returns a null value.  
      */
-    public static XNodeSet getXNodeSetFromResultSequence(ResultSequence resultSeq, DTMManager dtmMgr) {
+    public static XMLNodeCursorImpl getXNodeSetFromResultSequence(ResultSequence resultSeq, DTMManager dtmMgr) {
         
-        XNodeSet nodeSet = null;
+        XMLNodeCursorImpl nodeSet = null;
         
         List<Integer> dtmNodeHandleList = new ArrayList<Integer>();
         
         for (int idx = 0; idx < resultSeq.size(); idx++) {
            XObject nodeSetItem = resultSeq.item(idx);
-           if (nodeSetItem instanceof XNodeSet) {
-              int nodeDtmHandle = (((XNodeSet)nodeSetItem).iter()).nextNode();
+           if (nodeSetItem instanceof XMLNodeCursorImpl) {
+              int nodeDtmHandle = (((XMLNodeCursorImpl)nodeSetItem).iter()).nextNode();
               dtmNodeHandleList.add(nodeDtmHandle);
            }
            else {
@@ -263,7 +263,7 @@ public class XslTransformEvaluationHelper {
         }
         
         if (dtmNodeHandleList.size() == resultSeq.size()) {
-           nodeSet = new XNodeSet(dtmNodeHandleList, dtmMgr);
+           nodeSet = new XMLNodeCursorImpl(dtmNodeHandleList, dtmMgr);
         }
         
         return nodeSet; 
@@ -318,7 +318,7 @@ public class XslTransformEvaluationHelper {
         else if (expr instanceof LocPathIterator) {
            int pos;
             
-           DTMIterator nodes = expr.asIterator(xctxt, xctxt.getCurrentNode());
+           DTMCursorIterator nodes = expr.asIterator(xctxt, xctxt.getCurrentNode());
 
            while ((pos = nodes.nextNode()) != DTM.NULL) {
               DTM dtm = nodes.getDTM(pos);
@@ -345,8 +345,8 @@ public class XslTransformEvaluationHelper {
         
         if (expr instanceof Function) {
             XObject evalResult = ((Function)expr).execute(xctxt);
-            if (evalResult instanceof XNodeSet) {
-                xdmSequenceSize = ((XNodeSet)evalResult).getLength();   
+            if (evalResult instanceof XMLNodeCursorImpl) {
+                xdmSequenceSize = ((XMLNodeCursorImpl)evalResult).getLength();   
             }
             else if (evalResult instanceof ResultSequence) {
                xdmSequenceSize = ((ResultSequence)evalResult).size();
@@ -358,8 +358,8 @@ public class XslTransformEvaluationHelper {
         }
         else if (expr instanceof Variable) {
            XObject evalResult = ((Variable)expr).execute(xctxt);
-           if (evalResult instanceof XNodeSet) {
-               xdmSequenceSize = ((XNodeSet)evalResult).getLength();   
+           if (evalResult instanceof XMLNodeCursorImpl) {
+               xdmSequenceSize = ((XMLNodeCursorImpl)evalResult).getLength();   
            }
            else if (evalResult instanceof ResultSequence) {
               xdmSequenceSize = ((ResultSequence)evalResult).size();
@@ -385,7 +385,7 @@ public class XslTransformEvaluationHelper {
                 xdmSequenceSize = resultSeq.size();   
             }
             else {
-                DTMIterator nl = expr.asIterator(xctxt, xctxt.getCurrentNode());
+                DTMCursorIterator nl = expr.asIterator(xctxt, xctxt.getCurrentNode());
                 xdmSequenceSize = nl.getLength(); 
                 nl.detach();
             }

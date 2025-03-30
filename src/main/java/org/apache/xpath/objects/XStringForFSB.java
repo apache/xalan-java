@@ -427,7 +427,7 @@ public class XStringForFSB extends XString
       // In order to handle the 'all' semantics of 
       // nodeset comparisons, we always call the 
       // nodeset function.
-    else if (obj2 instanceof XNodeSet)
+    else if (obj2 instanceof XMLNodeCursorImpl)
       return obj2.equals(this);
     else if (obj2 instanceof XStringForFSB)
       return equals((XMLString) obj2);

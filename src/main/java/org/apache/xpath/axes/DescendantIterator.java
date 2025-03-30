@@ -24,7 +24,7 @@ import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisTraverser;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Compiler;
@@ -147,7 +147,7 @@ public class DescendantIterator extends LocPathIterator
    * 
    *  @throws CloneNotSupportedException
    */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMCursorIterator cloneWithReset() throws CloneNotSupportedException
   {
 
     DescendantIterator clone = (DescendantIterator) super.cloneWithReset();
@@ -220,7 +220,7 @@ public class DescendantIterator extends LocPathIterator
   
         if (DTM.NULL != next)
         {
-          if(DTMIterator.FILTER_ACCEPT == acceptNode(next))
+          if(DTMCursorIterator.FILTER_ACCEPT == acceptNode(next))
             break;
           else
             continue;

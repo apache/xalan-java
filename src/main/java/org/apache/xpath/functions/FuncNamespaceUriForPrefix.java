@@ -21,11 +21,11 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
@@ -66,10 +66,10 @@ public class FuncNamespaceUriForPrefix extends Function2Args {
 		  String nsPrefixStr = XslTransformEvaluationHelper.getStrVal(arg0Value);
 		  
 		  XObject arg1Value = arg1.execute(xctxt);
-		  if (arg1Value instanceof XNodeSet) {
-			 XNodeSet nodeSet = (XNodeSet)arg1Value;
+		  if (arg1Value instanceof XMLNodeCursorImpl) {
+			 XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)arg1Value;
 			 if (nodeSet.getLength() == 1) {
-				 DTMIterator dtmIter = nodeSet.iterRaw();
+				 DTMCursorIterator dtmIter = nodeSet.iterRaw();
 		         int nodeHandle = dtmIter.nextNode();
 		         DTMManager dtmMgr = nodeSet.getDTMManager();
 		         DTM dtm = dtmMgr.getDTM(nodeHandle);

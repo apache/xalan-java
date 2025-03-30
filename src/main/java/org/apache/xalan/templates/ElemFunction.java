@@ -38,7 +38,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
@@ -233,7 +233,7 @@ public class ElemFunction extends ElemTemplate
                  
                  if (paramAsAttrStrVal != null) {
                     try {
-                       XNodeSet nodeSet = SequenceTypeSupport.getNodeReference(argValue);
+                       XMLNodeCursorImpl nodeSet = SequenceTypeSupport.getNodeReference(argValue);
                        if (nodeSet != null) {
                     	  XSTypeDefinition typeDef = nodeSet.getXsTypeDefinition();                    	  
                     	  if (typeDef != null) {
@@ -281,7 +281,7 @@ public class ElemFunction extends ElemTemplate
                  }
                  
                  if (argConvertedVal instanceof ResultSequence) {                
-                    XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)argConvertedVal, 
+                    XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)argConvertedVal, 
                                                                                                                                 xctxt);
                     if (nodeSet != null) {
                        argConvertedVal = nodeSet;  

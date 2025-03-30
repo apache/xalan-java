@@ -29,7 +29,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -40,7 +40,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -178,7 +178,7 @@ public class XPathForExpr extends Expression {
            if (xpathExpr instanceof LocPathIterator) {
         	   LocPathIterator locPathIterator = (LocPathIterator)xpathExpr;          
                
-               DTMIterator dtmIter = null;                     
+               DTMCursorIterator dtmIter = null;                     
                try {
                   dtmIter = locPathIterator.asIterator(xctxt, contextNode);
                }
@@ -194,7 +194,7 @@ public class XPathForExpr extends Expression {
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
-            			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            			   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
             			   // Evaluate an XPath path expression like /a/b/funcCall(..).
             			   // Find one result item here for a sequence of items, 
                      	   // since this is within a loop.
@@ -207,7 +207,7 @@ public class XPathForExpr extends Expression {
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
-            			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            			   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
             			   // Evaluate an XPath path expression like /a/b/$funcCall(..).
             			   // Find one result item here for a sequence of items, 
                      	   // since this is within a loop.
@@ -220,7 +220,7 @@ public class XPathForExpr extends Expression {
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
-            			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);            			   
+            			   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);            			   
             			   xsObjResultSeq.add(singletonXPathNode);
             		   } 
             	   }
@@ -229,14 +229,14 @@ public class XPathForExpr extends Expression {
            else {
         	   XObject xsObj = varBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
         	   
-        	   if (xsObj instanceof XNodeSet) {
-                   XNodeSet nodeSet = (XNodeSet)xsObj;
-                   DTMIterator dtmIter = nodeSet.iterRaw();
+        	   if (xsObj instanceof XMLNodeCursorImpl) {
+                   XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xsObj;
+                   DTMCursorIterator dtmIter = nodeSet.iterRaw();
                    
                    int nextNode;
                           
                    while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {       
-                      XNodeSet node = new XNodeSet(nextNode, xctxt);
+                      XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, xctxt);
                       xsObjResultSeq.add(node);
                    }
                }
@@ -296,15 +296,15 @@ public class XPathForExpr extends Expression {
             XObject retExprResultVal = returnExprXPath.execute(xctxt, contextNode, 
                                                                         xctxt.getNamespaceContext());
             
-            if (retExprResultVal instanceof XNodeSet) { 
-               XNodeSet xNodeSet = (XNodeSet)retExprResultVal;
+            if (retExprResultVal instanceof XMLNodeCursorImpl) { 
+               XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)retExprResultVal;
                
-               DTMIterator dtmIter = xNodeSet.iterRaw();               
+               DTMCursorIterator dtmIter = xNodeSet.iterRaw();               
                
                int nextNodeDtmHandle;
                
                while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {       
-                  XNodeSet nodeSetItem = new XNodeSet(nextNodeDtmHandle, xctxt);
+                  XMLNodeCursorImpl nodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, xctxt);
                   returnExprResultSet.add(nodeSetItem);
                }
             }

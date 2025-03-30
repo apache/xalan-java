@@ -20,7 +20,7 @@
  */
 package org.apache.xpath.axes;
 
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.patterns.NodeTest;
@@ -126,10 +126,10 @@ public class UnionChildIterator extends ChildTestIterator
           if (pnt.getPredicateCount() > 0)
           {
             if (pnt.executePredicates(n, xctxt))
-              return DTMIterator.FILTER_ACCEPT;
+              return DTMCursorIterator.FILTER_ACCEPT;
           }
           else
-            return DTMIterator.FILTER_ACCEPT;
+            return DTMCursorIterator.FILTER_ACCEPT;
 
         }
       }
@@ -144,7 +144,7 @@ public class UnionChildIterator extends ChildTestIterator
     {
       xctxt.popCurrentNode();
     }
-    return DTMIterator.FILTER_SKIP;
+    return DTMCursorIterator.FILTER_SKIP;
   }
 
 }

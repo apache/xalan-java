@@ -24,13 +24,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.NodeSequence;
+import org.apache.xpath.axes.NodeCursor;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
@@ -38,23 +38,34 @@ import org.w3c.dom.traversal.NodeIterator;
 import xml.xpath31.processor.types.XSUntyped;
 
 /**
- * This class represents an XPath nodeset object, and is capable of
- * converting the nodeset to other types, such as a string.
+ * This class represents an XPath 3.1 data model (XDM) ordered list of 
+ * nodes, that can be iterated similar to a programming language 
+ * cursor. This class, implements an XDM data model's node() abstraction. 
+ * An object instance of this class, is capable of being converted to 
+ * other data types such as string.
+
+ * In addition to having this class, Xalan-J's XSL 3 implementation 
+ * also has a class named ResultSequence that is capable of having
+ * an ordered list of heterogeneous XDM items (which can be of XDM 
+ * kinds 'node', 'atomic value', 'function item', 'map' or an 'array').
  * 
- * For XPath 3.1 processor, we use an object of this class along with 
- * ResultSequence object and an XObject instance, all of them as 
- * representations of xdm sequence.
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Joseph Kesselman <jkesselm@apache.org>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XPath 3.1 specific changes, to this class)
  * 
  * @xsl.usage general
  */
-public class XNodeSet extends NodeSequence
-{  
+public class XMLNodeCursorImpl extends NodeCursor
+{
+	
   static final long serialVersionUID = 1916026368035639667L;
   
   /**
    * Default constructor for derived objects.
    */
-  protected XNodeSet() { }
+  protected XMLNodeCursorImpl() { }
   
   /**
    * Class field to store value of an attribute named 'type', for 
@@ -69,16 +80,16 @@ public class XNodeSet extends NodeSequence
   private String m_validation = null;
 
   /**
-   * Construct a XNodeSet object.
+   * Construct a XMLNodeCursorImpl object.
    *
-   * @param val Value of the XNodeSet object
+   * @param val Value of the XMLNodeCursorImpl object
    */
-  public XNodeSet(DTMIterator val)
+  public XMLNodeCursorImpl(DTMCursorIterator val)
   {
   	super();
-  	if(val instanceof XNodeSet)
+  	if(val instanceof XMLNodeCursorImpl)
   	{
-        final XNodeSet nodeSet = (XNodeSet) val;
+        final XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl) val;
 	    setIter(nodeSet.m_iter);
 	    m_dtmMgr = nodeSet.m_dtmMgr;
 	    m_last = nodeSet.m_last;
@@ -95,11 +106,11 @@ public class XNodeSet extends NodeSequence
   }
   
   /**
-   * Construct a XNodeSet object.
+   * Construct a XMLNodeCursorImpl object.
    *
-   * @param val Value of the XNodeSet object
+   * @param val Value of the XMLNodeCursorImpl object
    */
-  public XNodeSet(XNodeSet val)
+  public XMLNodeCursorImpl(XMLNodeCursorImpl val)
   {
   	super();
     setIter(val.m_iter);
@@ -112,20 +123,20 @@ public class XNodeSet extends NodeSequence
 
 
   /**
-   * Construct an empty XNodeSet object.  This is used to create a mutable 
+   * Construct an empty XMLNodeCursorImpl object.  This is used to create a mutable 
    * nodeset to which random nodes may be added.
    */
-  public XNodeSet(DTMManager dtmMgr) 
+  public XMLNodeCursorImpl(DTMManager dtmMgr) 
   {
      this(DTM.NULL,dtmMgr);
   }
 
   /**
-   * Construct a XNodeSet object for one node.
+   * Construct a XMLNodeCursorImpl object for one node.
    *
-   * @param n Node to add to the new XNodeSet object
+   * @param n Node to add to the new XMLNodeCursorImpl object
    */
-  public XNodeSet(int n, DTMManager dtmMgr)
+  public XMLNodeCursorImpl(int n, DTMManager dtmMgr)
   {
 
     super(new NodeSetDTM(dtmMgr));
@@ -141,11 +152,11 @@ public class XNodeSet extends NodeSequence
   }
   
   /**
-   * Construct a XNodeSet object, for multiple nodes.
+   * Construct a XMLNodeCursorImpl object, for multiple nodes.
    *
-   * @param nodesDtmList Nodes to add to the new XNodeSet object
+   * @param nodesDtmList Nodes to add to the new XMLNodeCursorImpl object
    */
-  public XNodeSet(List<Integer> nodesDtmList, DTMManager dtmMgr)
+  public XMLNodeCursorImpl(List<Integer> nodesDtmList, DTMManager dtmMgr)
   {
       super(new NodeSetDTM(dtmMgr));
       m_dtmMgr = dtmMgr;
@@ -386,10 +397,10 @@ public class XNodeSet extends NodeSequence
   {
     org.apache.xml.dtm.ref.DTMNodeList nodelist = new org.apache.xml.dtm.ref.DTMNodeList(this);
     // Creating a DTMNodeList has the side-effect that it will create a clone
-    // XNodeSet with cache and run m_iter to the end. You cannot get any node
+    // XMLNodeCursorImpl with cache and run m_iter to the end. You cannot get any node
     // from m_iter after this call. As a fix, we call SetVector() on the clone's 
     // cache. See Bugzilla 14406.
-    XNodeSet clone = (XNodeSet)nodelist.getDTMIterator();
+    XMLNodeCursorImpl clone = (XMLNodeCursorImpl)nodelist.getDTMIterator();
     SetVector(clone.getVector());
     return nodelist;
   }
@@ -409,12 +420,12 @@ public class XNodeSet extends NodeSequence
   /**
    * Return the iterator without cloning, etc.
    */
-  public DTMIterator iterRaw()
+  public DTMCursorIterator iterRaw()
   {
     return this;
   }
   
-  public void release(DTMIterator iter)
+  public void release(DTMCursorIterator iter)
   {
   }
   
@@ -423,7 +434,7 @@ public class XNodeSet extends NodeSequence
    *
    * @return The nodeset as a nodelist
    */
-  public DTMIterator iter()
+  public DTMCursorIterator iter()
   {
     try
     {
@@ -532,8 +543,8 @@ public class XNodeSet extends NodeSequence
       // is true if and only if some node in $x has the string-value 
       // foo; the latter is true if and only if all nodes in $x have 
       // the string-value foo.
-      DTMIterator list1 = iterRaw();
-      DTMIterator list2 = ((XNodeSet) obj2).iterRaw();
+      DTMCursorIterator list1 = iterRaw();
+      DTMCursorIterator list2 = ((XMLNodeCursorImpl) obj2).iterRaw();
       int node1;
       java.util.Vector node2Strings = null;
 
@@ -583,7 +594,7 @@ public class XNodeSet extends NodeSequence
     else if (XObject.CLASS_RESULT_SEQUENCE == type) {        
         ResultSequence rSeq = (ResultSequence)obj2;
         
-        DTMIterator list1 = iterRaw();        
+        DTMCursorIterator list1 = iterRaw();        
         int node1;
         while (DTM.NULL != (node1 = list1.nextNode()))
         {
@@ -628,7 +639,7 @@ public class XNodeSet extends NodeSequence
       // comparison on the number to be compared and on the result of 
       // converting the string-value of that node to a number using 
       // the number function is true.      
-      DTMIterator list1 = iterRaw();
+      DTMCursorIterator list1 = iterRaw();
       double num2 = obj2.num();
       int node;
 
@@ -648,7 +659,7 @@ public class XNodeSet extends NodeSequence
     else if (XObject.CLASS_RTREEFRAG == type)
     {
       XMLString s2 = obj2.xstr();
-      DTMIterator list1 = iterRaw();
+      DTMCursorIterator list1 = iterRaw();
       int node;
 
       while (DTM.NULL != (node = list1.nextNode()))
@@ -674,7 +685,7 @@ public class XNodeSet extends NodeSequence
       // the comparison on the string-value of the node and the other 
       // string is true. 
       XMLString s2 = obj2.xstr();
-      DTMIterator list1 = iterRaw();
+      DTMCursorIterator list1 = iterRaw();
       int node;
 
       while (DTM.NULL != (node = list1.nextNode()))
@@ -693,7 +704,7 @@ public class XNodeSet extends NodeSequence
        XSUntyped obj2Val = (XSUntyped)obj2;
        
        XMLString s2 = new XString(obj2Val.stringValue());
-       DTMIterator list1 = iterRaw();
+       DTMCursorIterator list1 = iterRaw();
        int node;
 
        while (DTM.NULL != (node = list1.nextNode()))
@@ -729,8 +740,8 @@ public class XNodeSet extends NodeSequence
 	    int obj2Type = obj2.getType();
 	
 	    if (obj2Type == XObject.CLASS_NODESET) {
-		   DTMIterator dtmIter1 = iterRaw();
-		   DTMIterator dtmIter2 = ((XNodeSet) obj2).iterRaw();
+		   DTMCursorIterator dtmIter1 = iterRaw();
+		   DTMCursorIterator dtmIter2 = ((XMLNodeCursorImpl) obj2).iterRaw();
 		   int nodeHandle1;
 		
 		   while ((nodeHandle1 = dtmIter1.nextNode()) != DTM.NULL) {
@@ -761,7 +772,7 @@ public class XNodeSet extends NodeSequence
 	   else if (obj2Type == XObject.CLASS_RESULT_SEQUENCE) {        
 	      ResultSequence rSeq = (ResultSequence)obj2;
 	        
-	      DTMIterator list1 = iterRaw();        
+	      DTMCursorIterator list1 = iterRaw();        
 	      int nodeHandle1;
 	      while ((nodeHandle1 = list1.nextNode()) != DTM.NULL) {
 	         XMLString s1 = getStringFromNode(nodeHandle1);
@@ -773,8 +784,8 @@ public class XNodeSet extends NodeSequence
 	            {
 	                DTM dtm = xctxt.getDTM(nodeHandle1);
 		     	    Node node1 = dtm.getNode(nodeHandle1);
-		     	    if (xObj instanceof XNodeSet) {
-		     	       XNodeSet xObjNodeSet = (XNodeSet)xObj;
+		     	    if (xObj instanceof XMLNodeCursorImpl) {
+		     	       XMLNodeCursorImpl xObjNodeSet = (XMLNodeCursorImpl)xObj;
 		     	       int nodeHandle2 = (xObjNodeSet.iter()).nextNode();
 		     	       DTM dtm2 = xctxt.getDTM(nodeHandle2);
 		     	       Node node2 = dtm.getNode(nodeHandle2);
@@ -802,7 +813,7 @@ public class XNodeSet extends NodeSequence
 	      result = comparator.compareNumbers(num1, num2);
 	   }
 	   else if (obj2Type == XObject.CLASS_NUMBER) {     
-	      DTMIterator list1 = iterRaw();
+	      DTMCursorIterator list1 = iterRaw();
 	      double num2 = obj2.num();
 	      int node;
 	
@@ -819,7 +830,7 @@ public class XNodeSet extends NodeSequence
 	   }
 	   else if (obj2Type == XObject.CLASS_STRING) {
 	      XMLString s2 = obj2.xstr();
-	      DTMIterator list1 = iterRaw();
+	      DTMCursorIterator list1 = iterRaw();
 	      int node;
 	
 	      while ((node = list1.nextNode()) != DTM.NULL) {
@@ -837,7 +848,7 @@ public class XNodeSet extends NodeSequence
 	       XSUntyped obj2Val = (XSUntyped)obj2;
 	       
 	       XMLString s2 = new XString(obj2Val.stringValue());
-	       DTMIterator list1 = iterRaw();
+	       DTMCursorIterator list1 = iterRaw();
 	       int node;
 	
 	       while ((node = list1.nextNode()) != DTM.NULL) {

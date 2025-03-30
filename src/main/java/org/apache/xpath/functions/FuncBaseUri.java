@@ -24,7 +24,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
@@ -63,7 +63,7 @@ public class FuncBaseUri extends FunctionDef1Arg
     	if (m_arg0 != null) {
     	   XObject argValue = m_arg0.execute(xctxt);
     	   if ((argValue != null) && (argValue.getType() == XObject.CLASS_NODESET)) {
-    		  XNodeSet nodeSet = (XNodeSet)argValue;
+    		  XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)argValue;
     		  if (nodeSet.getLength() == 1) {
     			 baseUriStr = getXdmNodeBaseUri(nodeSet, dtmMgr);
     			 if (baseUriStr != null) {
@@ -90,7 +90,7 @@ public class FuncBaseUri extends FunctionDef1Arg
     	else {
     	   int contextXdmNodeHandle = xctxt.getContextNode();
       	   if (contextXdmNodeHandle != DTM.NULL) {    		   
-      		  XNodeSet nodeSet = new XNodeSet(contextXdmNodeHandle, dtmMgr);
+      		  XMLNodeCursorImpl nodeSet = new XMLNodeCursorImpl(contextXdmNodeHandle, dtmMgr);
       		  if (nodeSet.getLength() == 1) {
       			 baseUriStr = getXdmNodeBaseUri(nodeSet, dtmMgr);
       			 if (baseUriStr != null) {
@@ -109,7 +109,7 @@ public class FuncBaseUri extends FunctionDef1Arg
       	   else {
       		  XObject contextItem = xctxt.getXPath3ContextItem();
       		  if ((contextItem != null) && (contextItem.getType() == XObject.CLASS_NODESET)) {
-      			 XNodeSet nodeSet = (XNodeSet)contextItem;
+      			 XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)contextItem;
       			 if (nodeSet.getLength() == 1) {
       				baseUriStr = getXdmNodeBaseUri(nodeSet, dtmMgr);
       				if (baseUriStr != null) {
@@ -156,7 +156,7 @@ public class FuncBaseUri extends FunctionDef1Arg
      * @return           XML base uri of the node as string value
      * @throws           TransformerException 
      */
-    private String getXdmNodeBaseUri(XNodeSet nodeSet, DTMManager dtmMgr) {
+    private String getXdmNodeBaseUri(XMLNodeCursorImpl nodeSet, DTMManager dtmMgr) {
        String xmlBaseUri = null;
               
        int nodeHandle = nodeSet.nextNode();

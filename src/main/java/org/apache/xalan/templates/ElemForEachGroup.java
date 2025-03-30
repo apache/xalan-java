@@ -32,18 +32,18 @@ import org.apache.xalan.transformer.ForEachGroupXslSortSorter;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.NodeSequence;
+import org.apache.xpath.axes.NodeCursor;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -454,7 +454,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         
         final int sourceNode = xctxt.getCurrentNode();
         
-        DTMIterator sourceNodes = null;
+        DTMCursorIterator sourceNodes = null;
         
         if (m_selectExpression instanceof Variable) {
             XObject xObj = ((Variable)m_selectExpression).execute(xctxt);
@@ -716,7 +716,7 @@ public class ElemForEachGroup extends ElemTemplateElement
               if (transformer.getDebug()) {
                   transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
                                    "select", new XPath(m_selectExpression),
-                                    new org.apache.xpath.objects.XNodeSet(sourceNodes));
+                                    new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
               }
         
               xctxt.popSAXLocator();
@@ -859,20 +859,20 @@ public class ElemForEachGroup extends ElemTemplateElement
    * Get XML document source nodes (represented as an 'DTMIterator' object), from
    * a list of XNodeSet objects contained within a 'ResultSequence' object.    
    */
-  private DTMIterator getSourceNodesFromResultSequence(ResultSequence resultSeq, XPathContext xctxt) 
+  private DTMCursorIterator getSourceNodesFromResultSequence(ResultSequence resultSeq, XPathContext xctxt) 
                                                                                           throws TransformerException {
-     DTMIterator sourceNodes = null;
+     DTMCursorIterator sourceNodes = null;
      
      NodeVector nodeVector = new NodeVector();
      
      for (int idx = 0; idx < resultSeq.size(); idx++) {
          XObject xObject = resultSeq.item(idx);
-         xObject = ((XNodeSet)xObject).getFresh();
-         DTMIterator dtmIter = xObject.iter();
+         xObject = ((XMLNodeCursorImpl)xObject).getFresh();
+         DTMCursorIterator dtmIter = xObject.iter();
          nodeVector.addElement(dtmIter.nextNode()); 
      }
    
-     NodeSequence nodeSequence = new NodeSequence(nodeVector);
+     NodeCursor nodeSequence = new NodeCursor(nodeVector);
      
      try {
         sourceNodes = nodeSequence.cloneWithReset();

@@ -36,13 +36,13 @@ import javax.xml.validation.Validator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.Constants;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.objects.XBooleanStatic;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
@@ -100,12 +100,12 @@ public class FuncXmlToJson extends FunctionMultiArgs
            		                                                      + "have either 1 or two arguments.", srcLocator);
         }
         
-        XNodeSet arg0NodeSet = null;
+        XMLNodeCursorImpl arg0NodeSet = null;
         
         if (arg0 instanceof Variable) {
            XObject arg0Obj = ((Variable)arg0).execute(xctxt);
-           if (arg0Obj instanceof XNodeSet) {
-        	  arg0NodeSet = (XNodeSet)arg0Obj;  
+           if (arg0Obj instanceof XMLNodeCursorImpl) {
+        	  arg0NodeSet = (XMLNodeCursorImpl)arg0Obj;  
            }
            else {
         	  throw new javax.xml.transform.TransformerException("FOAP0001 : The function fn:xml-to-json's 1st argument "
@@ -114,8 +114,8 @@ public class FuncXmlToJson extends FunctionMultiArgs
         }
         else {
            XObject arg0Obj = arg0.execute(xctxt);
-           if (arg0Obj instanceof XNodeSet) {
-        	  arg0NodeSet = (XNodeSet)arg0Obj;        	  
+           if (arg0Obj instanceof XMLNodeCursorImpl) {
+        	  arg0NodeSet = (XMLNodeCursorImpl)arg0Obj;        	  
            }
            else {
         	  throw new javax.xml.transform.TransformerException("FOAP0001 : The function fn:xml-to-json's 1st argument "
@@ -165,7 +165,7 @@ public class FuncXmlToJson extends FunctionMultiArgs
            }
         }
         
-        DTMIterator dtmIter = arg0NodeSet.iterRaw();
+        DTMCursorIterator dtmIter = arg0NodeSet.iterRaw();
    	    int nodeHandle = dtmIter.nextNode();
    	    DTM dtm = xctxt.getDTM(nodeHandle);
    	    

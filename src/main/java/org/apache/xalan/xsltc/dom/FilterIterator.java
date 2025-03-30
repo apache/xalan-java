@@ -24,7 +24,7 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
 /**
@@ -92,7 +92,7 @@ public final class FilterIterator extends DTMAxisIteratorBase {
     public int next() {
 	int node;
 	while ((node = _source.next()) != END) {
-	    if (_filter.acceptNode(node, DTMFilter.SHOW_ALL) == DTMIterator.FILTER_ACCEPT) {
+	    if (_filter.acceptNode(node, DTMFilter.SHOW_ALL) == DTMCursorIterator.FILTER_ACCEPT) {
 		return returnNode(node);
 	    }
 	}

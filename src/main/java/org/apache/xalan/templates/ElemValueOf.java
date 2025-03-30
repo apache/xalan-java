@@ -26,7 +26,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
@@ -40,7 +40,7 @@ import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
@@ -458,7 +458,7 @@ public class ElemValueOf extends ElemTemplateElement {
                      Function func = locPathIterator.getFuncExpr();
                      XPathDynamicFunctionCall dfc = locPathIterator.getDynamicFuncCallExpr();
                      
-                     DTMIterator dtmIter = null;                     
+                     DTMCursorIterator dtmIter = null;                     
                      try {
                         dtmIter = locPathIterator.asIterator(xctxt, current);
                      }
@@ -471,7 +471,7 @@ public class ElemValueOf extends ElemTemplateElement {
                         StringBuffer strBuff = new StringBuffer();
                         while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
                         {
-                           XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+                           XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
                            String resultStr = "";
                            if (func != null) {
                         	  // Evaluate an XPath path expression like /a/b/funcCall(..).

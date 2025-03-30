@@ -32,7 +32,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.NodeSetDTM;
@@ -40,7 +40,7 @@ import org.apache.xpath.SourceTreeManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -100,7 +100,7 @@ public class FuncDocument extends Function2Args
             // If the second argument is an empty nodeset, this is an error.
             // The processor can recover by returning an empty nodeset.
           	warn(xctxt, XSLTErrorResources.WG_EMPTY_SECOND_ARG, null);
-          	XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
+          	XMLNodeCursorImpl nodes = new XMLNodeCursorImpl(xctxt.getDTMManager());
    	        return nodes;
         } else{
 	        DTM baseDTM = xctxt.getDTM(baseNode);
@@ -141,9 +141,9 @@ public class FuncDocument extends Function2Args
       base = xctxt.getNamespaceContext().getBaseIdentifier();
     }
 
-    XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
+    XMLNodeCursorImpl nodes = new XMLNodeCursorImpl(xctxt.getDTMManager());
     NodeSetDTM mnl = nodes.mutableNodeset();
-    DTMIterator iterator = (XObject.CLASS_NODESET == arg.getType())
+    DTMCursorIterator iterator = (XObject.CLASS_NODESET == arg.getType())
                             ? arg.iter() : null;
     int pos = DTM.NULL;
 

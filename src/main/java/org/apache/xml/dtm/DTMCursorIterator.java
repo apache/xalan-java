@@ -22,36 +22,39 @@ package org.apache.xml.dtm;
 
 /**
 
- * <code>DTMIterators</code> are used to step through a (possibly
+ * <code>DTMCursorIterator's</code> are used to step through a (possibly
  * filtered) set of nodes.  Their API is modeled largely after the DOM
  * NodeIterator.
  * 
- * <p>A DTMIterator is a somewhat unusual type of iterator, in that it 
+ * <p>A DTMCursorIterator is a somewhat unusual type of iterator, in that it 
  * can serve both single node iteration and random access.</p>
  * 
- * <p>The DTMIterator's traversal semantics, i.e. how it walks the tree,
- * are specified when it is created, possibly and probably by an XPath
- * <a href="http://www.w3.org/TR/xpath#NT-LocationPath>LocationPath</a> or 
- * a <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.</p>
+ * <p>The DTMCursorIterator traversal semantics, i.e. how it walks an 
+ * XPath Data Model (XDM) tree, are specified when it is created, possibly and 
+ * probably by an XPath <a href="http://www.w3.org/TR/xpath#NT-LocationPath>LocationPath</a> 
+ * or a <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.</p>
  * 
- * <p>A DTMIterator is meant to be created once as a master static object, and 
- * then cloned many times for runtime use.  Or the master object itself may 
- * be used for simpler use cases.</p>
+ * <p>A DTMCursorIterator is meant to be created once as a static object instance, 
+ * and then cloned many times for runtime use. Or, this original object instance itself 
+ * may be used for simpler use cases.</p>
  *
- * <p>At this time, we do not expect DTMIterator to emulate
+ * <p>At this time, we do not expect DTMCursorIterator to emulate
  * NodeIterator's "maintain relative position" semantics under
- * document mutation.  It's likely to respond more like the
+ * document mutation. It's likely to respond more like the
  * TreeWalker's "current node" semantics. However, since the base DTM
  * is immutable, this issue currently makes no practical
  * difference.</p>
- *
- * <p>State: In progress!!</p> */
-public interface DTMIterator
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Joseph Kesselman <jkesselm@apache.org>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XSLT 3.0 specific changes, to this class)
+ * 
+ * @xsl.usage general
+ */
+public interface DTMCursorIterator
 {
-
-  // Constants returned by acceptNode, borrowed from the DOM Traversal chapter
-  // %REVIEW% Should we explicitly initialize them from, eg,
-  // org.w3c.dom.traversal.NodeFilter.FILTER_ACCEPT?
 
   /**
    * Accept the node.
@@ -91,7 +94,7 @@ public interface DTMIterator
   public DTMManager getDTMManager();
 
   /**
-   * The root node of the <code>DTMIterator</code>, as specified when it
+   * The root node of the <code>DTMCursorIterator</code>, as specified when it
    * was created.  Note the root node is not the root node of the 
    * document tree, but the context node from where the iteration 
    * begins and ends.
@@ -101,7 +104,7 @@ public interface DTMIterator
   public int getRoot();
 
   /**
-   * Reset the root node of the <code>DTMIterator</code>, overriding
+   * Reset the root node of the <code>DTMCursorIterator</code>, overriding
    * the value specified when it was created.  Note the root node is
    * not the root node of the document tree, but the context node from
    * where the iteration begins.
@@ -165,7 +168,7 @@ public interface DTMIterator
 
   /**
    * Returns the next node in the set and advances the position of the
-   * iterator in the set. After a <code>DTMIterator</code> has setRoot called,
+   * iterator in the set. After a <code>DTMCursorIterator</code> has setRoot called,
    * the first call to <code>nextNode()</code> returns that root or (if it
    * is rejected by the filters) the first node within its subtree which is
    * not filtered out.
@@ -176,14 +179,14 @@ public interface DTMIterator
 
   /**
    * Returns the previous node in the set and moves the position of the
-   * <code>DTMIterator</code> backwards in the set.
+   * <code>DTMCursorIterator</code> backwards in the set.
    * @return The previous node handle in the set being iterated over,
    *   or <code>DTM.NULL</code> if there are no more members in that set.
    */
   public int previousNode();
 
   /**
-   * Detaches the <code>DTMIterator</code> from the set which it iterated
+   * Detaches the <code>DTMCursorIterator</code> from the set which it iterated
    * over, releasing any computational resources and placing the iterator
    * in the INVALID state. After <code>detach</code> has been invoked,
    * calls to <code>nextNode</code> or <code>previousNode</code> will
@@ -225,7 +228,7 @@ public interface DTMIterator
    * sorts and the like.  They are not cached by default.
    *
    * %REVIEW% Shouldn't the other random-access methods throw an exception
-   * if they're called on a DTMIterator with this flag set false?
+   * if they're called on a DTMCursorIterator with this flag set false?
    *
    * @param b true if the nodes should be cached.
    */
@@ -274,7 +277,7 @@ public interface DTMIterator
    *
    * @param index of the item.
    * @return The node handle at the <code>index</code>th position in the
-   *   <code>DTMIterator</code>, or <code>-1</code> if that is not a valid
+   *   <code>DTMCursorIterator</code>, or <code>-1</code> if that is not a valid
    *   index.
    */
   public int item(int index);
@@ -312,7 +315,7 @@ public interface DTMIterator
    *
    * @throws CloneNotSupportedException
    */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException;
+  public DTMCursorIterator cloneWithReset() throws CloneNotSupportedException;
 
   /**
    * Get a clone of this iterator, but don't reset the iteration in the 

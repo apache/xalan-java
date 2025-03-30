@@ -35,7 +35,7 @@ import org.apache.xml.utils.Constants;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.json.JsonFunction;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Pattern;
 import org.w3c.dom.Document;
@@ -157,7 +157,7 @@ public class FuncCollection extends JsonFunction
 						DTMManager dtmMgr = xctxt.getDTMManager();
 						DTM dtm = dtmMgr.getDTM(new DOMSource(document), true, null, false, false);
 						int docNodeDtmHandle = dtm.getDocument();							
-						XNodeSet xNodeSet = new XNodeSet(docNodeDtmHandle, dtmMgr);
+						XMLNodeCursorImpl xNodeSet = new XMLNodeCursorImpl(docNodeDtmHandle, dtmMgr);
 						resultSeq.add(xNodeSet);
 					}
 					catch (Exception ex) {

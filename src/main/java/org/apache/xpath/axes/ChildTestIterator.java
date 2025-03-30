@@ -23,7 +23,7 @@ package org.apache.xpath.axes;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisTraverser;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.compiler.Compiler;
 
 /**
@@ -104,7 +104,7 @@ public class ChildTestIterator extends BasicTestIterator
    * 
    *  @throws CloneNotSupportedException
    */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMCursorIterator cloneWithReset() throws CloneNotSupportedException
   {
 
     ChildTestIterator clone = (ChildTestIterator) super.cloneWithReset();

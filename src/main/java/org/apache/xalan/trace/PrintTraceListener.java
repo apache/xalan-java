@@ -251,7 +251,7 @@ public void selected(SelectionEvent ev)
         if (ev.m_selection.getType() == ev.m_selection.CLASS_NODESET) {
             m_pw.println();
 
-            org.apache.xml.dtm.DTMIterator nl = ev.m_selection.iter();
+            org.apache.xml.dtm.DTMCursorIterator nl = ev.m_selection.iter();
             
             // The following lines are added to fix bug#16222.
             // The main cause is that the following loop change the state of iterator, which is shared
@@ -260,7 +260,7 @@ public void selected(SelectionEvent ev)
             int currentPos = DTM.NULL;
             currentPos = nl.getCurrentPos();
             nl.setShouldCacheNodes(true); // This MUST be done before we clone the iterator!
-            org.apache.xml.dtm.DTMIterator clone = null;
+            org.apache.xml.dtm.DTMCursorIterator clone = null;
             // End of block
             
             try {

@@ -22,11 +22,11 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -93,18 +93,18 @@ public class FuncMax extends FunctionMultiArgs
       int yearMonthDurationItemCount = 0;
       int dayTimeDurationItemCount = 0;
       
-      if (xObjArg0 instanceof XNodeSet) {
+      if (xObjArg0 instanceof XMLNodeCursorImpl) {
          // If for all the nodes of an input sequence, the node's string
          // value can be cast to xs:double, we shall be able to process
          // such a nodeset successfully, to be able to find a numeric
          // maximum value from these nodes.
-         XNodeSet xsObjNodeSet = (XNodeSet)xObjArg0;
-         DTMIterator dtmIter = xsObjNodeSet.iterRaw();
+         XMLNodeCursorImpl xsObjNodeSet = (XMLNodeCursorImpl)xObjArg0;
+         DTMCursorIterator dtmIter = xsObjNodeSet.iterRaw();
          
          int nextNodeDtmHandle;
          
          while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {       
-            XNodeSet xdmNode = new XNodeSet(nextNodeDtmHandle, xctxt);
+            XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(nextNodeDtmHandle, xctxt);
             String nodeStrVal = xdmNode.str();
             try {
                convetedInpSequence.add(new XSDouble((Double.valueOf(nodeStrVal)).doubleValue()));

@@ -28,14 +28,14 @@ import org.apache.xalan.transformer.ClonerToResultTree;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.DescendantIterator;
 import org.apache.xpath.axes.OneStepIterator;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
@@ -193,33 +193,33 @@ public class XSLProcessorContext
       else if (obj instanceof DTM)
       {
         DTM dtm = (DTM)obj;
-        DTMIterator iterator = new DescendantIterator();
+        DTMCursorIterator iterator = new DescendantIterator();
         // %%ISSUE%% getDocument may not be valid for DTMs shared by multiple
         // document trees, eg RTFs. But in that case, we shouldn't be trying
         // to iterate over the whole DTM; we should be iterating over 
         // dtm.getDocumentRoot(rootNodeHandle), and folks should have told us
         // this by passing a more appropriate type.
         iterator.setRoot(dtm.getDocument(), xctxt);
-        value = new XNodeSet(iterator);
+        value = new XMLNodeCursorImpl(iterator);
       }
       else if (obj instanceof DTMAxisIterator)
       {
         DTMAxisIterator iter = (DTMAxisIterator)obj;
-        DTMIterator iterator = new OneStepIterator(iter, -1);
-        value = new XNodeSet(iterator);
+        DTMCursorIterator iterator = new OneStepIterator(iter, -1);
+        value = new XMLNodeCursorImpl(iterator);
       }
-      else if (obj instanceof DTMIterator)
+      else if (obj instanceof DTMCursorIterator)
       {
-        value = new XNodeSet((DTMIterator) obj);
+        value = new XMLNodeCursorImpl((DTMCursorIterator) obj);
       }
       else if (obj instanceof NodeIterator)
       {
-        value = new XNodeSet(new org.apache.xpath.NodeSetDTM(((NodeIterator)obj), xctxt));
+        value = new XMLNodeCursorImpl(new org.apache.xpath.NodeSetDTM(((NodeIterator)obj), xctxt));
       }
       else if (obj instanceof org.w3c.dom.Node)
       {
         value =
-          new XNodeSet(xctxt.getDTMHandleFromNode((org.w3c.dom.Node) obj),
+          new XMLNodeCursorImpl(xctxt.getDTMHandleFromNode((org.w3c.dom.Node) obj),
                        xctxt.getDTMManager());
       }
       else
@@ -241,7 +241,7 @@ public class XSLProcessorContext
         break;
 
       case XObject.CLASS_NODESET :  // System.out.println(value);
-        DTMIterator nl = value.iter();
+        DTMCursorIterator nl = value.iter();
         
         int pos;
 

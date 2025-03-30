@@ -307,7 +307,7 @@ public abstract class DTMManager
    * @param pos The position in the expression.
    * @return The newly created <code>DTMIterator</code>.
    */
-  public abstract DTMIterator createDTMIterator(Object xpathCompiler,
+  public abstract DTMCursorIterator createDTMIterator(Object xpathCompiler,
           int pos);
 
   /**
@@ -323,7 +323,7 @@ public abstract class DTMManager
    *
    * @return The newly created <code>DTMIterator</code>.
    */
-  public abstract DTMIterator createDTMIterator(String xpathString,
+  public abstract DTMCursorIterator createDTMIterator(String xpathString,
           PrefixResolver presolver);
 
   /**
@@ -348,7 +348,7 @@ public abstract class DTMManager
    *
    * @return The newly created <code>DTMIterator</code>.
    */
-  public abstract DTMIterator createDTMIterator(int whatToShow,
+  public abstract DTMCursorIterator createDTMIterator(int whatToShow,
           DTMFilter filter, boolean entityReferenceExpansion);
 
   /**
@@ -358,7 +358,7 @@ public abstract class DTMManager
    *
    * @return The newly created <code>DTMIterator</code>.
    */
-  public abstract DTMIterator createDTMIterator(int node);
+  public abstract DTMCursorIterator createDTMIterator(int node);
   
   /* Flag indicating whether an incremental transform is desired */
   public boolean m_incremental = false;

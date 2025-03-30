@@ -23,9 +23,9 @@ package org.apache.xpath.functions;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSBoolean;
@@ -74,11 +74,11 @@ public class FuncLang extends FunctionMultiArgs {
 		    
 		    if (m_arg1 != null) {
 		       XObject secondArgEvalResult = m_arg1.execute(xctxt);
-		       if (secondArgEvalResult instanceof XNodeSet) {
-		    	   XNodeSet xObject = (XNodeSet)secondArgEvalResult;
+		       if (secondArgEvalResult instanceof XMLNodeCursorImpl) {
+		    	   XMLNodeCursorImpl xObject = (XMLNodeCursorImpl)secondArgEvalResult;
 		    	   if (xObject.getLength() == 1) {
-		    		   XNodeSet nodeSet = (XNodeSet)xObject;
-				       DTMIterator dtmIter = nodeSet.iterRaw();
+		    		   XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject;
+				       DTMCursorIterator dtmIter = nodeSet.iterRaw();
 				       nodeHandle = dtmIter.nextNode(); 
 		    	   }
 		    	   else {

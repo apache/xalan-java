@@ -32,14 +32,14 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
 import org.apache.xml.dtm.ref.DTMNodeIterator;
 import org.apache.xml.dtm.ref.DTMNodeProxy;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XBooleanStatic;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -1176,8 +1176,8 @@ public class XConnection
         }
         catch (Exception e)
         {
-          XNodeSet xNS = (XNodeSet)dtmIter.getDTMIterator();
-          DTMIterator iter = (DTMIterator)xNS.getContainedIter();
+          XMLNodeCursorImpl xNS = (XMLNodeCursorImpl)dtmIter.getDTMIterator();
+          DTMCursorIterator iter = (DTMCursorIterator)xNS.getContainedIter();
           DTM dtm = iter.getDTM(xNS.nextNode());
           return (SQLDocument)dtm;
         }

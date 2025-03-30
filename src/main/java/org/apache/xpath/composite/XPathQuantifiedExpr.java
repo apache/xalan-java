@@ -29,7 +29,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -38,7 +38,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSBoolean;
@@ -220,14 +220,14 @@ public class XPathQuantifiedExpr extends Expression {
            
            ResultSequence xsObjResultSeq = new ResultSequence(); 
            
-           if (xsObj instanceof XNodeSet) {
-               XNodeSet xsObjNodeSet = (XNodeSet)xsObj;
-               DTMIterator dtmIter = xsObjNodeSet.iterRaw();
+           if (xsObj instanceof XMLNodeCursorImpl) {
+               XMLNodeCursorImpl xsObjNodeSet = (XMLNodeCursorImpl)xsObj;
+               DTMCursorIterator dtmIter = xsObjNodeSet.iterRaw();
                
                int nextNodeDtmHandle;
                       
                while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {       
-                  XNodeSet singletonXPathNode = new XNodeSet(nextNodeDtmHandle, xctxt);
+                  XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNodeDtmHandle, xctxt);
                   xsObjResultSeq.add(singletonXPathNode);
                }
            }

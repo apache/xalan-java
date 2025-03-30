@@ -26,7 +26,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -36,7 +36,7 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
@@ -86,7 +86,7 @@ public class FuncForEach extends Function2Args {
         Expression arg0 = getArg0();
         Expression arg1 = getArg1();                
         
-        DTMIterator arg0DtmIterator = null;        
+        DTMCursorIterator arg0DtmIterator = null;        
         XObject arg0XsObject = null;
         
         if (m_vars != null) {
@@ -190,7 +190,7 @@ public class FuncForEach extends Function2Args {
    * Evaluate the function call fn:for-each.
    */
   private ResultSequence evaluateFnForEach(XPathContext xctxt, XObject arg0XsObject, 
-                                               DTMIterator dtmIter, XPathInlineFunction arg1) 
+                                               DTMCursorIterator dtmIter, XPathInlineFunction arg1) 
                                                                                     throws TransformerException {
         ResultSequence resultSeq = new ResultSequence(); 
         
@@ -232,7 +232,7 @@ public class FuncForEach extends Function2Args {
            int dtmNodeHandle;
             
            while (DTM.NULL != (dtmNodeHandle = dtmIter.nextNode())) {
-               XNodeSet inpSeqItem = new XNodeSet(dtmNodeHandle, xctxt.getDTMManager());
+               XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(dtmNodeHandle, xctxt.getDTMManager());
                if (varQname != null) {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
                }
@@ -260,7 +260,7 @@ public class FuncForEach extends Function2Args {
    * Evaluate XPath named function reference.
    */
   private ResultSequence evaluateNamedFunctionReference(XPathContext xctxt, SourceLocator srcLocator,
-		                                                DTMIterator dtmIter, XObject arg0XsObject, 
+		                                                DTMCursorIterator dtmIter, XObject arg0XsObject, 
 		                                                ResultSequence resultSeq, XPathNamedFunctionReference namedFuncRef) 
 		                                                		                         throws TransformerException {	
 	  String funcNamespace = namedFuncRef.getFuncNamespace();
@@ -304,7 +304,7 @@ public class FuncForEach extends Function2Args {
     * specified as named function reference.
     */
    private ResultSequence evaluateFnForEach(XObject forEachSeq, XPathContext xctxt,
-          								    DTMIterator dtmIter, Function function) 
+          								    DTMCursorIterator dtmIter, Function function) 
           								    		               throws WrongNumberArgsException, TransformerException {
 	  ResultSequence resultSeq = new ResultSequence();
 	  
@@ -320,7 +320,7 @@ public class FuncForEach extends Function2Args {
 	  else if (dtmIter != null) {          
 		  int dtmNodeHandle;          
           while (DTM.NULL != (dtmNodeHandle = dtmIter.nextNode())) {
-              XNodeSet inpSeqItem = new XNodeSet(dtmNodeHandle, xctxt.getDTMManager());              
+              XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(dtmNodeHandle, xctxt.getDTMManager());              
               function.setArg(inpSeqItem, 0);
   			  XObject funcResult = function.execute(xctxt);
   			  resultSeq.add(funcResult);

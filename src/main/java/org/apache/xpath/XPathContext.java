@@ -41,7 +41,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
@@ -298,7 +298,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * @param pos The position in the expression.
    * @return The newly created <code>DTMIterator</code>.
    */
-  public DTMIterator createDTMIterator(Object xpathCompiler, int pos)
+  public DTMCursorIterator createDTMIterator(Object xpathCompiler, int pos)
   {
     return m_dtmManager.createDTMIterator(xpathCompiler, pos);
   }
@@ -316,7 +316,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    *
    * @return The newly created <code>DTMIterator</code>.
    */
-  public DTMIterator createDTMIterator(String xpathString,
+  public DTMCursorIterator createDTMIterator(String xpathString,
           PrefixResolver presolver)
   {
     return m_dtmManager.createDTMIterator(xpathString, presolver);
@@ -339,7 +339,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    *
    * @return The newly created <code>NodeIterator</code>.
    */
-  public DTMIterator createDTMIterator(int whatToShow,
+  public DTMCursorIterator createDTMIterator(int whatToShow,
           DTMFilter filter, boolean entityReferenceExpansion)
   {
     return m_dtmManager.createDTMIterator(whatToShow, filter, entityReferenceExpansion);
@@ -352,10 +352,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    *
    * @return The newly created <code>DTMIterator</code>.
    */
-  public DTMIterator createDTMIterator(int node)
+  public DTMCursorIterator createDTMIterator(int node)
   {
     // DescendantIterator iter = new DescendantIterator();
-    DTMIterator iter = new org.apache.xpath.axes.OneStepIteratorForward(Axis.SELF);
+    DTMCursorIterator iter = new org.apache.xpath.axes.OneStepIteratorForward(Axis.SELF);
     iter.setRoot(node, this);
     return iter;
     // return m_dtmManager.createDTMIterator(node);
@@ -736,11 +736,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * @return  the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>,
    * also refered to here as a <term>context node list</term>.
    */
-  public final DTMIterator getContextNodeList()
+  public final DTMCursorIterator getContextNodeList()
   {
 
     if (m_contextNodeLists.size() > 0)
-      return (DTMIterator) m_contextNodeLists.peek();
+      return (DTMCursorIterator) m_contextNodeLists.peek();
     else
       return null;
   }
@@ -752,7 +752,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * also refered to here as a <term>context node list</term>.
    * @xsl.usage internal
    */
-  public final void pushContextNodeList(DTMIterator nl)
+  public final void pushContextNodeList(DTMCursorIterator nl)
   {
     m_contextNodeLists.push(nl);
   }
@@ -1096,12 +1096,12 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * @return An iterator for the current context list, as
    * defined in XSLT.
    */
-  public final DTMIterator getContextNodes()
+  public final DTMCursorIterator getContextNodes()
   {
 
     try
     {
-      DTMIterator cnl = getContextNodeList();
+      DTMCursorIterator cnl = getContextNodeList();
 
       if (null != cnl)
         return cnl.cloneWithReset();

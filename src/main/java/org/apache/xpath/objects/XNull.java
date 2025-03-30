@@ -28,7 +28,7 @@ import org.apache.xpath.XPathContext;
  * converting the null to other types, such as a string.
  * @xsl.usage general
  */
-public class XNull extends XNodeSet
+public class XNull extends XMLNodeCursorImpl
 {
     static final long serialVersionUID = -6841683711458983005L;
 

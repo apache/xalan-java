@@ -32,7 +32,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -42,7 +42,7 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
@@ -115,11 +115,11 @@ public class FuncSort extends FunctionMultiArgs
            xObjArg0 = arg0.execute(xctxt); 
         }                
         
-        if (xObjArg0 instanceof XNodeSet) {
+        if (xObjArg0 instanceof XMLNodeCursorImpl) {
            DTMManager dtmMgr = (DTMManager)xctxt;
             
-           XNodeSet xNodeSet = (XNodeSet)xObjArg0;           
-           DTMIterator sourceNodes = xNodeSet.iter();
+           XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObjArg0;           
+           DTMCursorIterator sourceNodes = xNodeSet.iter();
            
            int nextNodeDtmHandle;
            
@@ -132,7 +132,7 @@ public class FuncSort extends FunctionMultiArgs
            }
 
            while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-              XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
+              XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);
               
               if (numOfArgs == 3) {
             	  if (arg2 instanceof Variable) {

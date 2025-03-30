@@ -18,7 +18,7 @@ package org.apache.xpath.functions;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -61,7 +61,7 @@ public class FuncDocAvailable extends FunctionOneArg {
             
             try {
                XObject funcDocResult = funcDoc.execute(xctxt);
-               if (funcDocResult instanceof XNodeSet) {
+               if (funcDocResult instanceof XMLNodeCursorImpl) {
             	   result = new XSBoolean(true); 
                }
                else {

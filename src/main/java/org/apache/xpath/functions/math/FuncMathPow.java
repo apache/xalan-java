@@ -22,7 +22,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
@@ -72,8 +72,8 @@ public class FuncMathPow extends Function2Args {
            String strVal = ((XSNumericType)xObject).stringValue();
            resultVal = (new XSDouble(strVal)).doubleValue();
         }
-        else if (xObject instanceof XNodeSet) {
-           XNodeSet xNodeSet = (XNodeSet)xObject;
+        else if (xObject instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObject;
            if (xNodeSet.getLength() != 1) {
               throw new javax.xml.transform.TransformerException("XPTY0004 : The " + argNumStr + " argument to math:pow "
                                                                        + "function must be a sequence of length one.", srcLocator);    

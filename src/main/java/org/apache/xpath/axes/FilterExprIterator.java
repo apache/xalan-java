@@ -24,7 +24,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 
 public class FilterExprIterator extends BasicTestIterator
 {
@@ -34,7 +34,7 @@ public class FilterExprIterator extends BasicTestIterator
   private Expression m_expr;
 
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
-  transient private XNodeSet m_exprObj;
+  transient private XMLNodeCursorImpl m_exprObj;
 
   private boolean m_mustHardReset = false;
   private boolean m_canDetachNodeset = true;

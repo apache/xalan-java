@@ -21,7 +21,7 @@
 package org.apache.xpath.axes;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -487,10 +487,10 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
           countProximityPosition(0);
 
           if (!executePredicates(n, xctxt))
-            return DTMIterator.FILTER_SKIP;
+            return DTMCursorIterator.FILTER_SKIP;
         }
 
-        return DTMIterator.FILTER_ACCEPT;
+        return DTMCursorIterator.FILTER_ACCEPT;
       }
     }
     catch (javax.xml.transform.TransformerException se)
@@ -504,7 +504,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
       xctxt.popCurrentNode();
     }
 
-    return DTMIterator.FILTER_SKIP;
+    return DTMCursorIterator.FILTER_SKIP;
   }
 
   

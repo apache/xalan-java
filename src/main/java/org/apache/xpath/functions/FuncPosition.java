@@ -23,7 +23,7 @@ package org.apache.xpath.functions;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SubContextList;
 import org.apache.xpath.compiler.Compiler;
@@ -84,7 +84,7 @@ public class FuncPosition extends Function
       return prox;
     }
 
-    DTMIterator cnl = xctxt.getContextNodeList();
+    DTMCursorIterator cnl = xctxt.getContextNodeList();
 
     if (null != cnl)
     {

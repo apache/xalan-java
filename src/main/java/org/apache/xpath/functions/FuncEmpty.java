@@ -19,7 +19,7 @@ package org.apache.xpath.functions;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -48,8 +48,8 @@ public class FuncEmpty extends FunctionOneArg {
         
         XObject xObject0 = m_arg0.execute(xctxt);
         
-        if (xObject0 instanceof XNodeSet) {
-           XNodeSet nodeSet = (XNodeSet)xObject0;
+        if (xObject0 instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject0;
            if (nodeSet.getLength() == 0) {
               result = XBoolean.S_TRUE;  
            }

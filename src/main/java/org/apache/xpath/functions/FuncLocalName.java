@@ -20,11 +20,11 @@ package org.apache.xpath.functions;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
@@ -61,20 +61,20 @@ public class FuncLocalName extends FunctionDef1Arg {
 		 }
 		 else if (m_arg0 instanceof SelfIteratorNoPredicate) {
 			 XObject contextItem = xctxt.getXPath3ContextItem();
-			 if ((contextItem != null) && (contextItem instanceof XNodeSet)) {
-				 nodeHandle = getNodeHandle((XNodeSet)contextItem); 
+			 if ((contextItem != null) && (contextItem instanceof XMLNodeCursorImpl)) {
+				 nodeHandle = getNodeHandle((XMLNodeCursorImpl)contextItem); 
 			 }
 			 else {
 				 XObject xObject = m_arg0.execute(xctxt);
-			     if (xObject instanceof XNodeSet) {
-			        nodeHandle = getNodeHandle((XNodeSet)xObject);
+			     if (xObject instanceof XMLNodeCursorImpl) {
+			        nodeHandle = getNodeHandle((XMLNodeCursorImpl)xObject);
 			     }
 			 }
 		 }
 		 else {			 
 			 XObject xObject = m_arg0.execute(xctxt);
-		     if (xObject instanceof XNodeSet) {
-		        nodeHandle = getNodeHandle((XNodeSet)xObject);
+		     if (xObject instanceof XMLNodeCursorImpl) {
+		        nodeHandle = getNodeHandle((XMLNodeCursorImpl)xObject);
 		     }
 		 }
 		 
@@ -93,10 +93,10 @@ public class FuncLocalName extends FunctionDef1Arg {
 	 /**
 	  * Get dtm node handle of a node.
 	  */
-	 private int getNodeHandle(XNodeSet nodeSet) {
+	 private int getNodeHandle(XMLNodeCursorImpl nodeSet) {
 		 int nodeHandle;
 		 
-		 DTMIterator dtmIter = nodeSet.iterRaw();
+		 DTMCursorIterator dtmIter = nodeSet.iterRaw();
 		 nodeHandle = dtmIter.nextNode();
 		 
 		 return nodeHandle;

@@ -40,7 +40,7 @@ import org.apache.xerces.xs.XSAttributeDeclaration;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.ref.DTMTreeWalker;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
@@ -49,7 +49,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
@@ -229,7 +229,7 @@ public class ElemCopyOf extends ElemTemplateElement
     
             switch (xObjectType) {           
                 case XObject.CLASS_NODESET :
-                  XNodeSet xNodeSet = (XNodeSet)value;
+                  XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)value;
                   xNodeSet.setTypeAttrForValidation(type);
                   if (validationStr != null) {
                 	  if (!isValidationStrOk(validationStr)) {
@@ -329,10 +329,10 @@ public class ElemCopyOf extends ElemTemplateElement
   /**
    *  Given an an XNodeSet node object, this method does XSL copy-of action on the node.
    */
-  public static void copyOfActionOnNodeSet(XNodeSet nodeSet, TransformerImpl transformer, 
+  public static void copyOfActionOnNodeSet(XMLNodeCursorImpl nodeSet, TransformerImpl transformer, 
                                                                       SerializationHandler serializationHandler, XPathContext xctxt) 
                                                                                throws TransformerException, SAXException {
-      DTMIterator dtmIter = nodeSet.iter();
+      DTMCursorIterator dtmIter = nodeSet.iter();
 
       DTMTreeWalker tw = new TreeWalker2Result(transformer, serializationHandler);
       int pos;
@@ -433,7 +433,7 @@ public class ElemCopyOf extends ElemTemplateElement
              }
           }
          else if (xdmItem.getType() == XObject.CLASS_NODESET) {                 
-             copyOfActionOnNodeSet((XNodeSet)xdmItem, transformer, serializationHandler, xctxt);
+             copyOfActionOnNodeSet((XMLNodeCursorImpl)xdmItem, transformer, serializationHandler, xctxt);
          }
          else if (xdmItem.getType() == XObject.CLASS_RESULT_SEQUENCE) {                 
              copyOfActionOnResultSequence((ResultSequence)xdmItem, transformer, serializationHandler, xctxt, xslSeqProc);
@@ -461,7 +461,7 @@ public class ElemCopyOf extends ElemTemplateElement
    * type or schema element declaration, then the node is emitted to XSL 
    * transformation's output.
    */
-  private static void validateAndEmitElementNode(XNodeSet nodeSet, XPathContext xctxt, 
+  private static void validateAndEmitElementNode(XMLNodeCursorImpl nodeSet, XPathContext xctxt, 
                                                  DTMTreeWalker tw, int nodeHandle, DTM dtm) throws TransformerException {	  
 
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
@@ -563,7 +563,7 @@ public class ElemCopyOf extends ElemTemplateElement
    * type or schema attribute declaration, then the node is emitted to XSL 
    * transformation's output.
    */
-   private static void validateAndEmitAttributeNode(XNodeSet nodeSet, SerializationHandler serializationHandler,
+   private static void validateAndEmitAttributeNode(XMLNodeCursorImpl nodeSet, SerializationHandler serializationHandler,
 												    XPathContext xctxt, int pos, DTM dtm) throws TransformerException {
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();

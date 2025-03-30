@@ -25,12 +25,12 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
@@ -83,13 +83,13 @@ public class FuncStringJoin extends Function2Args {
 	        arg0ResultSeq = new ResultSequence();
 	        	        
 	        final int contextNode = xctxt.getCurrentNode();
-	        DTMIterator arg0DtmIterator = m_arg0.asIterator(xctxt, contextNode);        
+	        DTMCursorIterator arg0DtmIterator = m_arg0.asIterator(xctxt, contextNode);        
 	        
 	        int nodeDtmHandle;	        
 	        DTMManager dtmMgr = (DTMManager)xctxt;
 	        
 	        while ((nodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
-	            XNodeSet xNodeSetItem = new XNodeSet(nodeDtmHandle, dtmMgr);            
+	            XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nodeDtmHandle, dtmMgr);            
 	            String nodeStrValue = xNodeSetItem.str();
 	            
 	            DTM dtm = dtmMgr.getDTM(nodeDtmHandle);

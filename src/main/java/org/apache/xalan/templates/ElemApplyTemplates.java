@@ -35,7 +35,7 @@ import org.apache.xalan.transformer.StackGuard;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
@@ -47,7 +47,7 @@ import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -211,7 +211,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
     final XPathContext xctxt = transformer.getXPathContext();
     final int sourceNode = xctxt.getCurrentNode();
     
-    DTMIterator sourceNodes = null;
+    DTMCursorIterator sourceNodes = null;
     
     SourceLocator srcLocator = xctxt.getSAXLocator();    
     XObject varEvalResult = null;    
@@ -227,7 +227,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
     		return;
     	}
     	else {
-    		XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);
+    		XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);
     		if (nodeSet != null) {
     			sourceNodes = nodeSet.asIterator(xctxt, sourceNode);   
     		}
@@ -248,7 +248,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
     		   return;
     	   }
     	   else {
-    		   XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);
+    		   XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);
     		   if (nodeSet != null) {
     			   sourceNodes = nodeSet.asIterator(xctxt, sourceNode);   
     		   }
@@ -262,8 +262,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
     	   return; 
        }
-       else if (varEvalResult instanceof XNodeSet) {
-    	   sourceNodes = ((XNodeSet)varEvalResult).asIterator(xctxt, sourceNode);
+       else if (varEvalResult instanceof XMLNodeCursorImpl) {
+    	   sourceNodes = ((XMLNodeCursorImpl)varEvalResult).asIterator(xctxt, sourceNode);
        }       
        else {
     	   throw new TransformerException("XTTE0505 : xsl:apply-templates 'select' expression evaluation "
@@ -282,7 +282,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
     		   return;
     	   }
     	   else {
-    		   XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);    		   
+    		   XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);    		   
     		   if (nodeSet != null) {
     			   sourceNodes = nodeSet.asIterator(xctxt, sourceNode);   
     		   }
@@ -291,8 +291,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
     		   }
     	   } 
        }
-       else if (varEvalResult instanceof XNodeSet) {
-    	   sourceNodes = ((XNodeSet)varEvalResult).asIterator(xctxt, sourceNode);
+       else if (varEvalResult instanceof XMLNodeCursorImpl) {
+    	   sourceNodes = ((XMLNodeCursorImpl)varEvalResult).asIterator(xctxt, sourceNode);
        }
        else if (isXdmItemAtomicValue(varEvalResult)) {    	   
     	   executeXslTransformAtomicValue(transformer, xctxt, varEvalResult, xslTemplateInvokeMode);
@@ -332,7 +332,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
       {
         transformer.getTraceManager().emitSelectedEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
-                new org.apache.xpath.objects.XNodeSet(sourceNodes));
+                new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
       }
 
       final SerializationHandler rth = transformer.getSerializationHandler();
@@ -539,8 +539,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
                    SerializationHandler handler = transformer.getSerializationHandler();        
                    
                    try {
-                        if (templateEvalResultForAsAttr instanceof XNodeSet) {
-                           ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)templateEvalResultForAsAttr, transformer, 
+                        if (templateEvalResultForAsAttr instanceof XMLNodeCursorImpl) {
+                           ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)templateEvalResultForAsAttr, transformer, 
                                                                                                             handler, xctxt);
                         }
                         else {
@@ -622,7 +622,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
       if (transformer.getDebug())
         transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
-                new org.apache.xpath.objects.XNodeSet(sourceNodes));
+                new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
       
       // Unlink to the original stack frame  
       if(nParams > 0)

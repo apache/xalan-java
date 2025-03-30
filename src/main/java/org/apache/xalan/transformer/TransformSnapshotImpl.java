@@ -23,7 +23,7 @@ package org.apache.xalan.transformer;
 import java.util.Stack;
 
 import org.apache.xalan.templates.ElemNumber;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.NamespaceMappings;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.BoolStack;
@@ -67,7 +67,7 @@ class TransformSnapshotImpl implements TransformSnapshot
   /**
    * The current context node list.
    */
-  private DTMIterator m_contextNodeList;
+  private DTMCursorIterator m_contextNodeList;
 
   /**
    * Stack of AxesIterators.
@@ -164,7 +164,7 @@ class TransformSnapshotImpl implements TransformSnapshot
 
       if (!m_contextNodeLists.empty())
         m_contextNodeList =
-          (DTMIterator) xpc.getContextNodeList().clone();
+          (DTMCursorIterator) xpc.getContextNodeList().clone();
 
       m_axesIteratorStack = (Stack) xpc.getAxesIteratorStackStacks().clone();
       m_currentTemplateRuleIsNull =
@@ -220,7 +220,7 @@ class TransformSnapshotImpl implements TransformSnapshot
       xpc.setContextNodeListsStack((Stack) m_contextNodeLists.clone());
 
       if (m_contextNodeList != null)
-        xpc.pushContextNodeList((DTMIterator) m_contextNodeList.clone());
+        xpc.pushContextNodeList((DTMCursorIterator) m_contextNodeList.clone());
 
       xpc.setAxesIteratorStackStacks((Stack) m_axesIteratorStack.clone());
 

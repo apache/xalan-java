@@ -30,7 +30,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -43,7 +43,7 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -350,8 +350,8 @@ public class ElemEvaluate extends ElemTemplateElement {
 	    				contextItem = ((Variable)contextItemExpr).execute(xctxt);
 	    			}
 
-	    			if (contextItem instanceof XNodeSet) {
-	    				DTMIterator dtmIter = ((XNodeSet)contextItem).iterRaw();
+	    			if (contextItem instanceof XMLNodeCursorImpl) {
+	    				DTMCursorIterator dtmIter = ((XMLNodeCursorImpl)contextItem).iterRaw();
 	    				contextNode = dtmIter.nextNode();
 	    			}
 	    			else {
@@ -467,7 +467,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
-		DTMIterator dtmIter = null;		
+		DTMCursorIterator dtmIter = null;		
 		try {
 			dtmIter = locPathIterator.asIterator(xctxt, contextNode);
 		}
@@ -483,7 +483,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 			ResultSequence resultSeq = new ResultSequence();
 			while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
 			{
-				XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+				XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
 				XObject evalResult = singletonXPathNode; 
 				if (func != null) {
 					// Evaluate an XPath path expression like /a/b/funcCall(..).
@@ -562,7 +562,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 		
 		switch (xdmItemType) {           
 			case XObject.CLASS_NODESET :          
-				ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)xdmItem, transformer, handler, xctxt);          
+				ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xdmItem, transformer, handler, xctxt);          
 				break;
 			case XObject.CLASS_RTREEFRAG :
 				SerializerUtils.outputResultTreeFragment(handler, xdmItem, xctxt);

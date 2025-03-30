@@ -24,11 +24,11 @@ import java.util.Set;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -65,9 +65,9 @@ public class FuncInScopePrefixes extends FunctionOneArg {
 	  Expression arg0 = getArg0();
 
 	  XObject nodeArg = arg0.execute(xctxt);
-	  if (nodeArg instanceof XNodeSet) {
-		 XNodeSet nodeSet = (XNodeSet)nodeArg;
-		 DTMIterator dtmIter = nodeSet.iterRaw();
+	  if (nodeArg instanceof XMLNodeCursorImpl) {
+		 XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)nodeArg;
+		 DTMCursorIterator dtmIter = nodeSet.iterRaw();
 		 int nodeHandle = dtmIter.nextNode();
 		 DTM dtm = xctxt.getDTM(nodeHandle);
 		 Node node = dtm.getNode(nodeHandle);

@@ -71,7 +71,7 @@ import org.apache.xalan.trace.GenerateEvent;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.serializer.Method;
@@ -1418,7 +1418,7 @@ public class TransformerImpl extends Transformer
         }
         // ===========        
         // System.out.println("Calling applyTemplateToNode - "+Thread.currentThread().getName());
-        DTMIterator dtmIter = new org.apache.xpath.axes.SelfIteratorNoPredicate();
+        DTMCursorIterator dtmIter = new org.apache.xpath.axes.SelfIteratorNoPredicate();
         dtmIter.setRoot(node, xctxt);
         xctxt.pushContextNodeList(dtmIter);
         try
@@ -2370,7 +2370,7 @@ public class TransformerImpl extends Transformer
       
       // Fix copy copy29 test.
       if (!isApplyImports) {
-          DTMIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
+          DTMCursorIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
           m_xcontext.pushContextNodeList(cnl);
       }
 
@@ -3080,14 +3080,14 @@ public class TransformerImpl extends Transformer
    *
    * @return A reset clone of the context node list.
    */
-  public DTMIterator getContextNodeList()
+  public DTMCursorIterator getContextNodeList()
   {
 
     try
     {
-      DTMIterator cnl = m_xcontext.getContextNodeList();
+      DTMCursorIterator cnl = m_xcontext.getContextNodeList();
 
-      return (cnl == null) ? null : (DTMIterator) cnl.cloneWithReset();
+      return (cnl == null) ? null : (DTMCursorIterator) cnl.cloneWithReset();
     }
     catch (CloneNotSupportedException cnse)
     {

@@ -21,13 +21,13 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
@@ -86,16 +86,16 @@ public class FuncDistinctValues extends FunctionMultiArgs {
         
         XObject arg0Obj = arg0.execute(xctxt);
         
-        if (arg0Obj instanceof XNodeSet) {
+        if (arg0Obj instanceof XMLNodeCursorImpl) {
            DTMManager dtmMgr = (DTMManager)xctxt;
            
-           XNodeSet xNodeSet = (XNodeSet)arg0Obj;           
-           DTMIterator sourceNodes = xNodeSet.iter();
+           XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)arg0Obj;           
+           DTMCursorIterator sourceNodes = xNodeSet.iter();
            
            int nextNodeDtmHandle;
            
            while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-              XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
+              XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);
               String nodeStrValue = xNodeSetItem.str();
               
               DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);

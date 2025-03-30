@@ -25,7 +25,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -36,7 +36,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
@@ -191,7 +191,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
         	   Function func = locPathIter.getFuncExpr();
         	   XPathDynamicFunctionCall dfc = locPathIter.getDynamicFuncCallExpr();
                
-               DTMIterator dtmIter = null;
+               DTMCursorIterator dtmIter = null;
                try {
                    dtmIter = locPathIter.asIterator(xctxt, sourceNode);
                }
@@ -206,7 +206,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
-            			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            			   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
             			   // Evaluate an XPath path expression like /a/b/funcCall(..).
             			   // Find one result item here for a sequence of items, 
                      	   // since this is within a loop.
@@ -222,7 +222,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
-            			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            			   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
             			   // Evaluate an XPath path expression like /a/b/$funcCall(..).
             			   // Find one result item here for a sequence of items, 
                      	   // since this is within a loop.
@@ -258,8 +258,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                for (int idx = 0; idx < itemsToBeProcessed.size(); idx++) {
                   XObject resultSeqItem = itemsToBeProcessed.get(idx);
                        
-                  if (resultSeqItem instanceof XNodeSet) {
-                     resultSeqItem = ((XNodeSet)resultSeqItem).getFresh(); 
+                  if (resultSeqItem instanceof XMLNodeCursorImpl) {
+                     resultSeqItem = ((XMLNodeCursorImpl)resultSeqItem).getFresh(); 
                   }
                        
                   setXPathContextForXslSequenceProcessing(itemsToBeProcessed.size(), idx, resultSeqItem, xctxt);                                                                     
@@ -307,7 +307,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            else {
                // Evaluate xsl:iterate instruction, when value of its "select" attribute evaluates 
                // to a node set. 
-               DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+               DTMCursorIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
         
                try {               
                    xctxt.pushCurrentNode(DTM.NULL);

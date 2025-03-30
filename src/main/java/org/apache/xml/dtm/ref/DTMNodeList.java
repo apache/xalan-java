@@ -21,7 +21,7 @@
 package org.apache.xml.dtm.ref;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.w3c.dom.Node;
 
 /**
@@ -54,7 +54,7 @@ import org.w3c.dom.Node;
  * <p>State: In progress!!</p>
  * */
 public class DTMNodeList extends DTMNodeListBase {
-    private DTMIterator m_iter;
+    private DTMCursorIterator m_iter;
 
     //================================================================
     // Methods unique to this class
@@ -69,11 +69,11 @@ public class DTMNodeList extends DTMNodeListBase {
      * AGAINST THE DTMIterator.
      *
      */
-    public DTMNodeList(DTMIterator dtmIterator) {
+    public DTMNodeList(DTMCursorIterator dtmIterator) {
         if (dtmIterator != null) {
             int pos = dtmIterator.getCurrentPos();
             try {
-                m_iter=(DTMIterator)dtmIterator.cloneWithReset();
+                m_iter=(DTMCursorIterator)dtmIterator.cloneWithReset();
             } catch(CloneNotSupportedException cnse) {
                 m_iter = dtmIterator;
             }
@@ -88,7 +88,7 @@ public class DTMNodeList extends DTMNodeListBase {
      * need this or not, but let's write it and think about it.
      *
      */
-    public DTMIterator getDTMIterator() {
+    public DTMCursorIterator getDTMIterator() {
         return m_iter;
     }
 

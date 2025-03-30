@@ -26,7 +26,7 @@ import javax.xml.transform.Transformer;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
@@ -44,7 +44,7 @@ public class XalanTransformState
     int m_currentNodeHandle = DTM.NULL;
     Node m_currentNode = null;
     int m_matchedNode = DTM.NULL;
-    DTMIterator m_contextNodeList = null;
+    DTMCursorIterator m_contextNodeList = null;
     boolean m_elemPending = false;    
     TransformerImpl m_transformer = null;
 

@@ -30,7 +30,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMException;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.dom2dtm.DOM2DTM;
@@ -787,7 +787,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * NEEDSDOC (createDTMIterator) @return
    */
-  synchronized public DTMIterator createDTMIterator(int whatToShow, DTMFilter filter,
+  synchronized public DTMCursorIterator createDTMIterator(int whatToShow, DTMFilter filter,
                                        boolean entityReferenceExpansion)
   {
 
@@ -804,7 +804,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * NEEDSDOC (createDTMIterator) @return
    */
-  synchronized public DTMIterator createDTMIterator(String xpathString,
+  synchronized public DTMCursorIterator createDTMIterator(String xpathString,
                                        PrefixResolver presolver)
   {
 
@@ -820,7 +820,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * NEEDSDOC (createDTMIterator) @return
    */
-  synchronized public DTMIterator createDTMIterator(int node)
+  synchronized public DTMCursorIterator createDTMIterator(int node)
   {
 
     /** @todo: implement this org.apache.xml.dtm.DTMManager abstract method */
@@ -836,7 +836,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * NEEDSDOC (createDTMIterator) @return
    */
-  synchronized public DTMIterator createDTMIterator(Object xpathCompiler, int pos)
+  synchronized public DTMCursorIterator createDTMIterator(Object xpathCompiler, int pos)
   {
 
     /** @todo: implement this org.apache.xml.dtm.DTMManager abstract method */

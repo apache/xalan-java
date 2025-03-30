@@ -20,7 +20,7 @@ package org.apache.xpath.operations;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -52,11 +52,11 @@ public class NodeComparisonFollows extends Operation
    {
        XObject result = null;
        
-       XNodeSet lNodeSet = null;
-       XNodeSet rNodeSet = null;
+       XMLNodeCursorImpl lNodeSet = null;
+       XMLNodeCursorImpl rNodeSet = null;
        
-       if (left instanceof XNodeSet) {
-          lNodeSet = (XNodeSet)left;
+       if (left instanceof XMLNodeCursorImpl) {
+          lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not "
                                                                                   + "allowed as the first operand of an operator '>>'.");   
@@ -67,8 +67,8 @@ public class NodeComparisonFollows extends Operation
                                                                                   + "operand of an operator '>>' is not node().");    
        }
        
-       if (right instanceof XNodeSet) {
-          rNodeSet = (XNodeSet)right;
+       if (right instanceof XMLNodeCursorImpl) {
+          rNodeSet = (XMLNodeCursorImpl)right;
           if (rNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not "
                                                                                   + "allowed as the second operand of an operator '>>'.");   

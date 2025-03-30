@@ -31,7 +31,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -458,8 +458,8 @@ public class ElemTemplate extends ElemTemplateElement
         SerializationHandler handler = transformer.getSerializationHandler();
         
         try {
-            if (templateEvalResultForAsAttr instanceof XNodeSet) {
-               ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)templateEvalResultForAsAttr, transformer, 
+            if (templateEvalResultForAsAttr instanceof XMLNodeCursorImpl) {
+               ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)templateEvalResultForAsAttr, transformer, 
                                                                                                 handler, xctxt);
             }
             else {

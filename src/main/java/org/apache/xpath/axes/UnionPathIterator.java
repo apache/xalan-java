@@ -22,7 +22,7 @@ package org.apache.xpath.axes;
 
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
@@ -39,7 +39,7 @@ import org.apache.xpath.compiler.OpMap;
  * @xsl.usage advanced
  */
 public class UnionPathIterator extends LocPathIterator
-        implements Cloneable, DTMIterator, java.io.Serializable, PathComponent
+        implements Cloneable, DTMCursorIterator, java.io.Serializable, PathComponent
 {
     static final long serialVersionUID = -3910351546843826781L;
 
@@ -73,11 +73,11 @@ public class UnionPathIterator extends LocPathIterator
       if (null != m_exprs)
       {
         int n = m_exprs.length;
-        DTMIterator newIters[] = new DTMIterator[n];
+        DTMCursorIterator newIters[] = new DTMCursorIterator[n];
   
         for (int i = 0; i < n; i++)
         {
-          DTMIterator iter = m_exprs[i].asIterator(m_execContext, context);
+          DTMCursorIterator iter = m_exprs[i].asIterator(m_execContext, context);
           newIters[i] = iter;
           iter.nextNode();
         }
@@ -95,22 +95,22 @@ public class UnionPathIterator extends LocPathIterator
    *
    * @param expr non-null reference to a location path iterator.
    */
-  public void addIterator(DTMIterator expr)
+  public void addIterator(DTMCursorIterator expr)
   {
 
     // Increase array size by only 1 at a time.  Fix this
     // if it looks to be a problem.
     if (null == m_iterators)
     {
-      m_iterators = new DTMIterator[1];
+      m_iterators = new DTMCursorIterator[1];
       m_iterators[0] = expr;
     }
     else
     {
-      DTMIterator[] exprs = m_iterators;
+      DTMCursorIterator[] exprs = m_iterators;
       int len = m_iterators.length;
 
-      m_iterators = new DTMIterator[len + 1];
+      m_iterators = new DTMCursorIterator[len + 1];
 
       System.arraycopy(exprs, 0, m_iterators, 0, len);
 
@@ -284,11 +284,11 @@ public class UnionPathIterator extends LocPathIterator
     {
       int n = m_iterators.length;
       
-      clone.m_iterators = new DTMIterator[n];
+      clone.m_iterators = new DTMCursorIterator[n];
 
       for (int i = 0; i < n; i++)
       {
-        clone.m_iterators[i] = (DTMIterator)m_iterators[i].clone();
+        clone.m_iterators[i] = (DTMCursorIterator)m_iterators[i].clone();
       }
     }
 
@@ -474,7 +474,7 @@ public class UnionPathIterator extends LocPathIterator
    * path</a> contained in the union expression.
    * @serial
    */
-  protected DTMIterator[] m_iterators;
+  protected DTMCursorIterator[] m_iterators;
       
   /**
    * Returns the axis being iterated, if it is known.

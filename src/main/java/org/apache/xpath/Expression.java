@@ -28,10 +28,10 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.xml.sax.ContentHandler;
@@ -222,7 +222,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   public int asNode(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
-  	DTMIterator iter = execute(xctxt).iter();
+  	DTMCursorIterator iter = execute(xctxt).iter();
     return iter.nextNode();
   }
 
@@ -241,7 +241,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    * @throws javax.xml.transform.TransformerException
    * @xsl.usage experimental
    */
-  public DTMIterator asIterator(XPathContext xctxt, int contextNode)
+  public DTMCursorIterator asIterator(XPathContext xctxt, int contextNode)
           throws javax.xml.transform.TransformerException
   {
 
@@ -251,7 +251,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
       
       XObject xObj = execute(xctxt);
       
-      DTMIterator dtmIter = xObj.iter(); 
+      DTMCursorIterator dtmIter = xObj.iter(); 
 
       return dtmIter;
     }
@@ -276,7 +276,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    * @throws javax.xml.transform.TransformerException
    * @xsl.usage experimental
    */
-  public DTMIterator asIteratorRaw(XPathContext xctxt, int contextNode)
+  public DTMCursorIterator asIteratorRaw(XPathContext xctxt, int contextNode)
           throws javax.xml.transform.TransformerException
   {
 
@@ -284,7 +284,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
     {
       xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
 
-      XNodeSet nodeset = (XNodeSet)execute(xctxt);
+      XMLNodeCursorImpl nodeset = (XMLNodeCursorImpl)execute(xctxt);
       return nodeset.iterRaw();
     }
     finally

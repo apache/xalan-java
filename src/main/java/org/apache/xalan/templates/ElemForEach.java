@@ -32,7 +32,7 @@ import org.apache.xalan.transformer.NodeSorter;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
@@ -47,7 +47,7 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBooleanStatic;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.operations.Operation;
@@ -292,8 +292,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    *
    * @throws TransformerException
    */
-  public DTMIterator sortNodes(
-          XPathContext xctxt, Vector keys, DTMIterator sourceNodes)
+  public DTMCursorIterator sortNodes(
+          XPathContext xctxt, Vector keys, DTMCursorIterator sourceNodes)
             throws TransformerException
   {
 
@@ -329,13 +329,13 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     
     final int sourceNode = xctxt.getCurrentNode();
     
-    DTMIterator resultSeqDtmIterator = null;
+    DTMCursorIterator resultSeqDtmIterator = null;
     
     if (m_selectExpression instanceof Function) {
         XObject evalResult = ((Function)m_selectExpression).execute(xctxt);
         
         if (evalResult instanceof ResultSequence) {
-            XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+            XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
                processSequenceOrArray(transformer, xctxt, evalResult);
@@ -357,7 +357,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XObject evalResult = dfc.execute(xctxt);
         
         if (evalResult instanceof ResultSequence) {
-            XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+            XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
                 processSequenceOrArray(transformer, xctxt, evalResult);
@@ -381,7 +381,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             return;
         }        
         else if (evalResult instanceof ResultSequence) {
-            XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+            XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
                 processSequenceOrArray(transformer, xctxt, evalResult);
@@ -402,7 +402,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XObject  evalResult = m_selectExpression.execute(xctxt);
         
         if (evalResult instanceof ResultSequence) {
-            XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+            XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
                 processSequenceOrArray(transformer, xctxt, evalResult);
@@ -418,7 +418,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XPathForExpr forExpr = (XPathForExpr)m_selectExpression;
         XObject evalResult = forExpr.execute(xctxt);
         
-        XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+        XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                               (DTMManager)xctxt);             
         if (nodeSet == null) {
             processSequenceOrArray(transformer, xctxt, evalResult);
@@ -434,7 +434,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                                                                      m_selectExpression;
         XObject  evalResult = seqCtrExpr.execute(xctxt);
         
-        XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+        XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                               (DTMManager)xctxt);             
         if (nodeSet == null) {
             processSequenceOrArray(transformer, xctxt, evalResult);
@@ -449,7 +449,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         LocPathIterator locPathIterator = (LocPathIterator)m_selectExpression;          
         
         boolean isProcessAsNodeset = true;
-        DTMIterator dtmIter = null;                     
+        DTMCursorIterator dtmIter = null;                     
         try {
            dtmIter = locPathIterator.asIterator(xctxt, sourceNode);
         }
@@ -468,7 +468,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         		int nextNode;
         		while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         		{
-        			XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+        			XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
         			// Evaluate an XPath path expression like /a/b/funcCall(..).
         			// Find one result item here for a sequence of items, 
               	    // since this is within a loop.
@@ -486,7 +486,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         		int nextNode;
         		while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         		{
-        			XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+        			XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
         			// Evaluate an XPath path expression like /a/b/$funcCall(..).
         			// Find one result item here for a sequence of items, 
               	    // since this is within a loop.
@@ -598,7 +598,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
           }
     }
     
-    DTMIterator sourceNodes = null;
+    DTMCursorIterator sourceNodes = null;
     
     if (resultSeqDtmIterator != null) {
        sourceNodes = resultSeqDtmIterator;
@@ -713,7 +713,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
       if (transformer.getDebug())
         transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
-                new org.apache.xpath.objects.XNodeSet(sourceNodes));
+                new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
 
       xctxt.popSAXLocator();
       xctxt.popContextNodeList();
@@ -820,8 +820,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
        for (int idx = 0; idx < itemsToBeProcessed.size(); idx++) {
            XObject resultSeqItem = itemsToBeProcessed.get(idx);
            
-           if (resultSeqItem instanceof XNodeSet) {
-              resultSeqItem = ((XNodeSet)resultSeqItem).getFresh(); 
+           if (resultSeqItem instanceof XMLNodeCursorImpl) {
+              resultSeqItem = ((XMLNodeCursorImpl)resultSeqItem).getFresh(); 
            }
            
            setXPathContextForXslSequenceProcessing(itemsToBeProcessed.size(), idx, resultSeqItem, xctxt);

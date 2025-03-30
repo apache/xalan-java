@@ -27,7 +27,7 @@ import org.apache.xpath.ArithmeticOperation;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
@@ -119,10 +119,10 @@ public class Mult extends ArithmeticOperation
     	  XNumber rNumber = (XNumber)right;
     	  result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_MULT);                    
       }
-      else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {
+      else if ((left instanceof XNumber) && (right instanceof XMLNodeCursorImpl)) {
           double lDouble = ((XNumber)left).num();
           
-          XNodeSet rNodeSet = (XNodeSet)right;
+          XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
           if (rNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the 2nd "
@@ -135,10 +135,10 @@ public class Mult extends ArithmeticOperation
              result = new XNumber(lDouble * rDouble);
           }
       }
-      else if ((left instanceof XNodeSet) && (right instanceof XNumber)) {
+      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XNumber)) {
           double rDouble = ((XNumber)right).num();
           
-          XNodeSet lNodeSet = (XNodeSet)left;
+          XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the 1st "
@@ -151,8 +151,8 @@ public class Mult extends ArithmeticOperation
              result = new XNumber(lDouble * rDouble);
           }
       }
-      else if ((left instanceof XSNumericType) && (right instanceof XNodeSet)) {
-    	  XNodeSet rNodeSet = (XNodeSet)right;
+      else if ((left instanceof XSNumericType) && (right instanceof XMLNodeCursorImpl)) {
+    	  XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
           if (rNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the 2nd "
@@ -178,8 +178,8 @@ public class Mult extends ArithmeticOperation
           	  }
           }
       }
-      else if ((left instanceof XNodeSet) && (right instanceof XSNumericType)) {
-    	  XNodeSet lNodeSet = (XNodeSet)left;
+      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XSNumericType)) {
+    	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the 1st "
@@ -205,15 +205,15 @@ public class Mult extends ArithmeticOperation
           	  }
           }
       }
-      else if ((left instanceof XNodeSet) && (right instanceof XNodeSet)) {
-    	  XNodeSet lNodeSet = (XNodeSet)left;
+      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {
+    	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the 1st "
                                                                                    + "operand of operator '*'.");  
           }
           
-          XNodeSet rNodeSet = (XNodeSet)right;
+          XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
           if (rNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the 2nd "
@@ -424,8 +424,8 @@ public class Mult extends ArithmeticOperation
         	  result = new XSDecimal(resultBigDecimal);
           }
       }
-      else if (left instanceof XNodeSet) {
-    	  XNodeSet lNodeSet = (XNodeSet)left;
+      else if (left instanceof XMLNodeCursorImpl) {
+    	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the 1st "

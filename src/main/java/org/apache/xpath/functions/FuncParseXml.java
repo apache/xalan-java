@@ -28,7 +28,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
@@ -77,8 +77,8 @@ public class FuncParseXml extends FunctionOneArg {
     /**
      * Get an xdm nodeset corresponding to an XML string value.
      */
-    public static XNodeSet getNodeSetFromStr(String strVal, XPathContext xctxt, ErrorHandler errorHandler) throws Exception {
-        XNodeSet nodeSet = null;
+    public static XMLNodeCursorImpl getNodeSetFromStr(String strVal, XPathContext xctxt, ErrorHandler errorHandler) throws Exception {
+        XMLNodeCursorImpl nodeSet = null;
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             
@@ -97,7 +97,7 @@ public class FuncParseXml extends FunctionOneArg {
         DTM dtm = xctxt.getDTM(new DOMSource(document), true, null, false, false);            
         int documentNodeHandleVal = dtm.getDocument();
             
-        nodeSet = new XNodeSet(documentNodeHandleVal, xctxt.getDTMManager());
+        nodeSet = new XMLNodeCursorImpl(documentNodeHandleVal, xctxt.getDTMManager());
         
         return nodeSet;
     }

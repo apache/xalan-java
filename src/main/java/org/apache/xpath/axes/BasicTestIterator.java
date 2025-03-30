@@ -22,7 +22,7 @@ package org.apache.xpath.axes;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpMap;
@@ -171,7 +171,7 @@ public abstract class BasicTestIterator extends LocPathIterator
   
         if (DTM.NULL != next)
         {
-          if(DTMIterator.FILTER_ACCEPT == acceptNode(next))
+          if(DTMCursorIterator.FILTER_ACCEPT == acceptNode(next))
             break;
           else
             continue;
@@ -211,7 +211,7 @@ public abstract class BasicTestIterator extends LocPathIterator
    * 
    *  @throws CloneNotSupportedException
    */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMCursorIterator cloneWithReset() throws CloneNotSupportedException
   {
 
     ChildTestIterator clone = (ChildTestIterator) super.cloneWithReset();

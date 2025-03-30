@@ -23,14 +23,14 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSInteger;
@@ -104,12 +104,12 @@ public class FuncIndexOf extends FunctionMultiArgs {
         if (arg0 instanceof LocPathIterator) {
             arg0ResultSeq = new ResultSequence();
                                 
-            DTMIterator arg0DtmIterator = arg0.asIterator(xctxt, contextNode);        
+            DTMCursorIterator arg0DtmIterator = arg0.asIterator(xctxt, contextNode);        
             
             int nextNodeDtmHandle;
             
             while ((nextNodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
-                XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);                
+                XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);                
                 String nodeStrValue = xNodeSetItem.str();
                 
                 DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
@@ -142,13 +142,13 @@ public class FuncIndexOf extends FunctionMultiArgs {
         
         XObject arg1Obj = arg1.execute(xctxt);
         
-        if (arg1Obj instanceof XNodeSet) {
-           XNodeSet xNodeSet = (XNodeSet)arg1Obj;           
+        if (arg1Obj instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)arg1Obj;           
            
            if (xNodeSet.getLength() == 1) {
               String nodeStrValue = xNodeSet.str();
                
-              DTMIterator sourceNodes = arg0.asIterator(xctxt, contextNode);
+              DTMCursorIterator sourceNodes = arg0.asIterator(xctxt, contextNode);
               int dtmNodeHandle = sourceNodes.nextNode();
               
               DTM dtm = dtmMgr.getDTM(dtmNodeHandle);

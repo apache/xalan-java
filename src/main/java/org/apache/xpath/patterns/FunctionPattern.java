@@ -21,7 +21,7 @@
 package org.apache.xpath.patterns;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
@@ -103,7 +103,7 @@ public class FunctionPattern extends StepPattern
           throws javax.xml.transform.TransformerException
   {
 
-    DTMIterator nl = m_functionExpr.asIterator(xctxt, context);
+    DTMCursorIterator nl = m_functionExpr.asIterator(xctxt, context);
     XNumber score = SCORE_NONE;
 
     if (null != nl)
@@ -147,7 +147,7 @@ public class FunctionPattern extends StepPattern
           throws javax.xml.transform.TransformerException
   {
 
-    DTMIterator nl = m_functionExpr.asIterator(xctxt, context);
+    DTMCursorIterator nl = m_functionExpr.asIterator(xctxt, context);
     XNumber score = SCORE_NONE;
 
     if (null != nl)
@@ -190,7 +190,7 @@ public class FunctionPattern extends StepPattern
   {
 
     int context = xctxt.getCurrentNode();
-    DTMIterator nl = m_functionExpr.asIterator(xctxt, context);
+    DTMCursorIterator nl = m_functionExpr.asIterator(xctxt, context);
     XNumber score = SCORE_NONE;
 
     if (null != nl)

@@ -38,7 +38,7 @@ import org.apache.xerces.xs.XSElementDeclaration;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
@@ -50,7 +50,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.w3c.dom.DOMException;
@@ -1871,9 +1871,9 @@ public class ElemTemplateElement extends UnImplNode
                                                                   int currentlyProcessingItemIndex, 
                                                                   XObject currentContextItem, 
                                                                   XPathContext xctxt) {
-      if (currentContextItem instanceof XNodeSet) {         
-         XNodeSet xNodeSet = (XNodeSet)currentContextItem;
-         DTMIterator dtmIter = xNodeSet.iterRaw();
+      if (currentContextItem instanceof XMLNodeCursorImpl) {         
+         XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)currentContextItem;
+         DTMCursorIterator dtmIter = xNodeSet.iterRaw();
          int contextNode = dtmIter.nextNode();
          xctxt.pushCurrentNode(contextNode);
       }
@@ -1895,7 +1895,7 @@ public class ElemTemplateElement extends UnImplNode
    */
   protected void resetXPathContextForXslSequenceProcessing(XObject currentContextItem, 
                                                                             XPathContext xctxt) {
-     if (currentContextItem instanceof XNodeSet) {        
+     if (currentContextItem instanceof XMLNodeCursorImpl) {        
         xctxt.popCurrentNode();
      }
      else {     

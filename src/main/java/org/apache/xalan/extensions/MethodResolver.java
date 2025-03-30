@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.ref.DTMNodeIterator;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
@@ -736,7 +736,7 @@ public class MethodResolver
           if ( (javaClass == NodeIterator.class) ||
                (javaClass == java.lang.Object.class) )
           {
-            DTMIterator dtmIter = ((XRTreeFrag) xobj).asNodeIterator();
+            DTMCursorIterator dtmIter = ((XRTreeFrag) xobj).asNodeIterator();
             return new DTMNodeIterator(dtmIter);
           }
           else if (javaClass == NodeList.class)
@@ -747,7 +747,7 @@ public class MethodResolver
           // else if(Node.class.isAssignableFrom(javaClass))
           else if(javaClass == Node.class)
           {
-            DTMIterator iter = ((XRTreeFrag) xobj).asNodeIterator();
+            DTMCursorIterator iter = ((XRTreeFrag) xobj).asNodeIterator();
             int rootHandle = iter.nextNode();
             DTM dtm = iter.getDTM(rootHandle);
             return dtm.getNode(dtm.getFirstChild(rootHandle));
@@ -766,7 +766,7 @@ public class MethodResolver
           }
           else
           {
-            DTMIterator iter = ((XRTreeFrag) xobj).asNodeIterator();
+            DTMCursorIterator iter = ((XRTreeFrag) xobj).asNodeIterator();
             int rootHandle = iter.nextNode();
             DTM dtm = iter.getDTM(rootHandle);
             Node child = dtm.getNode(dtm.getFirstChild(rootHandle));
@@ -804,7 +804,7 @@ public class MethodResolver
           {
             // Xalan ensures that iter() always returns an
             // iterator positioned at the beginning.
-            DTMIterator ni = xobj.iter();
+            DTMCursorIterator ni = xobj.iter();
             int handle = ni.nextNode();
             if (handle != DTM.NULL)
               return ni.getDTM(handle).getNode(handle); // may be null.
@@ -825,7 +825,7 @@ public class MethodResolver
           }
           else
           {
-            DTMIterator iter = xobj.iter();
+            DTMCursorIterator iter = xobj.iter();
             int childHandle = iter.nextNode();
             DTM dtm = iter.getDTM(childHandle);
             Node child = dtm.getNode(childHandle);

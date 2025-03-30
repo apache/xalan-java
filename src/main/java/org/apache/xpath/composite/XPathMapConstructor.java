@@ -31,7 +31,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -40,7 +40,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
@@ -176,7 +176,7 @@ public class XPathMapConstructor extends Expression {
     	if (xpathExpr instanceof LocPathIterator) {    		
             LocPathIterator locPathIterator = (LocPathIterator)xpathExpr;
             
-            DTMIterator dtmIter = null;                     
+            DTMCursorIterator dtmIter = null;                     
             try {
                 dtmIter = locPathIterator.asIterator(xctxt, contextNode);
             }
@@ -196,11 +196,11 @@ public class XPathMapConstructor extends Expression {
             		  		                                                                   + "greater than one.", srcLocator); 
             	      }
             	      else {
-            	    	 result = new XNodeSet(nextNode, xctxt);
+            	    	 result = new XMLNodeCursorImpl(nextNode, xctxt);
             	    	 return result;
             	      }
             	   }            	   
-                   XNodeSet xNodeSetItem = new XNodeSet(nextNode, xctxt);
+                   XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNode, xctxt);
                    mapEntryValue.add(xNodeSetItem);
                }
                
@@ -274,11 +274,11 @@ public class XPathMapConstructor extends Expression {
             XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, 
                                                                            xctxt.getNamespaceContext());
             
-            if (xPathExprPartResult instanceof XNodeSet) {
+            if (xPathExprPartResult instanceof XMLNodeCursorImpl) {
                DTMManager dtmMgr = (DTMManager)xctxt;
                 
-               XNodeSet xNodeSet = (XNodeSet)xPathExprPartResult;
-               DTMIterator sourceNodes = xNodeSet.iter();
+               XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xPathExprPartResult;
+               DTMCursorIterator sourceNodes = xNodeSet.iter();
                 
                int nextNode;
                int nodeCount = 0;               
@@ -290,7 +290,7 @@ public class XPathMapConstructor extends Expression {
             		  		                                                                   + "greater than one.", srcLocator); 
             	     }
             	     else {
-            	    	result = new XNodeSet(nextNode, xctxt);
+            	    	result = new XMLNodeCursorImpl(nextNode, xctxt);
             	    	return result;
             	     }
             	  } 

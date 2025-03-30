@@ -21,13 +21,13 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -73,9 +73,9 @@ public class SimpleMapOperator extends Operation
            expr1 = m_left.execute(xctxt, true); 
        }
        
-       if (expr1 instanceof XNodeSet) {
-           XNodeSet xsObjNodeSet = (XNodeSet)expr1;
-           DTMIterator dtmIter = xsObjNodeSet.iterRaw();
+       if (expr1 instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl xsObjNodeSet = (XMLNodeCursorImpl)expr1;
+           DTMCursorIterator dtmIter = xsObjNodeSet.iterRaw();
            
            int contextNode;           
            ResultSequence resultSeq = new ResultSequence();            
@@ -110,8 +110,8 @@ public class SimpleMapOperator extends Operation
                   xctxt.setXPath3ContextPosition(prevCtxtPosition);
                   xctxt.setXPath3ContextSize(prevCtxtSize);
               }
-              else if (xObj instanceof XNodeSet) {
-                  int contextNode = ((XNodeSet)xObj).getCurrentNode();
+              else if (xObj instanceof XMLNodeCursorImpl) {
+                  int contextNode = ((XMLNodeCursorImpl)xObj).getCurrentNode();
                   xctxt.pushCurrentNode(contextNode);
                   XObject xsObj = m_right.execute(xctxt, contextNode);
                   resultSeq.add(xsObj);

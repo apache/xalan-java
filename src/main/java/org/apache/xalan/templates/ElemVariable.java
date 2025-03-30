@@ -29,7 +29,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -45,7 +45,7 @@ import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -490,7 +490,7 @@ public class ElemVariable extends ElemTemplateElement
             Function func = locPathIterator.getFuncExpr();
             XPathDynamicFunctionCall dfc = locPathIterator.getDynamicFuncCallExpr();
             
-            DTMIterator dtmIter = null;                     
+            DTMCursorIterator dtmIter = null;                     
             try {
                 dtmIter = locPathIterator.asIterator(xctxt, contextNode);
             }
@@ -505,7 +505,7 @@ public class ElemVariable extends ElemTemplateElement
             	  int nextNode;
             	  while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
                   {
-                      XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+                      XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
                       // Evaluate an XPath path expression like /a/b/funcCall(..).
                       // Find one result item here for a sequence of items, 
                 	  // since this is within a loop.
@@ -521,7 +521,7 @@ public class ElemVariable extends ElemTemplateElement
             	   int nextNode;
             	   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             	   {
-            		   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            		   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
             		   // Evaluate an XPath path expression like /a/b/$funcCall(..).
             		   // Find one result item here for a sequence of items, 
                  	   // since this is within a loop.
@@ -533,7 +533,7 @@ public class ElemVariable extends ElemTemplateElement
             	   var = rSeq; 
                }
                else {
-                  var = new XNodeSet(dtmIter);
+                  var = new XMLNodeCursorImpl(dtmIter);
                }
                
                if (m_asAttr != null) {

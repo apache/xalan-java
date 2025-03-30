@@ -28,7 +28,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.KeyDeclaration;
 import org.apache.xml.dtm.Axis;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.axes.OneStepIteratorForward;
@@ -131,7 +131,7 @@ public class KeyIterator extends OneStepIteratorForward
         if (score == kd.getMatch().MATCH_SCORE_NONE)
           continue;
 
-        return DTMIterator.FILTER_ACCEPT;
+        return DTMCursorIterator.FILTER_ACCEPT;
 
       } // end for(int i = 0; i < nDeclarations; i++)
     }
@@ -147,7 +147,7 @@ public class KeyIterator extends OneStepIteratorForward
           XSLTErrorResources.ER_NO_XSLKEY_DECLARATION,
           new Object[] { name.getLocalName()}));
           
-    return DTMIterator.FILTER_REJECT;
+    return DTMCursorIterator.FILTER_REJECT;
   }
 
 }

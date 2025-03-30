@@ -21,7 +21,7 @@
 package org.apache.xpath.objects;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
@@ -80,7 +80,7 @@ public class XRTreeFrag extends XObject implements Cloneable
   public Object object()
   {
     if (m_DTMXRTreeFrag.getXPathContext() != null)
-      return new org.apache.xml.dtm.ref.DTMNodeIterator((DTMIterator)(new org.apache.xpath.NodeSetDTM(m_dtmRoot, m_DTMXRTreeFrag.getXPathContext().getDTMManager())));
+      return new org.apache.xml.dtm.ref.DTMNodeIterator((DTMCursorIterator)(new org.apache.xpath.NodeSetDTM(m_dtmRoot, m_DTMXRTreeFrag.getXPathContext().getDTMManager())));
     else
       return super.object();
   }
@@ -223,7 +223,7 @@ public class XRTreeFrag extends XObject implements Cloneable
    * {@link org.apache.xalan.lib.ExsltCommon}.
    * @return The document fragment as a DTMIterator
    */
-  public DTMIterator asNodeIterator()
+  public DTMCursorIterator asNodeIterator()
   {
     return new RTFIterator(m_dtmRoot, m_DTMXRTreeFrag.getXPathContext().getDTMManager());
   }

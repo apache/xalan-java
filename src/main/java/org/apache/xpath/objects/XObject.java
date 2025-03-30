@@ -30,7 +30,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
@@ -576,7 +576,7 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public DTMIterator iter() throws javax.xml.transform.TransformerException
+  public DTMCursorIterator iter() throws javax.xml.transform.TransformerException
   {
 
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_NODELIST,
@@ -952,7 +952,7 @@ public class XObject extends Expression implements Serializable, Cloneable
        
        if (this.getType() == XObject.CLASS_NODESET) {       
           isOperandNodeSet1 = true;
-          if ((((XNodeSet)this).getLength() > 1)) {
+          if ((((XMLNodeCursorImpl)this).getLength() > 1)) {
               error(isLtTest ? XPATHErrorResources.ER_LT_OPERAND_CARDINALITY_ERROR : 
                                                               XPATHErrorResources.ER_GE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);
           }
@@ -960,7 +960,7 @@ public class XObject extends Expression implements Serializable, Cloneable
        
        if (obj2.getType() == XObject.CLASS_NODESET) {
           isOperandNodeSet2 = true; 
-          if ((((XNodeSet)obj2).getLength() > 1)) {
+          if ((((XMLNodeCursorImpl)obj2).getLength() > 1)) {
               error(isLtTest ? XPATHErrorResources.ER_LT_OPERAND_CARDINALITY_ERROR : 
                                                               XPATHErrorResources.ER_GE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
           }
@@ -1199,7 +1199,7 @@ public class XObject extends Expression implements Serializable, Cloneable
        
        if (this.getType() == XObject.CLASS_NODESET) {       
           isOperandNodeSet1 = true;
-          if ((((XNodeSet)this).getLength() > 1)) {
+          if ((((XMLNodeCursorImpl)this).getLength() > 1)) {
               error(isGtTest ? XPATHErrorResources.ER_GT_OPERAND_CARDINALITY_ERROR : 
                                                               XPATHErrorResources.ER_LE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);
           }
@@ -1207,7 +1207,7 @@ public class XObject extends Expression implements Serializable, Cloneable
        
        if (obj2.getType() == XObject.CLASS_NODESET) {
           isOperandNodeSet2 = true; 
-          if ((((XNodeSet)obj2).getLength() > 1)) {
+          if ((((XMLNodeCursorImpl)obj2).getLength() > 1)) {
               error(isGtTest ? XPATHErrorResources.ER_GT_OPERAND_CARDINALITY_ERROR : 
                                                               XPATHErrorResources.ER_LE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
           }
@@ -1675,12 +1675,12 @@ public class XObject extends Expression implements Serializable, Cloneable
    	      emitXsAnyAtomicTypeError(obj2, expressionOwner);   
       }
 	  else if (this.getType() == XObject.CLASS_NODESET) {
-		  if ((((XNodeSet)this).getLength() > 1)) {
+		  if ((((XMLNodeCursorImpl)this).getLength() > 1)) {
 			  error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
 				  XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
 		  }
 		  else if (obj2.getType() == XObject.CLASS_NODESET) {
-			  if ((((XNodeSet)obj2).getLength() > 1)) {
+			  if ((((XMLNodeCursorImpl)obj2).getLength() > 1)) {
 				  error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
 					  XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
 			  }
@@ -1693,12 +1693,12 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 	  }    
 	  else if (obj2.getType() == XObject.CLASS_NODESET) { 
-		  if ((((XNodeSet)obj2).getLength() > 1)) {
+		  if ((((XMLNodeCursorImpl)obj2).getLength() > 1)) {
 			  error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
 				  XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
 		  }
 		  else if (this.getType() == XObject.CLASS_NODESET) {
-			  if ((((XNodeSet)this).getLength() > 1)) {
+			  if ((((XMLNodeCursorImpl)this).getLength() > 1)) {
 				  error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
 					  XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
 			  }

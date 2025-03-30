@@ -27,7 +27,7 @@ import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -41,7 +41,7 @@ import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -240,7 +240,7 @@ public class ElemSequence extends ElemTemplateElement
             
             LocPathIterator locPathIterator = (LocPathIterator)selectExpression;
             
-            DTMIterator dtmIter = null;                     
+            DTMCursorIterator dtmIter = null;                     
             try {
                 dtmIter = locPathIterator.asIterator(xctxt, contextNode);
             }
@@ -249,7 +249,7 @@ public class ElemSequence extends ElemTemplateElement
             }
             
             if (dtmIter != null) {               
-               xslSequenceVal = new XNodeSet(dtmIter);
+               xslSequenceVal = new XMLNodeCursorImpl(dtmIter);
             }
             else {
                ResultSequence resultSeq = new ResultSequence();
@@ -401,7 +401,7 @@ public class ElemSequence extends ElemTemplateElement
 
 		  switch (xObjectType) {           
 		  case XObject.CLASS_NODESET :          
-			  ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)xslSequenceVal, transformer, handler, xctxt);          
+			  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xslSequenceVal, transformer, handler, xctxt);          
 			  break;
 		  case XObject.CLASS_RTREEFRAG :
 			  SerializerUtils.outputResultTreeFragment(handler, xslSequenceVal, xctxt);

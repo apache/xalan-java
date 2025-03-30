@@ -39,7 +39,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.objects.XBooleanStatic;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
@@ -228,7 +228,7 @@ public class FuncJsonToXml extends FunctionMultiArgs
          
         DTMManager dtmMgr = xctxt.getDTMManager();
         int dtmHandleOfResultNode = dtmMgr.getDTMHandleFromNode(document);           
-        result = new XNodeSet(dtmHandleOfResultNode, dtmMgr);           
+        result = new XMLNodeCursorImpl(dtmHandleOfResultNode, dtmMgr);           
         
         return result;
     }

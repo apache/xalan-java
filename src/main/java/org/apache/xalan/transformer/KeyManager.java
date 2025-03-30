@@ -27,7 +27,7 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 
 /**
  * This class manages the key tables.
@@ -54,12 +54,12 @@ public class KeyManager
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XNodeSet getNodeSetDTMByKey(
+  public XMLNodeCursorImpl getNodeSetDTMByKey(
           XPathContext xctxt, int doc, QName name, XMLString ref, PrefixResolver nscontext)
             throws javax.xml.transform.TransformerException
   {
 
-    XNodeSet nl = null;
+    XMLNodeCursorImpl nl = null;
     ElemTemplateElement template = (ElemTemplateElement) nscontext;  // yuck -sb
 
     if ((null != template)

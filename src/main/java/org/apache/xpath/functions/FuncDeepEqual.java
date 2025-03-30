@@ -27,13 +27,13 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.dom.ElementImpl;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.Constants;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.Document;
@@ -153,19 +153,19 @@ public class FuncDeepEqual extends FunctionMultiArgs {
                            break;
                         }
 					}
-					else if ((item1 instanceof XSAnyAtomicType) && (item2 instanceof XNodeSet)) {
+					else if ((item1 instanceof XSAnyAtomicType) && (item2 instanceof XMLNodeCursorImpl)) {
 						 isDeepEqual = false;
 		                 break; 
 					}
-	                else if ((item1 instanceof XNodeSet) && (item2 instanceof XSAnyAtomicType)) {
+	                else if ((item1 instanceof XMLNodeCursorImpl) && (item2 instanceof XSAnyAtomicType)) {
 	                	 isDeepEqual = false;
 	                 	 break; 
 					}
-	                else if ((item1 instanceof XNodeSet) && (item2 instanceof XNodeSet)) {
-	                	 item1 = ((XNodeSet)item1).getFresh();
-	                	 item2 = ((XNodeSet)item2).getFresh();
-	                	 DTMIterator dtmIter1 = ((XNodeSet)item1).iterRaw();
-	                	 DTMIterator dtmIter2 = ((XNodeSet)item2).iterRaw();
+	                else if ((item1 instanceof XMLNodeCursorImpl) && (item2 instanceof XMLNodeCursorImpl)) {
+	                	 item1 = ((XMLNodeCursorImpl)item1).getFresh();
+	                	 item2 = ((XMLNodeCursorImpl)item2).getFresh();
+	                	 DTMCursorIterator dtmIter1 = ((XMLNodeCursorImpl)item1).iterRaw();
+	                	 DTMCursorIterator dtmIter2 = ((XMLNodeCursorImpl)item2).iterRaw();
 	                	 int nodeHandle1 = dtmIter1.nextNode();
 	                	 int nodeHandle2 = dtmIter2.nextNode();
 	                	 DTM dtm1 = xctxt.getDTM(nodeHandle1);

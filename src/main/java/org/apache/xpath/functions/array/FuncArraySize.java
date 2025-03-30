@@ -22,7 +22,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.operations.Variable;
@@ -55,8 +55,8 @@ public class FuncArraySize extends FunctionOneArg {
 	       if (xObject instanceof XPathArray) {
 	    	   result = new XSInteger(((XPathArray)xObject).size() + ""); 
 	       }
-	       else if (xObject instanceof XNodeSet) {
-	    	  result = new XSInteger(((XNodeSet)xObject).getLength() + "");  
+	       else if (xObject instanceof XMLNodeCursorImpl) {
+	    	  result = new XSInteger(((XMLNodeCursorImpl)xObject).getLength() + "");  
 	       }
 	       else if (xObject instanceof ResultSequence) {
 	    	  result = new XSInteger(((ResultSequence)xObject).size() + "");  
@@ -70,8 +70,8 @@ public class FuncArraySize extends FunctionOneArg {
 	       if (xObject instanceof XPathArray) {
 	    	   result = new XSInteger(((XPathArray)xObject).size() + ""); 
 	       }
-	       else if (xObject instanceof XNodeSet) {
-		   	  result = new XSInteger(((XNodeSet)xObject).getLength() + "");  
+	       else if (xObject instanceof XMLNodeCursorImpl) {
+		   	  result = new XSInteger(((XMLNodeCursorImpl)xObject).getLength() + "");  
 		   }
 		   else if (xObject instanceof ResultSequence) {
 		      result = new XSInteger(((ResultSequence)xObject).size() + "");  

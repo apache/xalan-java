@@ -26,7 +26,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.ArithmeticOperation;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
@@ -124,8 +124,8 @@ public class Minus extends ArithmeticOperation
     	  XNumber rNumber = (XNumber)right;
     	  result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_MINUS);
       }
-      else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {          
-          XNodeSet rNodeSet = (XNodeSet)right;
+      else if ((left instanceof XNumber) && (right instanceof XMLNodeCursorImpl)) {          
+          XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
           if (rNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
@@ -148,8 +148,8 @@ public class Minus extends ArithmeticOperation
           	  }
           }
       }
-      else if ((left instanceof XNodeSet) && (right instanceof XNumber)) {
-    	  XNodeSet lNodeSet = (XNodeSet)left;
+      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XNumber)) {
+    	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
@@ -172,8 +172,8 @@ public class Minus extends ArithmeticOperation
           	  }
           }
       }
-      else if ((left instanceof XSNumericType) && (right instanceof XNodeSet)) {
-    	  XNodeSet rNodeSet = (XNodeSet)right;
+      else if ((left instanceof XSNumericType) && (right instanceof XMLNodeCursorImpl)) {
+    	  XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
           if (rNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
@@ -196,8 +196,8 @@ public class Minus extends ArithmeticOperation
           	  }
           }
       }
-      else if ((left instanceof XNodeSet) && (right instanceof XSNumericType)) {
-    	  XNodeSet lNodeSet = (XNodeSet)left;
+      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XSNumericType)) {
+    	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
@@ -220,13 +220,13 @@ public class Minus extends ArithmeticOperation
           	  }
           }
       }
-      else if ((left instanceof XNodeSet) && (right instanceof XNodeSet)) {          
-          XNodeSet lNodeSet = (XNodeSet)left;
+      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {          
+          XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           
-          XNodeSet rNodeSet = (XNodeSet)right;
+          XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
           if (rNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
@@ -448,8 +448,8 @@ public class Minus extends ArithmeticOperation
           	  }
           }
       }
-      else if (left instanceof XNodeSet) {
-    	  XNodeSet lNodeSet = (XNodeSet)left;
+      else if (left instanceof XMLNodeCursorImpl) {
+    	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }

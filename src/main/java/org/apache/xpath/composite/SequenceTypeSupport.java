@@ -47,7 +47,7 @@ import org.apache.xerces.xs.XSElementDeclaration;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xpath.XPath;
@@ -55,7 +55,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -460,7 +460,7 @@ public class SequenceTypeSupport {
             	}
             }
             
-            XNodeSet nodeSet = getNodeReference(srcValue);            
+            XMLNodeCursorImpl nodeSet = getNodeReference(srcValue);            
             XSTypeDefinition xsTypeDefinition = seqExpectedTypeData.getXsTypeDefinition();
             
             if ((nodeSet != null) && (xsTypeDefinition != null)) {
@@ -485,7 +485,7 @@ public class SequenceTypeSupport {
             }
             else if ((nodeSet != null) && ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == 
             		                                                                             SequenceTypeSupport.SCHEMA_ELEMENT_KIND))) {            	
-            	DTMIterator dtmIter = nodeSet.iterRaw();
+            	DTMCursorIterator dtmIter = nodeSet.iterRaw();
             	int nodeDtmHandle = dtmIter.nextNode();
             	DTM dtm = dtmIter.getDTM(nodeDtmHandle);
             	java.lang.String nodeName = dtm.getNodeName(nodeDtmHandle);
@@ -550,8 +550,8 @@ public class SequenceTypeSupport {
 	            	   }
 	            	}
 	            	else if (sequenceTypeKindTest.getKindVal() == DOCUMENT_KIND) {
-	            	   if (srcValue instanceof XNodeSet) {
-	            		  XNodeSet nodeSet1 = (XNodeSet)srcValue;
+	            	   if (srcValue instanceof XMLNodeCursorImpl) {
+	            		  XMLNodeCursorImpl nodeSet1 = (XMLNodeCursorImpl)srcValue;
 	            		  DTMManager dtmMgr = nodeSet1.getDTMManager();
 	            		  int nodeHandle = nodeSet1.nextNode();
 	            		  DTM dtm = dtmMgr.getDTM(nodeHandle);
@@ -824,7 +824,7 @@ public class SequenceTypeSupport {
                                                                               xctxt, srcLocator, itemTypeOccurenceIndicator, 
                                                                                                                        sequenceTypeKindTest);
             }
-            else if (srcValue instanceof XNodeSet) {
+            else if (srcValue instanceof XMLNodeCursorImpl) {
                result = castXNodeSetInstance(srcValue, sequenceTypeXPathExprStr, expectedSeqTypeData, 
                                                                               xctxt, srcLocator, itemTypeOccurenceIndicator, 
                                                                                                                        sequenceTypeKindTest);
@@ -1007,7 +1007,7 @@ public class SequenceTypeSupport {
     /**
      * Validate an xdm element node with an XML Schema type definition.
      */
-	public static boolean isXdmElemNodeValidWithSchemaType(XNodeSet xdmNode, XPathContext xctxt,
+	public static boolean isXdmElemNodeValidWithSchemaType(XMLNodeCursorImpl xdmNode, XPathContext xctxt,
 													      XSTypeDefinition xsTypeDefinition)
 														       throws Exception, ParserConfigurationException, SAXException, 
 															   IOException, TransformerException {
@@ -1015,8 +1015,8 @@ public class SequenceTypeSupport {
 		boolean isNodeValidWithSchemaType = false;
 
 		// Validate the node with an XML Schema type
-		xdmNode = (XNodeSet)(xdmNode.getFresh());
-		DTMIterator dtmIter = ((XNodeSet)xdmNode).iterRaw();
+		xdmNode = (XMLNodeCursorImpl)(xdmNode.getFresh());
+		DTMCursorIterator dtmIter = ((XMLNodeCursorImpl)xdmNode).iterRaw();
 		int nodeHandle = dtmIter.nextNode();
 		DTM dtm = xctxt.getDTM(nodeHandle);
 		Node node = dtm.getNode(nodeHandle);
@@ -1083,17 +1083,17 @@ public class SequenceTypeSupport {
 	 * an xdm node. A non-null object reference returned by this
 	 * method, indicates that an input object reference is a node.
 	 */
-	public static XNodeSet getNodeReference(XObject item) {
+	public static XMLNodeCursorImpl getNodeReference(XObject item) {
 		
-		XNodeSet nodeSet = null;
+		XMLNodeCursorImpl nodeSet = null;
 		
-		if (item instanceof XNodeSet) {
-		   nodeSet = (XNodeSet)item;			
+		if (item instanceof XMLNodeCursorImpl) {
+		   nodeSet = (XMLNodeCursorImpl)item;			
 		}
 		else if (item instanceof ResultSequence) {
 			ResultSequence rSeq = (ResultSequence)item;
-			if ((rSeq.size() == 1) && (rSeq.item(0) instanceof XNodeSet)) {
-			   nodeSet = (XNodeSet)(rSeq.item(0));
+			if ((rSeq.size() == 1) && (rSeq.item(0) instanceof XMLNodeCursorImpl)) {
+			   nodeSet = (XMLNodeCursorImpl)(rSeq.item(0));
 			}
 		}
 		
@@ -1567,7 +1567,7 @@ public class SequenceTypeSupport {
             result = convertedResultSeq;  
         }
         else if (xdmNodesDtmList.size() > 0) {
-            result = new XNodeSet(xdmNodesDtmList, dtmMgr); 
+            result = new XMLNodeCursorImpl(xdmNodesDtmList, dtmMgr); 
         }
         
         return result;
@@ -1586,7 +1586,7 @@ public class SequenceTypeSupport {
                                                                                                      throws TransformerException {
         XObject result = null;
         
-        XNodeSet xdmNodeSet = (XNodeSet)srcValue;
+        XMLNodeCursorImpl xdmNodeSet = (XMLNodeCursorImpl)srcValue;
         
         int nodeSetLen = xdmNodeSet.getLength();
                 
@@ -1609,12 +1609,12 @@ public class SequenceTypeSupport {
         else { 
             ResultSequence convertedResultSeq = new ResultSequence();
 
-            DTMIterator dtmIter = (DTMIterator)xdmNodeSet;
+            DTMCursorIterator dtmIter = (DTMCursorIterator)xdmNodeSet;
             
             int nextNodeDtmHandle;
                    
             while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {               
-               XNodeSet nodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());               
+               XMLNodeCursorImpl nodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmIter.getDTMManager());               
                
                String sequenceTypeNewXPathExprStr = null;
                if (sequenceTypeXPathExprStr != null) {

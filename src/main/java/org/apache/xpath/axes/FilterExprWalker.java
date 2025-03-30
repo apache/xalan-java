@@ -22,14 +22,14 @@ package org.apache.xpath.axes;
 
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpCodes;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 
 /**
  * Walker for the OP_VARIABLE, or OP_EXTFUNCTION, or OP_FUNCTION, or OP_GROUP,
@@ -131,7 +131,7 @@ public class FilterExprWalker extends AxesWalker
     FilterExprWalker clone = (FilterExprWalker) super.clone();
 
     if (null != m_exprObj)
-      clone.m_exprObj = (XNodeSet) m_exprObj.clone();
+      clone.m_exprObj = (XMLNodeCursorImpl) m_exprObj.clone();
 
     return clone;
   }
@@ -153,10 +153,10 @@ public class FilterExprWalker extends AxesWalker
         countProximityPosition(0);
 
         if (!executePredicates(n, m_lpi.getXPathContext()))
-          return DTMIterator.FILTER_SKIP;
+          return DTMCursorIterator.FILTER_SKIP;
       }
 
-      return DTMIterator.FILTER_ACCEPT;
+      return DTMCursorIterator.FILTER_ACCEPT;
     }
     catch (javax.xml.transform.TransformerException se)
     {
@@ -204,7 +204,7 @@ public class FilterExprWalker extends AxesWalker
   private Expression m_expr;
 
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
-  transient private XNodeSet m_exprObj;
+  transient private XMLNodeCursorImpl m_exprObj;
   
   private boolean m_mustHardReset = false;
   private boolean m_canDetachNodeset = true;

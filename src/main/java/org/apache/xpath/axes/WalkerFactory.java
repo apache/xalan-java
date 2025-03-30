@@ -23,7 +23,7 @@ package org.apache.xpath.axes;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.FunctionTable;
@@ -155,7 +155,7 @@ public class WalkerFactory
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public static DTMIterator newDTMIterator(
+  public static DTMCursorIterator newDTMIterator(
           Compiler compiler, int opPos,
           boolean isTopLevel)
             throws javax.xml.transform.TransformerException
@@ -164,7 +164,7 @@ public class WalkerFactory
     int firstStepPos = OpMap.getFirstChildPos(opPos);
     int analysis = analyze(compiler, firstStepPos, 0);
     boolean isOneStep = isOneStep(analysis);
-    DTMIterator iter;
+    DTMCursorIterator iter;
 
     // Is the iteration a one-step attribute pattern (i.e. select="@foo")?
     if (isOneStep && walksSelfOnly(analysis) && 

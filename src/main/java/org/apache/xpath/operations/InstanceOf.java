@@ -39,7 +39,7 @@ import org.apache.xerces.xs.XSElementDeclaration;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
@@ -49,7 +49,7 @@ import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.SequenceTypeSupport.OccurrenceIndicator;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
@@ -312,8 +312,8 @@ public class InstanceOf extends Operation
       else if ((xdmValue instanceof XSGMonth) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GMONTH)) {
           isInstanceOf = true;  
       }
-      else if (xdmValue instanceof XNodeSet) {
-          isInstanceOf = isNodesetInstanceOfType((XNodeSet)xdmValue, seqTypeData);
+      else if (xdmValue instanceof XMLNodeCursorImpl) {
+          isInstanceOf = isNodesetInstanceOfType((XMLNodeCursorImpl)xdmValue, seqTypeData);
       }
       else if (xdmValue instanceof ResultSequence) {
           isInstanceOf = isSequenceInstanceOfType((ResultSequence)xdmValue, seqTypeData); 
@@ -332,7 +332,7 @@ public class InstanceOf extends Operation
    * This method checks whether, an xdm nodeset is an instance of 
    * a specific type.
    */
-  private boolean isNodesetInstanceOfType(XNodeSet nodeSet, SequenceTypeData seqTypeData) throws 
+  private boolean isNodesetInstanceOfType(XMLNodeCursorImpl nodeSet, SequenceTypeData seqTypeData) throws 
                                                                          ParserConfigurationException, SAXException, 
                                                                          IOException, TransformerException, Exception {
 	  
@@ -345,7 +345,7 @@ public class InstanceOf extends Operation
 		  isInstanceOf = false; 
 	  }
 	  else {
-		  DTMIterator dtmIter = nodeSet.iterRaw();
+		  DTMCursorIterator dtmIter = nodeSet.iterRaw();
 
 		  List<Boolean> nodeSetSequenceTypeKindTestResultList = new ArrayList<Boolean>();
 
@@ -369,7 +369,7 @@ public class InstanceOf extends Operation
 							                                                    		                                       seqTypeKindTest.getNodeNsUri()))) {
 						  XSTypeDefinition xsTypeDefn = seqTypeData.getXsTypeDefinition();
 						  if (xsTypeDefn != null) {
-							  XNodeSet node = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());
+							  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmIter.getDTMManager());
 							  if (SequenceTypeSupport.isXdmElemNodeValidWithSchemaType(node, m_xctxt, xsTypeDefn)) {
 								  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));
 							  }
@@ -379,13 +379,13 @@ public class InstanceOf extends Operation
 							  }
 						  }
 						  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(seqTypeKindTest.getDataTypeUri())) {
-							  XNodeSet node = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());
+							  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmIter.getDTMManager());
 							  
 							  // Check whether this element node has complexContent (i.e, presence of 
 							  // child element or attribute). If 'yes' then instance of check will 
 							  // be false for this case.
-							  node = (XNodeSet)(node.getFresh());
-							  DTMIterator dtmIter1 = ((XNodeSet)node).iterRaw();
+							  node = (XMLNodeCursorImpl)(node.getFresh());
+							  DTMCursorIterator dtmIter1 = ((XMLNodeCursorImpl)node).iterRaw();
 							  int nodeHandle = dtmIter1.nextNode();
 							  DTM dtm1 = m_xctxt.getDTM(nodeHandle);
 							  Node node1 = dtm1.getNode(nodeHandle);
@@ -514,7 +514,7 @@ public class InstanceOf extends Operation
 						  if (xsTypeDefn != null) {
 							  if (xsTypeDefn instanceof XSSimpleType) {
 								  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)xsTypeDefn;
-								  XNodeSet node = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());
+								  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmIter.getDTMManager());
 								  try {
 								      xsSimpleTypeDecl.validate(node.str(), null, null);
 								      nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));
@@ -530,7 +530,7 @@ public class InstanceOf extends Operation
 							  }
 						  }
 						  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(seqTypeKindTest.getDataTypeUri())) {
-                              XNodeSet node = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());							  
+                              XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmIter.getDTMManager());							  
 							  java.lang.String dataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
 							  java.lang.String xpathConstructorFuncExprStr = "xs:" + dataTypeLocalName + "('" + node.str() + "')";
 							  xpathConstructorFuncExprStr += " instance of xs:" + dataTypeLocalName; 							  

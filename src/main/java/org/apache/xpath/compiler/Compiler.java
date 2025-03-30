@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
@@ -1022,7 +1022,7 @@ public class Compiler extends OpMap
     locPathDepth++;
     try
     {
-      DTMIterator iter = WalkerFactory.newDTMIterator(this, opPos, (locPathDepth == 0));
+      DTMCursorIterator iter = WalkerFactory.newDTMIterator(this, opPos, (locPathDepth == 0));
       return (Expression)iter; // cast OK, I guess.
     }
     finally
