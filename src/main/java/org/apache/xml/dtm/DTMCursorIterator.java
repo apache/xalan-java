@@ -26,30 +26,28 @@ package org.apache.xml.dtm;
  * filtered) set of nodes.  Their API is modeled largely after the DOM
  * NodeIterator.
  * 
- * <p>A DTMCursorIterator is a somewhat unusual type of iterator, in that it 
- * can serve both single node iteration and random access.</p>
- * 
- * <p>The DTMCursorIterator traversal semantics, i.e. how it walks an 
- * XPath Data Model (XDM) tree, are specified when it is created, possibly and 
- * probably by an XPath <a href="http://www.w3.org/TR/xpath#NT-LocationPath>LocationPath</a> 
- * or a <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.</p>
+ * <p>A DTMCursorIterator may serve both single node iteration and random access of nodes. 
+ * The DTMCursorIterator traversal semantics, i.e. how it walks an XPath Data Model (XDM) 
+ * tree are specified by the following XPath 3.1 grammar, 
+ * <a href="https://www.w3.org/TR/xpath-31/#id-path-expressions>PathExpr</a>.</p>
  * 
  * <p>A DTMCursorIterator is meant to be created once as a static object instance, 
  * and then cloned many times for runtime use. Or, this original object instance itself 
  * may be used for simpler use cases.</p>
  *
- * <p>At this time, we do not expect DTMCursorIterator to emulate
- * NodeIterator's "maintain relative position" semantics under
- * document mutation. It's likely to respond more like the
- * TreeWalker's "current node" semantics. However, since the base DTM
- * is immutable, this issue currently makes no practical
- * difference.</p>
+ * <p>It's not expected for DTMCursorIterator to emulate NodeIterator's 
+ * "maintain relative position" semantics for XDM document mutation. It's likely to 
+ * respond more like the TreeWalker's "current node" semantics. However, since 
+ * the base DTM object instance is immutable, this issue currently makes no 
+ * practical difference.</p>
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
+ * 
  * @author Joseph Kesselman <jkesselm@apache.org>
+ * @author Gary Gregory <ggregory@apache.org>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
- *         (XSLT 3.0 specific changes, to this class)
+ *         (XSL 3 specific changes, to this class)
  * 
  * @xsl.usage general
  */

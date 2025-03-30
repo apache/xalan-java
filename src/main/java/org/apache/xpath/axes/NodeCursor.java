@@ -32,14 +32,17 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 /**
- * This class is the dynamic wrapper for a Xalan DTMCursorIterator instance, 
- * and provides random access capabilities.
+ * An object of this class, is a dynamic wrapper for Xalan-J XSL 3 
+ * implementation's XSLDTMCursorIterator instance, and provides random 
+ * access capabilities.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
+ * 
  * @author Joseph Kesselman <jkesselm@apache.org>
+ * @author Gary Gregory <ggregory@apache.org>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
- *         (XPath 3.1 specific changes, to this class)
+ *         (XSL 3 specific changes, to this class)
  * 
  * @xsl.usage general
  */

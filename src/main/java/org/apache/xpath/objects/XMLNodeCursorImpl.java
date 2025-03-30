@@ -38,22 +38,26 @@ import org.w3c.dom.traversal.NodeIterator;
 import xml.xpath31.processor.types.XSUntyped;
 
 /**
- * This class represents an XPath 3.1 data model (XDM) ordered list of 
- * nodes, that can be iterated similar to a programming language 
- * cursor. This class, implements an XDM data model's node() abstraction. 
- * An object instance of this class, is capable of being converted to 
- * other data types such as string.
+ * This class definition, represents an XPath 3.1 data model (XDM) 
+ * ordered list of nodes that can be iterated similar to a programming 
+ * language cursor (like a JDBC java.sql.ResultSet object which is cursor 
+ * like, or a DB script cursor). This class, implements an XDM data 
+ * model's node() abstraction. An object instance of this class, is 
+ * also capable of being transformed via XSL transformation to other 
+ * data types such as string.
 
- * In addition to having this class, Xalan-J's XSL 3 implementation 
- * also has a class named ResultSequence that is capable of having
- * an ordered list of heterogeneous XDM items (which can be of XDM 
+ * In addition to this class, Xalan-J's XSL 3 implementation also has a 
+ * class named org.apache.xpath.objects.ResultSequence that is capable of 
+ * having an ordered list of heterogeneous XDM items (which can be of XDM 
  * kinds 'node', 'atomic value', 'function item', 'map' or an 'array').
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
+ * 
  * @author Joseph Kesselman <jkesselm@apache.org>
+ * @author Gary Gregory <ggregory@apache.org>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
- *         (XPath 3.1 specific changes, to this class)
+ *         (XSL 3 specific changes, to this class)
  * 
  * @xsl.usage general
  */
