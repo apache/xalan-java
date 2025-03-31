@@ -1802,10 +1802,10 @@ public class ElemTemplateElement extends UnImplNode
   }
   
   /**
-   * Method to determine whether, an XSLT instruction is in a sequence constructor's tail position.
+   * Method definition to determine whether, an XSLT instruction is in a sequence constructor's tail position.
    * 
    * The XSLT 3.0 spec, provides following definition to determine, whether an XSLT instruction
-   * is in the tail position within an XSLT sequence constructor,
+   * is in the tail position within an XSLT sequence constructor:
    * 
    * An instruction J is in a tail position within a sequence constructor SC if it satisfies 
    * one of the following conditions:
@@ -1822,12 +1822,12 @@ public class ElemTemplateElement extends UnImplNode
         
      Currently, we check only points 1), 2) and 3) as mentioned within previous definition above.
              
-     @param  xslInstr    the XSLT instruction for which we need to find, whether its in a tail position of an XSLT 
-                         sequence constructor.                          
+     @param  xslInstr    an XSLT instruction for which we need to find whether, that instruction is in 
+                         a tail position of sequence constructor.                          
    */
   protected boolean isXslInstructionInTailPositionOfSequenceConstructor(ElemTemplateElement xslInstr) {
       
-      boolean isXslInstructionInTailPositionOfSequenceConstructor = true;
+      boolean result = true;
       
       ElemTemplateElement elemTemplateElementNextSubling = xslInstr.m_nextSibling;
       
@@ -1835,24 +1835,24 @@ public class ElemTemplateElement extends UnImplNode
          ElemTemplateElement xslInstrParentElement = xslInstr.m_parentNode;
           
          if (xslInstrParentElement instanceof ElemIf) {
-            isXslInstructionInTailPositionOfSequenceConstructor = isXslInstructionInTailPositionOfSequenceConstructor(
+            result = isXslInstructionInTailPositionOfSequenceConstructor(
                                                                                              xslInstrParentElement); 
          }
          else if ((xslInstrParentElement instanceof ElemWhen) || (xslInstrParentElement 
                                                                                    instanceof ElemOtherwise)) {
              xslInstrParentElement = xslInstrParentElement.m_parentNode;
-             isXslInstructionInTailPositionOfSequenceConstructor = isXslInstructionInTailPositionOfSequenceConstructor(
+             result = isXslInstructionInTailPositionOfSequenceConstructor(
                                                                                                       xslInstrParentElement);
          }
       }
       else {
           if (!((elemTemplateElementNextSubling instanceof ElemIterateNextIteration) && 
                                                                       (elemTemplateElementNextSubling.m_nextSibling == null))) {
-              isXslInstructionInTailPositionOfSequenceConstructor = false;   
+              result = false;   
           }
       }
       
-      return isXslInstructionInTailPositionOfSequenceConstructor;
+      return result;
   }
   
   /**

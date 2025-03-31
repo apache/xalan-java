@@ -56,6 +56,7 @@ import org.apache.xpath.operations.Equals;
 import org.apache.xpath.operations.Except;
 import org.apache.xpath.operations.Gt;
 import org.apache.xpath.operations.Gte;
+import org.apache.xpath.operations.IDiv;
 import org.apache.xpath.operations.InstanceOf;
 import org.apache.xpath.operations.Intersect;
 import org.apache.xpath.operations.Lt;
@@ -234,6 +235,8 @@ public class Compiler extends OpMap
       expr = mult(opPos); break;
     case OpCodes.OP_DIV :
       expr = div(opPos); break;
+    case OpCodes.OP_IDIV :
+      expr = idiv(opPos); break;      
     case OpCodes.OP_MOD :
       expr = mod(opPos); break;
     case OpCodes.OP_NEG :
@@ -746,6 +749,20 @@ public class Compiler extends OpMap
   protected Expression div(int opPos) throws TransformerException
   {
     return compileOperation(new Div(), opPos);
+  }
+  
+  /**
+   * Compile a 'idiv' operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   *
+   * @return reference to {@link org.apache.xpath.operations.IDiv} instance.
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
+  protected Expression idiv(int opPos) throws TransformerException
+  {
+    return compileOperation(new IDiv(), opPos);
   }
 
   /**

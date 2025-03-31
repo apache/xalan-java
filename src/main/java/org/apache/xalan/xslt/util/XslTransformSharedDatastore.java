@@ -22,8 +22,8 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 
 /**
- * This class, has few XSL stylesheet transformation wide 
- * variables that are used during evaluation of specific XSL 
+ * A class definition, that has few XSL stylesheet transformation 
+ * wide variables that are used while evaluating specific XSL 
  * stylesheet instructions and XPath expressions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -39,20 +39,20 @@ public class XslTransformSharedDatastore {
     public static String xslSystemId;
     
     /**
-     * This class field represents, function items that're 
-     * returned from XSL stylesheet xsl:function calls.
+     * This class field represents, XDM function items that 
+     * are returned from XSL stylesheet xsl:function calls.
      */
     public static XPathInlineFunction xpathInlineFunction;
     
     /**
-     * This class field represents, XPath array values
+     * This class field represents, XDM array values
      * returned from evaluation of xsl:evaluate 
      * instruction.
      */
     public static XPathArray xpathArray;
     
     /**
-     * This class field represents, XPath map values
+     * This class field represents, XDM map values
      * returned from evaluation of xsl:evaluate 
      * instruction.
      */
@@ -60,22 +60,30 @@ public class XslTransformSharedDatastore {
     
     /**
      * This class field represents, compiled representation 
-     * of an XSL stylesheet.
+     * of an XSL stylesheet root object.
      */
     public static StylesheetRoot stylesheetRoot;
     
     /**
      * This class field represents, a string buffer value which is
      * RHS of an XPath expression like '* except (a,b)' i.e (a,b) and when used 
-     * with a node combining operation like union (and equivalently '|'), 
+     * with a node combining operator like union (and equivalently '|'), 
      * intersect or except.
      */
     public static StringBuffer xpathNodeCombiningExprRhsStrBuff;
     
     /**
-     * This class field represents, XPath predicate suffix of XSL 
+     * This class field represents, XPath predicate suffix for XSL 
      * template definition like xsl:template match=".[..]".
      */
     public static String templateMatchDotPatternPredicateStr;
+    
+    /**
+     * This class field represents, an org.apache.xpath.compiler.OpCodes 
+     * value, when evaluating an XPath 'idiv' operation. This class variable
+     * is initialized to a reasonably safest integer value for which, a 
+     * functional org.apache.xpath.compiler.OpCodes value will not exist. 
+     */
+    public static int xpathCallingOpCode = Integer.MIN_VALUE;
 
 }

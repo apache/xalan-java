@@ -147,7 +147,7 @@ public class XPathParser
                                                       "for", "in", "return", "if", "then", 
                                                       "else", "some", "every", "satisfies", 
                                                       "let", ":=", "-", "||", "=>", "instance", 
-                                                      "of", "as" };
+                                                      "of", "as", "idiv" };
   
   /**
    * When an XPath expression is () (i.e, representing an xdm empty sequence),
@@ -3053,6 +3053,7 @@ public class XPathParser
    * | MultiplicativeExpr 'div' UnaryExpr
    * | MultiplicativeExpr 'mod' UnaryExpr
    * | MultiplicativeExpr 'quo' UnaryExpr
+   * | MultiplicativeExpr 'idiv' UnaryExpr
    *
    * @param addPos Position where expression is to be added, or -1 for append.
    *
@@ -3088,6 +3089,18 @@ public class XPathParser
       {
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_DIV);
+
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+
+        addPos = MultiplicativeExpr(addPos);
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+        addPos += 2;
+      }
+      else if (tokenIs("idiv"))
+      {
+        nextToken();
+        insertOp(addPos, 2, OpCodes.OP_IDIV);
 
         int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 

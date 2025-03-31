@@ -44,6 +44,7 @@ import org.apache.xalan.tests.xpath3.XPathArithmeticOnDurationValuesTests;
 import org.apache.xalan.tests.xpath3.XPathBuiltinFunctionNamespceTests;
 import org.apache.xalan.tests.xpath3.XPathDynamicFunctionCallTests;
 import org.apache.xalan.tests.xpath3.XPathForExprTests;
+import org.apache.xalan.tests.xpath3.XPathIdivTests;
 import org.apache.xalan.tests.xpath3.XPathIfExprTests;
 import org.apache.xalan.tests.xpath3.XPathInstanceOfExprTests;
 import org.apache.xalan.tests.xpath3.XPathLetExprTests;
@@ -109,7 +110,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnRoundTests.class, XslSequenceInstTests.class, XPathNodeSequenceCombinationTests.class,
                 FnDocAvailableTests.class, FnUnparsedTextLinesTests.class, XslMethodOutputJsonTests.class,
                 XsGregorianTypeTests.class, XslMergeTests.class, XslSourceDocumentTests.class,
-                XslForkTests.class, XslResultDocumentTests.class })
+                XslForkTests.class, XslResultDocumentTests.class, XPathIdivTests.class })
 public class Xsl3TestSuite2 {
 
 }

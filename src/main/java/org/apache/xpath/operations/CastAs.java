@@ -21,14 +21,21 @@
 package org.apache.xpath.operations;
 
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
+
 /**
- * The XPath 3.1 "cast as" operation.
+ * An implementation of XPath 3.1 "cast as" expression 
+ * evaluation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -60,6 +67,50 @@ public class CastAs extends Operation
       XPathContext xpathContext = null;
       if (exprNode instanceof ElemTemplateElement) {
     	 xpathContext = ((ElemTemplateElement)exprNode).getXPathContext();
+      }
+      
+      try {
+    	  if (XslTransformSharedDatastore.xpathCallingOpCode == OpCodes.OP_IDIV) {
+    		  if (left instanceof XSDecimal) {
+    			  XSDecimal xsDecimal = (XSDecimal)left;
+    			  double dblValue = (xsDecimal.getValue()).doubleValue();
+    			  if (dblValue >= 0) {
+    				  int intValue = (int)(Math.floor(dblValue));
+    				  java.lang.String intStrValue = java.lang.String.valueOf(intValue);
+
+    				  result = new XSInteger(intStrValue);
+    			  }
+    			  else {
+    				  int intValue = (int)(Math.ceil(dblValue));
+    				  java.lang.String intStrValue = java.lang.String.valueOf(intValue);
+
+    				  result = new XSInteger(intStrValue);
+    			  }
+    			  
+    			  return result;
+    		  }
+    		  else if (left instanceof XSDouble) {
+    			  double dblValue = ((XSDouble)left).doubleValue();    			  
+    			  if (dblValue >= 0) {
+    				  int intValue = (int)(Math.floor(dblValue));
+    				  java.lang.String intStrValue = java.lang.String.valueOf(intValue);
+
+    				  result = new XSInteger(intStrValue);
+    			  }
+    			  else {
+    				  int intValue = (int)(Math.ceil(dblValue));
+    				  java.lang.String intStrValue = java.lang.String.valueOf(intValue);
+
+    				  result = new XSInteger(intStrValue);
+    			  }
+    			  
+    			  return result;
+    		  }
+    	  }
+      }
+      finally {
+    	  // Reset the value of variable XslTransformSharedDatastore.xpathCallingOpCode 
+    	  XslTransformSharedDatastore.xpathCallingOpCode = Integer.MIN_VALUE;
       }
       
       result = SequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, xpathContext);
