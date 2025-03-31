@@ -113,6 +113,8 @@ public class CastAs extends Operation
     	  XslTransformSharedDatastore.xpathCallingOpCode = Integer.MIN_VALUE;
       }
       
+      // Evaluate XPath "cast as" expression, when XPath "idiv" expression 
+      // evaluation was not requested within original XPath input expression.
       result = SequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, xpathContext);
       
       return result;

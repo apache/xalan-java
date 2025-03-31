@@ -541,6 +541,9 @@ public class FunctionTable
   
   /** The 'current-merge-key()' id (XSLT). */
   public static final int FUNC_CURRENT_MERGE_KEY = 172;
+  
+  /** The 'transform()' id. */
+  public static final int FUNC_TRANSFORM = 173;
 
   // Proprietary
 
@@ -631,10 +634,10 @@ public class FunctionTable
   private HashMap m_functionId_customer = new HashMap();
   
   /**
-   * Number of built in functions. Be sure to update this as
+   * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 173;
+  private static final int NUM_BUILT_IN_FUNCS = 174;
 
   /**
    * Number of built-in functions that may be added.
@@ -646,654 +649,422 @@ public class FunctionTable
    */
   private int m_funcNextFreeIndex = NUM_BUILT_IN_FUNCS;
   
-  static
-  {
-    m_functions = new Class[NUM_BUILT_IN_FUNCS];
-    m_functions[FUNC_CURRENT] = org.apache.xpath.functions.FuncCurrent.class;
-    m_functions[FUNC_LAST] = org.apache.xpath.functions.FuncLast.class;
-    m_functions[FUNC_POSITION] = org.apache.xpath.functions.FuncPosition.class;
-    m_functions[FUNC_COUNT] = org.apache.xpath.functions.FuncCount.class;
-    m_functions[FUNC_ID] = org.apache.xpath.functions.FuncId.class;
-    m_functions[FUNC_KEY] =
-      org.apache.xalan.templates.FuncKey.class;
-    m_functions[FUNC_LOCAL_NAME] = 
-      org.apache.xpath.functions.FuncLocalName.class;
-    m_functions[FUNC_NAMESPACE_URI] = 
-      org.apache.xpath.functions.FuncNamespaceUri.class;
-    
-    m_functions[FUNC_NAME] = org.apache.xpath.functions.FuncName.class;
-    
-    m_functions[FUNC_RESOLVE_QNAME] = org.apache.xpath.functions.FuncResolveQName.class;
-    m_functions[FUNC_QNAME] = org.apache.xpath.functions.FuncQName.class;
-    m_functions[FUNC_PREFIX_FROM_QNAME] = org.apache.xpath.functions.FuncPrefixFromQName.class;
-    m_functions[FUNC_LOCAL_NAME_FROM_QNAME] = org.apache.xpath.functions.FuncLocalNameFromQName.class;
-    m_functions[FUNC_NAMESPACE_URI_FROM_QNAME] = org.apache.xpath.functions.FuncNamespaceUriFromQName.class;
-    m_functions[FUNC_NAMESPACE_URI_FOR_PREFIX] = org.apache.xpath.functions.FuncNamespaceUriForPrefix.class;
-    m_functions[FUNC_IN_SCOPE_PREFIXES] = org.apache.xpath.functions.FuncInScopePrefixes.class;
-    
-    m_functions[FUNC_GENERATE_ID] = 
-      org.apache.xpath.functions.FuncGenerateId.class;
-    m_functions[FUNC_NOT] = org.apache.xpath.functions.FuncNot.class;
-    m_functions[FUNC_TRUE] = org.apache.xpath.functions.FuncTrue.class;
-    m_functions[FUNC_FALSE] = org.apache.xpath.functions.FuncFalse.class;
-    m_functions[FUNC_BOOLEAN] = org.apache.xpath.functions.FuncBoolean.class;
-    m_functions[FUNC_LANG] = org.apache.xpath.functions.FuncLang.class;
-    m_functions[FUNC_ROOT] = org.apache.xpath.functions.FuncRoot.class;
-    m_functions[FUNC_NUMBER] = org.apache.xpath.functions.FuncNumber.class;
-    m_functions[FUNC_FLOOR] = org.apache.xpath.functions.FuncFloor.class;
-    m_functions[FUNC_CEILING] = org.apache.xpath.functions.FuncCeiling.class;
-    m_functions[FUNC_ROUND] = org.apache.xpath.functions.FuncRound.class;
-    m_functions[FUNC_SUM] = org.apache.xpath.functions.FuncSum.class;
-    m_functions[FUNC_STRING] = org.apache.xpath.functions.FuncString.class;
-    
-    m_functions[FUNC_DATA] = org.apache.xpath.functions.FuncData.class;
-    
-    m_functions[FUNC_STARTS_WITH] = 
-      org.apache.xpath.functions.FuncStartsWith.class;
-    m_functions[FUNC_CONTAINS] = org.apache.xpath.functions.FuncContains.class;
-    m_functions[FUNC_SUBSTRING_BEFORE] = 
-      org.apache.xpath.functions.FuncSubstringBefore.class;
-    m_functions[FUNC_SUBSTRING_AFTER] = 
-      org.apache.xpath.functions.FuncSubstringAfter.class;
-    m_functions[FUNC_NORMALIZE_SPACE] = 
-      org.apache.xpath.functions.FuncNormalizeSpace.class;
-    m_functions[FUNC_TRANSLATE] = 
-      org.apache.xpath.functions.FuncTranslate.class;
-    m_functions[FUNC_CONCAT] = org.apache.xpath.functions.FuncConcat.class;
-    m_functions[FUNC_SYSTEM_PROPERTY] = 
-      org.apache.xpath.functions.FuncSystemProperty.class;
-    m_functions[FUNC_EXT_FUNCTION_AVAILABLE] =
-      org.apache.xpath.functions.FuncExtFunctionAvailable.class;
-    m_functions[FUNC_EXT_ELEM_AVAILABLE] =
-      org.apache.xpath.functions.FuncExtElementAvailable.class;
-    m_functions[FUNC_SUBSTRING] = 
-      org.apache.xpath.functions.FuncSubstring.class;
-    m_functions[FUNC_STRING_LENGTH] = 
-      org.apache.xpath.functions.FuncStringLength.class;
-    m_functions[FUNC_DOCLOCATION] = 
-      org.apache.xpath.functions.FuncDoclocation.class;
-    m_functions[FUNC_UNPARSED_ENTITY_URI] =
-      org.apache.xpath.functions.FuncUnparsedEntityURI.class;
-    
-    m_functions[FUNC_MATCHES] = 
-      org.apache.xpath.functions.FuncMatches.class;
-    m_functions[FUNC_REPLACE] = 
-      org.apache.xpath.functions.FuncReplace.class;
-    
-    m_functions[FUNC_CURRENT_GROUP] = 
-      org.apache.xalan.templates.FuncCurrentGroup.class;
-    m_functions[FUNC_CURRENT_GROUPING_KEY] = 
-      org.apache.xalan.templates.FuncCurrentGroupingKey.class;
-    
-    m_functions[FUNC_CURRENT_MERGE_GROUP] = 
-      org.apache.xalan.templates.FuncCurrentMergeGroup.class;
-    m_functions[FUNC_CURRENT_MERGE_KEY] = 
-      org.apache.xalan.templates.FuncCurrentMergeKey.class;
-    
-    m_functions[FUNC_ABS] = 
-      org.apache.xpath.functions.FuncAbs.class;
-    m_functions[FUNC_REGEX_GROUP] = 
-      org.apache.xalan.templates.FuncRegexGroup.class;
-    m_functions[FUNC_TOKENIZE] = 
-      org.apache.xpath.functions.FuncTokenize.class;
-    m_functions[FUNC_ANALYZE_STRING] = 
-      org.apache.xpath.functions.FuncAnalyzeString.class;
-    m_functions[FUNC_UNPARSED_TEXT] = 
-      org.apache.xpath.functions.FuncUnparsedText.class;
-    m_functions[FUNC_UNPARSED_TEXT_LINES] = 
-      org.apache.xpath.functions.FuncUnparsedTextLines.class;
-    m_functions[FUNC_COLLECTION] = 
-      org.apache.xpath.functions.FuncCollection.class;
-    m_functions[FUNC_COLLECTION] = 
-      org.apache.xpath.functions.FuncCollection.class;
-    m_functions[FUNC_STRING_JOIN] = 
-      org.apache.xpath.functions.FuncStringJoin.class;
-    m_functions[FUNC_CURRENT_DATETIME] = 
-      org.apache.xpath.functions.FuncCurrentDateTime.class;
-    m_functions[FUNC_CURRENT_DATE] = 
-      org.apache.xpath.functions.FuncCurrentDate.class;
-    m_functions[FUNC_CURRENT_TIME] = 
-      org.apache.xpath.functions.FuncCurrentTime.class;
-    m_functions[FUNC_UPPER_CASE] = 
-      org.apache.xpath.functions.FuncUpperCase.class;
-    m_functions[FUNC_LOWER_CASE] = 
-      org.apache.xpath.functions.FuncLowerCase.class;
-    m_functions[FUNC_IMPLICIT_TIMEZONE] = 
-      org.apache.xpath.functions.FuncImplicitTimezone.class;
-    m_functions[FUNC_INDEX_OF] = 
-      org.apache.xpath.functions.FuncIndexOf.class;        
-    m_functions[FUNC_DISTINCT_VALUES] = 
-      org.apache.xpath.functions.FuncDistinctValues.class;
-    
-    m_functions[FUNC_FOR_EACH] = 
-      org.apache.xpath.functions.FuncForEach.class;
-    m_functions[FUNC_FILTER] = 
-      org.apache.xpath.functions.FuncFilter.class;
-    m_functions[FUNC_FOLD_LEFT] = 
-      org.apache.xpath.functions.FuncFoldLeft.class;
-    m_functions[FUNC_FOLD_RIGHT] = 
-      org.apache.xpath.functions.FuncFoldRight.class;
-    m_functions[FUNC_FOR_EACH_PAIR] = 
-      org.apache.xpath.functions.FuncForEachPair.class;
-    m_functions[FUNC_SORT] = 
-      org.apache.xpath.functions.FuncSort.class;
-    m_functions[FUNC_APPLY] = org.apache.xpath.functions.FuncApply.class;
-    
-    // XPath 3.1 built-in functions configurations for the math 
-    // functions namespace http://www.w3.org/2005/xpath-functions/math    
-    m_functions[FUNC_MATH_PI] = 
-      org.apache.xpath.functions.math.FuncMathPi.class;
-    m_functions[FUNC_MATH_EXP] = 
-      org.apache.xpath.functions.math.FuncMathExp.class;
-    m_functions[FUNC_MATH_EXP10] = 
-      org.apache.xpath.functions.math.FuncMathExp10.class;
-    m_functions[FUNC_MATH_LOG] = 
-      org.apache.xpath.functions.math.FuncMathLog.class;
-    m_functions[FUNC_MATH_LOG10] = 
-      org.apache.xpath.functions.math.FuncMathLog10.class;
-    m_functions[FUNC_MATH_POW] = 
-      org.apache.xpath.functions.math.FuncMathPow.class;
-    m_functions[FUNC_MATH_SQRT] = 
-      org.apache.xpath.functions.math.FuncMathSqrt.class;
-    m_functions[FUNC_MATH_SIN] = 
-      org.apache.xpath.functions.math.FuncMathSin.class;
-    m_functions[FUNC_MATH_COS] = 
-      org.apache.xpath.functions.math.FuncMathCos.class;
-    m_functions[FUNC_MATH_TAN] = 
-      org.apache.xpath.functions.math.FuncMathTan.class;
-    m_functions[FUNC_MATH_ASIN] = 
-      org.apache.xpath.functions.math.FuncMathAsin.class;
-    m_functions[FUNC_MATH_ACOS] = 
-      org.apache.xpath.functions.math.FuncMathAcos.class;
-    m_functions[FUNC_MATH_ATAN] = 
-      org.apache.xpath.functions.math.FuncMathAtan.class;
-    m_functions[FUNC_MATH_ATAN2] = 
-      org.apache.xpath.functions.math.FuncMathAtan2.class;
-    
-    m_functions[FUNC_YEARS_FROM_DURATION] = 
-      org.apache.xpath.functions.FuncYearsFromDuration.class;
-    m_functions[FUNC_MONTHS_FROM_DURATION] = 
-      org.apache.xpath.functions.FuncMonthsFromDuration.class;
-    m_functions[FUNC_DAYS_FROM_DURATION] = 
-      org.apache.xpath.functions.FuncDaysFromDuration.class;
-    m_functions[FUNC_HOURS_FROM_DURATION] = 
-      org.apache.xpath.functions.FuncHoursFromDuration.class;
-    m_functions[FUNC_MINUTES_FROM_DURATION] = 
-      org.apache.xpath.functions.FuncMinutesFromDuration.class;
-    m_functions[FUNC_SECONDS_FROM_DURATION] = 
-      org.apache.xpath.functions.FuncSecondsFromDuration.class;
-    
-    m_functions[FUNC_CODE_POINTS_TO_STRING] = 
-      org.apache.xpath.functions.FuncCodePointsToString.class;
-    m_functions[FUNC_STRING_TO_CODE_POINTS] = 
-      org.apache.xpath.functions.FuncStringToCodepoints.class;
-    m_functions[FUNC_COMPARE] = 
-      org.apache.xpath.functions.FuncCompare.class;
-    m_functions[FUNC_CODEPOINT_EQUAL] = 
-      org.apache.xpath.functions.FuncCodepointEqual.class;
-    m_functions[FUNC_CONTAINS_TOKEN] = 
-      org.apache.xpath.functions.FuncContainsToken.class;
-    
-    m_functions[FUNC_EMPTY] = 
-      org.apache.xpath.functions.FuncEmpty.class;
-    m_functions[FUNC_EXISTS] = 
-      org.apache.xpath.functions.FuncExists.class;
-    m_functions[FUNC_HEAD] = 
-      org.apache.xpath.functions.FuncHead.class;
-    m_functions[FUNC_TAIL] = 
-      org.apache.xpath.functions.FuncTail.class;
-    m_functions[FUNC_INSERT_BEFORE] = 
-      org.apache.xpath.functions.FuncInsertBefore.class;
-    m_functions[FUNC_REMOVE] = 
-      org.apache.xpath.functions.FuncRemove.class;
-    m_functions[FUNC_REVERSE] = 
-      org.apache.xpath.functions.FuncReverse.class;
-    m_functions[FUNC_SUBSEQUENCE] = 
-      org.apache.xpath.functions.FuncSubsequence.class;
-    m_functions[FUNC_UNORDERED] = 
-      org.apache.xpath.functions.FuncUnordered.class;
-    
-    m_functions[FUNC_PARSE_XML] = 
-      org.apache.xpath.functions.FuncParseXml.class;
-    m_functions[FUNC_PARSE_XML_FRAGMENT] = 
-      org.apache.xpath.functions.FuncParseXmlFragment.class;
-    
-    m_functions[FUNC_AVG] = org.apache.xpath.functions.FuncAvg.class;
-    m_functions[FUNC_MAX] = org.apache.xpath.functions.FuncMax.class;
-    m_functions[FUNC_MIN] = org.apache.xpath.functions.FuncMin.class;
-    
-    m_functions[FUNC_DOC] = org.apache.xpath.functions.FuncDoc.class;
-    
-    m_functions[FUNC_NODE_NAME] = org.apache.xpath.functions.FuncNodeName.class;
-    m_functions[FUNC_DEEP_EQUAL] = org.apache.xpath.functions.FuncDeepEqual.class;
-    
-    m_functions[FUNC_DATE_TIME] = org.apache.xpath.functions.FuncDateTime.class;
-    m_functions[FUNC_YEAR_FROM_DATE_TIME] = org.apache.xpath.functions.FuncYearFromDateTime.class;
-    m_functions[FUNC_MONTH_FROM_DATE_TIME] = org.apache.xpath.functions.FuncMonthFromDateTime.class;
-    m_functions[FUNC_DAY_FROM_DATE_TIME] = org.apache.xpath.functions.FuncDayFromDateTime.class;
-    m_functions[FUNC_HOURS_FROM_DATE_TIME] = org.apache.xpath.functions.FuncHoursFromDateTime.class;
-    m_functions[FUNC_MINUTES_FROM_DATE_TIME] = org.apache.xpath.functions.FuncMinutesFromDateTime.class;
-    m_functions[FUNC_SECONDS_FROM_DATE_TIME] = org.apache.xpath.functions.FuncSecondsFromDateTime.class;
-    m_functions[FUNC_TIMEZONE_FROM_DATE_TIME] = org.apache.xpath.functions.FuncTimezoneFromDateTime.class;
-    m_functions[FUNC_YEAR_FROM_DATE] = org.apache.xpath.functions.FuncYearFromDate.class;
-    m_functions[FUNC_MONTH_FROM_DATE] = org.apache.xpath.functions.FuncMonthFromDate.class;
-    m_functions[FUNC_DAY_FROM_DATE] = org.apache.xpath.functions.FuncDayFromDate.class;
-    m_functions[FUNC_TIMEZONE_FROM_DATE] = org.apache.xpath.functions.FuncTimezoneFromDate.class;
-    m_functions[FUNC_HOURS_FROM_TIME] = org.apache.xpath.functions.FuncHoursFromTime.class;
-    m_functions[FUNC_MINUTES_FROM_TIME] = org.apache.xpath.functions.FuncMinutesFromTime.class;
-    m_functions[FUNC_SECONDS_FROM_TIME] = org.apache.xpath.functions.FuncSecondsFromTime.class;
-    m_functions[FUNC_TIMEZONE_FROM_TIME] = org.apache.xpath.functions.FuncTimezoneFromTime.class;
-    
-    m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.FuncDefaultCollation.class;
-    m_functions[FUNC_BASE_URI] = org.apache.xpath.functions.FuncBaseUri.class;
-    m_functions[FUNC_DOCUMENT_URI] = org.apache.xpath.functions.FuncDocumentUri.class;        
-    
-    // XPath 3.1 built-in functions configurations for the map 
-    // functions namespace http://www.w3.org/2005/xpath-functions/map
-    m_functions[FUNC_MAP_MERGE] = org.apache.xpath.functions.map.FuncMapMerge.class;
-    m_functions[FUNC_MAP_SIZE] = org.apache.xpath.functions.map.FuncMapSize.class;
-    m_functions[FUNC_MAP_KEYS] = org.apache.xpath.functions.map.FuncMapKeys.class;
-    m_functions[FUNC_MAP_CONTAINS] = org.apache.xpath.functions.map.FuncMapContains.class;
-    m_functions[FUNC_MAP_GET] = org.apache.xpath.functions.map.FuncMapGet.class;
-    m_functions[FUNC_MAP_PUT] = org.apache.xpath.functions.map.FuncMapPut.class;
-    m_functions[FUNC_MAP_ENTRY] = org.apache.xpath.functions.map.FuncMapEntry.class;
-    m_functions[FUNC_MAP_FOREACH] = org.apache.xpath.functions.map.FuncMapForEach.class;
-    m_functions[FUNC_MAP_REMOVE] = org.apache.xpath.functions.map.FuncMapRemove.class;
-    m_functions[FUNC_MAP_FIND] = org.apache.xpath.functions.map.FuncMapFind.class;
-    
-    // XPath 3.1 built-in functions configurations for the array 
-    // functions namespace http://www.w3.org/2005/xpath-functions/array    
-    m_functions[FUNC_ARRAY_SIZE] = org.apache.xpath.functions.array.FuncArraySize.class;
-    m_functions[FUNC_ARRAY_GET] = org.apache.xpath.functions.array.FuncArrayGet.class;
-    m_functions[FUNC_ARRAY_PUT] = org.apache.xpath.functions.array.FuncArrayPut.class;
-    m_functions[FUNC_ARRAY_APPEND] = org.apache.xpath.functions.array.FuncArrayAppend.class;
-    m_functions[FUNC_ARRAY_SUBARRAY] = org.apache.xpath.functions.array.FuncSubarray.class;
-    m_functions[FUNC_ARRAY_REMOVE] = org.apache.xpath.functions.array.FuncArrayRemove.class;
-    m_functions[FUNC_ARRAY_INSERT_BEFORE] = org.apache.xpath.functions.array.FuncArrayInsertBefore.class;
-    m_functions[FUNC_ARRAY_HEAD] = org.apache.xpath.functions.array.FuncArrayHead.class;
-    m_functions[FUNC_ARRAY_TAIL] = org.apache.xpath.functions.array.FuncArrayTail.class;
-    m_functions[FUNC_ARRAY_REVERSE] = org.apache.xpath.functions.array.FuncArrayReverse.class;
-    m_functions[FUNC_ARRAY_JOIN] = org.apache.xpath.functions.array.FuncArrayJoin.class;
-    m_functions[FUNC_ARRAY_FOR_EACH] = org.apache.xpath.functions.array.FuncArrayForEach.class;
-    m_functions[FUNC_ARRAY_FILTER] = org.apache.xpath.functions.array.FuncArrayFilter.class;
-    m_functions[FUNC_ARRAY_FOR_EACH_PAIR] = org.apache.xpath.functions.array.FuncArrayForEachPair.class;
-    m_functions[FUNC_ARRAY_FOLD_LEFT] = org.apache.xpath.functions.array.FuncArrayFoldLeft.class;
-    m_functions[FUNC_ARRAY_FOLD_RIGHT] = org.apache.xpath.functions.array.FuncArrayFoldRight.class;
-    m_functions[FUNC_ARRAY_SORT] = org.apache.xpath.functions.array.FuncArraySort.class;
-    m_functions[FUNC_ARRAY_FLATTEN] = org.apache.xpath.functions.array.FuncArrayFlatten.class;
-    
-    m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.json.FuncParseJson.class;
-    m_functions[FUNC_JSON_DOC] = org.apache.xpath.functions.json.FuncJsonDoc.class;
-    m_functions[FUNC_JSON_TO_XML] = org.apache.xpath.functions.json.FuncJsonToXml.class;
-    m_functions[FUNC_XML_TO_JSON] = org.apache.xpath.functions.json.FuncXmlToJson.class;
-    
-    m_functions[FUNC_DOC_AVAILABLE] = org.apache.xpath.functions.FuncDocAvailable.class;
-    
+  static {
+	  m_functions = new Class[NUM_BUILT_IN_FUNCS];
+	  
+	  m_functions[FUNC_CURRENT] = org.apache.xpath.functions.FuncCurrent.class;
+	  m_functions[FUNC_LAST] = org.apache.xpath.functions.FuncLast.class;
+	  m_functions[FUNC_POSITION] = org.apache.xpath.functions.FuncPosition.class;
+	  m_functions[FUNC_COUNT] = org.apache.xpath.functions.FuncCount.class;
+	  m_functions[FUNC_ID] = org.apache.xpath.functions.FuncId.class;
+	  m_functions[FUNC_KEY] = org.apache.xalan.templates.FuncKey.class;
+	  m_functions[FUNC_LOCAL_NAME] = org.apache.xpath.functions.FuncLocalName.class;
+	  m_functions[FUNC_NAMESPACE_URI] = org.apache.xpath.functions.FuncNamespaceUri.class;
+
+	  m_functions[FUNC_NAME] = org.apache.xpath.functions.FuncName.class;
+
+	  m_functions[FUNC_RESOLVE_QNAME] = org.apache.xpath.functions.FuncResolveQName.class;
+	  m_functions[FUNC_QNAME] = org.apache.xpath.functions.FuncQName.class;
+	  m_functions[FUNC_PREFIX_FROM_QNAME] = org.apache.xpath.functions.FuncPrefixFromQName.class;
+	  m_functions[FUNC_LOCAL_NAME_FROM_QNAME] = org.apache.xpath.functions.FuncLocalNameFromQName.class;
+	  m_functions[FUNC_NAMESPACE_URI_FROM_QNAME] = org.apache.xpath.functions.FuncNamespaceUriFromQName.class;
+	  m_functions[FUNC_NAMESPACE_URI_FOR_PREFIX] = org.apache.xpath.functions.FuncNamespaceUriForPrefix.class;
+	  m_functions[FUNC_IN_SCOPE_PREFIXES] = org.apache.xpath.functions.FuncInScopePrefixes.class;
+
+	  m_functions[FUNC_GENERATE_ID] = org.apache.xpath.functions.FuncGenerateId.class;
+	  m_functions[FUNC_NOT] = org.apache.xpath.functions.FuncNot.class;
+	  m_functions[FUNC_TRUE] = org.apache.xpath.functions.FuncTrue.class;
+	  m_functions[FUNC_FALSE] = org.apache.xpath.functions.FuncFalse.class;
+	  m_functions[FUNC_BOOLEAN] = org.apache.xpath.functions.FuncBoolean.class;
+	  m_functions[FUNC_LANG] = org.apache.xpath.functions.FuncLang.class;
+	  m_functions[FUNC_ROOT] = org.apache.xpath.functions.FuncRoot.class;
+	  m_functions[FUNC_NUMBER] = org.apache.xpath.functions.FuncNumber.class;
+	  m_functions[FUNC_FLOOR] = org.apache.xpath.functions.FuncFloor.class;
+	  m_functions[FUNC_CEILING] = org.apache.xpath.functions.FuncCeiling.class;
+	  m_functions[FUNC_ROUND] = org.apache.xpath.functions.FuncRound.class;
+	  m_functions[FUNC_SUM] = org.apache.xpath.functions.FuncSum.class;
+	  m_functions[FUNC_STRING] = org.apache.xpath.functions.FuncString.class;
+
+	  m_functions[FUNC_DATA] = org.apache.xpath.functions.FuncData.class;
+
+	  m_functions[FUNC_STARTS_WITH] = org.apache.xpath.functions.FuncStartsWith.class;
+	  m_functions[FUNC_CONTAINS] = org.apache.xpath.functions.FuncContains.class;
+	  m_functions[FUNC_SUBSTRING_BEFORE] = org.apache.xpath.functions.FuncSubstringBefore.class;
+	  m_functions[FUNC_SUBSTRING_AFTER] = org.apache.xpath.functions.FuncSubstringAfter.class;
+	  m_functions[FUNC_NORMALIZE_SPACE] = org.apache.xpath.functions.FuncNormalizeSpace.class;
+	  m_functions[FUNC_TRANSLATE] = org.apache.xpath.functions.FuncTranslate.class;
+	  m_functions[FUNC_CONCAT] = org.apache.xpath.functions.FuncConcat.class;
+	  m_functions[FUNC_SYSTEM_PROPERTY] = org.apache.xpath.functions.FuncSystemProperty.class;
+	  m_functions[FUNC_EXT_FUNCTION_AVAILABLE] = org.apache.xpath.functions.FuncExtFunctionAvailable.class;
+	  m_functions[FUNC_EXT_ELEM_AVAILABLE] = org.apache.xpath.functions.FuncExtElementAvailable.class;
+	  m_functions[FUNC_SUBSTRING] = org.apache.xpath.functions.FuncSubstring.class;
+	  m_functions[FUNC_STRING_LENGTH] = org.apache.xpath.functions.FuncStringLength.class;
+	  m_functions[FUNC_DOCLOCATION] = org.apache.xpath.functions.FuncDoclocation.class;
+	  m_functions[FUNC_UNPARSED_ENTITY_URI] = org.apache.xpath.functions.FuncUnparsedEntityURI.class;
+
+	  m_functions[FUNC_MATCHES] = org.apache.xpath.functions.FuncMatches.class;
+	  m_functions[FUNC_REPLACE] = org.apache.xpath.functions.FuncReplace.class;
+
+	  m_functions[FUNC_CURRENT_GROUP] = org.apache.xalan.templates.FuncCurrentGroup.class;
+	  m_functions[FUNC_CURRENT_GROUPING_KEY] = org.apache.xalan.templates.FuncCurrentGroupingKey.class;
+
+	  m_functions[FUNC_CURRENT_MERGE_GROUP] = org.apache.xalan.templates.FuncCurrentMergeGroup.class;
+	  m_functions[FUNC_CURRENT_MERGE_KEY] = org.apache.xalan.templates.FuncCurrentMergeKey.class;
+
+	  m_functions[FUNC_ABS] = org.apache.xpath.functions.FuncAbs.class;
+	  m_functions[FUNC_REGEX_GROUP] = org.apache.xalan.templates.FuncRegexGroup.class;
+	  m_functions[FUNC_TOKENIZE] = org.apache.xpath.functions.FuncTokenize.class;
+	  m_functions[FUNC_ANALYZE_STRING] = org.apache.xpath.functions.FuncAnalyzeString.class;
+	  m_functions[FUNC_UNPARSED_TEXT] = org.apache.xpath.functions.FuncUnparsedText.class;
+	  m_functions[FUNC_UNPARSED_TEXT_LINES] = org.apache.xpath.functions.FuncUnparsedTextLines.class;
+	  m_functions[FUNC_COLLECTION] = org.apache.xpath.functions.FuncCollection.class;
+	  m_functions[FUNC_COLLECTION] = org.apache.xpath.functions.FuncCollection.class;
+	  m_functions[FUNC_STRING_JOIN] = org.apache.xpath.functions.FuncStringJoin.class;
+	  m_functions[FUNC_CURRENT_DATETIME] = org.apache.xpath.functions.FuncCurrentDateTime.class;
+	  m_functions[FUNC_CURRENT_DATE] = org.apache.xpath.functions.FuncCurrentDate.class;
+	  m_functions[FUNC_CURRENT_TIME] = org.apache.xpath.functions.FuncCurrentTime.class;
+	  m_functions[FUNC_UPPER_CASE] = org.apache.xpath.functions.FuncUpperCase.class;
+	  m_functions[FUNC_LOWER_CASE] = org.apache.xpath.functions.FuncLowerCase.class;
+	  m_functions[FUNC_IMPLICIT_TIMEZONE] = org.apache.xpath.functions.FuncImplicitTimezone.class;
+	  m_functions[FUNC_INDEX_OF] = org.apache.xpath.functions.FuncIndexOf.class;        
+	  m_functions[FUNC_DISTINCT_VALUES] = org.apache.xpath.functions.FuncDistinctValues.class;
+
+	  m_functions[FUNC_FOR_EACH] = org.apache.xpath.functions.FuncForEach.class;
+	  m_functions[FUNC_FILTER] = org.apache.xpath.functions.FuncFilter.class;
+	  m_functions[FUNC_FOLD_LEFT] = org.apache.xpath.functions.FuncFoldLeft.class;
+	  m_functions[FUNC_FOLD_RIGHT] = org.apache.xpath.functions.FuncFoldRight.class;
+	  m_functions[FUNC_FOR_EACH_PAIR] = org.apache.xpath.functions.FuncForEachPair.class;
+	  m_functions[FUNC_SORT] = org.apache.xpath.functions.FuncSort.class;
+	  m_functions[FUNC_APPLY] = org.apache.xpath.functions.FuncApply.class;
+
+	  /**
+	   * XPath 3.1 built-in functions configurations for the math
+	   * functions namespace http://www.w3.org/2005/xpath-functions/math
+	   */
+	   m_functions[FUNC_MATH_PI] = org.apache.xpath.functions.math.FuncMathPi.class;
+	   m_functions[FUNC_MATH_EXP] = org.apache.xpath.functions.math.FuncMathExp.class;
+	   m_functions[FUNC_MATH_EXP10] = org.apache.xpath.functions.math.FuncMathExp10.class;
+	   m_functions[FUNC_MATH_LOG] = org.apache.xpath.functions.math.FuncMathLog.class;
+	   m_functions[FUNC_MATH_LOG10] = org.apache.xpath.functions.math.FuncMathLog10.class;
+	   m_functions[FUNC_MATH_POW] = org.apache.xpath.functions.math.FuncMathPow.class;
+	   m_functions[FUNC_MATH_SQRT] = org.apache.xpath.functions.math.FuncMathSqrt.class;
+	   m_functions[FUNC_MATH_SIN] = org.apache.xpath.functions.math.FuncMathSin.class;
+	   m_functions[FUNC_MATH_COS] = org.apache.xpath.functions.math.FuncMathCos.class;
+	   m_functions[FUNC_MATH_TAN] = org.apache.xpath.functions.math.FuncMathTan.class;
+	   m_functions[FUNC_MATH_ASIN] = org.apache.xpath.functions.math.FuncMathAsin.class;
+	   m_functions[FUNC_MATH_ACOS] = org.apache.xpath.functions.math.FuncMathAcos.class;
+	   m_functions[FUNC_MATH_ATAN] = org.apache.xpath.functions.math.FuncMathAtan.class;
+	   m_functions[FUNC_MATH_ATAN2] = org.apache.xpath.functions.math.FuncMathAtan2.class;
+
+	   m_functions[FUNC_YEARS_FROM_DURATION] = org.apache.xpath.functions.FuncYearsFromDuration.class;
+	   m_functions[FUNC_MONTHS_FROM_DURATION] = org.apache.xpath.functions.FuncMonthsFromDuration.class;
+	   m_functions[FUNC_DAYS_FROM_DURATION] = org.apache.xpath.functions.FuncDaysFromDuration.class;
+	   m_functions[FUNC_HOURS_FROM_DURATION] = org.apache.xpath.functions.FuncHoursFromDuration.class;
+	   m_functions[FUNC_MINUTES_FROM_DURATION] = org.apache.xpath.functions.FuncMinutesFromDuration.class;
+	   m_functions[FUNC_SECONDS_FROM_DURATION] = org.apache.xpath.functions.FuncSecondsFromDuration.class;
+
+	   m_functions[FUNC_CODE_POINTS_TO_STRING] = org.apache.xpath.functions.FuncCodePointsToString.class;
+	   m_functions[FUNC_STRING_TO_CODE_POINTS] = org.apache.xpath.functions.FuncStringToCodepoints.class;
+	   m_functions[FUNC_COMPARE] = org.apache.xpath.functions.FuncCompare.class;
+	   m_functions[FUNC_CODEPOINT_EQUAL] = org.apache.xpath.functions.FuncCodepointEqual.class;
+	   m_functions[FUNC_CONTAINS_TOKEN] = org.apache.xpath.functions.FuncContainsToken.class;
+
+	   m_functions[FUNC_EMPTY] = org.apache.xpath.functions.FuncEmpty.class;
+	   m_functions[FUNC_EXISTS] = org.apache.xpath.functions.FuncExists.class;
+	   m_functions[FUNC_HEAD] = org.apache.xpath.functions.FuncHead.class;
+	   m_functions[FUNC_TAIL] = org.apache.xpath.functions.FuncTail.class;
+	   m_functions[FUNC_INSERT_BEFORE] = org.apache.xpath.functions.FuncInsertBefore.class;
+	   m_functions[FUNC_REMOVE] = org.apache.xpath.functions.FuncRemove.class;
+	   m_functions[FUNC_REVERSE] = org.apache.xpath.functions.FuncReverse.class;
+	   m_functions[FUNC_SUBSEQUENCE] = org.apache.xpath.functions.FuncSubsequence.class;
+	   m_functions[FUNC_UNORDERED] = org.apache.xpath.functions.FuncUnordered.class;
+
+	   m_functions[FUNC_PARSE_XML] = org.apache.xpath.functions.FuncParseXml.class;
+	   m_functions[FUNC_PARSE_XML_FRAGMENT] = org.apache.xpath.functions.FuncParseXmlFragment.class;
+
+	   m_functions[FUNC_AVG] = org.apache.xpath.functions.FuncAvg.class;
+	   m_functions[FUNC_MAX] = org.apache.xpath.functions.FuncMax.class;
+	   m_functions[FUNC_MIN] = org.apache.xpath.functions.FuncMin.class;
+
+	   m_functions[FUNC_DOC] = org.apache.xpath.functions.FuncDoc.class;
+
+	   m_functions[FUNC_NODE_NAME] = org.apache.xpath.functions.FuncNodeName.class;
+	   m_functions[FUNC_DEEP_EQUAL] = org.apache.xpath.functions.FuncDeepEqual.class;
+
+	   m_functions[FUNC_DATE_TIME] = org.apache.xpath.functions.FuncDateTime.class;
+	   m_functions[FUNC_YEAR_FROM_DATE_TIME] = org.apache.xpath.functions.FuncYearFromDateTime.class;
+	   m_functions[FUNC_MONTH_FROM_DATE_TIME] = org.apache.xpath.functions.FuncMonthFromDateTime.class;
+	   m_functions[FUNC_DAY_FROM_DATE_TIME] = org.apache.xpath.functions.FuncDayFromDateTime.class;
+	   m_functions[FUNC_HOURS_FROM_DATE_TIME] = org.apache.xpath.functions.FuncHoursFromDateTime.class;
+	   m_functions[FUNC_MINUTES_FROM_DATE_TIME] = org.apache.xpath.functions.FuncMinutesFromDateTime.class;
+	   m_functions[FUNC_SECONDS_FROM_DATE_TIME] = org.apache.xpath.functions.FuncSecondsFromDateTime.class;
+	   m_functions[FUNC_TIMEZONE_FROM_DATE_TIME] = org.apache.xpath.functions.FuncTimezoneFromDateTime.class;
+	   m_functions[FUNC_YEAR_FROM_DATE] = org.apache.xpath.functions.FuncYearFromDate.class;
+	   m_functions[FUNC_MONTH_FROM_DATE] = org.apache.xpath.functions.FuncMonthFromDate.class;
+	   m_functions[FUNC_DAY_FROM_DATE] = org.apache.xpath.functions.FuncDayFromDate.class;
+	   m_functions[FUNC_TIMEZONE_FROM_DATE] = org.apache.xpath.functions.FuncTimezoneFromDate.class;
+	   m_functions[FUNC_HOURS_FROM_TIME] = org.apache.xpath.functions.FuncHoursFromTime.class;
+	   m_functions[FUNC_MINUTES_FROM_TIME] = org.apache.xpath.functions.FuncMinutesFromTime.class;
+	   m_functions[FUNC_SECONDS_FROM_TIME] = org.apache.xpath.functions.FuncSecondsFromTime.class;
+	   m_functions[FUNC_TIMEZONE_FROM_TIME] = org.apache.xpath.functions.FuncTimezoneFromTime.class;
+
+	   m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.FuncDefaultCollation.class;
+	   m_functions[FUNC_BASE_URI] = org.apache.xpath.functions.FuncBaseUri.class;
+	   m_functions[FUNC_DOCUMENT_URI] = org.apache.xpath.functions.FuncDocumentUri.class;        
+
+	   /**
+	    * XPath 3.1 built-in functions configurations for the map
+	    * functions namespace http://www.w3.org/2005/xpath-functions/map
+	    */
+	   m_functions[FUNC_MAP_MERGE] = org.apache.xpath.functions.map.FuncMapMerge.class;
+	   m_functions[FUNC_MAP_SIZE] = org.apache.xpath.functions.map.FuncMapSize.class;
+	   m_functions[FUNC_MAP_KEYS] = org.apache.xpath.functions.map.FuncMapKeys.class;
+	   m_functions[FUNC_MAP_CONTAINS] = org.apache.xpath.functions.map.FuncMapContains.class;
+	   m_functions[FUNC_MAP_GET] = org.apache.xpath.functions.map.FuncMapGet.class;
+	   m_functions[FUNC_MAP_PUT] = org.apache.xpath.functions.map.FuncMapPut.class;
+	   m_functions[FUNC_MAP_ENTRY] = org.apache.xpath.functions.map.FuncMapEntry.class;
+	   m_functions[FUNC_MAP_FOREACH] = org.apache.xpath.functions.map.FuncMapForEach.class;
+	   m_functions[FUNC_MAP_REMOVE] = org.apache.xpath.functions.map.FuncMapRemove.class;
+	   m_functions[FUNC_MAP_FIND] = org.apache.xpath.functions.map.FuncMapFind.class;
+
+	   /**
+	    * XPath 3.1 built-in functions configurations for the array
+	    * functions namespace http://www.w3.org/2005/xpath-functions/array
+	    */
+	   m_functions[FUNC_ARRAY_SIZE] = org.apache.xpath.functions.array.FuncArraySize.class;
+	   m_functions[FUNC_ARRAY_GET] = org.apache.xpath.functions.array.FuncArrayGet.class;
+	   m_functions[FUNC_ARRAY_PUT] = org.apache.xpath.functions.array.FuncArrayPut.class;
+	   m_functions[FUNC_ARRAY_APPEND] = org.apache.xpath.functions.array.FuncArrayAppend.class;
+	   m_functions[FUNC_ARRAY_SUBARRAY] = org.apache.xpath.functions.array.FuncSubarray.class;
+	   m_functions[FUNC_ARRAY_REMOVE] = org.apache.xpath.functions.array.FuncArrayRemove.class;
+	   m_functions[FUNC_ARRAY_INSERT_BEFORE] = org.apache.xpath.functions.array.FuncArrayInsertBefore.class;
+	   m_functions[FUNC_ARRAY_HEAD] = org.apache.xpath.functions.array.FuncArrayHead.class;
+	   m_functions[FUNC_ARRAY_TAIL] = org.apache.xpath.functions.array.FuncArrayTail.class;
+	   m_functions[FUNC_ARRAY_REVERSE] = org.apache.xpath.functions.array.FuncArrayReverse.class;
+	   m_functions[FUNC_ARRAY_JOIN] = org.apache.xpath.functions.array.FuncArrayJoin.class;
+	   m_functions[FUNC_ARRAY_FOR_EACH] = org.apache.xpath.functions.array.FuncArrayForEach.class;
+	   m_functions[FUNC_ARRAY_FILTER] = org.apache.xpath.functions.array.FuncArrayFilter.class;
+	   m_functions[FUNC_ARRAY_FOR_EACH_PAIR] = org.apache.xpath.functions.array.FuncArrayForEachPair.class;
+	   m_functions[FUNC_ARRAY_FOLD_LEFT] = org.apache.xpath.functions.array.FuncArrayFoldLeft.class;
+	   m_functions[FUNC_ARRAY_FOLD_RIGHT] = org.apache.xpath.functions.array.FuncArrayFoldRight.class;
+	   m_functions[FUNC_ARRAY_SORT] = org.apache.xpath.functions.array.FuncArraySort.class;
+	   m_functions[FUNC_ARRAY_FLATTEN] = org.apache.xpath.functions.array.FuncArrayFlatten.class;
+
+	   m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.json.FuncParseJson.class;
+	   m_functions[FUNC_JSON_DOC] = org.apache.xpath.functions.json.FuncJsonDoc.class;
+	   m_functions[FUNC_JSON_TO_XML] = org.apache.xpath.functions.json.FuncJsonToXml.class;
+	   m_functions[FUNC_XML_TO_JSON] = org.apache.xpath.functions.json.FuncXmlToJson.class;
+
+	   m_functions[FUNC_DOC_AVAILABLE] = org.apache.xpath.functions.FuncDocAvailable.class;    
   }
 
-  static{
-          m_functionId.put(Keywords.FUNC_CURRENT_STRING,
-                          new Integer(FunctionTable.FUNC_CURRENT));
-          m_functionId.put(Keywords.FUNC_LAST_STRING,
-                          new Integer(FunctionTable.FUNC_LAST));
-          m_functionId.put(Keywords.FUNC_POSITION_STRING,
-                          new Integer(FunctionTable.FUNC_POSITION));
-          m_functionId.put(Keywords.FUNC_COUNT_STRING,
-                          new Integer(FunctionTable.FUNC_COUNT));
-          m_functionId.put(Keywords.FUNC_ID_STRING,
-                          new Integer(FunctionTable.FUNC_ID));
-          m_functionId.put(Keywords.FUNC_KEY_STRING,
-                          new Integer(FunctionTable.FUNC_KEY));
-          m_functionId.put(Keywords.FUNC_LOCAL_NAME_STRING,
-                          new Integer(FunctionTable.FUNC_LOCAL_NAME));
-          m_functionId.put(Keywords.FUNC_NAMESPACE_URI_STRING,
-                          new Integer(FunctionTable.FUNC_NAMESPACE_URI));          
-          m_functionId.put(Keywords.FUNC_GENERATE_ID_STRING,
-                          new Integer(FunctionTable.FUNC_GENERATE_ID));
-          m_functionId.put(Keywords.FUNC_NOT_STRING,
-                          new Integer(FunctionTable.FUNC_NOT));
-          m_functionId.put(Keywords.FUNC_TRUE_STRING,
-                          new Integer(FunctionTable.FUNC_TRUE));
-          m_functionId.put(Keywords.FUNC_FALSE_STRING,
-                          new Integer(FunctionTable.FUNC_FALSE));
-          m_functionId.put(Keywords.FUNC_BOOLEAN_STRING,
-                          new Integer(FunctionTable.FUNC_BOOLEAN));
-          m_functionId.put(Keywords.FUNC_LANG_STRING,
-                          new Integer(FunctionTable.FUNC_LANG));
-          m_functionId.put(Keywords.FUNC_ROOT_STRING,
-                          new Integer(FunctionTable.FUNC_ROOT));
-          m_functionId.put(Keywords.FUNC_NUMBER_STRING,
-                          new Integer(FunctionTable.FUNC_NUMBER));
-          m_functionId.put(Keywords.FUNC_FLOOR_STRING,
-                          new Integer(FunctionTable.FUNC_FLOOR));
-          m_functionId.put(Keywords.FUNC_CEILING_STRING,
-                          new Integer(FunctionTable.FUNC_CEILING));
-          m_functionId.put(Keywords.FUNC_ROUND_STRING,
-                          new Integer(FunctionTable.FUNC_ROUND));
-          m_functionId.put(Keywords.FUNC_SUM_STRING,
-                          new Integer(FunctionTable.FUNC_SUM));
-          m_functionId.put(Keywords.FUNC_STRING_STRING,
-                          new Integer(FunctionTable.FUNC_STRING));
-          
-          m_functionId.put(Keywords.FUNC_DATA_STRING,
-                          new Integer(FunctionTable.FUNC_DATA));
-          
-          m_functionId.put(Keywords.FUNC_STARTS_WITH_STRING,
-                          new Integer(FunctionTable.FUNC_STARTS_WITH));
-          m_functionId.put(Keywords.FUNC_CONTAINS_STRING,
-                          new Integer(FunctionTable.FUNC_CONTAINS));
-          m_functionId.put(Keywords.FUNC_SUBSTRING_BEFORE_STRING,
-                          new Integer(FunctionTable.FUNC_SUBSTRING_BEFORE));
-          m_functionId.put(Keywords.FUNC_SUBSTRING_AFTER_STRING,
-                          new Integer(FunctionTable.FUNC_SUBSTRING_AFTER));
-          m_functionId.put(Keywords.FUNC_NORMALIZE_SPACE_STRING,
-                          new Integer(FunctionTable.FUNC_NORMALIZE_SPACE));
-          m_functionId.put(Keywords.FUNC_TRANSLATE_STRING,
-                          new Integer(FunctionTable.FUNC_TRANSLATE));
-          m_functionId.put(Keywords.FUNC_CONCAT_STRING,
-                          new Integer(FunctionTable.FUNC_CONCAT));
-          m_functionId.put(Keywords.FUNC_SYSTEM_PROPERTY_STRING,
-                          new Integer(FunctionTable.FUNC_SYSTEM_PROPERTY));
-          m_functionId.put(Keywords.FUNC_EXT_FUNCTION_AVAILABLE_STRING,
-                          new Integer(FunctionTable.FUNC_EXT_FUNCTION_AVAILABLE));
-          m_functionId.put(Keywords.FUNC_EXT_ELEM_AVAILABLE_STRING,
-                          new Integer(FunctionTable.FUNC_EXT_ELEM_AVAILABLE));
-          m_functionId.put(Keywords.FUNC_SUBSTRING_STRING,
-                          new Integer(FunctionTable.FUNC_SUBSTRING));
-          m_functionId.put(Keywords.FUNC_STRING_LENGTH_STRING,
-                          new Integer(FunctionTable.FUNC_STRING_LENGTH));
-          m_functionId.put(Keywords.FUNC_UNPARSED_ENTITY_URI_STRING,
-                          new Integer(FunctionTable.FUNC_UNPARSED_ENTITY_URI));
-          m_functionId.put(Keywords.FUNC_MATCHES_STRING,
-                          new Integer(FunctionTable.FUNC_MATCHES));
-          m_functionId.put(Keywords.FUNC_REPLACE_STRING,
-                          new Integer(FunctionTable.FUNC_REPLACE));
-          m_functionId.put(Keywords.FUNC_DOCLOCATION_STRING,
-                          new Integer(FunctionTable.FUNC_DOCLOCATION));
-          
-          m_functionId.put(Keywords.FUNC_CURRENT_GROUP,
-                          new Integer(FunctionTable.FUNC_CURRENT_GROUP));
-          m_functionId.put(Keywords.FUNC_CURRENT_GROUPING_KEY,
-                          new Integer(FunctionTable.FUNC_CURRENT_GROUPING_KEY));
-          
-          m_functionId.put(Keywords.FUNC_CURRENT_MERGE_GROUP,
-                          new Integer(FunctionTable.FUNC_CURRENT_MERGE_GROUP));
-          m_functionId.put(Keywords.FUNC_CURRENT_MERGE_KEY,
-                          new Integer(FunctionTable.FUNC_CURRENT_MERGE_KEY));
-          
-          m_functionId.put(Keywords.FUNC_ABS,
-                          new Integer(FunctionTable.FUNC_ABS));
-          m_functionId.put(Keywords.FUNC_REGEX_GROUP,
-                          new Integer(FunctionTable.FUNC_REGEX_GROUP));
-          m_functionId.put(Keywords.FUNC_TOKENIZE,
-                          new Integer(FunctionTable.FUNC_TOKENIZE));
-          m_functionId.put(Keywords.FUNC_ANALYZE_STRING,
-                          new Integer(FunctionTable.FUNC_ANALYZE_STRING));
-          m_functionId.put(Keywords.FUNC_UNPARSED_TEXT,
-                          new Integer(FunctionTable.FUNC_UNPARSED_TEXT));
-          m_functionId.put(Keywords.FUNC_UNPARSED_TEXT_LINES,
-                          new Integer(FunctionTable.FUNC_UNPARSED_TEXT_LINES));
-          m_functionId.put(Keywords.FUNC_COLLECTION,
-                          new Integer(FunctionTable.FUNC_COLLECTION));
-          m_functionId.put(Keywords.FUNC_STRING_JOIN,
-                          new Integer(FunctionTable.FUNC_STRING_JOIN));
-          m_functionId.put(Keywords.FUNC_CURRENT_DATETIME,
-                          new Integer(FunctionTable.FUNC_CURRENT_DATETIME));
-          m_functionId.put(Keywords.FUNC_CURRENT_DATE,
-                          new Integer(FunctionTable.FUNC_CURRENT_DATE));
-          m_functionId.put(Keywords.FUNC_CURRENT_TIME,
-                          new Integer(FunctionTable.FUNC_CURRENT_TIME));
-          m_functionId.put(Keywords.FUNC_UPPER_CASE,
-                          new Integer(FunctionTable.FUNC_UPPER_CASE));
-          m_functionId.put(Keywords.FUNC_LOWER_CASE,
-                          new Integer(FunctionTable.FUNC_LOWER_CASE));
-          m_functionId.put(Keywords.FUNC_IMPLICIT_TIMEZONE,
-                          new Integer(FunctionTable.FUNC_IMPLICIT_TIMEZONE));
-          m_functionId.put(Keywords.FUNC_INDEX_OF,
-                          new Integer(FunctionTable.FUNC_INDEX_OF));          
-          m_functionId.put(Keywords.FUNC_DISTINCT_VALUES,
-                          new Integer(FunctionTable.FUNC_DISTINCT_VALUES));
-          
-          m_functionId.put(Keywords.FUNC_FOR_EACH,
-                          new Integer(FunctionTable.FUNC_FOR_EACH));
-          m_functionId.put(Keywords.FUNC_FILTER,
-                          new Integer(FunctionTable.FUNC_FILTER));
-          m_functionId.put(Keywords.FUNC_FOLD_LEFT,
-                          new Integer(FunctionTable.FUNC_FOLD_LEFT));
-          m_functionId.put(Keywords.FUNC_FOLD_RIGHT,
-                          new Integer(FunctionTable.FUNC_FOLD_RIGHT));
-          m_functionId.put(Keywords.FUNC_FOR_EACH_PAIR,
-                          new Integer(FunctionTable.FUNC_FOR_EACH_PAIR));
-          m_functionId.put(Keywords.FUNC_SORT,
-                          new Integer(FunctionTable.FUNC_SORT));
-          m_functionId.put(Keywords.FUNC_APPLY,
-                          new Integer(FunctionTable.FUNC_APPLY));
-          
-          // XPath 3.1 functions configurations for the math functions 
-          // namespace http://www.w3.org/2005/xpath-functions/math
-          m_functionId.put(Keywords.FUNC_MATH_PI,
-                          new Integer(FunctionTable.FUNC_MATH_PI));
-          m_functionId.put(Keywords.FUNC_MATH_EXP,
-                          new Integer(FunctionTable.FUNC_MATH_EXP));
-          m_functionId.put(Keywords.FUNC_MATH_EXP10,
-                          new Integer(FunctionTable.FUNC_MATH_EXP10));
-          m_functionId.put(Keywords.FUNC_MATH_LOG,
-                          new Integer(FunctionTable.FUNC_MATH_LOG));
-          m_functionId.put(Keywords.FUNC_MATH_LOG10,
-                          new Integer(FunctionTable.FUNC_MATH_LOG10));
-          m_functionId.put(Keywords.FUNC_MATH_POW,
-                          new Integer(FunctionTable.FUNC_MATH_POW));
-          m_functionId.put(Keywords.FUNC_MATH_SQRT,
-                          new Integer(FunctionTable.FUNC_MATH_SQRT));
-          m_functionId.put(Keywords.FUNC_MATH_SIN,
-                          new Integer(FunctionTable.FUNC_MATH_SIN));
-          m_functionId.put(Keywords.FUNC_MATH_COS,
-                          new Integer(FunctionTable.FUNC_MATH_COS));
-          m_functionId.put(Keywords.FUNC_MATH_TAN,
-                          new Integer(FunctionTable.FUNC_MATH_TAN));
-          m_functionId.put(Keywords.FUNC_MATH_ASIN,
-                          new Integer(FunctionTable.FUNC_MATH_ASIN));
-          m_functionId.put(Keywords.FUNC_MATH_ACOS,
-                         new Integer(FunctionTable.FUNC_MATH_ACOS));
-          m_functionId.put(Keywords.FUNC_MATH_ATAN,
-                         new Integer(FunctionTable.FUNC_MATH_ATAN));
-          m_functionId.put(Keywords.FUNC_MATH_ATAN2,
-                         new Integer(FunctionTable.FUNC_MATH_ATAN2));
-          
-         m_functionId.put(Keywords.FUNC_YEARS_FROM_DURATION,
-                         new Integer(FunctionTable.FUNC_YEARS_FROM_DURATION));
-         m_functionId.put(Keywords.FUNC_MONTHS_FROM_DURATION,
-                         new Integer(FunctionTable.FUNC_MONTHS_FROM_DURATION));
-         m_functionId.put(Keywords.FUNC_DAYS_FROM_DURATION,
-                         new Integer(FunctionTable.FUNC_DAYS_FROM_DURATION));
-         m_functionId.put(Keywords.FUNC_HOURS_FROM_DURATION,
-                         new Integer(FunctionTable.FUNC_HOURS_FROM_DURATION));
-         m_functionId.put(Keywords.FUNC_MINUTES_FROM_DURATION,
-                         new Integer(FunctionTable.FUNC_MINUTES_FROM_DURATION));
-         m_functionId.put(Keywords.FUNC_SECONDS_FROM_DURATION,
-                         new Integer(FunctionTable.FUNC_SECONDS_FROM_DURATION));
-         
-         m_functionId.put(Keywords.FUNC_CODE_POINTS_TO_STRING,
-                         new Integer(FunctionTable.FUNC_CODE_POINTS_TO_STRING));
-         m_functionId.put(Keywords.FUNC_STRING_TO_CODE_POINTS,
-                         new Integer(FunctionTable.FUNC_STRING_TO_CODE_POINTS));
-         m_functionId.put(Keywords.FUNC_COMPARE,
-                         new Integer(FunctionTable.FUNC_COMPARE));
-         m_functionId.put(Keywords.FUNC_CODEPOINT_EQUAL,
-                         new Integer(FunctionTable.FUNC_CODEPOINT_EQUAL));
-         m_functionId.put(Keywords.FUNC_CONTAINS_TOKEN,
-                         new Integer(FunctionTable.FUNC_CONTAINS_TOKEN));
-         
-         m_functionId.put(Keywords.FUNC_EMPTY,
-                         new Integer(FunctionTable.FUNC_EMPTY));
-         m_functionId.put(Keywords.FUNC_EXISTS,
-                         new Integer(FunctionTable.FUNC_EXISTS));
-         m_functionId.put(Keywords.FUNC_HEAD,
-                         new Integer(FunctionTable.FUNC_HEAD));
-         m_functionId.put(Keywords.FUNC_TAIL,
-                         new Integer(FunctionTable.FUNC_TAIL));
-         m_functionId.put(Keywords.FUNC_INSERT_BEFORE,
-                         new Integer(FunctionTable.FUNC_INSERT_BEFORE));
-         m_functionId.put(Keywords.FUNC_REMOVE,
-                         new Integer(FunctionTable.FUNC_REMOVE));
-         m_functionId.put(Keywords.FUNC_REVERSE,
-                         new Integer(FunctionTable.FUNC_REVERSE));
-         m_functionId.put(Keywords.FUNC_SUBSEQUENCE,
-                         new Integer(FunctionTable.FUNC_SUBSEQUENCE));
-         m_functionId.put(Keywords.FUNC_UNORDERED,
-                         new Integer(FunctionTable.FUNC_UNORDERED));
-         
-         m_functionId.put(Keywords.FUNC_PARSE_XML,
-                         new Integer(FunctionTable.FUNC_PARSE_XML));
-         m_functionId.put(Keywords.FUNC_PARSE_XML_FRAGMENT,
-                         new Integer(FunctionTable.FUNC_PARSE_XML_FRAGMENT));
-         
-         m_functionId.put(Keywords.FUNC_AVG,
-                         new Integer(FunctionTable.FUNC_AVG));
-         m_functionId.put(Keywords.FUNC_MAX,
-                         new Integer(FunctionTable.FUNC_MAX));
-         m_functionId.put(Keywords.FUNC_MIN,
-                         new Integer(FunctionTable.FUNC_MIN));
-         
-         m_functionId.put(Keywords.FUNC_DOC,
-                         new Integer(FunctionTable.FUNC_DOC));
-         m_functionId.put(Keywords.FUNC_DOC_AVAILABLE,
-                         new Integer(FunctionTable.FUNC_DOC_AVAILABLE));
-         
-         m_functionId.put(Keywords.FUNC_NODE_NAME,
-                         new Integer(FunctionTable.FUNC_NODE_NAME));
-         m_functionId.put(Keywords.FUNC_DEEP_EQUAL,
-                         new Integer(FunctionTable.FUNC_DEEP_EQUAL));
-         
-         m_functionId.put(Keywords.FUNC_DATE_TIME,
-                         new Integer(FunctionTable.FUNC_DATE_TIME));
-         m_functionId.put(Keywords.FUNC_YEAR_FROM_DATE_TIME,
-                         new Integer(FunctionTable.FUNC_YEAR_FROM_DATE_TIME));
-         m_functionId.put(Keywords.FUNC_MONTH_FROM_DATE_TIME,
-                         new Integer(FunctionTable.FUNC_MONTH_FROM_DATE_TIME));
-         m_functionId.put(Keywords.FUNC_DAY_FROM_DATE_TIME,
-                         new Integer(FunctionTable.FUNC_DAY_FROM_DATE_TIME));
-         m_functionId.put(Keywords.FUNC_HOURS_FROM_DATE_TIME,
-                         new Integer(FunctionTable.FUNC_HOURS_FROM_DATE_TIME));
-         m_functionId.put(Keywords.FUNC_MINUTES_FROM_DATE_TIME,
-                         new Integer(FunctionTable.FUNC_MINUTES_FROM_DATE_TIME));
-         m_functionId.put(Keywords.FUNC_SECONDS_FROM_DATE_TIME,
-                         new Integer(FunctionTable.FUNC_SECONDS_FROM_DATE_TIME));
-         m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_DATE_TIME,
-                         new Integer(FunctionTable.FUNC_TIMEZONE_FROM_DATE_TIME));
-         m_functionId.put(Keywords.FUNC_YEAR_FROM_DATE,
-                         new Integer(FunctionTable.FUNC_YEAR_FROM_DATE));
-         m_functionId.put(Keywords.FUNC_MONTH_FROM_DATE,
-                         new Integer(FunctionTable.FUNC_MONTH_FROM_DATE));
-         m_functionId.put(Keywords.FUNC_DAY_FROM_DATE,
-                         new Integer(FunctionTable.FUNC_DAY_FROM_DATE));
-         m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_DATE,
-                         new Integer(FunctionTable.FUNC_TIMEZONE_FROM_DATE));
-         m_functionId.put(Keywords.FUNC_HOURS_FROM_TIME,
-                         new Integer(FunctionTable.FUNC_HOURS_FROM_TIME));
-         m_functionId.put(Keywords.FUNC_MINUTES_FROM_TIME,
-                         new Integer(FunctionTable.FUNC_MINUTES_FROM_TIME));
-         m_functionId.put(Keywords.FUNC_SECONDS_FROM_TIME,
-                         new Integer(FunctionTable.FUNC_SECONDS_FROM_TIME));
-         m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_TIME,
-                         new Integer(FunctionTable.FUNC_TIMEZONE_FROM_TIME));
-         
-         m_functionId.put(Keywords.FUNC_DEFAULT_COLLATION,
-                         new Integer(FunctionTable.FUNC_DEFAULT_COLLATION));
-         m_functionId.put(Keywords.FUNC_BASE_URI,
-                         new Integer(FunctionTable.FUNC_BASE_URI));
-         m_functionId.put(Keywords.FUNC_DOCUMENT_URI,
-                         new Integer(FunctionTable.FUNC_DOCUMENT_URI));
-         
-         // XPath 3.1 functions configurations for the map functions 
-         // namespace http://www.w3.org/2005/xpath-functions/map
-         m_functionId.put(Keywords.FUNC_MAP_MERGE,
-                          new Integer(FunctionTable.FUNC_MAP_MERGE));
-         m_functionId.put(Keywords.FUNC_MAP_SIZE,
-                          new Integer(FunctionTable.FUNC_MAP_SIZE));
-         m_functionId.put(Keywords.FUNC_MAP_KEYS,
-                          new Integer(FunctionTable.FUNC_MAP_KEYS));
-         m_functionId.put(Keywords.FUNC_MAP_CONTAINS,
-                         new Integer(FunctionTable.FUNC_MAP_CONTAINS));
-         m_functionId.put(Keywords.FUNC_MAP_GET,
-                         new Integer(FunctionTable.FUNC_MAP_GET));
-         m_functionId.put(Keywords.FUNC_MAP_PUT,
-                         new Integer(FunctionTable.FUNC_MAP_PUT));
-         m_functionId.put(Keywords.FUNC_MAP_ENTRY,
-                         new Integer(FunctionTable.FUNC_MAP_ENTRY));
-         m_functionId.put(Keywords.FUNC_MAP_FOREACH,
-                         new Integer(FunctionTable.FUNC_MAP_FOREACH));
-         m_functionId.put(Keywords.FUNC_MAP_REMOVE,
-                         new Integer(FunctionTable.FUNC_MAP_REMOVE));
-         m_functionId.put(Keywords.FUNC_MAP_FIND,
-                         new Integer(FunctionTable.FUNC_MAP_FIND));
-         
-         // XPath 3.1 functions configurations for the array functions 
-         // namespace http://www.w3.org/2005/xpath-functions/array
-         m_functionId.put(Keywords.FUNC_ARRAY_SIZE,
-                          new Integer(FunctionTable.FUNC_ARRAY_SIZE));
-         m_functionId.put(Keywords.FUNC_ARRAY_GET,
-                          new Integer(FunctionTable.FUNC_ARRAY_GET));
-         m_functionId.put(Keywords.FUNC_ARRAY_PUT,
-                          new Integer(FunctionTable.FUNC_ARRAY_PUT));
-         m_functionId.put(Keywords.FUNC_ARRAY_APPEND,
-                          new Integer(FunctionTable.FUNC_ARRAY_APPEND));
-         m_functionId.put(Keywords.FUNC_ARRAY_SUBARRAY,
-                          new Integer(FunctionTable.FUNC_ARRAY_SUBARRAY));
-         m_functionId.put(Keywords.FUNC_ARRAY_REMOVE,
-                          new Integer(FunctionTable.FUNC_ARRAY_REMOVE));
-         m_functionId.put(Keywords.FUNC_ARRAY_INSERT_BEFORE,
-                          new Integer(FunctionTable.FUNC_ARRAY_INSERT_BEFORE));
-         m_functionId.put(Keywords.FUNC_ARRAY_HEAD,
-                          new Integer(FunctionTable.FUNC_ARRAY_HEAD));
-         m_functionId.put(Keywords.FUNC_ARRAY_TAIL,
-                          new Integer(FunctionTable.FUNC_ARRAY_TAIL));
-         m_functionId.put(Keywords.FUNC_ARRAY_REVERSE,
-                          new Integer(FunctionTable.FUNC_ARRAY_REVERSE));
-         m_functionId.put(Keywords.FUNC_ARRAY_JOIN,
-                          new Integer(FunctionTable.FUNC_ARRAY_JOIN));
-         m_functionId.put(Keywords.FUNC_ARRAY_FILTER,
-                          new Integer(FunctionTable.FUNC_ARRAY_FILTER));
-         m_functionId.put(Keywords.FUNC_ARRAY_FOR_EACH_PAIR,
-                          new Integer(FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR));
-         m_functionId.put(Keywords.FUNC_ARRAY_FOLD_LEFT,
-                          new Integer(FunctionTable.FUNC_ARRAY_FOLD_LEFT));
-         m_functionId.put(Keywords.FUNC_ARRAY_FOLD_RIGHT,
-                          new Integer(FunctionTable.FUNC_ARRAY_FOLD_RIGHT));
-         m_functionId.put(Keywords.FUNC_ARRAY_SORT,
-                          new Integer(FunctionTable.FUNC_ARRAY_SORT));
-         m_functionId.put(Keywords.FUNC_ARRAY_FLATTEN,
-                          new Integer(FunctionTable.FUNC_ARRAY_FLATTEN));
-         
-         m_functionId.put(Keywords.FUNC_NAME_STRING,
-                          new Integer(FunctionTable.FUNC_NAME));
-         
-         m_functionId.put(Keywords.FUNC_RESOLVE_QNAME,
-                          new Integer(FunctionTable.FUNC_RESOLVE_QNAME));
-         m_functionId.put(Keywords.FUNC_QNAME,
-                          new Integer(FunctionTable.FUNC_QNAME));
-         m_functionId.put(Keywords.FUNC_PREFIX_FROM_QNAME,
-                          new Integer(FunctionTable.FUNC_PREFIX_FROM_QNAME));
-         m_functionId.put(Keywords.FUNC_LOCAL_NAME_FROM_QNAME,
-                          new Integer(FunctionTable.FUNC_LOCAL_NAME_FROM_QNAME));
-         m_functionId.put(Keywords.FUNC_NAMESPACE_URI_FROM_QNAME,
-                          new Integer(FunctionTable.FUNC_NAMESPACE_URI_FROM_QNAME));
-         m_functionId.put(Keywords.FUNC_NAMESPACE_URI_FOR_PREFIX,
-                          new Integer(FunctionTable.FUNC_NAMESPACE_URI_FOR_PREFIX));
-         m_functionId.put(Keywords.FUNC_IN_SCOPE_PREFIXES,
-                          new Integer(FunctionTable.FUNC_IN_SCOPE_PREFIXES));
-         
-         m_functionId.put(Keywords.FUNC_PARSE_JSON,
-                          new Integer(FunctionTable.FUNC_PARSE_JSON));
-         m_functionId.put(Keywords.FUNC_JSON_DOC,
-                          new Integer(FunctionTable.FUNC_JSON_DOC));
-         m_functionId.put(Keywords.FUNC_JSON_TO_XML,
-                          new Integer(FunctionTable.FUNC_JSON_TO_XML));
-         m_functionId.put(Keywords.FUNC_XML_TO_JSON,
-                          new Integer(FunctionTable.FUNC_XML_TO_JSON));
+  static {
+	  m_functionId.put(Keywords.FUNC_CURRENT_STRING, new Integer(FunctionTable.FUNC_CURRENT));
+	  m_functionId.put(Keywords.FUNC_LAST_STRING, new Integer(FunctionTable.FUNC_LAST));
+	  m_functionId.put(Keywords.FUNC_POSITION_STRING, new Integer(FunctionTable.FUNC_POSITION));
+	  m_functionId.put(Keywords.FUNC_COUNT_STRING, new Integer(FunctionTable.FUNC_COUNT));
+	  m_functionId.put(Keywords.FUNC_ID_STRING, new Integer(FunctionTable.FUNC_ID));
+	  m_functionId.put(Keywords.FUNC_KEY_STRING, new Integer(FunctionTable.FUNC_KEY));
+	  m_functionId.put(Keywords.FUNC_LOCAL_NAME_STRING, new Integer(FunctionTable.FUNC_LOCAL_NAME));
+	  m_functionId.put(Keywords.FUNC_NAMESPACE_URI_STRING, new Integer(FunctionTable.FUNC_NAMESPACE_URI));          
+	  m_functionId.put(Keywords.FUNC_GENERATE_ID_STRING, new Integer(FunctionTable.FUNC_GENERATE_ID));
+	  m_functionId.put(Keywords.FUNC_NOT_STRING, new Integer(FunctionTable.FUNC_NOT));
+	  m_functionId.put(Keywords.FUNC_TRUE_STRING, new Integer(FunctionTable.FUNC_TRUE));
+	  m_functionId.put(Keywords.FUNC_FALSE_STRING, new Integer(FunctionTable.FUNC_FALSE));
+	  m_functionId.put(Keywords.FUNC_BOOLEAN_STRING, new Integer(FunctionTable.FUNC_BOOLEAN));
+	  m_functionId.put(Keywords.FUNC_LANG_STRING, new Integer(FunctionTable.FUNC_LANG));
+	  m_functionId.put(Keywords.FUNC_ROOT_STRING, new Integer(FunctionTable.FUNC_ROOT));
+	  m_functionId.put(Keywords.FUNC_NUMBER_STRING, new Integer(FunctionTable.FUNC_NUMBER));
+	  m_functionId.put(Keywords.FUNC_FLOOR_STRING, new Integer(FunctionTable.FUNC_FLOOR));
+	  m_functionId.put(Keywords.FUNC_CEILING_STRING, new Integer(FunctionTable.FUNC_CEILING));
+	  m_functionId.put(Keywords.FUNC_ROUND_STRING, new Integer(FunctionTable.FUNC_ROUND));
+	  m_functionId.put(Keywords.FUNC_SUM_STRING, new Integer(FunctionTable.FUNC_SUM));
+	  m_functionId.put(Keywords.FUNC_STRING_STRING, new Integer(FunctionTable.FUNC_STRING));
+
+	  m_functionId.put(Keywords.FUNC_DATA_STRING, new Integer(FunctionTable.FUNC_DATA));
+
+	  m_functionId.put(Keywords.FUNC_STARTS_WITH_STRING, new Integer(FunctionTable.FUNC_STARTS_WITH));
+	  m_functionId.put(Keywords.FUNC_CONTAINS_STRING, new Integer(FunctionTable.FUNC_CONTAINS));
+	  m_functionId.put(Keywords.FUNC_SUBSTRING_BEFORE_STRING, new Integer(FunctionTable.FUNC_SUBSTRING_BEFORE));
+	  m_functionId.put(Keywords.FUNC_SUBSTRING_AFTER_STRING, new Integer(FunctionTable.FUNC_SUBSTRING_AFTER));
+	  m_functionId.put(Keywords.FUNC_NORMALIZE_SPACE_STRING, new Integer(FunctionTable.FUNC_NORMALIZE_SPACE));
+	  m_functionId.put(Keywords.FUNC_TRANSLATE_STRING, new Integer(FunctionTable.FUNC_TRANSLATE));
+	  m_functionId.put(Keywords.FUNC_CONCAT_STRING, new Integer(FunctionTable.FUNC_CONCAT));
+	  m_functionId.put(Keywords.FUNC_SYSTEM_PROPERTY_STRING, new Integer(FunctionTable.FUNC_SYSTEM_PROPERTY));
+	  m_functionId.put(Keywords.FUNC_EXT_FUNCTION_AVAILABLE_STRING, new Integer(FunctionTable.FUNC_EXT_FUNCTION_AVAILABLE));
+	  m_functionId.put(Keywords.FUNC_EXT_ELEM_AVAILABLE_STRING, new Integer(FunctionTable.FUNC_EXT_ELEM_AVAILABLE));
+	  m_functionId.put(Keywords.FUNC_SUBSTRING_STRING, new Integer(FunctionTable.FUNC_SUBSTRING));
+	  m_functionId.put(Keywords.FUNC_STRING_LENGTH_STRING, new Integer(FunctionTable.FUNC_STRING_LENGTH));
+	  m_functionId.put(Keywords.FUNC_UNPARSED_ENTITY_URI_STRING, new Integer(FunctionTable.FUNC_UNPARSED_ENTITY_URI));
+	  m_functionId.put(Keywords.FUNC_MATCHES_STRING, new Integer(FunctionTable.FUNC_MATCHES));
+	  m_functionId.put(Keywords.FUNC_REPLACE_STRING, new Integer(FunctionTable.FUNC_REPLACE));
+	  m_functionId.put(Keywords.FUNC_DOCLOCATION_STRING, new Integer(FunctionTable.FUNC_DOCLOCATION));
+
+	  m_functionId.put(Keywords.FUNC_CURRENT_GROUP, new Integer(FunctionTable.FUNC_CURRENT_GROUP));
+	  m_functionId.put(Keywords.FUNC_CURRENT_GROUPING_KEY, new Integer(FunctionTable.FUNC_CURRENT_GROUPING_KEY));
+
+	  m_functionId.put(Keywords.FUNC_CURRENT_MERGE_GROUP, new Integer(FunctionTable.FUNC_CURRENT_MERGE_GROUP));
+	  m_functionId.put(Keywords.FUNC_CURRENT_MERGE_KEY, new Integer(FunctionTable.FUNC_CURRENT_MERGE_KEY));
+
+	  m_functionId.put(Keywords.FUNC_ABS, new Integer(FunctionTable.FUNC_ABS));
+	  m_functionId.put(Keywords.FUNC_REGEX_GROUP, new Integer(FunctionTable.FUNC_REGEX_GROUP));
+	  m_functionId.put(Keywords.FUNC_TOKENIZE, new Integer(FunctionTable.FUNC_TOKENIZE));
+	  m_functionId.put(Keywords.FUNC_ANALYZE_STRING, new Integer(FunctionTable.FUNC_ANALYZE_STRING));
+	  m_functionId.put(Keywords.FUNC_UNPARSED_TEXT, new Integer(FunctionTable.FUNC_UNPARSED_TEXT));
+	  m_functionId.put(Keywords.FUNC_UNPARSED_TEXT_LINES, new Integer(FunctionTable.FUNC_UNPARSED_TEXT_LINES));
+	  m_functionId.put(Keywords.FUNC_COLLECTION, new Integer(FunctionTable.FUNC_COLLECTION));
+	  m_functionId.put(Keywords.FUNC_STRING_JOIN, new Integer(FunctionTable.FUNC_STRING_JOIN));
+	  m_functionId.put(Keywords.FUNC_CURRENT_DATETIME, new Integer(FunctionTable.FUNC_CURRENT_DATETIME));
+	  m_functionId.put(Keywords.FUNC_CURRENT_DATE, new Integer(FunctionTable.FUNC_CURRENT_DATE));
+	  m_functionId.put(Keywords.FUNC_CURRENT_TIME, new Integer(FunctionTable.FUNC_CURRENT_TIME));
+	  m_functionId.put(Keywords.FUNC_UPPER_CASE, new Integer(FunctionTable.FUNC_UPPER_CASE));
+	  m_functionId.put(Keywords.FUNC_LOWER_CASE, new Integer(FunctionTable.FUNC_LOWER_CASE));
+	  m_functionId.put(Keywords.FUNC_IMPLICIT_TIMEZONE, new Integer(FunctionTable.FUNC_IMPLICIT_TIMEZONE));
+	  m_functionId.put(Keywords.FUNC_INDEX_OF, new Integer(FunctionTable.FUNC_INDEX_OF));          
+	  m_functionId.put(Keywords.FUNC_DISTINCT_VALUES, new Integer(FunctionTable.FUNC_DISTINCT_VALUES));
+
+	  m_functionId.put(Keywords.FUNC_FOR_EACH, new Integer(FunctionTable.FUNC_FOR_EACH));
+	  m_functionId.put(Keywords.FUNC_FILTER, new Integer(FunctionTable.FUNC_FILTER));
+	  m_functionId.put(Keywords.FUNC_FOLD_LEFT, new Integer(FunctionTable.FUNC_FOLD_LEFT));
+	  m_functionId.put(Keywords.FUNC_FOLD_RIGHT, new Integer(FunctionTable.FUNC_FOLD_RIGHT));
+	  m_functionId.put(Keywords.FUNC_FOR_EACH_PAIR, new Integer(FunctionTable.FUNC_FOR_EACH_PAIR));
+	  m_functionId.put(Keywords.FUNC_SORT, new Integer(FunctionTable.FUNC_SORT));
+	  m_functionId.put(Keywords.FUNC_APPLY, new Integer(FunctionTable.FUNC_APPLY));
+
+	  /**
+	   * XPath 3.1 functions configurations for the math functions
+	   * namespace http://www.w3.org/2005/xpath-functions/math
+	   */
+	  m_functionId.put(Keywords.FUNC_MATH_PI, new Integer(FunctionTable.FUNC_MATH_PI));
+	  m_functionId.put(Keywords.FUNC_MATH_EXP, new Integer(FunctionTable.FUNC_MATH_EXP));
+	  m_functionId.put(Keywords.FUNC_MATH_EXP10, new Integer(FunctionTable.FUNC_MATH_EXP10));
+	  m_functionId.put(Keywords.FUNC_MATH_LOG, new Integer(FunctionTable.FUNC_MATH_LOG));
+	  m_functionId.put(Keywords.FUNC_MATH_LOG10, new Integer(FunctionTable.FUNC_MATH_LOG10));
+	  m_functionId.put(Keywords.FUNC_MATH_POW, new Integer(FunctionTable.FUNC_MATH_POW));
+	  m_functionId.put(Keywords.FUNC_MATH_SQRT, new Integer(FunctionTable.FUNC_MATH_SQRT));
+	  m_functionId.put(Keywords.FUNC_MATH_SIN, new Integer(FunctionTable.FUNC_MATH_SIN));
+	  m_functionId.put(Keywords.FUNC_MATH_COS, new Integer(FunctionTable.FUNC_MATH_COS));
+	  m_functionId.put(Keywords.FUNC_MATH_TAN, new Integer(FunctionTable.FUNC_MATH_TAN));
+	  m_functionId.put(Keywords.FUNC_MATH_ASIN, new Integer(FunctionTable.FUNC_MATH_ASIN));
+	  m_functionId.put(Keywords.FUNC_MATH_ACOS, new Integer(FunctionTable.FUNC_MATH_ACOS));
+	  m_functionId.put(Keywords.FUNC_MATH_ATAN, new Integer(FunctionTable.FUNC_MATH_ATAN));
+	  m_functionId.put(Keywords.FUNC_MATH_ATAN2, new Integer(FunctionTable.FUNC_MATH_ATAN2));
+
+	  m_functionId.put(Keywords.FUNC_YEARS_FROM_DURATION, new Integer(FunctionTable.FUNC_YEARS_FROM_DURATION));
+	  m_functionId.put(Keywords.FUNC_MONTHS_FROM_DURATION, new Integer(FunctionTable.FUNC_MONTHS_FROM_DURATION));
+	  m_functionId.put(Keywords.FUNC_DAYS_FROM_DURATION, new Integer(FunctionTable.FUNC_DAYS_FROM_DURATION));
+	  m_functionId.put(Keywords.FUNC_HOURS_FROM_DURATION, new Integer(FunctionTable.FUNC_HOURS_FROM_DURATION));
+	  m_functionId.put(Keywords.FUNC_MINUTES_FROM_DURATION, new Integer(FunctionTable.FUNC_MINUTES_FROM_DURATION));
+	  m_functionId.put(Keywords.FUNC_SECONDS_FROM_DURATION, new Integer(FunctionTable.FUNC_SECONDS_FROM_DURATION));
+
+	  m_functionId.put(Keywords.FUNC_CODE_POINTS_TO_STRING, new Integer(FunctionTable.FUNC_CODE_POINTS_TO_STRING));
+	  m_functionId.put(Keywords.FUNC_STRING_TO_CODE_POINTS, new Integer(FunctionTable.FUNC_STRING_TO_CODE_POINTS));
+	  m_functionId.put(Keywords.FUNC_COMPARE, new Integer(FunctionTable.FUNC_COMPARE));
+	  m_functionId.put(Keywords.FUNC_CODEPOINT_EQUAL, new Integer(FunctionTable.FUNC_CODEPOINT_EQUAL));
+	  m_functionId.put(Keywords.FUNC_CONTAINS_TOKEN, new Integer(FunctionTable.FUNC_CONTAINS_TOKEN));
+
+	  m_functionId.put(Keywords.FUNC_EMPTY, new Integer(FunctionTable.FUNC_EMPTY));
+	  m_functionId.put(Keywords.FUNC_EXISTS, new Integer(FunctionTable.FUNC_EXISTS));
+	  m_functionId.put(Keywords.FUNC_HEAD, new Integer(FunctionTable.FUNC_HEAD));
+	  m_functionId.put(Keywords.FUNC_TAIL, new Integer(FunctionTable.FUNC_TAIL));
+	  m_functionId.put(Keywords.FUNC_INSERT_BEFORE, new Integer(FunctionTable.FUNC_INSERT_BEFORE));
+	  m_functionId.put(Keywords.FUNC_REMOVE, new Integer(FunctionTable.FUNC_REMOVE));
+	  m_functionId.put(Keywords.FUNC_REVERSE, new Integer(FunctionTable.FUNC_REVERSE));
+	  m_functionId.put(Keywords.FUNC_SUBSEQUENCE, new Integer(FunctionTable.FUNC_SUBSEQUENCE));
+	  m_functionId.put(Keywords.FUNC_UNORDERED, new Integer(FunctionTable.FUNC_UNORDERED));
+
+	  m_functionId.put(Keywords.FUNC_PARSE_XML, new Integer(FunctionTable.FUNC_PARSE_XML));
+	  m_functionId.put(Keywords.FUNC_PARSE_XML_FRAGMENT, new Integer(FunctionTable.FUNC_PARSE_XML_FRAGMENT));
+
+	  m_functionId.put(Keywords.FUNC_AVG, new Integer(FunctionTable.FUNC_AVG));
+	  m_functionId.put(Keywords.FUNC_MAX, new Integer(FunctionTable.FUNC_MAX));
+	  m_functionId.put(Keywords.FUNC_MIN, new Integer(FunctionTable.FUNC_MIN));
+
+	  m_functionId.put(Keywords.FUNC_DOC, new Integer(FunctionTable.FUNC_DOC));
+	  m_functionId.put(Keywords.FUNC_DOC_AVAILABLE, new Integer(FunctionTable.FUNC_DOC_AVAILABLE));
+
+	  m_functionId.put(Keywords.FUNC_NODE_NAME, new Integer(FunctionTable.FUNC_NODE_NAME));
+	  m_functionId.put(Keywords.FUNC_DEEP_EQUAL, new Integer(FunctionTable.FUNC_DEEP_EQUAL));
+
+	  m_functionId.put(Keywords.FUNC_DATE_TIME, new Integer(FunctionTable.FUNC_DATE_TIME));
+	  m_functionId.put(Keywords.FUNC_YEAR_FROM_DATE_TIME, new Integer(FunctionTable.FUNC_YEAR_FROM_DATE_TIME));
+	  m_functionId.put(Keywords.FUNC_MONTH_FROM_DATE_TIME, new Integer(FunctionTable.FUNC_MONTH_FROM_DATE_TIME));
+	  m_functionId.put(Keywords.FUNC_DAY_FROM_DATE_TIME, new Integer(FunctionTable.FUNC_DAY_FROM_DATE_TIME));
+	  m_functionId.put(Keywords.FUNC_HOURS_FROM_DATE_TIME, new Integer(FunctionTable.FUNC_HOURS_FROM_DATE_TIME));
+	  m_functionId.put(Keywords.FUNC_MINUTES_FROM_DATE_TIME, new Integer(FunctionTable.FUNC_MINUTES_FROM_DATE_TIME));
+	  m_functionId.put(Keywords.FUNC_SECONDS_FROM_DATE_TIME, new Integer(FunctionTable.FUNC_SECONDS_FROM_DATE_TIME));
+	  m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_DATE_TIME, new Integer(FunctionTable.FUNC_TIMEZONE_FROM_DATE_TIME));
+	  m_functionId.put(Keywords.FUNC_YEAR_FROM_DATE, new Integer(FunctionTable.FUNC_YEAR_FROM_DATE));
+	  m_functionId.put(Keywords.FUNC_MONTH_FROM_DATE, new Integer(FunctionTable.FUNC_MONTH_FROM_DATE));
+	  m_functionId.put(Keywords.FUNC_DAY_FROM_DATE, new Integer(FunctionTable.FUNC_DAY_FROM_DATE));
+	  m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_DATE, new Integer(FunctionTable.FUNC_TIMEZONE_FROM_DATE));
+	  m_functionId.put(Keywords.FUNC_HOURS_FROM_TIME, new Integer(FunctionTable.FUNC_HOURS_FROM_TIME));
+	  m_functionId.put(Keywords.FUNC_MINUTES_FROM_TIME, new Integer(FunctionTable.FUNC_MINUTES_FROM_TIME));
+	  m_functionId.put(Keywords.FUNC_SECONDS_FROM_TIME, new Integer(FunctionTable.FUNC_SECONDS_FROM_TIME));
+	  m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_TIME, new Integer(FunctionTable.FUNC_TIMEZONE_FROM_TIME));
+
+	  m_functionId.put(Keywords.FUNC_DEFAULT_COLLATION, new Integer(FunctionTable.FUNC_DEFAULT_COLLATION));
+	  m_functionId.put(Keywords.FUNC_BASE_URI, new Integer(FunctionTable.FUNC_BASE_URI));
+	  m_functionId.put(Keywords.FUNC_DOCUMENT_URI, new Integer(FunctionTable.FUNC_DOCUMENT_URI));
+
+	  /**
+	   * XPath 3.1 functions configurations for the map functions
+	   * namespace http://www.w3.org/2005/xpath-functions/map
+	   */
+	  m_functionId.put(Keywords.FUNC_MAP_MERGE, new Integer(FunctionTable.FUNC_MAP_MERGE));
+	  m_functionId.put(Keywords.FUNC_MAP_SIZE, new Integer(FunctionTable.FUNC_MAP_SIZE));
+	  m_functionId.put(Keywords.FUNC_MAP_KEYS, new Integer(FunctionTable.FUNC_MAP_KEYS));
+	  m_functionId.put(Keywords.FUNC_MAP_CONTAINS, new Integer(FunctionTable.FUNC_MAP_CONTAINS));
+	  m_functionId.put(Keywords.FUNC_MAP_GET, new Integer(FunctionTable.FUNC_MAP_GET));
+	  m_functionId.put(Keywords.FUNC_MAP_PUT, new Integer(FunctionTable.FUNC_MAP_PUT));
+	  m_functionId.put(Keywords.FUNC_MAP_ENTRY, new Integer(FunctionTable.FUNC_MAP_ENTRY));
+	  m_functionId.put(Keywords.FUNC_MAP_FOREACH, new Integer(FunctionTable.FUNC_MAP_FOREACH));
+	  m_functionId.put(Keywords.FUNC_MAP_REMOVE, new Integer(FunctionTable.FUNC_MAP_REMOVE));
+	  m_functionId.put(Keywords.FUNC_MAP_FIND, new Integer(FunctionTable.FUNC_MAP_FIND));
+
+	  /**
+	   * XPath 3.1 functions configurations for the array functions
+	   * namespace http://www.w3.org/2005/xpath-functions/array
+	   */
+	  m_functionId.put(Keywords.FUNC_ARRAY_SIZE, new Integer(FunctionTable.FUNC_ARRAY_SIZE));
+	  m_functionId.put(Keywords.FUNC_ARRAY_GET, new Integer(FunctionTable.FUNC_ARRAY_GET));
+	  m_functionId.put(Keywords.FUNC_ARRAY_PUT, new Integer(FunctionTable.FUNC_ARRAY_PUT));
+	  m_functionId.put(Keywords.FUNC_ARRAY_APPEND, new Integer(FunctionTable.FUNC_ARRAY_APPEND));
+	  m_functionId.put(Keywords.FUNC_ARRAY_SUBARRAY, new Integer(FunctionTable.FUNC_ARRAY_SUBARRAY));
+	  m_functionId.put(Keywords.FUNC_ARRAY_REMOVE, new Integer(FunctionTable.FUNC_ARRAY_REMOVE));
+	  m_functionId.put(Keywords.FUNC_ARRAY_INSERT_BEFORE, new Integer(FunctionTable.FUNC_ARRAY_INSERT_BEFORE));
+	  m_functionId.put(Keywords.FUNC_ARRAY_HEAD, new Integer(FunctionTable.FUNC_ARRAY_HEAD));
+	  m_functionId.put(Keywords.FUNC_ARRAY_TAIL, new Integer(FunctionTable.FUNC_ARRAY_TAIL));
+	  m_functionId.put(Keywords.FUNC_ARRAY_REVERSE, new Integer(FunctionTable.FUNC_ARRAY_REVERSE));
+	  m_functionId.put(Keywords.FUNC_ARRAY_JOIN, new Integer(FunctionTable.FUNC_ARRAY_JOIN));
+	  m_functionId.put(Keywords.FUNC_ARRAY_FILTER, new Integer(FunctionTable.FUNC_ARRAY_FILTER));
+	  m_functionId.put(Keywords.FUNC_ARRAY_FOR_EACH_PAIR, new Integer(FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR));
+	  m_functionId.put(Keywords.FUNC_ARRAY_FOLD_LEFT, new Integer(FunctionTable.FUNC_ARRAY_FOLD_LEFT));
+	  m_functionId.put(Keywords.FUNC_ARRAY_FOLD_RIGHT, new Integer(FunctionTable.FUNC_ARRAY_FOLD_RIGHT));
+	  m_functionId.put(Keywords.FUNC_ARRAY_SORT, new Integer(FunctionTable.FUNC_ARRAY_SORT));
+	  m_functionId.put(Keywords.FUNC_ARRAY_FLATTEN, new Integer(FunctionTable.FUNC_ARRAY_FLATTEN));
+
+	  m_functionId.put(Keywords.FUNC_NAME_STRING, new Integer(FunctionTable.FUNC_NAME));
+
+	  m_functionId.put(Keywords.FUNC_RESOLVE_QNAME, new Integer(FunctionTable.FUNC_RESOLVE_QNAME));
+	  m_functionId.put(Keywords.FUNC_QNAME, new Integer(FunctionTable.FUNC_QNAME));
+	  m_functionId.put(Keywords.FUNC_PREFIX_FROM_QNAME, new Integer(FunctionTable.FUNC_PREFIX_FROM_QNAME));
+	  m_functionId.put(Keywords.FUNC_LOCAL_NAME_FROM_QNAME, new Integer(FunctionTable.FUNC_LOCAL_NAME_FROM_QNAME));
+	  m_functionId.put(Keywords.FUNC_NAMESPACE_URI_FROM_QNAME, new Integer(FunctionTable.FUNC_NAMESPACE_URI_FROM_QNAME));
+	  m_functionId.put(Keywords.FUNC_NAMESPACE_URI_FOR_PREFIX, new Integer(FunctionTable.FUNC_NAMESPACE_URI_FOR_PREFIX));
+	  m_functionId.put(Keywords.FUNC_IN_SCOPE_PREFIXES, new Integer(FunctionTable.FUNC_IN_SCOPE_PREFIXES));
+
+	  m_functionId.put(Keywords.FUNC_PARSE_JSON, new Integer(FunctionTable.FUNC_PARSE_JSON));
+	  m_functionId.put(Keywords.FUNC_JSON_DOC, new Integer(FunctionTable.FUNC_JSON_DOC));
+	  m_functionId.put(Keywords.FUNC_JSON_TO_XML, new Integer(FunctionTable.FUNC_JSON_TO_XML));
+	  m_functionId.put(Keywords.FUNC_XML_TO_JSON, new Integer(FunctionTable.FUNC_XML_TO_JSON));
   }
   
-  public FunctionTable(){
+  /**
+   * Class constructor.
+   */
+  public FunctionTable() {
+	  // NO OP
   }
   
   /**

@@ -183,19 +183,19 @@ public class IDiv extends ArithmeticOperation
 
 	@Override
 	public java.lang.String getNamespaceForPrefix(java.lang.String prefix, Node context) {
-		// No op
+		// no op
 		return null;
 	}
 
 	@Override
 	public java.lang.String getBaseIdentifier() {
-		// No op
+		// no op
 		return null;
 	}
 
 	@Override
 	public boolean handlesNullPrefixes() {
-		// No op
+		// no op
 		return false;
 	}
 	  

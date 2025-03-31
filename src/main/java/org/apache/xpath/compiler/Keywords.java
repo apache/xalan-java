@@ -721,68 +721,44 @@ public class Keywords
   /** current-merge-key function string (XSLT). */
   public static final String FUNC_CURRENT_MERGE_KEY = "current-merge-key";
   
+  /** transform function string. */
+  public static final String FUNC_TRANSFORM = "transform";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
   public static final String FUNC_DOCLOCATION_STRING = "document-location";
 
-  static
-  {
-    m_axisnames.put(FROM_ANCESTORS_STRING,
-                    new Integer(OpCodes.FROM_ANCESTORS));
-    m_axisnames.put(FROM_ANCESTORS_OR_SELF_STRING,
-                    new Integer(OpCodes.FROM_ANCESTORS_OR_SELF));
-    m_axisnames.put(FROM_ATTRIBUTES_STRING,
-                    new Integer(OpCodes.FROM_ATTRIBUTES));
-    m_axisnames.put(FROM_CHILDREN_STRING,
-                    new Integer(OpCodes.FROM_CHILDREN));
-    m_axisnames.put(FROM_DESCENDANTS_STRING,
-                    new Integer(OpCodes.FROM_DESCENDANTS));
-    m_axisnames.put(FROM_DESCENDANTS_OR_SELF_STRING,
-                    new Integer(OpCodes.FROM_DESCENDANTS_OR_SELF));
-    m_axisnames.put(FROM_FOLLOWING_STRING,
-                    new Integer(OpCodes.FROM_FOLLOWING));
-    m_axisnames.put(FROM_FOLLOWING_SIBLINGS_STRING,
-                    new Integer(OpCodes.FROM_FOLLOWING_SIBLINGS));
-    m_axisnames.put(FROM_PARENT_STRING,
-                    new Integer(OpCodes.FROM_PARENT));
-    m_axisnames.put(FROM_PRECEDING_STRING,
-                    new Integer(OpCodes.FROM_PRECEDING));
-    m_axisnames.put(FROM_PRECEDING_SIBLINGS_STRING,
-                    new Integer(OpCodes.FROM_PRECEDING_SIBLINGS));
-    m_axisnames.put(FROM_SELF_STRING,
-                    new Integer(OpCodes.FROM_SELF));
-    m_axisnames.put(FROM_NAMESPACE_STRING,
-                    new Integer(OpCodes.FROM_NAMESPACE));
-    m_nodetypes.put(NODETYPE_COMMENT_STRING,
-                    new Integer(OpCodes.NODETYPE_COMMENT));
-    m_nodetypes.put(NODETYPE_TEXT_STRING,
-                    new Integer(OpCodes.NODETYPE_TEXT));
-    m_nodetypes.put(NODETYPE_PI_STRING,
-                    new Integer(OpCodes.NODETYPE_PI));
-    m_nodetypes.put(NODETYPE_NODE_STRING,
-                    new Integer(OpCodes.NODETYPE_NODE));
-    m_nodetypes.put(NODETYPE_ANYELEMENT_STRING,
-                    new Integer(OpCodes.NODETYPE_ANYELEMENT));
-    
-    // added for XSLT 3.0
-    m_nodetypes.put(NODETYPE_CONTEXT_ITEM_STRING,
-                    new Integer(OpCodes.NODETYPE_CONTEXT_ITEM));
-    
-    m_keywords.put(FROM_SELF_ABBREVIATED_STRING,
-                   new Integer(OpCodes.FROM_SELF));
-    m_keywords.put(FUNC_ID_STRING,
-                   new Integer(FunctionTable.FUNC_ID));
-    m_keywords.put(FUNC_KEY_STRING,
-                   new Integer(FunctionTable.FUNC_KEY));
-    m_nodetests.put(NODETYPE_COMMENT_STRING,
-                    new Integer(OpCodes.NODETYPE_COMMENT));
-    m_nodetests.put(NODETYPE_TEXT_STRING,
-                    new Integer(OpCodes.NODETYPE_TEXT));
-    m_nodetests.put(NODETYPE_PI_STRING,
-                    new Integer(OpCodes.NODETYPE_PI));
-    m_nodetests.put(NODETYPE_NODE_STRING,
-                    new Integer(OpCodes.NODETYPE_NODE));
+  static {	  
+	  m_axisnames.put(FROM_ANCESTORS_STRING, new Integer(OpCodes.FROM_ANCESTORS));
+	  m_axisnames.put(FROM_ANCESTORS_OR_SELF_STRING, new Integer(OpCodes.FROM_ANCESTORS_OR_SELF));
+	  m_axisnames.put(FROM_ATTRIBUTES_STRING, new Integer(OpCodes.FROM_ATTRIBUTES));
+	  m_axisnames.put(FROM_CHILDREN_STRING, new Integer(OpCodes.FROM_CHILDREN));
+	  m_axisnames.put(FROM_DESCENDANTS_STRING, new Integer(OpCodes.FROM_DESCENDANTS));
+	  m_axisnames.put(FROM_DESCENDANTS_OR_SELF_STRING, new Integer(OpCodes.FROM_DESCENDANTS_OR_SELF));
+	  m_axisnames.put(FROM_FOLLOWING_STRING, new Integer(OpCodes.FROM_FOLLOWING));
+	  m_axisnames.put(FROM_FOLLOWING_SIBLINGS_STRING, new Integer(OpCodes.FROM_FOLLOWING_SIBLINGS));
+	  m_axisnames.put(FROM_PARENT_STRING, new Integer(OpCodes.FROM_PARENT));
+	  m_axisnames.put(FROM_PRECEDING_STRING, new Integer(OpCodes.FROM_PRECEDING));
+	  m_axisnames.put(FROM_PRECEDING_SIBLINGS_STRING, new Integer(OpCodes.FROM_PRECEDING_SIBLINGS));
+	  m_axisnames.put(FROM_SELF_STRING, new Integer(OpCodes.FROM_SELF));
+	  m_axisnames.put(FROM_NAMESPACE_STRING, new Integer(OpCodes.FROM_NAMESPACE));
+	  m_nodetypes.put(NODETYPE_COMMENT_STRING, new Integer(OpCodes.NODETYPE_COMMENT));
+	  m_nodetypes.put(NODETYPE_TEXT_STRING, new Integer(OpCodes.NODETYPE_TEXT));
+	  m_nodetypes.put(NODETYPE_PI_STRING, new Integer(OpCodes.NODETYPE_PI));
+	  m_nodetypes.put(NODETYPE_NODE_STRING, new Integer(OpCodes.NODETYPE_NODE));
+	  m_nodetypes.put(NODETYPE_ANYELEMENT_STRING, new Integer(OpCodes.NODETYPE_ANYELEMENT));
+
+	  // Added for XSLT 3.0
+	  m_nodetypes.put(NODETYPE_CONTEXT_ITEM_STRING, new Integer(OpCodes.NODETYPE_CONTEXT_ITEM));
+
+	  m_keywords.put(FROM_SELF_ABBREVIATED_STRING, new Integer(OpCodes.FROM_SELF));
+	  m_keywords.put(FUNC_ID_STRING, new Integer(FunctionTable.FUNC_ID));
+	  m_keywords.put(FUNC_KEY_STRING, new Integer(FunctionTable.FUNC_KEY));
+	  m_nodetests.put(NODETYPE_COMMENT_STRING, new Integer(OpCodes.NODETYPE_COMMENT));
+	  m_nodetests.put(NODETYPE_TEXT_STRING, new Integer(OpCodes.NODETYPE_TEXT));
+	  m_nodetests.put(NODETYPE_PI_STRING, new Integer(OpCodes.NODETYPE_PI));
+	  m_nodetests.put(NODETYPE_NODE_STRING, new Integer(OpCodes.NODETYPE_NODE));
   }
   
   static Object getAxisName(String key){
