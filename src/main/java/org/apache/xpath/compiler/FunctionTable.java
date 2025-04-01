@@ -787,6 +787,7 @@ public class FunctionTable
 	   m_functions[FUNC_MIN] = org.apache.xpath.functions.FuncMin.class;
 
 	   m_functions[FUNC_DOC] = org.apache.xpath.functions.FuncDoc.class;
+	   m_functions[FUNC_DOC_AVAILABLE] = org.apache.xpath.functions.FuncDocAvailable.class;
 
 	   m_functions[FUNC_NODE_NAME] = org.apache.xpath.functions.FuncNodeName.class;
 	   m_functions[FUNC_DEEP_EQUAL] = org.apache.xpath.functions.FuncDeepEqual.class;
@@ -849,13 +850,13 @@ public class FunctionTable
 	   m_functions[FUNC_ARRAY_FOLD_RIGHT] = org.apache.xpath.functions.array.FuncArrayFoldRight.class;
 	   m_functions[FUNC_ARRAY_SORT] = org.apache.xpath.functions.array.FuncArraySort.class;
 	   m_functions[FUNC_ARRAY_FLATTEN] = org.apache.xpath.functions.array.FuncArrayFlatten.class;
+	   
+	   m_functions[FUNC_TRANSFORM] = org.apache.xpath.functions.FuncTransform.class;
 
 	   m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.json.FuncParseJson.class;
 	   m_functions[FUNC_JSON_DOC] = org.apache.xpath.functions.json.FuncJsonDoc.class;
 	   m_functions[FUNC_JSON_TO_XML] = org.apache.xpath.functions.json.FuncJsonToXml.class;
-	   m_functions[FUNC_XML_TO_JSON] = org.apache.xpath.functions.json.FuncXmlToJson.class;
-
-	   m_functions[FUNC_DOC_AVAILABLE] = org.apache.xpath.functions.FuncDocAvailable.class;    
+	   m_functions[FUNC_XML_TO_JSON] = org.apache.xpath.functions.json.FuncXmlToJson.class;	   
   }
 
   static {
@@ -1053,11 +1054,13 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_NAMESPACE_URI_FROM_QNAME, new Integer(FunctionTable.FUNC_NAMESPACE_URI_FROM_QNAME));
 	  m_functionId.put(Keywords.FUNC_NAMESPACE_URI_FOR_PREFIX, new Integer(FunctionTable.FUNC_NAMESPACE_URI_FOR_PREFIX));
 	  m_functionId.put(Keywords.FUNC_IN_SCOPE_PREFIXES, new Integer(FunctionTable.FUNC_IN_SCOPE_PREFIXES));
+	  
+	  m_functionId.put(Keywords.FUNC_TRANSFORM, new Integer(FunctionTable.FUNC_TRANSFORM));
 
 	  m_functionId.put(Keywords.FUNC_PARSE_JSON, new Integer(FunctionTable.FUNC_PARSE_JSON));
 	  m_functionId.put(Keywords.FUNC_JSON_DOC, new Integer(FunctionTable.FUNC_JSON_DOC));
 	  m_functionId.put(Keywords.FUNC_JSON_TO_XML, new Integer(FunctionTable.FUNC_JSON_TO_XML));
-	  m_functionId.put(Keywords.FUNC_XML_TO_JSON, new Integer(FunctionTable.FUNC_XML_TO_JSON));
+	  m_functionId.put(Keywords.FUNC_XML_TO_JSON, new Integer(FunctionTable.FUNC_XML_TO_JSON));	  
   }
   
   /**

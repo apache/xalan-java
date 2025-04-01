@@ -167,10 +167,7 @@ public class XPathMapConstructor extends Expression {
     	SourceLocator srcLocator = xctxt.getSAXLocator();
     	
     	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-        if (m_vars != null) {
-           xpathObj.fixupVariables(m_vars, m_globals_size);
-        }
-
+        
         Expression xpathExpr = xpathObj.getExpression();
     	
     	if (xpathExpr instanceof LocPathIterator) {    		
@@ -266,12 +263,11 @@ public class XPathMapConstructor extends Expression {
     		return sequence;
     	}
         else {
-        	xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-            if (m_vars != null) {
+        	if (m_vars != null) {
                xpathObj.fixupVariables(m_vars, m_globals_size);
             }
             
-            XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, 
+        	XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, 
                                                                            xctxt.getNamespaceContext());
             
             if (xPathExprPartResult instanceof XMLNodeCursorImpl) {

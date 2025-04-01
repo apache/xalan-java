@@ -47,9 +47,9 @@ import xml.xpath31.processor.types.XSUntyped;
  * data types such as string.
 
  * In addition to this class, Xalan-J's XSL 3 implementation also has a 
- * class named org.apache.xpath.objects.ResultSequence that is capable of 
- * having an ordered list of heterogeneous XDM items (which can be of XDM 
- * kinds 'node', 'atomic value', 'function item', 'map' or an 'array').
+ * class org.apache.xpath.objects.ResultSequence that is capable of having 
+ * an ordered list of heterogeneous XDM items (which can be of XDM 
+ * types 'node', 'atomic value', 'function item', 'map' or an 'array').
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * 
@@ -350,34 +350,6 @@ public class XMLNodeCursorImpl extends NodeCursor
     	return m_obj;
   }
 
-  // %REVIEW%
-  // hmmm...
-//  /**
-//   * Cast result object to a result tree fragment.
-//   *
-//   * @param support The XPath context to use for the conversion 
-//   *
-//   * @return the nodeset as a result tree fragment.
-//   */
-//  public DocumentFragment rtree(XPathContext support)
-//  {
-//    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//    DocumentBuilder db = dbf.newDocumentBuilder();
-//    Document myDoc = db.newDocument();
-//    
-//    DocumentFragment docFrag = myDoc.createDocumentFragment();
-//
-//    DTMIterator nl = iter();
-//    int node;
-//
-//    while (DTM.NULL != (node = nl.nextNode()))
-//    {
-//      frag.appendChild(node, true, true);
-//    }
-//
-//    return frag.getDocument();
-//  }
-
   /**
    * Cast result object to a nodelist.
    *
@@ -408,18 +380,6 @@ public class XMLNodeCursorImpl extends NodeCursor
     SetVector(clone.getVector());
     return nodelist;
   }
-
-  
-//  /**
-//   * Return a java object that's closest to the representation
-//   * that should be handed to an extension.
-//   *
-//   * @return The object that this class wraps
-//   */
-//  public Object object()
-//  {
-//    return new org.apache.xml.dtm.ref.DTMNodeList(iter());
-//  }
 
   /**
    * Return the iterator without cloning, etc.

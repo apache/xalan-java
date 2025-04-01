@@ -101,6 +101,11 @@ public class XPathLetExpr extends Expression {
           
           XObject varBindingEvalResult = letExprVarBindingXPath.execute(xctxt, contextNode, 
                                                                                      xctxt.getNamespaceContext());
+          if (varBindingEvalResult == null) {
+        	 throw new TransformerException("FODC0005 : XPath let expression's variable could not be bound to "
+        	 		                                       + "a valid XDM value, due to an error in evaluating "
+        	 		                                       + "XPath expression on RHS of let expression's variable assignment.", srcLocator); 
+          }
           
           m_xpathVarList.add(new QName(varName));
           
@@ -125,7 +130,7 @@ public class XPathLetExpr extends Expression {
        evalResult = returnExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        
        if (evalResult == null) {
-          // Return an empty sequence, here
+          // To return an empty sequence
           evalResult = new ResultSequence();   
        }
         

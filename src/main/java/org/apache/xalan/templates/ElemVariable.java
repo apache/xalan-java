@@ -409,8 +409,9 @@ public class ElemVariable extends ElemTemplateElement
         }
         else if (selectExpression instanceof Function) {
             XObject evalResult = ((Function)selectExpression).execute(xctxt);            
-            if ((evalResult instanceof ResultSequence) || (evalResult instanceof XPathArray) || 
-                                                (evalResult instanceof XSAnyType)) {
+            if ((evalResult instanceof ResultSequence) || (evalResult instanceof XPathMap) || 
+            		                                      (evalResult instanceof XPathArray) || 
+                                                          (evalResult instanceof XSAnyType)) {
                 if (m_asAttr != null) {
                    evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {
