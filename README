@@ -59,11 +59,11 @@ This produces Maven build output with trailing information like following:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXsl3Tests
-[INFO] Tests run: 966, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 24.88 s - in org.apache.xalan.tests.main.AllXsl3Tests
+[INFO] Tests run: 967, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 24.123 s - in org.apache.xalan.tests.main.AllXsl3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 966, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 967, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS

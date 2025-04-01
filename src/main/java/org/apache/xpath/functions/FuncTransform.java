@@ -28,7 +28,6 @@ import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -183,13 +182,8 @@ public class FuncTransform extends FunctionDef1Arg
 			    	DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
 			    	xmlDocumentBuilderFactory.setNamespaceAware(true);
 
-			    	DocumentBuilder xmlDocumentBuilder = null;
-			    	try {
-			    		xmlDocumentBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();
-			    	} catch (ParserConfigurationException ex) {            
-			    		ex.printStackTrace();
-			    	}
-
+			    	DocumentBuilder xmlDocumentBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();
+			    	
 			    	Document document = xmlDocumentBuilder.parse(new InputSource(new StringReader(xmlInpDocStr)));
 
 			    	TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
@@ -242,9 +236,44 @@ public class FuncTransform extends FunctionDef1Arg
 		    	result.put(new XSString("output"), xdmNodeCursorImpl);
 		   }
            else {
-        	  // To use stylesheet-text's value
+        	   // Perform XPath function fn:transform's XSL transformation.
         	   
-			  // TO DO 
+        	   try {
+        		   String xslStylesheetStrValue = XslTransformEvaluationHelper.getStrVal(xslStylesheetTxtObj);
+
+        		   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)sourceInpDocNodeObj;
+        		   DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
+        		   int xmlInpNodeHandle = dtmCursorIter.nextNode();
+        		   DTM dtm = xctxt.getDTM(xmlInpNodeHandle);			    
+        		   Node xmlInpDocNode = dtm.getNode(xmlInpNodeHandle);
+
+        		   System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+        		   System.setProperty(XSLT_TRANSFORMER_FACTORY_KEY, XSLT_TRANSFORMER_FACTORY_VALUE);                
+
+        		   DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+        		   xmlDocumentBuilderFactory.setNamespaceAware(true);
+        		   
+        		   DocumentBuilder xmlDocumentBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();
+        		   Document document = xmlDocumentBuilder.parse(new InputSource(new StringReader(xslStylesheetStrValue)));
+
+        		   TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
+        		   Transformer transformer = xslTransformerFactory.newTransformer(new DOMSource(document));
+
+        		   DOMResult domResult = new DOMResult();		        
+        		   transformer.transform(new DOMSource(xmlInpDocNode), domResult);
+
+        		   DTMManager dtmManager = xctxt.getDTMManager();
+        		   DTM dtmResult = dtmManager.getDTM(new DOMSource(domResult.getNode()), true, null, false, false);
+        		   int resultDocHandle = dtmResult.getDocument();			    	
+        		   XMLNodeCursorImpl xdmNodeCursorImpl = new XMLNodeCursorImpl(resultDocHandle, dtmManager); 
+
+        		   result.put(new XSString("output"), xdmNodeCursorImpl);
+		       } 
+		       catch (Exception ex) {            
+		    	   throw new javax.xml.transform.TransformerException("FODC0005 : An error occured while evaluating "
+																	                           + "fn:transform function. Following exception occured : " + 
+																	                               ex.getMessage() + ".", srcLocator);
+		       }
 		   }		   		   		   
 		}
 

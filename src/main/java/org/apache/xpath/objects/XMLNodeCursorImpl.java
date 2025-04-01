@@ -97,7 +97,7 @@ public class XMLNodeCursorImpl extends NodeCursor
 	    setIter(nodeSet.m_iter);
 	    m_dtmMgr = nodeSet.m_dtmMgr;
 	    m_last = nodeSet.m_last;
-        // First make sure the DTMIterator val has a cache,
+        // First make sure the DTMCursorIterator value has a cache,
         // so if it doesn't have one, make one.
 	    if(!nodeSet.hasCache())
 	        nodeSet.setShouldCacheNodes(true);
