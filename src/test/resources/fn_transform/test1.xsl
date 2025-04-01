@@ -22,7 +22,15 @@
   
   <!-- An XSL function definition, to get function fn:transform's 
        argument as an XDM map. This XSL function definition uses 
-       stylesheet-location option while using function fn:transform. -->
+       stylesheet-location option while using function fn:transform. 
+       
+       This stylesheet function returns an XDM map, as if it was constructed from
+       the following lexical XPath map syntax :
+       map {
+          "stylesheet-location" : "render.xsl",
+          "source-node"         : doc('test.xml')
+       }
+  -->
   <xsl:function name="fn0:getFnTransformArg" as="map(*)">
      <xsl:param name="stylesheetUrl" as="xs:string"/>
 	 <xsl:param name="xmlInpNode" as="node()"/>
