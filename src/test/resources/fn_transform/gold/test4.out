@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><map>
+  <entry>
+    <key>stylesheet-location</key>
+    <value>render.xsl</value>
+  </entry>
+  <entry>
+    <key>source-node</key>
+    <value>
+      <a/>
+      <b/>
+      <c/>
+      <d/>
+      <e/>
+      <f/>
+      <g/>
+    </value>
+  </entry>
+</map>

@@ -274,14 +274,14 @@ public class XPathDynamicFunctionCall extends Expression {
      					  argValue = new XSString(((XString)argValue).str());
      					  evalResult = xpathMap.get(argValue);     					 
      					  if (evalResult == null) {
-     						  throw new javax.xml.transform.TransformerException("XPTY0004 : XDM map doesn't have an entry with key name '" + 
+     						  throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map doesn't have an entry with key name '" + 
      								                                                              XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  xctxt.getSAXLocator()); 
      					  }
      				  }
      				  else if (argValue instanceof XSString) {
      					  evalResult = xpathMap.get(argValue);     					 
      					  if (evalResult == null) {
-     						  throw new javax.xml.transform.TransformerException("XPTY0004 : XDM map doesn't have an entry with key name '" + 
+     						  throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map doesn't have an entry with key name '" + 
      								                                                             XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  xctxt.getSAXLocator()); 
      					  } 
      				  }

@@ -81,8 +81,11 @@ public class XPathMapConstructor extends Expression {
 	 */
 	private int m_globals_size;
     
-    private String KEY = "key";
-    private String VALUE = "value";
+	// Constant denoting key of an XDM map entry
+    private static final String KEY = "key";
+    
+    // Constant denoting value of an XDM map entry
+    private static final String VALUE = "value";
     
     @Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
@@ -289,7 +292,11 @@ public class XPathMapConstructor extends Expression {
             	    	result = new XMLNodeCursorImpl(nextNode, xctxt);
             	    	return result;
             	     }
-            	  } 
+            	  }
+                  else {
+                	 result = new XMLNodeCursorImpl(nextNode, xctxt);
+          	    	 return result; 
+                  }
                }               
             }
             else if (xPathExprPartResult instanceof ResultSequence) {

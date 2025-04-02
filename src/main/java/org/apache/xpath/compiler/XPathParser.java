@@ -1574,12 +1574,14 @@ public class XPathParser
      			  // within this map. 	        		
      			  mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(false); 
      		  }
-     		  else if (tokenIs("http://www.w3.org/2001/XMLSchema")) {
+     		  else if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
      			  mapEntryValueXPathExprStr = m_token;
 				  nextToken();
      			  while (!(tokenIs(',') || tokenIs('}'))) {     					  
      				  mapEntryValueXPathExprStr += m_token;
      				  nextToken();
+     				  
+     				  
      			  } 
      		  }
      		  else {
@@ -1776,12 +1778,13 @@ public class XPathParser
 	 mapStrBuf.append(m_token);
 	 
 	 consumeExpected("map");
+	 
 	 while (m_token != null) {
 		if (tokenIs('}')) {
 		   mapStrBuf.append(m_token);
 		   consumeExpected('}');
 		   if (getCharCount(mapStrBuf.toString(), '{') == 
-				                 getCharCount(mapStrBuf.toString(), '}')) {
+				                 					getCharCount(mapStrBuf.toString(), '}')) {
 			   break; 
 		   }
 		   else {
@@ -1791,6 +1794,7 @@ public class XPathParser
 			   else {
 				   mapStrBuf.append(m_token);   
 			   }
+			   
 			   nextToken(); 
 		   }
 		}
@@ -1800,7 +1804,8 @@ public class XPathParser
 		   }
 		   else {
 			  mapStrBuf.append(m_token);   
-		   }		   
+		   }
+		   
 		   nextToken();
 		}			 
      }
@@ -5301,7 +5306,9 @@ public class XPathParser
  				  }
  			  }
  		  }
+ 		  
  		  nativeMapObj.put(mapEntryKeyXPathExprStr, mapEntryValueXPathExprStr);
+ 		  
  		  if (tokenIs(',')) {
  			  consumeExpected(','); 
  		  }

@@ -351,9 +351,9 @@ class Lexer
         addToTokenQueue(pat.substring(i, i + 1));
         break;
       case ':' :
-        if (i>0)
+        if (i > 0)
         {
-          boolean isXPathMapExpr = isXPathMapExpr(pat);          
+          boolean isXPathMapExpr = isXPathMapExpr(pat);
           if (isXPathMapExpr) {
         	 // Handle ':' character as XPath map entry's key, value separator
         	 boolean isBreakFromSwitch = handleColonWithXdmMap(pat, i);
@@ -733,19 +733,35 @@ class Lexer
   }
   
   /**
-   * Method definition to check whether an XPath expression string
-   * represents a possible XPath 'map' expression, by doing a regex
-   * prefix check of an XPath expression pattern string. 
+   * Method definition to check whether, an XPath expression string
+   * represents start of an XPath 'map' expression or is a fn:transform function 
+   * call with a literal 'map { ...' argument, by doing a regex prefix check of 
+   * an XPath expression pattern string. 
    * 
    * @param pat		An XPath expression pattern string that this Lexer 
    *                is processing.
    */
   private boolean isXPathMapExpr(String pat) {
-	  boolean isXPathMapExpr = false;    
+	  boolean isXPathMapExpr = false;
 	  
-	  if ((pat.length() > 0) && java.util.regex.Pattern.matches("map[\\s]*[\\{].*", 
-			                                                                  pat.trim())) {
+	  String trimmedPat = pat.trim();
+	  
+	  if ((pat.length() > 0) && java.util.regex.Pattern.matches("map[\\s]*[\\{].*", trimmedPat)) {
 		  isXPathMapExpr = true;	
+	  }
+	  
+	  // Check whether XPath map expression is an argument of 
+	  // XPath fn:transform function call.
+	  if (!isXPathMapExpr) {
+		 String[] strParts = trimmedPat.split("\\(");
+		 if (strParts.length >= 2) {
+			String strPart1 = strParts[0];
+			String strPart2 = strParts[1];
+			if ((strPart1.equals(Keywords.FUNC_TRANSFORM) || strPart1.endsWith(":" + Keywords.FUNC_TRANSFORM)) && 
+					                                          java.util.regex.Pattern.matches("map[\\s]*[\\{].*", strPart2)) {
+			   isXPathMapExpr = true;
+			}
+		 }
 	  }
 	  
 	  return isXPathMapExpr;
