@@ -39,8 +39,6 @@ import org.apache.xpath.objects.XObject;
 
 /**
  * An implementation of XPath 3.1 'let' expression.
- *    
- * Ref : https://www.w3.org/TR/xpath-31/#id-let-expressions
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -94,7 +92,7 @@ public class XPathLetExpr extends Expression {
           }
           
           XPath letExprVarBindingXPath = new XPath(varResultXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                             XPath.SELECT, null);
+        		                                                                                             XPath.SELECT, null);
           if (m_vars != null) {
              letExprVarBindingXPath.fixupVariables(m_vars, m_globals_size);
           }

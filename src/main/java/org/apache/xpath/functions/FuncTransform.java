@@ -30,6 +30,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
@@ -64,9 +65,35 @@ public class FuncTransform extends FunctionDef1Arg
 
 	private static final long serialVersionUID = 4109927115539483019L;
 	
+	/**
+	 * Definition of various class, constant field definitions. 
+	 */
+	
     private static final String XSLT_TRANSFORMER_FACTORY_KEY = "javax.xml.transform.TransformerFactory";
     
     private static final String XSLT_TRANSFORMER_FACTORY_VALUE = "org.apache.xalan.processor.XSL3TransformerFactoryImpl";
+    
+    private static final String STYLESHEET_LOCATION = "stylesheet-location";    
+    
+    private static final String STYLESHEET_NODE = "stylesheet-node";
+    
+    private static final String STYLESHEET_TEXT = "stylesheet-text";
+    
+    private static final String SOURCE_NODE = "source-node";
+    
+    private static final String BASE_OUTPUT_URI = "base-output-uri";
+    
+    private static final String DELIVERY_FORMAT = "delivery-format";
+    
+    private static final String SERLIALIZATION_PARAMS = "serialization-params";
+    
+    private static final String DOCUMENT = "document";
+    
+    private static final String SERIALIZED = "serialized";
+    
+    private static final String RAW = "raw";
+    
+    private static final String OUTPUT = "output";
 
 	/**
 	 * Execute the function. The function must return a valid object.
@@ -85,6 +112,9 @@ public class FuncTransform extends FunctionDef1Arg
 		Expression arg0 = m_arg0;
 		XObject arg0Obj = arg0.execute(xctxt);
 		
+		System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    	System.setProperty(XSLT_TRANSFORMER_FACTORY_KEY, XSLT_TRANSFORMER_FACTORY_VALUE);
+		
 		if (!(arg0Obj instanceof XPathMap)) {
 			throw new javax.xml.transform.TransformerException("FODC0005 : The 1st argument to function call fn:transform "
 					                                                                                  + "is not an XDM map.", srcLocator);
@@ -94,9 +124,9 @@ public class FuncTransform extends FunctionDef1Arg
 		   
 		   // An XSL stylesheet input document, for fn:transform function call 
 		   // may be provided with one of following ways.
-		   XObject xslStylesheetLocObj = mapArg.get(new XSString("stylesheet-location"));
-		   XObject xslStylesheetNodeObj = mapArg.get(new XSString("stylesheet-node"));
-		   XObject xslStylesheetTxtObj = mapArg.get(new XSString("stylesheet-text"));
+		   XObject xslStylesheetLocObj = mapArg.get(new XSString(STYLESHEET_LOCATION));
+		   XObject xslStylesheetNodeObj = mapArg.get(new XSString(STYLESHEET_NODE));
+		   XObject xslStylesheetTxtObj = mapArg.get(new XSString(STYLESHEET_TEXT));
 		   
 		   boolean xslStylesheetSrcInpErr = false;
 		   
@@ -110,7 +140,7 @@ public class FuncTransform extends FunctionDef1Arg
 			   xslStylesheetSrcInpErr = true; 
 		   }
 		   
-           XObject sourceInpDocNodeObj = mapArg.get(new XSString("source-node"));
+           XObject sourceInpDocNodeObj = mapArg.get(new XSString(SOURCE_NODE));
 		   
 		   if (sourceInpDocNodeObj == null) {
 			   throw new javax.xml.transform.TransformerException("FODC0005 : For the fn:transform function call, an argument's map key 'source-node' "
@@ -124,66 +154,54 @@ public class FuncTransform extends FunctionDef1Arg
 			   		                                                                            + "'stylesheet-node' or 'stylesheet-text'. This identifies an XSL "
 			   		                                                                            + "stylesheet document, that will transform an XML input document source.", srcLocator); 
 		   }
-		   else if (xslStylesheetLocObj != null) {
-			   String hrefStrVal = XslTransformEvaluationHelper.getStrVal(xslStylesheetLocObj);
+		   
+		   // The following optional, function fn:transform's 'map' argument entry 
+		   // keys (along, with corresponding map entry values as well).
+		   XObject baseOutputUri = mapArg.get(new XSString(BASE_OUTPUT_URI));		   		   
+		   XObject deliveryFormat = mapArg.get(new XSString(DELIVERY_FORMAT));
+		   XObject serializationParams = mapArg.get(new XSString(SERLIALIZATION_PARAMS));  // TO DO
+		   
+		   String baseOutputUriStrValue = ((baseOutputUri != null) ? XslTransformEvaluationHelper.getStrVal(
+				   																							baseOutputUri) : null);
+		   if (baseOutputUriStrValue != null) {
+			   URL baseOutputUrl = getAbsoluteUrlValue(baseOutputUriStrValue, srcLocator);
+			   baseOutputUriStrValue = baseOutputUrl.toString();
+		   }
+		   
+		   String deliverFormatStrValue = ((deliveryFormat != null) ? XslTransformEvaluationHelper.getStrVal(
+				                                                                                            deliveryFormat) : null);
+		   if (deliverFormatStrValue != null) {
+			   if (!(DOCUMENT.equals(deliverFormatStrValue) || SERIALIZED.equals(deliverFormatStrValue) || 
+					   																				 RAW.equals(deliverFormatStrValue))) {
+				   throw new javax.xml.transform.TransformerException("FODC0005 : An XPath function fn:transform map argument "
+						   																+ "entry with key \"delivery-format\" can have value either "
+						   																+ "'document', 'serialized' or 'raw'.", srcLocator);			   
+			   }
+		   }
+		   
+		   if (xslStylesheetLocObj != null) {
+			    // XPath function fn:transform's XSL transformation, using XSL stylesheet 
+			    // information provided by fn:transform's map key 'stylesheet-location'.
 			   
-			   URL xslStylesheetResolvedUrl = null;
-			   
-			   try {
-		        	URI xslStylesheetUri = new URI(hrefStrVal);        	
-
-		        	if (xslStylesheetUri.isAbsolute()) {
-		        		xslStylesheetResolvedUrl = new URL(hrefStrVal); 
-		        	}
-		        	else {
-		        		String stylesheetSystemId = null;
-		            	
-		        		if (srcLocator != null) {
-		            		stylesheetSystemId = srcLocator.getSystemId();
-		            	}
-		            	else {
-		            		ExpressionNode expressionNode = getExpressionOwner();
-		            		stylesheetSystemId = expressionNode.getSystemId(); 
-		            	}
-		            	
-		        		if (stylesheetSystemId != null) {
-		        			URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
-		        			xslStylesheetResolvedUrl = resolvedUriArg.toURL();
-		        		}
-		        		else {
-		        			xslStylesheetResolvedUrl = new URL(hrefStrVal);
-		        		}
-		        	}
-		        }
-		        catch (URISyntaxException ex) {
-		           throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
-		                                                                                                + "or cannot be resolved to an absolute uri.", srcLocator); 
-		        }
-		        catch (MalformedURLException ex) {
-		           throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
-		                                                                                                + "or cannot be resolved to an absolute uri.", srcLocator); 
-		        }
-			   
-			    // Perform XPath function fn:transform's XSL transformation.
-			   
-			    XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)sourceInpDocNodeObj;
-			    DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
-			    int xmlInpNodeHandle = dtmCursorIter.nextNode();
-			    DTM dtm = xctxt.getDTM(xmlInpNodeHandle);			    
-			    Node xmlInpDocNode = dtm.getNode(xmlInpNodeHandle);
-			    
 			    try {
-			    	String xmlInpDocStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(xmlInpDocNode);			    
-			    	String xslStylesheetUrlStr = xslStylesheetResolvedUrl.toString();
+			    	String hrefStrVal = XslTransformEvaluationHelper.getStrVal(xslStylesheetLocObj);
 
-			    	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-			    	System.setProperty(XSLT_TRANSFORMER_FACTORY_KEY, XSLT_TRANSFORMER_FACTORY_VALUE);                
+			    	URL xslSecondaryStylesheetAbsUrl = getAbsoluteUrlValue(hrefStrVal, srcLocator);			   			    
+
+			    	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)sourceInpDocNodeObj;
+			    	DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
+			    	int xmlInpNodeHandle = dtmCursorIter.nextNode();
+			    	DTM dtm = xctxt.getDTM(xmlInpNodeHandle);			    
+			    	Node xmlInpDocNode = dtm.getNode(xmlInpNodeHandle);
+
+			    	String xmlInpDocStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(xmlInpDocNode);			    
+			    	String xslStylesheetUrlStr = xslSecondaryStylesheetAbsUrl.toString();			    	                
 
 			    	DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
 			    	xmlDocumentBuilderFactory.setNamespaceAware(true);
 
 			    	DocumentBuilder xmlDocumentBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();
-			    	
+
 			    	Document document = xmlDocumentBuilder.parse(new InputSource(new StringReader(xmlInpDocStr)));
 
 			    	TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
@@ -191,52 +209,105 @@ public class FuncTransform extends FunctionDef1Arg
 
 			    	DOMResult domResult = new DOMResult();		        
 			    	transformer.transform(new DOMSource(document), domResult);
-			    	
+
 			    	DTMManager dtmManager = xctxt.getDTMManager();
 			    	DTM dtmResult = dtmManager.getDTM(new DOMSource(domResult.getNode()), true, null, false, false);
 			    	int resultDocHandle = dtmResult.getDocument();			    	
 			    	XMLNodeCursorImpl xdmNodeCursorImpl = new XMLNodeCursorImpl(resultDocHandle, dtmManager); 
-			    	
-			    	result.put(new XSString("output"), xdmNodeCursorImpl);
+
+			    	if ((deliverFormatStrValue == null) || DOCUMENT.equals(deliverFormatStrValue)) {
+			    		if (baseOutputUriStrValue != null) {
+			    			result.put(new XSString(baseOutputUriStrValue), xdmNodeCursorImpl);	
+			    		}
+			    		else {
+			    			result.put(new XSString(OUTPUT), xdmNodeCursorImpl);
+			    		}
+			    	}
+			    	else if (SERIALIZED.equals(deliverFormatStrValue)) {
+			    		DTMCursorIterator dtmIter = xdmNodeCursorImpl.iterRaw();
+			    		int nodeHandle = dtmIter.nextNode();
+			    		DTM dtm1 = xctxt.getDTM(nodeHandle);
+			    		Node node = dtm1.getNode(nodeHandle);
+			    		String xmlStrValue = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+			    		if (baseOutputUriStrValue != null) {
+			    			result.put(new XSString(baseOutputUriStrValue), new XSString(xmlStrValue));	
+			    		}
+			    		else {
+			    			result.put(new XSString(OUTPUT), new XSString(xmlStrValue));
+			    		}
+			    	}
+			    	else if (RAW.equals(deliverFormatStrValue)) {
+			    		// TO DO
+			    	}
 			    }
 			    catch (Exception ex) {
 			    	throw new javax.xml.transform.TransformerException("FODC0005 : An error occured while evaluating "
-			    			                                                                     + "fn:transform function. Following exception occured : " + 
-			    			                                                                         ex.getMessage() + ".", srcLocator);
+			    			                                                   + "fn:transform function. Following exception occured : " + 
+			    			                                                   ex.getMessage() + ".", srcLocator);
 			    }
 		   }
 		   else if (xslStylesheetNodeObj != null) {
-			    // Perform XPath function fn:transform's XSL transformation.
+			    // XPath function fn:transform's XSL transformation, using XSL stylesheet 
+			    // information provided by fn:transform's map key 'stylesheet-node'.
 			   
-			    XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)sourceInpDocNodeObj;
-			    DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
-			    int xmlInpNodeHandle = dtmCursorIter.nextNode();
-			    DTM dtm = xctxt.getDTM(xmlInpNodeHandle);			    
-			    Node xmlInpDocNode = dtm.getNode(xmlInpNodeHandle);
-			    
-			    XMLNodeCursorImpl xslNodeCursorImpl = (XMLNodeCursorImpl)xslStylesheetNodeObj;
-			    dtmCursorIter = xslNodeCursorImpl.iterRaw();
-			    int xslNodeHandle = dtmCursorIter.nextNode();
-			    dtm = xctxt.getDTM(xslNodeHandle);			    
-			    Node xslDocNode = dtm.getNode(xslNodeHandle);
-			    
-		    	System.setProperty(XSLT_TRANSFORMER_FACTORY_KEY, XSLT_TRANSFORMER_FACTORY_VALUE);
-		    	
-		    	TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
-		    	Transformer transformer = xslTransformerFactory.newTransformer(new DOMSource(xslDocNode));
+			    try  {
+			    	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)sourceInpDocNodeObj;
+			    	DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
+			    	int xmlInpNodeHandle = dtmCursorIter.nextNode();
+			    	DTM dtm = xctxt.getDTM(xmlInpNodeHandle);			    
+			    	Node xmlInpDocNode = dtm.getNode(xmlInpNodeHandle);
 
-		    	DOMResult domResult = new DOMResult();		        
-		    	transformer.transform(new DOMSource(xmlInpDocNode), domResult);
-		    	
-		    	DTMManager dtmManager = xctxt.getDTMManager();
-		    	DTM dtmResult = dtmManager.getDTM(new DOMSource(domResult.getNode()), true, null, false, false);
-		    	int resultDocHandle = dtmResult.getDocument();			    	
-		    	XMLNodeCursorImpl xdmNodeCursorImpl = new XMLNodeCursorImpl(resultDocHandle, dtmManager); 
-		    	
-		    	result.put(new XSString("output"), xdmNodeCursorImpl);
+			    	XMLNodeCursorImpl xslNodeCursorImpl = (XMLNodeCursorImpl)xslStylesheetNodeObj;
+			    	dtmCursorIter = xslNodeCursorImpl.iterRaw();
+			    	int xslNodeHandle = dtmCursorIter.nextNode();
+			    	dtm = xctxt.getDTM(xslNodeHandle);			    
+			    	Node xslDocNode = dtm.getNode(xslNodeHandle);
+
+			    	TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
+			    	Transformer transformer = xslTransformerFactory.newTransformer(new DOMSource(xslDocNode));
+
+			    	DOMResult domResult = new DOMResult();		        
+			    	transformer.transform(new DOMSource(xmlInpDocNode), domResult);
+
+			    	DTMManager dtmManager = xctxt.getDTMManager();
+			    	DTM dtmResult = dtmManager.getDTM(new DOMSource(domResult.getNode()), true, null, false, false);
+			    	int resultDocHandle = dtmResult.getDocument();			    	
+			    	XMLNodeCursorImpl xdmNodeCursorImpl = new XMLNodeCursorImpl(resultDocHandle, dtmManager); 
+
+			    	if ((deliverFormatStrValue == null) || DOCUMENT.equals(deliverFormatStrValue)) {
+			    		if (baseOutputUriStrValue != null) {
+			    			result.put(new XSString(baseOutputUriStrValue), xdmNodeCursorImpl);	
+			    		}
+			    		else {
+			    			result.put(new XSString(OUTPUT), xdmNodeCursorImpl);
+			    		}
+			    	}
+			    	else if (SERIALIZED.equals(deliverFormatStrValue)) {
+			    		DTMCursorIterator dtmIter = xdmNodeCursorImpl.iterRaw();
+			    		int nodeHandle = dtmIter.nextNode();
+			    		DTM dtm1 = xctxt.getDTM(nodeHandle);
+			    		Node node = dtm1.getNode(nodeHandle);
+			    		String xmlStrValue = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+			    		if (baseOutputUriStrValue != null) {
+			    			result.put(new XSString(baseOutputUriStrValue), new XSString(xmlStrValue));	
+			    		}
+			    		else {
+			    			result.put(new XSString(OUTPUT), new XSString(xmlStrValue));
+			    		}		    		
+			    	}
+			    	else if (RAW.equals(deliverFormatStrValue)) {
+			    		// TO DO
+			    	}
+			    }
+		    	catch (Exception ex) {
+	    			throw new javax.xml.transform.TransformerException("FODC0005 : An error occured while evaluating fn:transform "
+	    					                                                   + "function. Following exception occured : " + 
+	    					                                                   ex.getMessage() + ".", srcLocator);
+	    		}
 		   }
            else {
-        	   // Perform XPath function fn:transform's XSL transformation.
+        	   // XPath function fn:transform's XSL transformation, using XSL stylesheet 
+			   // information provided by fn:transform's map key 'stylesheet-text'.
         	   
         	   try {
         		   String xslStylesheetStrValue = XslTransformEvaluationHelper.getStrVal(xslStylesheetTxtObj);
@@ -245,10 +316,7 @@ public class FuncTransform extends FunctionDef1Arg
         		   DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
         		   int xmlInpNodeHandle = dtmCursorIter.nextNode();
         		   DTM dtm = xctxt.getDTM(xmlInpNodeHandle);			    
-        		   Node xmlInpDocNode = dtm.getNode(xmlInpNodeHandle);
-
-        		   System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-        		   System.setProperty(XSLT_TRANSFORMER_FACTORY_KEY, XSLT_TRANSFORMER_FACTORY_VALUE);                
+        		   Node xmlInpDocNode = dtm.getNode(xmlInpNodeHandle);               
 
         		   DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
         		   xmlDocumentBuilderFactory.setNamespaceAware(true);
@@ -267,16 +335,87 @@ public class FuncTransform extends FunctionDef1Arg
         		   int resultDocHandle = dtmResult.getDocument();			    	
         		   XMLNodeCursorImpl xdmNodeCursorImpl = new XMLNodeCursorImpl(resultDocHandle, dtmManager); 
 
-        		   result.put(new XSString("output"), xdmNodeCursorImpl);
+        		   if ((deliverFormatStrValue == null) || DOCUMENT.equals(deliverFormatStrValue)) {
+        			   if (baseOutputUriStrValue != null) {
+        				   result.put(new XSString(baseOutputUriStrValue), xdmNodeCursorImpl);	
+        			   }
+        			   else {
+        				   result.put(new XSString(OUTPUT), xdmNodeCursorImpl);
+        			   }
+        		   }
+        		   else if (SERIALIZED.equals(deliverFormatStrValue)) {
+        			   DTMCursorIterator dtmIter = xdmNodeCursorImpl.iterRaw();
+        			   int nodeHandle = dtmIter.nextNode();
+        			   DTM dtm1 = xctxt.getDTM(nodeHandle);
+        			   Node node = dtm1.getNode(nodeHandle);
+        			   String xmlStrValue = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+        			   if (baseOutputUriStrValue != null) {
+        				   result.put(new XSString(baseOutputUriStrValue), new XSString(xmlStrValue));	
+        			   }
+        			   else {
+        				   result.put(new XSString(OUTPUT), new XSString(xmlStrValue));
+        			   }        			   
+        		   }
+        		   else if (RAW.equals(deliverFormatStrValue)) {
+        			   // TO DO
+        		   }
 		       } 
 		       catch (Exception ex) {            
 		    	   throw new javax.xml.transform.TransformerException("FODC0005 : An error occured while evaluating "
-																	                           + "fn:transform function. Following exception occured : " + 
-																	                               ex.getMessage() + ".", srcLocator);
+																	          + "fn:transform function. Following exception occured : " + 
+		    			                                                      ex.getMessage() + ".", srcLocator);
 		       }
 		   }		   		   		   
 		}
 
 		return result;
 	}
+
+	/**
+	 * Function definition to get absolute url object value, given either a relative
+	 * url or an absolute url string value as argument.
+	 */
+	private URL getAbsoluteUrlValue(String hrefStrVal, SourceLocator srcLocator) throws TransformerException {		
+		
+		URL absUrlValue = null;
+
+		try {
+			URI xslStylesheetUri = new URI(hrefStrVal);        	
+
+			if (xslStylesheetUri.isAbsolute()) {
+				absUrlValue = new URL(hrefStrVal); 
+			}
+			else {
+				String stylesheetSystemId = null;
+
+				if (srcLocator != null) {
+					stylesheetSystemId = srcLocator.getSystemId();
+				}
+				else {
+					ExpressionNode expressionNode = getExpressionOwner();
+					stylesheetSystemId = expressionNode.getSystemId(); 
+				}
+
+				if (stylesheetSystemId != null) {
+					URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
+					absUrlValue = resolvedUriArg.toURL();
+				}
+				else {
+					absUrlValue = new URL(hrefStrVal);
+				}
+			}
+		}
+		catch (URISyntaxException ex) {
+			throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
+																									+ "or cannot be resolved to an absolute uri.", srcLocator); 
+		}
+		catch (MalformedURLException ex) {
+			throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
+																									+ "or cannot be resolved to an absolute uri.", srcLocator); 
+		}
+		
+		return absUrlValue;
+		
+	}
+	
 }
