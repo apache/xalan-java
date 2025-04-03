@@ -3541,8 +3541,8 @@ public class XPathParser
     else if ((m_tokenChar == '$') && (lookahead('?', 2))) {
        // XPath parse for unary lookup operation on map & array references.       
        
-       // e.g, $map1?'a' (get map's entry value for key 'a'), 
-       // $array1?3 (get xdm item at array index 3).
+       // e.g, $map1?a (get xdm map's entry value, for key named 'a'), 
+       // $array1?3 (get xdm item for array index 3).
     	
        // We translate these XPath expression syntax, to a 
        // compiled form of XPath dynamic function call.
@@ -3568,6 +3568,7 @@ public class XPathParser
        
        m_dynamicFunctionCall = new XPathDynamicFunctionCall();
        m_dynamicFunctionCall.setFuncRefVarName(funcRefVarName);
+       m_dynamicFunctionCall.setIsFromUnaryLookupEvaluation(true);
        m_dynamicFunctionCall.setArgList(argList);
        
        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,

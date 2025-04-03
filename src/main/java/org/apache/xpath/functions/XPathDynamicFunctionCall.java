@@ -42,6 +42,7 @@ import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -51,8 +52,9 @@ import org.apache.xpath.objects.XString;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * This class implements XPath 3.1 dynamic function calls, and
- * map/array information lookup using function call syntax.
+ * This class implements XPath 3.1 dynamic function calls and,
+ * map/array information lookup using function call and unary 
+ * lookup syntax.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -62,7 +64,26 @@ public class XPathDynamicFunctionCall extends Expression {
     
     private static final long serialVersionUID = -4177034386870890029L;
 
+    /**
+     * There are following three types of XPath expression evaluations, that 
+     * this class implementation solves:
+     * 
+     * $funcVar(arg1, ...)   This is a call to an XDM inline function definition, 
+     *                       where variable $funcVar is a function item.
+     *                                
+     * $mapVar(key)          This is an XDM map entry's value lookup via function 
+     *                       call syntax.         
+     * 
+     * $mapVar?key           This is an XDM map entry's value lookup via unary 
+     *                       lookup operator.
+     *                  
+     * $arrayVar?index       This is an XDM array item lookup for a given array 
+     *                       variable reference and index value, for e.g $arrayVar?3.                  
+     */
+    
     private String m_funcRefVarName;
+    
+    private boolean m_IsUnaryLookup;
     
     private List<String> m_argList;
     
@@ -295,8 +316,11 @@ public class XPathDynamicFunctionCall extends Expression {
      					 
      					 evalResult = rSeqAnswer;
      				  }
+     				  else if (m_IsUnaryLookup && (argValue instanceof XMLNodeCursorImpl)) {
+     					 evalResult = xpathMap.get(new XSString(argXPathStr));
+     				  }
      				  else {
-     					  throw new javax.xml.transform.TransformerException("XPTY0004 : XDM map lookup is not done with a "
+     					 throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map lookup is not done via a "
      							                                                                + "string valued key.",  xctxt.getSAXLocator());
      				  }
      			  }
@@ -402,6 +426,14 @@ public class XPathDynamicFunctionCall extends Expression {
     	evalResult = xpathArr.get(intVal - 1);
     	
     	return evalResult;
+	}
+
+	public void setIsFromUnaryLookupEvaluation(boolean isUnaryLookup) {
+		m_IsUnaryLookup = isUnaryLookup; 		
+	}
+	
+	public boolean getIsFromUnaryLookupEvaluation() {
+		return m_IsUnaryLookup;
 	}
 
 }
