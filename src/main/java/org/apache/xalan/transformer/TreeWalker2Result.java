@@ -70,7 +70,10 @@ public class TreeWalker2Result extends DTMTreeWalker
    */
   public void traverse(int pos) throws org.xml.sax.SAXException
   {
-    m_dtm = m_transformer.getXPathContext().getDTM(pos);
+	if (m_dtm == null) {
+       m_dtm = m_transformer.getXPathContext().getDTM(pos);
+    }
+	
     m_startNode = pos;
 
     super.traverse(pos);

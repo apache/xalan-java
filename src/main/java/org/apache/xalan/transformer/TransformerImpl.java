@@ -2552,9 +2552,6 @@ public class TransformerImpl extends Transformer
       xctxt.popSAXLocator();
     }
 
-    // Check for infinite loops if we have to
-//    if (check)
-//      getStackGuard().pop();
   }
   
   /**

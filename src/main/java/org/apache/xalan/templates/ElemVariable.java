@@ -411,7 +411,8 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = ((Function)selectExpression).execute(xctxt);            
             if ((evalResult instanceof ResultSequence) || (evalResult instanceof XPathMap) || 
             		                                      (evalResult instanceof XPathArray) || 
-                                                          (evalResult instanceof XSAnyType)) {
+                                                          (evalResult instanceof XSAnyType) ||
+                                                          (evalResult instanceof XMLNodeCursorImpl)) {
                 if (m_asAttr != null) {
                    evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {

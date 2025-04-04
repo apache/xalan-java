@@ -36,6 +36,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xalan.templates.ElemResultDocument;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -69,31 +70,32 @@ public class FuncTransform extends FunctionDef1Arg
 	 * Definition of various class, constant field definitions. 
 	 */
 	
-    private static final String XSLT_TRANSFORMER_FACTORY_KEY = "javax.xml.transform.TransformerFactory";
+    public static final String XSLT_TRANSFORMER_FACTORY_KEY = "javax.xml.transform.TransformerFactory";
     
-    private static final String XSLT_TRANSFORMER_FACTORY_VALUE = "org.apache.xalan.processor.XSL3TransformerFactoryImpl";
+    public static final String XSLT_TRANSFORMER_FACTORY_VALUE = "org.apache.xalan.processor.XSL3TransformerFactoryImpl";
     
-    private static final String STYLESHEET_LOCATION = "stylesheet-location";    
+    public static final String STYLESHEET_LOCATION = "stylesheet-location";    
     
-    private static final String STYLESHEET_NODE = "stylesheet-node";
+    public static final String STYLESHEET_NODE = "stylesheet-node";
     
-    private static final String STYLESHEET_TEXT = "stylesheet-text";
+    public static final String STYLESHEET_TEXT = "stylesheet-text";
     
-    private static final String SOURCE_NODE = "source-node";
+    public static final String SOURCE_NODE = "source-node";
     
-    private static final String BASE_OUTPUT_URI = "base-output-uri";
+    public static final String BASE_OUTPUT_URI = "base-output-uri";
     
-    private static final String DELIVERY_FORMAT = "delivery-format";
+    public static final String DELIVERY_FORMAT = "delivery-format";
     
-    private static final String SERLIALIZATION_PARAMS = "serialization-params";
+    public static final String SERLIALIZATION_PARAMS = "serialization-params";
     
-    private static final String DOCUMENT = "document";
+    public static final String DOCUMENT = "document";
     
-    private static final String SERIALIZED = "serialized";
+    public static final String SERIALIZED = "serialized";
     
-    private static final String RAW = "raw";
+    public static final String RAW = "raw";
     
-    private static final String OUTPUT = "output";
+    public static final String OUTPUT = "output";
+    
 
 	/**
 	 * Execute the function. The function must return a valid object.
@@ -111,6 +113,9 @@ public class FuncTransform extends FunctionDef1Arg
 
 		Expression arg0 = m_arg0;
 		XObject arg0Obj = arg0.execute(xctxt);
+		
+		// Reference of result object instance of, function fn:transform's evaluation.
+		ElemResultDocument.m_fnTransformResult = result;
 		
 		System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
     	System.setProperty(XSLT_TRANSFORMER_FACTORY_KEY, XSLT_TRANSFORMER_FACTORY_VALUE);
@@ -155,17 +160,19 @@ public class FuncTransform extends FunctionDef1Arg
 			   		                                                                            + "stylesheet document, that will transform an XML input document source.", srcLocator); 
 		   }
 		   
-		   // The following optional, function fn:transform's 'map' argument entry 
-		   // keys (along, with corresponding map entry values as well).
+		   // The following are optional, function fn:transform's 'map' argument entry 
+		   // key values.
 		   XObject baseOutputUri = mapArg.get(new XSString(BASE_OUTPUT_URI));		   		   
 		   XObject deliveryFormat = mapArg.get(new XSString(DELIVERY_FORMAT));
 		   XObject serializationParams = mapArg.get(new XSString(SERLIALIZATION_PARAMS));  // TO DO
 		   
 		   String baseOutputUriStrValue = ((baseOutputUri != null) ? XslTransformEvaluationHelper.getStrVal(
 				   																							baseOutputUri) : null);
+		   
 		   if (baseOutputUriStrValue != null) {
 			   URL baseOutputUrl = getAbsoluteUrlValue(baseOutputUriStrValue, srcLocator);
-			   baseOutputUriStrValue = baseOutputUrl.toString();
+			   
+			   ElemResultDocument.m_BaseOutputUriStrAbsValue = baseOutputUrl.toString(); 
 		   }
 		   
 		   String deliverFormatStrValue = ((deliveryFormat != null) ? XslTransformEvaluationHelper.getStrVal(
@@ -174,10 +181,12 @@ public class FuncTransform extends FunctionDef1Arg
 			   if (!(DOCUMENT.equals(deliverFormatStrValue) || SERIALIZED.equals(deliverFormatStrValue) || 
 					   																				 RAW.equals(deliverFormatStrValue))) {
 				   throw new javax.xml.transform.TransformerException("FODC0005 : An XPath function fn:transform map argument "
-						   																+ "entry with key \"delivery-format\" can have value either "
-						   																+ "'document', 'serialized' or 'raw'.", srcLocator);			   
+						   																		          + "entry with key \"delivery-format\" can have value either "
+						   																                  + "'document', 'serialized' or 'raw'.", srcLocator);			   
 			   }
 		   }
+		   
+		   ElemResultDocument.m_fnTransformDeliveryFormat = deliverFormatStrValue;		   		   
 		   
 		   if (xslStylesheetLocObj != null) {
 			    // XPath function fn:transform's XSL transformation, using XSL stylesheet 
@@ -207,7 +216,7 @@ public class FuncTransform extends FunctionDef1Arg
 			    	TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
 			    	Transformer transformer = xslTransformerFactory.newTransformer(new StreamSource(xslStylesheetUrlStr));
 
-			    	DOMResult domResult = new DOMResult();		        
+			    	DOMResult domResult = new DOMResult();    			    	
 			    	transformer.transform(new DOMSource(document), domResult);
 
 			    	DTMManager dtmManager = xctxt.getDTMManager();
@@ -266,7 +275,7 @@ public class FuncTransform extends FunctionDef1Arg
 			    	TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
 			    	Transformer transformer = xslTransformerFactory.newTransformer(new DOMSource(xslDocNode));
 
-			    	DOMResult domResult = new DOMResult();		        
+			    	DOMResult domResult = new DOMResult();			    	
 			    	transformer.transform(new DOMSource(xmlInpDocNode), domResult);
 
 			    	DTMManager dtmManager = xctxt.getDTMManager();
@@ -367,6 +376,8 @@ public class FuncTransform extends FunctionDef1Arg
 		       }
 		   }		   		   		   
 		}
+		
+		ElemResultDocument.m_BaseOutputUriStrAbsValue = null;
 
 		return result;
 	}

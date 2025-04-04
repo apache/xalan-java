@@ -66,8 +66,6 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 /**
  * Implementation of XSLT xsl:copy-of instruction.
  * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-copy-of
- * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Morris Kwan <mkwan@apache.org>
  * @author Christine Li <jycli@apache.org>
@@ -332,14 +330,25 @@ public class ElemCopyOf extends ElemTemplateElement
   public static void copyOfActionOnNodeSet(XMLNodeCursorImpl nodeSet, TransformerImpl transformer, 
                                                                       SerializationHandler serializationHandler, XPathContext xctxt) 
                                                                                throws TransformerException, SAXException {
-      DTMCursorIterator dtmIter = nodeSet.iter();
+	  DTMCursorIterator dtmIter = nodeSet.iter();
 
       DTMTreeWalker tw = new TreeWalker2Result(transformer, serializationHandler);
       int pos;
+      
+      DTM dtm1 = nodeSet.getDtm();
 
-      while ((pos = dtmIter.nextNode()) != DTM.NULL) {
-          DTM dtm = xctxt.getDTMManager().getDTM(pos);
-          short nodeType = dtm.getNodeType(pos);
+      while ((pos = dtmIter.nextNode()) != DTM.NULL) {    	  
+          DTM dtm = null;
+          
+          if (dtm1 == null) {
+        	  dtm = (xctxt.getDTMManager()).getDTM(pos);  
+          }
+          else {
+        	  dtm = dtm1;
+        	  tw.setDTM(dtm);
+          }                                        
+    	  
+          short nodeType = dtm.getNodeType(pos);  
 
           if (nodeType == DTM.DOCUMENT_NODE) {
         	 // From the 1st XML element node child of document node, validate all 

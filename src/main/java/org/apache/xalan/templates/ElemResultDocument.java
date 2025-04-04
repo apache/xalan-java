@@ -21,36 +21,46 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncTransform;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of the XSLT 3.0 xsl:result-document instruction.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-result-document
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  
@@ -75,6 +85,24 @@ public class ElemResultDocument extends ElemTemplateElement
    * The "omit-xml-declaration" boolean value.
    */
   private boolean m_omitXmlDeclaration;
+  
+  /**
+   * This URI string value may be set from fn:transform 
+   * function call.
+   */
+  public static String m_BaseOutputUriStrAbsValue = null;
+  
+  /**
+   * Class field representing reference to, function fn:transform's 
+   * return value which is of type XDM map.
+   */
+  public static XPathMap m_fnTransformResult = null;
+  
+  /**
+   * Class field representing reference to, function fn:transform's 
+   * 'delivery-format' parameter specification.
+   */
+  public static String m_fnTransformDeliveryFormat = null;
   
   /**
    * The class constructor.
@@ -210,9 +238,15 @@ public class ElemResultDocument extends ElemTemplateElement
 				URI url = new URI(hrefStrVal);
 				String stylesheetSystemId = srcLocator.getSystemId();      // base uri of stylesheet, if available
 
-				if (!url.isAbsolute() && (stylesheetSystemId != null)) {
-					URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
-					resolvedHrefUrl = resolvedUriArg.toURL(); 
+				if (!url.isAbsolute()) {
+					if (m_BaseOutputUriStrAbsValue != null) {
+						URI resolvedUriArg = (new URI(m_BaseOutputUriStrAbsValue)).resolve(hrefStrVal);
+						resolvedHrefUrl = resolvedUriArg.toURL();
+					}				
+					else if (stylesheetSystemId != null) {
+						URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
+						resolvedHrefUrl = resolvedUriArg.toURL(); 
+					}
 				}
 
 				if (resolvedHrefUrl == null) {
@@ -230,7 +264,8 @@ public class ElemResultDocument extends ElemTemplateElement
 																					+ "an absolute uri.", srcLocator);
 			}
 	    	
-	    	QName methodQname = m_method;												// Optional, with default value "xml"	    	
+	    	QName methodQname = m_method;												// Optional, with default value "xml"
+	    	
 	    	boolean omitXmlDeclarationAttr = m_omitXmlDeclaration;   					// Optional, with default value "false"
 	    	
 	    	String resolvedHrefStrVal = resolvedHrefUrl.toString();
@@ -251,12 +286,43 @@ public class ElemResultDocument extends ElemTemplateElement
 	    			xmlStrValue = xmlStrValue.substring(xmlPrologEndStrIndex + 2); 
 	    		}
 	    		
-	    		writeStringContentsToFile(resolvedHrefStrVal, xmlStrValue);
+	    		if (m_fnTransformResult != null) {
+	    			if (m_BaseOutputUriStrAbsValue != null) {
+	    				int lastIndexOfSlsh = m_BaseOutputUriStrAbsValue.lastIndexOf('/');
+	    				String hrefUriPrefix = m_BaseOutputUriStrAbsValue.substring(0, lastIndexOfSlsh + 1);
+	    				URI url = new URI(hrefStrVal);
+	    				String effectAbsUri = null;
+	    				if (!url.isAbsolute()) {
+	    					effectAbsUri = hrefUriPrefix + url.toString(); 
+	    				}
+	    				else {
+	    					effectAbsUri = url.toString(); 
+	    				}
+	    				
+	    				m_fnTransformResult.put(new XSString(effectAbsUri), getFnTransformResultComponent(xctxt, xmlStrValue));
+	    			}
+	    			else {
+	    				m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, xmlStrValue));	
+	    			}
+	    		}
+	    		else {
+	    			writeStringContentsToFile(resolvedHrefStrVal, xmlStrValue);
+	    		}
 	    	}
 	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_TEXT).equals(methodQname.toString())) {
 	    		String textStrValue = transformer.transformToString(this);
 	    		
-	    		writeStringContentsToFile(resolvedHrefStrVal, textStrValue);
+	    		if (m_fnTransformResult != null) {
+	    			if (m_BaseOutputUriStrAbsValue != null) {
+	    				m_fnTransformResult.put(new XSString(m_BaseOutputUriStrAbsValue), getFnTransformResultComponent(xctxt, textStrValue));
+	    			}
+	    			else {
+	    				m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, textStrValue));	
+	    			}
+	    		}
+	    		else {
+	    			writeStringContentsToFile(resolvedHrefStrVal, textStrValue);
+	    		}
 	    	}
 	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_JSON).equals(methodQname.toString())) {
 	    		String jsonStrValue = transformer.transformToString(this);
@@ -269,13 +335,23 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		}
 	    		catch (JSONException ex) {
 	    		   throw new TransformerException("XPTY0004 : An xsl:result-document instruction within a stylesheet has attribute "
-	    		   		                                			+ "\"method\" with value 'json'. There's a JSON syntax error within "
-	    		   		                                			+ "an input string provided to the JSON parser, or there was a duplicate "
-	    		   		                                			+ "JSON object key. Following run-time error occured : " + 
-	    		   		                                			ex.getMessage() + ".", srcLocator);
+	    		   		                                										+ "\"method\" with value 'json'. There's a JSON syntax error within "
+	    		   		                                										+ "an input string provided to the JSON parser, or there was a duplicate "
+	    		   		                                										+ "JSON object key. Following run-time error occured : " + 
+	    		   		                                										ex.getMessage() + ".", srcLocator);
 	    		}
 	    		
-	    		writeStringContentsToFile(resolvedHrefStrVal, jsonStrValue.trim());
+	    		if (m_fnTransformResult != null) {
+	    			if (m_BaseOutputUriStrAbsValue != null) {
+	    				m_fnTransformResult.put(new XSString(m_BaseOutputUriStrAbsValue), getFnTransformResultComponent(xctxt, jsonStrValue.trim()));
+	    			}
+	    			else {
+	    				m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, jsonStrValue.trim()));	
+	    			}
+	    		}
+	    		else {
+	    			writeStringContentsToFile(resolvedHrefStrVal, jsonStrValue.trim());
+	    		}
 	    	}
 	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_HTML).equals(methodQname.toString())) {	    		
 	    		ElemTemplateElement t = this.m_firstChild;
@@ -311,13 +387,34 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		   String htmlStrValue = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
 	    		   int xmlPrologSuffixIdx = htmlStrValue.indexOf("?>");
 	    		   htmlStrValue = htmlStrValue.substring(xmlPrologSuffixIdx + 2);
+	    		   
+	    		   if (m_fnTransformResult != null) {
+	    			   if (m_BaseOutputUriStrAbsValue != null) {
+	    				   int lastIndexOfSlsh = m_BaseOutputUriStrAbsValue.lastIndexOf('/');
+	    				   String hrefUriPrefix = m_BaseOutputUriStrAbsValue.substring(0, lastIndexOfSlsh + 1);
+	    				   URI url = new URI(hrefStrVal);
+	    				   String effectAbsUri = null;
+	    				   if (!url.isAbsolute()) {
+	    					   effectAbsUri = hrefUriPrefix + url.toString(); 
+	    				   }
+	    				   else {
+	    					   effectAbsUri = url.toString(); 
+	    				   }
 
-	    		   writeStringContentsToFile(resolvedHrefStrVal, htmlStrValue);
+	    				   m_fnTransformResult.put(new XSString(effectAbsUri), getFnTransformResultComponent(xctxt, htmlStrValue));
+	    			   }
+	    			   else {
+	    				   m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, htmlStrValue));	
+	    			   }
+	    		   }
+	    		   else {
+	    			   writeStringContentsToFile(resolvedHrefStrVal, htmlStrValue);
+	    		   }
 
 	    		   /**
 	    		    * This is an original xsl:output information that has to be restored
 	    		    * on stylesheetRoot object for any further XSL transformation work, after
-	    		    * this xsl:result-document instruction instance has completed executing.
+	    		    * this xsl:result-document instruction instance has completed its processing.
 	    		    */
 	    		   Properties prevOutputProperties = stylesheetRoot.getDefaultOutputProps();
 
@@ -330,8 +427,8 @@ public class ElemResultDocument extends ElemTemplateElement
 	    }	    
 	    catch (Exception ex) {
 	    	throw new TransformerException("XPTY0004 : An exception occured while evaluating an "
-	    			                                    + "xsl:result-document instruction. Following "
-	    			                                    + "run-time error occured : " + ex.getMessage() + ".", srcLocator);
+	    			                                    								+ "xsl:result-document instruction. Following "
+	    			                                    								+ "run-time error occured : " + ex.getMessage() + ".", srcLocator);
 	    }
         finally {
             if (transformer.getDebug()) {
@@ -375,8 +472,8 @@ public class ElemResultDocument extends ElemTemplateElement
   }
   
   /**
-   * This method creates a physical file specified by its name within 
-   * local file system store, and writes a string value to the file.
+   * This method creates a file specified by its name within local file system 
+   * store, and writes a string value to the file.
    * 
    * @param hrefStr						local url of the file, with "file:/" scheme.
    *                                    this url may point to any location within 
@@ -396,6 +493,42 @@ public class ElemResultDocument extends ElemTemplateElement
 	  fos.write(byteArr);
 	  fos.flush();
 	  fos.close();
+  }
+  
+  /**
+   * This method definition gets details for the, result of xsl:result-document 
+   * instruction.
+   */
+  private XObject getFnTransformResultComponent(XPathContext xctxt, String resultStrValue) throws Exception {	  
+	  
+	  XObject result = null;
+	  
+	  if ((m_fnTransformDeliveryFormat == null) || (FuncTransform.DOCUMENT).equals(m_fnTransformDeliveryFormat)) {
+		  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+	      System.setProperty(FuncTransform.XSLT_TRANSFORMER_FACTORY_KEY, FuncTransform.XSLT_TRANSFORMER_FACTORY_VALUE);
+		  
+	      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+		  DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+		  StringReader strReader = new StringReader(resultStrValue);
+		  Document document = docBuilder.parse(new InputSource(strReader));
+		  
+		  DTMManager dtmManager = xctxt.getDTMManager();
+		  DTM resultDtm = dtmManager.getDTM(new DOMSource(document), true, null, false, false);
+		  int resultDtmHandle = resultDtm.getDocument();			    	
+		  
+		  XMLNodeCursorImpl resultNode = new XMLNodeCursorImpl(resultDtmHandle, dtmManager);		  
+		  resultNode.setDtm(resultDtm);
+		  
+		  result = resultNode;
+	  }
+	  else if ((FuncTransform.SERIALIZED).equals(m_fnTransformDeliveryFormat)) {
+		  result = new XSString(resultStrValue);
+	  }
+      else if ((FuncTransform.RAW).equals(m_fnTransformDeliveryFormat)) {
+		 // TO DO  
+	  }
+	  
+	  return result;
   }
 
 }

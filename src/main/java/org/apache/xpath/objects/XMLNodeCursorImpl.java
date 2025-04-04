@@ -82,6 +82,13 @@ public class XMLNodeCursorImpl extends NodeCursor
    * validating this xdm node object.
    */
   private String m_validation = null;
+  
+  /**
+   * Class field that supports XPath function fn:transform evaluation,
+   * that invokes an XSL secondary stylesheet having one or more
+   * xsl:result-document instructions.
+   */
+  private DTM m_dtm = null;
 
   /**
    * Construct a XMLNodeCursorImpl object.
@@ -1002,6 +1009,14 @@ public class XMLNodeCursorImpl extends NodeCursor
   
   public String getValidationAttrForValidation() {
      return m_validation;  
+  }
+
+  public DTM getDtm() {
+	 return m_dtm;
+  }
+
+  public void setDtm(DTM dtm) {
+	 this.m_dtm = dtm;
   }
   
 }

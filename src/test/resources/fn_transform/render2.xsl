@@ -5,18 +5,29 @@
     <!-- Author: mukulg@apache.org -->
     
     <!-- An XSL stylesheet that serves as, secondary stylesheet for XPath 
-         function fn:transform. -->			    
+         function fn:transform. -->				    
 				
-    <xsl:output method="xml" indent="yes"/>				
+    <xsl:output method="xml" omit-xml-declaration="yes"/>				
 	
     <xsl:template match="/info">
-	   <details>
-		  <xsl:for-each select="*">
-             <xsl:element name="{name()}">
-		        <xsl:value-of select="position()"/>
-		     </xsl:element>
-          </xsl:for-each>
-	   </details>
+	   <xsl:result-document href="result1.xml" method="xml">
+		  <result1>
+			 <xsl:for-each select="*[position() lt 4]">
+			    <xsl:element name="{name()}">
+				   <xsl:value-of select="position()"/>
+			    </xsl:element>
+			 </xsl:for-each>
+		  </result1>
+	   </xsl:result-document>
+	   <xsl:result-document href="result2.xml" method="xml">
+		  <result2>
+		     <xsl:for-each select="*[position() ge 4]">
+			    <xsl:element name="{name()}">
+				   <xsl:value-of select="position() + 3"/>
+			    </xsl:element>
+		     </xsl:for-each>
+		  </result2>
+	   </xsl:result-document>
     </xsl:template>
     
     <!--
