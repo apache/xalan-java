@@ -291,15 +291,15 @@ public class ElemResultDocument extends ElemTemplateElement
 	    				int lastIndexOfSlsh = m_BaseOutputUriStrAbsValue.lastIndexOf('/');
 	    				String hrefUriPrefix = m_BaseOutputUriStrAbsValue.substring(0, lastIndexOfSlsh + 1);
 	    				URI url = new URI(hrefStrVal);
-	    				String effectAbsUri = null;
+	    				String effectiveAbsUri = null;
 	    				if (!url.isAbsolute()) {
-	    					effectAbsUri = hrefUriPrefix + url.toString(); 
+	    					effectiveAbsUri = hrefUriPrefix + url.toString(); 
 	    				}
 	    				else {
-	    					effectAbsUri = url.toString(); 
+	    					effectiveAbsUri = url.toString(); 
 	    				}
 	    				
-	    				m_fnTransformResult.put(new XSString(effectAbsUri), getFnTransformResultComponent(xctxt, xmlStrValue));
+	    				m_fnTransformResult.put(new XSString(effectiveAbsUri), getFnTransformResultComponent(xctxt, xmlStrValue));
 	    			}
 	    			else {
 	    				m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, xmlStrValue));	
@@ -393,15 +393,15 @@ public class ElemResultDocument extends ElemTemplateElement
 	    				   int lastIndexOfSlsh = m_BaseOutputUriStrAbsValue.lastIndexOf('/');
 	    				   String hrefUriPrefix = m_BaseOutputUriStrAbsValue.substring(0, lastIndexOfSlsh + 1);
 	    				   URI url = new URI(hrefStrVal);
-	    				   String effectAbsUri = null;
+	    				   String effectiveAbsUri = null;
 	    				   if (!url.isAbsolute()) {
-	    					   effectAbsUri = hrefUriPrefix + url.toString(); 
+	    					   effectiveAbsUri = hrefUriPrefix + url.toString(); 
 	    				   }
 	    				   else {
-	    					   effectAbsUri = url.toString(); 
+	    					   effectiveAbsUri = url.toString(); 
 	    				   }
 
-	    				   m_fnTransformResult.put(new XSString(effectAbsUri), getFnTransformResultComponent(xctxt, htmlStrValue));
+	    				   m_fnTransformResult.put(new XSString(effectiveAbsUri), getFnTransformResultComponent(xctxt, htmlStrValue));
 	    			   }
 	    			   else {
 	    				   m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, htmlStrValue));	
@@ -525,7 +525,7 @@ public class ElemResultDocument extends ElemTemplateElement
 		  result = new XSString(resultStrValue);
 	  }
       else if ((FuncTransform.RAW).equals(m_fnTransformDeliveryFormat)) {
-		 // TO DO  
+		  // TO DO  
 	  }
 	  
 	  return result;

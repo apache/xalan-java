@@ -70,7 +70,8 @@ import xml.xpath31.processor.types.XSBoolean;
  */
 public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 {
-    static final long serialVersionUID = 6018140636363583690L;
+  static final long serialVersionUID = 6018140636363583690L;
+  
   /** Set true to request some basic status reports */
   static final boolean DEBUG = false;
   

@@ -61,9 +61,7 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of XSLT xsl:apply-templates element.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-apply-templates
+ * Implementation of XSLT 3.0 xsl:apply-templates element.
  * 
  * @xsl.usage advanced
  */
@@ -73,30 +71,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
   static final long serialVersionUID = 2903125371542621004L;
 
   /**
-   * mode %qname; #IMPLIED
+   * xsl:template's mode value.
    */
   private QName m_mode = null;
-
-  /**
-   * Set the mode attribute for this element.
-   *
-   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
-   */
-  public void setMode(QName mode)
-  {
-    m_mode = mode;
-  }
-
-  /**
-   * Get the mode attribute for this element.
-   *
-   * @return The mode attribute for this element
-   */
-  public QName getMode()
-  {
-    return m_mode;
-  }
-
+  
   /**
    * Tells if this belongs to a default template,
    * in which case it will act different with
@@ -106,16 +84,35 @@ public class ElemApplyTemplates extends ElemCallTemplate
   private boolean m_isDefaultTemplate = false;
 
   /**
+   * Set the mode attribute for this element.
+   *
+   * @param mode reference, which may be null.
+   */
+  public void setMode(QName mode)
+  {
+	  m_mode = mode;
+  }
+
+  /**
+   * Get the mode attribute for this element.
+   *
+   * @return The mode attribute for this element
+   */
+  public QName getMode()
+  {
+	  return m_mode;
+  }
+
+  /**
    * Set if this belongs to a default template,
    * in which case it will act different with
    * regard to processing modes.
-   * @see <a href="http://www.w3.org/TR/xslt#built-in-rule">built-in-rule in XSLT Specification</a>
    *
    * @param b boolean value to set.
    */
   public void setIsDefaultTemplate(boolean b)
   {
-    m_isDefaultTemplate = b;
+	  m_isDefaultTemplate = b;
   }
 
   /**
@@ -126,7 +123,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
    */
   public int getXSLToken()
   {
-    return Constants.ELEMNAME_APPLY_TEMPLATES;
+	  return Constants.ELEMNAME_APPLY_TEMPLATES;
   }
   
   /**
@@ -137,7 +134,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
    */
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
-    super.compose(sroot);
+	  super.compose(sroot);
   }
 
   /**
@@ -147,53 +144,52 @@ public class ElemApplyTemplates extends ElemCallTemplate
    */
   public String getNodeName()
   {
-    return Constants.ELEMNAME_APPLY_TEMPLATES_STRING;
+	  return Constants.ELEMNAME_APPLY_TEMPLATES_STRING;
   }
 
   /**
-   * Apply the context node to the matching templates.
-   * @see <a href="http://www.w3.org/TR/xslt#section-Applying-Template-Rules">section-Applying-Template-Rules in XSLT Specification</a>
+   * Apply the context node to XSL stylesheet's matching templates.
    *
-   * @param transformer non-null reference to the the current transform-time state.
+   * @param transformer non-null reference to the current transform-time state.
    *
    * @throws TransformerException
    */
   public void execute(TransformerImpl transformer) throws TransformerException
   {
 
-    transformer.pushCurrentTemplateRuleIsNull(false);
+	  transformer.pushCurrentTemplateRuleIsNull(false);
 
-    boolean pushMode = false;
+	  boolean pushMode = false;
 
-    try
-    {
-      QName mode = transformer.getMode();
+	  try
+	  {
+		  QName mode = transformer.getMode();
 
-      if (!m_isDefaultTemplate)
-      {
-        if (((null == mode) && (null != m_mode))
-                || ((null != mode) &&!mode.equals(m_mode)))
-        {
-          pushMode = true;
+		  if (!m_isDefaultTemplate)
+		  {
+			  if (((null == mode) && (null != m_mode))
+					  								|| ((null != mode) &&!mode.equals(m_mode)))
+			  {
+				  pushMode = true;
+				  
+				  transformer.pushMode(m_mode);
+			  }
+		  }
+		  if (transformer.getDebug())
+			  transformer.getTraceManager().emitTraceEvent(this);
 
-          transformer.pushMode(m_mode);
-        }
-      }
-      if (transformer.getDebug())
-        transformer.getTraceManager().emitTraceEvent(this);
+		  transformSelectedNodes(transformer);
+	  }
+	  finally
+	  {
+		  if (transformer.getDebug())
+			  transformer.getTraceManager().emitTraceEndEvent(this);
 
-      transformSelectedNodes(transformer);
-    }
-    finally
-    {
-      if (transformer.getDebug())
-        transformer.getTraceManager().emitTraceEndEvent(this);
+		  if (pushMode)
+			  transformer.popMode();
 
-      if (pushMode)
-        transformer.popMode();
-
-      transformer.popCurrentTemplateRuleIsNull();
-    }
+		  transformer.popCurrentTemplateRuleIsNull();
+	  }
   }
 
   
@@ -208,432 +204,424 @@ public class ElemApplyTemplates extends ElemCallTemplate
   public void transformSelectedNodes(TransformerImpl transformer) throws TransformerException
   {
 
-    final XPathContext xctxt = transformer.getXPathContext();
-    final int sourceNode = xctxt.getCurrentNode();
-    
-    DTMCursorIterator sourceNodes = null;
-    
-    SourceLocator srcLocator = xctxt.getSAXLocator();    
-    XObject varEvalResult = null;    
-    ResultSequence resultSeq = null;
-    QName xslTemplateInvokeMode = getMode();
-    
-    if (m_selectExpression instanceof XPathSequenceConstructor) {
-    	resultSeq = (ResultSequence)(((XPathSequenceConstructor)m_selectExpression).execute(xctxt));
-    	
-    	if (isAllSeqItemsXdmAtomicValues(resultSeq)) {    		
-    		executeXslTransformAtomicValueSeq(transformer, xctxt, resultSeq, xslTemplateInvokeMode);
-    		
-    		return;
-    	}
-    	else {
-    		XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);
-    		if (nodeSet != null) {
-    			sourceNodes = nodeSet.asIterator(xctxt, sourceNode);   
-    		}
-    		else {
-    			return;
-    		}
-    	}
-    }    
-    else if (m_selectExpression instanceof Variable) {
-       varEvalResult = ((Variable)m_selectExpression).execute(xctxt);
-       
-       if (varEvalResult instanceof ResultSequence) {
-    	   resultSeq = (ResultSequence)varEvalResult;
-    	   
-    	   if (isAllSeqItemsXdmAtomicValues(resultSeq)) {
-    		   executeXslTransformAtomicValueSeq(transformer, xctxt, resultSeq, xslTemplateInvokeMode);
+	  final XPathContext xctxt = transformer.getXPathContext();
+	  final int sourceNode = xctxt.getCurrentNode();
 
-    		   return;
-    	   }
-    	   else {
-    		   XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);
-    		   if (nodeSet != null) {
-    			   sourceNodes = nodeSet.asIterator(xctxt, sourceNode);   
-    		   }
-    		   else {
-    			   return;
-    		   }
-    	   }
-       }
-       else if (varEvalResult instanceof XSAnyAtomicType) {   	       	       	   
-    	   executeXslTransformAtomicValue(transformer, xctxt, varEvalResult, xslTemplateInvokeMode);
+	  DTMCursorIterator sourceNodes = null;
 
-    	   return; 
-       }
-       else if (varEvalResult instanceof XMLNodeCursorImpl) {
-    	   sourceNodes = ((XMLNodeCursorImpl)varEvalResult).asIterator(xctxt, sourceNode);
-       }       
-       else {
-    	   throw new TransformerException("XTTE0505 : xsl:apply-templates 'select' expression evaluation "
-    	   		                                 + "resulted in a value that is not supported to be processed.", srcLocator);
-       }
-    }
-    else {
-       varEvalResult = m_selectExpression.execute(xctxt);
-       
-       if (varEvalResult instanceof ResultSequence) {
-    	   resultSeq = (ResultSequence)varEvalResult;
-    	   
-    	   if (isAllSeqItemsXdmAtomicValues(resultSeq)) {
-    		   executeXslTransformAtomicValueSeq(transformer, xctxt, resultSeq, xslTemplateInvokeMode);
+	  SourceLocator srcLocator = xctxt.getSAXLocator();    
+	  XObject varEvalResult = null;    
+	  ResultSequence resultSeq = null;
+	  QName xslTemplateInvokeMode = getMode();
 
-    		   return;
-    	   }
-    	   else {
-    		   XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);    		   
-    		   if (nodeSet != null) {
-    			   sourceNodes = nodeSet.asIterator(xctxt, sourceNode);   
-    		   }
-    		   else {
-    			   return;
-    		   }
-    	   } 
-       }
-       else if (varEvalResult instanceof XMLNodeCursorImpl) {
-    	   sourceNodes = ((XMLNodeCursorImpl)varEvalResult).asIterator(xctxt, sourceNode);
-       }
-       else if (isXdmItemAtomicValue(varEvalResult)) {    	   
-    	   executeXslTransformAtomicValue(transformer, xctxt, varEvalResult, xslTemplateInvokeMode);
+	  if (m_selectExpression instanceof XPathSequenceConstructor) {
+		  resultSeq = (ResultSequence)(((XPathSequenceConstructor)m_selectExpression).execute(xctxt));
 
-    	   return;
-       }
-       else {
-    	   throw new TransformerException("XTTE0505 : xsl:apply-templates 'select' expression evaluation "
-    	   		                                 											+ "resulted in a value that is not "
-    	   		                                 											+ "supported to be processed.", srcLocator);
-       }
-    }
-    
-    VariableStack vars = xctxt.getVarStack();
-    int nParams = getParamElemCount();
-    int thisframe = vars.getStackFrame();
-    StackGuard guard = transformer.getStackGuard();
-    boolean check = (guard.getRecursionLimit() > -1) ? true : false;
-    
-    boolean pushContextNodeListFlag = false;
-      
-    try
-    {
-      xctxt.pushCurrentNode(DTM.NULL);
-      xctxt.pushCurrentExpressionNode(DTM.NULL);
-      xctxt.pushSAXLocatorNull();
-      transformer.pushElemTemplateElement(null);
-      final Vector keys = (m_sortElems == null)
-                          ? null
-                          : transformer.processSortKeys(this, sourceNode);
+		  if (isAllSeqItemsXdmAtomicValues(resultSeq)) {    		
+			  executeXslTransformAtomicValueSeq(transformer, xctxt, resultSeq, xslTemplateInvokeMode);
 
-      // Sort if we need to
-      if (null != keys)
-        sourceNodes = sortNodes(xctxt, keys, sourceNodes);
-            
-      if (transformer.getDebug())
-      {
-        transformer.getTraceManager().emitSelectedEvent(sourceNode, this,
-                "select", new XPath(m_selectExpression),
-                new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
-      }
+			  return;
+		  }
+		  else {
+			  XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);
+			  if (nodeSet != null) {
+				  sourceNodes = nodeSet.asIterator(xctxt, sourceNode);   
+			  }
+			  else {
+				  return;
+			  }
+		  }
+	  }    
+	  else if (m_selectExpression instanceof Variable) {
+		  varEvalResult = ((Variable)m_selectExpression).execute(xctxt);
 
-      final SerializationHandler rth = transformer.getSerializationHandler();
-      final StylesheetRoot sroot = transformer.getStylesheet();
-      final TemplateList tl = sroot.getTemplateListComposed();
-      
-      final boolean quiet = transformer.getQuietConflictWarnings();
-      
-      // Should be able to get this from the iterator 
-      // but there might be a codebase issue.
-      DTM dtm = xctxt.getDTM(sourceNode);
-      
-      int argsFrame = -1;
-      if(nParams > 0)
-      {
-        // This code will create a section on the stack that is all the 
-        // evaluated arguments. These will be copied into the real params 
-        // section of each called template.
-        argsFrame = vars.link(nParams);
-        vars.setStackFrame(thisframe);
-        
-        int maxParamStackFrameIndex = -1;
-        
-        for (int i = 0; i < nParams; i++) 
-        {
-          ElemWithParam ewp = m_paramElems[i];
-          if (transformer.getDebug())
-            transformer.getTraceManager().emitTraceEvent(ewp);
-          
-          XObject obj = null;
-          
-          try {
-             obj = ewp.getValue(transformer, sourceNode);
-          }
-          catch (TransformerException ex) {
-             throw new TransformerException(ex.getMessage(), srcLocator);   
-          }
-          
-          if (transformer.getDebug())
-            transformer.getTraceManager().emitTraceEndEvent(ewp);
-          
-          String tunnelStrVal = ewp.getTunnel();
-          obj.setTunnel(tunnelStrVal);
-          QName qName = ewp.getName();
-          obj.setQName(qName);
-          
-          vars.setLocalVariable(i, obj, argsFrame);
-          maxParamStackFrameIndex = i;
-        }
-        
-        for (int idx = 0; idx < MAX_PARAM_LIMIT; idx++) {
-        	XObject obj = vars.getLocalVariable(idx, thisframe);
-        	if (obj != null) {
-        		String tunnelValStr = obj.getTunnel();
-        		if ((obj.getTunnel() != null) && XslTransformEvaluationHelper.isTunnelAttributeYes(tunnelValStr)) {
-        			vars.setLocalVariable(++maxParamStackFrameIndex, obj, argsFrame);
-        		}
-        	}
-        	else {
-        		break; 
-        	}
-        }
+		  if (varEvalResult instanceof ResultSequence) {
+			  resultSeq = (ResultSequence)varEvalResult;
 
-        ElemTemplateElement parentElem = getParentElem();
-        while (!(parentElem instanceof ElemTemplate)) {
-        	parentElem = parentElem.getParentElem(); 
-        }
+			  if (isAllSeqItemsXdmAtomicValues(resultSeq)) {
+				  executeXslTransformAtomicValueSeq(transformer, xctxt, resultSeq, xslTemplateInvokeMode);
 
-        List<XObject> tunnelParamObjList = parentElem.getTunnelParamObjList();
-        for (int idx = 0; idx < tunnelParamObjList.size(); idx++) {
-        	XObject var = tunnelParamObjList.get(idx);
-        	vars.setLocalVariable(++maxParamStackFrameIndex, var, argsFrame);
-        }
-        
-        vars.setStackFrame(argsFrame);
-      }
-      
-      xctxt.pushContextNodeList(sourceNodes);
-      pushContextNodeListFlag = true;
-      
-      IntStack currentNodes = xctxt.getCurrentNodeStack();
-      
-      IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
-      
-      int child;
-      while (DTM.NULL != (child = sourceNodes.nextNode()))
-      {
-        currentNodes.setTop(child);
-        currentExpressionNodes.setTop(child);
+				  return;
+			  }
+			  else {
+				  XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);
+				  if (nodeSet != null) {
+					  sourceNodes = nodeSet.asIterator(xctxt, sourceNode);   
+				  }
+				  else {
+					  return;
+				  }
+			  }
+		  }
+		  else if (varEvalResult instanceof XSAnyAtomicType) {   	       	       	   
+			  executeXslTransformAtomicValue(transformer, xctxt, varEvalResult, xslTemplateInvokeMode);
 
-        if(xctxt.getDTM(child) != dtm)
-        {
-          dtm = xctxt.getDTM(child);
-        }
-        
-        final int exNodeType = dtm.getExpandedTypeID(child);
+			  return; 
+		  }
+		  else if (varEvalResult instanceof XMLNodeCursorImpl) {
+			  sourceNodes = ((XMLNodeCursorImpl)varEvalResult).asIterator(xctxt, sourceNode);
+		  }       
+		  else {
+			  throw new TransformerException("XTTE0505 : xsl:apply-templates 'select' expression evaluation "
+					  														               + "resulted in a value that is not "
+					  														               + "supported to be processed.", srcLocator);
+		  }
+	  }
+	  else {
+		  varEvalResult = m_selectExpression.execute(xctxt);
 
-        final int nodeType = dtm.getNodeType(child);
+		  if (varEvalResult instanceof ResultSequence) {
+			  resultSeq = (ResultSequence)varEvalResult;
 
-        final QName mode = transformer.getMode();
+			  if (isAllSeqItemsXdmAtomicValues(resultSeq)) {
+				  executeXslTransformAtomicValueSeq(transformer, xctxt, resultSeq, xslTemplateInvokeMode);
 
-        ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, -1, quiet, dtm);
+				  return;
+			  }
+			  else {
+				  XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(resultSeq, xctxt);    		   
+				  if (nodeSet != null) {
+					  sourceNodes = nodeSet.asIterator(xctxt, sourceNode);   
+				  }
+				  else {
+					  return;
+				  }
+			  } 
+		  }
+		  else if (varEvalResult instanceof XMLNodeCursorImpl) {
+			  sourceNodes = ((XMLNodeCursorImpl)varEvalResult).asIterator(xctxt, sourceNode);
+		  }
+		  else if (isXdmItemAtomicValue(varEvalResult)) {    	   
+			  executeXslTransformAtomicValue(transformer, xctxt, varEvalResult, xslTemplateInvokeMode);
 
-        // If that didn't locate a node, fall back to a default template rule.
-        // See http://www.w3.org/TR/xslt#built-in-rule.
-        if (template == null)
-        {
-          switch (nodeType)
-          {
-          case DTM.DOCUMENT_FRAGMENT_NODE :
-          case DTM.ELEMENT_NODE :
-            template = sroot.getDefaultRule();
-            break;
-          case DTM.ATTRIBUTE_NODE :
-          case DTM.CDATA_SECTION_NODE :
-          case DTM.TEXT_NODE :
-            transformer.pushPairCurrentMatched(sroot.getDefaultTextRule(), child);
-            transformer.setCurrentElement(sroot.getDefaultTextRule());
-            dtm.dispatchCharactersEvents(child, rth, false);
-            transformer.popCurrentMatched();
-            continue;
-          case DTM.DOCUMENT_NODE :
-            template = sroot.getDefaultRootRule();
-            break;
-          default :
-            continue;
-          }
-        }
-        else
-        {
-        	transformer.setCurrentElement(template);
-        }
-                
-        transformer.pushPairCurrentMatched(template, child);
-        if (check)
-	        guard.checkForInfiniteLoop();
+			  return;
+		  }
+		  else {
+			  throw new TransformerException("XTTE0505 : xsl:apply-templates 'select' expression evaluation "
+																						  + "resulted in a value that is not "
+																						  + "supported to be processed.", srcLocator);
+		  }
+	  }
 
-        int currentFrameBottom;
-        if(template.m_frameSize > 0)
-        {
-          xctxt.pushRTFContext();
-          currentFrameBottom = vars.getStackFrame();
-          vars.link(template.m_frameSize);
-          
-          if (template.m_inArgsSize > 0)
-          {
-            int paramIndex = 0;
-            for (ElemTemplateElement elem = template.getFirstChildElem(); 
-                 null != elem; elem = elem.getNextSiblingElem()) 
-            {
-              if(Constants.ELEMNAME_PARAMVARIABLE == elem.getXSLToken())
-              {
-                ElemParam ep = (ElemParam)elem;
-                
-                int i;
-                for (i = 0; i < nParams; i++) 
-                {
-                  ElemWithParam ewp = m_paramElems[i];
-                  if (ewp.m_qnameID == ep.m_qnameID)                  
-                  {
-                      XObject obj = vars.getLocalVariable(i, argsFrame);
-                      vars.setLocalVariable(paramIndex, obj);
-                      break;
-                  }
-                }
-                
-                // The below code before commenting has been causing, issues 
-                // implementing XSLT tunnel parameters. Commenting this seems 
-                // to be working fine for non-tunnel parameter use cases as 
-                // well. Pls review.
-                /*if (i == nParams) {
-                  vars.setLocalVariable(paramIndex, null);*/                
-              }
-              else
-                break;
-              paramIndex++;
-            }                        
-          }                    
-        }
-        else {
-           currentFrameBottom = 0;
-        }
+	  VariableStack vars = xctxt.getVarStack();
+	  int nParams = getParamElemCount();
+	  int thisframe = vars.getStackFrame();
+	  StackGuard guard = transformer.getStackGuard();
+	  boolean check = (guard.getRecursionLimit() > -1) ? true : false;
 
-        if (transformer.getDebug()) {
-           transformer.getTraceManager().emitTraceEvent(template);
-        }
+	  boolean pushContextNodeListFlag = false;
 
-        String templateAsAttrVal = template.getAs();
-        
-        if (templateAsAttrVal != null) {         
-            try {
-               // Check whether an xsl:template element's result contents conform to the 
-               // SequenceType expression specified as value of xsl:template element's 
-               // 'as' attribute.
-                 
-               int dtmNodeHandle = transformer.transformToGlobalRTF(template);
-                
-               NodeList nodeList = (new XRTreeFrag(dtmNodeHandle, xctxt, template)).convertToNodeset();             
-               XObject templateEvalResultForAsAttr = new XNodeSetForDOM(nodeList, xctxt);
-               
-               templateEvalResultForAsAttr = SequenceTypeSupport.castXdmValueToAnotherType(templateEvalResultForAsAttr, templateAsAttrVal, 
-                                                                                                                                          null, xctxt);
-               if (templateEvalResultForAsAttr != null) {
-                   SerializationHandler handler = transformer.getSerializationHandler();        
-                   
-                   try {
-                        if (templateEvalResultForAsAttr instanceof XMLNodeCursorImpl) {
-                           ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)templateEvalResultForAsAttr, transformer, 
-                                                                                                            handler, xctxt);
-                        }
-                        else {
-                           ElemCopyOf.copyOfActionOnResultSequence((ResultSequence)templateEvalResultForAsAttr, 
-                                                                                                            transformer, handler, xctxt, false); 
-                        }
-                    } 
-                    catch (TransformerException ex) {
-                        throw new TransformerException(ex.getMessage(), srcLocator); 
-                    } 
-                    catch (SAXException ex) {
-                        transformer.getErrorListener().fatalError(new TransformerException(ex)); 
-                    }   
-               }
-               else {
-                   QName m_name = template.getName();
-                   String m_matchPatternStr = (template.getMatch()).getPatternString();
-                   String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPatternStr; 
-                   throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-                                                                                                 + " is " + templateAsAttrVal + ". But the template "
-                                                                                                 + "result doesn't conform to this required type.", srcLocator);  
-               }
-            }
-            catch (TransformerException ex) {
-               String trfExpMessage = ex.getMessage();
-               if ((trfExpMessage != null) && trfExpMessage.startsWith("XTTE0590")) {
-            	   throw ex;   
-               }
-               else {
-	               QName m_name = template.getName();
-	               String m_matchPatternStr = (template.getMatch()).getPatternString();
-	               String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPatternStr; 
-	               throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-	                                                                                                 + " is " + templateAsAttrVal + ". But the template "
-	                                                                                                 + "result doesn't conform to this required type.", srcLocator);
-               }
-            }  
-        }
-        else {
-            // Evaluate the child templates.
-            // Loop through the children of the template, evaluating 
-            // each of them.
-            for (ElemTemplateElement t = template.m_firstChild; 
-                                                        t != null; t = t.m_nextSibling) {
-              xctxt.setSAXLocator(t);
-              
-              try
-              {
-              	  transformer.pushElemTemplateElement(t);
-              	  t.execute(transformer);
-              }
-              finally
-              {
-              	  transformer.popElemTemplateElement();
-              }
-            }
-        }
-        
-        if (transformer.getDebug()) {
-	      transformer.getTraceManager().emitTraceEndEvent(template);
-        }
-	    
-        if(template.m_frameSize > 0)
-        {
-          vars.unlink(currentFrameBottom);
-          xctxt.popRTFContext();
-        }
-          
-        transformer.popCurrentMatched();
-        
-      } // end while (DTM.NULL != (child = sourceNodes.nextNode()))
-    }
-    catch (SAXException se)
-    {
-      transformer.getErrorListener().fatalError(new TransformerException(se));
-    }
-    finally
-    {
-      if (transformer.getDebug())
-        transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
-                "select", new XPath(m_selectExpression),
-                new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
-      
-      // Unlink to the original stack frame  
-      if(nParams > 0)
-        vars.unlink(thisframe);
-      xctxt.popSAXLocator();
-      if (pushContextNodeListFlag) xctxt.popContextNodeList();
-      transformer.popElemTemplateElement();
-      xctxt.popCurrentExpressionNode();
-      xctxt.popCurrentNode();
-      sourceNodes.detach();
-    }
+	  try
+	  {
+		  xctxt.pushCurrentNode(DTM.NULL);
+		  xctxt.pushCurrentExpressionNode(DTM.NULL);
+		  xctxt.pushSAXLocatorNull();
+		  transformer.pushElemTemplateElement(null);
+		  final Vector keys = (m_sortElems == null)
+				  ? null
+						  : transformer.processSortKeys(this, sourceNode);
+
+		  // Sort if we need to
+		  if (null != keys)
+			  sourceNodes = sortNodes(xctxt, keys, sourceNodes);
+
+		  if (transformer.getDebug())
+		  {
+			  transformer.getTraceManager().emitSelectedEvent(sourceNode, this,
+																	  "select", new XPath(m_selectExpression),
+																	  new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
+		  }
+
+		  final SerializationHandler rth = transformer.getSerializationHandler();
+		  final StylesheetRoot sroot = transformer.getStylesheet();
+		  final TemplateList tl = sroot.getTemplateListComposed();
+
+		  final boolean quiet = transformer.getQuietConflictWarnings();
+
+		  // Should be able to get this from the iterator 
+		  // but there might be a codebase issue.
+		  DTM dtm = xctxt.getDTM(sourceNode);
+
+		  int argsFrame = -1;
+		  if (nParams > 0)
+		  {
+			  // This code will create a section on the stack that is all the 
+			  // evaluated arguments. These will be copied into the real params 
+			  // section of each called template.
+			  argsFrame = vars.link(nParams);
+			  vars.setStackFrame(thisframe);
+
+			  int maxParamStackFrameIndex = -1;
+
+			  for (int i = 0; i < nParams; i++) 
+			  {
+				  ElemWithParam ewp = m_paramElems[i];
+				  if (transformer.getDebug())
+					  transformer.getTraceManager().emitTraceEvent(ewp);
+
+				  XObject obj = null;
+
+				  try {
+					  obj = ewp.getValue(transformer, sourceNode);
+				  }
+				  catch (TransformerException ex) {
+					  throw new TransformerException(ex.getMessage(), srcLocator);   
+				  }
+
+				  if (transformer.getDebug())
+					  transformer.getTraceManager().emitTraceEndEvent(ewp);
+
+				  String tunnelStrVal = ewp.getTunnel();
+				  obj.setTunnel(tunnelStrVal);
+				  QName qName = ewp.getName();
+				  obj.setQName(qName);
+
+				  vars.setLocalVariable(i, obj, argsFrame);
+				  maxParamStackFrameIndex = i;
+			  }
+
+			  for (int idx = 0; idx < MAX_PARAM_LIMIT; idx++) {
+				  XObject obj = vars.getLocalVariable(idx, thisframe);
+				  if (obj != null) {
+					  String tunnelValStr = obj.getTunnel();
+					  if ((obj.getTunnel() != null) && XslTransformEvaluationHelper.isTunnelAttributeYes(tunnelValStr)) {
+						  vars.setLocalVariable(++maxParamStackFrameIndex, obj, argsFrame);
+					  }
+				  }
+				  else {
+					  break; 
+				  }
+			  }
+
+			  ElemTemplateElement parentElem = getParentElem();
+			  while (!(parentElem instanceof ElemTemplate)) {
+				  parentElem = parentElem.getParentElem(); 
+			  }
+
+			  List<XObject> tunnelParamObjList = parentElem.getTunnelParamObjList();
+			  for (int idx = 0; idx < tunnelParamObjList.size(); idx++) {
+				  XObject var = tunnelParamObjList.get(idx);
+				  vars.setLocalVariable(++maxParamStackFrameIndex, var, argsFrame);
+			  }
+
+			  vars.setStackFrame(argsFrame);
+		  }
+
+		  xctxt.pushContextNodeList(sourceNodes);
+		  pushContextNodeListFlag = true;
+
+		  IntStack currentNodes = xctxt.getCurrentNodeStack();
+
+		  IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
+
+		  int child;
+		  while (DTM.NULL != (child = sourceNodes.nextNode()))
+		  {
+			  currentNodes.setTop(child);
+			  currentExpressionNodes.setTop(child);
+
+			  if (xctxt.getDTM(child) != dtm)
+			  {
+				  dtm = xctxt.getDTM(child);
+			  }
+
+			  final int exNodeType = dtm.getExpandedTypeID(child);
+
+			  final int nodeType = dtm.getNodeType(child);
+
+			  final QName mode = transformer.getMode();
+
+			  ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, -1, quiet, dtm);
+
+			  // If that didn't locate a node, fall back to a default template rule.
+			  if (template == null)
+			  {
+				  switch (nodeType)
+				  {
+				  case DTM.DOCUMENT_FRAGMENT_NODE :
+				  case DTM.ELEMENT_NODE :
+					  template = sroot.getDefaultRule();
+					  break;
+				  case DTM.ATTRIBUTE_NODE :
+				  case DTM.CDATA_SECTION_NODE :
+				  case DTM.TEXT_NODE :
+					  transformer.pushPairCurrentMatched(sroot.getDefaultTextRule(), child);
+					  transformer.setCurrentElement(sroot.getDefaultTextRule());
+					  dtm.dispatchCharactersEvents(child, rth, false);
+					  transformer.popCurrentMatched();
+					  continue;
+				  case DTM.DOCUMENT_NODE :
+					  template = sroot.getDefaultRootRule();
+					  break;
+				  default :
+					  continue;
+				  }
+			  }
+			  else
+			  {
+				  transformer.setCurrentElement(template);
+			  }
+
+			  transformer.pushPairCurrentMatched(template, child);
+			  if (check)
+				  guard.checkForInfiniteLoop();
+
+			  int currentFrameBottom;
+			  if (template.m_frameSize > 0)
+			  {
+				  xctxt.pushRTFContext();
+				  currentFrameBottom = vars.getStackFrame();
+				  vars.link(template.m_frameSize);
+
+				  if (template.m_inArgsSize > 0)
+				  {
+					  int paramIndex = 0;
+					  for (ElemTemplateElement elem = template.getFirstChildElem(); 
+							  null != elem; elem = elem.getNextSiblingElem()) 
+					  {
+						  if (Constants.ELEMNAME_PARAMVARIABLE == elem.getXSLToken())
+						  {
+							  ElemParam ep = (ElemParam)elem;
+
+							  int i;
+							  for (i = 0; i < nParams; i++) 
+							  {
+								  ElemWithParam ewp = m_paramElems[i];
+								  if (ewp.m_qnameID == ep.m_qnameID)                  
+								  {
+									  XObject obj = vars.getLocalVariable(i, argsFrame);
+									  vars.setLocalVariable(paramIndex, obj);
+									  break;
+								  }
+							  }              
+						  }
+						  else
+							  break;
+						  paramIndex++;
+					  }                        
+				  }                    
+			  }
+			  else {
+				  currentFrameBottom = 0;
+			  }
+
+			  if (transformer.getDebug()) {
+				  transformer.getTraceManager().emitTraceEvent(template);
+			  }
+
+			  String templateAsAttrVal = template.getAs();
+
+			  if (templateAsAttrVal != null) {         
+				  try {
+					  // Check whether an xsl:template element's result contents conform to the 
+					  // SequenceType expression specified as value of xsl:template element's 
+					  // 'as' attribute.
+
+					  int dtmNodeHandle = transformer.transformToGlobalRTF(template);
+
+					  NodeList nodeList = (new XRTreeFrag(dtmNodeHandle, xctxt, template)).convertToNodeset();             
+					  XObject templateEvalResultForAsAttr = new XNodeSetForDOM(nodeList, xctxt);
+
+					  templateEvalResultForAsAttr = SequenceTypeSupport.castXdmValueToAnotherType(templateEvalResultForAsAttr, templateAsAttrVal, 
+							  null, xctxt);
+					  if (templateEvalResultForAsAttr != null) {
+						  SerializationHandler handler = transformer.getSerializationHandler();        
+
+						  try {
+							  if (templateEvalResultForAsAttr instanceof XMLNodeCursorImpl) {
+								  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)templateEvalResultForAsAttr, transformer, 
+										  handler, xctxt);
+							  }
+							  else {
+								  ElemCopyOf.copyOfActionOnResultSequence((ResultSequence)templateEvalResultForAsAttr, 
+										  transformer, handler, xctxt, false); 
+							  }
+						  } 
+						  catch (TransformerException ex) {
+							  throw new TransformerException(ex.getMessage(), srcLocator); 
+						  } 
+						  catch (SAXException ex) {
+							  transformer.getErrorListener().fatalError(new TransformerException(ex)); 
+						  }   
+					  }
+					  else {
+						  QName m_name = template.getName();
+						  String m_matchPatternStr = (template.getMatch()).getPatternString();
+						  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPatternStr; 
+						  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+																						  + " is " + templateAsAttrVal + ". But the template "
+																						  + "result doesn't conform to this required type.", srcLocator);  
+					  }
+				  }
+				  catch (TransformerException ex) {
+					  String trfExpMessage = ex.getMessage();
+					  if ((trfExpMessage != null) && trfExpMessage.startsWith("XTTE0590")) {
+						  throw ex;   
+					  }
+					  else {
+						  QName m_name = template.getName();
+						  String m_matchPatternStr = (template.getMatch()).getPatternString();
+						  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPatternStr; 
+						  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+																						  + " is " + templateAsAttrVal + ". But the template "
+																						  + "result doesn't conform to this required type.", srcLocator);
+					  }
+				  }  
+			  }
+			  else {
+				  // For the XSL template that matched the context node,
+				  // evaluate this XSL stylesheet template's child elements.
+				  for (ElemTemplateElement t = template.m_firstChild; 
+						  											t != null; t = t.m_nextSibling) {
+					  xctxt.setSAXLocator(t);
+
+					  try
+					  {
+						  transformer.pushElemTemplateElement(t);
+						  t.execute(transformer);
+					  }
+					  finally
+					  {
+						  transformer.popElemTemplateElement();
+					  }
+				  }
+			  }
+
+			  if (transformer.getDebug()) {
+				  transformer.getTraceManager().emitTraceEndEvent(template);
+			  }
+
+			  if (template.m_frameSize > 0)
+			  {
+				  vars.unlink(currentFrameBottom);
+				  xctxt.popRTFContext();
+			  }
+
+			  transformer.popCurrentMatched();
+
+		  } // end while (DTM.NULL != (child = sourceNodes.nextNode()))
+	  }
+	  catch (SAXException se)
+	  {
+		  transformer.getErrorListener().fatalError(new TransformerException(se));
+	  }
+	  finally
+	  {
+		  if (transformer.getDebug())
+			  transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
+					  "select", new XPath(m_selectExpression),
+					  new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
+
+		  // Unlink to the original stack frame  
+		  if (nParams > 0)
+			  vars.unlink(thisframe);
+		  xctxt.popSAXLocator();
+		  if (pushContextNodeListFlag) xctxt.popContextNodeList();
+		  transformer.popElemTemplateElement();
+		  xctxt.popCurrentExpressionNode();
+		  xctxt.popCurrentNode();
+		  sourceNodes.detach();
+	  }
   }
 
   /**
@@ -641,22 +629,19 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * XDM atomic values.
    */
   private void executeXslTransformAtomicValueSeq(TransformerImpl transformer, final XPathContext xctxt,
-		  														ResultSequence resultSeq, QName xslTemplateInvokeMode) throws TransformerException {
+		  														                            ResultSequence resultSeq, QName xslTemplateInvokeMode) 
+		  														                            		              throws TransformerException {
 	  
 	  final StylesheetRoot sroot = transformer.getStylesheet();
 	  final TemplateList tl = sroot.getTemplateListComposed();
 	  
 	  Hashtable templateListHashTable = tl.getPatternTable();
 	  Set hashTableEntrySet = templateListHashTable.entrySet();
-	  // Iterator iter = hashTableEntrySet.iterator();
 	  
 	  for (int idx = 0; idx < resultSeq.size(); idx++) {
 		  XObject xObj = resultSeq.item(idx);
 		  
-		  executeXslTransformAtomicValue(transformer, xctxt, xObj, hashTableEntrySet, xslTemplateInvokeMode);
-		  
-		  // Reset an iterator object instance
-		  // iter = hashTableEntrySet.iterator();		  
+		  executeXslTransformXdmAtomicValue(transformer, xctxt, xObj, hashTableEntrySet, xslTemplateInvokeMode);	  
 	  }
   }
   
@@ -674,7 +659,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  Set hashTableEntrySet = templateListHashTable.entrySet();
 	  // Iterator iter = hashTableEntrySet.iterator();
 
-	  executeXslTransformAtomicValue(transformer, xctxt, contextItem, hashTableEntrySet, xslTemplateInvokeMode);
+	  executeXslTransformXdmAtomicValue(transformer, xctxt, contextItem, hashTableEntrySet, xslTemplateInvokeMode);
 	  
 	  // Recreate an iterator object instance
 	  //iter = hashTableEntrySet.iterator();
@@ -683,8 +668,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
   /**
    * This method definition does, an XSL transform for one XDM atomic value.
    */
-  private void executeXslTransformAtomicValue(TransformerImpl transformer, final XPathContext xctxt, XObject contextItem,
-		  													Set hashTableEntrySet, QName xslTemplateInvokeMode) throws TransformerException {
+  private void executeXslTransformXdmAtomicValue(TransformerImpl transformer, final XPathContext xctxt, XObject contextItem,
+		  													                               Set hashTableEntrySet, QName xslTemplateInvokeMode) 
+		  													                            		     throws TransformerException {
 	  
 	  Iterator iter = hashTableEntrySet.iterator();	  
 	  
@@ -697,25 +683,25 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  xctxt.setXPath3ContextItem(contextItem);
 	  
 	  // A list of TemplateDefnPriorityPair object instances, is needed to sort 
-	  // ElemTemplate object instances by a numeric priority (if this priority 
+	  // ElemTemplate object instances according to numeric priority (if this priority 
 	  // is not specified within an XSL stylesheet, then its value is 
 	  // java double -Infinity which is the min value of java double as 
-	  // provided by jdk).  
+	  // provided by JDK).  
 	  List<TemplateDefnPriorityPair> templateDefnPriorityPairList = new ArrayList<TemplateDefnPriorityPair>();
 	  
 	  // This while loop finds an ElemTemplate object instance, that will be
-	  // used to do an XSL transformation of an XPath data model atomic 
-	  // value (for e.g, xs:string, xs:integer etc) that has been passed as 
-	  // an argument to this method.
+	  // used to do an XSL transformation of an XPath data model (XDM) atomic 
+	  // value (e.g, xs:string, xs:integer etc) that has been provided as an 
+	  // argument to this method.
 	  
-	  // An xsl:template instance selected for this purpose, is chosen on the 
-	  // basis of xsl:template's mode and priority. Programmatically, an 
-	  // xsl:template instance will always have priority (which will be 
-	  // java lang -Infinity double value if not specified within an 
-	  // XSL stylesheet, otherwise it'll be a valid xs:decimal finite number). 
-	  // Programmatically, an xsl:template's mode will be null when not 
-	  // specified with an XML attribute named 'mode', otherwise it'll be 
-	  // an XML QName non-null typed value.
+	  // An xsl:template instance selected for this purpose, is chosen 
+	  // according to xsl:template's mode and priority. At run-time, an 
+	  // xsl:template instance will always have priority value (which will be 
+	  // java lang double -Infinity value if not specified within an 
+	  // XSL stylesheet. Otherwise, xsl:template's priority shall be an xs:decimal 
+	  // finite numeric value). At run-time, an xsl:template's mode will 
+	  // be null when not specified with an XML attribute named 'mode', otherwise 
+	  // xsl:template's mode will be an XML QName typed non-null value.
 	  
 	  boolean templateSelectedWithoutPriority = false;
 	  
@@ -875,10 +861,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
   
   /**
    * A list containing objects of this class, is sortable in an ascending
-   * order by priority java's double value.
-   * 
-   * An xsl:template definition's priority is defined to have xs:decimal 
-   * data type, according to XSLT 3 spec.
+   * order by numeric xs:double priority values.
    */
   class TemplateDefnPriorityPair implements Comparable<TemplateDefnPriorityPair> {
 	  
@@ -889,7 +872,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  private double priority;
 	  
 	  /**
-	   * Default class constructor.
+	   * Default constructor.
 	   */
 	  public TemplateDefnPriorityPair() {
 		 // NO OP  

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <doc uri="output"/>
+  <doc uri="result1.xml">
+    <result1>
+   <a>1</a>
+   <b>2</b>
+   <c>3</c>
+</result1>
+  </doc>
+  <doc uri="result2.xml">
+    <result2>
+   <d>4</d>
+   <e>5</e>
+   <f>6</f>
+   <g>7</g>
+</result2>
+  </doc>
+  <anotherResult>
+    <info3>
+      <d>51</d>
+      <e>52</e>
+      <f>53</f>
+      <g>54</g>
+    </info3>
+  </anotherResult>
+</result>
