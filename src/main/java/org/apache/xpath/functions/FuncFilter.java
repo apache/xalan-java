@@ -52,22 +52,6 @@ import org.apache.xpath.res.XPATHErrorResources;
  * 
  * @xsl.usage advanced
  */
-/*
- * fn:filter is one of XPath 3.1's higher-order function
- * (ref, https://www.w3.org/TR/xpath-functions-31/#higher-order-functions).
- * 
- * The XPath function fn:filter has following signature, and definition,
- * 
- * fn:filter($seq as item()*, $f as function(item()) as xs:boolean) as item()*
- * 
- * The function fn:filter returns those items from the sequence $seq for which the 
- * supplied function $f returns true.
- * 
- * Error conditions,
-   As a consequence of the function signature and the function calling rules, a type 
-   error occurs if the supplied function $f returns anything other than a single 
-   xs:boolean item. There is no conversion to an effective boolean value.
- */
 public class FuncFilter extends Function2Args {
 
    private static final long serialVersionUID = 2912594883291006421L;

@@ -50,6 +50,8 @@ import org.apache.xpath.patterns.NodeTest;
 public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
     
     private static final long serialVersionUID = -3772850377799360556L;
+    
+    private static XSL3FunctionService xslFunctionService = XSLFunctionBuilder.getXSLFunctionService(); 
 
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
@@ -101,7 +103,7 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
            if (stylesheetRoot != null) {
         	   transformerImpl = stylesheetRoot.getTransformerImpl();  
         	   TemplateList templateList = stylesheetRoot.getTemplateListComposed();        	   
-        	   if (XslTransformEvaluationHelper.isFuncArityWellFormedForNamedFuncRef(funcNameRef)) {        	   
+        	   if (xslFunctionService.isFuncArityWellFormedForNamedFuncRef(funcNameRef)) {        	   
         		   int hashCharIdx = funcNameRef.indexOf('#');
         		   String funcNameRef2 = funcNameRef.substring(0, hashCharIdx);
         		   ElemTemplate elemTemplate = templateList.getTemplate(new QName(funcNamespace, funcNameRef2));
@@ -126,7 +128,7 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
         }
         else {
            throw new javax.xml.transform.TransformerException("FORG0006 : The third argument to function call "
-                                                                                 + "fn:fold-left is not an XPath function reference.", srcLocator);
+                                                                                 						+ "fn:fold-left is not an XPath function reference.", srcLocator);
         }
         
         if (foldLeftInlineFuncArg != null) {
@@ -171,24 +173,24 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
         	}
         	else {
         		throw new javax.xml.transform.TransformerException("XPTY0004 : An inline function definition argument to "
-																        				+ "function fn:fold-left has " + funcParamList.size() + " "
-																        				+ "parameters. Expected 2.", srcLocator); 
+																					        				+ "function fn:fold-left has " + funcParamList.size() + " "
+																					        				+ "parameters. Expected 2.", srcLocator); 
         	}
         }
         else if ((elemFunction != null) && (transformerImpl != null)) {        						
-			for (int idx = 0; idx < foldLeftFirstArgResultSeq.size(); idx++) {
-				ResultSequence argSequence = new ResultSequence();
-				if (idx == 0) {                        				    				
-    				argSequence.add(foldLeftFirstArgResultSeq.item(idx));
-    				argSequence.add(foldLeftBaseVal);
-    				evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
-    			}
-    			else {
-    				argSequence.add(foldLeftFirstArgResultSeq.item(idx));
-    				argSequence.add(evalResult);
-    				evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);                   
-    			}								
-			}			
+        	for (int idx = 0; idx < foldLeftFirstArgResultSeq.size(); idx++) {
+        		ResultSequence argSequence = new ResultSequence();
+
+        		argSequence.add(foldLeftFirstArgResultSeq.item(idx));
+        		if (idx == 0) {                        				    				    				
+        			argSequence.add(foldLeftBaseVal);
+        		}
+        		else {
+        			argSequence.add(evalResult);    				                   
+        		}
+
+        		evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
+        	}			
         }
         
         return evalResult;

@@ -4,9 +4,9 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- Test for the XPath 3.1 fn:fold-right() function.
+   <!-- An XSL stylesheet test case, for the XPath function fn:fold-right.
    
-        The XPath fn:fold-right() function usage examples, as
+        The XPath function fn:fold-right's usage examples, as
         illustrated within this stylesheet are borrowed from
         XPath 3.1 spec, and https://www.altova.com/. -->                 
 
@@ -23,7 +23,7 @@
         <xsl:variable name="charListSeq1" select="('a', 'b', 'c')"/>
         <val3><xsl:value-of select="fold-right($charListSeq1, 'z' , function($arg1, $arg2) { concat($arg1, $arg2) })"/></val3>
         
-        <!-- the following fn:fold-right function call example, refers an inline function, 
+        <!-- The following fn:fold-right function call example, refers an inline function, 
              via a variable reference. -->
         <xsl:variable name="charListSeq2" select="('a', 'b', 'c', 'd', 'e')"/>
         <val4><xsl:value-of select="fold-right($charListSeq2, 'z' , $fnStrConcat)"/></val4>
@@ -35,7 +35,7 @@
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
       * regarding copyright ownership. The ASF licenses this file
-      * to you under the Apache License, Version 2.0 (the  "License");
+      * to you under the Apache License, Version 2.0 (the "License");
       * you may not use this file except in compliance with the License.
       * You may obtain a copy of the License at
       *

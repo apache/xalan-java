@@ -557,6 +557,30 @@ public class XSL3FunctionService {
     }
     
     /**
+     * Method definition to syntactically check, well-formedness of function arity of 
+     * the function to be called, for named function references specified with syntax 
+     * functionNameString#integerLiteral.
+     */
+    public boolean isFuncArityWellFormedForNamedFuncRef(String funcRefStr) {	      	
+    	boolean isFuncArityWellFormed = true;
+
+    	int idx = funcRefStr.indexOf('#');
+    	String intStr = funcRefStr.substring(idx + 1);
+    	Integer intVal = null;
+    	try {
+    		intVal = Integer.valueOf(intStr);
+    		if (intVal < 0) {
+    			isFuncArityWellFormed = false;
+    		}
+    	}
+    	catch (NumberFormatException ex) {
+    		isFuncArityWellFormed = false; 
+    	}
+
+    	return isFuncArityWellFormed;
+    }
+    
+    /**
      * Evaluate the XPath built-in constructor function call.
      */
     private XObject evaluateXPathBuiltInConstructorFunctionCall(XSL3ConstructorOrExtensionFunction funcObj, 

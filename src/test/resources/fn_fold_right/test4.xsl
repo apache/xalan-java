@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
+                version="3.0"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:fn0="http://fn0"
+                exclude-result-prefixes="xs fn0">
                 
    <!-- Author: mukulg@apache.org -->
    
@@ -13,12 +16,19 @@
    <xsl:template match="/temp">      
       <result>
         <xsl:variable name="valList1" select="val"/>
-        <val1><xsl:value-of select="fold-right($valList1, 1, function($a, $b) { $a * $b })"/></val1>
+        <val1><xsl:value-of select="fold-right($valList1, 1, fn0:mult#2)"/></val1>
         
         <xsl:variable name="valList2" select="data/@*"/>
-        <val2><xsl:value-of select="fold-right($valList2, 1, function($a, $b) { $a * $b })"/></val2>
+        <val2><xsl:value-of select="fold-right($valList2, 1, fn0:mult#2)"/></val2>
       </result>
    </xsl:template>
+   
+   <!-- An XSL stylesheet function, to multiply two numeric integer values. -->
+   <xsl:function name="fn0:mult" as="xs:integer">
+      <xsl:param name="a" as="xs:integer"/>
+	  <xsl:param name="b" as="xs:integer"/>
+	  <xsl:sequence select="$a * $b"/>
+   </xsl:function>
    
    <!--
       * Licensed to the Apache Software Foundation (ASF) under one

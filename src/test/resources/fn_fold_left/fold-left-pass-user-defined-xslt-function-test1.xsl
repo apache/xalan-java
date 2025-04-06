@@ -1,22 +1,34 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:mf="http://example.com/mf"
+                exclude-result-prefixes="mf xs"
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->
+                   
+   <!-- Initial contribution by Martin Honnen, for the 
+        jira issue XALANJ-2808. -->
+                   
+   <!-- use with test1_a.xml -->                
    
-   <!-- use with test1_a.xml -->
-   
-   <!-- An XSL stylesheet test case, for the XPath function fn:fold-right. -->                   
+   <!-- An XSL stylesheet test case, for the XPath 3.1 function fn:fold-left. -->                   
 
    <xsl:output method="xml" indent="yes"/>
+
+   <xsl:function name="mf:mult" as="xs:decimal">
+     <xsl:param name="a" as="xs:decimal"/>
+     <xsl:param name="b" as="xs:decimal"/>
+     <xsl:sequence select="$a * $b"/>
+   </xsl:function>
       
    <xsl:template match="/temp">      
       <result>
         <xsl:variable name="valList1" select="val"/>
-        <val1><xsl:value-of select="fold-right($valList1, 1, function($a, $b) { $a * $b })"/></val1>
+        <val1><xsl:value-of select="fold-left($valList1, 1, mf:mult#2)"/></val1>
         
         <xsl:variable name="valList2" select="data/@*"/>
-        <val2><xsl:value-of select="fold-right($valList2, 1, function($a, $b) { $a * $b })"/></val2>
+        <val2><xsl:value-of select="fold-left($valList2, 1, mf:mult#2)"/></val2>
       </result>
    </xsl:template>
    

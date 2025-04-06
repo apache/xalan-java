@@ -38,7 +38,6 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
@@ -67,6 +66,7 @@ import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -254,6 +254,8 @@ public class XPathParser
   private XPathExprFunctionSuffix m_xpathExprFunctionSuffix = null;
   
   private boolean m_isFunctionArgumentParse;
+  
+  private static XSL3FunctionService xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
   
   private static final String STRING_CLASSCAST_ERROR_MESSAGE = "org.apache.xpath.objects.XString cannot be cast to java.lang.String";
   
@@ -3846,7 +3848,8 @@ public class XPathParser
     		String funcNamespaceUri = m_token;
     		String nextTokenToAnalyze = getTokenRelative(1); 
     		if ((nextTokenToAnalyze != null) && (nextTokenToAnalyze.contains("#")) 
-    				                         &&                  XslTransformEvaluationHelper.isFuncArityWellFormedForNamedFuncRef(nextTokenToAnalyze)) {
+    				                                                     && xslFunctionService.isFuncArityWellFormedForNamedFuncRef(
+    				                                                    		                                                nextTokenToAnalyze)) {
     		    nextToken();
        		    consumeExpected(':');
 	       		String funcName = m_token.substring(0, m_token.indexOf('#'));
@@ -3876,8 +3879,8 @@ public class XPathParser
     	    ExprSingle();
     	}
     }
-    else if (!m_token.contains(":") && m_token.contains("#") && XslTransformEvaluationHelper.
-    		                                                                             isFuncArityWellFormedForNamedFuncRef(m_token)) {
+    else if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormedForNamedFuncRef(
+    																												 m_token)) {
     	// XPath parse of named function reference, for built-in functions
 
     	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
