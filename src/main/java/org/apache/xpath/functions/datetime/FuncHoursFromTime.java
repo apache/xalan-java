@@ -15,30 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.datetime;
 
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.XObject;
 
-import xml.xpath31.processor.types.XSDate;
-import xml.xpath31.processor.types.XSDayTimeDuration;
+import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSTime;
 
 /**
- * Implementation of fn:timezone-from-date function.
+ * Implementation of fn:hours-from-time function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncTimezoneFromDate extends FunctionOneArg
+public class FuncHoursFromTime extends FunctionOneArg
 {
+   private static final long serialVersionUID = -935961991537736333L;
 
-  private static final long serialVersionUID = 9099356275948507441L;
-
-  /**
+   /**
    * Execute the function. The function must return
    * a valid object.
    * @param xctxt The current execution context.
@@ -56,14 +56,14 @@ public class FuncTimezoneFromDate extends FunctionOneArg
 	  
 	  XObject arg0Val = arg0.execute(xctxt);
 	  
-	  if (!(arg0Val instanceof XSDate)) {
+	  if (!(arg0Val instanceof XSTime)) {
 		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of "
-		 		                                                   + "fn:timezone-from-date() is xs:date, whereas the supplied "
+		 		                                                   + "fn:hours-from-time() is xs:time, whereas the supplied "
 		 		                                                   + "argument is not conformant.", srcLocator);   
 	  }
 	  else {
-		 XSDate xsDateVal = (XSDate)arg0Val;
-		 result = (XSDayTimeDuration)(xsDateVal.getTimezone());
+		 XSTime xsTimeVal = (XSTime)arg0Val;
+		 result = new XSInteger(xsTimeVal.hour() + "");
 	  }
 	  
 	  return result;

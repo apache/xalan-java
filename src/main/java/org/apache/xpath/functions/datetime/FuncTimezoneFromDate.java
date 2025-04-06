@@ -15,29 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.datetime;
 
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDayTimeDuration;
-import xml.xpath31.processor.types.XSTime;
 
 /**
- * Implementation of fn:timezone-from-time function.
+ * Implementation of fn:timezone-from-date function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncTimezoneFromTime extends FunctionOneArg
+public class FuncTimezoneFromDate extends FunctionOneArg
 {
 
-  private static final long serialVersionUID = -3647176281412841183L;
+  private static final long serialVersionUID = 9099356275948507441L;
 
   /**
    * Execute the function. The function must return
@@ -57,18 +57,14 @@ public class FuncTimezoneFromTime extends FunctionOneArg
 	  
 	  XObject arg0Val = arg0.execute(xctxt);
 	  
-	  if (!(arg0Val instanceof XSTime)) {
+	  if (!(arg0Val instanceof XSDate)) {
 		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of "
-		 		                                                   + "fn:timezone-from-time() is xs:time, whereas the supplied "
+		 		                                                   + "fn:timezone-from-date() is xs:date, whereas the supplied "
 		 		                                                   + "argument is not conformant.", srcLocator);   
 	  }
 	  else {
-		 XSTime xsTimeVal = (XSTime)arg0Val;
-		 result = (XSDayTimeDuration)(xsTimeVal.getTimezone());
-	  }
-	  
-	  if (result == null) {
-		 result = new ResultSequence();  
+		 XSDate xsDateVal = (XSDate)arg0Val;
+		 result = (XSDayTimeDuration)(xsDateVal.getTimezone());
 	  }
 	  
 	  return result;

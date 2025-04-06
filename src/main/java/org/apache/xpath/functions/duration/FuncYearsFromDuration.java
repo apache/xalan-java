@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.duration;
 
 import java.math.BigInteger;
 
@@ -22,6 +22,8 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FunctionOneArg;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
@@ -29,15 +31,15 @@ import xml.xpath31.processor.types.XSDuration;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
- * Implementation of the days-from-duration() function.
+ * Implementation of the years-from-duration() function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncDaysFromDuration extends FunctionOneArg {
+public class FuncYearsFromDuration extends FunctionOneArg {
 
-    private static final long serialVersionUID = -8471054241151786884L;
+    private static final long serialVersionUID = -5098972397509827951L;
 
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
@@ -55,12 +57,12 @@ public class FuncDaysFromDuration extends FunctionOneArg {
             
            XSDuration xsDuration = (XSDuration)(((XSL3ConstructorOrExtensionFunction)arg0).execute(xctxt));
             
-           int days = xsDuration.days();
+           int year = xsDuration.year();
            if (xsDuration.negative()) {
-              days = days * -1;
+              year = year * -1;
            }
             
-           result = new XSInteger(BigInteger.valueOf(days));
+           result = new XSInteger(BigInteger.valueOf(year));
         }
         catch (Exception ex) {
            throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator); 

@@ -15,29 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.datetime;
 
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSInteger;
-import xml.xpath31.processor.types.XSTime;
 
 /**
- * Implementation of fn:hours-from-time function.
+ * Implementation of fn:year-from-dateTime function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncHoursFromTime extends FunctionOneArg
+public class FuncYearFromDateTime extends FunctionOneArg
 {
-   private static final long serialVersionUID = -935961991537736333L;
 
-   /**
+   private static final long serialVersionUID = -8668351850166809529L;
+
+  /**
    * Execute the function. The function must return
    * a valid object.
    * @param xctxt The current execution context.
@@ -55,14 +57,15 @@ public class FuncHoursFromTime extends FunctionOneArg
 	  
 	  XObject arg0Val = arg0.execute(xctxt);
 	  
-	  if (!(arg0Val instanceof XSTime)) {
+	  if (!(arg0Val instanceof XSDateTime)) {
 		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of "
-		 		                                                   + "fn:hours-from-time() is xs:time, whereas the supplied "
+		 		                                                   + "fn:year-from-dateTime() is xs:dateTime, whereas the supplied "
 		 		                                                   + "argument is not conformant.", srcLocator);   
 	  }
 	  else {
-		 XSTime xsTimeVal = (XSTime)arg0Val;
-		 result = new XSInteger(xsTimeVal.hour() + "");
+		 XSDateTime xsDateTimeVal = (XSDateTime)arg0Val;
+		 XSInteger xsInteger = new XSInteger(xsDateTimeVal.year() + "");
+		 result = xsInteger;
 	  }
 	  
 	  return result;

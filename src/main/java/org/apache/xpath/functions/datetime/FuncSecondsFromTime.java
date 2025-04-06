@@ -15,28 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.datetime;
 
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.XObject;
 
-import xml.xpath31.processor.types.XSDateTime;
-import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSTime;
 
 /**
- * Implementation of fn:minutes-from-dateTime function.
+ * Implementation of fn:seconds-from-time function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncMinutesFromDateTime extends FunctionOneArg
+public class FuncSecondsFromTime extends FunctionOneArg
 {
-
-  private static final long serialVersionUID = -1124900727770516453L;
+  private static final long serialVersionUID = -5441092496752221630L;
 
   /**
    * Execute the function. The function must return
@@ -56,15 +56,14 @@ public class FuncMinutesFromDateTime extends FunctionOneArg
 	  
 	  XObject arg0Val = arg0.execute(xctxt);
 	  
-	  if (!(arg0Val instanceof XSDateTime)) {
+	  if (!(arg0Val instanceof XSTime)) {
 		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of "
-		 		                                                   + "fn:minutes-from-dateTime() is xs:dateTime, whereas the supplied "
+		 		                                                   + "fn:seconds-from-time() is xs:time, whereas the supplied "
 		 		                                                   + "argument is not conformant.", srcLocator);   
 	  }
 	  else {
-		 XSDateTime xsDateTimeVal = (XSDateTime)arg0Val;
-		 XSInteger xsInteger = new XSInteger(xsDateTimeVal.minute() + "");
-		 result = xsInteger;
+		 XSTime xsTimeVal = (XSTime)arg0Val;
+		 result = new XSDecimal(xsTimeVal.second() + "");
 	  }
 	  
 	  return result;

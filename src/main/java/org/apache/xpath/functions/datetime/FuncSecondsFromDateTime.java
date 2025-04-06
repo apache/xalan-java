@@ -15,28 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.datetime;
 
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
- * Implementation of fn:month-from-dateTime function.
+ * Implementation of fn:seconds-from-dateTime function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncMonthFromDateTime extends FunctionOneArg
+public class FuncSecondsFromDateTime extends FunctionOneArg
 {
 
-  private static final long serialVersionUID = 8318631526916045541L;
+  private static final long serialVersionUID = -4967761326818696933L;
 
   /**
    * Execute the function. The function must return
@@ -58,12 +59,12 @@ public class FuncMonthFromDateTime extends FunctionOneArg
 	  
 	  if (!(arg0Val instanceof XSDateTime)) {
 		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of "
-		 		                                                   + "fn:month-from-dateTime() is xs:dateTime, whereas the supplied "
+		 		                                                   + "fn:seconds-from-dateTime() is xs:dateTime, whereas the supplied "
 		 		                                                   + "argument is not conformant.", srcLocator);   
 	  }
 	  else {
 		 XSDateTime xsDateTimeVal = (XSDateTime)arg0Val;
-		 XSInteger xsInteger = new XSInteger(xsDateTimeVal.month() + "");
+		 XSInteger xsInteger = new XSInteger(xsDateTimeVal.second() + "");
 		 result = xsInteger;
 	  }
 	  

@@ -756,12 +756,12 @@ public class FunctionTable
 	   m_functions[FUNC_MATH_ATAN] = org.apache.xpath.functions.math.FuncMathAtan.class;
 	   m_functions[FUNC_MATH_ATAN2] = org.apache.xpath.functions.math.FuncMathAtan2.class;
 
-	   m_functions[FUNC_YEARS_FROM_DURATION] = org.apache.xpath.functions.FuncYearsFromDuration.class;
-	   m_functions[FUNC_MONTHS_FROM_DURATION] = org.apache.xpath.functions.FuncMonthsFromDuration.class;
-	   m_functions[FUNC_DAYS_FROM_DURATION] = org.apache.xpath.functions.FuncDaysFromDuration.class;
-	   m_functions[FUNC_HOURS_FROM_DURATION] = org.apache.xpath.functions.FuncHoursFromDuration.class;
-	   m_functions[FUNC_MINUTES_FROM_DURATION] = org.apache.xpath.functions.FuncMinutesFromDuration.class;
-	   m_functions[FUNC_SECONDS_FROM_DURATION] = org.apache.xpath.functions.FuncSecondsFromDuration.class;
+	   m_functions[FUNC_YEARS_FROM_DURATION] = org.apache.xpath.functions.duration.FuncYearsFromDuration.class;
+	   m_functions[FUNC_MONTHS_FROM_DURATION] = org.apache.xpath.functions.duration.FuncMonthsFromDuration.class;
+	   m_functions[FUNC_DAYS_FROM_DURATION] = org.apache.xpath.functions.duration.FuncDaysFromDuration.class;
+	   m_functions[FUNC_HOURS_FROM_DURATION] = org.apache.xpath.functions.duration.FuncHoursFromDuration.class;
+	   m_functions[FUNC_MINUTES_FROM_DURATION] = org.apache.xpath.functions.duration.FuncMinutesFromDuration.class;
+	   m_functions[FUNC_SECONDS_FROM_DURATION] = org.apache.xpath.functions.duration.FuncSecondsFromDuration.class;
 
 	   m_functions[FUNC_CODE_POINTS_TO_STRING] = org.apache.xpath.functions.string.FuncCodePointsToString.class;
 	   m_functions[FUNC_STRING_TO_CODE_POINTS] = org.apache.xpath.functions.string.FuncStringToCodepoints.class;
@@ -792,22 +792,22 @@ public class FunctionTable
 	   m_functions[FUNC_NODE_NAME] = org.apache.xpath.functions.FuncNodeName.class;
 	   m_functions[FUNC_DEEP_EQUAL] = org.apache.xpath.functions.FuncDeepEqual.class;
 
-	   m_functions[FUNC_DATE_TIME] = org.apache.xpath.functions.FuncDateTime.class;
-	   m_functions[FUNC_YEAR_FROM_DATE_TIME] = org.apache.xpath.functions.FuncYearFromDateTime.class;
-	   m_functions[FUNC_MONTH_FROM_DATE_TIME] = org.apache.xpath.functions.FuncMonthFromDateTime.class;
-	   m_functions[FUNC_DAY_FROM_DATE_TIME] = org.apache.xpath.functions.FuncDayFromDateTime.class;
-	   m_functions[FUNC_HOURS_FROM_DATE_TIME] = org.apache.xpath.functions.FuncHoursFromDateTime.class;
-	   m_functions[FUNC_MINUTES_FROM_DATE_TIME] = org.apache.xpath.functions.FuncMinutesFromDateTime.class;
-	   m_functions[FUNC_SECONDS_FROM_DATE_TIME] = org.apache.xpath.functions.FuncSecondsFromDateTime.class;
-	   m_functions[FUNC_TIMEZONE_FROM_DATE_TIME] = org.apache.xpath.functions.FuncTimezoneFromDateTime.class;
-	   m_functions[FUNC_YEAR_FROM_DATE] = org.apache.xpath.functions.FuncYearFromDate.class;
-	   m_functions[FUNC_MONTH_FROM_DATE] = org.apache.xpath.functions.FuncMonthFromDate.class;
-	   m_functions[FUNC_DAY_FROM_DATE] = org.apache.xpath.functions.FuncDayFromDate.class;
-	   m_functions[FUNC_TIMEZONE_FROM_DATE] = org.apache.xpath.functions.FuncTimezoneFromDate.class;
-	   m_functions[FUNC_HOURS_FROM_TIME] = org.apache.xpath.functions.FuncHoursFromTime.class;
-	   m_functions[FUNC_MINUTES_FROM_TIME] = org.apache.xpath.functions.FuncMinutesFromTime.class;
-	   m_functions[FUNC_SECONDS_FROM_TIME] = org.apache.xpath.functions.FuncSecondsFromTime.class;
-	   m_functions[FUNC_TIMEZONE_FROM_TIME] = org.apache.xpath.functions.FuncTimezoneFromTime.class;
+	   m_functions[FUNC_DATE_TIME] = org.apache.xpath.functions.datetime.FuncDateTime.class;
+	   m_functions[FUNC_YEAR_FROM_DATE_TIME] = org.apache.xpath.functions.datetime.FuncYearFromDateTime.class;
+	   m_functions[FUNC_MONTH_FROM_DATE_TIME] = org.apache.xpath.functions.datetime.FuncMonthFromDateTime.class;
+	   m_functions[FUNC_DAY_FROM_DATE_TIME] = org.apache.xpath.functions.datetime.FuncDayFromDateTime.class;
+	   m_functions[FUNC_HOURS_FROM_DATE_TIME] = org.apache.xpath.functions.datetime.FuncHoursFromDateTime.class;
+	   m_functions[FUNC_MINUTES_FROM_DATE_TIME] = org.apache.xpath.functions.datetime.FuncMinutesFromDateTime.class;
+	   m_functions[FUNC_SECONDS_FROM_DATE_TIME] = org.apache.xpath.functions.datetime.FuncSecondsFromDateTime.class;
+	   m_functions[FUNC_TIMEZONE_FROM_DATE_TIME] = org.apache.xpath.functions.datetime.FuncTimezoneFromDateTime.class;
+	   m_functions[FUNC_YEAR_FROM_DATE] = org.apache.xpath.functions.datetime.FuncYearFromDate.class;
+	   m_functions[FUNC_MONTH_FROM_DATE] = org.apache.xpath.functions.datetime.FuncMonthFromDate.class;
+	   m_functions[FUNC_DAY_FROM_DATE] = org.apache.xpath.functions.datetime.FuncDayFromDate.class;
+	   m_functions[FUNC_TIMEZONE_FROM_DATE] = org.apache.xpath.functions.datetime.FuncTimezoneFromDate.class;
+	   m_functions[FUNC_HOURS_FROM_TIME] = org.apache.xpath.functions.datetime.FuncHoursFromTime.class;
+	   m_functions[FUNC_MINUTES_FROM_TIME] = org.apache.xpath.functions.datetime.FuncMinutesFromTime.class;
+	   m_functions[FUNC_SECONDS_FROM_TIME] = org.apache.xpath.functions.datetime.FuncSecondsFromTime.class;
+	   m_functions[FUNC_TIMEZONE_FROM_TIME] = org.apache.xpath.functions.datetime.FuncTimezoneFromTime.class;
 
 	   m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.FuncDefaultCollation.class;
 	   m_functions[FUNC_BASE_URI] = org.apache.xpath.functions.FuncBaseUri.class;
