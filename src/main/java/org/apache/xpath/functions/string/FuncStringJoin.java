@@ -18,7 +18,7 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import javax.xml.transform.SourceLocator;
 
@@ -29,6 +29,9 @@ import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;

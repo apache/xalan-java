@@ -33,10 +33,10 @@ public class Function4Args extends Function3Args
 {
   private static final long serialVersionUID = 553916218361619933L;
     
-  /** The third argument passed to the function (at index 3).
-   *
+  /** 
+   * The third argument passed to the function (at index 3).
    */
-  Expression m_arg3;
+  protected Expression m_arg3;
 
   /**
    * Return the third argument passed to the function (at index 3).

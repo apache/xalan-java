@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import java.math.BigInteger;
 
@@ -25,6 +25,8 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FunctionMultiArgs;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 

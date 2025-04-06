@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import javax.xml.transform.SourceLocator;
 
@@ -22,6 +22,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;

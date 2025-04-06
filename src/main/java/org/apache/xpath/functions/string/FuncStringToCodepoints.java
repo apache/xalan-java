@@ -18,23 +18,33 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
+import java.math.BigInteger;
+
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.functions.FunctionDef1Arg;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSInteger;
+
 /**
- * Implementation of string-length() function.
+ * Implementation of the string-to-codepoints() function.
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncStringLength extends FunctionDef1Arg
+public class FuncStringToCodepoints extends FunctionDef1Arg
 {
-   static final long serialVersionUID = -159616417996519839L;
+
+   private static final long serialVersionUID = -2509583274718320399L;
 
   /**
-   * Execute the function. The function must return a valid object.
+   * Execute the function. The function must return
+   * a valid object.
    * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
@@ -43,6 +53,24 @@ public class FuncStringLength extends FunctionDef1Arg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return new XNumber(getArg0AsString(xctxt).length());
+     
+     XObject result = null;
+     
+     String inpStr = (getArg0AsString(xctxt)).toString();
+     
+     XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+     
+     int[] codePointsArr = xPathCollationSupport.getCodepointsFromString(inpStr);
+     
+     ResultSequence resultSeq = new ResultSequence();
+     
+     for (int idx=0; idx < codePointsArr.length; idx++) {
+        long codepointVal = codePointsArr[idx]; 
+        resultSeq.add(new XSInteger(BigInteger.valueOf(codepointVal))); 
+     }
+     
+     result = resultSeq; 
+     
+     return result;
   }
 }

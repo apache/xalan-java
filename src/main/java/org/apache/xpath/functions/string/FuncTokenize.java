@@ -18,7 +18,7 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,9 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.functions.RegexEvaluationSupport;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLStringFactoryImpl;
 import org.apache.xpath.objects.XObject;

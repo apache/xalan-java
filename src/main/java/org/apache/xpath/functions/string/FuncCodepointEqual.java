@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;

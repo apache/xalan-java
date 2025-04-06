@@ -18,7 +18,7 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import javax.xml.transform.TransformerException;
 
@@ -27,6 +27,9 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.FunctionMultiArgs;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 

@@ -18,12 +18,14 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;

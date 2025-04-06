@@ -18,36 +18,32 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FunctionDef1Arg;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
 
 /**
- * Implementation of the upper-case() function.
- * 
- * @author Mukul Gandhi <mukulg@apache.org>
+ * Implementation of string-length() function.
  * 
  * @xsl.usage advanced
  */
-public class FuncUpperCase extends FunctionDef1Arg
+public class FuncStringLength extends FunctionDef1Arg
 {
-    
-    private static final long serialVersionUID = 2596924943524147578L;
+   static final long serialVersionUID = -159616417996519839L;
 
-     /**
-       * Execute the function. The function must return a valid object.
-       * 
-       * @param xctxt The current execution context.
-       * @return A valid XObject.
-       *
-       * @throws javax.xml.transform.TransformerException
-       */
-      public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-      {
-          String strValueOfArg = (getArg0AsString(xctxt)).toString();
-    
-          return new XString((new String(strValueOfArg)).toUpperCase());
-      }
+  /**
+   * Execute the function. The function must return a valid object.
+   * 
+   * @param xctxt The current execution context.
+   * @return A valid XObject.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+  {
+    return new XNumber(getArg0AsString(xctxt).length());
+  }
 }

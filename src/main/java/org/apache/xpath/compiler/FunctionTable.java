@@ -687,23 +687,23 @@ public class FunctionTable
 
 	  m_functions[FUNC_DATA] = org.apache.xpath.functions.FuncData.class;
 
-	  m_functions[FUNC_STARTS_WITH] = org.apache.xpath.functions.FuncStartsWith.class;
-	  m_functions[FUNC_CONTAINS] = org.apache.xpath.functions.FuncContains.class;
-	  m_functions[FUNC_SUBSTRING_BEFORE] = org.apache.xpath.functions.FuncSubstringBefore.class;
-	  m_functions[FUNC_SUBSTRING_AFTER] = org.apache.xpath.functions.FuncSubstringAfter.class;
-	  m_functions[FUNC_NORMALIZE_SPACE] = org.apache.xpath.functions.FuncNormalizeSpace.class;
-	  m_functions[FUNC_TRANSLATE] = org.apache.xpath.functions.FuncTranslate.class;
-	  m_functions[FUNC_CONCAT] = org.apache.xpath.functions.FuncConcat.class;
+	  m_functions[FUNC_STARTS_WITH] = org.apache.xpath.functions.string.FuncStartsWith.class;
+	  m_functions[FUNC_CONTAINS] = org.apache.xpath.functions.string.FuncContains.class;
+	  m_functions[FUNC_SUBSTRING_BEFORE] = org.apache.xpath.functions.string.FuncSubstringBefore.class;
+	  m_functions[FUNC_SUBSTRING_AFTER] = org.apache.xpath.functions.string.FuncSubstringAfter.class;
+	  m_functions[FUNC_NORMALIZE_SPACE] = org.apache.xpath.functions.string.FuncNormalizeSpace.class;
+	  m_functions[FUNC_TRANSLATE] = org.apache.xpath.functions.string.FuncTranslate.class;
+	  m_functions[FUNC_CONCAT] = org.apache.xpath.functions.string.FuncConcat.class;
 	  m_functions[FUNC_SYSTEM_PROPERTY] = org.apache.xpath.functions.FuncSystemProperty.class;
 	  m_functions[FUNC_EXT_FUNCTION_AVAILABLE] = org.apache.xpath.functions.FuncExtFunctionAvailable.class;
 	  m_functions[FUNC_EXT_ELEM_AVAILABLE] = org.apache.xpath.functions.FuncExtElementAvailable.class;
-	  m_functions[FUNC_SUBSTRING] = org.apache.xpath.functions.FuncSubstring.class;
-	  m_functions[FUNC_STRING_LENGTH] = org.apache.xpath.functions.FuncStringLength.class;
+	  m_functions[FUNC_SUBSTRING] = org.apache.xpath.functions.string.FuncSubstring.class;
+	  m_functions[FUNC_STRING_LENGTH] = org.apache.xpath.functions.string.FuncStringLength.class;
 	  m_functions[FUNC_DOCLOCATION] = org.apache.xpath.functions.FuncDoclocation.class;
 	  m_functions[FUNC_UNPARSED_ENTITY_URI] = org.apache.xpath.functions.FuncUnparsedEntityURI.class;
 
-	  m_functions[FUNC_MATCHES] = org.apache.xpath.functions.FuncMatches.class;
-	  m_functions[FUNC_REPLACE] = org.apache.xpath.functions.FuncReplace.class;
+	  m_functions[FUNC_MATCHES] = org.apache.xpath.functions.string.FuncMatches.class;
+	  m_functions[FUNC_REPLACE] = org.apache.xpath.functions.string.FuncReplace.class;
 
 	  m_functions[FUNC_CURRENT_GROUP] = org.apache.xalan.templates.FuncCurrentGroup.class;
 	  m_functions[FUNC_CURRENT_GROUPING_KEY] = org.apache.xalan.templates.FuncCurrentGroupingKey.class;
@@ -713,18 +713,18 @@ public class FunctionTable
 
 	  m_functions[FUNC_ABS] = org.apache.xpath.functions.FuncAbs.class;
 	  m_functions[FUNC_REGEX_GROUP] = org.apache.xalan.templates.FuncRegexGroup.class;
-	  m_functions[FUNC_TOKENIZE] = org.apache.xpath.functions.FuncTokenize.class;
-	  m_functions[FUNC_ANALYZE_STRING] = org.apache.xpath.functions.FuncAnalyzeString.class;
+	  m_functions[FUNC_TOKENIZE] = org.apache.xpath.functions.string.FuncTokenize.class;
+	  m_functions[FUNC_ANALYZE_STRING] = org.apache.xpath.functions.string.FuncAnalyzeString.class;
 	  m_functions[FUNC_UNPARSED_TEXT] = org.apache.xpath.functions.FuncUnparsedText.class;
 	  m_functions[FUNC_UNPARSED_TEXT_LINES] = org.apache.xpath.functions.FuncUnparsedTextLines.class;
 	  m_functions[FUNC_COLLECTION] = org.apache.xpath.functions.FuncCollection.class;
 	  m_functions[FUNC_COLLECTION] = org.apache.xpath.functions.FuncCollection.class;
-	  m_functions[FUNC_STRING_JOIN] = org.apache.xpath.functions.FuncStringJoin.class;
+	  m_functions[FUNC_STRING_JOIN] = org.apache.xpath.functions.string.FuncStringJoin.class;
 	  m_functions[FUNC_CURRENT_DATETIME] = org.apache.xpath.functions.FuncCurrentDateTime.class;
 	  m_functions[FUNC_CURRENT_DATE] = org.apache.xpath.functions.FuncCurrentDate.class;
 	  m_functions[FUNC_CURRENT_TIME] = org.apache.xpath.functions.FuncCurrentTime.class;
-	  m_functions[FUNC_UPPER_CASE] = org.apache.xpath.functions.FuncUpperCase.class;
-	  m_functions[FUNC_LOWER_CASE] = org.apache.xpath.functions.FuncLowerCase.class;
+	  m_functions[FUNC_UPPER_CASE] = org.apache.xpath.functions.string.FuncUpperCase.class;
+	  m_functions[FUNC_LOWER_CASE] = org.apache.xpath.functions.string.FuncLowerCase.class;
 	  m_functions[FUNC_IMPLICIT_TIMEZONE] = org.apache.xpath.functions.FuncImplicitTimezone.class;
 	  m_functions[FUNC_INDEX_OF] = org.apache.xpath.functions.FuncIndexOf.class;        
 	  m_functions[FUNC_DISTINCT_VALUES] = org.apache.xpath.functions.FuncDistinctValues.class;
@@ -763,11 +763,11 @@ public class FunctionTable
 	   m_functions[FUNC_MINUTES_FROM_DURATION] = org.apache.xpath.functions.FuncMinutesFromDuration.class;
 	   m_functions[FUNC_SECONDS_FROM_DURATION] = org.apache.xpath.functions.FuncSecondsFromDuration.class;
 
-	   m_functions[FUNC_CODE_POINTS_TO_STRING] = org.apache.xpath.functions.FuncCodePointsToString.class;
-	   m_functions[FUNC_STRING_TO_CODE_POINTS] = org.apache.xpath.functions.FuncStringToCodepoints.class;
-	   m_functions[FUNC_COMPARE] = org.apache.xpath.functions.FuncCompare.class;
-	   m_functions[FUNC_CODEPOINT_EQUAL] = org.apache.xpath.functions.FuncCodepointEqual.class;
-	   m_functions[FUNC_CONTAINS_TOKEN] = org.apache.xpath.functions.FuncContainsToken.class;
+	   m_functions[FUNC_CODE_POINTS_TO_STRING] = org.apache.xpath.functions.string.FuncCodePointsToString.class;
+	   m_functions[FUNC_STRING_TO_CODE_POINTS] = org.apache.xpath.functions.string.FuncStringToCodepoints.class;
+	   m_functions[FUNC_COMPARE] = org.apache.xpath.functions.string.FuncCompare.class;
+	   m_functions[FUNC_CODEPOINT_EQUAL] = org.apache.xpath.functions.string.FuncCodepointEqual.class;
+	   m_functions[FUNC_CONTAINS_TOKEN] = org.apache.xpath.functions.string.FuncContainsToken.class;
 
 	   m_functions[FUNC_EMPTY] = org.apache.xpath.functions.FuncEmpty.class;
 	   m_functions[FUNC_EXISTS] = org.apache.xpath.functions.FuncExists.class;

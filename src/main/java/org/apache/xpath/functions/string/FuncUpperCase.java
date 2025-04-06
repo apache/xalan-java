@@ -18,36 +18,37 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FunctionDef1Arg;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * Execute the SubstringBefore() function.
+ * Implementation of the upper-case() function.
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
  * @xsl.usage advanced
  */
-public class FuncSubstringBefore extends Function2Args
+public class FuncUpperCase extends FunctionDef1Arg
 {
-    static final long serialVersionUID = 4110547161672431775L;
+    
+    private static final long serialVersionUID = 2596924943524147578L;
 
-  /**
-   * Execute the function.  The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-
-    String s1 = m_arg0.execute(xctxt).str();
-    String s2 = m_arg1.execute(xctxt).str();
-    int index = s1.indexOf(s2);
-
-    return (-1 == index)
-           ? XString.EMPTYSTRING : new XString(s1.substring(0, index));
-  }
+     /**
+       * Execute the function. The function must return a valid object.
+       * 
+       * @param xctxt The current execution context.
+       * @return A valid XObject.
+       *
+       * @throws javax.xml.transform.TransformerException
+       */
+      public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+      {
+          String strValueOfArg = (getArg0AsString(xctxt)).toString();
+    
+          return new XString((new String(strValueOfArg)).toUpperCase());
+      }
 }

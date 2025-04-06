@@ -18,11 +18,12 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 

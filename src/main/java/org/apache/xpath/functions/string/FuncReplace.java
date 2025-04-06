@@ -18,32 +18,36 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.functions.Function4Args;
+import org.apache.xpath.functions.RegexEvaluationSupport;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.PatternSyntaxException;
 import org.apache.xpath.res.XPATHErrorResources;
 
-import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of the fn:matches function.
+ * Implementation of the fn:replace function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncMatches extends Function3Args {
+public class FuncReplace extends Function4Args {
     
    static final long serialVersionUID = 400116356230813776L;
    
-   private static final String FUNCTION_NAME = "matches()"; 
+   private static final String FUNCTION_NAME = "replace()";
 
   /**
    * Execute the function. The function must return a valid object.
@@ -54,40 +58,44 @@ public class FuncMatches extends Function3Args {
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {      
+  {
+        XObject result = null;
         
-	    XObject result = null;
-	  
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
-        
-        String inputStr = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+	    
+	    XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+	    String inputStr = null;
+	    if ((m_arg0 instanceof SelfIteratorNoPredicate) && (xpath3ContextItem != null)) {
+	       inputStr = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem); 
+	    }
+	    else {
+           inputStr = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+	    }
         String patternStr = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
+        String replacementStr = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
         
         String flagStr = null;
         
-        if (m_arg2 != null) {
-           flagStr = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
-           if (!RegexEvaluationSupport.isFlagStrValid(flagStr)) {               
-              throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                                                            ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), srcLocator); 
+        if (m_arg3 != null) {
+           flagStr = XslTransformEvaluationHelper.getStrVal(m_arg3.execute(xctxt));
+           if (!RegexEvaluationSupport.isFlagStrValid(flagStr)) {
+               throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
+                                                                                                                ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), 
+            		   																						    srcLocator);     
            }
         }
         
-        boolean boolValue = false;
-        
-        try {                
-            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(patternStr), 
-            																									flagStr != null ? flagStr : null, inputStr);
-            while (matcher.find()) {
-               boolValue = true;
-               break;
-            }            
-        } catch (PatternSyntaxException ex) {
-            throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                        									ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator); 
+        try {
+            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(
+            		                                                                                             patternStr), flagStr, inputStr);
+            String resultStr = matcher.replaceAll(replacementStr);
+            result = new XSString(resultStr);
         }
-        
-        result = (boolValue ? new XSBoolean(true) : new XSBoolean(false));  
+        catch (PatternSyntaxException ex) {
+            throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
+                                                                                                                ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
+                                                                                                                srcLocator);   
+        }                
     
         return result;
   }
@@ -101,7 +109,7 @@ public class FuncMatches extends Function3Args {
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-     if (argNum < 2) {
+     if (argNum < 3) {
         reportWrongNumberArgs();
      }
   }
@@ -114,7 +122,7 @@ public class FuncMatches extends Function3Args {
    */
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
-                                              XPATHErrorResources.ER_TWO_OR_THREE, null)); //"2 or 3"
+                                              XPATHErrorResources.ER_THREE_OR_FOUR, null)); //"3 or 4"
   }
   
 }

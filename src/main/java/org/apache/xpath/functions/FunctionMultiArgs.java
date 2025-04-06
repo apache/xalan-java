@@ -35,9 +35,10 @@ public class FunctionMultiArgs extends Function3Args
 {
     static final long serialVersionUID = 7117257746138417181L;
 
-  /** Argument expressions that are at index 3 or greater.
-   *  @serial */
-  Expression[] m_args;
+  /** 
+   * Argument expressions that are at index 3 or greater.
+   */
+  protected Expression[] m_args;
   
   /**
    * Return an expression array containing arguments at index 3 or greater.

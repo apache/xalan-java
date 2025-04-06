@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,9 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.functions.FunctionMultiArgs;
+import org.apache.xpath.functions.RegexEvaluationSupport;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;

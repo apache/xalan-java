@@ -18,32 +18,26 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.string;
 
-import java.math.BigInteger;
-
-import org.apache.xpath.XPathCollationSupport;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.XObject;
 
-import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of the string-to-codepoints() function.
- * 
- * @author Mukul Gandhi <mukulg@apache.org>
+ * Implementation of fn:Contains function.
  * 
  * @xsl.usage advanced
  */
-public class FuncStringToCodepoints extends FunctionDef1Arg
+public class FuncContains extends Function2Args
 {
-
-   private static final long serialVersionUID = -2509583274718320399L;
+    static final long serialVersionUID = 5084753781887919723L;
 
   /**
-   * Execute the function. The function must return
-   * a valid object.
+   * Execute the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
@@ -51,25 +45,21 @@ public class FuncStringToCodepoints extends FunctionDef1Arg
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-     
-     XObject result = null;
-     
-     String inpStr = (getArg0AsString(xctxt)).toString();
-     
-     XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
-     
-     int[] codePointsArr = xPathCollationSupport.getCodepointsFromString(inpStr);
-     
-     ResultSequence resultSeq = new ResultSequence();
-     
-     for (int idx=0; idx < codePointsArr.length; idx++) {
-        long codepointVal = codePointsArr[idx]; 
-        resultSeq.add(new XSInteger(BigInteger.valueOf(codepointVal))); 
-     }
-     
-     result = resultSeq; 
-     
-     return result;
+  {    
+	    XObject result = null;
+	    
+	    String str1 = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+	    String str2 = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
+	
+	    // Add this check for JDK consistency for empty strings
+	    if ((str1.length() == 0) && (str2.length() == 0)) {
+	        result = new XSBoolean(true);
+	    }
+	    else {	
+	       int index = str1.indexOf(str2);
+	       result = ((index > -1) ? new XSBoolean(true) : new XSBoolean(false));
+	    }
+	
+	    return result;
   }
 }
