@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.hof;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +33,8 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -61,7 +63,7 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
         
         int contextNode = xctxt.getContextNode();
         
-        ResultSequence foldRightFirstArgResultSeq = constructXDMSequenceFromXPathExpression(m_arg0, xctxt);
+        ResultSequence foldRightFirstArgSeq = constructSequenceFromXPathExpression(m_arg0, xctxt);
         
         XObject foldRightBaseVal = m_arg1.execute(xctxt);
         
@@ -103,7 +105,7 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
             if (stylesheetRoot != null) {
          	   transformerImpl = stylesheetRoot.getTransformerImpl();  
          	   TemplateList templateList = stylesheetRoot.getTemplateListComposed();        	   
-         	   if (xslFunctionService.isFuncArityWellFormedForNamedFuncRef(funcNameRef)) {        	   
+         	   if (xslFunctionService.isFuncArityWellFormed(funcNameRef)) {        	   
          		   int hashCharIdx = funcNameRef.indexOf('#');
          		   String funcNameRef2 = funcNameRef.substring(0, hashCharIdx);
          		   ElemTemplate elemTemplate = templateList.getTemplate(new QName(funcNamespace, funcNameRef2));
@@ -153,12 +155,12 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
 
         		XPath inlineFuncXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
         																								XPath.SELECT, null);              
-        		for (int idx = foldRightFirstArgResultSeq.size() - 1; idx >= 0; idx--) {
+        		for (int idx = foldRightFirstArgSeq.size() - 1; idx >= 0; idx--) {
         			Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
 
-        			inlineFunctionVarMap.put(new QName(funcItemFirstArgName), foldRightFirstArgResultSeq.item(idx));
+        			inlineFunctionVarMap.put(new QName(funcItemFirstArgName), foldRightFirstArgSeq.item(idx));
 
-        			if (idx == (foldRightFirstArgResultSeq.size() - 1)) {                    
+        			if (idx == (foldRightFirstArgSeq.size() - 1)) {                    
         				inlineFunctionVarMap.put(new QName(funcItemSecondArgName), foldRightBaseVal);
         			}
         			else {
@@ -179,11 +181,11 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
             }
         }
         else if ((elemFunction != null) && (transformerImpl != null)) {
-           for (int idx = foldRightFirstArgResultSeq.size() - 1; idx >= 0; idx--) {
+           for (int idx = foldRightFirstArgSeq.size() - 1; idx >= 0; idx--) {
         	   ResultSequence argSequence = new ResultSequence();        	           	   
         	   
-        	   argSequence.add(foldRightFirstArgResultSeq.item(idx));        	   
-        	   if (idx == (foldRightFirstArgResultSeq.size() - 1)) {        		   
+        	   argSequence.add(foldRightFirstArgSeq.item(idx));        	   
+        	   if (idx == (foldRightFirstArgSeq.size() - 1)) {        		   
    				   argSequence.add(foldRightBaseVal);   				   
         	   }
         	   else {

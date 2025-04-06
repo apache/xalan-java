@@ -729,13 +729,13 @@ public class FunctionTable
 	  m_functions[FUNC_INDEX_OF] = org.apache.xpath.functions.FuncIndexOf.class;        
 	  m_functions[FUNC_DISTINCT_VALUES] = org.apache.xpath.functions.FuncDistinctValues.class;
 
-	  m_functions[FUNC_FOR_EACH] = org.apache.xpath.functions.FuncForEach.class;
-	  m_functions[FUNC_FILTER] = org.apache.xpath.functions.FuncFilter.class;
-	  m_functions[FUNC_FOLD_LEFT] = org.apache.xpath.functions.FuncFoldLeft.class;
-	  m_functions[FUNC_FOLD_RIGHT] = org.apache.xpath.functions.FuncFoldRight.class;
-	  m_functions[FUNC_FOR_EACH_PAIR] = org.apache.xpath.functions.FuncForEachPair.class;
-	  m_functions[FUNC_SORT] = org.apache.xpath.functions.FuncSort.class;
-	  m_functions[FUNC_APPLY] = org.apache.xpath.functions.FuncApply.class;
+	  m_functions[FUNC_FOR_EACH] = org.apache.xpath.functions.hof.FuncForEach.class;
+	  m_functions[FUNC_FILTER] = org.apache.xpath.functions.hof.FuncFilter.class;
+	  m_functions[FUNC_FOLD_LEFT] = org.apache.xpath.functions.hof.FuncFoldLeft.class;
+	  m_functions[FUNC_FOLD_RIGHT] = org.apache.xpath.functions.hof.FuncFoldRight.class;
+	  m_functions[FUNC_FOR_EACH_PAIR] = org.apache.xpath.functions.hof.FuncForEachPair.class;
+	  m_functions[FUNC_SORT] = org.apache.xpath.functions.hof.FuncSort.class;
+	  m_functions[FUNC_APPLY] = org.apache.xpath.functions.hof.FuncApply.class;
 
 	  /**
 	   * XPath 3.1 built-in functions configurations for the math

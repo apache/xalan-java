@@ -18,7 +18,7 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.hof;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -40,6 +40,9 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.FunctionMultiArgs;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -49,7 +52,7 @@ import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Implementation of an XPath 3.1 function, fn:sort.
+ * Implementation of XPath 3.1 function fn:sort.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

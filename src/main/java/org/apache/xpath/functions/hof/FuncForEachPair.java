@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.hof;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +30,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -37,7 +39,7 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
 
 /**
- * Implementation of an XPath 3.1 function, fn:for-each-pair.
+ * Implementation of XPath 3.1 function fn:for-each-pair.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -53,8 +55,8 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        ResultSequence inpSeq1 = constructXDMSequenceFromXPathExpression(m_arg0, xctxt);        
-        ResultSequence inpSeq2 = constructXDMSequenceFromXPathExpression(m_arg1, xctxt);
+        ResultSequence inpSeq1 = constructSequenceFromXPathExpression(m_arg0, xctxt);        
+        ResultSequence inpSeq2 = constructSequenceFromXPathExpression(m_arg1, xctxt);
         
         XPathInlineFunction xpathInlineFunction = null;
         XPathNamedFunctionReference xpathNamedFunctionReference = null;

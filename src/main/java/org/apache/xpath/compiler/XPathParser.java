@@ -3848,7 +3848,7 @@ public class XPathParser
     		String funcNamespaceUri = m_token;
     		String nextTokenToAnalyze = getTokenRelative(1); 
     		if ((nextTokenToAnalyze != null) && (nextTokenToAnalyze.contains("#")) 
-    				                                                     && xslFunctionService.isFuncArityWellFormedForNamedFuncRef(
+    				                                                     && xslFunctionService.isFuncArityWellFormed(
     				                                                    		                                                nextTokenToAnalyze)) {
     		    nextToken();
        		    consumeExpected(':');
@@ -3879,7 +3879,7 @@ public class XPathParser
     	    ExprSingle();
     	}
     }
-    else if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormedForNamedFuncRef(
+    else if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(
     																												 m_token)) {
     	// XPath parse of named function reference, for built-in functions
 

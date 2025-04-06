@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.hof;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
@@ -25,6 +25,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
+import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -59,7 +60,7 @@ public class XPathHigherOrderBuiltinFunction extends Function3Args {
      * 
      * @throws javax.xml.transform.TransformerException
      */
-    protected ResultSequence constructXDMSequenceFromXPathExpression(Expression xpathExpr, XPathContext xctxt) 
+    protected ResultSequence constructSequenceFromXPathExpression(Expression xpathExpr, XPathContext xctxt) 
                                                                                        throws javax.xml.transform.TransformerException {        
         ResultSequence resultSeq = new ResultSequence();
         

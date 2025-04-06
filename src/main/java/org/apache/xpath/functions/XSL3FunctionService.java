@@ -561,7 +561,7 @@ public class XSL3FunctionService {
      * the function to be called, for named function references specified with syntax 
      * functionNameString#integerLiteral.
      */
-    public boolean isFuncArityWellFormedForNamedFuncRef(String funcRefStr) {	      	
+    public boolean isFuncArityWellFormed(String funcRefStr) {	      	
     	boolean isFuncArityWellFormed = true;
 
     	int idx = funcRefStr.indexOf('#');
