@@ -25,7 +25,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An object of this class is, constructed by an XPath parser
+ * An XPath parser, constructs an object instance of this class
  * to represent a named function reference expression.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -42,11 +42,13 @@ public class XPathNamedFunctionReference extends XObject {
 
 	@Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
-		// The run-time execution of this function, shall 
-		// not reach this method invocation. The following implementation
-		// of this method is only notional.
-		XObject result = null;		
-		result = new ResultSequence();		
+		/**
+		 * The run-time processing of this method, shall not occur. 
+		 * An implementation of this method is only notional.
+		 */
+		
+		XObject result = new ResultSequence();		
+		
 		return result;
     }
 
@@ -80,7 +82,7 @@ public class XPathNamedFunctionReference extends XObject {
     
     public int getType()
     {
-      return CLASS_FUNCTION_ITEM;
+        return CLASS_FUNCTION_ITEM;
     }
 
 }

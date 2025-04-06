@@ -577,5 +577,29 @@ public class XslTransformEvaluationHelper {
        
        return sum;
     }
+    
+    /**
+     * Method definition to check, well-formedness of function arity of the function 
+     * to be called, for named function references specified with syntax 
+     * functionNameString#integerLiteral.
+     */
+    public static boolean isFuncArityWellFormedForNamedFuncRef(String funcRefStr) {	      	
+    	boolean isFuncArityWellFormed = true;
+
+    	int idx = funcRefStr.indexOf('#');
+    	String intStr = funcRefStr.substring(idx + 1);
+    	Integer intVal = null;
+    	try {
+    		intVal = Integer.valueOf(intStr);
+    		if (intVal < 0) {
+    			isFuncArityWellFormed = false;
+    		}
+    	}
+    	catch (NumberFormatException ex) {
+    		isFuncArityWellFormed = false; 
+    	}
+
+    	return isFuncArityWellFormed;
+    }
 
 }

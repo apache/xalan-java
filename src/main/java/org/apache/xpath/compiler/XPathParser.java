@@ -38,6 +38,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
@@ -1635,33 +1636,6 @@ public class XPathParser
       else {
          ExprSingle();
       }
-  }
-  
-  /**
-   * For named function references specified with syntax functionNameString#integerLiteral,
-   * check whether integerLiteral (i.e, function arity, of the function to be called) is 
-   * an integer >= 0.
-   * 
-   * Function arity is defined as, "The number of arguments the function accepts".
-   */
-  private boolean isFuncArityWellFormedForNamedFuncRef(String funcRefStr) {	  
-	 
-	 boolean isFuncArityWellFormed = true;
-	 
-	 int idx = funcRefStr.indexOf('#');
-	 String intStr = funcRefStr.substring(idx + 1);
-	 Integer intVal = null;
-	 try {
-	    intVal = Integer.valueOf(intStr);
-	    if (intVal < 0) {
-	    	isFuncArityWellFormed = false;
-	    }
-	 }
-	 catch (NumberFormatException ex) {
-		 isFuncArityWellFormed = false; 
-	 }
-	 
-	 return isFuncArityWellFormed;
   }
   
   /**
@@ -3872,7 +3846,7 @@ public class XPathParser
     		String funcNamespaceUri = m_token;
     		String nextTokenToAnalyze = getTokenRelative(1); 
     		if ((nextTokenToAnalyze != null) && (nextTokenToAnalyze.contains("#")) 
-    				                         && isFuncArityWellFormedForNamedFuncRef(nextTokenToAnalyze)) {
+    				                         &&                  XslTransformEvaluationHelper.isFuncArityWellFormedForNamedFuncRef(nextTokenToAnalyze)) {
     		    nextToken();
        		    consumeExpected(':');
 	       		String funcName = m_token.substring(0, m_token.indexOf('#'));
@@ -3902,7 +3876,8 @@ public class XPathParser
     	    ExprSingle();
     	}
     }
-    else if (!m_token.contains(":") && m_token.contains("#") && isFuncArityWellFormedForNamedFuncRef(m_token)) {
+    else if (!m_token.contains(":") && m_token.contains("#") && XslTransformEvaluationHelper.
+    		                                                                             isFuncArityWellFormedForNamedFuncRef(m_token)) {
     	// XPath parse of named function reference, for built-in functions
 
     	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(

@@ -1701,7 +1701,7 @@ private static final boolean DEBUG = false;
     opPos++;
 
     // We create a method key to uniquely identify this function so that we
-    // can cache the object needed to invoke it.  This way, we only pay the
+    // can cache the object needed to invoke it. This way, we only pay the
     // reflection overhead on the first call.
 
     Function funcObj = new XSL3ConstructorOrExtensionFunction(ns, funcName, String.valueOf(getNextMethodId()));

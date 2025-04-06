@@ -487,10 +487,26 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * A method that returns a default instance of this class.
+   * Method definition, to return an object instance of this class.
    */
   public static ElemFunction getXSLFunctionService() {
      return new ElemFunction();  
+  }
+  
+  /**
+   * Method definition, to count number of xsl:function parameters 
+   * within this xsl:function definition.
+   */
+  public int getParamCount() {
+	 int paramCount = 0;
+	 
+	 for (ElemTemplateElement elem = getFirstChildElem(); elem != null; elem = elem.getNextSiblingElem()) {
+		 if (elem instanceof ElemParam) {
+			 paramCount++; 
+		 }
+	 }
+	 
+	 return paramCount;
   }
   
   /**

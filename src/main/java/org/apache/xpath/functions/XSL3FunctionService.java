@@ -146,7 +146,7 @@ public class XSL3FunctionService {
     		String funcNamespace = funcObj.getNamespace();
     		
     		if (!(Constants.S_EXTENSIONS_JAVA_URL).equals(funcNamespace)) {
-    			// both XPath constructor (prefix:typeName) and XSL stylesheet function 
+    			// Both XPath constructor (prefix:typeName) and XSL stylesheet function 
     			// calls (xsl:function), are syntactically similar to Xalan-J XPath 
     			// extension function calls (prefix:functionName). The implementation
     			// here need not run when an XSL stylesheet specifies Xalan-J XPath 
