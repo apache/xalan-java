@@ -544,6 +544,9 @@ public class FunctionTable
   
   /** The 'transform()' id. */
   public static final int FUNC_TRANSFORM = 173;
+  
+  /** The 'ends-with()' id. */
+  public static final int FUNC_ENDS_WITH = 174;
 
   // Proprietary
 
@@ -637,7 +640,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 174;
+  private static final int NUM_BUILT_IN_FUNCS = 175;
 
   /**
    * Number of built-in functions that may be added.
@@ -687,8 +690,9 @@ public class FunctionTable
 
 	  m_functions[FUNC_DATA] = org.apache.xpath.functions.FuncData.class;
 
-	  m_functions[FUNC_STARTS_WITH] = org.apache.xpath.functions.string.FuncStartsWith.class;
 	  m_functions[FUNC_CONTAINS] = org.apache.xpath.functions.string.FuncContains.class;
+	  m_functions[FUNC_STARTS_WITH] = org.apache.xpath.functions.string.FuncStartsWith.class;
+	  m_functions[FUNC_ENDS_WITH] = org.apache.xpath.functions.string.FuncEndsWith.class;	  
 	  m_functions[FUNC_SUBSTRING_BEFORE] = org.apache.xpath.functions.string.FuncSubstringBefore.class;
 	  m_functions[FUNC_SUBSTRING_AFTER] = org.apache.xpath.functions.string.FuncSubstringAfter.class;
 	  m_functions[FUNC_NORMALIZE_SPACE] = org.apache.xpath.functions.string.FuncNormalizeSpace.class;
@@ -884,8 +888,9 @@ public class FunctionTable
 
 	  m_functionId.put(Keywords.FUNC_DATA_STRING, new Integer(FunctionTable.FUNC_DATA));
 
-	  m_functionId.put(Keywords.FUNC_STARTS_WITH_STRING, new Integer(FunctionTable.FUNC_STARTS_WITH));
 	  m_functionId.put(Keywords.FUNC_CONTAINS_STRING, new Integer(FunctionTable.FUNC_CONTAINS));
+	  m_functionId.put(Keywords.FUNC_STARTS_WITH_STRING, new Integer(FunctionTable.FUNC_STARTS_WITH));
+	  m_functionId.put(Keywords.FUNC_ENDS_WITH_STRING, new Integer(FunctionTable.FUNC_ENDS_WITH));
 	  m_functionId.put(Keywords.FUNC_SUBSTRING_BEFORE_STRING, new Integer(FunctionTable.FUNC_SUBSTRING_BEFORE));
 	  m_functionId.put(Keywords.FUNC_SUBSTRING_AFTER_STRING, new Integer(FunctionTable.FUNC_SUBSTRING_AFTER));
 	  m_functionId.put(Keywords.FUNC_NORMALIZE_SPACE_STRING, new Integer(FunctionTable.FUNC_NORMALIZE_SPACE));

@@ -33,7 +33,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
- * Implementation of the compare() function.
+ * Implementation of XPath 3.1 function fn:compare.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -87,7 +87,8 @@ public class FuncCompare extends FunctionMultiArgs {
                result = new XSInteger(BigInteger.valueOf((long)comparisonResult));
             }
             else {
-                // a collation uri was, explicitly provided during the function call fn:compare
+                // A collation uri was, explicitly provided during the function 
+            	// call fn:compare.
                 
                 arg2 = m_arg2;
                 

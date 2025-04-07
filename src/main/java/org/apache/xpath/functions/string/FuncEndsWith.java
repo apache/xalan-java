@@ -33,17 +33,19 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Implementation of XPath 3.1 function fn:starts-with.
+ * Implementation of XPath 3.1 function fn:ends-with.
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncStartsWith extends FunctionMultiArgs
+public class FuncEndsWith extends FunctionMultiArgs
 {
-  
-  static final long serialVersionUID = 2194585774699567928L;
+	
+  private static final long serialVersionUID = -4632201923330818748L;
   
   /**
-   * The number of arguments passed to the fn:starts-with function 
+   * The number of arguments passed to the fn:ends-with function 
    * call.
    */
   private int numOfArgs = 0;
@@ -60,7 +62,7 @@ public class FuncStartsWith extends FunctionMultiArgs
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 	  XObject result = null;
-    
+	    
 	  XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
 	  
 	  Expression arg0 = m_arg0;        
@@ -75,17 +77,17 @@ public class FuncStartsWith extends FunctionMultiArgs
 
     	  if ((arg0 instanceof SelfIteratorNoPredicate) && (xpath3ContextItem != null)) {
     		  String arg0StrValue = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);		  
-    		  result = arg0StrValue.startsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;   
+    		  result = arg0StrValue.endsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;   
     	  }
     	  else {
     		  XObject xpathEvalResult = arg0.execute(xctxt);
     		  String arg0StrValue = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
-    		  result = arg0StrValue.startsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+    		  result = arg0StrValue.endsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
     	  }
       }
       else {
     	  // A collation uri was, explicitly provided during the function 
-      	  // call fn:starts-with.
+      	  // call fn:ends-with.
           
           arg2 = m_arg2;
           
@@ -101,9 +103,10 @@ public class FuncStartsWith extends FunctionMultiArgs
           
           result = XBoolean.S_FALSE;
           
-          for (int idx = 0; idx < str0.length(); idx++) {
-        	 String str0Prefix = str0.substring(0, idx + 1);
-        	 int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(str0Prefix, str1, collationUri);
+          int str0Length = str0.length();          
+          for (int idx = 0; idx < str0Length; idx++) {
+        	 String str0Suffix = str0.substring(str0Length - (idx + 1), str0Length);
+        	 int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(str0Suffix, str1, collationUri);
         	 if (comparisonResult == 0) {
         		 result = XBoolean.S_TRUE;
         		 
@@ -143,5 +146,4 @@ public class FuncStartsWith extends FunctionMultiArgs
                                                                    XPATHErrorResources.ER_TWO_OR_THREE, 
                                                                    null));
   }
-  
 }

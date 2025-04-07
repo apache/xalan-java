@@ -34,6 +34,7 @@ import org.apache.xalan.tests.xpath3.FnParseXmlFragmentTests;
 import org.apache.xalan.tests.xpath3.FnParseXmlTests;
 import org.apache.xalan.tests.xpath3.FnRoundTests;
 import org.apache.xalan.tests.xpath3.FnSortTests;
+import org.apache.xalan.tests.xpath3.FnStartsWithEndsWithTests;
 import org.apache.xalan.tests.xpath3.FnStringJoinTests;
 import org.apache.xalan.tests.xpath3.FnStringToCodepointsTests;
 import org.apache.xalan.tests.xpath3.FnTokenizeTests;
@@ -112,7 +113,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnDocAvailableTests.class, FnUnparsedTextLinesTests.class, XslMethodOutputJsonTests.class,
                 XsGregorianTypeTests.class, XslMergeTests.class, XslSourceDocumentTests.class,
                 XslForkTests.class, XslResultDocumentTests.class, XPathIdivTests.class,
-                FnTransformTests.class })
+                FnTransformTests.class, FnStartsWithEndsWithTests.class })
 public class Xsl3TestSuite2 {
 
 }

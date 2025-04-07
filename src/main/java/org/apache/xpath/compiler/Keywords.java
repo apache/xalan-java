@@ -184,6 +184,9 @@ public class Keywords
 
   /** starts-with function string. */
   public static final String FUNC_STARTS_WITH_STRING = "starts-with";
+  
+  /** ends-with function string. */
+  public static final String FUNC_ENDS_WITH_STRING = "ends-with";
 
   /** contains function string. */
   public static final String FUNC_CONTAINS_STRING = "contains";
