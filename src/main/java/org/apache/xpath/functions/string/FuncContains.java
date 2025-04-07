@@ -15,26 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.string;
 
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.FunctionMultiArgs;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.res.XPATHErrorResources;
 
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of fn:Contains function.
+ * Implementation of XPath 3.1 function fn:contains.
  * 
  * @xsl.usage advanced
  */
-public class FuncContains extends Function2Args
+public class FuncContains extends FunctionMultiArgs
 {
-    static final long serialVersionUID = 5084753781887919723L;
+  static final long serialVersionUID = 5084753781887919723L;
+  
+  /**
+   * The number of arguments passed to the fn:contains function 
+   * call.
+   */
+  private int numOfArgs = 0;
 
   /**
    * Execute the function. The function must return a valid object.
@@ -48,18 +55,76 @@ public class FuncContains extends Function2Args
   {    
 	    XObject result = null;
 	    
-	    String str1 = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
-	    String str2 = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
+	    String arg0StrValue = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+	    String arg1StrValue = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
 	
-	    // Add this check for JDK consistency for empty strings
-	    if ((str1.length() == 0) && (str2.length() == 0)) {
-	        result = new XSBoolean(true);
+	    XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+	    
+	    if (numOfArgs == 2) {
+	    	if ((arg0StrValue.length() == 0) && (arg1StrValue.length() == 0)) {
+	    		result = new XSBoolean(true);
+	    	}
+	    	else {	
+	    		int index = arg0StrValue.indexOf(arg1StrValue);
+	    		result = ((index > -1) ? new XSBoolean(true) : new XSBoolean(false));
+	    	}
 	    }
-	    else {	
-	       int index = str1.indexOf(str2);
-	       result = ((index > -1) ? new XSBoolean(true) : new XSBoolean(false));
+	    else {
+	    	// A collation uri was, explicitly provided during the function 
+	    	// call fn:contains.
+
+	    	String collationUri = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
+
+	    	result = new XSBoolean(false);
+
+	    	int arg0StrLength = arg0StrValue.length();
+	    	for (int idx = 0; idx < arg0StrLength; idx++) {
+	    		int temp = idx;
+	    		for (int idx2 = temp; idx2 < arg0StrLength; idx2++) {
+	    			String tempStr = arg0StrValue.substring(temp, idx2 + 1);
+	    			int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(tempStr, arg1StrValue, collationUri);
+	    			if (comparisonResult == 0) {
+	    				result = new XSBoolean(true);        		 
+	           		    break;
+	    			}
+	    		}
+	    		
+	    		if (((XSBoolean)result).bool()) {
+	    		   break;
+	    		}
+	    	}	
 	    }
 	
 	    return result;
   }
+  
+  /**
+   * Check that the number of arguments passed to this function is correct.
+   *
+   * @param argNum The number of arguments that is being passed to the function.
+   *
+   * @throws WrongNumberArgsException
+   */
+  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
+  {
+	  if (!(argNum > 1 && argNum <= 3)) {
+		  reportWrongNumberArgs();
+	  }
+	  else {
+		  numOfArgs = argNum;   
+	  }
+  }
+  
+  /**
+   * Constructs and throws a WrongNumberArgException with the appropriate
+   * message for this function object.
+   *
+   * @throws WrongNumberArgsException
+   */
+  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
+                                                                   XPATHErrorResources.ER_TWO_OR_THREE, 
+                                                                   null));
+  }
+  
 }

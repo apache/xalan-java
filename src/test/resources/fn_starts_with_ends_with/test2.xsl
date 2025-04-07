@@ -5,7 +5,7 @@
   <!-- Author: mukulg@apache.org -->
    
   <!-- An XSL stylesheet test case, to test XPath 3.1 functions 
-       fn:starts-with and fn:ends-with with a non null collation 
+       fn:starts-with and fn:ends-with with a non-null collation 
        argument having lang=de & strength=primary. -->			    									
   
   <xsl:output method="xml" indent="yes"/>

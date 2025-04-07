@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.string;
 
 import org.apache.xalan.res.XSLMessages;
@@ -108,8 +105,7 @@ public class FuncEndsWith extends FunctionMultiArgs
         	 String str0Suffix = str0.substring(str0Length - (idx + 1), str0Length);
         	 int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(str0Suffix, str1, collationUri);
         	 if (comparisonResult == 0) {
-        		 result = XBoolean.S_TRUE;
-        		 
+        		 result = XBoolean.S_TRUE;        		 
         		 break;
         	 }        			 
           }
@@ -146,4 +142,5 @@ public class FuncEndsWith extends FunctionMultiArgs
                                                                    XPATHErrorResources.ER_TWO_OR_THREE, 
                                                                    null));
   }
+  
 }

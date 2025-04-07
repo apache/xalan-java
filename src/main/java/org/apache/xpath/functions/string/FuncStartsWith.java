@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.string;
 
 import org.apache.xalan.res.XSLMessages;
@@ -105,8 +102,7 @@ public class FuncStartsWith extends FunctionMultiArgs
         	 String str0Prefix = str0.substring(0, idx + 1);
         	 int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(str0Prefix, str1, collationUri);
         	 if (comparisonResult == 0) {
-        		 result = XBoolean.S_TRUE;
-        		 
+        		 result = XBoolean.S_TRUE;        		 
         		 break;
         	 }        			 
           }
