@@ -15,28 +15,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.string;
 
-import org.apache.xml.utils.XMLString;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.FunctionMultiArgs;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
+import org.apache.xpath.res.XPATHErrorResources;
+
+import xml.xpath31.processor.types.XSString;
 
 /**
- * Execute the SubstringAfter() function.
+ * Implementation of XPath 3.1 function fn:substring-after.
+ * 
  * @xsl.usage advanced
  */
-public class FuncSubstringAfter extends Function2Args
+public class FuncSubstringAfter extends FunctionMultiArgs
 {
-    static final long serialVersionUID = -8119731889862512194L;
+   
+	static final long serialVersionUID = -8119731889862512194L;
+    
+    /**
+     * The number of arguments passed to the fn:substring-after function 
+     * call.
+     */
+    private int numOfArgs = 0;
 
   /**
-   * Execute the function.  The function must return
-   * a valid object.
+   * Execute the function. The function must return a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
@@ -44,13 +54,79 @@ public class FuncSubstringAfter extends Function2Args
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
+	  XObject result = null;
+	  
+	  String str1 = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+	  String str2 = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
+	  
+	  XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+	    
+	  if (numOfArgs == 2) {
+		 int index = str1.indexOf(str2);
+		 
+		 result = ((index == -1) ? new XSString("") : new XSString(str1.substring(index + str2.length()))); 
+	  }
+	  else {
+		  // A collation uri was, explicitly provided during the function 
+		  // call fn:substring-before.
 
-    XMLString s1 = m_arg0.execute(xctxt).xstr();
-    XMLString s2 = m_arg1.execute(xctxt).xstr();
-    int index = s1.indexOf(s2);
+		  String collationUri = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
 
-    return (-1 == index)
-           ? XString.EMPTYSTRING
-           : (XString)s1.substring(index + s2.length());
+		  int str1Length = str1.length();
+		  boolean subsMatchFound = false;
+		  for (int idx = 0; idx < str1Length; idx++) {
+			  int temp = idx;			  
+			  for (int idx2 = temp; idx2 < str1Length; idx2++) {
+				  String tempStr = str1.substring(temp, idx2 + 1);
+				  int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(tempStr, str2, collationUri);
+				  if (comparisonResult == 0) {
+					  subsMatchFound = true;        		 
+					  break;
+				  }
+			  }
+
+			  if (subsMatchFound) {
+				  result = new XSString(str1.substring((temp + 1) + str2.length())); 
+				  break;
+			  }
+		  }
+		  
+		  if (!subsMatchFound) {
+			 result = new XSString("");  
+		  }
+	  }
+	  
+	  return result;
+	  
   }
+  
+  /**
+   * Check that the number of arguments passed to this function is correct.
+   *
+   * @param argNum The number of arguments that is being passed to the function.
+   *
+   * @throws WrongNumberArgsException
+   */
+  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
+  {
+	  if (!(argNum > 1 && argNum <= 3)) {
+		  reportWrongNumberArgs();
+	  }
+	  else {
+		  numOfArgs = argNum;   
+	  }
+  }
+  
+  /**
+   * Constructs and throws a WrongNumberArgException with the appropriate
+   * message for this function object.
+   *
+   * @throws WrongNumberArgsException
+   */
+  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
+                                                                   XPATHErrorResources.ER_TWO_OR_THREE, 
+                                                                   null));
+  }
+  
 }
