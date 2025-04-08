@@ -29,14 +29,18 @@ import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
@@ -63,7 +67,21 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
         
         int contextNode = xctxt.getContextNode();
         
-        ResultSequence foldRightFirstArgSeq = constructSequenceFromXPathExpression(m_arg0, xctxt);
+        ResultSequence foldRightFirstArgSeq = null;
+        
+        if (m_arg0 instanceof LocPathIterator) {
+        	foldRightFirstArgSeq = new ResultSequence();         	
+        	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)(m_arg0.execute(xctxt));
+        	DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.asIterator(xctxt, contextNode);
+        	int nextNode;
+        	while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {
+        	   XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(nextNode, xctxt);
+        	   foldRightFirstArgSeq.add(xdmNode);
+        	}
+        }
+        else {
+        	foldRightFirstArgSeq = constructSequenceFromXPathExpression(m_arg0, xctxt);
+        }
         
         XObject foldRightBaseVal = m_arg1.execute(xctxt);
         

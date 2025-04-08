@@ -23,14 +23,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Xalan-J jira issues, test cases for XSL 3 
- * implementation work.
+ * XSL 3 stylesheet test cases, to test fixes for Xalan-J jira 
+ * issues.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class JiraIssuesTests extends XSLTransformTestsUtil {        
+public class XalanJiraIssueTests extends XSLTransformTestsUtil {        
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "jira_issues/";
     
@@ -49,7 +49,7 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
     }
 
     @Test
-    public void xslJiraIssuesTest1() {
+    public void xslJiraIssueTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
@@ -59,7 +59,7 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslJiraIssuesTest2() {
+    public void xslJiraIssueTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
@@ -69,7 +69,7 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslJiraIssuesTest3() {
+    public void xslJiraIssueTest3() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
@@ -79,7 +79,7 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslJiraIssuesTest4() {
+    public void xslJiraIssueTest4() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
@@ -89,7 +89,7 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslJiraIssuesTest5() {
+    public void xslJiraIssueTest5() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
@@ -99,7 +99,7 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslJiraIssuesTest6() {
+    public void xslJiraIssueTest6() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
         
@@ -109,7 +109,7 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslJiraIssuesTest7() {
+    public void xslJiraIssueTest7() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
         
@@ -119,7 +119,7 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslJiraIssuesTest8() {
+    public void xslJiraIssueTest8() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
         
@@ -129,11 +129,31 @@ public class JiraIssuesTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslJiraIssuesTest9() {
+    public void xslJiraIssueTest9() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslJiraIssueTest10() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslJiraIssueTest11() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

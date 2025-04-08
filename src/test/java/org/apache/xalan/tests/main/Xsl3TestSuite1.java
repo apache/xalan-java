@@ -55,7 +55,7 @@ import org.apache.xalan.tests.xpath3.XsDateTimeArithmeticTests;
 import org.apache.xalan.tests.xpath3.XsDateTimeTests;
 import org.apache.xalan.tests.xpath3.XsDurationSubtypes;
 import org.apache.xalan.tests.xpath3.XsTimeWithArithmeticTests;
-import org.apache.xalan.tests.xslt3.JiraIssuesTests;
+import org.apache.xalan.tests.xslt3.XalanJiraIssueTests;
 import org.apache.xalan.tests.xslt3.XmlDotComXslHigherOrderFunctionTests;
 import org.apache.xalan.tests.xslt3.XslAttributeValidationTests;
 import org.apache.xalan.tests.xslt3.XslCopyValidationTests;
@@ -95,7 +95,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnRootTests.class, XPathCastTests.class, XPathArrowOpTests.class, FnMapMerge.class,
                 FnParseJsonTests.class, FnJsonDocTests.class, FnJsonToXmlTests.class,
                 FnXmlToJsonTests.class, FnAnalyzeStringTests.class, XPathMapOtherTests.class,
-                JiraIssuesTests.class, XPathNamedFunctionReferenceTests.class, FnApplyTests.class,
+                XalanJiraIssueTests.class, XPathNamedFunctionReferenceTests.class, FnApplyTests.class,
                 XPathGeneralComparisonOpTests.class, FnMapFindTests.class, XPathNumericArithmeticTests.class,
                 XslTunnelParameterTests.class, FuncBooleanValuesTests.class, XslElementValidationTests.class,
                 XslLiteralResultElementValidationTests.class, XslAttributeValidationTests.class,
