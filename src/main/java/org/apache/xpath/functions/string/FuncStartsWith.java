@@ -19,11 +19,8 @@ package org.apache.xpath.functions.string;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
@@ -34,7 +31,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  * 
  * @xsl.usage advanced
  */
-public class FuncStartsWith extends FunctionMultiArgs
+public class FuncStartsWith extends XSL3StringCollationAwareFunction
 {
   
   static final long serialVersionUID = 2194585774699567928L;
@@ -46,8 +43,7 @@ public class FuncStartsWith extends FunctionMultiArgs
   private int numOfArgs = 0;
 
   /**
-   * Execute the function. The function must return
-   * a valid object.
+   * Execute the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
@@ -58,49 +54,24 @@ public class FuncStartsWith extends FunctionMultiArgs
   {
 	  XObject result = null;
     
-	  XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
-	  
-	  Expression arg0 = m_arg0;        
-      Expression arg1 = m_arg1;        
-      Expression arg2 = null;
-      
-      XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+	  String arg0StrValue = getArgStringValue(xctxt, m_arg0);
+	  String arg1StrValue = getArgStringValue(xctxt, m_arg1);
 	  
       if (numOfArgs == 2) {
-    	  XObject arg1XObj = arg1.execute(xctxt);
-    	  String arg1StrValue = XslTransformEvaluationHelper.getStrVal(arg1XObj);
-
-    	  if ((arg0 instanceof SelfIteratorNoPredicate) && (xpath3ContextItem != null)) {
-    		  String arg0StrValue = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);		  
-    		  result = arg0StrValue.startsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;   
-    	  }
-    	  else {
-    		  XObject xpathEvalResult = arg0.execute(xctxt);
-    		  String arg0StrValue = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
-    		  result = arg0StrValue.startsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-    	  }
+    	  result = arg0StrValue.startsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
       }
       else {
     	  // A collation uri was, explicitly provided during the function 
       	  // call fn:starts-with.
           
-          arg2 = m_arg2;
-          
-          XObject xObject0 = arg0.execute(xctxt);
-          XObject xObject1 = arg1.execute(xctxt);
-          
-          XObject xObject2 = arg2.execute(xctxt);
-          
-          String str0 = XslTransformEvaluationHelper.getStrVal(xObject0);
-          String str1 = XslTransformEvaluationHelper.getStrVal(xObject1);
-          
-          String collationUri = XslTransformEvaluationHelper.getStrVal(xObject2);
+    	  XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();	    	
+	      String collationUri = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
           
           result = XBoolean.S_FALSE;
           
-          for (int idx = 0; idx < str0.length(); idx++) {
-        	 String str0Prefix = str0.substring(0, idx + 1);
-        	 int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(str0Prefix, str1, collationUri);
+          for (int idx = 0; idx < arg0StrValue.length(); idx++) {
+        	 String str0Prefix = arg0StrValue.substring(0, idx + 1);
+        	 int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(str0Prefix, arg1StrValue, collationUri);
         	 if (comparisonResult == 0) {
         		 result = XBoolean.S_TRUE;        		 
         		 break;

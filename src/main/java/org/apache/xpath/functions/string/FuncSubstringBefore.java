@@ -21,7 +21,6 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -33,7 +32,7 @@ import xml.xpath31.processor.types.XSString;
  * 
  * @xsl.usage advanced
  */
-public class FuncSubstringBefore extends FunctionMultiArgs
+public class FuncSubstringBefore extends XSL3StringCollationAwareFunction
 {
   
   static final long serialVersionUID = 4110547161672431775L;
@@ -56,29 +55,28 @@ public class FuncSubstringBefore extends FunctionMultiArgs
   {
 	  XObject result = null;
 	  
-	  String str1 = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
-	  String str2 = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
-	  
-	  XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+	  String arg0StrValue = getArgStringValue(xctxt, m_arg0);
+	  String arg1StrValue = getArgStringValue(xctxt, m_arg1);
 	    
 	  if (numOfArgs == 2) {
-		 int index = str1.indexOf(str2);
+		 int index = arg0StrValue.indexOf(arg1StrValue);
 		 
-		 result = ((index == -1) ? new XSString("") : new XSString(str1.substring(0, index))); 
+		 result = ((index == -1) ? new XSString("") : new XSString(arg0StrValue.substring(0, index))); 
 	  }
 	  else {
 		 // A collation uri was, explicitly provided during the function 
 	     // call fn:substring-before.
 		  
-		 String collationUri = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
+		  XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();	    	
+	      String collationUri = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
 		 
-		 int str1Length = str1.length();
+		 int str1Length = arg0StrValue.length();
 		 boolean subsMatchFound = false;
 		 for (int idx = 0; idx < str1Length; idx++) {
 			 int temp = idx;			 
 			 for (int idx2 = temp; idx2 < str1Length; idx2++) {
-				 String tempStr = str1.substring(temp, idx2 + 1);
-				 int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(tempStr, str2, collationUri);
+				 String tempStr = arg0StrValue.substring(temp, idx2 + 1);
+				 int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(tempStr, arg1StrValue, collationUri);
 				 if (comparisonResult == 0) {
 					 subsMatchFound = true;        		 
 					 break;
@@ -86,7 +84,7 @@ public class FuncSubstringBefore extends FunctionMultiArgs
 			 }
 
 			 if (subsMatchFound) {
-				 result = new XSString(str1.substring(0, temp)); 
+				 result = new XSString(arg0StrValue.substring(0, temp)); 
 				 break;
 			 }
 		 }

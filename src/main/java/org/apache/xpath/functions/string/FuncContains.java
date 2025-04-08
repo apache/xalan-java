@@ -21,7 +21,6 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -33,7 +32,7 @@ import xml.xpath31.processor.types.XSBoolean;
  * 
  * @xsl.usage advanced
  */
-public class FuncContains extends FunctionMultiArgs
+public class FuncContains extends XSL3StringCollationAwareFunction
 {
   static final long serialVersionUID = 5084753781887919723L;
   
@@ -55,10 +54,8 @@ public class FuncContains extends FunctionMultiArgs
   {    
 	    XObject result = null;
 	    
-	    String arg0StrValue = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
-	    String arg1StrValue = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
-	
-	    XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+	    String arg0StrValue = getArgStringValue(xctxt, m_arg0);	    
+	    String arg1StrValue = getArgStringValue(xctxt, m_arg1);
 	    
 	    if (numOfArgs == 2) {
 	    	if ((arg0StrValue.length() == 0) && (arg1StrValue.length() == 0)) {
@@ -73,6 +70,7 @@ public class FuncContains extends FunctionMultiArgs
 	    	// A collation uri was, explicitly provided during the function 
 	    	// call fn:contains.
 
+	    	XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();	    	
 	    	String collationUri = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
 
 	    	result = new XSBoolean(false);
