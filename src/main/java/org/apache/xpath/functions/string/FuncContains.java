@@ -34,6 +34,7 @@ import xml.xpath31.processor.types.XSBoolean;
  */
 public class FuncContains extends XSL3StringCollationAwareFunction
 {
+  
   static final long serialVersionUID = 5084753781887919723L;
   
   /**

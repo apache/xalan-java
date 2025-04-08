@@ -35,13 +35,13 @@ import xml.xpath31.processor.types.XSString;
 public class FuncSubstringAfter extends XSL3StringCollationAwareFunction
 {
    
-	static final long serialVersionUID = -8119731889862512194L;
+  static final long serialVersionUID = -8119731889862512194L;
     
-    /**
-     * The number of arguments passed to the fn:substring-after function 
-     * call.
-     */
-    private int numOfArgs = 0;
+  /**
+    * The number of arguments passed to the fn:substring-after function 
+    * call.
+    */
+  private int numOfArgs = 0;
 
   /**
    * Execute the function. The function must return a valid object.

@@ -5254,57 +5254,62 @@ public class XPathParser
 
  	  consumeExpected('{');
 
- 	  while (!tokenIs('}')) {        	 
- 		  String mapEntryKeyXPathExprStr = m_token;
- 		  nextToken();
- 		  consumeExpected(':');
- 		  String mapEntryValueXPathExprStr = null;
- 		  if (tokenIs("map")) {
- 			  // There's likely an XPath map constructor here, 
- 			  // within this map. 	        		
- 			  mapEntryValueXPathExprStr = getXPathMapConstructorStrValue();
- 		  }
- 		  else if (tokenIs('[')) {
- 			  // There's likely an XPath square array constructor here, 
- 			  // within this map. 	        		
- 			  mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(true); 
- 		  }
- 		  else if (tokenIs("array") && lookahead('{', 1)) {
- 			  // There's likely an XPath curly array constructor here, 
- 			  // within this map. 	        		
- 			  mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(false); 
- 		  }
- 		  else {
- 			  // The map's key value here is a simple value (i.e, not an array, or 
- 			  // map).
- 			  mapEntryValueXPathExprStr = m_token;
- 			  while (!(tokenIs(',') || tokenIs('}'))) {
- 				  nextToken();
- 				  if (!(tokenIs(',') || tokenIs('}'))) {
- 					  mapEntryValueXPathExprStr += m_token;
+ 	  if (!tokenIs('}')) {
+ 		  while (!tokenIs('}')) {        	 
+ 			  String mapEntryKeyXPathExprStr = m_token;
+ 			  nextToken();
+ 			  consumeExpected(':');
+ 			  String mapEntryValueXPathExprStr = null;
+ 			  if (tokenIs("map")) {
+ 				  // There's likely an XPath map constructor here, 
+ 				  // within this map. 	        		
+ 				  mapEntryValueXPathExprStr = getXPathMapConstructorStrValue();
+ 			  }
+ 			  else if (tokenIs('[')) {
+ 				  // There's likely an XPath square array constructor here, 
+ 				  // within this map. 	        		
+ 				  mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(true); 
+ 			  }
+ 			  else if (tokenIs("array") && lookahead('{', 1)) {
+ 				  // There's likely an XPath curly array constructor here, 
+ 				  // within this map. 	        		
+ 				  mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(false); 
+ 			  }
+ 			  else {
+ 				  // The map's key value here is a simple value (i.e, not an array, or 
+ 				  // map).
+ 				  mapEntryValueXPathExprStr = m_token;
+ 				  while (!(tokenIs(',') || tokenIs('}'))) {
+ 					  nextToken();
+ 					  if (!(tokenIs(',') || tokenIs('}'))) {
+ 						  mapEntryValueXPathExprStr += m_token;
+ 					  }
  				  }
  			  }
- 		  }
- 		  
- 		  nativeMapObj.put(mapEntryKeyXPathExprStr, mapEntryValueXPathExprStr);
- 		  
- 		  if (tokenIs(',')) {
- 			  consumeExpected(','); 
- 		  }
- 		  else if (tokenIs(']')) {
- 			  consumeExpected(']');
+
+ 			  nativeMapObj.put(mapEntryKeyXPathExprStr, mapEntryValueXPathExprStr);
+
  			  if (tokenIs(',')) {
  				  consumeExpected(','); 
+ 			  }
+ 			  else if (tokenIs(']')) {
+ 				  consumeExpected(']');
+ 				  if (tokenIs(',')) {
+ 					  consumeExpected(','); 
+ 				  }
+ 				  else if (tokenIs('}')) {
+ 					  consumeExpected('}');
+ 					  break;
+ 				  }
  			  }
  			  else if (tokenIs('}')) {
  				  consumeExpected('}');
  				  break;
  			  }
  		  }
- 		  else if (tokenIs('}')) {
- 			  consumeExpected('}');
- 			  break;
- 		  }
+ 	  }
+ 	  else {
+ 		 consumeExpected('}');
  	  }
 
  	  m_xpathMapConstructor.setNativeMap(nativeMapObj);

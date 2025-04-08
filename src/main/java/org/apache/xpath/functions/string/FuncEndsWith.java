@@ -36,7 +36,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class FuncEndsWith extends XSL3StringCollationAwareFunction
 {
 	
-  private static final long serialVersionUID = -4632201923330818748L;
+  static final long serialVersionUID = -4632201923330818748L;
   
   /**
    * The number of arguments passed to the fn:ends-with function 
