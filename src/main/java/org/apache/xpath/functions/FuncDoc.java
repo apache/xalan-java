@@ -32,7 +32,7 @@ import org.apache.xpath.objects.XObject;
 import org.xml.sax.ErrorHandler;
 
 /**
- * Implementation of an fn:doc function.
+ * Implementation of XPath 3.1 function fn:doc.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

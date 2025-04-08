@@ -174,15 +174,15 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
         																									XPath.SELECT, null);              
         		for (int idx = 0; idx < foldLeftFirstArgSeq.size(); idx++) {
         			Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
-
-        			inlineFunctionVarMap.put(new QName(funcItemSecondArgName), foldLeftFirstArgSeq.item(idx));
-
+        			
         			if (idx == 0) {                    
         				inlineFunctionVarMap.put(new QName(funcItemFirstArgName), foldLeftBaseVal);
         			}
         			else {
         				inlineFunctionVarMap.put(new QName(funcItemFirstArgName), evalResult);                   
-        			}
+        			}        			
+        			
+        			inlineFunctionVarMap.put(new QName(funcItemSecondArgName), foldLeftFirstArgSeq.item(idx));
 
         			evalResult = inlineFuncXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
@@ -199,15 +199,14 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
         }
         else if ((elemFunction != null) && (transformerImpl != null)) {        						
         	for (int idx = 0; idx < foldLeftFirstArgSeq.size(); idx++) {
-        		ResultSequence argSequence = new ResultSequence();
-
-        		argSequence.add(foldLeftFirstArgSeq.item(idx));
+        		ResultSequence argSequence = new ResultSequence();        		        		        		
         		if (idx == 0) {                        				    				    				
         			argSequence.add(foldLeftBaseVal);
         		}
         		else {
         			argSequence.add(evalResult);    				                   
-        		}
+        		}        		        		
+        		argSequence.add(foldLeftFirstArgSeq.item(idx));
 
         		evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
         	}			

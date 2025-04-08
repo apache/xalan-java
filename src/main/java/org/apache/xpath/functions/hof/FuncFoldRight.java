@@ -175,9 +175,9 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
         																								XPath.SELECT, null);              
         		for (int idx = foldRightFirstArgSeq.size() - 1; idx >= 0; idx--) {
         			Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
-
+        			
         			inlineFunctionVarMap.put(new QName(funcItemFirstArgName), foldRightFirstArgSeq.item(idx));
-
+        			
         			if (idx == (foldRightFirstArgSeq.size() - 1)) {                    
         				inlineFunctionVarMap.put(new QName(funcItemSecondArgName), foldRightBaseVal);
         			}
@@ -200,9 +200,8 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
         }
         else if ((elemFunction != null) && (transformerImpl != null)) {
            for (int idx = foldRightFirstArgSeq.size() - 1; idx >= 0; idx--) {
-        	   ResultSequence argSequence = new ResultSequence();        	           	   
-        	   
-        	   argSequence.add(foldRightFirstArgSeq.item(idx));        	   
+        	   ResultSequence argSequence = new ResultSequence();        	   
+        	   argSequence.add(foldRightFirstArgSeq.item(idx));        	           	   
         	   if (idx == (foldRightFirstArgSeq.size() - 1)) {        		   
    				   argSequence.add(foldRightBaseVal);   				   
         	   }
