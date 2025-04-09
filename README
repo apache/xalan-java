@@ -17,7 +17,7 @@
 
 Copyright 1999-2025 The Apache Software Foundation
 
-Document last modified : 2025-04-08
+Document last modified : 2025-04-09
 
 Authors:
    Gary Gregory <ggregory@apache.org>
@@ -59,16 +59,16 @@ This produces Maven build output with trailing information like following:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXsl3Tests
-[INFO] Tests run: 988, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 23.096 s - in org.apache.xalan.tests.main.AllXsl3Tests
+[INFO] Tests run: 991, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 36.01 s - in org.apache.xalan.tests.main.AllXsl3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 988, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 991, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  45.784 s
+[INFO] Total time:  01:44 min
 
 To run Xalan-J's XSL 3 processor for invoking an XSL stylesheet transformation, the jar file xalan-java-3.0.1.jar and other 
 jar files available within 'libs' folder need to be made available on Java run-time's classpath.   
