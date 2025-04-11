@@ -47,7 +47,7 @@ import xml.xpath31.processor.types.XSString;
  */
 public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 
-	private static final long serialVersionUID = -3027484379104675428L;
+	static final long serialVersionUID = -3027484379104675428L;
 	
 	/**
 	 * The "select" expression.
@@ -172,7 +172,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	}
 	
 	/**
-	 * Run an XSL xsl:try transformation.
+	 * Run an xsl:try transformation.
 	 *
 	 * @param transformer non-null reference to the the current transform-time state.
 	 *
@@ -235,12 +235,12 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
     			ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false);
 	    	}
 	    	catch (TransformerException ex) {
-				// This XSL dynamic exception may have a suitable xsl:catch element 
-	    		// handler. If such a xsl:catch element is available we'll evaluate 
+				// This XSL run-time exception may have a suitable xsl:catch element 
+	    		// handler. If such a xsl:catch element is available, we'll evaluate 
 	    		// that xsl:catch element, otherwise XSL transformation processing 
 	    		// shall terminate with this exception.
 	    		
-	    		handleXslExceptionWithCatch(transformer, xctxt, ex);
+	    		handleExceptionWithXslCatch(transformer, xctxt, ex);
 			}
 	    	catch (SAXException ex) {
 	    		throw new TransformerException(ex.getMessage(), srcLocator);
@@ -250,6 +250,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    	// An XSL processing specified by xsl:try element is
 	    	// been done by xsl:try element's contained sequence
 	    	// constructor.
+	    	
 	    	try {	    		
 	    		for (ElemTemplateElement t = this.m_firstChild; t != null;
 	    																t = t.m_nextSibling) 
@@ -262,12 +263,12 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    		}
 	    	}
 	    	catch (TransformerException ex) {
-	    		// This XSL dynamic exception may have a suitable xsl:catch element 
-	    		// handler. If such a xsl:catch element is available we'll evaluate 
+	    		// This XSL run-time exception may have a suitable xsl:catch element 
+	    		// handler. If such a xsl:catch element is available, we'll evaluate 
 	    		// that xsl:catch element, otherwise XSL transformation processing 
 	    		// shall terminate with this exception.
 	    		
-				handleXslExceptionWithCatch(transformer, xctxt, ex);
+				handleExceptionWithXslCatch(transformer, xctxt, ex);
 			}
 	    }
 	}
@@ -296,14 +297,13 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 
 	@Override
 	public Expression getExpression() {
-		// TODO Auto-generated method stub
+		// NO OP
 		return null;
 	}
 
 	@Override
 	public void setExpression(Expression exp) {
-		// TODO Auto-generated method stub
-
+		// NO OP
 	}
 	
 	/**
@@ -320,50 +320,64 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	 * @param ex							An XSL run-time TransformerException object. 
 	 * @throws TransformerException
 	 */
-	private void handleXslExceptionWithCatch(TransformerImpl transformer, XPathContext xctxt, 
+	private void handleExceptionWithXslCatch(TransformerImpl transformer, XPathContext xctxt, 
 																			    TransformerException ex) throws TransformerException {
 		
-		String errMesg = ex.getMessage();				
-		int colonIdx = errMesg.indexOf(':');
-		String errCodeStr = errMesg.substring(colonIdx + 1);
-		colonIdx = errCodeStr.indexOf(':');
-		if (colonIdx != -1) {
-		   errCodeStr = (errCodeStr.substring(0, colonIdx)).trim();
-		}
-		else {
-		   colonIdx = errMesg.indexOf(':');
-		   errCodeStr = (errMesg.substring(0, colonIdx)).trim();
-		}
+		Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
 		
-		ElemCatch xslDesiredCatchElem = getXslCatchToHandleException(transformer, xctxt, errCodeStr, this);
+		QName errCodeKey = new QName(Constants.XSL_ERROR_NAMESACE, Constants.XSL_ERROR_CODE);
+		QName errDescKey = new QName(Constants.XSL_ERROR_NAMESACE, Constants.XSL_ERROR_DESCRIPTION);
+		QName errLineNumKey = new QName(Constants.XSL_ERROR_NAMESACE, Constants.XSL_ERROR_LINE_NUMBER);
+		QName errColNumKey = new QName(Constants.XSL_ERROR_NAMESACE, Constants.XSL_ERROR_COLUMN_NUMBER);
 		
-		if (xslDesiredCatchElem != null) {
-			colonIdx = errMesg.indexOf(':');
-			String errMesg2 = errMesg.substring(colonIdx + 1);
-			colonIdx = errMesg2.indexOf(':');
-			errMesg2 = (errMesg2.substring(colonIdx + 1)).trim();
-			
-			// Set variables err:code, err:description, err:line-number, 
-			// err:column-number within XPath evaluation context.				
-			Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
-			QName varqName = new QName(Constants.XSL_ERROR_NAMESACE, Constants.XSL_ERROR_CODE);
-			xpathVarMap.put(varqName, new XSString(errCodeStr));
-			varqName = new QName(Constants.XSL_ERROR_NAMESACE, Constants.XSL_ERROR_DESCRIPTION);
-			xpathVarMap.put(varqName, new XSString(errMesg2));				
-			SourceLocator srcLocator2 = ex.getLocator();
-			int errLineNum = srcLocator2.getLineNumber();
-			int errColNum = srcLocator2.getColumnNumber();
-			varqName = new QName(Constants.XSL_ERROR_NAMESACE, Constants.XSL_ERROR_LINE_NUMBER);
-			xpathVarMap.put(varqName, new XSInteger(String.valueOf(errLineNum)));
-			varqName = new QName(Constants.XSL_ERROR_NAMESACE, Constants.XSL_ERROR_COLUMN_NUMBER);
-			xpathVarMap.put(varqName, new XSInteger(String.valueOf(errColNum)));
-			
-			xctxt.setSAXLocator(xslDesiredCatchElem);
-			transformer.setCurrentElement(xslDesiredCatchElem);
-			xslDesiredCatchElem.execute(transformer);
+		try {
+			String errMesg = ex.getMessage();				
+			int colonIdx = errMesg.indexOf(':');
+			String errCodeStr = errMesg.substring(colonIdx + 1);
+			colonIdx = errCodeStr.indexOf(':');
+			if (colonIdx != -1) {
+				errCodeStr = (errCodeStr.substring(0, colonIdx)).trim();
+			}
+			else {
+				colonIdx = errMesg.indexOf(':');
+				errCodeStr = (errMesg.substring(0, colonIdx)).trim();
+			}
+
+			ElemCatch elemCatch = getXslCatchElemToHandleException(transformer, xctxt, errCodeStr, this);						
+
+			if (elemCatch != null) {
+				colonIdx = errMesg.indexOf(':');
+				String errMesg2 = errMesg.substring(colonIdx + 1);
+				colonIdx = errMesg2.indexOf(':');
+				errMesg2 = (errMesg2.substring(colonIdx + 1)).trim();
+
+				// Set variables err:code, err:description, err:line-number, 
+				// err:column-number within XPath evaluation context.				
+				xpathVarMap.put(errCodeKey, new XSString(errCodeStr));
+				xpathVarMap.put(errDescKey, new XSString(errMesg2));				
+				SourceLocator srcLocator2 = ex.getLocator();
+				int errLineNum = srcLocator2.getLineNumber();
+				int errColNum = srcLocator2.getColumnNumber();
+				xpathVarMap.put(errLineNumKey, new XSInteger(String.valueOf(errLineNum)));
+				xpathVarMap.put(errColNumKey, new XSInteger(String.valueOf(errColNum)));
+
+				// Run xsl:catch transformation
+				xctxt.setSAXLocator(elemCatch);
+				transformer.setCurrentElement(elemCatch);
+				elemCatch.execute(transformer);
+			}
+			else {
+				throw ex;
+			}
 		}
-		else {
-			throw ex;
+		finally {
+			// Remove the variable bindings within XML err: namespace 
+			// that were created for xsl:catch processing, from XPath 
+			// expression context.
+			xpathVarMap.remove(errCodeKey);
+			xpathVarMap.remove(errDescKey);
+			xpathVarMap.remove(errLineNumKey);
+			xpathVarMap.remove(errColNumKey);
 		}
 	}
 	
@@ -379,7 +393,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	 *                              needs to be found for error recovery.
 	 * @return
 	 */
-	private ElemCatch getXslCatchToHandleException(TransformerImpl transformer, XPathContext xctxt, 
+	private ElemCatch getXslCatchElemToHandleException(TransformerImpl transformer, XPathContext xctxt, 
 			                                                                                  String errCodeStr, ElemTry elemTry) {
 		
 		ElemCatch xslDesiredCatchElem = null;
@@ -392,26 +406,38 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 				QName[] qNameArr = elemCatch.getErrors();
 				if ((qNameArr == null) || ((qNameArr.length == 1) && "*".equals((qNameArr[0]).getLocalName()))) {
 					// This xsl:catch element doesn't have an attribute "errors", 
-					// or an attribute "errors" value is "*". That is, this xsl:catch element 
-					// is a suitable recovery handler for this exception.
-					xslDesiredCatchElem = elemCatch; 					
+					// or an attribute "errors" value is "*". Therefore, this xsl:catch 
+					// element is a suitable recovery handler for this exception.
+					
+					xslDesiredCatchElem = elemCatch;
+					
+					break;
 				}
 				else {
 					for (int idx = 0; idx < qNameArr.length; idx++) {
 						QName xslCatchErrQName = qNameArr[idx];
 						if (errCodeStr.equals(xslCatchErrQName.getLocalName()) && 
-								(Constants.XSL_ERROR_NAMESACE).equals(xslCatchErrQName.getNamespace())) {
+																		(Constants.XSL_ERROR_NAMESACE).equals(xslCatchErrQName.getNamespace())) {
 							// An error code of an XPath dynamic error, matches 
-							// with this xsl:catch's error declaration.
+							// with this xsl:catch's error declaration. Therefore, this 
+							// xsl:catch element is a suitable recovery handler for this 
+							// exception.
+							
 							xslDesiredCatchElem = elemCatch;
+							
+							break;
 						}
 					}
 				}
 			}
+			
+			if (xslDesiredCatchElem != null) {
+			   break;	
+			}
 		}
 
 		if (xslDesiredCatchElem == null) {
-			// None of xsl:catch elements within this xsl:try element
+			// None of the xsl:catch elements within this xsl:try element
 			// were able to process the recovery of an XSL dynamic
 			// exception. We'll attempt to find an xsl:catch element if 
 			// available within this xsl:try's ancestor scope (i.e, any other 
@@ -423,7 +449,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 			}
 			
 			if ((parentElem != null) && (parentElem instanceof ElemTry)) {
-				xslDesiredCatchElem = getXslCatchToHandleException(transformer, xctxt, errCodeStr, (ElemTry)parentElem);
+				xslDesiredCatchElem = getXslCatchElemToHandleException(transformer, xctxt, errCodeStr, (ElemTry)parentElem);
 			}
 		}
 		

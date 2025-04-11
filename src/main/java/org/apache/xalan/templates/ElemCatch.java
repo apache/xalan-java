@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  */
 public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 
-	private static final long serialVersionUID = -1806774621639027295L;
+	static final long serialVersionUID = -1806774621639027295L;
 	
 	/**
 	 * The value of the "errors" attribute.
@@ -166,7 +166,7 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	}
 	
 	/**
-	 * Run an XSL xsl:catch transformation.
+	 * Run an xsl:catch transformation.
 	 *
 	 * @param transformer non-null reference to the the current transform-time state.
 	 *
@@ -180,7 +180,7 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	    
 	    int contextNode = xctxt.getContextNode();
 	    
-	    ElemTemplateElement parentElem = this.getParentElem();
+	    ElemTemplateElement parentElem = getParentElem();
 	    if (!(parentElem instanceof ElemTry)) {
 	    	throw new TransformerException("XTSE3150 : An xsl:catch element can only occur as child of xsl:try element.", srcLocator);
 	    }
@@ -191,6 +191,9 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 		}
 	    
 	    if (m_selectExpression != null) {
+	    	// An XSL processing specified by xsl:catch element is
+	    	// been done by xsl:catch element's 'select' attribute.
+	    	
 	    	if (m_vars != null) {
     			m_selectExpression.fixupVariables(m_vars, m_globals_size);
     		}
@@ -206,16 +209,20 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 			} 
 			catch (TransformerException ex) {
 				throw new javax.xml.transform.TransformerException("XPTY0004 : An exception occured while serializing xsl:catch's evaluation "
-						                                                   + "to an XSL result tree, with following exception trace : " + 
+						                                                        + "to an XSL result tree, with following exception trace : " + 
 						                                                        ex.getMessage() + ".", srcLocator);	
 			} 
 			catch (SAXException ex) {
 				throw new javax.xml.transform.TransformerException("XPTY0004 : An exception occured while serializing xsl:catch's evaluation "
-                                                                           + "to an XSL result tree, with following exception trace : " + 
+                                                                               + "to an XSL result tree, with following exception trace : " + 
                                                                                ex.getMessage() + ".", srcLocator);		
 			}
 	    }
 	    else {
+	    	// An XSL processing specified by xsl:catch element is
+	    	// been done by xsl:catch element's contained sequence
+	    	// constructor.
+	    	
 	    	for (ElemTemplateElement t = this.m_firstChild; t != null;
 	    															t = t.m_nextSibling) 
 	    	{
