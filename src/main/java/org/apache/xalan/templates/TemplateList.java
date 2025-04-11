@@ -408,16 +408,16 @@ public class TemplateList implements java.io.Serializable
 	  }
 	  
 	  if (templateModeStr != null) {
-		  patternTableKeyStr = (patternTableKeyStr + Constants.XSL3_PATTERN_TABLE_DELIM + templateModeStr);  
+		  patternTableKeyStr = (patternTableKeyStr + Constants.XSL_PATTERN_TABLE_DELIM + templateModeStr);  
 	  }
 	  else {
-		  patternTableKeyStr = (patternTableKeyStr + Constants.XSL3_PATTERN_TABLE_DELIM + "mode_unspecified");		  
+		  patternTableKeyStr = (patternTableKeyStr + Constants.XSL_PATTERN_TABLE_DELIM + "mode_unspecified");		  
 	  }
 	  
 	  double templatePriority = template.getPriority();
 	  String templatePriorityStr = String.valueOf(templatePriority);
 	  
-	  patternTableKeyStr = (patternTableKeyStr + Constants.XSL3_PATTERN_TABLE_DELIM + templatePriorityStr);
+	  patternTableKeyStr = (patternTableKeyStr + Constants.XSL_PATTERN_TABLE_DELIM + templatePriorityStr);
 	  
 	  m_patternTable.put(patternTableKeyStr, association);
   }

@@ -90,10 +90,18 @@ public class XPath implements Serializable, ExpressionOwner
   private String m_arrowop_remaining_xpath_expr_str = null;
   
   /**
-   * This class field with boolean true value denotes, that this XPath 
-   * expression corresponds to quantified expression's satisfies clause. 
+   * This class field with boolean value 'true' denotes, that 
+   * this XPath expression corresponds to quantified expression's 
+   * satisfies clause. 
    */
   private boolean m_is_quantified_expr;
+  
+  /**
+   * This class field with boolean value 'true' denotes, that 
+   * this XPath expression corresponds to xsl:try element 
+   * processing. 
+   */
+  private boolean m_is_xsltry_processing;
 
   /**
    * initial the function table
@@ -859,7 +867,7 @@ public class XPath implements Serializable, ExpressionOwner
 		  }
 		  te.setLocator(this.getLocator());
 		  ErrorListener el = xctxt.getErrorListener();
-		  if(null != el && !m_is_quantified_expr)
+		  if(null != el && !m_is_quantified_expr && !m_is_xsltry_processing)
 		  {
 			  el.error(te);
 		  }
@@ -902,6 +910,14 @@ public class XPath implements Serializable, ExpressionOwner
 	  }
 
 	  return result;
+  }
+
+  public void setIsXslTryProcessing(boolean bool) {
+	  m_is_xsltry_processing = bool;
+  }
+  
+  public boolean getIsXslTryProcessing() {
+	  return m_is_xsltry_processing; 
   }
 
 }

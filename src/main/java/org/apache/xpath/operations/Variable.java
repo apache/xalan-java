@@ -25,9 +25,12 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemCatch;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -43,13 +46,17 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class Variable extends Expression implements PathComponent
 {
-    static final long serialVersionUID = -4334975375609297049L;
-  /** Tell if fixupVariables was called.
-   *  @serial   */
+  
+  static final long serialVersionUID = -4334975375609297049L;
+  
+  /**
+   * Tell if fixupVariables was called.
+   */
   private boolean m_fixUpWasCalled = false;
 
-  /** The qualified name of the variable.
-   *  @serial   */
+  /**
+   * The qualified name of the variable.
+   */
   protected QName m_qname;
   
   /**
@@ -133,6 +140,32 @@ public class Variable extends Expression implements PathComponent
 			  }
 
 			  return;
+		  }
+	  }
+	  
+	  ExpressionNode exprOwnerNode = getExpressionOwner();
+	  boolean isVariableRefInXslCatch = false;
+	  if (exprOwnerNode instanceof ElemCatch) {
+		  isVariableRefInXslCatch = true; 
+	  }
+	  else {
+		  while (exprOwnerNode != null) {
+			  exprOwnerNode = exprOwnerNode.exprGetParent();
+			  if (exprOwnerNode instanceof ElemCatch) {
+				  isVariableRefInXslCatch = true;
+				  break;
+			  }
+		  }
+	  }
+	  
+	  if (isVariableRefInXslCatch) {
+		  java.lang.String varLocalName = m_qname.getLocalName();
+		  java.lang.String nsUri = m_qname.getNamespaceURI();
+		  if ((Constants.XSL_ERROR_NAMESACE).equals(nsUri)) {
+			 if (Constants.XSL_ERROR_CODE.equals(varLocalName) || Constants.XSL_ERROR_DESCRIPTION.equals(varLocalName) || 
+					 Constants.XSL_ERROR_LINE_NUMBER.equals(varLocalName) || Constants.XSL_ERROR_COLUMN_NUMBER.equals(varLocalName)) {
+				 return; 
+			 }
 		  }
 	  }
 

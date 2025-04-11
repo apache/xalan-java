@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <error location="line : 18, column : 40">
+    <errCode>XPTY0004</errCode>
+    <reason>Number of arguments required for dynamic call to function is 2. Number of arguments provided 1.</reason>
+  </error>
+</result>

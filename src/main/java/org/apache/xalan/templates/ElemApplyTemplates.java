@@ -733,10 +733,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  }
 		  
 		  String keyValueStr = (String)hashTableKeyObj;	  
-		  String[] strArray1 = keyValueStr.split(Constants.XSL3_PATTERN_TABLE_DELIM);
+		  String[] strArray1 = keyValueStr.split(Constants.XSL_PATTERN_TABLE_DELIM);
 		  if (keyValueStr.startsWith(".[") && (strArray1.length == 3)) {
 			  String xslTemplatePriorityStr = strArray1[2];			  
-			  String xpathStr = keyValueStr.substring(0, keyValueStr.indexOf(Constants.XSL3_PATTERN_TABLE_DELIM));
+			  String xpathStr = keyValueStr.substring(0, keyValueStr.indexOf(Constants.XSL_PATTERN_TABLE_DELIM));
 			  xpathStr = xpathStr.substring(2);
 			  xpathStr = xpathStr.substring(0, xpathStr.length() - 1);
 			  
@@ -797,7 +797,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  }
 			  
 			  String keyValueStr = (String)hashTableKeyObj;			  
-			  String[] strArray1 = keyValueStr.split(Constants.XSL3_PATTERN_TABLE_DELIM);
+			  String[] strArray1 = keyValueStr.split(Constants.XSL_PATTERN_TABLE_DELIM);
 			  if (".".equals(strArray1[0]) && (strArray1.length == 3)) {
 				 String xslTemplatePriorityStr = strArray1[2];
 				 TemplateDefnPriorityPair templateDefnPriorityPair = new TemplateDefnPriorityPair(keyValueStr, elemTemplate, 

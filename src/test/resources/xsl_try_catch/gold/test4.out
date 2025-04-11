@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <error location="line : 18, column : 32">
+    <errCode>FOAR0001</errCode>
+    <reason>An integer division by zero error.</reason>
+  </error>
+</result>

@@ -124,9 +124,13 @@ public class Constants extends org.apache.xml.utils.Constants
   
   ELEMNAME_FORK = 107,
   
-  ELEMNAME_RESULTDOCUMENT = 108;
+  ELEMNAME_RESULTDOCUMENT = 108,
   
-  // next available number : 109
+  ELEMNAME_TRY = 109,
+  
+  ELEMNAME_CATCH = 110;
+  
+  // next available number : 111
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -175,6 +179,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_MERGE_SOURCE_STRING = "merge-source",
       ELEMNAME_MERGE_KEY_STRING = "merge-key",
       ELEMNAME_MERGE_ACTION_STRING = "merge-action",
+      ELEMNAME_TRY_STRING = "try",
+      ELEMNAME_CATCH_STRING = "catch",
       ELEMNAME_ANALYZESTRING_STRING = "analyze-string",
       ELEMNAME_MATCHINGSUBSTRING_STRING = "matching-substring",
       ELEMNAME_NONMATCHINGSUBSTRING_STRING = "non-matching-substring",
@@ -455,9 +461,15 @@ public class Constants extends org.apache.xml.utils.Constants
                              ATTRVAL_NAN = "NaN",
                              DEFAULT_DECIMAL_FORMAT = "#default";
 
-  public static final String XSL3_PATTERN_TABLE_DELIM = "#####";
+  public static final String XSL_PATTERN_TABLE_DELIM = "#####";
   
-  /** temp dummy         */
-  public static final String ATTRNAME_XXXX = "XXXX";
+  /** XSLT 3.0 xsl:try and xsl:catch processing constants */
+  
+  public static final String XSL_ERROR_NAMESACE = "http://www.w3.org/2005/xqt-errors";
+  public static final String XSL_ERROR_CODE = "code";
+  public static final String XSL_ERROR_DESCRIPTION = "description";
+  public static final String XSL_ERROR_LINE_NUMBER = "line-number";
+  public static final String XSL_ERROR_COLUMN_NUMBER = "column-number";
+  
   
 }

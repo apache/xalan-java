@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.processor;
 
 import java.util.HashMap;
@@ -28,6 +25,7 @@ import org.apache.xalan.templates.ElemApplyImport;
 import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.ElemCallTemplate;
+import org.apache.xalan.templates.ElemCatch;
 import org.apache.xalan.templates.ElemChoose;
 import org.apache.xalan.templates.ElemComment;
 import org.apache.xalan.templates.ElemCopy;
@@ -68,6 +66,7 @@ import org.apache.xalan.templates.ElemSourceDocument;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
+import org.apache.xalan.templates.ElemTry;
 import org.apache.xalan.templates.ElemUnknown;
 import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.ElemVariable;
@@ -229,6 +228,11 @@ public class XSLTSchema extends XSLTElementDef
                                               XSLTAttributeDef.T_QNAMES,
                                               false, false, XSLTAttributeDef.ERROR);
     
+    // Optional.
+    // xsl:catch      
+    XSLTAttributeDef errorsAttrOpt = new XSLTAttributeDef(null, "errors", XSLTAttributeDef.T_QNAMES,
+                                                                                    false, false, XSLTAttributeDef.ERROR);
+    
     // xsl:element, xsl:attribute                                           
     XSLTAttributeDef typeAttrOpt = new XSLTAttributeDef(null, "type",
             										XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
@@ -303,7 +307,8 @@ public class XSLTSchema extends XSLTElementDef
                                                   XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
 
     // Optional.                                          
-    // xsl:variable, xsl:value-of, xsl:param, xsl:with-param, xsl:attribute, xsl:break, xsl:on-completion, xsl:sequence                                       
+    // xsl:variable, xsl:value-of, xsl:param, xsl:with-param, xsl:attribute, xsl:break, 
+    // xsl:on-completion, xsl:sequence, xsl:try, xsl:catch                                       
     XSLTAttributeDef selectAttrOpt = new XSLTAttributeDef(null, "select",
                                        XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
@@ -326,13 +331,8 @@ public class XSLTSchema extends XSLTElementDef
     // Default: "."
     // xsl:sort                                        
     XSLTAttributeDef selectAttrDefDot = new XSLTAttributeDef(null, "select",
-                                          XSLTAttributeDef.T_EXPR, false,XSLTAttributeDef.ERROR, ".");
+                                          XSLTAttributeDef.T_EXPR, false,XSLTAttributeDef.ERROR, ".");    
     
-    // Optional.
-    // Default: "no"
-    // xsl:source-document
-    XSLTAttributeDef streamableAttr = new XSLTAttributeDef(null, "streamable",
-                                          XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     // xsl:key                                      
     XSLTAttributeDef matchAttrRequired = new XSLTAttributeDef(null, "match",
                                            XSLTAttributeDef.T_PATTERN, true, false,XSLTAttributeDef.ERROR);
@@ -347,12 +347,23 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef modeAttr = new XSLTAttributeDef(null, "mode",
                                      XSLTAttributeDef.T_QNAME, false, false,XSLTAttributeDef.ERROR);
    
-    XSLTAttributeDef spaceAttr =
-      new XSLTAttributeDef(Constants.S_XMLNAMESPACEURI, "space", false, false, false, XSLTAttributeDef.WARNING,
-                           "default", Constants.ATTRVAL_STRIP, "preserve",
-                           Constants.ATTRVAL_PRESERVE);
-                           
-                         
+    XSLTAttributeDef spaceAttr = new XSLTAttributeDef(Constants.S_XMLNAMESPACEURI, "space", false, false, 
+    		                             false, XSLTAttributeDef.WARNING,
+                                         "default", Constants.ATTRVAL_STRIP, "preserve",
+                                         Constants.ATTRVAL_PRESERVE);
+    
+    // Optional.
+    // Default: "no"
+    // xsl:source-document
+    XSLTAttributeDef streamableAttr = new XSLTAttributeDef(null, "streamable",
+                                          XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional.
+    // Default: "yes"
+    // xsl:try
+    XSLTAttributeDef rollbackOutputAttrOpt = new XSLTAttributeDef(null, "rollback-output",
+                                          					XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
+                                                    
     XSLTAttributeDef spaceAttrLiteral =
       new XSLTAttributeDef(Constants.S_XMLNAMESPACEURI, "space", 
                                           XSLTAttributeDef.T_URL, false, true,XSLTAttributeDef.ERROR);
@@ -471,13 +482,13 @@ public class XSLTSchema extends XSLTElementDef
                                                           XSLTAttributeDef.T_CDATA, false, false, 
                                                           XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[41];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[42];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[42];
+    XSLTElementDef[] templateElements = new XSLTElementDef[43];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[44];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[44];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[42];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[44];
     
-    XSLTElementDef[] charTemplateElements = new XSLTElementDef[23];
+    XSLTElementDef[] charTemplateElements = new XSLTElementDef[25];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
                                      templateElements /* elements */,
@@ -638,6 +649,20 @@ public class XSLTSchema extends XSLTElementDef
 								             new XSLTAttributeDef[]{ spaceAttr }, 
 								             new ProcessorTemplateElem(),
 								             ElemMergeAction.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslTry = new XSLTElementDef(this,
+								             Constants.S_XSLNAMESPACEURL, "try",
+								             null /*alias */, templateElements,
+								             new XSLTAttributeDef[]{ selectAttrOpt, rollbackOutputAttrOpt, spaceAttr }, 
+								             new ProcessorTemplateElem(),
+								             ElemTry.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslCatch = new XSLTElementDef(this,
+								             Constants.S_XSLNAMESPACEURL, "catch",
+								             null /*alias */, templateElements,
+								             new XSLTAttributeDef[]{ selectAttrOpt, errorsAttrOpt, spaceAttr }, 
+								             new ProcessorTemplateElem(),
+								             ElemCatch.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslAnalyzeString = new XSLTElementDef(this,
                                                 Constants.S_XSLNAMESPACEURL, "analyze-string",
@@ -865,6 +890,8 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslMergeSource;
     templateElements[i++] = xslMergeKey;
     templateElements[i++] = xslMergeAction;
+    templateElements[i++] = xslTry;
+    templateElements[i++] = xslCatch;
     templateElements[i++] = xslMatchingSubstring;
     templateElements[i++] = xslNonMatchingSubstring;
     templateElements[i++] = xslIterate;
@@ -919,6 +946,8 @@ public class XSLTSchema extends XSLTElementDef
     charTemplateElements[i++] = xslMergeSource;
     charTemplateElements[i++] = xslMergeKey;
     charTemplateElements[i++] = xslMergeAction;
+    charTemplateElements[i++] = xslTry;
+    charTemplateElements[i++] = xslCatch;
     charTemplateElements[i++] = xslValueOf;
     charTemplateElements[i++] = xslCopyOf;
     charTemplateElements[i++] = xslNumber;

@@ -80,6 +80,7 @@ import org.apache.xalan.tests.xslt3.XslSequenceInstTests;
 import org.apache.xalan.tests.xslt3.XslSourceDocumentTests;
 import org.apache.xalan.tests.xslt3.XslTemplateAttributeAsTests;
 import org.apache.xalan.tests.xslt3.XslTemplateTests;
+import org.apache.xalan.tests.xslt3.XslTryCatchTests;
 import org.apache.xalan.tests.xslt3.XslVariableAttributeAsTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -116,7 +117,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XsGregorianTypeTests.class, XslMergeTests.class, XslSourceDocumentTests.class,
                 XslForkTests.class, XslResultDocumentTests.class, XPathIdivTests.class,
                 FnTransformTests.class, FnStartsWithEndsWithTests.class, FnContainsTests.class,
-                FnSubstringBeforeAndAfterTests.class })
+                FnSubstringBeforeAndAfterTests.class, XslTryCatchTests.class })
 public class Xsl3TestSuite2 {
 
 }
