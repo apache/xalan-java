@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+   <xs:element name="info">
+      <xs:complexType>
+         <xs:sequence> 
+		    <xs:element name="a" type="aType"/>
+	     </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   
+   <xs:complexType name="aType">
+      <xs:simpleContent>
+		 <xs:extension base="xs:string">
+		    <xs:attribute name="val">
+		       <xs:simpleType>
+				  <xs:restriction base="xs:integer">
+				    <xs:maxInclusive value="10"/>
+				  </xs:restriction>
+	           </xs:simpleType>
+		    </xs:attribute>
+		 </xs:extension>
+	  </xs:simpleContent>
+   </xs:complexType>
+   
+   <xs:element name="aList">
+	  <xs:complexType>
+	    <xs:sequence>	     
+	  	   <xs:element name="a" type="aType" minOccurs="3" maxOccurs="3"/> 			  
+	    </xs:sequence>
+	    <xs:attribute name="id" type="xs:integer"/>
+	  </xs:complexType>
+   </xs:element>
+
+</xs:schema>

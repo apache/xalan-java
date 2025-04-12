@@ -138,5 +138,29 @@ public class XslTryCatchTests extends XSLTransformTestsUtil {
          
          runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslTryCatchTest10() {
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
+         
+         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";
+         
+         setXmlValidationProperty(true);
+         
+         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslTryCatchTest11() {
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
+         
+         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
+         
+         setXmlValidationProperty(true);
+         
+         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

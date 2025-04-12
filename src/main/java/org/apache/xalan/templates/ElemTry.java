@@ -346,15 +346,25 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 			ElemCatch elemCatch = getXslCatchElemToHandleException(transformer, xctxt, errCodeStr, this);						
 
 			if (elemCatch != null) {
-				colonIdx = errMesg.indexOf(':');
-				String errMesg2 = errMesg.substring(colonIdx + 1);
-				colonIdx = errMesg2.indexOf(':');
-				errMesg2 = (errMesg2.substring(colonIdx + 1)).trim();
-
+				String errMesg2 = null;				
+				if (errCodeStr.length() > 8) {
+					colonIdx = errMesg.indexOf(':');
+					errCodeStr = (errMesg.substring(0, colonIdx)).trim();
+					errMesg2 = (errMesg.substring(colonIdx + 1)).trim();
+				}
+				else {
+					colonIdx = errMesg.indexOf(':');
+					errMesg2 = errMesg.substring(colonIdx + 1);
+					colonIdx = errMesg2.indexOf(':');
+					errMesg2 = (errMesg2.substring(colonIdx + 1)).trim();
+				}
+				
+				errMesg = errMesg2; 
+				
 				// Set variables err:code, err:description, err:line-number, 
 				// err:column-number within XPath evaluation context.				
 				xpathVarMap.put(errCodeKey, new XSString(errCodeStr));
-				xpathVarMap.put(errDescKey, new XSString(errMesg2));				
+				xpathVarMap.put(errDescKey, new XSString(errMesg));				
 				SourceLocator srcLocator2 = ex.getLocator();
 				int errLineNum = srcLocator2.getLineNumber();
 				int errColNum = srcLocator2.getColumnNumber();
