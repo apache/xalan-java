@@ -33,10 +33,8 @@ import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * A base class for arithmetic operations +, -, div & mod.
- * 
- * This class has been defined, to support XSLT 3 
- * implementation.
+ * A class providing utility methods for arithmetic operations 
+ * +, -, div & mod, to support Xalan-J's XSLT 3.0 implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
@@ -132,8 +130,11 @@ public class ArithmeticOperation extends Operation {
 			else if (opSymbol.equals(OP_SYMBOL_MULT)) {
 			   result = new XSDouble(lDbl * rDbl);				
 			}
-			else if (opSymbol.equals(OP_SYMBOL_DIV)) {
-			   result = new XSDecimal(BigDecimal.valueOf(lDbl.doubleValue() / rDbl.doubleValue()));
+			else if (opSymbol.equals(OP_SYMBOL_DIV)) {			   
+			   double lDouble = lDbl.doubleValue();
+			   double rDouble = rDbl.doubleValue();
+			   
+			   result = doubleDiv(lDouble, rDouble);
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MOD)) {
 			   result = new XSDecimal(BigDecimal.valueOf(lDbl.doubleValue() % rDbl.doubleValue()));	
@@ -182,8 +183,8 @@ public class ArithmeticOperation extends Operation {
 			else if (opSymbol.equals(OP_SYMBOL_MULT)) {
 			   result = new XSDouble(lDouble * rDouble);				
 			}
-			else if (opSymbol.equals(OP_SYMBOL_DIV)) {
-			   result = new XSDouble(lDouble / rDouble);	
+			else if (opSymbol.equals(OP_SYMBOL_DIV)) {			   
+			   result = doubleDiv(lDouble, rDouble);
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MOD)) {
 			   result = new XSDouble(lDouble % rDouble);	
@@ -267,6 +268,36 @@ public class ArithmeticOperation extends Operation {
 		}
 
 		throw new javax.xml.transform.TransformerException(errMesg); 
+	}
+	
+	/**
+	 * Given two double operands for arithmetic division, do the
+	 * division and return the result as an XDM numeric value.
+	 * 
+	 * @param lDouble			division left operand
+	 * @param rDouble           division left operand 
+	 * @return					An XSDouble or XSDecimal result value 
+	 */
+	protected XObject doubleDiv(double lDouble, double rDouble) {
+
+		XObject result = null;
+
+		double resultDbl = (lDouble / rDouble);
+
+		if (resultDbl == Double.POSITIVE_INFINITY) {
+			result = new XSDouble(Double.POSITIVE_INFINITY);
+		}
+		else if (resultDbl == Double.NEGATIVE_INFINITY) {
+			result = new XSDouble(Double.NEGATIVE_INFINITY); 
+		}
+		else if (resultDbl == Double.NaN) {
+			result = new XSDouble(Double.NaN); 
+		}
+		else {
+			result = new XSDecimal(BigDecimal.valueOf(resultDbl));
+		}
+
+		return result;
 	}
 	
 	/**

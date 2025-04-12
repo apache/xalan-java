@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <item>0.33333</item>
+  <item>num : 1, denom : 0 = div_by_zero_err</item>
+  <item>0.66667</item>
+  <item>num : 2, denom : 0 = div_by_zero_err</item>
+</result>

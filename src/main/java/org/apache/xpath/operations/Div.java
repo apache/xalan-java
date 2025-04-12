@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,9 +14,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/*
- * $Id$
  */
 package org.apache.xpath.operations;
 
@@ -50,7 +47,8 @@ import java.lang.String;
  */
 public class Div extends ArithmeticOperation
 {
-   static final long serialVersionUID = 6220756595959798135L;
+   
+  static final long serialVersionUID = 6220756595959798135L;
 
   /**
    * Apply the operation to two operands, and return the result.
@@ -73,7 +71,7 @@ public class Div extends ArithmeticOperation
          java.lang.String rStrVal = ((XSUntyped)right).stringValue();
          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
          
-         result = new XSDouble(lDouble / rDouble);
+         result = doubleDiv(lDouble, rDouble);
      }
      else if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntypedAtomic)) {
          java.lang.String lStrVal = ((XSUntypedAtomic)left).stringValue();
@@ -82,7 +80,7 @@ public class Div extends ArithmeticOperation
          java.lang.String rStrVal = ((XSUntypedAtomic)right).stringValue();
          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
          
-         result = new XSDouble(lDouble / rDouble);
+         result = doubleDiv(lDouble, rDouble);
      }
      else if ((left instanceof XSUntyped) && (right instanceof XSUntypedAtomic)) {
          java.lang.String lStrVal = ((XSUntyped)left).stringValue();
@@ -91,7 +89,7 @@ public class Div extends ArithmeticOperation
          java.lang.String rStrVal = ((XSUntypedAtomic)right).stringValue();
          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
          
-         result = new XSDouble(lDouble / rDouble);
+         result = doubleDiv(lDouble, rDouble);
      }
      else if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntyped)) {
          java.lang.String lStrVal = ((XSUntypedAtomic)left).stringValue();
@@ -100,7 +98,7 @@ public class Div extends ArithmeticOperation
          java.lang.String rStrVal = ((XSUntyped)right).stringValue();
          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
          
-         result = new XSDouble(lDouble / rDouble);
+         result = doubleDiv(lDouble, rDouble);
      }
      else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
     	XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
@@ -131,7 +129,7 @@ public class Div extends ArithmeticOperation
             java.lang.String rStrVal = rNodeSet.str();
             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
             
-            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+            result = doubleDiv(lDouble, rDouble);
          }
      }
      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XNumber)) {
@@ -145,7 +143,7 @@ public class Div extends ArithmeticOperation
             java.lang.String lStrVal = lNodeSet.str();
             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
             
-            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+            result = doubleDiv(lDouble, rDouble);
          }
      }
      else if ((left instanceof XSNumericType) && (right instanceof XMLNodeCursorImpl)) {
@@ -160,7 +158,7 @@ public class Div extends ArithmeticOperation
             java.lang.String rStrVal = rNodeSet.str();
             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
             
-            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+            result = doubleDiv(lDouble, rDouble);
          }
      }
      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XSNumericType)) {
@@ -175,7 +173,7 @@ public class Div extends ArithmeticOperation
             java.lang.String lStrVal = lNodeSet.str();
             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
             
-            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+            result = doubleDiv(lDouble, rDouble);
          }
      }
      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {
@@ -200,7 +198,7 @@ public class Div extends ArithmeticOperation
             rDouble = (Double.valueOf(rStrVal)).doubleValue();
          }
          
-         result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+         result = doubleDiv(lDouble, rDouble);
      }     
      else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
          ResultSequence rsLeft = (ResultSequence)left;          
@@ -213,7 +211,7 @@ public class Div extends ArithmeticOperation
             
             double rDouble = ((XNumber)right).num();
             
-            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+            result = doubleDiv(lDouble, rDouble);
          }
      }
      else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
@@ -227,7 +225,7 @@ public class Div extends ArithmeticOperation
             java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
             double rDouble = (Double.valueOf(rStr)).doubleValue();
             
-            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+            result = doubleDiv(lDouble, rDouble);
          }
      }
      else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
@@ -242,7 +240,7 @@ public class Div extends ArithmeticOperation
             java.lang.String rStrVal = ((XSNumericType)right).stringValue();
             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
             
-            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+            result = doubleDiv(lDouble, rDouble);
          } 
      }
      else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
@@ -257,7 +255,7 @@ public class Div extends ArithmeticOperation
             java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
             double rDouble = (Double.valueOf(rStr)).doubleValue();
             
-            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+            result = doubleDiv(lDouble, rDouble);
          }
      }
      else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
@@ -277,7 +275,7 @@ public class Div extends ArithmeticOperation
          java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
          double rDouble = (Double.valueOf(rStr)).doubleValue();
          
-         result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+         result = doubleDiv(lDouble, rDouble);
      }
      else if (left instanceof ResultSequence) {
     	 ResultSequence rSeq = (ResultSequence)left;
@@ -338,12 +336,16 @@ public class Div extends ArithmeticOperation
      }     
      else {
     	 try {
-            java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
-        	java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);            
-            result = new XSDecimal(BigDecimal.valueOf(Double.valueOf(lStrVal) / Double.valueOf(rStrVal)));
+    		 java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
+    		 java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
+
+    		 double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+    		 double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+
+    		 result = doubleDiv(lDouble, rDouble);
          }
          catch (NumberFormatException ex) {
-        	error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_DIV}); 
+        	 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_DIV}); 
          }
      }
       

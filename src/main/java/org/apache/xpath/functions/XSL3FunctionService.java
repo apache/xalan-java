@@ -620,7 +620,13 @@ public class XSL3FunctionService {
     	
     	if (funcArg instanceof SelfIteratorNoPredicate) {
     		XObject contextItem = xctxt.getXPath3ContextItem();
-    		argStr = XslTransformEvaluationHelper.getStrVal(contextItem); 
+    		if (contextItem != null) {
+    		   argStr = XslTransformEvaluationHelper.getStrVal(contextItem);
+    		}
+    		else {
+    		   XObject argVal = funcArg.execute(xctxt);
+        	   argStr = XslTransformEvaluationHelper.getStrVal(argVal);
+    		}
     	}
     	else {
     		XObject argVal = funcArg.execute(xctxt);
