@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,9 +14,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/*
- * $Id$
  */
 package org.apache.xalan.templates;
 
@@ -40,9 +37,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Implementation of XSLT xsl:template element.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-template
+ * Implementation of XSLT 3.0 xsl:template element.
  * 
  * @xsl.usage advanced
  */
@@ -70,7 +65,7 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public String getPublicId()
   {
-    return m_publicId;
+	  return m_publicId;
   }
 
   /**
@@ -85,7 +80,7 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public String getSystemId()
   {
-    return m_systemId;
+	  return m_systemId;
   }
 
   /**
@@ -95,18 +90,14 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public void setLocaterInfo(SourceLocator locator)
   {
+	  m_publicId = locator.getPublicId();
+	  m_systemId = locator.getSystemId();
 
-    m_publicId = locator.getPublicId();
-    m_systemId = locator.getSystemId();
-
-    super.setLocaterInfo(locator);
+	  super.setLocaterInfo(locator);
   }
 
   /**
    * The owning stylesheet.
-   * (Should this only be put on the template element, to
-   * conserve space?)
-   * @serial
    */
   private Stylesheet m_stylesheet;
 
@@ -118,7 +109,7 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public StylesheetComposed getStylesheetComposed()
   {
-    return m_stylesheet.getStylesheetComposed();
+	  return m_stylesheet.getStylesheetComposed();
   }
 
   /**
@@ -128,7 +119,7 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public Stylesheet getStylesheet()
   {
-    return m_stylesheet;
+	  return m_stylesheet;
   }
 
   /**
@@ -138,7 +129,7 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public void setStylesheet(Stylesheet sheet)
   {
-    m_stylesheet = sheet;
+	  m_stylesheet = sheet;
   }
 
   /**
@@ -148,13 +139,12 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public StylesheetRoot getStylesheetRoot()
   {
-    return m_stylesheet.getStylesheetRoot();
+	  return m_stylesheet.getStylesheetRoot();
   }
 
   /**
    * The match attribute is a Pattern that identifies the source
    * node or nodes to which the rule applies.
-   * @serial
    */
   private XPath m_matchPattern = null;
 
@@ -163,15 +153,14 @@ public class ElemTemplate extends ElemTemplateElement
    * The match attribute is a Pattern that identifies the source
    * node or nodes to which the rule applies. The match attribute
    * is required unless the xsl:template element has a name
-   * attribute (see [6 Named Templates]). It is an error for the
-   * value of the match attribute to contain a VariableReference.
-   * @see <a href="http://www.w3.org/TR/xslt#patterns">patterns in XSLT Specification</a>
+   * attribute. It is an error for the value of the match attribute 
+   * to contain a VariableReference.
    *
    * @param v Value to set for the "match" attribute
    */
   public void setMatch(XPath v)
   {
-    m_matchPattern = v;
+	  m_matchPattern = v;
   }
 
   /**
@@ -179,15 +168,14 @@ public class ElemTemplate extends ElemTemplateElement
    * The match attribute is a Pattern that identifies the source
    * node or nodes to which the rule applies. The match attribute
    * is required unless the xsl:template element has a name
-   * attribute (see [6 Named Templates]). It is an error for the
-   * value of the match attribute to contain a VariableReference.
-   * @see <a href="http://www.w3.org/TR/xslt#patterns">patterns in XSLT Specification</a>
+   * attribute. It is an error for the value of the match attribute 
+   * to contain a VariableReference.
    *
    * @return Value of the "match" attribute 
    */
   public XPath getMatch()
   {
-    return m_matchPattern;
+	  return m_matchPattern;
   }
 
   /**
@@ -200,13 +188,12 @@ public class ElemTemplate extends ElemTemplateElement
    * An xsl:template element with a name attribute specifies a named template.
    * If an xsl:template element has a name attribute, it may, but need not,
    * also have a match attribute.
-   * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
    *
    * @param v Value to set the "name" attribute
    */
   public void setName(QName v)
   {
-    m_name = v;
+	  m_name = v;
   }
 
   /**
@@ -214,34 +201,31 @@ public class ElemTemplate extends ElemTemplateElement
    * An xsl:template element with a name attribute specifies a named template.
    * If an xsl:template element has a name attribute, it may, but need not,
    * also have a match attribute.
-   * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
    *
    * @return Value of the "name" attribute
    */
   public QName getName()
   {
-    return m_name;
+	  return m_name;
   }
 
   /**
    * Modes allow an element to be processed multiple times,
    * each time producing a different result.
-   * @serial
    */
   private QName m_mode;
 
   /**
    * Set the "mode" attribute.
    * Modes allow an element to be processed multiple times,
-   * each time producing a different result.  If xsl:template
+   * each time producing a different result. If xsl:template
    * does not have a match attribute, it must not have a mode attribute.
-   * @see <a href="http://www.w3.org/TR/xslt#modes">modes in XSLT Specification</a>
    *
    * @param v Value to set the "mode" attribute
    */
   public void setMode(QName v)
   {
-    m_mode = v;
+	  m_mode = v;
   }
 
   /**
@@ -249,39 +233,37 @@ public class ElemTemplate extends ElemTemplateElement
    * Modes allow an element to be processed multiple times,
    * each time producing a different result.  If xsl:template
    * does not have a match attribute, it must not have a mode attribute.
-   * @see <a href="http://www.w3.org/TR/xslt#modes">modes in XSLT Specification</a>
    *
    * @return Value of the "mode" attribute
    */
   public QName getMode()
   {
-    return m_mode;
+	  return m_mode;
   }
-  
+
   /**
    * The value of the "as" attribute.
    */
   private String m_asAttr;
-  
+
   /**
    * Set the "as" attribute.
    */
   public void setAs(String val) {
-     m_asAttr = val;
+	  m_asAttr = val;
   }
-  
+
   /**
    * Get the "as" attribute.
    */
   public String getAs()
   {
-     return m_asAttr;
+	  return m_asAttr;
   }
 
   /**
    * The priority of a template rule is specified by the priority
    * attribute on the template rule.
-   * @serial
    */
   private double m_priority = XPath.MATCH_SCORE_NONE;
 
@@ -291,13 +273,12 @@ public class ElemTemplate extends ElemTemplateElement
    * attribute on the template rule. The value of this must be a
    * real number (positive or negative), matching the production
    * Number with an optional leading minus sign (-).
-   * @see <a href="http://www.w3.org/TR/xslt#conflict">conflict in XSLT Specification</a>
    *
    * @param v The value to set for the "priority" attribute
    */
   public void setPriority(double v)
   {
-    m_priority = v;
+	  m_priority = v;
   }
 
   /**
@@ -306,13 +287,12 @@ public class ElemTemplate extends ElemTemplateElement
    * attribute on the template rule. The value of this must be a
    * real number (positive or negative), matching the production
    * Number with an optional leading minus sign (-).
-   * @see <a href="http://www.w3.org/TR/xslt#conflict">conflict in XSLT Specification</a>
    *
    * @return The value of the "priority" attribute
    */
   public double getPriority()
   {
-    return m_priority;
+	  return m_priority;
   }
 
   /**
@@ -323,7 +303,7 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public int getXSLToken()
   {
-    return Constants.ELEMNAME_TEMPLATE;
+	  return Constants.ELEMNAME_TEMPLATE;
   }
 
   /**
@@ -333,7 +313,7 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public String getNodeName()
   {
-    return Constants.ELEMNAME_TEMPLATE_STRING;
+	  return Constants.ELEMNAME_TEMPLATE_STRING;
   }
   
   /**
@@ -364,14 +344,15 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
-    super.compose(sroot);
-    StylesheetRoot.ComposeState cstate = sroot.getComposeState();
-    java.util.Vector vnames = cstate.getVariableNames();
-    if(null != m_matchPattern)
-      m_matchPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
-      
-    cstate.resetStackFrameSize();
-    m_inArgsSize = 0;
+	  super.compose(sroot);
+	  
+	  StylesheetRoot.ComposeState cstate = sroot.getComposeState();
+	  java.util.Vector vnames = cstate.getVariableNames();
+	  if(null != m_matchPattern)
+		  m_matchPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+
+	  cstate.resetStackFrameSize();
+	  m_inArgsSize = 0;
   }
   
   /**
@@ -379,11 +360,11 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public void endCompose(StylesheetRoot sroot) throws TransformerException
   {
-    StylesheetRoot.ComposeState cstate = sroot.getComposeState();
-    super.endCompose(sroot);
-    m_frameSize = cstate.getFrameSize();
-    
-    cstate.resetStackFrameSize();
+	  StylesheetRoot.ComposeState cstate = sroot.getComposeState();
+	  super.endCompose(sroot);
+	  m_frameSize = cstate.getFrameSize();
+
+	  cstate.resetStackFrameSize();
   }
 
   /**
@@ -397,99 +378,100 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public void execute(TransformerImpl transformer) throws TransformerException {
     
-    XPathContext xctxt = transformer.getXPathContext();
-    
-    SourceLocator srcLocator = xctxt.getSAXLocator();
-    
-    transformer.getStackGuard().checkForInfiniteLoop();
-    
-    xctxt.pushRTFContext();
+	  XPathContext xctxt = transformer.getXPathContext();
 
-    if (transformer.getDebug()) {
-      transformer.getTraceManager().emitTraceEvent(this);
-    }
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
-    XObject templateEvalResultForAsAttr = null;
-    
-    if (m_asAttr != null) {         
-        try {                      
-           templateEvalResultForAsAttr = getXslTemplateResult(transformer, xctxt);
-           
-           if (templateEvalResultForAsAttr instanceof XPathInlineFunction) {
-        	   XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
-               XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-               SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
-               if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {            	  
-        	      return;
-               }
-               else {
-            	  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
-        		  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-        				                                                            + " is " + m_asAttr + ". But the template result "
-        				                                                            + "doesn't conform to this required type.", srcLocator); 
-               }
-           }
-           else {
-        	   templateEvalResultForAsAttr = SequenceTypeSupport.castXdmValueToAnotherType(templateEvalResultForAsAttr, m_asAttr, 
-        			                                                                                                             null, xctxt);
-        	   if (templateEvalResultForAsAttr == null) {
-        		   String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
-        		   throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-        				                                                             + " is " + m_asAttr + ". But the template result "
-        				                                                             + "doesn't conform to this required type.", srcLocator);   
-        	   }
-           }
-        }
-        catch (TransformerException ex) {
-           String errMesg = ex.getMessage();
-           if ((errMesg != null) && (errMesg.startsWith("XTTE0505") || errMesg.startsWith("XTTE0590"))) {
-        	  throw ex;   
-           }
-           else {
-              String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
-              throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-                                                                                            + " is " + m_asAttr + ". But the template result "
-                                                                                            + "doesn't conform to this required type.", srcLocator);
-           }
-        }
-    }
-    
-    if (templateEvalResultForAsAttr != null) {        
-        SerializationHandler handler = transformer.getSerializationHandler();
-        
-        try {
-            if (templateEvalResultForAsAttr instanceof XMLNodeCursorImpl) {
-               ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)templateEvalResultForAsAttr, transformer, 
-                                                                                                handler, xctxt);
-            }
-            else {
-               ElemCopyOf.copyOfActionOnResultSequence((ResultSequence)templateEvalResultForAsAttr, 
-                                                                                                transformer, handler, xctxt, false); 
-            }
-        } 
-        catch (TransformerException ex) {
-            throw new TransformerException(ex.getMessage(), srcLocator); 
-        } 
-        catch (SAXException ex) {
-            transformer.getErrorListener().fatalError(new TransformerException(ex)); 
-        }  
-    }
-    else {
-       transformer.executeChildTemplates(this, true);
-    }
+	  transformer.getStackGuard().checkForInfiniteLoop();
 
-    if (transformer.getDebug()) {
-       transformer.getTraceManager().emitTraceEndEvent(this);
-    }
+	  xctxt.pushRTFContext();
 
-    xctxt.popRTFContext();
+	  if (transformer.getDebug()) {
+		  transformer.getTraceManager().emitTraceEvent(this);
+	  }
+
+	  if (m_asAttr == null) {
+		  transformer.executeChildTemplates(this, true);
+	  }
+	  else {         
+		  try {                      
+			  XObject xslTemplateEvalResult = getXslTemplateResult(transformer, xctxt);
+
+			  if (xslTemplateEvalResult instanceof XPathInlineFunction) {
+				  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+				  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+				  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+				  if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {            	  
+					  return;
+				  }
+				  else {
+					  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
+					  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+																								  + " is " + m_asAttr + ". But the template result "
+																								  + "doesn't conform to this required type.", srcLocator); 
+				  }
+			  }
+			  else {
+				  xslTemplateEvalResult = SequenceTypeSupport.castXdmValueToAnotherType(xslTemplateEvalResult, m_asAttr, null, xctxt);
+				  if (xslTemplateEvalResult != null) {
+					  SerializationHandler handler = transformer.getSerializationHandler();
+
+					  try {
+						  if (xslTemplateEvalResult instanceof XMLNodeCursorImpl) {
+							  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xslTemplateEvalResult, transformer, handler, xctxt);
+						  }
+						  else {
+							  ElemCopyOf.copyOfActionOnResultSequence((ResultSequence)xslTemplateEvalResult, transformer, handler, xctxt, false); 
+						  }
+					  } 
+					  catch (TransformerException ex) {
+						  throw new TransformerException(ex.getMessage(), srcLocator); 
+					  } 
+					  catch (SAXException ex) {
+						  transformer.getErrorListener().fatalError(new TransformerException(ex)); 
+					  }        		           		     
+				  }
+				  else {        
+					  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
+					  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+																								  + " is " + m_asAttr + ". But the template result "
+																								  + "doesn't conform to this required type.", srcLocator);  
+				  }
+			  }
+		  }
+		  catch (TransformerException ex) {
+			  String errMesg = ex.getMessage();
+			  if ((errMesg != null) && (errMesg.startsWith("XTTE0505") || errMesg.startsWith("XTTE0590"))) {
+				  throw ex;   
+			  }
+			  else {
+				  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
+				  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+																								  + " is " + m_asAttr + ". But the template result "
+																								  + "doesn't conform to this required type.", srcLocator);
+			  }
+		  }
+	  }        
+
+	  if (transformer.getDebug()) {
+		  transformer.getTraceManager().emitTraceEndEvent(this);
+	  }
+
+	  xctxt.popRTFContext();
     
   }
   
   /**
-   * This method computes the result of, xsl:template element that has "as" attribute.
+   * Method definition to return, the result of xsl:template element 
+   * processing for an xsl:template element that has "as" attribute.
+   * 
+   * @param transformer					An XSL TransformerImpl object instance
+   * @param xctxt						XPath evaluation context
+   * @return 							An XObject instance representing the result of xsl:template processing.
+   * @throws TransformerException
    */
-  private XObject getXslTemplateResult(TransformerImpl transformer, XPathContext xctxt) throws TransformerException {		
+  private XObject getXslTemplateResult(TransformerImpl transformer, XPathContext xctxt) throws TransformerException {			  
+	  
 	  XObject result = null;
 	  
 	  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
@@ -514,7 +496,7 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public void recompose(StylesheetRoot root)
   {
-    root.recomposeTemplates(this);
+	  root.recomposeTemplates(this);
   }
 
 }

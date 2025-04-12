@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,9 +14,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/*
- * $Id$
  */
 package org.apache.xalan.xslt;
 
@@ -864,22 +861,22 @@ public class Process
 								  new DOMResult(outNode));
 
 						  // Now serialize output to disk with identity transformer
-						  Transformer serializer = stf.newTransformer();
-						  serializer.setErrorListener(new DefaultErrorHandler(false));
+						  Transformer identityTransformer = stf.newTransformer();
+						  identityTransformer.setErrorListener(new DefaultErrorHandler(false));
 
 						  Properties serializationProps =
 								  stylesheet.getOutputProperties();
 
-						  serializer.setOutputProperties(serializationProps);
+						  identityTransformer.setOutputProperties(serializationProps);
 
 						  if (contentHandler != null)
 						  {
 							  SAXResult result = new SAXResult(contentHandler);
 
-							  serializer.transform(new DOMSource(outNode), result);
+							  identityTransformer.transform(new DOMSource(outNode), result);
 						  }
 						  else
-							  serializer.transform(new DOMSource(outNode), strResult);
+							  identityTransformer.transform(new DOMSource(outNode), strResult);
 					  }
 					  else if (flavor.equals("s2s"))
 					  {            	
@@ -895,21 +892,21 @@ public class Process
 								  new DOMResult(outNode));
 
 						  // Now serialize output to disk with identity transformer
-						  Transformer serializer = stf.newTransformer();
-						  serializer.setErrorListener(new DefaultErrorHandler(false));
+						  Transformer identityTransformer = stf.newTransformer();
+						  identityTransformer.setErrorListener(new DefaultErrorHandler(false));
 
 						  Properties serializationProps = stylesheet.getOutputProperties();
 
-						  serializer.setOutputProperties(serializationProps);
+						  identityTransformer.setOutputProperties(serializationProps);
 
 						  if (contentHandler != null)
 						  {
 							  SAXResult result = new SAXResult(contentHandler);
 
-							  serializer.transform(new DOMSource(outNode), result);
+							  identityTransformer.transform(new DOMSource(outNode), result);
 						  }
 						  else
-							  serializer.transform(new DOMSource(outNode), strResult);
+							  identityTransformer.transform(new DOMSource(outNode), strResult);
 					  }
 					  else if (flavor.equals("th"))
 					  {
