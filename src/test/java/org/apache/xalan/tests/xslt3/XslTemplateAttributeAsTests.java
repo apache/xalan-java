@@ -16,7 +16,7 @@
  */
 package org.apache.xalan.tests.xslt3;
 
-import org.apache.xalan.tests.util.XSLConstants;
+import org.apache.xalan.tests.util.XSLTestConstants;
 import org.apache.xalan.tests.util.XSLTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -33,10 +33,10 @@ import org.junit.Test;
  */
 public class XslTemplateAttributeAsTests extends XSLTransformTestsUtil {
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX 
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX 
                                                                                                     + "xsl_template_attribute_as/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX 
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX 
                                                                                                     + "xsl_template_attribute_as/gold/";      
 
 

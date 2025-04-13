@@ -17,13 +17,14 @@
 package org.apache.xalan.tests.util;
 
 /**
- * The constant definitions, used by this XSLT and XPath test suite.
+ * A class defining constants, used by Xalan-J's 
+ * XSL 3 test suite.
  *  
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XSLConstants {        
+public class XSLTestConstants {        
     
     public static final String XSLT_TRANSFORMER_FACTORY_KEY = "javax.xml.transform.TransformerFactory";
     
@@ -32,6 +33,14 @@ public class XSLConstants {
     public static final String XSL_TRANSFORM_INPUT_DIRPATH_PREFIX = "./src/test/resources/";
     
     public static final String XSL_TRANSFORM_GOLD_DIRPATH_PREFIX = "./src/test/resources/";
+    
+    public static final String XML = "xml";
+    
+    public static final String JSON = "json";
+    
+    public static final String TEXT = "text";
+    
+    public static final String HTML = "html";
     
     
     /**
@@ -44,14 +53,14 @@ public class XSLConstants {
     /**
      * Few XSL tests within this test suite, require specifying absolute URI of local files 
      * with file: scheme. The following two class field variables are used for these XSL tests 
-     * within this test suite. Both file local absolute URI prefixes file:/D:/ and file:/D:/// are 
+     * within this test suite. Both file local absolute URI prefixes file:/d:/ and file:/d:/// are 
      * appropriate examples for Windows. For Linux, there are similar URI conventions. User running
      * this test suite on Windows needs to change values of following two class field variables as 
      * per Xalan-J src code's local folder. For Linux, an appropriate local absolute URI prefix 
      * needs to be specified. 
      */    
-    public static final String LOCAL_BASE_URI_PREFIX_OF_TESTS1 = "file:/D:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/resources/";
+    public static final String LOCAL_BASE_URI_PREFIX_OF_TESTS1 = "file:/d:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/resources/";
     
-    public static final String LOCAL_BASE_URI_PREFIX_OF_TESTS2 = "file:/D:///eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/resources/";
+    public static final String LOCAL_BASE_URI_PREFIX_OF_TESTS2 = "file:/d:///eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/resources/";
 
 }

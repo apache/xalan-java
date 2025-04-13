@@ -80,6 +80,12 @@ public class XSLTransformTestsUtil {
     protected String xslTransformInpPath = null;
     
     /**
+     * Class field representing, types of files whose contents may be 
+     * compared. Possible values are XML, JSON, TEXT and HTML.
+     */
+    protected String fileComparisonType = XSLTestConstants.XML;
+    
+    /**
      * Class field representing, whether XML Schema validation is enabled 
      * for an XSL transformation instance invoked by this test suite.
      */
@@ -93,11 +99,16 @@ public class XSLTransformTestsUtil {
     private boolean isXslEvaluateEnabled = false;
     
     /**
+     * Class field representing, FileComparisonUtil object instance. 
+     */
+    private FileComparisonUtil fileComparisonUtil = null;
+    
+    /**
      * Class constructor.
      */
     public XSLTransformTestsUtil() {
         System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-        System.setProperty(XSLConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLConstants.XSLT_TRANSFORMER_FACTORY_VALUE);                
+        System.setProperty(XSLTestConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLTestConstants.XSLT_TRANSFORMER_FACTORY_VALUE);                
         
         xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
         xmlDocumentBuilderFactory.setNamespaceAware(true);
@@ -109,6 +120,8 @@ public class XSLTransformTestsUtil {
         }
         
         xslTransformerFactory = TransformerFactory.newInstance();
+        
+        fileComparisonUtil = new FileComparisonUtil();
     }
     
     /**
@@ -235,8 +248,15 @@ public class XSLTransformTestsUtil {
 
     			String fileProducedStr1 = getFileContentAsString(fileProducedName1);
     			String fileProducedStr2 = getFileContentAsString(fileProducedName2);
-
-    			if (!(goldFileStrArr[0].equals(fileProducedStr1) && goldFileStrArr[1].equals(fileProducedStr2))) {
+    			
+    			if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+    				boolean fileComparisonResult1 = fileComparisonUtil.isJsonFileContentsEqual(goldFileStrArr[0], fileProducedStr1);
+    				boolean fileComparisonResult2 = fileComparisonUtil.isJsonFileContentsEqual(goldFileStrArr[1], fileProducedStr2);
+    				if (!(fileComparisonResult1 && fileComparisonResult2)) {
+    				   Assert.fail();
+    				}
+    			}
+    			else if (!(goldFileStrArr[0].equals(fileProducedStr1) && goldFileStrArr[1].equals(fileProducedStr2))) {
     				Assert.fail();
     			}
     		}
@@ -248,7 +268,12 @@ public class XSLTransformTestsUtil {
 
     			String fileProducedStr1 = getFileContentAsString(fileProducedName1);
 
-    			if (!(goldFileStrArr[0].equals(fileProducedStr1))) {
+    			if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+    				if (!fileComparisonUtil.isJsonFileContentsEqual(goldFileStrArr[0], fileProducedStr1)) {
+    				   Assert.fail();	
+    				}
+    			}
+    			else if (!(goldFileStrArr[0].equals(fileProducedStr1))) {
     				Assert.fail();
     			}
     		}
@@ -311,8 +336,21 @@ public class XSLTransformTestsUtil {
     		}
     		else {
     			byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
-
-    			Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+    			if ((XSLTestConstants.TEXT).equals(fileComparisonType)) {
+    			   Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+                }
+    			else if ((XSLTestConstants.HTML).equals(fileComparisonType)) {
+    			   Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+                }
+    			else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+    				if (!fileComparisonUtil.isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
+     				   Assert.fail();	
+     				}
+    			}
+                else {
+    			   // XML file comparison
+                   // TO DO
+    			}
     		}
     	}
     	catch (Exception ex) {

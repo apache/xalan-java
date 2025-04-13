@@ -16,7 +16,7 @@
  */
 package org.apache.xalan.tests.xslt3;
 
-import org.apache.xalan.tests.util.XSLConstants;
+import org.apache.xalan.tests.util.XSLTestConstants;
 import org.apache.xalan.tests.util.XSLTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,9 +31,9 @@ import org.junit.Test;
  */
 public class XslResultDocumentTests extends XSLTransformTestsUtil {
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_result_document/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_result_document/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_result_document/gold/";      
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_result_document/gold/";      
 
 
     @BeforeClass
@@ -111,6 +111,8 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
         
         xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
+        fileComparisonType = XSLTestConstants.JSON;
+        
         String goldFileName1 = "result1.json";
         
         String goldFilePath1 = XSL_TRANSFORM_GOLD_DIRPATH + goldFileName1;
@@ -137,6 +139,8 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
         
         xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
+        fileComparisonType = XSLTestConstants.JSON;
+        
         String goldFileName1 = "result2.json";
         
         String goldFilePath1 = XSL_TRANSFORM_GOLD_DIRPATH + goldFileName1;
@@ -162,6 +166,8 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
         xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
+        
+        fileComparisonType = XSLTestConstants.JSON;
         
         String goldFileName1 = "result3.json";
         

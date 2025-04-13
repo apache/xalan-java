@@ -16,7 +16,7 @@
  */
 package org.apache.xalan.tests.xpath3;
 
-import org.apache.xalan.tests.util.XSLConstants;
+import org.apache.xalan.tests.util.XSLTestConstants;
 import org.apache.xalan.tests.util.XSLTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,9 +31,9 @@ import org.junit.Test;
  */
 public class FnParseJsonTests extends XSLTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "fn_parse_json/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "fn_parse_json/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "fn_parse_json/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "fn_parse_json/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

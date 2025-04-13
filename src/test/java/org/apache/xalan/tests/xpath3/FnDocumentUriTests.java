@@ -16,7 +16,7 @@
  */
 package org.apache.xalan.tests.xpath3;
 
-import org.apache.xalan.tests.util.XSLConstants;
+import org.apache.xalan.tests.util.XSLTestConstants;
 import org.apache.xalan.tests.util.XSLTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,10 +31,10 @@ import org.junit.Test;
  */
 public class FnDocumentUriTests extends XSLTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX 
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX 
     		                                                                                               + "fn_document_uri/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX 
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX 
     		                                                                                             + "fn_document_uri/gold/";
 
     @BeforeClass
@@ -51,7 +51,7 @@ public class FnDocumentUriTests extends XSLTransformTestsUtil {
 
     @Test
     public void xslFnDocumentUriTest1() {
-    	if (XSLConstants.IS_TESTS_USING_ONLINE_URIS_ENABLED) {
+    	if (XSLTestConstants.IS_TESTS_USING_ONLINE_URIS_ENABLED) {
 	        String xmlDocumentUri= "https://xalan.apache.org/xalan-j/xsl3/tests/data/test1_a.xml"; 
 	        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
 	        
