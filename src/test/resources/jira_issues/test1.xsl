@@ -26,9 +26,9 @@
   </xsl:template>
 
   <xsl:template match="/">
-    <xsl:copy>
+    <root>
       <xsl:apply-templates/>
-    </xsl:copy>
+    </root>
   </xsl:template>
   
   <!--

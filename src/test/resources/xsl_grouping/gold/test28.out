@@ -1,10 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><a>
-  <m/>
-  <o/>
-  <p/>
-  <q/>
-</a><b>
-  <n/>
-  <r/>
-  <s/>
-</b>
+<?xml version="1.0" encoding="UTF-8"?><root>
+  <a>
+    <m/>
+    <o/>
+    <p/>
+    <q/>
+  </a>
+  <b>
+    <n/>
+    <r/>
+    <s/>
+  </b>
+</root>

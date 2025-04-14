@@ -15,8 +15,10 @@
     
     <xsl:output method="xml" indent="yes"/>
     
-    <xsl:template match="/info">       
-       <xsl:copy-of select="fn1:sortNodeSet(*)"/>   
+    <xsl:template match="/info">
+       <info>       
+         <xsl:copy-of select="fn1:sortNodeSet(*)"/>
+       </info>   
     </xsl:template>
     
     <!-- A function, that traverses a node set passed as an argument
@@ -34,7 +36,7 @@
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
       * regarding copyright ownership. The ASF licenses this file
-      * to you under the Apache License, Version 2.0 (the  "License");
+      * to you under the Apache License, Version 2.0 (the "License");
       * you may not use this file except in compliance with the License.
       * You may obtain a copy of the License at
       *

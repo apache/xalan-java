@@ -1,4 +1,4 @@
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;details&gt;&#13;
+<result>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;details&gt;&#13;
    &lt;a&gt;1&lt;/a&gt;&#13;
    &lt;b&gt;2&lt;/b&gt;&#13;
    &lt;c&gt;3&lt;/c&gt;&#13;
@@ -7,3 +7,4 @@
    &lt;f&gt;6&lt;/f&gt;&#13;
    &lt;g&gt;7&lt;/g&gt;&#13;
 &lt;/details&gt;&#13;
+</result>

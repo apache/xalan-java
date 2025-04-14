@@ -21,9 +21,9 @@
    <xsl:output method="xml" indent="yes"/>
    
    <xsl:variable name="currentDateStr" select="java:format(java:java.text.SimpleDateFormat.new('yyyy-MM-dd'), 
-                                                        java:org.apache.xalan.tests.util.XSLTransformTestsUtil.getCurrentDate())"/>
+                                                        java:org.apache.xalan.tests.util.XslTransformTestsUtil.getCurrentDate())"/>
                                                         
-   <xsl:variable name="timeZoneOffsetStr" select="java:org.apache.xalan.tests.util.XSLTransformTestsUtil.getDefaultTimezoneOffsetStr()"/>                                                                    
+   <xsl:variable name="timeZoneOffsetStr" select="java:org.apache.xalan.tests.util.XslTransformTestsUtil.getDefaultTimezoneOffsetStr()"/>                                                                    
 
    <xsl:template match="/">            
       <elem>                       

@@ -17,7 +17,7 @@
 package org.apache.xalan.tests.xslt3;
 
 import org.apache.xalan.tests.util.XSLTestConstants;
-import org.apache.xalan.tests.util.XSLTransformTestsUtil;
+import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XslAnalyzeStringTests extends XSLTransformTestsUtil {     
+public class XslAnalyzeStringTests extends XslTransformTestsUtil {     
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_analyze_string/";
     
@@ -52,7 +52,9 @@ public class XslAnalyzeStringTests extends XSLTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
+        
+        fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
@@ -162,7 +164,9 @@ public class XslAnalyzeStringTests extends XSLTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
+        
+        fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

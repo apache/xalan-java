@@ -9,11 +9,13 @@
   <xsl:output method="xml" indent="yes"/>
 
   <xsl:template match="/root">
-     <xsl:for-each-group select="*" group-by="node-name()">
-        <xsl:element name="{current-grouping-key()}">
-           <xsl:copy-of select="current-group()/*"/>
-        </xsl:element>
-     </xsl:for-each-group>
+     <root>
+	     <xsl:for-each-group select="*" group-by="node-name()">
+	        <xsl:element name="{current-grouping-key()}">
+	           <xsl:copy-of select="current-group()/*"/>
+	        </xsl:element>
+	     </xsl:for-each-group>
+     </root>
   </xsl:template>
   
   <!--

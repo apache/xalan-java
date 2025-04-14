@@ -26,9 +26,6 @@ import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -37,14 +34,13 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xml.utils.Constants;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import junit.framework.Assert;
 
 /**
- * A class providing, various common services for Xalan-J's 
+ * A class providing, various common method definitions for Xalan-J's 
  * XSL 3 test suite.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -52,19 +48,7 @@ import junit.framework.Assert;
  * 
  * @xsl.usage advanced
  */
-public class XSLTransformTestsUtil {        
-    
-	/**
-	 * Class field representing an XML DocumentBuilderFactory object instance 
-	 * needed by this test suite. 
-	 */
-    protected static DocumentBuilderFactory xmlDocumentBuilderFactory = null;
-    
-    /**
-     * Class field representing an XML DocumentBuilder object instance 
-     * needed by this test suite.
-     */
-    protected static DocumentBuilder xmlDocumentBuilder = null;
+public class XslTransformTestsUtil extends FileComparisonUtil {
     
     /**
      * Class field representing an XSL TransformerFactory object instance 
@@ -77,13 +61,7 @@ public class XSLTransformTestsUtil {
      * related to XSL instructions like xsl:result-document that have 'href' 
      * attribute.
      */
-    protected String xslTransformInpPath = null;
-    
-    /**
-     * Class field representing, types of files whose contents may be 
-     * compared. Possible values are XML, JSON, TEXT and HTML.
-     */
-    protected String fileComparisonType = XSLTestConstants.XML;
+    protected static String xslTransformInpPath = null;
     
     /**
      * Class field representing, whether XML Schema validation is enabled 
@@ -99,58 +77,12 @@ public class XSLTransformTestsUtil {
     private boolean isXslEvaluateEnabled = false;
     
     /**
-     * Class field representing, FileComparisonUtil object instance. 
-     */
-    private FileComparisonUtil fileComparisonUtil = null;
-    
-    /**
      * Class constructor.
      */
-    public XSLTransformTestsUtil() {
-        System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-        System.setProperty(XSLTestConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLTestConstants.XSLT_TRANSFORMER_FACTORY_VALUE);                
-        
-        xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
-        xmlDocumentBuilderFactory.setNamespaceAware(true);
-        
-        try {
-            xmlDocumentBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException ex) {            
-            ex.printStackTrace();
-        }
+    public XslTransformTestsUtil() {        
+        System.setProperty(XSLTestConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLTestConstants.XSLT_TRANSFORMER_FACTORY_VALUE);
         
         xslTransformerFactory = TransformerFactory.newInstance();
-        
-        fileComparisonUtil = new FileComparisonUtil();
-    }
-    
-    /**
-     * This method is used by, Xalan-J Java extension functions used
-     * within few .xsl test files.
-     */
-    public static Date getCurrentDate() {
-        Date currentDate = new Date();
-      
-        return currentDate;
-    }
-   
-    /**
-     * This method is used by, Xalan-J Java extension functions used
-     * within few .xsl test files.
-     */
-    public static String getDefaultTimezoneOffsetStr() {
-        String timeZoneoffsetStr = null;
-       
-        String dateStr = (OffsetDateTime.now()).toString();
-        if (dateStr.endsWith("Z")) {
-            timeZoneoffsetStr = "Z";   
-        }
-        else {
-            int dateStrLength = dateStr.length();
-            timeZoneoffsetStr = dateStr.substring(dateStrLength - 6, dateStrLength); 
-        }
-       
-        return timeZoneoffsetStr;
     }
 
     /**
@@ -197,8 +129,20 @@ public class XSLTransformTestsUtil {
            }
            else {
               byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
-           
-              Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+              
+              if ((XSLTestConstants.XML).equals(fileComparisonType)) {            	              	  
+            	  if (!isXMLFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
+            		  Assert.fail(); 
+            	  }
+              }
+              else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+  				  if (!isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
+  				     Assert.fail();
+  				  } 
+              }
+              else if ((XSLTestConstants.TEXT).equals(fileComparisonType) || (XSLTestConstants.HTML).equals(fileComparisonType)) {
+            	  Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+              }              
            }
         }
         catch (Exception ex) {
@@ -249,16 +193,31 @@ public class XSLTransformTestsUtil {
     			String fileProducedStr1 = getFileContentAsString(fileProducedName1);
     			String fileProducedStr2 = getFileContentAsString(fileProducedName2);
     			
-    			if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
-    				boolean fileComparisonResult1 = fileComparisonUtil.isJsonFileContentsEqual(goldFileStrArr[0], fileProducedStr1);
-    				boolean fileComparisonResult2 = fileComparisonUtil.isJsonFileContentsEqual(goldFileStrArr[1], fileProducedStr2);
+    			if ((XSLTestConstants.XML).equals(fileComparisonType)) {    				
+    				int idx1 = fileProducedStr1.lastIndexOf('>');
+    				fileProducedStr1 = fileProducedStr1.substring(0, idx1 + 1);
+    				int idx2 = fileProducedStr2.lastIndexOf('>');
+    				fileProducedStr2 = fileProducedStr2.substring(0, idx2 + 1);
+    				boolean fileComparisonResult1 = isXMLFileContentsEqual(goldFileStrArr[0], fileProducedStr1);
+    				boolean fileComparisonResult2 = isXMLFileContentsEqual(goldFileStrArr[1], fileProducedStr2);
     				if (!(fileComparisonResult1 && fileComparisonResult2)) {
     				   Assert.fail();
     				}
     			}
-    			else if (!(goldFileStrArr[0].equals(fileProducedStr1) && goldFileStrArr[1].equals(fileProducedStr2))) {
-    				Assert.fail();
+    			else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+    				boolean fileComparisonResult1 = isJsonFileContentsEqual(goldFileStrArr[0], fileProducedStr1);
+    				boolean fileComparisonResult2 = isJsonFileContentsEqual(goldFileStrArr[1], fileProducedStr2);
+    				if (!(fileComparisonResult1 && fileComparisonResult2)) {
+    				   Assert.fail();
+    				}
     			}
+    			else if ((XSLTestConstants.TEXT).equals(fileComparisonType) || (XSLTestConstants.HTML).equals(fileComparisonType)) {
+    				boolean fileComparisonResult1 = (goldFileStrArr[0]).equals(fileProducedStr1); 
+    				boolean fileComparisonResult2 = (goldFileStrArr[1]).equals(fileProducedStr2);
+    				if (!(fileComparisonResult1 && fileComparisonResult2)) {
+     				   Assert.fail();
+     				}
+                }
     		}
     		else {
     			// Only one file is there to compare it's contents
@@ -268,13 +227,20 @@ public class XSLTransformTestsUtil {
 
     			String fileProducedStr1 = getFileContentAsString(fileProducedName1);
 
-    			if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
-    				if (!fileComparisonUtil.isJsonFileContentsEqual(goldFileStrArr[0], fileProducedStr1)) {
+    			if ((XSLTestConstants.XML).equals(fileComparisonType)) { 
+    				if (!isXMLFileContentsEqual(goldFileStrArr[0], fileProducedStr1)) {
+     				   Assert.fail();	
+     				}
+    			}
+    			else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+    				if (!isJsonFileContentsEqual(goldFileStrArr[0], fileProducedStr1)) {
     				   Assert.fail();	
     				}
     			}
-    			else if (!(goldFileStrArr[0].equals(fileProducedStr1))) {
-    				Assert.fail();
+    			else if ((XSLTestConstants.TEXT).equals(fileComparisonType) || (XSLTestConstants.HTML).equals(fileComparisonType)) {
+    				if (!(goldFileStrArr[0].equals(fileProducedStr1))) {
+    				   Assert.fail();
+    				}
     			}
     		}
     	}
@@ -336,21 +302,20 @@ public class XSLTransformTestsUtil {
     		}
     		else {
     			byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
-    			if ((XSLTestConstants.TEXT).equals(fileComparisonType)) {
-    			   Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
-                }
-    			else if ((XSLTestConstants.HTML).equals(fileComparisonType)) {
-    			   Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
-                }
+    			
+    			if ((XSLTestConstants.XML).equals(fileComparisonType)) {
+    				if (!isXMLFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
+    					Assert.fail();	
+    				}	
+    			}
     			else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
-    				if (!fileComparisonUtil.isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
-     				   Assert.fail();	
-     				}
+    				if (!isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
+    					Assert.fail();	
+    				}
     			}
-                else {
-    			   // XML file comparison
-                   // TO DO
-    			}
+    			else if ((XSLTestConstants.TEXT).equals(fileComparisonType) || (XSLTestConstants.HTML).equals(fileComparisonType)) {
+    			    Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+                }    			
     		}
     	}
     	catch (Exception ex) {
@@ -397,9 +362,21 @@ public class XSLTransformTestsUtil {
                }
            }
            else {
-              byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
-           
-              Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+        	   byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
+
+        	   if ((XSLTestConstants.XML).equals(fileComparisonType)) {
+        		   if (!isXMLFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
+        			   Assert.fail();	
+        		   }	
+        	   }
+        	   else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+        		   if (!isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
+        			   Assert.fail();	
+        		   }
+        	   }
+        	   else if ((XSLTestConstants.TEXT).equals(fileComparisonType) || (XSLTestConstants.HTML).equals(fileComparisonType)) {
+        		   Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+        	   } 
            }
         }
         catch (Exception ex) {
@@ -422,40 +399,19 @@ public class XSLTransformTestsUtil {
     }
     
     /**
-     * Get the file contents as String, given the 
-     * name of the file as an argument to this method.
+     * Get the file contents as String, given the file system 
+     * path of the file as an argument to this method.
      */
-    protected String getFileContentAsString(String fileName) {
+    protected String getFileContentAsString(String filePathStr) {
     	
     	String fileContentStr = null;
     	
-    	FileInputStream fileInputStream = null;
-    	
-    	try {
-    		fileInputStream = new FileInputStream(fileName);
-    		StringBuffer strBuff = new StringBuffer();
-    		byte[] byteArr = new byte[512];
-    		int noOfCharsRead = -1;
-    		while ((noOfCharsRead = fileInputStream.read(byteArr)) != -1) {
-    			String strRead = new String(byteArr);
-    			strBuff.append(strRead);
-    		}
-    		
-    		fileContentStr = strBuff.toString();
-
-    		fileInputStream.close();
+    	try {    		
+    		byte[] fileByteArr = Files.readAllBytes(Paths.get(filePathStr));
+    		fileContentStr = new String(fileByteArr, "UTF-8");
     	}
     	catch (Exception ex) {
     		ex.printStackTrace();
-    	}
-    	finally {
-    		if (fileInputStream != null) {
-    			try {
-    				fileInputStream.close();
-    			} catch (IOException ex) {
-    				ex.printStackTrace();
-    			}
-    		}
     	}
     	
     	return fileContentStr;
@@ -475,6 +431,39 @@ public class XSLTransformTestsUtil {
     		TransformerImpl transformerImpl = (TransformerImpl)transformer;
     		transformerImpl.setProperty(TransformerImpl.XSL_EVALUATE_PROPERTY, Boolean.TRUE); 
     	}
+    }
+    
+    /**
+     * This method is used by, Xalan-J XSL 3 java extension function calls
+     * used within few .xsl test files.
+     * 
+     * @return  current date value
+     */
+    public static Date getCurrentDate() {
+        Date currentDate = new Date();
+      
+        return currentDate;
+    }
+   
+    /**
+     * This method is used by, Xalan-J XSL 3 java extension function calls
+     * used within few .xsl test files.
+     * 
+     * @return  default time zone offset string
+     */
+    public static String getDefaultTimezoneOffsetStr() {
+        String timeZoneoffsetStr = null;
+       
+        String dateStr = (OffsetDateTime.now()).toString();
+        if (dateStr.endsWith("Z")) {
+            timeZoneoffsetStr = "Z";   
+        }
+        else {
+            int dateStrLength = dateStr.length();
+            timeZoneoffsetStr = dateStr.substring(dateStrLength - 6, dateStrLength); 
+        }
+       
+        return timeZoneoffsetStr;
     }
     
 }

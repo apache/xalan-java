@@ -17,7 +17,7 @@
 package org.apache.xalan.tests.xpath3;
 
 import org.apache.xalan.tests.util.XSLTestConstants;
-import org.apache.xalan.tests.util.XSLTransformTestsUtil;
+import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class FnAbsTests extends XSLTransformTestsUtil {        
+public class FnAbsTests extends XslTransformTestsUtil {        
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "fn_abs/";
     

@@ -17,7 +17,7 @@
 package org.apache.xalan.tests.xslt3;
 
 import org.apache.xalan.tests.util.XSLTestConstants;
-import org.apache.xalan.tests.util.XSLTransformTestsUtil;
+import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class W3c_xslt30_IterateTests extends XSLTransformTestsUtil {
+public class W3c_xslt30_IterateTests extends XslTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + 
                                                                                                  "w3c_xslt30_testsuite/insn/iterate/";

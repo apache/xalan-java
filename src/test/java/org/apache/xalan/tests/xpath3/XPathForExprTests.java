@@ -17,7 +17,7 @@
 package org.apache.xalan.tests.xpath3;
 
 import org.apache.xalan.tests.util.XSLTestConstants;
-import org.apache.xalan.tests.util.XSLTransformTestsUtil;
+import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XPathForExprTests extends XSLTransformTestsUtil {        
+public class XPathForExprTests extends XslTransformTestsUtil {        
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "for_expr/";
     
@@ -192,7 +192,9 @@ public class XPathForExprTests extends XSLTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test15.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test15.out";
+        
+        fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

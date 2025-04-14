@@ -17,7 +17,7 @@
 package org.apache.xalan.tests.xpath3;
 
 import org.apache.xalan.tests.util.XSLTestConstants;
-import org.apache.xalan.tests.util.XSLTransformTestsUtil;
+import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,7 +31,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XPathValueComparisonTests extends XSLTransformTestsUtil {
+public class XPathValueComparisonTests extends XslTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xpath_value_comparison/";
     

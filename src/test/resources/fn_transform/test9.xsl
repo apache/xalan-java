@@ -10,13 +10,15 @@
   <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
 
   <xsl:template match="/">
-	  <xsl:variable name="result" select="transform(
-	                                                map {
-													   'stylesheet-location' : 'render.xsl',
-													   'source-node' : doc('test1.xml'),
-													   'delivery-format' : 'serialized'
-												    })" as="map(*)"/>
-      <xsl:copy-of select="$result?output"/>													
+      <result>
+		  <xsl:variable name="result" select="transform(
+		                                                map {
+														   'stylesheet-location' : 'render.xsl',
+														   'source-node' : doc('test1.xml'),
+														   'delivery-format' : 'serialized'
+													    })" as="map(*)"/>
+	      <xsl:copy-of select="$result?output"/>
+      </result>													
   </xsl:template>
   
   <!--

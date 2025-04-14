@@ -19,15 +19,17 @@
                                                                            then true() 
                                                                            else false() }"/>
                                                                            
-   <xsl:template match="/">      
-      <xsl:variable name="srchInp" select="/list/word"/>
-      <xsl:variable name="srchKeyWords" select="tokenize($scfFileContents, ',')"/>
-      <xsl:for-each select="$srchKeyWords">
-        <xsl:variable name="keyWord" select="."/>
-        <srchResult> 
-          <xsl:copy-of select="$srchInp[$filterCheck(., $keyWord)]"/>
-        </srchResult>
-      </xsl:for-each>
+   <xsl:template match="/">
+      <result>      
+	      <xsl:variable name="srchInp" select="/list/word"/>
+	      <xsl:variable name="srchKeyWords" select="tokenize($scfFileContents, ',')"/>
+	      <xsl:for-each select="$srchKeyWords">
+	        <xsl:variable name="keyWord" select="."/>
+	        <srchResult> 
+	          <xsl:copy-of select="$srchInp[$filterCheck(., $keyWord)]"/>
+	        </srchResult>
+	      </xsl:for-each>
+      </result>
    </xsl:template>
    
    <!--

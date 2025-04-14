@@ -8,7 +8,7 @@
          fn:xml-to-json which also uses 2nd argument which 
          is an options map. -->                                            
 
-    <xsl:output method="text"/>
+    <xsl:output method="json"/>
 
     <xsl:template match="/">
 	   <xsl:value-of select="xml-to-json(*, map {'indent' : true()})"/>

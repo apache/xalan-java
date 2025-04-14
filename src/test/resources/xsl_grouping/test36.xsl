@@ -11,7 +11,7 @@
        within a JSON document file using xsl:for-each-group instruction via 
        an intermediate transformation to XML document. -->                 
   
-  <xsl:output method="text"/>
+  <xsl:output method="json"/>
   
   <xsl:template match="/">
      <xsl:variable name="personsJsonStrVal" select="unparsed-text('person.json', 'UTF-8')" as="xs:string"/>

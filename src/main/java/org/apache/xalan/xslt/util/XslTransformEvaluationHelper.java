@@ -61,7 +61,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * This class, defines few utility methods, that provide support for
- * XSL 3 transformation processor implementation.
+ * Xalan-J's XSL 3 transformation processor implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -504,7 +504,7 @@ public class XslTransformEvaluationHelper {
     	String resultStr = null;
 
     	DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.
-    			newInstance()).getDOMImplementation("LS"));
+    																				 newInstance()).getDOMImplementation("LS"));
     	LSSerializer lsSerializer = domImplLS.createLSSerializer();
     	DOMConfiguration domConfig = lsSerializer.getDomConfig();
     	domConfig.setParameter(XSL3FunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
@@ -527,7 +527,8 @@ public class XslTransformEvaluationHelper {
             while ((c = buffReader.read()) != -1) {
                strBuilder.append((char)c);
             }
-        } finally {
+        } 
+        finally {
             inpStream.close();
         }
      

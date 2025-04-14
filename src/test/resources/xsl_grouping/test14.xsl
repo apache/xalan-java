@@ -9,11 +9,13 @@
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/">
-      <xsl:for-each-group select="cities/city" group-by="@country">
-         <country name="{current-grouping-key()}">
-           <xsl:apply-templates select="current-group()"/>     
-         </country>
-      </xsl:for-each-group>
+      <root>
+        <xsl:for-each-group select="cities/city" group-by="@country">
+           <country name="{current-grouping-key()}">
+             <xsl:apply-templates select="current-group()"/>     
+           </country>
+        </xsl:for-each-group>
+      </root>
    </xsl:template>
    
    <xsl:template match="city">

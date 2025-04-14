@@ -17,7 +17,7 @@
 package org.apache.xalan.tests.xslt3;
 
 import org.apache.xalan.tests.util.XSLTestConstants;
-import org.apache.xalan.tests.util.XSLTransformTestsUtil;
+import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XslResultDocumentTests extends XSLTransformTestsUtil {
+public class XslResultDocumentTests extends XslTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_result_document/";
     
@@ -82,6 +82,8 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
         xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
+        
+        fileComparisonType = XSLTestConstants.TEXT;
         
         String goldFileName1 = "credits.txt";
         String goldFileName2 = "debits.txt";
@@ -194,6 +196,8 @@ public class XslResultDocumentTests extends XSLTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
         
         xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
+        
+        fileComparisonType = XSLTestConstants.HTML;
         
         String goldFileName1 = "transactions.html";
         

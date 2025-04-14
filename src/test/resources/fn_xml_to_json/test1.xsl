@@ -7,7 +7,7 @@
     <!-- An XSLT test case, to test XPath 3.1 function 
          fn:xml-to-json. -->                                            
 
-    <xsl:output method="text"/>
+    <xsl:output method="json"/>
 
     <xsl:template match="/">
 	   <xsl:value-of select="xml-to-json(*)"/>

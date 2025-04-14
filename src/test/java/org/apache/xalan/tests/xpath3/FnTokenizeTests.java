@@ -17,7 +17,7 @@
 package org.apache.xalan.tests.xpath3;
 
 import org.apache.xalan.tests.util.XSLTestConstants;
-import org.apache.xalan.tests.util.XSLTransformTestsUtil;
+import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -30,7 +30,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class FnTokenizeTests extends XSLTransformTestsUtil {
+public class FnTokenizeTests extends XslTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "fn_tokenize/";
     
@@ -155,6 +155,8 @@ public class FnTokenizeTests extends XSLTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
         
+        fileComparisonType = XSLTestConstants.TEXT;
+        
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
@@ -164,6 +166,8 @@ public class FnTokenizeTests extends XSLTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
+        
+        fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
