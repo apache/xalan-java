@@ -20,6 +20,8 @@
  */
 package org.apache.xalan.processor;
 
+import java.util.Vector;
+
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerException;
 
@@ -37,7 +39,7 @@ import org.xml.sax.Attributes;
  */
 class ProcessorOutputElem extends XSLTElementProcessor
 {
-    static final long serialVersionUID = 3513742319582547590L;
+  static final long serialVersionUID = 3513742319582547590L;
 
   /** The output properties, set temporarily while the properties are 
    *  being set from the attributes, and then nulled after that operation 
@@ -122,6 +124,15 @@ class ProcessorOutputElem extends XSLTElementProcessor
   public void setOmitXmlDeclaration(boolean newValue)
   {
     m_outputProperties.setBooleanProperty(OutputKeys.OMIT_XML_DECLARATION, newValue);
+  }
+  
+  /**
+   * Set the use-character-maps property from the attribute value.
+   * @param newValue processed attribute value.
+   */
+  public void setUseCharacterMaps(Vector newValue)
+  {
+    m_outputProperties.setQNameProperties(OutputProperties.USE_CHARACTER_MAPS, newValue);
   }
 
   /**

@@ -20,10 +20,16 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.serializer.CharacterMapConfig;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.serializer.SerializerBase;
 import org.xml.sax.SAXException;
 
 /**
@@ -204,6 +210,24 @@ public class ElemTextLiteral extends ElemTemplateElement
     try
     {
       SerializationHandler rth = transformer.getResultTreeHandler();
+      
+      String strValue = new String(m_ch);
+      
+      if (rth instanceof SerializerBase) {    		  
+    	  SerializerBase serializerBase = (SerializerBase)rth;
+    	  CharacterMapConfig charMapConfig = serializerBase.getCharMapConfig();
+    	  Map<Character, String> charMap = charMapConfig.getCharMap();
+    	  Set<Character> charSet = charMap.keySet();
+    	  Iterator<Character> iter = charSet.iterator();
+    	  while (iter.hasNext()) {
+    		  Character char1 = iter.next();
+    		  String replacementStr = charMap.get(char1);
+    		  strValue = strValue.replace(char1.toString(), replacementStr);
+    	  }
+    	  
+    	  m_ch = strValue.toCharArray(); 
+      }
+      
       if (transformer.getDebug()) {
         // flush any pending cached processing before the trace event.
         rth.flushPending();

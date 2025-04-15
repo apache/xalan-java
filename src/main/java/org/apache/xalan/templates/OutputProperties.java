@@ -49,7 +49,10 @@ import org.apache.xml.utils.QName;
 public class OutputProperties extends ElemTemplateElement
         implements Cloneable
 {
-    static final long serialVersionUID = -6975274363881785488L;
+  static final long serialVersionUID = -6975274363881785488L;
+  
+  public static final String USE_CHARACTER_MAPS = "use-character-maps";
+  
   /**
    * Creates an empty OutputProperties with no default values.
    */
@@ -654,6 +657,7 @@ public class OutputProperties extends ElemTemplateElement
             || key.equals(OutputKeys.MEDIA_TYPE)
             || key.equals(OutputKeys.METHOD)
             || key.equals(OutputKeys.OMIT_XML_DECLARATION)
+            || key.equals(USE_CHARACTER_MAPS)
             || key.equals(OutputKeys.STANDALONE)
             || key.equals(OutputKeys.VERSION)
             || (key.length() > 0) 

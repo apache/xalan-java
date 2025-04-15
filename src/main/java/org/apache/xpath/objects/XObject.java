@@ -194,7 +194,6 @@ public class XObject extends Expression implements Serializable, Cloneable
   public void dispatchCharactersEvents(org.xml.sax.ContentHandler ch)
           throws org.xml.sax.SAXException
   {
-      // xstr().dispatchCharactersEvents(ch);
 	  String strVal = XslTransformEvaluationHelper.getStrVal(this);
 	  XMLString xmlStr = XMLStringFactoryImpl.getFactory().newstr(strVal);
 	  xmlStr.dispatchCharactersEvents(ch);

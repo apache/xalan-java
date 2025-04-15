@@ -356,7 +356,7 @@ public class ElemTemplate extends ElemTemplateElement
   }
   
   /**
-   * This after the template's children have been composed.
+   * This method is called after the template's children have been composed.
    */
   public void endCompose(StylesheetRoot sroot) throws TransformerException
   {

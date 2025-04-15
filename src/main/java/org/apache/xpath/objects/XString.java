@@ -20,9 +20,14 @@
  */
 package org.apache.xpath.objects;
 
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.serializer.CharacterMapConfig;
+import org.apache.xml.serializer.SerializerBase;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
@@ -39,7 +44,7 @@ import xml.xpath31.processor.types.XSString;
  */
 public class XString extends XObject implements XMLString
 {
-    static final long serialVersionUID = 2020470518395094525L;
+  static final long serialVersionUID = 2020470518395094525L;
 
   /** Empty string XString object */
   public static final XString EMPTYSTRING = new XString("");
@@ -204,6 +209,19 @@ public class XString extends XObject implements XMLString
   {
 
     String str = str();
+    
+    if (ch instanceof SerializerBase) {
+	   SerializerBase serializerBase = (SerializerBase)ch;
+	   CharacterMapConfig charMapConfig = serializerBase.getCharMapConfig();
+	   Map<Character, String> charMap = charMapConfig.getCharMap();
+	   Set<Character> charSet = charMap.keySet();
+	   Iterator<Character> iter = charSet.iterator();
+	   while (iter.hasNext()) {
+		  Character char1 = iter.next();
+		  String replacementStr = charMap.get(char1);
+		  str = str.replace(char1.toString(), replacementStr);
+	   }
+	}
 
     ch.characters(str.toCharArray(), 0, str.length());
   }

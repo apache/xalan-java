@@ -243,7 +243,12 @@ public abstract class SerializerBase
      * Reusing this buffer means not creating a new character array
      * everytime and it runs faster.
      */
-    protected char[] m_attrBuff = new char[30];    
+    protected char[] m_attrBuff = new char[30];
+    
+    /**
+     * Class field added to support XSLT 3 instruction xsl:character-map.
+     */
+    private CharacterMapConfig m_charMapConfig = new CharacterMapConfig();
 
     /**
      * Receive notification of a comment.
@@ -1695,6 +1700,14 @@ public abstract class SerializerBase
             first = name.charAt(i+1);
         return first;
     }
+
+	public CharacterMapConfig getCharMapConfig() {
+		return m_charMapConfig;
+	}
+
+	public void setCharMapConfig(CharacterMapConfig charMapConfig) {
+		this.m_charMapConfig = charMapConfig;
+	}
 }
     
 

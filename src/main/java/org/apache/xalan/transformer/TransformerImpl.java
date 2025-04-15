@@ -57,6 +57,7 @@ import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemNumber;
+import org.apache.xalan.templates.ElemOutputCharacter;
 import org.apache.xalan.templates.ElemSort;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -74,9 +75,11 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.serializer.CharacterMapConfig;
 import org.apache.xml.serializer.Method;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.serializer.Serializer;
+import org.apache.xml.serializer.SerializerBase;
 import org.apache.xml.serializer.SerializerFactory;
 import org.apache.xml.serializer.ToSAXHandler;
 import org.apache.xml.serializer.ToTextStream;
@@ -95,6 +98,8 @@ import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -1429,9 +1434,7 @@ public class TransformerImpl extends Transformer
         {
           xctxt.popContextNodeList();
         }
-        // m_stylesheetRoot.getStartRule().execute(this);
 
-        // System.out.println("Done with applyTemplateToNode - "+Thread.currentThread().getName());
         if (null != m_serializationHandler)
         {
           m_serializationHandler.endDocument();
@@ -1524,11 +1527,8 @@ public class TransformerImpl extends Transformer
 
     if (null == m_inputContentHandler)
     {
-
-      //      if(null == m_urlOfSource && null != m_stylesheetRoot)
-      //        m_urlOfSource = m_stylesheetRoot.getBaseIdentifier();
       m_inputContentHandler = new TransformerHandlerImpl(this, doDocFrag,
-              m_urlOfSource);
+              															m_urlOfSource);
     }
 
     return m_inputContentHandler;
@@ -3237,8 +3237,27 @@ public class TransformerImpl extends Transformer
    * be the main result tree manager.
    */
   public SerializationHandler getResultTreeHandler()
-  {
-    return m_serializationHandler;
+  {		
+	  NodeList stylesheetRootChildNodes = m_stylesheetRoot.getChildNodes();
+	  int childNodeLen = stylesheetRootChildNodes.getLength();
+	  CharacterMapConfig charMapConfig = new CharacterMapConfig();
+	  
+	  for (int idx = 0; idx < childNodeLen; idx++) {
+		  Node node = stylesheetRootChildNodes.item(idx);
+		  if (node instanceof ElemOutputCharacter) {
+			  ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)node;			  			  
+			  char chr = elemOutputCharacter.getCharacter();
+			  String str = elemOutputCharacter.getString();
+			  charMapConfig.put(Character.valueOf(chr), str);
+		  }
+	  }
+	  
+	  if (m_serializationHandler instanceof SerializerBase) {
+		 SerializerBase serializerBase = (SerializerBase)m_serializationHandler;
+		 serializerBase.setCharMapConfig(charMapConfig);
+	  }
+
+	  return m_serializationHandler;
   }
 
   /**

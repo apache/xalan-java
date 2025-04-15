@@ -716,7 +716,7 @@ public class Process
 					  }
 
 					  DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-					  Node xslDOM = docBuilder.parse(new InputSource(xslFileName));
+					  Document xslDOM = docBuilder.parse(new InputSource(xslFileName));
 
 					  stylesheet = tfactory.newTemplates(new DOMSource(xslDOM, xslFileName));
 				  }

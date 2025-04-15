@@ -57,6 +57,7 @@ import org.apache.xalan.templates.ElemMessage;
 import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
+import org.apache.xalan.templates.ElemOutputCharacter;
 import org.apache.xalan.templates.ElemPI;
 import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemResultDocument;
@@ -118,7 +119,17 @@ public class XSLTSchema extends XSLTElementDef
 	// xsl:preserve-space, xsl:strip-space
     XSLTAttributeDef elementsAttr = new XSLTAttributeDef(null, "elements",
                                       XSLTAttributeDef.T_SIMPLEPATTERNLIST,
-                                      true, false, XSLTAttributeDef.ERROR);                                   
+                                      true, false, XSLTAttributeDef.ERROR);
+    
+    // Required.
+    // xsl:output-character                                     
+    XSLTAttributeDef characterAttrRequired = new XSLTAttributeDef(null, "character",
+    										   XSLTAttributeDef.T_CHAR, true, false, XSLTAttributeDef.ERROR);
+    
+    // Required.
+    // xsl:output-character                                     
+    XSLTAttributeDef stringAttrRequired = new XSLTAttributeDef(null, "string",
+    							            XSLTAttributeDef.T_STRING, true, false, XSLTAttributeDef.ERROR);
     
     // xsl:output, xsl:result-document
     XSLTAttributeDef methodAttr = new XSLTAttributeDef(null, "method",
@@ -131,6 +142,8 @@ public class XSLTSchema extends XSLTElementDef
                                                 "omit-xml-declaration",
                                                 XSLTAttributeDef.T_YESNO,
                                                 false, false,XSLTAttributeDef.ERROR);
+    XSLTAttributeDef useCharacterMapsAttr = new XSLTAttributeDef(null, "use-character-maps",
+                                                      XSLTAttributeDef.T_QNAMES, false, false, XSLTAttributeDef.ERROR);
     XSLTAttributeDef standaloneAttr = new XSLTAttributeDef(null,
                                         "standalone",
                                         XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
@@ -153,7 +166,7 @@ public class XSLTSchema extends XSLTElementDef
     // Required.
     // It is an error if the name attribute is not present on any of these elements
     // xsl:key, xsl:attribute-set, xsl:call-template, xsl:with-param, xsl:variable, xsl:param, 
-    // xsl:function
+    // xsl:function, xsl:character-map
     XSLTAttributeDef nameAttrRequired = new XSLTAttributeDef(null, "name",
                                           XSLTAttributeDef.T_QNAME, true, false,XSLTAttributeDef.ERROR);
     
@@ -591,6 +604,13 @@ public class XSLTSchema extends XSLTElementDef
                                                new ProcessorTemplateElem(),
                                   ElemForEach.class /* class object */, true, false, true, 20, true);
     
+    XSLTElementDef xslOutputCharacter = new XSLTElementDef(this,
+					              Constants.S_XSLNAMESPACEURL, "output-character",
+					              null /*alias */, templateElements,
+					              new XSLTAttributeDef[]{ characterAttrRequired, stringAttrRequired }, 
+					              new ProcessorTemplateElem(),
+					              ElemOutputCharacter.class /* class object */, true, false, true, 20, true);
+    
     XSLTElementDef xslForEachGroup = new XSLTElementDef(this,
                                              Constants.S_XSLNAMESPACEURL, "for-each-group",
                                              null /*alias */, templateElementsAndSort,
@@ -1022,10 +1042,11 @@ public class XSLTSchema extends XSLTElementDef
                                          null /*alias */,
                                          null /* elements */,
                                          new XSLTAttributeDef[]{
-                                                  methodAttr,
+                                                  methodAttr,                                                  
                                                   versionAttr,
                                                   encodingAttr,
                                                   omitXmlDeclarationAttr,
+                                                  useCharacterMapsAttr,
                                                   standaloneAttr,
                                                   doctypePublicAttr,
                                                   doctypeSystemAttr,
@@ -1033,7 +1054,15 @@ public class XSLTSchema extends XSLTElementDef
                                                   indentAttr,
                                                   mediaTypeAttr,
                                                   XSLTAttributeDef.m_foreignAttr }, 
-                                          new ProcessorOutputElem(), null /* class object */, 20, true), 
+                                          new ProcessorOutputElem(), null /* class object */, 20, true),
+                                  new XSLTElementDef(
+                                          this,
+                                          Constants.S_XSLNAMESPACEURL,
+                                          "character-map",
+                                          null /*alias */,
+                                          new XSLTElementDef[] { xslOutputCharacter } /* elements */,
+                                          new XSLTAttributeDef[] { nameAttrRequired }, 
+                                           new ProcessorOutputElem(), null /* class object */, 20, true),
                                   new XSLTElementDef(
                                           this,
                                           Constants.S_XSLNAMESPACEURL,

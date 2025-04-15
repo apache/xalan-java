@@ -1592,6 +1592,11 @@ public class XSLTAttributeDef
   {
     if(attrRawName.equals("xmlns") || attrRawName.startsWith("xmlns:"))
       return true;
+    
+    if (attrRawName.equals("name") && elem instanceof ProcessorOutputElem) {
+       // To implement xsl:output element's attribute ''use-character-maps'
+       return true;
+    }
       
     String setterString = getSetterMethodName();
 
