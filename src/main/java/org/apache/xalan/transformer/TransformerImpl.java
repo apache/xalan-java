@@ -15,17 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.transformer;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -111,7 +111,8 @@ import org.xml.sax.ext.LexicalHandler;
 /**
  * This class implements the
  * {@link javax.xml.transform.Transformer} interface, and is the core
- * representation of an XSL transformation implementation.</p>
+ * representation of an XSL transformation implementation.
+ * 
  * @xsl.usage advanced
  */
 public class TransformerImpl extends Transformer
@@ -145,7 +146,7 @@ public class TransformerImpl extends Transformer
   private Result m_outputTarget = null;
 
   /**
-   * The output format object set by the user.  May be null.
+   * The output format object set by the user. May be null.
    */
   private OutputProperties m_outputFormat;
 
@@ -2494,13 +2495,29 @@ public class TransformerImpl extends Transformer
     if (null == t)
       return;      
     
-    if(elem.hasTextLitOnly() && m_optimizer)
+    if (elem.hasTextLitOnly() && m_optimizer)
     {      
       char[] chars = ((ElemTextLiteral)t).getChars();
       try
       {
         // Have to push stuff on for tooling...
         this.pushElemTemplateElement(t);
+        
+        if (m_serializationHandler instanceof SerializerBase) {
+        	CharacterMapConfig charMapConfig = ((SerializerBase)m_serializationHandler).getCharMapConfig();
+        	Map<Character, String> charMap = charMapConfig.getCharMap();
+        	Set<Character> charSet = charMap.keySet();
+        	Iterator<Character> iter = charSet.iterator();
+        	String strValue = String.valueOf(chars);
+        	while (iter.hasNext()) {
+        		Character char1 = iter.next();
+        		String replacementStr = charMap.get(char1);
+        		strValue = strValue.replace(char1.toString(), replacementStr);
+        	}
+
+        	chars = strValue.toCharArray();
+        }
+        
         m_serializationHandler.characters(chars, 0, chars.length);
       }
       catch(SAXException se)
@@ -3238,23 +3255,27 @@ public class TransformerImpl extends Transformer
    */
   public SerializationHandler getResultTreeHandler()
   {		
-	  NodeList stylesheetRootChildNodes = m_stylesheetRoot.getChildNodes();
-	  int childNodeLen = stylesheetRootChildNodes.getLength();
+	  boolean useCharMaps = m_stylesheetRoot.getUseCharacterMaps();
+	  
 	  CharacterMapConfig charMapConfig = new CharacterMapConfig();
 	  
-	  for (int idx = 0; idx < childNodeLen; idx++) {
-		  Node node = stylesheetRootChildNodes.item(idx);
-		  if (node instanceof ElemOutputCharacter) {
-			  ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)node;			  			  
-			  char chr = elemOutputCharacter.getCharacter();
-			  String str = elemOutputCharacter.getString();
-			  charMapConfig.put(Character.valueOf(chr), str);
+	  if (useCharMaps) {
+		  NodeList stylesheetRootChildNodes = m_stylesheetRoot.getChildNodes();
+		  int childNodeLen = stylesheetRootChildNodes.getLength();	  	  
+		  for (int idx = 0; idx < childNodeLen; idx++) {
+			  Node node = stylesheetRootChildNodes.item(idx);
+			  if (node instanceof ElemOutputCharacter) {
+				  ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)node;			  			  
+				  char chr = elemOutputCharacter.getCharacter();
+				  String str = elemOutputCharacter.getString();
+				  charMapConfig.put(Character.valueOf(chr), str);
+			  }
 		  }
-	  }
-	  
-	  if (m_serializationHandler instanceof SerializerBase) {
-		 SerializerBase serializerBase = (SerializerBase)m_serializationHandler;
-		 serializerBase.setCharMapConfig(charMapConfig);
+
+		  if (m_serializationHandler instanceof SerializerBase) {
+			  SerializerBase serializerBase = (SerializerBase)m_serializationHandler;
+			  serializerBase.setCharMapConfig(charMapConfig);
+		  }
 	  }
 
 	  return m_serializationHandler;

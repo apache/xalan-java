@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,9 +14,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/*
- * $Id$
  */
 package org.apache.xalan.templates;
 
@@ -80,6 +77,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * This class represents the root object of the stylesheet tree.
+ * 
  * @xsl.usage general
  */
 public class StylesheetRoot extends StylesheetComposed
@@ -150,10 +148,15 @@ public class StylesheetRoot extends StylesheetComposed
   }
 
   /**
-   * The schema used when creating this StylesheetRoot
-   * @serial
+   * The schema used when creating this StylesheetRoot.
    */
   private HashMap m_availElems;
+  
+  /**
+   * This class field is used to implement XSL instruction 
+   * xsl:character-map.
+   */
+  private boolean m_isXslOutputHasUseCharacterMapsAttr;
   
   /**
    * Creates a StylesheetRoot and retains a pointer to the schema used to create this
@@ -431,7 +434,6 @@ public class StylesheetRoot extends StylesheetComposed
    * The combined list of imports.  The stylesheet with the highest
    * import precedence will be at element 0.  The one with the lowest
    * import precedence will be at element length - 1.
-   * @serial
    */
   private StylesheetComposed[] m_globalImportList;
 
@@ -544,7 +546,6 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * This will be set up with the default values, and then the values
    * will be set as stylesheets are encountered.
-   * @serial
    */
   private OutputProperties m_outputProperties;
 
@@ -579,8 +580,9 @@ public class StylesheetRoot extends StylesheetComposed
     return m_outputProperties;
   }
 
-  /** Flag indicating whether an output method has been set by the user.
-   *  @serial           */
+  /** 
+   * Flag indicating whether an output method has been set by the user.
+   */
   private boolean m_outputMethodSet = false;
 
   /**
@@ -597,7 +599,6 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Composed set of all included and imported attribute set properties.
    * Each entry is a vector of ElemAttributeSet objects.
-   * @serial
    */
   private HashMap m_attrSets;
 
@@ -638,7 +639,6 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * Table of DecimalFormatSymbols, keyed by QName.
-   * @serial
    */
   private Hashtable m_decimalFormatSymbols;
 
@@ -701,7 +701,6 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * A list of all key declarations visible from this stylesheet and all
    * lesser stylesheets.
-   * @serial
    */
   private Vector m_keyDecls;
 
@@ -728,7 +727,6 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * Composed set of all namespace aliases.
-   * @serial
    */
   private Hashtable m_namespaceAliasComposed;
 
@@ -760,7 +758,6 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * The "xsl:template" properties.
-   * @serial
    */
   private TemplateList m_templateList;
 
@@ -873,7 +870,6 @@ public class StylesheetRoot extends StylesheetComposed
   
   /**
    * Composed set of all variables and params.
-   * @serial
    */
   private Vector m_variables;
 
@@ -942,7 +938,6 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * A list of properties that specify how to do space
    * stripping. This uses the same exact mechanism as Templates.
-   * @serial
    */
   private TemplateList m_whiteSpaceInfoList;
 
@@ -1037,13 +1032,11 @@ public class StylesheetRoot extends StylesheetComposed
   {
     return (null != m_whiteSpaceInfoList);
   }
-  
-
 
   /**
    * The default template to use for text nodes if we don't find
    * anything else.  This is initialized in initDefaultRule().
-   * @serial
+   * 
    * @xsl.usage advanced
    */
   private ElemTemplate m_defaultTextRule;
@@ -1061,8 +1054,8 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * The default template to use if we don't find anything
-   * else.  This is initialized in initDefaultRule().
-   * @serial
+   * else. This is initialized in initDefaultRule().
+   *
    * @xsl.usage advanced
    */
   private ElemTemplate m_defaultRule;
@@ -1086,7 +1079,7 @@ public class StylesheetRoot extends StylesheetComposed
    * For now, I default the root document element to "HTML".
    * Don't know if this is really a good idea or not.
    * I suspect it is not.
-   * @serial
+   *
    * @xsl.usage advanced
    */
   private ElemTemplate m_defaultRootRule;
@@ -1104,7 +1097,7 @@ public class StylesheetRoot extends StylesheetComposed
   
   /**
    * The start rule to kick off the transformation.
-   * @serial
+   * 
    * @xsl.usage advanced
    */
   private ElemTemplate m_startRule;
@@ -1123,7 +1116,6 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * Used for default selection.
-   * @serial
    */
   XPath m_selectDefault;
 
@@ -1758,6 +1750,24 @@ public class StylesheetRoot extends StylesheetComposed
 
 			throw new TransformerException(valErrMesgToDisplay); 
 		}
+	}
+
+	/**
+	 * This method is used to implement XSL instruction xsl:character-map.
+	 * 
+	 * @param isXslOutputHasUseCharacterMapsAttr
+	 */
+	public void setUseCharacterMaps(boolean isXslOutputHasUseCharacterMapsAttr) {
+		this.m_isXslOutputHasUseCharacterMapsAttr = isXslOutputHasUseCharacterMapsAttr; 		
+	}
+	
+	/**
+	 * This method is used to implement XSL instruction xsl:character-map.
+	 * 
+	 * @return boolean
+	 */
+	public boolean getUseCharacterMaps() {
+		return this.m_isXslOutputHasUseCharacterMapsAttr;
 	}
 
 }
