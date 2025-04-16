@@ -57,8 +57,6 @@ import xml.xpath31.processor.types.XSAnyType;
 /**
  * Implementation of XSL stylesheet literal result element.
  * 
- * @see <a href="https://www.w3.org/TR/xslt-30/#literal-result-element">literal-result-element in XSLT 3.0 Specification</a>
- * 
  * @xsl.usage advanced
  */
 public class ElemLiteralResult extends ElemUse
@@ -144,7 +142,6 @@ public class ElemLiteralResult extends ElemUse
    */
   public void addLiteralResultAttribute(AVT avt)
   {
-
     if (null == m_avts)
       m_avts = new ArrayList();
 
@@ -158,7 +155,6 @@ public class ElemLiteralResult extends ElemUse
    */
   public void addLiteralResultAttribute(String att)
   {
-
     if (null == m_xslAttr)
       m_xslAttr = new ArrayList();
 
@@ -178,7 +174,6 @@ public class ElemLiteralResult extends ElemUse
    */
   public void setXmlSpace(AVT avt)
   {
-    // This function is a bit-o-hack, I guess...
     addLiteralResultAttribute(avt);
     String val = avt.getSimpleString();
     if(val.equals("default"))
@@ -202,7 +197,6 @@ public class ElemLiteralResult extends ElemUse
    */
   public AVT getLiteralResultAttributeNS(String namespaceURI, String localName)
   {
-
     if (null != m_avts)
     {
       int nAttrs = m_avts.size();
@@ -563,7 +557,7 @@ public class ElemLiteralResult extends ElemUse
         return new LiteralElementAttributes();
   }
 
-  public class LiteralElementAttributes implements NamedNodeMap{
+  public class LiteralElementAttributes implements NamedNodeMap {
           private int m_count = -1;
           
           /**
@@ -1310,8 +1304,7 @@ public class ElemLiteralResult extends ElemUse
    *
    * @throws TransformerException
    */
-    public void execute(TransformerImpl transformer)
-        throws TransformerException
+    public void execute(TransformerImpl transformer) throws TransformerException
     {
         SerializationHandler rhandler = transformer.getSerializationHandler();
         
@@ -1328,9 +1321,6 @@ public class ElemLiteralResult extends ElemUse
                 transformer.getTraceManager().emitTraceEvent(this);
             }
 
-            // JJK Bugzilla 3464, test namespace85 -- make sure LRE's
-            // namespace is asserted even if default, since xsl:element
-            // may have changed the context.
             rhandler.startPrefixMapping(getPrefix(), getNamespace());
 
             // Add namespace declarations.
@@ -1352,11 +1342,9 @@ public class ElemLiteralResult extends ElemUse
         TransformerException tException = null;
         try
         {
-
             // Process any possible attributes from xsl:use-attribute-sets first
             super.execute(transformer);
 
-            //xsl:version, excludeResultPrefixes???
             // Process the list of avts next
             if (null != m_avts)
             {

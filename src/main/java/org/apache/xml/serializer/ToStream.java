@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,9 +14,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/*
- * $Id$
  */
 package org.apache.xml.serializer;
 
@@ -3015,6 +3012,9 @@ abstract public class ToStream extends SerializerBase
     {
         boolean was_added;
         int index;
+        
+        String newValue = replaceAttributeValueWithCharMap(value);
+        
         if (uri == null || localName == null || uri.length() == 0)
             index = m_attributes.getIndex(rawName);
         else {
@@ -3027,7 +3027,7 @@ abstract public class ToStream extends SerializerBase
             if (m_tracer != null)
             {
                 old_value = m_attributes.getValue(index);
-                if (value.equals(old_value))
+                if (newValue.equals(old_value))
                     old_value = null;
             }
 
@@ -3035,7 +3035,7 @@ abstract public class ToStream extends SerializerBase
              * We may have a null uri or localName, but all we really
              * want to re-set is the value anyway.
              */
-            m_attributes.setValue(index, value);
+            m_attributes.setValue(index, newValue);
             was_added = false;
             if (old_value != null)
                 emitPseudoAttributes();
@@ -3120,11 +3120,12 @@ abstract public class ToStream extends SerializerBase
                     e.printStackTrace();
                 }
             }
-            m_attributes.addAttribute(uri, localName, rawName, type, value);
+            m_attributes.addAttribute(uri, localName, rawName, type, newValue);
             was_added = true;
             if (m_tracer != null)
                 emitPseudoAttributes();
         }
+        
         return was_added;
     }
 

@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,13 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xml.serializer;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.transform.OutputKeys;
@@ -402,21 +401,15 @@ public abstract class SerializerBase
         String value,
         boolean XSLAttribute)
     {
-        boolean was_added;
-//            final int index =
-//                (localName == null || uri == null) ?
-//                m_attributes.getIndex(rawName):m_attributes.getIndex(uri, localName);        
+            boolean was_added;        
             int index;
-//            if (localName == null || uri == null){
-//                index = m_attributes.getIndex(rawName);
-//            }
-//            else {
-//                index = m_attributes.getIndex(uri, localName);
-//            }
+            
+            String newValue = replaceAttributeValueWithCharMap(value);            
+            
             if (localName == null || uri == null || uri.length() == 0)
                 index = m_attributes.getIndex(rawName);
             else {
-                index = m_attributes.getIndex(uri,localName);
+                index = m_attributes.getIndex(uri, localName);
             }
             if (index >= 0)
             {
@@ -424,20 +417,19 @@ public abstract class SerializerBase
                  * We may have a null uri or localName, but all
                  * we really want to re-set is the value anyway.
                  */
-                m_attributes.setValue(index,value);
+                m_attributes.setValue(index, newValue);
                 was_added = false;
             }
             else
             {
                 // the attribute doesn't exist yet, create it
-                m_attributes.addAttribute(uri, localName, rawName, type, value);
+                m_attributes.addAttribute(uri, localName, rawName, type, newValue);
                 was_added = true;
             }
-            return was_added;
-        
+            
+            return was_added;        
     }
   
-
     /**
      * Adds the given attribute to the set of collected attributes, 
      * but only if there is a currently open element.
@@ -1708,6 +1700,30 @@ public abstract class SerializerBase
 	public void setCharMapConfig(CharacterMapConfig charMapConfig) {
 		this.m_charMapConfig = charMapConfig;
 	}
+	
+	/**
+	 * If one or more xsl:character-map elements are been used within an 
+	 * XSL stylesheet, this method replaces attribute values that have to be 
+	 * serialized to XSL transformation output, with the information
+	 * provided within xsl:character-map element(s). 
+	 * 
+	 * @param attrValue			Initial attribute value
+	 * @return
+	 */
+	protected String replaceAttributeValueWithCharMap(String attrValue) {
+		
+		CharacterMapConfig charMapConfig = getCharMapConfig();
+		
+		Map<Character, String> charMap = charMapConfig.getCharMap();
+		Set<Character> charSet = charMap.keySet();
+		Iterator<Character> iter = charSet.iterator();
+		while (iter.hasNext()) {
+			Character char1 = iter.next();
+			String replacementStr = charMap.get(char1);
+			attrValue = attrValue.replace(char1.toString(), replacementStr);
+		}
+		
+		return attrValue;
+	}
+	
 }
-    
-

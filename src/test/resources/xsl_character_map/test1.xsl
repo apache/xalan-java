@@ -7,7 +7,8 @@
   <!-- Author: mukulg@apache.org -->
   
   <!-- An XSL stylesheet test case to test, xsl:character-map 
-       instruction. -->			    	
+       instruction. This stylesheet example does, character substitution 
+       within string values emitted via xsl:value-of instruction. -->			    	
   
   <xsl:output method="xml" use-character-maps="cm1" indent="yes"/>
   

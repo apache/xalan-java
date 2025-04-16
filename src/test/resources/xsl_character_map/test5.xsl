@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                				
-			    version="3.0">	
-  
+			    version="3.0">
+			    
   <!-- Author: mukulg@apache.org -->
   
   <!-- An XSL stylesheet test case to test, xsl:character-map 
-       instruction. This stylesheet example does, character substitution 
-       within string values emitted via xsl:text instruction. 
+       instruction. This stylesheet example does, character substituton 
+       within attribute values. 
        
        This stylesheet example, also has more than one xsl:character-map 
        elements. 
-  -->	
-       
+  -->				    	
+  
   <xsl:output method="xml" use-character-maps="cm1 cm2" indent="yes"/>
   
   <xsl:character-map name="cm1">
@@ -27,9 +27,13 @@
   
   <xsl:template match="/">
 	 <result>
-	    <one>
-		   <xsl:text>thanks x foR Reading y. p and q and r.</xsl:text>
-		</one>
+	    <one attr1="thanks x foR Reading y. p and q and r."/>
+		<two>
+		   <xsl:attribute name="attr2" select="'p and q and r'"/>
+		</two>
+		<three>
+		   <xsl:attribute name="attr3">x and y</xsl:attribute>		   
+		</three>
 	 </result>
   </xsl:template>
   
@@ -49,6 +53,6 @@
       * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
       * See the License for the specific language governing permissions and
       * limitations under the License.
-   -->
+  -->
   
 </xsl:stylesheet>

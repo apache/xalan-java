@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                				
-			    version="3.0">	
-  
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                exclude-result-prefixes="xs"				
+			    version="3.0">
+
   <!-- Author: mukulg@apache.org -->
   
+  <!-- use with test1.xml -->
+  
   <!-- An XSL stylesheet test case to test, xsl:character-map 
-       instruction. This stylesheet example does, character substitution 
-       within string values emitted via xsl:text instruction. 
+       instruction. This stylesheet example does, character substituton 
+       within attribute values. 
        
        This stylesheet example, also has more than one xsl:character-map 
-       elements. 
-  -->	
-       
+       elements.       
+  -->				
+  
   <xsl:output method="xml" use-character-maps="cm1 cm2" indent="yes"/>
   
   <xsl:character-map name="cm1">
@@ -25,11 +29,15 @@
 	 <xsl:output-character character="r" string="RRR"/>
   </xsl:character-map>
   
-  <xsl:template match="/">
+  <xsl:template match="/root">
 	 <result>
-	    <one>
-		   <xsl:text>thanks x foR Reading y. p and q and r.</xsl:text>
-		</one>
+	    <one attr1="{info}"/>
+		<two>
+		   <xsl:attribute name="attr2" select="info"/>
+		</two>
+		<three>
+		   <xsl:attribute name="attr3"><xsl:value-of select="info"/></xsl:attribute>		   
+		</three>
 	 </result>
   </xsl:template>
   
@@ -49,6 +57,6 @@
       * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
       * See the License for the specific language governing permissions and
       * limitations under the License.
-   -->
+  -->
   
 </xsl:stylesheet>
