@@ -41,9 +41,9 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.templates.Constants;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.transformer.TrAXFilter;
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -81,6 +81,9 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
    */
   private boolean m_isSecureProcessing = false;
   
+  /**
+   * Namespace URL for XSL transformation language.
+   */
   private static final String XSL_NAMESPACE_URL = "http://www.w3.org/1999/XSL/Transform";
 
   /**
@@ -843,29 +846,30 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
           throws TransformerConfigurationException
   {
 
-    String baseID = source.getSystemId();
+    String xslStylesheetSystemId = source.getSystemId();
 
-    if (null != baseID) {
-       baseID = SystemIDResolver.getAbsoluteURI(baseID);
+    if (xslStylesheetSystemId != null) {
+       xslStylesheetSystemId = SystemIDResolver.getAbsoluteURI(xslStylesheetSystemId);
     }
 
     if (source instanceof DOMSource)
     {
-      DOMSource dsource = (DOMSource) source;
-      Node node = dsource.getNode();           
+    	DOMSource dsource = (DOMSource) source;
+    	Node node = dsource.getNode();           
 
-      if (node != null) {    	
-    	verifyXSLCharacterMapNameConsistency((Document)node);
-    	
-        return processFromNode(node, baseID);
-      }
-      else
-      {
-        String messageStr = XSLMessages.createMessage(
-          XSLTErrorResources.ER_ILLEGAL_DOMSOURCE_INPUT, null);
+    	if (node != null) {
+    		// Do lexical validation for, XSL xsl:character-map instruction
+    		verifyXSLCharacterMapNameConsistency((Document)node);
 
-        throw new IllegalArgumentException(messageStr);
-      }
+    		return processFromNode(node, xslStylesheetSystemId);
+    	}
+    	else
+    	{
+    		String messageStr = XSLMessages.createMessage(
+    				XSLTErrorResources.ER_ILLEGAL_DOMSOURCE_INPUT, null);
+
+    		throw new IllegalArgumentException(messageStr);
+    	}
     }
     else if (source instanceof StreamSource) {
     	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
@@ -874,29 +878,42 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     	Document document = null;
     	try {
     		DocumentBuilder dBuilder = dbf.newDocumentBuilder();   	
-    		document = dBuilder.parse(baseID);
+    		document = dBuilder.parse(xslStylesheetSystemId);
     	}
     	catch (Exception ex) {
     		ex.printStackTrace();
     	}
     	
+    	// Do lexical validation for, XSL xsl:character-map instruction
     	verifyXSLCharacterMapNameConsistency(document);
     }
 
     TemplatesHandler builder = newTemplatesHandler();
-    builder.setSystemId(baseID);
+    builder.setSystemId(xslStylesheetSystemId);
     
     try
     {
-      InputSource isource = SAXSource.sourceToInputSource(source);
-      isource.setSystemId(baseID);
+      InputSource inpSource = SAXSource.sourceToInputSource(source);
+      inpSource.setSystemId(xslStylesheetSystemId);
       XMLReader reader = null;
 
-      if (source instanceof SAXSource) {
-    	// Verify xsl:character-map name consistency
-        // TO DO
-        
-    	reader = ((SAXSource) source).getXMLReader();
+      if (source instanceof SAXSource) {    	  
+    	  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    	  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    	  dbf.setNamespaceAware(true);    	
+    	  Document document = null;
+    	  try {
+    		  DocumentBuilder dBuilder = dbf.newDocumentBuilder();   	
+    		  document = dBuilder.parse(inpSource);
+    	  }
+    	  catch (Exception ex) {
+    		  ex.printStackTrace();
+    	  }
+
+    	  // Do lexical validation for, XSL xsl:character-map instruction
+    	  verifyXSLCharacterMapNameConsistency(document);
+
+    	  reader = ((SAXSource)source).getXMLReader();
       }
         
       if (null == reader)
@@ -941,7 +958,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
       // xmlns attributes.  Needs to be fixed.  -sb
       // reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
       reader.setContentHandler(builder);
-      reader.parse(isource);
+      reader.parse(inpSource);
     }
     catch (org.xml.sax.SAXException se)
     {
@@ -1063,8 +1080,9 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   }
   
   /**
-   * Given an XSL stylesheet DOM object, verify consistency of xsl:character-map element names 
-   * with, those specified within attribute value xsl:output/@use-character-maps.
+   * Given an XSL stylesheet DOM object, verify consistency of xsl:character-map names 
+   * specified within xsl:character-map/@name attribute, with those specified within 
+   * xsl:output/@use-character-maps attribute value.
    * 
    * @param document									An XSL stylesheet DOM object.									
    * @throws TransformerConfigurationException
@@ -1076,7 +1094,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 	  List<String> charMapNameList1 = new ArrayList<String>();
 	  for (int idx = 0; idx < nodeList.getLength(); idx++) {
 		  Element elemNode = (Element)(nodeList.item(idx));
-		  String charMapName = elemNode.getAttribute("name");
+		  String charMapName = elemNode.getAttribute(Constants.ATTRNAME_NAME);
 		  if (charMapNameList1.contains(charMapName)) {
 			  throw new TransformerConfigurationException("An XSL stylesheet contains more than one xsl:character-map "
 					  																		+ "instructions with name '" + charMapName + "'.");    		  
@@ -1090,15 +1108,15 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 	  nodeList = document.getElementsByTagNameNS(XSL_NAMESPACE_URL, Constants.ELEMNAME_OUTPUT_STRING);
 	  if (nodeList.getLength() == 1) {
 		  Element elemNode = (Element)(nodeList.item(0));
-		  String attrValue = elemNode.getAttribute("use-character-maps");
+		  String attrValue = elemNode.getAttribute(Constants.ATTRNAME_USE_CHARACTER_MAPS);
 		  if (!"".equals(attrValue)) {
 			  String[] charMapNames = attrValue.split(" ");
 			  for (int idx = 0; idx < charMapNames.length; idx++) {
 				  String charMapName = charMapNames[idx]; 
 				  if (charMapNameList2.contains(charMapName)) {
 					  throw new TransformerConfigurationException("An XSL stylesheet xsl:output element's attribute 'use-character-maps' "
-																							 + "value refers to more than one xsl:character-map name '" + 
-																							 charMapName + "'.");    		  
+																							 + "value refers to more than one xsl:character-map "
+																							 + "with name '" + charMapName + "'.");    		  
 				  }
 				  else {
 					  charMapNameList2.add(charMapName); 
@@ -1124,8 +1142,9 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 			  }
 
 			  if (!allCharacterMapNamesOk) {
-				  throw new TransformerConfigurationException("An XSL character map name '" + name1 + "' of an element xsl:character-map "
-						  																	+ "is not found within attribute value xsl:output/@use-character-maps."); 
+				  throw new TransformerConfigurationException("An XSL character map name '" + name1 + "', specified as value of an "
+				  																		+ "element xsl:character-map's name attribute is not found within "
+				  																		+ "attribute value xsl:output/@use-character-maps."); 
 			  }
 		  }
 	  }

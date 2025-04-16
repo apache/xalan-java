@@ -21,7 +21,9 @@
 package org.apache.xalan.templates;
 
 /**
- * Primary constants used in the TransformerImpl classes.
+ * Specification of primary constant values used in the 
+ * TransformerImpl classes.
+ * 
  * @xsl.usage advanced
  */
 public class Constants extends org.apache.xml.utils.Constants
@@ -245,7 +247,7 @@ public class Constants extends org.apache.xml.utils.Constants
   
   
   /**
-   * Literals for XSL attribute names.  Note that there may be more
+   * Literals for XSL attribute names. Note that there may be more
    * names than IDs, because some names may map to the same ID.
    */
   public static final String
@@ -330,7 +332,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ATTRNAME_XMLNS = "xmlns:", // namespace declaration prefix -- NOT an attribute by itself
       ATTRNAME_XMLNSDEF = "xmlns", // default namespace
       ATTRNAME_XMLSPACE = "xml:space", 
-      ATTRNAME_ZERODIGIT = "zero-digit";
+      ATTRNAME_ZERODIGIT = "zero-digit",      
+      ATTRNAME_USE_CHARACTER_MAPS = "use-character-maps";
 
   /** IDs for XSL attribute types. These are associated
    * with the string literals in the TransformerImpl class.

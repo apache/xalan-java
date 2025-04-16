@@ -720,6 +720,11 @@ public class Process
 
 					  stylesheet = tfactory.newTemplates(new DOMSource(xslDOM, xslFileName));
 				  }
+				  if (flavor.equals("s2s"))
+				  {
+					 SAXSource saxSource = new SAXSource(new InputSource(xslFileName)); 
+					 stylesheet = tfactory.newTemplates(saxSource);
+				  }
 				  else
 				  {
 					  XslTransformSharedDatastore.xslSystemId = SystemIDResolver.getAbsoluteURI(xslFileName); 
