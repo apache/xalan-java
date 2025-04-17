@@ -3255,29 +3255,8 @@ public class TransformerImpl extends Transformer
    */
   public SerializationHandler getResultTreeHandler()
   {		
-	  boolean useCharMaps = m_stylesheetRoot.getUseCharacterMaps();
+	  setCharacterMapConfigOnSerializationHandler();
 	  
-	  CharacterMapConfig charMapConfig = new CharacterMapConfig();
-	  
-	  if (useCharMaps) {
-		  NodeList stylesheetRootChildNodes = m_stylesheetRoot.getChildNodes();
-		  int childNodeLen = stylesheetRootChildNodes.getLength();	  	  
-		  for (int idx = 0; idx < childNodeLen; idx++) {
-			  Node node = stylesheetRootChildNodes.item(idx);
-			  if (node instanceof ElemOutputCharacter) {
-				  ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)node;			  			  
-				  char chr = elemOutputCharacter.getCharacter();
-				  String str = elemOutputCharacter.getString();
-				  charMapConfig.put(Character.valueOf(chr), str);
-			  }
-		  }
-
-		  if (m_serializationHandler instanceof SerializerBase) {
-			  SerializerBase serializerBase = (SerializerBase)m_serializationHandler;
-			  serializerBase.setCharMapConfig(charMapConfig);
-		  }
-	  }
-
 	  return m_serializationHandler;
   }
 
@@ -3288,8 +3267,10 @@ public class TransformerImpl extends Transformer
    * be the main result tree manager.
    */
   public SerializationHandler getSerializationHandler()
-  {
-    return m_serializationHandler;
+  {	  
+	  setCharacterMapConfigOnSerializationHandler();
+
+	  return m_serializationHandler;
   }
   
   /**
@@ -4052,6 +4033,37 @@ public class TransformerImpl extends Transformer
 
 	public void setSource(Source source) {
 		this.m_source = source;
+	}
+	
+	/**
+	 * Before returning m_serializationHandler object value up the 
+	 * method call chain, set xsl:character-map details within an
+	 * XSL serializer run-time object. 
+	 */
+	private void setCharacterMapConfigOnSerializationHandler() {
+		
+		boolean useCharMaps = m_stylesheetRoot.getUseCharacterMaps();
+
+		CharacterMapConfig charMapConfig = new CharacterMapConfig();
+
+		if (useCharMaps) {
+			NodeList stylesheetRootChildNodes = m_stylesheetRoot.getChildNodes();
+			int childNodeLen = stylesheetRootChildNodes.getLength();	  	  
+			for (int idx = 0; idx < childNodeLen; idx++) {
+				Node node = stylesheetRootChildNodes.item(idx);
+				if (node instanceof ElemOutputCharacter) {
+					ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)node;			  			  
+					char chr = elemOutputCharacter.getCharacter();
+					String str = elemOutputCharacter.getString();
+					charMapConfig.put(Character.valueOf(chr), str);
+				}
+			}
+
+			if (m_serializationHandler instanceof SerializerBase) {
+				SerializerBase serializerBase = (SerializerBase)m_serializationHandler;
+				serializerBase.setCharMapConfig(charMapConfig);
+			}
+		}
 	}
 
 }  // end TransformerImpl class

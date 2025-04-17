@@ -149,4 +149,24 @@ public class XslCharacterMapTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
     }
     
+    @Test
+    public void xslCharacterMapTest11() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";                 
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
+    }
+    
+    @Test
+    public void xslCharacterMapTest12() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";                 
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
+    }
+    
 }

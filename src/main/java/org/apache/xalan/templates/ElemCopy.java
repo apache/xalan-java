@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
@@ -35,7 +35,9 @@ import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.serializer.CharacterMapConfig;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.serializer.SerializerBase;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -48,7 +50,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Implement of XSLT xsl:copy instruction.
+ * Implementation of XSLT xsl:copy instruction.
  * 
  * @xsl.usage advanced
  */
@@ -137,8 +139,8 @@ public class ElemCopy extends ElemUse
 		  String validation = getValidation();
 
 		  if ((type != null) && (validation != null)) {
-			  throw new TransformerException("XTTE1540 : A xsl:copy instruction cannot have both the attributes "
-					  																	  + "'type' and 'validation'.", srcLocator); 
+			  throw new TransformerException("XTTE1540 : An xsl:copy instruction cannot have both the attributes "
+					  																	   + "'type' and 'validation'.", srcLocator); 
 		  }
 
 		  if ((DTM.DOCUMENT_NODE != nodeType) && (DTM.DOCUMENT_FRAGMENT_NODE != nodeType))
@@ -147,9 +149,32 @@ public class ElemCopy extends ElemUse
 
 			  if (transformer.getDebug())
 				  transformer.getTraceManager().emitTraceEvent(this);
-
-			  ClonerToResultTree.cloneToResultTree(sourceNode, nodeType, dtm, 
-					  													rthandler, false);
+			  
+			  if (nodeType == DTM.TEXT_NODE) {				  				  
+				  XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(sourceNode, xctxt);
+				  String nodeStrValue = xdmNode.str();				  
+				  if (rthandler instanceof SerializerBase) {
+					  // Doing xsl:character-map transformation
+			    	  SerializerBase serializerBase = (SerializerBase)rthandler;
+			    	  CharacterMapConfig charMapConfig = serializerBase.getCharMapConfig();
+			    	  Map<Character, String> charMap = charMapConfig.getCharMap();
+			    	  Set<Character> charSet = charMap.keySet();
+			    	  Iterator<Character> iter = charSet.iterator();
+			    	  while (iter.hasNext()) {
+			    		  Character char1 = iter.next();
+			    		  String replacementStr = charMap.get(char1);
+			    		  nodeStrValue = nodeStrValue.replace(char1.toString(), replacementStr);
+			    	  }
+			    	  
+			    	  rthandler.characters(nodeStrValue.toCharArray(), 0, nodeStrValue.length());			    	  
+			      }
+				  else {
+					  ClonerToResultTree.cloneToResultTree(sourceNode, nodeType, dtm, rthandler, false); 
+				  }				  
+			  }
+			  else {
+			      ClonerToResultTree.cloneToResultTree(sourceNode, nodeType, dtm, rthandler, false);
+			  }
 
 			  if (DTM.ELEMENT_NODE == nodeType)
 			  {
@@ -196,18 +221,18 @@ public class ElemCopy extends ElemUse
 								  validateWithElemDeclAndEmitElement(sourceNode, nodeLocalName, schemaElemDecl, transformer, xctxt);								  
 							  }
 							  else {
-								  throw new TransformerException("FODC0005 : xsl:copy instruction has 'validation' attribute with value '" + 
-																							  Constants.XS_VALIDATION_STRICT_STRING + "' to request validation of "
-																							  + "xsl:copy's result, but the schema used to validate "
-																							  + "an XML input document doesn't have global element declaration for "
-																							  + "an element node produced by xsl:copy instruction.", srcLocator);
+								  throw new TransformerException("FODC0005 : An xsl:copy instruction has 'validation' attribute with value '" + 
+																				 			    Constants.XS_VALIDATION_STRICT_STRING + "' to request validation of "
+																							    + "xsl:copy's result, but the schema used to validate "
+																							    + "an XML input document doesn't have global element declaration for "
+																							    + "an element node produced by xsl:copy instruction.", srcLocator);
 							  }
 						  }
 						  else {
-							  throw new TransformerException("FODC0005 : xsl:copy instruction has 'validation' attribute to request "
-																						  + "validation of xsl:copy's result, but an XML input "
-																						  + "document has not been validated using schema supplied "
-																						  + "via xsl:import-schema instruction.", srcLocator); 
+							  throw new TransformerException("FODC0005 : An xsl:copy instruction has 'validation' attribute to request "
+																						       + "validation of xsl:copy's result, but an XML input "
+																						       + "document has not been validated using schema supplied "
+																						       + "via xsl:import-schema instruction.", srcLocator); 
 						  }
 					  }
 					  else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
@@ -224,9 +249,9 @@ public class ElemCopy extends ElemUse
 						  }						  
 					  }
 					  
-					  // The validation value 'strip' requires no validation.
+					  // The validation value 'strip' requires no validation
 
-					  // The validation value 'preserve' is currently not implemented.
+					  // The validation value 'preserve' is currently not implemented
 				  }
 				  else {
 					  transformer.executeChildTemplates(this, true);

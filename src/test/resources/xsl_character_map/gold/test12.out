@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><root imp_attr="abc, def and ghi">
+  abc
+  <a id="abc">hello abc</a>
+  <b id="def">hello def</b>
+  def
+  <c id="ghi">
+    abc def ghi
+    <d>hello ghi</d>
+  </c>
+</root>

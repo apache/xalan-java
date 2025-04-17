@@ -1,0 +1,10 @@
+<root imp_attr="1, 2 and 3">
+  1
+  <a id="1">hello 1</a>
+  <b id="2">hello 2</b>
+  2
+  <c id="3">
+    1 2 3
+    <d>hello 3</d>
+  </c>
+</root>

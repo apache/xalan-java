@@ -1112,7 +1112,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 		  String charMapName = elemNode.getAttribute(Constants.ATTRNAME_NAME);
 		  if (charMapNameList1.contains(charMapName)) {
 			  throw new TransformerConfigurationException("An XSL stylesheet contains more than one xsl:character-map "
-					  																		+ "instructions with name '" + charMapName + "'.");    		  
+					  																		+ "instruction with name '" + charMapName + "'.");    		  
 		  }
 		  else {
 			  charMapNameList1.add(charMapName); 
@@ -1132,38 +1132,12 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 				  String charMapName = charMapNames[idx]; 
 				  if (charMapNameList2.contains(charMapName)) {
 					  throw new TransformerConfigurationException("An XSL stylesheet xsl:output element's attribute 'use-character-maps' "
-																							 + "value refers to more than one xsl:character-map "
-																							 + "with name '" + charMapName + "'.");    		  
+																						  + "refers to an xsl:character-map '" + charMapName + "' "
+																						  + "more than once.");    		  
 				  }
 				  else {
 					  charMapNameList2.add(charMapName); 
 				  } 
-			  }
-		  }
-	  }
-
-	  if (isXslOutputHasUseCharacterMapsAttr) {
-		  if (charMapNameList1.size() != charMapNameList2.size()) {
-			  throw new TransformerConfigurationException("Within an XSL stylesheet, the number of character maps referred within attribute "
-																							 + "value xsl:output/@use-character-maps is not equal to "
-																							 + "number of xsl:character-map elements.");
-		  }
-		  else {
-			  for (int idx1 = 0; idx1 < charMapNameList1.size(); idx1++) {
-				  String name1 = charMapNameList1.get(idx1);
-				  boolean allCharacterMapNamesOk = false;
-				  for (int idx2 = 0; idx2 < charMapNameList2.size(); idx2++) {
-					  String name2 = charMapNameList2.get(idx2);
-					  if (name1.equals(name2)) {
-						  allCharacterMapNamesOk = true; 
-					  }
-				  }
-
-				  if (!allCharacterMapNamesOk) {
-					  throw new TransformerConfigurationException("An XSL character map name '" + name1 + "', specified as value of an "
-																						   + "element xsl:character-map's name attribute is not found within "
-																						   + "attribute value xsl:output/@use-character-maps."); 
-				  }
 			  }
 		  }
 	  }

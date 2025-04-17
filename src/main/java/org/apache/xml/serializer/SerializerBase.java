@@ -245,7 +245,8 @@ public abstract class SerializerBase
     protected char[] m_attrBuff = new char[30];
     
     /**
-     * Class field added to support XSLT 3 instruction xsl:character-map.
+     * This class field supports, XSLT 3 instruction xsl:character-map 
+     * processing.
      */
     private CharacterMapConfig m_charMapConfig = new CharacterMapConfig();
 
@@ -1708,9 +1709,13 @@ public abstract class SerializerBase
 	 * provided within xsl:character-map element(s). 
 	 * 
 	 * @param attrValue			Initial attribute value
-	 * @return
+	 * 
+	 * @return					Replaced attribute value after xsl:character-map
+	 *                          processing.
 	 */
 	protected String replaceAttributeValueWithCharMap(String attrValue) {
+		
+		String replacedAttrValue = attrValue;
 		
 		CharacterMapConfig charMapConfig = getCharMapConfig();
 		
@@ -1720,10 +1725,10 @@ public abstract class SerializerBase
 		while (iter.hasNext()) {
 			Character char1 = iter.next();
 			String replacementStr = charMap.get(char1);
-			attrValue = attrValue.replace(char1.toString(), replacementStr);
+			replacedAttrValue = replacedAttrValue.replace(char1.toString(), replacementStr);
 		}
 		
-		return attrValue;
+		return replacedAttrValue;
 	}
 	
 }
