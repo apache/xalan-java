@@ -180,7 +180,7 @@ public class XSL3FunctionService {
     					evalResult = ((ElemFunction)elemTemplate).evaluateXslFunction(transformerImpl, argSequence);
     					
     					return evalResult;
-    				}
+    				}    				
     			}
     			
     			if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {                
@@ -408,8 +408,8 @@ public class XSL3FunctionService {
     			       String errMesgStrTrailingSuffix = ((exceptionMesgStr != null) && (exceptionMesgStr.length() > 0)) ? " "+ exceptionMesgStr : ""; 
     			       
     			       throw new TransformerException("FODC0005 : A dynamic error has occured, evaluating XPath built-in "
-    			       		                                            + "constructor function call for xs:" + funcName + "." + errMesgStrTrailingSuffix, 
-    			       		                                                   srcLocator);
+    			       		                                                             + "constructor function call for xs:" + funcName + "." + 
+    			    		                                                                errMesgStrTrailingSuffix, srcLocator);
     			    }
     			}
     			else {
@@ -454,17 +454,19 @@ public class XSL3FunctionService {
     								if (xsTypeDefinition != null) {
     									XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)xsTypeDefinition;
     									XObject xsSimpleTypeInpObj = (funcObj.getArg(0)).execute(xctxt);
-    									xsSimpleTypeDecl.validate(XslTransformEvaluationHelper.getStrVal(xsSimpleTypeInpObj), null, null);
-    									evalResult = new XSString(XS_VALID_TRUE);
-    								}
+    									String argStrVal = XslTransformEvaluationHelper.getStrVal(xsSimpleTypeInpObj);
+										xsSimpleTypeDecl.validate(argStrVal, null, null);
+										evalResult = new XSString(XS_VALID_TRUE);
+										evalResult.setObject(argStrVal);
+    									evalResult.setXsTypeDefinition(xsTypeDefinition);    								}
     								else {
     									throw new javax.xml.transform.TransformerException("FODC0005 : There's no in-scope schema type definition available "
-    																					+ "with name {" + funcNamespace + "}:" + funcName + ".", srcLocator);							
+    																					           + "with name {" + funcNamespace + "}:" + funcName + ".", srcLocator);							
     								}	    							    						
     							}
     							else {
     								throw new javax.xml.transform.TransformerException("FODC0005 : While processing xsl:import-schema instruction, a compiled "
-    																					+ "representation of an XML Schema document could not be built.", srcLocator);
+    																					       + "representation of an XML Schema document could not be built.", srcLocator);
     							}
     						}
     						catch (InvalidDatatypeValueException ex) {
@@ -519,26 +521,29 @@ public class XSL3FunctionService {
     									if (xsTypeDefinition != null) {
     										XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)xsTypeDefinition;
     										XObject xsSimpleTypeInpObj = (funcObj.getArg(0)).execute(xctxt);
-    										xsSimpleTypeDecl.validate(XslTransformEvaluationHelper.getStrVal(xsSimpleTypeInpObj), null, null);
+    										String argStrVal = XslTransformEvaluationHelper.getStrVal(xsSimpleTypeInpObj);
+    										xsSimpleTypeDecl.validate(argStrVal, null, null);
     										evalResult = new XSString(XS_VALID_TRUE);
+    										evalResult.setObject(argStrVal);
+    										evalResult.setXsTypeDefinition(xsTypeDefinition);
     									}
     									else {
     										throw new javax.xml.transform.TransformerException("FODC0005 : There's no in-scope schema type definition available "
-    																						+ "with name {" + funcNamespace + "}:" + funcName + ".", srcLocator);							
+    																						           + "with name {" + funcNamespace + "}:" + funcName + ".", srcLocator);							
     									}
     								}
     								else {
     									throw new javax.xml.transform.TransformerException("FODC0005 : While processing xsl:import-schema instruction, a compiled "
-    																					+ "representation of an XML Schema document could not be built.", srcLocator);
+    																					           + "representation of an XML Schema document could not be built.", srcLocator);
     								}
     							}
     							catch (URISyntaxException ex) {
     								throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
-    																				+ "is not a valid absolute uri, or cannot be resolved to an absolute uri.", srcLocator);   
+    																				           + "is not a valid absolute uri, or cannot be resolved to an absolute uri.", srcLocator);   
     							}
     							catch (MalformedURLException ex) {
     								throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
-    																				+ "is not a valid absolute uri, or cannot be resolved to an absolute uri.", srcLocator); 
+    																				           + "is not a valid absolute uri, or cannot be resolved to an absolute uri.", srcLocator); 
     							}
     							catch (InvalidDatatypeValueException ex) {
     								throw new TransformerException(ex.getMessage(), srcLocator);

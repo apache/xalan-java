@@ -6,8 +6,8 @@
                 
   <!-- Author: mukulg@apache.org -->
   
-  <!-- An XSLT stylesheet test case, to test mutual recursion
-       between two XSLT stylesheet functions.
+  <!-- An XSL 3 stylesheet test case, to test mutual recursion
+       between two stylesheet functions.
   -->                 
                 
   <xsl:output method="xml" indent="yes"/>

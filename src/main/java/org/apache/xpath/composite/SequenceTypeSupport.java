@@ -1586,6 +1586,8 @@ public class SequenceTypeSupport {
                                                                                                      throws TransformerException {
         XObject result = null;
         
+        // srcValue = srcValue.getFresh();
+        
         XMLNodeCursorImpl xdmNodeSet = (XMLNodeCursorImpl)srcValue;
         
         int nodeSetLen = xdmNodeSet.getLength();

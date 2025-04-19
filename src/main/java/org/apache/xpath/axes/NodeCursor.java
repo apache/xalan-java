@@ -787,7 +787,7 @@ public class NodeCursor extends XObject
     * to update some caching information.
     *
     */
-   protected void setObject(Object obj) {
+   public void setObject(Object obj) {
        if (obj instanceof NodeVector) {
            // Keep our superclass informed of the current NodeVector
            // ... if we don't the smoketest fails (don't know why).

@@ -7,8 +7,8 @@
   <!-- Author: mukulg@apache.org -->
     
   <!-- An XSL stylesheet test case, to test an XSL element xsl:function. 
-       This stylesheet gets its input data from a JSON document. Using a rudimentary 
-       maths problem for this use case.
+       This stylesheet gets its input data from a JSON document. Using a 
+       rudimentary maths use case for this XSL test case.
   -->			    
   
   <xsl:output method="xml" indent="yes"/>
@@ -37,7 +37,7 @@
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
       * regarding copyright ownership. The ASF licenses this file
-      * to you under the Apache License, Version 2.0 (the  "License");
+      * to you under the Apache License, Version 2.0 (the "License");
       * you may not use this file except in compliance with the License.
       * You may obtain a copy of the License at
       *

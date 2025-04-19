@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.objects;
 
 import java.io.Serializable;
@@ -28,6 +25,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.impl.Constants;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -41,6 +39,8 @@ import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.types.XSGDay;
 import org.apache.xpath.types.XSGMonth;
@@ -117,7 +117,7 @@ public class XObject extends Expression implements Serializable, Cloneable
     setObject(obj);
   }
   
-  protected void setObject(Object obj) {
+  public void setObject(Object obj) {
       m_obj = obj;
   }
 
@@ -745,9 +745,81 @@ public class XObject extends Expression implements Serializable, Cloneable
                                                                String collationUri, boolean isLtTest) 
                                                                                 throws javax.xml.transform.TransformerException {       
        
-       XPathContext xctxt = new XPathContext();
-      
-       if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
+	  boolean result = false;
+	  
+	  XPathContext xctxt = new XPathContext();
+       
+      XSTypeDefinition xsObj1Type = this.getXsTypeDefinition();
+ 	  XSTypeDefinition xsObj2Type = obj2.getXsTypeDefinition();
+ 	  
+ 	  if ((xsObj1Type != null) || (xsObj2Type != null)) { 		   		  
+ 		  String strVal1 = XslTransformEvaluationHelper.getStrVal(this);
+ 		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal1)) {
+ 			  strVal1 = str(); 
+ 		  }
+ 		  
+ 		  String strVal2 = XslTransformEvaluationHelper.getStrVal(obj2);
+ 		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal2)) {
+ 			  strVal2 = obj2.str(); 
+ 		  }
+ 		  
+ 		  XSNumericType lXsNumericValue = null;
+ 		  XSNumericType rXsNumericValue = null;
+ 		  
+ 		  if (xsObj1Type != null) {
+ 			  XSTypeDefinition xsObj1BaseType = xsObj1Type.getBaseType();			  
+ 			  if ((Constants.NS_XMLSCHEMA).equals(xsObj1BaseType.getNamespace())) {
+ 				  String lXsBaseTypeName = xsObj1BaseType.getName();
+ 				  if ((Keywords.XS_INTEGER).equals(lXsBaseTypeName)) {
+ 					  lXsNumericValue = new XSInteger(strVal1); 
+ 				  }
+ 				  else if ((Keywords.XS_DECIMAL).equals(lXsBaseTypeName)) {
+ 					  lXsNumericValue = new XSDecimal(strVal1);
+ 				  }
+                   else if ((Keywords.XS_FLOAT).equals(lXsBaseTypeName)) {
+                 	  lXsNumericValue = new XSFloat(strVal1);
+ 				  }
+                   else if ((Keywords.XS_DOUBLE).equals(lXsBaseTypeName)) {
+                 	  lXsNumericValue = new XSDouble(strVal1);
+                   }
+ 			  }
+ 		  }
+ 		  
+ 		  if (xsObj2Type != null) {
+ 			  XSTypeDefinition xsObj2BaseType = xsObj2Type.getBaseType();			  
+ 			  if ((Constants.NS_XMLSCHEMA).equals(xsObj2BaseType.getNamespace())) {
+ 				  String rXsTypeName = xsObj2BaseType.getName();
+ 				  if ((Keywords.XS_INTEGER).equals(rXsTypeName)) {
+ 					  rXsNumericValue = new XSInteger(strVal2); 
+ 				  }
+ 				  else if ((Keywords.XS_DECIMAL).equals(rXsTypeName)) {
+ 					  rXsNumericValue = new XSDecimal(strVal2);
+ 				  }
+                   else if ((Keywords.XS_FLOAT).equals(rXsTypeName)) {
+                 	  rXsNumericValue = new XSFloat(strVal2);
+ 				  }
+                   else if ((Keywords.XS_DOUBLE).equals(rXsTypeName)) {
+                 	  rXsNumericValue = new XSDouble(strVal2);
+                   }
+ 			  }
+ 		  }
+ 		  
+ 		  if ((lXsNumericValue != null) && (rXsNumericValue == null)) {
+ 			  result = lXsNumericValue.vcLessThan(obj2, expressionOwner, collationUri, isLtTest); 
+ 		  }
+ 		  else if ((lXsNumericValue == null) && (rXsNumericValue != null)) {
+ 			  result = this.vcLessThan(rXsNumericValue, expressionOwner, collationUri, isLtTest); 
+ 		  }
+ 		  else if ((lXsNumericValue != null) && (rXsNumericValue != null)) {
+ 			  result = lXsNumericValue.vcLessThan(rXsNumericValue, expressionOwner, collationUri, isLtTest); 
+ 		  }		  
+ 		  else if (this.vcLessThan(obj2, expressionOwner, collationUri, isLtTest)) {			  
+ 			  result = true;
+ 		  }
+ 		  
+ 		  return result;
+ 	   }      
+ 	   else if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
           return ((XSDecimal)this).lt((XSDecimal)obj2);        
        }
        else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
@@ -994,10 +1066,82 @@ public class XObject extends Expression implements Serializable, Cloneable
   public boolean vcGreaterThan(XObject obj2, ExpressionNode expressionOwner, 
                                                   String collationUri, boolean isGtTest) 
                                                                  throws javax.xml.transform.TransformerException {
+	  
+	  boolean result = false;
+	  
+	  XPathContext xctxt = new XPathContext();
        
-       XPathContext xctxt = new XPathContext();
-      
-       if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
+      XSTypeDefinition xsObj1Type = this.getXsTypeDefinition();
+  	  XSTypeDefinition xsObj2Type = obj2.getXsTypeDefinition();
+  	  
+  	  if ((xsObj1Type != null) || (xsObj2Type != null)) {  		  
+  		  String strVal1 = XslTransformEvaluationHelper.getStrVal(this);
+  		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal1)) {
+  			  strVal1 = str(); 
+  		  }
+  		  
+  		  String strVal2 = XslTransformEvaluationHelper.getStrVal(obj2);
+  		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal2)) {
+  			  strVal2 = obj2.str(); 
+  		  }
+  		  
+  		  XSNumericType lXsNumericValue = null;
+  		  XSNumericType rXsNumericValue = null;
+  		  
+  		  if (xsObj1Type != null) {
+  			  XSTypeDefinition xsObj1BaseType = xsObj1Type.getBaseType();			  
+  			  if ((Constants.NS_XMLSCHEMA).equals(xsObj1BaseType.getNamespace())) {
+  				  String lXsBaseTypeName = xsObj1BaseType.getName();
+  				  if ((Keywords.XS_INTEGER).equals(lXsBaseTypeName)) {
+  					  lXsNumericValue = new XSInteger(strVal1); 
+  				  }
+  				  else if ((Keywords.XS_DECIMAL).equals(lXsBaseTypeName)) {
+  					  lXsNumericValue = new XSDecimal(strVal1);
+  				  }
+                    else if ((Keywords.XS_FLOAT).equals(lXsBaseTypeName)) {
+                  	  lXsNumericValue = new XSFloat(strVal1);
+  				  }
+                    else if ((Keywords.XS_DOUBLE).equals(lXsBaseTypeName)) {
+                  	  lXsNumericValue = new XSDouble(strVal1);
+                    }
+  			  }
+  		  }
+  		  
+  		  if (xsObj2Type != null) {
+  			  XSTypeDefinition xsObj2BaseType = xsObj2Type.getBaseType();			  
+  			  if ((Constants.NS_XMLSCHEMA).equals(xsObj2BaseType.getNamespace())) {
+  				  String rXsTypeName = xsObj2BaseType.getName();
+  				  if ((Keywords.XS_INTEGER).equals(rXsTypeName)) {
+  					  rXsNumericValue = new XSInteger(strVal2); 
+  				  }
+  				  else if ((Keywords.XS_DECIMAL).equals(rXsTypeName)) {
+  					  rXsNumericValue = new XSDecimal(strVal2);
+  				  }
+                    else if ((Keywords.XS_FLOAT).equals(rXsTypeName)) {
+                  	  rXsNumericValue = new XSFloat(strVal2);
+  				  }
+                    else if ((Keywords.XS_DOUBLE).equals(rXsTypeName)) {
+                  	  rXsNumericValue = new XSDouble(strVal2);
+                    }
+  			  }
+  		  }
+  		  
+  		  if ((lXsNumericValue != null) && (rXsNumericValue == null)) {
+  			  result = lXsNumericValue.vcGreaterThan(obj2, expressionOwner, collationUri, isGtTest); 
+  		  }
+  		  else if ((lXsNumericValue == null) && (rXsNumericValue != null)) {
+  			  result = this.vcGreaterThan(rXsNumericValue, expressionOwner, collationUri, isGtTest); 
+  		  }
+  		  else if ((lXsNumericValue != null) && (rXsNumericValue != null)) {
+  			  result = lXsNumericValue.vcGreaterThan(rXsNumericValue, expressionOwner, collationUri, isGtTest); 
+  		  }		  
+  		  else if (this.vcGreaterThan(obj2, expressionOwner, collationUri, isGtTest)) {			  
+  			  result = true;
+  		  }
+  		  
+  		  return result;
+  	   }      
+  	   else if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
           return ((XSDecimal)this).gt((XSDecimal)obj2);        
        }
        else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
@@ -1511,8 +1655,78 @@ public class XObject extends Expression implements Serializable, Cloneable
                                                                throws javax.xml.transform.TransformerException
   {	 
 	  boolean result = false;
-
-	  if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {
+	  
+	  XSTypeDefinition xsObj1Type = this.getXsTypeDefinition();
+	  XSTypeDefinition xsObj2Type = obj2.getXsTypeDefinition();
+	  
+	  if ((xsObj1Type != null) || (xsObj2Type != null)) {
+		  String strVal1 = XslTransformEvaluationHelper.getStrVal(this);
+		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal1)) {
+			  strVal1 = str(); 
+		  }
+		  
+		  String strVal2 = XslTransformEvaluationHelper.getStrVal(obj2);
+		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal2)) {
+			  strVal2 = obj2.str(); 
+		  }
+		  
+		  XSNumericType lXsNumericValue = null;
+		  XSNumericType rXsNumericValue = null;
+		  
+		  if (xsObj1Type != null) {
+			  XSTypeDefinition xsObj1BaseType = xsObj1Type.getBaseType();			  
+			  if ((Constants.NS_XMLSCHEMA).equals(xsObj1BaseType.getNamespace())) {
+				  String lXsBaseTypeName = xsObj1BaseType.getName();
+				  if ((Keywords.XS_INTEGER).equals(lXsBaseTypeName)) {
+					  lXsNumericValue = new XSInteger(strVal1); 
+				  }
+				  else if ((Keywords.XS_DECIMAL).equals(lXsBaseTypeName)) {
+					  lXsNumericValue = new XSDecimal(strVal1);
+				  }
+                  else if ((Keywords.XS_FLOAT).equals(lXsBaseTypeName)) {
+                	  lXsNumericValue = new XSFloat(strVal1);
+				  }
+                  else if ((Keywords.XS_DOUBLE).equals(lXsBaseTypeName)) {
+                	  lXsNumericValue = new XSDouble(strVal1);
+                  }
+			  }
+		  }
+		  
+		  if (xsObj2Type != null) {
+			  XSTypeDefinition xsObj2BaseType = xsObj2Type.getBaseType();			  
+			  if ((Constants.NS_XMLSCHEMA).equals(xsObj2BaseType.getNamespace())) {
+				  String rXsTypeName = xsObj2BaseType.getName();
+				  if ((Keywords.XS_INTEGER).equals(rXsTypeName)) {
+					  rXsNumericValue = new XSInteger(strVal2); 
+				  }
+				  else if ((Keywords.XS_DECIMAL).equals(rXsTypeName)) {
+					  rXsNumericValue = new XSDecimal(strVal2);
+				  }
+                  else if ((Keywords.XS_FLOAT).equals(rXsTypeName)) {
+                	  rXsNumericValue = new XSFloat(strVal2);
+				  }
+                  else if ((Keywords.XS_DOUBLE).equals(rXsTypeName)) {
+                	  rXsNumericValue = new XSDouble(strVal2);
+                  }
+			  }
+		  }
+		  
+		  if ((lXsNumericValue != null) && (rXsNumericValue == null)) {
+			  result = lXsNumericValue.vcEquals(obj2, expressionOwner, isEqTest); 
+		  }
+		  else if ((lXsNumericValue == null) && (rXsNumericValue != null)) {
+			  result = rXsNumericValue.vcEquals(this, expressionOwner, isEqTest); 
+		  }
+		  else if ((lXsNumericValue != null) && (rXsNumericValue != null)) {
+			  result = lXsNumericValue.vcEquals(rXsNumericValue, expressionOwner, isEqTest); 
+		  }		  
+		  else if (strVal1.equals(strVal2)) {			  
+			  result = true;
+		  }
+		  
+		  return result;
+	  }
+	  else if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {
 		  String lStr = ((XSNumericType)this).stringValue();
 		  BigDecimal lBigDecimal = new BigDecimal(lStr);		  
 		  String rStr = ((XSNumericType)obj2).stringValue();

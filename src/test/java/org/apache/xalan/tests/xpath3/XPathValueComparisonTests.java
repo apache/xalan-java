@@ -4,7 +4,7 @@
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -24,7 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 test cases, for value comparison operators 
+ * XPath 3.1 test cases to test, value comparison operators 
  * eq, ne, lt, le, gt, ge.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -186,6 +186,66 @@ public class XPathValueComparisonTests extends XslTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test14.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslValueComparison15() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test15.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslValueComparison16() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test16.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslValueComparison17() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test17.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslValueComparison18() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test18.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslValueComparison19() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test19.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslValueComparison20() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test20.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test20.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test20.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

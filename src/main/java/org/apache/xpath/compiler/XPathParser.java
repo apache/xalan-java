@@ -259,6 +259,9 @@ public class XPathParser
   
   private static final String STRING_CLASSCAST_ERROR_MESSAGE = "org.apache.xpath.objects.XString cannot be cast to java.lang.String";
   
+  private boolean m_isParseSequenceTypeExprWithUserDefinedType = false;
+  
+  
   /**
    * The parser constructor.
    */
@@ -2559,7 +2562,7 @@ public class XPathParser
 
         addPos = EqualityExpr(addPos);
         m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
-          m_ops.getOp(addPos + op1 + 1) + op1);
+        		m_ops.getOp(addPos + op1 + 1) + op1);
         addPos += 2;
       }
       else if (tokenIs("ne"))
@@ -4106,8 +4109,8 @@ public class XPathParser
       }
 
       Argument();
-
-      if (!tokenIs(')'))
+      	  
+      if (!m_isParseSequenceTypeExprWithUserDefinedType && !tokenIs(')'))
       {
         consumeExpected(',');
 
@@ -4119,7 +4122,12 @@ public class XPathParser
       }
     }
 
-    consumeExpected(')');
+    if (!m_isParseSequenceTypeExprWithUserDefinedType) {
+        consumeExpected(')');
+    }
+    else {
+    	m_isParseSequenceTypeExprWithUserDefinedType = false;	
+    }
 
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
     m_ops.setOp(OpMap.MAPINDEX_LENGTH,m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
@@ -5474,7 +5482,8 @@ public class XPathParser
     */
    private void parseSequenceTypeExprWithUserDefinedType(XPathSequenceTypeExpr xpathSequenceTypeExpr, String typeName) 
 		                                                                                  throws TransformerException {
-
+	   m_isParseSequenceTypeExprWithUserDefinedType = true;
+	   
 	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
 	   String xslSystemId = XslTransformSharedDatastore.xslSystemId;
 
@@ -5491,13 +5500,15 @@ public class XPathParser
 		   }
 		   else {
 			   type_name = type_namespace;
-			   type_namespace = null;
+			   type_namespace = null;			   
 		   }
 	   }
 	   else {
 		   type_name = typeName;
 		   type_namespace = null;
 	   }
+	   
+	   nextToken();
 
 	   Node elemTemplateElem = stylesheetRoot.getFirstChildElem();
 

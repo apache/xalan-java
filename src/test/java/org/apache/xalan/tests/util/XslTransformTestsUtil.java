@@ -17,8 +17,6 @@
 package org.apache.xalan.tests.util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
