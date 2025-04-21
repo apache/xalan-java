@@ -40,8 +40,8 @@ import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
@@ -763,10 +763,14 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void popContextNodeList()
   {
-  	if(m_contextNodeLists.isEmpty())
+  	/*if(m_contextNodeLists.isEmpty())
   	  System.err.println("Warning: popContextNodeList when stack is empty!");
   	else
-      m_contextNodeLists.pop();
+      m_contextNodeLists.pop(); */
+  	
+  	if (!m_contextNodeLists.isEmpty()) {
+  	   m_contextNodeLists.pop();
+  	}
   }
 
   /**

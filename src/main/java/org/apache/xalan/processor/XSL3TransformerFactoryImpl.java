@@ -879,6 +879,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     	dbf.setNamespaceAware(true);    	
     	Document document = null;
+    	
     	try {
     		DocumentBuilder dBuilder = dbf.newDocumentBuilder();   	
     		document = dBuilder.parse(xslStylesheetSystemId);

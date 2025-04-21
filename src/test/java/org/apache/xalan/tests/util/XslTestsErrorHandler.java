@@ -54,7 +54,7 @@ public class XslTestsErrorHandler implements ErrorHandler, ErrorListener {
 
     @Override
     public void warning(TransformerException ex) throws TransformerException {
-        // no op        
+        // NO OP
     }
 
     @Override
@@ -69,7 +69,7 @@ public class XslTestsErrorHandler implements ErrorHandler, ErrorListener {
 
     @Override
     public void warning(SAXParseException ex) throws SAXException {
-        // no op        
+        // NO OP
     }
     
     public List<String> getTrfErrorList() {
