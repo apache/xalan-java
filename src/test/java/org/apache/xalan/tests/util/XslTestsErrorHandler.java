@@ -39,6 +39,10 @@ public class XslTestsErrorHandler implements ErrorHandler, ErrorListener {
     private List<String> trfErrorList = new ArrayList<String>();
     
     private List<String> trfFatalErrorList = new ArrayList<String>();
+    
+    private String xmlDocumentStr = null;
+    
+    private String xslTestCaseName = null;
 
     @Override
     public void error(TransformerException ex) throws TransformerException {        
@@ -59,12 +63,14 @@ public class XslTestsErrorHandler implements ErrorHandler, ErrorListener {
 
     @Override
     public void error(SAXParseException ex) throws SAXException {        
-        
+    	String errMesg = ex.getMessage();
+    	trfErrorList.add(errMesg);
     }
 
     @Override
     public void fatalError(SAXParseException ex) throws SAXException {        
-        
+    	String errMesg = ex.getMessage();
+    	trfFatalErrorList.add(errMesg);
     }
 
     @Override
@@ -79,5 +85,13 @@ public class XslTestsErrorHandler implements ErrorHandler, ErrorListener {
     public List<String> getTrfFatalErrorList() {
         return trfFatalErrorList;  
     }
+
+	public void setXMLDocumentStr(String xmlDocumentStr) {
+		this.xmlDocumentStr = xmlDocumentStr;		
+	}
+
+	public void setTestCaseName(String xslTestCaseName) {
+		this.xslTestCaseName = xslTestCaseName;		
+	}
 
 }

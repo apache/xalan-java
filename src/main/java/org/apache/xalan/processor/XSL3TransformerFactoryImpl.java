@@ -875,21 +875,23 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     	}
     }
     else if (source instanceof StreamSource) {
-    	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-    	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    	dbf.setNamespaceAware(true);    	
-    	Document document = null;
-    	
-    	try {
-    		DocumentBuilder dBuilder = dbf.newDocumentBuilder();   	
-    		document = dBuilder.parse(xslStylesheetSystemId);
+    	if (xslStylesheetSystemId != null) {
+    		System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    		dbf.setNamespaceAware(true);    	
+    		Document document = null;
+
+    		try {
+    			DocumentBuilder dBuilder = dbf.newDocumentBuilder();   	
+    			document = dBuilder.parse(xslStylesheetSystemId);
+    		}
+    		catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+
+    		// Do lexical validation for, XSL xsl:character-map instruction
+    		isXslOutputHasUseCharacterMapsAttr = verifyXSLCharacterMapNameConsistency(document);
     	}
-    	catch (Exception ex) {
-    		ex.printStackTrace();
-    	}
-    	
-    	// Do lexical validation for, XSL xsl:character-map instruction
-    	isXslOutputHasUseCharacterMapsAttr = verifyXSLCharacterMapNameConsistency(document);
     }
 
     TemplatesHandler builder = newTemplatesHandler();

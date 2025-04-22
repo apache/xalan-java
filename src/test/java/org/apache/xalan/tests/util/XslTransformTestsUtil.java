@@ -49,6 +49,7 @@ import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import junit.framework.Assert;
 
@@ -101,6 +102,12 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     
     protected static String w3cXslt3TestSuiteXalanResultsPathPrefix = "file:/d:/xslt30-test-master/xalan_j_test_results/";
     
+    private static final String EXPECTED_NODE_KIND_ERROR = "error";
+    
+    private static final String EXPECTED_NODE_KIND_ASSERT_ALL_OF = "all-of";
+    
+    private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";
+    
     /**
      * Class constructor.
      */
@@ -122,6 +129,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     	List<String> trfErrorList = null;
     	List<String> trfFatalErrorList = null;
 
+    	Element elemTestResult = testResultDoc.createElement("testResult");
+    	
     	try {
     		Transformer transformer = xslTransformerFactory.newTransformer(xsltStreamSrc);
 
@@ -137,13 +146,12 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
 
     		trfErrorList = xslTransformErrHandler.getTrfErrorList();
     		trfFatalErrorList = xslTransformErrHandler.getTrfFatalErrorList();
-    		
-    		Element elemTestResult = testResultDoc.createElement("testResult");
+    		    		
     		elemTestResult.setAttribute("testName", testCaseName);
     		
     		Node nodeExpected = (expectedResultElem.getFirstChild()).getNextSibling();
     		String expectedNodeKindName = nodeExpected.getNodeName();
-    		if ("error".equals(expectedNodeKindName)) {
+    		if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
     			String expErrCodeName = ((Element)nodeExpected).getAttribute("code");
     			if ((trfErrorList.size() > 0) || (trfFatalErrorList.size() > 0)) {
     				boolean isXslTransformErrorOk = false;
@@ -168,28 +176,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     					elemTestResult.setAttribute("status", "pass");
     				}
     				else {
-    					// An XSL transformation resulted with dynamic error.
-    					// But Xalan-J produced an error trace that doesn't match
-    					// with XSL 3 test suite's error definition for this 
-    					// test case.
-    					elemTestResult.setAttribute("status", "fail");
-    					
-    					Element resultOutElem = testResultDoc.createElement("outResult");
-    					for (int idx = 0; idx < trfErrorList.size(); idx++) {
-        					String errTraceInfo = trfErrorList.get(idx);
-        					Element errTraceElem = testResultDoc.createElement("errTrace");
-        					errTraceElem.setTextContent(errTraceInfo);
-        					resultOutElem.appendChild(errTraceElem);
-    					}
-    					
-    					for (int idx = 0; idx < trfFatalErrorList.size(); idx++) {
-        					String errTraceInfo = trfFatalErrorList.get(idx);
-        					Element errTraceElem = testResultDoc.createElement("errTrace");
-        					errTraceElem.setTextContent(errTraceInfo);
-        					resultOutElem.appendChild(errTraceElem);
-    					}
-    					
-    					elemTestResult.appendChild(resultOutElem);
+    					handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, elemTestResult);
     				}
         		}
     			else {
@@ -202,8 +189,9 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     				elemTestResult.appendChild(resultOutElem);
     			}
     		}
-    		/*else if ("all-of".equals(expectedNodeKindName)) {    			
-    			byte[] fileBytes = Files.readAllBytes(Paths.get(new URI(XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH)));
+    		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName)) {
+    			// REVISIT
+    			/*byte[] fileBytes = Files.readAllBytes(Paths.get(new URI(XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH)));
     			String xslTemplateStr = new String(fileBytes);
     			NodeList nodeList = nodeExpected.getChildNodes();
     			StringBuffer replacementStrBuff = new StringBuffer();
@@ -212,13 +200,15 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     			for (int idx = 0; idx < nodeList.getLength(); idx++) {
     				Node node = nodeList.item(idx);
     				if (node.getNodeType() == Node.ELEMENT_NODE) {
-    					String assertStr = ((Element)node).getTextContent();
-    					String str = "<xpath inp='" + assertStr + "'>";
-    					str += "<xsl:value-of select='" + assertStr + "'></xsl:value-of>";
-    					str += "</xpath>\n";
-    					replacementStrBuff.append(str);
+    					String assertStr = ((Element)node).getTextContent();    					
+    					if (assertStr.contains("'")) {
+    						assertStr = assertStr.replace("'", "\"");
+    					}
+    					String strValue = "<xpath><xsl:value-of select='" + assertStr + "'/></xpath>";
     					
-    					replacementStrBuffOk.append("<xpath inp='" + assertStr + "'>true</xpath>");
+    					replacementStrBuff.append(strValue);
+    					
+    					replacementStrBuffOk.append("<xpath>true</xpath>");
     				}
     			}    			
     			
@@ -231,9 +221,22 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     			// transformation should be equal to string value replacementStrBuffOk.toString() for 
     			// this test case to pass.
     			
-    			Document xmlInpDoc = xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
+    			// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
+    			XslTestsErrorHandler xmlDocumentErrHandler = new XslTestsErrorHandler();
+    			xmlDocumentErrHandler.setXMLDocumentStr(resultStrWriter.toString());
+    			xmlDocumentBuilder.setErrorHandler(xmlDocumentErrHandler);
     			
-    			transformer = xslTransformerFactory.newTransformer(new StreamSource(new ByteArrayInputStream(xslTemplateReplacedStr.getBytes())));
+    			Document xmlInpDoc = xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));    			    			
+    			
+    			// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
+    			XslTestsErrorHandler xsltDocumentErrHandler = new XslTestsErrorHandler();
+    			xsltDocumentErrHandler.setXMLDocumentStr(xslTemplateReplacedStr);
+    			xmlDocumentBuilder.setErrorHandler(xsltDocumentErrHandler);
+    			
+    			Document xsltInpDoc1 = xmlDocumentBuilder.parse(new ByteArrayInputStream(xslTemplateReplacedStr.getBytes()));
+    			
+    			transformer = xslTransformerFactory.newTransformer(new DOMSource(xsltInpDoc1));
+    			
     			StringWriter strWriter = new StringWriter();
     			transformer.transform(new DOMSource(xmlInpDoc), new StreamResult(strWriter));
     			
@@ -246,14 +249,11 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     			}
     			else {
     				elemTestResult.setAttribute("status", "fail");
-    			}
-    		}*/
-    		else if ("all-of".equals(expectedNodeKindName)) {
-    			// This is currently not supported. We need to fix
-    			// a bug within commented code block above.
-    			elemTestResult.setAttribute("status", "fail");
+    			}*/
+    			
+    			elemTestResult.setAttribute("status", "assert_all_of_fail");
     		}
-            else if ("assert-xml".equals(expectedNodeKindName)) {
+            else if (EXPECTED_NODE_KIND_ASSERT_XML.equals(expectedNodeKindName)) {
             	Element elemNode = (Element)nodeExpected;
             	String fileName = elemNode.getAttribute("file");
             	String expectedResultStr = null;
@@ -266,8 +266,21 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
             	   expectedResultStr = elemNode.getTextContent();            		
             	}
             	
+            	// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
+    			XslTestsErrorHandler xmlDocumentErrHandler = new XslTestsErrorHandler();
+    			xmlDocumentErrHandler.setTestCaseName(testCaseName);
+    			xmlDocumentErrHandler.setXMLDocumentStr(resultStrWriter.toString());
+    			xmlDocumentBuilder.setErrorHandler(xmlDocumentErrHandler);
+            	
             	Document xmlInpDoc1 = xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
     			String str1 = serializeXmlDomElementNode(xmlInpDoc1);
+    			
+    			// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
+    			XslTestsErrorHandler xsltDocumentErrHandler = new XslTestsErrorHandler();
+    			xmlDocumentErrHandler.setTestCaseName(testCaseName);
+    			xsltDocumentErrHandler.setXMLDocumentStr(expectedResultStr);
+    			xmlDocumentBuilder.setErrorHandler(xsltDocumentErrHandler);
+    			
     			Document xmlInpDoc2 = xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
     			String str2 = serializeXmlDomElementNode(xmlInpDoc2);
     			if (str1.equals(str2)) {
@@ -276,14 +289,20 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     			else {
     				elemTestResult.setAttribute("status", "fail");
     			}
-    		}
-    		
-    		elemTestRun.appendChild(elemTestResult);
+    		}    		    		
+    	}
+    	catch (SAXException ex) {
+    		handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, elemTestResult);
+    	}
+    	catch (Exception ex) {
+            handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, elemTestResult);    	
     	}
     	finally {
+    		elemTestRun.appendChild(elemTestResult);
+    		
     		trfErrorList.clear();
     		trfFatalErrorList.clear();
-    	}
+    	}    	    	
     }
 
     /**
@@ -704,5 +723,30 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
        
         return timeZoneoffsetStr;
     }
+    
+    /**
+     * Method definition to handle test case failure exception.
+     */
+	private void handleTestCaseFailException(Document testResultDoc, List<String> trfErrorList,
+											 List<String> trfFatalErrorList, Element elemTestResult) {		
+		elemTestResult.setAttribute("status", "fail");
+		
+		Element resultOutElem = testResultDoc.createElement("outResult");
+		for (int idx = 0; idx < trfErrorList.size(); idx++) {
+			String errTraceInfo = trfErrorList.get(idx);
+			Element errTraceElem = testResultDoc.createElement("errTrace");
+			errTraceElem.setTextContent(errTraceInfo);
+			resultOutElem.appendChild(errTraceElem);
+		}
+		
+		for (int idx = 0; idx < trfFatalErrorList.size(); idx++) {
+			String errTraceInfo = trfFatalErrorList.get(idx);
+			Element errTraceElem = testResultDoc.createElement("errTrace");
+			errTraceElem.setTextContent(errTraceInfo);
+			resultOutElem.appendChild(errTraceElem);
+		}
+		
+		elemTestResult.appendChild(resultOutElem);
+	}
     
 }

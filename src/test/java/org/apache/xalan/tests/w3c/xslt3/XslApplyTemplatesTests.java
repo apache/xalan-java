@@ -40,13 +40,13 @@ import org.w3c.dom.NodeList;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XSLT 3.0 tests for 
- * xsl:analyze-string instruction.
+ * xsl:apply-templates instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslAnalyzeStringTests extends XslTransformTestsUtil {     
+public class XslApplyTemplatesTests extends XslTransformTestsUtil {     
     
     private static XslTestsErrorHandler m_xslTransformErrHandler = null;
     
@@ -55,8 +55,8 @@ public class XslAnalyzeStringTests extends XslTransformTestsUtil {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformErrHandler = new XslTestsErrorHandler();
-    	xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/analyze-string/_analyze-string-test-set.xml";
-    	m_testResultFileName = "xsl_analyze_string_test_results.xml";    	   
+    	xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/apply-templates/_apply-templates-test-set.xml";
+    	m_testResultFileName = "xsl_apply_templates_test_results.xml";    	   
     }
 
     @AfterClass
@@ -68,7 +68,7 @@ public class XslAnalyzeStringTests extends XslTransformTestsUtil {
     }
 
     @Test
-    public void xslAnalyzeStringTest() {    	
+    public void xslApplyTemplatesTest() {    	
     	
     	Document xslTestSetDoc = null;
     	
