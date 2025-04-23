@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,9 +14,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/*
- * $Id$
  */
 package org.apache.xpath.functions;
 
@@ -29,7 +26,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute the XPath 3.1 last() function.
+ * Implementation of the XPath 3.1 function fn:last.
  * 
  * @xsl.usage advanced
  */
@@ -75,7 +72,6 @@ public class FuncLast extends Function
     // If we're in a predicate, then this will return non-null.
     SubContextList iter = m_isTopLevel ? null : xctxt.getSubContextList();
 
-    // System.out.println("iter: "+iter);
     if (null != iter)
       return iter.getLastPos(xctxt);
 
@@ -84,7 +80,6 @@ public class FuncLast extends Function
     if(null != cnl)
     {
       count = cnl.getLength();
-      // System.out.println("count: "+count); 
     }
     else
       count = 0;   
@@ -92,8 +87,9 @@ public class FuncLast extends Function
   }
 
   /**
-   * Execute the function.  The function must return
-   * a valid object.
+   * Execute the function. The function must return a valid 
+   * object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
@@ -101,8 +97,11 @@ public class FuncLast extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    XNumber xnum = new XNumber((double) getCountOfContextNodeList(xctxt));
-    // System.out.println("last: "+xnum.num());
+    XNumber xnum = null;
+    
+    double pos = (xctxt.getGroupCount() > 0) ? xctxt.getGroupCount() : ((double) getCountOfContextNodeList(xctxt));
+    xnum = new XNumber(pos);
+    
     return xnum;
   }
   

@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -42,8 +42,6 @@ import org.apache.xpath.objects.XPathArray;
 
 /**
  * Implementation of the XSLT 3.0 xsl:iterate instruction.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-iterate
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -176,6 +174,9 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            XPathContext xctxt = transformer.getXPathContext();
          
            final int sourceNode = xctxt.getCurrentNode();
+           
+           xctxt.setGroupPosition(0);
+           xctxt.setGroupCount(0);
            
            // Clear the, xsl:iterate->xsl:param list storage before this xsl:iterate 
            // instruction's evaluation.

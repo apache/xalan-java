@@ -36,13 +36,21 @@ import org.xml.sax.SAXParseException;
  */
 public class XslTestsErrorHandler implements ErrorHandler, ErrorListener {
     
-    private List<String> trfErrorList = new ArrayList<String>();
+    private List<String> trfErrorList = null;
     
-    private List<String> trfFatalErrorList = new ArrayList<String>();
+    private List<String> trfFatalErrorList = null;
     
     private String xmlDocumentStr = null;
     
     private String xslTestCaseName = null;
+    
+    /**
+     * Class constructor.
+     */
+    public XslTestsErrorHandler() {
+    	trfErrorList = new ArrayList<String>();
+    	trfFatalErrorList = new ArrayList<String>();
+    }
 
     @Override
     public void error(TransformerException ex) throws TransformerException {        

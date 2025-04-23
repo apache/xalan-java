@@ -32,9 +32,9 @@ import org.junit.Test;
  */
 public class XslGroupingTests extends XslTransformTestsUtil {
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_grouping/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_for_each_group/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_grouping/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_for_each_group/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

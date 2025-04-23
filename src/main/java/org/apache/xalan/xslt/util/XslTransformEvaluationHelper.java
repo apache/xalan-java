@@ -404,38 +404,34 @@ public class XslTransformEvaluationHelper {
        boolean isSeqContains = false;
        
        for (int idx = 0; idx < resultSeq.size(); idx++) {
-          XObject existingItemWithinResultSeq = resultSeq.item(idx);
-          if ((existingItemWithinResultSeq instanceof XSUntyped) && 
-                                                            (srch instanceof XSUntyped)) {
-             if (((XSUntyped)existingItemWithinResultSeq).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
+          XObject resultSeqItem = resultSeq.item(idx);
+          if ((resultSeqItem instanceof XSUntyped) && (srch instanceof XSUntyped)) {
+             if (((XSUntyped)resultSeqItem).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
                  isSeqContains = true;
                  break;    
              }
           }
-          else if ((existingItemWithinResultSeq instanceof XSUntypedAtomic) && 
-                                                                  (srch instanceof XSUntypedAtomic)) {
-              if (((XSUntypedAtomic)existingItemWithinResultSeq).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
+          else if ((resultSeqItem instanceof XSUntypedAtomic) && (srch instanceof XSUntypedAtomic)) {
+              if (((XSUntypedAtomic)resultSeqItem).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
                  isSeqContains = true;
                  break;    
               } 
           }
-          else if ((existingItemWithinResultSeq instanceof XSUntyped) && 
-                                                                  (srch instanceof XSUntypedAtomic)) {
-              if (((XSUntyped)existingItemWithinResultSeq).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
+          else if ((resultSeqItem instanceof XSUntyped) && (srch instanceof XSUntypedAtomic)) {
+              if (((XSUntyped)resultSeqItem).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
                  isSeqContains = true;
                  break;    
               } 
           }
-          else if ((existingItemWithinResultSeq instanceof XSUntypedAtomic) && 
-                                                                  (srch instanceof XSUntyped)) {
-              if (((XSUntypedAtomic)existingItemWithinResultSeq).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
+          else if ((resultSeqItem instanceof XSUntypedAtomic) && (srch instanceof XSUntyped)) {
+              if (((XSUntypedAtomic)resultSeqItem).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
                  isSeqContains = true;
                  break;    
               }
           }
-          else if ((existingItemWithinResultSeq instanceof XSNumericType) && (srch instanceof XSNumericType)) {
+          else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XSNumericType)) {
         	  // When comparing numeric values, collationUri is not used
-        	  String lStr = ((XSNumericType)existingItemWithinResultSeq).stringValue();
+        	  String lStr = ((XSNumericType)resultSeqItem).stringValue();
          	  XSDouble lDouble = new XSDouble(lStr);
          	  
          	  String rStr = ((XSNumericType)srch).stringValue();
@@ -446,9 +442,9 @@ public class XslTransformEvaluationHelper {
                  break;  
         	  }
           }
-          else if ((existingItemWithinResultSeq instanceof XSNumericType) && (srch instanceof XNumber)) {
+          else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XNumber)) {
         	  // When comparing numeric values, collationUri is not used
-        	  String lStr = ((XSNumericType)existingItemWithinResultSeq).stringValue();
+        	  String lStr = ((XSNumericType)resultSeqItem).stringValue();
          	  XSDouble lDouble = new XSDouble(lStr);
          	  
          	  double rdbl = ((XNumber)srch).num();
@@ -459,9 +455,9 @@ public class XslTransformEvaluationHelper {
                 break;  
         	 }
           }
-          else if ((existingItemWithinResultSeq instanceof XNumber) && (srch instanceof XSNumericType)) {
+          else if ((resultSeqItem instanceof XNumber) && (srch instanceof XSNumericType)) {
         	 // When comparing numeric values, collationUri is not used
-        	 double ldbl = ((XNumber)existingItemWithinResultSeq).num();
+        	 double ldbl = ((XNumber)resultSeqItem).num();
           	 XSDouble lDouble = new XSDouble(ldbl);
           	  
           	 String rStr = ((XSNumericType)srch).stringValue();
@@ -472,23 +468,23 @@ public class XslTransformEvaluationHelper {
                 break;  
           	 } 
          }
-         else if ((existingItemWithinResultSeq instanceof XNumber) && (srch instanceof XNumber)) {
+         else if ((resultSeqItem instanceof XNumber) && (srch instanceof XNumber)) {
         	 // When comparing numeric values, collationUri is not used
-        	 double num1 = ((XNumber)existingItemWithinResultSeq).num();
+        	 double num1 = ((XNumber)resultSeqItem).num();
         	 double num2 = ((XNumber)srch).num();
-        	 if (num1 == num2) {
+
+        	 if ((num1 == num2) || (Double.isNaN(num1) && Double.isNaN(num2))) {
         		isSeqContains = true;
         		break; 
         	 }
          }
-         else if ((existingItemWithinResultSeq instanceof XSAnyType) && 
-                                                                 (srch instanceof XSAnyType)) {
-             if (((XSAnyType)existingItemWithinResultSeq).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
+         else if ((resultSeqItem instanceof XSAnyType) && (srch instanceof XSAnyType)) {
+             if (((XSAnyType)resultSeqItem).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
                 isSeqContains = true;
                 break;    
              }   
          }
-         else if (existingItemWithinResultSeq.equals(srch, collationUri, xpathCollationSupport)) {
+         else if (resultSeqItem.equals(srch, collationUri, xpathCollationSupport)) {
              isSeqContains = true;
              break;    
          }

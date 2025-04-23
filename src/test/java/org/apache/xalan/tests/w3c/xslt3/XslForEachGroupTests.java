@@ -37,22 +37,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/**
- * Xalan-J XSL 3 test driver, to run W3C XSLT 3.0 tests for 
- * xsl:apply-templates instruction.
- * 
- * @author Mukul Gandhi <mukulg@apache.org>
- * 
- * @xsl.usage advanced
- */
-public class XslApplyTemplatesTests extends XslTransformTestsUtil {     
+public class XslForEachGroupTests extends XslTransformTestsUtil {     
     
     private static String m_testResultFileName;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/apply-templates/_apply-templates-test-set.xml";
-    	m_testResultFileName = "xsl_apply_templates_test_results.xml";    	   
+    	xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/for-each-group/_for-each-group-test-set.xml";
+    	m_testResultFileName = "xsl_for_each_group_test_results.xml";
     }
 
     @AfterClass
@@ -63,7 +55,7 @@ public class XslApplyTemplatesTests extends XslTransformTestsUtil {
     }
 
     @Test
-    public void xslApplyTemplatesTest() {    	
+    public void xslForEachGroupTest() {    	
     	
     	Document xslTestSetDoc = null;
     	
@@ -84,7 +76,7 @@ public class XslApplyTemplatesTests extends XslTransformTestsUtil {
     	   NodeList nodeList = xslTestSetDoc.getElementsByTagNameNS("http://www.w3.org/2012/10/xslt-test-catalog", "test-case");
     	   for (int idx = 0; idx < nodeList.getLength(); idx++) {
     		   Node node = nodeList.item(idx);
-    		   String testCaseName = ((Element)node).getAttribute("name"); 
+    		   String testCaseName = ((Element)node).getAttribute("name");    		   
     		   Object envRef = getTestCaseEnvironment(node);
     		   NodeList nodeList2 = null;
     		   
@@ -169,7 +161,7 @@ public class XslApplyTemplatesTests extends XslTransformTestsUtil {
     		   
     		   DOMSource xmlInpDomSource = new DOMSource(xmlDocumentBuilder.parse(inpStream));    		   
     		   StreamSource xsltStreamSrc = new StreamSource(xslStylesheetUriStr);
-    		   
+    		       		   
     		   runW3CXSLTTestSuiteXslTransformAndProduceResult(testCaseName, xmlInpDomSource, xsltStreamSrc, expectedResultElem, 
     				                                                            elemTestRun, testResultDoc);
        		   

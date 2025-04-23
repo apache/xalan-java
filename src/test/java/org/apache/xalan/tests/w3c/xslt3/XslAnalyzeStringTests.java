@@ -27,7 +27,6 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -48,13 +47,10 @@ import org.w3c.dom.NodeList;
  */
 public class XslAnalyzeStringTests extends XslTransformTestsUtil {     
     
-    private static XslTestsErrorHandler m_xslTransformErrHandler = null;
-    
     private static String m_testResultFileName;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	m_xslTransformErrHandler = new XslTestsErrorHandler();
     	xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/analyze-string/_analyze-string-test-set.xml";
     	m_testResultFileName = "xsl_analyze_string_test_results.xml";    	   
     }
@@ -64,7 +60,6 @@ public class XslAnalyzeStringTests extends XslTransformTestsUtil {
         xmlDocumentBuilderFactory = null;
         xmlDocumentBuilder = null;
         xslTransformerFactory = null;
-        m_xslTransformErrHandler = null;
     }
 
     @Test
@@ -176,8 +171,7 @@ public class XslAnalyzeStringTests extends XslTransformTestsUtil {
     		   StreamSource xsltStreamSrc = new StreamSource(xslStylesheetUriStr);
     		   
     		   runW3CXSLTTestSuiteXslTransformAndProduceResult(testCaseName, xmlInpDomSource, xsltStreamSrc, expectedResultElem, 
-    				                                                            elemTestRun, testResultDoc, 
-    				                                                            m_xslTransformErrHandler);
+    				                                                            elemTestRun, testResultDoc);
        		   
     	   }
     	   

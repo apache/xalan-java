@@ -23,8 +23,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT xsl:for-each-group test cases, that use xsl:sort 
- * instructions.
+ * XSLT 3.0 xsl:for-each-group test cases, when xsl:for-each-group 
+ * instruction has xsl:sort element child node to implement ordering 
+ * among groups.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -32,9 +33,9 @@ import org.junit.Test;
  */
 public class XslGroupingWithSortTests extends XslTransformTestsUtil {
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_grouping/sort/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_for_each_group/sort/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_grouping/sort/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_for_each_group/sort/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

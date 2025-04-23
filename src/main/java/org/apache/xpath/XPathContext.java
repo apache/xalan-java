@@ -160,11 +160,33 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * is the real DTMManager.
    */
   protected DTMManager m_dtmManager = DTMManager.newInstance(
-                   org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+                   											org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
   
   /**
-   * Return the DTMManager object.  Though XPathContext context extends 
-   * the DTMManager, it really is a proxy for the real DTMManager.  If a 
+   * Class field indicating, position of the current group within the 
+   * sequence of groups being processed by xsl:for-each-group instruction.
+   *  
+   * The value of this field, is the return value of fn:position() function 
+   * when evaluated within xsl:for-each-group instruction. xsl:for-each
+   * and xsl:iterate instructions will have their own values for fn:position() 
+   * function.
+   */
+  private int groupPos;
+  
+  /**
+   * Class field indicating, the number of groups formed by xsl:for-each-group 
+   * instruction.  
+   *  
+   * The value of this field, is the return value of fn:last() function 
+   * when evaluated within xsl:for-each-group instruction. xsl:for-each
+   * and xsl:iterate instructions will have their own values for fn:last() 
+   * function.
+   */
+  private int groupCount;
+  
+  /**
+   * Return the DTMManager object. Though XPathContext context extends 
+   * the DTMManager, it really is a proxy for the real DTMManager. If a 
    * caller needs to make a lot of calls to the DTMManager, it is faster 
    * if it gets the real one from this function.
    */
@@ -1503,6 +1525,22 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   
   public XSL3FunctionService getXSLFunctionService() {
 	  return XSLFunctionBuilder.getXSLFunctionService(); 
+  }
+
+  public void setGroupPosition(int pos) {
+	 this.groupPos = pos;
+  }
+  
+  public int getGroupPosition() {
+	 return this.groupPos;
+  }
+
+  public void setGroupCount(int grpCount) {
+	 this.groupCount = grpCount;	
+  }
+  
+  public int getGroupCount() {
+     return this.groupCount;
   }
   
 }

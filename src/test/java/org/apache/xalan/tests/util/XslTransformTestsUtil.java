@@ -44,7 +44,6 @@ import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
@@ -123,29 +122,26 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     protected void runW3CXSLTTestSuiteXslTransformAndProduceResult(String testCaseName, DOMSource xmlInpDomSource, 
     		                                                       StreamSource xsltStreamSrc, Element expectedResultElem,  
-            													   Element elemTestRun, Document testResultDoc, 
-            													   XslTestsErrorHandler xslTransformErrHandler) throws Exception {
-    	
-    	List<String> trfErrorList = null;
-    	List<String> trfFatalErrorList = null;
+            													   Element elemTestRun, Document testResultDoc) throws Exception {    	    	
 
     	Element elemTestResult = testResultDoc.createElement("testResult");
     	
+    	XslTestsErrorHandler xslTransformErrHandler = new XslTestsErrorHandler();
+		List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();
+		List<String> trfFatalErrorList = xslTransformErrHandler.getTrfFatalErrorList();
+    	
     	try {
+    		xslTransformerFactory.setErrorListener(xslTransformErrHandler);
+    		
     		Transformer transformer = xslTransformerFactory.newTransformer(xsltStreamSrc);
 
-    		setXslTransformProperties(transformer);
+    		setXslTransformProperties(transformer);    		
 
-    		if (xslTransformErrHandler != null) {
-    			transformer.setErrorListener(xslTransformErrHandler);  
-    		}
+    		//transformer.setErrorListener(xslTransformErrHandler);  
 
     		StringWriter resultStrWriter = new StringWriter();
 
-    		transformer.transform(xmlInpDomSource, new StreamResult(resultStrWriter));
-
-    		trfErrorList = xslTransformErrHandler.getTrfErrorList();
-    		trfFatalErrorList = xslTransformErrHandler.getTrfFatalErrorList();
+    		transformer.transform(xmlInpDomSource, new StreamResult(resultStrWriter));    		
     		    		
     		elemTestResult.setAttribute("testName", testCaseName);
     		
@@ -298,8 +294,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
             handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, elemTestResult);    	
     	}
     	finally {
-    		elemTestRun.appendChild(elemTestResult);
-    		
+    		elemTestRun.appendChild(elemTestResult);    		
     		trfErrorList.clear();
     		trfFatalErrorList.clear();
     	}    	    	
