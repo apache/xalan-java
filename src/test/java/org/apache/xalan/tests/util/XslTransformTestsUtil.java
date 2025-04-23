@@ -135,9 +135,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		
     		Transformer transformer = xslTransformerFactory.newTransformer(xsltStreamSrc);
 
-    		setXslTransformProperties(transformer);    		
-
-    		//transformer.setErrorListener(xslTransformErrHandler);  
+    		setXslTransformProperties(transformer);    		 
 
     		StringWriter resultStrWriter = new StringWriter();
 
@@ -262,29 +260,45 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
             	   expectedResultStr = elemNode.getTextContent();            		
             	}
             	
-            	// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
-    			XslTestsErrorHandler xmlDocumentErrHandler = new XslTestsErrorHandler();
-    			xmlDocumentErrHandler.setTestCaseName(testCaseName);
-    			xmlDocumentErrHandler.setXMLDocumentStr(resultStrWriter.toString());
-    			xmlDocumentBuilder.setErrorHandler(xmlDocumentErrHandler);
-            	
-            	Document xmlInpDoc1 = xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
-    			String str1 = serializeXmlDomElementNode(xmlInpDoc1);
-    			
-    			// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
-    			XslTestsErrorHandler xsltDocumentErrHandler = new XslTestsErrorHandler();
-    			xmlDocumentErrHandler.setTestCaseName(testCaseName);
-    			xsltDocumentErrHandler.setXMLDocumentStr(expectedResultStr);
-    			xmlDocumentBuilder.setErrorHandler(xsltDocumentErrHandler);
-    			
-    			Document xmlInpDoc2 = xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
-    			String str2 = serializeXmlDomElementNode(xmlInpDoc2);
-    			if (str1.equals(str2)) {
-    				elemTestResult.setAttribute("status", "pass");
-    			}
-    			else {
-    				elemTestResult.setAttribute("status", "fail");
-    			}
+            	if (expectedResultStr.startsWith("<html>") || expectedResultStr.startsWith("<table>")) {            		
+            		String xslTransformResultStr = resultStrWriter.toString();
+            		int idx = xslTransformResultStr.indexOf("?>");
+            		if (idx > -1) {
+            			xslTransformResultStr = xslTransformResultStr.substring(idx + 2);            			
+            		}
+            		expectedResultStr = expectedResultStr.replace(" ", "");
+            		if (xslTransformResultStr.equals(expectedResultStr)) {
+            			elemTestResult.setAttribute("status", "pass");
+            		}
+            		else {
+            			elemTestResult.setAttribute("status", "fail");
+            		}
+            	}
+            	else {
+            		// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
+            		XslTestsErrorHandler xmlDocumentErrHandler = new XslTestsErrorHandler();
+            		xmlDocumentErrHandler.setTestCaseName(testCaseName);
+            		xmlDocumentErrHandler.setXMLDocumentStr(resultStrWriter.toString());
+            		xmlDocumentBuilder.setErrorHandler(xmlDocumentErrHandler);
+
+            		Document xmlInpDoc1 = xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
+            		String str1 = serializeXmlDomElementNode(xmlInpDoc1);
+
+            		// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
+            		XslTestsErrorHandler xsltDocumentErrHandler = new XslTestsErrorHandler();
+            		xmlDocumentErrHandler.setTestCaseName(testCaseName);
+            		xsltDocumentErrHandler.setXMLDocumentStr(expectedResultStr);
+            		xmlDocumentBuilder.setErrorHandler(xsltDocumentErrHandler);
+
+            		Document xmlInpDoc2 = xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
+            		String str2 = serializeXmlDomElementNode(xmlInpDoc2);
+            		if (str1.equals(str2)) {
+            			elemTestResult.setAttribute("status", "pass");
+            		}
+            		else {
+            			elemTestResult.setAttribute("status", "fail");
+            		}
+            	}
     		}    		    		
     	}
     	catch (SAXException ex) {

@@ -19,7 +19,6 @@ package org.apache.xalan.tests.w3c.xslt3;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -61,6 +60,8 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     	
     	FileOutputStream testResultFos = null;
     	
+    	Document testResultDoc = null;
+    	
     	try {
     	   xslTestSetDoc = xmlDocumentBuilder.parse(xslTransformTestSetFilePath);
     	   Element docElem = xslTestSetDoc.getDocumentElement();
@@ -68,7 +69,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     	   // Create XSL tests result XML DOM tree header, to which
 		   // individual test results will be appended.
 		   String testSetName = docElem.getAttribute("name");
-		   Document testResultDoc = xmlDocumentBuilder.newDocument();
+		   testResultDoc = xmlDocumentBuilder.newDocument();
     	   Element elemTestRun = testResultDoc.createElement("testrun");
     	   elemTestRun.setAttribute("name", testSetName);
     	   testResultDoc.appendChild(elemTestRun);
@@ -165,24 +166,23 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     		   runW3CXSLTTestSuiteXslTransformAndProduceResult(testCaseName, xmlInpDomSource, xsltStreamSrc, expectedResultElem, 
     				                                                            elemTestRun, testResultDoc);
        		   
-    	   }
-    	   
-    	   // Serialize testResultDoc to file    	   
-    	   String xslTestResultStr = serializeXmlDomElementNode(testResultDoc);
-    	   
-    	   File xslAnalyzeStringTestResultFile = new File(new URI(w3cXslt3TestSuiteXalanResultsPathPrefix + m_testResultFileName));
-    	   testResultFos = new FileOutputStream(xslAnalyzeStringTestResultFile);
-    	   testResultFos.write(xslTestResultStr.getBytes());
-    	   testResultFos.flush();    	   
+    	   }  	   
     	}
     	catch (Exception ex) {
     	   ex.printStackTrace();
     	}
     	finally {
     	   try {
+    		   // Serialize testResultDoc to file
+    		   String xslTestResultStr = serializeXmlDomElementNode(testResultDoc);
+        	   
+        	   File xslAnalyzeStringTestResultFile = new File(new URI(w3cXslt3TestSuiteXalanResultsPathPrefix + m_testResultFileName));
+        	   testResultFos = new FileOutputStream(xslAnalyzeStringTestResultFile);
+        	   testResultFos.write(xslTestResultStr.getBytes());
+        	   testResultFos.flush();
 			   testResultFos.close();
-		   } 
-    	   catch (IOException ex) {
+		   }
+    	   catch (Exception ex) {
 			   ex.printStackTrace();
 		   }
     	}

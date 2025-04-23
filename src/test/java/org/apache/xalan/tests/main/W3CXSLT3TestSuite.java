@@ -18,6 +18,7 @@ package org.apache.xalan.tests.main;
 
 import org.apache.xalan.tests.w3c.xslt3.XslAnalyzeStringTests;
 import org.apache.xalan.tests.w3c.xslt3.XslApplyTemplatesTests;
+import org.apache.xalan.tests.w3c.xslt3.XslForEachGroupTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -32,7 +33,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XslAnalyzeStringTests.class, XslApplyTemplatesTests.class })
+@SuiteClasses({ XslAnalyzeStringTests.class, XslApplyTemplatesTests.class, XslForEachGroupTests.class })
 public class W3CXSLT3TestSuite {
 
 }
