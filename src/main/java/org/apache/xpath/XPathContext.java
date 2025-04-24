@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,9 +14,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/*
- * $Id$
  */
 package org.apache.xpath;
 
@@ -72,7 +69,9 @@ import xml.xpath31.processor.types.XSDuration;
  */
 public class XPathContext extends DTMManager // implements ExpressionContext
 {
-	IntStack m_last_pushed_rtfdtm=new IntStack();	
+  
+  IntStack m_last_pushed_rtfdtm=new IntStack();
+  
   /**
    * Stack of cached "reusable" DTMs for Result Tree Fragments.
    * This is a kluge to handle the problem of starting an RTF before
@@ -84,10 +83,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * but the retained RTF DTM will have been tail-pruned so should be small.
    */
   private Vector m_rtfdtm_stack=null;
+  
   /** Index of currently active RTF DTM in m_rtfdtm_stack */
   private int m_which_rtfdtm=-1;
   
- /**
+  /**
    * Most recent "reusable" DTM for Global Result Tree Fragments. No stack is
    * required since we're never going to pop these.
    */
@@ -144,7 +144,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   private Map<QName, XObject> xpathVarMap = new HashMap<QName, XObject>();
   
   /**
-   * The default collation uri (the default collation for XalanJ's XSL3 support 
+   * The default collation uri (the default collation for Xalan-J's XSL 3 support 
    * is, "Unicode Codepoint Collation").
    */
   private String m_default_collation = XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI;

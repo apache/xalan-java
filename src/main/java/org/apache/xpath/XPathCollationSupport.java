@@ -200,6 +200,88 @@ public class XPathCollationSupport {
     }
     
     /**
+     * This method implements, 'Unicode Collation Algorithm' as specified by XPath 3.1 F&O spec
+     * (which in turn is based on UTS #10 [Unicode Technical Standard #10 : Unicode Collation
+     * Algorithm]).
+     * 
+     * @param collationUri     the requested collation uri, during XPath 3.1 string comparisons,
+     *                         and sorting of strings.
+     *                         
+     * @return                 a configured Java object of type java.text.Collator, that callers of
+     *                         this method can use to do locale specific string comparisons.
+     * 
+     * @throws TransformerException
+     */
+    public Collator getUCACollatorFromCollationUri(String collationUri) throws TransformerException {
+       
+       Collator strComparisonCollator = null;
+       
+       try {
+           if (collationUri.equals(UNICODE_COLLATION_ALGORITHM_URI)) {
+              strComparisonCollator = getDefaultUCACollator();
+           }
+           else {
+              int ucaUriPrefixLength = UNICODE_COLLATION_ALGORITHM_URI.length();              
+              String uriAndQueryStrDelim = collationUri.substring(ucaUriPrefixLength, ucaUriPrefixLength + 1);
+              
+              if (UCA_QUERY_STRING_PREFIX.equals(uriAndQueryStrDelim)) {
+                 String uriQueryStr = collationUri.substring(collationUri.indexOf(UCA_QUERY_STRING_PREFIX) + 1);
+                 Map<String, String> queryStrMap = getUCAQueryStrComponents(uriQueryStr);
+                 
+                 String queryStrFallbackValue = queryStrMap.get(UCA_KEYWORD_FALLBACK);
+                 String queryStrLangCode = queryStrMap.get(UCA_KEYWORD_LANG);
+                 String queryStrStrengthValue = queryStrMap.get(UCA_KEYWORD_STRENGTH);
+                    
+                 if (queryStrFallbackValue == null) {
+                    fQueryStrFallbackValue = DEFAULT_UCA_FALLBACK_VALUE;  
+                 }
+                 else {
+                    fQueryStrFallbackValue = queryStrFallbackValue;  
+                 }
+                    
+                 if (queryStrLangCode == null) {
+                    queryStrLangCode = DEFAULT_UCA_LOCALE.getCountry(); 
+                 }
+                    
+                 if (queryStrStrengthValue == null) {
+                    queryStrStrengthValue = DEFAULT_UCA_STRENGTH_VALUE;  
+                 }
+                    
+                 strComparisonCollator = Collator.getInstance(new Locale(queryStrLangCode));
+                    
+                 switch (queryStrStrengthValue) {
+                    case UCA_STRENGTH_PRIMARY :
+                       strComparisonCollator.setStrength(Collator.PRIMARY);
+                       break;
+                    case UCA_STRENGTH_SECONDARY :
+                       strComparisonCollator.setStrength(Collator.SECONDARY);
+                       break;
+                    case UCA_STRENGTH_TERTIARY :
+                       strComparisonCollator.setStrength(Collator.TERTIARY);
+                       break;
+                    case UCA_STRENGTH_IDENTICAL :
+                       strComparisonCollator.setStrength(Collator.IDENTICAL);
+                       break;
+                    default:
+                       // no op    
+                 }
+              }
+              else {
+                 throw new TransformerException("FOCH0002 : The first character if present after collation uri '" + 
+                                                                        UNICODE_COLLATION_ALGORITHM_URI + "' must be "
+                                                                        + "'" + UCA_QUERY_STRING_PREFIX + "', to denote the "
+                                                                        + "start of query string within the collation uri.");   
+              }
+           }
+       }
+       catch (Exception ex) {
+           throw new TransformerException(ex.getMessage());  
+       }
+       
+       return strComparisonCollator;
+    }
+    
+    /**
      * This method compares, two string values using 'Unicode Codepoint Collation'
      * as specified by XPath 3.1 F&O spec.
      *
@@ -299,88 +381,6 @@ public class XPathCollationSupport {
        }
        
        return intArray;
-    }
-    
-    /**
-     * This method implements, 'Unicode Collation Algorithm' as specified by XPath 3.1 F&O spec
-     * (which in turn is based on UTS #10 [Unicode Technical Standard #10 : Unicode Collation
-     * Algorithm]).
-     * 
-     * @param collationUri     the requested collation uri, during XPath 3.1 string comparisons,
-     *                         and sorting of strings.
-     *                         
-     * @return                 a configured Java object of type java.text.Collator, that callers of
-     *                         this method can use to do locale specific string comparisons.
-     * 
-     * @throws TransformerException
-     */
-    private Collator getUCACollatorFromCollationUri(String collationUri) throws TransformerException {
-       
-       Collator strComparisonCollator = null;
-       
-       try {
-           if (collationUri.equals(UNICODE_COLLATION_ALGORITHM_URI)) {
-              strComparisonCollator = getDefaultUCACollator();
-           }
-           else {
-              int ucaUriPrefixLength = UNICODE_COLLATION_ALGORITHM_URI.length();              
-              String uriAndQueryStrDelim = collationUri.substring(ucaUriPrefixLength, ucaUriPrefixLength + 1);
-              
-              if (UCA_QUERY_STRING_PREFIX.equals(uriAndQueryStrDelim)) {
-                 String uriQueryStr = collationUri.substring(collationUri.indexOf(UCA_QUERY_STRING_PREFIX) + 1);
-                 Map<String, String> queryStrMap = getUCAQueryStrComponents(uriQueryStr);
-                 
-                 String queryStrFallbackValue = queryStrMap.get(UCA_KEYWORD_FALLBACK);
-                 String queryStrLangCode = queryStrMap.get(UCA_KEYWORD_LANG);
-                 String queryStrStrengthValue = queryStrMap.get(UCA_KEYWORD_STRENGTH);
-                    
-                 if (queryStrFallbackValue == null) {
-                    fQueryStrFallbackValue = DEFAULT_UCA_FALLBACK_VALUE;  
-                 }
-                 else {
-                    fQueryStrFallbackValue = queryStrFallbackValue;  
-                 }
-                    
-                 if (queryStrLangCode == null) {
-                    queryStrLangCode = DEFAULT_UCA_LOCALE.getCountry(); 
-                 }
-                    
-                 if (queryStrStrengthValue == null) {
-                    queryStrStrengthValue = DEFAULT_UCA_STRENGTH_VALUE;  
-                 }
-                    
-                 strComparisonCollator = Collator.getInstance(new Locale(queryStrLangCode));
-                    
-                 switch (queryStrStrengthValue) {
-                    case UCA_STRENGTH_PRIMARY :
-                       strComparisonCollator.setStrength(Collator.PRIMARY);
-                       break;
-                    case UCA_STRENGTH_SECONDARY :
-                       strComparisonCollator.setStrength(Collator.SECONDARY);
-                       break;
-                    case UCA_STRENGTH_TERTIARY :
-                       strComparisonCollator.setStrength(Collator.TERTIARY);
-                       break;
-                    case UCA_STRENGTH_IDENTICAL :
-                       strComparisonCollator.setStrength(Collator.IDENTICAL);
-                       break;
-                    default:
-                       // no op    
-                 }
-              }
-              else {
-                 throw new TransformerException("FOCH0002 : The first character if present after collation uri '" + 
-                                                                        UNICODE_COLLATION_ALGORITHM_URI + "' must be "
-                                                                        + "'" + UCA_QUERY_STRING_PREFIX + "', to denote the "
-                                                                        + "start of query string within the collation uri.");   
-              }
-           }
-       }
-       catch (Exception ex) {
-           throw new TransformerException(ex.getMessage());  
-       }
-       
-       return strComparisonCollator;
     }
     
     /**

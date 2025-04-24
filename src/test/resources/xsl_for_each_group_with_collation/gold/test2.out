@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><words>
+  <group word="Strasse">
+    <word id="1">Strasse</word>
+    <word id="3">Straße</word>
+  </group>
+  <group word="Mukul">
+    <word id="2">Mukul</word>
+    <word id="4">Mukul</word>
+  </group>
+  <group word="Martin">
+    <word id="5">Martin</word>
+  </group>
+</words>

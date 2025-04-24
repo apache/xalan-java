@@ -267,6 +267,11 @@ public class XSLTSchema extends XSLTElementDef
                                             XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
     
     // Optional.
+    // xsl:for-each-group 
+    XSLTAttributeDef collationAttrOpt = new XSLTAttributeDef(null, "collation", 
+    	                                              XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional.
     // xsl:value-of
     XSLTAttributeDef separatorAttrOpt = new XSLTAttributeDef(null,
 									                   "separator",
@@ -615,7 +620,8 @@ public class XSLTSchema extends XSLTElementDef
                                              Constants.S_XSLNAMESPACEURL, "for-each-group",
                                              null /*alias */, templateElementsAndSort,
                                              new XSLTAttributeDef[]{ selectAttrRequired, groupByAttrOpt, groupAdjacentAttrOpt, 
-                                                                     groupStartingWithAttrOpt, groupEndingWithAttrOpt, spaceAttr }, 
+                                                                     groupStartingWithAttrOpt, groupEndingWithAttrOpt, collationAttrOpt, 
+                                                                     spaceAttr }, 
                                              new ProcessorTemplateElem(),
                                              ElemForEachGroup.class /* class object */, true, false, true, 20, true);
     

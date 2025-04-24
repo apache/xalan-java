@@ -31,7 +31,7 @@ import java.util.Vector;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemForEachGroup;
-import org.apache.xalan.templates.GroupingKeyAndGroupPair;
+import org.apache.xalan.templates.GroupingKeyAndGroupPairForXslSort;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
@@ -81,10 +81,10 @@ public class ForEachGroupXslSortSorter
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public List<GroupingKeyAndGroupPair> sort(Object forEachGroups, Vector sortKeys, XPathContext xpathContext)
+  public List<GroupingKeyAndGroupPairForXslSort> sort(Object forEachGroups, Vector sortKeys, XPathContext xpathContext)
                                                     throws javax.xml.transform.TransformerException {
       
-        List<GroupingKeyAndGroupPair> groupingKeyAndGroupPairList = new ArrayList<GroupingKeyAndGroupPair>();
+        List<GroupingKeyAndGroupPairForXslSort> groupingKeyAndGroupPairList = new ArrayList<GroupingKeyAndGroupPairForXslSort>();
 
         m_keys = sortKeys;
         
@@ -96,7 +96,7 @@ public class ForEachGroupXslSortSorter
                                                             groupingKeysIter.hasNext(); ) {
                 Object groupingKey = groupingKeysIter.next();
                 List<Integer> groupNodesDtmHandles = xslForEachGroupMap.get(groupingKey);
-                GroupingKeyAndGroupPair groupingKeyAndGroupPair = new GroupingKeyAndGroupPair(
+                GroupingKeyAndGroupPairForXslSort groupingKeyAndGroupPair = new GroupingKeyAndGroupPairForXslSort(
                                                                            groupingKey, groupNodesDtmHandles);
                 groupingKeyAndGroupPairList.add(groupingKeyAndGroupPair);
              } 
@@ -108,7 +108,7 @@ public class ForEachGroupXslSortSorter
                 Object groupingKey = null;
                 List<Integer> groupNodesDtmHandles = xslForEachGroupStartingWithEndingWith.get(idx);
                                 
-                GroupingKeyAndGroupPair groupingKeyAndGroupPair = new GroupingKeyAndGroupPair(
+                GroupingKeyAndGroupPairForXslSort groupingKeyAndGroupPair = new GroupingKeyAndGroupPairForXslSort(
                                                                                  groupingKey, groupNodesDtmHandles);
                 groupingKeyAndGroupPairList.add(groupingKeyAndGroupPair);
             }
@@ -134,7 +134,7 @@ public class ForEachGroupXslSortSorter
         
         for (int idx = 0; idx < nodeCompareElements.size(); idx++)
         {
-            GroupingKeyAndGroupPair groupingKeyAndGroupPair = ((NodeCompareElem)nodeCompareElements.get(idx)).
+            GroupingKeyAndGroupPairForXslSort groupingKeyAndGroupPair = ((NodeCompareElem)nodeCompareElements.get(idx)).
                                                                         getGroupingKeyAndGroupPair();
             groupingKeyAndGroupPairList.add(groupingKeyAndGroupPair);
         }
@@ -362,7 +362,7 @@ public class ForEachGroupXslSortSorter
         /** Value from second sort key */
         Object m_key2Value;
         
-        GroupingKeyAndGroupPair m_groupingKeyAndGroupPair;
+        GroupingKeyAndGroupPairForXslSort m_groupingKeyAndGroupPair;
 
         /**
          * Constructor function, of this class.
@@ -371,7 +371,7 @@ public class ForEachGroupXslSortSorter
          *
          * @throws javax.xml.transform.TransformerException
          */
-        NodeCompareElem(GroupingKeyAndGroupPair groupingKeyAndGroupPair) throws 
+        NodeCompareElem(GroupingKeyAndGroupPairForXslSort groupingKeyAndGroupPair) throws 
                                                                javax.xml.transform.TransformerException {
             
               this.m_groupingKeyAndGroupPair = groupingKeyAndGroupPair; 
@@ -427,11 +427,11 @@ public class ForEachGroupXslSortSorter
               }   
         }
 
-        public GroupingKeyAndGroupPair getGroupingKeyAndGroupPair() {
+        public GroupingKeyAndGroupPairForXslSort getGroupingKeyAndGroupPair() {
             return m_groupingKeyAndGroupPair;
         }
 
-        public void setGroupingKeyAndGroupPair(GroupingKeyAndGroupPair 
+        public void setGroupingKeyAndGroupPair(GroupingKeyAndGroupPairForXslSort 
                                                              groupingKeyAndGroupPair) {
             this.m_groupingKeyAndGroupPair = groupingKeyAndGroupPair;
         }

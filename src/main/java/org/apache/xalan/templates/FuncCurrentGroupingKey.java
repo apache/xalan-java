@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import java.util.Vector;
@@ -26,22 +23,10 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.types.StringWithCollation;
 
-/**
- * Implementation of xsl:for-each-group's current-grouping-key() function.
- * 
- * This function is designed to be called from within, xsl:for-each-group instruction.
- * 
- * The following cases are applicable, when using this function from within XSLT stylesheets,
- * 
- * 1) With xsl:for-each-group instruction, when group-by and group-adjacent attributes
- *    are present, call to this function within xsl:for-each-group element returns valid non null 
- *    typed values. 
- * 2) With xsl:for-each-group instruction, when group-starting-with and group-ending-with attributes
- *    are present the grouping key is absent, and with these cases the call to this function within 
- *    xsl:for-each-group element raises a dynamic error XTDE1071.
- * 3) This function may also be called, within any XSLT element other than xsl:for-each-group element.
- *    With these cases, the call to this function raises a dynamic error XTDE1071.    
+/**   
+ * Implementation of an XSLT 3.0 function current-grouping-key().
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -74,8 +59,11 @@ public class FuncCurrentGroupingKey extends Function
         }
         
         if (groupingKey == null) {
-            throw new javax.xml.transform.TransformerException("XTDE1071 : There is no current grouping key.", 
-                                                                                xctxt.getSAXLocator());    
+            throw new javax.xml.transform.TransformerException("XTDE1071 : There is no current grouping key.", xctxt.getSAXLocator());    
+        }
+        
+        if (groupingKey instanceof StringWithCollation) {
+        	groupingKey = ((StringWithCollation)groupingKey).getStrValue();	
         }
       
         return XObject.create(groupingKey);

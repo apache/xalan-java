@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><cities>
+  <country pop="6" name="italy">
+    <city pop="5" name="milan"/>
+    <city pop="1" name="venice"/>
+  </country>
+  <country pop="22" name="india">
+    <city pop="10" name="ahemdabad"/>
+    <city pop="7" name="gurgaon"/>
+    <city pop="5" name="new delhi"/>
+  </country>
+  <country pop="9" name="france">
+    <city pop="2" name="lyon"/>
+    <city pop="7" name="paris"/>
+  </country>
+  <country pop="4" name="germany">
+    <city pop="4" name="munich"/>
+  </country>
+</cities>
