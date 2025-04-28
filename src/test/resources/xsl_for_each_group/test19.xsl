@@ -10,11 +10,11 @@
 
    <xsl:template match="/body">
      <chapter>
-        <xsl:for-each-group select="*" group-starting-with="self::h2">
+        <xsl:for-each-group select="*" group-starting-with="h2">
           <section title="{current-group()[1]}">
-   	     <xsl:for-each select="current-group()[position() &gt; 1]">
-   	       <para><xsl:value-of select="."/></para>
-   	     </xsl:for-each> 
+	   	     <xsl:for-each select="current-group()[position() &gt; 1]">
+	   	       <para><xsl:value-of select="."/></para>
+	   	     </xsl:for-each> 
           </section>
         </xsl:for-each-group>
      </chapter>
@@ -25,7 +25,7 @@
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
       * regarding copyright ownership. The ASF licenses this file
-      * to you under the Apache License, Version 2.0 (the  "License");
+      * to you under the Apache License, Version 2.0 (the "License");
       * you may not use this file except in compliance with the License.
       * You may obtain a copy of the License at
       *

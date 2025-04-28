@@ -50,6 +50,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.types.StringWithCollation;
+import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
@@ -575,24 +576,58 @@ public class ElemForEachGroup extends ElemTemplateElement
          else if (m_GroupStartingWithExpression != null) {
              int nextNode;
              
+             List<Integer> grpStartNodeHandles = new ArrayList<Integer>();
+             XObject xpathEvalResult = m_GroupStartingWithExpression.execute(xctxt);
+             
+             XMLNodeCursorImpl node = (XMLNodeCursorImpl)xpathEvalResult;
+             int currNode = (node.getContainedIter()).nextNode();
+             DTM dtm = xctxt.getDTM(currNode);
+             Node node2 = dtm.getNode(currNode);
+             String nodeName = node2.getNodeName();
+             List<Integer> allNodeHandleList = new ArrayList<Integer>();
              while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
-                xctxt.pushCurrentNode(nextNode);
-                
-                XObject xpathEvalResult = m_GroupStartingWithExpression.execute(xctxt);
-                boolean patternEvalResult = xpathEvalResult.bool();
-                if (patternEvalResult) {
-                    List<Integer> group = new ArrayList<Integer>();
-                    group.add(nextNode);
-                    xslForEachGroupStartingWithEndingWith.add(group);
-                }
-                else {
-                    int groupsCountSoFar = xslForEachGroupStartingWithEndingWith.size();
-                    if (groupsCountSoFar > 0) {
-                       List<Integer> group = xslForEachGroupStartingWithEndingWith.get(groupsCountSoFar - 1);
-                       group.add(nextNode);
-                    }
-                }                
+            	 allNodeHandleList.add(Integer.valueOf(nextNode));
+                 dtm = xctxt.getDTM(nextNode);
+                 node2 = dtm.getNode(nextNode);
+                 String nodeName2 = node2.getNodeName();
+                 if (nodeName2.equals(nodeName)) {
+                	 grpStartNodeHandles.add(Integer.valueOf(nextNode)); 
+                 }
              }
+             
+             for (int idx = 0; idx < grpStartNodeHandles.size(); idx++) {
+            	int grpStartNodeHandle = grpStartNodeHandles.get(idx);
+            	List<Integer> groupNodeHandles = new ArrayList<Integer>();
+            	for (int idx2 = 0; idx2 < allNodeHandleList.size(); idx2++) {
+            	   if (grpStartNodeHandles.size() > 1) {
+            		   if ((idx < (grpStartNodeHandles.size() - 1)) && ((allNodeHandleList.get(idx2) >= grpStartNodeHandle) && 
+            				                                            (allNodeHandleList.get(idx2) < grpStartNodeHandles.get(idx + 1)))) {
+            			   groupNodeHandles.add(allNodeHandleList.get(idx2));  
+            		   }
+            	   }
+            	   else if ((allNodeHandleList.get(idx2) >= grpStartNodeHandle) && 
+                            (allNodeHandleList.get(idx2) < grpStartNodeHandles.get(idx))) {
+            		   groupNodeHandles.add(allNodeHandleList.get(idx2)); 
+            	   }
+            	}
+            	
+            	if (groupNodeHandles.size() > 0) {
+            	   xslForEachGroupStartingWithEndingWith.add(groupNodeHandles);
+            	}
+             }
+             
+             // Getting node handles of the last group, for xsl:for-each-group's 
+             // group-starting-with attribute.
+             int temp = grpStartNodeHandles.size();             
+             int grpStartNodeHandle = grpStartNodeHandles.get(temp - 1);
+             List<Integer> groupNodeHandles = new ArrayList<Integer>();
+             for (int idx2 = 0; idx2 < allNodeHandleList.size(); idx2++) {            	   
+            	 if (grpStartNodeHandle <= allNodeHandleList.get(idx2)) {
+            		 groupNodeHandles.add(allNodeHandleList.get(idx2));  
+            	 }
+             }
+
+             xslForEachGroupStartingWithEndingWith.add(groupNodeHandles);
          }
          else if (m_GroupEndingWithExpression != null) {                          
              int nextNode;
