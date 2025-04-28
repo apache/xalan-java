@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,9 +14,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/*
- * $Id$
  */
 package org.apache.xpath.functions.string;
 
@@ -40,8 +37,6 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.PatternSyntaxException;
 import org.apache.xpath.res.XPATHErrorResources;
-
-import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of the fn:tokenize function.
@@ -106,7 +101,7 @@ public class FuncTokenize extends Function3Args {
             }
             
             for (int idx = 0; idx < tokenList.size(); idx++) {
-                resultSeq.add(new XSString(tokenList.get(idx)));    
+                resultSeq.add(new XString(tokenList.get(idx)));    
             }
         }
         else {
@@ -140,7 +135,7 @@ public class FuncTokenize extends Function3Args {
         	}
 
         	for (int idx = 0; idx < tokenList.size(); idx++) {
-        		resultSeq.add(new XSString(tokenList.get(idx)));    
+        		resultSeq.add(new XString(tokenList.get(idx)));    
         	}
         }
         

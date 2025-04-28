@@ -253,7 +253,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
 				  }
 			  }
 		  }
-		  else if (varEvalResult instanceof XSAnyAtomicType) {   	       	       	   
+		  else if ((varEvalResult instanceof XSAnyAtomicType) || (varEvalResult instanceof XString) || 
+				                                                 (varEvalResult instanceof XBoolean) || 
+				                                                 (varEvalResult instanceof XNumber)) {   	       	       	   
 			  executeXslTransformAtomicValue(transformer, xctxt, varEvalResult, xslTemplateInvokeMode);
 
 			  return; 

@@ -91,7 +91,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
   /**
    * The "select" expression.
-   * @serial
    */
   protected Expression m_selectExpression = null;
   
@@ -446,7 +445,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             resultSeqDtmIterator = nodeSet.iter(); 
         }
     }
-    else if (m_selectExpression instanceof LocPathIterator) {
+    else if (m_selectExpression instanceof LocPathIterator) {    	
         LocPathIterator locPathIterator = (LocPathIterator)m_selectExpression;          
         
         boolean isProcessAsNodeset = true;
@@ -514,6 +513,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                String varRefXPathExprStr = "$" + xpathPatternStr.substring(1, xpathPatternStr.indexOf('['));
                String xpathIndexExprStr = xpathPatternStr.substring(xpathPatternStr.indexOf('[') + 1, 
                                                                                             xpathPatternStr.indexOf(']'));
+               
                ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
                List<XMLNSDecl> prefixTable = null;
                if (elemTemplateElement != null) {
