@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSL stylesheet test cases to test, xsl:for-each-group instruction
+ * XSLT 3.0 stylesheet test cases, to test xsl:for-each-group instruction
  * having 'collation' attribute.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>

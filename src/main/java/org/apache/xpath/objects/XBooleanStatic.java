@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,22 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.objects;
 
 /**
  * This class doesn't have any XPathContext, so override
  * whatever to ensure it works OK.
+ * 
  * @xsl.usage internal
  */
 public class XBooleanStatic extends XBoolean
 {
-    static final long serialVersionUID = -8064147275772687409L;
+  static final long serialVersionUID = -8064147275772687409L;
 
-  /** The value of the object.
-   *  @serial          */
+  /** 
+   * The value of the object.
+   */
   private final boolean m_val;
 
   /**
@@ -40,9 +39,8 @@ public class XBooleanStatic extends XBoolean
    */
   public XBooleanStatic(boolean b)
   {
-
     super(b);
-
+    
     m_val = b;
   }
 
@@ -66,4 +64,15 @@ public class XBooleanStatic extends XBoolean
       throw new org.apache.xml.utils.WrappedRuntimeException(te);
     }
   }
+  
+  /**
+   * Cast result object to a boolean.
+   *
+   * @return The object value as a boolean
+   */
+  public boolean bool()
+  {
+    return m_val;
+  }
+  
 }

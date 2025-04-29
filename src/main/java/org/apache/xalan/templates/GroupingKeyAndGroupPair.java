@@ -20,22 +20,17 @@ import java.util.List;
 
 /**
  * This class is used for an implementation, when xsl:for-each-group 
- * instruction has one or more xsl:sort child elements i.e, an 
- * xsl:for-each-group instruction like following,
- * 
- * <xsl:for-each-group ...>
- *    <xsl:sort ...
- * </xsl:for-each-group>
+ * instruction has an attribute 'group-by' or 'group-adjacent'. 
  * 
  * An object of this class, has complete information about one group 
  * (which is grouping key of the group, and all members of the group) 
- * among all the possible groups.
+ * among all the possible groups formed by xsl:for-each-group instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class GroupingKeyAndGroupPairForXslSort {
+public class GroupingKeyAndGroupPair {
     
 	/**
 	 * Grouping key value of a group.
@@ -54,7 +49,7 @@ public class GroupingKeyAndGroupPairForXslSort {
      *                                  group have same value for grouping key.
      * @param groupNodesDtmHandles      XML node handles for members of a group
      */
-    public GroupingKeyAndGroupPairForXslSort(Object groupingKey, List<Integer> groupNodesDtmHandles) {
+    public GroupingKeyAndGroupPair(Object groupingKey, List<Integer> groupNodesDtmHandles) {
         this.groupingKey = groupingKey;
         this.groupNodesDtmHandles = groupNodesDtmHandles;
     }

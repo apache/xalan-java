@@ -70,8 +70,8 @@ import org.apache.xalan.tests.xslt3.XslAnalyzeStringTests;
 import org.apache.xalan.tests.xslt3.XslAttributeTests;
 import org.apache.xalan.tests.xslt3.XslCharacterMapTests;
 import org.apache.xalan.tests.xslt3.XslForkTests;
-import org.apache.xalan.tests.xslt3.XslGroupingTests;
-import org.apache.xalan.tests.xslt3.XslGroupingWithSortTests;
+import org.apache.xalan.tests.xslt3.XslForEachGroupTests;
+import org.apache.xalan.tests.xslt3.XslForEachGroupWithSortTests;
 import org.apache.xalan.tests.xslt3.XslIterateTests;
 import org.apache.xalan.tests.xslt3.XslMergeTests;
 import org.apache.xalan.tests.xslt3.XslMethodOutputJsonTests;
@@ -96,8 +96,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XslAnalyzeStringTests.class, XslAttributeTests.class, XslGroupingTests.class,
-                XslGroupingWithSortTests.class, XslRtfMigrationTests.class, XPathQuantifiedExprTests.class, 
+@SuiteClasses({ XslAnalyzeStringTests.class, XslAttributeTests.class, XslForEachGroupTests.class,
+                XslForEachGroupWithSortTests.class, XslRtfMigrationTests.class, XPathQuantifiedExprTests.class, 
                 FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,                 
                 FnIndexOfTests.class, XPathSequenceTests.class, XPathRangeExprTests.class, 
                 W3c_xslt30_IterateTests.class, W3c_xslt30_AxesTests.class, 

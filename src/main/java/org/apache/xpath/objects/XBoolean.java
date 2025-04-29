@@ -3,7 +3,7 @@
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the  "License");
+ * to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,19 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.objects;
 
 /**
  * This class represents an XPath boolean object, and is capable of
  * converting the boolean to other types, such as a string.
+ * 
  * @xsl.usage advanced
  */
 public class XBoolean extends XObject
 {
-    static final long serialVersionUID = -2964933058866100881L;
+  static final long serialVersionUID = -2964933058866100881L;
 
   /**
    * A true boolean object so we don't have to keep creating them.
@@ -41,8 +39,9 @@ public class XBoolean extends XObject
    */
   public static final XBoolean S_FALSE = new XBooleanStatic(false);
 
-  /** Value of the object.
-   *  @serial         */
+  /** 
+   * Value of the object.         
+   */
   private final boolean m_val;
 
   /**

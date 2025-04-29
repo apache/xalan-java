@@ -23,15 +23,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT 3.0 xsl:for-each-group test cases, when xsl:for-each-group 
- * instruction has xsl:sort element child node to implement ordering 
- * among groups.
+ * XSLT 3.0 stylesheet test cases, to test xsl:for-each-group instruction 
+ * having xsl:sort child instruction node(s) to implement ordering among 
+ * groups. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslGroupingWithSortTests extends XslTransformTestsUtil {
+public class XslForEachGroupWithSortTests extends XslTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_for_each_group/sort/";
     

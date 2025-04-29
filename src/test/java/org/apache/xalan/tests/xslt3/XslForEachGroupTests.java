@@ -24,13 +24,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT 3.0 xsl:for-each-group test cases.
+ * XSLT 3.0 stylesheet test cases, to test xsl:for-each-group instruction. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslGroupingTests extends XslTransformTestsUtil {
+public class XslForEachGroupTests extends XslTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_for_each_group/";
     
@@ -429,10 +429,20 @@ public class XslGroupingTests extends XslTransformTestsUtil {
     
     @Test
     public void xslGroupingTest38() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test_group_ending_with.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test_group_ending_with.xsl";
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "for_each_group_ending_with.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "for_each_group_ending_with.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test_grp_ending_with.out";
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "for_each_group_grp_ending_with.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslGroupingTest39() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "for_each_group_adjacent.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "for_each_group_adjacent.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "for_each_group_adjacent.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

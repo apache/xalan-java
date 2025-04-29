@@ -4,7 +4,7 @@
 			    
   <!-- Author: mukulg@apache.org --> 			    
 			    
-  <!-- use with test_group_ending_with.xml -->
+  <!-- use with for_each_group_ending_with.xml -->
   
   <!-- An XSL 3 stylesheet test case, to test xsl:for-each-group 
        instruction having attribute 'group-ending-with'. 
