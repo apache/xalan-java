@@ -521,15 +521,15 @@ public class ElemForEachGroup extends ElemTemplateElement
         
         if (m_GroupByExpression != null) {
         	constructGroupsForGroupBy(xctxt, sourceNodes, xslForEachGroupMap);
-        }
-        else if (m_GroupAdjacentExpression != null) {
-        	constructGroupsForGroupAdjacent(xctxt, sourceNodes, xslForEachGroupAdjacentList);
-        }
+        }        
         else if (m_GroupStartingWithExpression != null) {
         	constructGroupsForGroupStartingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith);
         }
         else if (m_GroupEndingWithExpression != null) {                          
         	constructGroupsForGroupEndingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith);
+        }
+        else if (m_GroupAdjacentExpression != null) {
+        	constructGroupsForGroupAdjacent(xctxt, sourceNodes, xslForEachGroupAdjacentList);
         }
         
         try {
@@ -807,8 +807,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 					  groupNodeHandles.add(allNodeHandleList.get(idx2));  
 				  }
 			  }
-			  else if ((allNodeHandleList.get(idx2) >= grpStartNodeHandle) && 
-					  (allNodeHandleList.get(idx2) < grpStartNodeHandles.get(idx))) {
+			  else if (allNodeHandleList.get(idx2) >= grpStartNodeHandle) {
 				  groupNodeHandles.add(allNodeHandleList.get(idx2)); 
 			  }
 		  }

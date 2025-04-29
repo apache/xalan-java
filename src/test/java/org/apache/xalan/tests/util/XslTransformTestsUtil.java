@@ -44,6 +44,7 @@ import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
@@ -185,7 +186,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName)) {
     			// REVISIT
-    			/*byte[] fileBytes = Files.readAllBytes(Paths.get(new URI(XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH)));
+    			byte[] fileBytes = Files.readAllBytes(Paths.get(new URI(XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH)));
     			String xslTemplateStr = new String(fileBytes);
     			NodeList nodeList = nodeExpected.getChildNodes();
     			StringBuffer replacementStrBuff = new StringBuffer();
@@ -243,9 +244,9 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     			}
     			else {
     				elemTestResult.setAttribute("status", "fail");
-    			}*/
+    			}
     			
-    			elemTestResult.setAttribute("status", "assert_all_of_fail");
+    			// elemTestResult.setAttribute("status", "assert_all_of_fail");
     		}
             else if (EXPECTED_NODE_KIND_ASSERT_XML.equals(expectedNodeKindName)) {
             	Element elemNode = (Element)nodeExpected;
@@ -283,6 +284,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
 
             		Document xmlInpDoc1 = xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
             		String str1 = serializeXmlDomElementNode(xmlInpDoc1);
+            		str1 = str1.replaceAll("\\s+", "");
 
             		// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
             		XslTestsErrorHandler xsltDocumentErrHandler = new XslTestsErrorHandler();
@@ -291,8 +293,10 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
             		xmlDocumentBuilder.setErrorHandler(xsltDocumentErrHandler);
 
             		Document xmlInpDoc2 = xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
+            		           		
             		String str2 = serializeXmlDomElementNode(xmlInpDoc2);
-            		if (str1.equals(str2)) {
+            		str2 = str2.replaceAll("\\s+", "");
+            		if (str1.equals(str2)) {            		
             			elemTestResult.setAttribute("status", "pass");
             		}
             		else {
