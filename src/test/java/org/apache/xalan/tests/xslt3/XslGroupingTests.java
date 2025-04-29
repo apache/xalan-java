@@ -426,5 +426,15 @@ public class XslGroupingTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslGroupingTest38() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test_group_ending_with.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test_group_ending_with.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test_grp_ending_with.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

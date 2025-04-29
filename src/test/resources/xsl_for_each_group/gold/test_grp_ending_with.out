@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><doc>
+  <pageset>
+    <page>Some text</page>
+    <page>More text</page>
+    <page>Yet more text</page>
+  </pageset>
+  <pageset>
+    <page>Some words</page>
+    <page>More words</page>
+    <page>Yet more words</page>
+  </pageset>
+</doc>

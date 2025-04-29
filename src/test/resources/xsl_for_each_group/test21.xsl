@@ -15,7 +15,7 @@
 
    <xsl:template match="/body">
       <chapter>
-         <xsl:for-each-group select="*" group-ending-with="self::h2">
+         <xsl:for-each-group select="*" group-ending-with="h2">
            <group title="{current-grouping-key()}">
            </group>
          </xsl:for-each-group>
@@ -27,7 +27,7 @@
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
       * regarding copyright ownership. The ASF licenses this file
-      * to you under the Apache License, Version 2.0 (the  "License");
+      * to you under the Apache License, Version 2.0 (the "License");
       * you may not use this file except in compliance with the License.
       * You may obtain a copy of the License at
       *

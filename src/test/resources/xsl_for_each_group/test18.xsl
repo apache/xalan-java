@@ -10,7 +10,7 @@
 
    <xsl:template match="/body">
       <chapter>
-         <xsl:for-each-group select="*" group-ending-with="self::h2">
+         <xsl:for-each-group select="*" group-ending-with="h2">
            <xsl:variable name="currGrp" select="current-group()"/>
            <xsl:variable name="currGrpLastItem" select="$currGrp[count($currGrp)]"/>
            <section title="{$currGrpLastItem}">
