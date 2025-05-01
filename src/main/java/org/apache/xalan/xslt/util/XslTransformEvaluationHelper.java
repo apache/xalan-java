@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import javax.xml.transform.TransformerException;
 
@@ -544,6 +545,39 @@ public class XslTransformEvaluationHelper {
        }
        
        return result;
+    }
+    
+    /**
+     * This method definition, is used to check whether the supplied string 
+     * value has balanced parentheses pairs.
+     */
+    public static boolean isStrHasBalancedParentheses(String str, char lParentType, char rParenType) {
+       
+       boolean isStrHasBalancedParentheses = true;
+       
+       Stack<Character> charStack = new Stack<Character>();
+       
+       int strLen = str.length();
+       
+       for(int idx = 0; idx < strLen; idx++) {
+           char ch = str.charAt(idx);
+           if (ch == lParentType) {
+              charStack.push(ch); 
+           }
+           else if (ch == rParenType){
+              if (charStack.isEmpty() || (charStack.pop() != lParentType)) {
+                 // unbalanced parentheses
+                 isStrHasBalancedParentheses = false;
+                 break;
+              }   
+           }
+       }
+       
+       if (!charStack.isEmpty()) {
+          isStrHasBalancedParentheses = false;
+       }
+       
+       return isStrHasBalancedParentheses; 
     }
     
     /**

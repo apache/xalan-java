@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.UUID;
 
 import javax.xml.XMLConstants;
@@ -38,6 +37,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
@@ -887,7 +887,7 @@ public class XPathParser
       else {
          String argDetailsAccumulatedStrSoFar = "(" + getStrValueFromStrList(
                                                                   argDetailsStrPartsList) + ")";         
-         if (!isStrHasBalancedParentheses(argDetailsAccumulatedStrSoFar, '(', ')')) {
+         if (!XslTransformEvaluationHelper.isStrHasBalancedParentheses(argDetailsAccumulatedStrSoFar, '(', ')')) {
             argDetailsStrPartsList.add(m_token);
             nextToken();
             isXpathDynamicFuncCallParseAhead = true;
@@ -910,38 +910,6 @@ public class XPathParser
       }
       
       return concatenatedStrInfo; 
-  }
-  
-  /**
-   * Check whether a, string has balanced parentheses pairs.
-   */
-  private boolean isStrHasBalancedParentheses(String str, char lParentType, char rParenType) {
-     
-     boolean isStrHasBalancedParentheses = true;
-     
-     Stack<Character> charStack = new Stack<Character>();
-     
-     int strLen = str.length();
-     
-     for(int idx = 0; idx < strLen; idx++) {
-         char ch = str.charAt(idx);
-         if (ch == lParentType) {
-            charStack.push(ch); 
-         }
-         else if (ch == rParenType){
-            if (charStack.isEmpty() || (charStack.pop() != lParentType)) {
-               // unbalanced parentheses
-               isStrHasBalancedParentheses = false;
-               break;
-            }   
-         }
-     }
-     
-     if (!charStack.isEmpty()) {
-        isStrHasBalancedParentheses = false;
-     }
-     
-     return isStrHasBalancedParentheses; 
   }
   
   /**
@@ -1480,9 +1448,9 @@ public class XPathParser
             	 rParenChar = '}'; 
              }
              
-             boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(
-            		                                                    seqOrArrayMemberXPathExprStr, 
-            		                                                    lParenChar, rParenChar);
+             boolean isStrHasBalancedParentheses = XslTransformEvaluationHelper.isStrHasBalancedParentheses(
+								            		                                                    seqOrArrayMemberXPathExprStr, 
+								            		                                                    lParenChar, rParenChar);
              if (!isStrHasBalancedParentheses) {
                 isXPathParseOkToProceed = false;
                 break;
@@ -1939,7 +1907,7 @@ public class XPathParser
          else if (tokenIs(',') && (",".equals(prevTokenStrBeforeFor) || "(".equals(prevTokenStrBeforeFor))) {
         	String lstStrJoin = xPathReturnExprStrPartsList.toString();
         	lstStrJoin = lstStrJoin.substring(1, lstStrJoin.length()-1);
-        	if (isStrHasBalancedParentheses(lstStrJoin, '(', ')')) {        	
+        	if (XslTransformEvaluationHelper.isStrHasBalancedParentheses(lstStrJoin, '(', ')')) {        	
         	   break;
         	}
         	else {
@@ -2184,7 +2152,7 @@ public class XPathParser
       
       String probableBranchConditionExprStr = probableBranchConditionXPathStrBuff.toString();
       int thenTokenComputedRevisedIdx = 0;
-      while (!isStrHasBalancedParentheses(probableBranchConditionExprStr, '(', ')')) {
+      while (!XslTransformEvaluationHelper.isStrHasBalancedParentheses(probableBranchConditionExprStr, '(', ')')) {
     	  boolean isBreak = false;
     	  for (int idx = (thenTokenEffectiveComputedIdx + 1); idx < tokenQueueSize; idx++) {
     		 Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
@@ -2192,7 +2160,7 @@ public class XPathParser
         	 if (!"then".equals(tokenStrValue)) {
         	    probableBranchConditionExprStr += tokenStrValue;  
         	 }
-        	 else if (isStrHasBalancedParentheses(probableBranchConditionExprStr, '(', ')')) {
+        	 else if (XslTransformEvaluationHelper.isStrHasBalancedParentheses(probableBranchConditionExprStr, '(', ')')) {
         		thenTokenComputedRevisedIdx = idx;
         		isBreak = true;
         		break; 
@@ -2227,7 +2195,7 @@ public class XPathParser
       
       String probableElseExprStr = probableElseExprStrBuff.toString();
       int elseTokenComputedRevisedIdx = 0;
-      while (!isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {
+      while (!XslTransformEvaluationHelper.isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {
     	  boolean isBreak = false;
     	  for (int idx = (elseTokenEffectiveComputedIdx - 1); idx >= 0; idx--) {
     		  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
@@ -2239,7 +2207,7 @@ public class XPathParser
         			probableElseExprStr += (tokenObj.toString() + " "); 
         		 }
         		 probableElseExprStr = probableElseExprStr.trim();
-        		 if (isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {
+        		 if (XslTransformEvaluationHelper.isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {
         			elseTokenComputedRevisedIdx = idx; 
         			isBreak = true;
         			break; 
@@ -2467,9 +2435,9 @@ public class XPathParser
                  
                  char lParenChar = '(';
                  char rParenChar = ')';                 
-                 boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(
-                		                                                    seqItemXPathExprStr, 
-                		                                                    lParenChar, rParenChar);
+                 boolean isStrHasBalancedParentheses = XslTransformEvaluationHelper.isStrHasBalancedParentheses(
+								                		                                                    seqItemXPathExprStr, 
+								                		                                                    lParenChar, rParenChar);
                  if (!isStrHasBalancedParentheses) {
                     isXPathParseOkToProceed = false;
                     break;
@@ -2670,8 +2638,8 @@ public class XPathParser
         			
         			char lParenChar = '(';
         			char rParenChar = ')';                 
-        			boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(seqItemXPathExprStr, 
-        					                                                          lParenChar, rParenChar);
+        			boolean isStrHasBalancedParentheses = XslTransformEvaluationHelper.isStrHasBalancedParentheses(seqItemXPathExprStr, 
+        					                                                          												lParenChar, rParenChar);
         			if (!isStrHasBalancedParentheses) {
         				isXPathParseOkToProceed = false;
         				break;
@@ -5190,7 +5158,7 @@ public class XPathParser
  		  if (!(tokenIs(',') || tokenIs(rParen))) {
  			  xpathExpr += m_token;
  			  nextToken();
- 			  if (tokenIs(rParen) && !isStrHasBalancedParentheses(lParen + xpathExpr, lParen, rParen)) {
+ 			  if (tokenIs(rParen) && !XslTransformEvaluationHelper.isStrHasBalancedParentheses(lParen + xpathExpr, lParen, rParen)) {
  				  if (lookahead(null, 1)) {
  					  xpathExprPartList.add(xpathExpr);
  					  break;
@@ -5210,8 +5178,8 @@ public class XPathParser
  				  }
  				  nextToken();
  				  if (tokenIs(rParen)) {
- 					  if (isStrHasBalancedParentheses(lParen + xpathExpr + rParen, lParen, rParen) 
- 							                                                    && !lookahead(rParen, 1)) {
+ 					  if (XslTransformEvaluationHelper.isStrHasBalancedParentheses(lParen + xpathExpr + rParen, lParen, rParen) 
+ 							                                                    									&& !lookahead(rParen, 1)) {
  						  xpathExpr = (lParen + xpathExpr + m_token); 
  						  nextToken();
  						  fl1 = false;
@@ -5838,7 +5806,7 @@ public class XPathParser
  				   nextToken();
  				}
  				else if (tokenIs(',')) {
- 				   if (!isStrHasBalancedParentheses(typedFunctionTestPrefixPart, '(', ')')) {
+ 				   if (!XslTransformEvaluationHelper.isStrHasBalancedParentheses(typedFunctionTestPrefixPart, '(', ')')) {
  				      typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
  				      nextToken();
  				   }

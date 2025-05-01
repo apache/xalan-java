@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.ForEachGroupXslSortSorter;
@@ -50,6 +51,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.types.ForEachGroupCompositeGroupingKey;
 import org.apache.xpath.types.StringWithCollation;
 
 import xml.xpath31.processor.types.XSAnyURI;
@@ -98,6 +100,11 @@ public class ElemForEachGroup extends ElemTemplateElement
    * The "group-ending-with" expression.
    */
   private Expression m_GroupEndingWithExpression = null;
+  
+  /**
+   * The "composite" attribute value.
+   */
+  private boolean m_composite;
   
   /**
    * The "collation" attribute value.
@@ -181,7 +188,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public void setGroupBy(XPath xpath)
   {
-      m_GroupByExpression = xpath.getExpression();   
+      m_GroupByExpression = xpath.getExpression();
   }
   
   /**
@@ -252,6 +259,20 @@ public class ElemForEachGroup extends ElemTemplateElement
   public Expression getGroupEndingWith()
   {
       return m_GroupEndingWithExpression;
+  }
+  
+  /**
+   * Set the "composite" attribute.
+   */
+  public void setComposite(boolean composite) {
+	  this.m_composite = composite;
+  }
+  
+  /**
+   * Get the "composite" attribute.
+   */
+  public boolean getComposite() {
+	  return m_composite;
   }
   
   /**
@@ -521,16 +542,16 @@ public class ElemForEachGroup extends ElemTemplateElement
         
         if (m_GroupByExpression != null) {
         	constructGroupsForGroupBy(xctxt, sourceNodes, xslForEachGroupMap);
-        }        
+        }
+        else if (m_GroupAdjacentExpression != null) {
+        	constructGroupsForGroupAdjacent(xctxt, sourceNodes, xslForEachGroupAdjacentList);
+        }
         else if (m_GroupStartingWithExpression != null) {
         	constructGroupsForGroupStartingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith);
         }
         else if (m_GroupEndingWithExpression != null) {                          
         	constructGroupsForGroupEndingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith);
-        }
-        else if (m_GroupAdjacentExpression != null) {
-        	constructGroupsForGroupAdjacent(xctxt, sourceNodes, xslForEachGroupAdjacentList);
-        }
+        }        
         
         try {
         	xctxt.pushCurrentNode(DTM.NULL);
@@ -749,22 +770,61 @@ public class ElemForEachGroup extends ElemTemplateElement
   private void constructGroupsForGroupBy(XPathContext xctxt, DTMCursorIterator sourceNodes,
 		  							     Map<Object, List<Integer>> xslForEachGroupByMap) throws TransformerException {
 	  int nextNode;
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
 	  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
 		  xctxt.pushCurrentNode(nextNode);
 
 		  XObject xpathEvalResult = m_GroupByExpression.execute(xctxt);                
-		  Object groupingKeyValue = getNormalizedGroupingKeyValue(xpathEvalResult);
+		  Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
 
-		  if (xslForEachGroupByMap.get(groupingKeyValue) != null) {
-			  List<Integer> group = xslForEachGroupByMap.get(groupingKeyValue);
-			  group.add(nextNode);
-		  } 
+		  if (!m_composite) {
+			  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue);
+		  }
 		  else {
-			  List<Integer> group = new ArrayList<Integer>();
-			  group.add(nextNode);
-			  xslForEachGroupByMap.put(groupingKeyValue, group);
-		  }            
+			  // Processing for xsl:for-each-group's composite grouping key
+			  if (groupingKeyValue instanceof ForEachGroupCompositeGroupingKey) {
+				  ForEachGroupCompositeGroupingKey groupingKeyObj = (ForEachGroupCompositeGroupingKey)groupingKeyValue;
+				  ResultSequence groupingKeySeq = groupingKeyObj.getValue();
+				  if (groupingKeySeq.size() >= 1) {
+					  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue);
+				  }
+				  else {
+					  throw new TransformerException("XTSE1080 : An xsl:for-each-group instruction with attribute "
+							  		                             + "value 'composite=\"yes\"', resulted in a grouping key "
+							  		                             + "sequence that is empty.", srcLocator);
+				  }
+			  }
+			  else {
+				  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue); 
+			  }
+		  }
+	  }
+  }
+
+  /**
+   * When processing xsl:for-each-group instruction having 'group-by' attribute, 
+   * resulting in a grouping key having atomic value, add an XDM node handle to the 
+   * required group represented by an object of type java.util.Map. 
+   * 
+   * @param xslForEachGroupByMap		An java.util.Map object representing all the groups 
+   *                                    constructed for xsl:for-each-group instruction. 
+   * @param nodeHandle                  An XDM node handle that needs to be assigned to an
+   *                                    xsl:for-each-group instruction's correct group.
+   * @param groupingKeyValue            A grouping key value having an atomic data type, for 
+   *                                    xsl:for-each-group instruction. 
+   */
+  private void addXdmNodeHandleToGroup(Map<Object, List<Integer>> xslForEachGroupByMap, 
+		                                                       int nodeHandle, Object groupingKeyValue) {
+	  if (xslForEachGroupByMap.get(groupingKeyValue) != null) {
+		  List<Integer> group = xslForEachGroupByMap.get(groupingKeyValue);
+		  group.add(nodeHandle);
+	  } 
+	  else {
+		  List<Integer> group = new ArrayList<Integer>();
+		  group.add(nodeHandle);
+		  xslForEachGroupByMap.put(groupingKeyValue, group);
 	  }
   }
   
@@ -908,7 +968,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 	     xctxt.pushCurrentNode(nextNode);
 	     
 	     XObject xpathEvalResult = m_GroupAdjacentExpression.execute(xctxt);                 
-	     Object groupingKeyValue = getNormalizedGroupingKeyValue(xpathEvalResult);                 
+	     Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);                 
 	     Object currValue = groupingKeyValue;
 	     
 	     List<Integer> group = null;
@@ -1037,7 +1097,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    * java.lang.Object (which is the data type of underlying java.util.Map 
    * object's key definition).
    */
-  private Object getNormalizedGroupingKeyValue(XObject xpathEvalResult) {
+  private Object getNormalizedGroupingKeyValue(XPathContext xctxt, XObject xpathEvalResult) {
       
 	  Object xpathRawResult = null;
       
@@ -1085,6 +1145,14 @@ public class ElemForEachGroup extends ElemTemplateElement
       }
       else if (xpathEvalResult instanceof XSAnyURI) {
     	  xpathRawResult = xpathEvalResult; 
+      }
+      else if (xpathEvalResult instanceof ResultSequence) {
+    	  if (m_collationUri == null) {
+    		  m_collationUri = XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI;   
+    	  }
+    	  
+    	  xpathRawResult = new ForEachGroupCompositeGroupingKey(xctxt, (ResultSequence)xpathEvalResult, 
+    			                                                									m_collationUri, m_xpathCollationSupport);
       }
       else {
           // Any other data type for grouping key, is treated as string

@@ -446,5 +446,25 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslGroupingTest40() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "composite_grouping_key_test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "composite_grouping_key1.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "for_each_group_composite_key.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslGroupingTest41() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "composite_grouping_key_test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "composite_grouping_key2.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "for_each_group_composite_key.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

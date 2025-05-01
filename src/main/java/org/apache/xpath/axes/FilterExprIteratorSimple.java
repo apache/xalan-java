@@ -20,6 +20,7 @@
  */
 package org.apache.xpath.axes;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.PrefixResolver;
@@ -28,7 +29,10 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.types.ForEachGroupCompositeGroupingKey;
 
 /**
  * Class to use for one-step iteration that doesn't have a predicate, and 
@@ -36,12 +40,14 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
  */
 public class FilterExprIteratorSimple extends LocPathIterator
 {
-    static final long serialVersionUID = -6978977187025375579L;
-  /** The contained expression. Should be non-null.
-   *  @serial   */
+  static final long serialVersionUID = -6978977187025375579L;
+  
+  /** 
+   * The contained expression. Should be non-null.
+   */
   private Expression m_expr;
 
-  /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
+  /** The result of executing m_expr. Needs to be deep cloned on clone op. */
   transient private XMLNodeCursorImpl m_exprObj;
 
   private boolean m_mustHardReset = false;
@@ -112,8 +118,18 @@ public class FilterExprIteratorSimple extends LocPathIterator
         // These three statements need to be combined into one operation.
         int savedStart = vars.getStackFrame();
         vars.setStackFrame(stackFrame);
-
-        result = (org.apache.xpath.objects.XMLNodeCursorImpl) expr.execute(xctxt);
+        
+        XObject xObj = expr.execute(xctxt);
+        Object obj1 = xObj.object();
+        if (!(obj1 instanceof ForEachGroupCompositeGroupingKey)) {            
+            result = (org.apache.xpath.objects.XMLNodeCursorImpl)expr.execute(xctxt);
+        }
+        else {
+        	ForEachGroupCompositeGroupingKey forEachGroupCompositeGroupingKeyObj = (ForEachGroupCompositeGroupingKey)obj1;
+            ResultSequence rSeq = forEachGroupCompositeGroupingKeyObj.getValue();
+            result = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(rSeq, xctxt);
+        }
+        
         result.setShouldCacheNodes(true);
 
         // These two statements need to be combined into one operation.

@@ -31,7 +31,9 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.StringToIntTable;
 import org.apache.xml.utils.StringVector;
@@ -763,13 +765,27 @@ public class XSLTAttributeDef
 
     try
     {
-      XPath expr = handler.createXPath(value, owner);
+      XPath expr = null;
+      
+      String normalizedStrValue = null;
+      if ((owner instanceof ElemForEachGroup) && (Constants.ATTRNAME_GROUPBY).equals(name)) {
+    	 if (value != null) {
+    		normalizedStrValue = getForEachGroupAttrNormalizedStrValue(value);    		
+    		if (normalizedStrValue != null) {
+    		   expr = handler.createXPath(normalizedStrValue, owner);
+    		   
+    		   return expr;
+    		}
+    	 }
+      }
+      
+      expr = handler.createXPath(value, owner);  
 
       return expr;
     }
     catch (TransformerException te)
     {
-      throw new org.xml.sax.SAXException(te);
+       throw new org.xml.sax.SAXException(te);
     }
   }
 
@@ -1689,4 +1705,39 @@ public class XSLTAttributeDef
         default: break;
     }
   }
+  
+  /**
+   * When a xsl:for-each-group element has an attribute named 'composite', 
+   * this method normalizes xsl:for-each-group's group-by attribute's 
+   * string value to an XPath literal sequence constructor expression for implementing 
+   * an xsl:for-each-group instruction specifying composite grouping key.
+   * 
+   * @param groupByStrValue     xsl:for-each-group element's original group-by 
+   *                            attribute value, as specified within an XSL
+   *                            stylesheet.
+   * @return
+   */
+  private String getForEachGroupAttrNormalizedStrValue(String groupByStrValue) throws TransformerException {
+	  
+	  String result = null;
+
+	  result = groupByStrValue;	  
+	  if (!"".equals(result)) {
+		  String[] strArr = result.split(",");    
+		  String firstArrItem = strArr[0];
+		  String lastArrItem = strArr[strArr.length - 1];		  
+		  if ((strArr.length > 1) && !(firstArrItem.startsWith("(") || lastArrItem.endsWith(")"))) {
+			  result = "(" + result + ")";			  
+		  }
+	  }
+	  
+	  if (!XslTransformEvaluationHelper.isStrHasBalancedParentheses(result, '(', ')')) {
+		  throw new TransformerException("An xsl:for-each-group instruction's group-by value \"" + 
+										                                  groupByStrValue + "\" doesn't have or evaluates to a string "
+										                                  + "having balanced parenthesis pairs '(' and ')'."); 
+	  }
+
+	  return result;
+  }
+  
 }
