@@ -26,8 +26,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.transformer.ForEachGroupXslSortSorter;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -53,6 +57,10 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.types.ForEachGroupCompositeGroupingKey;
 import org.apache.xpath.types.StringWithCollation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
@@ -77,32 +85,32 @@ public class ElemForEachGroup extends ElemTemplateElement
   private static final long serialVersionUID = -6682554013978812260L;
 
   /**
-   * xsl:for-each-group element's attribute "select" XPath expression.
+   * An XPath expression for 'select' attribute. 
    */
   private XPath m_selectExpression = null;
   
   /**
-   * xsl:for-each-group element's attribute "group-by" XPath expression.
+   * An XPath expression for 'group-by' attribute.
    */
   private XPath m_GroupByExpression = null;  
   
   /**
-   * xsl:for-each-group element's attribute "group-starting-with" XPath expression.
+   * An XPath expression for 'group-starting-with' attribute.
    */  
   private XPath m_GroupStartingWithExpression = null;
   
   /**
-   * xsl:for-each-group element's attribute "group-ending-with" XPath expression.
+   * An XPath expression for 'group-ending-with' attribute.
    */
   private XPath m_GroupEndingWithExpression = null;
   
   /**
-   * xsl:for-each-group element's attribute "group-adjacent" XPath expression.
+   * An XPath expression for 'group-adjacent' attribute.
    */
   private XPath m_GroupAdjacentExpression = null;
   
   /**
-   * xsl:for-each-group element attribute "composite"'s value.
+   * An attribute 'composite''s boolean value.
    */
   private boolean m_composite;
   
@@ -486,18 +494,20 @@ public class ElemForEachGroup extends ElemTemplateElement
       
         XPathContext xctxt = transformer.getXPathContext();
         
+        SourceLocator srcLocator = xctxt.getSAXLocator();
+        
         int forEachGroupGroupingAttributesCount = getForEachGroupGroupingAttributesCount();
         
         if (forEachGroupGroupingAttributesCount == 0) {
             throw new TransformerException("XTSE1080 : None of the attributes 'group-by', 'group-adjacent', "
 										                                              + "'group-starting-with', 'group-ending-with' is present on "
-										                                              + "xsl:for-each-group element.", xctxt.getSAXLocator());     
+										                                              + "xsl:for-each-group element.", srcLocator);     
         }
          
         if (forEachGroupGroupingAttributesCount > 1) {
            throw new TransformerException("XTSE1080 : Only one of the attributes 'group-by', 'group-adjacent', "
 									                                                 + "'group-starting-with', 'group-ending-with' is allowed to be "
-									                                                 + "present on xsl:for-each-group element.", xctxt.getSAXLocator());     
+									                                                 + "present on xsl:for-each-group element.", srcLocator);     
         }
         
         final int sourceNode = xctxt.getCurrentNode();
@@ -528,9 +538,19 @@ public class ElemForEachGroup extends ElemTemplateElement
            XObject value = m_selectExpression.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
            XMLNodeCursorImpl xmlNodeCursorImpl = null;
            if (value instanceof ResultSequence) {
-        	   ResultSequence rSeq = (ResultSequence)value;
-        	   xmlNodeCursorImpl = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(rSeq, xctxt);
-        	   sourceNodes = xmlNodeCursorImpl.iter();
+        	   ResultSequence rSeq = (ResultSequence)value;        	   
+        	   try {
+        		  // Since a sequence of nodes doesn't refer to an XDM parent element 
+        		  // node, we construct here an DTMCursorIterator object that refers 
+        		  // to an artificially created XDM parent element for the supplied 
+        		  // items within a sequence. 
+        		  sourceNodes = constructSourceNodesFromXdmSequence(xctxt, rSeq);
+        	   }
+        	   catch (Exception ex) {
+        		   throw new TransformerException("XTSE1080 : An error occured while evaluating xsl:for-each-group "
+        		   		                                       + "instruction, with following error trace : " + ex.getMessage() + 
+        		   		                                                                                                    ".", srcLocator); 
+        	   }        	           	   
            }
            else {
         	   xmlNodeCursorImpl = (XMLNodeCursorImpl)value;
@@ -1217,6 +1237,69 @@ public class ElemForEachGroup extends ElemTemplateElement
      }
      
      return sourceNodes; 
+  }
+  
+  /**
+   * Given an XDM sequence as an argument for this method, construct a DTM object
+   * and further an DTMCursorIterator instance from the DTM.
+   * 
+   * @param xctxt									XPath context object
+   * @param rSeq									The supplied XDM sequence	
+   * @return										An DTMCursorIterator object instance
+   * @throws ParserConfigurationException
+   */
+  private DTMCursorIterator constructSourceNodesFromXdmSequence(XPathContext xctxt, ResultSequence rSeq)
+		  																						throws ParserConfigurationException {
+	  DTMCursorIterator sourceNodes = null;
+	  
+	  System.setProperty(org.apache.xml.utils.Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, org.apache.xml.utils.Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+	  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+	  dbf.setNamespaceAware(true);
+
+	  DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+	  Document document = dBuilder.newDocument();
+
+	  Element docElem = document.createElement("docElem1");   // arbitrary, chosen document element name          
+	  for (int idx = 0; idx < rSeq.size(); idx++) {
+		  XObject seqItem = rSeq.item(idx);
+		  XMLNodeCursorImpl xmlNode = (XMLNodeCursorImpl)seqItem;
+		  DTMCursorIterator iter = xmlNode.iter();
+		  int nodeHandle = iter.nextNode();
+		  DTM dtm = xctxt.getDTM(nodeHandle);
+		  Node node = dtm.getNode(nodeHandle);
+		  if (dtm.getNodeType(nodeHandle) == DTM.ELEMENT_NODE) {        				   
+			  String nodeName = node.getNodeName();
+			  String nodeTxtContent = node.getTextContent();
+			  Element elem = document.createElement(nodeName);
+			  Text text = document.createTextNode(nodeTxtContent);
+			  elem.appendChild(text);
+			  docElem.appendChild(elem);
+		  }
+		  else if (dtm.getNodeType(nodeHandle) == DTM.TEXT_NODE) {
+			  String nodeTxtContent = node.getTextContent();
+			  Text text = document.createTextNode(nodeTxtContent);
+			  docElem.appendChild(text);
+		  }
+	  }
+
+	  document.appendChild(docElem);
+	  DTM dtm = xctxt.getDTM(new DOMSource(document), true, null, false, false);
+	  int docNodeHandle = dtm.getDocument();			    	        			  
+
+	  int docElemHandle = dtm.getFirstChild(docNodeHandle);
+	  int elemNodeHandle = dtm.getFirstChild(docElemHandle);
+	  List<Integer> nodeHandleList = new ArrayList<Integer>();
+	  while (elemNodeHandle != DTM.NULL) {
+		  nodeHandleList.add(elemNodeHandle);
+		  elemNodeHandle = dtm.getNextSibling(elemNodeHandle);
+	  }
+
+	  XMLNodeCursorImpl XMLNodeCursorImpl = new XMLNodeCursorImpl(nodeHandleList, xctxt);
+	  sourceNodes = XMLNodeCursorImpl.iter();
+	  
+	  return sourceNodes;
   }
 
 }
