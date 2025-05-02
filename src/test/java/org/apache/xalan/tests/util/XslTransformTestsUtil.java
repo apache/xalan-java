@@ -258,50 +258,33 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
             		expectedResultStr = getStringContentFromUrl(uri.toURL());
             	}
             	else {
-            	   expectedResultStr = elemNode.getTextContent();            		
+            		expectedResultStr = elemNode.getTextContent();            		
             	}
-            	
-            	if (expectedResultStr.startsWith("<html>") || expectedResultStr.startsWith("<table>")) {            		
-            		String xslTransformResultStr = resultStrWriter.toString();
-            		int idx = xslTransformResultStr.indexOf("?>");
-            		if (idx > -1) {
-            			xslTransformResultStr = xslTransformResultStr.substring(idx + 2);            			
-            		}
-            		expectedResultStr = expectedResultStr.replace(" ", "");
-            		if (xslTransformResultStr.equals(expectedResultStr)) {
-            			elemTestResult.setAttribute("status", "pass");
-            		}
-            		else {
-            			elemTestResult.setAttribute("status", "fail");
-            		}
+
+            	// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
+            	XslTestsErrorHandler xmlDocumentErrHandler = new XslTestsErrorHandler();
+            	xmlDocumentErrHandler.setTestCaseName(testCaseName);
+            	xmlDocumentErrHandler.setXMLDocumentStr(resultStrWriter.toString());
+            	xmlDocumentBuilder.setErrorHandler(xmlDocumentErrHandler);
+
+            	Document xmlInpDoc1 = xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
+            	String str1 = serializeXmlDomElementNode(xmlInpDoc1);
+
+            	// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
+            	XslTestsErrorHandler xsltDocumentErrHandler = new XslTestsErrorHandler();
+            	xmlDocumentErrHandler.setTestCaseName(testCaseName);
+            	xsltDocumentErrHandler.setXMLDocumentStr(expectedResultStr);
+            	xmlDocumentBuilder.setErrorHandler(xsltDocumentErrHandler);
+
+            	Document xmlInpDoc2 = xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
+
+            	String str2 = serializeXmlDomElementNode(xmlInpDoc2);
+
+            	if (isTwoXmlHtmlStrEqual(str1, str2)) {            		
+            		elemTestResult.setAttribute("status", "pass");
             	}
             	else {
-            		// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
-            		XslTestsErrorHandler xmlDocumentErrHandler = new XslTestsErrorHandler();
-            		xmlDocumentErrHandler.setTestCaseName(testCaseName);
-            		xmlDocumentErrHandler.setXMLDocumentStr(resultStrWriter.toString());
-            		xmlDocumentBuilder.setErrorHandler(xmlDocumentErrHandler);
-
-            		Document xmlInpDoc1 = xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
-            		String str1 = serializeXmlDomElementNode(xmlInpDoc1);
-            		str1 = str1.replaceAll("\\s+", "");
-
-            		// DEBUG : Setting error handler on XML DOM parser, to check for well-formedness errors
-            		XslTestsErrorHandler xsltDocumentErrHandler = new XslTestsErrorHandler();
-            		xmlDocumentErrHandler.setTestCaseName(testCaseName);
-            		xsltDocumentErrHandler.setXMLDocumentStr(expectedResultStr);
-            		xmlDocumentBuilder.setErrorHandler(xsltDocumentErrHandler);
-
-            		Document xmlInpDoc2 = xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
-            		           		
-            		String str2 = serializeXmlDomElementNode(xmlInpDoc2);
-            		str2 = str2.replaceAll("\\s+", "");
-            		if (str1.equals(str2)) {            		
-            			elemTestResult.setAttribute("status", "pass");
-            		}
-            		else {
-            			elemTestResult.setAttribute("status", "fail");
-            		}
+            		elemTestResult.setAttribute("status", "fail");
             	}
     		}    		    		
     	}
@@ -761,5 +744,40 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
 		
 		elemTestResult.appendChild(resultOutElem);
 	}
+	
+	/**
+     * This method definition checks whether, two XML or HTML
+     * string values represent equal document content.
+     */
+    private boolean isTwoXmlHtmlStrEqual(String str1, String str2) {
+        
+    	boolean result = true;
+        
+        String[] strArr1 = str1.split("\r?\n");
+        String[] strArr2 = str2.split("\r?\n");
+        if (strArr1.length != strArr2.length) {
+           result = false;	
+        }
+        else {
+           for (int idx = 0; idx < strArr1.length; idx++) {
+        	   for (int idx2 = 0; idx2 < strArr2.length; idx2++) {
+        		  if (idx == idx2) {
+        			  String strTrim1 = (strArr1[idx]).trim();
+        			  String strTrim2 = (strArr2[idx2]).trim();
+        			  if (!strTrim1.equals(strTrim2)) {
+        				  result = false;
+        				  break;
+        			  }
+        		  }
+        	   }
+        	   
+        	   if (!result) {
+        		  break; 
+        	   }
+           }
+        }
+        
+        return result;
+    }
     
 }

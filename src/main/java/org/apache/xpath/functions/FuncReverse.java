@@ -46,8 +46,6 @@ public class FuncReverse extends FunctionOneArg {
     {
         
         ResultSequence result = new ResultSequence();
-        
-        SourceLocator srcLocator = xctxt.getSAXLocator();
 
         XObject xObject0 = m_arg0.execute(xctxt);
             
