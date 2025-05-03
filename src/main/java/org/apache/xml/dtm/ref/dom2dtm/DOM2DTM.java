@@ -785,6 +785,9 @@ public class DOM2DTM extends DTMDefaultBaseIterators
             nodeuri = "";
 
           String nodelocalname = node.getLocalName();
+          if (nodelocalname == null) {
+        	  nodelocalname = node.getNodeName(); 
+          }
 
           if (nodeuri.equals(namespaceURI) && name.equals(nodelocalname))
             return makeNodeHandle(identity);

@@ -20,9 +20,20 @@
  */
 package org.apache.xpath.axes;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -32,7 +43,18 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.types.ForEachGroupCompositeGroupingKey;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
+
+import xml.xpath31.processor.types.XSAnyAtomicType;
 
 /**
  * Class to use for one-step iteration that doesn't have a predicate, and 
@@ -87,14 +109,14 @@ public class FilterExprIteratorSimple extends LocPathIterator
   }
 
   /**
-   * Execute the expression.  Meant for reuse by other FilterExpr iterators 
+   * Execute the expression. Meant for reuse by other FilterExpr iterators 
    * that are not derived from this object.
    */
   public static XMLNodeCursorImpl executeFilterExpr(int context, XPathContext xctxt, 
-  												PrefixResolver prefixResolver,
-  												boolean isTopLevel,
-  												int stackFrame,
-  												Expression expr )
+	  												PrefixResolver prefixResolver,
+	  												boolean isTopLevel,
+	  												int stackFrame,
+	  												Expression expr)
     throws org.apache.xml.utils.WrappedRuntimeException
   {
     PrefixResolver savedResolver = xctxt.getNamespaceContext();
@@ -112,7 +134,6 @@ public class FilterExprIteratorSimple extends LocPathIterator
 
       if (isTopLevel)
       {
-        // System.out.println("calling m_expr.execute(getXPathContext())");
         VariableStack vars = xctxt.getVarStack();
 
         // These three statements need to be combined into one operation.
@@ -126,9 +147,10 @@ public class FilterExprIteratorSimple extends LocPathIterator
         }
         else {
         	ForEachGroupCompositeGroupingKey forEachGroupCompositeGroupingKeyObj = (ForEachGroupCompositeGroupingKey)obj1;
-            ResultSequence rSeq = forEachGroupCompositeGroupingKeyObj.getValue();
-            result = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(rSeq, xctxt);
+            ResultSequence groupingKeySeq = forEachGroupCompositeGroupingKeyObj.getValue();
+            result = getCompositeGroupingKeyNodeset(groupingKeySeq, xctxt);
         }
+        
         
         result.setShouldCacheNodes(true);
 
@@ -136,13 +158,11 @@ public class FilterExprIteratorSimple extends LocPathIterator
         vars.setStackFrame(savedStart);
       }
       else
-          result = (org.apache.xpath.objects.XMLNodeCursorImpl) expr.execute(xctxt);
+        result = (org.apache.xpath.objects.XMLNodeCursorImpl) expr.execute(xctxt);
 
     }
     catch (javax.xml.transform.TransformerException se)
     {
-
-      // TODO: Fix...
       throw new org.apache.xml.utils.WrappedRuntimeException(se);
     }
     finally
@@ -326,6 +346,116 @@ public class FilterExprIteratorSimple extends LocPathIterator
     	return Axis.FILTEREDLIST;
   }
 
+  /**
+   * Method definition to convert xsl:for-each-group's composite grouping key 
+   * sequence to a node set.
+   */
+  private static XMLNodeCursorImpl getCompositeGroupingKeyNodeset(ResultSequence groupingKeySeq, DTMManager dtmMgr) 
+  		                                                                                                        throws TransformerException {
+      
+	  XMLNodeCursorImpl nodeSet = null;
 
+	  System.setProperty(org.apache.xml.utils.Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, 
+			  																		org.apache.xml.utils.Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+	  try {
+		  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+		  dbf.setNamespaceAware(true);
+
+		  DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+		  Document document = dBuilder.newDocument();
+
+		  // Generate random XML element name strings, using class java.util.UUID.
+		  // Prefixing with an English letter, to make the string a valid XML name.
+		  String docElemNameTemp = "a_" + ((UUID.randomUUID()).toString());
+		  String elemNameTemp1 = "a_" + (UUID.randomUUID()).toString();
+		  String elemNameTemp2 = "a_" + (UUID.randomUUID()).toString();
+		  
+		  Element docElem = document.createElement(docElemNameTemp);		  		  
+
+		  for (int idx = 0; idx < groupingKeySeq.size(); idx++) {
+			  XObject seqItem = groupingKeySeq.item(idx);
+			  if (seqItem instanceof XMLNodeCursorImpl) {
+				  DTMCursorIterator iter = seqItem.iter();
+				  int nodeHandle = iter.nextNode();
+				  DTM dtm = dtmMgr.getDTM(nodeHandle);
+				  Node node = dtm.getNode(nodeHandle);
+				  if (dtm.getNodeType(nodeHandle) == DTM.ELEMENT_NODE) {        				   
+					  String nodeName = node.getNodeName();
+					  String nodeTxtContent = node.getTextContent();
+					  Element elem = document.createElement(nodeName);					  
+					  Text text = document.createTextNode(nodeTxtContent);
+					  elem.appendChild(text);
+					  docElem.appendChild(elem);
+				  }
+				  if (dtm.getNodeType(nodeHandle) == DTM.ATTRIBUTE_NODE) { 
+					  String attrName = node.getNodeName();
+					  String attrValue = node.getNodeValue();
+					  Element elem = document.createElement(elemNameTemp1);
+					  elem.setAttribute(attrName, attrValue);
+					  docElem.appendChild(elem);
+				  }
+				  else if (dtm.getNodeType(nodeHandle) == DTM.TEXT_NODE) {
+					  String nodeTxtContent = node.getTextContent();
+					  Text text = document.createTextNode(nodeTxtContent);
+					  docElem.appendChild(text);
+				  }
+			  }
+			  else if (seqItem instanceof XSAnyAtomicType) {
+				  Element elem = document.createElement(elemNameTemp2);
+				  String nodeTxtContent = XslTransformEvaluationHelper.getStrVal(seqItem);
+				  Text text = document.createTextNode(nodeTxtContent);
+				  elem.appendChild(text);
+				  docElem.appendChild(elem);
+			  }
+			  else if ((seqItem instanceof XPathInlineFunction) || (seqItem instanceof XPathMap) || (seqItem instanceof XPathArray)) {
+				  throw new TransformerException("XPTY0004 : Cannot convert a sequence to node set, because sequence has one or more function "
+																												  		   + "item, map or an array instances.");
+			  }
+		  }
+
+		  document.appendChild(docElem);
+		  
+		  DTM dtm = dtmMgr.getDTM(new DOMSource(document), true, null, false, false);
+		  int docNodeHandle = dtm.getDocument();			    	        			  
+
+		  int docElemHandle = dtm.getFirstChild(docNodeHandle);
+		  int elemNodeHandle = dtm.getFirstChild(docElemHandle);
+		  List<Integer> nodeHandleList = new ArrayList<Integer>();
+		  while (elemNodeHandle != DTM.NULL) {			  
+			  Element elemNode = (Element)(dtm.getNode(elemNodeHandle));
+			  String elemName = elemNode.getNodeName();
+			  if (elemNameTemp1.equals(elemName)) {
+				  NamedNodeMap namedNodeMap = elemNode.getAttributes();
+				  int attrLength = namedNodeMap.getLength();
+				  for (int idx = 0; idx < attrLength; idx++) {
+					  Attr attr = (Attr)(namedNodeMap.item(idx));
+					  int attrNodeHandle = dtm.getAttributeNode(elemNodeHandle, null, attr.getNodeName());
+					  nodeHandleList.add(attrNodeHandle);
+				  }
+			  }
+			  else if (elemNameTemp2.equals(elemName)) {
+				  int nodeHandle = dtm.getFirstChild(elemNodeHandle);
+				  nodeHandleList.add(nodeHandle);
+				  
+			  }
+			  else {				  
+				  nodeHandleList.add(elemNodeHandle);				  
+			  }
+
+			  elemNodeHandle = dtm.getNextSibling(elemNodeHandle);
+		  }
+
+		  nodeSet = new XMLNodeCursorImpl(nodeHandleList, dtmMgr);
+	  }
+	  catch (Exception ex) {
+		  throw new TransformerException("XPTY0004 : An error occured while converting a sequence to node set, "
+				  																						+ "with following error trace : " + ex.getMessage() + ".");
+	  }
+
+	  return nodeSet; 
+  }
+  
 }
 

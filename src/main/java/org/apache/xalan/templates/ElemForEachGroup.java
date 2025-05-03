@@ -540,10 +540,10 @@ public class ElemForEachGroup extends ElemTemplateElement
            if (value instanceof ResultSequence) {
         	   ResultSequence rSeq = (ResultSequence)value;        	   
         	   try {
-        		  // Since a sequence of nodes doesn't refer to an XDM parent element 
-        		  // node, we construct here an DTMCursorIterator object that refers 
-        		  // to an artificially created XDM parent element for the supplied 
-        		  // items within a sequence. 
+        		  // Since a sequence of nodes doesn't refer to a common XDM parent 
+        		  // element node, we construct here an DTMCursorIterator object that  
+        		  // refers to an artificially created XDM common parent element for 
+        		  // the supplied items within a sequence. 
         		  sourceNodes = constructSourceNodesFromXdmSequence(xctxt, rSeq);
         	   }
         	   catch (Exception ex) {
@@ -594,9 +594,8 @@ public class ElemForEachGroup extends ElemTemplateElement
         	xctxt.pushContextNodeList(sourceNodes);
         	transformer.pushElemTemplateElement(null);                        
 
-        	final Vector sortKeys = (m_sortElems == null)
-        			? null : transformer.processSortKeysForEachGroup(
-        					this, sourceNode);            
+        	final Vector sortKeys = (m_sortElems == null) ? null : transformer.processSortKeysForEachGroup(
+        			                                                                                    this, sourceNode);            
         	if (sortKeys != null) {
         		/**
         		 * There are xsl:sort elements within xsl:for-each-group. Sort the groups,
@@ -1240,8 +1239,9 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * Given an XDM sequence as an argument for this method, construct a DTM object
-   * and further an DTMCursorIterator instance from the DTM.
+   * Given an XDM sequence as an argument to this method, construct a
+   * DTM object and subsequently an DTMCursorIterator instance from 
+   * the DTM object.
    * 
    * @param xctxt									XPath context object
    * @param rSeq									The supplied XDM sequence	
@@ -1252,7 +1252,8 @@ public class ElemForEachGroup extends ElemTemplateElement
 		  																						throws ParserConfigurationException {
 	  DTMCursorIterator sourceNodes = null;
 	  
-	  System.setProperty(org.apache.xml.utils.Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, org.apache.xml.utils.Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+	  System.setProperty(org.apache.xml.utils.Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, 
+			                                                                   org.apache.xml.utils.Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
 
 	  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -1261,7 +1262,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  DocumentBuilder dBuilder = dbf.newDocumentBuilder();
 	  Document document = dBuilder.newDocument();
 
-	  Element docElem = document.createElement("docElem1");   // arbitrary, chosen document element name          
+	  Element docElem = document.createElement("docElem1");   // arbitrarily, chosen document element name          
 	  for (int idx = 0; idx < rSeq.size(); idx++) {
 		  XObject seqItem = rSeq.item(idx);
 		  XMLNodeCursorImpl xmlNode = (XMLNodeCursorImpl)seqItem;
@@ -1296,8 +1297,8 @@ public class ElemForEachGroup extends ElemTemplateElement
 		  elemNodeHandle = dtm.getNextSibling(elemNodeHandle);
 	  }
 
-	  XMLNodeCursorImpl XMLNodeCursorImpl = new XMLNodeCursorImpl(nodeHandleList, xctxt);
-	  sourceNodes = XMLNodeCursorImpl.iter();
+	  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nodeHandleList, xctxt);
+	  sourceNodes = xmlNodeCursorImpl.iter();
 	  
 	  return sourceNodes;
   }

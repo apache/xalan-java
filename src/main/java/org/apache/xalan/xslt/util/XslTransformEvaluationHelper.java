@@ -240,11 +240,7 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Given a ResultSequence object instance, return a corresponding XNodeSet object if
-     * all the items within the supplied ResultSequence are xdm nodes.    
-     *
-     * If all the items within the supplied ResultSequence object instance are not xdm nodes,
-     * then this method returns a null value.  
+     * Method definition to convert an XDM sequence to a node set.
      */
     public static XMLNodeCursorImpl getXNodeSetFromResultSequence(ResultSequence resultSeq, DTMManager dtmMgr) {
         

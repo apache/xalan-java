@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><out>
+  <group pop="5" country="italy">
+    <city country="italy" name="milan" pop="5"/>
+  </group>
+  <group pop="7" country="france">
+    <city country="france" name="paris" pop="7"/>
+  </group>
+  <group pop="4" country="germany">
+    <city country="germany" name="munich" pop="4"/>
+  </group>
+  <group pop="2" country="france">
+    <city country="france" name="lyon" pop="2"/>
+  </group>
+  <group pop="10" country="england">
+    <city country="england" name="london" pop="10"/>
+  </group>
+  <group pop="5" country="england">
+    <city country="england" name="bristol" pop="5.0"/>
+    <city country="england" name="sheffield" pop="05"/>
+  </group>
+  <group pop="7" country="england">
+    <city country="england" name="manchester" pop="7.0"/>
+    <city country="england" name="liverpool" pop="7"/>
+  </group>
+  <group pop="1" country="italy">
+    <city country="italy" name="venice" pop="1"/>
+  </group>
+</out>

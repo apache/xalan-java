@@ -21,11 +21,11 @@
        <lang>Chinese</lang>
      </xsl:variable>
      <r>
-     <xsl:for-each-group select="reverse($languages/*)" group-ending-with="p">
-       <p><xsl:value-of select="position()"/></p>
-       <v><xsl:value-of select="."/></v>
-       <l><xsl:value-of select="last()"/></l>
-     </xsl:for-each-group>
+       <xsl:for-each-group select="reverse($languages/*)" group-ending-with="p">
+         <p><xsl:value-of select="position()"/></p>
+         <v><xsl:value-of select="."/></v>
+         <l><xsl:value-of select="last()"/></l>
+       </xsl:for-each-group>
      </r>
    </xsl:template>
    

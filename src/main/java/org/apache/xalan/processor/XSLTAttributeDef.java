@@ -1726,7 +1726,7 @@ public class XSLTAttributeDef
 		  String[] strArr = result.split(",");    
 		  String firstArrItem = strArr[0];
 		  String lastArrItem = strArr[strArr.length - 1];		  
-		  if ((strArr.length > 1) && !(firstArrItem.startsWith("(") || lastArrItem.endsWith(")"))) {
+		  if ((strArr.length > 1) && !(firstArrItem.startsWith("(") && lastArrItem.endsWith(")"))) {
 			  result = "(" + result + ")";			  
 		  }
 	  }
