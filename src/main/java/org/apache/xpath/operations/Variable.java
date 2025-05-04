@@ -267,7 +267,7 @@ public class Variable extends Expression implements PathComponent
               }
            } 
            else {  
-              result = xctxt.getVarStack().getVariableOrParam(xctxt,m_qname);
+              result = xctxt.getVarStack().getVariableOrParam(xctxt, m_qname);
            }
         }
         catch (javax.xml.transform.TransformerException ex) {
@@ -281,10 +281,20 @@ public class Variable extends Expression implements PathComponent
         	   result = xpath.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
         	   
         	   XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff = null;
-           }
+           }           
            else {
-               throw new javax.xml.transform.TransformerException("Variable $" + m_qname.toString() + " "
-                                                                                               + "accessed before it is bound!."); 
+        	  try {
+        		  if (m_isGlobal) {
+        			  result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
+        		  }
+        		  else {
+        			  result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOK);
+        		  }
+        	  }
+        	  catch (TransformerException ex1) {
+                  throw new javax.xml.transform.TransformerException("Variable $" + m_qname.toString() + " "
+                                                                                                  			+ "accessed before it is bound!.");
+        	  }
            }
         }
       

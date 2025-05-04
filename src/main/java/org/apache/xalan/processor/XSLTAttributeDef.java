@@ -768,7 +768,8 @@ public class XSLTAttributeDef
       XPath expr = null;
       
       String normalizedStrValue = null;
-      if ((owner instanceof ElemForEachGroup) && (Constants.ATTRNAME_GROUPBY).equals(name)) {
+      if ((owner instanceof ElemForEachGroup) && ((Constants.ATTRNAME_GROUPBY).equals(name) || 
+    		                                      (Constants.ATTRNAME_GROUP_ADJACENT).equals(name))) {
     	 if (value != null) {
     		normalizedStrValue = getForEachGroupAttrNormalizedStrValue(value);    		
     		if (normalizedStrValue != null) {
@@ -1391,13 +1392,13 @@ public class XSLTAttributeDef
   {
 
     // Is this already checked somewhere else?  -sb
-    if (!(value.equals("yes") || value.equals("no")))
+    if (!(value.equals("yes") || value.equals("true") || value.equals("no") || value.equals("false")))
     {
       handleError(handler, XSLTErrorResources.INVALID_BOOLEAN, new Object[] {name,value}, null);
       return null;
    }
  
-     return new Boolean(value.equals("yes") ? true : false);
+     return new Boolean((value.equals("yes") || value.equals("true")) ? true : false);
   }
 
   /**

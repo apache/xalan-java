@@ -282,6 +282,7 @@ public class Constants extends org.apache.xml.utils.Constants
       ATTRNAME_GROUPINGSEPARATOR = "grouping-separator",
       ATTRNAME_GROUPINGSIZE = "grouping-size",
       ATTRNAME_GROUPBY = "group-by",
+      ATTRNAME_GROUP_ADJACENT = "group-adjacent",
       ATTRNAME_HREF = "href",
       ATTRNAME_ID = "id",
       ATTRNAME_IMPORTANCE = "importance",

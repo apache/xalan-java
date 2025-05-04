@@ -38,6 +38,8 @@ public class FuncPosition extends Function
   
   private boolean m_isTopLevel;
   
+  public static int m_forEachGroupGroupByPos = 0;
+  
   /**
    * Figure out if we're executing a toplevel expression.
    * If so, we can't be inside of a predicate. 
@@ -127,7 +129,8 @@ public class FuncPosition extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {    	  
-	  double pos = (xctxt.getGroupPosition() > 0) ? xctxt.getGroupPosition() : ((double) getPositionInContextNodeList(xctxt));  
+	  double pos = (xctxt.getGroupPosition() > 0) ? xctxt.getGroupPosition() : ((double) getPositionInContextNodeList(xctxt));
+	  pos = (pos > 0) ? pos : m_forEachGroupGroupByPos;
     
       return new XNumber(pos);
   }

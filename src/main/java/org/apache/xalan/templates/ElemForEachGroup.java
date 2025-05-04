@@ -47,6 +47,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.NodeCursor;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
+import org.apache.xpath.functions.FuncPosition;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -804,32 +805,40 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  int nextNode;
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  	  
+	  try {
+		  int pos = 0;
+		  
+		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+			  FuncPosition.m_forEachGroupGroupByPos = ++pos; 
+			  XObject xpathEvalResult = m_GroupByExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());
+			  Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
 
-	  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
-		  XObject xpathEvalResult = m_GroupByExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());                
-		  Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
-
-		  if (!m_composite) {
-			  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue);
-		  }
-		  else {
-			  // Processing for xsl:for-each-group's composite grouping key
-			  if (groupingKeyValue instanceof ForEachGroupCompositeGroupingKey) {
-				  ForEachGroupCompositeGroupingKey groupingKeyObj = (ForEachGroupCompositeGroupingKey)groupingKeyValue;
-				  ResultSequence groupingKeySeq = groupingKeyObj.getValue();
-				  if (groupingKeySeq.size() >= 1) {
-					  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue);
-				  }
-				  else {
-					  throw new TransformerException("XTSE1080 : An xsl:for-each-group instruction with attribute "
-							  		                             + "value 'composite=\"yes\"', resulted in a grouping key "
-							  		                             + "sequence that is empty.", srcLocator);
-				  }
+			  if (!m_composite) {
+				  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue);
 			  }
 			  else {
-				  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue); 
+				  // Processing for xsl:for-each-group's composite grouping key
+				  if (groupingKeyValue instanceof ForEachGroupCompositeGroupingKey) {
+					  ForEachGroupCompositeGroupingKey groupingKeyObj = (ForEachGroupCompositeGroupingKey)groupingKeyValue;
+					  ResultSequence groupingKeySeq = groupingKeyObj.getValue();
+					  if (groupingKeySeq.size() >= 1) {
+						  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue);
+					  }
+					  else {
+						  throw new TransformerException("XTSE1080 : An xsl:for-each-group instruction with attribute "
+																										  + "'composite=\"yes\"', resulted in a grouping key "
+																										  + "sequence that is empty.", srcLocator);
+					  }
+				  }
+				  else {
+					  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue); 
+				  }
 			  }
 		  }
+	  }
+	  finally {	  
+	     FuncPosition.m_forEachGroupGroupByPos = 0;
 	  }
   }
 
@@ -1008,14 +1017,31 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   private void constructGroupsForGroupAdjacent(XPathContext xctxt, DTMCursorIterator sourceNodes,
 		                                       List<GroupingKeyAndGroupPair> xslForEachGroupAdjacentList) throws TransformerException {
-	 Object prevValue = null;
+	  
 	 int idx = 0;
 	 int nextNode;
 	 
+	 Object prevGroupingKeyValue = null;
+	 
+	 SourceLocator srcLocator = xctxt.getSAXLocator(); 
+	 
 	 while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {	     
 	     XObject xpathEvalResult = m_GroupAdjacentExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());                 
-	     Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);                 
-	     Object currValue = groupingKeyValue;
+	     Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
+	     
+	     if (m_composite) {
+	    	 if (groupingKeyValue instanceof ForEachGroupCompositeGroupingKey) {
+				  ForEachGroupCompositeGroupingKey groupingKeyObj = (ForEachGroupCompositeGroupingKey)groupingKeyValue;
+				  ResultSequence groupingKeySeq = groupingKeyObj.getValue();
+				  if (groupingKeySeq.size() == 0) {
+					  throw new TransformerException("XTSE1080 : An xsl:for-each-group instruction with attribute "
+																	                             + "'composite=\"yes\"', resulted in a grouping key "
+																	                             + "sequence that is empty.", srcLocator);
+				  }
+			  } 
+	     }
+	     
+	     Object currGroupingKeyValue = groupingKeyValue;
 	     
 	     List<Integer> group = null;
 	     
@@ -1023,12 +1049,12 @@ public class ElemForEachGroup extends ElemTemplateElement
 	         // This is the first XDM node being iterated, within this loop
 	         group = new ArrayList<Integer>();
 	         group.add(nextNode);
-	         GroupingKeyAndGroupPair groupingKeyAndGroupPair = new GroupingKeyAndGroupPair(currValue, group);
+	         GroupingKeyAndGroupPair groupingKeyAndGroupPair = new GroupingKeyAndGroupPair(currGroupingKeyValue, group);
 	         xslForEachGroupAdjacentList.add(groupingKeyAndGroupPair);
-	         prevValue = currValue; 
+	         prevGroupingKeyValue = currGroupingKeyValue; 
 	     }
 	     else {
-	        if (currValue.equals(prevValue)) {
+	        if (currGroupingKeyValue.equals(prevGroupingKeyValue)) {
 	        	int currResultSize = xslForEachGroupAdjacentList.size();
 	        	GroupingKeyAndGroupPair groupingKeyAndGroupPair = xslForEachGroupAdjacentList.get(currResultSize - 1);
 	        	group = groupingKeyAndGroupPair.getGroupNodesDtmHandles(); 
@@ -1037,11 +1063,11 @@ public class ElemForEachGroup extends ElemTemplateElement
 	        else {
 	            group = new ArrayList<Integer>();
 	            group.add(nextNode);
-	            GroupingKeyAndGroupPair groupingKeyAndGroupPair = new GroupingKeyAndGroupPair(currValue, group);
+	            GroupingKeyAndGroupPair groupingKeyAndGroupPair = new GroupingKeyAndGroupPair(currGroupingKeyValue, group);
 	            xslForEachGroupAdjacentList.add(groupingKeyAndGroupPair);
 	        }
 	        
-	        prevValue = currValue;
+	        prevGroupingKeyValue = currGroupingKeyValue;
 	     }
 	     
 	     idx++;
