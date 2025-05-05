@@ -17,6 +17,10 @@
  */
 package org.apache.xalan.templates;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1166,72 +1170,95 @@ public class ElemForEachGroup extends ElemTemplateElement
    * Method definition, to transform xsl:for-each-group instruction's grouping 
    * key value (which is the result of evaluating xsl:for-each-group's 'group-by' or 
    * 'group-adjacent' XPath expressions), into a normalized value of type 
-   * java.lang.Object (which is the data type of underlying java.util.Map 
-   * object's key definition).
+   * java.lang.Object.
    */
-  private Object getNormalizedGroupingKeyValue(XPathContext xctxt, XObject xpathEvalResult) {
+  private Object getNormalizedGroupingKeyValue(XPathContext xctxt, XObject groupingKeyValue) throws TransformerException {
       
-	  Object xpathRawResult = null;
+	  Object normalizedGroupingKeyValue = null;
       
-      if (xpathEvalResult instanceof XString) {
+      if (groupingKeyValue instanceof XString) {
     	  if (m_collationUri == null) {
-    		 xpathRawResult = xpathEvalResult.str();   
+    		 normalizedGroupingKeyValue = groupingKeyValue.str();   
     	  }
     	  else {
-    	     xpathRawResult = new StringWithCollation(xpathEvalResult.str(), m_collationUri, m_xpathCollationSupport);
+    	     normalizedGroupingKeyValue = new StringWithCollation(groupingKeyValue.str(), m_collationUri, m_xpathCollationSupport);
     	  }
       }
-      else if (xpathEvalResult instanceof XSQName) {
-    	  XSQName qName = (XSQName)xpathEvalResult;
+      else if (groupingKeyValue instanceof XSQName) {
+    	  XSQName qName = (XSQName)groupingKeyValue;
     	  String localPart = qName.getLocalPart();
     	  String namespaceUri = qName.getNamespaceUri();
-    	  xpathRawResult = localPart + ((namespaceUri == null) ? "" : ":" + namespaceUri); 
+    	  normalizedGroupingKeyValue = localPart + ((namespaceUri == null) ? "" : ":" + namespaceUri); 
       }
-      else if (xpathEvalResult instanceof XSString) {
+      else if (groupingKeyValue instanceof XSString) {
     	  if (m_collationUri == null) {
-    		 xpathRawResult = ((XSString)xpathEvalResult).stringValue();   
+    		 normalizedGroupingKeyValue = ((XSString)groupingKeyValue).stringValue();   
     	  }
     	  else {
-             xpathRawResult = new StringWithCollation(((XSString)xpathEvalResult).stringValue(), m_collationUri, m_xpathCollationSupport);
+             normalizedGroupingKeyValue = new StringWithCollation(((XSString)groupingKeyValue).stringValue(), m_collationUri, m_xpathCollationSupport);
     	  }
       }
-      else if (xpathEvalResult instanceof XNumber) {
-          xpathRawResult = Double.valueOf(((XNumber)xpathEvalResult).num());  
+      else if (groupingKeyValue instanceof XNumber) {
+          normalizedGroupingKeyValue = Double.valueOf(((XNumber)groupingKeyValue).num());  
       }
-      else if (xpathEvalResult instanceof XSNumericType) {
-          String strVal = ((XSNumericType)xpathEvalResult).stringValue();
-          xpathRawResult = Double.valueOf(strVal);
+      else if (groupingKeyValue instanceof XSNumericType) {
+          String strVal = ((XSNumericType)groupingKeyValue).stringValue();
+          normalizedGroupingKeyValue = Double.valueOf(strVal);
       }
-      else if (xpathEvalResult instanceof XBooleanStatic) {
-    	  xpathRawResult =  Boolean.valueOf(((XBooleanStatic)xpathEvalResult).bool());
+      else if (groupingKeyValue instanceof XBooleanStatic) {
+    	  normalizedGroupingKeyValue =  Boolean.valueOf(((XBooleanStatic)groupingKeyValue).bool());
       }
-      else if (xpathEvalResult instanceof XBoolean) {
-          xpathRawResult =  Boolean.valueOf(((XBoolean)xpathEvalResult).bool());     
+      else if (groupingKeyValue instanceof XBoolean) {
+          normalizedGroupingKeyValue =  Boolean.valueOf(((XBoolean)groupingKeyValue).bool());     
       }      
-      else if (xpathEvalResult instanceof XSBoolean) {
-          xpathRawResult = Boolean.valueOf(((XSBoolean)xpathEvalResult).value());
+      else if (groupingKeyValue instanceof XSBoolean) {
+          normalizedGroupingKeyValue = Boolean.valueOf(((XSBoolean)groupingKeyValue).value());
       }
-      else if ((xpathEvalResult instanceof XSDate) || (xpathEvalResult instanceof XSDateTime) || 
-    		                                          (xpathEvalResult instanceof XSTime)) {
-          xpathRawResult = xpathEvalResult;
+      else if ((groupingKeyValue instanceof XSDate) || (groupingKeyValue instanceof XSTime)) {
+          normalizedGroupingKeyValue = groupingKeyValue;
+      }      
+      else if (groupingKeyValue instanceof XSDateTime) {
+    	  XSDateTime dateTimeValue = (XSDateTime)groupingKeyValue;    	  
+    	  String dateTimeStr = dateTimeValue.stringValue();
+    	  if (dateTimeStr.contains("+")) {
+    		  // xs:dateTime string value contains a non-UTC time zone suffix.
+    		  // Normalize the xs:dateTime value to UTC time zone.
+    		  ZoneId translateToTimeZone = ZoneId.of("UTC");
+    		  OffsetDateTime offsetDateTime = OffsetDateTime.parse(dateTimeStr);
+    		  ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(offsetDateTime.toInstant(), translateToTimeZone);
+    		  DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+    		  String formattedDateTimeStr = zonedDateTime.format(dateTimeFormatter);
+
+    		  try {
+    			  normalizedGroupingKeyValue = XSDateTime.parseDateTime(formattedDateTimeStr);
+    		  } 
+    		  catch (TransformerException ex) {
+    			  throw ex;
+    		  }
+    	  }
+    	  else {
+    		  normalizedGroupingKeyValue = groupingKeyValue;  
+    	  }
+
+    	  return normalizedGroupingKeyValue;
+      }  		  
+      else if (groupingKeyValue instanceof XSAnyURI) {
+    	  normalizedGroupingKeyValue = groupingKeyValue; 
       }
-      else if (xpathEvalResult instanceof XSAnyURI) {
-    	  xpathRawResult = xpathEvalResult; 
-      }
-      else if (xpathEvalResult instanceof ResultSequence) {
+      else if (groupingKeyValue instanceof ResultSequence) {
     	  if (m_collationUri == null) {
     		  m_collationUri = XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI;   
     	  }
     	  
-    	  xpathRawResult = new ForEachGroupCompositeGroupingKey(xctxt, (ResultSequence)xpathEvalResult, 
+    	  normalizedGroupingKeyValue = new ForEachGroupCompositeGroupingKey(xctxt, (ResultSequence)groupingKeyValue, 
     			                                                									m_collationUri, m_xpathCollationSupport);
       }
       else {
           // Any other data type for grouping key, is treated as string
-          xpathRawResult = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);  
+          normalizedGroupingKeyValue = XslTransformEvaluationHelper.getStrVal(groupingKeyValue);  
       }
       
-      return xpathRawResult;      
+      return normalizedGroupingKeyValue;      
   }
   
   /**

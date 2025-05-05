@@ -858,6 +858,16 @@ public class XSLTAttributeDef
 
     try
     {
+      if (value.contains("current-group()")) {
+    	 throw new TransformerException("XTSE1060 : A current-group() function cannot be used within a pattern. "
+    	 		                                                             + "An erroneous pattern string used within the stylesheet is " + value + ".");   
+      }
+      
+      if (value.contains("current-grouping-key()")) {
+     	 throw new TransformerException("XTSE1070 : A current-grouping-key() function cannot be used within a pattern. "
+     	 		                                                             + "An erroneous pattern string used within the stylesheet is " + value + ".");   
+      }
+      
       XPath pattern = handler.createMatchPatternXPath(value, owner);
 
       return pattern;
