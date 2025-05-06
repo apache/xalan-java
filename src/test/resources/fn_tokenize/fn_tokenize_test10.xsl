@@ -25,9 +25,9 @@
 	 </result>
   </xsl:template>
   
-  <!-- An XSL named template that intends to emit a sequence of 
-       XML elements. This overall XSL transformation fails, because actual emitted 
-       elements don't conform to sequence return type of this XSL template. -->
+  <!-- An XSL named template that intends to emit a sequence of XML elements. 
+       This overall XSL transformation fails, because actual emitted elements 
+       don't conform to sequence return type of this XSL template. -->
   <xsl:template name="emitStrTokensFromTokenSequence" as="element(incorrect_element_name)*">
      <xsl:param name="tokens" as="xs:string*"/>
 	 <xsl:for-each select="$tokens">

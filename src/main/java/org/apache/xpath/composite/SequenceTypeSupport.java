@@ -106,8 +106,6 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * This class provides few utility methods, to support 
  * evaluation of XPath 3.1 sequence type expressions.
  * 
- * Ref : https://www.w3.org/TR/xpath-31/#id-sequencetype-syntax
- * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
@@ -230,7 +228,11 @@ public class SequenceTypeSupport {
      * 
      * @author Mukul Gandhi <mukulg@apache.org>
      */
-    public static class OccurrenceIndicator {
+    public static class OccurrenceIndicator {       
+       // No occurrence indicator has been specified within an 
+       // XSL stylesheet in a sequence type expression.
+       public static int ABSENT = 0;
+       
        // Represents the sequence type occurrence indicator '?'
        public static int ZERO_OR_ONE = 1;
        
@@ -427,35 +429,35 @@ public class SequenceTypeSupport {
             			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
             				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
             			}
-            			throw new TransformerException("XTTE0570 : An item of type xs:gYearMonth cannot be converted to " + expectedTypeStr + " as specified by stylesheet.");
+            			throw new TransformerException("XTTE0570 : An item of type xs:gYearMonth cannot be converted to " + expectedTypeStr + " as specified within an XSL stylesheet.");
             		}
             		else if ((xObj instanceof XSGYear) && (expectedType != XS_GYEAR)) {
             			String expectedTypeStr = sequenceTypeXPathExprStr; 
             			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
             				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
             			}
-            			throw new TransformerException("XTTE0570 : An item of type xs:gYear cannot be converted to " + expectedTypeStr + " as specified by stylesheet.");
+            			throw new TransformerException("XTTE0570 : An item of type xs:gYear cannot be converted to " + expectedTypeStr + " as specified within an XSL stylesheet.");
             		}
             		else if ((xObj instanceof XSGMonthDay) && (expectedType != XS_GMONTH_DAY)) {
             			String expectedTypeStr = sequenceTypeXPathExprStr; 
             			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
             				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
             			}
-            			throw new TransformerException("XTTE0570 : An item of type xs:gMonthDay cannot be converted to " + expectedTypeStr + " as specified by stylesheet.");
+            			throw new TransformerException("XTTE0570 : An item of type xs:gMonthDay cannot be converted to " + expectedTypeStr + " as specified within an XSL stylesheet.");
             		}
             		else if ((xObj instanceof XSGDay) && (expectedType != XS_GDAY)) {
             			String expectedTypeStr = sequenceTypeXPathExprStr; 
             			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
             				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
             			}
-            			throw new TransformerException("XTTE0570 : An item of type xs:gDay cannot be converted to " + expectedTypeStr + " as specified by stylesheet.");
+            			throw new TransformerException("XTTE0570 : An item of type xs:gDay cannot be converted to " + expectedTypeStr + " as specified within an XSL stylesheet.");
             		}
             		else if ((xObj instanceof XSGMonth) && (expectedType != XS_GMONTH)) {
             			String expectedTypeStr = sequenceTypeXPathExprStr; 
             			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
             				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
             			}
-            			throw new TransformerException("XTTE0570 : An item of type xs:gMonth cannot be converted to " + expectedTypeStr + " as specified by stylesheet.");
+            			throw new TransformerException("XTTE0570 : An item of type xs:gMonth cannot be converted to " + expectedTypeStr + " as specified within an XSL stylesheet.");
             		}
             	}
             }
@@ -547,6 +549,65 @@ public class SequenceTypeSupport {
 	            		  }
 	            		  
 	            		  return result;
+	            	   }
+	            	}
+	            	else if (sequenceTypeKindTest.getKindVal() == ELEMENT_KIND) {
+	            	   if (srcValue instanceof XNodeSetForDOM) {	            		   
+	            		   XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)srcValue;
+	            		   Object obj1 = xNodeSetForDOM.object();
+	            		   if (obj1 instanceof DTMNodeList) {
+	            			   DTMNodeList dtmNodeList = (DTMNodeList)obj1;
+	            			   DTMCursorIterator dtmCursorIter = dtmNodeList.getDTMIterator();
+	            			   int nodeHandle = dtmCursorIter.nextNode();
+	            			   DTM dtm = xctxt.getDTM(nodeHandle);
+	            			   int childNodeHandle = dtm.getFirstChild(nodeHandle);	            				  
+	            			   int nextSiblingNodeHandle = dtm.getNextSibling(childNodeHandle);
+	            			   String nodeExpectedLocalName = sequenceTypeKindTest.getNodeLocalName();
+	            			   String nodeExpectedNsUri = sequenceTypeKindTest.getNodeNsUri();	            			   
+	            			   if ((childNodeHandle != DTM.NULL) && (nextSiblingNodeHandle == DTM.NULL) && 
+	            					                                   ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) || 
+	            							                            (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE))) {
+	            				   Node node = dtm.getNode(childNodeHandle);
+	            				   String nodeLocalName = node.getLocalName();
+	            				   String nodeNsUri = node.getNamespaceURI();	            				   	            				   
+	            				   boolean isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
+	            				   if (isNodeNameOk) {
+	            					   result = new XMLNodeCursorImpl(childNodeHandle, xctxt);
+
+		            				   return result;
+	            				   }	            				   
+	            			   }
+	            			   else if ((childNodeHandle != DTM.NULL) && (nextSiblingNodeHandle != DTM.NULL) && 
+	            					                                        ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) || 
+	            					                                         (itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY))) {
+	            				   List<Integer> seqNodeHandles = new ArrayList<Integer>();
+	            				   Node node = dtm.getNode(childNodeHandle);
+	            				   String nodeLocalName = node.getLocalName();
+	            				   String nodeNsUri = node.getNamespaceURI();
+	            				   boolean isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
+	            				   if (isNodeNameOk) {
+	            					   seqNodeHandles.add(Integer.valueOf(childNodeHandle));
+	            				   }
+	            				   node = dtm.getNode(nextSiblingNodeHandle);
+	            				   isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
+	            				   if (isNodeNameOk) {
+	            					   seqNodeHandles.add(Integer.valueOf(nextSiblingNodeHandle));
+	            				   }
+	            				   while ((nextSiblingNodeHandle = dtm.getNextSibling(nextSiblingNodeHandle)) != DTM.NULL) {
+	            					   node = dtm.getNode(nextSiblingNodeHandle);
+		            				   isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
+		            				   if (isNodeNameOk) {
+		            					   seqNodeHandles.add(Integer.valueOf(nextSiblingNodeHandle));
+		            				   } 
+	            				   }
+
+	            				   if (seqNodeHandles.size() > 0) {
+	            					   result = new XMLNodeCursorImpl(seqNodeHandles, xctxt);
+
+	            					   return result;
+	            				   }
+	            			   }
+	            		   }
 	            	   }
 	            	}
 	            	else if (sequenceTypeKindTest.getKindVal() == DOCUMENT_KIND) {
@@ -987,8 +1048,8 @@ public class SequenceTypeSupport {
         
         return result;
     }
-    
-    /**
+
+	/**
      * Check whether, two XML namespace values are equal.
      */
     public static boolean isTwoXmlNamespaceValuesEqual(String ns0, String ns1) {
@@ -1859,6 +1920,32 @@ public class SequenceTypeSupport {
 				                      (seqTypekindVal == SequenceTypeSupport.NODE_KIND));
 		
 		return isXdmItemOneOfTheNodeKinds; 
+	}
+    
+    /**
+     * Check whether, an XML document input node's name conforms to the 
+     * node's expected name specified within sequence type.
+     */
+    private static boolean isNodeNameOk(String nodeLocalName, String nodeNsUri, String nodeExpectedLocalName,
+																			    String nodeExpectedNsUri) {
+		boolean result = true;
+		
+		if (!((nodeExpectedLocalName == null) || ("".equals(nodeExpectedLocalName)))) {
+			if (!nodeLocalName.equals(nodeExpectedLocalName)) {
+				result = false;
+			}
+			else if ((nodeNsUri != null) && (nodeExpectedNsUri == null)) {
+				result = false;
+			}
+			else if ((nodeExpectedNsUri != null) && (nodeNsUri == null)) {
+				result = false;
+			}
+			else if ((nodeExpectedNsUri != null) && (nodeNsUri != null) && !nodeExpectedNsUri.equals(nodeNsUri)) {
+				result = false;
+			} 
+		}		
+		
+		return result;
 	}
 
 }

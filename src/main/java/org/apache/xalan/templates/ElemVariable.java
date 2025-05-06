@@ -293,9 +293,6 @@ public class ElemVariable extends ElemTemplateElement
     m_selectPattern = param.m_selectPattern;
     m_qname = param.m_qname;   
     m_isTopLevel = param.m_isTopLevel;
-
-    // m_value = param.m_value;
-    // m_varContext = param.m_varContext;
   }
 
   /**
@@ -322,7 +319,6 @@ public class ElemVariable extends ElemTemplateElement
         xpathVarMap.put(m_qname, var);
     }
     else {
-        // transformer.getXPathContext().getVarStack().pushVariable(m_qname, var);
         transformer.getXPathContext().getVarStack().setLocalVariable(m_index, var);
     }
     
@@ -887,17 +883,6 @@ public class ElemVariable extends ElemTemplateElement
     	cstate.resetStackFrameSize();
     }
   }
-
-  
-  
-//  /**
-//   * This after the template's children have been composed.
-//   */
-//  public void endCompose() throws TransformerException
-//  {
-//    super.endCompose();
-//  }
-
 
   /**
    * If the children of a variable is a single xsl:value-of or text literal, 

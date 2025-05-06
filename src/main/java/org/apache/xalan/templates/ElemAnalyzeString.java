@@ -20,6 +20,7 @@ package org.apache.xalan.templates;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
@@ -29,13 +30,15 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.RegexEvaluationSupport;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
 
+import xml.xpath31.processor.types.XSNumericType;
+
 /**
  * Implementation of the XSLT 3.0 xsl:analyze-string instruction.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#analyze-string
  *   
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -198,18 +201,37 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
       
        final XPathContext xctxt = transformer.getXPathContext();
        
+       SourceLocator srcLocator = xctxt.getSAXLocator();
+       
        XObject xpathSelectExpr = m_selectExpression.execute(xctxt);
+       
+       if (xpathSelectExpr instanceof ResultSequence) {
+    	   ResultSequence rSeq = (ResultSequence)xpathSelectExpr;
+    	   if (rSeq.size() == 0) {
+    		   throw new javax.xml.transform.TransformerException("XPTY0004 : The xsl:analyze-string/@select expression evaluated "
+    		   		                                                                                                  + "to an empty sequence.", srcLocator);  
+    	   }
+    	   else if (rSeq.size() > 1) {
+    		   throw new javax.xml.transform.TransformerException("XPTY0004 : The xsl:analyze-string/@select expression evaluated to a "
+    		   		                                                                                                  + "sequence with size greater than one.", srcLocator);
+    	   }
+       }
+       
+       if ((xpathSelectExpr instanceof XNumber) || (xpathSelectExpr instanceof XSNumericType)) {
+    	   throw new javax.xml.transform.TransformerException("XPTY0004 : The xsl:analyze-string/@select expression has error. The supplied "
+							    	   		                                                                          + "'select' expression evaluated to a numeric value, whereas the "
+							    	   		                                                                          + "required type is xs:string.", srcLocator); 
+       }
        
        String strToBeAnalyzed = XslTransformEvaluationHelper.getStrVal(xpathSelectExpr);
        
        if (m_regex == null) {
-           throw new javax.xml.transform.TransformerException("XTSE0010 : xsl:analyze-string element must "
-                                                                                 + "have an 'regex' attribute.", xctxt.getSAXLocator());   
+           throw new javax.xml.transform.TransformerException("XTSE0010 : xsl:analyze-string element must have an 'regex' attribute.", srcLocator);   
        }
        
        if (m_regex_flags != null && !RegexEvaluationSupport.isFlagStrValid(m_regex_flags)) {
            throw new javax.xml.transform.TransformerException("XTDE1145 : Incorrect regex flag value(s) are present as value of 'flags' "
-           		                                                                 + "attribute of an xsl:analyze-string element.", xctxt.getSAXLocator());    
+           		                                                                  									 + "attribute of an xsl:analyze-string element.", srcLocator);    
        }
 
        ElemTemplateElement templateElem1 = this.m_firstChild;
@@ -217,29 +239,28 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
        
        if (templateElem1 == null) {
            throw new javax.xml.transform.TransformerException("XTSE1130 : At-least one of the elements xsl:matching-substring, or "
-                                                                  + "xsl:non-matching-substring must be present as child of xsl:analyze-string "
-                                                                  + "element.", xctxt.getSAXLocator());    
+												                                                                     + "xsl:non-matching-substring must be present as child of xsl:analyze-string "
+												                                                                     + "element.", srcLocator);    
        }
        else {
            templateElem2 = templateElem1.m_nextSibling;
            if (templateElem2 != null) {
                if (!((templateElem1 instanceof ElemMatchingSubstring) && (templateElem2 instanceof ElemNonMatchingSubstring))) {
                    throw new javax.xml.transform.TransformerException("XTSE0010 : xsl:matching-substring element must come first within "
-                                                                                          + "xsl:analyze-string element.", xctxt.getSAXLocator());   
+                                                                                          							 + "xsl:analyze-string element.", srcLocator);   
                }
                if (templateElem2.m_nextSibling != null) {
                    throw new javax.xml.transform.TransformerException("XTSE0010 : Only xsl:matching-substring, and xsl:non-matching-substring "
-                                                                                          + "elements are allowed to be present within an xsl:analyze-string "
-                                                                                          + "element.", xctxt.getSAXLocator());    
+						                                                                                             + "elements are allowed to be present within an xsl:analyze-string "
+						                                                                                             + "element.", srcLocator);    
                }
            }
        }
        
        if (strToBeAnalyzed.length() > 0) {
     	   String regexStr = m_regex.evaluate(xctxt, xctxt.getContextNode(), this);
-    	   Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(
-    			   										             RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr), 
-    			   										             m_regex_flags, strToBeAnalyzed);
+    	   Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr), 
+    			   										                                                                                  m_regex_flags, strToBeAnalyzed);
 
     	   List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();
 

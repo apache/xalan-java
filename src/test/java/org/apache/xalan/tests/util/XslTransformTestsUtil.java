@@ -139,6 +139,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		xslTransformerFactory.setErrorListener(xslTransformErrHandler);
     		
     		Transformer transformer = xslTransformerFactory.newTransformer(xsltStreamSrc);
+    		
+    		transformer.setErrorListener(xslTransformErrHandler);
 
     		setXslTransformProperties(transformer);    		 
 
