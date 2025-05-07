@@ -30,22 +30,12 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 
 /**
-   XSLT 3.0 non-matching-substring element.
-   
-   <xsl:non-matching-substring>
-      <!-- Content: sequence-constructor -->
-   </xsl:non-matching-substring>
- 
-   @author Mukul Gandhi <mukulg@apache.org>
-   
+ * Implementation of the XSLT 3.0 non-matching-substring instruction.
+ *    
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *   
  * @xsl.usage advanced
- */
-
-/*
- * Implementation of the XSLT 3.0 xsl:non-matching-substring instruction.
- * 
- * This XSLT element can only be used within the element xsl:analyze-string.
- */
+*/
 public class ElemNonMatchingSubstring extends ElemTemplateElement implements ExpressionOwner {
 
   private static final long serialVersionUID = -3993288598365914097L;
@@ -132,6 +122,8 @@ public class ElemNonMatchingSubstring extends ElemTemplateElement implements Exp
       XPathContext xctxtNew = new XPathContext(false);
       
       xctxtNew.setVarStack(xctxt.getVarStack());
+      xctxtNew.setPos(xctxt.getPos());
+      xctxtNew.setLast(xctxt.getLast());
 
       DTMManager dtmMgr = xctxtNew.getDTMManager();      
       DTM docFragDtm = dtmMgr.createDTMForSimpleXMLDocument(strValueTobeEvaluated);

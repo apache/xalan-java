@@ -33,21 +33,11 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 
 /**
-   XSLT 3.0 matching-substring element.
-   
-   <xsl:matching-substring>
-      <!-- Content: sequence-constructor -->
-   </xsl:matching-substring>
-   
-   @author Mukul Gandhi <mukulg@apache.org>
-  
- * @xsl.usage advanced
- */
-
-/*
- * Implementation of the XSLT 3.0 xsl:matching-substring instruction.
- * 
- * This XSLT element can only be used within the element xsl:analyze-string.
+  * Implementation of the XSLT 3.0 xsl:matching-substring instruction.
+  *    
+  * @author Mukul Gandhi <mukulg@apache.org>
+  *   
+  * @xsl.usage advanced
  */
 public class ElemMatchingSubstring extends ElemTemplateElement implements ExpressionOwner {
   
@@ -149,6 +139,8 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
       XPathContext xctxtNew = new XPathContext(false);
       
       xctxtNew.setVarStack(xctxt.getVarStack());
+      xctxtNew.setPos(xctxt.getPos());
+      xctxtNew.setLast(xctxt.getLast());
 
       DTMManager dtmMgr = xctxtNew.getDTMManager();      
       DTM docFragDtm = dtmMgr.createDTMForSimpleXMLDocument(strValueTobeEvaluated);

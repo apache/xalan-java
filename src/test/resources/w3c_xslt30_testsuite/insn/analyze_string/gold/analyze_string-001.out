@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><out>
+  <non-match last="18" position="1">|Mary had a littl</non-match>
+  <match last="18" position="2">e</match>
+  <non-match last="18" position="3"> lamb|Its fl</non-match>
+  <match last="18" position="4">e</match>
+  <match last="18" position="5">e</match>
+  <non-match last="18" position="6">c</non-match>
+  <match last="18" position="7">e</match>
+  <non-match last="18" position="8"> was black as soot|And </non-match>
+  <match last="18" position="9">e</match>
+  <non-match last="18" position="10">v</non-match>
+  <match last="18" position="11">e</match>
+  <non-match last="18" position="12">rywh</non-match>
+  <match last="18" position="13">e</match>
+  <non-match last="18" position="14">r</non-match>
+  <match last="18" position="15">e</match>
+  <non-match last="18" position="16"> that Mary w</non-match>
+  <match last="18" position="17">e</match>
+  <non-match last="18" position="18">nt|It put its sooty foot|</non-match>
+</out>

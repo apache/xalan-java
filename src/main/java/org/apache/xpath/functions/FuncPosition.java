@@ -129,7 +129,7 @@ public class FuncPosition extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {    	  
-	  double pos = (xctxt.getGroupPosition() > 0) ? xctxt.getGroupPosition() : ((double) getPositionInContextNodeList(xctxt));
+	  double pos = (xctxt.getPos() > 0) ? xctxt.getPos() : ((double) getPositionInContextNodeList(xctxt));
 	  pos = (pos > 0) ? pos : m_forEachGroupGroupByPos;
     
       return new XNumber(pos);

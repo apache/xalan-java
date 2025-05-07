@@ -326,8 +326,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     
     final int sourceNode = xctxt.getCurrentNode();
     
-    xctxt.setGroupPosition(0);
-    xctxt.setGroupCount(0);
+    xctxt.setPos(0);
+    xctxt.setLast(0);
     
     DTMCursorIterator resultSeqDtmIterator = null;
     

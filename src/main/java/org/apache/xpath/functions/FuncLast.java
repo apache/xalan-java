@@ -99,7 +99,7 @@ public class FuncLast extends Function
   {
     XNumber xnum = null;
     
-    double pos = (xctxt.getGroupCount() > 0) ? xctxt.getGroupCount() : ((double) getCountOfContextNodeList(xctxt));
+    double pos = (xctxt.getLast() > 0) ? xctxt.getLast() : ((double) getCountOfContextNodeList(xctxt));
     xnum = new XNumber(pos);
     
     return xnum;

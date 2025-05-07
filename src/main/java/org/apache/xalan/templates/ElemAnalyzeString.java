@@ -290,21 +290,107 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 		   else if ((templateElem2 != null) && (templateElem2 instanceof ElemNonMatchingSubstring)) {
 			  nonMatchingXslElem = (ElemNonMatchingSubstring)templateElem2; 
 		   }
-		
+		   
+		   /**
+		    * Pre-process xsl:analyze-string instruction's regex matching & non-matching
+		    * positions within an input string, to accumulate values for position() and 
+		    * last() functions that an XSL stylesheet may use within xsl:analyze-string 
+		    * instruction.
+		    */		   
+		   List<Integer> fnPositionValueList = new ArrayList<Integer>();
+		   int posValue = 0;
+		   
 		   if (regexMatchInfoList.size() > 0) {
 			   RegexMatchInfo firstRegexMatchInfo = regexMatchInfoList.get(0);
 			   int startIdx1 = firstRegexMatchInfo.getStartIdx();
 			   if (startIdx1 == 0) {
-				   // Regex has matched a substring, which is prefix of an input string
+				   // xsl:analyze-string instruction's regex has matched a substring, 
+				   // which is prefix of an input string.
+				   for (int idx = 0; idx < regexMatchInfoList.size(); idx++) {
+					   RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
+					   int idx1 = matchInfo.getStartIdx();
+					   int idx2 = matchInfo.getEndIdx();					   
+					   if (matchingXslElem != null) {
+						  fnPositionValueList.add(Integer.valueOf(++posValue));
+					   }
+					   
+					   if (isNonMatchingStringAvailable(strToBeAnalyzed, idx2)) {
+						   String nonMatchStr = null;
+						   if ((idx + 1) == regexMatchInfoList.size()) {
+							   nonMatchStr = strToBeAnalyzed.substring(idx2);
+						   }
+						   else {
+							   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx+1);
+							   nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
+						   }
+						   
+						   if ((nonMatchingXslElem != null) && (nonMatchStr.length() > 0)) {
+							   fnPositionValueList.add(Integer.valueOf(++posValue)); 
+						   }
+					   }
+				   }
+			   }
+			   else if (startIdx1 > 0) {
+				   // None of the prefix of an input string, matched xsl:analyze-string 
+				   // instruction's regex.     		
+				   RegexMatchInfo pof1 = regexMatchInfoList.get(0);
+				   String nonMatchStr = strToBeAnalyzed.substring(0, pof1.getStartIdx());
+				   
+				   if ((nonMatchingXslElem != null) && (nonMatchStr.length() > 0)) {
+					   fnPositionValueList.add(Integer.valueOf(++posValue)); 
+				   }
+				   
+				   for (int idx = 0; idx < regexMatchInfoList.size(); idx++) {
+					   RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
+					   int idx1 = matchInfo.getStartIdx();
+					   int idx2 = matchInfo.getEndIdx();
+					   if (matchingXslElem != null) {
+						   fnPositionValueList.add(Integer.valueOf(++posValue)); 
+					   }
+					   
+					   if (isNonMatchingStringAvailable(strToBeAnalyzed, idx2)) {
+						   if ((idx + 1) == regexMatchInfoList.size()) {
+							   nonMatchStr = strToBeAnalyzed.substring(idx2);
+						   }
+						   else {
+							   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx+1);
+							   nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
+						   }
+						   
+						   if ((nonMatchingXslElem != null) && (nonMatchStr.length() > 0)) {
+							   fnPositionValueList.add(Integer.valueOf(++posValue)); 
+						   }
+					   }
+				   }
+			   }
+		   }
+		   else if (nonMatchingXslElem != null) {
+			   fnPositionValueList.add(Integer.valueOf(++posValue));
+		   }
+		
+		   // Reset posValue variable 
+		   posValue = 0;
+		   
+		   // Traverse xsl:analyze-string instruction's regex match positions,
+		   // and evaluate xsl:matching-substring and xsl:non-matching-substring
+		   // instructions in sequence.
+		   if (regexMatchInfoList.size() > 0) {
+			   RegexMatchInfo firstRegexMatchInfo = regexMatchInfoList.get(0);
+			   int startIdx1 = firstRegexMatchInfo.getStartIdx();
+			   if (startIdx1 == 0) {
+				   // xsl:analyze-string instruction's regex has matched a substring, 
+				   // which is prefix of an input string.
 				   for (int idx = 0; idx < regexMatchInfoList.size(); idx++) {
 					   RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
 					   int idx1 = matchInfo.getStartIdx();
 					   int idx2 = matchInfo.getEndIdx();
 					   String matchStr = strToBeAnalyzed.substring(idx1, idx2);       			   
-					   if (matchingXslElem != null) {
+					   if (matchingXslElem != null) { 
 						   matchingXslElem.setStrValue(matchStr);
 						   matchingXslElem.setRegex(regexStr);
 						   matchingXslElem.setFlags(m_regex_flags);
+						   xctxt.setPos(++posValue);
+						   xctxt.setLast(fnPositionValueList.size());
 						   xctxt.setSAXLocator(matchingXslElem);
 						   transformer.setCurrentElement(matchingXslElem);                   
 						   matchingXslElem.execute(transformer);   
@@ -320,8 +406,10 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 							   nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
 						   }       				          				   
 
-						   if (nonMatchingXslElem != null) {
-							   nonMatchingXslElem.setStrValue(nonMatchStr);       					
+						   if ((nonMatchingXslElem != null) && (nonMatchStr.length() > 0)) {
+							   nonMatchingXslElem.setStrValue(nonMatchStr);
+							   xctxt.setPos(++posValue);
+							   xctxt.setLast(fnPositionValueList.size());
 							   xctxt.setSAXLocator(nonMatchingXslElem);
 							   transformer.setCurrentElement(nonMatchingXslElem);                   
 							   nonMatchingXslElem.execute(transformer);   
@@ -330,12 +418,15 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 				   }	
 			   }
 			   else if (startIdx1 > 0) {
-				   // Any prefix of an input string, hasn't been matched by regex     		
+				   // None of the prefix of an input string, matched xsl:analyze-string 
+				   // instruction's regex.     		
 				   RegexMatchInfo pof1 = regexMatchInfoList.get(0);
 				   String nonMatchStr = strToBeAnalyzed.substring(0, pof1.getStartIdx());
 
-				   if (nonMatchingXslElem != null) {
-					   nonMatchingXslElem.setStrValue(nonMatchStr);       					
+				   if ((nonMatchingXslElem != null) && (nonMatchStr.length() > 0)) {
+					   nonMatchingXslElem.setStrValue(nonMatchStr);
+					   xctxt.setPos(++posValue);
+					   xctxt.setLast(fnPositionValueList.size());
 					   xctxt.setSAXLocator(nonMatchingXslElem);
 					   transformer.setCurrentElement(nonMatchingXslElem);                   
 					   nonMatchingXslElem.execute(transformer);   
@@ -350,6 +441,8 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 						   matchingXslElem.setStrValue(matchStr);
 						   matchingXslElem.setRegex(regexStr);
 						   matchingXslElem.setFlags(m_regex_flags);
+						   xctxt.setPos(++posValue);
+						   xctxt.setLast(fnPositionValueList.size());
 						   xctxt.setSAXLocator(matchingXslElem);
 						   transformer.setCurrentElement(matchingXslElem);                   
 						   matchingXslElem.execute(transformer);   
@@ -364,8 +457,10 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 							   nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
 						   }
 
-						   if (nonMatchingXslElem != null) {
-							   nonMatchingXslElem.setStrValue(nonMatchStr);       					
+						   if ((nonMatchingXslElem != null) && (nonMatchStr.length() > 0)) {
+							   nonMatchingXslElem.setStrValue(nonMatchStr);
+							   xctxt.setPos(++posValue);
+							   xctxt.setLast(fnPositionValueList.size());
 							   xctxt.setSAXLocator(nonMatchingXslElem);
 							   transformer.setCurrentElement(nonMatchingXslElem);                   
 							   nonMatchingXslElem.execute(transformer);   
@@ -377,8 +472,10 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 		   else if (nonMatchingXslElem != null) {
 			   // xsl:analyze-string instruction's regex didn't match anything within an 
 			   // input string to be analyzed. If there's a xsl:non-matching-substring element 
-			   // available process an input string with it. 
-			   nonMatchingXslElem.setStrValue(strToBeAnalyzed);       					
+			   // available process an input string with it.
+			   nonMatchingXslElem.setStrValue(strToBeAnalyzed);
+			   xctxt.setPos(1);
+			   xctxt.setLast(1);
 			   xctxt.setSAXLocator(nonMatchingXslElem);
 			   transformer.setCurrentElement(nonMatchingXslElem);                   
 			   nonMatchingXslElem.execute(transformer);   

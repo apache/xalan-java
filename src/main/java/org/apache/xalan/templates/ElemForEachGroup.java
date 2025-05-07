@@ -623,8 +623,8 @@ public class ElemForEachGroup extends ElemTemplateElement
         			Object groupingKey = groupingKeyAndGroupPair.getGroupingKey();
         			List<Integer> groupNodesDtmHandles = groupingKeyAndGroupPair.getGroupNodesDtmHandles();
 
-        			xctxt.setGroupPosition(idx + 1);    							// Set value of fn:position() function within xsl:for-each-group
-        			xctxt.setGroupCount(groupingKeyAndGroupPairList.size());        // Set value of the number of groups formed
+        			xctxt.setPos(idx + 1);    							// Set value of fn:position() function within xsl:for-each-group
+        			xctxt.setLast(groupingKeyAndGroupPairList.size());        // Set value of the number of groups formed
 
         			for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
         					templateElem = templateElem.m_nextSibling) {
@@ -685,8 +685,8 @@ public class ElemForEachGroup extends ElemTemplateElement
         				Object groupingKey = groupingKeyNodeHandlePair.getGroupingKey();              // current-grouping-key() value, for this group
         				List<Integer> groupNodesDtmHandles = xslForEachGroupMap.get(groupingKey);     // current-group() contents, for this group
 
-        				xctxt.setGroupPosition(idx + 1);										      // Set value of fn:position() function within xsl:for-each-group
-        				xctxt.setGroupCount(groupingKeyAndNodeHandlePairList.size());		          // Set value of the number of groups formed                        
+        				xctxt.setPos(idx + 1);										      // Set value of fn:position() function within xsl:for-each-group
+        				xctxt.setLast(groupingKeyAndNodeHandlePairList.size());		          // Set value of the number of groups formed                        
 
         				for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
         																						templateElem = templateElem.m_nextSibling) {
@@ -715,8 +715,8 @@ public class ElemForEachGroup extends ElemTemplateElement
         				Object groupingKey = groupingKeyAndGroupPair.getGroupingKey();                             // current-grouping-key() value, for this group
         				List<Integer> groupNodesDtmHandles = groupingKeyAndGroupPair.getGroupNodesDtmHandles();    // current-group() contents, for this group
 
-        				xctxt.setGroupPosition(idx + 1);										                   // Set value of fn:position() function within xsl:for-each-group
-        				xctxt.setGroupCount(xslForEachGroupAdjacentList.size());		                           // Set value of the number of groups formed                        
+        				xctxt.setPos(idx + 1);										                   // Set value of fn:position() function within xsl:for-each-group
+        				xctxt.setLast(xslForEachGroupAdjacentList.size());		                           // Set value of the number of groups formed                        
 
         				for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
         																						templateElem = templateElem.m_nextSibling) {
@@ -744,8 +744,8 @@ public class ElemForEachGroup extends ElemTemplateElement
         			for (int idx = 0; idx < xslForEachGroupStartingWithEndingWith.size(); idx++) {
         				List<Integer> groupNodesDtmHandles = xslForEachGroupStartingWithEndingWith.get(idx);
 
-        				xctxt.setGroupPosition(idx + 1);											// Set value of fn:position() function within xsl:for-each-group
-        				xctxt.setGroupCount(xslForEachGroupStartingWithEndingWith.size());	        // Set value of the number of groups formed                       
+        				xctxt.setPos(idx + 1);											// Set value of fn:position() function within xsl:for-each-group
+        				xctxt.setLast(xslForEachGroupStartingWithEndingWith.size());	        // Set value of the number of groups formed                       
 
         				for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
         																						templateElem = templateElem.m_nextSibling) {                   
@@ -780,8 +780,8 @@ public class ElemForEachGroup extends ElemTemplateElement
         	transformer.popElemTemplateElement();
         	xctxt.popCurrentExpressionNode();
         	xctxt.popCurrentNode();
-        	xctxt.setGroupPosition(0);
-        	xctxt.setGroupCount(0);
+        	xctxt.setPos(0);
+        	xctxt.setLast(0);
         	sourceNodes.detach();
         }
 

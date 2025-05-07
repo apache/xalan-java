@@ -162,27 +162,17 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   protected DTMManager m_dtmManager = DTMManager.newInstance(
                    											org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
   
-  /**
-   * Class field indicating, position of the current group within the 
-   * sequence of groups being processed by xsl:for-each-group instruction.
-   *  
-   * The value of this field, is the return value of fn:position() function 
-   * when evaluated within xsl:for-each-group instruction. xsl:for-each
-   * and xsl:iterate instructions will have their own values for fn:position() 
-   * function.
+  /** 
+   * The value of this class field, represents the value returned by fn:position() 
+   * function when called within XSL instructions 'xsl:for-each-group' or 'xsl:analyze-string'.
    */
-  private int groupPos;
+  private int m_pos;
   
-  /**
-   * Class field indicating, the number of groups formed by xsl:for-each-group 
-   * instruction.  
-   *  
-   * The value of this field, is the return value of fn:last() function 
-   * when evaluated within xsl:for-each-group instruction. xsl:for-each
-   * and xsl:iterate instructions will have their own values for fn:last() 
-   * function.
+  /** 
+   * The value of this class field, represents the value returned by fn:last() 
+   * function when called within XSL instructions 'xsl:for-each-group' or 'xsl:analyze-string'.
    */
-  private int groupCount;
+  private int m_last;
   
   /**
    * Return the DTMManager object. Though XPathContext context extends 
@@ -1527,20 +1517,20 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	  return XSLFunctionBuilder.getXSLFunctionService(); 
   }
 
-  public void setGroupPosition(int pos) {
-	 this.groupPos = pos;
+  public void setPos(int pos) {
+	 this.m_pos = pos;
   }
   
-  public int getGroupPosition() {
-	 return this.groupPos;
+  public int getPos() {
+	 return this.m_pos;
   }
 
-  public void setGroupCount(int grpCount) {
-	 this.groupCount = grpCount;	
+  public void setLast(int last) {
+	 this.m_last = last;	
   }
   
-  public int getGroupCount() {
-     return this.groupCount;
+  public int getLast() {
+     return this.m_last;
   }
   
 }

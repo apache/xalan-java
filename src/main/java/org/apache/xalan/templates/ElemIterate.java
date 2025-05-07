@@ -175,8 +175,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
          
            final int sourceNode = xctxt.getCurrentNode();
            
-           xctxt.setGroupPosition(0);
-           xctxt.setGroupCount(0);
+           xctxt.setPos(0);
+           xctxt.setLast(0);
            
            // Clear the, xsl:iterate->xsl:param list storage before this xsl:iterate 
            // instruction's evaluation.
