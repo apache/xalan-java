@@ -326,6 +326,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     
     final int sourceNode = xctxt.getCurrentNode();
     
+    SourceLocator srcLocator = xctxt.getSAXLocator();
+    
     xctxt.setPos(0);
     xctxt.setLast(0);
     
@@ -458,44 +460,40 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         }
         
         if (dtmIter != null) {
-        	ResultSequence inpSeq = null;
+        	ResultSequence resultSeq = null;
         	
         	Function func = locPathIterator.getFuncExpr();
         	XPathDynamicFunctionCall dfc = locPathIterator.getDynamicFuncCallExpr();
         	
         	if (func != null) {        		
-        		inpSeq = new ResultSequence();
+        		resultSeq = new ResultSequence();
         		int nextNode;
         		while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         		{
-        			XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
-        			// Evaluate an XPath path expression like /a/b/funcCall(..).
-        			// Find one result item here for a sequence of items, 
-              	    // since this is within a loop.
-        			xctxt.setXPath3ContextItem(singletonXPathNode);                              
-        			XObject funcEvalResult = func.execute(xctxt);
-        			inpSeq.add(funcEvalResult);
+        			XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+        			// Evaluate an XPath expression like /a/b/funcCall(..).
+					// Find one result item for a sequence of items.
+        			XObject evalResult = evaluateXPathSuffixFunction(xctxt, srcLocator, func, xdmNodeObj);
+        			resultSeq.add(evalResult);
         		}
         		
-        		processSequenceOrArray(transformer, xctxt, inpSeq);
+        		processSequenceOrArray(transformer, xctxt, resultSeq);
                 
                 return;
         	}
         	else if (dfc != null) {        		
-        		inpSeq = new ResultSequence();
+        		resultSeq = new ResultSequence();
         		int nextNode;
         		while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         		{
-        			XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
-        			// Evaluate an XPath path expression like /a/b/$funcCall(..).
-        			// Find one result item here for a sequence of items, 
-              	    // since this is within a loop.
-        			xctxt.setXPath3ContextItem(singletonXPathNode);                              
-        			XObject dfcEvalResult = dfc.execute(xctxt);
-        			inpSeq.add(dfcEvalResult);
+        			XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+        			// Evaluate an XPath expression like /a/b/$funcCall(..).
+					// Find one result item for a sequence of items.        			
+        			XObject evalResult = evaluateXPathSuffixDfc(xctxt, dfc, xdmNodeObj);
+        			resultSeq.add(evalResult);
         		}
         		
-        		processSequenceOrArray(transformer, xctxt, inpSeq);
+        		processSequenceOrArray(transformer, xctxt, resultSeq);
                 
                 return;
         	}
@@ -526,8 +524,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                                                                                                    varRefXPathExprStr, 
                                                                                                    prefixTable);
                }
-               
-               SourceLocator srcLocator = xctxt.getSAXLocator();
                
                XPath xpathObj = new XPath(varRefXPathExprStr, srcLocator, 
                                                                      xctxt.getNamespaceContext(), XPath.SELECT, null);

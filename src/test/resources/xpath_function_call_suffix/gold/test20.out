@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <P>
+    <one>pos1 pos2 pos3 pos4 pos5 pos6</one>
+    <two>pos6 pos5 pos4 pos3 pos2 pos1</two>
+  </P>
+  <Q>
+    <one>pos1 pos2 pos3 pos4 pos5 pos6</one>
+    <two>pos6 pos5 pos4 pos3 pos2 pos1</two>
+  </Q>
+</result>

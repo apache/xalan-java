@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
@@ -31,6 +32,8 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -590,4 +593,61 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   	  return 0;
   	return m_parent.getColumnNumber();
   }
+  
+  /**
+   * This method definition, evaluates an XPath expression suffix function call funcCall(..) 
+   * within an expression like like /a/b/funcCall(..).
+   * 
+   * @param xctxt							An XPath context object
+   * @param srcLocator						An XPath SourceLocator object
+   * @param func							An XPath function compiled expression
+   * @param xdmNodeObj						An XDM node object
+   * @return								Result of function call evaluation
+   * @throws TransformerException
+   */
+  protected XObject evaluateXPathSuffixFunction(XPathContext xctxt, SourceLocator srcLocator, Function func, XMLNodeCursorImpl 
+		  																													xdmNodeObj) throws TransformerException {
+	  XObject evalResult = null;
+
+	  xctxt.setXPath3ContextItem(xdmNodeObj);
+
+	  Expression arg0 = func.getArg0();
+	  if (arg0 == null) {
+		  XPath argXPath = new XPath(".", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		  arg0 = argXPath.getExpression();
+		  func.setArg0(arg0);
+	  }
+
+	  evalResult = func.execute(xctxt);
+
+	  return evalResult;
+  }
+
+  /**
+   * This method definition, evaluates an XPath expression suffix dynamic function call 
+   * $funcCall(..) within an expression like like /a/b/$funcCall(..).
+   * 
+   * @param xctxt							An XPath context object
+   * @param dfc								An XPath dynamic function call compiled expression
+   * @param xdmNodeObj						An XDM node object
+   * @return								Result of function call evaluation
+   * @throws TransformerException
+   */
+  protected XObject evaluateXPathSuffixDfc(XPathContext xctxt, XPathDynamicFunctionCall dfc, XMLNodeCursorImpl xdmNodeObj)
+		  																												throws TransformerException {
+	  XObject evalResult = null;
+
+	  xctxt.setXPath3ContextItem(xdmNodeObj);
+
+	  List<String> argList = dfc.getArgList();
+	  if (argList.size() == 0) {
+		  argList.add(".");
+		  dfc.setArgList(argList);
+	  }
+
+	  evalResult = dfc.execute(xctxt);
+
+	  return evalResult;
+  }
+
 }

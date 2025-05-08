@@ -471,26 +471,22 @@ public class ElemValueOf extends ElemTemplateElement {
                         StringBuffer strBuff = new StringBuffer();
                         while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
                         {
-                           XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
+                           XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
                            String resultStr = "";
                            if (func != null) {
-                        	  // Evaluate an XPath path expression like /a/b/funcCall(..).
-                        	  // Find one result item here for a sequence of items, 
-                        	  // since this is within a loop.
-                              xctxt.setXPath3ContextItem(singletonXPathNode);                              
-                              XObject funcEvalResult = func.execute(xctxt);
-                              resultStr = XslTransformEvaluationHelper.getStrVal(funcEvalResult);                               
+                        	  // Evaluate an XPath expression like /a/b/funcCall(..).
+                        	  // Find one result item for a sequence of items.
+                              XObject evalResult = evaluateXPathSuffixFunction(xctxt, srcLocator, func, xdmNodeObj);
+                              resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);                               
                            }
                            else if (dfc != null) {
-                        	   // Evaluate an XPath path expression like /a/b/$funcCall(..).
-                        	   // Find one result item here for a sequence of items, 
-                         	   // since this is within a loop.
-                               xctxt.setXPath3ContextItem(singletonXPathNode);                              
-                               XObject evalResult = dfc.execute(xctxt);
+                        	   // Evaluate an XPath expression like /a/b/$funcCall(..).
+                        	   // Find one result item for a sequence of items.
+                               XObject evalResult = evaluateXPathSuffixDfc(xctxt, dfc, xdmNodeObj);
                                resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);                               
                            }
                            else {
-                              resultStr = singletonXPathNode.str();
+                              resultStr = xdmNodeObj.str();
                            }
                            strBuff.append(resultStr + " ");
                         }

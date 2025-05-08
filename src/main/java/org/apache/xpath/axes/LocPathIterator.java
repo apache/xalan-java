@@ -48,6 +48,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  * in the NodeVector, so that previousNode() can easily be done, except in
  * the case where the LocPathIterator is "owned" by a UnionPathIterator,
  * in which case the UnionPathIterator will cache the nodes.</p>
+ * 
  * @xsl.usage advanced
  */
 public abstract class LocPathIterator extends PredicatedNodeTest
@@ -56,17 +57,17 @@ public abstract class LocPathIterator extends PredicatedNodeTest
     static final long serialVersionUID = -4602476357268405754L;
     
     /**
-     * If there's a function call suffix at an end of XPath path expression 
-     * similar to /a/b/func(..), we keep a compiled Function 
+     * If there's a function call suffix in an XPath expression 
+     * string similar to /a/b/func(..), we keep a compiled Function 
      * object for func(..) within this class field.  
      */
     private Function m_func_expr = null;
     
     /**
-     * If there's an XPath dynamic function call suffix at an end of 
-     * XPath path expression similar to /a/b/$func(..), we keep a 
-     * compiled XPathDynamicFunctionCall object for $func(..) within 
-     * this class field.  
+     * If there's a dynamic function call suffix in an XPath expression 
+     * string similar to /a/b/$func(..), we keep a compiled 
+     * XPathDynamicFunctionCall object for $func(..) within this class 
+     * field.  
      */
     private XPathDynamicFunctionCall m_dfc_expr = null; 
 	

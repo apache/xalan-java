@@ -173,7 +173,7 @@ public class XPathForExpr extends Expression {
            
            Expression xpathExpr = varBindingXPath.getExpression();
            
-           ResultSequence xsObjResultSeq = new ResultSequence();
+           ResultSequence resultSeq2 = new ResultSequence();
            
            if (xpathExpr instanceof LocPathIterator) {
         	   LocPathIterator locPathIterator = (LocPathIterator)xpathExpr;          
@@ -194,26 +194,22 @@ public class XPathForExpr extends Expression {
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
-            			   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
-            			   // Evaluate an XPath path expression like /a/b/funcCall(..).
-            			   // Find one result item here for a sequence of items, 
-                     	   // since this is within a loop.
-            			   xctxt.setXPath3ContextItem(singletonXPathNode);                              
-            			   XObject funcEvalResult = func.execute(xctxt);
-            			   xsObjResultSeq.add(funcEvalResult);
+            			   XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+            			   // Evaluate an XPath expression like /a/b/funcCall(..).
+       					   // Find one result item for a sequence of items.            			   
+            			   XObject evalResult = evaluateXPathSuffixFunction(xctxt, srcLocator, func, xdmNodeObj);
+            			   resultSeq2.add(evalResult);
             		   }
             	   }
             	   else if (dfc != null) {            		   
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
-            			   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
-            			   // Evaluate an XPath path expression like /a/b/$funcCall(..).
-            			   // Find one result item here for a sequence of items, 
-                     	   // since this is within a loop.
-            			   xctxt.setXPath3ContextItem(singletonXPathNode);                              
-            			   XObject dfcEvalResult = dfc.execute(xctxt);
-            			   xsObjResultSeq.add(dfcEvalResult);
+            			   XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+            			   // Evaluate an XPath expression like /a/b/$funcCall(..).
+       					   // Find one result item for a sequence of items.            			   
+                           XObject evalResult = evaluateXPathSuffixDfc(xctxt, dfc, xdmNodeObj);
+            			   resultSeq2.add(evalResult);
             		   }
             	   }
             	   else {
@@ -221,7 +217,7 @@ public class XPathForExpr extends Expression {
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
             			   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);            			   
-            			   xsObjResultSeq.add(singletonXPathNode);
+            			   resultSeq2.add(singletonXPathNode);
             		   } 
             	   }
                }
@@ -237,21 +233,21 @@ public class XPathForExpr extends Expression {
                           
                    while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {       
                       XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, xctxt);
-                      xsObjResultSeq.add(node);
+                      resultSeq2.add(node);
                    }
                }
         	   else if (xsObj instanceof ResultSequence) {
                    ResultSequence rSeq = (ResultSequence)xsObj;
                    for (int idx = 0; idx < rSeq.size(); idx++) {
-                       xsObjResultSeq.add(rSeq.item(idx)); 
+                       resultSeq2.add(rSeq.item(idx)); 
                    }
                }
                else {
-                   xsObjResultSeq.add(xsObj);
+                   resultSeq2.add(xsObj);
                }
            }
            
-           if (xsObjResultSeq.size() == 0) {
+           if (resultSeq2.size() == 0) {
                listIter.previous();
                
                return resultSeq;    
@@ -262,8 +258,8 @@ public class XPathForExpr extends Expression {
            // For each xdm item within sequence object 'xsObjResultSeq' (which is the 
            // result of variable binding xpath expression's evaluation), bind the 'for' 
            // expression's binding variable in turn to that item.
-           for (int idx = 0; idx < xsObjResultSeq.size(); idx++) {
-               XObject xdmItem = xsObjResultSeq.item(idx);
+           for (int idx = 0; idx < resultSeq2.size(); idx++) {
+               XObject xdmItem = resultSeq2.item(idx);
                              
                forExprVarBindingMap.put(new QName(varName), xdmItem);
                

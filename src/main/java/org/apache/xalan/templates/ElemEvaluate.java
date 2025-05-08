@@ -483,21 +483,20 @@ public class ElemEvaluate extends ElemTemplateElement {
 			ResultSequence resultSeq = new ResultSequence();
 			while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
 			{
-				XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
-				XObject evalResult = singletonXPathNode; 
+				XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+				XObject evalResult = null; 
 				if (func != null) {
-					// Evaluate an XPath path expression like /a/b/funcCall(..).
-					// Find one result item here for a sequence of items, 
-              	    // since this is within a loop.
-					xctxt.setXPath3ContextItem(singletonXPathNode);                              
-					evalResult = func.execute(xctxt);                              
+					// Evaluate an XPath expression like /a/b/funcCall(..).
+					// Find one result item for a sequence of items.					
+					evalResult = evaluateXPathSuffixFunction(xctxt, srcLocator, func, xdmNodeObj);
 				}
 				else if (dfc != null) {
-					// Evaluate an XPath path expression like /a/b/$funcCall(..).
-					// Find one result item here for a sequence of items, 
-              	    // since this is within a loop.
-					xctxt.setXPath3ContextItem(singletonXPathNode);                              
-					evalResult = dfc.execute(xctxt);                             
+					// Evaluate an XPath expression like /a/b/$funcCall(..).
+					// Find one result item for a sequence of items.
+					evalResult = evaluateXPathSuffixDfc(xctxt, dfc, xdmNodeObj);                             
+				}
+				else {
+					evalResult = xdmNodeObj; 
 				}
 				
 				resultSeq.add(evalResult);

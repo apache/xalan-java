@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
@@ -171,9 +172,11 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
        */
        private void transformSelectedNodes(TransformerImpl transformer) throws TransformerException {
         
-           XPathContext xctxt = transformer.getXPathContext();
+           XPathContext xctxt = transformer.getXPathContext();                       
          
            final int sourceNode = xctxt.getCurrentNode();
+           
+           SourceLocator srcLocator = xctxt.getSAXLocator();
            
            xctxt.setPos(0);
            xctxt.setLast(0);
@@ -201,38 +204,34 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                }
                
                if (dtmIter != null) {
-            	   ResultSequence rSeq = null;
+            	   ResultSequence resultSeq = null;
             	   if (func != null) {            		   
-            		   rSeq = new ResultSequence();
+            		   resultSeq = new ResultSequence();
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
-            			   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
-            			   // Evaluate an XPath path expression like /a/b/funcCall(..).
-            			   // Find one result item here for a sequence of items, 
-                     	   // since this is within a loop.
-            			   xctxt.setXPath3ContextItem(singletonXPathNode);                              
-            			   XObject funcEvalResult = func.execute(xctxt);
-            			   rSeq.add(funcEvalResult);
+            			   XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+            			   // Evaluate an XPath expression like /a/b/funcCall(..).
+       					   // Find one result item for a sequence of items.            			   
+            			   XObject evalResult = evaluateXPathSuffixFunction(xctxt, srcLocator, func, xdmNodeObj);
+            			   resultSeq.add(evalResult);
             		   }
             		   
-            		   inpXObject = rSeq;
+            		   inpXObject = resultSeq;
             	   }
             	   else if (dfc != null) {            		   
-            		   rSeq = new ResultSequence();
+            		   resultSeq = new ResultSequence();
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
             		   {
-            			   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);
-            			   // Evaluate an XPath path expression like /a/b/$funcCall(..).
-            			   // Find one result item here for a sequence of items, 
-                     	   // since this is within a loop.
-            			   xctxt.setXPath3ContextItem(singletonXPathNode);                              
-            			   XObject funcEvalResult = dfc.execute(xctxt);
-            			   rSeq.add(funcEvalResult);
+            			   XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+            			   // Evaluate an XPath expression like /a/b/$funcCall(..).
+       					   // Find one result item for a sequence of items.            			   
+            			   XObject evalResult = evaluateXPathSuffixDfc(xctxt, dfc, xdmNodeObj);
+            			   resultSeq.add(evalResult);
             		   }
             		   
-            		   inpXObject = rSeq;
+            		   inpXObject = resultSeq;
             	   }
                }
            }
