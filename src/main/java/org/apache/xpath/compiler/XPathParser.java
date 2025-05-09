@@ -54,6 +54,7 @@ import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeMapTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathArrayConstructor;
+import org.apache.xpath.composite.XPathExprFunctionCallSuffix;
 import org.apache.xpath.composite.XPathExprFunctionSuffix;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathIfExpr;
@@ -248,6 +249,8 @@ public class XPathParser
   static XPathSequenceTypeExpr m_xpathSequenceTypeExpr = null;
   
   static XPathNamedFunctionReference m_xpathNamedFunctionReference = null;
+  
+  static XPathExprFunctionCallSuffix m_xpathExprWithFuncCallSuffix = null;
   
   private String m_arrowOpRemainingXPathExprStr = null;
   
@@ -3886,8 +3889,43 @@ public class XPathParser
         
        m_xpath_inlineFunction = InlineFunctionExpr();               
     }
-    else {       
-       Expr();       
+    else {
+       TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+       StringBuffer strBuff = new StringBuffer();
+       while (!tokenIs(',') && !(tokenIs(')') && lookahead(null, 1)) && (m_token != null)) {
+    	  strBuff.append(m_token);
+    	  nextToken();
+       }
+       
+       String xpathExprStr = strBuff.toString();
+       int idx = xpathExprStr.lastIndexOf('/');
+       if (idx != -1) {
+    	  String xpathLhsStr = xpathExprStr.substring(0, idx);
+    	  String xpathRhsStr = xpathExprStr.substring(idx + 1);
+    	  if (xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI) || 
+								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
+								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) ||
+								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
+              restoreTokenQueueScanPosition(prevTokQueueScanPosition);    		  
+    		  Expr();  
+    	  }    	  
+    	  else {    		  
+    		  if (!isStrHasXPathAxisNamePrefix(xpathRhsStr) && (xpathRhsStr.endsWith("()") || xpathRhsStr.endsWith("(.)"))) {    		  
+    			  insertOp(opPos, 2, OpCodes.OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX);    		  
+
+    			  m_xpathExprWithFuncCallSuffix = new XPathExprFunctionCallSuffix();
+    			  m_xpathExprWithFuncCallSuffix.setXPathExprStr(xpathExprStr);
+    		  }
+    		  else {
+    			  restoreTokenQueueScanPosition(prevTokQueueScanPosition);    		  
+    			  Expr(); 
+    		  }
+    	  }
+       }
+       else {
+    	   restoreTokenQueueScanPosition(prevTokQueueScanPosition);    	   
+    	   Expr(); 
+       }                     
     }
     
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
@@ -6149,6 +6187,69 @@ public class XPathParser
 
    public void setXPathExprFunctionSuffix(XPathExprFunctionSuffix xpathExprFunctionSuffix) {
 	   this.m_xpathExprFunctionSuffix = xpathExprFunctionSuffix;
+   }
+   
+   /**
+    * Method definition to check, whether the supplied string value has 
+    * an XPath axis name prefix.
+    * 
+    * @param strValue			Supplied string value
+    * @return					true if the supplied string value has an 
+    *                           XPath axis name prefix.
+    */
+   public static boolean isStrHasXPathAxisNamePrefix(String strValue) {
+	   
+	   boolean result = false;
+
+	   int idx = strValue.indexOf("::");
+	   if (idx >= 0) {
+		   String xpathAxis = strValue.substring(0, idx);
+		   switch (xpathAxis) {
+		   case "ancestor":
+			   result = true;
+			   break;
+		   case "ancestor-or-self":
+			   result = true;
+			   break;
+		   case "attribute":
+			   result = true;
+			   break;
+		   case "child":
+			   result = true;
+			   break;
+		   case "descendant":
+			   result = true;
+			   break;
+		   case "descendant-or-self":
+			   result = true;
+			   break;
+		   case "following":
+			   result = true;
+			   break;
+		   case "following-sibling":
+			   result = true;
+			   break;
+		   case "parent":
+			   result = true;
+			   break;
+		   case "preceding":
+			   result = true;
+			   break;
+		   case "preceding-sibling":
+			   result = true;
+			   break;
+		   case "self":
+			   result = true;
+			   break;
+		   case "namespace":
+			   result = true;
+			   break;
+		   default:	   
+			   // NO OP
+		   }
+	   }
+
+	   return result;	   
    }
    
    /**

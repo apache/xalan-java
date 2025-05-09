@@ -16,7 +16,7 @@
  */
 package org.apache.xpath.composite;
 
-/*
+/**
  * An object of this class, is used to store information about
  * XPath 3.1 "for" expression or "quantified expression" 
  * (i.e, 'some', 'every')'s single variable binding (i.e, 

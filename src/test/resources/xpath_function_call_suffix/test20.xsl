@@ -3,18 +3,20 @@
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->                 
-				
-   <!-- use with test18.xml, test19.xml -->
+
+   <!-- use with test21.xml -->
    
    <!-- An XSL stylesheet test case, to test an XPath path expression 
-        string having function call as suffix. -->				
+        string having function call as suffix. -->					
 
    <xsl:output method="xml" indent="yes"/> 
    
    <xsl:template match="/">
      <result>
-	    <one><xsl:value-of select="/temp/*/@*/name()"/></one>
-	    <two><xsl:value-of select="/temp/*/@*/name(.)"/></two>
+	    <one><xsl:value-of select="deep-equal(/temp/*/name(), ('a', 'b', 'c'))"/></one>
+		<two><xsl:value-of select="deep-equal(/temp/*/name(), ('a', 'c'))"/></two>
+		<three><xsl:value-of select="deep-equal(('a', 'b', 'c'), /temp/*/name())"/></three>
+		<four><xsl:value-of select="deep-equal(('a', 'c'), /temp/*/name())"/></four>
 	 </result>
    </xsl:template>
    

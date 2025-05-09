@@ -6,8 +6,8 @@
 				
    <!-- use with test17.xml -->
    
-   <!-- An XSL stylesheet test case, to test XPath function call as 
-        suffix of XPath path expression string. -->				
+   <!-- An XSL stylesheet test case, to test an XPath path expression 
+        string having function call as suffix. -->				
 
    <xsl:output method="xml" indent="yes"/> 
    

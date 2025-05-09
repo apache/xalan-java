@@ -32,10 +32,10 @@ import org.junit.Test;
 public class XPathSimpleMapOperatorTests extends XslTransformTestsUtil {        
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + 
-                                                                                                    "SimpleMapOperatorTests/";
+                                                                                                    "simpleMapOperatorTests/";
     
     private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + 
-                                                                                                    "SimpleMapOperatorTests/gold/";
+                                                                                                    "simpleMapOperatorTests/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

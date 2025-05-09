@@ -247,5 +247,35 @@ public class XPathExprFunctionCallSuffixTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xpathExprFunctionCallSuffixTest21() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test21.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test20.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test21.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathExprFunctionCallSuffixTest22() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test21.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test22.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathExprFunctionCallSuffixTest23() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test23.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test23.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

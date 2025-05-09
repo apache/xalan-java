@@ -2,9 +2,9 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="3.0">
                 
-   <!-- Author: mukulg@apache.org -->                 
-				
-   <!-- use with test18.xml, test19.xml -->
+   <!-- Author: mukulg@apache.org -->                
+
+   <!-- use with test22.xml -->
    
    <!-- An XSL stylesheet test case, to test an XPath path expression 
         string having function call as suffix. -->				
@@ -13,8 +13,10 @@
    
    <xsl:template match="/">
      <result>
-	    <one><xsl:value-of select="/temp/*/@*/name()"/></one>
-	    <two><xsl:value-of select="/temp/*/@*/name(.)"/></two>
+	    <one><xsl:value-of select="deep-equal(/temp/*/@pos/number(), (1 to 10))"/></one>
+		<two><xsl:value-of select="deep-equal(/temp/*/@pos/number(), (1 to 7))"/></two>
+		<three><xsl:value-of select="deep-equal((1 to 10), /temp/*/@pos/number())"/></three>
+		<four><xsl:value-of select="deep-equal((1 to 7), /temp/*/@pos/number())"/></four>
 	 </result>
    </xsl:template>
    

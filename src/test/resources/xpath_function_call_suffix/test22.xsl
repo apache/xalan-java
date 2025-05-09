@@ -3,8 +3,8 @@
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->                 
-				
-   <!-- use with test18.xml, test19.xml -->
+
+   <!-- use with test23.xml -->
    
    <!-- An XSL stylesheet test case, to test an XPath path expression 
         string having function call as suffix. -->				
@@ -13,8 +13,7 @@
    
    <xsl:template match="/">
      <result>
-	    <one><xsl:value-of select="/temp/*/@*/name()"/></one>
-	    <two><xsl:value-of select="/temp/*/@*/name(.)"/></two>
+	    <one><xsl:value-of select="every $a in /temp/*/@value/number() satisfies $a = 5"/></one>
 	 </result>
    </xsl:template>
    

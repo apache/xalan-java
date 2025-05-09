@@ -280,7 +280,9 @@ public class Compiler extends OpMap
     case OpCodes.OP_LOCATIONPATHPATTERN :
       expr = locationPathPattern(opPos); break;
     case OpCodes.OP_NAMED_FUNCTION_REFERENCE :
-      expr = namedFunctionReference(opPos); break;	
+      expr = namedFunctionReference(opPos); break;
+    case OpCodes.OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX :
+      expr = xpathExprWithFuncCallSuffix(opPos); break;
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ "quo" });
       break;
@@ -1650,6 +1652,16 @@ private static final boolean DEBUG = false;
 	  }
 	  
 	  return xpathArrayCons; 
+  }
+  
+  /**
+   * Compile an XPath path expression, whose string value has a 
+   * function call suffix (for e.g, an XPath expression of the 
+   * form /temp/abc/func()).
+   */
+  Expression xpathExprWithFuncCallSuffix(int opPos) throws TransformerException
+  {
+      return XPathParser.m_xpathExprWithFuncCallSuffix;
   }
   
   /**
