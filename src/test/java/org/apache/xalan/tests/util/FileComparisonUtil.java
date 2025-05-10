@@ -42,19 +42,19 @@ public class FileComparisonUtil {
 	 * Class field representing an XML DocumentBuilderFactory object instance 
 	 * needed by this test suite. 
 	 */
-    protected static DocumentBuilderFactory xmlDocumentBuilderFactory = null;
+    protected static DocumentBuilderFactory m_xmlDocumentBuilderFactory = null;
     
     /**
      * Class field representing an XML DocumentBuilder object instance 
      * needed by this test suite.
      */
-    protected static DocumentBuilder xmlDocumentBuilder = null;
+    protected static DocumentBuilder m_xmlDocumentBuilder = null;
     
     /**
      * Class field representing, types of files whose contents may be 
      * compared. Possible values are XML, JSON, TEXT and HTML.
      */
-    protected String fileComparisonType = XSLTestConstants.XML;
+    protected String m_fileComparisonType = XSLTestConstants.XML;
 	
 	/**
 	 * Class constructor.
@@ -62,11 +62,11 @@ public class FileComparisonUtil {
 	public FileComparisonUtil() {
 		System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
 		
-		xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
-        xmlDocumentBuilderFactory.setNamespaceAware(true);
+		m_xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+        m_xmlDocumentBuilderFactory.setNamespaceAware(true);
         
         try {
-            xmlDocumentBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();
+            m_xmlDocumentBuilder = m_xmlDocumentBuilderFactory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {            
             ex.printStackTrace();
         }
@@ -95,8 +95,8 @@ public class FileComparisonUtil {
 
 		StringReader strReader1 = new StringReader(xmlStr1);
 		StringReader strReader2 = new StringReader(xmlStr2);
-		Document document1 = xmlDocumentBuilder.parse(new InputSource(strReader1));
-		Document document2 = xmlDocumentBuilder.parse(new InputSource(strReader2));
+		Document document1 = m_xmlDocumentBuilder.parse(new InputSource(strReader1));
+		Document document2 = m_xmlDocumentBuilder.parse(new InputSource(strReader2));
 		String xmlNormalizedStr1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(
 																						document1.getDocumentElement());            	  
 		String xmlNormalizedStr2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(

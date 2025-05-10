@@ -68,10 +68,10 @@ public class XPathQuantifiedExpr extends Expression {
     public static final int EVERY = 1;
     
     /**
-     * Class field, representing whether an object instance of this class
-     * is evaluating an XPath quantified expression 'some' or every'. 
+     * Class field, representing whether current XPath quantified expression 
+     * evaluation is for quantified expression 'some' or every'. 
      */
-    private int m_CurrentXPathQuantifier;
+    private int m_xpathQuantifier;
     
     /**
      * A java.util.List object supporting implementation of XPath quantified 
@@ -81,9 +81,10 @@ public class XPathQuantifiedExpr extends Expression {
                                                         ArrayList<ForQuantifiedExprVarBinding>();
 
     /**
-     * A string value supporting implementation of XPath quantified expression.  
+     * This class field represents an XPath expression string, that 
+     * occurs after XPath quantified expression's 'satisfies' keyword.  
      */
-    private String m_QuantifierTestXPathStr = null;
+    private String m_xpathQuantifierTestStr = null;
     
     /**
 	 * This class field is used during, XPath.fixupVariables(..) action 
@@ -115,11 +116,11 @@ public class XPathQuantifiedExpr extends Expression {
         }
         
         if (prefixTable != null) {
-            m_QuantifierTestXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                          m_QuantifierTestXPathStr, prefixTable);
+            m_xpathQuantifierTestStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                          m_xpathQuantifierTestStr, prefixTable);
         }
         
-        XPath quantifiedExprXPath = new XPath(m_QuantifierTestXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+        XPath quantifiedExprXPath = new XPath(m_xpathQuantifierTestStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                         XPath.SELECT, null);
         quantifiedExprXPath.setIsQuantifiedExpr(true);
         
@@ -134,7 +135,7 @@ public class XPathQuantifiedExpr extends Expression {
            XObject xsObject = resultSequence.item(idx);
            XSBoolean xsBoolean = (XSBoolean)xsObject;
            
-           if (m_CurrentXPathQuantifier == SOME) {
+           if (m_xpathQuantifier == SOME) {
               if (xsBoolean.value()) {
                  quantifiedExprResult = XBoolean.S_TRUE;
                  isEvalResultDecided = true;
@@ -151,7 +152,7 @@ public class XPathQuantifiedExpr extends Expression {
         }
         
         if (!isEvalResultDecided) {
-           if (m_CurrentXPathQuantifier == SOME) {
+           if (m_xpathQuantifier == SOME) {
               quantifiedExprResult = XBoolean.S_FALSE;    
            }
            else {
@@ -174,11 +175,11 @@ public class XPathQuantifiedExpr extends Expression {
     }
 
     public int getCurrentXPathQuantifier() {
-        return m_CurrentXPathQuantifier;
+        return m_xpathQuantifier;
     }
 
     public void setCurrentXPathQuantifier(int fCurrentXPathQuantifier) {
-        this.m_CurrentXPathQuantifier = fCurrentXPathQuantifier;
+        this.m_xpathQuantifier = fCurrentXPathQuantifier;
     }
 
     public List<ForQuantifiedExprVarBinding> getQuantifiedExprVarBindingList() {
@@ -190,12 +191,12 @@ public class XPathQuantifiedExpr extends Expression {
         this.m_QuantifiedExprVarBindingList = fQuantifiedExprVarBindingList;
     }
 
-    public String getQuantifierTestXPathStr() {
-        return m_QuantifierTestXPathStr;
+    public String getXPathQuantifierTestStr() {
+        return m_xpathQuantifierTestStr;
     }
 
-    public void setQuantifierTestXPathStr(String fQuantifierTestXPathStr) {
-        this.m_QuantifierTestXPathStr = fQuantifierTestXPathStr;
+    public void setXPathQuantifierTestStr(String xpathQuantifierTestStr) {
+        this.m_xpathQuantifierTestStr = xpathQuantifierTestStr;
     }
     
     /**

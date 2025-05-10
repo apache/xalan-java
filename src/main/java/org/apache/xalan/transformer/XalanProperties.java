@@ -32,4 +32,12 @@ public class XalanProperties
 {
   public final static String SOURCE_LOCATION
     = "http://xml.apache.org/xalan/properties/source-location";
+  
+  /**
+   * Constant denoting an XSL stylesheet transformation feature,
+   * where an XSL template name for a named template is specified for 
+   * selecting an initial template from where an XSL transformation
+   * processing should begin.
+   */
+  public final static String INIT_TEMPLATE = "init-template";
 }

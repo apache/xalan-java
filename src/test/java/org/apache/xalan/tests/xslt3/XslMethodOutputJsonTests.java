@@ -43,9 +43,9 @@ public class XslMethodOutputJsonTests extends XslTransformTestsUtil {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        xmlDocumentBuilderFactory = null;
-        xmlDocumentBuilder = null;
-        xslTransformerFactory = null;
+        m_xmlDocumentBuilderFactory = null;
+        m_xmlDocumentBuilder = null;
+        m_xslTransformerFactory = null;
     }
 
     @Test
@@ -55,7 +55,7 @@ public class XslMethodOutputJsonTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
         
-        fileComparisonType = XSLTestConstants.JSON;
+        m_fileComparisonType = XSLTestConstants.JSON;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

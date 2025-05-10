@@ -109,9 +109,8 @@ import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * This class implements the
- * {@link javax.xml.transform.Transformer} interface, and is the core
- * representation of an XSL transformation implementation.
+ * This class implements the {@link javax.xml.transform.Transformer} interface, 
+ * and is primary representation of an XSL transformation implementation.
  * 
  * @xsl.usage advanced
  */
@@ -1422,8 +1421,7 @@ public class TransformerImpl extends Transformer
             }
           }
         }
-        // ===========        
-        // System.out.println("Calling applyTemplateToNode - "+Thread.currentThread().getName());
+
         DTMCursorIterator dtmIter = new org.apache.xpath.axes.SelfIteratorNoPredicate();
         dtmIter.setRoot(node, xctxt);
         xctxt.pushContextNodeList(dtmIter);
@@ -2276,6 +2274,8 @@ public class TransformerImpl extends Transformer
     boolean isDefaultTextRule = false;
     boolean isApplyImports = false;
     
+    String initTemplateName = m_stylesheetRoot.getInitTemplateName();
+    
     isApplyImports = ((xslInstruction == null)
                                 ? false
                                 : xslInstruction.getXSLToken()
@@ -2309,7 +2309,6 @@ public class TransformerImpl extends Transformer
       }
       else
       {
-
         // Find the XSL template that is the best match for the 
         // element.        
         XPathContext xctxt = m_xcontext;
@@ -2317,20 +2316,54 @@ public class TransformerImpl extends Transformer
         try
         {
           xctxt.pushNamespaceContext(xslInstruction);
+          
+          if (initTemplateName != null) {
+             template = m_stylesheetRoot.getTemplateComposed(new QName(initTemplateName));             
+             if (template != null) {
+            	 pushElemTemplateElement(template);
+                 m_xcontext.pushCurrentNode(child);
+                 pushPairCurrentMatched(template, child);
+                 
+                 DTMCursorIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
+                 m_xcontext.pushContextNodeList(cnl);
+                 
+                 m_xcontext.setSAXLocator(template);
+           	     m_xcontext.getVarStack().link(template.m_frameSize);
+           	     executeChildTemplates(template, true);
 
-          QName mode = this.getMode();
-          
-          if (isApplyImports)
-            template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode,
-                  maxImportLevel, endImportLevel, m_quietConflictWarnings, dtm);
-          else
-            template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode,
-                  m_quietConflictWarnings, dtm);
-          
+           	     if (m_debug)
+           		    getTraceManager().emitTraceEndEvent(template);
+           	     
+           	     return true;
+             }
+             else {
+            	 throw new TransformerException("XTDE0040 : An XSL template named '" + initTemplateName + "' doesn't exist."); 
+             }                          
+          }          
+          else {
+        	  QName mode = this.getMode();
+
+        	  if (isApplyImports)
+        		  template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode,
+        				  															maxImportLevel, endImportLevel, m_quietConflictWarnings, dtm);
+        	  else
+        		  template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode,
+        				  															m_quietConflictWarnings, dtm);
+          }
         }
         finally
         {
-          xctxt.popNamespaceContext();
+        	xctxt.popNamespaceContext();
+        	
+        	if ((initTemplateName != null) && (template != null)) {        		        	
+        		m_xcontext.getVarStack().unlink();        	
+        		m_xcontext.popCurrentNode();
+        		if (!isApplyImports) {
+        			m_xcontext.popContextNodeList();
+        		}
+        		popCurrentMatched();
+        		popElemTemplateElement();
+        	}
         }
       }
 
@@ -2377,41 +2410,39 @@ public class TransformerImpl extends Transformer
 
       if (isDefaultTextRule)
       {
-        switch (nodeType)
-        {
-        case DTM.CDATA_SECTION_NODE :
-        case DTM.TEXT_NODE :
-          ClonerToResultTree.cloneToResultTree(child, nodeType, 
-                                        dtm, getResultTreeHandler(), false);
-          break;
-        case DTM.ATTRIBUTE_NODE :
-          dtm.dispatchCharactersEvents(child, getResultTreeHandler(), false);
-          break;
-        }
+    	  switch (nodeType)
+    	  {
+    	  case DTM.CDATA_SECTION_NODE :
+    	  case DTM.TEXT_NODE :
+    		  ClonerToResultTree.cloneToResultTree(child, nodeType, dtm, 
+    				                                                   getResultTreeHandler(), false);
+    		  break;
+    	  case DTM.ATTRIBUTE_NODE :
+    		  dtm.dispatchCharactersEvents(child, getResultTreeHandler(), false);
+    		  break;
+    	  }
       }
       else
       {
+    	  // Emit a trace event for the template.
+    	  
+    	  if (m_debug)
+    		  getTraceManager().emitTraceEvent(template);
+    	  // And execute the child templates.
+    	  // 9/11/00: If template has been compiled, hand off to it
+    	  // since much (most? all?) of the processing has been inlined.
+    	  // (It would be nice if there was a single entry point that
+    	  // worked for both... but the interpretive system works by
+    	  // having the Tranformer execute the children, while the
+    	  // compiled obviously has to run its own code. It's
+    	  // also unclear that "execute" is really the right name for
+    	  // that entry point.)
+    	  m_xcontext.setSAXLocator(template);
+    	  m_xcontext.getVarStack().link(template.m_frameSize);
+    	  executeChildTemplates(template, true);
 
-        // Emit a trace event for the template.
-         
-        if (m_debug)
-          getTraceManager().emitTraceEvent(template);
-        // And execute the child templates.
-        // 9/11/00: If template has been compiled, hand off to it
-        // since much (most? all?) of the processing has been inlined.
-        // (It would be nice if there was a single entry point that
-        // worked for both... but the interpretive system works by
-        // having the Tranformer execute the children, while the
-        // compiled obviously has to run its own code. It's
-        // also unclear that "execute" is really the right name for
-        // that entry point.)
-        m_xcontext.setSAXLocator(template);
-        // m_xcontext.getVarStack().link();
-        m_xcontext.getVarStack().link(template.m_frameSize);
-        executeChildTemplates(template, true);
-        
-        if (m_debug)
-          getTraceManager().emitTraceEndEvent(template);
+    	  if (m_debug)
+    		  getTraceManager().emitTraceEndEvent(template);
       }
     }
     catch (org.xml.sax.SAXException se)

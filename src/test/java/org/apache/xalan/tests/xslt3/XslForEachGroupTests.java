@@ -43,9 +43,9 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        xmlDocumentBuilderFactory = null;
-        xmlDocumentBuilder = null;
-        xslTransformerFactory = null;
+        m_xmlDocumentBuilderFactory = null;
+        m_xmlDocumentBuilder = null;
+        m_xslTransformerFactory = null;
     }
 
     @Test
@@ -398,7 +398,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test35.out";
         
-        fileComparisonType = XSLTestConstants.JSON;
+        m_fileComparisonType = XSLTestConstants.JSON;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
@@ -410,7 +410,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test36.out";
         
-        fileComparisonType = XSLTestConstants.JSON;
+        m_fileComparisonType = XSLTestConstants.JSON;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
@@ -422,7 +422,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test37.out";
         
-        fileComparisonType = XSLTestConstants.JSON;
+        m_fileComparisonType = XSLTestConstants.JSON;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

@@ -63,7 +63,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
- * The TransformerFactoryImpl, which implements the TRaX TransformerFactory
+ * The XSL3TransformerFactoryImpl, which implements the TRaX TransformerFactory
  * interface, processes XSLT stylesheets into a Templates object
  * (a StylesheetRoot).
  */
@@ -74,8 +74,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
    * Maintenance note: see also
    * <code>org.apache.xpath.functions.FuncSystemProperty.XSLT_PROPERTIES</code>
    */
-  public static final String XSLT_PROPERTIES =
-    "org/apache/xalan/res/XSLTInfo.properties";
+  public static final String XSLT_PROPERTIES = "org/apache/xalan/res/XSLTInfo.properties";
 
   /**
    * <p>State of secure processing feature.</p>
@@ -88,8 +87,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   private static final String XSL_NAMESPACE_URL = "http://www.w3.org/1999/XSL/Transform";
 
   /**
-   * Constructor TransformerFactoryImpl
-   *
+   * Constructor XSL3TransformerFactoryImpl.
    */
   public XSL3TransformerFactoryImpl()
   {
@@ -106,6 +104,10 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   /** Static string to be used for source_location feature */
   public static final String FEATURE_SOURCE_LOCATION =
                              XalanProperties.SOURCE_LOCATION;
+  
+  /** Static string to be used for initial template feature */
+  public static final String FEATURE_INIT_TEMPLATE =
+                             XalanProperties.INIT_TEMPLATE;
 
   public javax.xml.transform.Templates processFromNode(Node node)
           throws TransformerConfigurationException
@@ -143,12 +145,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
       }
       else
       {
-
-        // Should remove this later... but right now diagnostics from 
-        // TransformerConfigurationException are not good.
-        // se.printStackTrace();
         throw new TransformerConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSFROMNODE_FAILED, null), se); 
-        //"processFromNode failed", se);
       }
     }
     catch (TransformerConfigurationException tce)
@@ -156,11 +153,6 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
       // Assume it's already been reported to the error listener.
       throw tce;
     }
-   /* catch (TransformerException tce)
-    {
-      // Assume it's already been reported to the error listener.
-      throw new TransformerConfigurationException(tce.getMessage(), tce);
-    }*/
     catch (Exception e)
     {
       if (m_errorListener != null)
@@ -182,9 +174,6 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
       }
       else
       {
-        // Should remove this later... but right now diagnostics from 
-        // TransformerConfigurationException are not good.
-        // se.printStackTrace();
         throw new TransformerConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSFROMNODE_FAILED, null), e); //"processFromNode failed",
                                                     //e);
       }
@@ -496,6 +485,11 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   private boolean m_source_location = false;
   
   /**
+   * An XSL stylesheet initial template name.
+   */
+  private String m_init_template_name = null;
+  
+  /**
    * Flag set by FEATURE_INCREMENTAL.
    * This feature specifies whether to produce output incrementally, rather than
    * waiting to finish parsing the input before generating any output. By 
@@ -576,7 +570,10 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
         throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_BAD_VALUE, new Object[]{name, value})); //name + " bad value " + value);
       }
     }
-    
+    else if(name.equals(FEATURE_INIT_TEMPLATE))
+    {
+    	m_init_template_name = (String)value; 
+    }
     else
     {
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUPPORTED, new Object[]{name})); //name + "not supported");
@@ -606,6 +603,10 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     else if (name.equals(FEATURE_SOURCE_LOCATION))
     {
       return m_source_location ? Boolean.TRUE : Boolean.FALSE;
+    }
+    else if (name.equals(FEATURE_INIT_TEMPLATE))
+    {
+      return m_init_template_name;
     }
     else
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_RECOGNIZED, new Object[]{name})); //name + " attribute not recognized");

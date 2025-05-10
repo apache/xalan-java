@@ -2113,7 +2113,7 @@ public class XPathParser
       String xPathTestExprStr = getXPathStrFromComponentParts(xPathTestExprStrPartsList);
       
       quantifiedExpr.setQuantifiedExprVarBindingList(quantifiedExprVarBindingList);
-      quantifiedExpr.setQuantifierTestXPathStr(xPathTestExprStr);
+      quantifiedExpr.setXPathQuantifierTestStr(xPathTestExprStr);
       
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);

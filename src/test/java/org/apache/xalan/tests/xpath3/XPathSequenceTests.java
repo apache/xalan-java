@@ -42,9 +42,9 @@ public class XPathSequenceTests extends XslTransformTestsUtil {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        xmlDocumentBuilderFactory = null;
-        xmlDocumentBuilder = null;
-        xslTransformerFactory = null;
+        m_xmlDocumentBuilderFactory = null;
+        m_xmlDocumentBuilder = null;
+        m_xslTransformerFactory = null;
     }
 
     @Test

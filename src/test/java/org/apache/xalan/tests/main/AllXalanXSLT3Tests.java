@@ -41,6 +41,6 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ Xsl3TestSuite1.class, Xsl3TestSuite2.class})
-public class AllXsl3Tests {
+public class AllXalanXSLT3Tests {
 
 }

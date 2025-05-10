@@ -124,6 +124,12 @@ public class StylesheetRoot extends StylesheetComposed
      */
     private XSModel m_xsModel;
     
+    /**
+     * An XSL transformation initial template name.
+     */
+    private String m_init_template_name = null;
+    
+    
   /**
    * Uses an XSL stylesheet document.
    * @throws TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
@@ -1768,6 +1774,14 @@ public class StylesheetRoot extends StylesheetComposed
 	 */
 	public boolean getUseCharacterMaps() {
 		return this.m_isXslOutputHasUseCharacterMapsAttr;
+	}
+
+	public String getInitTemplateName() {
+		return m_init_template_name;
+	}
+
+	public void setInitTemplateName(String initTemplateName) {
+		this.m_init_template_name = initTemplateName;
 	}
 
 }

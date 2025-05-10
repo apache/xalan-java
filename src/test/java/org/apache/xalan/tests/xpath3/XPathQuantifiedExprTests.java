@@ -47,9 +47,9 @@ public class XPathQuantifiedExprTests extends XslTransformTestsUtil {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        xmlDocumentBuilderFactory = null;
-        xmlDocumentBuilder = null;
-        xslTransformerFactory = null;
+        m_xmlDocumentBuilderFactory = null;
+        m_xmlDocumentBuilder = null;
+        m_xslTransformerFactory = null;
     }
 
     @Test
@@ -59,7 +59,7 @@ public class XPathQuantifiedExprTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
         
-        fileComparisonType = XSLTestConstants.TEXT;
+        m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
@@ -71,7 +71,7 @@ public class XPathQuantifiedExprTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";
         
-        fileComparisonType = XSLTestConstants.TEXT;
+        m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);  
     }
@@ -83,7 +83,7 @@ public class XPathQuantifiedExprTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";
         
-        fileComparisonType = XSLTestConstants.TEXT;
+        m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
@@ -95,7 +95,7 @@ public class XPathQuantifiedExprTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";
         
-        fileComparisonType = XSLTestConstants.TEXT;
+        m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
     }
@@ -107,7 +107,7 @@ public class XPathQuantifiedExprTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";
         
-        fileComparisonType = XSLTestConstants.TEXT;
+        m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
@@ -119,7 +119,7 @@ public class XPathQuantifiedExprTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";
         
-        fileComparisonType = XSLTestConstants.TEXT;
+        m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
@@ -131,7 +131,7 @@ public class XPathQuantifiedExprTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";
         
-        fileComparisonType = XSLTestConstants.TEXT;
+        m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
@@ -143,7 +143,7 @@ public class XPathQuantifiedExprTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test8.out";
         
-        fileComparisonType = XSLTestConstants.TEXT;
+        m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
@@ -155,7 +155,7 @@ public class XPathQuantifiedExprTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";
         
-        fileComparisonType = XSLTestConstants.TEXT;
+        m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

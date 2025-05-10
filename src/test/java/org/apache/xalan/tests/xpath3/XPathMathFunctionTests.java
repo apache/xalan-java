@@ -45,9 +45,9 @@ public class XPathMathFunctionTests extends XslTransformTestsUtil {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {        
-        xmlDocumentBuilderFactory = null;
-        xmlDocumentBuilder = null;
-        xslTransformerFactory = null;
+        m_xmlDocumentBuilderFactory = null;
+        m_xmlDocumentBuilder = null;
+        m_xslTransformerFactory = null;
     }
 
     @Test
@@ -107,7 +107,7 @@ public class XPathMathFunctionTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";
         
-        fileComparisonType = XSLTestConstants.HTML;
+        m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

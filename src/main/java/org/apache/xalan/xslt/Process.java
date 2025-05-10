@@ -87,6 +87,7 @@ public class Process
     System.out.println(resbundle.getString("optionXSL"));  //"   [-XSL XSLTransformationURL]");
     System.out.println(resbundle.getString("optionXSVAL"));  //"   [-XSVAL (Request XML Schema validation of XML input document)]");
     System.out.println(resbundle.getString("optionXSLEVALUATE"));  //"   [-XSLEVALUATE (Request xsl:evaluate instruction to be enabled)]");
+    System.out.println(resbundle.getString("optionINIT_TEMPLATE"));  //" [-INIT_TEMPLATE (Specify an XSL template's name to select an initial template for transformation)]");
     System.out.println(resbundle.getString("optionOUT"));  //"   [-OUT outputFileName]");
 
     // System.out.println(resbundle.getString("optionE")); //"   [-E (Do not expand entity refs)]");
@@ -157,7 +158,7 @@ public class Process
 	  String msg = null;
 	  boolean isSecureProcessing = false;    
 	  boolean isSchemaValidation = false;    
-	  boolean isXslEvaluate = false;
+	  boolean isXslEvaluate = false; 
 
 	  /**
 	   * The default java.io.PrintWriter diagnostic writer.
@@ -668,6 +669,15 @@ public class Process
 			  else if ("-XSLEVALUATE".equalsIgnoreCase(argv[i])) {
 				  isXslEvaluate = true;
 			  }
+			  else if ("-INIT_TEMPLATE".equalsIgnoreCase(argv[i])) {
+				  if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-') {
+					  tfactory.setAttribute(XalanProperties.INIT_TEMPLATE, argv[++i]);
+				  }
+				  else
+					  System.err.println(XSLMessages.createMessage(
+															  XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+															  new Object[]{ "-IT" }));
+			  }
 			  else
 				  System.err.println(
 						  XSLMessages.createMessage(
@@ -699,11 +709,8 @@ public class Process
 			  {
 				  if (flavor.equals("d2d"))
 				  {
-
 					  // Parse in the xml data into a DOM
-					  DocumentBuilderFactory dfactory =
-							  DocumentBuilderFactory.newInstance();
-
+					  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 					  dfactory.setNamespaceAware(true);
 
 					  if (isSecureProcessing)
@@ -722,8 +729,8 @@ public class Process
 				  }
 				  if (flavor.equals("s2s"))
 				  {
-					 SAXSource saxSource = new SAXSource(new InputSource(xslFileName)); 
-					 stylesheet = tfactory.newTemplates(saxSource);
+					  SAXSource saxSource = new SAXSource(new InputSource(xslFileName)); 
+					  stylesheet = tfactory.newTemplates(saxSource);
 				  }
 				  else
 				  {
@@ -814,7 +821,7 @@ public class Process
 					  if (useSourceLocation)
 						  impl.setProperty(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);
 
-					  if(recursionLimit>0)
+					  if (recursionLimit > 0)
 						  impl.setRecursionLimit(recursionLimit);
 
 					  // sc 28-Feb-01 if we re-implement this, please uncomment helpmsg in printArgOptions
@@ -837,8 +844,7 @@ public class Process
 					  if (flavor.equals("d2d"))
 					  {
 						  // Parse in the xml data into a DOM
-						  DocumentBuilderFactory dfactory =
-								  DocumentBuilderFactory.newInstance();
+						  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
 						  dfactory.setCoalescing(true);
 						  dfactory.setNamespaceAware(true);
@@ -859,18 +865,15 @@ public class Process
 
 						  Node xmlDoc = docBuilder.parse(new InputSource(inFileName));
 						  Document doc = docBuilder.newDocument();
-						  org.w3c.dom.DocumentFragment outNode =
-								  doc.createDocumentFragment();
+						  org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
 
-						  transformer.transform(new DOMSource(xmlDoc, inFileName),
-								  new DOMResult(outNode));
+						  transformer.transform(new DOMSource(xmlDoc, inFileName), new DOMResult(outNode));
 
 						  // Now serialize output to disk with identity transformer
 						  Transformer identityTransformer = stf.newTransformer();
 						  identityTransformer.setErrorListener(new DefaultErrorHandler(false));
 
-						  Properties serializationProps =
-								  stylesheet.getOutputProperties();
+						  Properties serializationProps = stylesheet.getOutputProperties();
 
 						  identityTransformer.setOutputProperties(serializationProps);
 

@@ -38,19 +38,19 @@ import org.w3c.dom.NodeList;
 
 public class XslForEachGroupTests extends XslTransformTestsUtil {     
     
-    private static String m_testResultFileName;
+	private static String m_testResultFileName = null;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/for-each-group/_for-each-group-test-set.xml";
+    	m_xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/for-each-group/_for-each-group-test-set.xml";
     	m_testResultFileName = "xsl_for_each_group_test_results.xml";
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        xmlDocumentBuilderFactory = null;
-        xmlDocumentBuilder = null;
-        xslTransformerFactory = null;
+        m_xmlDocumentBuilderFactory = null;
+        m_xmlDocumentBuilder = null;
+        m_xslTransformerFactory = null;
     }
 
     @Test
@@ -63,13 +63,13 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     	Document testResultDoc = null;
     	
     	try {
-    	   xslTestSetDoc = xmlDocumentBuilder.parse(xslTransformTestSetFilePath);
+    	   xslTestSetDoc = m_xmlDocumentBuilder.parse(m_xslTransformTestSetFilePath);
     	   Element docElem = xslTestSetDoc.getDocumentElement();
     	   
     	   // Create XSL tests result XML DOM tree header, to which
 		   // individual test results will be appended.
 		   String testSetName = docElem.getAttribute("name");
-		   testResultDoc = xmlDocumentBuilder.newDocument();
+		   testResultDoc = m_xmlDocumentBuilder.newDocument();
     	   Element elemTestRun = testResultDoc.createElement("testrun");
     	   elemTestRun.setAttribute("name", testSetName);
     	   testResultDoc.appendChild(elemTestRun);
@@ -105,7 +105,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     			  Element envSrcElem = (Element)((envElem.getFirstChild()).getNextSibling());
     			  String envFileName = envSrcElem.getAttribute("file");
     			  if (!"".equals(envFileName)) {
-    				  URI uri = new URI(xslTransformTestSetFilePath);
+    				  URI uri = new URI(m_xslTransformTestSetFilePath);
 					  uri = uri.resolve(envFileName);
 					  xmlDocInpStr = getStringContentFromUrl(uri.toURL());					  
     			  }
@@ -116,21 +116,19 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     		   }
     		   
     		   if (xmlDocInpStr == null) {    			   
-    			   /** An XML tag test-case/environment is not present.
+    			   /** 
+    			    * An XML tag test-case/environment is not present.
     			    * 
-    			    * This test case is not supported.
+    			    * An example of this kind of test case specification, is following:
     			    * 
-    			    * Example of this test case type is following:
     			    * <test>
     			    *   <stylesheet file="...xsl"/>
     			    *   <initial-template name="main"/>
     			    * </test>
     			    * 
-    			    * (future work)
-    			    * 
-    			    * Run the next test case in loop.			  
+    			    * Any XML document input shall work here.			  
     			    */
-    			   continue; 
+    			   xmlDocInpStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><temp/>"; 
     		   }
     		   
     		   nodeList2 = node.getChildNodes();
@@ -145,9 +143,15 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     					   NodeList nodeList3 = elemNode.getElementsByTagName("stylesheet");
     					   Element elemNode2 = (Element)(nodeList3.item(0));    					   
     					   String fileName = elemNode2.getAttribute("file");
-    					   URI uri = new URI(xslTransformTestSetFilePath);
+    					   URI uri = new URI(m_xslTransformTestSetFilePath);
    						   uri = uri.resolve(fileName);
    						   xslStylesheetUriStr = uri.toString();
+   						   
+   						   NodeList nodeList4 = elemNode.getElementsByTagName("initial-template");
+						   if (nodeList4.getLength() == 1) {
+							  Element elemNode3 = (Element)(nodeList4.item(0));
+							  m_initTemplateName = elemNode3.getAttribute("name");
+						   }
    						   
    						   Node siblingNode = elemNode.getNextSibling();
    						   expectedResultElem = (Element)(siblingNode.getNextSibling());   						   
@@ -160,7 +164,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     		   byte[] byteArr = xmlDocInpStr.getBytes(StandardCharsets.UTF_8);
     		   InputStream inpStream = new ByteArrayInputStream(byteArr);    		   
     		   
-    		   DOMSource xmlInpDomSource = new DOMSource(xmlDocumentBuilder.parse(inpStream));    		   
+    		   DOMSource xmlInpDomSource = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));    		   
     		   StreamSource xsltStreamSrc = new StreamSource(xslStylesheetUriStr);
     		       		   
     		   runW3CXSLTTestSuiteXslTransformAndProduceResult(testCaseName, xmlInpDomSource, xsltStreamSrc, expectedResultElem, 
@@ -176,7 +180,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     		   // Serialize testResultDoc to file
     		   String xslTestResultStr = serializeXmlDomElementNode(testResultDoc);
         	   
-        	   File xslAnalyzeStringTestResultFile = new File(new URI(w3cXslt3TestSuiteXalanResultsPathPrefix + m_testResultFileName));
+        	   File xslAnalyzeStringTestResultFile = new File(new URI(m_w3cXslt3TestSuiteXalanResultsPathPrefix + m_testResultFileName));
         	   testResultFos = new FileOutputStream(xslAnalyzeStringTestResultFile);
         	   testResultFos.write(xslTestResultStr.getBytes());
         	   testResultFos.flush();
@@ -223,7 +227,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     				}
     				else {    					    					    					
     					try {
-    						URI uri = new URI(xslTransformTestSetFilePath);
+    						URI uri = new URI(m_xslTransformTestSetFilePath);
     						uri = uri.resolve(fileName);    						
 							result = getStringContentFromUrl(uri.toURL());
 						} catch (Exception ex) {

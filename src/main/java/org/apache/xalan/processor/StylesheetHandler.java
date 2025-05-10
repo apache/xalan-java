@@ -56,10 +56,11 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
- * Initializes and processes a stylesheet via SAX events.
+ * Initializes and processes an XSL stylesheet via SAX events.
  * This class acts as essentially a state machine, maintaining
  * a ContentHandler stack, and pushing appropriate content
  * handlers as parse events occur.
+ * 
  * @xsl.usage advanced
  */
 public class StylesheetHandler extends DefaultHandler
@@ -90,6 +91,11 @@ public class StylesheetHandler extends DefaultHandler
   private ProcessorImportSchema processorImportSchema = null;
   
   /**
+   * An XSL transformation initial template name.
+   */
+  private String m_init_template_name = null;
+  
+  /**
    * Create a StylesheetHandler object, creating a root stylesheet
    * as the target.
    *
@@ -104,8 +110,6 @@ public class StylesheetHandler extends DefaultHandler
     Class func = org.apache.xalan.templates.FuncDocument.class;
     m_funcTable.installFunction("document", func);
 
-    // func = new org.apache.xalan.templates.FuncKey();
-    // FunctionTable.installFunction("key", func);
     func = org.apache.xalan.templates.FuncFormatNumb.class;
 
     m_funcTable.installFunction("format-number", func);
@@ -116,7 +120,11 @@ public class StylesheetHandler extends DefaultHandler
             XSL3TransformerFactoryImpl.FEATURE_INCREMENTAL)).booleanValue();
     m_source_location = ((Boolean) processor.getAttribute(
             XSL3TransformerFactoryImpl.FEATURE_SOURCE_LOCATION)).booleanValue();
-    // m_schema = new XSLTSchema();    
+    Object initTemplate = processor.getAttribute(XSL3TransformerFactoryImpl.FEATURE_INIT_TEMPLATE);
+    if (initTemplate != null) {
+       m_init_template_name = ((String) processor.getAttribute(XSL3TransformerFactoryImpl.
+    		                                                                            FEATURE_INIT_TEMPLATE)).toString();
+    }
     init(processor);
   }
 
@@ -1205,6 +1213,8 @@ public class StylesheetHandler extends DefaultHandler
 
 	  XslTransformSharedDatastore.stylesheetRoot = m_stylesheetRoot;
 	  XslTransformSharedDatastore.xslSystemId = getSystemId();
+	  
+	  m_stylesheetRoot.setInitTemplateName(m_init_template_name);
 
 	  return m_stylesheetRoot;
   }

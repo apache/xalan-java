@@ -1360,6 +1360,7 @@ public class XSLTErrorResources extends ListResourceBundle
   { "optionXSL", "   [-XSL XSLTransformationURL]"},
   { "optionXSVAL", "   [-XSVAL (Request XML Schema validation of XML input document)]"},
   { "optionXSLEVALUATE", "   [-XSLEVALUATE (Request xsl:evaluate instruction to be enabled)]"},
+  { "optionINIT_TEMPLATE", "   [-INIT_TEMPLATE (Specify an XSL template's name to select an initial template for transformation)]"},
   { "optionOUT",  "   [-OUT outputFileName]"},
   { "optionLXCIN", "   [-LXCIN compiledStylesheetFileNameIn]"},
   { "optionLXCOUT", "   [-LXCOUT compiledStylesheetFileNameOutOut]"},

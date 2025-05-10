@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <f>
+    <val>6</val>
+    <text>XML</text>
+  </f>
+  <g>
+    <val>7</val>
+    <text>document</text>
+  </g>
+  <h>
+    <val>8</val>
+    <text>thanks</text>
+  </h>
+  <i>
+    <val>9</val>
+    <text>a</text>
+  </i>
+  <j>
+    <val>10</val>
+    <text>lot</text>
+  </j>
+</result>

@@ -43,9 +43,9 @@ public class XslForkTests extends XslTransformTestsUtil {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        xmlDocumentBuilderFactory = null;
-        xmlDocumentBuilder = null;
-        xslTransformerFactory = null;
+        m_xmlDocumentBuilderFactory = null;
+        m_xmlDocumentBuilder = null;
+        m_xslTransformerFactory = null;
     }
 
     @Test
@@ -83,7 +83,7 @@ public class XslForkTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
-        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
+        m_xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
         String goldFileName1 = "credits.xml";
         String goldFileName2 = "debits.xml";

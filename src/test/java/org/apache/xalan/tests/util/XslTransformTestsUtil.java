@@ -39,10 +39,12 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
@@ -68,39 +70,28 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      * Class field representing an XSL TransformerFactory object instance 
      * needed by this test suite.
      */
-    protected static TransformerFactory xslTransformerFactory = null;
+    protected static TransformerFactory m_xslTransformerFactory = null;
     
     /**
      * Class field representing file path prefix, that is used for test cases
      * related to XSL instructions like xsl:result-document that have 'href' 
      * attribute.
      */
-    protected static String xslTransformInpPath = null;
+    protected static String m_xslTransformInpPath = null;
     
     /**
      * Class field representing local file system folder, where W3C XSLT 3.0 
      * Xalan-J test results shall be saved.
      */
-    protected static String w3cXslt3TestSuiteXalanResultFolderUri = "file:/d:/xslt30-test-master/tests/";
+    protected static String m_w3cXslt3TestSuiteXalanResultFolderUri = "file:/d:/xslt30-test-master/tests/";
     
-    protected static String xslTransformTestSetFilePath = null;
+    protected static String m_xslTransformTestSetFilePath = null;
     
-    /**
-     * Class field representing, whether XML Schema validation is enabled 
-     * for an XSL transformation instance invoked by this test suite.
-     */
-    private boolean isXmlValidationEnabled = false;
+    protected static String m_initTemplateName = null;
     
-    /**
-     * Class field representing, whether an XSL xsl:evaluate instruction 
-     * processing is enabled for an XSL transformation instance invoked by 
-     * this test suite.
-     */
-    private boolean isXslEvaluateEnabled = false;
+    protected static String m_w3cXslt3TestSuiteXalanResultsPathPrefix = "file:/d:/xslt30-test-master/xalan_j_test_results/";
     
-    private static final String XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH = "file:/d:/xslt30-test-master/tests/test_all_of_template.xsl";
-    
-    protected static String w3cXslt3TestSuiteXalanResultsPathPrefix = "file:/d:/xslt30-test-master/xalan_j_test_results/";
+    private static final String XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH = "file:/d:/xslt30-test-master/tests/variant_all_of_test_template.xsl";
     
     private static final String EXPECTED_NODE_KIND_ERROR = "error";
     
@@ -109,12 +100,25 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";
     
     /**
+     * Class field representing, whether XML Schema validation is enabled 
+     * for an XSL transformation instance invoked by this test suite.
+     */
+    private boolean m_isXmlValidationEnabled = false;
+    
+    /**
+     * Class field representing, whether an XSL xsl:evaluate instruction 
+     * processing is enabled for an XSL transformation instance invoked by 
+     * this test suite.
+     */
+    private boolean m_isXslEvaluateEnabled = false;
+    
+    /**
      * Class constructor.
      */
     public XslTransformTestsUtil() {        
         System.setProperty(XSLTestConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLTestConstants.XSLT_TRANSFORMER_FACTORY_VALUE);
         
-        xslTransformerFactory = TransformerFactory.newInstance();
+        m_xslTransformerFactory = TransformerFactory.newInstance();
     }
     
     /**
@@ -136,9 +140,13 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
 		elemTestResult.setAttribute("testName", testCaseName);
     	
     	try {
-    		xslTransformerFactory.setErrorListener(xslTransformErrHandler);
+    		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);
     		
-    		Transformer transformer = xslTransformerFactory.newTransformer(xsltStreamSrc);
+    		if (m_initTemplateName != null) {
+    		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);
+    		}
+    		
+    		Transformer transformer = m_xslTransformerFactory.newTransformer(xsltStreamSrc);
     		
     		transformer.setErrorListener(xslTransformErrHandler);
 
@@ -193,7 +201,6 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     			}
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName)) {
-    			// REVISIT
     			byte[] fileBytes = Files.readAllBytes(Paths.get(new URI(XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH)));
     			String verificationXslTemplateStr = new String(fileBytes);
     			NodeList nodeList = nodeExpected.getChildNodes();
@@ -213,24 +220,36 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     					
     					expectedResultStrBuff.append("<xpath>true</xpath>\n");
     				}
-    			}    			
+    			}
     			
     			String verificationXslStylesheetStr = verificationXslTemplateStr.replace("{{XPATH_ASSERT_LIST}}", replacementStrBuff.toString());
     			
+    			NamedNodeMap attrNamedNodeMap = nodeExpected.getAttributes();
+    			int attrCount = attrNamedNodeMap.getLength();
+    			StringBuffer attrDeclstrBuff = new StringBuffer();
+    			for (int idx = 0; idx < attrCount; idx++) {
+    				Node attrNode = attrNamedNodeMap.item(idx);
+    				String attrName = attrNode.getNodeName();
+    				String attrValue = attrNode.getNodeValue();
+    				attrDeclstrBuff.append(attrName + "=\"" + attrValue + "\"");
+    			}
+    			
+    			verificationXslStylesheetStr = verificationXslStylesheetStr.replace("{{NS_DECL}}", attrDeclstrBuff.toString());
+    			
     			expectedResultStrBuff.append("</result>");
     			
-    			Document expectedResultDoc = xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStrBuff.toString()).getBytes()));    			    			
+    			Document expectedResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStrBuff.toString()).getBytes()));    			    			
     			
-    			Document verificationXslDoc = xmlDocumentBuilder.parse(new ByteArrayInputStream(verificationXslStylesheetStr.getBytes()));
+    			Document verificationXslDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(verificationXslStylesheetStr.getBytes()));
     			
-    			transformer = xslTransformerFactory.newTransformer(new DOMSource(verificationXslDoc));
+    			transformer = m_xslTransformerFactory.newTransformer(new DOMSource(verificationXslDoc));
     			
     			StringWriter strWriter = new StringWriter();
     			
-    			Document documentToBeTransformed = xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
+    			Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
     			transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
     			
-    			Document xmlInpDoc1 = xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
+    			Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
     			String str1 = serializeXmlDomElementNode(xmlInpDoc1);
     			String str2 = serializeXmlDomElementNode(expectedResultDoc);
     			
@@ -246,7 +265,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
             	String fileName = elemNode.getAttribute("file");
             	String expectedResultStr = null;
             	if (!"".equals(fileName)) {
-            		URI uri = new URI(xslTransformTestSetFilePath);
+            		URI uri = new URI(m_xslTransformTestSetFilePath);
             		uri = uri.resolve(fileName);
             		expectedResultStr = getStringContentFromUrl(uri.toURL());
             	}
@@ -254,10 +273,10 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
             		expectedResultStr = elemNode.getTextContent();            		
             	}
 
-            	Document xmlInpDoc1 = xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
+            	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
             	String str1 = serializeXmlDomElementNode(xmlInpDoc1);
 
-            	Document xmlInpDoc2 = xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
+            	Document xmlInpDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
 
             	String str2 = serializeXmlDomElementNode(xmlInpDoc2);
 
@@ -281,6 +300,10 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		elemTestRun.appendChild(elemTestResult);    		
     		trfErrorList.clear();
     		trfFatalErrorList.clear();
+    		if (m_initTemplateName != null) {
+     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, null);
+     		   m_initTemplateName = null;
+     		}
     	}    	    	
     }
 
@@ -298,9 +321,13 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            String xmlDocumentUriStr = ((new File(xmlFilePath)).toURI()).toString();
            String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
            
-           Node xmlDomSource = xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
+           Node xmlDomSource = m_xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
+           
+           if (m_initTemplateName != null) {
+        	  m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName); 
+           }
        
-           Transformer transformer = xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
+           Transformer transformer = m_xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
            
            setXslTransformProperties(transformer);
            
@@ -329,23 +356,30 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            else {
               byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
               
-              if ((XSLTestConstants.XML).equals(fileComparisonType)) {            	              	  
+              if ((XSLTestConstants.XML).equals(m_fileComparisonType)) {            	              	  
             	  if (!isXMLFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
             		  Assert.fail(); 
             	  }
               }
-              else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+              else if ((XSLTestConstants.JSON).equals(m_fileComparisonType)) {
   				  if (!isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
   				     Assert.fail();
   				  } 
               }
-              else if ((XSLTestConstants.TEXT).equals(fileComparisonType) || (XSLTestConstants.HTML).equals(fileComparisonType)) {
+              else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType) || (XSLTestConstants.HTML).equals(m_fileComparisonType)) {
             	  Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
               }              
            }
         }
         catch (Exception ex) {
             Assert.fail();    
+        }
+        finally {
+        	m_fileComparisonType = XSLTestConstants.XML;         	
+        	if (m_initTemplateName != null) {
+        		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, null);
+        		m_initTemplateName = null;
+        	}
         }
      }
     
@@ -367,9 +401,9 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		String xmlDocumentUriStr = ((new File(xmlFilePath)).toURI()).toString();
     		String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
 
-    		Node xmlDomSource = xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
+    		Node xmlDomSource = m_xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
 
-    		Transformer transformer = xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
+    		Transformer transformer = m_xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
 
     		setXslTransformProperties(transformer);
 
@@ -384,15 +418,15 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		transformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
     		
     		if (goldFileNameArr.length == 2) {
-    			fileProducedName1 = (xslTransformInpPath != null) ? (xslTransformInpPath + 
+    			fileProducedName1 = (m_xslTransformInpPath != null) ? (m_xslTransformInpPath + 
     					                                                          goldFileNameArr[0]) : goldFileNameArr[0];
-    			fileProducedName2 = (xslTransformInpPath != null) ? (xslTransformInpPath + 
+    			fileProducedName2 = (m_xslTransformInpPath != null) ? (m_xslTransformInpPath + 
     					                                                          goldFileNameArr[1]) : goldFileNameArr[1];
 
     			String fileProducedStr1 = getFileContentAsString(fileProducedName1);
     			String fileProducedStr2 = getFileContentAsString(fileProducedName2);
     			
-    			if ((XSLTestConstants.XML).equals(fileComparisonType)) {    				
+    			if ((XSLTestConstants.XML).equals(m_fileComparisonType)) {    				
     				int idx1 = fileProducedStr1.lastIndexOf('>');
     				fileProducedStr1 = fileProducedStr1.substring(0, idx1 + 1);
     				int idx2 = fileProducedStr2.lastIndexOf('>');
@@ -403,14 +437,14 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     				   Assert.fail();
     				}
     			}
-    			else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+    			else if ((XSLTestConstants.JSON).equals(m_fileComparisonType)) {
     				boolean fileComparisonResult1 = isJsonFileContentsEqual(goldFileStrArr[0], fileProducedStr1);
     				boolean fileComparisonResult2 = isJsonFileContentsEqual(goldFileStrArr[1], fileProducedStr2);
     				if (!(fileComparisonResult1 && fileComparisonResult2)) {
     				   Assert.fail();
     				}
     			}
-    			else if ((XSLTestConstants.TEXT).equals(fileComparisonType) || (XSLTestConstants.HTML).equals(fileComparisonType)) {
+    			else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType) || (XSLTestConstants.HTML).equals(m_fileComparisonType)) {
     				boolean fileComparisonResult1 = (goldFileStrArr[0]).equals(fileProducedStr1); 
     				boolean fileComparisonResult2 = (goldFileStrArr[1]).equals(fileProducedStr2);
     				if (!(fileComparisonResult1 && fileComparisonResult2)) {
@@ -421,22 +455,22 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		else {
     			// Only one file is there to compare it's contents
     			
-    			fileProducedName1 = (xslTransformInpPath != null) ? (xslTransformInpPath + 
+    			fileProducedName1 = (m_xslTransformInpPath != null) ? (m_xslTransformInpPath + 
                                                                                   goldFileNameArr[0]) : goldFileNameArr[0];
 
     			String fileProducedStr1 = getFileContentAsString(fileProducedName1);
 
-    			if ((XSLTestConstants.XML).equals(fileComparisonType)) { 
+    			if ((XSLTestConstants.XML).equals(m_fileComparisonType)) { 
     				if (!isXMLFileContentsEqual(goldFileStrArr[0], fileProducedStr1)) {
      				   Assert.fail();	
      				}
     			}
-    			else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+    			else if ((XSLTestConstants.JSON).equals(m_fileComparisonType)) {
     				if (!isJsonFileContentsEqual(goldFileStrArr[0], fileProducedStr1)) {
     				   Assert.fail();	
     				}
     			}
-    			else if ((XSLTestConstants.TEXT).equals(fileComparisonType) || (XSLTestConstants.HTML).equals(fileComparisonType)) {
+    			else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType) || (XSLTestConstants.HTML).equals(m_fileComparisonType)) {
     				if (!(goldFileStrArr[0].equals(fileProducedStr1))) {
     				   Assert.fail();
     				}
@@ -470,9 +504,9 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		String xmlDocumentUriStr = ((new File(xmlFilePath)).toURI()).toString();
     		String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
 
-    		Node xmlDomSource = xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
+    		Node xmlDomSource = m_xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
 
-    		Transformer transformer = xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
+    		Transformer transformer = m_xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
 
     		setXslTransformProperties(transformer);
 
@@ -502,17 +536,17 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		else {
     			byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
     			
-    			if ((XSLTestConstants.XML).equals(fileComparisonType)) {
+    			if ((XSLTestConstants.XML).equals(m_fileComparisonType)) {
     				if (!isXMLFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
     					Assert.fail();	
     				}	
     			}
-    			else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+    			else if ((XSLTestConstants.JSON).equals(m_fileComparisonType)) {
     				if (!isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
     					Assert.fail();	
     				}
     			}
-    			else if ((XSLTestConstants.TEXT).equals(fileComparisonType) || (XSLTestConstants.HTML).equals(fileComparisonType)) {
+    			else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType) || (XSLTestConstants.HTML).equals(m_fileComparisonType)) {
     			    Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
                 }    			
     		}
@@ -536,9 +570,9 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            String xmlDocumentUriStr = xmlDocumentUri;
            String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
            
-           Node xmlDomSource = xmlDocumentBuilder.parse(xmlDocumentUriStr);
+           Node xmlDomSource = m_xmlDocumentBuilder.parse(xmlDocumentUriStr);
        
-           Transformer xslTransformer = xslTransformerFactory.newTransformer(new 
+           Transformer xslTransformer = m_xslTransformerFactory.newTransformer(new 
         		                                                          StreamSource(xslDocumentUriStr));
            if (xslTransformErrHandler != null) {
                xslTransformer.setErrorListener(xslTransformErrHandler);  
@@ -563,17 +597,17 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            else {
         	   byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
 
-        	   if ((XSLTestConstants.XML).equals(fileComparisonType)) {
+        	   if ((XSLTestConstants.XML).equals(m_fileComparisonType)) {
         		   if (!isXMLFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
         			   Assert.fail();	
         		   }	
         	   }
-        	   else if ((XSLTestConstants.JSON).equals(fileComparisonType)) {
+        	   else if ((XSLTestConstants.JSON).equals(m_fileComparisonType)) {
         		   if (!isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
         			   Assert.fail();	
         		   }
         	   }
-        	   else if ((XSLTestConstants.TEXT).equals(fileComparisonType) || (XSLTestConstants.HTML).equals(fileComparisonType)) {
+        	   else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType) || (XSLTestConstants.HTML).equals(m_fileComparisonType)) {
         		   Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
         	   } 
            }
@@ -587,14 +621,14 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      * Set an XSL transformation, XML Schema validation property.
      */
     protected void setXmlValidationProperty(boolean isEnableValidation) {
-    	isXmlValidationEnabled = isEnableValidation;
+    	m_isXmlValidationEnabled = isEnableValidation;
     }
     
     /**
      * Set an XSL transformation, xsl:evaluate instruction evaluation property.
      */
     protected void setXslEvaluateProperty(boolean isXslEvaluateEnable) {
-    	isXslEvaluateEnabled = isXslEvaluateEnable;
+    	m_isXslEvaluateEnabled = isXslEvaluateEnable;
     }
     
     /**
@@ -659,12 +693,12 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      * Xalan-J's TransformerImpl object. 
      */
     private void setXslTransformProperties(Transformer transformer) throws TransformerException {
-    	if (isXmlValidationEnabled) {
+    	if (m_isXmlValidationEnabled) {
     		TransformerImpl transformerImpl = (TransformerImpl)transformer;
     		transformerImpl.setProperty(TransformerImpl.XML_VALIDATION_PROPERTY, Boolean.TRUE);
     	}
 
-    	if (isXslEvaluateEnabled) {
+    	if (m_isXslEvaluateEnabled) {
     		TransformerImpl transformerImpl = (TransformerImpl)transformer;
     		transformerImpl.setProperty(TransformerImpl.XSL_EVALUATE_PROPERTY, Boolean.TRUE); 
     	}

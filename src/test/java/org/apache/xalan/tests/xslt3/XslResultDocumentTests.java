@@ -43,9 +43,9 @@ public class XslResultDocumentTests extends XslTransformTestsUtil {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        xmlDocumentBuilderFactory = null;
-        xmlDocumentBuilder = null;
-        xslTransformerFactory = null;
+        m_xmlDocumentBuilderFactory = null;
+        m_xmlDocumentBuilder = null;
+        m_xslTransformerFactory = null;
     }
 
     @Test
@@ -53,7 +53,7 @@ public class XslResultDocumentTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
-        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
+        m_xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
         String goldFileName1 = "credits.xml";
         String goldFileName2 = "debits.xml";
@@ -81,9 +81,9 @@ public class XslResultDocumentTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
-        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
+        m_xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
-        fileComparisonType = XSLTestConstants.TEXT;
+        m_fileComparisonType = XSLTestConstants.TEXT;
         
         String goldFileName1 = "credits.txt";
         String goldFileName2 = "debits.txt";
@@ -111,9 +111,9 @@ public class XslResultDocumentTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
-        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
+        m_xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
-        fileComparisonType = XSLTestConstants.JSON;
+        m_fileComparisonType = XSLTestConstants.JSON;
         
         String goldFileName1 = "result1.json";
         
@@ -139,9 +139,9 @@ public class XslResultDocumentTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
-        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
+        m_xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
-        fileComparisonType = XSLTestConstants.JSON;
+        m_fileComparisonType = XSLTestConstants.JSON;
         
         String goldFileName1 = "result2.json";
         
@@ -167,9 +167,9 @@ public class XslResultDocumentTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
-        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
+        m_xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
-        fileComparisonType = XSLTestConstants.JSON;
+        m_fileComparisonType = XSLTestConstants.JSON;
         
         String goldFileName1 = "result3.json";
         
@@ -195,9 +195,9 @@ public class XslResultDocumentTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "transactions.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
         
-        xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
+        m_xslTransformInpPath = XSL_TRANSFORM_INPUT_DIRPATH;
         
-        fileComparisonType = XSLTestConstants.HTML;
+        m_fileComparisonType = XSLTestConstants.HTML;
         
         String goldFileName1 = "transactions.html";
         
