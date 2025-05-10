@@ -158,7 +158,8 @@ public class Process
 	  String msg = null;
 	  boolean isSecureProcessing = false;    
 	  boolean isSchemaValidation = false;    
-	  boolean isXslEvaluate = false; 
+	  boolean isXslEvaluate = false;
+	  String initialTemplateName = null;
 
 	  /**
 	   * The default java.io.PrintWriter diagnostic writer.
@@ -671,7 +672,8 @@ public class Process
 			  }
 			  else if ("-INIT_TEMPLATE".equalsIgnoreCase(argv[i])) {
 				  if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-') {
-					  tfactory.setAttribute(XalanProperties.INIT_TEMPLATE, argv[++i]);
+					  initialTemplateName = argv[++i]; 
+					  tfactory.setAttribute(XalanProperties.INIT_TEMPLATE, initialTemplateName);
 				  }
 				  else
 					  System.err.println(XSLMessages.createMessage(
@@ -1065,11 +1067,14 @@ public class Process
 					  }
 				  }
 				  else
-				  {
-					  StringReader reader =
-							  new StringReader("<?xml version=\"1.0\"?> <doc/>");
-
-					  transformer.transform(new StreamSource(reader), strResult);
+				  {					  
+					  if (initialTemplateName == null) {
+						  StringReader reader = new StringReader("<?xml version=\"1.0\"?><doc/>");
+						  transformer.transform(new StreamSource(reader), strResult); 
+					  }
+					  else {
+						  transformer.transform(null, strResult);
+					  }
 				  }
 			  }
 			  else

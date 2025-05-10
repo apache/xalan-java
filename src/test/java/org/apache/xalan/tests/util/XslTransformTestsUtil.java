@@ -318,10 +318,9 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
                                                                String xslGoldFilePath, 
                                                                XslTestsErrorHandler xslTransformErrHandler) {
         try {
-           String xmlDocumentUriStr = ((new File(xmlFilePath)).toURI()).toString();
-           String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
            
-           Node xmlDomSource = m_xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
+           
+           String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
            
            if (m_initTemplateName != null) {
         	  m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName); 
@@ -337,7 +336,13 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            
            StringWriter resultStrWriter = new StringWriter();
            
-           DOMSource xmlDomSrc = new DOMSource(xmlDomSource, xmlDocumentUriStr);
+           DOMSource xmlDomSrc = null;
+           
+           if (xmlFilePath != null) {
+              String xmlDocumentUriStr = ((new File(xmlFilePath)).toURI()).toString();
+              Node node = m_xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
+              xmlDomSrc = new DOMSource(node, xmlDocumentUriStr);
+           }
            
            transformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
            

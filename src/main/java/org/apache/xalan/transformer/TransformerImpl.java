@@ -320,6 +320,11 @@ public class TransformerImpl extends Transformer
    * Transformer is created
    */  
   private boolean m_source_location = false;
+  
+  /**
+   * An XSL stylesheet initial template name.
+   */
+  private String m_init_template_name = null;
     
   /**
    * This is a compile-time flag to turn off calling
@@ -443,7 +448,8 @@ public class TransformerImpl extends Transformer
   {
     m_optimizer = stylesheet.getOptimizer();
     m_incremental = stylesheet.getIncremental();
-    m_source_location = stylesheet.getSource_location();  	
+    m_source_location = stylesheet.getSource_location();
+    m_init_template_name = stylesheet.getInitTemplateName();
     setStylesheet(stylesheet);
     XPathContext xPath = new XPathContext(this);
     xPath.setIncremental(m_incremental);
@@ -706,16 +712,21 @@ public class TransformerImpl extends Transformer
       if(getXPathContext().getNamespaceContext() == null){
          getXPathContext().setNamespaceContext(getStylesheet());
       }
-      String base = source.getSystemId();
+      
+      String base = null;
+      
+      if (source != null) {
+         base = source.getSystemId();
+      }
       
       // If no systemID of the source, use the base of the stylesheet.
-      if(null == base)
+      if (null == base)
       {
         base = m_stylesheetRoot.getBaseIdentifier();
       }
 
       // As a last resort, use the current user dir.
-      if(null == base)
+      if (null == base)
       {
         String currentDir = "";
         try {
@@ -731,6 +742,7 @@ public class TransformerImpl extends Transformer
         base = base + java.io.File.separatorChar
                + source.getClass().getName();
       }
+      
       setBaseURLOfSource(base);
       DTMManager mgr = m_xcontext.getDTMManager();
       /*
@@ -763,8 +775,13 @@ public class TransformerImpl extends Transformer
           fatalError(e);
         }           
       }
-      DTM dtm = mgr.getDTM(source, false, this, true, true);
-      dtm.setDocumentBaseURI(base);
+      
+      DTM dtm = null;
+      
+      if (source != null) {
+        dtm = mgr.getDTM(source, false, this, true, true);
+        dtm.setDocumentBaseURI(base);
+      }
       
       boolean hardDelete = true;  // %REVIEW% I have to think about this. -sb
 
@@ -773,19 +790,30 @@ public class TransformerImpl extends Transformer
       	 // NOTE: This will work because this is _NOT_ a shared DTM, and thus has
       	 // only a single Document node. If it could ever be an RTF or other
       	 // shared DTM, look at dtm.getDocumentRoot(nodeHandle).
-    	  
-    	 // Validate an XML input document, if validation parameter is set 
-    	 // on the transformer.    	
-    	 if (m_enabledPropertyList.contains(XML_VALIDATION_PROPERTY)) { 
-    	    m_stylesheetRoot.validateXmlInputDoc(base);
-    	 }
-    	  
-        this.transformNode(dtm.getDocument());
+    	 
+    	  if (source != null) {
+    		  // Validate an XML input document, if validation parameter is set 
+    		  // on the transformer.    	
+    		  if (m_enabledPropertyList.contains(XML_VALIDATION_PROPERTY)) { 
+    			  m_stylesheetRoot.validateXmlInputDoc(base);
+    		  }
+
+    		  this.transformNode(dtm.getDocument());
+    	  }
+    	  else if (m_init_template_name != null) {
+    		  /**
+    		   * An XSL stylesheet initial template name is available,
+    		   * but context item is not available. An XSL transformation
+    		   * will be attempted with an absent focus.
+    		   */
+    		  this.transformNode(DTM.NULL);
+    	  }
       }
       finally
       {
-        if (shouldRelease)
+        if (shouldRelease && (dtm != null)) {
           mgr.release(dtm, hardDelete);
+        }
       }
 
       // Kick off the parse.  When the ContentHandler gets 
@@ -2270,7 +2298,12 @@ public class TransformerImpl extends Transformer
   {
 
     DTM dtm = m_xcontext.getDTM(child);
-    short nodeType = dtm.getNodeType(child);
+    short nodeType = DTM.ROOT_NODE;
+    
+    if (dtm != null) {
+       nodeType = dtm.getNodeType(child);
+    }
+    
     boolean isDefaultTextRule = false;
     boolean isApplyImports = false;
     

@@ -97,5 +97,25 @@ public class XslInitialTemplateTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslInitialTemplateTest5() {
+    	/**
+    	 * We don't have an XML input document available for this XSL
+    	 * transformation. Name of an XSL initial template is provided.
+    	 * An XSL transformation shall take place with an absent initial 
+    	 * focus.
+    	 */
+    	
+    	String xmlFilePath = null;
+        
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";
+        
+        m_initTemplateName = "main";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }
