@@ -125,14 +125,14 @@ public class Range extends Operation
      	    }
      	    catch (NumberFormatException ex) {
      	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
-                                                                                + "operand is not an integer.", srcLocator);
+                                                                                + "operand value " + strVal + " is not an integer.", srcLocator);
      	    }
     	}
     	else if (xpathToOperand instanceof XNumber) {
     		double dbl = ((XNumber)xpathToOperand).num();
     		if (dbl > (long)dbl) {
     			throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
-    					                                                        + "operand is not an integer.", srcLocator);  
+                                                                                + "operand value " + dbl + " is not an integer.", srcLocator);  
     		}
     		else {
     			result = BigInteger.valueOf((long)dbl); 
@@ -145,8 +145,8 @@ public class Range extends Operation
     	       result = new BigInteger(strVal);
     	    }
     	    catch (NumberFormatException ex) {
-    	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
-                                                                                + "operand is not an integer.", srcLocator);
+    	    	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
+                        														+ "operand value " + strVal + " is not an integer.", srcLocator);
     	    }
     	}    	
 

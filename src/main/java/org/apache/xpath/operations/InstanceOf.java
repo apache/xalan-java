@@ -355,12 +355,22 @@ public class InstanceOf extends Operation
 			  java.lang.String nodeName = dtm.getNodeName(nextNodeDtmHandle);
 			  java.lang.String nodeNsUri = dtm.getNamespaceURI(nextNodeDtmHandle);
 
-			  if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
+			  if (dtm.getNodeType(nextNodeDtmHandle) == DTM.DOCUMENT_NODE) {
+				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
+				  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND)) {
+					  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
+				  }
+				  else {
+					  isInstanceOf = false;
+					  break;
+				  }
+			  }
+			  else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
 				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
 				  if (seqTypeKindTest != null) {
 					  java.lang.String elemNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
 					  if (elemNodeKindTestNodeName == null || "".equals(elemNodeKindTestNodeName) || 
-							  SequenceTypeSupport.STAR.equals(elemNodeKindTestNodeName)) {
+							  																SequenceTypeSupport.STAR.equals(elemNodeKindTestNodeName)) {
 						  elemNodeKindTestNodeName = nodeName;  
 					  }
 

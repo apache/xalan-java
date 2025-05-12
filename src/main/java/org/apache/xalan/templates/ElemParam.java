@@ -35,9 +35,7 @@ import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of XSLT xsl:param element.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-param
+ * Implementation of XSLT 3.0 xsl:param element.
  * 
  * @xsl.usage advanced
  */
@@ -169,15 +167,15 @@ public class ElemParam extends ElemVariable
               transformer.getXPathContext().getVarStack().setLocalVariable(m_index, var);        	  
            }
            else {              
-              throw new TransformerException("XTTE0590 : The value to parameter " + m_qname.toString() + " cannot be assigned. "
-                                                                             + "Either an input content for parameter is not available within "
-                                                                             + "stylesheet context, or parameter's value cannot be cast to an expected type.", srcLocator);
+              throw new TransformerException("XTTE0590 : The value to parameter '" + m_qname.toString() + "' cannot be assigned. "
+                                                                             + "Either the parameter's input is not available or parameter's value "
+                                                                             + "cannot be cast to an expected type.", srcLocator);
            }
         }
         catch (TransformerException ex) {
-            throw new TransformerException("XTTE0590 : The value to parameter " + m_qname.toString() + " cannot be assigned. "
-                                                                           + "Either an input content for parameter is not available within "
-                                                                           + "stylesheet context, or parameter's value cannot be cast to an expected type.", srcLocator);   
+        	throw new TransformerException("XTTE0590 : The value to parameter '" + m_qname.toString() + "' cannot be assigned. "
+														                    + "Either the parameter's input is not available or parameter's value "
+														                    + "cannot be cast to an expected type.", srcLocator);   
         }	
     }
     else if (!(getParentElem() instanceof ElemFunction)) {

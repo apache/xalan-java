@@ -776,7 +776,6 @@ public class ElemValueOf extends ElemTemplateElement {
 		 char chr = str.charAt(str.length() - 1);
 		 if (Character.isWhitespace(chr)) {
 			resultStr = str.substring(0, str.length() - 1);
-			// Recursive call to this method
 			resultStr = strRtrim(resultStr); 
 		 }
 		 else {
