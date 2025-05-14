@@ -171,8 +171,9 @@ public class XPathParser
   private boolean m_isSequenceTypeXPathExpr = false;
   
   static XPathInlineFunction m_xpath_inlineFunction = null;
-  
-  static XPathDynamicFunctionCall m_dynamicFunctionCall = null;
+    
+  static int m_xpathDynFuncCallProcessedCount = 0;
+  static List<XPathDynamicFunctionCall> m_xpathDynamicFunctionCallList = new ArrayList<XPathDynamicFunctionCall>();  
   
   static List<XPathForExpr> m_forExprList = new ArrayList<XPathForExpr>();
   
@@ -3479,9 +3480,11 @@ public class XPathParser
 
        consumeExpected(')');
        
-       m_dynamicFunctionCall = new XPathDynamicFunctionCall();
-       m_dynamicFunctionCall.setFuncRefVarName(funcRefVarName);
-       m_dynamicFunctionCall.setArgList(argList);
+       XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();
+       xpathDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
+       xpathDynamicFunctionCall.setArgList(argList);
+              
+       m_xpathDynamicFunctionCallList.add(xpathDynamicFunctionCall);
        
        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -3516,10 +3519,12 @@ public class XPathParser
        argList.add(argListNormalizedStrBuff.toString());          
        nextToken();
        
-       m_dynamicFunctionCall = new XPathDynamicFunctionCall();
-       m_dynamicFunctionCall.setFuncRefVarName(funcRefVarName);
-       m_dynamicFunctionCall.setIsFromUnaryLookupEvaluation(true);
-       m_dynamicFunctionCall.setArgList(argList);
+       XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();
+       xpathDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
+       xpathDynamicFunctionCall.setIsFromUnaryLookupEvaluation(true);
+       xpathDynamicFunctionCall.setArgList(argList);
+               
+       m_xpathDynamicFunctionCallList.add(xpathDynamicFunctionCall);
        
        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);

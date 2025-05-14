@@ -8,12 +8,7 @@
 				
    <!-- An XSL 3 stylesheet test case, to test use of XPath user-defined 
         functions and binary operator '*' together in different ways for the 
-		same use case. 
-		
-		This XSL stylesheet test case is motivated by the fact that, Xalan-J's 
-		implementation of XPath 3.1 expression $sqrt(9) * $sqr(5) has a bug and 
-		presenting various alternate legitimate ways of achieving this computation 
-		correctly.
+		same use case.
    -->	
                 
    <xsl:output method="xml" indent="yes"/>
@@ -37,11 +32,27 @@
 		 <xsl:variable name="apply2" select="function($a, $b) { let $L := $sqrt($a), 
 		                                                            $M := $sqr($b) return $L * $M }"/>
          <four><xsl:value-of select="$apply2(9, 5)"/></four>
-		 
-		 <!-- Illustration of a buggy XPath expression below. Expected answer
-		      is 75, but actual answer is 625. -->
-         <five_bug><xsl:value-of select="$sqrt(9) * $sqr(5)"/></five_bug>		 
+         		 
+         <five><xsl:value-of select="$sqrt(9) * $sqr(5)"/></five>		 
 	  </result>
    </xsl:template>
+   
+   <!--
+      * Licensed to the Apache Software Foundation (ASF) under one
+      * or more contributor license agreements. See the NOTICE file
+      * distributed with this work for additional information
+      * regarding copyright ownership. The ASF licenses this file
+      * to you under the Apache License, Version 2.0 (the "License");
+      * you may not use this file except in compliance with the License.
+      * You may obtain a copy of the License at
+      *
+      *     http://www.apache.org/licenses/LICENSE-2.0
+      *
+      * Unless required by applicable law or agreed to in writing, software
+      * distributed under the License is distributed on an "AS IS" BASIS,
+      * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      * See the License for the specific language governing permissions and
+      * limitations under the License.
+   -->
 
 </xsl:stylesheet>

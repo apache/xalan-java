@@ -28,8 +28,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.Axis;
-import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
@@ -44,6 +44,7 @@ import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
@@ -567,10 +568,7 @@ public class Compiler extends OpMap
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled 'SequenceType' expression returned as an object of class
-   *         XPathSequenceTypeExpr. An object of class XPathSequenceTypeExpr
-   *         has already been created and populated by XPath expression parser,
-   *         and this function just returns that object to the caller of this 
-   *         method.       
+   *         XPathSequenceTypeExpr.       
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */
@@ -1491,10 +1489,7 @@ private static final boolean DEBUG = false;
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled inline function definition expression returned
-   *         as an object of class InlineFunction. An object of class
-   *         InlineFunction has already been created and populated by XPath 
-   *         expression parser, and this function just returns that object
-   *         to the caller of this method.
+   *         as an object of class InlineFunction.
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */
@@ -1509,16 +1504,18 @@ private static final boolean DEBUG = false;
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled dynamic function call expression returned
-   *         as an object of class DynamicFunctionCall. An object of class
-   *         DynamicFunctionCall has already been created and populated by 
-   *         XPath expression parser, and this function just returns that
-   *         object to the caller of this method.
+   *         as an object of class DynamicFunctionCall.
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */
   Expression compileDynamicFunctionCall(int opPos) throws TransformerException
   {
-      return XPathParser.m_dynamicFunctionCall;
+	  XPathDynamicFunctionCall result = null;
+
+	  XPathParser.m_xpathDynFuncCallProcessedCount++;
+	  result = (XPathParser.m_xpathDynamicFunctionCallList).get(XPathParser.m_xpathDynFuncCallProcessedCount - 1);  
+
+	  return result;	  	  
   }
   
   /**
@@ -1527,9 +1524,7 @@ private static final boolean DEBUG = false;
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled "for" expression returned as an object of class
-   *         XPathForExpr. An object of class XPathForExpr has already been
-   *         created and populated by XPath expression parser, and this function 
-   *         just returns that object to the caller of this method.
+   *         XPathForExpr.
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */
@@ -1546,9 +1541,7 @@ private static final boolean DEBUG = false;
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled "let" expression returned as an object of class
-   *         XPathLetExpr. An object of class XPathLetExpr has already been
-   *         created and populated by XPath expression parser, and this function 
-   *         just returns that object to the caller of this method.
+   *         XPathLetExpr.
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */
@@ -1563,10 +1556,7 @@ private static final boolean DEBUG = false;
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled quantified expression returned as an object of class
-   *         XPathQuantifiedExpr. An object of class XPathQuantifiedExpr has
-   *         already been created and populated by XPath expression parser, and 
-   *         this function just returns that object to the caller of this
-   *         method.
+   *         XPathQuantifiedExpr.
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */
@@ -1581,9 +1571,7 @@ private static final boolean DEBUG = false;
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled "if" expression returned as an object of class
-   *         IfExpr. An object of class IfExpr has already been created and
-   *         populated by XPath expression parser, and this function just 
-   *         returns that object to the caller of this method.       
+   *         IfExpr.     
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */

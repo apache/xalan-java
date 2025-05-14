@@ -31,9 +31,11 @@ import org.junit.Test;
  */
 public class XPathDynamicFunctionCallTests extends XslTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "dynamic_function_call/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + 
+    		                                                                                                      "xpath_dynamic_function_call/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "dynamic_function_call/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + 
+    		                                                                                                    "xpath_dynamic_function_call/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
