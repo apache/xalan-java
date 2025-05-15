@@ -17,13 +17,11 @@
 package org.apache.xalan.tests.util;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -44,14 +42,12 @@ import org.apache.xpath.functions.XSL3FunctionService;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import junit.framework.Assert;
 
@@ -72,6 +68,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     protected static TransformerFactory m_xslTransformerFactory = null;
     
+    protected static String m_initTemplateName = null;
+    
     /**
      * Class field representing file path prefix, that is used for test cases
      * related to XSL instructions like xsl:result-document that have 'href' 
@@ -79,27 +77,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     protected static String m_xslTransformInpPath = null;
     
-    /**
-     * Class field representing local file system folder, where W3C XSLT 3.0 
-     * Xalan-J test results shall be saved.
-     */
-    protected static String m_w3cXslt3TestSuiteXalanResultFolderUri = "file:/d:/xslt30-test-master/tests/";
-    
-    protected static String m_xslTransformTestSetFilePath = null;
-    
-    protected static String m_testResultFileName = null;
-    
-    protected static String m_initTemplateName = null;
-    
     protected static String m_w3cXslt3TestSuiteXalanResultsPathPrefix = "file:/d:/xslt30-test-master/xalan_j_test_results/";
-    
-    private static final String XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH = "file:/d:/xslt30-test-master/tests/variant_all_of_test_template.xsl";
-    
-    private static final String EXPECTED_NODE_KIND_ERROR = "error";
-    
-    private static final String EXPECTED_NODE_KIND_ASSERT_ALL_OF = "all-of";
-    
-    private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";
     
     /**
      * Class field representing, whether XML Schema validation is enabled 
@@ -121,192 +99,6 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         System.setProperty(XSLTestConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLTestConstants.XSLT_TRANSFORMER_FACTORY_VALUE);
         
         m_xslTransformerFactory = TransformerFactory.newInstance();
-    }
-    
-    /**
-     * This method definition, serves to invoke W3C XSLT 3.0 test suite, on Xalan-J 
-     * XSLT3 implementation.
-     */
-    protected void runW3CXSLTTestSuiteXslTransformAndProduceResult(String testCaseName, DOMSource xmlInpDomSource, 
-    		                                                       StreamSource xsltStreamSrc, Element expectedResultElem,  
-            													   Element elemTestRun, Document testResultDoc) throws Exception {    	    	
-
-    	Element elemTestResult = testResultDoc.createElement("testResult");
-    	
-    	XslTestsErrorHandler xslTransformErrHandler = new XslTestsErrorHandler();
-		List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();
-		List<String> trfFatalErrorList = xslTransformErrHandler.getTrfFatalErrorList();
-		
-		String expErrCodeName = null;
-		
-		elemTestResult.setAttribute("testName", testCaseName);
-    	
-    	try {
-    		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);
-    		
-    		if (m_initTemplateName != null) {
-    		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);
-    		}
-    		
-    		Transformer transformer = m_xslTransformerFactory.newTransformer(xsltStreamSrc);
-    		
-    		transformer.setErrorListener(xslTransformErrHandler);
-
-    		setXslTransformProperties(transformer);    		 
-
-    		StringWriter resultStrWriter = new StringWriter();
-    		
-    		Node nodeExpected = (expectedResultElem.getFirstChild()).getNextSibling();
-    		String expectedNodeKindName = nodeExpected.getNodeName();
-    		if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
-    			expErrCodeName = ((Element)nodeExpected).getAttribute("code");
-    		}
-    		
-    		transformer.transform(xmlInpDomSource, new StreamResult(resultStrWriter));    		
-    		
-    		if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
-    			if ((trfErrorList.size() > 0) || (trfFatalErrorList.size() > 0)) {
-    				boolean isXslTransformErrorOk = false;
-    				for (int idx = 0; idx < trfErrorList.size(); idx++) {
-    					String errInfo = trfErrorList.get(idx);
-    					if (errInfo.contains(expErrCodeName)) {
-    						isXslTransformErrorOk = true;    						
-    						break;
-    					}
-    				}
-    				if (!isXslTransformErrorOk) {
-    					for (int idx = 0; idx < trfFatalErrorList.size(); idx++) {
-    						String errInfo = trfFatalErrorList.get(idx);
-        					if (errInfo.contains(expErrCodeName)) {
-        						isXslTransformErrorOk = true;
-        						break;
-        					}
-    					}
-    				}
-    				
-    				if (isXslTransformErrorOk) {
-    					elemTestResult.setAttribute("status", "pass");
-    				}
-    				else {
-    					handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 
-    							                                                               elemTestResult, expErrCodeName);
-    				}
-        		}
-    			else {
-    				// An XSL transformation did not result in a dynamic error.
-    				// i.e, this test case has failed.
-    				elemTestResult.setAttribute("status", "fail");
-    				
-    				Element resultOutElem = testResultDoc.createElement("outResult");
-    				resultOutElem.setTextContent(resultStrWriter.toString());
-    				elemTestResult.appendChild(resultOutElem);
-    			}
-    		}
-    		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName)) {
-    			byte[] fileBytes = Files.readAllBytes(Paths.get(new URI(XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH)));
-    			String verificationXslTemplateStr = new String(fileBytes);
-    			NodeList nodeList = nodeExpected.getChildNodes();
-    			StringBuffer replacementStrBuff = new StringBuffer();
-    			StringBuffer expectedResultStrBuff = new StringBuffer();
-    			expectedResultStrBuff.append("<result>");
-    			for (int idx = 0; idx < nodeList.getLength(); idx++) {
-    				Node node = nodeList.item(idx);
-    				if (node.getNodeType() == Node.ELEMENT_NODE) {
-    					String assertStr = ((Element)node).getTextContent();    					
-    					if (assertStr.contains("'")) {
-    						assertStr = assertStr.replace("'", "\"");
-    					}
-    					String strValue = "<xpath><xsl:value-of select='" + assertStr + "'/></xpath>\n";
-    					
-    					replacementStrBuff.append(strValue);
-    					
-    					expectedResultStrBuff.append("<xpath>true</xpath>\n");
-    				}
-    			}
-    			
-    			String verificationXslStylesheetStr = verificationXslTemplateStr.replace("{{XPATH_ASSERT_LIST}}", replacementStrBuff.toString());
-    			
-    			NamedNodeMap attrNamedNodeMap = nodeExpected.getAttributes();
-    			int attrCount = attrNamedNodeMap.getLength();
-    			StringBuffer attrDeclstrBuff = new StringBuffer();
-    			for (int idx = 0; idx < attrCount; idx++) {
-    				Node attrNode = attrNamedNodeMap.item(idx);
-    				String attrName = attrNode.getNodeName();
-    				String attrValue = attrNode.getNodeValue();
-    				attrDeclstrBuff.append(attrName + "=\"" + attrValue + "\"");
-    			}
-    			
-    			verificationXslStylesheetStr = verificationXslStylesheetStr.replace("{{NS_DECL}}", attrDeclstrBuff.toString());
-    			
-    			expectedResultStrBuff.append("</result>");
-    			
-    			Document expectedResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStrBuff.toString()).getBytes()));    			    			
-    			
-    			Document verificationXslDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(verificationXslStylesheetStr.getBytes()));
-    			
-    			transformer = m_xslTransformerFactory.newTransformer(new DOMSource(verificationXslDoc));
-    			
-    			StringWriter strWriter = new StringWriter();
-    			
-    			Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
-    			transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
-    			
-    			Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
-    			String str1 = serializeXmlDomElementNode(xmlInpDoc1);
-    			String str2 = serializeXmlDomElementNode(expectedResultDoc);
-    			
-    			if (isTwoXmlHtmlStrEqual(str1, str2)) {
-    				elemTestResult.setAttribute("status", "pass");
-    			}
-    			else {
-    				elemTestResult.setAttribute("status", "fail");
-    			}
-    		}
-            else if (EXPECTED_NODE_KIND_ASSERT_XML.equals(expectedNodeKindName)) {
-            	Element elemNode = (Element)nodeExpected;
-            	String fileName = elemNode.getAttribute("file");
-            	String expectedResultStr = null;
-            	if (!"".equals(fileName)) {
-            		URI uri = new URI(m_xslTransformTestSetFilePath);
-            		uri = uri.resolve(fileName);
-            		expectedResultStr = getStringContentFromUrl(uri.toURL());
-            	}
-            	else {
-            		expectedResultStr = elemNode.getTextContent();            		
-            	}
-
-            	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
-            	String str1 = serializeXmlDomElementNode(xmlInpDoc1);
-
-            	Document xmlInpDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
-
-            	String str2 = serializeXmlDomElementNode(xmlInpDoc2);
-
-            	if (isTwoXmlHtmlStrEqual(str1, str2)) {            		
-            		elemTestResult.setAttribute("status", "pass");
-            	}
-            	else {
-            		elemTestResult.setAttribute("status", "fail");
-            	}
-    		}    		    		
-    	}
-    	catch (SAXException ex) {
-    		handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 
-    				                                                                 elemTestResult, expErrCodeName);
-    	}
-    	catch (Exception ex) {
-            handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 
-            		                                                                 elemTestResult, expErrCodeName);    	
-    	}
-    	finally {
-    		elemTestRun.appendChild(elemTestResult);    		
-    		trfErrorList.clear();
-    		trfFatalErrorList.clear();
-    		if (m_initTemplateName != null) {
-     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, null);
-     		   m_initTemplateName = null;
-     		}
-    	}    	    	
     }
 
     /**
@@ -767,7 +559,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      * Set XML Schema validation and xsl:evaluate XSL transformation properties, on 
      * Xalan-J's TransformerImpl object. 
      */
-    private void setXslTransformProperties(Transformer transformer) throws TransformerException {
+    protected void setXslTransformProperties(Transformer transformer) throws TransformerException {
     	if (m_isXmlValidationEnabled) {
     		TransformerImpl transformerImpl = (TransformerImpl)transformer;
     		transformerImpl.setProperty(TransformerImpl.XML_VALIDATION_PROPERTY, Boolean.TRUE);
@@ -780,46 +572,11 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     }
     
     /**
-     * This method is used by, Xalan-J XSL 3 java extension function calls
-     * used within few .xsl test files.
-     * 
-     * @return  current date value
-     */
-    public static Date getCurrentDate() {
-        Date currentDate = new Date();
-      
-        return currentDate;
-    }
-   
-    /**
-     * This method is used by, Xalan-J XSL 3 java extension function calls
-     * used within few .xsl test files.
-     * 
-     * @return  default time zone offset string
-     */
-    public static String getDefaultTimezoneOffsetStr() {
-        String timeZoneoffsetStr = null;
-       
-        String dateStr = (OffsetDateTime.now()).toString();
-        if (dateStr.endsWith("Z")) {
-            timeZoneoffsetStr = "Z";   
-        }
-        else {
-            int dateStrLength = dateStr.length();
-            timeZoneoffsetStr = dateStr.substring(dateStrLength - 6, dateStrLength); 
-        }
-       
-        return timeZoneoffsetStr;
-    }
-    
-    /**
      * Method definition to handle test case failure exception.
      */
-	private void handleTestCaseFailException(Document testResultDoc, List<String> trfErrorList,
-											 List<String> trfFatalErrorList, Element elemTestResult, 
-											 String expErrCodeName) {
-		
-		// elemTestResult.setAttribute("status", "fail");
+	protected void handleTestCaseFailException(Document testResultDoc, List<String> trfErrorList,
+											   List<String> trfFatalErrorList, Element elemTestResult, 
+											   String expErrCodeName) {		
 		
 		Element resultOutElem = testResultDoc.createElement("outResult");
 		for (int idx = 0; idx < trfErrorList.size(); idx++) {
@@ -855,7 +612,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      * This method definition checks whether, two XML or HTML
      * string values represent equal document content.
      */
-    private boolean isTwoXmlHtmlStrEqual(String str1, String str2) {
+    protected boolean isTwoXmlHtmlStrEqual(String str1, String str2) {
         
     	boolean result = true;
         
@@ -884,6 +641,39 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         }
         
         return result;
+    }
+    
+    /**
+     * This method is used by, Xalan-J XSL 3 java extension function calls
+     * used within few .xsl test files.
+     * 
+     * @return  current date value
+     */
+    public static Date getCurrentDate() {
+        Date currentDate = new Date();
+      
+        return currentDate;
+    }
+   
+    /**
+     * This method is used by, Xalan-J XSL 3 java extension function calls
+     * used within few .xsl test files.
+     * 
+     * @return  default time zone offset string
+     */
+    public static String getDefaultTimezoneOffsetStr() {
+        String timeZoneoffsetStr = null;
+       
+        String dateStr = (OffsetDateTime.now()).toString();
+        if (dateStr.endsWith("Z")) {
+            timeZoneoffsetStr = "Z";   
+        }
+        else {
+            int dateStrLength = dateStr.length();
+            timeZoneoffsetStr = dateStr.substring(dateStrLength - 6, dateStrLength); 
+        }
+       
+        return timeZoneoffsetStr;
     }
     
 }

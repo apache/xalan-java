@@ -14,26 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xslt3;
+package org.apache.xalan.tests.w3c.xslt3.expr;
 
+import org.apache.xalan.tests.w3c.xslt3.W3CXslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XSL 3.0 transformation 
- * tests for xsl:try instruction.
+ * tests for XPath math expressions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslTryTests extends W3CXslTransformTestsUtil {     
+public class XslMathTests extends W3CXslTransformTestsUtil {     
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	m_xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/try/_try-test-set.xml";
-    	m_testResultFileName = "xsl_try_test_results.xml";    	   
+    	m_xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/expr/math/_math-test-set.xml";
+    	m_testResultFileName = "_math-test-set_results.xml";    	   
     }
 
     @AfterClass
@@ -44,8 +45,8 @@ public class XslTryTests extends W3CXslTransformTestsUtil {
     }
 
     @Test
-    public void runXslTryTests() {    	    	
-    	runXslTests();
+    public void runXslMathTests() {    	
+       runXslTestSet();
     }
 
 }

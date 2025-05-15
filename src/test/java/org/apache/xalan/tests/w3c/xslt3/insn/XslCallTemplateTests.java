@@ -14,26 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xslt3;
+package org.apache.xalan.tests.w3c.xslt3.insn;
 
+import org.apache.xalan.tests.w3c.xslt3.W3CXslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XSL 3.0 transformation 
- * tests for xsl:analyze-string instruction.
+ * tests for xsl:call-template instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslAnalyzeStringTests extends W3CXslTransformTestsUtil {     
+public class XslCallTemplateTests extends W3CXslTransformTestsUtil {     
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	m_xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/analyze-string/_analyze-string-test-set.xml";
-    	m_testResultFileName = "xsl_analyze_string_test_results.xml";    	   
+    	m_xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/call-template/_call-template-test-set.xml";
+    	m_testResultFileName = "_call-template-test-set_results.xml";    	   
     }
 
     @AfterClass
@@ -44,8 +45,8 @@ public class XslAnalyzeStringTests extends W3CXslTransformTestsUtil {
     }
 
     @Test
-    public void runXslAnalyzeStringTests() {    	
-       runXslTests();
+    public void runXslCallTemplateTests() {    	    	
+    	runXslTestSet();
     }
 
 }

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="analyze-string">
+   <testResult status="pass" testName="analyze-string-001"/>
+   <testResult status="pass" testName="analyze-string-002"/>
+   <testResult status="pass" testName="analyze-string-003"/>
+   <testResult status="pass" testName="analyze-string-005"/>
+   <testResult status="pass" testName="analyze-string-006"/>
+   <testResult status="pass" testName="analyze-string-007"/>
+   <testResult status="pass" testName="analyze-string-008"/>
+   <testResult status="pass" testName="analyze-string-012"/>
+   <testResult status="pass" testName="analyze-string-033"/>
+   <testResult status="fail" testName="analyze-string-034"/>
+   <testResult status="pass" testName="analyze-string-035"/>
+   <testResult status="pass" testName="analyze-string-036"/>
+   <testResult status="pass" testName="analyze-string-037"/>
+   <testResult status="pass" testName="analyze-string-042"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="pass" testName="analyze-string-048"/>
+   <testResult status="pass" testName="analyze-string-049"/>
+   <testResult status="pass" testName="analyze-string-050"/>
+   <testResult status="pass" testName="analyze-string-051"/>
+   <testResult status="pass" testName="analyze-string-052"/>
+   <testResult status="pass" testName="analyze-string-053"/>
+   <testResult status="pass" testName="analyze-string-063"/>
+   <testResult status="pass" testName="analyze-string-064"/>
+   <testResult status="pass" testName="analyze-string-065"/>
+   <testResult status="pass" testName="analyze-string-067"/>
+   <testResult status="pass" testName="analyze-string-069"/>
+   <testResult status="pass" testName="analyze-string-070"/>
+   <testResult status="pass" testName="analyze-string-071"/>
+   <testResult status="fail" testName="analyze-string-072"/>
+   <testResult status="pass" testName="analyze-string-073"/>
+   <testResult status="pass" testName="analyze-string-074"/>
+   <testResult status="fail" testName="analyze-string-075"/>
+   <testResult status="fail" testName="analyze-string-076"/>
+   <testResult status="fail" testName="analyze-string-077"/>
+   <testResult status="fail" testName="analyze-string-078"/>
+   <testResult status="pass" testName="analyze-string-079"/>
+   <testResult status="fail" testName="analyze-string-080"/>
+   <testResult status="fail" testName="analyze-string-081"/>
+   <testResult status="pass" testName="analyze-string-082"/>
+   <testResult status="pass" testName="analyze-string-083"/>
+   <testResult status="fail" testName="analyze-string-084"/>
+   <testResult status="fail" testName="analyze-string-085">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;ales&gt; &#13;
+        &lt;no-match&gt;HISTï¿½RIA DE LA CIï¿½NCIA&lt;/no-match&gt; &#13;
+        &lt;codi/&gt; &#13;
+        &lt;no-match&gt;50003&lt;/no-match&gt; &#13;
+        &lt;no-match&gt;Tipologia: &lt;/no-match&gt; &#13;
+        &lt;no-match&gt;presencial&lt;/no-match&gt; &#13;
+&lt;/ales&gt;</outResult>
+   </testResult>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="analyze-string-090b">
+      <outResult>
+         <errTrace>Variable v1 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>Variable $v1 accessed before it is bound!.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult testName="analyze-string-091b"/>
+   <testResult status="fail" testName="analyze-string-092">
+      <outResult>
+         <errTrace>Variable v1 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>Variable $v1 accessed before it is bound!.</errTrace>
+         <errTrace>Extra illegal tokens: '"s "', '10', 'Grand', '", mister"'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="analyze-string-093"/>
+   <testResult status="pass" testName="analyze-string-094"/>
+   <testResult status="fail" testName="analyze-string-095">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="analyze-string-096">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="analyze-string-097">
+      <outResult>
+         <errTrace>XTTE1540 : An error occured while evaluating an XSL stylesheet xsl:copy-of instruction.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="analyze-string-097a">
+      <outResult>
+         <errTrace>XTTE1540 : An error occured while evaluating an XSL stylesheet xsl:copy-of instruction.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="analyze-string-098">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="analyze-string-099">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="analyze-string-100">
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: XPTY0004 : The required item type of the first argument of function fn:regex-group() is xs:integer.</errTrace>
+      </outResult>
+   </testResult>
+</testrun>

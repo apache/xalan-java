@@ -14,26 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xslt3;
+package org.apache.xalan.tests.w3c.xslt3.decl;
 
+import org.apache.xalan.tests.w3c.xslt3.W3CXslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XSL 3.0 transformation 
- * tests for xsl:for-each-group instruction.
+ * tests for xsl:character-map instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslForEachGroupTests extends W3CXslTransformTestsUtil {     
+public class XslCharacterMapTests extends W3CXslTransformTestsUtil {     
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	m_xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/for-each-group/_for-each-group-test-set.xml";
-    	m_testResultFileName = "xsl_for_each_group_test_results.xml";
+    	m_xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/decl/character-map/_character-map-test-set.xml";
+    	m_testResultFileName = "_character-map-test-set_results.xml";    	   
     }
 
     @AfterClass
@@ -42,10 +43,10 @@ public class XslForEachGroupTests extends W3CXslTransformTestsUtil {
         m_xmlDocumentBuilder = null;
         m_xslTransformerFactory = null;
     }
-    
+
     @Test
-    public void runXslForEachGroupTests() {    	
-       runXslTests();
+    public void runXslCharacterMapTests() {    	
+       runXslTestSet();
     }
 
 }

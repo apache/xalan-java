@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="function">
+   <testResult status="fail" testName="function-0001">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-0002">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}function-name()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-0003">
+      <outResult>
+         <errTrace>Extra illegal tokens: '(', '-', '2', ')'</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}function-name()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-0004">
+      <outResult>
+         <errTrace>Extra illegal tokens: '(', '1.23456', ')'</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}function-name()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="function-0101"/>
+   <testResult status="pass" testName="function-0102"/>
+   <testResult status="pass" testName="function-0103"/>
+   <testResult testName="function-0104"/>
+   <testResult status="pass" testName="function-0105"/>
+   <testResult testName="function-0106"/>
+   <testResult status="pass" testName="function-0107"/>
+   <testResult testName="function-0108"/>
+   <testResult status="pass" testName="function-0109"/>
+   <testResult testName="function-0110"/>
+   <testResult status="pass" testName="function-0111"/>
+   <testResult testName="function-0112"/>
+   <testResult status="pass" testName="function-0113"/>
+   <testResult testName="function-0114"/>
+   <testResult status="fail" testName="function-0115">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;17&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="function-0116"/>
+   <testResult status="fail" testName="function-0117">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;17&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="function-0118">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;17&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult testName="function-0119b"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="function-0120b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;true&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="function-0121"/>
+   <testResult status="fail" testName="function-0122">
+      <outResult>
+         <errTrace>Illegal value: Q{}count-elements used for QNAME attribute: name</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="function-0201"/>
+   <testResult status="pass" testName="function-0202"/>
+   <testResult status="pass" testName="function-0203"/>
+   <testResult status="pass" testName="function-0205"/>
+   <testResult status="fail" testName="function-0301"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult testName="function-0302b"/>
+   <testResult testName="function-0303"/>
+   <testResult status="fail" testName="function-0401"/>
+   <testResult status="fail" testName="function-0501">
+      <outResult>
+         <errTrace>ERROR! Unknown op code: 0</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="function-0601"/>
+   <testResult status="pass" testName="function-0602"/>
+   <testResult status="fail" testName="function-0701">
+      <outResult>
+         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>XPTY0004 : The function call result for function {http://www.wrox.com/5067/tour}list-possible-moves(), doesn't match the declared function result type xs:integer*.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-0901"/>
+   <testResult status="pass" testName="function-1001"/>
+   <testResult status="fail" testName="function-1002">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Found more than one stylesheet function named: x:test</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="function-1003"/>
+   <testResult status="fail" testName="function-1004"/>
+   <testResult status="fail" testName="function-1005">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-1007"/>
+   <testResult status="fail" testName="function-1009"/>
+   <testResult testName="function-1011"/>
+   <testResult status="pass" testName="function-1012"/>
+   <testResult status="fail" testName="function-1013"/>
+   <testResult status="fail" testName="function-1014">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Found more than one stylesheet function named: f:maximum</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="function-1015"/>
+   <testResult status="fail" testName="function-1016">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Found more than one stylesheet function named: x:test</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="function-1017"/>
+   <testResult testName="function-1018"/>
+   <testResult testName="function-1019"/>
+   <testResult status="pass" testName="function-1020"/>
+   <testResult status="fail" testName="function-1021">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:x="http://xxx.com/"/&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="function-1022"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="function-1024">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-1025">
+      <outResult>
+         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
+         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="function-1026"/>
+   <testResult status="fail" testName="function-1027">
+      <outResult>
+         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
+         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="function-1028"/>
+   <testResult status="fail" testName="function-1029">
+      <outResult>
+         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
+         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="function-1030"/>
+   <testResult testName="function-1031"/>
+</testrun>

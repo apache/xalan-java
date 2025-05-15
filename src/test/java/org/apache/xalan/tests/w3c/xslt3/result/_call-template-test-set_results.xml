@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="call-template">
+   <testResult status="fail" testName="call-template-0001">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="call-template-0101"/>
+   <testResult status="fail" testName="call-template-0102">
+      <outResult>
+         <errTrace>XTDE0040 : An XSL template named 'foo:temp' doesn't exist.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="call-template-0103"/>
+   <testResult status="pass" testName="call-template-0104"/>
+   <testResult status="pass" testName="call-template-0105"/>
+   <testResult status="fail" testName="call-template-0106">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt; Do Nothing! </outResult>
+   </testResult>
+   <testResult status="pass" testName="call-template-0107"/>
+   <testResult testName="call-template-0108"/>
+   <testResult status="fail" testName="call-template-0109">
+      <outResult>
+         <errTrace>Illegal value:  Q{}temp  used for QNAME attribute: name</errTrace>
+         <errTrace>Illegal value: Q{http://another/}temp used for QNAME attribute: name</errTrace>
+         <errTrace>Illegal value:  Q{http://another/}temp  used for QNAME attribute: name</errTrace>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: xsl:template requires either a name or a match attribute.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="call-template-0110">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: Prefix must resolve to a namespace: *</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="call-template-0111">
+      <outResult>
+         <errTrace>Extra illegal tokens: '!', '$', 'in'</errTrace>
+         <errTrace>XTTE0590 : The required item type of the value of parameter in is xs:string. The supplied value doesn't match the expected item type.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="call-template-0201"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="call-template-0401a">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
+  top-level-a&#13;
+&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="call-template-0402"/>
+   <testResult status="pass" testName="call-template-0501"/>
+   <testResult status="pass" testName="call-template-0601"/>
+   <testResult status="pass" testName="call-template-0701"/>
+   <testResult status="fail" testName="call-template-0702"/>
+   <testResult status="fail" testName="call-template-0703">
+      <outResult>
+         <errTrace>Illegal value: Q{http://0702.com/}pvar1 used for QNAME attribute: name</errTrace>
+         <errTrace>Illegal value: Q{http://0702.com/}pvar1 used for QNAME attribute: name</errTrace>
+         <errTrace>Illegal value: Q{}pvar2 used for QNAME attribute: name</errTrace>
+         <errTrace>Illegal value: Q{http://0702.com/}pvar1 used for QNAME attribute: name</errTrace>
+         <errTrace>Prefix must resolve to a namespace: http</errTrace>
+         <errTrace>Extra illegal tokens: '{', '/', '/', '0702.com', '/', '}', 'pvar1'</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="call-template-0801"/>
+   <testResult status="pass" testName="call-template-0802"/>
+   <testResult status="fail" testName="call-template-0901"/>
+   <testResult status="pass" testName="call-template-1001"/>
+   <testResult status="fail" testName="call-template-1002"/>
+   <testResult testName="call-template-1003"/>
+   <testResult status="pass" testName="call-template-1101"/>
+   <testResult status="pass" testName="call-template-1102"/>
+   <testResult status="pass" testName="call-template-1201"/>
+   <testResult status="pass" testName="call-template-1301"/>
+   <testResult status="pass" testName="call-template-1401"/>
+   <testResult status="pass" testName="call-template-1501"/>
+   <testResult status="pass" testName="call-template-1601"/>
+   <testResult status="pass" testName="call-template-1701"/>
+   <testResult status="pass" testName="call-template-1801"/>
+   <testResult status="pass" testName="call-template-1802"/>
+   <testResult status="pass" testName="call-template-1803"/>
+   <testResult status="fail" testName="call-template-1901"/>
+   <testResult status="pass" testName="call-template-2001"/>
+   <testResult status="fail" testName="call-template-2101">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;test,pvar2 default data&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="call-template-2102"/>
+</testrun>

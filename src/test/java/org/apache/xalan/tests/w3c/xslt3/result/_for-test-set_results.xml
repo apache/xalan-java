@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="for">
+   <testResult status="pass" testName="for-001"/>
+   <testResult status="fail" testName="for-002"/>
+   <testResult status="fail" testName="for-003"/>
+   <testResult testName="for-004"/>
+</testrun>
