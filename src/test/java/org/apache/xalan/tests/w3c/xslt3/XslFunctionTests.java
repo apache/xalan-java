@@ -14,28 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.main;
+package org.apache.xalan.tests.w3c.xslt3;
 
-import org.apache.xalan.tests.w3c.xslt3.XslAnalyzeStringTests;
-import org.apache.xalan.tests.w3c.xslt3.XslApplyTemplatesTests;
-import org.apache.xalan.tests.w3c.xslt3.XslForEachGroupTests;
-import org.apache.xalan.tests.w3c.xslt3.XslTryTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
- * Xalan-J XSL 3 test driver, to run W3C XSLT 3.0 test suite.
- * 
- * This is under development.
+ * Xalan-J XSL 3 test driver, to run W3C XSL 3.0 transformation 
+ * tests for xsl:function instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-@RunWith(Suite.class)
-@SuiteClasses({ XslAnalyzeStringTests.class, XslApplyTemplatesTests.class, XslForEachGroupTests.class,
-	            XslTryTests.class})
-public class W3CXSLT3TestSuite {
+public class XslFunctionTests extends W3CXslTransformTestsUtil {     
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+    	m_xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/decl/function/_function-test-set.xml";
+    	m_testResultFileName = "xsl_function_test_results.xml";    	   
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        m_xmlDocumentBuilderFactory = null;
+        m_xmlDocumentBuilder = null;
+        m_xslTransformerFactory = null;
+    }
+    
+    @Test
+    public void runXslFunctionTests() {    	    	
+    	runXslTests();
+    }
 
 }

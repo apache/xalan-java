@@ -87,6 +87,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     
     protected static String m_xslTransformTestSetFilePath = null;
     
+    protected static String m_testResultFileName = null;
+    
     protected static String m_initTemplateName = null;
     
     protected static String m_w3cXslt3TestSuiteXalanResultsPathPrefix = "file:/d:/xslt30-test-master/xalan_j_test_results/";
@@ -691,6 +693,74 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     	resultStr = resultStr.replaceFirst(XSL3FunctionService.UTF_16, XSL3FunctionService.UTF_8);
 
     	return resultStr;
+    }
+    
+    /**
+     * When running W3C XSLT 3.0 test suite, check whether the test case 
+     * is intended for XSLT 2.0 version only.
+     *  
+     * @param testCaseNode
+     * @return						Boolean value true or false						
+     */
+    protected boolean isXslt2OnlyTestCase(Node testCaseNode) {
+    	
+        boolean result = false;
+        
+        NodeList nodeList = testCaseNode.getChildNodes();
+        for (int idx = 0; idx < nodeList.getLength(); idx++) {
+     	  Node node = nodeList.item(idx);
+     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
+     		 Element elemNode = (Element)node;
+     		 String elemName = elemNode.getLocalName();
+     		 if ("dependencies".equals(elemName)) {
+     			 NodeList nodeList1 = elemNode.getElementsByTagName("spec");
+     			 if (nodeList1.getLength() == 1) {
+     				 Element elem1 = (Element)(nodeList1.item(0));
+     				 String xsltSpecVersion = elem1.getAttribute("value");
+     				 if ("XSLT20".equals(xsltSpecVersion)) {
+     					result = true;
+     					break; 
+     				 }
+     			 }
+     		 }
+     	  }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * When running W3C XSLT 3.0 test suite, check whether the test case 
+     * is written for streaming feature.
+     *  
+     * @param testCaseNode
+     * @return						Boolean value true or false						
+     */
+    protected boolean isStreamingFeatureTestCase(Node testCaseNode) {
+    	
+        boolean result = false;
+        
+        NodeList nodeList = testCaseNode.getChildNodes();
+        for (int idx = 0; idx < nodeList.getLength(); idx++) {
+     	  Node node = nodeList.item(idx);
+     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
+     		 Element elemNode = (Element)node;
+     		 String elemName = elemNode.getLocalName();
+     		 if ("dependencies".equals(elemName)) {
+     			 NodeList nodeList1 = elemNode.getElementsByTagName("feature");
+     			 if (nodeList1.getLength() == 1) {
+     				 Element elem1 = (Element)(nodeList1.item(0));
+     				 String streaming = elem1.getAttribute("value");
+     				 if ("streaming".equals(streaming)) {
+     					result = true;
+     					break; 
+     				 }
+     			 }
+     		 }
+     	  }
+        }
+        
+        return result;
     }
     
     /**
