@@ -1396,12 +1396,25 @@ public class XPathParser
                 	 nextToken();
                  }
                  else {
-                    while (!tokenIs(",") && (m_token != null)) {
-                       if (!lookahead(null, 1)) {
-                          xpathExprTokens.add(m_token);
-                       }
-                       nextToken();
-                    }
+                	if ((lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3))) || isDfcBegin(m_token)) {
+                		// The literal sequence constructor item is an XPath conventional 
+                		// function call, or an XPath dynamic function call.
+                		while (!(isStrListHasBalancedParentheses(xpathExprTokens, '(', ')') && 
+                				                                                          tokenIs(",")) && (m_token != null)) {
+                		   if (!lookahead(null, 1)) {
+                			  xpathExprTokens.add(m_token);
+                		   }
+                		   nextToken();
+                		}
+                	}
+                	else {
+                		while (!tokenIs(",") && (m_token != null)) {
+                			if (!lookahead(null, 1)) {
+                				xpathExprTokens.add(m_token);
+                			}
+                			nextToken();
+                		}
+                	}
                  }
                  
                  if (xpathExprTokens.size() > 0) {
@@ -1613,6 +1626,53 @@ public class XPathParser
       else {
          ExprSingle();
       }
+  }
+  
+  /**
+   * This method definition checks whether, the supplied token 
+   * string value starts with an XPath dynamic function call syntax.
+   * 
+   * @param tokenStr			The supplied token string value 
+   * @return                    Boolean true or false, indicating the 
+   *                            result of evaluation.
+   */
+  private boolean isDfcBegin(String tokenStr) {
+	  boolean result = false;
+	  
+	  if ((tokenStr != null) && (tokenStr.equals("$") && lookahead('(', 2))) {
+		  result = true; 
+	  }
+	  
+	  return result;
+  }
+  
+  /**
+   * Given a list of strings and left and right parentheses character definitions, 
+   * find whether the concatenated string value of the supplied list contains balanced 
+   * parenthesis pairs.
+   * 
+   * @param strList					The supplied list of strings
+   * @param lParentType				Left parentheses character
+   * @param rParenType              Right parentheses character
+   * @return						Boolean true or false, indicating the 
+   *                                result of evaluation.
+   */
+  private boolean isStrListHasBalancedParentheses(List<String> strList, char lParentType, char rParenType) {
+	  
+	  boolean result = false;
+	  
+	  StringBuffer strBuff = new StringBuffer();
+	  if (strList.size() > 0) {
+		 for (int idx = 0; idx < strList.size(); idx++) {
+			strBuff.append(strList.get(idx)); 
+		 }
+		 
+		 if (XslTransformEvaluationHelper.isStrHasBalancedParentheses(strBuff.toString(), '(', ')')) {
+			 result = true; 
+		 }
+	  }
+	  
+	  return result;
   }
   
   /**
