@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xslt3.insn;
+package org.apache.xalan.tests.w3c.xslt3.type;
 
 import org.apache.xalan.tests.w3c.xslt3.W3CXslTransformTestsUtil;
 import org.junit.AfterClass;
@@ -23,18 +23,18 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XSL 3.0 transformation 
- * tests for xsl:call-template instruction.
+ * tests for XPath boolean types.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslCallTemplateTests extends W3CXslTransformTestsUtil {     
+public class XslBooleanTests extends W3CXslTransformTestsUtil {     
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/call-template/_call-template-test-set.xml";
-    	m_testResultFileName = "_call-template-test-set_result.xml";    	   
+    	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "type/boolean/_boolean-test-set.xml";
+    	m_testResultFileName = "_boolean-test-set_result.xml";    	   
     }
 
     @AfterClass
@@ -45,8 +45,8 @@ public class XslCallTemplateTests extends W3CXslTransformTestsUtil {
     }
 
     @Test
-    public void runXslCallTemplateTests() {    	    	
-    	runXslTestSet();
+    public void runXslBooleanTests() {    	
+       runXslTestSet();
     }
 
 }

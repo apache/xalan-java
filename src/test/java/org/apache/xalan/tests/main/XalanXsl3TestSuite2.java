@@ -43,7 +43,6 @@ import org.apache.xalan.tests.xpath3.FnTokenizeTests;
 import org.apache.xalan.tests.xpath3.FnTransformTests;
 import org.apache.xalan.tests.xpath3.FnUnparsedTextLinesTests;
 import org.apache.xalan.tests.xpath3.FnUnparsedTextTests;
-import org.apache.xalan.tests.xpath3.W3c_xslt30_fn_deep_equalTests;
 import org.apache.xalan.tests.xpath3.XPathArithmeticOnDurationValuesTests;
 import org.apache.xalan.tests.xpath3.XPathBuiltinFunctionNamespceTests;
 import org.apache.xalan.tests.xpath3.XPathDynamicFunctionCallTests;
@@ -64,10 +63,6 @@ import org.apache.xalan.tests.xpath3.XPathSimpleMapOperatorTests;
 import org.apache.xalan.tests.xpath3.XPathStringConcatExprTests;
 import org.apache.xalan.tests.xpath3.XsDurationComponentExtractionFunctionTests;
 import org.apache.xalan.tests.xpath3.XsGregorianTypeTests;
-import org.apache.xalan.tests.xslt3.W3c_xslt30_AnalyzeStringTests;
-import org.apache.xalan.tests.xslt3.W3c_xslt30_AxesTests;
-import org.apache.xalan.tests.xslt3.W3c_xslt30_ForEachGroupTests;
-import org.apache.xalan.tests.xslt3.W3c_xslt30_IterateTests;
 import org.apache.xalan.tests.xslt3.XslAnalyzeStringTests;
 import org.apache.xalan.tests.xslt3.XslAttributeTests;
 import org.apache.xalan.tests.xslt3.XslCharacterMapTests;
@@ -103,10 +98,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ XslAnalyzeStringTests.class, XslAttributeTests.class, XslForEachGroupTests.class,
                 XslForEachGroupWithSortTests.class, XslRtfMigrationTests.class, XPathQuantifiedExprTests.class, 
                 FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,                 
-                FnIndexOfTests.class, XPathSequenceTests.class, XPathRangeExprTests.class, 
-                W3c_xslt30_IterateTests.class, W3c_xslt30_AxesTests.class, 
-                W3c_xslt30_fn_deep_equalTests.class, W3c_xslt30_ForEachGroupTests.class, 
-                W3c_xslt30_AnalyzeStringTests.class, XslIterateTests.class,                 
+                FnIndexOfTests.class, XPathSequenceTests.class, XPathRangeExprTests.class, XslIterateTests.class,                 
                 FnFilterTests.class, XPathDynamicFunctionCallTests.class, XPathIfExprTests.class, 
                 XPathForExprTests.class, XPathLetExprTests.class, FnDistinctValuesTests.class,
                 XPathMathFunctionTests.class, XPathBuiltinFunctionNamespceTests.class,
@@ -125,6 +117,6 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnTransformTests.class, FnStartsWithEndsWithTests.class, FnContainsTests.class,
                 FnSubstringBeforeAndAfterTests.class, XslTryCatchTests.class, XslCharacterMapTests.class,
                 XslInitialTemplateTests.class, XslContextItemTests.class })
-public class Xsl3TestSuite2 {
+public class XalanXsl3TestSuite2 {
 
 }

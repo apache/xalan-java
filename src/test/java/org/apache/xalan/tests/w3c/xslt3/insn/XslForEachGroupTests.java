@@ -33,8 +33,8 @@ public class XslForEachGroupTests extends W3CXslTransformTestsUtil {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	m_xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/insn/for-each-group/_for-each-group-test-set.xml";
-    	m_testResultFileName = "_for-each-group-test-set_results.xml";
+    	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/for-each-group/_for-each-group-test-set.xml";
+    	m_testResultFileName = "_for-each-group-test-set_result.xml";
     }
 
     @AfterClass

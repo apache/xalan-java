@@ -23,13 +23,20 @@ import org.apache.xalan.tests.w3c.xslt3.expr.XslCastableTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslExpressionTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslForTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslMathTests;
+import org.apache.xalan.tests.w3c.xslt3.expr.XslNodeTestTests;
+import org.apache.xalan.tests.w3c.xslt3.expr.XslPathTests;
+import org.apache.xalan.tests.w3c.xslt3.expr.XslPredicateTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslAnalyzeStringTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslApplyTemplatesTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslAttributeTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslCallTemplateTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslChooseTemplateTests;
+import org.apache.xalan.tests.w3c.xslt3.insn.XslCopyTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslForEachGroupTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslTryTests;
+import org.apache.xalan.tests.w3c.xslt3.type.XslBooleanTests;
+import org.apache.xalan.tests.w3c.xslt3.type.XslNodeTests;
+import org.apache.xalan.tests.w3c.xslt3.type.XslStringTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -45,9 +52,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ XslAnalyzeStringTests.class, XslApplyTemplatesTests.class, XslForEachGroupTests.class,
 	            XslTryTests.class, XslAttributeTests.class, XslCallTemplateTests.class,
-	            XslChooseTemplateTests.class, XslFunctionTests.class, XslCharacterMapTests.class,
+	            XslChooseTemplateTests.class, XslCopyTests.class, XslFunctionTests.class, XslCharacterMapTests.class,
 	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class,
-	            XslMathTests.class })
+	            XslMathTests.class, XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class,
+	            XslBooleanTests.class, XslNodeTests.class, XslStringTests.class })
 public class W3CXSLT3Tests {
 
 }

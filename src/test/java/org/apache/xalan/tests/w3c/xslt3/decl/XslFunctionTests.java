@@ -33,8 +33,8 @@ public class XslFunctionTests extends W3CXslTransformTestsUtil {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	m_xslTransformTestSetFilePath = "file:/d:/xslt30-test-master/tests/decl/function/_function-test-set.xml";
-    	m_testResultFileName = "_function-test-set_results.xml";    	   
+    	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "decl/function/_function-test-set.xml";
+    	m_testResultFileName = "_function-test-set_result.xml";    	   
     }
 
     @AfterClass

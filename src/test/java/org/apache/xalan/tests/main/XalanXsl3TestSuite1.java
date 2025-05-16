@@ -104,6 +104,6 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathExprFunctionCallSuffixTests.class, XslEvaluateTests.class, XslValueofTests.class,
                 XslCopyofValidationTests.class, XslCopyValidationTests.class, FnPositionTests.class,
                 XslForEachGroupWithCollationTests.class })
-public class Xsl3TestSuite1 {
+public class XalanXsl3TestSuite1 {
 
 }

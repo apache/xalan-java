@@ -25,7 +25,10 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
@@ -52,13 +55,15 @@ import org.xml.sax.SAXException;
  * 
  * @xsl.usage advanced
  */
-public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
-	
+public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {	    
+    
+    protected static final String W3C_XSLT3_TESTS_META_DATA_DIR_HOME = "file:/d:/xslt30-test-master/tests/";
+    
+    private static final String XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH =  W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "variant_all_of_test_template.xsl";
+    
     protected static String m_xslTransformTestSetFilePath = null;
     
     protected static String m_testResultFileName = null;
-    
-    private static final String XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH = "file:/d:/xslt30-test-master/tests/variant_all_of_test_template.xsl";
     
     private static final String EXPECTED_NODE_KIND_ERROR = "error";
     
@@ -67,7 +72,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";
 	
 	/**
-	 * Run all XSL transformation tests from a test set.
+	 * Method definition to run all XSL transformation tests from 
+	 * a test set.
 	 */
     public void runXslTestSet() {    	
     	
@@ -75,7 +81,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	
     	FileOutputStream testResultFos = null;
     	
-    	Document testResultDoc = null;
+    	Document testResultDoc = null;    	
+    	Element elemTestRun = null;
     	
     	try {
     	   xslTestSetDoc = m_xmlDocumentBuilder.parse(m_xslTransformTestSetFilePath);
@@ -85,16 +92,18 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		   // individual test results will be appended.
 		   String testSetName = docElem.getAttribute("name");
 		   testResultDoc = m_xmlDocumentBuilder.newDocument();
-    	   Element elemTestRun = testResultDoc.createElement("testrun");
+    	   elemTestRun = testResultDoc.createElement("testrun");
+    	   String testRunDateStrValue = getDateISOString(new Date());
     	   elemTestRun.setAttribute("name", testSetName);
-    	   testResultDoc.appendChild(elemTestRun);
+    	   elemTestRun.setAttribute("dateTime", testRunDateStrValue);
+    	   testResultDoc.appendChild(elemTestRun);    	   
     	   
     	   NodeList nodeList = xslTestSetDoc.getElementsByTagNameNS("http://www.w3.org/2012/10/xslt-test-catalog", "test-case");
     	   for (int idx = 0; idx < nodeList.getLength(); idx++) {
     		   Node node = nodeList.item(idx);
     		   
     		   if (isXslt2OnlyTestCase(node)) {
-    			  // We skip running XSLT 2.0 only test case
+    			  // We skip running XSLT 2.0 only test cases
     			  Element elemTestResult = testResultDoc.createElement("testResult");
     			  elemTestResult.setAttribute("status", "skipped");
     			  elemTestResult.setAttribute("xsltVersion", "2.0 only");
@@ -103,7 +112,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			  continue; 
     		   }
     		   else if (isStreamingFeatureTestCase(node)) {
-     			  // We skip running streaming feature test case
+     			  // We skip running streaming feature test cases
        			  Element elemTestResult = testResultDoc.createElement("testResult");
        			  elemTestResult.setAttribute("status", "skipped");
        			  elemTestResult.setAttribute("feature", "streaming");
@@ -190,17 +199,54 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   
     		   StreamSource xsltStreamSrc = new StreamSource(xslStylesheetUriStr);
     		   
-    		   runW3CXSLTTestSuiteXslTransformAndProduceResult(testCaseName, xmlInpDomSource, xsltStreamSrc, expectedResultElem, 
-    				                                                            elemTestRun, testResultDoc);
+    		   try {
+    		      runW3CXSLTTestSuiteXslTransformAndProduceResult(testCaseName, xmlInpDomSource, xsltStreamSrc, 
+    		    		                                          expectedResultElem, elemTestRun, testResultDoc);
+    		   }
+    		   catch (Exception ex) {
+    			  System.out.println("Test case name : " + testCaseName + ", Exception message : " + ex.getMessage()); 
+    		   }
        		   
     	   }    	   
     	}
     	catch (Exception ex) {
-    	   ex.printStackTrace();
+    	   System.out.println(ex.getMessage());
     	}
     	finally {
     	   try {
-    		   // Serialize testResultDoc to file
+    		   NodeList nodeList = testResultDoc.getElementsByTagName("testResult");
+        	   
+    		   int testsPassCount = 0;
+        	   int testsfailCount = 0;
+        	   int testsSkippedCount = 0;
+        	   int testStatusUnknownCount = 0;
+        	   
+        	   for (int idx = 0; idx < nodeList.getLength(); idx++) {
+        		  Element element = (Element)(nodeList.item(idx));
+        		  String statusValue = element.getAttribute("status");
+        		  if ("pass".equals(statusValue)) {
+        			  testsPassCount++; 
+        		  }
+        		  else if ("fail".equals(statusValue)) {
+        			  testsfailCount++; 
+        		  }
+        		  else if ("skipped".equals(statusValue)) {
+        			  testsSkippedCount++; 
+        		  }
+        		  else {
+        			  testStatusUnknownCount++; 
+        		  }
+        	   }
+        	   
+        	   int totalTestsRun = (testsPassCount + testsfailCount + testsSkippedCount + testStatusUnknownCount);    
+        	   
+        	   elemTestRun.setAttribute("pass", String.valueOf(testsPassCount));
+        	   elemTestRun.setAttribute("fail", String.valueOf(testsfailCount));
+        	   elemTestRun.setAttribute("skipped", String.valueOf(testsSkippedCount));
+        	   elemTestRun.setAttribute("statusUnknown", String.valueOf(testStatusUnknownCount));
+        	   elemTestRun.setAttribute("totalRun", String.valueOf(totalTestsRun));
+        	   
+    		   // Serialize W3C XSLT 3.0 test set results file to file system
     		   String xslTestResultStr = serializeXmlDomElementNode(testResultDoc);
         	   
         	   File xslAnalyzeStringTestResultFile = new File(new URI(m_w3cXslt3TestSuiteXalanResultsPathPrefix + m_testResultFileName));
@@ -489,6 +535,24 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	}
     	
     	return result;
+    }
+    
+    /**
+     * Method definition to get an ISO formatted date string for the supplied 
+     * java.util.Date value.
+     *  
+     * @param date				The supplied date object value
+     * @return					The formatted date string
+     */
+    private String getDateISOString(Date dateValue) {
+    	String result = null;
+    	
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        
+        result = sdf.format(dateValue); 
+        
+        return result;
     }
 
 }
