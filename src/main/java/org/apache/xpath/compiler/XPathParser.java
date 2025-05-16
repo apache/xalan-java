@@ -43,6 +43,7 @@ import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
+import org.apache.xml.utils.ObjectVector;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
@@ -264,6 +265,10 @@ public class XPathParser
   private static final String STRING_CLASSCAST_ERROR_MESSAGE = "org.apache.xpath.objects.XString cannot be cast to java.lang.String";
   
   private boolean m_isParseSequenceTypeExprWithUserDefinedType = false;
+  
+  private boolean m_isSequenceOperand = false;
+  
+  private TokenQueueScanPosition m_prevTokQueueScanPosition = null;
   
   
   /**
@@ -1281,7 +1286,7 @@ public class XPathParser
 	          }
 	      }
 	  }
-	  else if (m_isXPathExprBeginParse && isLiteralSequenceOrArrayBegin()) {
+	  else if ((m_isXPathExprBeginParse || m_isSequenceOperand) && isLiteralSequenceOrArrayBegin()) {
     	  /**
 		   * We consider XPath parse of sequence and array, in similar 
     	   * way. These are lexically different only by virtue of sequence/array 
@@ -1439,6 +1444,24 @@ public class XPathParser
               }                            
           }
           
+          int listSize = seqOrArrayXPathItems.size();
+          String sequenceIndexExpr = null;
+          if (listSize > 1) {
+             String listLastItemStr = seqOrArrayXPathItems.get(listSize - 1);
+             int idx1 = listLastItemStr.indexOf(')');
+             int idx2 = listLastItemStr.indexOf('[');
+             if (idx2 == (idx1 + 1)) {            	
+            	ObjectVector tokenQueueVector = m_ops.getTokenQueue();
+            	int tokenQueueSize = m_ops.getTokenQueueSize();
+            	String tokenQueueLastItemStr = (tokenQueueVector.elementAt(tokenQueueSize - 1)).toString();
+            	if ("]".equals(tokenQueueLastItemStr)) {
+            	   sequenceIndexExpr = listLastItemStr.substring(idx2 + 1);
+            	   listLastItemStr = listLastItemStr.substring(0, idx1);
+            	   seqOrArrayXPathItems.set(listSize - 1, listLastItemStr);
+            	}
+             }
+          }
+          
           boolean isXPathParseOkToProceed = true;
           
           if (isSquareArrayConstructor) {
@@ -1499,6 +1522,7 @@ public class XPathParser
                  insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
                  m_xpathSequenceConstructor = new XPathSequenceConstructor();                 
                  m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
+                 m_xpathSequenceConstructor.setIndexExpr(sequenceIndexExpr);
               }
               
               m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
@@ -1506,10 +1530,15 @@ public class XPathParser
              
           }
           else {
-              // Re-start XPath parse, reusing the same token queue             
-              m_queueMark = 0;
-              nextToken();
-              ExprSingle();
+        	  if (m_isSequenceOperand) {
+        		  m_isSequenceOperand = false; 
+        	  }
+        	  else {
+        		  // Re-start XPath parse, reusing the same token queue             
+        		  m_queueMark = 0;
+        		  nextToken();
+        		  ExprSingle();
+        	  }
           }
       }
 	  else if (m_isSequenceTypeXPathExpr) {
@@ -3033,26 +3062,40 @@ public class XPathParser
       if (tokenIs('+'))
       {
         nextToken();
+        
         insertOp(addPos, 2, OpCodes.OP_PLUS);
+        
+        if (tokenIs('(')) {
+            addPos = handleXPathParseRhsSequenceOperand(addPos);
+        }
+        else {
+        	int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
-        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+        	addPos = AdditiveExpr(addPos);
 
-        addPos = AdditiveExpr(addPos);
-        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
-          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
-        addPos += 2;
+        	m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
+        	  m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+        	addPos += 2;
+        }                
       }
       else if (tokenIs('-'))
       {
         nextToken();
+        
         insertOp(addPos, 2, OpCodes.OP_MINUS);
+        
+        if (tokenIs('(')) {
+            addPos = handleXPathParseRhsSequenceOperand(addPos);
+        }
+        else {
+        	int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
-        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+        	addPos = AdditiveExpr(addPos);
 
-        addPos = AdditiveExpr(addPos);
-        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
-          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
-        addPos += 2;
+        	m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
+        	  m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+        	addPos += 2;
+        }
       }
     }
 
@@ -6324,6 +6367,7 @@ public class XPathParser
     * similarly excluded.
     */
    private boolean isXPathPatternExcludeTrailingNodeFunctions() {
+	   
 	  boolean isExclude = false;
 	  
 	  String currXPathPattern = m_ops.m_currentPattern;
@@ -6351,6 +6395,7 @@ public class XPathParser
     * Check whether the token string is one of the node combining tokens.
     */
    private boolean isTokenNodeCombining(String tokenStr) {
+	   
  	  boolean result = false;	  
  	  
  	  if (tokenStr != null) {
@@ -6359,6 +6404,39 @@ public class XPathParser
  				  										|| tokenStr.equals("except")) {
  			  result = true; 
  		  }
+ 	  }
+ 	  
+ 	  return result;
+   }
+   
+   /**
+    * XPath parse of RHS literal sequence constructor operand of XPath binary 
+    * operations like +, -.
+    */
+   private int handleXPathParseRhsSequenceOperand(int addPos) throws TransformerException {
+	   
+ 	  int result = 0;
+ 	  
+ 	  m_prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);           
+ 	  m_isSequenceOperand = true;
+ 	  
+ 	  Expr();
+ 	  
+ 	  if (!m_isSequenceOperand) {
+ 		  // The method Expr() has set variable m_isSequenceOperand to false
+ 		  
+ 		  restoreTokenQueueScanPosition(m_prevTokQueueScanPosition);
+
+ 		  int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+
+ 		  result = AdditiveExpr(addPos);
+
+ 		  m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
+ 			m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+ 		  result += 2;
+ 	  }
+ 	  else {
+ 		  m_isSequenceOperand = false;
  	  }
  	  
  	  return result;

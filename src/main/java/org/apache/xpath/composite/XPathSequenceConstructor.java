@@ -54,7 +54,9 @@ public class XPathSequenceConstructor extends Expression {
 
     private static final long serialVersionUID = -5141131877741250613L;
     
-    private List<String> sequenceConstructorXPathParts = new ArrayList<String>();
+    private List<String> m_sequenceConstructorXPathParts = new ArrayList<String>();
+    
+    private String m_xpathIndexExpr = null;
     
     /**
      * This class field is used during, XPath.fixupVariables(..) action 
@@ -76,7 +78,7 @@ public class XPathSequenceConstructor extends Expression {
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
         
-        ResultSequence resultSeq = new ResultSequence();
+    	XObject result = null;
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
@@ -88,12 +90,16 @@ public class XPathSequenceConstructor extends Expression {
             prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
         }
         
-        // We evaluate below all the, XPath expression parts within the list 
-        // 'sequenceConstructorXPathParts', and concatenate the sequences resulting
-        // from each of them, to get the final result sequence that is returned by
-        // this method.
-        for (int idx = 0; idx < sequenceConstructorXPathParts.size(); idx++) {
-           String xpathExprStr = sequenceConstructorXPathParts.get(idx);
+        /**
+         * We evaluate all the XPath expression parts within the list 'm_sequenceConstructorXPathParts', 
+         * and concatenate the sequences resulting from each of them, to get the final result 
+         * sequence that is returned by this method.
+         */
+        
+        ResultSequence resultSeq = new ResultSequence();
+        
+        for (int idx = 0; idx < m_sequenceConstructorXPathParts.size(); idx++) {
+           String xpathExprStr = m_sequenceConstructorXPathParts.get(idx);
            
            if (prefixTable != null) {
               xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, 
@@ -170,9 +176,7 @@ public class XPathSequenceConstructor extends Expression {
                              resultSeq.add(evalResult);
                           }
                           else {
-                              throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
-                                                                                       + "sequence reference, is not an integer.", 
-                                                                                              srcLocator);  
+                              throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with a sequence reference, is not an integer.", srcLocator);  
                           }
                        }
                        else if (seqIndexEvalResult instanceof XSNumericType) {
@@ -183,14 +187,11 @@ public class XPathSequenceConstructor extends Expression {
                              resultSeq.add(evalResult);
                           }
                           else {
-                              throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
-                                                                                       + "sequence reference, is not an integer.", 
-                                                                                              srcLocator);  
+                              throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with a sequence reference, is not an integer.", srcLocator);  
                           }
                        }
                        else {
-                           throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm sequence "
-                                                                                    + "reference, is not numeric.", srcLocator);  
+                           throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with a sequence reference, is not numeric.", srcLocator);  
                        }
                    }
                }
@@ -231,7 +232,48 @@ public class XPathSequenceConstructor extends Expression {
            }
         }
         
-        return resultSeq;
+        if (m_xpathIndexExpr != null) {
+        	if (prefixTable != null) {
+        		m_xpathIndexExpr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpathIndexExpr, prefixTable);
+        	}
+
+        	XPath xpathObj = new XPath(m_xpathIndexExpr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	
+        	if (m_vars != null) {
+        		xpathObj.fixupVariables(m_vars, m_globals_size);
+            }
+        	
+        	XObject seqIndexEvalResult = xpathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+        	
+        	if (seqIndexEvalResult instanceof XNumber) {
+        	   double dbl1 = ((XNumber)seqIndexEvalResult).num();
+        	   if (dbl1 == (int)dbl1) {
+        		  result = resultSeq.item((int)dbl1 - 1); 
+        	   }
+        	   else {
+        		  throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with a sequence reference, is not an integer.", srcLocator);
+        	   }
+        	}
+        	else if (seqIndexEvalResult instanceof XSNumericType) {
+        	   XSNumericType xsNumericType = (XSNumericType)seqIndexEvalResult;
+        	   String strValue = xsNumericType.stringValue();
+        	   double dbl1 = Double.valueOf(strValue);
+               if (dbl1 == (int)dbl1) {
+            	  result = resultSeq.item((int)dbl1 - 1);   
+        	   }
+        	   else {
+        		  throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with a sequence reference, is not an integer.", srcLocator);
+        	   }
+        	}
+        	else {
+        	   throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with a sequence reference, is not numeric.", srcLocator);
+        	}
+        }
+        else {
+           result = resultSeq; 	
+        }
+        
+        return result;
     }
 
     @Override
@@ -246,12 +288,20 @@ public class XPathSequenceConstructor extends Expression {
     }
 
     public List<String> getSequenceConstructorXPathParts() {
-        return sequenceConstructorXPathParts;
+        return m_sequenceConstructorXPathParts;
     }
 
     public void setSequenceConstructorXPathParts(List<String> 
                                                         sequenceConstructorXpathParts) {
-        this.sequenceConstructorXPathParts = sequenceConstructorXpathParts;
+        this.m_sequenceConstructorXPathParts = sequenceConstructorXpathParts;
     }
+
+	public void setIndexExpr(String sequenceIndexExpr) {
+		this.m_xpathIndexExpr = sequenceIndexExpr; 		
+	}
+	
+	public String getIndexExpr() {
+	    return m_xpathIndexExpr;
+	}
 
 }
