@@ -32,9 +32,9 @@ import org.junit.Test;
  */
 public class XPathSequenceConstructorTests extends XslTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "sequence_constructor/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xpath_sequence_constructor/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "sequence_constructor/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xpath_sequence_constructor/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -264,6 +264,16 @@ public class XPathSequenceConstructorTests extends XslTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test22.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslSequenceConstructorTest23() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test23.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test23.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test23.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

@@ -1506,12 +1506,26 @@ public class XPathParser
                 break;
              }
           }
-          
-          // Verifying, whether sequence constructor expression, can create 
-          // a sequence of at-least two XDM values.
-	      if (isXPathParseOkToProceed && isSequenceConstructor) {
-	    	 if (!(seqOrArrayXPathItems.size() > 1)) {
-	    		isXPathParseOkToProceed = false; 
+                    
+	      if (isXPathParseOkToProceed && isSequenceConstructor) { 
+	    	 if (seqOrArrayXPathItems.size() > 1) {
+	    		 // An XPath literal sequence constructor expression can 
+	    		 // create an XDM sequence having at-least two values.
+	    		 isXPathParseOkToProceed = true; 
+	    	 }
+	    	 else {
+	    		 String xpathExprStr = seqOrArrayXPathItems.get(0);
+	    		 if (xpathExprStr.startsWith("for") || xpathExprStr.startsWith("let") || 
+	    				                               xpathExprStr.startsWith("some") || 
+	    				                               xpathExprStr.startsWith("every") || 
+	    				                               xpathExprStr.startsWith("if")) {
+	    			 // XPath parse of expressions like (for ...). i.e, XPath 'for' 
+	    			 // and other such expressions contained within '(' & ')'.
+	    			 isXPathParseOkToProceed = true; 
+	    		 }
+	    		 else {
+	    			 isXPathParseOkToProceed = false;
+	    		 }
 	    	 }
 	      }
                              
@@ -1536,10 +1550,10 @@ public class XPathParser
         	  if (m_isSequenceOperand) {
         		  m_isSequenceOperand = false; 
         	  }
-        	  else {
-        		  // Re-start XPath parse, reusing the same token queue             
-        		  m_queueMark = 0;
-        		  nextToken();
+        	  else {        		  
+        		  // Re-start XPath parse, reusing the same token queue        		                 	  
+               	  m_queueMark = 0;
+        		  nextToken();       		  
         		  ExprSingle();
         	  }
           }
