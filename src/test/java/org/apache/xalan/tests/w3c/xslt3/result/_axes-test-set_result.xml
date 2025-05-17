@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-16T11:49:43Z" fail="27" name="axes" pass="174" skipped="0" statusUnknown="0" totalRun="201">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-17T08:38:07Z" fail="28" name="axes" pass="173" skipped="0" statusUnknown="0" totalRun="201">
    <testResult status="pass" testName="axes-001"/>
    <testResult status="pass" testName="axes-002"/>
    <testResult status="pass" testName="axes-003"/>
@@ -44,7 +44,7 @@
    <testResult status="fail" testName="axes-043">
       <outResult>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="axes-044"/>
@@ -65,13 +65,13 @@
          <errTrace>Can not convert #STRING to a NodeList!</errTrace>
       </outResult>
    </testResult>
-   <testResult status="pass" testName="axes-058"/>
+   <testResult status="fail" testName="axes-058"/>
    <testResult status="fail" testName="axes-059"/>
    <testResult status="fail" testName="axes-060"/>
    <testResult status="fail" testName="axes-061">
       <outResult>
          <errTrace>ERROR! Unknown op code: 21</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="axes-062"/>
@@ -148,7 +148,7 @@
       <outResult>
          <errTrace>"xpath-default-namespace" attribute is not allowed on the xsl:stylesheet element!</errTrace>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="axes-133"/>
@@ -166,7 +166,7 @@
    <testResult status="fail" testName="axes-145">
       <outResult>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="axes-146"/>

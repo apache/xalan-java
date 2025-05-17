@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-16T11:49:43Z" fail="28" name="function" pass="20" skipped="4" statusUnknown="18" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-17T08:38:05Z" fail="28" name="function" pass="20" skipped="4" statusUnknown="18" totalRun="70">
    <testResult status="fail" testName="function-0001">
       <outResult>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>
@@ -84,9 +84,8 @@
    <testResult status="pass" testName="function-0602"/>
    <testResult status="fail" testName="function-0701">
       <outResult>
-         <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>XPTY0004 : The function call result for function {http://www.wrox.com/5067/tour}list-possible-moves(), doesn't match the declared function result type xs:integer*.</errTrace>
+         <errTrace>Extra illegal tokens: ')', '=', '0', ']'</errTrace>
+         <errTrace>Variable $empty-board accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-0901"/>
@@ -109,7 +108,12 @@
    <testResult status="fail" testName="function-1009"/>
    <testResult testName="function-1011"/>
    <testResult status="pass" testName="function-1012"/>
-   <testResult status="fail" testName="function-1013"/>
+   <testResult status="fail" testName="function-1013">
+      <outResult>
+         <errTrace>Extra illegal tokens: ')', '=', '0', ']', '/', '..', '/', '..', '/', '..', '/', '..'</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Variable $x accessed before it is bound!.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="function-1014">
       <outResult>
          <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Found more than one stylesheet function named: f:maximum</errTrace>

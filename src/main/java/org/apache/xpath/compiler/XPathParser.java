@@ -1444,16 +1444,26 @@ public class XPathParser
               }                            
           }
           
+          /**
+           * Handle, XPath literal sequence constructor expression
+           * like (a,b)[1] i.e, a literal sequence constructor
+           * followed by an index accessor. An index accessor here
+           * can be a variable reference as well.
+           */
           int listSize = seqOrArrayXPathItems.size();
-          String sequenceIndexExpr = null;
+          
+          // For e.g, for the expression (a,b)[1] this string 
+          // variable will have value "1".
+          String sequenceIndexExpr = null; 
+        		  
           if (listSize > 1) {
              String listLastItemStr = seqOrArrayXPathItems.get(listSize - 1);
              int idx1 = listLastItemStr.indexOf(')');
-             int idx2 = listLastItemStr.indexOf('[');
-             if (idx2 == (idx1 + 1)) {            	
-            	ObjectVector tokenQueueVector = m_ops.getTokenQueue();
-            	int tokenQueueSize = m_ops.getTokenQueueSize();
-            	String tokenQueueLastItemStr = (tokenQueueVector.elementAt(tokenQueueSize - 1)).toString();
+             int idx2 = listLastItemStr.indexOf('[');         	          	 
+             if ((idx1 >= 0) && (idx2 >= 0) && (idx2 == (idx1 + 1))) {
+            	ObjectVector tokenQueue = m_ops.getTokenQueue();
+             	int tokenQueueSize = m_ops.getTokenQueueSize();
+             	String tokenQueueLastItemStr = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();             	
             	if ("]".equals(tokenQueueLastItemStr)) {
             	   sequenceIndexExpr = listLastItemStr.substring(idx2 + 1);
             	   listLastItemStr = listLastItemStr.substring(0, idx1);
@@ -1465,7 +1475,7 @@ public class XPathParser
           boolean isXPathParseOkToProceed = true;
           
           if (isSquareArrayConstructor) {
-        	 // Compact the array items if applicable
+        	 // Compact the array items
              compactArrayItems(seqOrArrayXPathItems);
 	      }
 	  
@@ -1497,11 +1507,8 @@ public class XPathParser
              }
           }
           
-          // Verifying, whether sequence constructor expression, can build 
-          // at-least two xdm items.          
-	      // (Sequence constructor expressions having single '(' & ')' parentheses, 
-          // are evaluated with Xalan-J parser op code OpCodes.OP_GROUP from 
-          // within the Xalan-J parse method call ExprSingle())
+          // Verifying, whether sequence constructor expression, can create 
+          // a sequence of at-least two XDM values.
 	      if (isXPathParseOkToProceed && isSequenceConstructor) {
 	    	 if (!(seqOrArrayXPathItems.size() > 1)) {
 	    		isXPathParseOkToProceed = false; 
@@ -1522,12 +1529,8 @@ public class XPathParser
                  insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
                  m_xpathSequenceConstructor = new XPathSequenceConstructor();                 
                  m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
-                 m_xpathSequenceConstructor.setIndexExpr(sequenceIndexExpr);
-              }
-              
-              m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-             
+                 m_xpathSequenceConstructor.setIndexExpr(sequenceIndexExpr);                 
+              }             
           }
           else {
         	  if (m_isSequenceOperand) {
@@ -1705,43 +1708,47 @@ public class XPathParser
   }
   
   /**
-   * Given an information of XPath literal array items as a list 
-   * produced by "square array" constructor, compact the array 
-   * to produce correct desired literal array items.
+   * Method definition to compact the supplied string valued list,
+   * which contains a list of XPath array items. The supplied string
+   * valued list is mutated by this method which is the result of 
+   * compaction, and is accessible to the caller of this method.
    */
-  private void compactArrayItems(List<String> arrayXPathItems) {
+  private void compactArrayItems(List<String> xpathArrayItems) {
 	  
-	  List<String> arrayItemsXPathStrBackup = new ArrayList<String>();
+	  List<String> strListCopy = new ArrayList<String>();
 	  
-	  for (int idx = 0; idx < arrayXPathItems.size(); idx++) {
-		  arrayItemsXPathStrBackup.add(arrayXPathItems.get(idx)); 
+	  for (int idx = 0; idx < xpathArrayItems.size(); idx++) {
+		  strListCopy.add(xpathArrayItems.get(idx)); 
 	  }
 
-	  arrayXPathItems.clear();
+	  xpathArrayItems.clear();
 
-	  for (int idx = 0; idx < arrayItemsXPathStrBackup.size(); idx++) {
-		  String strVal = arrayItemsXPathStrBackup.get(idx);
-		  if (!(strVal.charAt(0) == '[')) {
-			  arrayXPathItems.add(strVal); 
+	  for (int idx = 0; idx < strListCopy.size(); idx++) {
+		  String strValue = strListCopy.get(idx);
+		  if (!(strValue.charAt(0) == '[')) {
+			  xpathArrayItems.add(strValue); 
 		  } 
 		  else {
 			  StringBuffer strBuff = new StringBuffer();
-			  strBuff.append(strVal + ",");
-			  arrayXPathItems.add(strVal + ",");        		 
-			  for (int idx1 = idx + 1; idx1 < arrayItemsXPathStrBackup.size(); idx1++) {
-				  String strVal2 = arrayItemsXPathStrBackup.get(idx1);
+			  strBuff.append(strValue + ",");
+			  xpathArrayItems.add(strValue + ",");
+			  
+			  for (int idx1 = idx + 1; idx1 < strListCopy.size(); idx1++) {
+				  String strVal2 = strListCopy.get(idx1);
 				  strBuff.append(strVal2);
 				  idx = idx1; 
 				  if ((strVal2.endsWith("]")) && (getCharCount(strBuff.toString(), '[') == 
 						                                                     getCharCount(strBuff.toString(), ']'))) {
-					  arrayXPathItems.remove(arrayXPathItems.size() - 1);
+					  xpathArrayItems.remove(xpathArrayItems.size() - 1);
+					  
 					  break;
 				  }
 				  else {
 					  strBuff.append(",");
 				  }
 			  }
-			  arrayXPathItems.add(strBuff.toString());        		 ; 
+			  
+			  xpathArrayItems.add(strBuff.toString());        		 ; 
 		  }
 	  }
   }
@@ -3066,7 +3073,7 @@ public class XPathParser
         insertOp(addPos, 2, OpCodes.OP_PLUS);
         
         if (tokenIs('(')) {
-            addPos = handleXPathParseRhsSequenceOperand(addPos);
+            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_PLUS);
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
@@ -3085,7 +3092,7 @@ public class XPathParser
         insertOp(addPos, 2, OpCodes.OP_MINUS);
         
         if (tokenIs('(')) {
-            addPos = handleXPathParseRhsSequenceOperand(addPos);
+            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_MINUS);
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
@@ -3108,11 +3115,11 @@ public class XPathParser
    * evaluated as |-|+|9|7|6|.
    *
    * MultiplicativeExpr  ::=  UnaryExpr
-   * | MultiplicativeExpr MultiplyOperator UnaryExpr
+   * | MultiplicativeExpr '*' UnaryExpr
    * | MultiplicativeExpr 'div' UnaryExpr
+   * | MultiplicativeExpr 'idiv' UnaryExpr
    * | MultiplicativeExpr 'mod' UnaryExpr
    * | MultiplicativeExpr 'quo' UnaryExpr
-   * | MultiplicativeExpr 'idiv' UnaryExpr
    *
    * @param addPos Position where expression is to be added, or -1 for append.
    *
@@ -3135,62 +3142,92 @@ public class XPathParser
       if (tokenIs('*'))
       {
         nextToken();
+        
         insertOp(addPos, 2, OpCodes.OP_MULT);
+        
+        if (tokenIs('(')) {
+            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_MULT);
+        }
+        else {
+        	int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
-        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
-
-        addPos = MultiplicativeExpr(addPos);
-        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
-          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
-        addPos += 2;
+        	addPos = MultiplicativeExpr(addPos);
+            m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+              m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+            addPos += 2;
+        }
       }
       else if (tokenIs("div"))
       {
         nextToken();
+        
         insertOp(addPos, 2, OpCodes.OP_DIV);
+        
+        if (tokenIs('(')) {
+            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_DIV);
+        }
+        else {
+        	int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
-        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
-
-        addPos = MultiplicativeExpr(addPos);
-        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
-          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
-        addPos += 2;
+        	addPos = MultiplicativeExpr(addPos);
+            m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+              m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+            addPos += 2;
+        }
       }
       else if (tokenIs("idiv"))
       {
         nextToken();
+        
         insertOp(addPos, 2, OpCodes.OP_IDIV);
 
-        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+        if (tokenIs('(')) {
+            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_IDIV);
+        }
+        else {
+        	int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
-        addPos = MultiplicativeExpr(addPos);
-        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
-          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
-        addPos += 2;
+        	addPos = MultiplicativeExpr(addPos);
+            m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+              m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+            addPos += 2;
+        }
       }
       else if (tokenIs("mod"))
       {
         nextToken();
+        
         insertOp(addPos, 2, OpCodes.OP_MOD);
 
-        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+        if (tokenIs('(')) {
+            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_MOD);
+        }
+        else {
+        	int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
-        addPos = MultiplicativeExpr(addPos);
-        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
-          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
-        addPos += 2;
+        	addPos = MultiplicativeExpr(addPos);
+            m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+              m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+            addPos += 2;
+        }
       }
       else if (tokenIs("quo"))
       {
         nextToken();
+        
         insertOp(addPos, 2, OpCodes.OP_QUO);
 
-        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+        if (tokenIs('(')) {
+            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_QUO);
+        }
+        else {
+        	int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
-        addPos = MultiplicativeExpr(addPos);
-        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
-          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
-        addPos += 2;
+        	addPos = MultiplicativeExpr(addPos);
+            m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+              m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+            addPos += 2;
+        }
       }
     }
 
@@ -6410,10 +6447,11 @@ public class XPathParser
    }
    
    /**
-    * XPath parse of RHS literal sequence constructor operand of XPath binary 
-    * operations like +, -.
+    * XPath parse of literal sequence constructor, which is an 
+    * RHS operand of XPath binary operations like +, -, *, div,
+    * idiv, mod, quo.
     */
-   private int handleXPathParseRhsSequenceOperand(int addPos) throws TransformerException {
+   private int handleXPathParseRhsSequenceOperand(int addPos, int opCode) throws TransformerException {
 	   
  	  int result = 0;
  	  
@@ -6429,7 +6467,12 @@ public class XPathParser
 
  		  int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
- 		  result = AdditiveExpr(addPos);
+ 		  if ((opCode == OpCodes.OP_PLUS) || (opCode == OpCodes.OP_MINUS)) {
+ 		     result = AdditiveExpr(addPos);
+ 		  }
+ 		  else {
+ 			 result = MultiplicativeExpr(addPos);
+ 		  }
 
  		  m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
  			m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);

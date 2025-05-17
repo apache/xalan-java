@@ -34,6 +34,7 @@ import org.apache.xalan.tests.w3c.xslt3.insn.XslChooseTemplateTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslCopyTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslForEachGroupTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslIterateTests;
+import org.apache.xalan.tests.w3c.xslt3.insn.XslSequenceTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslTryTests;
 import org.apache.xalan.tests.w3c.xslt3.type.XslBooleanTests;
 import org.apache.xalan.tests.w3c.xslt3.type.XslNodeTests;
@@ -53,7 +54,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ XslAnalyzeStringTests.class, XslApplyTemplatesTests.class, XslForEachGroupTests.class,
 	            XslTryTests.class, XslAttributeTests.class, XslCallTemplateTests.class,
-	            XslChooseTemplateTests.class, XslCopyTests.class, XslIterateTests.class, 
+	            XslChooseTemplateTests.class, XslCopyTests.class, XslIterateTests.class, XslSequenceTests.class, 
 	            XslFunctionTests.class, XslCharacterMapTests.class, XslAxesTests.class, 
 	            XslCastableTests.class, XslExpressionTests.class, XslForTests.class, XslMathTests.class, 
 	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, XslBooleanTests.class, 

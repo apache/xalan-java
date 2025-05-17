@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-16T11:49:36Z" fail="26" name="apply-templates" pass="22" skipped="2" statusUnknown="0" totalRun="50">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-17T08:37:49Z" fail="26" name="apply-templates" pass="22" skipped="2" statusUnknown="0" totalRun="50">
    <testResult status="fail" testName="apply-templates-001">
       <outResult>
          <errTrace>java.lang.NullPointerException</errTrace>
