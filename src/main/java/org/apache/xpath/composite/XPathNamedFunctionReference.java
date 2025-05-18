@@ -18,10 +18,11 @@ package org.apache.xpath.composite;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -36,52 +37,80 @@ public class XPathNamedFunctionReference extends XObject {
 
 	private static final long serialVersionUID = -2448144139309343329L;
 	
-	private String funcNamespace = null;	
-	private String funcName = null;	
-	private int funcArity = -1;
+	/**
+	 * Function's name.
+	 */
+	private String m_funcName = null;
+	
+	/**
+	 * Namespace of the function.
+	 */
+	private String m_funcNamespace = null;
+	
+	/**
+	 * Function's arity value.
+	 */
+	private int m_funcArity = -1;
+	
+	/**
+	 * An XSL stylesheet function object reference.
+	 */
+	private ElemFunction m_elemFunction = null;
+	
+	/**
+	 * An XSL StylesheetRoot object reference.
+	 */
+	private StylesheetRoot m_stylesheetRoot = null;
+	
 
 	@Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
-		/**
-		 * The run-time processing of this method, shall not occur. 
-		 * An implementation of this method is only notional.
-		 */
-		
-		XObject result = new ResultSequence();		
-		
-		return result;
+		// NO OP
+		return null;
     }
 
 	public String getFuncNamespace() {
-		return funcNamespace;
+		return m_funcNamespace;
 	}
 
 	public void setFuncNamespace(String funcNamespace) {
-		this.funcNamespace = funcNamespace;
+		this.m_funcNamespace = funcNamespace;
 	}
 
 	public String getFuncName() {
-		return funcName;
+		return m_funcName;
 	}
 
 	public void setFuncName(String funcName) {
-		this.funcName = funcName;
+		this.m_funcName = funcName;
 	}
 
 	public int getFuncArity() {
-		return funcArity;
+		return m_funcArity;
 	}
 
 	public void setFuncArity(int funcArity) {
-		this.funcArity = funcArity;
+		this.m_funcArity = funcArity;
+	}
+	
+	public ElemFunction getXslStylesheetFunction() {
+		return m_elemFunction; 
+	}
+	
+	public void setXslStylesheetFunction(ElemFunction elemFunction, StylesheetRoot stylesheetRoot) {
+		m_elemFunction = elemFunction;
+		m_stylesheetRoot = stylesheetRoot;
+	}
+	
+	public StylesheetRoot getXslStylesheetRoot() {
+		return m_stylesheetRoot; 
 	}
 	
 	public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-        // no op
+        // NO OP
     }
     
-    public int getType()
-    {
+    public int getType() {
         return CLASS_FUNCTION_ITEM;
     }
 

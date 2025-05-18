@@ -71,6 +71,8 @@ public class XSL3ConstructorOrExtensionFunction extends Function
    *  @serial 
    */
   Object m_methodKey;
+  
+  private int m_funcArity = 0;
 
   /**
    * Array of static expressions which represent the parameters to the
@@ -355,5 +357,13 @@ public class XSL3ConstructorOrExtensionFunction extends Function
       return "{" + m_namespace + "}" + m_extensionName;
     else
       return m_extensionName;
+  }
+
+  public int getFuncArity() {
+	 return m_funcArity;
+  }
+
+  public void setFuncArity(int funcArity) {
+	 this.m_funcArity = funcArity;
   }  
 }

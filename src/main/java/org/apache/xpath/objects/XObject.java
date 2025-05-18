@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.Constants;
 import org.apache.xerces.xs.XSTypeDefinition;
@@ -365,13 +366,18 @@ public class XObject extends Expression implements Serializable, Cloneable
    * schema type. A non-null value of this class field implies that,
    * this object instance has this type annotation.
    */
-  private XSTypeDefinition xsTypeDefinition;
+  private XSTypeDefinition m_xsTypeDefinition;
   
   /** 
    * If this variable has value true, then XPath "treat as" or 
    * "castable as" evaluations are required on this XObject instance.
    */
-  private boolean isTreatAs;
+  private boolean m_isTreatAs;
+  
+  /**
+   * An XSL stylesheet root object.
+   */
+  private StylesheetRoot m_xslStylesheetRoot;
 
   /**
    * Tell what kind of class this is.
@@ -2066,19 +2072,27 @@ public class XObject extends Expression implements Serializable, Cloneable
   }
 
   public XSTypeDefinition getXsTypeDefinition() {
-	 return xsTypeDefinition;
+	 return m_xsTypeDefinition;
   }
 
   public void setXsTypeDefinition(XSTypeDefinition xsTypeDefinition) {
-	 this.xsTypeDefinition = xsTypeDefinition;
+	 this.m_xsTypeDefinition = xsTypeDefinition;
   }
 
   public void setTreatAs(boolean isTreatAs) {
-	 this.isTreatAs = isTreatAs;
+	 this.m_isTreatAs = isTreatAs;
   }
   
   public boolean isTreatAs() {
-	 return isTreatAs; 
+	 return m_isTreatAs; 
+  }
+  
+  public void setXslStylesheetRoot(StylesheetRoot xslStylesheetRoot) {
+     this.m_xslStylesheetRoot = xslStylesheetRoot; 
+  }
+  
+  public StylesheetRoot getXslStylesheetRoot() {
+	 return m_xslStylesheetRoot;  
   }
   
   private void emitXsAnyAtomicTypeError(XObject xObject, ExpressionNode expressionOwner) throws TransformerException {

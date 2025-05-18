@@ -27,9 +27,11 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.extensions.ExpressionContext;
+import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -377,6 +379,81 @@ public class XPathDynamicFunctionCall extends Expression {
 	                  }
      			  }
      		   }
+    	    }
+    	    else {
+    	       Object obj1 = functionRef.object();
+    	       if (obj1 instanceof Function) {
+    	    	  Function function = (Function)obj1;    	    	  
+    	    	  
+    	    	  String funcNamespace = function.getNamespace();
+ 	    		  String funcLocalName = function.getLocalName();
+ 	    		  int funcArity = function.getFuncArity();
+ 	    		  
+ 	    		  String expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;
+ 	    		  
+    	    	  if (m_argList.size() == funcArity) {    	    		     	    		 
+    	    		 try {
+    	    			 for (int idx = 0; idx < m_argList.size(); idx++) {
+    	    				 String argXPathStr = m_argList.get(idx);
+    	    				 if (prefixTable != null) {
+    	    					 argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    	    				 }
+
+    	    				 XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	    				 if (m_vars != null) {
+    	    					 argXPath.fixupVariables(m_vars, m_globals_size);
+    	    				 }
+
+    	    				 XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    	    				 function.setArg(argValue, idx);
+    	    			 }
+    	    		 }
+    	    		 catch (WrongNumberArgsException ex) {
+    	    			 throw new javax.xml.transform.TransformerException("XPTY0004 : Wrong number of arguments provided, "
+                                 																	+ "during function call " + expandedFuncName + ".", srcLocator); 
+    	    		 }
+    	    		 
+    	    		 evalResult = function.execute(xctxt);
+    	    	  }
+    	    	  else {
+    	    		 throw new javax.xml.transform.TransformerException("XPTY0004 : The number of arguments provided for "
+    	    		 		                                                                     + "function call " + expandedFuncName + " is "
+    	    		 		                                                                     + "incorrect. Required " + funcArity + ", supplied " 
+    	    		 		                                                                     + m_argList.size() + ".", srcLocator); 
+    	    	  }
+    	       }
+    	       else if (obj1 instanceof ElemFunction) {
+    	    	  ElemFunction elemFunction = (ElemFunction)obj1;    	    	      	    	  
+    	    	  int funcArity = elemFunction.getParamCount();    	    	  
+    	    	  if (m_argList.size() == funcArity) {
+    	    		  StylesheetRoot stylesheetRoot = functionRef.getXslStylesheetRoot();
+    	    		  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+    	    		  ResultSequence argSequence = new ResultSequence(); 
+    	    		  for (int idx = 0; idx < m_argList.size(); idx++) {
+    	    			  String argXPathStr = m_argList.get(idx);
+    	    			  if (prefixTable != null) {
+    	    				  argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    	    			  }
+
+    	    			  XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	    			  if (m_vars != null) {
+    	    				  argXPath.fixupVariables(m_vars, m_globals_size);
+    	    			  }
+
+    	    			  XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    	    			  argSequence.add(argValue);
+    	    		  }
+    	    		  
+    	    		  evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
+    	    	  }
+    	    	  else {
+    	    		  QName funcName = elemFunction.getName();
+    	    		  throw new javax.xml.transform.TransformerException("XPTY0004 : The number of arguments provided for "
+																	                              + "stylesheet function call " + funcName.toString() + " is "
+																	                              + "incorrect. Required " + funcArity + ", supplied " 
+																	                              + m_argList.size() + ".", srcLocator);  
+    	    	  }
+    	       }
     	    }
       }
       else {

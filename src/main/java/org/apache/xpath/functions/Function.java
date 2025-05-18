@@ -46,6 +46,12 @@ public abstract class Function extends Expression
     * The first argument passed to the function (at index 0).
     */
    protected Expression m_arg0;
+   
+   private String m_localName = null;
+   
+   private String m_namespace = null;
+   
+   private int m_funcArity = 0;
 
    /**
    * Set an argument expression for a function.  This method is called by the 
@@ -154,5 +160,29 @@ public abstract class Function extends Expression
   
   public void setArg0(Expression arg0) {
 	m_arg0 = arg0; 
+  }
+
+  public String getLocalName() {
+	return m_localName;
+  }
+
+  public void setLocalName(String localName) {
+	this.m_localName = localName;
+  }
+
+  public String getNamespace() {
+	return m_namespace;
+  }
+
+  public void setNamespace(String namespace) {
+	this.m_namespace = namespace;
+  }
+
+  public int getFuncArity() {
+	return m_funcArity;
+  }
+
+  public void setFuncArity(int funcArity) {
+	this.m_funcArity = funcArity;
   }
 }

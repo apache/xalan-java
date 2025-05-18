@@ -140,7 +140,13 @@ public class XPathIfExpr extends Expression {
               thenExprXPath.fixupVariables(m_vars, m_globals_size);
            }
            
-           evalResult = thenExprXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+           Expression expr = thenExprXPath.getExpression();
+           if (expr instanceof XPathNamedFunctionReference) {
+        	  evalResult = (XPathNamedFunctionReference)expr;   
+           }
+           else {
+              evalResult = thenExprXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+           }
        }
        else if ((eagerBranchConditionCheck && !branchConditionEvalResult) || (!eagerBranchConditionCheck && !branchConditionXPathResult.bool())) {
            if (prefixTable != null) {
@@ -154,7 +160,13 @@ public class XPathIfExpr extends Expression {
               elseExprXPath.fixupVariables(m_vars, m_globals_size);
            }
            
-           evalResult = elseExprXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+           Expression expr = elseExprXPath.getExpression();
+           if (expr instanceof XPathNamedFunctionReference) {
+        	  evalResult = (XPathNamedFunctionReference)expr;   
+           }
+           else {
+              evalResult = elseExprXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+           }
        }
        
        return evalResult;

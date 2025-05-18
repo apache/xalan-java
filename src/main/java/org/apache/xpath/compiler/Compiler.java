@@ -1128,8 +1128,6 @@ public class Compiler extends OpMap
   
   /**
    * Compile an XPath 'named function reference' expression.
-   * 
-   * Ref : https://www.w3.org/TR/xpath-31/#id-named-function-ref
    */
   public Expression namedFunctionReference(int opPos) {
 	return XPathParser.m_xpathNamedFunctionReference;  

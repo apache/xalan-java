@@ -22,6 +22,7 @@ import org.apache.xalan.tests.w3c.xslt3.expr.XslAxesTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslCastableTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslExpressionTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslForTests;
+import org.apache.xalan.tests.w3c.xslt3.expr.XslHigherOrderFunctionTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslMathTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslNodeTestTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslPathTests;
@@ -57,8 +58,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XslChooseTemplateTests.class, XslCopyTests.class, XslIterateTests.class, XslSequenceTests.class, 
 	            XslFunctionTests.class, XslCharacterMapTests.class, XslAxesTests.class, 
 	            XslCastableTests.class, XslExpressionTests.class, XslForTests.class, XslMathTests.class, 
-	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, XslBooleanTests.class, 
-	            XslNodeTests.class, XslStringTests.class })
+	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, 
+	            XslHigherOrderFunctionTests.class, XslBooleanTests.class, XslNodeTests.class, XslStringTests.class })
 public class W3CXSLT3Tests {
 
 }
