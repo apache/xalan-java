@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-18T06:56:29Z" fail="19" name="analyze-string" pass="33" skipped="5" statusUnknown="1" totalRun="58">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-19T17:12:33Z" fail="19" name="analyze-string" pass="33" skipped="5" statusUnknown="1" totalRun="58">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -64,7 +64,8 @@
       <outResult>
          <errTrace>Variable v1 is directly or indirectly referencing itself!</errTrace>
          <errTrace>Variable $v1 accessed before it is bound!.</errTrace>
-         <errTrace>Extra illegal tokens: '"s "', '10', 'Grand', '", mister"'</errTrace>
+         <errTrace>Expected ), but found: "s "</errTrace>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XNumber cannot be cast to java.lang.String</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="analyze-string-093"/>
@@ -88,9 +89,7 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="analyze-string-098">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="analyze-string-099">
       <outResult>

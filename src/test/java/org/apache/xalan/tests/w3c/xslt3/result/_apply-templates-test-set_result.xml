@@ -1,11 +1,119 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-18T06:56:31Z" fail="26" name="apply-templates" pass="22" skipped="2" statusUnknown="0" totalRun="50">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-19T17:12:36Z" fail="26" name="apply-templates" pass="22" skipped="2" statusUnknown="0" totalRun="50">
    <testResult status="fail" testName="apply-templates-001">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+</outResult>
    </testResult>
    <testResult status="fail" testName="apply-templates-002">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+&#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+    &#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+    &#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+    &#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+    &#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+    &#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+&#13;
+</outResult>
    </testResult>
    <testResult status="pass" testName="conflict-resolution-0101"/>
    <testResult status="pass" testName="conflict-resolution-0102a"/>

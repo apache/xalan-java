@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
-                
-   <!-- Author: mukulg@apache.org -->
-   
-   <!-- An XSL stylesheet test case, to test XSL transformation with 
-        an initial named template. -->	                 				
-
-   <xsl:output method="xml" indent="yes"/>   
-   
-   <xsl:template name="main">
-      <result>
-	    <xsl:for-each select="(1, 2, 3, 4, 5)">
-		  <value>
-		    <xsl:value-of select="."/>
-		  </value>
-		</xsl:for-each>
-	  </result>
-   </xsl:template>
-   
-   <!--
+                version="3.0">				
+	
+	<!-- Author: mukulg@apache.org --> 
+	
+	<!-- An XSL stylesheet test case, to test XPath literal sequence 
+	     constructor expression without beginning and trailing parenthesis. -->
+	
+	<xsl:output method="xml" indent="yes"/>
+    
+    <xsl:template match="/">
+       <result>
+	      <xsl:for-each select="1,2,3,4,5">
+		    <item>
+		      <xsl:value-of select="."/>
+			</item>
+		  </xsl:for-each>
+	   </result>
+    </xsl:template>
+    
+    <!--
       * Licensed to the Apache Software Foundation (ASF) under one
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
@@ -35,6 +35,6 @@
       * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
       * See the License for the specific language governing permissions and
       * limitations under the License.
-   -->
-   
+    -->
+    
 </xsl:stylesheet>

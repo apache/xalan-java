@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.processor.StylesheetHandler;
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -762,12 +763,37 @@ public class XPath implements Serializable, ExpressionOwner
 	  if (m_mainExp instanceof LocPathIterator) {
 		  LocPathIterator locPathIterator = (LocPathIterator)m_mainExp;
 
-		  DTMCursorIterator dtmIter = null;                     
-		  try {
+		  DTMCursorIterator dtmIter = null;
+		  String xpathExprStr = null;
+		  
+		  try {			  
+			  ExpressionNode exprNode = m_mainExp.getExpressionOwner();
+			  if (exprNode instanceof ElemCopyOf) {
+				  ElemCopyOf elemCopyOf = (ElemCopyOf)exprNode;
+				  boolean isXmlSourceAbsent = elemCopyOf.getXMLSourceAbsent();
+				  XPath elemCopyOfSelect = elemCopyOf.getSelect();
+				  xpathExprStr = elemCopyOfSelect.getPatternString();
+				  
+				  // An XPath expression string, starting with character '$'
+				  // means that an XPath expression is a variable reference.
+				  
+				  if (isXmlSourceAbsent && !xpathExprStr.startsWith("$")) {
+					  contextNode = DTM.NULL;  
+				  }
+			  }
+			  else {
+			     // REVISIT : Other XSL template elements needs to be handled
+			  }
+			  
 			  dtmIter = locPathIterator.asIterator(xctxt, contextNode);
 		  }
 		  catch (ClassCastException ex) {
 			  isProcessAsNodeset = false;
+		  }
+		  catch (Exception ex) {
+			 String xpathExprStrErr = ((xpathExprStr != null) ? " " + xpathExprStr : "");
+			 throw new TransformerException("XPTY0004 : An error occured while evaluating an XPath expression" + 
+			                                                                                                xpathExprStrErr + ".", srcLocator);  
 		  }
 	  }
 

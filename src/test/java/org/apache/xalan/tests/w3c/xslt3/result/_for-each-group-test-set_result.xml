@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-18T06:56:32Z" fail="34" name="for-each-group" pass="37" skipped="4" statusUnknown="2" totalRun="77">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-19T17:12:37Z" fail="33" name="for-each-group" pass="39" skipped="4" statusUnknown="2" totalRun="78">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="fail" testName="for-each-group-002">
@@ -26,7 +26,7 @@
    <testResult status="fail" testName="for-each-group-026"/>
    <testResult status="fail" testName="for-each-group-027"/>
    <testResult status="fail" testName="for-each-group-028"/>
-   <testResult status="fail" testName="for-each-group-029"/>
+   <testResult status="pass" testName="for-each-group-029"/>
    <testResult status="pass" testName="for-each-group-030"/>
    <testResult status="pass" testName="for-each-group-031"/>
    <testResult status="pass" testName="for-each-group-032"/>
@@ -69,13 +69,11 @@
    <testResult status="pass" testName="for-each-group-056"/>
    <testResult status="fail" testName="for-each-group-059">
       <outResult>
-         <errTrace>Extra illegal tokens: ',', '1', 'to', '10', ',', ''b'', ',', '11', 'to', '20'</errTrace>
          <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="for-each-group-060">
       <outResult>
-         <errTrace>Extra illegal tokens: ',', '1', 'to', '10', ',', ''b'', ',', '11', 'to', '20'</errTrace>
          <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl</errTrace>
       </outResult>
    </testResult>
@@ -121,5 +119,6 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="for-each-group-082"/>
-   <testResult testName="for-each-group-083"/>
+   <testResult status="pass" testName="for-each-group-083"/>
+   <testResult testName="for-each-group-084"/>
 </testrun>

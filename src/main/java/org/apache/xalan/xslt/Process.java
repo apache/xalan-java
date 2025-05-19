@@ -1073,7 +1073,35 @@ public class Process
 						  transformer.transform(new StreamSource(reader), strResult); 
 					  }
 					  else {
-						  transformer.transform(null, strResult);
+						  DOMSource xslDomSource = null;
+						  
+						  if (null != xslFileName)
+						  {
+							  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+							  dfactory.setNamespaceAware(true);
+
+							  if (isSecureProcessing)
+							  {
+								  try
+								  {
+									  dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+								  }
+								  catch (ParserConfigurationException pce) {}
+							  }
+
+							  DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+							  Document xslDOM = docBuilder.parse(new InputSource(xslFileName));
+
+							  xslDomSource = new DOMSource(xslDOM, xslFileName);
+						  }
+						  
+						  if (xslDomSource != null) {
+                             ((TransformerImpl)transformer).setXMLSourceAbsent(true);
+						     transformer.transform(xslDomSource, strResult);
+						  }
+						  else {
+							 transformer.transform(null, strResult); 
+						  }
 					  }
 				  }
 			  }

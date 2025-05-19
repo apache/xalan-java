@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-18T06:56:38Z" fail="14" name="call-template" pass="25" skipped="1" statusUnknown="2" totalRun="42">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-19T17:12:42Z" fail="14" name="call-template" pass="25" skipped="1" statusUnknown="2" totalRun="42">
    <testResult status="fail" testName="call-template-0001">
       <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>XPTY0004 : An error occured while evaluating an XPath expression ancestor-or-self::*.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="call-template-0101"/>
@@ -33,7 +33,6 @@
    </testResult>
    <testResult status="fail" testName="call-template-0111">
       <outResult>
-         <errTrace>Extra illegal tokens: '!', '$', 'in'</errTrace>
          <errTrace>XTTE0590 : The required item type of the value of parameter in is xs:string. The supplied value doesn't match the expected item type.</errTrace>
       </outResult>
    </testResult>
@@ -56,7 +55,6 @@
          <errTrace>Illegal value: Q{}pvar2 used for QNAME attribute: name</errTrace>
          <errTrace>Illegal value: Q{http://0702.com/}pvar1 used for QNAME attribute: name</errTrace>
          <errTrace>Prefix must resolve to a namespace: http</errTrace>
-         <errTrace>Extra illegal tokens: '{', '/', '/', '0702.com', '/', '}', 'pvar1'</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>

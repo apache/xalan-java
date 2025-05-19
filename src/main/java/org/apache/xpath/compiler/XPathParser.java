@@ -336,7 +336,75 @@ public class XPathParser
       Expr();
 
       if (null != m_token)
-      {
+      {    	
+    	// Retry once again, by parenthesizing the original 
+    	// XPath expression.
+    	
+        boolean isTrySecondTime = true;
+        
+        String newExpression = null;
+        
+        if (!(expression.startsWith("(") && expression.endsWith(")"))) {
+        	String[] strArr = expression.split(",");
+        	if (strArr.length > 1) {
+        	   boolean fl1 = true;
+        	   for (int idx = 0; idx < strArr.length; idx++) {
+        		  String str1 = strArr[idx];
+        		  if (!XslTransformEvaluationHelper.isStrHasBalancedParentheses(str1, '(', ')')) {
+        			  fl1 = false; 
+        		  }
+        	   }
+        	   
+        	   if (fl1) {
+        		   newExpression = "(" + expression + ")"; 
+        	   }
+        	}
+        }
+  	
+        if (newExpression != null) {
+        	(m_ops.m_tokenQueue).removeAllElements();    	
+        	lexer = new Lexer(compiler, namespaceContext, this);
+        	lexer.tokenize(newExpression);
+
+        	m_ops.setOp(0,OpCodes.OP_XPATH);
+        	m_ops.setOp(OpMap.MAPINDEX_LENGTH,2);                
+
+        	try {
+        		nextToken();
+
+        		m_isXPathExprBeginParse = true;
+
+        		Expr();
+
+        		if (null != m_token)
+        		{            	
+        			String extraTokens = "";
+
+        			while (null != m_token)
+        			{
+        				extraTokens += "'" + m_token + "'";
+
+        				nextToken();
+
+        				if (null != m_token)
+        					extraTokens += ", ";
+        			}
+
+        			error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
+        					new Object[]{ extraTokens });
+        		}
+        	}
+        	catch (org.apache.xpath.XPathProcessorException e)
+        	{
+        		if(CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
+        		{
+        			initXPath(compiler, "/..",  namespaceContext, false);
+        		}
+        		else
+        			throw e;
+        	}
+        }
+        
         String extraTokens = "";
 
         while (null != m_token)
@@ -349,8 +417,10 @@ public class XPathParser
             extraTokens += ", ";
         }
 
-        error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
-              new Object[]{ extraTokens });
+        if (!isTrySecondTime) {
+	        error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
+	              new Object[]{ extraTokens });
+        }
       }
 
     } 
@@ -1722,7 +1792,7 @@ public class XPathParser
 	     handleXPathParseNamedFuncRefWithoutNSQual(opPos);
 	  }
       else {
-         ExprSingle();
+         ExprSingle();                  
       }
   }
   

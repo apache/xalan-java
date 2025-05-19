@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-18T06:56:35Z" fail="21" name="try" pass="11" skipped="5" statusUnknown="5" totalRun="42">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-19T17:12:39Z" fail="21" name="try" pass="11" skipped="5" statusUnknown="5" totalRun="42">
    <testResult status="pass" testName="try-001"/>
    <testResult status="fail" testName="try-002">
       <outResult/>
@@ -42,9 +42,7 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="try-019">
-      <outResult>
-         <errTrace>Extra illegal tokens: ',', '$', 'http://www.w3.org/2005/xqt-errors', ':', 'code', ',', '$', 'http://www.w3.org/2005/xqt-errors', ':', 'description', ',', '$', 'http://www.w3.org/2005/xqt-errors', ':', 'value', ',', 'tokenize', '(', '$', 'http://www.w3.org/2005/xqt-errors', ':', 'module', ',', ''/'', ')', '[', 'last', '(', ')', ']', ',', '(', ''#'', '||', '$', '||', 'http://www.w3.org/2005/xqt-errors', ':', 'line-number||', ''#'', ')', ',', '$', 'http://www.w3.org/2005/xqt-errors', ':', 'column-number'</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="try-020"/>
    <testResult status="fail" testName="try-021">

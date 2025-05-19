@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -37,6 +38,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -281,7 +283,6 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	
     	try {
     		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);
-    		
     		if (m_initTemplateName != null) {
     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);
     		}
@@ -300,7 +301,16 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			expErrCodeName = ((Element)nodeExpected).getAttribute("code");
     		}
     		
-    		transformer.transform(xmlInpDomSource, new StreamResult(resultStrWriter));    		
+    		Source xmlInpSrc = null;
+    		if ((m_initTemplateName != null) && (xmlInpDomSource == null)) {
+    			xmlInpSrc = xsltStreamSrc;
+    			((TransformerImpl)transformer).setXMLSourceAbsent(true);
+    		}
+    		else {
+    			xmlInpSrc = xmlInpDomSource; 
+    		}
+    		
+    		transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));
     		
     		if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
     			if ((trfErrorList.size() > 0) || (trfFatalErrorList.size() > 0)) {

@@ -29,6 +29,7 @@ import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -119,8 +120,10 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            if (m_initTemplateName != null) {
         	  m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName); 
            }
+           
+           StreamSource xsltStreamSrc = new StreamSource(xslDocumentUriStr);
        
-           Transformer transformer = m_xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
+           Transformer transformer = m_xslTransformerFactory.newTransformer(xsltStreamSrc);
            
            setXslTransformProperties(transformer);
            
@@ -138,7 +141,16 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
               xmlDomSrc = new DOMSource(node, xmlDocumentUriStr);
            }
            
-           transformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
+           Source xmlInpSrc = null;
+           if ((m_initTemplateName != null) && (xmlFilePath == null)) {
+        	   xmlInpSrc = xsltStreamSrc;
+        	   ((TransformerImpl)transformer).setXMLSourceAbsent(true);
+           }
+           else {
+        	   xmlInpSrc = xmlDomSrc; 
+           }
+           
+           transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));
            
            if (xslTransformErrHandler != null) {
                List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();

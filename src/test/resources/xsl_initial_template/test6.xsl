@@ -5,21 +5,31 @@
    <!-- Author: mukulg@apache.org -->
    
    <!-- An XSL stylesheet test case, to test XSL transformation with 
-        an initial named template. -->	                 				
+        an initial named template. -->	                				
+	
+	<xsl:output method="xml" indent="yes"/>
+	
+	<xsl:variable name="var1">
+	   <info>
+	      <a>
+		    <id>1</id>
+		  </a>
+		  <b>
+		    <id>2</id>
+		  </b>
+		  <c>
+            <id>3</id>
+          </c>		  
+	   </info>
+	</xsl:variable>
 
-   <xsl:output method="xml" indent="yes"/>   
-   
-   <xsl:template name="main">
-      <result>
-	    <xsl:for-each select="(1, 2, 3, 4, 5)">
-		  <value>
-		    <xsl:value-of select="."/>
-		  </value>
-		</xsl:for-each>
-	  </result>
-   </xsl:template>
-   
-   <!--
+    <xsl:template name="main">
+       <result>
+	      <xsl:copy-of select="$var1//id"/>
+	   </result>
+    </xsl:template>
+    
+    <!--
       * Licensed to the Apache Software Foundation (ASF) under one
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
@@ -35,6 +45,6 @@
       * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
       * See the License for the specific language governing permissions and
       * limitations under the License.
-   -->
-   
+    -->
+    
 </xsl:stylesheet>

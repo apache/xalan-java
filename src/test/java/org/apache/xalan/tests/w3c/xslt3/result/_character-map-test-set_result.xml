@@ -1,36 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-18T06:56:49Z" fail="18" name="character-map" pass="1" skipped="0" statusUnknown="10" totalRun="29">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-19T17:12:54Z" fail="18" name="character-map" pass="1" skipped="0" statusUnknown="10" totalRun="29">
    <testResult status="fail" testName="character-map-001">
       <outResult>
          <errTrace>A location path was expected, but the following token was encountered:  [</errTrace>
-         <errTrace>Extra illegal tokens: '[', '""', ']', 'ab', '\', '[', 'C', '\', ']', 'de', '[', '""', ']'</errTrace>
          <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="character-map-002">
       <outResult>
          <errTrace>A location path was expected, but the following token was encountered:  [</errTrace>
-         <errTrace>Extra illegal tokens: '[', '""', ']', 'ab', '\', '[', 'C', '\', ']', 'de', '[', '""', ']'</errTrace>
          <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="character-map-003">
       <outResult>
          <errTrace>A location path was expected, but the following token was encountered:  [</errTrace>
-         <errTrace>Extra illegal tokens: '[', '""', ']', 'ab', '\', '{', 'C', '\', '}', 'de', '[', '""', ']'</errTrace>
          <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="character-map-004">
       <outResult>
          <errTrace>A location path was expected, but the following token was encountered:  [</errTrace>
-         <errTrace>Extra illegal tokens: '[', '""', ']', 'ab', '\', '[', 'C', '\', ']', 'de', '[', '""', ']'</errTrace>
          <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="character-map-005">
       <outResult>
          <errTrace>A location path was expected, but the following token was encountered:  [</errTrace>
-         <errTrace>Extra illegal tokens: '[', '""', ']', '\', '[', 'A', '\', ']', 'b', '\', '{', 'C', '\', '}', 'de', '[', '""', ']'</errTrace>
          <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
       </outResult>
    </testResult>
@@ -41,14 +36,12 @@
    <testResult status="fail" testName="character-map-008">
       <outResult>
          <errTrace>A location path was expected, but the following token was encountered:  [</errTrace>
-         <errTrace>Extra illegal tokens: '[', '""', ']', '\', '[', 'A', '\', ']', '\', '[', 'B', '\', ']', 'cde', '[', '""', ']'</errTrace>
          <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="character-map-009">
       <outResult>
          <errTrace>A location path was expected, but the following token was encountered:  [</errTrace>
-         <errTrace>Extra illegal tokens: '[', '""', ']', 'z-linkage', '\', '.html', '[', '""', ']'</errTrace>
          <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
       </outResult>
    </testResult>
@@ -66,7 +59,6 @@
    <testResult status="fail" testName="character-map-017">
       <outResult>
          <errTrace>A location path was expected, but the following token was encountered:  [</errTrace>
-         <errTrace>Extra illegal tokens: '[', '""', ']', 'te', '\', '[', 'X', '\', ']', 't', '/', 'html;', '\', '[', 'C', '\', ']', 'harset', '=', 'UTF-8', '[', '""', ']'</errTrace>
          <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
       </outResult>
    </testResult>
@@ -87,9 +79,7 @@
    </testResult>
    <testResult status="fail" testName="character-map-023">
       <outResult>
-         <errTrace>Extra illegal tokens: 'World'</errTrace>
          <errTrace>A location path was expected, but the following token was encountered:  [</errTrace>
-         <errTrace>Extra illegal tokens: '[', '""', ']', '&lt;', 'GT', '&lt;', 'GT', '[', '""', ']'</errTrace>
          <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
       </outResult>
    </testResult>

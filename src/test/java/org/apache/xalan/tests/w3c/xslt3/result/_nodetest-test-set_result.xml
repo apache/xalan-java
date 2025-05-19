@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-18T06:57:00Z" fail="36" name="nodetest" pass="2" skipped="0" statusUnknown="0" totalRun="38">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-19T17:13:06Z" fail="36" name="nodetest" pass="2" skipped="0" statusUnknown="0" totalRun="38">
    <testResult status="pass" testName="nodetest-001"/>
    <testResult status="pass" testName="nodetest-002"/>
    <testResult status="fail" testName="nodetest-003">
@@ -94,7 +94,6 @@
          <errTrace>Failed calling setNamespace method</errTrace>
          <errTrace>Failed calling setSchemaLocation method</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>Extra illegal tokens: 'schema-element', '(', 'http://www.schemanodetest.example.com/ns/various', ':', 'complexMixedUserElem', ')', '/', '@', 'age'</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
@@ -150,7 +149,6 @@
          <errTrace>Failed calling setNamespace method</errTrace>
          <errTrace>Failed calling setSchemaLocation method</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>Extra illegal tokens: 'schema-element', '(', 'http://www.schemanodetest.example.com/ns/subgroup', ':', 'book', ')', '/', 'http://www.schemanodetest.example.com/ns/subgroup', ':', 'price'</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
@@ -192,16 +190,7 @@
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="nodetest-027">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>Extra illegal tokens: ',', 'schema-attribute', '(', 'http://www.schemanodetest.example.com/ns/various', ':', 'listParts', ')'</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="nodetest-027"/>
    <testResult status="fail" testName="nodetest-028">
       <outResult>
          <errTrace>Failed calling setNamespace method</errTrace>
@@ -230,7 +219,6 @@
          <errTrace>Failed calling setNamespace method</errTrace>
          <errTrace>Failed calling setSchemaLocation method</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>Extra illegal tokens: 'schema-attribute', '(', 'http://www.schemanodetest.example.com/ns/various', ':', 'count', ')', '/', 'self', '::', 'node', '(', ')', '/', 'name', '(', ')'</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>

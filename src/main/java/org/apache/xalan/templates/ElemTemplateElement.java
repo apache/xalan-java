@@ -121,6 +121,8 @@ public class ElemTemplateElement extends UnImplNode
     * This class field stores an XPath context object.
     */
    private XPathContext m_xpathContext;
+   
+   private boolean m_xmlSourceAbsent;
 
   /**
    * Construct a template element instance.
@@ -2217,6 +2219,14 @@ public class ElemTemplateElement extends UnImplNode
 	  evalResult = dfc.execute(xctxt);
 	  
 	  return evalResult;
+  }
+
+  public void setXMLSourceAbsent(boolean xmlSourceAbsent) {	
+	  m_xmlSourceAbsent = xmlSourceAbsent;
+  }
+  
+  public boolean getXMLSourceAbsent() {
+	  return m_xmlSourceAbsent;	
   }
 
 }

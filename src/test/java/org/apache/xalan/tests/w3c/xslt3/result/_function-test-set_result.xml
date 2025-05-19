@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-18T06:56:47Z" fail="28" name="function" pass="20" skipped="4" statusUnknown="18" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-19T17:12:52Z" fail="28" name="function" pass="20" skipped="4" statusUnknown="18" totalRun="70">
    <testResult status="fail" testName="function-0001">
       <outResult>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>
@@ -15,7 +15,6 @@
    </testResult>
    <testResult status="fail" testName="function-0003">
       <outResult>
-         <errTrace>Extra illegal tokens: '(', '-', '2', ')'</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}function-name()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
@@ -23,7 +22,6 @@
    </testResult>
    <testResult status="fail" testName="function-0004">
       <outResult>
-         <errTrace>Extra illegal tokens: '(', '1.23456', ')'</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}function-name()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
@@ -84,8 +82,7 @@
    <testResult status="pass" testName="function-0602"/>
    <testResult status="fail" testName="function-0701">
       <outResult>
-         <errTrace>Extra illegal tokens: ')', '=', '0', ']'</errTrace>
-         <errTrace>Variable $empty-board accessed before it is bound!.</errTrace>
+         <errTrace>XPTY0004 : The function call result for function {http://www.wrox.com/5067/tour}place-knight(), doesn't match the declared function result type xs:integer*.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-0901"/>
@@ -108,12 +105,7 @@
    <testResult status="fail" testName="function-1009"/>
    <testResult testName="function-1011"/>
    <testResult status="pass" testName="function-1012"/>
-   <testResult status="fail" testName="function-1013">
-      <outResult>
-         <errTrace>Extra illegal tokens: ')', '=', '0', ']', '/', '..', '/', '..', '/', '..', '/', '..'</errTrace>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Variable $x accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="function-1013"/>
    <testResult status="fail" testName="function-1014">
       <outResult>
          <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Found more than one stylesheet function named: f:maximum</errTrace>
