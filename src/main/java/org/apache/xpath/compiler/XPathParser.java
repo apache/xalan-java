@@ -1530,6 +1530,40 @@ public class XPathParser
 	    		 }
 	    	 }
 	      }
+	      
+	      String xpathPrefixStr = null;
+	      String xpathSuffixStr = null;	      
+	      boolean trailProcessingReq = false;
+	      
+	      if (!isXPathParseOkToProceed) {
+	    	 // XPath parse of expressions like (p,q)/*, (p,q)/*/a etc 
+	    	 
+	    	 // Construct an XPath original expression string from token queue
+	    	 StringBuffer strBuff = new StringBuffer();
+	    	 ObjectVector tokenQueue = m_ops.getTokenQueue();
+          	 int tokenQueueSize = m_ops.getTokenQueueSize();
+          	 for (int idx = 0; idx < tokenQueueSize; idx++) {
+          		String str1 = (tokenQueue.elementAt(idx)).toString();
+          		strBuff.append(str1);
+          	 }
+          	 
+          	 String xpathExprStr = strBuff.toString();
+          	 int idx = xpathExprStr.indexOf('/');
+          	 if (idx > 0) {
+          		xpathPrefixStr = xpathExprStr.substring(0, idx);
+          		xpathSuffixStr = xpathExprStr.substring(idx + 1);
+          		if ((xpathPrefixStr != null) && xpathPrefixStr.startsWith("(") && xpathPrefixStr.endsWith(")")) {
+          		   trailProcessingReq = true;
+          		}
+          	 }
+	      }
+	      
+	      if (trailProcessingReq && (seqOrArrayXPathItems.size() >= 2)) {
+	    	 String lastItemStr = seqOrArrayXPathItems.get(listSize - 1);
+	    	 String str1 = lastItemStr.substring(0, lastItemStr.indexOf(')'));
+	    	 seqOrArrayXPathItems.set(listSize - 1, str1);	    	 
+	    	 isXPathParseOkToProceed = true;
+	      }
                              
           if (isXPathParseOkToProceed) {
               int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
@@ -1542,10 +1576,11 @@ public class XPathParser
             	 m_xpathArrayConstructor.setArrayConstructorXPathParts(seqOrArrayXPathItems);
               }
               else {
-                 insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+                 insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);                 
                  m_xpathSequenceConstructor = new XPathSequenceConstructor();                 
-                 m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
-                 m_xpathSequenceConstructor.setIndexExpr(sequenceIndexExpr);                 
+                 m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);  
+                 m_xpathSequenceConstructor.setIndexExpr(sequenceIndexExpr);
+                 m_xpathSequenceConstructor.setXPathSuffixStr(xpathSuffixStr);
               }             
           }
           else {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group info="less_or_equal_to_four">
+    <m parentId="10">1</m>
+    <m parentId="11">2</m>
+    <m parentId="12">3</m>
+    <m parentId="13">4</m>
+  </group>
+  <group info="greater_than_four">
+    <m parentId="14">5</m>
+    <m parentId="15">6</m>
+    <m parentId="16">7</m>
+  </group>
+</result>

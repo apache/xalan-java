@@ -54,9 +54,26 @@ public class XPathSequenceConstructor extends Expression {
 
     private static final long serialVersionUID = -5141131877741250613L;
     
+    /**
+     * These are the main XPath expression strings for the sequence constructor.
+     */
     private List<String> m_sequenceConstructorXPathParts = new ArrayList<String>();
     
+    /**
+     * An optional XPath expression string, to represent an index 
+     * suffix of an XPath expression.
+     * 
+     * For e.g, in the XPath expression (a, b)[1] this is 1.
+     */
     private String m_xpathIndexExpr = null;
+    
+    /**
+     * An optional XPath expression string, to represent a suffix of an 
+     * XPath expression.
+     * 
+     * For e.g, in the XPath expression (a, b)/m/n this is m/n.
+     */
+    private String m_xpathSuffixStr = null;
     
     /**
      * This class field is used during, XPath.fixupVariables(..) action 
@@ -269,6 +286,38 @@ public class XPathSequenceConstructor extends Expression {
         	   throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with a sequence reference, is not numeric.", srcLocator);
         	}
         }
+        else if (m_xpathSuffixStr != null) {
+        	if (prefixTable != null) {
+        		m_xpathSuffixStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpathSuffixStr, prefixTable);
+        	}
+
+        	XPath xpathObj = new XPath(m_xpathSuffixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	
+        	if (m_vars != null) {
+        		xpathObj.fixupVariables(m_vars, m_globals_size);
+            }
+        	
+        	ResultSequence newResultSeq = new ResultSequence();
+        	
+        	for (int idx = 0; idx < resultSeq.size(); idx++) {
+        	   XObject xObj = resultSeq.item(idx);
+        	   if (xObj instanceof XMLNodeCursorImpl) {
+        		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+        		  DTMCursorIterator iter = xmlNodeCursorImpl.iterRaw();
+        		  int newContextNode = iter.nextNode();
+        		  XObject evalResult = xpathObj.execute(xctxt, newContextNode, xctxt.getNamespaceContext());
+        		  XMLNodeCursorImpl newNodeSet = (XMLNodeCursorImpl)evalResult;
+        		  DTMCursorIterator iter2 = newNodeSet.iterRaw();
+        		  int nextNode;
+        		  while ((nextNode = iter2.nextNode()) != DTM.NULL) {
+        			  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, xctxt);
+        			  newResultSeq.add(node);
+        		  }
+        	   }
+        	}
+        	
+        	result = newResultSeq;
+        }
         else {
            result = resultSeq; 	
         }
@@ -302,6 +351,14 @@ public class XPathSequenceConstructor extends Expression {
 	
 	public String getIndexExpr() {
 	    return m_xpathIndexExpr;
+	}
+
+	public void setXPathSuffixStr(String xpathSuffixStr) {
+		m_xpathSuffixStr = xpathSuffixStr; 		
+	}
+	
+	public String getXPathSuffixStr() {
+		return m_xpathSuffixStr;
 	}
 
 }
