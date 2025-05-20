@@ -49,9 +49,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * This class implementation, contains common code for
- * Xalan-J's implementation of W3C XSL 3.0 transformations test 
- * suite.
+ * This class implementation, contains common code for Xalan-J's 
+ * implementation of W3C XSL 3.0 transformations test suite.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -64,6 +63,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     private static final String XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH =  W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "variant_all_of_test_template.xsl";
     
     protected static String m_xslTransformTestSetFilePath = null;
+    
+    protected static final String W3C_XSLT3_TESTS_RESULT_DIR_HOME = "file:/d:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/";
+    
+    protected static String m_resultSubFolderName = null;
     
     protected static String m_testResultFileName = null;
     
@@ -251,7 +254,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   // Serialize W3C XSLT 3.0 test set results file to file system
     		   String xslTestResultStr = serializeXmlDomElementNode(testResultDoc);
         	   
-        	   File xslAnalyzeStringTestResultFile = new File(new URI(m_w3cXslt3TestSuiteXalanResultsPathPrefix + m_testResultFileName));
+        	   File xslAnalyzeStringTestResultFile = new File(new URI(W3C_XSLT3_TESTS_RESULT_DIR_HOME + m_resultSubFolderName + "/" + m_testResultFileName));
         	   testResultFos = new FileOutputStream(xslAnalyzeStringTestResultFile);
         	   testResultFos.write(xslTestResultStr.getBytes());
         	   testResultFos.flush();

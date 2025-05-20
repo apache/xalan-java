@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:32Z" fail="26" name="apply-templates" pass="22" skipped="2" statusUnknown="0" totalRun="50">
+   <testResult status="fail" testName="apply-templates-001">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="apply-templates-002">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+&#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+    &#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+    &#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+    &#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+    &#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+&#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+    &#13;
+    &#13;
+        &#13;
+            &#13;
+        &#13;
+    &#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="conflict-resolution-0101"/>
+   <testResult status="pass" testName="conflict-resolution-0102a"/>
+   <testResult status="fail" testName="conflict-resolution-0102b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;Match-of-wildcard&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="conflict-resolution-0102c"/>
+   <testResult status="pass" testName="conflict-resolution-0104a"/>
+   <testResult status="fail" testName="conflict-resolution-0104b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;Match-of-node-type&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="conflict-resolution-0104c"/>
+   <testResult status="pass" testName="conflict-resolution-0106"/>
+   <testResult status="pass" testName="conflict-resolution-0107"/>
+   <testResult status="pass" testName="conflict-resolution-0108a"/>
+   <testResult status="fail" testName="conflict-resolution-0108b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;Match-of-non-simple '/'&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="conflict-resolution-0108c"/>
+   <testResult status="pass" testName="conflict-resolution-0110a"/>
+   <testResult status="fail" testName="conflict-resolution-0110b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;Match-of-non-simple '[...]'&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="conflict-resolution-0110c"/>
+   <testResult status="pass" testName="conflict-resolution-0112"/>
+   <testResult status="pass" testName="conflict-resolution-0201"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="pass" testName="conflict-resolution-0401c"/>
+   <testResult status="fail" testName="conflict-resolution-0501">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="conflict-resolution-0502"/>
+   <testResult status="fail" testName="conflict-resolution-0503">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="conflict-resolution-0601"/>
+   <testResult status="fail" testName="conflict-resolution-0701">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="conflict-resolution-0702"/>
+   <testResult status="fail" testName="conflict-resolution-0703">
+      <outResult>
+         <errTrace>"xpath-default-namespace" attribute is not allowed on the xsl:stylesheet element!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="conflict-resolution-0801">
+      <outResult>
+         <errTrace>"xpath-default-namespace" attribute is not allowed on the xsl:stylesheet element!</errTrace>
+         <errTrace>Illegal value: #current used for QNAME attribute: mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="conflict-resolution-0802">
+      <outResult>
+         <errTrace>"xpath-default-namespace" attribute is not allowed on the xsl:stylesheet element!</errTrace>
+         <errTrace>Illegal value: #default used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value: a b #default used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value: #current used for QNAME attribute: mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="conflict-resolution-0901"/>
+   <testResult status="pass" testName="conflict-resolution-1001"/>
+   <testResult status="fail" testName="conflict-resolution-1101"/>
+   <testResult status="fail" testName="conflict-resolution-1102">
+      <outResult>
+         <errTrace>xsl:with-param is not allowed in this position in the stylesheet</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="conflict-resolution-1201"/>
+   <testResult status="fail" testName="conflict-resolution-1202a"/>
+   <testResult status="fail" testName="conflict-resolution-1202b">
+      <outResult>
+         <errTrace>XTSE0010 : an instruction xsl:next-match is not known to the XSLT processor.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="conflict-resolution-1202c"/>
+   <testResult status="fail" testName="conflict-resolution-1204"/>
+   <testResult status="fail" testName="conflict-resolution-1205"/>
+   <testResult status="pass" testName="conflict-resolution-1301"/>
+   <testResult status="fail" testName="conflict-resolution-1401"/>
+   <testResult status="fail" testName="conflict-resolution-1402">
+      <outResult>
+         <errTrace>"default-validation" attribute is not allowed on the xslt:transform element!</errTrace>
+         <errTrace>Unknown nodetype: attribute</errTrace>
+         <errTrace>Extra illegal tokens: 'attribute', '(', 'x', ',', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ')'</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="conflict-resolution-1501">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="conflict-resolution-1601"/>
+   <testResult status="pass" testName="conflict-resolution-1602"/>
+   <testResult status="pass" testName="conflict-resolution-1603"/>
+   <testResult status="fail" testName="conflict-resolution-1701"/>
+   <testResult status="fail" testName="conflict-resolution-1801">
+      <outResult>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+</testrun>

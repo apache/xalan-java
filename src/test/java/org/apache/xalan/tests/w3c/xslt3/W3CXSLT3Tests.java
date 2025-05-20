@@ -27,15 +27,21 @@ import org.apache.xalan.tests.w3c.xslt3.expr.XslMathTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslNodeTestTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslPathTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslPredicateTests;
+import org.apache.xalan.tests.w3c.xslt3.fn.XslFnDeepEqualTests;
+import org.apache.xalan.tests.w3c.xslt3.fn.XslFnKeyTests;
+import org.apache.xalan.tests.w3c.xslt3.fn.XslFnPositionTests;
+import org.apache.xalan.tests.w3c.xslt3.fn.XslFnRootTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslAnalyzeStringTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslApplyTemplatesTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslAttributeTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslCallTemplateTests;
-import org.apache.xalan.tests.w3c.xslt3.insn.XslChooseTemplateTests;
+import org.apache.xalan.tests.w3c.xslt3.insn.XslChooseTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslCopyTests;
+import org.apache.xalan.tests.w3c.xslt3.insn.XslElementTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslForEachGroupTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslIterateTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslSequenceTests;
+import org.apache.xalan.tests.w3c.xslt3.insn.XslSortTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslTryTests;
 import org.apache.xalan.tests.w3c.xslt3.type.XslBooleanTests;
 import org.apache.xalan.tests.w3c.xslt3.type.XslNodeTests;
@@ -55,11 +61,12 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ XslAnalyzeStringTests.class, XslApplyTemplatesTests.class, XslForEachGroupTests.class,
 	            XslTryTests.class, XslAttributeTests.class, XslCallTemplateTests.class,
-	            XslChooseTemplateTests.class, XslCopyTests.class, XslIterateTests.class, XslSequenceTests.class, 
-	            XslFunctionTests.class, XslCharacterMapTests.class, XslAxesTests.class, 
-	            XslCastableTests.class, XslExpressionTests.class, XslForTests.class, XslMathTests.class, 
-	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, 
-	            XslHigherOrderFunctionTests.class, XslBooleanTests.class, XslNodeTests.class, XslStringTests.class })
+	            XslChooseTests.class, XslCopyTests.class, XslIterateTests.class, XslSequenceTests.class, 
+	            XslElementTests.class, XslSortTests.class, XslFunctionTests.class, XslCharacterMapTests.class, 
+	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class, 
+	            XslMathTests.class, XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, 
+	            XslHigherOrderFunctionTests.class, XslBooleanTests.class, XslNodeTests.class, XslStringTests.class,
+	            XslFnDeepEqualTests.class, XslFnPositionTests.class, XslFnRootTests.class, XslFnKeyTests.class })
 public class W3CXSLT3Tests {
 
 }

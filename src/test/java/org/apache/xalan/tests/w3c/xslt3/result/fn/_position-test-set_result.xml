@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:43Z" fail="8" name="position" pass="108" skipped="0" statusUnknown="1" totalRun="117">
+   <testResult status="pass" testName="position-0101"/>
+   <testResult status="fail" testName="position-0102"/>
+   <testResult status="fail" testName="position-0103">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="position-0201"/>
+   <testResult status="pass" testName="position-0202"/>
+   <testResult status="pass" testName="position-0301"/>
+   <testResult status="pass" testName="position-0302"/>
+   <testResult status="pass" testName="position-0401"/>
+   <testResult status="pass" testName="position-0501"/>
+   <testResult status="pass" testName="position-0601"/>
+   <testResult status="pass" testName="position-0701"/>
+   <testResult status="pass" testName="position-0702"/>
+   <testResult status="fail" testName="position-0801">
+      <outResult>
+         <errTrace>ERROR! Unknown op code: 0</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="position-0901"/>
+   <testResult status="pass" testName="position-0902"/>
+   <testResult status="pass" testName="position-1001"/>
+   <testResult status="pass" testName="position-1002"/>
+   <testResult status="pass" testName="position-1101"/>
+   <testResult status="pass" testName="position-1102"/>
+   <testResult status="pass" testName="position-1103"/>
+   <testResult status="pass" testName="position-1104"/>
+   <testResult status="pass" testName="position-1105"/>
+   <testResult status="pass" testName="position-1106"/>
+   <testResult status="pass" testName="position-1107"/>
+   <testResult status="pass" testName="position-1108"/>
+   <testResult status="pass" testName="position-1109"/>
+   <testResult status="pass" testName="position-1110"/>
+   <testResult status="pass" testName="position-1111"/>
+   <testResult status="pass" testName="position-1112"/>
+   <testResult status="pass" testName="position-1113"/>
+   <testResult status="pass" testName="position-1114"/>
+   <testResult status="pass" testName="position-1115"/>
+   <testResult status="pass" testName="position-1116"/>
+   <testResult status="pass" testName="position-1117"/>
+   <testResult status="pass" testName="position-1118"/>
+   <testResult status="pass" testName="position-1119"/>
+   <testResult status="pass" testName="position-1120"/>
+   <testResult status="pass" testName="position-1121"/>
+   <testResult status="pass" testName="position-1122"/>
+   <testResult status="pass" testName="position-1123"/>
+   <testResult status="pass" testName="position-1124"/>
+   <testResult status="pass" testName="position-1125"/>
+   <testResult status="pass" testName="position-1126"/>
+   <testResult status="pass" testName="position-1127"/>
+   <testResult status="pass" testName="position-1128"/>
+   <testResult status="pass" testName="position-1129"/>
+   <testResult status="pass" testName="position-1130"/>
+   <testResult status="pass" testName="position-1131"/>
+   <testResult status="pass" testName="position-1132"/>
+   <testResult status="pass" testName="position-1201"/>
+   <testResult status="pass" testName="position-1202"/>
+   <testResult status="pass" testName="position-1203"/>
+   <testResult status="pass" testName="position-1204"/>
+   <testResult status="pass" testName="position-1205"/>
+   <testResult status="pass" testName="position-1206"/>
+   <testResult status="pass" testName="position-1207"/>
+   <testResult status="pass" testName="position-1208"/>
+   <testResult status="pass" testName="position-1209"/>
+   <testResult status="pass" testName="position-1210"/>
+   <testResult status="pass" testName="position-1211"/>
+   <testResult status="pass" testName="position-1212"/>
+   <testResult status="pass" testName="position-1213"/>
+   <testResult status="pass" testName="position-1214"/>
+   <testResult status="pass" testName="position-1215"/>
+   <testResult status="pass" testName="position-1216"/>
+   <testResult status="pass" testName="position-1217"/>
+   <testResult status="pass" testName="position-1218"/>
+   <testResult status="pass" testName="position-1301"/>
+   <testResult status="pass" testName="position-1302"/>
+   <testResult status="pass" testName="position-1303"/>
+   <testResult status="pass" testName="position-1304"/>
+   <testResult status="pass" testName="position-1305"/>
+   <testResult status="pass" testName="position-1306"/>
+   <testResult status="pass" testName="position-1307"/>
+   <testResult status="pass" testName="position-1308"/>
+   <testResult status="pass" testName="position-1309"/>
+   <testResult status="pass" testName="position-1310"/>
+   <testResult status="pass" testName="position-1311"/>
+   <testResult status="pass" testName="position-1312"/>
+   <testResult status="pass" testName="position-1313"/>
+   <testResult status="pass" testName="position-1314"/>
+   <testResult status="pass" testName="position-1315"/>
+   <testResult status="pass" testName="position-1316"/>
+   <testResult status="pass" testName="position-1317"/>
+   <testResult status="pass" testName="position-1318"/>
+   <testResult status="pass" testName="position-1319"/>
+   <testResult status="pass" testName="position-1320"/>
+   <testResult status="pass" testName="position-1401"/>
+   <testResult status="pass" testName="position-1402"/>
+   <testResult status="pass" testName="position-1403"/>
+   <testResult status="pass" testName="position-1404"/>
+   <testResult status="pass" testName="position-1501"/>
+   <testResult status="pass" testName="position-1502"/>
+   <testResult status="pass" testName="position-1503"/>
+   <testResult status="pass" testName="position-1504"/>
+   <testResult status="pass" testName="position-1505"/>
+   <testResult status="pass" testName="position-1506"/>
+   <testResult status="pass" testName="position-1507"/>
+   <testResult status="pass" testName="position-1508"/>
+   <testResult status="pass" testName="position-1509"/>
+   <testResult status="pass" testName="position-1510"/>
+   <testResult status="pass" testName="position-1601"/>
+   <testResult status="fail" testName="position-1602">
+      <outResult>
+         <errTrace>Prefix must resolve to a namespace: unpredictable</errTrace>
+         <errTrace>Expected ), but found: ,</errTrace>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to java.lang.String</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="position-1701"/>
+   <testResult status="pass" testName="position-1702"/>
+   <testResult status="pass" testName="position-1703"/>
+   <testResult status="pass" testName="position-1801"/>
+   <testResult status="pass" testName="position-1901"/>
+   <testResult status="pass" testName="position-2001"/>
+   <testResult status="fail" testName="position-2101"/>
+   <testResult status="fail" testName="position-2201">
+      <outResult>
+         <errTrace>"input-type-annotations" attribute is not allowed on the xsl:transform element!</errTrace>
+         <errTrace>xsl:result-document requires attribute: href</errTrace>
+         <errTrace>XPTY0004 : An exception occured while evaluating an xsl:result-document instruction. Following run-time error occured : null.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="position-2301"/>
+   <testResult status="pass" testName="position-2401"/>
+   <testResult status="pass" testName="position-2402"/>
+   <testResult status="fail" testName="position-2501"/>
+   <testResult status="fail" testName="position-2601"/>
+   <testResult testName="position-2701"/>
+</testrun>

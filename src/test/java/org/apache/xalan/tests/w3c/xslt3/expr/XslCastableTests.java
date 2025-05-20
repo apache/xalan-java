@@ -34,6 +34,7 @@ public class XslCastableTests extends W3CXslTransformTestsUtil {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "expr/castable/_castable-test-set.xml";
+    	m_resultSubFolderName = "expr";
     	m_testResultFileName = "_castable-test-set_result.xml";    	   
     }
 

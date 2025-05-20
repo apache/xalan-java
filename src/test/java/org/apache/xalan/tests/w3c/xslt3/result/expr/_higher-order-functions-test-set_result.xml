@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:43Z" fail="18" name="higher-order-functions" pass="6" skipped="0" statusUnknown="1" totalRun="25">
+   <testResult status="pass" testName="higher-order-functions-001"/>
+   <testResult status="fail" testName="higher-order-functions-002">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Found more than one stylesheet function named: local:f</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="higher-order-functions-003"/>
+   <testResult status="pass" testName="higher-order-functions-004"/>
+   <testResult status="pass" testName="higher-order-functions-005"/>
+   <testResult status="pass" testName="higher-order-functions-006"/>
+   <testResult status="fail" testName="higher-order-functions-007"/>
+   <testResult status="fail" testName="higher-order-functions-008"/>
+   <testResult status="fail" testName="higher-order-functions-009"/>
+   <testResult status="fail" testName="higher-order-functions-010"/>
+   <testResult status="fail" testName="higher-order-functions-011"/>
+   <testResult status="fail" testName="higher-order-functions-012"/>
+   <testResult status="fail" testName="higher-order-functions-013"/>
+   <testResult status="fail" testName="higher-order-functions-014"/>
+   <testResult status="fail" testName="higher-order-functions-015"/>
+   <testResult status="fail" testName="higher-order-functions-016"/>
+   <testResult status="fail" testName="higher-order-functions-017"/>
+   <testResult status="pass" testName="higher-order-functions-018"/>
+   <testResult status="fail" testName="higher-order-functions-019"/>
+   <testResult status="fail" testName="higher-order-functions-020"/>
+   <testResult status="fail" testName="higher-order-functions-021"/>
+   <testResult status="fail" testName="higher-order-functions-022"/>
+   <testResult status="fail" testName="higher-order-functions-023"/>
+   <testResult status="fail" testName="higher-order-functions-024">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}function-name()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="higher-order-functions-025"/>
+</testrun>

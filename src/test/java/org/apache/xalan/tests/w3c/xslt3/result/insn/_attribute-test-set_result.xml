@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:32Z" fail="11" name="attribute" pass="7" skipped="0" statusUnknown="3" totalRun="21">
+   <testResult status="fail" testName="attribute-0001"/>
+   <testResult status="fail" testName="attribute-0002">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="attribute-0003"/>
+   <testResult status="fail" testName="attribute-0004"/>
+   <testResult status="pass" testName="attribute-0005"/>
+   <testResult status="fail" testName="attribute-0301">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="attribute-0401"/>
+   <testResult status="pass" testName="attribute-0501"/>
+   <testResult status="fail" testName="attribute-0601">
+      <outResult>
+         <errTrace>Attempting to generate a namespace prefix with a null URI</errTrace>
+         <errTrace>Prefix must resolve to a namespace: http</errTrace>
+         <errTrace>Prefix must resolve to a namespace: http</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="attribute-0701"/>
+   <testResult status="pass" testName="attribute-0801"/>
+   <testResult status="pass" testName="attribute-0802"/>
+   <testResult status="fail" testName="attribute-0803">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;Out&gt;&lt;Element1 Att1="OK"/&gt;&lt;/Out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="attribute-0804">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;Out&gt;&lt;Element1 Att1="OK"&gt;&lt;!--Should not break--&gt;&lt;Element2/&gt;&lt;/Element1&gt;&lt;/Out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="attribute-0805">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;Out&gt;&lt;Element1 Att1="OK"&gt;&lt;?my-pi type="text/css"?&gt;&lt;Element2/&gt;&lt;/Element1&gt;&lt;/Out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="attribute-0806"/>
+   <testResult status="fail" testName="attribute-0807">
+      <outResult>
+         <errTrace>t:attribute requires attribute: name</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="attribute-0901"/>
+   <testResult status="pass" testName="attribute-0902"/>
+   <testResult testName="attribute-1101"/>
+   <testResult testName="attribute-1301"/>
+</testrun>

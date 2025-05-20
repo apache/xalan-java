@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:42Z" fail="33" name="math" pass="26" skipped="0" statusUnknown="89" totalRun="148">
+   <testResult testName="math-0101"/>
+   <testResult status="fail" testName="math-0102">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="math-0103"/>
+   <testResult status="fail" testName="math-0104"/>
+   <testResult status="fail" testName="math-0105"/>
+   <testResult status="fail" testName="math-0106">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;false</outResult>
+   </testResult>
+   <testResult status="fail" testName="math-0107">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="math-0201"/>
+   <testResult testName="math-0202"/>
+   <testResult testName="math-0301"/>
+   <testResult testName="math-0401"/>
+   <testResult testName="math-0501"/>
+   <testResult testName="math-0601"/>
+   <testResult testName="math-0701"/>
+   <testResult testName="math-0801"/>
+   <testResult testName="math-0901"/>
+   <testResult testName="math-1001"/>
+   <testResult testName="math-1002"/>
+   <testResult testName="math-1003"/>
+   <testResult testName="math-1004"/>
+   <testResult testName="math-1005"/>
+   <testResult testName="math-1101"/>
+   <testResult testName="math-1201"/>
+   <testResult status="pass" testName="math-1301"/>
+   <testResult testName="math-1401"/>
+   <testResult testName="math-1501"/>
+   <testResult testName="math-1502"/>
+   <testResult testName="math-1503"/>
+   <testResult testName="math-1504"/>
+   <testResult testName="math-1505"/>
+   <testResult testName="math-1506"/>
+   <testResult testName="math-1507"/>
+   <testResult testName="math-1508"/>
+   <testResult testName="math-1509"/>
+   <testResult testName="math-1510"/>
+   <testResult testName="math-1511"/>
+   <testResult testName="math-1512"/>
+   <testResult testName="math-1513"/>
+   <testResult testName="math-1514"/>
+   <testResult testName="math-1515"/>
+   <testResult testName="math-1516"/>
+   <testResult testName="math-1517"/>
+   <testResult testName="math-1518"/>
+   <testResult testName="math-1519"/>
+   <testResult status="fail" testName="math-1601"/>
+   <testResult status="fail" testName="math-1701"/>
+   <testResult status="fail" testName="math-1801"/>
+   <testResult testName="math-1901"/>
+   <testResult testName="math-1902"/>
+   <testResult testName="math-1903"/>
+   <testResult testName="math-1904"/>
+   <testResult testName="math-1905"/>
+   <testResult testName="math-1906"/>
+   <testResult testName="math-1907"/>
+   <testResult testName="math-1908"/>
+   <testResult testName="math-1909"/>
+   <testResult testName="math-1910"/>
+   <testResult testName="math-1911"/>
+   <testResult testName="math-1912"/>
+   <testResult testName="math-1913"/>
+   <testResult testName="math-1914"/>
+   <testResult testName="math-1915"/>
+   <testResult testName="math-1916"/>
+   <testResult testName="math-1917"/>
+   <testResult testName="math-2001"/>
+   <testResult testName="math-2002"/>
+   <testResult testName="math-2003"/>
+   <testResult testName="math-2004"/>
+   <testResult testName="math-2005"/>
+   <testResult testName="math-2006"/>
+   <testResult testName="math-2007"/>
+   <testResult testName="math-2008"/>
+   <testResult testName="math-2009"/>
+   <testResult testName="math-2010"/>
+   <testResult testName="math-2011"/>
+   <testResult testName="math-2012"/>
+   <testResult testName="math-2013"/>
+   <testResult status="pass" testName="math-2101"/>
+   <testResult testName="math-2102"/>
+   <testResult status="pass" testName="math-2201"/>
+   <testResult status="pass" testName="math-2202"/>
+   <testResult status="pass" testName="math-2301"/>
+   <testResult status="pass" testName="math-2302"/>
+   <testResult status="pass" testName="math-2303"/>
+   <testResult testName="math-2401"/>
+   <testResult status="pass" testName="math-2402"/>
+   <testResult status="pass" testName="math-2403"/>
+   <testResult status="pass" testName="math-2404"/>
+   <testResult status="pass" testName="math-2405"/>
+   <testResult status="pass" testName="math-2406"/>
+   <testResult status="pass" testName="math-2407"/>
+   <testResult status="pass" testName="math-2408"/>
+   <testResult status="pass" testName="math-2409"/>
+   <testResult status="pass" testName="math-2410"/>
+   <testResult status="pass" testName="math-2501"/>
+   <testResult testName="math-2502"/>
+   <testResult testName="math-2503"/>
+   <testResult testName="math-2504"/>
+   <testResult status="pass" testName="math-2505"/>
+   <testResult testName="math-2506"/>
+   <testResult testName="math-2507"/>
+   <testResult status="fail" testName="math-2508"/>
+   <testResult testName="math-2509"/>
+   <testResult testName="math-2601"/>
+   <testResult testName="math-2602"/>
+   <testResult testName="math-2603"/>
+   <testResult testName="math-2604"/>
+   <testResult testName="math-2605"/>
+   <testResult status="fail" testName="math-2606">
+      <outResult>
+         <errTrace>1.0e could not be formatted to a number!</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="math-2607"/>
+   <testResult status="pass" testName="math-2608"/>
+   <testResult status="fail" testName="math-2609"/>
+   <testResult status="pass" testName="math-2610"/>
+   <testResult status="fail" testName="math-2611"/>
+   <testResult status="fail" testName="math-2612"/>
+   <testResult status="fail" testName="math-2701"/>
+   <testResult status="pass" testName="math-2801"/>
+   <testResult status="pass" testName="math-2901"/>
+   <testResult testName="math-3001"/>
+   <testResult testName="math-3101"/>
+   <testResult status="pass" testName="math-3201"/>
+   <testResult status="fail" testName="math-3301">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="math-3301a">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="math-3302">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="math-3302a">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="math-3303">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="math-3303a">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="math-3304">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="math-3304a">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="math-3305"/>
+   <testResult status="fail" testName="math-3305a"/>
+   <testResult status="fail" testName="math-3306"/>
+   <testResult status="fail" testName="math-3306a"/>
+   <testResult status="pass" testName="math-3307"/>
+   <testResult testName="math-3307a"/>
+   <testResult testName="math-3308"/>
+   <testResult testName="math-3308a"/>
+   <testResult testName="math-3309"/>
+   <testResult testName="math-3309a"/>
+   <testResult status="fail" testName="math-3310"/>
+   <testResult status="fail" testName="math-3310a"/>
+   <testResult status="pass" testName="math-3311"/>
+   <testResult status="pass" testName="math-3312"/>
+   <testResult status="fail" testName="math-3313"/>
+   <testResult status="fail" testName="math-3314"/>
+   <testResult status="fail" testName="math-3315">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="math-3316"/>
+   <testResult testName="math-3317"/>
+</testrun>

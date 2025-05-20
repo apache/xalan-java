@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:32Z" fail="33" name="for-each-group" pass="39" skipped="4" statusUnknown="2" totalRun="78">
+   <testResult status="pass" testName="for-each-group-001"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="for-each-group-002">
+      <outResult>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Could not find variable with the name of g</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="for-each-group-003"/>
+   <testResult status="pass" testName="for-each-group-005"/>
+   <testResult status="pass" testName="for-each-group-007"/>
+   <testResult status="pass" testName="for-each-group-009"/>
+   <testResult status="fail" testName="for-each-group-011"/>
+   <testResult status="pass" testName="for-each-group-012"/>
+   <testResult status="pass" testName="for-each-group-013"/>
+   <testResult status="pass" testName="for-each-group-014"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="for-each-group-015b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;g&gt;&lt;h key="city"/&gt;&lt;h key="city"/&gt;&lt;/g&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="for-each-group-016"/>
+   <testResult status="fail" testName="for-each-group-018"/>
+   <testResult status="pass" testName="for-each-group-020"/>
+   <testResult status="fail" testName="for-each-group-022"/>
+   <testResult status="pass" testName="for-each-group-024"/>
+   <testResult status="fail" testName="for-each-group-026"/>
+   <testResult status="fail" testName="for-each-group-027"/>
+   <testResult status="fail" testName="for-each-group-028"/>
+   <testResult status="pass" testName="for-each-group-029"/>
+   <testResult status="pass" testName="for-each-group-030"/>
+   <testResult status="pass" testName="for-each-group-031"/>
+   <testResult status="pass" testName="for-each-group-032"/>
+   <testResult status="fail" testName="for-each-group-033"/>
+   <testResult status="fail" testName="for-each-group-034"/>
+   <testResult status="fail" testName="for-each-group-035"/>
+   <testResult status="pass" testName="for-each-group-036"/>
+   <testResult status="pass" testName="for-each-group-037"/>
+   <testResult status="pass" testName="for-each-group-038"/>
+   <testResult status="pass" testName="for-each-group-039"/>
+   <testResult status="pass" testName="for-each-group-040"/>
+   <testResult status="fail" testName="for-each-group-041"/>
+   <testResult status="fail" testName="for-each-group-042"/>
+   <testResult status="pass" testName="for-each-group-043"/>
+   <testResult status="pass" testName="for-each-group-044"/>
+   <testResult status="fail" testName="for-each-group-045"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult testName="for-each-group-046a"/>
+   <testResult status="pass" testName="for-each-group-047"/>
+   <testResult status="pass" testName="for-each-group-048"/>
+   <testResult status="pass" testName="for-each-group-049"/>
+   <testResult status="pass" testName="for-each-group-050"/>
+   <testResult status="fail" testName="for-each-group-051">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Position&lt;/th&gt;&lt;th&gt;Country&lt;/th&gt;&lt;th&gt;City List&lt;/th&gt;&lt;th&gt;Population&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;italy&lt;/td&gt;&lt;td&gt;milan&lt;/td&gt;&lt;td&gt;5&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;france&lt;/td&gt;&lt;td&gt;paris&lt;/td&gt;&lt;td&gt;7&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;germany&lt;/td&gt;&lt;td&gt;munich&lt;/td&gt;&lt;td&gt;4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;4&lt;/td&gt;&lt;td&gt;france&lt;/td&gt;&lt;td&gt;lyon&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;5&lt;/td&gt;&lt;td&gt;england&lt;/td&gt;&lt;td&gt;london&lt;/td&gt;&lt;td&gt;10&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;6&lt;/td&gt;&lt;td&gt;england&lt;/td&gt;&lt;td&gt;bristol&lt;/td&gt;&lt;td&gt;5&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;7&lt;/td&gt;&lt;td&gt;england&lt;/td&gt;&lt;td&gt;manchester&lt;/td&gt;&lt;td&gt;7&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8&lt;/td&gt;&lt;td&gt;england&lt;/td&gt;&lt;td&gt;liverpool&lt;/td&gt;&lt;td&gt;7&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;9&lt;/td&gt;&lt;td&gt;england&lt;/td&gt;&lt;td&gt;sheffield&lt;/td&gt;&lt;td&gt;5&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;10&lt;/td&gt;&lt;td&gt;italy&lt;/td&gt;&lt;td&gt;venice&lt;/td&gt;&lt;td&gt;1&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="for-each-group-052">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Position&lt;/th&gt;&lt;th&gt;Country&lt;/th&gt;&lt;th&gt;City List&lt;/th&gt;&lt;th&gt;Population&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;italy&lt;/td&gt;&lt;td&gt;milan, paris, munich, lyon, london, bristol, manchester, liverpool, sheffield, venice&lt;/td&gt;&lt;td&gt;53&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="for-each-group-053">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Position&lt;/th&gt;&lt;th&gt;Country&lt;/th&gt;&lt;th&gt;City List&lt;/th&gt;&lt;th&gt;Population&lt;/th&gt;&lt;/tr&gt;&lt;/table&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="for-each-group-054">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Position&lt;/th&gt;&lt;th&gt;Country&lt;/th&gt;&lt;th&gt;City List&lt;/th&gt;&lt;th&gt;Population&lt;/th&gt;&lt;/tr&gt;&lt;/table&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="for-each-group-055">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="for-each-group-056"/>
+   <testResult status="fail" testName="for-each-group-059">
+      <outResult>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="for-each-group-060">
+      <outResult>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="for-each-group-061"/>
+   <testResult status="pass" testName="for-each-group-062"/>
+   <testResult status="fail" testName="for-each-group-063"/>
+   <testResult status="pass" testName="for-each-group-064"/>
+   <testResult status="pass" testName="for-each-group-065"/>
+   <testResult status="pass" testName="for-each-group-066"/>
+   <testResult status="fail" testName="for-each-group-067"/>
+   <testResult status="fail" testName="for-each-group-068"/>
+   <testResult status="fail" testName="for-each-group-069"/>
+   <testResult status="fail" testName="for-each-group-070"/>
+   <testResult status="fail" testName="for-each-group-071">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="for-each-group-072"/>
+   <testResult status="pass" testName="for-each-group-073"/>
+   <testResult status="pass" testName="for-each-group-074"/>
+   <testResult status="pass" testName="for-each-group-075"/>
+   <testResult status="fail" testName="for-each-group-076">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;group pop="5" country="italy"&gt;&lt;city country="italy" name="milan" pop="5"/&gt;&lt;/group&gt;&lt;group pop="7" country="france"&gt;&lt;city country="france" name="paris" pop="7"/&gt;&lt;/group&gt;&lt;group pop="4" country="germany"&gt;&lt;city country="germany" name="munich" pop="4"/&gt;&lt;/group&gt;&lt;group pop="2" country="france"&gt;&lt;city country="france" name="lyon" pop="2"/&gt;&lt;/group&gt;&lt;group pop="10" country="england"&gt;&lt;city country="england" name="london" pop="10"/&gt;&lt;/group&gt;&lt;group pop="5" country="england"&gt;&lt;city country="england" name="bristol" pop="5.0"/&gt;&lt;city country="england" name="sheffield" pop="05"/&gt;&lt;/group&gt;&lt;group pop="7" country="england"&gt;&lt;city country="england" name="manchester" pop="7.0"/&gt;&lt;city country="england" name="liverpool" pop="7"/&gt;&lt;/group&gt;&lt;group pop="1" country="italy"&gt;&lt;city country="italy" name="venice" pop="1"/&gt;&lt;/group&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="for-each-group-078a"/>
+   <testResult status="fail" testName="for-each-group-078b">
+      <outResult>
+         <errTrace>XTSE1080 : An error occured while evaluating xsl:for-each-group instruction, with following error trace : xml.xpath31.processor.types.XSInteger cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="for-each-group-079a"/>
+   <testResult status="fail" testName="for-each-group-079b">
+      <outResult>
+         <errTrace>XTSE1080 : An error occured while evaluating xsl:for-each-group instruction, with following error trace : xml.xpath31.processor.types.XSInteger cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="for-each-group-080"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="for-each-group-081b">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="for-each-group-082"/>
+   <testResult status="pass" testName="for-each-group-083"/>
+   <testResult testName="for-each-group-084"/>
+</testrun>

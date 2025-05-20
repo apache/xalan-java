@@ -34,6 +34,7 @@ public class XslCopyTests extends W3CXslTransformTestsUtil {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/copy/_copy-test-set.xml";
+    	m_resultSubFolderName = "insn";
     	m_testResultFileName = "_copy-test-set_result.xml";    	   
     }
 

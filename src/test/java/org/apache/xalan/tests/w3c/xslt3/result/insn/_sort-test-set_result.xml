@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:39Z" fail="37" name="sort" pass="31" skipped="0" statusUnknown="12" totalRun="80">
+   <testResult status="pass" testName="sort-001"/>
+   <testResult status="pass" testName="sort-002"/>
+   <testResult testName="sort-003"/>
+   <testResult status="fail" testName="sort-004"/>
+   <testResult status="pass" testName="sort-005"/>
+   <testResult testName="sort-006"/>
+   <testResult status="pass" testName="sort-007"/>
+   <testResult status="pass" testName="sort-008"/>
+   <testResult status="pass" testName="sort-009"/>
+   <testResult testName="sort-010"/>
+   <testResult status="pass" testName="sort-011"/>
+   <testResult status="fail" testName="sort-012"/>
+   <testResult status="fail" testName="sort-013"/>
+   <testResult status="fail" testName="sort-014"/>
+   <testResult status="fail" testName="sort-015"/>
+   <testResult status="pass" testName="sort-016"/>
+   <testResult status="fail" testName="sort-017"/>
+   <testResult status="fail" testName="sort-018"/>
+   <testResult status="fail" testName="sort-019"/>
+   <testResult status="fail" testName="sort-020"/>
+   <testResult status="pass" testName="sort-021"/>
+   <testResult status="pass" testName="sort-022"/>
+   <testResult status="pass" testName="sort-023"/>
+   <testResult testName="sort-024"/>
+   <testResult testName="sort-025"/>
+   <testResult testName="sort-026"/>
+   <testResult status="fail" testName="sort-027">
+      <outResult>&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;&lt;out lang="default-order"/&gt;&#13;
+</outResult>
+   </testResult>
+   <testResult testName="sort-028"/>
+   <testResult status="fail" testName="sort-029">
+      <outResult>&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;&lt;out lang="default-order"/&gt;&#13;
+</outResult>
+   </testResult>
+   <testResult testName="sort-030"/>
+   <testResult testName="sort-031"/>
+   <testResult status="pass" testName="sort-032"/>
+   <testResult status="pass" testName="sort-033"/>
+   <testResult status="fail" testName="sort-034"/>
+   <testResult status="pass" testName="sort-035"/>
+   <testResult status="pass" testName="sort-036"/>
+   <testResult testName="sort-037"/>
+   <testResult testName="sort-038"/>
+   <testResult status="pass" testName="sort-039"/>
+   <testResult status="pass" testName="sort-040"/>
+   <testResult status="pass" testName="sort-041"/>
+   <testResult status="pass" testName="sort-042"/>
+   <testResult status="pass" testName="sort-043"/>
+   <testResult status="pass" testName="sort-044"/>
+   <testResult status="pass" testName="sort-045"/>
+   <testResult status="fail" testName="sort-046"/>
+   <testResult status="fail" testName="sort-047"/>
+   <testResult status="pass" testName="sort-048"/>
+   <testResult status="pass" testName="sort-049"/>
+   <testResult status="pass" testName="sort-050"/>
+   <testResult status="fail" testName="sort-051"/>
+   <testResult status="pass" testName="sort-052"/>
+   <testResult status="fail" testName="sort-053"/>
+   <testResult status="fail" testName="sort-054">
+      <outResult>
+         <errTrace>XTTE0590 : The value to parameter 'v' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="sort-055"/>
+   <testResult status="fail" testName="sort-056"/>
+   <testResult status="fail" testName="sort-057"/>
+   <testResult status="fail" testName="sort-058"/>
+   <testResult status="fail" testName="sort-059"/>
+   <testResult status="fail" testName="sort-060"/>
+   <testResult status="fail" testName="sort-061"/>
+   <testResult status="fail" testName="sort-062">
+      <outResult>
+         <errTrace>XTTE0590 : The value to parameter 'list1' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="sort-063"/>
+   <testResult status="fail" testName="sort-064"/>
+   <testResult status="fail" testName="sort-065"/>
+   <testResult status="fail" testName="sort-066"/>
+   <testResult status="fail" testName="sort-067"/>
+   <testResult status="fail" testName="sort-068"/>
+   <testResult status="fail" testName="sort-069"/>
+   <testResult status="fail" testName="sort-070"/>
+   <testResult status="pass" testName="sort-071"/>
+   <testResult status="fail" testName="sort-072"/>
+   <testResult status="fail" testName="sort-073"/>
+   <testResult status="pass" testName="sort-074"/>
+   <testResult status="pass" testName="sort-075"/>
+   <testResult status="pass" testName="sort-076"/>
+   <testResult status="pass" testName="sort-077"/>
+   <testResult status="fail" testName="sort-078">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;First,Second,Third,Fourth,Fifth,Sixth,Seventh,&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="sort-079">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="sort-080">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+      </outResult>
+   </testResult>
+</testrun>

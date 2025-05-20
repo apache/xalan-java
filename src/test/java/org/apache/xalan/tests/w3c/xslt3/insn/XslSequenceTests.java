@@ -35,6 +35,7 @@ public class XslSequenceTests extends W3CXslTransformTestsUtil {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/sequence/_sequence-test-set.xml";
+    	m_resultSubFolderName = "insn";
     	m_testResultFileName = "_sequence-test-set_result.xml";    	   
     }
 

@@ -78,8 +78,6 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     protected static String m_xslTransformInpPath = null;
     
-    protected static String m_w3cXslt3TestSuiteXalanResultsPathPrefix = "file:/d:/xslt30-test-master/xalan_j_test_results/";
-    
     /**
      * Class field representing, whether XML Schema validation is enabled 
      * for an XSL transformation instance invoked by this test suite.

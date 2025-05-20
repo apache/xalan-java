@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:38Z" fail="14" name="element" pass="8" skipped="0" statusUnknown="1" totalRun="23">
+   <testResult status="fail" testName="element-0001">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="element-0002">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="element-0003">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="element-0004"/>
+   <testResult status="pass" testName="element-0005"/>
+   <testResult status="fail" testName="element-0006">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="element-0101"/>
+   <testResult status="pass" testName="element-0102"/>
+   <testResult status="fail" testName="element-0103"/>
+   <testResult status="fail" testName="element-0104"/>
+   <testResult status="fail" testName="element-0105"/>
+   <testResult status="fail" testName="element-0106"/>
+   <testResult status="fail" testName="element-0107"/>
+   <testResult status="fail" testName="element-0108"/>
+   <testResult status="pass" testName="element-0110"/>
+   <testResult status="pass" testName="element-0111"/>
+   <testResult status="pass" testName="element-0201"/>
+   <testResult status="fail" testName="element-0301"/>
+   <testResult status="fail" testName="element-0302">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}resolve-uri()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="element-0303">
+      <outResult>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="element-0304">
+      <outResult>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="element-0305"/>
+   <testResult testName="element-0306"/>
+</testrun>

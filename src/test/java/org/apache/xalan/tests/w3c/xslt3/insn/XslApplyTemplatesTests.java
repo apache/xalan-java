@@ -34,6 +34,7 @@ public class XslApplyTemplatesTests extends W3CXslTransformTestsUtil {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/apply-templates/_apply-templates-test-set.xml";
+    	m_resultSubFolderName = "insn";
     	m_testResultFileName = "_apply-templates-test-set_result.xml";    	   
     }
 

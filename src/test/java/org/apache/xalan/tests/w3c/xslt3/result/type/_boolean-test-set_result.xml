@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:43Z" fail="23" name="boolean" pass="89" skipped="0" statusUnknown="0" totalRun="112">
+   <testResult status="pass" testName="boolean-001"/>
+   <testResult status="pass" testName="boolean-002"/>
+   <testResult status="pass" testName="boolean-003"/>
+   <testResult status="pass" testName="boolean-004"/>
+   <testResult status="pass" testName="boolean-005"/>
+   <testResult status="pass" testName="boolean-006"/>
+   <testResult status="pass" testName="boolean-007"/>
+   <testResult status="pass" testName="boolean-008"/>
+   <testResult status="pass" testName="boolean-009"/>
+   <testResult status="pass" testName="boolean-010"/>
+   <testResult status="pass" testName="boolean-011"/>
+   <testResult status="pass" testName="boolean-012"/>
+   <testResult status="pass" testName="boolean-013"/>
+   <testResult status="pass" testName="boolean-014"/>
+   <testResult status="pass" testName="boolean-015"/>
+   <testResult status="pass" testName="boolean-016"/>
+   <testResult status="pass" testName="boolean-017"/>
+   <testResult status="fail" testName="boolean-018"/>
+   <testResult status="pass" testName="boolean-019"/>
+   <testResult status="pass" testName="boolean-020"/>
+   <testResult status="pass" testName="boolean-021"/>
+   <testResult status="pass" testName="boolean-022"/>
+   <testResult status="pass" testName="boolean-023"/>
+   <testResult status="pass" testName="boolean-024"/>
+   <testResult status="pass" testName="boolean-025"/>
+   <testResult status="pass" testName="boolean-026"/>
+   <testResult status="pass" testName="boolean-027"/>
+   <testResult status="pass" testName="boolean-028"/>
+   <testResult status="pass" testName="boolean-029"/>
+   <testResult status="pass" testName="boolean-030"/>
+   <testResult status="pass" testName="boolean-031"/>
+   <testResult status="pass" testName="boolean-032"/>
+   <testResult status="pass" testName="boolean-033"/>
+   <testResult status="pass" testName="boolean-034"/>
+   <testResult status="pass" testName="boolean-035"/>
+   <testResult status="pass" testName="boolean-036"/>
+   <testResult status="pass" testName="boolean-037"/>
+   <testResult status="pass" testName="boolean-038"/>
+   <testResult status="pass" testName="boolean-039"/>
+   <testResult status="fail" testName="boolean-040"/>
+   <testResult status="fail" testName="boolean-041"/>
+   <testResult status="fail" testName="boolean-042"/>
+   <testResult status="fail" testName="boolean-043"/>
+   <testResult status="fail" testName="boolean-044"/>
+   <testResult status="pass" testName="boolean-045"/>
+   <testResult status="pass" testName="boolean-046"/>
+   <testResult status="pass" testName="boolean-047"/>
+   <testResult status="fail" testName="boolean-048"/>
+   <testResult status="pass" testName="boolean-049"/>
+   <testResult status="pass" testName="boolean-050"/>
+   <testResult status="pass" testName="boolean-051"/>
+   <testResult status="pass" testName="boolean-052"/>
+   <testResult status="pass" testName="boolean-053"/>
+   <testResult status="pass" testName="boolean-054"/>
+   <testResult status="pass" testName="boolean-055"/>
+   <testResult status="pass" testName="boolean-056"/>
+   <testResult status="pass" testName="boolean-057"/>
+   <testResult status="pass" testName="boolean-058"/>
+   <testResult status="pass" testName="boolean-059"/>
+   <testResult status="pass" testName="boolean-060"/>
+   <testResult status="pass" testName="boolean-061"/>
+   <testResult status="pass" testName="boolean-062"/>
+   <testResult status="pass" testName="boolean-063"/>
+   <testResult status="pass" testName="boolean-064"/>
+   <testResult status="pass" testName="boolean-065"/>
+   <testResult status="fail" testName="boolean-066"/>
+   <testResult status="fail" testName="boolean-067"/>
+   <testResult status="fail" testName="boolean-068"/>
+   <testResult status="fail" testName="boolean-069"/>
+   <testResult status="pass" testName="boolean-070"/>
+   <testResult status="fail" testName="boolean-071"/>
+   <testResult status="fail" testName="boolean-072"/>
+   <testResult status="fail" testName="boolean-073"/>
+   <testResult status="fail" testName="boolean-074"/>
+   <testResult status="pass" testName="boolean-075"/>
+   <testResult status="fail" testName="boolean-076"/>
+   <testResult status="fail" testName="boolean-077"/>
+   <testResult status="fail" testName="boolean-078">
+      <outResult>
+         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
+         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="boolean-079">
+      <outResult>
+         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
+         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="boolean-080"/>
+   <testResult status="pass" testName="boolean-081"/>
+   <testResult status="fail" testName="boolean-082">
+      <outResult>
+         <errTrace>ERROR! Unknown op code: 0</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="boolean-083"/>
+   <testResult status="pass" testName="boolean-084"/>
+   <testResult status="pass" testName="boolean-085"/>
+   <testResult status="pass" testName="boolean-086"/>
+   <testResult status="pass" testName="boolean-087"/>
+   <testResult status="pass" testName="boolean-088"/>
+   <testResult status="pass" testName="boolean-089"/>
+   <testResult status="pass" testName="boolean-090"/>
+   <testResult status="pass" testName="boolean-091"/>
+   <testResult status="pass" testName="boolean-092"/>
+   <testResult status="pass" testName="boolean-093"/>
+   <testResult status="pass" testName="boolean-094"/>
+   <testResult status="pass" testName="boolean-095"/>
+   <testResult status="pass" testName="boolean-096"/>
+   <testResult status="fail" testName="boolean-097">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;true&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="boolean-098">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;true&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="boolean-099"/>
+   <testResult status="pass" testName="boolean-100"/>
+   <testResult status="pass" testName="boolean-101"/>
+   <testResult status="pass" testName="boolean-102"/>
+   <testResult status="pass" testName="boolean-103"/>
+   <testResult status="pass" testName="boolean-104"/>
+   <testResult status="pass" testName="boolean-105"/>
+   <testResult status="pass" testName="boolean-106"/>
+   <testResult status="pass" testName="boolean-107"/>
+   <testResult status="pass" testName="boolean-108"/>
+   <testResult status="pass" testName="boolean-109"/>
+   <testResult status="pass" testName="boolean-110"/>
+   <testResult status="pass" testName="boolean-111"/>
+   <testResult status="pass" testName="boolean-112"/>
+</testrun>

@@ -34,6 +34,7 @@ public class XslBooleanTests extends W3CXslTransformTestsUtil {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "type/boolean/_boolean-test-set.xml";
+    	m_resultSubFolderName = "type";
     	m_testResultFileName = "_boolean-test-set_result.xml";    	   
     }
 
