@@ -1524,9 +1524,9 @@ public class XPathParser
            */
           int listSize = seqOrArrayXPathItems.size();
           
-          // For e.g, for the expression (a,b)[1] this string 
-          // variable will have value "1".
-          String sequenceIndexExpr = null; 
+          // For e.g, for the XPath expression (a,b)[p] this 
+          // string variable will have value "p".
+          String sequencePredicateExpr = null; 
         		  
           if (listSize > 1) {
              String listLastItemStr = seqOrArrayXPathItems.get(listSize - 1);
@@ -1537,7 +1537,7 @@ public class XPathParser
              	int tokenQueueSize = m_ops.getTokenQueueSize();
              	String tokenQueueLastItemStr = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();             	
             	if ("]".equals(tokenQueueLastItemStr)) {
-            	   sequenceIndexExpr = listLastItemStr.substring(idx2 + 1);
+            	   sequencePredicateExpr = listLastItemStr.substring(idx2 + 1);
             	   listLastItemStr = listLastItemStr.substring(0, idx1);
             	   seqOrArrayXPathItems.set(listSize - 1, listLastItemStr);
             	}
@@ -1649,7 +1649,7 @@ public class XPathParser
                  insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);                 
                  m_xpathSequenceConstructor = new XPathSequenceConstructor();                 
                  m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);  
-                 m_xpathSequenceConstructor.setIndexExpr(sequenceIndexExpr);
+                 m_xpathSequenceConstructor.setPredicateExpr(sequencePredicateExpr);
                  m_xpathSequenceConstructor.setXPathSuffixStr(xpathSuffixStr);
               }             
           }

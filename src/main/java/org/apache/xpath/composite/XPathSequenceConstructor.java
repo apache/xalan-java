@@ -36,10 +36,13 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
@@ -60,16 +63,16 @@ public class XPathSequenceConstructor extends Expression {
     private List<String> m_sequenceConstructorXPathParts = new ArrayList<String>();
     
     /**
-     * An optional XPath expression string, to represent an index 
-     * suffix of an XPath expression.
+     * An optional XPath expression string, to represent a 
+     * predicate following an XPath literal sequence constructor.
      * 
-     * For e.g, in the XPath expression (a, b)[1] this is 1.
+     * For e.g, in the XPath expression (a, b)[p] this is p.
      */
-    private String m_xpathIndexExpr = null;
+    private String m_xpathPredicateExpr = null;
     
     /**
-     * An optional XPath expression string, to represent a suffix of an 
-     * XPath expression.
+     * An optional XPath expression string, to represent a path 
+     * suffix following an XPath literal sequence constructor.
      * 
      * For e.g, in the XPath expression (a, b)/m/n this is m/n.
      */
@@ -249,42 +252,52 @@ public class XPathSequenceConstructor extends Expression {
            }
         }
         
-        if (m_xpathIndexExpr != null) {
+        if (m_xpathPredicateExpr != null) {
         	if (prefixTable != null) {
-        		m_xpathIndexExpr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpathIndexExpr, prefixTable);
+        		m_xpathPredicateExpr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpathPredicateExpr, prefixTable);
         	}
 
-        	XPath xpathObj = new XPath(m_xpathIndexExpr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	XPath xpathObj = new XPath(m_xpathPredicateExpr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         	
         	if (m_vars != null) {
         		xpathObj.fixupVariables(m_vars, m_globals_size);
             }
         	
-        	XObject seqIndexEvalResult = xpathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
-        	
-        	if (seqIndexEvalResult instanceof XNumber) {
-        	   double dbl1 = ((XNumber)seqIndexEvalResult).num();
-        	   if (dbl1 == (int)dbl1) {
-        		  result = resultSeq.item((int)dbl1 - 1); 
-        	   }
-        	   else {
-        		  throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with a sequence reference, is not an integer.", srcLocator);
-        	   }
-        	}
-        	else if (seqIndexEvalResult instanceof XSNumericType) {
-        	   XSNumericType xsNumericType = (XSNumericType)seqIndexEvalResult;
-        	   String strValue = xsNumericType.stringValue();
-        	   double dbl1 = Double.valueOf(strValue);
-               if (dbl1 == (int)dbl1) {
-            	  result = resultSeq.item((int)dbl1 - 1);   
-        	   }
-        	   else {
-        		  throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with a sequence reference, is not an integer.", srcLocator);
-        	   }
-        	}
-        	else {
-        	   throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with a sequence reference, is not numeric.", srcLocator);
-        	}
+            XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+            int xpath3ContextPos = xctxt.getXPath3ContextPosition();
+            int xpath3ContextSize = xctxt.getXPath3ContextSize();
+            
+            try {
+            	result = getSequenceValueByIndex(xctxt, resultSeq, xpathObj);
+            }
+            catch (TransformerException ex) {
+            	throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while evaluating an XPath predicate "
+            			                                                                          + "following a literal sequence constructor expression. Exception "
+            			                                                                          + "trace : " + ex.getMessage() + ".", srcLocator);
+            }
+            finally {
+            	xctxt.setXPath3ContextItem(xpath3ContextItem);
+            	xctxt.setXPath3ContextPosition(xpath3ContextPos);
+            	xctxt.setXPath3ContextSize(xpath3ContextSize);
+            }
+            
+            if (result == null) {
+            	try {
+            		ResultSequence newResultSeq = getResultSequenceByPredicateEvaluation(xctxt, srcLocator, resultSeq, xpathObj);
+            		
+            		result = newResultSeq; 
+            	}
+            	catch (TransformerException ex) {
+            		throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while evaluating an XPath predicate "
+                            															          + "following a literal sequence constructor expression. Exception "
+                            															          + "trace : " + ex.getMessage() + ".", srcLocator);
+            	}
+            	finally {
+            		xctxt.setXPath3ContextItem(xpath3ContextItem);
+                	xctxt.setXPath3ContextPosition(xpath3ContextPos);
+                	xctxt.setXPath3ContextSize(xpath3ContextSize);
+            	}
+            }
         }
         else if (m_xpathSuffixStr != null) {
         	if (prefixTable != null) {
@@ -345,12 +358,12 @@ public class XPathSequenceConstructor extends Expression {
         this.m_sequenceConstructorXPathParts = sequenceConstructorXpathParts;
     }
 
-	public void setIndexExpr(String sequenceIndexExpr) {
-		this.m_xpathIndexExpr = sequenceIndexExpr; 		
+	public void setPredicateExpr(String sequencePredicateExpr) {
+		this.m_xpathPredicateExpr = sequencePredicateExpr; 		
 	}
 	
-	public String getIndexExpr() {
-	    return m_xpathIndexExpr;
+	public String getPredicateExpr() {
+	    return m_xpathPredicateExpr;
 	}
 
 	public void setXPathSuffixStr(String xpathSuffixStr) {
@@ -359,6 +372,99 @@ public class XPathSequenceConstructor extends Expression {
 	
 	public String getXPathSuffixStr() {
 		return m_xpathSuffixStr;
+	}
+
+	/**
+	 * Given a supplied sequence which is the result of XPath literal sequence constructor 
+	 * evaluation, and an XPath predicate expression following the literal sequence 
+	 * constructor, attempt to return a result as an index accessor for the supplied sequence.
+	 */
+	private XObject getSequenceValueByIndex(XPathContext xctxt, ResultSequence resultSeq, XPath xpathObj)
+																									throws TransformerException {
+		
+		XObject result = null;
+		
+		List<Integer> intList = new ArrayList<Integer>();
+		for (int idx = 0; idx < resultSeq.size(); idx++) {
+			XObject xObj = resultSeq.item(idx);
+			xctxt.setXPath3ContextItem(xObj);
+			xctxt.setXPath3ContextPosition(idx + 1);
+			xctxt.setXPath3ContextSize(resultSeq.size());
+			XObject seqEvalResult = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+			if (seqEvalResult instanceof XNumber) {
+		 	   double dbl1 = ((XNumber)seqEvalResult).num();
+		 	   if (dbl1 == (int)dbl1) {
+		 		  intList.add((int)dbl1); 
+		 	   }                 	   
+		 	}
+			else if (seqEvalResult instanceof XSNumericType) {
+			   XSNumericType xsNumericType = (XSNumericType)seqEvalResult;
+		 	   String strValue = xsNumericType.stringValue();
+		 	   double dbl1 = Double.valueOf(strValue);
+		 	   if (dbl1 == (int)dbl1) {
+		 		  intList.add((int)dbl1); 
+		 	   } 
+			}
+		}
+		
+		if ((resultSeq.size() > 0) && (intList.size() == resultSeq.size())) {
+			Integer intValue = intList.get(0);
+			boolean allValSame = true;
+			for (int idx = 1; idx < intList.size(); idx++) {
+				int iVal = intList.get(idx);
+				if (iVal != intValue) {
+				   allValSame = false;
+				   break;
+				}
+			}
+			
+			if (allValSame) {
+			    result = resultSeq.item(intValue - 1); 
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Given a supplied sequence which is the result of XPath literal sequence constructor 
+	 * evaluation, and an XPath predicate expression following the literal sequence 
+	 * constructor, evaluate the predicate in turn for each sequence item as a context item 
+	 * and return the supplied sequence values for which the predicate evaluates to true.
+	 */
+	private ResultSequence getResultSequenceByPredicateEvaluation(XPathContext xctxt, SourceLocator srcLocator,
+														          ResultSequence resultSeq, XPath xpathObj) throws TransformerException {
+		
+		ResultSequence newResultSeq = new ResultSequence();
+		
+		for (int idx = 0; idx < resultSeq.size(); idx++) {
+			XObject xObj = resultSeq.item(idx);
+			xctxt.setXPath3ContextItem(xObj);
+			xctxt.setXPath3ContextPosition(idx + 1);
+			xctxt.setXPath3ContextSize(resultSeq.size());
+			XObject seqEvalResult = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+			boolean boolValue = false;
+			if (seqEvalResult instanceof XBooleanStatic) {
+				boolValue = ((XBooleanStatic)seqEvalResult).bool();
+			}
+			else if (seqEvalResult instanceof XBoolean) {
+				boolValue = ((XBoolean)seqEvalResult).bool();
+			}
+			else if (seqEvalResult instanceof XSBoolean) {
+				boolValue = ((XSBoolean)seqEvalResult).bool();
+			}
+			else {
+				throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while evaluating an XPath predicate "
+						                                                              + "following a literal sequence constructor expression. "
+						                                                              + "The predicate didn't evaluate to a boolean value.", srcLocator);
+			}
+			
+			if (boolValue) {
+				newResultSeq.add(xObj);
+			}
+		}
+		
+		return newResultSeq;
 	}
 
 }
