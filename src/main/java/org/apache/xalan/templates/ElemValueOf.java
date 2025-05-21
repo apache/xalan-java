@@ -354,28 +354,40 @@ public class ElemValueOf extends ElemTemplateElement {
                       String strValue = null;
                       
                       if (evalResult instanceof XSAnyType) {
-                          strValue = ((XSAnyType)evalResult).stringValue();    
-                      }
-                      else if (evalResult instanceof XPathArray) {
-                    	 XPathArray xpathArr = (XPathArray)evalResult;
-                    	 List<XObject> nativeArr = xpathArr.getNativeArray();
-                    	 
-                    	 ResultSequence rSeq = new ResultSequence();
-                         for (int idx = 0; idx < nativeArr.size(); idx++) {                           
-                        	rSeq.add(nativeArr.get(idx));
-                         }
-                         
-                         strValue = getEffectiveSequenceStrValue(rSeq);
-                      }
-                      else if (evalResult instanceof XPathMap) {
-                    	 throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
-                    	 		                                              + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
+                    	  strValue = ((XSAnyType)evalResult).stringValue();    
+                      }                                            
+                      else if (evalResult instanceof XMLNodeCursorImpl) {
+                    	  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;
+                    	  DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
+                    	  int nextNode;
+                    	  StringBuffer strBuffer = new StringBuffer();
+                    	  while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {
+                    		  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, xctxt);
+                    		  strBuffer.append(node.str() + " ");
+                    	  }
+                    	  
+                    	  strValue = (strBuffer.toString()).trim(); 
                       }
                       else if (evalResult instanceof ResultSequence) {
                     	  strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult);
                       }
+                      else if (evalResult instanceof XPathArray) {
+                    	  XPathArray xpathArr = (XPathArray)evalResult;
+                    	  List<XObject> nativeArr = xpathArr.getNativeArray();
+
+                    	  ResultSequence rSeq = new ResultSequence();
+                    	  for (int idx = 0; idx < nativeArr.size(); idx++) {                           
+                    		  rSeq.add(nativeArr.get(idx));
+                    	  }
+
+                    	  strValue = getEffectiveSequenceStrValue(rSeq);
+                      }
+                      else if (evalResult instanceof XPathMap) {
+                    	  throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
+                    			                                                     + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
+                      }
                       else {
-                          strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                    	  strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                       }
                       
                       (new XString(strValue)).dispatchCharactersEvents(rth);

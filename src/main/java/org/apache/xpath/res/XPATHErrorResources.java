@@ -135,6 +135,7 @@ public class XPATHErrorResources extends ListResourceBundle
 	 "ER_COULDNOT_GET_VAR_NAMED";
   public static final String ER_UNKNOWN_OPCODE = "ER_UNKNOWN_OPCODE";
   public static final String ER_EXTRA_ILLEGAL_TOKENS ="ER_EXTRA_ILLEGAL_TOKENS";
+  public static final String ER_EXPECTED_CLOSING_SQUARE_BRACKET = "ER_EXPECTED_CLOSING_SQUARE_BRACKET";
   public static final String ER_IF_EXPR ="ER_IF_EXPR";
   public static final String ER_EXPECTED_DOUBLE_QUOTE = 
 	 "ER_EXPECTED_DOUBLE_QUOTE";
@@ -476,6 +477,9 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 
   { ER_EXTRA_ILLEGAL_TOKENS,
      "Extra illegal tokens: {0}"},
+  
+  { ER_EXPECTED_CLOSING_SQUARE_BRACKET,
+     "Could not find token ]"},
   
   { ER_IF_EXPR,
      "\"if\" keyword expected followed by \"(\" expr \")\"." },

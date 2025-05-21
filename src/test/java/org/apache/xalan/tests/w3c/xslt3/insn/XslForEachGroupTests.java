@@ -46,7 +46,7 @@ public class XslForEachGroupTests extends W3CXslTransformTestsUtil {
     }
     
     @Test
-    public void runXslForEachGroupTests() {    	
+    public void runXslForEachGroupTests() {
        runXslTestSet();
     }
 

@@ -126,7 +126,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
        			  continue; 
      		   }
     		   
-    		   String testCaseName = ((Element)node).getAttribute("name"); 
+    		   String testCaseName = ((Element)node).getAttribute("name");    		   
     		   Object envRef = getTestCaseEnvironment(node);
     		   NodeList nodeList2 = null;
     		   
@@ -217,7 +217,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	catch (Exception ex) {
     	   System.out.println(ex.getMessage());
     	}
-    	finally {
+    	finally {    	   	
     	   try {
     		   NodeList nodeList = testResultDoc.getElementsByTagName("testResult");
         	   

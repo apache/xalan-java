@@ -284,6 +284,8 @@ public class Compiler extends OpMap
       expr = namedFunctionReference(opPos); break;
     case OpCodes.OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX :
       expr = xpathExprWithFuncCallSuffix(opPos); break;
+    case OpCodes.OP_CONTEXT_ITEM_WITH_PREDICATE :
+      expr = xpathContextItemWithPredicate(opPos); break;
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ "quo" });
       break;
@@ -1648,6 +1650,14 @@ private static final boolean DEBUG = false;
   Expression xpathExprWithFuncCallSuffix(int opPos) throws TransformerException
   {
       return XPathParser.m_xpathExprWithFuncCallSuffix;
+  }
+  
+  /**
+   * Compile an XPath expression with string value like .[predicate]
+   */
+  Expression xpathContextItemWithPredicate(int opPos) throws TransformerException
+  {
+      return XPathParser.xpathContextItemWithPredicate;
   }
   
   /**

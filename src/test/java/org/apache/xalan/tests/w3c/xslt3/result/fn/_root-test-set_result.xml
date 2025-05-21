@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:44Z" fail="1" name="root" pass="9" skipped="0" statusUnknown="0" totalRun="10">
-   <testResult status="pass" testName="root-0101"/>
-   <testResult status="pass" testName="root-0102"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-21T16:47:48Z" fail="4" name="root" pass="6" skipped="0" statusUnknown="0" totalRun="10">
+   <testResult status="fail" testName="root-0101"/>
+   <testResult status="fail" testName="root-0102"/>
    <testResult status="pass" testName="root-0103"/>
-   <testResult status="pass" testName="root-0104"/>
+   <testResult status="fail" testName="root-0104"/>
    <testResult status="pass" testName="root-0201"/>
    <testResult status="pass" testName="root-0301"/>
    <testResult status="pass" testName="root-0401"/>

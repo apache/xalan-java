@@ -49,7 +49,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
 
     @Test
-    public void xslGroupingTest1() {
+    public void xslForEachGroupTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
@@ -59,7 +59,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest2() {
+    public void xslForEachGroupTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_b.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
@@ -69,7 +69,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest3() {
+    public void xslForEachGroupTest3() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
@@ -79,7 +79,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest4() {
+    public void xslForEachGroupTest4() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
@@ -89,7 +89,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest5() {
+    public void xslForEachGroupTest5() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
@@ -99,7 +99,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest6() {
+    public void xslForEachGroupTest6() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
         
@@ -109,7 +109,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest7() {
+    public void xslForEachGroupTest7() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
         
@@ -119,7 +119,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest8() {
+    public void xslForEachGroupTest8() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
         
@@ -129,7 +129,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest9() {
+    public void xslForEachGroupTest9() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
         
@@ -139,7 +139,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest10() {
+    public void xslForEachGroupTest10() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
         
@@ -149,7 +149,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest11() {
+    public void xslForEachGroupTest11() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_e.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
         
@@ -159,7 +159,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest12() {
+    public void xslForEachGroupTest12() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_f.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
         
@@ -169,7 +169,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest13() {
+    public void xslForEachGroupTest13() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
         
@@ -179,7 +179,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest14() {
+    public void xslForEachGroupTest14() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_2.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
         
@@ -189,7 +189,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest15() {
+    public void xslForEachGroupTest15() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_3.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
         
@@ -199,7 +199,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest16() {
+    public void xslForEachGroupTest16() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_3.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl";
         
@@ -209,7 +209,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest17() {
+    public void xslForEachGroupTest17() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_4.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl";
         
@@ -219,7 +219,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest18() {
+    public void xslForEachGroupTest18() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_5.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl";
         
@@ -229,7 +229,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest19() {
+    public void xslForEachGroupTest19() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_4.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19.xsl";
         
@@ -239,7 +239,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest20() {
+    public void xslForEachGroupTest20() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_4.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test20.xsl";
         
@@ -250,7 +250,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest21() {
+    public void xslForEachGroupTest21() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_5.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test21.xsl";
         
@@ -261,7 +261,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest22() {
+    public void xslForEachGroupTest22() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_3.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xsl";
         
@@ -271,7 +271,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest23() {
+    public void xslForEachGroupTest23() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_3.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test23.xsl";
         
@@ -282,7 +282,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest24() {
+    public void xslForEachGroupTest24() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test24.xsl";
         
@@ -292,7 +292,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest25() {
+    public void xslForEachGroupTest25() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_g.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test25.xsl";
         
@@ -302,7 +302,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest26() {
+    public void xslForEachGroupTest26() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_h.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test26.xsl";
         
@@ -312,7 +312,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest27() {
+    public void xslForEachGroupTest27() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_i.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test27.xsl";
         
@@ -322,7 +322,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest28() {
+    public void xslForEachGroupTest28() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test28.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test28.xsl";
         
@@ -332,7 +332,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest29() {
+    public void xslForEachGroupTest29() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test29.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test29.xsl";
         
@@ -342,7 +342,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest30() {
+    public void xslForEachGroupTest30() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test30.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test30.xsl";
         
@@ -352,7 +352,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest31() {
+    public void xslForEachGroupTest31() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test31.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test31.xsl";
         
@@ -362,7 +362,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest32() {
+    public void xslForEachGroupTest32() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test32.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test32.xsl";
         
@@ -372,7 +372,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest33() {
+    public void xslForEachGroupTest33() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test33.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test33.xsl";
         
@@ -382,7 +382,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest34() {
+    public void xslForEachGroupTest34() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test34.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test34.xsl";
         
@@ -392,7 +392,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest35() {
+    public void xslForEachGroupTest35() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test35.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test35.xsl";
         
@@ -404,7 +404,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest36() {
+    public void xslForEachGroupTest36() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test36.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test36.xsl";
         
@@ -416,7 +416,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest37() {
+    public void xslForEachGroupTest37() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37.xsl";
         
@@ -428,7 +428,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest38() {
+    public void xslForEachGroupTest38() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "for_each_group_ending_with.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "for_each_group_ending_with.xsl";
         
@@ -438,7 +438,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest39() {
+    public void xslForEachGroupTest39() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "for_each_group_adjacent.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "for_each_group_adjacent.xsl";
         
@@ -448,7 +448,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest40() {
+    public void xslForEachGroupTest40() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "composite_grouping_key_test1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "composite_grouping_key1.xsl";
         
@@ -458,7 +458,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslGroupingTest41() {
+    public void xslForEachGroupTest41() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "composite_grouping_key_test1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "composite_grouping_key2.xsl";
         

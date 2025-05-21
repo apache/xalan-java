@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-20T11:35:32Z" fail="33" name="for-each-group" pass="39" skipped="4" statusUnknown="2" totalRun="78">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-21T16:47:35Z" fail="32" name="for-each-group" pass="40" skipped="4" statusUnknown="2" totalRun="78">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="fail" testName="for-each-group-002">
@@ -37,9 +37,9 @@
    <testResult status="pass" testName="for-each-group-037"/>
    <testResult status="pass" testName="for-each-group-038"/>
    <testResult status="pass" testName="for-each-group-039"/>
-   <testResult status="pass" testName="for-each-group-040"/>
-   <testResult status="fail" testName="for-each-group-041"/>
-   <testResult status="fail" testName="for-each-group-042"/>
+   <testResult status="fail" testName="for-each-group-040"/>
+   <testResult status="pass" testName="for-each-group-041"/>
+   <testResult status="pass" testName="for-each-group-042"/>
    <testResult status="pass" testName="for-each-group-043"/>
    <testResult status="pass" testName="for-each-group-044"/>
    <testResult status="fail" testName="for-each-group-045"/>
@@ -69,12 +69,15 @@
    <testResult status="pass" testName="for-each-group-056"/>
    <testResult status="fail" testName="for-each-group-059">
       <outResult>
-         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Attribute: order has an illegal value: </errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="for-each-group-060">
       <outResult>
-         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl</errTrace>
+         <errTrace>XPTY0004 : An error occured while evaluating an XPath expression.</errTrace>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Attribute: order has an illegal value: </errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="for-each-group-061"/>
@@ -102,13 +105,15 @@
    <testResult status="pass" testName="for-each-group-078a"/>
    <testResult status="fail" testName="for-each-group-078b">
       <outResult>
-         <errTrace>XTSE1080 : An error occured while evaluating xsl:for-each-group instruction, with following error trace : xml.xpath31.processor.types.XSInteger cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl.</errTrace>
+         <errTrace>XPST0008 : Variable 'f' has not been declared, or its declaration is not in scope.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="for-each-group-079a"/>
    <testResult status="fail" testName="for-each-group-079b">
       <outResult>
-         <errTrace>XTSE1080 : An error occured while evaluating xsl:for-each-group instruction, with following error trace : xml.xpath31.processor.types.XSInteger cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl.</errTrace>
+         <errTrace>XPST0008 : Variable 'f' has not been declared, or its declaration is not in scope.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="for-each-group-080"/>

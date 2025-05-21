@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group key="non_integer_values">
+    <item>abc</item>
+    <item>mno</item>
+  </group>
+  <group key="integer_values">
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+  </group>
+</result>

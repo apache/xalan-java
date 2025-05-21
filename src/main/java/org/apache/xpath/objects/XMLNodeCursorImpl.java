@@ -89,6 +89,13 @@ public class XMLNodeCursorImpl extends NodeCursor
    * xsl:result-document instructions.
    */
   private DTM m_dtm = null;
+  
+  /**
+   * Class field to check whether this XMLNodeCursorImpl object instance
+   * is constructed for the purpose of xsl:for-each-group instruction,
+   * when grouping a sequence of XDM atomic values. 
+   */
+  public static boolean m_is_for_each_group = false;
 
   /**
    * Construct a XMLNodeCursorImpl object.

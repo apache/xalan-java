@@ -254,9 +254,13 @@ public abstract class DTMManager
       }
   }
   
-  /*
-   * Given an xdm sequence, this method constructs a Xalan-J dtm object 
-   * from the information provided in an input sequence. 
+  /**
+   * Given a supplied sequence of XDM atomic values, construct a DTM 
+   * wrapper object over the values available within the supplied 
+   * sequence.
+   * 
+   * @param resultSeq        Sequence of XDM atomic values
+   * @return                 DTM object instance
    */
   public DTM getDTMFromResultSequence(ResultSequence resultSeq) {
       try {
@@ -265,14 +269,20 @@ public abstract class DTMManager
           dbf.setNamespaceAware(true);
      
           DocumentBuilder dBuilder = dbf.newDocumentBuilder();
-          Document document = dBuilder.newDocument();
-                    
-          Element docElem = document.createElement("docElem1");          
+          Document document = dBuilder.newDocument();          
+          
+          // Generate arbitrary random XML element names
+          String docElemName = "a_" + System.currentTimeMillis();
+          String childElemName = "b_" + System.currentTimeMillis();
+          
+          Element docElem = document.createElement(docElemName);          
           for (int idx = 0; idx < resultSeq.size(); idx++) {
               XObject seqItem = resultSeq.item(idx);
-              String strVal = XslTransformEvaluationHelper.getStrVal(seqItem); 
-              Text textNode = document.createTextNode(strVal);              
-              docElem.appendChild(textNode);
+              String strVal = XslTransformEvaluationHelper.getStrVal(seqItem);
+              Element elemNode = document.createElement(childElemName);
+              Text textNode = document.createTextNode(strVal);
+              elemNode.appendChild(textNode);                                          
+              docElem.appendChild(elemNode);
           }
           
           document.appendChild(docElem);

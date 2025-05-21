@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-05-20T11:35:56Z" desc="W3C XSLT 3.0 test suite results" fail="507" pass="889" skipped="21" success="57.45%" totalRun="1584" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-05-21T16:48:16Z" desc="W3C XSLT 3.0 test suite results" fail="508" pass="888" skipped="21" success="57.39%" totalRun="1584" xslt_processor="Xalan-J XSLT 3.0 development code">
   <decl>
     <character-map fail="18" pass="1" skipped="0" success="3.45%" totalRun="29"/>
     <function fail="28" pass="20" skipped="4" success="34.29%" totalRun="70"/>
@@ -19,7 +19,7 @@
     <deep-equal fail="0" pass="2" skipped="0" success="100.0%" totalRun="2"/>
     <key fail="3" pass="20" skipped="0" success="80.0%" totalRun="25"/>
     <position fail="8" pass="108" skipped="0" success="92.31%" totalRun="117"/>
-    <root fail="1" pass="9" skipped="0" success="90.0%" totalRun="10"/>
+    <root fail="4" pass="6" skipped="0" success="60.0%" totalRun="10"/>
   </fn>
   <insn>
     <analyze-string fail="19" pass="33" skipped="5" success="65.52%" totalRun="58"/>
@@ -29,9 +29,9 @@
     <choose fail="3" pass="17" skipped="0" success="70.83%" totalRun="24"/>
     <copy fail="38" pass="16" skipped="0" success="26.67%" totalRun="60"/>
     <element fail="14" pass="8" skipped="0" success="34.78%" totalRun="23"/>
-    <for-each-group fail="33" pass="39" skipped="4" success="55.13%" totalRun="78"/>
+    <for-each-group fail="32" pass="40" skipped="4" success="56.41%" totalRun="78"/>
     <iterate fail="32" pass="8" skipped="0" success="18.18%" totalRun="44"/>
-    <sequence fail="19" pass="7" skipped="0" success="25.93%" totalRun="27"/>
+    <sequence fail="18" pass="8" skipped="0" success="29.63%" totalRun="27"/>
     <sort fail="37" pass="31" skipped="0" success="38.75%" totalRun="80"/>
     <try fail="21" pass="11" skipped="5" success="38.1%" totalRun="42"/>
   </insn>

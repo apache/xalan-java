@@ -18,6 +18,7 @@
 package org.apache.xpath.operations;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -313,7 +314,43 @@ public class InstanceOf extends Operation
           isInstanceOf = true;  
       }
       else if (xdmValue instanceof XMLNodeCursorImpl) {
-          isInstanceOf = isNodesetInstanceOfType((XMLNodeCursorImpl)xdmValue, seqTypeData);
+    	  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xdmValue;
+    	  if (xmlNodeCursorImpl.m_is_for_each_group) {
+    		  // This XMLNodeCursorImpl object is constructed via xsl:for-each-group 
+    		  // instruction, to group a sequence of atomic values.
+    		  
+    		  DTMCursorIterator iter = xmlNodeCursorImpl.getContainedIter();    	  
+    		  int node = iter.nextNode();
+    		  DTM dtm = iter.getDTM(node);
+    		  short nodeType = dtm.getNodeType(node);
+    		  if (nodeType == DTM.TEXT_NODE) {
+    			  Node nodeObj = dtm.getNode(node);
+    			  java.lang.String nodeStrValue = nodeObj.getNodeValue();
+    			  Double dblValue = null;
+    			  XObject xObj = null;
+    			  try {
+    				  dblValue = Double.valueOf(nodeStrValue);
+    			  }
+    			  catch (NumberFormatException ex) {
+    				  // NO OP 
+    			  }
+
+    			  if (dblValue != null) {
+    				  xObj = new XSDecimal(BigDecimal.valueOf(dblValue));
+    			  }
+    			  else {
+    				  xObj = new XSString(nodeStrValue);;  
+    			  }
+
+    			  XObject result = SequenceTypeSupport.castXdmValueToAnotherType(xObj, seqTypeData, true);
+    			  if (result != null) {
+    				  isInstanceOf = true; 
+    			  }
+    		  }
+    	  }
+    	  else {
+             isInstanceOf = isNodesetInstanceOfType((XMLNodeCursorImpl)xdmValue, seqTypeData);
+    	  }
       }
       else if (xdmValue instanceof ResultSequence) {
           isInstanceOf = isSequenceInstanceOfType((ResultSequence)xdmValue, seqTypeData); 

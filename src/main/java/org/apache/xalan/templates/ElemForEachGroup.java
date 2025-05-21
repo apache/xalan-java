@@ -17,6 +17,7 @@
  */
 package org.apache.xalan.templates;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -30,18 +31,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.transformer.ForEachGroupXslSortSorter;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -49,8 +47,6 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.NodeCursor;
-import org.apache.xpath.composite.XPathForExpr;
-import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.FuncPosition;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -62,15 +58,14 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.types.ForEachGroupCompositeGroupingKey;
 import org.apache.xpath.types.StringWithCollation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.Text;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
@@ -519,49 +514,76 @@ public class ElemForEachGroup extends ElemTemplateElement
         
         DTMCursorIterator sourceNodes = null;
         
-        Expression selectExpr = m_selectExpression.getExpression();
+        Expression selectExpr = m_selectExpression.getExpression();                
+        
+        XObject selectExprResult = null;
         
         if (selectExpr instanceof Variable) {
-            XObject xObj = ((Variable)selectExpr).execute(xctxt);
-            
-            if (xObj instanceof ResultSequence) {                              
-               ResultSequence resultSeq = (ResultSequence)xObj;
-               sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);                
-            }
+            selectExprResult = ((Variable)selectExpr).execute(xctxt);                        
         }
-        else if ((selectExpr instanceof XPathSequenceConstructor) ||
-                                                    (selectExpr instanceof XPathForExpr)) {
-            XObject xObj = selectExpr.execute(xctxt);
+        else {
+        	selectExprResult = selectExpr.execute(xctxt);
+        }
+        
+        boolean isInpSeqAllAtomicValues = true;
+        
+        if (selectExprResult instanceof ResultSequence) {
+        	ResultSequence resultSeq = (ResultSequence)selectExprResult;        	
+        	
+        	// Check where an input sequence contains all XDM atomic values
+        	for (int idx = 0; idx < resultSeq.size(); idx++) {
+        		XObject seqItem = resultSeq.item(idx);
+        		if (!((seqItem instanceof XNumber) || (seqItem instanceof XBooleanStatic) || (seqItem instanceof XBoolean) || 
+							        				  (seqItem instanceof XSBoolean) || (seqItem instanceof XString) || 
+							        				  (seqItem instanceof XSAnyAtomicType))) {
+        			isInpSeqAllAtomicValues = false;
+
+        			break;
+        		}
+        	}
+
+        	if (!isInpSeqAllAtomicValues) {
+        		// We assume here that, an input sequence has all values as nodes            	
+        		sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);
+        	}
+        	else {
+        		DTMManager dtmManager = (DTMManager)xctxt;
+
+        		// Construct an XML DOM wrapper over a sequence of input 
+        		// atomic values, for the purpose of grouping
+        		DTM dtm = dtmManager.getDTMFromResultSequence(resultSeq);
+
+        		int docNodeHandle = dtm.getDocument();
+        		int topMostElemNodeHandle = dtm.getFirstChild(docNodeHandle);
+        		int child = dtm.getFirstChild(topMostElemNodeHandle);
+
+        		// This variable shall contain a sequence of text nodes
+        		ResultSequence wrapperResultSeq = new ResultSequence();
+
+        		while (child != DTM.NULL) {            	  
+        			int textNodeHandle = dtm.getFirstChild(child);
+        			XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(textNodeHandle, dtmManager);
+        			xmlNodeCursorImpl.m_is_for_each_group = true;
+        			wrapperResultSeq.add(xmlNodeCursorImpl);
+        			child = dtm.getNextSibling(child); 
+        		}
+
+        		sourceNodes = getSourceNodesFromResultSequence(wrapperResultSeq, xctxt);
+        	}
+        }
+        else if (selectExprResult instanceof XMLNodeCursorImpl) {
+        	isInpSeqAllAtomicValues = false;
+        	
+        	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)selectExprResult;
             
-            ResultSequence resultSeq = (ResultSequence)xObj;
-            sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);
+            sourceNodes = xmlNodeCursorImpl.iter();
+        }
+        else {
+        	throw new TransformerException("XPTY0004 : An xsl:for-each-group's select expression didn't evaluate "
+        			                                                        + "to a sequence or nodeset that could be grouped.", srcLocator);
         }
         
         m_xpathCollationSupport = xctxt.getXPathCollationSupport();
-        
-        if (sourceNodes == null) {
-           XObject value = m_selectExpression.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
-           XMLNodeCursorImpl xmlNodeCursorImpl = null;
-           if (value instanceof ResultSequence) {
-        	   ResultSequence rSeq = (ResultSequence)value;        	   
-        	   try {
-        		  // Since a sequence of nodes doesn't refer to a common XDM parent 
-        		  // element node, we construct here an DTMCursorIterator object that  
-        		  // refers to an artificially created XDM common parent element for 
-        		  // the supplied items within a sequence. 
-        		  sourceNodes = constructSourceNodesFromXdmSequence(xctxt, rSeq);
-        	   }
-        	   catch (Exception ex) {
-        		   throw new TransformerException("XTSE1080 : An error occured while evaluating xsl:for-each-group "
-        		   		                                       + "instruction, with following error trace : " + ex.getMessage() + 
-        		   		                                                                                                    ".", srcLocator); 
-        	   }        	           	   
-           }
-           else {
-        	   xmlNodeCursorImpl = (XMLNodeCursorImpl)value;
-        	   sourceNodes = xmlNodeCursorImpl.iter();
-           }
-        }
         
         /**
          * A java.util.Map object to store groups formed by 'group-by' attribute. 
@@ -582,10 +604,10 @@ public class ElemForEachGroup extends ElemTemplateElement
         	constructGroupsForGroupBy(xctxt, sourceNodes, xslForEachGroupMap);
         }        
         else if (m_GroupStartingWithExpression != null) {
-        	constructGroupsForGroupStartingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith);
+        	constructGroupsForGroupStartingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith, isInpSeqAllAtomicValues);
         }
         else if (m_GroupEndingWithExpression != null) {                          
-        	constructGroupsForGroupEndingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith);
+        	constructGroupsForGroupEndingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith, isInpSeqAllAtomicValues);
         }
         else if (m_GroupAdjacentExpression != null) {
         	constructGroupsForGroupAdjacent(xctxt, sourceNodes, xslForEachGroupAdjacentList);
@@ -880,32 +902,69 @@ public class ElemForEachGroup extends ElemTemplateElement
    *                                  			have to be grouped. 
    * @param xslForEachGroupStartingWith         A list that needs to be populated with groups
    *                                            formed.
+   * @param isInpSeqAllAtomicValues             Boolean value indicating whether an XDM input
+   *                                            sequence to be grouped has all items as atomic
+   *                                            values.
    * @throws TransformerException
    */
   private void constructGroupsForGroupStartingWith(XPathContext xctxt, DTMCursorIterator sourceNodes,
-		                                           List<List<Integer>> xslForEachGroupStartingWith) throws TransformerException {
+		                                           List<List<Integer>> xslForEachGroupStartingWith, 
+		                                           boolean isInpSeqAllAtomicValues) throws TransformerException {
 	  int nextNode;
 	  
 	  List<Integer> allNodeHandleList = new ArrayList<Integer>();
 	  
 	  List<Integer> grpStartNodeHandles = new ArrayList<Integer>();
 	  
-	  int idx3 = 0;
-	  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
-		  allNodeHandleList.add(Integer.valueOf(nextNode));
-		  DTM dtm = xctxt.getDTM(nextNode);
-		  
-		  if (idx3 == 0) {
-			  int parentNode = dtm.getParent(nextNode);
-			  XObject groupStartingWithEvalResult = m_GroupStartingWithExpression.execute(xctxt, parentNode, xctxt.getNamespaceContext());
-			  XMLNodeCursorImpl grpStartingWithNodeInit = (XMLNodeCursorImpl)groupStartingWithEvalResult;
-			  DTMCursorIterator dtmCursorIter = grpStartingWithNodeInit.getContainedIter();
-			  while (DTM.NULL != (nextNode = dtmCursorIter.nextNode())) {            	 
-				  grpStartNodeHandles.add(Integer.valueOf(nextNode)); 
+	  if (!isInpSeqAllAtomicValues) {
+		  int idx3 = 0;
+		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+			  allNodeHandleList.add(Integer.valueOf(nextNode));
+			  DTM dtm = xctxt.getDTM(nextNode);		  
+			  if (idx3 == 0) {
+				  int parentNode = dtm.getParent(nextNode);
+				  XObject groupStartingWithEvalResult = null;			  
+				  groupStartingWithEvalResult = m_GroupStartingWithExpression.execute(xctxt, parentNode, xctxt.getNamespaceContext());
+				  XMLNodeCursorImpl grpStartingWithNodeInit = (XMLNodeCursorImpl)groupStartingWithEvalResult;
+				  DTMCursorIterator dtmCursorIter = grpStartingWithNodeInit.getContainedIter();
+				  while (DTM.NULL != (nextNode = dtmCursorIter.nextNode())) {            	 
+					  grpStartNodeHandles.add(Integer.valueOf(nextNode)); 
+				  }				  		  			  
+			  }		  
+			  idx3++;
+		  }
+	  }
+	  else {
+		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+			  allNodeHandleList.add(Integer.valueOf(nextNode));
+			  DTM dtm = xctxt.getDTM(nextNode);
+			  Node node = dtm.getNode(nextNode);
+			  String nodeStrValue = node.getNodeValue();
+
+			  Double dblValue = null;
+			  XObject xObj = null;
+			  try {
+				  dblValue = Double.valueOf(nodeStrValue);
+			  }
+			  catch (NumberFormatException ex) {
+				  // NO OP 
+			  }
+
+			  if (dblValue != null) {
+				  xObj = new XSDecimal(BigDecimal.valueOf(dblValue));
+			  }
+			  else {
+				  xObj = new XSString(nodeStrValue);;  
+			  }
+
+			  xctxt.setXPath3ContextItem(xObj);				  
+			  XObject xObjResult = m_GroupStartingWithExpression.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+			  if ((xObjResult instanceof XBooleanStatic) || (xObjResult instanceof XBoolean) || (xObjResult instanceof XSBoolean)) {
+				  if (xObjResult.bool()) {
+					 grpStartNodeHandles.add(Integer.valueOf(nextNode)); 
+				  }
 			  }
 		  }
-		  
-		  idx3++;
 	  }
 
 	  for (int idx = 0; idx < grpStartNodeHandles.size(); idx++) {
@@ -939,7 +998,9 @@ public class ElemForEachGroup extends ElemTemplateElement
 		  }
 	  }
 
-	  xslForEachGroupStartingWith.add(groupNodeHandles);
+	  if (groupNodeHandles.size() > 0) {
+		  xslForEachGroupStartingWith.add(groupNodeHandles);
+	  }
   }
 
   /**
@@ -954,29 +1015,64 @@ public class ElemForEachGroup extends ElemTemplateElement
    * @throws TransformerException
    */
   private void constructGroupsForGroupEndingWith(XPathContext xctxt, DTMCursorIterator sourceNodes,
-		  									     List<List<Integer>> xslForEachGroupEndingWith) throws TransformerException {
+		  									     List<List<Integer>> xslForEachGroupEndingWith, 
+		  									     boolean isInpSeqAllAtomicValues) throws TransformerException {
 	  int nextNode;
 	  
 	  List<Integer> allNodeHandleList = new ArrayList<Integer>();
 	  
 	  List<Integer> grpEndNodeHandles = new ArrayList<Integer>();	  
 	  
-	  int idx3 = 0;
-	  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
-		  allNodeHandleList.add(Integer.valueOf(nextNode));		  
-		  DTM dtm = xctxt.getDTM(nextNode);
-		  
-		  if (idx3 == 0) {
-			  int parentNode = dtm.getParent(nextNode);
-			  XObject groupStartingWithEvalResult = m_GroupEndingWithExpression.execute(xctxt, parentNode, xctxt.getNamespaceContext());
-			  XMLNodeCursorImpl grpStartingWithNodeInit = (XMLNodeCursorImpl)groupStartingWithEvalResult;
-			  DTMCursorIterator dtmCursorIter = grpStartingWithNodeInit.getContainedIter();
-			  while (DTM.NULL != (nextNode = dtmCursorIter.nextNode())) {            	 
-				  grpEndNodeHandles.add(Integer.valueOf(nextNode)); 
+	  if (!isInpSeqAllAtomicValues) {
+		  int idx3 = 0;
+		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+			  allNodeHandleList.add(Integer.valueOf(nextNode));		  
+			  DTM dtm = xctxt.getDTM(nextNode);
+
+			  if (idx3 == 0) {
+				  int parentNode = dtm.getParent(nextNode);
+				  XObject groupStartingWithEvalResult = m_GroupEndingWithExpression.execute(xctxt, parentNode, xctxt.getNamespaceContext());
+				  XMLNodeCursorImpl grpStartingWithNodeInit = (XMLNodeCursorImpl)groupStartingWithEvalResult;
+				  DTMCursorIterator dtmCursorIter = grpStartingWithNodeInit.getContainedIter();
+				  while (DTM.NULL != (nextNode = dtmCursorIter.nextNode())) {            	 
+					  grpEndNodeHandles.add(Integer.valueOf(nextNode)); 
+				  }
+			  }
+
+			  idx3++;
+		  }
+	  }
+	  else {
+		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+			  allNodeHandleList.add(Integer.valueOf(nextNode));
+			  DTM dtm = xctxt.getDTM(nextNode);			  
+			  Node node = dtm.getNode(nextNode);
+			  String nodeStrValue = node.getNodeValue();
+
+			  Double dblValue = null;
+			  XObject xObj = null;
+			  try {
+				  dblValue = Double.valueOf(nodeStrValue);
+			  }
+			  catch (NumberFormatException ex) {
+				  // NO OP 
+			  }
+
+			  if (dblValue != null) {
+				  xObj = new XSDecimal(BigDecimal.valueOf(dblValue));
+			  }
+			  else {
+				  xObj = new XSString(nodeStrValue);;  
+			  }
+
+			  xctxt.setXPath3ContextItem(xObj);				  
+			  XObject xObjResult = m_GroupEndingWithExpression.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+			  if ((xObjResult instanceof XBooleanStatic) || (xObjResult instanceof XBoolean) || (xObjResult instanceof XSBoolean)) {
+				  if (xObjResult.bool()) {
+					  grpEndNodeHandles.add(Integer.valueOf(nextNode)); 
+				  }
 			  }
 		  }
-		  
-		  idx3++;
 	  }
 	  
 
@@ -1005,6 +1101,21 @@ public class ElemForEachGroup extends ElemTemplateElement
 		  if (groupNodeHandles.size() > 0) {
 			  xslForEachGroupEndingWith.add(groupNodeHandles);
 		  }
+	  }
+	  
+	  // Getting node handles of the last group, for xsl:for-each-group's 
+	  // group-ending-with attribute.
+	  int temp = grpEndNodeHandles.size();             
+	  int grpEndNodeHandle = grpEndNodeHandles.get(temp - 1);
+	  List<Integer> groupNodeHandles = new ArrayList<Integer>();
+	  for (int idx2 = 0; idx2 < allNodeHandleList.size(); idx2++) {            	   
+		  if (allNodeHandleList.get(idx2) > grpEndNodeHandle) {
+			  groupNodeHandles.add(allNodeHandleList.get(idx2));  
+		  }
+	  }
+	  
+	  if (groupNodeHandles.size() > 0) {
+		  xslForEachGroupEndingWith.add(groupNodeHandles);
 	  }
   }
 
@@ -1262,8 +1373,8 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * Get XML document source nodes (represented as an 'DTMIterator' object), from
-   * a list of XNodeSet objects contained within a 'ResultSequence' object.    
+   * Given a supplied ResultSequence object containing XDM nodes, construct
+   * and return a corresponding DTMCursorIterator object instance.     
    */
   private DTMCursorIterator getSourceNodesFromResultSequence(ResultSequence resultSeq, XPathContext xctxt) 
                                                                                           throws TransformerException {
@@ -1289,71 +1400,6 @@ public class ElemForEachGroup extends ElemTemplateElement
      }
      
      return sourceNodes; 
-  }
-  
-  /**
-   * Given an XDM sequence as an argument to this method, construct a
-   * DTM object and subsequently an DTMCursorIterator instance from 
-   * the DTM object.
-   * 
-   * @param xctxt									XPath context object
-   * @param rSeq									The supplied XDM sequence	
-   * @return										An DTMCursorIterator object instance
-   * @throws ParserConfigurationException
-   */
-  private DTMCursorIterator constructSourceNodesFromXdmSequence(XPathContext xctxt, ResultSequence rSeq)
-		  																						throws ParserConfigurationException {
-	  DTMCursorIterator sourceNodes = null;
-	  
-	  System.setProperty(org.apache.xml.utils.Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, 
-			                                                                   org.apache.xml.utils.Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-
-	  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-	  dbf.setNamespaceAware(true);
-
-	  DocumentBuilder dBuilder = dbf.newDocumentBuilder();
-	  Document document = dBuilder.newDocument();
-
-	  Element docElem = document.createElement("docElem1");   // arbitrarily, chosen document element name          
-	  for (int idx = 0; idx < rSeq.size(); idx++) {
-		  XObject seqItem = rSeq.item(idx);
-		  XMLNodeCursorImpl xmlNode = (XMLNodeCursorImpl)seqItem;
-		  DTMCursorIterator iter = xmlNode.iter();
-		  int nodeHandle = iter.nextNode();
-		  DTM dtm = xctxt.getDTM(nodeHandle);
-		  Node node = dtm.getNode(nodeHandle);
-		  if (dtm.getNodeType(nodeHandle) == DTM.ELEMENT_NODE) {        				   
-			  String nodeName = node.getNodeName();
-			  String nodeTxtContent = node.getTextContent();
-			  Element elem = document.createElement(nodeName);
-			  Text text = document.createTextNode(nodeTxtContent);
-			  elem.appendChild(text);
-			  docElem.appendChild(elem);
-		  }
-		  else if (dtm.getNodeType(nodeHandle) == DTM.TEXT_NODE) {
-			  String nodeTxtContent = node.getTextContent();
-			  Text text = document.createTextNode(nodeTxtContent);
-			  docElem.appendChild(text);
-		  }
-	  }
-
-	  document.appendChild(docElem);
-	  DTM dtm = xctxt.getDTM(new DOMSource(document), true, null, false, false);
-	  int docNodeHandle = dtm.getDocument();			    	        			  
-
-	  int docElemHandle = dtm.getFirstChild(docNodeHandle);
-	  int elemNodeHandle = dtm.getFirstChild(docElemHandle);
-	  List<Integer> nodeHandleList = new ArrayList<Integer>();
-	  while (elemNodeHandle != DTM.NULL) {
-		  nodeHandleList.add(elemNodeHandle);
-		  elemNodeHandle = dtm.getNextSibling(elemNodeHandle);
-	  }
-
-	  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nodeHandleList, xctxt);
-	  sourceNodes = xmlNodeCursorImpl.iter();
-	  
-	  return sourceNodes;
   }
 
 }

@@ -23,19 +23,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT 3.0 stylesheet test cases, to test xsl:for-each-group instruction 
- * having xsl:sort child instruction node(s) to implement ordering among 
- * groups. 
+ * XSLT 3.0 stylesheet test cases, to test xsl:for-each-group instruction. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslForEachGroupWithSortTests extends XslTransformTestsUtil {
+public class XslForEachGroupMiscTests extends XslTransformTestsUtil {
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_for_each_group/sort/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_for_each_group/misc/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_for_each_group/sort/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_for_each_group/misc/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -50,8 +48,8 @@ public class XslForEachGroupWithSortTests extends XslTransformTestsUtil {
     }
 
     @Test
-    public void xslForEachGroupWithSortTest1() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test_1a.xml"; 
+    public void xslForEachGroupTest1() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
@@ -60,8 +58,8 @@ public class XslForEachGroupWithSortTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslForEachGroupWithSortTest2() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test_1b.xml"; 
+    public void xslForEachGroupTest2() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
@@ -70,8 +68,8 @@ public class XslForEachGroupWithSortTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslForEachGroupWithSortTest3() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test_1b.xml"; 
+    public void xslForEachGroupTest3() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
@@ -80,18 +78,18 @@ public class XslForEachGroupWithSortTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslForEachGroupWithSortTest4() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test_1c.xml"; 
+    public void xslForEachGroupTest4() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";                
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);     
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
     }
     
     @Test
-    public void xslForEachGroupWithSortTest5() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
+    public void xslForEachGroupTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
@@ -100,41 +98,11 @@ public class XslForEachGroupWithSortTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslForEachGroupWithSortTest6() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
+    public void xslForEachGroupTest6() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslForEachGroupWithSortTest7() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslForEachGroupWithSortTest8() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test8.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslForEachGroupWithSortTest9() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
