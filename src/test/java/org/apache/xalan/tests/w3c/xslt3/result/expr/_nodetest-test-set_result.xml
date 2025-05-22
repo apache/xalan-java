@@ -1,281 +1,100 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-21T16:47:45Z" fail="36" name="nodetest" pass="2" skipped="0" statusUnknown="0" totalRun="38">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-22T11:08:08Z" fail="36" name="nodetest" pass="2" skipped="0" statusUnknown="0" totalRun="38">
    <testResult status="pass" testName="nodetest-001"/>
    <testResult status="pass" testName="nodetest-002"/>
    <testResult status="fail" testName="nodetest-003">
-      <outResult>
-         <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-004">
-      <outResult>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-005">
-      <outResult>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-006">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-007">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-008">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-009">
-      <outResult>
-         <errTrace>"input-type-annotations" attribute is not allowed on the t:transform element!</errTrace>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-010">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-011"/>
    <testResult status="fail" testName="nodetest-012">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-013">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-014"/>
    <testResult status="fail" testName="nodetest-015">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-016"/>
    <testResult status="fail" testName="nodetest-017">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-018">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-019">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-020">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-021">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-022">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-023">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-024">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-025">
-      <outResult>
-         <errTrace>"input-type-annotations" attribute is not allowed on the t:transform element!</errTrace>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-026">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-027"/>
    <testResult status="fail" testName="nodetest-028">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-029">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>Prefix must resolve to a namespace: http</errTrace>
-         <errTrace>Prefix must resolve to a namespace: various</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>A location step was expected following the '/' or '//' token.</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-030"/>
    <testResult status="fail" testName="nodetest-031">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-032"/>
    <testResult status="fail" testName="nodetest-033">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-034">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-035">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-036">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-037">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}schema-attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="nodetest-038">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
 </testrun>

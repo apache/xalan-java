@@ -36,6 +36,8 @@ public class FuncCurrentGroupingKey extends Function
 {
 
     private static final long serialVersionUID = 936495388930718095L;
+    
+    public static final String XSL_GROUPING_KEY_ABSENT = "XSL_GROUPING_KEY_ABSENT";
 
     /**
       * Execute the function. The function must return a valid object.
@@ -47,26 +49,35 @@ public class FuncCurrentGroupingKey extends Function
     */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
+    	XObject result = null;
+    	
         TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            
         ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();
         
-        Object groupingKey = currElemTemplateElement.getGroupingKey();
-        while (groupingKey == null && currElemTemplateElement != null) {            
+        Object groupingKeyObj = currElemTemplateElement.getGroupingKey();
+        
+        while ((groupingKeyObj == null) && (currElemTemplateElement != null)) {            
            currElemTemplateElement = currElemTemplateElement.getParentElem();
            if (currElemTemplateElement != null) {
-               groupingKey = currElemTemplateElement.getGroupingKey();
+               groupingKeyObj = currElemTemplateElement.getGroupingKey();
            }
         }
         
-        if (groupingKey == null) {
-            throw new javax.xml.transform.TransformerException("XTDE1071 : There is no current grouping key.", xctxt.getSAXLocator());    
+        if (groupingKeyObj == null) {
+           groupingKeyObj = XSL_GROUPING_KEY_ABSENT; 
         }
         
-        if (groupingKey instanceof StringWithCollation) {
-        	groupingKey = ((StringWithCollation)groupingKey).getStrValue();	
+        if (groupingKeyObj instanceof StringWithCollation) {
+        	groupingKeyObj = ((StringWithCollation)groupingKeyObj).getStrValue();	
         }
+        else if (XSL_GROUPING_KEY_ABSENT.equals(groupingKeyObj.toString())) {
+        	throw new javax.xml.transform.TransformerException("XTDE1071 : xsl:for-each-group instruction's current-grouping-key() "
+        			                                                                      + "value is not available.", xctxt.getSAXLocator());
+        }
+        
+        result = XObject.create(groupingKeyObj); 
       
-        return XObject.create(groupingKey);
+        return result;
     }
 
     @Override

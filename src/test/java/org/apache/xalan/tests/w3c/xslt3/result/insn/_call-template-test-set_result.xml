@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-21T16:47:36Z" fail="14" name="call-template" pass="25" skipped="1" statusUnknown="2" totalRun="42">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-22T11:07:59Z" fail="14" name="call-template" pass="25" skipped="1" statusUnknown="2" totalRun="42">
    <testResult status="fail" testName="call-template-0001">
       <outResult>
          <errTrace>XPTY0004 : An error occured while evaluating an XPath expression ancestor-or-self::*.</errTrace>
@@ -19,17 +19,10 @@
    <testResult status="pass" testName="call-template-0107"/>
    <testResult testName="call-template-0108"/>
    <testResult status="fail" testName="call-template-0109">
-      <outResult>
-         <errTrace>Illegal value:  Q{}temp  used for QNAME attribute: name</errTrace>
-         <errTrace>Illegal value: Q{http://another/}temp used for QNAME attribute: name</errTrace>
-         <errTrace>Illegal value:  Q{http://another/}temp  used for QNAME attribute: name</errTrace>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: xsl:template requires either a name or a match attribute.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="call-template-0110">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: Prefix must resolve to a namespace: *</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="call-template-0111">
       <outResult>
@@ -49,14 +42,7 @@
    <testResult status="pass" testName="call-template-0701"/>
    <testResult status="fail" testName="call-template-0702"/>
    <testResult status="fail" testName="call-template-0703">
-      <outResult>
-         <errTrace>Illegal value: Q{http://0702.com/}pvar1 used for QNAME attribute: name</errTrace>
-         <errTrace>Illegal value: Q{http://0702.com/}pvar1 used for QNAME attribute: name</errTrace>
-         <errTrace>Illegal value: Q{}pvar2 used for QNAME attribute: name</errTrace>
-         <errTrace>Illegal value: Q{http://0702.com/}pvar1 used for QNAME attribute: name</errTrace>
-         <errTrace>Prefix must resolve to a namespace: http</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="call-template-0801"/>
    <testResult status="pass" testName="call-template-0802"/>

@@ -651,7 +651,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
        "fsb() not supported for XStringForChars"},
 
   { ER_COULD_NOT_FIND_VAR,
-      "Could not find variable with the name of {0}"},
+      "XPST0008 : Could not find variable with the name of {0}"},
 
   { ER_XSTRINGFORCHARS_CANNOT_TAKE_STRING,
       "XStringForChars can not take a string for an argument"},

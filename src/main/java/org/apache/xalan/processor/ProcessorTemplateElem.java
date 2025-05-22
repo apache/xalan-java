@@ -23,6 +23,7 @@ package org.apache.xalan.processor;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.xml.sax.Attributes;
 
@@ -48,6 +49,8 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
+	  
+	verifyXSLAllowedAttributes(localName, attributes);
 
     super.startElement(handler, uri, localName, rawName, attributes);
     try
@@ -81,6 +84,35 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
     {
       throw new org.xml.sax.SAXException(te);
     }
+  }
+  
+  /**
+   * Method definition to verify attributes that can be present on 
+   * specific XSLT instructions as per XSLT 3.0 specification.
+   * 
+   * @param localName					An XSLT instruction's local name for an instruction
+   *                                    that is present within the stylesheet.
+   * @param attributes					XSLT instruction whose local name is localName, it's 
+   *                                    attributes that are present within the stylesheet.	
+   */
+  private void verifyXSLAllowedAttributes(String localName, Attributes attributes) 
+		                                                                      throws org.apache.xml.utils.WrappedRuntimeException {
+	  if (Constants.ELEMNAME_FOREACHGROUP_STRING.equals(localName)) {
+		  int noOfAttributes = attributes.getLength();
+		  if (noOfAttributes > 0) {
+			  XSLTElementDef elemDef = getElemDef();
+			  for (int idx = 0; idx < noOfAttributes; idx++) {
+				  String attrLocalName = attributes.getLocalName(idx);
+				  XSLTAttributeDef attrDef = elemDef.getAttributeDef(null, attrLocalName);
+				  if (attrDef == null) {
+					  TransformerException te = new TransformerException("XTSE0090 : Attribute '" + attrLocalName + "' is not allowed "
+							  															          + "to appear on element " + Constants.
+							  															          ELEMNAME_FOREACHGROUP_STRING + ".", this);
+					  throw new org.apache.xml.utils.WrappedRuntimeException(te);
+				  }
+			  }
+		  }
+	  }
   }
 
   /**
@@ -122,4 +154,5 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
     super.endElement(handler, uri, localName, rawName);
     handler.popElemTemplateElement().setEndLocaterInfo(handler.getLocator());
   }
+  
 }

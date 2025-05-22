@@ -292,16 +292,32 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		Transformer transformer = m_xslTransformerFactory.newTransformer(xsltStreamSrc);
     		
-    		transformer.setErrorListener(xslTransformErrHandler);
-
-    		setXslTransformProperties(transformer);    		 
-
-    		StringWriter resultStrWriter = new StringWriter();
-    		
     		Node nodeExpected = (expectedResultElem.getFirstChild()).getNextSibling();
     		String expectedNodeKindName = nodeExpected.getNodeName();
     		if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
     			expErrCodeName = ((Element)nodeExpected).getAttribute("code");
+    		}
+    		
+    		StringWriter resultStrWriter = new StringWriter();
+    		
+    		if (transformer != null) {
+    			transformer.setErrorListener(xslTransformErrHandler);
+    		    setXslTransformProperties(transformer);
+    		}
+    		else {    		    		        		    
+    		    if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
+        			handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
+        					                             trfFatalErrorList, expErrCodeName, resultStrWriter);
+        		}
+    		    else {
+    		    	elemTestResult.setAttribute("status", "fail");
+    				
+    				Element resultOutElem = testResultDoc.createElement("outResult");
+    				resultOutElem.setTextContent(resultStrWriter.toString());
+    				elemTestResult.appendChild(resultOutElem);	
+    		    }
+    		    
+    			return;
     		}
     		
     		Source xmlInpSrc = null;
@@ -316,42 +332,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));
     		
     		if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
-    			if ((trfErrorList.size() > 0) || (trfFatalErrorList.size() > 0)) {
-    				boolean isXslTransformErrorOk = false;
-    				for (int idx = 0; idx < trfErrorList.size(); idx++) {
-    					String errInfo = trfErrorList.get(idx);
-    					if (errInfo.contains(expErrCodeName)) {
-    						isXslTransformErrorOk = true;    						
-    						break;
-    					}
-    				}
-    				if (!isXslTransformErrorOk) {
-    					for (int idx = 0; idx < trfFatalErrorList.size(); idx++) {
-    						String errInfo = trfFatalErrorList.get(idx);
-        					if (errInfo.contains(expErrCodeName)) {
-        						isXslTransformErrorOk = true;
-        						break;
-        					}
-    					}
-    				}
-    				
-    				if (isXslTransformErrorOk) {
-    					elemTestResult.setAttribute("status", "pass");
-    				}
-    				else {
-    					handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 
-    							                                                               elemTestResult, expErrCodeName);
-    				}
-        		}
-    			else {
-    				// An XSL transformation did not result in a dynamic error.
-    				// i.e, this test case has failed.
-    				elemTestResult.setAttribute("status", "fail");
-    				
-    				Element resultOutElem = testResultDoc.createElement("outResult");
-    				resultOutElem.setTextContent(resultStrWriter.toString());
-    				elemTestResult.appendChild(resultOutElem);
-    			}
+    			handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
+    					                             trfFatalErrorList, expErrCodeName, resultStrWriter);
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName)) {
     			byte[] fileBytes = Files.readAllBytes(Paths.get(new URI(XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH)));
@@ -445,7 +427,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 
     				                                                                 elemTestResult, expErrCodeName);
     	}
-    	catch (Exception ex) {
+    	catch (Exception ex) {    		
             handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 
             		                                                                 elemTestResult, expErrCodeName);    	
     	}
@@ -567,5 +549,56 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
         
         return result;
     }
+    
+    /**
+     * Method definition to handle an expected XSL transformation error.
+     * 
+     * @param testResultDoc
+     * @param elemTestResult
+     * @param trfErrorList
+     * @param trfFatalErrorList
+     * @param expErrCodeName
+     * @param resultStrWriter
+     */
+	private void handleExpectedXslTransformationError(Document testResultDoc, Element elemTestResult, List<String> trfErrorList, 
+			                                          List<String> trfFatalErrorList, String expErrCodeName, StringWriter resultStrWriter) {
+		
+		if ((trfErrorList.size() > 0) || (trfFatalErrorList.size() > 0)) {
+			boolean isXslTransformErrorOk = false;
+			for (int idx = 0; idx < trfErrorList.size(); idx++) {
+				String errInfo = trfErrorList.get(idx);
+				if (errInfo.contains(expErrCodeName)) {
+					isXslTransformErrorOk = true;    						
+					break;
+				}
+			}
+			if (!isXslTransformErrorOk) {
+				for (int idx = 0; idx < trfFatalErrorList.size(); idx++) {
+					String errInfo = trfFatalErrorList.get(idx);
+					if (errInfo.contains(expErrCodeName)) {
+						isXslTransformErrorOk = true;
+						break;
+					}
+				}
+			}
+			
+			if (isXslTransformErrorOk) {
+				elemTestResult.setAttribute("status", "pass");
+			}
+			else {
+				handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 
+						                                                               elemTestResult, expErrCodeName);
+			}
+		}
+		else {
+			// An XSL transformation did not result in a dynamic error.
+			// i.e, this test case has failed.
+			elemTestResult.setAttribute("status", "fail");
+			
+			Element resultOutElem = testResultDoc.createElement("outResult");
+			resultOutElem.setTextContent(resultStrWriter.toString());
+			elemTestResult.appendChild(resultOutElem);
+		}
+	}
 
 }

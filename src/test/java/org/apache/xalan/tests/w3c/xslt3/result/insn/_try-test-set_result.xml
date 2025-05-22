@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-21T16:47:35Z" fail="21" name="try" pass="11" skipped="5" statusUnknown="5" totalRun="42">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-22T11:07:58Z" fail="21" name="try" pass="11" skipped="5" statusUnknown="5" totalRun="42">
    <testResult status="pass" testName="try-001"/>
    <testResult status="fail" testName="try-002">
       <outResult/>
@@ -11,13 +11,11 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="try-004">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}module</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="try-005">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}module</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}module</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="try-006"/>
@@ -37,33 +35,23 @@
    <testResult status="fail" testName="try-016"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="fail" testName="try-018">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}value</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="try-019">
       <outResult/>
    </testResult>
    <testResult status="pass" testName="try-020"/>
    <testResult status="fail" testName="try-021">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}module</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="try-022">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}module</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="try-023">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}module</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="try-024">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}module</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>

@@ -599,7 +599,7 @@ public class XSLTElementDef
         defaultDef = attrDef;
       }
       else if (equalsMayBeNullOrZeroLen(uri, uriDef)
-               && localName.equals(nameDef))
+               && nameDef.equals(localName))
       {
         return attrDef;
       }
@@ -607,7 +607,7 @@ public class XSLTElementDef
 
     if (null == defaultDef)
     {
-      if (uri.length() > 0 && !equalsMayBeNullOrZeroLen(uri, Constants.S_XSLNAMESPACEURL))
+      if (((uri != null) && (uri.length() > 0)) && !equalsMayBeNullOrZeroLen(uri, Constants.S_XSLNAMESPACEURL))
       {
         return XSLTAttributeDef.m_foreignAttr;
       }

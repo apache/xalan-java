@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-21T16:47:48Z" fail="4" name="root" pass="6" skipped="0" statusUnknown="0" totalRun="10">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-22T11:08:10Z" fail="4" name="root" pass="6" skipped="0" statusUnknown="0" totalRun="10">
    <testResult status="fail" testName="root-0101"/>
    <testResult status="fail" testName="root-0102"/>
    <testResult status="pass" testName="root-0103"/>
@@ -9,10 +9,6 @@
    <testResult status="pass" testName="root-0501"/>
    <testResult status="pass" testName="root-0502"/>
    <testResult status="fail" testName="root-0601">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
 </testrun>

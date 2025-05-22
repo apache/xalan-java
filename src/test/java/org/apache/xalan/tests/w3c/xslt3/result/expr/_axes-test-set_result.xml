@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-21T16:47:42Z" fail="28" name="axes" pass="173" skipped="0" statusUnknown="0" totalRun="201">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-22T11:08:05Z" fail="28" name="axes" pass="173" skipped="0" statusUnknown="0" totalRun="201">
    <testResult status="pass" testName="axes-001"/>
    <testResult status="pass" testName="axes-002"/>
    <testResult status="pass" testName="axes-003"/>
@@ -42,10 +42,7 @@
    <testResult status="pass" testName="axes-041"/>
    <testResult status="pass" testName="axes-042"/>
    <testResult status="fail" testName="axes-043">
-      <outResult>
-         <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="axes-044"/>
    <testResult status="pass" testName="axes-045"/>
@@ -145,11 +142,7 @@
    <testResult status="pass" testName="axes-130"/>
    <testResult status="pass" testName="axes-131"/>
    <testResult status="fail" testName="axes-132">
-      <outResult>
-         <errTrace>"xpath-default-namespace" attribute is not allowed on the xsl:stylesheet element!</errTrace>
-         <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="axes-133"/>
    <testResult status="pass" testName="axes-134"/>
@@ -164,10 +157,7 @@
    <testResult status="pass" testName="axes-143"/>
    <testResult status="pass" testName="axes-144"/>
    <testResult status="fail" testName="axes-145">
-      <outResult>
-         <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="axes-146"/>
    <testResult status="pass" testName="axes-147"/>
@@ -225,10 +215,6 @@
    <testResult status="pass" testName="axes-199"/>
    <testResult status="pass" testName="axes-200"/>
    <testResult status="fail" testName="axes-201">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}idref()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
 </testrun>

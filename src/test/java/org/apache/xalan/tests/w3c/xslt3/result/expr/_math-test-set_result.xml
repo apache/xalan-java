@@ -1,11 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-21T16:47:45Z" fail="33" name="math" pass="26" skipped="0" statusUnknown="89" totalRun="148">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-22T11:08:08Z" fail="33" name="math" pass="26" skipped="0" statusUnknown="89" totalRun="148">
    <testResult testName="math-0101"/>
    <testResult status="fail" testName="math-0102">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="math-0103"/>
    <testResult status="fail" testName="math-0104"/>
@@ -120,10 +116,7 @@
    <testResult testName="math-2604"/>
    <testResult testName="math-2605"/>
    <testResult status="fail" testName="math-2606">
-      <outResult>
-         <errTrace>1.0e could not be formatted to a number!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult testName="math-2607"/>
    <testResult status="pass" testName="math-2608"/>
@@ -138,60 +131,28 @@
    <testResult testName="math-3101"/>
    <testResult status="pass" testName="math-3201"/>
    <testResult status="fail" testName="math-3301">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="math-3301a">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="math-3302">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="math-3302a">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="math-3303">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="math-3303a">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="math-3304">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="math-3304a">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="math-3305"/>
    <testResult status="fail" testName="math-3305a"/>
@@ -210,11 +171,7 @@
    <testResult status="fail" testName="math-3313"/>
    <testResult status="fail" testName="math-3314"/>
    <testResult status="fail" testName="math-3315">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}round-half-to-even()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="math-3316"/>
    <testResult testName="math-3317"/>

@@ -1,27 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-21T16:47:35Z" fail="32" name="for-each-group" pass="40" skipped="4" statusUnknown="2" totalRun="78">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-22T11:07:58Z" fail="28" name="for-each-group" pass="44" skipped="4" statusUnknown="2" totalRun="78">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="fail" testName="for-each-group-002">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Could not find variable with the name of g</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-002"/>
    <testResult status="pass" testName="for-each-group-003"/>
    <testResult status="pass" testName="for-each-group-005"/>
    <testResult status="pass" testName="for-each-group-007"/>
    <testResult status="pass" testName="for-each-group-009"/>
-   <testResult status="fail" testName="for-each-group-011"/>
+   <testResult status="pass" testName="for-each-group-011"/>
    <testResult status="pass" testName="for-each-group-012"/>
    <testResult status="pass" testName="for-each-group-013"/>
    <testResult status="pass" testName="for-each-group-014"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="fail" testName="for-each-group-015b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;g&gt;&lt;h key="city"/&gt;&lt;h key="city"/&gt;&lt;/g&gt;&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-015b"/>
    <testResult status="pass" testName="for-each-group-016"/>
    <testResult status="fail" testName="for-each-group-018"/>
    <testResult status="pass" testName="for-each-group-020"/>
-   <testResult status="fail" testName="for-each-group-022"/>
+   <testResult status="pass" testName="for-each-group-022"/>
    <testResult status="pass" testName="for-each-group-024"/>
    <testResult status="fail" testName="for-each-group-026"/>
    <testResult status="fail" testName="for-each-group-027"/>
