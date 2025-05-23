@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><result>
   <error location="line : 17, column : 32">
     <errCode>XPTY0004</errCode>
-    <reason>Number of arguments required for dynamic call to function is 2. Number of arguments provided 1.</reason>
+    <reason>Number of arguments required for XPath dynamic function call is 2. Arguments provided : 1.</reason>
   </error>
 </result>

@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -40,8 +41,10 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -54,9 +57,9 @@ import org.apache.xpath.objects.XString;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * This class implements XPath 3.1 dynamic function calls and,
- * map/array information lookup using function call and unary 
- * lookup syntax.
+ * This class implements an XPath 3.1 dynamic function call, and
+ * XDM map & array information lookup using function call syntax and unary 
+ * lookup syntax respectively.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -89,10 +92,14 @@ public class XPathDynamicFunctionCall extends Expression {
     
     private List<String> m_argList;
     
-    // The following two fields of this class, are used during 
-    // XPath.fixupVariables(..) action as performed within object of 
-    // this class.    
-    private Vector m_vars;    
+    private List<String> m_trailingArgList;
+    
+    /**
+     * The following two class fields are used during XPath.fixupVariables(..) 
+     * action as performed within object of this class.
+     */    
+    private Vector m_vars;
+    
     private int m_globals_size;
 
     public String getFuncRefVarName() {
@@ -109,11 +116,6 @@ public class XPathDynamicFunctionCall extends Expression {
 
     public void setArgList(List<String> argList) {
         this.m_argList = argList;
-    }
-
-    @Override
-    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-        // no op
     }
 
     @Override
@@ -138,8 +140,8 @@ public class XPathDynamicFunctionCall extends Expression {
               functionRef = exprContext.getVariableOrParam(new QName(m_funcRefVarName));
            }
            catch (TransformerException ex) {
-              // Try to get an XPath inline function reference, from within 
-              // stylesheet's global scope. 
+              // Trying to get an XPath inline function reference, from within 
+              // stylesheet's global variable scope. 
               ExpressionNode expressionNode = getExpressionOwner();
               ExpressionNode stylesheetRootNode = null;
               while (expressionNode != null) {
@@ -153,113 +155,28 @@ public class XPathDynamicFunctionCall extends Expression {
            }           
        }
        
+       List<XMLNSDecl> prefixTable = null;
+       
        if (functionRef != null) {
     	    ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
             
-    	    List<XMLNSDecl> prefixTable = null;
             if (elemTemplateElement != null) {
                prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
             }
                 	    
-    	    if (functionRef instanceof XPathInlineFunction) {
-	           XPathInlineFunction inlineFunction = (XPathInlineFunction)functionRef;
-	           
-	           String inlineFnXPathStr = inlineFunction.getFuncBodyXPathExprStr();
-	           List<InlineFunctionParameter> funcParamList = inlineFunction.getFuncParamList();           
-	           
-	           if (m_argList.size() != funcParamList.size()) {
-	               throw new javax.xml.transform.TransformerException("XPTY0004 : Number of arguments required for "
-	                                                                                  + "dynamic call to function is " + funcParamList.size() + ". "
-	                                                                                  + "Number of arguments provided " + m_argList.size() + ".", xctxt.getSAXLocator());    
-	           }	           	           
-	           
-	           Map<QName, XObject> functionParamAndArgMap = new HashMap<QName, XObject>();
-	           
-	           for (int idx = 0; idx < funcParamList.size(); idx++) {
-	              InlineFunctionParameter funcParam = funcParamList.get(idx);                                                         
-	              
-	              String argXPathStr = m_argList.get(idx);
-	              
-	              if (prefixTable != null) {
-	                  argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, 
-	                                                                                                      prefixTable);
-	              }
-	              
-	              XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), 
-	                                                                                        XPath.SELECT, null);
-	              if (m_vars != null) {
-	                 argXPath.fixupVariables(m_vars, m_globals_size);
-	              }
-	              
-	              XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-	              
-	              String funcParamName = funcParam.getParamName();
-	              SequenceTypeData paramType = funcParam.getParamType();
-	              
-	              if (paramType != null) {
-	                  try {
-	                     argValue = SequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
-	                     if (argValue == null) {
-	                        throw new TransformerException("XTTE0505 : The item type of argument at position " + (idx + 1) + " of dynamic function call "
-	                                                                                                           + "$" + m_funcRefVarName + ", doesn't match "
-	                                                                                                           + "an expected type.", srcLocator);  
-	                     }
-	                  }
-	                  catch (TransformerException ex) {
-	                     throw new TransformerException("XTTE0505 : The item type of argument at position " + (idx + 1) + " of dynamic function call "
-	                                                                                                        + "$" + m_funcRefVarName + ", doesn't match "
-	                                                                                                        + "an expected type.", srcLocator); 
-	                  }
-	              }
-	              
-	              m_xpathVarList.add(new QName(funcParamName));
-	              
-	              functionParamAndArgMap.put(new QName(funcParamName), argValue);
-	           }
-	           
-	           inlineFunctionVarMap.putAll(functionParamAndArgMap);
-	           
-	           if (prefixTable != null) {
-	              inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXPathStr, 
-	                                                                                                           prefixTable);
-	           }
-	           
-	           XPath inlineFnXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
-	                                                                                       XPath.SELECT, null);
-	           if (m_vars != null) {
-	              inlineFnXPath.fixupVariables(m_vars, m_globals_size);
-	           }
-	                      
-	           evalResult = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-	           
-	           SequenceTypeData funcReturnType = inlineFunction.getReturnType();
-	           if (funcReturnType != null) {
-	              try {
-	                 evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, null, funcReturnType, null);
-	                 if (evalResult == null) {
-	                    throw new TransformerException("XTTE0505 : The item type of result of dynamic function call $"+ m_funcRefVarName + ", doesn't match an "
-	                                                                                                                                   + "expected type.", srcLocator);  
-	                 }
-	              }
-	              catch (TransformerException ex) {
-	                  throw new TransformerException("XTTE0505 : The item type of result of dynamic function call $"+ m_funcRefVarName + ", doesn't match an "
-	                                                                                                                                 + "expected type.", srcLocator);  
-	              }
-	           }
-	           
-	           Set<QName> keysOfArgVariables = functionParamAndArgMap.keySet();
-	           Iterator<QName> iter = keysOfArgVariables.iterator();
-	           while (iter.hasNext()) {
-	        	  QName key = iter.next();
-	        	  inlineFunctionVarMap.remove(key);
+    	    if (functionRef instanceof XPathInlineFunction) {    	    		    	    	
+	           evalResult = evaluateXPathInlineFunction(xctxt, (XPathInlineFunction)functionRef, m_argList, prefixTable);
+               
+	           if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
+	        	  evalResult = evaluateXPathNamedFunctionReference(xctxt, (XPathNamedFunctionReference)evalResult, prefixTable); 
 	           }
 	        }
     	    else if (functionRef instanceof XPathMap) {
      		   XPathMap xpathMap = (XPathMap)functionRef;
      		   if (m_argList.size() != 1) {
-     			   throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for map information lookup, needs to have "
-     			   		                                                     + "1 argument which should be one of map's key name.", 
-     			   		                                                     xctxt.getSAXLocator()); 
+     			   throw new javax.xml.transform.TransformerException("XPTY0004 : Function call reference for map information lookup, needs to have "
+			     			   		                                                                  + "one argument which should be one of map's key "
+			     			   		                                                                  + "name.", srcLocator); 
      		   }
      		   else {
      			  String argXPathStr = m_argList.get(0);
@@ -283,8 +200,7 @@ public class XPathDynamicFunctionCall extends Expression {
      			  }
      			  else {
      				  if (prefixTable != null) {
-     					  argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, 
-     							  prefixTable);
+     					  argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
      				  }
 
      				  XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -298,14 +214,16 @@ public class XPathDynamicFunctionCall extends Expression {
      					  evalResult = xpathMap.get(argValue);     					 
      					  if (evalResult == null) {
      						  throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map doesn't have an entry with key name '" + 
-     								                                                              XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  xctxt.getSAXLocator()); 
+     								                                                              XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
+     								                                                              srcLocator); 
      					  }
      				  }
      				  else if (argValue instanceof XSString) {
      					  evalResult = xpathMap.get(argValue);     					 
      					  if (evalResult == null) {
      						  throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map doesn't have an entry with key name '" + 
-     								                                                             XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  xctxt.getSAXLocator()); 
+     								                                                             XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
+     								                                                             srcLocator); 
      					  } 
      				  }
      				  else if (argValue instanceof ResultSequence) {
@@ -323,7 +241,7 @@ public class XPathDynamicFunctionCall extends Expression {
      				  }
      				  else {
      					 throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map lookup is not done via a "
-     							                                                                + "string valued key.",  xctxt.getSAXLocator());
+     							                                                                + "string valued key.",  srcLocator);
      				  }
      			  }
      		   }    		   
@@ -332,8 +250,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	       XPathArray xpathArr = (XPathArray)functionRef;    	       
     	       if (m_argList.size() != 1) {
     	    	   throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for array information lookup, needs to have "
-                                                                             + "1 argument which should be position within an array.", 
-                                                                             xctxt.getSAXLocator()); 
+                                                                                         + "one argument which should be position within an array.", srcLocator); 
      		   }
      		   else {
      			  String argXPathStr = m_argList.get(0);
@@ -448,6 +365,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	  }
     	    	  else {
     	    		  QName funcName = elemFunction.getName();
+    	    		  
     	    		  throw new javax.xml.transform.TransformerException("XPTY0004 : The number of arguments provided for "
 																	                              + "stylesheet function call " + funcName.toString() + " is "
 																	                              + "incorrect. Required " + funcArity + ", supplied " 
@@ -461,8 +379,13 @@ public class XPathDynamicFunctionCall extends Expression {
                                                                                                        + "not been declared, or its declaration is not in scope.", 
                                                                                                                                               xctxt.getSAXLocator());    
       }
+       
+      if ((evalResult instanceof XPathInlineFunction) && (m_trailingArgList != null)) {
+    	 evalResult = evaluateXPathInlineFunction(xctxt, (XPathInlineFunction)evalResult, m_trailingArgList, prefixTable); 
+      }
                
       return evalResult;
+      
     }
 
     @Override
@@ -470,18 +393,47 @@ public class XPathDynamicFunctionCall extends Expression {
         m_vars = (Vector)(vars.clone());
         m_globals_size = globalsSize; 
     }
+    
+    @Override
+    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
+        // NO OP
+    }
 
     @Override
     public boolean deepEquals(Expression expr) {
         return false;
     }
     
-    /**
-     * Given an xdm array object, get array item at a specified index position.
-     */
+    public void setIsFromUnaryLookupEvaluation(boolean isUnaryLookup) {
+		m_IsUnaryLookup = isUnaryLookup; 		
+	}
+	
+	public boolean getIsFromUnaryLookupEvaluation() {
+		return m_IsUnaryLookup;
+	}
+
+	public void setTrailingArgList(List<String> strList) {
+		m_trailingArgList = strList; 		
+	}
+	
+	public List<String> getTrailingArgList() {
+		return m_trailingArgList;
+	}
+    
+	/**
+	 * Method definition to get an XDM array item value at a specified index.
+	 * 
+	 * @param xctxt							    An XPath context object
+	 * @param xpathArr							An XDM array object instance
+	 * @param indexVal							An array index value
+	 * @return									An XDM value available at the specified array index.
+	 * @throws TransformerException
+	 */
     private XObject getArrayLookupResult(XPathContext xctxt, XPathArray xpathArr, XObject indexVal)
 			                                                                                      throws TransformerException {
     	XObject evalResult;
+    	
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
     	
     	String argValStr = XslTransformEvaluationHelper.getStrVal(indexVal);     				  
 
@@ -489,28 +441,287 @@ public class XPathDynamicFunctionCall extends Expression {
     	try {
     		intVal = Integer.valueOf(argValStr);
     		if (!(intVal > 0 && (intVal <= xpathArr.size()))) {
-    			throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for array information lookup, "
-    					                                                  + "needs to have 1 numeric argument >= 1 specifying position "
-    					                                                  + "within an array.", xctxt.getSAXLocator()); 
+	    			throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for array information lookup, "
+							    					                                                           + "needs to have one numeric argument with value greater or equal to one "
+							    					                                                           + "specifying an index value for an array.", srcLocator); 
     		}
     	}
     	catch (NumberFormatException ex) {
     		throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for array information lookup, "
-    				                                                  + "needs to have 1 numeric argument >= 1 specifying position "
-    				                                                  + "within an array.", xctxt.getSAXLocator()); 
+								    				                                                           + "needs to have one numeric argument with value greater or equal to one "
+								    				                                                           + "specifying an index value for an array.", srcLocator); 
     	}
 
     	evalResult = xpathArr.get(intVal - 1);
     	
     	return evalResult;
 	}
+    
+    /**
+     * Method definition to evaluate an XPath inline function reference.
+     * 
+     * @param xctxt									An XPath context object
+     * @param xpathInlineFunction			        An XPath compiled inline function reference object		
+     * @param argList                               A list of XPath string values for argument information of 
+     *                                              inline function reference.
+     * @param prefixTable                           An XML prefix table list object reference containing
+     *                                              an XSL context namespace binding information.
+     * @return									    The result of evaluation of an XPath inline function
+     *                                              reference.
+     * @throws TransformerException
+     */
+    private XObject evaluateXPathInlineFunction(XPathContext xctxt, XPathInlineFunction xpathInlineFunction, 
+    		                                    List<String> argList, List<XMLNSDecl> prefixTable) throws TransformerException {
+    	
+    	XObject evalResult = null;
+    	
+    	Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
 
-	public void setIsFromUnaryLookupEvaluation(boolean isUnaryLookup) {
-		m_IsUnaryLookup = isUnaryLookup; 		
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
+
+    	final int contextNode = xctxt.getCurrentNode(); 
+
+    	String inlineFnXPathStr = xpathInlineFunction.getFuncBodyXPathExprStr();
+    	List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();           
+
+    	int argCount1 = argList.size();
+
+    	if (argCount1 != funcParamList.size()) {
+    		throw new javax.xml.transform.TransformerException("XPTY0004 : Number of arguments required for "
+																		    				+ "XPath dynamic function call is " + funcParamList.size() + ". "
+																		    				+ "Arguments provided : " + argCount1 + ".", srcLocator);    
+    	}	           	           
+
+    	Map<QName, XObject> functionParamAndArgMap = new HashMap<QName, XObject>();
+
+    	for (int idx = 0; idx < funcParamList.size(); idx++) {
+    		InlineFunctionParameter funcParam = funcParamList.get(idx);                                                         
+
+    		String argXPathStr = argList.get(idx);
+
+    		if (prefixTable != null) {
+    			argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    		}
+
+    		XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    		if (m_vars != null) {
+    			argXPath.fixupVariables(m_vars, m_globals_size);
+    		}
+
+    		XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+
+    		String funcParamName = funcParam.getParamName();
+    		SequenceTypeData paramType = funcParam.getParamType();
+
+    		if (paramType != null) {
+    			try {
+    				argValue = SequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
+    				if (argValue == null) {
+    					throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
+			    							                                              + "function call $" + m_funcRefVarName + ", "
+			    							                                              + "doesn't match an expected type.", srcLocator);  
+    				}
+    			}
+    			catch (TransformerException ex) {
+    				throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
+		    						                                                  + "function call $" + m_funcRefVarName + ", "
+		    						                                                  + "doesn't match an expected type.", srcLocator); 
+    			}
+    		}
+
+    		m_xpathVarList.add(new QName(funcParamName));
+
+    		functionParamAndArgMap.put(new QName(funcParamName), argValue);
+    	}
+
+    	inlineFunctionVarMap.putAll(functionParamAndArgMap);
+
+    	if (prefixTable != null) {
+    		inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXPathStr, prefixTable);
+    	}
+
+    	XPath inlineFnXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+    			XPath.SELECT, null);
+    	if (m_vars != null) {
+    		inlineFnXPath.fixupVariables(m_vars, m_globals_size);
+    	}
+
+    	evalResult = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+
+    	SequenceTypeData funcReturnType = xpathInlineFunction.getReturnType();
+    	if (funcReturnType != null) {
+    		try {
+    			evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, null, funcReturnType, null);
+    			if (evalResult == null) {
+    				throw new TransformerException("XTTE0505 : An item type of result of dynamic function call $"+ m_funcRefVarName + ", "
+    						                                                                         + "doesn't match an expected type.", srcLocator);  
+    			}
+    		}
+    		catch (TransformerException ex) {
+    			throw new TransformerException("XTTE0505 : An item type of result of dynamic function call $"+ m_funcRefVarName + ", "
+    					                                                                             + "doesn't match an expected type.", srcLocator);  
+    		}
+    	}
+
+    	Set<QName> keysOfArgVariables = functionParamAndArgMap.keySet();    	
+    	Iterator<QName> iter = keysOfArgVariables.iterator();    	
+    	while (iter.hasNext()) {
+    		QName key = iter.next();
+    		inlineFunctionVarMap.remove(key);
+    	}
+    	
+    	return evalResult;
 	}
-	
-	public boolean getIsFromUnaryLookupEvaluation() {
-		return m_IsUnaryLookup;
+    
+    /**
+     * Method definition to evaluate an XPath named function reference.
+     * 
+     * @param xctxt							    An XPath context object
+     * @param xpathNamedFuncRef                 An XPath compiled named function reference object
+     * @param prefixTable                       An XML prefix table list object reference containing
+     *                                          an XSL context namespace binding information.
+     * @return									The result of evaluation of an XPath named function
+     *                                          reference.
+     * @throws TransformerException
+     */
+    private XObject evaluateXPathNamedFunctionReference(XPathContext xctxt, XPathNamedFunctionReference xpathNamedFuncRef, 
+    		                                            List<XMLNSDecl> prefixTable) throws TransformerException {
+    	
+    	XObject evalResult = null;
+
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
+
+    	int contextNode = xctxt.getCurrentNode(); 
+
+    	String funcNamespace = xpathNamedFuncRef.getFuncNamespace();
+    	String funcLocalName = xpathNamedFuncRef.getFuncName();
+    	int funcArity = xpathNamedFuncRef.getFuncArity();
+
+    	String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName; 
+
+    	FunctionTable funcTable = xctxt.getFunctionTable();
+
+    	Object funcIdObj = null;
+    	if (FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
+    		funcIdObj = funcTable.getFunctionId(funcLocalName);
+    	}
+    	else if (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
+    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
+    	}
+    	else if (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
+    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
+    	}
+    	else if (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
+    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
+    	}
+
+    	if (funcIdObj != null) {
+    		// Evaluate an XPath built-in function reference
+    		
+    		String funcIdStr = funcIdObj.toString();
+    		Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
+    		function.setLocalName(funcLocalName);
+    		function.setNamespace(funcNamespace);
+    		function.setFuncArity(funcArity);
+
+    		for (int idx = 0; idx < m_trailingArgList.size(); idx++) {
+    			String argXPathStr = m_trailingArgList.get(idx);
+    			if (prefixTable != null) {
+    				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    			}
+
+    			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    			if (m_vars != null) {
+    				argXPath.fixupVariables(m_vars, m_globals_size);
+    			}
+
+    			try {
+    				function.setArg(argXPath.getExpression(), idx);
+    			} 
+    			catch (WrongNumberArgsException ex) {							
+    				// error handling
+    			}
+    		}
+
+    		evalResult = function.execute(xctxt);
+    	}
+    	else if (xpathNamedFuncRef.getXslStylesheetFunction() != null) {
+    		// Evaluate an XSL stylesheet function reference
+    		
+    		ElemFunction elemFunction = xpathNamedFuncRef.getXslStylesheetFunction();
+
+    		ResultSequence argSequence = new ResultSequence();
+    		for (int idx = 0; idx < m_trailingArgList.size(); idx++) {
+    			String argXPathStr = m_trailingArgList.get(idx);
+    			if (prefixTable != null) {
+    				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    			}
+
+    			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    			if (m_vars != null) {
+    				argXPath.fixupVariables(m_vars, m_globals_size);
+    			}
+
+    			try {
+    				XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    				argSequence.add(argValue);
+    			} 
+    			catch (TransformerException ex) {							
+    				// error handling
+    			}
+    		}
+
+    		ExpressionNode stylesheetRootNode = null;
+    		ExpressionNode expressionNode = this.getExpressionOwner();
+    		while (expressionNode != null) {
+    			stylesheetRootNode = expressionNode;
+    			expressionNode = expressionNode.exprGetParent();                     
+    		}
+
+    		StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+
+    		if (stylesheetRoot != null) {
+    			TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+
+    			evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
+    		}
+    		else {
+    			evalResult = new ResultSequence();  
+    		}
+    	}
+    	else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {
+    		// Evaluate an XPath schema type constructor function call reference
+    		
+    		XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
+    		funcObj.setFuncArity(funcArity);
+
+    		for (int idx = 0; idx < m_trailingArgList.size(); idx++) {
+    			String argXPathStr = m_trailingArgList.get(idx);
+    			if (prefixTable != null) {
+    				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    			}
+
+    			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    			if (m_vars != null) {
+    				argXPath.fixupVariables(m_vars, m_globals_size);
+    			}
+
+    			try {
+    				funcObj.setArg(argXPath.getExpression(), idx);
+    			} 
+    			catch (WrongNumberArgsException ex) {							
+    				// error handling
+    			}
+    		}
+
+    		evalResult = funcObj.execute(xctxt);        		  
+    	}
+    	else {
+    		throw new TransformerException("FODC0005 : An XSL function definition for named function reference " + funcQualifiedName + 
+    				                                                                                 " doesn't exist.", srcLocator);
+    	}
+    	
+    	return evalResult;
 	}
 
 }

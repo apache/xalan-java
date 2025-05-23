@@ -118,7 +118,7 @@ public class FnUnparsedTextTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";
         
-        String localBaseUriPrefix = XSLTestConstants.LOCAL_BASE_URI_PREFIX_OF_TESTS1; 
+        String localBaseUriPrefix = XSLTestConstants.LOCAL_BASE_URI_PREFIX_FOR_TESTS_1; 
         
         runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
     }
@@ -130,7 +130,7 @@ public class FnUnparsedTextTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";
         
-        String localBaseUriPrefix = XSLTestConstants.LOCAL_BASE_URI_PREFIX_OF_TESTS2; 
+        String localBaseUriPrefix = XSLTestConstants.LOCAL_BASE_URI_PREFIX_FOR_TESTS_2; 
         
         runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
     }

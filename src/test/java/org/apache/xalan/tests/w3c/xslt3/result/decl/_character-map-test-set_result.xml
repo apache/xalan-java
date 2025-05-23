@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-22T11:08:05Z" fail="18" name="character-map" pass="1" skipped="0" statusUnknown="10" totalRun="29">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-23T10:23:11Z" fail="18" name="character-map" pass="1" skipped="0" statusUnknown="10" totalRun="29">
    <testResult status="fail" testName="character-map-001">
       <outResult>
          <errTrace>A location path was expected, but the following token was encountered:  [</errTrace>

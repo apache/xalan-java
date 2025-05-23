@@ -3809,6 +3809,8 @@ public class XPathParser
        XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();
        xpathDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
        xpathDynamicFunctionCall.setArgList(argList);
+       
+       mutateXPathDynamicFuncCallReference(xpathDynamicFunctionCall, argList);              
               
        m_xpathDynamicFunctionCallList.add(xpathDynamicFunctionCall);
        
@@ -6763,6 +6765,79 @@ public class XPathParser
 
 			ExprSingle();
 		}
+	}
+	
+	/**
+	  * Method definition to mutate XPathDynamicFunctionCall object reference,
+	  * to handle XPath parse of expressions like $func1(args)(2,3) i.e,
+	  * an XPath dynamic function call reference returning a function item
+	  * which is subsequence called with function call arguments.
+	  * 
+	  * @param argList						   A list of XPath string values for the 
+	  *                                        argument of the left most XPath dynamic 
+	  *                                        function call.
+	  * @param xpathDynamicFunctionCall        An XPathDynamicFunctionCall object reference
+	  *                                        that needs to be mutated with further information.
+	  */
+	private void mutateXPathDynamicFuncCallReference(XPathDynamicFunctionCall xpathDynamicFunctionCall, 
+			                                         List<String> argList) {
+		   
+		  List<String> argListBackup = new ArrayList<String>();
+
+		  for (int idx = 0; idx < argList.size(); idx++) {
+			  String str1 = argList.get(idx);
+			  argListBackup.add(str1);
+		  }
+
+		  int noOfArgs = argList.size();
+		  String lastArgStr = argList.get(noOfArgs - 1);                     
+
+		  int i = lastArgStr.lastIndexOf(')');       
+		  if (i > -1) {
+			  boolean isExceptionOccured = false;
+			  try {
+				  String lastArgEffectiveStr = lastArgStr.substring(0, i);
+				  argList.set(noOfArgs - 1, lastArgEffectiveStr);
+				  ObjectVector tokenQueue = m_ops.getTokenQueue();
+				  int tokenQueueSize = tokenQueue.size();
+				  String lastTokenStr = (tokenQueue.elementAt(tokenQueueSize - 1)).toString();
+				  if (")".equals(lastTokenStr)) {
+					  char c1 = lastArgStr.charAt(i + 1);
+					  if (c1 == '(') {
+						  String trailingInfoStr = lastArgStr.substring(i + 2);
+						  String[] trailingInfoStrParts = trailingInfoStr.split(",");
+						  List<String> list1 = Arrays.asList(trailingInfoStrParts);
+						  xpathDynamicFunctionCall.setTrailingArgList(list1);
+					  }
+				  }
+			  }
+			  catch (StringIndexOutOfBoundsException ex) {
+				  isExceptionOccured = true;
+			  }
+
+			  if (isExceptionOccured) {
+				  xpathDynamicFunctionCall.setArgList(argListBackup);
+				  xpathDynamicFunctionCall.setTrailingArgList(null);
+			  }
+			  else {
+				  String str1 = argList.get(noOfArgs - 1);
+				  int count1 = 0;
+				  int count2 = 0;
+				  for (int idx = 0; idx < str1.length(); idx++) {
+					  if (str1.charAt(idx) == '(') {
+						  count1++; 
+					  }
+					  else if (str1.charAt(idx) == ')') {
+						  count2++; 
+					  }
+				  }
+
+				  if (count1 != count2) {
+					  xpathDynamicFunctionCall.setArgList(argListBackup);
+					  xpathDynamicFunctionCall.setTrailingArgList(null); 
+				  }
+			  }
+		  }
 	}
   
 }

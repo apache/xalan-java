@@ -17,69 +17,73 @@
 
 Copyright 1999-2025 The Apache Software Foundation
 
-Document last modified : 2025-05-21
+Document last modified : 2025-05-23
 
 Authors:
    Gary Gregory <ggregory@apache.org>
    Joseph Kesselman <jkesselm@apache.org>
    Mukul Gandhi <mukulg@apache.org>
 
-This GitHub repos branch has src code provided as Maven (https://maven.apache.org/) build, for 
+This GitHub repos branch has src code configured as Maven (https://maven.apache.org/) build, for 
 Xalan-J's implementation of XSLT 3.0 and XPath 3.1 specifications.
 
-Following are the steps to produce Xalan-J's XSL 3 jar file (containing Xalan's XSLT 3.0 and 
-XPath 3.1 run-time processors) and running Xalan-J's XSL 3 conformance tests:
+Following are the steps to produce Xalan-J's XSLT 3.0 build jar file (containing Xalan-J's XSLT 3.0 and 
+XPath 3.1 run-time processors) and running Xalan-J's XSLT 3.0 conformance tests:
 
-1) Set JAVA_HOME environment variable pointing to a local JDK installation folder. JDK 1.8/8 has been used
-to write and test Xalan-J's src code available within this codebase repos. Higher JDK version releases shall also 
-work fine to compile and run Xalan-J's XSL processor from this codebase repos.
+1) Set JAVA_HOME environment variable pointing to the local JDK installation folder. JDK version 1.8/8 has been used
+to develop and test Xalan-J's src code available within this code base repos. JDK versions greater than 1.8 shall also 
+work fine to compile and run Xalan-J's XSLT 3.0 processor built from this code base repos
 
-2) Java Maven build tool needs to be installed on local workstation, using JDK specified by 
+2) Java Maven build tool needs to be installed on local workstation, using JDK installation referred by 
 JAVA_HOME environment variable.
 
-3) For running successfully few Xalan-J tests available within this test suite, within the Java file 
-org.apache.xalan.tests.util.XSLConstants available in this github code repos branch please change
-the value of Java class field variables LOCAL_BASE_URI_PREFIX_OF_TESTS1 and LOCAL_BASE_URI_PREFIX_OF_TESTS2
-as per local workstation where this test suite is running.
+3) To successfully run Xalan-J's XSLT 3.0 tests available within this test suite (the root folder path for this 
+is : src/test/java/org/apache/xalan/tests/main), within the Java class org.apache.xalan.tests.util.XSLTestConstants 
+please change the value of class field variables LOCAL_BASE_URI_PREFIX_FOR_TESTS_1 and LOCAL_BASE_URI_PREFIX_FOR_TESTS_2 
+as per local workstation where this test suite runs.
 
-4) Run Maven build command 'mvn clean install -DskipTests' on the local workstation folder 
-where Maven's pom.xml file is located. This shall produce the Java jar file xalan-java-3.0.1.jar 
-within Maven build's local folder /target.
+4) Run Maven build command 'mvn clean install -DskipTests' from the local workstation folder 
+where Maven build's pom.xml file is located. This shall produce the Java jar file xalan-java-3.0.1.jar 
+within Maven build's local folder 'target'.
 
-The 'libs' file-system folder available within this GitHub repos branch contains various jar file dependencies 
-provided as convenience to users, that're needed by Xalan-J XSL 3 implementation's jar file xalan-java-3.0.1.jar.
+The file system folder 'libs' contains various jar file dependencies, provided as convenience to users, that 
+are needed by Xalan-J's XSLT 3.0 implementation.
 
-Maven build tool may be used to run only Xalan-J XSL 3 tests, using the following command:
+To run Xalan-J's XSLT 3.0 conformance tests, the following command needs to be run:
 
 mvn clean test -Dtest=AllXalanXSLT3Tests
 
-This produces Maven build output with trailing information like following:
+The Maven build results like following shall be produced: 
 
 [INFO] -------------------------------------------------------
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXalanXSLT3Tests
-[INFO] Tests run: 1059, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 46.431 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
+[INFO] Tests run: 1063, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 46.331 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 1059, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1063, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  02:16 min
+[INFO] Total time:  01:36 min
 
-To run Xalan-J's XSL 3 processor for invoking an XSL stylesheet transformation, the jar file xalan-java-3.0.1.jar and other 
-jar files available within 'libs' folder need to be made available on Java run-time's classpath.   
 
-Please note that, unlike previous Xalan-J versions this build doesn't produce a separate serializer.jar file. Instead,
-the jar file xalan-java-3.0.1.jar produced by this build contains all the run-time classes and resources of Xalan-J's 
-XSL 3 transformation serializer.
+If the user needs to run Xalan-J's XSLT 3.0 implementation via Java code, the value of JVM's system property 
+javax.xml.transform.TransformerFactory needs to be set to org.apache.xalan.processor.XSL3TransformerFactoryImpl.
 
-If you're running Xalan-J's XSL 3 processor programmatically from this dev repos branch via JAXP's TRaX TransformerFactory interface, 
-you need to set value of JVM's system property javax.xml.transform.TransformerFactory to org.apache.xalan.processor.XSL3TransformerFactoryImpl.   
+5) This code base repos branch also has Xalan-J's XSLT 3.0 test drivers for W3C XSLT 3.0 test suite (https://github.com/w3c/xslt30-test).
 
-The document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides
-latest details about Xalan-J's XSLT 3.0 and XPath 3.1 implementation status with respect to Xalan-J's 
-compliance with these specifications.
+Xalan-J's XSLT 3.0 code repos folder src/test/java/org/apache/xalan/tests/w3c/xslt3 has following Java classes for this purpose:
+
+W3CXSLT3Tests : To run W3C XSLT 3.0 test suite on Xalan-J's XSLT 3.0 implementation.
+
+W3CXSLT3TestSuiteXalanResultSummarize : To produce an aggregated W3C XSLT 3.0 test suite results for Xalan-J's XSLT 3.0 implementation.
+
+Xalan-J's XSLT 3.0 implementation's conformance results with W3C XSLT 3.0 test suite are available at following location : 
+https://github.com/apache/xalan-java/blob/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/w3c_xslt3_testsuite_xalan-j_result.xml   
+
+The PDF document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides 
+various other details about Xalan-J's XSLT 3.0 and XPath 3.1 implementations.
