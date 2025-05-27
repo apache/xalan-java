@@ -1,0 +1,21 @@
+{
+   "description" : "an example json document",   
+   "person1" : {
+	  "id" : 1,
+	  "name" : "Gary Gregory",
+      "email" : "ggregory@apache.org",	  
+	  "location" : "office 1"
+   },
+   "person2" : {
+	  "id" : 2,
+	  "name" : "Joseph Kesselman", 
+	  "email" : "jkesselm@apache.org",
+	  "location" : "office 1"
+   },
+   "person3" : {
+	  "id" : 3,
+	  "name" : "Mukul Gandhi", 
+	  "email" : "mukulg@apache.org",
+	  "location" : "office 2"
+   }
+}

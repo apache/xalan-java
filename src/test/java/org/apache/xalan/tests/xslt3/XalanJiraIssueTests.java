@@ -128,7 +128,9 @@ public class XalanJiraIssueTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    @Test
+    // This test case is moved to XslMiscTests, due to dependency issues
+    // between few test cases.
+    /*@Test
     public void xslJiraIssueTest9() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
@@ -136,7 +138,7 @@ public class XalanJiraIssueTests extends XslTransformTestsUtil {
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
     @Test
     public void xslJiraIssueTest10() {

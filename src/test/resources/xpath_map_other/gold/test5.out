@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <person1>
+    <id>1</id>
+    <name>Gary Gregory</name>
+    <email>ggregory@apache.org</email>
+    <location>office 1</location>
+  </person1>
+  <person2>
+    <id>2</id>
+    <name>Joseph Kesselman</name>
+    <email>jkesselm@apache.org</email>
+    <location>office 1</location>
+  </person2>
+  <person3>
+    <id>3</id>
+    <name>Mukul Gandhi</name>
+    <email>mukulg@apache.org</email>
+    <location>office 2</location>
+  </person3>
+</result>

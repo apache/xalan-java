@@ -139,7 +139,9 @@ public class FnSortTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    @Test
+    // This test case is moved to XslMiscTests, due to dependency issues
+    // between few test cases.
+    /*@Test
     public void xslFnSortTest10() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_e.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
@@ -147,7 +149,7 @@ public class FnSortTests extends XslTransformTestsUtil {
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
     @Test
     public void xslFnSortTest11() {

@@ -20,7 +20,7 @@
          <val><xsl:value-of select="($seq[2], $seq[3])"/></val>
          <val><xsl:value-of select="$val1"/></val>                  
          <val><xsl:value-of select="xs:double(103) + $val1"/></val>
-         <val><xsl:value-of select="$val1 * 11.5"/></val>
+         <val><xsl:value-of select="round($val1 * 11.5, 2)"/></val>
          <val><xsl:value-of select="$val1 + xs:double(103)"/></val>
          <val><xsl:value-of select="xs:double(103) - $val1"/></val>
          <val><xsl:value-of select="xs:double(103) * $val1"/></val>

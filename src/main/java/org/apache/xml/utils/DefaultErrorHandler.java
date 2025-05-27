@@ -353,7 +353,6 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
         
     if(null != locator)
     {
-      // getErrorWriter().println("Parser fatal error: "+exception.getMessage());
       String id = (null != locator.getPublicId() )
                   ? locator.getPublicId()
                     : (null != locator.getSystemId())

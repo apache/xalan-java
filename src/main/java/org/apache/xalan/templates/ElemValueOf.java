@@ -613,6 +613,21 @@ public class ElemValueOf extends ElemTemplateElement {
                       
                       (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
+                  else if (expr instanceof XString) {
+                	  XString xStr = (XString)expr;
+                	  String strValue = xStr.str();
+                	  String xpathPatternStr = m_selectExpression.getPatternString();
+                	  if ("''''".equals(xpathPatternStr) && "".equals(strValue)) {
+                		  // An XSL stylesheet has an effective character value ' (which in 
+                		  // escaped form is '' and lexically specified with XPath expression 
+                		  // string as '''') that needs to be emitted to stylesheet's result.
+                		  XString xStr2 = new XString("'");
+                		  xStr2.executeCharsToContentHandler(xctxt, rth);
+                	  }
+                	  else {
+                		  xStr.executeCharsToContentHandler(xctxt, rth); 
+                	  }
+                  }
                   else {
                      expr.executeCharsToContentHandler(xctxt, rth);
                   }

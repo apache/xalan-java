@@ -542,22 +542,11 @@ public class ElemForEachGroup extends ElemTemplateElement
         boolean isInpSeqAllAtomicValues = true;
         
         if (selectExprResult instanceof ResultSequence) {
-        	ResultSequence resultSeq = (ResultSequence)selectExprResult;        	
+        	ResultSequence resultSeq = (ResultSequence)selectExprResult;
         	
-        	// Check where an input sequence contains all XDM atomic values
-        	for (int idx = 0; idx < resultSeq.size(); idx++) {
-        		XObject seqItem = resultSeq.item(idx);
-        		if (!((seqItem instanceof XNumber) || (seqItem instanceof XBooleanStatic) || (seqItem instanceof XBoolean) || 
-							        				  (seqItem instanceof XSBoolean) || (seqItem instanceof XString) || 
-							        				  (seqItem instanceof XSAnyAtomicType))) {
-        			isInpSeqAllAtomicValues = false;
-
-        			break;
-        		}
-        	}
-
-        	if (!isInpSeqAllAtomicValues) {
-        		// We assume here that, an input sequence has all values as nodes            	
+        	if (!XslTransformEvaluationHelper.isSequenceContainsAllXDMAtomicValues(resultSeq)) {
+        		// We assume here that, an xsl:for-each-group's input sequence has all 
+        		// values as nodes.            	
         		sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);
         	}
         	else {

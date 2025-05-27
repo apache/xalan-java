@@ -88,7 +88,7 @@ public class XMLNodeCursorImpl extends NodeCursor
    * that invokes an XSL secondary stylesheet having one or more
    * xsl:result-document instructions.
    */
-  private DTM m_dtm = null;
+  private DTM m_dtm = null;    
   
   /**
    * Class field to check whether this XMLNodeCursorImpl object instance
@@ -96,6 +96,14 @@ public class XMLNodeCursorImpl extends NodeCursor
    * when grouping a sequence of XDM atomic values. 
    */
   public static boolean m_is_for_each_group = false;
+  
+  /**
+   * There is implementation code within Xalan-J's XSLT 3.0
+   * implementation where XPath atomic values are wrapped in
+   * node objects of type XMLNodeCursorImpl. The value of this
+   * class field being true is for those such values. 
+   */
+  private static boolean m_is_transformed_atomic_value = false;
 
   /**
    * Construct a XMLNodeCursorImpl object.
@@ -184,7 +192,7 @@ public class XMLNodeCursorImpl extends NodeCursor
          ((NodeSetDTM) m_obj).addNode(nodeDtmHandle);
       }
     
-      m_last = nodesDtmList.size();    
+      m_last = nodesDtmList.size();
   }
 
   /**
@@ -1024,6 +1032,14 @@ public class XMLNodeCursorImpl extends NodeCursor
 
   public void setDtm(DTM dtm) {
 	 this.m_dtm = dtm;
+  }
+
+  public boolean isTransformedAtomicValue() {
+	 return m_is_transformed_atomic_value;
+  }
+
+  public void setIsTransformedAtomicValue(boolean isTransformedAtomicValue) {
+	 this.m_is_transformed_atomic_value = isTransformedAtomicValue;
   }
   
 }

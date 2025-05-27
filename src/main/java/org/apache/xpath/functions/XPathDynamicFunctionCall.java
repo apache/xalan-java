@@ -88,7 +88,7 @@ public class XPathDynamicFunctionCall extends Expression {
     
     private String m_funcRefVarName;
     
-    private boolean m_IsUnaryLookup;
+    private boolean m_isUnaryLookup;
     
     private List<String> m_argList;
     
@@ -180,6 +180,7 @@ public class XPathDynamicFunctionCall extends Expression {
      		   }
      		   else {
      			  String argXPathStr = m_argList.get(0);
+     			  
      			  if ("*".equals(argXPathStr)) {
      				 // This is XDM map's wild-card key specifier. To return 
      				 // all the map entry values as typed sequence.     				  
@@ -199,50 +200,18 @@ public class XPathDynamicFunctionCall extends Expression {
      				 evalResult = xpathMap.get(contextItem);
      			  }
      			  else {
-     				  if (prefixTable != null) {
-     					  argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
-     				  }
-
-     				  XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-     				  if (m_vars != null) {
-     					  argXPath.fixupVariables(m_vars, m_globals_size);
-     				  }
-
-     				  XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-     				  if (argValue instanceof XString) {
-     					  argValue = new XSString(((XString)argValue).str());
-     					  evalResult = xpathMap.get(argValue);     					 
-     					  if (evalResult == null) {
-     						  throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map doesn't have an entry with key name '" + 
-     								                                                              XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
-     								                                                              srcLocator); 
-     					  }
-     				  }
-     				  else if (argValue instanceof XSString) {
-     					  evalResult = xpathMap.get(argValue);     					 
-     					  if (evalResult == null) {
-     						  throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map doesn't have an entry with key name '" + 
-     								                                                             XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
-     								                                                             srcLocator); 
-     					  } 
-     				  }
-     				  else if (argValue instanceof ResultSequence) {
-     					 ResultSequence rSeqArg = (ResultSequence)argValue;
-     					 ResultSequence rSeqAnswer = new ResultSequence(); 
-     					 for (int idx = 0; idx < rSeqArg.size(); idx++) {
-     						XObject oneArgValue = rSeqArg.item(idx);
-     						rSeqAnswer.add(xpathMap.get(oneArgValue));
+     				 evalResult = getXPathMapEntryValue(xctxt, xpathMap, argXPathStr, prefixTable);
+     				  
+     				 if ((evalResult instanceof XPathMap) && (m_trailingArgList != null)) {
+     					 if (m_trailingArgList.size() == 1) {
+     						 argXPathStr = m_trailingArgList.get(0); 
+     						 evalResult = getXPathMapEntryValue(xctxt, (XPathMap)evalResult, argXPathStr, prefixTable);
      					 }
-     					 
-     					 evalResult = rSeqAnswer;
-     				  }
-     				  else if (m_IsUnaryLookup && (argValue instanceof XMLNodeCursorImpl)) {
-     					 evalResult = xpathMap.get(new XSString(argXPathStr));
-     				  }
-     				  else {
-     					 throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map lookup is not done via a "
-     							                                                                + "string valued key.",  srcLocator);
-     				  }
+     					 else {
+     						 // Return an empty sequence
+     	    				 evalResult = new ResultSequence(); 
+     					 }
+     				 }
      			  }
      		   }    		   
      	    }
@@ -405,11 +374,11 @@ public class XPathDynamicFunctionCall extends Expression {
     }
     
     public void setIsFromUnaryLookupEvaluation(boolean isUnaryLookup) {
-		m_IsUnaryLookup = isUnaryLookup; 		
+		m_isUnaryLookup = isUnaryLookup; 		
 	}
 	
 	public boolean getIsFromUnaryLookupEvaluation() {
-		return m_IsUnaryLookup;
+		return m_isUnaryLookup;
 	}
 
 	public void setTrailingArgList(List<String> strList) {
@@ -638,8 +607,9 @@ public class XPathDynamicFunctionCall extends Expression {
     			try {
     				function.setArg(argXPath.getExpression(), idx);
     			} 
-    			catch (WrongNumberArgsException ex) {							
-    				// error handling
+    			catch (WrongNumberArgsException ex) {
+    				// Return an empty sequence in case of this exception
+    				evalResult = new ResultSequence();
     			}
     		}
 
@@ -667,7 +637,8 @@ public class XPathDynamicFunctionCall extends Expression {
     				argSequence.add(argValue);
     			} 
     			catch (TransformerException ex) {							
-    				// error handling
+    				// Return an empty sequence in case of this exception
+    				evalResult = new ResultSequence();
     			}
     		}
 
@@ -710,7 +681,8 @@ public class XPathDynamicFunctionCall extends Expression {
     				funcObj.setArg(argXPath.getExpression(), idx);
     			} 
     			catch (WrongNumberArgsException ex) {							
-    				// error handling
+    				// Return an empty sequence in case of this exception
+    				evalResult = new ResultSequence();
     			}
     		}
 
@@ -723,5 +695,80 @@ public class XPathDynamicFunctionCall extends Expression {
     	
     	return evalResult;
 	}
+    
+    private XObject getXPathMapEntryValue(XPathContext xctxt, XPathMap xpathMap, String argXPathStr, 
+    									  List<XMLNSDecl> prefixTable) throws TransformerException {
+
+    	XObject evalResult = null;
+
+    	SourceLocator srcLocator = xctxt.getSAXLocator(); 
+
+    	final int contextNode = xctxt.getCurrentNode();
+
+    	if (prefixTable != null) {
+    		argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    	}
+
+    	XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	if (m_vars != null) {
+    		argXPath.fixupVariables(m_vars, m_globals_size);
+    	}
+
+    	XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    	if (argValue instanceof XString) {
+    		argValue = new XSString(((XString)argValue).str());
+    		evalResult = xpathMap.get(argValue);     					 
+    		if (evalResult == null) {
+    			throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map doesn't have an entry with key name '" + 
+																			    					XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
+																			    					srcLocator); 
+    		}
+    	}
+    	else if (argValue instanceof XSString) {
+    		evalResult = xpathMap.get(argValue);     					 
+    		if (evalResult == null) {
+    			throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map doesn't have an entry with key name '" + 
+																			    					XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
+																			    					srcLocator); 
+    		} 
+    	}
+    	else if (argValue instanceof ResultSequence) {
+    		ResultSequence argSeq = (ResultSequence)argValue;
+    		ResultSequence evalResultSeq = new ResultSequence(); 
+    		for (int idx = 0; idx < argSeq.size(); idx++) {
+    			XObject argSeqItem = argSeq.item(idx);
+    			evalResultSeq.add(xpathMap.get(argSeqItem));
+    		}
+
+    		evalResult = evalResultSeq;
+    	}
+    	else if (argValue instanceof XMLNodeCursorImpl) {    	        		
+    		if (m_isUnaryLookup) {
+    			evalResult = xpathMap.get(new XSString(argXPathStr));
+    		}
+    		else {
+    			ResultSequence argSeq = XslTransformEvaluationHelper.getResultSequenceFromXObject(argValue, xctxt);
+        	    ResultSequence evalResultSeq = new ResultSequence(); 
+        		for (int idx = 0; idx < argSeq.size(); idx++) {
+        			XObject argSeqItem = argSeq.item(idx);
+        			String strValue = XslTransformEvaluationHelper.getStrVal(argSeqItem);
+        			evalResultSeq.add(xpathMap.get(new XSString(strValue)));
+        		}
+
+        		if (evalResultSeq.size() == 1) {
+        		   evalResult = evalResultSeq.item(0);
+        		}
+        		else {
+        		   evalResult = evalResultSeq;
+        		}
+    		}
+    	}    	
+    	else {
+    		throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map lookup is not done via a "
+    				                                                                              + "string valued key.",  srcLocator);
+    	}
+
+    	return evalResult;		  
+    }
 
 }

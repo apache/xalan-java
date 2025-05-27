@@ -41,6 +41,8 @@ import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -54,7 +56,9 @@ import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSUntyped;
@@ -574,6 +578,31 @@ public class XslTransformEvaluationHelper {
        }
        
        return isStrHasBalancedParentheses; 
+    }
+    
+    /**
+     * Method definition to check whether, all the values of the 
+     * supplied input sequence are XPath atomic values.
+     * 
+     * @param resultSeq				The supplied XPath sequence object
+     * @return						boolean value true or false
+     */
+    public static boolean isSequenceContainsAllXDMAtomicValues(ResultSequence resultSeq) {
+    	
+    	boolean result = true;
+    	
+    	for (int idx = 0; idx < resultSeq.size(); idx++) {
+    		XObject seqItem = resultSeq.item(idx);
+    		if (!((seqItem instanceof XNumber) || (seqItem instanceof XBooleanStatic) || (seqItem instanceof XBoolean) || 
+						        				  (seqItem instanceof XSBoolean) || (seqItem instanceof XString) || 
+						        				  (seqItem instanceof XSAnyAtomicType))) {
+    			result = false;
+
+    			break;
+    		}
+    	}
+    	
+    	return result;
     }
     
     /**

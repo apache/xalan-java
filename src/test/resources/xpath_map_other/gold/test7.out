@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <array1>1 2 3</array1>
+    <value1>hello</value1>
+  </one>
+  <two>
+    <array2>4 5 6</array2>
+    <value2>there</value2>
+  </two>
+</result>

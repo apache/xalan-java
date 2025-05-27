@@ -95,6 +95,23 @@ public class FuncBoolean extends FunctionOneArg
 		  if (((XMLNodeCursorImpl)xObj).getLength() == 0) {
 			  result = new XSBoolean(false);
 		  }
+		  else if (((XMLNodeCursorImpl)xObj).getLength() == 1) {
+			  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+			  if (xmlNodeCursorImpl.isTransformedAtomicValue()) {
+				  String strValue = xmlNodeCursorImpl.str();
+				  if ("".equals(strValue)) {
+					  result = new XSBoolean(false); 
+				  }
+				  else {
+					  result = new XSBoolean(true); 
+				  }
+				  
+				  xmlNodeCursorImpl.setIsTransformedAtomicValue(false);
+			  }
+			  else {
+				 result = new XSBoolean(true);  
+			  }
+		  }
 		  else {
 			  result = new XSBoolean(true); 
 		  }

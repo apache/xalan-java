@@ -118,9 +118,11 @@ public class FilterExprIteratorSimple extends LocPathIterator
 	  												int stackFrame,
 	  												Expression expr)
     throws org.apache.xml.utils.WrappedRuntimeException
-  {
+  {    
+    
+	XMLNodeCursorImpl result = null;
+    
     PrefixResolver savedResolver = xctxt.getNamespaceContext();
-    XMLNodeCursorImpl result = null;
 
     try
     {
@@ -140,17 +142,38 @@ public class FilterExprIteratorSimple extends LocPathIterator
         int savedStart = vars.getStackFrame();
         vars.setStackFrame(stackFrame);
         
-        XObject xObj = expr.execute(xctxt);
-        Object obj1 = xObj.object();
-        if (!(obj1 instanceof ForEachGroupCompositeGroupingKey)) {            
-            result = (org.apache.xpath.objects.XMLNodeCursorImpl)expr.execute(xctxt);
+        XObject exprEvalResult = expr.execute(xctxt);
+        Object obj1 = null;
+        if ((exprEvalResult instanceof ResultSequence) && XslTransformEvaluationHelper.isSequenceContainsAllXDMAtomicValues((ResultSequence)exprEvalResult)) {
+           DTMManager dtmMgr = xctxt.getDTMManager();
+           DTM dtm = dtmMgr.getDTMFromResultSequence((ResultSequence)exprEvalResult);
+           int docNodeHandle = dtm.getDocument();
+           int docElemHandle = dtm.getFirstChild(docNodeHandle);
+           int nextNode = dtm.getFirstChild(docElemHandle);
+           List<Integer> nodeHandleList = new ArrayList<Integer>();
+           while (nextNode != DTM.NULL) {
+        	   nodeHandleList.add(nextNode);        	   
+        	   XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, dtmMgr);
+         	   xmlNodeCursorImpl.setIsTransformedAtomicValue(true);         	  
+        	   nextNode = dtm.getNextSibling(nextNode);        	   
+           }
+           
+           result = new XMLNodeCursorImpl(nodeHandleList, dtmMgr);
         }
         else {
-        	ForEachGroupCompositeGroupingKey forEachGroupCompositeGroupingKeyObj = (ForEachGroupCompositeGroupingKey)obj1;
-            ResultSequence groupingKeySeq = forEachGroupCompositeGroupingKeyObj.getValue();
-            result = getCompositeGroupingKeyNodeset(groupingKeySeq, xctxt);
+        	obj1 = exprEvalResult.object();	
         }
         
+        if (result == null) {
+        	if (obj1 instanceof ForEachGroupCompositeGroupingKey) {        		
+        		ForEachGroupCompositeGroupingKey forEachGroupCompositeGroupingKeyObj = (ForEachGroupCompositeGroupingKey)obj1;
+        		ResultSequence groupingKeySeq = forEachGroupCompositeGroupingKeyObj.getValue();
+        		result = getCompositeGroupingKeyNodeset(groupingKeySeq, xctxt);
+        	}
+        	else {
+        		result = (org.apache.xpath.objects.XMLNodeCursorImpl)exprEvalResult;
+        	}
+        }        
         
         result.setShouldCacheNodes(true);
 
@@ -170,6 +193,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
       xctxt.popCurrentNode();
       xctxt.setNamespaceContext(savedResolver);
     }
+    
     return result;
   }
   

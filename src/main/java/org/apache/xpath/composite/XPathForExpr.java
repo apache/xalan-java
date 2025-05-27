@@ -43,10 +43,10 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSString;
+
 /**
  * An implementation of XPath 3.1 'for' expression.
- *    
- * Ref : https://www.w3.org/TR/xpath-31/#id-for-expressions
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -278,10 +278,9 @@ public class XPathForExpr extends Expression {
            return resultSeq;
         }
         else {
-            // This else clause, evaluates the XPath 'for' expression's 'return' 
-            // expression. The XPath 'for' expression's 'return' expression may
-            // be evaluated multiple times depending upon, how may 'for' expression
-            // iterations are there.
+            // Evaluate the XPath 'for' expression's 'return' clause. The XPath 'for' 
+        	// expression's 'return' clause may be evaluated multiple times depending 
+        	// upon, how may 'for' expression iterations are there.
             
             if (m_vars != null) {              
                returnExprXPath.fixupVariables(m_vars, m_globals_size);
@@ -301,7 +300,14 @@ public class XPathForExpr extends Expression {
                
                while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {       
                   XMLNodeCursorImpl nodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, xctxt);
-                  returnExprResultSet.add(nodeSetItem);
+                  if (nodeSetItem.isTransformedAtomicValue()) {
+                	  String strValue = nodeSetItem.str();
+                	  returnExprResultSet.add(new XSString(strValue));
+                	  nodeSetItem.setIsTransformedAtomicValue(false);
+                  }
+                  else {
+                      returnExprResultSet.add(nodeSetItem);
+                  }
                }
             }
             else if (retExprResultVal instanceof ResultSequence) {
