@@ -13,9 +13,7 @@
          will be ignored for processing.                     
     --> 
     
-	<xsl:output method="xml" indent="yes"/>
-	
-	<xsl:character-map name="cm1">
+    <xsl:character-map name="cm1">
 	   <xsl:output-character character="1" string="abc"/>   
 	   <xsl:output-character character="2" string="def"/>
 	   <xsl:output-character character="3" string='ghi'/>
@@ -25,6 +23,8 @@
 	   <xsl:output-character character="4" string="mno"/>   
 	   <xsl:output-character character="5" string="pqr"/>
 	</xsl:character-map>
+	
+	<xsl:output method="xml" indent="yes"/>
 
 	<xsl:template match="/">
 	   <result>

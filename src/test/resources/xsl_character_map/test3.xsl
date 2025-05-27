@@ -14,12 +14,12 @@
        elements. 
   -->			    	
   
-  <xsl:output method="xml" use-character-maps="cm1 cm2" indent="yes"/>
-  
   <xsl:character-map name="cm1">
      <xsl:output-character character="x" string="hello1"/>
 	 <xsl:output-character character="y" string="hello2"/>
   </xsl:character-map>
+  
+  <xsl:output method="xml" use-character-maps="cm1 cm2" indent="yes"/>
   
   <xsl:character-map name="cm2">
      <xsl:output-character character="p" string="PPP"/>

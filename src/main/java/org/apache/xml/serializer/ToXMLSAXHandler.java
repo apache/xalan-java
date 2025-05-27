@@ -27,6 +27,7 @@ import java.util.Properties;
 
 import javax.xml.transform.Result;
 
+import org.apache.xml.utils.DOMBuilder;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -512,7 +513,8 @@ public final class ToXMLSAXHandler extends ToSAXHandler
     public void characters(char[] ch, int off, int len) throws SAXException
     {
         // We do the first two things in flushPending() but we don't
-        // close any open CDATA calls.        
+        // close any open CDATA calls.
+    	
         if (m_needToCallStartDocument)
         {
             startDocumentInternal();
@@ -533,12 +535,20 @@ public final class ToXMLSAXHandler extends ToSAXHandler
             // no balancing call to m_lexHandler.endCDATA()
             // so we set m_cdataTagOpen true to remember this.
             m_cdataTagOpen = true;
+        }                
+        
+        CharacterMapConfig charMapConfig = getCharMapConfig();
+        
+        if ((m_saxHandler instanceof DOMBuilder) && (charMapConfig != null)) {
+           DOMBuilder domBuilder = (DOMBuilder)m_saxHandler;
+           domBuilder.setCharMapConfig(charMapConfig);
         }
         
         /* If there are any occurances of "]]>" in the character data
          * let m_saxHandler worry about it, we've already warned them with
          * the previous call of m_lexHandler.startCDATA();
          */ 
+        
         m_saxHandler.characters(ch, off, len);
 
         // time to generate characters event

@@ -22,7 +22,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.xml.transform.TransformerException;
@@ -31,6 +34,7 @@ import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.serializer.CharacterMapConfig;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
@@ -602,6 +606,30 @@ public class XslTransformEvaluationHelper {
     		}
     	}
     	
+    	return result;
+    }
+    
+    /**
+     * This method definition does the xsl:character-map transformation
+     * on the supplied string value, using a CharacterMapConfig run-time object. 
+     * 
+     * @param strValue					Supplied string value
+     * @param charMapConfig				CharacterMapConfig run-time object
+     * @return							The modified string value after doing
+     *                                  xsl:character-map transformation.
+     */
+    public static String characterMapTransformation(String strValue, CharacterMapConfig charMapConfig) {    	
+    	String result = strValue;
+
+    	Map<Character, String> charMap = charMapConfig.getCharMap();
+    	Set<Character> charSet = charMap.keySet();
+    	Iterator<Character> iter = charSet.iterator();
+    	while (iter.hasNext()) {
+    		Character char1 = iter.next();
+    		String replacementStr = charMap.get(char1);
+    		result = result.replace(char1.toString(), replacementStr);
+    	}
+
     	return result;
     }
     

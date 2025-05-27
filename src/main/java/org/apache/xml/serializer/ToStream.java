@@ -35,6 +35,7 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
 import org.apache.xml.serializer.utils.WrappedRuntimeException;
@@ -1616,8 +1617,18 @@ abstract public class ToStream extends SerializerBase
             startClean = lastDirtyCharProcessed + 1;
             if (i > startClean)
             {
-                int lengthClean = i - startClean;
-                m_writer.write(chars, startClean, lengthClean);
+                int lengthClean = i - startClean;                             
+                                
+                CharacterMapConfig charMapConfig = getCharMapConfig();                
+                if (charMapConfig != null) {
+                	// xsl:character-map transformation
+                    String strToBeAppended = new String(chars, startClean, lengthClean);
+                    strToBeAppended = XslTransformEvaluationHelper.characterMapTransformation(strToBeAppended, charMapConfig);
+                    m_writer.write(strToBeAppended);
+                }
+                else {
+                	m_writer.write(chars, startClean, lengthClean);	
+                }                                                 
             }
 
             // For indentation purposes, mark that we've just writen text out
@@ -3013,7 +3024,10 @@ abstract public class ToStream extends SerializerBase
         boolean was_added;
         int index;
         
-        String newValue = replaceAttributeValueWithCharMap(value);
+        CharacterMapConfig charMapConfig = getCharMapConfig();        
+        if (charMapConfig != null) {
+        	value = XslTransformEvaluationHelper.characterMapTransformation(value, charMapConfig);
+        }
         
         if (uri == null || localName == null || uri.length() == 0)
             index = m_attributes.getIndex(rawName);
@@ -3027,7 +3041,7 @@ abstract public class ToStream extends SerializerBase
             if (m_tracer != null)
             {
                 old_value = m_attributes.getValue(index);
-                if (newValue.equals(old_value))
+                if (value.equals(old_value))
                     old_value = null;
             }
 
@@ -3035,7 +3049,7 @@ abstract public class ToStream extends SerializerBase
              * We may have a null uri or localName, but all we really
              * want to re-set is the value anyway.
              */
-            m_attributes.setValue(index, newValue);
+            m_attributes.setValue(index, value);
             was_added = false;
             if (old_value != null)
                 emitPseudoAttributes();
@@ -3120,7 +3134,7 @@ abstract public class ToStream extends SerializerBase
                     e.printStackTrace();
                 }
             }
-            m_attributes.addAttribute(uri, localName, rawName, type, newValue);
+            m_attributes.addAttribute(uri, localName, rawName, type, value);
             was_added = true;
             if (m_tracer != null)
                 emitPseudoAttributes();

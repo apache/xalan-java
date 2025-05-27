@@ -8,13 +8,13 @@
     <!-- An XSL stylesheet test case to test, xsl:character-map 
          instruction with an XSL identity transformation. -->				
 
-	<xsl:output method="xml" use-character-maps="cm1" indent="yes"/>
-	
-	<xsl:character-map name="cm1">
+    <xsl:character-map name="cm1">
 	   <xsl:output-character character="1" string="abc"/>   
 	   <xsl:output-character character="2" string="def"/>
 	   <xsl:output-character character="3" string='ghi'/>
 	</xsl:character-map>
+	
+	<xsl:output method="xml" use-character-maps="cm1" indent="yes"/>
 
 	<xsl:template match="node() | @*">
 	  <xsl:copy>

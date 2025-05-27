@@ -10,12 +10,12 @@
        instruction. This stylesheet example does, character substitution 
        within string values emitted via xsl:value-of instruction. -->			    	
   
-  <xsl:output method="xml" use-character-maps="cm1" indent="yes"/>
-  
   <xsl:character-map name="cm1">
      <xsl:output-character character="x" string="hello1"/>
 	 <xsl:output-character character="y" string="hello2"/>
   </xsl:character-map>
+  
+  <xsl:output method="xml" use-character-maps="cm1" indent="yes"/>
   
   <xsl:template match="/">
 	 <result>

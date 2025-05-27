@@ -17,11 +17,9 @@
  */
 package org.apache.xpath.objects;
 
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.serializer.CharacterMapConfig;
 import org.apache.xml.serializer.SerializerBase;
@@ -207,16 +205,12 @@ public class XString extends XObject implements XMLString
 
     String str = str();
     
-    if (ch instanceof SerializerBase) {
+    if (ch instanceof SerializerBase) {       
 	   SerializerBase serializerBase = (SerializerBase)ch;
 	   CharacterMapConfig charMapConfig = serializerBase.getCharMapConfig();
-	   Map<Character, String> charMap = charMapConfig.getCharMap();
-	   Set<Character> charSet = charMap.keySet();
-	   Iterator<Character> iter = charSet.iterator();
-	   while (iter.hasNext()) {
-		  Character char1 = iter.next();
-		  String replacementStr = charMap.get(char1);
-		  str = str.replace(char1.toString(), replacementStr);
+	   if (charMapConfig != null) {
+		  // xsl:character-map transformation 
+	      str = XslTransformEvaluationHelper.characterMapTransformation(str, charMapConfig);
 	   }
 	}
 

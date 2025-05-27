@@ -17,9 +17,6 @@
  */
 package org.apache.xalan.templates;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
@@ -153,17 +150,12 @@ public class ElemCopy extends ElemUse
 			  if (nodeType == DTM.TEXT_NODE) {				  				  
 				  XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(sourceNode, xctxt);
 				  String nodeStrValue = xdmNode.str();				  
-				  if (rthandler instanceof SerializerBase) {
-					  // Doing xsl:character-map transformation
+				  if (rthandler instanceof SerializerBase) {					  					  
 			    	  SerializerBase serializerBase = (SerializerBase)rthandler;
 			    	  CharacterMapConfig charMapConfig = serializerBase.getCharMapConfig();
-			    	  Map<Character, String> charMap = charMapConfig.getCharMap();
-			    	  Set<Character> charSet = charMap.keySet();
-			    	  Iterator<Character> iter = charSet.iterator();
-			    	  while (iter.hasNext()) {
-			    		  Character char1 = iter.next();
-			    		  String replacementStr = charMap.get(char1);
-			    		  nodeStrValue = nodeStrValue.replace(char1.toString(), replacementStr);
+			    	  if (charMapConfig != null) {
+			    		 // xsl:character-map transformation
+			    	     nodeStrValue = XslTransformEvaluationHelper.characterMapTransformation(nodeStrValue, charMapConfig);
 			    	  }
 			    	  
 			    	  rthandler.characters(nodeStrValue.toCharArray(), 0, nodeStrValue.length());			    	  

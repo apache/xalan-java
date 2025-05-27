@@ -19,14 +19,13 @@ package org.apache.xml.serializer;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Transformer;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.Attributes;
@@ -405,7 +404,10 @@ public abstract class SerializerBase
             boolean was_added;        
             int index;
             
-            String newValue = replaceAttributeValueWithCharMap(value);            
+            CharacterMapConfig charMapConfig = getCharMapConfig();
+            if (charMapConfig != null) {
+                value = XslTransformEvaluationHelper.characterMapTransformation(value, charMapConfig); 
+            }
             
             if (localName == null || uri == null || uri.length() == 0)
                 index = m_attributes.getIndex(rawName);
@@ -418,13 +420,13 @@ public abstract class SerializerBase
                  * We may have a null uri or localName, but all
                  * we really want to re-set is the value anyway.
                  */
-                m_attributes.setValue(index, newValue);
+                m_attributes.setValue(index, value);
                 was_added = false;
             }
             else
             {
                 // the attribute doesn't exist yet, create it
-                m_attributes.addAttribute(uri, localName, rawName, type, newValue);
+                m_attributes.addAttribute(uri, localName, rawName, type, value);
                 was_added = true;
             }
             
@@ -1700,35 +1702,6 @@ public abstract class SerializerBase
 
 	public void setCharMapConfig(CharacterMapConfig charMapConfig) {
 		this.m_charMapConfig = charMapConfig;
-	}
-	
-	/**
-	 * If one or more xsl:character-map elements are been used within an 
-	 * XSL stylesheet, this method replaces attribute values that have to be 
-	 * serialized to XSL transformation output, with the information
-	 * provided within xsl:character-map element(s). 
-	 * 
-	 * @param attrValue			Initial attribute value
-	 * 
-	 * @return					Replaced attribute value after xsl:character-map
-	 *                          processing.
-	 */
-	protected String replaceAttributeValueWithCharMap(String attrValue) {
-		
-		String replacedAttrValue = attrValue;
-		
-		CharacterMapConfig charMapConfig = getCharMapConfig();
-		
-		Map<Character, String> charMap = charMapConfig.getCharMap();
-		Set<Character> charSet = charMap.keySet();
-		Iterator<Character> iter = charSet.iterator();
-		while (iter.hasNext()) {
-			Character char1 = iter.next();
-			String replacementStr = charMap.get(char1);
-			replacedAttrValue = replacedAttrValue.replace(char1.toString(), replacementStr);
-		}
-		
-		return replacedAttrValue;
 	}
 	
 }

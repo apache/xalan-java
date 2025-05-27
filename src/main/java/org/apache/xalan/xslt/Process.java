@@ -741,7 +741,6 @@ public class Process
 				  }
 			  }
 
-			  PrintWriter resultWriter;
 			  StreamResult strResult;
 
 			  if (null != outFileName)

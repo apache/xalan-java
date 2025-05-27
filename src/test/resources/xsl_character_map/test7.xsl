@@ -16,8 +16,6 @@
        elements.       
   -->				
   
-  <xsl:output method="xml" use-character-maps="cm1 cm2" indent="yes"/>
-  
   <xsl:character-map name="cm1">
      <xsl:output-character character="x" string="hello1"/>
 	 <xsl:output-character character="y" string="hello2"/>
@@ -28,6 +26,8 @@
 	 <xsl:output-character character="q" string="QQQ"/>
 	 <xsl:output-character character="r" string="RRR"/>
   </xsl:character-map>
+  
+  <xsl:output method="xml" use-character-maps="cm1 cm2" indent="yes"/>
   
   <xsl:template match="/root">
 	 <result>

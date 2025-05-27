@@ -13,13 +13,13 @@
          will be ignored for processing.                     
     -->                
 
-	<xsl:output method="xml" indent="yes"/>
-	
-	<xsl:character-map name="cm">
+    <xsl:character-map name="cm">
 	   <xsl:output-character character="1" string="abc"/>   
 	   <xsl:output-character character="2" string="def"/>
 	   <xsl:output-character character="3" string='ghi'/>
 	</xsl:character-map>
+	
+	<xsl:output method="xml" indent="yes"/>
 
 	<xsl:template match="/">
 	   <result>

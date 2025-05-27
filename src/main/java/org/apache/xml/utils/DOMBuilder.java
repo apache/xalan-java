@@ -23,8 +23,10 @@ package org.apache.xml.utils;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
+import org.apache.xml.serializer.CharacterMapConfig;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -65,6 +67,11 @@ public class DOMBuilder
   
   /** Namespace support */
   protected Vector m_prefixMappings = new Vector();
+  
+  /**
+   * An XSL stylesheet xsl:character-map run-time information.
+   */
+  private CharacterMapConfig m_char_map_config = null;
   
   /**
    * DOMBuilder instance constructor... it will add the DOM nodes
@@ -476,6 +483,12 @@ public class DOMBuilder
     }
 
     String s = new String(ch, start, length);
+        
+    if (m_char_map_config != null) {
+       // xsl:character-map transformation
+       s = XslTransformEvaluationHelper.characterMapTransformation(s, m_char_map_config);
+    }
+    
     Node childNode;
     childNode =  m_currentNode != null ? m_currentNode.getLastChild(): null;
     if( childNode != null && childNode.getNodeType() == Node.TEXT_NODE ){
@@ -790,4 +803,13 @@ public class DOMBuilder
    *        parameter entity, the name will begin with '%'.
    */
   public void skippedEntity(String name) throws org.xml.sax.SAXException{}
+
+  public CharacterMapConfig getCharMapConfig() {
+	  return m_char_map_config;  
+  }
+  
+  public void setCharMapConfig(CharacterMapConfig charMapConfig) {
+	  m_char_map_config = charMapConfig; 	
+  }
+  
 }

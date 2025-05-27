@@ -21,11 +21,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -70,6 +67,7 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XUnresolvedVariable;
 import org.apache.xalan.trace.GenerateEvent;
 import org.apache.xalan.trace.TraceManager;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -2577,17 +2575,12 @@ public class TransformerImpl extends Transformer
         
         if (m_serializationHandler instanceof SerializerBase) {
         	CharacterMapConfig charMapConfig = ((SerializerBase)m_serializationHandler).getCharMapConfig();
-        	Map<Character, String> charMap = charMapConfig.getCharMap();
-        	Set<Character> charSet = charMap.keySet();
-        	Iterator<Character> iter = charSet.iterator();
-        	String strValue = String.valueOf(chars);
-        	while (iter.hasNext()) {
-        		Character char1 = iter.next();
-        		String replacementStr = charMap.get(char1);
-        		strValue = strValue.replace(char1.toString(), replacementStr);
+        	if (charMapConfig != null) {
+        		// xsl:character-map transformation
+        		String strValue = String.valueOf(chars);        	        	
+        		strValue = XslTransformEvaluationHelper.characterMapTransformation(strValue, charMapConfig);
+        		chars = strValue.toCharArray();
         	}
-
-        	chars = strValue.toCharArray();
         }
         
         m_serializationHandler.characters(chars, 0, chars.length);
