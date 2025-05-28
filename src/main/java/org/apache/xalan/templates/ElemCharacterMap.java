@@ -17,73 +17,100 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Vector;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 
 /**
- * Implementation of XSLT 3.0 xsl:output-character element within
- * xsl:character-map element.
+ * Implementation of XSLT 3.0 xsl:character-map element.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class ElemOutputCharacter extends ElemTemplateElement 
+public class ElemCharacterMap extends ElemTemplateElement 
                                                           implements ExpressionOwner {
 
 	static final long serialVersionUID = 5924859487723083394L;
 	
 	/**
-	 * Class field representing "character" attribute.
+	 * Class field representing "name" attribute.
 	 */
-	protected char m_character;
+	protected QName m_name = null;
 	
 	/**
-	 * Set the "character" attribute.
+	 * Set the "name" attribute.
 	 * 
-	 * @param c
+	 * @param v		  Value of the "name" attribute
 	 */
-	public void setCharacter(char c)
+	public void setName(QName v)
 	{
-		m_character = c;
+		m_name = v;
+	}
+	
+	/**
+	 * Get the value of "name" attribute.
+	 * 
+	 * @return		  The value of "name" attribute
+	 */
+	public QName getName()
+	{
+		return m_name;
+	}
+	
+	/**
+	 * Class field representing "use-character-maps" attribute.
+	 */
+	protected Vector m_use_character_maps = null;
+	
+	/**
+	 * Set the "use-character-maps" attribute.
+	 * 
+	 * @param v		  Value of the "use-character-maps" attribute
+	 */
+	public void setUseCharacterMaps(Vector v)
+	{
+		m_use_character_maps = v;
+	}
+	
+	/**
+	 * Get the value of "use-character-maps" attribute.
+	 * 
+	 * @return		  The value of "use-character-maps" attribute
+	 */
+	public Vector getUseCharacterMaps()
+	{
+		return m_use_character_maps;
+	}
+	
+	/**
+	 * The owning stylesheet.
+	 */
+	private Stylesheet m_stylesheet;
+	
+	/**
+	 * Get the owning stylesheet.
+	 *
+	 * @return The owning stylesheet.
+	 */
+	public Stylesheet getStylesheet()
+	{
+		return m_stylesheet;
 	}
 
 	/**
-	 * Get the "character" attribute.
-	 * 
-	 * @return
+	 * Set the owning stylesheet.
+	 *
+	 * @param sheet The owning stylesheet for this element
 	 */
-	public char getCharacter()
+	public void setStylesheet(Stylesheet sheet)
 	{
-		return m_character;
-	}
-	
-	/**
-	 * Class field representing "string" attribute.
-	 */
-	protected String m_string = null;
-	
-	/**
-	 * Set the "string" attribute.
-	 * 
-	 * @param c
-	 */
-	public void setString(String str)
-	{
-		m_string = str;
-	}
-
-	/**
-	 * Get the "string" attribute.
-	 * 
-	 * @return
-	 */
-	public String getString()
-	{
-		return m_string;
+		m_stylesheet = sheet;
 	}
 	
 	/**
@@ -94,7 +121,7 @@ public class ElemOutputCharacter extends ElemTemplateElement
 	 */
 	public int getXSLToken()
 	{
-		return Constants.ELEMNAME_OUTPUT_CHARACTER;
+		return Constants.ELEMNAME_CHARACTER_MAP;
 	}
 
 	/**
@@ -104,7 +131,7 @@ public class ElemOutputCharacter extends ElemTemplateElement
 	 */
 	public String getNodeName()
 	{
-		return Constants.ELEMNAME_OUTPUT_CHARACTER_STRING;
+		return Constants.ELEMNAME_CHARACTER_MAP_STRING;
 	}
 	
 	/**
@@ -127,7 +154,7 @@ public class ElemOutputCharacter extends ElemTemplateElement
 	}
 	
 	/**
-	 * Execute an XSL xsl:output-character transformation.
+	 * Execute an XSL xsl:character-map transformation.
 	 */
 	public void execute(TransformerImpl transformer) throws TransformerException {	    
 		// NO OP

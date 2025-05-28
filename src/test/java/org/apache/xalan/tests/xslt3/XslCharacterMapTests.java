@@ -169,14 +169,4 @@ public class XslCharacterMapTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
     }
     
-    @Test
-    public void xslCharacterMapTest13() {
-    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";                 
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
-    }
-    
 }

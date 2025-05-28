@@ -131,11 +131,13 @@ public class Constants extends org.apache.xml.utils.Constants
   
   ELEMNAME_CATCH = 110,
   
-  ELEMNAME_OUTPUT_CHARACTER = 111,
+  ELEMNAME_CHARACTER_MAP = 111,
   
-  ELEMNAME_CONTEXT_ITEM = 112;
+  ELEMNAME_OUTPUT_CHARACTER = 112,
   
-  // next available number : 113
+  ELEMNAME_CONTEXT_ITEM = 113;
+  
+  // next available number : 114
 
   /**
    * Literals for XSL element names. Note that there are more

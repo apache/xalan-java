@@ -17,7 +17,7 @@
 
 Copyright 1999-2025 The Apache Software Foundation
 
-Document last modified : 2025-05-27
+Document last modified : 2025-05-28
 
 Authors:
    Gary Gregory <ggregory@apache.org>
@@ -59,11 +59,11 @@ The Maven build results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXalanXSLT3Tests
-[INFO] Tests run: 1068, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.851 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
+[INFO] Tests run: 1067, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 34.099 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 1068, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1067, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS

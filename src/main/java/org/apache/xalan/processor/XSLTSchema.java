@@ -26,6 +26,7 @@ import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.ElemCallTemplate;
 import org.apache.xalan.templates.ElemCatch;
+import org.apache.xalan.templates.ElemCharacterMap;
 import org.apache.xalan.templates.ElemChoose;
 import org.apache.xalan.templates.ElemComment;
 import org.apache.xalan.templates.ElemContextItem;
@@ -1085,8 +1086,8 @@ public class XSLTSchema extends XSLTElementDef
                                           "character-map",
                                           null /*alias */,
                                           new XSLTElementDef[] { xslOutputCharacter } /* elements */,
-                                          new XSLTAttributeDef[] { nameAttrRequired }, 
-                                           new ProcessorOutputElem(), null /* class object */, 20, true),
+                                          new XSLTAttributeDef[] { nameAttrRequired, useCharacterMapsAttr }, 
+                                           new ProcessorCharacterMap(), ElemCharacterMap.class /* class object */, 20, true),
                                   new XSLTElementDef(
                                           this,
                                           Constants.S_XSLNAMESPACEURL,

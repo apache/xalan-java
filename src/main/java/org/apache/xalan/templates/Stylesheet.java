@@ -985,6 +985,52 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	{
 		return (m_templates != null) ? m_templates.size() : 0;
 	}
+	
+	/**
+	 * The "xsl:character-map" properties.
+	 */
+	private Vector m_character_maps;
+	
+	/**
+	 * Set an "xsl:character-map" property.
+	 *
+	 * @param v ElemCharacterMap to add to list of character maps
+	 */
+	public void setCharacterMap(ElemCharacterMap v)
+	{
+		if (m_character_maps == null)
+			m_character_maps = new Vector();
+
+		m_character_maps.addElement(v);
+		v.setStylesheet(this);
+	}
+	
+	/**
+	 * Get an "xsl:character-map" property.
+	 *
+	 * @param i Index of ElemCharacterMap in the list to get
+	 *
+	 * @return ElemCharacterMap at the given index in the list
+	 *
+	 * @throws TransformerException
+	 */
+	public ElemCharacterMap getCharacterMap(int i) throws TransformerException
+	{
+		if (m_character_maps == null)
+			throw new ArrayIndexOutOfBoundsException();
+
+		return (ElemCharacterMap) m_character_maps.elementAt(i);
+	}
+	
+	/**
+	 * Get the number of "xsl:character-map" properties.
+	 *
+	 * @return the number of "xsl:character-map" properties.
+	 */
+	public int getCharacterMapCount()
+	{
+		return (m_character_maps != null) ? m_character_maps.size() : 0;
+	}
 
 	/**
 	 * The "xsl:namespace-alias" properties.
