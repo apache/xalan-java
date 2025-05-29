@@ -1106,47 +1106,36 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
    */
   private boolean verifyXSLCharacterMapNameConsistency(Document document) throws TransformerConfigurationException {	  
 	  
-	  boolean isXslOutputHasUseCharacterMapsAttr = false;
+	  boolean result = false;
 	  
 	  NodeList nodeList = document.getElementsByTagNameNS(XSL_NAMESPACE_URL, Constants.ELEMNAME_CHARACTER_MAP_STRING);
 	  
-	  List<String> charMapNameList1 = new ArrayList<String>();
+	  List<String> charMapNameList = new ArrayList<String>();
 	  for (int idx = 0; idx < nodeList.getLength(); idx++) {
 		  Element elemNode = (Element)(nodeList.item(idx));
 		  String charMapName = elemNode.getAttribute(Constants.ATTRNAME_NAME);
-		  if (charMapNameList1.contains(charMapName)) {
+		  if (charMapNameList.contains(charMapName)) {
 			  throw new TransformerConfigurationException("An XSL stylesheet contains more than one xsl:character-map "
 					  																		+ "instruction with name '" + charMapName + "'.");    		  
 		  }
 		  else {
-			  charMapNameList1.add(charMapName); 
+			  charMapNameList.add(charMapName); 
 		  }
 	  }
-
-	  List<String> charMapNameList2 = new ArrayList<String>();
 	  
 	  nodeList = document.getElementsByTagNameNS(XSL_NAMESPACE_URL, Constants.ELEMNAME_OUTPUT_STRING);
-	  if (nodeList.getLength() == 1) {
-		  Element elemNode = (Element)(nodeList.item(0));
+	  
+	  for (int idx = 0; idx < nodeList.getLength(); idx++) {
+		  Element elemNode = (Element)(nodeList.item(idx));
 		  String attrValue = elemNode.getAttribute(Constants.ATTRNAME_USE_CHARACTER_MAPS);
 		  if (!"".equals(attrValue)) {
-			  isXslOutputHasUseCharacterMapsAttr = true;
-			  String[] charMapNames = attrValue.split(" ");
-			  for (int idx = 0; idx < charMapNames.length; idx++) {
-				  String charMapName = charMapNames[idx]; 
-				  if (charMapNameList2.contains(charMapName)) {
-					  throw new TransformerConfigurationException("An XSL stylesheet xsl:output element's attribute 'use-character-maps' "
-																						  + "refers to an xsl:character-map '" + charMapName + "' "
-																						  + "more than once.");    		  
-				  }
-				  else {
-					  charMapNameList2.add(charMapName); 
-				  } 
-			  }
+			  result = true;
+			  
+			  break;
 		  }
 	  }
 	  
-	  return isXslOutputHasUseCharacterMapsAttr;
+	  return result;
   }
   
 }

@@ -20,6 +20,7 @@ package org.apache.xalan.transformer;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -3322,7 +3323,9 @@ public class TransformerImpl extends Transformer
    */
   public SerializationHandler getResultTreeHandler()
   {		
-	  setCharacterMapConfigOnSerializationHandler();
+	  if (m_stylesheetRoot.getUseCharacterMaps()) {
+	     setCharacterMapConfigOnSerializationHandler();
+	  }
 	  
 	  return m_serializationHandler;
   }
@@ -3335,7 +3338,9 @@ public class TransformerImpl extends Transformer
    */
   public SerializationHandler getSerializationHandler()
   {	  
-	  setCharacterMapConfigOnSerializationHandler();
+	  if (m_stylesheetRoot.getUseCharacterMaps()) {
+	     setCharacterMapConfigOnSerializationHandler();
+	  }
 
 	  return m_serializationHandler;
   }
@@ -4101,84 +4106,6 @@ public class TransformerImpl extends Transformer
 	public void setSource(Source source) {
 		this.m_source = source;
 	}
-	
-	/**
-	 * Before returning m_serializationHandler object value up the 
-	 * method call chain, set xsl:character-map details within an
-	 * XSL serializer run-time object. 
-	 */
-	private void setCharacterMapConfigOnSerializationHandler() {
-		
-		boolean useCharMaps = m_stylesheetRoot.getUseCharacterMaps();		
-		
-		if (useCharMaps) {			
-			Properties outputProperties = m_stylesheetRoot.getOutputProperties();
-			String useCharacterMapsStr = outputProperties.getProperty("use-character-maps");			
-
-			if (useCharacterMapsStr != null) {
-				CharacterMapConfig charMapConfig = new CharacterMapConfig();
-				
-				String[] charMapNameArr = useCharacterMapsStr.split("\\s+");
-				for (int idx = 0; idx < charMapNameArr.length; idx++) {
-					String charMapNameStr = charMapNameArr[idx];
-					NodeList stylesheetRootChildNodes = m_stylesheetRoot.getChildNodes();
-					int childNodeLen = stylesheetRootChildNodes.getLength();	  	  
-					for (int idx2 = 0; idx2 < childNodeLen; idx2++) {
-						Node node = stylesheetRootChildNodes.item(idx2);
-						if (node instanceof ElemCharacterMap) {
-							ElemCharacterMap elemCharacterMap = (ElemCharacterMap)node;
-							String charMapNameStr2 = (elemCharacterMap.getName()).toString();														
-							if (charMapNameStr2.equals(charMapNameStr)) {
-								Vector useCharacterMaps = elemCharacterMap.getUseCharacterMaps();
-								if (useCharacterMaps != null) {
-									// xsl:character-map element has 'use-character-map' attribute.
-									// Expand 'use-character-map' attribute values, to populate
-									// CharacterMapConfig object.
-									for (int idx3 = 0; idx3 < useCharacterMaps.size(); idx3++) {
-										String charMapName1 = (useCharacterMaps.elementAt(idx3)).toString();
-										for (int idx4 = 0; idx4 < childNodeLen; idx4++) {
-											Node node2 = stylesheetRootChildNodes.item(idx4);
-											if (node2 instanceof ElemCharacterMap) {
-												ElemCharacterMap elemCharacterMap2 = (ElemCharacterMap)node2;
-												String charMapNameStr3 = (elemCharacterMap2.getName()).toString();
-												if (charMapNameStr3.equals(charMapName1)) {
-													ElemTemplateElement elemTemplateElem = elemCharacterMap2.getFirstChildElem();
-													while ((elemTemplateElem != null) && (elemTemplateElem instanceof ElemOutputCharacter)) {								
-														ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
-														char chr = elemOutputCharacter.getCharacter();
-														String str = elemOutputCharacter.getString();
-														charMapConfig.put(Character.valueOf(chr), str);
-														elemTemplateElem = elemTemplateElem.getNextSiblingElem();
-													}
-												}
-											}
-										}
-									}
-								}
-								else {
-									// Populate CharacterMapConfig object by traversing xsl:output-character child
-									// elements within xsl:character-map element. 
-									ElemTemplateElement elemTemplateElem = elemCharacterMap.getFirstChildElem();
-									while ((elemTemplateElem != null) && (elemTemplateElem instanceof ElemOutputCharacter)) {								
-										ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
-										char chr = elemOutputCharacter.getCharacter();
-										String str = elemOutputCharacter.getString();
-										charMapConfig.put(Character.valueOf(chr), str);
-										elemTemplateElem = elemTemplateElem.getNextSiblingElem();
-									}
-								}
-							}
-						}
-					}
-				}
-				
-				if (m_serializationHandler instanceof SerializerBase) {
-					SerializerBase serializerBase = (SerializerBase)m_serializationHandler;
-					serializerBase.setCharMapConfig(charMapConfig);
-				}
-			}			
-		}
-	}
 
 	public void setXMLSourceAbsent(boolean xmlSourceAbsent) {
 		m_xmlSourceAbsent = xmlSourceAbsent; 		
@@ -4186,6 +4113,106 @@ public class TransformerImpl extends Transformer
 	
 	public boolean getXMLSourceAbsent() {
 	    return m_xmlSourceAbsent;	
+	}
+	
+	/**
+	 * Method definition to populate CharacterMapConfig run-time 
+	 * object from all eligible XSL xsl:output-character elements,
+	 * and set this information within an XSL run-time SerializationHandler 
+	 * object instance. 
+	 */
+	private void setCharacterMapConfigOnSerializationHandler() {
+		
+		// There can be more than one xsl:output elements within an 
+		// XSL stylesheet. We need to accumulate xsl:character-map names
+		// from all of them.
+		NodeList stylesheetRootChildNodes = m_stylesheetRoot.getChildNodes();
+		int childNodeLen = stylesheetRootChildNodes.getLength();
+		List<String> charMapNameList = new ArrayList<String>();
+		for (int idx = 0; idx < childNodeLen; idx++) {
+			Node node = stylesheetRootChildNodes.item(idx);
+			if (node instanceof OutputProperties) {
+				OutputProperties outputProperties2 = (OutputProperties)node;
+				String useCharacterMapsStr2 = outputProperties2.getProperty(Constants.ATTRNAME_USE_CHARACTER_MAPS);
+				String[] charMapNameArr = useCharacterMapsStr2.split("\\s+");
+				List<String> strList = Arrays.asList(charMapNameArr);
+				charMapNameList.addAll(strList);
+			}
+		}
+
+		if (charMapNameList.size() > 0) {
+			CharacterMapConfig charMapConfig = new CharacterMapConfig();				
+			String[] charMapNameArr = charMapNameList.toArray(new String[0]);
+			for (int idx = 0; idx < charMapNameArr.length; idx++) {
+				String charMapNameStr = charMapNameArr[idx];
+				stylesheetRootChildNodes = m_stylesheetRoot.getChildNodes();
+				childNodeLen = stylesheetRootChildNodes.getLength();	  	  
+				for (int idx2 = 0; idx2 < childNodeLen; idx2++) {
+					Node node = stylesheetRootChildNodes.item(idx2);
+					if (node instanceof ElemCharacterMap) {
+						ElemCharacterMap elemCharacterMap = (ElemCharacterMap)node;
+						String charMapNameStr2 = (elemCharacterMap.getName()).toNamespacedString();														
+						if (charMapNameStr2.equals(charMapNameStr)) {
+							Vector useCharacterMaps = elemCharacterMap.getUseCharacterMaps();
+							if (useCharacterMaps != null) {
+								// xsl:character-map element has 'use-character-map' attribute.
+								// Expand 'use-character-map' attribute values, to populate
+								// CharacterMapConfig object.
+								for (int idx3 = 0; idx3 < useCharacterMaps.size(); idx3++) {
+									String charMapName1 = ((QName)(useCharacterMaps.elementAt(idx3))).toNamespacedString();
+									for (int idx4 = 0; idx4 < childNodeLen; idx4++) {
+										Node node2 = stylesheetRootChildNodes.item(idx4);
+										if (node2 instanceof ElemCharacterMap) {
+											ElemCharacterMap elemCharacterMap2 = (ElemCharacterMap)node2;
+											String charMapNameStr3 = (elemCharacterMap2.getName()).toNamespacedString();
+											if (charMapNameStr3.equals(charMapName1)) {
+												ElemTemplateElement elemTemplateElem = elemCharacterMap2.getFirstChildElem();
+												while ((elemTemplateElem != null) && (elemTemplateElem instanceof ElemOutputCharacter)) {								
+													ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
+													char chr = elemOutputCharacter.getCharacter();
+													String str = elemOutputCharacter.getString();
+													charMapConfig.put(Character.valueOf(chr), str);
+													elemTemplateElem = elemTemplateElem.getNextSiblingElem();
+												}
+											}
+										}
+									}
+								}
+
+								// Add any more available xsl:output-character mappings from within the 
+								// child information of xsl:character-map element, to CharacterMapConfig 
+								// object.
+								ElemTemplateElement elemTemplateElem = elemCharacterMap.getFirstChildElem();
+								while ((elemTemplateElem != null) && (elemTemplateElem instanceof ElemOutputCharacter)) {								
+									ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
+									char chr = elemOutputCharacter.getCharacter();
+									String str = elemOutputCharacter.getString();
+									charMapConfig.put(Character.valueOf(chr), str);
+									elemTemplateElem = elemTemplateElem.getNextSiblingElem();
+								}
+							}
+							else {
+								// Populate CharacterMapConfig object by traversing xsl:output-character child
+								// elements within xsl:character-map element. 
+								ElemTemplateElement elemTemplateElem = elemCharacterMap.getFirstChildElem();
+								while ((elemTemplateElem != null) && (elemTemplateElem instanceof ElemOutputCharacter)) {								
+									ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
+									char chr = elemOutputCharacter.getCharacter();
+									String str = elemOutputCharacter.getString();
+									charMapConfig.put(Character.valueOf(chr), str);
+									elemTemplateElem = elemTemplateElem.getNextSiblingElem();
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if (m_serializationHandler instanceof SerializerBase) {
+				SerializerBase serializerBase = (SerializerBase)m_serializationHandler;
+				serializerBase.setCharMapConfig(charMapConfig);
+			}
+		}			
 	}
 
 }  // end TransformerImpl class

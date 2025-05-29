@@ -1776,10 +1776,20 @@ public class StylesheetRoot extends StylesheetComposed
 		return this.m_isXslOutputHasUseCharacterMapsAttr;
 	}
 
+	/**
+	 * Get XSL transformation's initial template name.
+	 * 
+	 * @return			String value of XSL transformation's initial template name
+	 */
 	public String getInitTemplateName() {
 		return m_init_template_name;
 	}
 
+	/**
+	 * Set XSL transformation's initial template name.
+	 * 
+	 * @param initTemplateName			An XSL transformation's initial template name 
+	 */
 	public void setInitTemplateName(String initTemplateName) {
 		this.m_init_template_name = initTemplateName;
 	}

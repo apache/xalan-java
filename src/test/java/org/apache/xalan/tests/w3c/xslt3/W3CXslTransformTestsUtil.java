@@ -369,13 +369,28 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
    				   List<Element> elemNodeList = new ArrayList<Element>();
    				   elemNodeList.add(xmlResultDoc.getDocumentElement());
    				   
-   				   getDomElemNodes(xmlResultDoc.getDocumentElement(), elemNodeList);
+   				   // Get list of all XML element nodes within a DOM object
+   				   getXmlDomElemNodes(xmlResultDoc.getDocumentElement(), elemNodeList);
    				   
    				   boolean isTestCasePass = false;
    				   
    				   for (int idx = 0; idx < elemNodeList.size(); idx++) {
    					  Element elemNode = elemNodeList.get(idx);
-   					  String elemNodeStrValue = elemNode.getTextContent();
+   					  String elemNodeStrValue = null;   					  
+   					  if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
+   						  Node node = elemNode.getFirstChild();
+   						  node = node.getFirstChild();
+   						  elemNodeStrValue = serializeXmlDomElementNode(node);
+
+   						  int i = elemNodeStrValue.indexOf("?>");
+   						  if (i > -1) {
+   							  elemNodeStrValue = (elemNodeStrValue.substring(i + 2)).trim();
+   						  }
+   					  }
+   					  else {
+   						  elemNodeStrValue = elemNode.getTextContent(); 
+   					  }
+   					  
    					  List<Boolean> boolList = new ArrayList<Boolean>();
    					  for (int idx2 = 0; idx2 < serMatchesMetaDataList.size(); idx2++) {
    						  XslSerializationMatchesMetaData xslSerializationMatchesMetaData = serMatchesMetaDataList.get(idx2);
@@ -384,9 +399,9 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
    						  if (strValue != null) {
    							 Pattern pattern = Pattern.compile(strValue);   							 
    							 Matcher matcher = pattern.matcher(elemNodeStrValue);   							 
-   							 if (matcher.matches()) {
+   							 if (strValue.equals(elemNodeStrValue) || matcher.matches()) {
    								boolList.add(Boolean.valueOf(true));
-   						     }   							 
+   						     }
    						  }
    						  else {
    							  String attrName = strArray[0];
@@ -394,7 +409,15 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
    							  Pattern pattern1 = Pattern.compile(attrName);   							   							  
   							  Pattern pattern2 = Pattern.compile(attrValue);
   							  
-   							  NamedNodeMap namedNodeMap = elemNode.getAttributes();
+  							  NamedNodeMap namedNodeMap = null;
+  							  if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
+  								  elemNode = (Element)(elemNode.getFirstChild());
+  								  namedNodeMap = elemNode.getAttributes();
+  							  }
+  							  else {
+  								  namedNodeMap = elemNode.getAttributes();
+  							  }
+  							
    							  for (int idx3 = 0; idx3 < namedNodeMap.getLength(); idx3++) {
    								  Node attrNode = namedNodeMap.item(idx3);
    								  String atrName2 = attrNode.getNodeName();
@@ -403,6 +426,15 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
    								  Matcher matcher1 = pattern1.matcher(atrName2);
    								  Matcher matcher2 = pattern2.matcher(attrValue2);
    								  if (matcher1.matches() && matcher2.matches()) {
+   									  boolList.add(Boolean.valueOf(true));
+   								  }
+   								  else if (attrName.equals(atrName2) && attrValue.equals(attrValue2)) {
+   									  boolList.add(Boolean.valueOf(true)); 
+   								  }
+   								  else if (attrName.equals(atrName2) && matcher2.matches()) {
+   									  boolList.add(Boolean.valueOf(true));
+   								  }
+   								  else if (attrValue.equals(attrValue2) && matcher1.matches()) {
    									  boolList.add(Boolean.valueOf(true));
    								  }
    							  }
@@ -537,17 +569,18 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      * 
      * @param elemNode			   The supplied element node
      * @param result               A list object to contain information produced
-     *                             by this method definition.
+     *                             by this method definition, which the caller
+     *                             of this method uses to access this information.
      * @return                     
      */
-    private void getDomElemNodes(Element elemNode, List<Element> result) {
+    private void getXmlDomElemNodes(Element elemNode, List<Element> result) {
     	
     	NodeList nodeList = elemNode.getChildNodes();
     	for (int idx = 0; idx < nodeList.getLength(); idx++) {
     	    Node node = nodeList.item(idx);
     	    if (node.getNodeType() == Node.ELEMENT_NODE) {
     	    	result.add((Element)node);
-    	    	getDomElemNodes((Element)node, result);
+    	    	getXmlDomElemNodes((Element)node, result);
     	    }
     	}
 	}

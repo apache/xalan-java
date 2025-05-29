@@ -1,17 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-28T12:32:25Z" fail="14" name="character-map" pass="5" skipped="0" statusUnknown="10" totalRun="29">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-29T05:49:22Z" fail="11" name="character-map" pass="8" skipped="0" statusUnknown="10" totalRun="29">
    <testResult status="pass" testName="character-map-001"/>
    <testResult status="pass" testName="character-map-002"/>
    <testResult status="pass" testName="character-map-003"/>
    <testResult status="pass" testName="character-map-004"/>
-   <testResult status="fail" testName="character-map-005"/>
-   <testResult status="fail" testName="character-map-006"/>
+   <testResult status="pass" testName="character-map-005"/>
+   <testResult status="pass" testName="character-map-006"/>
    <testResult testName="character-map-007"/>
-   <testResult status="fail" testName="character-map-008"/>
+   <testResult status="pass" testName="character-map-008"/>
    <testResult status="fail" testName="character-map-009">
       <outResult/>
    </testResult>
    <testResult status="fail" testName="character-map-010">
-      <outResult/>
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult testName="character-map-011"/>
    <testResult testName="character-map-012"/>
@@ -24,7 +26,7 @@
    <testResult status="fail" testName="character-map-017"/>
    <testResult testName="character-map-018"/>
    <testResult status="fail" testName="character-map-019">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;doc&gt;&lt;a value="abcde"&gt;vwxyz&lt;/a&gt;&lt;/doc&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;doc&gt;&lt;a value="[A]b{C}de"&gt;vwx{Y}z&lt;/a&gt;&lt;/doc&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="character-map-020">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;doc&gt;&lt;a value="ab{C}de"&gt;vwx{Y}z&lt;/a&gt;&lt;/doc&gt;</outResult>
