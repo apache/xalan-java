@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-05-29T05:49:56Z" desc="W3C XSLT 3.0 test suite results" fail="498" pass="898" skipped="21" success="58.02%" totalRun="1584" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-05-29T11:11:17Z" desc="W3C XSLT 3.0 test suite results" fail="504" pass="902" skipped="21" success="58.27%" totalRun="1584" xslt_processor="Xalan-J XSLT 3.0 development code">
   <decl>
-    <character-map fail="11" pass="8" skipped="0" success="27.59%" totalRun="29"/>
+    <character-map fail="15" pass="13" skipped="0" success="44.83%" totalRun="29"/>
     <function fail="28" pass="20" skipped="4" success="34.29%" totalRun="70"/>
   </decl>
   <expr>
@@ -24,14 +24,14 @@
   <insn>
     <analyze-string fail="19" pass="33" skipped="5" success="65.52%" totalRun="58"/>
     <apply-templates fail="26" pass="22" skipped="2" success="48.0%" totalRun="50"/>
-    <attribute fail="11" pass="7" skipped="0" success="33.33%" totalRun="21"/>
+    <attribute fail="12" pass="7" skipped="0" success="33.33%" totalRun="21"/>
     <call-template fail="14" pass="25" skipped="1" success="61.9%" totalRun="42"/>
     <choose fail="3" pass="17" skipped="0" success="70.83%" totalRun="24"/>
     <copy fail="38" pass="16" skipped="0" success="26.67%" totalRun="60"/>
     <element fail="14" pass="8" skipped="0" success="34.78%" totalRun="23"/>
     <for-each-group fail="30" pass="42" skipped="4" success="58.97%" totalRun="78"/>
     <iterate fail="31" pass="9" skipped="0" success="20.45%" totalRun="44"/>
-    <sequence fail="18" pass="8" skipped="0" success="29.63%" totalRun="27"/>
+    <sequence fail="19" pass="7" skipped="0" success="25.93%" totalRun="27"/>
     <sort fail="37" pass="31" skipped="0" success="38.75%" totalRun="80"/>
     <try fail="21" pass="11" skipped="5" success="38.1%" totalRun="42"/>
   </insn>

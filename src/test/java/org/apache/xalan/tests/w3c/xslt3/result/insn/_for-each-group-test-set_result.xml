@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-29T05:49:07Z" fail="30" name="for-each-group" pass="42" skipped="4" statusUnknown="2" totalRun="78">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-29T11:10:51Z" fail="30" name="for-each-group" pass="42" skipped="4" statusUnknown="2" totalRun="78">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -101,7 +101,7 @@
    </testResult>
    <testResult status="fail" testName="for-each-group-078b">
       <outResult>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="for-each-group-079a">

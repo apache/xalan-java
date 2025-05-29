@@ -22,6 +22,8 @@ package org.apache.xalan.transformer;
 
 import java.util.Stack;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.NamespaceMappings;
@@ -145,7 +147,13 @@ class TransformSnapshotImpl implements TransformSnapshot
     {
 
       // Are all these clones deep enough?
-      SerializationHandler rtf = transformer.getResultTreeHandler();
+      SerializationHandler rtf = null;
+      try {
+         rtf = transformer.getResultTreeHandler();
+      }
+      catch (javax.xml.transform.TransformerException ex) {
+    	 // NO OP
+      }
 
       {
         // save serializer fields
@@ -203,7 +211,13 @@ class TransformSnapshotImpl implements TransformSnapshot
     {
 
       // Are all these clones deep enough?
-      SerializationHandler rtf = transformer.getResultTreeHandler();
+      SerializationHandler rtf = null;      
+      try {
+         rtf = transformer.getResultTreeHandler();
+      }
+      catch (javax.xml.transform.TransformerException ex) {
+    	 // NO OP  
+      }
 
       if (rtf != null)
       {

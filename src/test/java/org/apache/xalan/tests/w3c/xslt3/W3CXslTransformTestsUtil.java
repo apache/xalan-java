@@ -19,9 +19,11 @@ package org.apache.xalan.tests.w3c.xslt3;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -31,8 +33,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -53,31 +58,49 @@ import org.xml.sax.SAXException;
 
 /**
  * This class implementation, contains common code for Xalan-J's 
- * implementation of W3C XSL 3.0 transformations test suite.
+ * implementation of W3C XSLT 3.0 test suite driver.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
 public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {	    
+	
+    /**
+     * Class field declarations. 
+     */
+	
+	protected static final String W3C_XSLT3_TESTS_RESULT_DIR_HOME = "file:/d:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/";
     
     protected static final String W3C_XSLT3_TESTS_META_DATA_DIR_HOME = "file:/d:/xslt30-test-master/tests/";
     
-    private static final String XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH =  W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "variant_all_of_test_template_assert.xsl";
+    protected static final String XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH =  W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "variant_all_of_test_template_assert.xsl";
     
-    protected static String m_xslTransformTestSetFilePath = null;
-    
-    protected static final String W3C_XSLT3_TESTS_RESULT_DIR_HOME = "file:/d:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/";
-    
-    protected static String m_resultSubFolderName = null;
-    
-    protected static String m_testResultFileName = null;
-    
-    private static final String EXPECTED_NODE_KIND_ERROR = "error";
+	private static final String ELEM_NODE_NAME_TEST_CASE = "test-case";
+	
+	private static final String ELEM_NODE_NAME_TEST = "test";
+	
+	private static final String ELEM_NODE_NAME_INITIAL_TEMPLATE = "initial-template";
+	
+	private static final String NAME_ATTR = "name";
+	
+	private static final String FILE_ATTR = "file";
+	
+	private static final String EXPECTED_NODE_KIND_ERROR = "error";
     
     private static final String EXPECTED_NODE_KIND_ASSERT_ALL_OF = "all-of";
     
     private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";
+    
+    private static final String SERIALIZATION_MATCHES = "serialization-matches";
+    
+    private static final String W3C_XSLT3_TEST_CATALOG_NS = "http://www.w3.org/2012/10/xslt-test-catalog";
+    
+    protected static String m_xslTransformTestSetFilePath = null;
+    
+    protected static String m_resultSubFolderName = null;
+    
+    protected static String m_testResultFileName = null;
 	
 	/**
 	 * Method definition to run all XSL transformation tests from 
@@ -93,20 +116,20 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	Element elemTestRun = null;
     	
     	try {
+    	   // An XML parse of W3C XSLT 3.0 test set file
     	   xslTestSetDoc = m_xmlDocumentBuilder.parse(m_xslTransformTestSetFilePath);
+    	   
     	   Element docElem = xslTestSetDoc.getDocumentElement();
     	   
-    	   // Construct XSL tests result XML DOM tree header, to which
-		   // individual test results will be appended.
-		   String testSetName = docElem.getAttribute("name");
+		   String testSetName = docElem.getAttribute(NAME_ATTR);
 		   testResultDoc = m_xmlDocumentBuilder.newDocument();
     	   elemTestRun = testResultDoc.createElement("testrun");
     	   String testRunDateStrValue = getDateISOString(new Date());
-    	   elemTestRun.setAttribute("name", testSetName);
+    	   elemTestRun.setAttribute(NAME_ATTR, testSetName);
     	   elemTestRun.setAttribute("dateTime", testRunDateStrValue);
     	   testResultDoc.appendChild(elemTestRun);    	   
     	   
-    	   NodeList nodeList = xslTestSetDoc.getElementsByTagNameNS("http://www.w3.org/2012/10/xslt-test-catalog", "test-case");
+    	   NodeList nodeList = xslTestSetDoc.getElementsByTagNameNS(W3C_XSLT3_TEST_CATALOG_NS, ELEM_NODE_NAME_TEST_CASE);
     	   for (int idx = 0; idx < nodeList.getLength(); idx++) {
     		   Node node = nodeList.item(idx);
     		   
@@ -129,7 +152,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
        			  continue; 
      		   }
     		   
-    		   String testCaseName = ((Element)node).getAttribute("name");    		   
+    		   String testCaseName = ((Element)node).getAttribute(NAME_ATTR);    		   
     		   Object envRef = getTestCaseEnvironment(node);
     		   NodeList nodeList2 = null;
     		   
@@ -142,7 +165,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				   if (node2.getNodeType() == Node.ELEMENT_NODE) {
     					   Element elemNode = (Element)node2;
     					   if ("environment".equals(elemNode.getLocalName())) {
-    						   String envName = elemNode.getAttribute("name");
+    						   String envName = elemNode.getAttribute(NAME_ATTR);
     						   if (envName.equals(envRef)) {
     							   xmlDocInpStr = getXMLInputDocStr(elemNode);
 
@@ -155,7 +178,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   else {
     			  Element envElem = (Element)envRef;
     			  Element envSrcElem = (Element)((envElem.getFirstChild()).getNextSibling());
-    			  String envFileName = envSrcElem.getAttribute("file");
+    			  String envFileName = envSrcElem.getAttribute(FILE_ATTR);
     			  if (!"".equals(envFileName)) {
     				  URI uri = new URI(m_xslTransformTestSetFilePath);
 					  uri = uri.resolve(envFileName);
@@ -175,18 +198,18 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   Node node2 = nodeList2.item(idx2);
     			   if (node2.getNodeType() == Node.ELEMENT_NODE) {
     				   Element elemNode = (Element)node2;
-    				   if ("test".equals(elemNode.getLocalName())) {    					   
+    				   if (ELEM_NODE_NAME_TEST.equals(elemNode.getLocalName())) {    					   
     					   NodeList nodeList3 = elemNode.getElementsByTagName("stylesheet");
     					   Element elemNode2 = (Element)(nodeList3.item(0));    					   
-    					   String fileName = elemNode2.getAttribute("file");
+    					   String fileName = elemNode2.getAttribute(FILE_ATTR);
     					   URI uri = new URI(m_xslTransformTestSetFilePath);
    						   uri = uri.resolve(fileName);
    						   xslStylesheetUriStr = uri.toString();
    						   
-   						   NodeList nodeList4 = elemNode.getElementsByTagName("initial-template");
+   						   NodeList nodeList4 = elemNode.getElementsByTagName(ELEM_NODE_NAME_INITIAL_TEMPLATE);
    						   if (nodeList4.getLength() == 1) {
    							   Element elemNode3 = (Element)(nodeList4.item(0));
-   							   m_initTemplateName = elemNode3.getAttribute("name");
+   							   m_initTemplateName = elemNode3.getAttribute(NAME_ATTR);
    						   }
    						   
    						   Node siblingNode = elemNode.getNextSibling();
@@ -213,8 +236,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   }
     		   catch (Exception ex) {
     			  System.out.println("Test case name : " + testCaseName + ", Exception message : " + ex.getMessage()); 
-    		   }
-       		   
+    		   }       		   
     	   }    	   
     	}
     	catch (Exception ex) {
@@ -270,8 +292,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     }
     
     /**
-     * This method definition, serves to invoke W3C XSLT 3.0 test suite, on Xalan-J 
-     * XSLT3 implementation.
+     * This method definition runs one W3C XSLT 3.0 test case within a test set, 
+     * on Xalan-J's XSLT 3 implementation.
      */
     private void runW3CXSLTTestSuiteXslTransformAndProduceResult(String testCaseName, DOMSource xmlInpDomSource, 
     		                                                     StreamSource xsltStreamSrc, Element expectedResultElem,  
@@ -293,15 +315,15 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);
     		}
     		
-    		Transformer transformer = m_xslTransformerFactory.newTransformer(xsltStreamSrc);
+    		Transformer transformer = m_xslTransformerFactory.newTransformer(xsltStreamSrc);    		    		
     		
     		Node nodeExpected = (expectedResultElem.getFirstChild()).getNextSibling();
     		String expectedNodeKindName = nodeExpected.getNodeName();
     		if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
     			expErrCodeName = ((Element)nodeExpected).getAttribute("code");
     		}
-    		
-    		StringWriter resultStrWriter = new StringWriter();
+    		    		
+    		StringWriter resultStrWriter = new StringWriter();    		    		    		
     		
     		if (transformer != null) {
     			transformer.setErrorListener(xslTransformErrHandler);
@@ -311,16 +333,18 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		    if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
         			handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
         					                             trfFatalErrorList, expErrCodeName, resultStrWriter);
+        			
+        			return;
         		}
-    		    else {
+    		    else if (!SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {
     		    	elemTestResult.setAttribute("status", "fail");
     				
     				Element resultOutElem = testResultDoc.createElement("outResult");
     				resultOutElem.setTextContent(resultStrWriter.toString());
-    				elemTestResult.appendChild(resultOutElem);	
+    				elemTestResult.appendChild(resultOutElem);
+    				
+    				return;
     		    }
-    		    
-    			return;
     		}
     		
     		Source xmlInpSrc = null;
@@ -338,187 +362,25 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
     					                             trfFatalErrorList, expErrCodeName, resultStrWriter);
     		}
-    		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName)) {    			
-    			NodeList nodeList1 = ((Element)nodeExpected).getElementsByTagName("serialization-matches");
-    			int nodeListLength = nodeList1.getLength();    			
-    			if (nodeListLength > 0) {
-    			   List<XslSerializationMatchesMetaData> serMatchesMetaDataList = new ArrayList<XslSerializationMatchesMetaData>();
-    			   for (int idx = 0; idx < nodeListLength; idx++) {
-    				  Element elemNode = (Element)(nodeList1.item(idx));
-    				  String txtContextStr = elemNode.getTextContent();
-    				  String[] strArr = txtContextStr.split("=");    		
-    				  XslSerializationMatchesMetaData serMatchesMetaData = null;
-    				  if (strArr.length > 1) {
-    					  serMatchesMetaData = new XslSerializationMatchesMetaData(strArr, null);  
-    				  }
-    				  else {
-    					  serMatchesMetaData = new XslSerializationMatchesMetaData(null, txtContextStr);
-    				  }
-    				  
-    				  serMatchesMetaDataList.add(serMatchesMetaData);    				  
-    			   }
-    			   
-    			   StringWriter strWriter = new StringWriter();
-    			   
-   				   Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));   				
-   				   
-   				   transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
-   				   
-   				   Document xmlResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
-   				   
-   				   List<Element> elemNodeList = new ArrayList<Element>();
-   				   elemNodeList.add(xmlResultDoc.getDocumentElement());
-   				   
-   				   // Get list of all XML element nodes within a DOM object
-   				   getXmlDomElemNodes(xmlResultDoc.getDocumentElement(), elemNodeList);
-   				   
-   				   boolean isTestCasePass = false;
-   				   
-   				   for (int idx = 0; idx < elemNodeList.size(); idx++) {
-   					  Element elemNode = elemNodeList.get(idx);
-   					  String elemNodeStrValue = null;   					  
-   					  if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
-   						  Node node = elemNode.getFirstChild();
-   						  node = node.getFirstChild();
-   						  elemNodeStrValue = serializeXmlDomElementNode(node);
-
-   						  int i = elemNodeStrValue.indexOf("?>");
-   						  if (i > -1) {
-   							  elemNodeStrValue = (elemNodeStrValue.substring(i + 2)).trim();
-   						  }
-   					  }
-   					  else {
-   						  elemNodeStrValue = elemNode.getTextContent(); 
-   					  }
-   					  
-   					  List<Boolean> boolList = new ArrayList<Boolean>();
-   					  for (int idx2 = 0; idx2 < serMatchesMetaDataList.size(); idx2++) {
-   						  XslSerializationMatchesMetaData xslSerializationMatchesMetaData = serMatchesMetaDataList.get(idx2);
-   						  String[] strArray = xslSerializationMatchesMetaData.getStrArr();
-   						  String strValue = xslSerializationMatchesMetaData.getStrValue();
-   						  if (strValue != null) {
-   							 Pattern pattern = Pattern.compile(strValue);   							 
-   							 Matcher matcher = pattern.matcher(elemNodeStrValue);   							 
-   							 if (strValue.equals(elemNodeStrValue) || matcher.matches()) {
-   								boolList.add(Boolean.valueOf(true));
-   						     }
-   						  }
-   						  else {
-   							  String attrName = strArray[0];
-   							  String attrValue = strArray[1];   							  
-   							  Pattern pattern1 = Pattern.compile(attrName);   							   							  
-  							  Pattern pattern2 = Pattern.compile(attrValue);
-  							  
-  							  NamedNodeMap namedNodeMap = null;
-  							  if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
-  								  elemNode = (Element)(elemNode.getFirstChild());
-  								  namedNodeMap = elemNode.getAttributes();
-  							  }
-  							  else {
-  								  namedNodeMap = elemNode.getAttributes();
-  							  }
-  							
-   							  for (int idx3 = 0; idx3 < namedNodeMap.getLength(); idx3++) {
-   								  Node attrNode = namedNodeMap.item(idx3);
-   								  String atrName2 = attrNode.getNodeName();
-   								  String attrValue2 = attrNode.getNodeValue();
-   								  attrValue2 = "'" + attrValue2 + "'";  
-   								  Matcher matcher1 = pattern1.matcher(atrName2);
-   								  Matcher matcher2 = pattern2.matcher(attrValue2);
-   								  if (matcher1.matches() && matcher2.matches()) {
-   									  boolList.add(Boolean.valueOf(true));
-   								  }
-   								  else if (attrName.equals(atrName2) && attrValue.equals(attrValue2)) {
-   									  boolList.add(Boolean.valueOf(true)); 
-   								  }
-   								  else if (attrName.equals(atrName2) && matcher2.matches()) {
-   									  boolList.add(Boolean.valueOf(true));
-   								  }
-   								  else if (attrValue.equals(attrValue2) && matcher1.matches()) {
-   									  boolList.add(Boolean.valueOf(true));
-   								  }
-   							  }
-   						   }
-   					    }
-   					  
-   					    if ((boolList.size() > 0) && (boolList.size() == serMatchesMetaDataList.size())) {
-   					       isTestCasePass = true;
-   					       break;
-   					    }
-   				     }
-   				   
-   				     if (isTestCasePass) {
-					    elemTestResult.setAttribute("status", "pass");
-				     }
-				     else {
-					    elemTestResult.setAttribute("status", "fail");
-				     }
+    		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName) || SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {    			
+    			NodeList nodeList1 = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
+    			int nodeListLength = nodeList1.getLength();
+    			
+    			String xslTransformMethod = transformer.getOutputProperty(OutputKeys.METHOD);
+    			
+    			if (SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {
+    				testCaseOneSerializationMatchCheck(elemTestResult, transformer, nodeExpected, resultStrWriter, xslTransformMethod);
+    			}
+    			else if (nodeListLength > 0) {
+    			    testCaseMultipleSerializationMatchChecks(elemTestResult, transformer, resultStrWriter, nodeList1, nodeListLength);
     			}
     			else {
-    				byte[] fileBytes = Files.readAllBytes(Paths.get(new URI(XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH)));
-    				String verificationXslTemplateStr = new String(fileBytes);
-    				NodeList nodeList = nodeExpected.getChildNodes();
-    				StringBuffer replacementStrBuff = new StringBuffer();
-    				StringBuffer expectedResultStrBuff = new StringBuffer();
-    				expectedResultStrBuff.append("<result>");
-    				for (int idx = 0; idx < nodeList.getLength(); idx++) {
-    					Node node = nodeList.item(idx);
-    					if (node.getNodeType() == Node.ELEMENT_NODE) {
-    						String assertStr = ((Element)node).getTextContent();    					
-    						if (assertStr.contains("'")) {
-    							assertStr = assertStr.replace("'", "\"");
-    						}
-    						String strValue = "<xpath><xsl:value-of select='" + assertStr + "'/></xpath>\n";
-
-    						replacementStrBuff.append(strValue);
-
-    						expectedResultStrBuff.append("<xpath>true</xpath>\n");
-    					}
-    				}
-
-    				String verificationXslStylesheetStr = verificationXslTemplateStr.replace("{{XPATH_ASSERT_LIST}}", replacementStrBuff.toString());
-
-    				NamedNodeMap attrNamedNodeMap = nodeExpected.getAttributes();
-    				int attrCount = attrNamedNodeMap.getLength();
-    				StringBuffer attrDeclstrBuff = new StringBuffer();
-    				for (int idx = 0; idx < attrCount; idx++) {
-    					Node attrNode = attrNamedNodeMap.item(idx);
-    					String attrName = attrNode.getNodeName();
-    					String attrValue = attrNode.getNodeValue();
-    					attrDeclstrBuff.append(attrName + "=\"" + attrValue + "\"");
-    				}
-
-    				verificationXslStylesheetStr = verificationXslStylesheetStr.replace("{{NS_DECL}}", attrDeclstrBuff.toString());
-
-    				expectedResultStrBuff.append("</result>");
-
-    				Document expectedResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStrBuff.toString()).getBytes()));    			    			
-
-    				Document verificationXslDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(verificationXslStylesheetStr.getBytes()));
-
-    				transformer = m_xslTransformerFactory.newTransformer(new DOMSource(verificationXslDoc));
-
-    				StringWriter strWriter = new StringWriter();
-    				
-    				Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));    				
-    				
-    				transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
-
-    				Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
-    				String str1 = serializeXmlDomElementNode(xmlInpDoc1);
-    				String str2 = serializeXmlDomElementNode(expectedResultDoc);
-
-    				if (isTwoXmlHtmlStrEqual(str1, str2)) {
-    					elemTestResult.setAttribute("status", "pass");
-    				}
-    				else {
-    					elemTestResult.setAttribute("status", "fail");
-    				}
+    				testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter);
     		    }
     		}
             else if (EXPECTED_NODE_KIND_ASSERT_XML.equals(expectedNodeKindName)) {
             	Element elemNode = (Element)nodeExpected;
-            	String fileName = elemNode.getAttribute("file");
+            	String fileName = elemNode.getAttribute(FILE_ATTR);
             	String expectedResultStr = null;
             	if (!"".equals(fileName)) {
             		URI uri = new URI(m_xslTransformTestSetFilePath);
@@ -562,6 +424,346 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      		}
     	}    	    	
     }
+
+    /**
+     * An W3C XSL test case implementation, when expected output is available as 
+     * one or more XPath expression strings that need to verify test case's actual
+     * output. 
+     */
+	private void testCaseExpectedAssertXPathList(Element elemTestResult, Node nodeExpected, StringWriter resultStrWriter)
+																						throws IOException, URISyntaxException, 
+																						       SAXException, TransformerConfigurationException,
+																						       TransformerException, Exception {
+		
+		byte[] fileBytes = Files.readAllBytes(Paths.get(new URI(XSL_TRANSFORM_TEST_ALL_OF_TEMPLATE_FILE_PATH)));
+		
+		String verificationXslTemplateStr = new String(fileBytes);
+		NodeList nodeList = nodeExpected.getChildNodes();
+		StringBuffer replacementStrBuff = new StringBuffer();
+		StringBuffer expectedResultStrBuff = new StringBuffer();
+		expectedResultStrBuff.append("<result>");
+		for (int idx = 0; idx < nodeList.getLength(); idx++) {
+			Node node = nodeList.item(idx);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				String assertStr = ((Element)node).getTextContent();    					
+				if (assertStr.contains("'")) {
+					assertStr = assertStr.replace("'", "\"");
+				}
+				String strValue = "<xpath><xsl:value-of select='" + assertStr + "'/></xpath>\n";
+
+				replacementStrBuff.append(strValue);
+
+				expectedResultStrBuff.append("<xpath>true</xpath>\n");
+			}
+		}
+
+		String verificationXslStylesheetStr = verificationXslTemplateStr.replace("{{XPATH_ASSERT_LIST}}", replacementStrBuff.toString());
+
+		NamedNodeMap attrNamedNodeMap = nodeExpected.getAttributes();
+		int attrCount = attrNamedNodeMap.getLength();
+		StringBuffer attrDeclstrBuff = new StringBuffer();
+		for (int idx = 0; idx < attrCount; idx++) {
+			Node attrNode = attrNamedNodeMap.item(idx);
+			String attrName = attrNode.getNodeName();
+			String attrValue = attrNode.getNodeValue();
+			attrDeclstrBuff.append(attrName + "=\"" + attrValue + "\"");
+		}
+
+		verificationXslStylesheetStr = verificationXslStylesheetStr.replace("{{NS_DECL}}", attrDeclstrBuff.toString());
+
+		expectedResultStrBuff.append("</result>");
+
+		Document expectedResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStrBuff.toString()).getBytes()));    			    			
+
+		Document verificationXslDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(verificationXslStylesheetStr.getBytes()));
+
+		Transformer transformer = m_xslTransformerFactory.newTransformer(new DOMSource(verificationXslDoc));
+
+		StringWriter strWriter = new StringWriter();
+		
+		Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));    				
+		
+		transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
+
+		Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
+		String str1 = serializeXmlDomElementNode(xmlInpDoc1);
+		String str2 = serializeXmlDomElementNode(expectedResultDoc);
+
+		if (isTwoXmlHtmlStrEqual(str1, str2)) {
+			elemTestResult.setAttribute("status", "pass");
+		}
+		else {
+			elemTestResult.setAttribute("status", "fail");
+		}
+	}
+
+	/**
+     * An W3C XSL test case implementation, when test case's expected output is 
+     * available as more than one XML serialization-matches elements that require 
+     * doing checks with regex.  
+     */
+	private void testCaseMultipleSerializationMatchChecks(Element elemTestResult, Transformer transformer,
+														  StringWriter resultStrWriter, NodeList nodeList1, int nodeListLength)
+			                                                                                     throws SAXException, IOException, 
+			                                                                                            TransformerException, Exception {
+		
+		List<XslSerializationMatchesMetaData> serMatchesMetaDataList = new ArrayList<XslSerializationMatchesMetaData>();
+		
+		for (int idx = 0; idx < nodeListLength; idx++) {
+			Element elemNode = (Element)(nodeList1.item(idx));
+			String txtContextStr = elemNode.getTextContent();
+			String[] strArr = txtContextStr.split("=");    		
+			XslSerializationMatchesMetaData serMatchesMetaData = null;
+			if (strArr.length > 1) {
+				serMatchesMetaData = new XslSerializationMatchesMetaData(strArr, null);  
+			}
+			else {
+				serMatchesMetaData = new XslSerializationMatchesMetaData(null, txtContextStr);
+			}
+
+			serMatchesMetaDataList.add(serMatchesMetaData);    				  
+		}
+
+		StringWriter strWriter = new StringWriter();
+
+		Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));   				
+
+		transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
+
+		Document xmlResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
+
+		List<Element> elemNodeList = new ArrayList<Element>();
+		elemNodeList.add(xmlResultDoc.getDocumentElement());
+
+		// Get list of all XML element nodes within a DOM object
+		getXmlDomElemNodes(xmlResultDoc.getDocumentElement(), elemNodeList);
+
+		boolean isTestCasePass = false;
+
+		for (int idx = 0; idx < elemNodeList.size(); idx++) {
+			Element elemNode = elemNodeList.get(idx);
+			String elemNodeStrValue = null;   					  
+			if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
+				Node node = elemNode.getFirstChild();
+				node = node.getFirstChild();
+				elemNodeStrValue = serializeXmlDomElementNode(node);
+
+				int i = elemNodeStrValue.indexOf("?>");
+				if (i > -1) {
+					elemNodeStrValue = (elemNodeStrValue.substring(i + 2)).trim();
+				}
+			}
+			else {
+				elemNodeStrValue = elemNode.getTextContent(); 
+			}
+
+			List<Boolean> boolList = new ArrayList<Boolean>();
+			for (int idx2 = 0; idx2 < serMatchesMetaDataList.size(); idx2++) {
+				XslSerializationMatchesMetaData xslSerializationMatchesMetaData = serMatchesMetaDataList.get(idx2);
+				String[] strArray = xslSerializationMatchesMetaData.getStrArr();
+				String strValue = xslSerializationMatchesMetaData.getStrValue();
+				if (strValue != null) {
+					Pattern pattern = Pattern.compile(strValue);   							 
+					Matcher matcher = pattern.matcher(elemNodeStrValue);   							 
+					if (strValue.equals(elemNodeStrValue) || matcher.matches()) {
+						boolList.add(Boolean.valueOf(true));
+					}
+				}
+				else {
+					String attrName = strArray[0];
+					String attrValue = strArray[1];   							  
+					Pattern pattern1 = Pattern.compile(attrName);   							   							  
+					Pattern pattern2 = Pattern.compile(attrValue);
+
+					NamedNodeMap namedNodeMap = null;
+					if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
+						elemNode = (Element)(elemNode.getFirstChild());
+						namedNodeMap = elemNode.getAttributes();
+					}
+					else {
+						namedNodeMap = elemNode.getAttributes();
+					}
+
+					for (int idx3 = 0; idx3 < namedNodeMap.getLength(); idx3++) {
+						Node attrNode = namedNodeMap.item(idx3);
+						String atrName2 = attrNode.getNodeName();
+						String attrValue2 = attrNode.getNodeValue();
+						attrValue2 = "'" + attrValue2 + "'";  
+						Matcher matcher1 = pattern1.matcher(atrName2);
+						Matcher matcher2 = pattern2.matcher(attrValue2);
+						if (matcher1.matches() && matcher2.matches()) {
+							boolList.add(Boolean.valueOf(true));
+						}
+						else if (attrName.equals(atrName2) && attrValue.equals(attrValue2)) {
+							boolList.add(Boolean.valueOf(true)); 
+						}
+						else if (attrName.equals(atrName2) && matcher2.matches()) {
+							boolList.add(Boolean.valueOf(true));
+						}
+						else if (attrValue.equals(attrValue2) && matcher1.matches()) {
+							boolList.add(Boolean.valueOf(true));
+						}
+					}
+				}
+			}
+
+			if ((boolList.size() > 0) && (boolList.size() == serMatchesMetaDataList.size())) {
+				isTestCasePass = true;
+
+				break;
+			}
+		}
+
+		if (isTestCasePass) {
+			elemTestResult.setAttribute("status", "pass");
+		}
+		else {
+			elemTestResult.setAttribute("status", "fail");
+		}
+	}
+
+	/**
+     * An W3C XSL test case implementation, when test case's expected output is 
+     * available as one XML serialization-matches element that require doing a 
+     * check with regex.  
+     */
+	private void testCaseOneSerializationMatchCheck(Element elemTestResult, Transformer transformer, Node nodeExpected,
+												    StringWriter resultStrWriter, String xslTransformMethod) 
+												    		                      throws SAXException, IOException, 
+	                                                                                     TransformerException, Exception {
+		Element elemNode = (Element)nodeExpected;
+		String txtContextStr = elemNode.getTextContent();
+		String[] strArr = txtContextStr.split("=");    		
+		XslSerializationMatchesMetaData serMatchesMetaData = null;
+		if (strArr.length > 1) {
+			serMatchesMetaData = new XslSerializationMatchesMetaData(strArr, null);  
+		}
+		else {
+			serMatchesMetaData = new XslSerializationMatchesMetaData(null, txtContextStr);
+		}
+
+		boolean isTestCasePass = false;
+		
+	    if (!(org.apache.xml.serializer.Method.TEXT).equals(xslTransformMethod)) {
+	    	StringWriter strWriter = new StringWriter();
+	    	
+	    	Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));   				
+
+	    	transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
+
+	    	Document xmlResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
+
+	    	List<Element> elemNodeList = new ArrayList<Element>();
+	    	elemNodeList.add(xmlResultDoc.getDocumentElement());
+
+	    	// Get list of all XML element nodes within DOM object xmlResultDoc
+	    	getXmlDomElemNodes(xmlResultDoc.getDocumentElement(), elemNodeList);		
+
+	    	for (int idx = 0; idx < elemNodeList.size(); idx++) {
+	    		elemNode = elemNodeList.get(idx);
+	    		String elemNodeStrValue = null;
+	    		String elemNodeStrValue2 = null; 
+	    		if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
+	    			Node node = elemNode.getFirstChild();
+	    			node = node.getFirstChild();
+	    			elemNodeStrValue = serializeXmlDomElementNode(node);
+	    			int i = elemNodeStrValue.indexOf("?>");
+	    			if (i > -1) {
+	    				elemNodeStrValue = (elemNodeStrValue.substring(i + 2)).trim();
+	    			}
+	    		}
+	    		else {
+	    			elemNodeStrValue = elemNode.getTextContent();
+	    			elemNodeStrValue2 = serializeXmlDomElementNode(elemNode);
+	    			int i = elemNodeStrValue2.indexOf("?>");
+	    			if (i > -1) {
+	    				elemNodeStrValue2 = (elemNodeStrValue2.substring(i + 2)).trim();
+	    			}
+	    		}
+
+	    		String[] strArray = serMatchesMetaData.getStrArr();
+	    		String strValue = serMatchesMetaData.getStrValue();
+	    		if (strValue != null) {
+	    			Pattern pattern = Pattern.compile(strValue);   							 
+	    			Matcher matcher = pattern.matcher(elemNodeStrValue);
+	    			Matcher matcher2 = pattern.matcher(elemNodeStrValue2);  
+	    			if (strValue.equals(elemNodeStrValue) || matcher.matches()) {
+	    				isTestCasePass = true;
+	    			}
+	    			else if (strValue.equals(elemNodeStrValue2) || matcher2.matches()) {
+	    				isTestCasePass = true; 
+	    			}
+	    		}
+	    		else {
+	    			String attrName = strArray[0];
+	    			String attrValue = strArray[1];   							  
+	    			Pattern pattern1 = Pattern.compile(attrName);   							   							  
+	    			Pattern pattern2 = Pattern.compile(attrValue);
+
+	    			NamedNodeMap namedNodeMap = null;
+	    			if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
+	    				elemNode = (Element)(elemNode.getFirstChild());
+	    				namedNodeMap = elemNode.getAttributes();
+	    			}
+	    			else {
+	    				namedNodeMap = elemNode.getAttributes();
+	    			}
+
+	    			for (int idx3 = 0; idx3 < namedNodeMap.getLength(); idx3++) {
+	    				Node attrNode = namedNodeMap.item(idx3);
+	    				String atrName2 = attrNode.getNodeName();
+	    				String attrValue2 = attrNode.getNodeValue();
+	    				attrValue2 = "'" + attrValue2 + "'";  
+	    				Matcher matcher1 = pattern1.matcher(atrName2);
+	    				Matcher matcher2 = pattern2.matcher(attrValue2);
+	    				if (matcher1.matches() && matcher2.matches()) {
+	    					isTestCasePass = true;
+	    				}
+	    				else if (attrName.equals(atrName2) && attrValue.equals(attrValue2)) {
+	    					isTestCasePass = true; 
+	    				}
+	    				else if (attrName.equals(atrName2) && matcher2.matches()) {
+	    					isTestCasePass = true;
+	    				}
+	    				else if (attrValue.equals(attrValue2) && matcher1.matches()) {
+	    					isTestCasePass = true;
+	    				}
+	    			}
+	    		}
+
+	    		if (isTestCasePass) {
+	    			break;
+	    		}
+	    	}
+	    }
+	    else {
+	    	String xslTransformResultStr = resultStrWriter.toString();
+	    	String expectedResultRegexStr = serMatchesMetaData.getStrValue();
+	    	
+	    	Pattern pattern = null;
+	    	if (expectedResultRegexStr != null) {
+	    	    pattern = Pattern.compile(expectedResultRegexStr);
+	    	}
+	    	else {	    	    
+	    	    strArr = serMatchesMetaData.getStrArr();
+	    		expectedResultRegexStr = strArr[0] + "=" + strArr[1];
+	    		expectedResultRegexStr = expectedResultRegexStr.replace("\\", "");
+	    		pattern = Pattern.compile(expectedResultRegexStr, Pattern.LITERAL);
+	    	}
+	    	
+			Matcher matcher = pattern.matcher(xslTransformResultStr);
+			if (matcher.matches()) {
+			   isTestCasePass = true;
+			}
+	    }
+
+		if (isTestCasePass) {
+			elemTestResult.setAttribute("status", "pass");
+		}
+		else {
+			elemTestResult.setAttribute("status", "fail");
+		}
+	}
     
     /**
      * Method definition to get a list of all XML element nodes within 
@@ -605,7 +807,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		if (node.getNodeType() == Node.ELEMENT_NODE) {
     			Element elemNode = (Element)node;
     			if ("source".equals(elemNode.getLocalName())) {
-    			    String fileName = elemNode.getAttribute("file");    			       			    
+    			    String fileName = elemNode.getAttribute(FILE_ATTR);    			       			    
     				if ("".equals(fileName)) {
     					NodeList nodeList2 = elemNode.getChildNodes();
     					for (int idx2 = 0; idx2 < nodeList2.getLength(); idx2++) {

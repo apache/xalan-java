@@ -3321,7 +3321,7 @@ public class TransformerImpl extends Transformer
    * @return The current SerializationHandler, which may not
    * be the main result tree manager.
    */
-  public SerializationHandler getResultTreeHandler()
+  public SerializationHandler getResultTreeHandler() throws javax.xml.transform.TransformerException
   {		
 	  if (m_stylesheetRoot.getUseCharacterMaps()) {
 	     setCharacterMapConfigOnSerializationHandler();
@@ -3336,7 +3336,7 @@ public class TransformerImpl extends Transformer
    * @return The current SerializationHandler, which may not
    * be the main result tree manager.
    */
-  public SerializationHandler getSerializationHandler()
+  public SerializationHandler getSerializationHandler() throws javax.xml.transform.TransformerException
   {	  
 	  if (m_stylesheetRoot.getUseCharacterMaps()) {
 	     setCharacterMapConfigOnSerializationHandler();
@@ -4121,7 +4121,7 @@ public class TransformerImpl extends Transformer
 	 * and set this information within an XSL run-time SerializationHandler 
 	 * object instance. 
 	 */
-	private void setCharacterMapConfigOnSerializationHandler() {
+	private void setCharacterMapConfigOnSerializationHandler() throws javax.xml.transform.TransformerException {
 		
 		// There can be more than one xsl:output elements within an 
 		// XSL stylesheet. We need to accumulate xsl:character-map names
@@ -4143,6 +4143,33 @@ public class TransformerImpl extends Transformer
 		if (charMapNameList.size() > 0) {
 			CharacterMapConfig charMapConfig = new CharacterMapConfig();				
 			String[] charMapNameArr = charMapNameList.toArray(new String[0]);
+			
+			// Check that all the xsl:character-map names within an array 
+			// charMapNameArr have an XSL xsl:character-map definition 
+			// within the stylesheet.
+			for (int idx = 0; idx < charMapNameArr.length; idx++) {
+				String charMapNameStr = charMapNameArr[idx];
+				stylesheetRootChildNodes = m_stylesheetRoot.getChildNodes();
+				boolean xslCharacterMapDefnAbsent = true;
+				for (int idx2 = 0; idx2 < stylesheetRootChildNodes.getLength(); idx2++) {
+					Node node = stylesheetRootChildNodes.item(idx2);
+					if (node instanceof ElemCharacterMap) {
+						ElemCharacterMap elemCharacterMap = (ElemCharacterMap)node;
+						String charMapNameStr2 = (elemCharacterMap.getName()).toNamespacedString();
+						if (charMapNameStr2.equals(charMapNameStr)) {
+							xslCharacterMapDefnAbsent = false;
+							
+							break;
+						}
+					}
+				}
+				
+				if (xslCharacterMapDefnAbsent) {
+					throw new javax.xml.transform.TransformerException("XTSE1590 : An xsl:character-map with name '" + 
+				                                                                                  charMapNameStr + "' has not been defined in the stylesheet.");					
+				}
+			}
+			
 			for (int idx = 0; idx < charMapNameArr.length; idx++) {
 				String charMapNameStr = charMapNameArr[idx];
 				stylesheetRootChildNodes = m_stylesheetRoot.getChildNodes();

@@ -1115,8 +1115,8 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 		  Element elemNode = (Element)(nodeList.item(idx));
 		  String charMapName = elemNode.getAttribute(Constants.ATTRNAME_NAME);
 		  if (charMapNameList.contains(charMapName)) {
-			  throw new TransformerConfigurationException("An XSL stylesheet contains more than one xsl:character-map "
-					  																		+ "instruction with name '" + charMapName + "'.");    		  
+			  throw new TransformerConfigurationException("XTSE1580 : An XSL stylesheet contains more than one xsl:character-map "
+					  																		              + "instruction with name '" + charMapName + "'.");    		  
 		  }
 		  else {
 			  charMapNameList.add(charMapName); 
