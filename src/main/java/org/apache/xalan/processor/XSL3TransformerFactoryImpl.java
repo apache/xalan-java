@@ -84,7 +84,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   /**
    * Namespace URL for XSL transformation language.
    */
-  private static final String XSL_NAMESPACE_URL = "http://www.w3.org/1999/XSL/Transform";
+  public static final String XSL_NAMESPACE_URL = "http://www.w3.org/1999/XSL/Transform";
 
   /**
    * Constructor XSL3TransformerFactoryImpl.

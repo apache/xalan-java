@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-29T11:10:57Z" fail="37" name="sort" pass="31" skipped="0" statusUnknown="12" totalRun="80">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-30T11:51:37Z" fail="37" name="sort" pass="31" skipped="0" statusUnknown="12" totalRun="80">
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
    <testResult testName="sort-003"/>
@@ -95,12 +95,12 @@
    </testResult>
    <testResult status="fail" testName="sort-079">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+         <errTrace>"expand-text" attribute is not allowed on the t:transform element!</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="sort-080">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+         <errTrace>"expand-text" attribute is not allowed on the xsl:transform element!</errTrace>
       </outResult>
    </testResult>
 </testrun>

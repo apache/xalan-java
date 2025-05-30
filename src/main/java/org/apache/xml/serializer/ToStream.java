@@ -35,6 +35,7 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
@@ -3024,8 +3025,15 @@ abstract public class ToStream extends SerializerBase
         boolean was_added;
         int index;
         
-        CharacterMapConfig charMapConfig = getCharMapConfig();        
-        if (charMapConfig != null) {
+        CharacterMapConfig charMapConfig = getCharMapConfig();
+        
+        boolean isHtmlHrefAttr = false;
+        if ((org.apache.xml.serializer.Method.HTML).equals(m_output_method) && 
+        		                                                           (Constants.ATTRNAME_HREF).equals(rawName)) {
+           isHtmlHrefAttr = true;	
+        }
+        
+        if ((charMapConfig != null) && !isHtmlHrefAttr) {
         	value = XslTransformEvaluationHelper.characterMapTransformation(value, charMapConfig);
         }
         

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-29T11:10:55Z" fail="31" name="iterate" pass="9" skipped="0" statusUnknown="4" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-30T11:51:34Z" fail="27" name="iterate" pass="9" skipped="0" statusUnknown="8" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -141,56 +141,27 @@
    <testResult status="fail" testName="iterate-034">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="iterate-035">
-      <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="iterate-036">
-      <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="iterate-035"/>
+   <testResult status="fail" testName="iterate-036"/>
    <testResult status="fail" testName="iterate-037">
       <outResult>
          <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="iterate-038">
       <outResult>
          <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="iterate-039">
-      <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="iterate-040">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="iterate-041">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
-   </testResult>
+   <testResult testName="iterate-039"/>
+   <testResult testName="iterate-040"/>
+   <testResult testName="iterate-041"/>
    <testResult status="fail" testName="iterate-042">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="iterate-043">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
-   </testResult>
+   <testResult testName="iterate-043"/>
    <testResult status="fail" testName="iterate-901">
       <outResult>
          <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of basketCost</errTrace>

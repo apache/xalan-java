@@ -443,6 +443,8 @@ public class Constants extends org.apache.xml.utils.Constants
   
   /** For Stylesheet-prefix and result-prefix in xsl:namespace-alias          */
   public static final String ATTRVAL_DEFAULT_PREFIX = "#default";
+  
+  public static final String ATTRVAL_ALL_PREFIX = "#all";
 
  /** Integer equivalents for above        */
   public static final int NUMBERLETTER_ALPHABETIC = 1, NUMBERLETTER_TRADITIONAL = 2;

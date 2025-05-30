@@ -118,10 +118,9 @@ public class TransformerImpl extends Transformer
         implements Runnable, DTMWSFilter, ExtensionsProvider, org.apache.xml.serializer.SerializerTrace
 {
 
-  // Synch object to gaurd against setting values from the TrAX interface 
-  // or reentry while the transform is going on.
+  // Synch object to gaurd against setting values from an 
+  // XML TrAX interface or reentry while the transform is going on.
 
-  /** NEEDSDOC Field m_reentryGuard          */
   private Boolean m_reentryGuard = new Boolean(true);
 
   /**
@@ -1228,7 +1227,7 @@ public class TransformerImpl extends Transformer
         if (nextSibling != null)
           handler.setNextSibling(nextSibling);
         
-          String encoding = format.getProperty(OutputKeys.ENCODING);          
+          String encoding = format.getProperty(OutputKeys.ENCODING);
           xoh = new ToXMLSAXHandler(handler, (LexicalHandler)handler, encoding);
       }
       else if (outputTarget instanceof SAXResult)
@@ -1245,8 +1244,7 @@ public class TransformerImpl extends Transformer
         else
             lexHandler = null;
             
-        String encoding = format.getProperty(OutputKeys.ENCODING); 
-        String method = format.getProperty(OutputKeys.METHOD);
+        String encoding = format.getProperty(OutputKeys.ENCODING);         
 
         ToXMLSAXHandler toXMLSAXHandler = new ToXMLSAXHandler(handler, lexHandler, encoding);
         toXMLSAXHandler.setShouldOutputNSAttr(false);
@@ -1341,9 +1339,10 @@ public class TransformerImpl extends Transformer
       SourceLocator srcLocator = getStylesheet();
       xoh.setSourceLocator(srcLocator);
       
+      String method = format.getProperty(OutputKeys.METHOD);
+      xoh.setOutputMethod(method);
       
       return xoh;
-
    
     }
         
@@ -4134,9 +4133,11 @@ public class TransformerImpl extends Transformer
 			if (node instanceof OutputProperties) {
 				OutputProperties outputProperties2 = (OutputProperties)node;
 				String useCharacterMapsStr2 = outputProperties2.getProperty(Constants.ATTRNAME_USE_CHARACTER_MAPS);
-				String[] charMapNameArr = useCharacterMapsStr2.split("\\s+");
-				List<String> strList = Arrays.asList(charMapNameArr);
-				charMapNameList.addAll(strList);
+				if (useCharacterMapsStr2 != null) {
+					String[] charMapNameArr = useCharacterMapsStr2.split("\\s+");
+					List<String> strList = Arrays.asList(charMapNameArr);
+					charMapNameList.addAll(strList);
+				}
 			}
 		}
 
@@ -4196,9 +4197,9 @@ public class TransformerImpl extends Transformer
 												ElemTemplateElement elemTemplateElem = elemCharacterMap2.getFirstChildElem();
 												while ((elemTemplateElem != null) && (elemTemplateElem instanceof ElemOutputCharacter)) {								
 													ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
-													char chr = elemOutputCharacter.getCharacter();
+													Integer chrCodePoint = elemOutputCharacter.getCharacter();
 													String str = elemOutputCharacter.getString();
-													charMapConfig.put(Character.valueOf(chr), str);
+													charMapConfig.put(chrCodePoint, str);
 													elemTemplateElem = elemTemplateElem.getNextSiblingElem();
 												}
 											}
@@ -4212,9 +4213,9 @@ public class TransformerImpl extends Transformer
 								ElemTemplateElement elemTemplateElem = elemCharacterMap.getFirstChildElem();
 								while ((elemTemplateElem != null) && (elemTemplateElem instanceof ElemOutputCharacter)) {								
 									ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
-									char chr = elemOutputCharacter.getCharacter();
+									Integer chrCodePoint = elemOutputCharacter.getCharacter();
 									String str = elemOutputCharacter.getString();
-									charMapConfig.put(Character.valueOf(chr), str);
+									charMapConfig.put(chrCodePoint, str);
 									elemTemplateElem = elemTemplateElem.getNextSiblingElem();
 								}
 							}
@@ -4224,9 +4225,9 @@ public class TransformerImpl extends Transformer
 								ElemTemplateElement elemTemplateElem = elemCharacterMap.getFirstChildElem();
 								while ((elemTemplateElem != null) && (elemTemplateElem instanceof ElemOutputCharacter)) {								
 									ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
-									char chr = elemOutputCharacter.getCharacter();
+									Integer chrCodePoint = elemOutputCharacter.getCharacter();
 									String str = elemOutputCharacter.getString();
-									charMapConfig.put(Character.valueOf(chr), str);
+									charMapConfig.put(chrCodePoint, str);
 									elemTemplateElem = elemTemplateElem.getNextSiblingElem();
 								}
 							}

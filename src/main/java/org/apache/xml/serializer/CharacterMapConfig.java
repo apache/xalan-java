@@ -30,7 +30,9 @@ import java.util.Map;
  */
 public class CharacterMapConfig {
 	
-	Map<Character, String> xslCharMap = new HashMap<Character, String>();
+	// An java.util.HashMap object storing character's code point 
+	// to replacement string value mapping. 
+	Map<Integer, String> m_xslCharMap = new HashMap<Integer, String>();
 	
 	/**
 	 * Class constructor.
@@ -39,20 +41,20 @@ public class CharacterMapConfig {
 		// NO OP
 	}
 
-	public void put(Character chr, String strValue) {
-		this.xslCharMap.put(chr, strValue);
+	public void put(Integer codePoint, String strValue) {
+		this.m_xslCharMap.put(codePoint, strValue);
 	}
 
-	public String get(Character chr) {
-		return this.xslCharMap.get(chr);
+	public String get(Integer codePoint) {
+		return this.m_xslCharMap.get(codePoint);
 	}
 	
-	public void setCharMap(Map<Character, String> xslCharMap) {
-		this.xslCharMap = xslCharMap;
+	public void setCharMap(Map<Integer, String> xslCharMap) {
+		this.m_xslCharMap = xslCharMap;
 	}
 	
-	public Map<Character, String> getCharMap() {
-		return xslCharMap;
+	public Map<Integer, String> getCharMap() {
+		return m_xslCharMap;
 	}
 
 }

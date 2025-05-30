@@ -363,16 +363,16 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					                             trfFatalErrorList, expErrCodeName, resultStrWriter);
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName) || SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {    			
-    			NodeList nodeList1 = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
-    			int nodeListLength = nodeList1.getLength();
+    			NodeList nodeList = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
+    			int nodeListLength = nodeList.getLength();
     			
     			String xslTransformMethod = transformer.getOutputProperty(OutputKeys.METHOD);
     			
     			if (SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {
-    				testCaseOneSerializationMatchCheck(elemTestResult, transformer, nodeExpected, resultStrWriter, xslTransformMethod);
+    				testCaseOneSerializationMatchCheck(elemTestResult, nodeExpected, resultStrWriter, xslTransformMethod);
     			}
     			else if (nodeListLength > 0) {
-    			    testCaseMultipleSerializationMatchChecks(elemTestResult, transformer, resultStrWriter, nodeList1, nodeListLength);
+    			    testCaseMultipleSerializationMatchChecks(elemTestResult, resultStrWriter, nodeList, xslTransformMethod);
     			}
     			else {
     				testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter);
@@ -502,15 +502,15 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      * available as more than one XML serialization-matches elements that require 
      * doing checks with regex.  
      */
-	private void testCaseMultipleSerializationMatchChecks(Element elemTestResult, Transformer transformer,
-														  StringWriter resultStrWriter, NodeList nodeList1, int nodeListLength)
+	private void testCaseMultipleSerializationMatchChecks(Element elemTestResult, StringWriter resultStrWriter, 
+			                                              NodeList nodeList, String xslTransformMethod)
 			                                                                                     throws SAXException, IOException, 
 			                                                                                            TransformerException, Exception {
 		
 		List<XslSerializationMatchesMetaData> serMatchesMetaDataList = new ArrayList<XslSerializationMatchesMetaData>();
 		
-		for (int idx = 0; idx < nodeListLength; idx++) {
-			Element elemNode = (Element)(nodeList1.item(idx));
+		for (int idx = 0; idx < nodeList.getLength(); idx++) {
+			Element elemNode = (Element)(nodeList.item(idx));
 			String txtContextStr = elemNode.getTextContent();
 			String[] strArr = txtContextStr.split("=");    		
 			XslSerializationMatchesMetaData serMatchesMetaData = null;
@@ -523,14 +523,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
 			serMatchesMetaDataList.add(serMatchesMetaData);    				  
 		}
+		
+		String xslTransformResultStr = resultStrWriter.toString();		
+		if ((org.apache.xml.serializer.Method.HTML).equals(xslTransformMethod)) {
+			xslTransformResultStr = resultStrWriter.toString();			
+			xslTransformResultStr = xslTransformResultStr.replace("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">", "");
+		}
 
-		StringWriter strWriter = new StringWriter();
-
-		Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));   				
-
-		transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
-
-		Document xmlResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
+		Document xmlResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(xslTransformResultStr.getBytes()));
 
 		List<Element> elemNodeList = new ArrayList<Element>();
 		elemNodeList.add(xmlResultDoc.getDocumentElement());
@@ -542,8 +542,17 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
 		for (int idx = 0; idx < elemNodeList.size(); idx++) {
 			Element elemNode = elemNodeList.get(idx);
-			String elemNodeStrValue = null;   					  
-			if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
+			String elemNodeStrValue = null; 
+			if ((org.apache.xml.serializer.Method.HTML).equals(xslTransformMethod)) {
+				// Handling only HTML tag <a> for now in this test suite driver
+				if ("a".equals(elemNode.getNodeName())) {
+					elemNodeStrValue = elemNode.getTextContent();					    
+				}
+				else {										
+					continue;
+				}
+			}
+			else if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
 				Node node = elemNode.getFirstChild();
 				node = node.getFirstChild();
 				elemNodeStrValue = serializeXmlDomElementNode(node);
@@ -563,6 +572,12 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 				String[] strArray = xslSerializationMatchesMetaData.getStrArr();
 				String strValue = xslSerializationMatchesMetaData.getStrValue();
 				if (strValue != null) {
+					if ((org.apache.xml.serializer.Method.HTML).equals(xslTransformMethod)) {
+					   if (strValue.startsWith(">")) {
+						   strValue = strValue.substring(1); 
+					   }
+					}
+					
 					Pattern pattern = Pattern.compile(strValue);   							 
 					Matcher matcher = pattern.matcher(elemNodeStrValue);   							 
 					if (strValue.equals(elemNodeStrValue) || matcher.matches()) {
@@ -627,10 +642,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      * available as one XML serialization-matches element that require doing a 
      * check with regex.  
      */
-	private void testCaseOneSerializationMatchCheck(Element elemTestResult, Transformer transformer, Node nodeExpected,
+	private void testCaseOneSerializationMatchCheck(Element elemTestResult, Node nodeExpected,
 												    StringWriter resultStrWriter, String xslTransformMethod) 
-												    		                      throws SAXException, IOException, 
-	                                                                                     TransformerException, Exception {
+												    		                          throws SAXException, IOException, 
+	                                                                                         TransformerException, Exception {
 		Element elemNode = (Element)nodeExpected;
 		String txtContextStr = elemNode.getTextContent();
 		String[] strArr = txtContextStr.split("=");    		
@@ -644,14 +659,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
 		boolean isTestCasePass = false;
 		
-	    if (!(org.apache.xml.serializer.Method.TEXT).equals(xslTransformMethod)) {
-	    	StringWriter strWriter = new StringWriter();
-	    	
-	    	Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));   				
-
-	    	transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
-
-	    	Document xmlResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
+		String xslTransformResultStr = resultStrWriter.toString();		
+		if ((org.apache.xml.serializer.Method.HTML).equals(xslTransformMethod)) {
+			xslTransformResultStr = resultStrWriter.toString();			
+			xslTransformResultStr = xslTransformResultStr.replace("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">", "");
+		}
+		
+		if (!(org.apache.xml.serializer.Method.TEXT).equals(xslTransformMethod)) {
+	    	Document xmlResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(xslTransformResultStr.getBytes()));
 
 	    	List<Element> elemNodeList = new ArrayList<Element>();
 	    	elemNodeList.add(xmlResultDoc.getDocumentElement());
@@ -737,7 +752,6 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    	}
 	    }
 	    else {
-	    	String xslTransformResultStr = resultStrWriter.toString();
 	    	String expectedResultRegexStr = serMatchesMetaData.getStrValue();
 	    	
 	    	Pattern pattern = null;

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.stream.IntStream;
 
 import javax.xml.transform.TransformerException;
 
@@ -611,7 +612,8 @@ public class XslTransformEvaluationHelper {
     
     /**
      * This method definition does the xsl:character-map transformation
-     * on the supplied string value, using a CharacterMapConfig run-time object. 
+     * on the supplied string value, using a CharacterMapConfig 
+     * run-time object. 
      * 
      * @param strValue					Supplied string value
      * @param charMapConfig				CharacterMapConfig run-time object
@@ -619,15 +621,29 @@ public class XslTransformEvaluationHelper {
      *                                  xsl:character-map transformation.
      */
     public static String characterMapTransformation(String strValue, CharacterMapConfig charMapConfig) {    	
-    	String result = strValue;
-
-    	Map<Character, String> charMap = charMapConfig.getCharMap();
-    	Set<Character> charSet = charMap.keySet();
-    	Iterator<Character> iter = charSet.iterator();
+    	
+    	String result = strValue;    	
+    	
+    	Map<Integer, String> hashMap1 = charMapConfig.getCharMap();
+    	Set<Integer> charSet = hashMap1.keySet();
+    	Iterator<Integer> iter = charSet.iterator();    	
     	while (iter.hasNext()) {
-    		Character char1 = iter.next();
-    		String replacementStr = charMap.get(char1);
-    		result = result.replace(char1.toString(), replacementStr);
+    		Integer targetCodePoint = iter.next();
+    		String replacementStr = hashMap1.get(targetCodePoint);    	    		    		    		
+    		StringBuffer strBuffer = new StringBuffer();
+    		IntStream resultCodePointIntStream = result.codePoints();
+    		int[] resultCodePointArr = resultCodePointIntStream.toArray();
+    		for (int idx = 0; idx < resultCodePointArr.length; idx++) {
+    			int codePoint = resultCodePointArr[idx];
+    			if (codePoint == targetCodePoint) { 
+    				strBuffer.append(replacementStr);
+    			} 
+    			else {
+    				strBuffer.appendCodePoint(codePoint);
+    			}
+    		}
+    		
+    		result = strBuffer.toString(); 
     	}
 
     	return result;

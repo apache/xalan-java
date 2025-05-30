@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-29T11:11:00Z" fail="7" name="predicate" pass="49" skipped="0" statusUnknown="1" totalRun="57">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-30T11:51:40Z" fail="7" name="predicate" pass="49" skipped="0" statusUnknown="1" totalRun="57">
    <testResult status="fail" testName="predicate-001"/>
    <testResult status="fail" testName="predicate-002"/>
    <testResult status="fail" testName="predicate-003"/>
@@ -55,13 +55,9 @@
    <testResult status="pass" testName="predicate-054"/>
    <testResult testName="predicate-055"/>
    <testResult status="fail" testName="predicate-056">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="predicate-057">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
 </testrun>

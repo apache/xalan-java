@@ -141,5 +141,12 @@ public interface SerializationHandler
      * false if they are to be left as DTD entity references. 
      */
     public void setDTDEntityExpansion(boolean expand);
+
+    /**
+     * Set the XSL transformation's xsl:output 'method' attribute.
+     * 
+     * @param method
+     */
+	public void setOutputMethod(String method);
     
 }

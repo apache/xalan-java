@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-29T11:10:52Z" fail="3" name="choose" pass="17" skipped="0" statusUnknown="4" totalRun="24">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-30T11:51:32Z" fail="3" name="choose" pass="17" skipped="0" statusUnknown="4" totalRun="24">
    <testResult status="pass" testName="choose-0101"/>
    <testResult status="pass" testName="choose-0102"/>
    <testResult status="fail" testName="choose-0103"/>
@@ -8,9 +8,7 @@
    <testResult testName="choose-0107"/>
    <testResult status="pass" testName="choose-0201"/>
    <testResult status="fail" testName="choose-0202">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="choose-0301"/>
    <testResult status="pass" testName="choose-0401"/>

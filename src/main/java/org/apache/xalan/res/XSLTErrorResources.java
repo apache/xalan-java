@@ -386,6 +386,7 @@ public class XSLTErrorResources extends ListResourceBundle
   public static final String ER_XPATH_RESOLVER_NEGATIVE_ARITY =
 	 "ER_XPATH_RESOLVER_NEGATIVE_ARITY";
   public static final String INVALID_TCHAR = "INVALID_TCHAR";
+  public static final String INVALID_T_UNICODE_CHAR = "INVALID_T_UNICODE_CHAR";
   public static final String INVALID_QNAME = "INVALID_QNAME";
   public static final String INVALID_ENUM = "INVALID_ENUM";
   public static final String INVALID_NMTOKEN = "INVALID_NMTOKEN";
@@ -1078,7 +1079,10 @@ public class XSLTErrorResources extends ListResourceBundle
   // This code is shared with warning codes.
   // SystemId Unknown
     { INVALID_TCHAR,
-     "Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!"},
+     "Illegal value: {1} used for CHAR attribute: {0}. An attribute of type CHAR must be only 1 character!"},
+    
+    { INVALID_T_UNICODE_CHAR,
+     "Illegal value: {1} used for UNICODE_CHAR attribute: {0}. An attribute of type UNICODE_CHAR must be only 1 unicode character."},
 
     // Note to translators:  The following message is used if the value of
     // an attribute in a stylesheet is invalid.  "QNAME" is the XML data-type of

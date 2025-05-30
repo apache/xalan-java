@@ -39,16 +39,16 @@ public class ElemOutputCharacter extends ElemTemplateElement
 	/**
 	 * Class field representing "character" attribute.
 	 */
-	protected char m_character;
+	protected Integer m_charCodePoint;
 	
 	/**
 	 * Set the "character" attribute.
 	 * 
-	 * @param c
+	 * @param codePoint
 	 */
-	public void setCharacter(char c)
+	public void setCharacter(Integer codePoint)
 	{
-		m_character = c;
+		m_charCodePoint = codePoint;
 	}
 
 	/**
@@ -56,9 +56,9 @@ public class ElemOutputCharacter extends ElemTemplateElement
 	 * 
 	 * @return
 	 */
-	public char getCharacter()
+	public Integer getCharacter()
 	{
-		return m_character;
+		return m_charCodePoint;
 	}
 	
 	/**

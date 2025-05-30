@@ -126,7 +126,7 @@ public class XSLTSchema extends XSLTElementDef
     // Required.
     // xsl:output-character                                     
     XSLTAttributeDef characterAttrRequired = new XSLTAttributeDef(null, "character",
-    										   XSLTAttributeDef.T_CHAR, true, false, XSLTAttributeDef.ERROR);
+    										   XSLTAttributeDef.T_UNICODE_CHAR, true, false, XSLTAttributeDef.ERROR);
     
     // Required.
     // xsl:output-character                                     

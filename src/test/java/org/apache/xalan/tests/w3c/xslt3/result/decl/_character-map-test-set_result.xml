@@ -1,23 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-29T11:10:57Z" fail="15" name="character-map" pass="13" skipped="0" statusUnknown="1" totalRun="29">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-30T11:51:37Z" fail="12" name="character-map" pass="15" skipped="0" statusUnknown="2" totalRun="29">
    <testResult status="pass" testName="character-map-001"/>
    <testResult status="pass" testName="character-map-002"/>
    <testResult status="pass" testName="character-map-003"/>
    <testResult status="pass" testName="character-map-004"/>
    <testResult status="pass" testName="character-map-005"/>
    <testResult status="pass" testName="character-map-006"/>
-   <testResult status="fail" testName="character-map-007">
-      <outResult>
-         <errTrace>Illegal value: 񐀀 used for CHAR attribute: character.  An attribute of type CHAR must be only 1 character!</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="character-map-007"/>
    <testResult status="pass" testName="character-map-008"/>
-   <testResult status="fail" testName="character-map-009">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="character-map-009"/>
    <testResult status="fail" testName="character-map-010">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="character-map-011"/>
    <testResult status="pass" testName="character-map-012"/>
@@ -56,15 +48,9 @@
    <testResult status="fail" testName="character-map-024"/>
    <testResult testName="character-map-025"/>
    <testResult status="fail" testName="character-map-026">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="character-map-027"/>
    <testResult status="fail" testName="character-map-028"/>
-   <testResult status="fail" testName="character-map-901">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
-   </testResult>
+   <testResult testName="character-map-901"/>
 </testrun>

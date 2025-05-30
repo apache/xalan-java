@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-29T11:11:01Z" fail="8" name="position" pass="108" skipped="0" statusUnknown="1" totalRun="117">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-30T11:51:41Z" fail="8" name="position" pass="108" skipped="0" statusUnknown="1" totalRun="117">
    <testResult status="pass" testName="position-0101"/>
    <testResult status="fail" testName="position-0102"/>
    <testResult status="fail" testName="position-0103">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+         <errTrace>xsl:merge-source requires attribute: select</errTrace>
+         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://example.com/mf}construct-doc(), doesn't match the declared parameter type xs:integer*.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="position-0201"/>

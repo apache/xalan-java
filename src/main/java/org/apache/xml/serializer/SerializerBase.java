@@ -25,6 +25,7 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Transformer;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
@@ -82,8 +83,6 @@ public abstract class SerializerBase
         }
         PKG_PATH = sb.toString();
     }
-
-    
 
     /**
      * Emit an end element trace event.
@@ -248,6 +247,11 @@ public abstract class SerializerBase
      * processing.
      */
     private CharacterMapConfig m_charMapConfig = new CharacterMapConfig();
+    
+    /**
+     * An XSL stylesheet's xsl:output 'method' value.
+     */
+    protected String m_output_method = null;
 
     /**
      * Receive notification of a comment.
@@ -405,7 +409,14 @@ public abstract class SerializerBase
             int index;
             
             CharacterMapConfig charMapConfig = getCharMapConfig();
-            if (charMapConfig != null) {
+            
+            boolean isHtmlHrefAttr = false;
+            if ((org.apache.xml.serializer.Method.HTML).equals(m_output_method) && 
+            		                                                           (Constants.ATTRNAME_HREF).equals(rawName)) {
+               isHtmlHrefAttr = true;	
+            }
+            
+            if (charMapConfig != null && !isHtmlHrefAttr) {
                 value = XslTransformEvaluationHelper.characterMapTransformation(value, charMapConfig); 
             }
             
@@ -1696,12 +1707,29 @@ public abstract class SerializerBase
         return first;
     }
 
+    /**
+     * Get xsl:character-map run-time configuration object.
+     * 
+     * @return					    An CharacterMapConfig object instance
+     */
 	public CharacterMapConfig getCharMapConfig() {
 		return m_charMapConfig;
 	}
 
+	/**
+	 * Set xsl:character-map run-time configuration object.
+	 * 
+	 * @param charMapConfig			An CharacterMapConfig object instance
+	 */
 	public void setCharMapConfig(CharacterMapConfig charMapConfig) {
 		this.m_charMapConfig = charMapConfig;
+	}
+
+	/**
+	 * Set XSL transform's xsl:output 'method' value.
+	 */
+	public void setOutputMethod(String outputMethod) {
+		this.m_output_method = outputMethod;
 	}
 	
 }

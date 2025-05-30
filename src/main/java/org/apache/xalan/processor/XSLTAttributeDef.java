@@ -22,8 +22,10 @@ package org.apache.xalan.processor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.stream.IntStream;
 
 import javax.xml.transform.TransformerException;
 
@@ -39,6 +41,7 @@ import org.apache.xml.utils.StringToIntTable;
 import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.XML11Char;
 import org.apache.xpath.XPath;
+import org.xml.sax.helpers.NamespaceSupport;
 
  
 /**
@@ -273,7 +276,10 @@ public class XSLTAttributeDef
   T_PREFIXLIST = 20,
   
   // Used for a string value.
-  T_STRING = 21;
+  T_STRING = 21,
+  
+  // Used for a generic unicode character
+  T_UNICODE_CHAR = 22;
 
   /** Representation for an attribute in a foreign namespace. */
   static final XSLTAttributeDef m_foreignAttr = new XSLTAttributeDef("*", "*",
@@ -607,6 +613,55 @@ public class XSLTAttributeDef
 	    }
 
 	    return new Character(value.charAt(0));
+	}
+  }
+  
+  /**
+   * Process an attribute string of type T_UNICODE_CHAR into
+   * a unicode code point integer value.
+   *
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value Should be a string.
+   *
+   * @return Integer object representing unicode code point value.
+   *
+   * @throws org.xml.sax.SAXException if the string has more than 1 unicode characters.
+   */
+  Object processUNICODECHAR(
+          StylesheetHandler handler, String uri, String name, String rawName, String value, ElemTemplateElement owner)
+            throws org.xml.sax.SAXException
+  {	
+	
+	IntStream codePointIntStr = value.codePoints();
+	int[] codePointArr = codePointIntStr.toArray();
+	
+	if (getSupportsAVT()) {
+	    try
+	    {
+	      AVT avt = new AVT(handler, uri, name, rawName, value, owner);
+	
+		  // If an AVT wasn't used, validate the value
+		  if ((avt.isSimple()) && (codePointArr.length != 1)) {
+		  	handleError(handler, XSLTErrorResources.INVALID_T_UNICODE_CHAR, new Object[] {name, value},null);
+            return null;
+		  }	
+	      return avt;
+	    }
+	    catch (TransformerException te)
+	    {
+	      throw new org.xml.sax.SAXException(te);
+	    }
+	} else {    
+	    if (codePointArr.length != 1)
+	    {
+            handleError(handler, XSLTErrorResources.INVALID_T_UNICODE_CHAR, new Object[] {name, value},null);
+            return null;
+	    }
+
+	    return Integer.valueOf(codePointArr[0]);
 	}
   }
 
@@ -1317,19 +1372,31 @@ public class XSLTAttributeDef
      StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
      int nStrings = tokenizer.countTokens();
      StringVector strings = new StringVector(nStrings);
-
+     
      for (int i = 0; i < nStrings; i++)
      {
-       String prefix = tokenizer.nextToken();
-       String url = handler.getNamespaceForPrefix(prefix);
-       if (prefix.equals(Constants.ATTRVAL_DEFAULT_PREFIX) || url != null)
-         strings.addElement(prefix);
-       else
-         throw new org.xml.sax.SAXException(
-              XSLMessages.createMessage(
-                   XSLTErrorResources.ER_CANT_RESOLVE_NSPREFIX, 
-                   new Object[] {prefix}));
-    
+    	 String prefix = tokenizer.nextToken();
+    	 String url = handler.getNamespaceForPrefix(prefix);
+    	 if (prefix.equals(Constants.ATTRVAL_DEFAULT_PREFIX) || url != null) {
+    		 strings.addElement(prefix);
+    	 }
+    	 else if (prefix.equals(Constants.ATTRVAL_ALL_PREFIX)) {
+    		 NamespaceSupport namespaceSupport = handler.getNamespaceSupport();
+    		 Enumeration declPrefixesEnum = namespaceSupport.getDeclaredPrefixes();
+    		 while (declPrefixesEnum.hasMoreElements()) {
+    			 String prefix2 = (String)(declPrefixesEnum.nextElement());
+    			 String url2 = handler.getNamespaceForPrefix(prefix2);
+    			 if (!((XSL3TransformerFactoryImpl.XSL_NAMESPACE_URL).equals(url2))) {
+    				 strings.addElement(prefix2); 
+    			 }
+    		 }
+    	 }
+    	 else if (url == null) {
+    		 throw new org.xml.sax.SAXException(
+    				 XSLMessages.createMessage(
+    						 XSLTErrorResources.ER_CANT_RESOLVE_NSPREFIX, 
+    						 new Object[] {prefix}));
+    	 }
      }
 
      return strings;
@@ -1444,6 +1511,9 @@ public class XSLTAttributeDef
     case T_CHAR :
       processedValue = processCHAR(handler, uri, name, rawName, value, owner);
       break;
+    case T_UNICODE_CHAR :
+      processedValue = processUNICODECHAR(handler, uri, name, rawName, value, owner);
+      break;  
     case T_ENUM :
       processedValue = processENUM(handler, uri, name, rawName, value, owner);
       break;
@@ -1498,8 +1568,7 @@ public class XSLTAttributeDef
         processedValue = processAVT_QNAME(handler, uri, name, rawName, value, owner);
         break;
     case T_PREFIXLIST :
-      processedValue = processPREFIX_LIST(handler, uri, name, rawName,
-                                             value);
+      processedValue = processPREFIX_LIST(handler, uri, name, rawName, value);
       break;
 
     default :

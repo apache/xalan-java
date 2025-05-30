@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-29T11:10:58Z" fail="9" name="castable" pass="0" skipped="0" statusUnknown="0" totalRun="9">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-30T11:51:38Z" fail="7" name="castable" pass="0" skipped="0" statusUnknown="2" totalRun="9">
    <testResult status="fail" testName="castable-001"/>
    <testResult status="fail" testName="castable-002">
       <outResult>
@@ -15,29 +15,21 @@
          <errTrace>XTTE0570 : The source xdm sequence cannot be cast to the provided sequence type.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="castable-005">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="castable-006">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
-      </outResult>
-   </testResult>
+   <testResult testName="castable-005"/>
+   <testResult testName="castable-006"/>
    <testResult status="fail" testName="castable-007">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="castable-008">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="castable-009">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Can not resolve namespace prefix: #all</errTrace>
+         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
       </outResult>
    </testResult>
 </testrun>

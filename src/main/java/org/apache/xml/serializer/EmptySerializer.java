@@ -784,4 +784,9 @@ public class EmptySerializer implements SerializationHandler
         couldThrowIOException();
         return null;
     }
+
+	@Override
+	public void setOutputMethod(String outputMethod) {
+		// NO OP		
+	}
 }
