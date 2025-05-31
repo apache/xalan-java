@@ -799,12 +799,7 @@ public class XPath implements Serializable, ExpressionOwner
 
 	  try {    	
 		  if (isProcessAsNodeset) {
-			  if (m_mainExp instanceof Function) {
-				  result = ((Function)m_mainExp).execute(xctxt); 
-			  }
-			  else {
-				  result = m_mainExp.execute(xctxt);
-			  }
+			  result = m_mainExp.execute(xctxt);
 		  }
 		  else {
 			  String xpathPatternStr = getPatternString();

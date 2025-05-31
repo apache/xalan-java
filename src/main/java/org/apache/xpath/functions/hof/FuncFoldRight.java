@@ -22,22 +22,16 @@ import java.util.Map;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.templates.ElemFunction;
-import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
-import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.functions.XSL3FunctionService;
-import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -56,8 +50,6 @@ import org.apache.xpath.patterns.NodeTest;
 public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
     
     private static final long serialVersionUID = 4675724832355053777L;
-    
-    private static XSL3FunctionService xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
 
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
@@ -107,44 +99,9 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
            foldRightInlineFuncArg = (XPathInlineFunction)m_arg2;                                           
         }
         else if (m_arg2 instanceof NodeTest) {
-            NodeTest nodeTest = (NodeTest)m_arg2;
-            String funcNameRef = nodeTest.getLocalName();
-            String funcNamespace = nodeTest.getNamespace();
+           transformerImpl = getTransformerImplFromXPathExpression(m_arg2);
             
-            ExpressionNode expressionNode = m_arg2.getExpressionOwner();
-            ExpressionNode stylesheetRootNode = null;
-            while (expressionNode != null) {
-         	   stylesheetRootNode = expressionNode;
-         	   expressionNode = expressionNode.exprGetParent();                     
-            }
-
-            StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
-            
-            if (stylesheetRoot != null) {
-         	   transformerImpl = stylesheetRoot.getTransformerImpl();  
-         	   TemplateList templateList = stylesheetRoot.getTemplateListComposed();        	   
-         	   if (xslFunctionService.isFuncArityWellFormed(funcNameRef)) {        	   
-         		   int hashCharIdx = funcNameRef.indexOf('#');
-         		   String funcNameRef2 = funcNameRef.substring(0, hashCharIdx);
-         		   ElemTemplate elemTemplate = templateList.getTemplate(new QName(funcNamespace, funcNameRef2));
-         		   if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
-         			   elemFunction = (ElemFunction)elemTemplate;
-         			   int xslFuncDefnParamCount = elemFunction.getParamCount();                      
-         			   String str = funcNameRef.substring(hashCharIdx + 1);
-         			   int funcRefParamCount = (Integer.valueOf(str)).intValue();
-         			   if (funcRefParamCount != xslFuncDefnParamCount) {
-         				   throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcNameRef 
-         						   																						+ " cannot resolve to a function "
-         						   																						+ "definition.", srcLocator); 
-         			   }
-         		   }
-         	   }
-         	   else {
-         		   throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcNameRef 
- 																														+ " cannot resolve to a function "
- 																														+ "definition.", srcLocator);
-         	   }
-            }           
+           elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg2, transformerImpl, srcLocator);          
         }
         else {
            throw new javax.xml.transform.TransformerException("FORG0006 : The third argument to function call "
@@ -198,7 +155,7 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
                                                                                                                   + "parameters. Expected 2.", srcLocator); 
             }
         }
-        else if ((elemFunction != null) && (transformerImpl != null)) {
+        else if (elemFunction != null) { 
            for (int idx = foldRightFirstArgSeq.size() - 1; idx >= 0; idx--) {
         	   ResultSequence argSequence = new ResultSequence();        	   
         	   argSequence.add(foldRightFirstArgSeq.item(idx));        	           	   

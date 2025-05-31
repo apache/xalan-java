@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-30T11:51:41Z" fail="19" name="higher-order-functions" pass="5" skipped="0" statusUnknown="1" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:17:01Z" fail="18" name="higher-order-functions" pass="6" skipped="0" statusUnknown="1" totalRun="25">
    <testResult status="fail" testName="higher-order-functions-001"/>
-   <testResult status="fail" testName="higher-order-functions-002">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
    <testResult status="pass" testName="higher-order-functions-004"/>
    <testResult status="pass" testName="higher-order-functions-005"/>

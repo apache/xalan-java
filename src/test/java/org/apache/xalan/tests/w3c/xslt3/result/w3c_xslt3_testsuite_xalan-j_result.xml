@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-05-30T11:51:52Z" desc="W3C XSLT 3.0 test suite results" fail="495" pass="902" skipped="21" success="58.27%" totalRun="1584" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-05-31T10:17:19Z" desc="W3C XSLT 3.0 test suite results" fail="490" pass="907" skipped="21" success="58.59%" totalRun="1584" xslt_processor="Xalan-J XSLT 3.0 development code">
   <decl>
     <character-map fail="12" pass="15" skipped="0" success="51.72%" totalRun="29"/>
-    <function fail="28" pass="20" skipped="4" success="34.29%" totalRun="70"/>
+    <function fail="27" pass="21" skipped="4" success="35.71%" totalRun="70"/>
   </decl>
   <expr>
     <axes fail="29" pass="172" skipped="0" success="85.57%" totalRun="201"/>
     <castable fail="7" pass="0" skipped="0" success="0.0%" totalRun="9"/>
     <expression fail="0" pass="9" skipped="0" success="90.0%" totalRun="10"/>
     <for fail="2" pass="1" skipped="0" success="25.0%" totalRun="4"/>
-    <higher-order-functions fail="19" pass="5" skipped="0" success="20.0%" totalRun="25"/>
+    <higher-order-functions fail="18" pass="6" skipped="0" success="24.0%" totalRun="25"/>
     <math fail="32" pass="26" skipped="0" success="17.57%" totalRun="148"/>
     <nodetest fail="36" pass="2" skipped="0" success="5.26%" totalRun="38"/>
     <path fail="3" pass="7" skipped="0" success="70.0%" totalRun="10"/>
@@ -29,9 +29,9 @@
     <choose fail="3" pass="17" skipped="0" success="70.83%" totalRun="24"/>
     <copy fail="38" pass="16" skipped="0" success="26.67%" totalRun="60"/>
     <element fail="14" pass="8" skipped="0" success="34.78%" totalRun="23"/>
-    <for-each-group fail="30" pass="42" skipped="4" success="58.97%" totalRun="78"/>
+    <for-each-group fail="28" pass="44" skipped="4" success="61.54%" totalRun="78"/>
     <iterate fail="27" pass="9" skipped="0" success="20.45%" totalRun="44"/>
-    <sequence fail="19" pass="7" skipped="0" success="25.93%" totalRun="27"/>
+    <sequence fail="18" pass="8" skipped="0" success="29.63%" totalRun="27"/>
     <sort fail="37" pass="31" skipped="0" success="38.75%" totalRun="80"/>
     <try fail="21" pass="11" skipped="5" success="38.1%" totalRun="42"/>
   </insn>

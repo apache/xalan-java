@@ -3764,53 +3764,57 @@ public class XPathParser
        nextToken();
        consumeExpected('(');
        
-       // While parsing the arguments detail of a dynamic function call,
-       // we use the code as specified below, and store the resulting
-       // information within an object of class 'DynamicFunctionCall'.
+       // XPath parse of dynamic function call argument information
        
        List<String> argList = new ArrayList<>();
        
-       List<String> argDetailsStrPartsList = new ArrayList<String>();
-       
-       // We specify here a temporary function call argument delimiter 
-       // string, for this processing.       
-       String delim = "t0_" + (UUID.randomUUID()).toString();
-       
-       while (m_token != null && isXPathDynamicFuncCallParseAhead(
-                                                      argDetailsStrPartsList, delim)) {
-          // NO OP
-       }
-       
-       m_dynamicFunctionCallArgumentMarker = false;
-       
-       int startIdx = 0;
-       int idxDelim;       
-       while (argDetailsStrPartsList.contains(delim) && 
-                         (idxDelim = argDetailsStrPartsList.indexOf(delim)) != -1) {
-          List<String> lst1 = argDetailsStrPartsList.subList(startIdx, idxDelim);
-          
-          String xpathStr = getXPathStrFromComponentParts(lst1);
-          
-          argList.add(xpathStr);
-          
-          List<String> lst2 = argDetailsStrPartsList.subList(idxDelim + 1, 
-                                                                           argDetailsStrPartsList.size());
-          
-          argDetailsStrPartsList = lst2; 
-       }
-       
-       if (argDetailsStrPartsList.size() > 0) {
-           String xpathStr = getXPathStrFromComponentParts(argDetailsStrPartsList);
-           argList.add(xpathStr);
-       }
+       if (!tokenIs(')')) {
+    	   // Function call argument list is not empty
+    	   
+    	   List<String> argDetailsStrPartsList = new ArrayList<String>();
 
+    	   // We specify here a temporary function call argument delimiter 
+    	   // string, for this processing.       
+    	   String delim = "t0_" + (UUID.randomUUID()).toString();
+
+    	   while (m_token != null && isXPathDynamicFuncCallParseAhead(
+    			   argDetailsStrPartsList, delim)) {
+    		   // NO OP
+    	   }
+
+    	   m_dynamicFunctionCallArgumentMarker = false;
+
+    	   int startIdx = 0;
+    	   int idxDelim;       
+    	   while (argDetailsStrPartsList.contains(delim) && 
+    			   (idxDelim = argDetailsStrPartsList.indexOf(delim)) != -1) {
+    		   List<String> lst1 = argDetailsStrPartsList.subList(startIdx, idxDelim);
+
+    		   String xpathStr = getXPathStrFromComponentParts(lst1);
+
+    		   argList.add(xpathStr);
+
+    		   List<String> lst2 = argDetailsStrPartsList.subList(idxDelim + 1, 
+    				   argDetailsStrPartsList.size());
+
+    		   argDetailsStrPartsList = lst2; 
+    	   }
+
+    	   if (argDetailsStrPartsList.size() > 0) {
+    		   String xpathStr = getXPathStrFromComponentParts(argDetailsStrPartsList);
+    		   argList.add(xpathStr);
+    	   }
+       }
+       
        consumeExpected(')');
        
        XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();
        xpathDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
        xpathDynamicFunctionCall.setArgList(argList);
        
-       mutateXPathDynamicFuncCallReference(xpathDynamicFunctionCall, argList);              
+       if (argList.size() > 0) {
+           mutateXPathDynamicFuncCallReference(xpathDynamicFunctionCall, argList);
+       }
               
        m_xpathDynamicFunctionCallList.add(xpathDynamicFunctionCall);
        
@@ -6698,10 +6702,12 @@ public class XPathParser
 			consumeExpected(':');
 			
 			try {
-				String funcName = m_token.substring(0, m_token.indexOf('#'));
-				ElemTemplate elemTemplate = stylesheetRoot.getTemplateComposed(new org.apache.xml.utils.QName(funcNamespaceUri, funcName));
-				if (elemTemplate instanceof ElemFunction) {
-					ElemFunction elemFunction = (ElemFunction)elemTemplate;
+				int indexOfHash = m_token.indexOf('#');
+				String funcName = m_token.substring(0, indexOfHash);
+				int arity = Integer.valueOf(m_token.substring(indexOfHash + 1)); 				
+				ElemFunction elemFunction = stylesheetRoot.getXslFunction(new org.apache.xml.utils.QName(funcNamespaceUri, 
+						                                                                                               funcName), arity);
+				if (elemFunction != null) {
 					String namedFuncRef = m_token;										
 					nextToken();					
 					insertOp(opPos, 2, OpCodes.OP_NAMED_FUNCTION_REFERENCE);

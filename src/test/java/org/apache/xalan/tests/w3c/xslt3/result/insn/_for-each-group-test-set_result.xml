@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-30T11:51:30Z" fail="30" name="for-each-group" pass="42" skipped="4" statusUnknown="2" totalRun="78">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:16:31Z" fail="28" name="for-each-group" pass="44" skipped="4" statusUnknown="2" totalRun="78">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -96,20 +96,18 @@
    <testResult status="fail" testName="for-each-group-076">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;group pop="5" country="italy"&gt;&lt;city country="italy" name="milan" pop="5"/&gt;&lt;/group&gt;&lt;group pop="7" country="france"&gt;&lt;city country="france" name="paris" pop="7"/&gt;&lt;/group&gt;&lt;group pop="4" country="germany"&gt;&lt;city country="germany" name="munich" pop="4"/&gt;&lt;/group&gt;&lt;group pop="2" country="france"&gt;&lt;city country="france" name="lyon" pop="2"/&gt;&lt;/group&gt;&lt;group pop="10" country="england"&gt;&lt;city country="england" name="london" pop="10"/&gt;&lt;/group&gt;&lt;group pop="5" country="england"&gt;&lt;city country="england" name="bristol" pop="5.0"/&gt;&lt;city country="england" name="sheffield" pop="05"/&gt;&lt;/group&gt;&lt;group pop="7" country="england"&gt;&lt;city country="england" name="manchester" pop="7.0"/&gt;&lt;city country="england" name="liverpool" pop="7"/&gt;&lt;/group&gt;&lt;group pop="1" country="italy"&gt;&lt;city country="italy" name="venice" pop="1"/&gt;&lt;/group&gt;&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="for-each-group-078a">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-078a"/>
    <testResult status="fail" testName="for-each-group-078b">
       <outResult>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>XPST0008 : Variable 'f' has not been declared, or its declaration is not in scope.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="for-each-group-079a">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-079a"/>
    <testResult status="fail" testName="for-each-group-079b">
       <outResult>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>XPST0008 : Variable 'f' has not been declared, or its declaration is not in scope.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="for-each-group-080"/>

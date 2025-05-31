@@ -105,6 +105,8 @@ public class XSLTErrorResources extends ListResourceBundle
   public static final String ER_NEED_MATCH_ATTRIB = "ER_NEED_MATCH_ATTRIB";
   public static final String ER_NEED_NAME_OR_MATCH_ATTRIB = 
 	 "ER_NEED_NAME_OR_MATCH_ATTRIB";
+  public static final String ER_XSL_FUNCTION_NEED_NAME_ATTRIB = 
+	 "ER_XSL_FUNCTION_NEED_NAME_ATTRIB";
   public static final String ER_CANT_RESOLVE_NSPREFIX =
 	 "ER_CANT_RESOLVE_NSPREFIX";
   public static final String ER_ILLEGAL_VALUE = "ER_ILLEGAL_VALUE";
@@ -551,6 +553,9 @@ public class XSLTErrorResources extends ListResourceBundle
 
     { ER_NEED_NAME_ATTRIB,
       "xsl:with-param must have a 'name' attribute."},
+    
+    { ER_XSL_FUNCTION_NEED_NAME_ATTRIB,
+      "xsl:function must have a 'name' attribute."},
 
     { ER_NO_CONTEXT_OWNERDOC,
       "context does not have an owner document!"},
@@ -800,7 +805,7 @@ public class XSLTErrorResources extends ListResourceBundle
       "Found more than one template named: {0}"},
     
     { ER_DUPLICATE_XSL_FUNCTION,
-      "Found more than one stylesheet function named: {0}"},
+      "Found more than one XSL stylesheet function named: {0} with arity {1}"},
 
     { ER_INVALID_KEY_CALL,
       "Invalid function call: recursive key() calls are not allowed"},

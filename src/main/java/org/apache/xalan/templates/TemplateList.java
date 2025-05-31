@@ -21,7 +21,9 @@
 package org.apache.xalan.templates;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
@@ -39,11 +41,12 @@ import org.apache.xpath.patterns.UnionPattern;
 
 /**
  * Encapsulates a template list, and helps locate individual templates.
+ * 
  * @xsl.usage advanced
  */
 public class TemplateList implements java.io.Serializable
 {
-    static final long serialVersionUID = 5803675288911728791L;
+  static final long serialVersionUID = 5803675288911728791L;
 
   /**
    * Construct a TemplateList object. Needs to be public so it can
@@ -55,83 +58,102 @@ public class TemplateList implements java.io.Serializable
   }
 
   /**
-   * Add a template to the table of named templates and/or the table of templates
-   * with match patterns.  This routine should
-   * be called in decreasing order of precedence but it checks nonetheless.
+   * Add a template to the table of named templates, and/or the table of templates
+   * with match patterns. This method is also used to add xsl:function definitions
+   * to a table of function definitions. 
+   * 
+   * This routine should be called in decreasing order of precedence but it 
+   * checks nonetheless.
    *
-   * @param template
+   * @param template				This can be for an xsl:template definition or
+   *                                xsl:function definition.
    */
   public void setTemplate(ElemTemplate template)
-  {
-    XPath matchXPath = template.getMatch();
-    
-    if (null == template.getName() && null == matchXPath)
-    {
-      if (!(template instanceof ElemFunction)) {
-         template.error(XSLTErrorResources.ER_NEED_NAME_OR_MATCH_ATTRIB,
-                                                      new Object[]{ "xsl:template" });
-      }
-    }
-    
-    if (null != template.getName())
-    {
-      ElemTemplate existingTemplate = (ElemTemplate) m_namedTemplates.get(template.getName());
-      if (null == existingTemplate)
-      {
-        m_namedTemplates.put(template.getName(), template);
-      }
-      else
-      {
-        int existingPrecedence =
-                        existingTemplate.getStylesheetComposed().getImportCountComposed();
-        int newPrecedence = template.getStylesheetComposed().getImportCountComposed();
-        if (newPrecedence > existingPrecedence)
+  {    
+	  
+    if (!(template instanceof ElemFunction)) {    	
+    	XPath matchXPath = template.getMatch();
+    	
+    	if ((template.getName() == null) && (matchXPath == null))
         {
-          // This should never happen
-          m_namedTemplates.put(template.getName(), template);
+            template.error(XSLTErrorResources.ER_NEED_NAME_OR_MATCH_ATTRIB,
+                                                                      new Object[]{ "xsl:template" });
         }
-        else if (newPrecedence == existingPrecedence) {
-          if (template instanceof ElemFunction) {
-             template.error(XSLTErrorResources.ER_DUPLICATE_XSL_FUNCTION,
-                                             new Object[]{ template.getName() }); 
-          }
-          else {
-             template.error(XSLTErrorResources.ER_DUPLICATE_NAMED_TEMPLATE,
-                                             new Object[]{ template.getName() });
-          }
-        }
-      }
-    }    
-
-    if (null != matchXPath)
-    {
-      Expression matchExpr = matchXPath.getExpression();
-      
-      XPath templateMatchXPath = template.getMatch();
-      String xpathPatternStr = templateMatchXPath.getPatternString();
-	  if (".".equals(xpathPatternStr) || xpathPatternStr.startsWith(".[")) {		 		 
-		 insertPatternInTable(String.valueOf(xpathPatternStr), template);
-	  }
-	  else if (matchExpr instanceof StepPattern)
-      {
-        insertPatternInTable((StepPattern) matchExpr, template);
-      }
-      else if (matchExpr instanceof UnionPattern)
-      {
-        UnionPattern upat = (UnionPattern) matchExpr;
-        StepPattern[] pats = upat.getPatterns();
-        int n = pats.length;
-
-        for (int i = 0; i < n; i++)
+    	
+    	if (template.getName() != null)
         {
-          insertPatternInTable(pats[i], template);
+    		ElemTemplate existingTemplate = (ElemTemplate)(m_namedTemplates.get(template.getName()));
+    		if (existingTemplate == null)
+    		{
+    			m_namedTemplates.put(template.getName(), template);
+    		}
+    		else {
+    			int existingPrecedence = existingTemplate.getStylesheetComposed().getImportCountComposed();
+    			int newPrecedence = template.getStylesheetComposed().getImportCountComposed();
+    			if (newPrecedence == existingPrecedence) {
+    				template.error(XSLTErrorResources.ER_DUPLICATE_NAMED_TEMPLATE,
+    																		  new Object[]{ template.getName() });
+    			}
+    		}    		
         }
-      }
-      else
-      {
-        // TODO: assert error
-      }
+    	
+    	if (matchXPath != null)
+        {
+    		Expression matchExpr = matchXPath.getExpression();
+
+    		XPath templateMatchXPath = template.getMatch();
+    		String xpathPatternStr = templateMatchXPath.getPatternString();
+    		if (".".equals(xpathPatternStr) || xpathPatternStr.startsWith(".[")) {		 		 
+    			insertPatternInTable(String.valueOf(xpathPatternStr), template);
+    		}
+    		else if (matchExpr instanceof StepPattern)
+    		{
+    			insertPatternInTable((StepPattern) matchExpr, template);
+    		}
+    		else if (matchExpr instanceof UnionPattern)
+    		{
+    			UnionPattern upat = (UnionPattern) matchExpr;
+    			StepPattern[] pats = upat.getPatterns();
+    			int n = pats.length;
+
+    			for (int i = 0; i < n; i++)
+    			{
+    				insertPatternInTable(pats[i], template);
+    			}
+    		}
+        }
     }
+    else {
+    	if (template.getName() == null)
+        {
+            template.error(XSLTErrorResources.ER_XSL_FUNCTION_NEED_NAME_ATTRIB,
+                                                                      new Object[]{});
+        }
+    	else {
+    		int funcArity = 0;
+    		for (ElemTemplateElement elem = template.getFirstChildElem(); elem != null; elem = elem.getNextSiblingElem()) {
+    			if (elem instanceof ElemParam) {
+    				funcArity++; 
+    			}
+    		}
+    		
+    		XslFunctionDefinitionKey funcDefnKey = new XslFunctionDefinitionKey(template.getName(), funcArity);
+    		ElemFunction existingXslFunction = m_functionDefinitionMap.get(funcDefnKey);
+    		if (existingXslFunction == null)
+    		{
+    			m_functionDefinitionMap.put(funcDefnKey, (ElemFunction)template);
+    		}
+    		else {
+    			int existingPrecedence = existingXslFunction.getStylesheetComposed().getImportCountComposed();
+    			int newPrecedence = template.getStylesheetComposed().getImportCountComposed();
+    			if (newPrecedence == existingPrecedence) {
+    				template.error(XSLTErrorResources.ER_DUPLICATE_XSL_FUNCTION,
+    																		  new Object[]{ existingXslFunction.getName(), funcDefnKey.getArity() });
+    			}
+    		}
+    	 }
+      }
+    
   }
 
 /** Flag to indicate whether in DEBUG mode          */
@@ -459,11 +481,28 @@ public class TemplateList implements java.io.Serializable
    *
    * @param qname  Qualified name of the template.
    *
-   * @return Template argument with the requested name, or null if not found.
+   * @return 	   An xsl:template definition object instance, or null 
+   *               if not found.
    */
   public ElemTemplate getTemplate(QName qname)
   {
-    return (ElemTemplate) m_namedTemplates.get(qname);
+	  return (ElemTemplate) m_namedTemplates.get(qname);
+  }
+  
+  /**
+   * Locate an XSL named function.
+   * 
+   * @param qname	Qualified name of an XSL function.
+   * @param arity	XSL function definition's arity
+   * 
+   * @return        An XSL function definition object instance, or null 
+   *                if not found.
+   */
+  public ElemTemplate getXslFunction(QName qname, int arity)
+  {
+	  XslFunctionDefinitionKey xslFunctionDefinitionKey = new XslFunctionDefinitionKey(qname, arity);
+
+	  return (ElemTemplate) (m_functionDefinitionMap.get(xslFunctionDefinitionKey));
   }
 
   /**
@@ -818,33 +857,40 @@ public class TemplateList implements java.io.Serializable
    * that are macro elements in the XSL DOM tree.
    * Initialized in initMacroLookupTable, and used in
    * findNamedTemplate.
-   * @serial
    */
   private Hashtable m_namedTemplates = new Hashtable(89);
+  
+  /**
+   * An java.util.Map object to store xsl:function definitions within an XSL stylesheet. 
+   */
+  private Map<XslFunctionDefinitionKey, ElemFunction> m_functionDefinitionMap = new HashMap<XslFunctionDefinitionKey, ElemFunction>();
 
   /**
    * This table is keyed on the target elements
    * of patterns, and contains linked lists of
    * the actual patterns that match the target element
    * to some degree of specifity.
-   * @serial
    */
   private Hashtable m_patternTable = new Hashtable(89);
 
-  /** Wildcard patterns.
-   *  @serial          */
+  /** 
+   * Wildcard patterns.
+   */
   private TemplateSubPatternAssociation m_wildCardPatterns = null;
 
-  /** Text Patterns.
-   *  @serial          */
+  /** 
+   * Text Patterns.
+   */
   private TemplateSubPatternAssociation m_textPatterns = null;
 
-  /** Root document Patterns.
-   *  @serial          */
+  /** 
+   * Root document Patterns.
+   */
   private TemplateSubPatternAssociation m_docPatterns = null;
 
-  /** Comment Patterns.
-   *  @serial          */
+  /** 
+   * Comment Patterns.
+   */
   private TemplateSubPatternAssociation m_commentPatterns = null;
 
   /**

@@ -167,7 +167,8 @@ public class XSL3FunctionService {
 
     				TemplateList templateList = stylesheetRoot.getTemplateListComposed();
 
-    				ElemTemplate elemTemplate = templateList.getTemplate(new QName(funcNamespace, funcName));
+    				int argCount = funcObj.getArgCount();
+    				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcName), argCount);
 
     				if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
     					// Evaluate XSL stylesheet function call

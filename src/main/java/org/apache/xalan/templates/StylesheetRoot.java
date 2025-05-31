@@ -359,7 +359,7 @@ public class StylesheetRoot extends StylesheetComposed
     m_decimalFormatSymbols = new Hashtable();
     m_keyDecls = new Vector();
     m_namespaceAliasComposed = new Hashtable();
-    m_templateList = new TemplateList();
+    m_templateList = new TemplateList();    
     m_variables = new Vector();
 
     // Now we sequence through the sorted elements, 
@@ -872,6 +872,18 @@ public class StylesheetRoot extends StylesheetComposed
   public ElemTemplate getTemplateComposed(QName qname)
   {
     return m_templateList.getTemplate(qname);
+  }
+  
+  /**
+   * Get an "xsl:function" property.
+   * 
+   * @param qname
+   * @param arity
+   * @return
+   */
+  public ElemFunction getXslFunction(QName qname, int arity)
+  {	  
+	  return (ElemFunction)(m_templateList.getXslFunction(qname, arity));
   }
   
   /**
