@@ -64,8 +64,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XslChooseTests.class, XslCopyTests.class, XslIterateTests.class, XslSequenceTests.class, 
 	            XslElementTests.class, XslSortTests.class, XslFunctionTests.class, XslCharacterMapTests.class, 
 	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class, 
-	            XslMathTests.class, XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, 
-	            XslHigherOrderFunctionTests.class, XslBooleanTests.class, XslNodeTests.class, XslStringTests.class,
+	            XslMathTests.class, XslNodeTestTests.class, XslPathTests.class, XslHigherOrderFunctionTests.class, 
+	            XslPredicateTests.class, XslBooleanTests.class, XslNodeTests.class, XslStringTests.class,
 	            XslFnDeepEqualTests.class, XslFnPositionTests.class, XslFnRootTests.class, XslFnKeyTests.class })
 public class W3CXSLT3Tests {
 

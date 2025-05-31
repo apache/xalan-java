@@ -1,14 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:16:45Z" fail="37" name="sort" pass="31" skipped="0" statusUnknown="12" totalRun="80">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:47:03Z" fail="44" name="sort" pass="35" skipped="0" statusUnknown="1" totalRun="80">
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
-   <testResult testName="sort-003"/>
+   <testResult status="fail" testName="sort-003">
+      <outResult>
+         <errTrace>xsl:sequence is not allowed in this position in the stylesheet</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="sort-004"/>
    <testResult status="pass" testName="sort-005"/>
-   <testResult testName="sort-006"/>
+   <testResult status="fail" testName="sort-006"/>
    <testResult status="pass" testName="sort-007"/>
    <testResult status="pass" testName="sort-008"/>
    <testResult status="pass" testName="sort-009"/>
-   <testResult testName="sort-010"/>
+   <testResult status="fail" testName="sort-010"/>
    <testResult status="pass" testName="sort-011"/>
    <testResult status="fail" testName="sort-012"/>
    <testResult status="fail" testName="sort-013"/>
@@ -22,9 +26,9 @@
    <testResult status="pass" testName="sort-021"/>
    <testResult status="pass" testName="sort-022"/>
    <testResult status="pass" testName="sort-023"/>
-   <testResult testName="sort-024"/>
-   <testResult testName="sort-025"/>
-   <testResult testName="sort-026"/>
+   <testResult status="fail" testName="sort-024"/>
+   <testResult status="fail" testName="sort-025"/>
+   <testResult status="fail" testName="sort-026"/>
    <testResult status="fail" testName="sort-027">
       <outResult>&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;&lt;out lang="default-order"/&gt;&#13;
 </outResult>
@@ -34,15 +38,15 @@
       <outResult>&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;&lt;out lang="default-order"/&gt;&#13;
 </outResult>
    </testResult>
-   <testResult testName="sort-030"/>
-   <testResult testName="sort-031"/>
+   <testResult status="pass" testName="sort-030"/>
+   <testResult status="pass" testName="sort-031"/>
    <testResult status="pass" testName="sort-032"/>
    <testResult status="pass" testName="sort-033"/>
    <testResult status="fail" testName="sort-034"/>
    <testResult status="pass" testName="sort-035"/>
    <testResult status="pass" testName="sort-036"/>
-   <testResult testName="sort-037"/>
-   <testResult testName="sort-038"/>
+   <testResult status="pass" testName="sort-037"/>
+   <testResult status="pass" testName="sort-038"/>
    <testResult status="pass" testName="sort-039"/>
    <testResult status="pass" testName="sort-040"/>
    <testResult status="pass" testName="sort-041"/>
@@ -63,7 +67,9 @@
          <errTrace>XTTE0590 : The value to parameter 'v' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="sort-055"/>
+   <testResult status="fail" testName="sort-055">
+      <outResult/>
+   </testResult>
    <testResult status="fail" testName="sort-056"/>
    <testResult status="fail" testName="sort-057"/>
    <testResult status="fail" testName="sort-058"/>

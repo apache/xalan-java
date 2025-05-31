@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:17:01Z" fail="23" name="boolean" pass="89" skipped="0" statusUnknown="0" totalRun="112">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:47:07Z" fail="22" name="boolean" pass="90" skipped="0" statusUnknown="0" totalRun="112">
    <testResult status="pass" testName="boolean-001"/>
    <testResult status="pass" testName="boolean-002"/>
    <testResult status="pass" testName="boolean-003"/>
@@ -67,10 +67,14 @@
    <testResult status="fail" testName="boolean-066"/>
    <testResult status="fail" testName="boolean-067"/>
    <testResult status="fail" testName="boolean-068"/>
-   <testResult status="fail" testName="boolean-069"/>
+   <testResult status="fail" testName="boolean-069">
+      <outResult>
+         <errTrace>XTTE0590 : The value to parameter 'set1' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="boolean-070"/>
    <testResult status="fail" testName="boolean-071"/>
-   <testResult status="fail" testName="boolean-072"/>
+   <testResult status="pass" testName="boolean-072"/>
    <testResult status="fail" testName="boolean-073"/>
    <testResult status="fail" testName="boolean-074"/>
    <testResult status="pass" testName="boolean-075"/>

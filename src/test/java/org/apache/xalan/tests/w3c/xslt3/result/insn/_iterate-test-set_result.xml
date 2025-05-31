@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:16:41Z" fail="27" name="iterate" pass="9" skipped="0" statusUnknown="8" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:47:00Z" fail="33" name="iterate" pass="10" skipped="0" statusUnknown="1" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -86,9 +86,9 @@
    <testResult status="pass" testName="iterate-012"/>
    <testResult status="pass" testName="iterate-013"/>
    <testResult status="fail" testName="iterate-014"/>
-   <testResult testName="iterate-015"/>
-   <testResult testName="iterate-016"/>
-   <testResult testName="iterate-017"/>
+   <testResult status="pass" testName="iterate-015"/>
+   <testResult status="fail" testName="iterate-016"/>
+   <testResult status="fail" testName="iterate-017"/>
    <testResult status="fail" testName="iterate-018"/>
    <testResult status="fail" testName="iterate-019"/>
    <testResult status="fail" testName="iterate-020"/>
@@ -153,15 +153,27 @@
          <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="iterate-039"/>
-   <testResult testName="iterate-040"/>
-   <testResult testName="iterate-041"/>
+   <testResult status="fail" testName="iterate-039">
+      <outResult>
+         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="iterate-040">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="iterate-041">
+      <outResult/>
+   </testResult>
    <testResult status="fail" testName="iterate-042">
       <outResult>
          <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="iterate-043"/>
+   <testResult status="fail" testName="iterate-043">
+      <outResult>
+         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="iterate-901">
       <outResult>
          <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of basketCost</errTrace>

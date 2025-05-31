@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:16:53Z" fail="7" name="castable" pass="0" skipped="0" statusUnknown="2" totalRun="9">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:47:04Z" fail="9" name="castable" pass="0" skipped="0" statusUnknown="0" totalRun="9">
    <testResult status="fail" testName="castable-001"/>
    <testResult status="fail" testName="castable-002">
       <outResult>
@@ -15,8 +15,18 @@
          <errTrace>XTTE0570 : The source xdm sequence cannot be cast to the provided sequence type.</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="castable-005"/>
-   <testResult testName="castable-006"/>
+   <testResult status="fail" testName="castable-005">
+      <outResult>
+         <errTrace>Failed calling setNamespace method</errTrace>
+         <errTrace>Failed calling setSchemaLocation method</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="castable-006">
+      <outResult>
+         <errTrace>Failed calling setNamespace method</errTrace>
+         <errTrace>Failed calling setSchemaLocation method</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="castable-007">
       <outResult>
          <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>

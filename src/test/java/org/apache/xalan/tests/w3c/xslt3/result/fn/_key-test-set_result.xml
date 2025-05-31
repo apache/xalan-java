@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:17:09Z" fail="3" name="key" pass="20" skipped="0" statusUnknown="2" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:47:09Z" fail="3" name="key" pass="21" skipped="0" statusUnknown="1" totalRun="25">
    <testResult status="pass" testName="key-001"/>
    <testResult status="fail" testName="key-002">
       <outResult/>
    </testResult>
    <testResult status="pass" testName="key-003"/>
    <testResult status="fail" testName="key-004"/>
-   <testResult testName="key-005"/>
+   <testResult status="pass" testName="key-005"/>
    <testResult status="fail" testName="key-006">
       <outResult/>
    </testResult>

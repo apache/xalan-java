@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:16:36Z" fail="14" name="call-template" pass="25" skipped="1" statusUnknown="2" totalRun="42">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:46:58Z" fail="16" name="call-template" pass="25" skipped="1" statusUnknown="0" totalRun="42">
    <testResult status="fail" testName="call-template-0001">
       <outResult>
          <errTrace>XPTY0004 : An error occured while evaluating an XPath expression ancestor-or-self::*.</errTrace>
@@ -17,7 +17,7 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt; Do Nothing! </outResult>
    </testResult>
    <testResult status="pass" testName="call-template-0107"/>
-   <testResult testName="call-template-0108"/>
+   <testResult status="fail" testName="call-template-0108"/>
    <testResult status="fail" testName="call-template-0109">
       <outResult/>
    </testResult>
@@ -49,7 +49,11 @@
    <testResult status="fail" testName="call-template-0901"/>
    <testResult status="pass" testName="call-template-1001"/>
    <testResult status="fail" testName="call-template-1002"/>
-   <testResult testName="call-template-1003"/>
+   <testResult status="fail" testName="call-template-1003">
+      <outResult>
+         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="call-template-1101"/>
    <testResult status="pass" testName="call-template-1102"/>
    <testResult status="pass" testName="call-template-1201"/>

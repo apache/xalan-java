@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:17:04Z" fail="6" name="string" pass="128" skipped="0" statusUnknown="2" totalRun="136">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:47:07Z" fail="8" name="string" pass="128" skipped="0" statusUnknown="0" totalRun="136">
    <testResult status="pass" testName="string-001"/>
    <testResult status="pass" testName="string-002"/>
    <testResult status="pass" testName="string-003"/>
@@ -134,8 +134,16 @@
    <testResult status="pass" testName="string-131"/>
    <testResult status="fail" testName="string-132"/>
    <testResult status="pass" testName="string-133"/>
-   <testResult testName="string-134"/>
-   <testResult testName="string-135"/>
+   <testResult status="fail" testName="string-134">
+      <outResult>
+         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="string-135">
+      <outResult>
+         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="string-136">
       <outResult>
          <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>

@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,6 +42,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
@@ -54,6 +58,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -86,11 +91,15 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	
 	private static final String FILE_ATTR = "file";
 	
+	private static final String TRUE = "true";
+	
 	private static final String EXPECTED_NODE_KIND_ERROR = "error";
     
     private static final String EXPECTED_NODE_KIND_ASSERT_ALL_OF = "all-of";
     
-    private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";
+    private static final String EXPECTED_NODE_KIND_ASSERT = "assert";
+    
+    private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";        
     
     private static final String SERIALIZATION_MATCHES = "serialization-matches";
     
@@ -311,6 +320,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	
     	try {
     		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);
+    		
     		if (m_initTemplateName != null) {
     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);
     		}
@@ -377,7 +387,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			else {
     				testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter);
     		    }
-    		}
+    		}    		
             else if (EXPECTED_NODE_KIND_ASSERT_XML.equals(expectedNodeKindName)) {
             	Element elemNode = (Element)nodeExpected;
             	String fileName = elemNode.getAttribute(FILE_ATTR);
@@ -404,7 +414,39 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	else {
             		elemTestResult.setAttribute("status", "fail");
             	}
-    		}    		    		
+    		}
+            else if (EXPECTED_NODE_KIND_ASSERT.equals(expectedNodeKindName)) {
+            	Element elemNode = (Element)nodeExpected;
+            	String fileName = elemNode.getAttribute(FILE_ATTR);
+            	String expectedResultStr = null;
+            	if (!"".equals(fileName)) {
+            		URI uri = new URI(m_xslTransformTestSetFilePath);
+            		uri = uri.resolve(fileName);
+            		expectedResultStr = getStringContentFromUrl(uri.toURL());
+            	}
+            	else {
+            		expectedResultStr = elemNode.getTextContent();            		
+            	}
+
+            	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
+            	String str1 = serializeXmlDomElementNode(xmlInpDoc1);
+            	StringReader strReader = new StringReader(str1);
+            	
+            	// We need to do an XPath 1.0 check here. This is probably 
+            	// using XPath 1.0 processor from jdk.
+            	XPathFactory xpathFactory = XPathFactory.newInstance();
+            	XPath xpath = xpathFactory.newXPath();
+            	XPathExpression xpathExpr = xpath.compile(expectedResultStr);
+            	
+            	String xpathEvalResult = xpathExpr.evaluate(new InputSource(strReader));
+
+            	if (TRUE.equals(xpathEvalResult)) {            		
+            		elemTestResult.setAttribute("status", "pass");
+            	}
+            	else {
+            		elemTestResult.setAttribute("status", "fail");
+            	}
+    		}
     	}
     	catch (SAXException ex) {
     		handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 

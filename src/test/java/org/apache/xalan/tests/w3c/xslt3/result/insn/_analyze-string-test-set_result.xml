@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:16:28Z" fail="18" name="analyze-string" pass="33" skipped="5" statusUnknown="2" totalRun="58">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:46:55Z" fail="20" name="analyze-string" pass="33" skipped="5" statusUnknown="0" totalRun="58">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -59,7 +59,7 @@
       </outResult>
    </testResult>
    <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult testName="analyze-string-091b"/>
+   <testResult status="fail" testName="analyze-string-091b"/>
    <testResult status="fail" testName="analyze-string-092">
       <outResult>
          <errTrace>Variable v1 is directly or indirectly referencing itself!</errTrace>
@@ -73,7 +73,7 @@
    <testResult status="fail" testName="analyze-string-095">
       <outResult/>
    </testResult>
-   <testResult testName="analyze-string-096"/>
+   <testResult status="fail" testName="analyze-string-096"/>
    <testResult status="fail" testName="analyze-string-097">
       <outResult>
          <errTrace>XTTE1540 : An error occured while evaluating an XSL stylesheet xsl:copy-of instruction.</errTrace>

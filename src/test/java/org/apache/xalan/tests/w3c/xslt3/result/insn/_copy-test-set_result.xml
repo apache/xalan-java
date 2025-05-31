@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:16:39Z" fail="38" name="copy" pass="16" skipped="0" statusUnknown="6" totalRun="60">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:47:00Z" fail="43" name="copy" pass="16" skipped="0" statusUnknown="1" totalRun="60">
    <testResult status="fail" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="fail" testName="copy-0103"/>
@@ -44,9 +44,9 @@
          <errTrace>Illegal value: #current used for QNAME attribute: mode</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="copy-0609"/>
-   <testResult testName="copy-0610"/>
-   <testResult testName="copy-0611"/>
+   <testResult status="fail" testName="copy-0609"/>
+   <testResult status="fail" testName="copy-0610"/>
+   <testResult status="fail" testName="copy-0611"/>
    <testResult status="fail" testName="copy-0612">
       <outResult>
          <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
@@ -202,7 +202,7 @@
    <testResult status="pass" testName="copy-1202"/>
    <testResult status="pass" testName="copy-1203"/>
    <testResult status="pass" testName="copy-1204"/>
-   <testResult testName="copy-1205"/>
+   <testResult status="fail" testName="copy-1205"/>
    <testResult status="fail" testName="copy-1206"/>
    <testResult status="fail" testName="copy-1207"/>
    <testResult status="fail" testName="copy-1208"/>
@@ -217,7 +217,7 @@
          <errTrace>XTSE0010 : an instruction xsl:on-empty is not known to the XSLT processor.</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="copy-1211"/>
+   <testResult status="fail" testName="copy-1211"/>
    <testResult status="fail" testName="copy-1212"/>
    <testResult status="fail" testName="copy-1213">
       <outResult>

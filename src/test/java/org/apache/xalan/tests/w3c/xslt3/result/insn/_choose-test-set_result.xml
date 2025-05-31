@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:16:37Z" fail="3" name="choose" pass="17" skipped="0" statusUnknown="4" totalRun="24">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:46:58Z" fail="6" name="choose" pass="17" skipped="0" statusUnknown="1" totalRun="24">
    <testResult status="pass" testName="choose-0101"/>
    <testResult status="pass" testName="choose-0102"/>
    <testResult status="fail" testName="choose-0103"/>
    <testResult status="pass" testName="choose-0104"/>
-   <testResult testName="choose-0105"/>
-   <testResult testName="choose-0106"/>
-   <testResult testName="choose-0107"/>
+   <testResult status="fail" testName="choose-0105">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="choose-0106"/>
+   <testResult status="fail" testName="choose-0107"/>
    <testResult status="pass" testName="choose-0201"/>
    <testResult status="fail" testName="choose-0202">
       <outResult/>

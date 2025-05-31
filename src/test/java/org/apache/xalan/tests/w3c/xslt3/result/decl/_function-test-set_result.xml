@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T10:16:47Z" fail="27" name="function" pass="21" skipped="4" statusUnknown="18" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-05-31T11:47:03Z" fail="39" name="function" pass="22" skipped="4" statusUnknown="5" totalRun="70">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -14,17 +14,17 @@
    <testResult status="pass" testName="function-0101"/>
    <testResult status="pass" testName="function-0102"/>
    <testResult status="pass" testName="function-0103"/>
-   <testResult testName="function-0104"/>
+   <testResult status="fail" testName="function-0104"/>
    <testResult status="pass" testName="function-0105"/>
-   <testResult testName="function-0106"/>
+   <testResult status="fail" testName="function-0106"/>
    <testResult status="pass" testName="function-0107"/>
-   <testResult testName="function-0108"/>
+   <testResult status="fail" testName="function-0108"/>
    <testResult status="pass" testName="function-0109"/>
-   <testResult testName="function-0110"/>
+   <testResult status="fail" testName="function-0110"/>
    <testResult status="pass" testName="function-0111"/>
-   <testResult testName="function-0112"/>
+   <testResult status="fail" testName="function-0112"/>
    <testResult status="pass" testName="function-0113"/>
-   <testResult testName="function-0114"/>
+   <testResult status="fail" testName="function-0114"/>
    <testResult status="fail" testName="function-0115">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;17&lt;/out&gt;</outResult>
    </testResult>
@@ -36,7 +36,7 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;17&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult testName="function-0119b"/>
+   <testResult status="pass" testName="function-0119b"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="fail" testName="function-0120b">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;true&lt;/out&gt;</outResult>
@@ -56,8 +56,17 @@
    <testResult status="pass" testName="function-0205"/>
    <testResult status="fail" testName="function-0301"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult testName="function-0302b"/>
-   <testResult testName="function-0303"/>
+   <testResult status="fail" testName="function-0302b">
+      <outResult>
+         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-0303">
+      <outResult/>
+   </testResult>
    <testResult status="fail" testName="function-0401"/>
    <testResult status="fail" testName="function-0501">
       <outResult>
@@ -86,7 +95,7 @@
    <testResult status="pass" testName="function-1012"/>
    <testResult status="fail" testName="function-1013"/>
    <testResult status="fail" testName="function-1014"/>
-   <testResult testName="function-1015"/>
+   <testResult status="fail" testName="function-1015"/>
    <testResult status="fail" testName="function-1016">
       <outResult>
          <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Found more than one XSL stylesheet function named: x:test with arity 1</errTrace>
@@ -111,14 +120,26 @@
    <testResult status="fail" testName="function-1025">
       <outResult/>
    </testResult>
-   <testResult testName="function-1026"/>
+   <testResult status="fail" testName="function-1026">
+      <outResult>
+         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://xxx.com/}test(), doesn't match the declared parameter type xs:integer.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="function-1027">
       <outResult/>
    </testResult>
-   <testResult testName="function-1028"/>
+   <testResult status="fail" testName="function-1028">
+      <outResult>
+         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://xxx.com/}test(), doesn't match the declared parameter type xs:integer.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="function-1029">
       <outResult/>
    </testResult>
-   <testResult testName="function-1030"/>
+   <testResult status="fail" testName="function-1030">
+      <outResult>
+         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://xxx.com/}test(), doesn't match the declared parameter type xs:integer.</errTrace>
+      </outResult>
+   </testResult>
    <testResult testName="function-1031"/>
 </testrun>
