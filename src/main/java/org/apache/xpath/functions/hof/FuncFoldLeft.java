@@ -51,6 +51,9 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
     
     private static final long serialVersionUID = -3772850377799360556L;
 
+    /**
+     * Evaluate the function call.
+     */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         XObject evalResult = new ResultSequence();
@@ -79,7 +82,8 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
         
         XPathInlineFunction foldLeftInlineFuncArg = null;
         
-        ElemFunction elemFunction = null;        
+        ElemFunction elemFunction = null;
+        
         TransformerImpl transformerImpl = null;
         
         if (m_arg2 instanceof Variable) {

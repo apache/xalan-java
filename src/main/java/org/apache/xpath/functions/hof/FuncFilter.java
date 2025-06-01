@@ -25,14 +25,15 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
@@ -41,11 +42,15 @@ import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
+
+import xml.xpath31.processor.types.XSBoolean;
 
 /**
  * Implementation of an XPath 3.1 function fn:filter.
@@ -57,8 +62,6 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class FuncFilter extends Function2Args {
 
    private static final long serialVersionUID = 2912594883291006421L;
-   
-   private static final String FUNCTION_NAME = "filter()";
    
    /**
     * This class field is used during, XPath.fixupVariables(..) action 
@@ -88,44 +91,65 @@ public class FuncFilter extends Function2Args {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        final int contextNode = xctxt.getCurrentNode();
+        final int contextNode = xctxt.getCurrentNode();                               
         
-        Expression arg0 = getArg0();
-        Expression arg1 = getArg1();                
+        XObject xsObjectArg = null;
         
-        DTMCursorIterator arg0DtmIterator = null;
-        
-        XObject arg0XsObject = null;
+        DTMCursorIterator dtmIterArg = null;
                   
-        if (arg0 instanceof LocPathIterator) {
-            arg0DtmIterator = arg0.asIterator(xctxt, contextNode);               
+        if (m_arg0 instanceof LocPathIterator) {
+            dtmIterArg = m_arg0.asIterator(xctxt, contextNode);               
         }
         else {
-            arg0XsObject = arg0.execute(xctxt, contextNode);
+            xsObjectArg = m_arg0.execute(xctxt, contextNode);
         }
         
         ResultSequence resultSeq = new ResultSequence();
                     
-        if (arg1 instanceof XPathInlineFunction) {
-            XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1;
+        if (m_arg1 instanceof XPathInlineFunction) {
+            XPathInlineFunction inlineFuncArg = (XPathInlineFunction)m_arg1;
+            
             validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
-            resultSeq = evaluateFnFilter(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg); 
+            
+            if (xsObjectArg != null && !(xsObjectArg instanceof ResultSequence)) {
+            	xsObjectArg = castSingletonItemToResultSequence(xsObjectArg); 
+            }
+            
+            resultSeq = evaluateFnFilter(xctxt, xsObjectArg, dtmIterArg, inlineFuncArg); 
+        }                
+        else if (m_arg1 instanceof NodeTest) {
+        	TransformerImpl transformerImpl = getTransformerImplFromXPathExpression(m_arg1);
+            
+        	ElemFunction elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg1, transformerImpl, srcLocator);
+            
+        	if (xsObjectArg != null && !(xsObjectArg instanceof ResultSequence)) {
+            	xsObjectArg = castSingletonItemToResultSequence(xsObjectArg); 
+            }
+        	
+        	resultSeq = evaluateFnFilter(xctxt, xsObjectArg, dtmIterArg, elemFunction, transformerImpl);            
         }
-        else if (arg1 instanceof Variable) {
-            XObject arg1VarValue = arg1.execute(xctxt);
+        else if (m_arg1 instanceof Variable) {
+            XObject arg1VarValue = m_arg1.execute(xctxt);
+            
             if (arg1VarValue instanceof XPathInlineFunction) {
                 XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
+                
                 validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
-                resultSeq = evaluateFnFilter(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg);   
+                
+                if (xsObjectArg != null && !(xsObjectArg instanceof ResultSequence)) {
+                	xsObjectArg = castSingletonItemToResultSequence(xsObjectArg); 
+                }
+                
+                resultSeq = evaluateFnFilter(xctxt, xsObjectArg, dtmIterArg, inlineFuncArg);   
             }
             else {
-                throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call filter(), "
-                                                                                               + "is not a function item.", xctxt.getSAXLocator());    
+                throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call fn:filter, "
+                                                                                               + "is not a function item.", srcLocator);    
             }
         }
         else {
-            throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call filter(), "
-                                                                                           + "is not a function item.", xctxt.getSAXLocator());               
+            throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call fn:filter, "
+                                                                                               + "is not a function item.", srcLocator);               
         }            
         
         funcEvaluationResult = resultSeq;
@@ -171,30 +195,34 @@ public class FuncFilter extends Function2Args {
                                                                                                 javax.xml.transform.TransformerException {
       List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
       if (funcParamList.size() != 1) {
-          throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied function fn:filter's function item has " + 
-                                                                                                      funcParamList.size() + " parameters. "
+          throw new javax.xml.transform.TransformerException("XPTY0004 : The function fn:filter is called with a function item argument having " + 
+                                                                                                      funcParamList.size() + " parameter(s). "
                                                                                                       + "Expected 1.", srcLocator);   
       }
   }
   
-  /*
-   * Evaluate the function call fn:filter.
+  /**
+   * Method definition to evaluate the function call fn:filter, when its function item 
+   * argument was compiled from an XPath inline function expression. One of the argument 
+   * xsObject or dtmIterator will be null while the other will be non-null, depending
+   * upon whether an input sequence was constructed from a sequence of non XML values
+   * or from XML nodes. 
    */
-  private ResultSequence evaluateFnFilter(XPathContext xctxt, XObject arg0XsObject, 
-                                                 DTMCursorIterator arg0DtmIterator, XPathInlineFunction arg1) 
-                                                                                    throws TransformerException {
-        ResultSequence resultSeq = new ResultSequence(); 
+  private ResultSequence evaluateFnFilter(XPathContext xctxt, XObject xsObject, DTMCursorIterator dtmIterator, 
+		                                                      XPathInlineFunction xpathInlineFunction) throws TransformerException {
+	  
+        ResultSequence resultSeq = new ResultSequence();
         
-        List<InlineFunctionParameter> funcParamList = arg1.getFuncParamList();
+        SourceLocator srcLocator = xctxt.getSAXLocator();
+        
+        List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
         QName varQname = new QName((funcParamList.get(0)).getParamName());
         
-        String funcBodyXPathExprStr = arg1.getFuncBodyXPathExprStr();
+        String funcBodyXPathExprStr = xpathInlineFunction.getFuncBodyXPathExprStr();
         
         if (funcBodyXPathExprStr == null || "".equals(funcBodyXPathExprStr)) {
            return resultSeq;
         }                
-        
-        SourceLocator srcLocator = xctxt.getSAXLocator();
         
         PrefixResolver prefixResolver = xctxt.getNamespaceContext();
         List<XMLNSDecl> prefixTable = null;
@@ -210,40 +238,41 @@ public class FuncFilter extends Function2Args {
         
         XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, prefixResolver, XPath.SELECT, null);
         
-        if (arg0XsObject instanceof ResultSequence) {
+        if (xsObject instanceof ResultSequence) {
            XPathContext xpathContextNew = new XPathContext(false);
            Map<QName, XObject> inlineFunctionVarMap = xpathContextNew.getXPathVarMap();
         
-           ResultSequence inpResultSeq = (ResultSequence)arg0XsObject;
+           ResultSequence inpResultSeq = (ResultSequence)xsObject;
            for (int idx = 0; idx < inpResultSeq.size(); idx++) {
                XObject inpSeqItem = inpResultSeq.item(idx);
                if (varQname != null) {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
                }
         
-               XObject resultObj = inlineFnXpath.execute(xpathContextNew, DTM.NULL, null);
-               if (resultObj instanceof XBoolean) {
-                   if (((XBoolean)resultObj).bool()) {
+               XObject funcEvalResult = inlineFnXpath.execute(xpathContextNew, DTM.NULL, null);
+               if ((funcEvalResult instanceof XBoolean) || (funcEvalResult instanceof XBooleanStatic) 
+                                                        || (funcEvalResult instanceof XSBoolean)) {
+                   if (funcEvalResult.bool()) {
                       resultSeq.add(inpSeqItem);
                    }
                }
                else {
-                   throw new javax.xml.transform.TransformerException("XPTY0004 : The item type of the result of calling "
-                                                                                              + "function filter() is not xs:boolean.", xctxt.getSAXLocator()); 
+                   throw new javax.xml.transform.TransformerException("XPTY0004 : The function fn:filter's function item argument "
+                   		                                                                      + "when evaluated didn't produce a xs:boolean result.", srcLocator); 
                }
            }
         
            inlineFunctionVarMap.clear();
         }
-        else if (arg0DtmIterator != null) {
+        else if (dtmIterator != null) {
            Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
         
            final int contextNode = xctxt.getCurrentNode();           
            
-           int dtmNodeHandle;
+           int nextNode;
            
-           while (DTM.NULL != (dtmNodeHandle = arg0DtmIterator.nextNode())) {               
-               XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(dtmNodeHandle, xctxt.getDTMManager());
+           while (DTM.NULL != (nextNode = dtmIterator.nextNode())) {               
+               XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(nextNode, xctxt.getDTMManager());
                
                if (varQname != null) {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
@@ -257,15 +286,16 @@ public class FuncFilter extends Function2Args {
                   m_xpathVarList.remove(varQname);
                }
                
-               XObject resultObj = inlineFnXpath.execute(xctxt, contextNode, null);
-               if (resultObj instanceof XBoolean) {
-                   if (((XBoolean)resultObj).bool()) {                       
+               XObject funcEvalResult = inlineFnXpath.execute(xctxt, contextNode, null);
+               if ((funcEvalResult instanceof XBoolean) || (funcEvalResult instanceof XBooleanStatic) 
+                                                        || (funcEvalResult instanceof XSBoolean)) {
+                   if (funcEvalResult.bool()) {                       
                        resultSeq.add(inpSeqItem);
                    }
                }
                else {
-                   throw new javax.xml.transform.TransformerException("XPTY0004 : The item type of the result of calling "
-                                                                                              + "function filter() is not xs:boolean.", xctxt.getSAXLocator());  
+            	   throw new javax.xml.transform.TransformerException("XPTY0004 : The function fn:filter's function item argument "
+                                                                                               + "when evaluated didn't produce a xs:boolean result.", srcLocator);  
                }
            }
         
@@ -274,5 +304,80 @@ public class FuncFilter extends Function2Args {
         
         return resultSeq;
    }
+  
+  /**
+   * Method definition to evaluate the function call fn:filter, when its function item 
+   * argument was compiled from an XSL xsl:function definition. One of the argument 
+   * xsObject or dtmIterator will be null while the other will be non-null, depending
+   * upon whether an input sequence was constructed from a sequence of non XML values
+   * or from XML nodes. 
+   */
+  private ResultSequence evaluateFnFilter(XPathContext xctxt, XObject xsObject, DTMCursorIterator dtmIterator,
+		  								  ElemFunction elemFunction, TransformerImpl transformerImpl) throws TransformerException {
+	  
+	  ResultSequence resultSeq = new ResultSequence();
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+	  if (xsObject instanceof ResultSequence) {
+		  ResultSequence inpResultSeq = (ResultSequence)xsObject;
+          for (int idx = 0; idx < inpResultSeq.size(); idx++) {
+        	  XObject inpSeqItem = inpResultSeq.item(idx);
+        	  ResultSequence argSeq = new ResultSequence();
+        	  argSeq.add(inpSeqItem);
+        	  XObject funcEvalResult = elemFunction.evaluateXslFunction(transformerImpl, argSeq);
+        	  if ((funcEvalResult instanceof XBoolean) || (funcEvalResult instanceof XBooleanStatic) 
+        			                                   || (funcEvalResult instanceof XSBoolean)) {
+                  if (funcEvalResult.bool()) {                       
+                      resultSeq.add(inpSeqItem);
+                  }
+              }
+              else {
+            	  throw new javax.xml.transform.TransformerException("XPTY0004 : The function fn:filter's function item argument "
+                                                                                                         + "when evaluated didn't produce a xs:boolean result.", srcLocator);  
+              }
+          }
+	  }
+	  else {		  
+		  int nextNode;
+		  
+          while (DTM.NULL != (nextNode = dtmIterator.nextNode())) {               
+              XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(nextNode, xctxt.getDTMManager());
+              ResultSequence argSeq = new ResultSequence();
+        	  argSeq.add(inpSeqItem);
+        	  XObject funcEvalResult = elemFunction.evaluateXslFunction(transformerImpl, argSeq);
+        	  if ((funcEvalResult instanceof XBoolean) || (funcEvalResult instanceof XBooleanStatic) 
+        			                                   || (funcEvalResult instanceof XSBoolean)) {
+                  if (funcEvalResult.bool()) {                       
+                      resultSeq.add(inpSeqItem);
+                  }
+              }
+              else {
+            	  throw new javax.xml.transform.TransformerException("XPTY0004 : The function fn:filter's function item argument "
+                                                                                                         + "when evaluated didn't produce a xs:boolean result.", srcLocator);  
+              }
+          }		  
+	  }
+	  
+	  return resultSeq;
+  }
+  
+  /**
+   * Method definition to convert a singleton XDM item to a sequence 
+   * containing that one item.
+   * 
+   * @param xObj					    A singleton item to be cast to a sequence
+   * @return							An XObject instance representing the returned sequence						
+   */
+  private XObject castSingletonItemToResultSequence(XObject xObj) {	  
+	  XObject result = null;
+	  
+	  ResultSequence rSeq = new ResultSequence();
+	  rSeq.add(xObj);
+	  
+	  result = rSeq;
+	  
+	  return result;
+  }
 
 }

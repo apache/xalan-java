@@ -26,8 +26,14 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.XPathArrayConstructor;
@@ -37,10 +43,12 @@ import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
@@ -55,42 +63,45 @@ public class FuncApply extends Function2Args {
    private static final long serialVersionUID = 1073550747347273561L;
 
    /**
-    * 
-   * Implementation of the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * 
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
+    * Evaluate the function call.
+    */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {                      
-      
+	   
         XObject result = null;
         
-        Expression arg0 = getArg0();
-        Expression arg1 = getArg1();
-        
         SourceLocator srcLocator = xctxt.getSAXLocator();
- 
-        if (arg0 instanceof XPathNamedFunctionReference) {
-            XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)arg0;
-            result = getFnApplyResult(namedFuncRef, arg1, xctxt);
+        
+        TransformerImpl transformerImpl = null;
+        
+        ElemFunction elemFunction = null;
+        
+        if (m_arg0 instanceof XPathNamedFunctionReference) {
+            XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)m_arg0;
+            
+            result = getFnApplyResult(namedFuncRef, m_arg1, xctxt);
         }
-        else if (arg0 instanceof XPathInlineFunction) {
-        	XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)arg0;
-        	result = getFnApplyResult(xpathInlineFunction, arg1, xctxt);
+        else if (m_arg0 instanceof XPathInlineFunction) {
+        	XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)m_arg0;
+        	
+        	result = getFnApplyResult(xpathInlineFunction, m_arg1, xctxt);
         }
-        else if (arg0 instanceof Variable) {           
-            XObject arg0VarValue = arg0.execute(xctxt);
+        else if (m_arg0 instanceof NodeTest) {
+            transformerImpl = getTransformerImplFromXPathExpression(m_arg0);            
+            elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg0, transformerImpl, srcLocator);
+            result = getFnApplyResult(elemFunction, m_arg1, xctxt, transformerImpl);
+        }
+        else if (m_arg0 instanceof Variable) {           
+            XObject arg0VarValue = m_arg0.execute(xctxt);
             if (arg0VarValue instanceof XPathNamedFunctionReference) {
             	XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)arg0VarValue;
-            	result = getFnApplyResult(namedFuncRef, arg1, xctxt);
+            	
+            	result = getFnApplyResult(namedFuncRef, m_arg1, xctxt);
             }
             else if (arg0VarValue instanceof XPathInlineFunction) {            	
             	XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)arg0VarValue;
-            	result = getFnApplyResult(xpathInlineFunction, arg1, xctxt);
+            	
+            	result = getFnApplyResult(xpathInlineFunction, m_arg1, xctxt);
             }
             else {
                 throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument provided to function call fn:apply, "
@@ -144,7 +155,7 @@ public class FuncApply extends Function2Args {
 	  
 	  if (!(arg1XObj instanceof XPathArray)) {
 		 throw new TransformerException("XPTY0004 : The 2nd argument provided to function call fn:apply, "
-		 		                                                            + "is not an array reference.", srcLocator);   
+		 		                                                            							+ "is not an array reference.", srcLocator);   
 	  }
 	  
 	  String funcNamespace = namedFuncRef.getFuncNamespace();
@@ -182,12 +193,12 @@ public class FuncApply extends Function2Args {
 		  } 
 		  catch (WrongNumberArgsException ex) {			    
 			 throw new javax.xml.transform.TransformerException("XPTY0004 : Wrong number of arguments provided, "
-					                                                   + "during function call " + expandedFuncName + ".", srcLocator); 
+					                                                   									+ "during function call " + expandedFuncName + ".", srcLocator); 
 		  }               
 	  }
 	  else {
 		  throw new javax.xml.transform.TransformerException("XPTY0004 : There is no function definition "
-		  		                                                    + "found, for the function " + expandedFuncName + ".", srcLocator);
+		  		                                                    									+ "found, for the function " + expandedFuncName + ".", srcLocator);
 	  }
 
 	  return result;
@@ -204,7 +215,7 @@ public class FuncApply extends Function2Args {
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
-	  // We manually construct an XPath dynamic function call expression, 
+	  // Construct an XPath dynamic function call expression, 
 	  // to evaluate this function call.
 	  
 	  XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();
@@ -224,8 +235,8 @@ public class FuncApply extends Function2Args {
 		  List<InlineFunctionParameter> inlineFuncParamList = xpathInlineFunction.getFuncParamList();
 		  if (arrConsXPathParts.size() != inlineFuncParamList.size()) {
 			  throw new TransformerException("XPTY0004 : The number of arguments provided with function call fn:apply() "
-					                                     + "within its arguments array is " + arrConsXPathParts.size() + 
-					                                       ". Required " + inlineFuncParamList.size() + "."); 
+																                                     + "within its arguments array is " + arrConsXPathParts.size() + 
+																                                       ". Required " + inlineFuncParamList.size() + "."); 
 		  }
 		  else {
 			  List<String> dfcArgList = new ArrayList<String>();
@@ -236,6 +247,60 @@ public class FuncApply extends Function2Args {
 			  xpathDynamicFunctionCall.setArgList(dfcArgList);
 			  
 			  result = xpathDynamicFunctionCall.execute(xctxt);
+		  }
+	  }
+
+	  return result;
+  }
+  
+  /**
+   * Get result of fn:apply function call, when fn:apply's function 
+   * argument is xsl:function reference.
+   */
+  private XObject getFnApplyResult(ElemFunction elemFunction, Expression arrXPathExpr, 
+		                           XPathContext xctxt, TransformerImpl transformerImpl) throws TransformerException {
+	  
+	  XObject result = null;
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+	  if (!(arrXPathExpr instanceof XPathArrayConstructor)) {
+		  throw new TransformerException("XPTY0004 : The 2nd argument provided to function call fn:apply, "
+				                                                             							+ "is not an array reference.", srcLocator);   
+	  }
+	  else {
+		  XPathArrayConstructor xpathArrConstructor = (XPathArrayConstructor)arrXPathExpr;
+		  List<String> arrConsXPathParts = xpathArrConstructor.getArrayConstructorXPathParts();
+		  int xslFunctionParamCount = elemFunction.getParamCount();
+		  if (arrConsXPathParts.size() != xslFunctionParamCount) {
+			  throw new TransformerException("XPTY0004 : The number of arguments provided with function call fn:apply() "
+																                                     				+ "within its arguments array is " + arrConsXPathParts.size() + 
+																                                     				". Required " + xslFunctionParamCount + "."); 
+		  }
+		  else {
+			  final int contextNode = xctxt.getCurrentNode();
+
+			  List<XMLNSDecl> prefixTable = null;
+			  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+
+			  if (elemTemplateElement != null) {
+				  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+			  }
+
+			  ResultSequence argSequence = new ResultSequence();
+			  for (int idx = 0; idx < xslFunctionParamCount; idx++) {
+				  String xpathStr = arrConsXPathParts.get(idx);
+				  if (prefixTable != null) {
+					  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, prefixTable);
+				  }
+
+				  XPath argXPath = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+				  XObject argVal = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());    					
+				  argSequence.add(argVal);
+			  }
+
+			  result = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
 		  }
 	  }
 

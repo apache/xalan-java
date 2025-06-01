@@ -20,7 +20,7 @@ package org.apache.xpath.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import xml.xpath31.processor.types.XSAnyType;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 
 /**
  * This class represents, an XPath 3.1 xdm sequence.
@@ -33,8 +33,10 @@ public class ResultSequence extends XObject
 {
     static final long serialVersionUID = -5736721866747906182L;
     
-    // the underlying list object, to store items of this result sequence 
-    private List<XObject> rsList = new ArrayList<XObject>();
+    /**
+     * java.util.List object, to store items of this XDM result sequence.
+     */
+    private List<XObject> m_list = new ArrayList<XObject>();
     
     /**
      * Class constructor.
@@ -50,28 +52,38 @@ public class ResultSequence extends XObject
      * Append an item at the end of the sequence.
      */
     public void add(XObject item) {
-        rsList.add(item);    
+        m_list.add(item);    
     }
     
     /**
      * Set an item at a particular index.
      */
     public void set(int idx, XObject item) {
-        rsList.set(idx, item);
+        m_list.set(idx, item);
     }
     
     /**
      * Get an item stored at a particular index.
      */
     public XObject item(int idx) {
-        return rsList.get(idx);     
+    	XObject result = null;
+    	
+    	XObject xObj = m_list.get(idx);
+    	if (xObj instanceof XMLNodeCursorImpl) {
+    		result = xObj.getFresh(); 
+    	}
+    	else {
+    		result = xObj; 
+    	}
+    	
+        return result;     
     }
     
     /**
      * Get the size of the current sequence object.
      */
     public int size() {
-        return rsList.size();   
+        return m_list.size();   
     }
     
     /**
@@ -79,7 +91,7 @@ public class ResultSequence extends XObject
      * XObject objects. 
      */
     public List<XObject> getResultSequenceItems() {
-        return rsList;   
+        return m_list;   
     }
     
     /**
@@ -89,43 +101,36 @@ public class ResultSequence extends XObject
      * is greater than 0.
      */
     public boolean bool() {
-        return (rsList.size() > 0);       
+        return (m_list.size() > 0);       
     }
     
     /**
-     * Get the string value of this ResultSequence object.
+     * Method definition to get string value of this ResultSequence 
+     * object.
      * 
-     * This method, produces a default serialization of this
-     * string value, which is space separated string values 
-     * of the xdm items of this sequence.
+     * This method, produces a default serialization format of
+     * string value, which is space character separated string 
+     * values of the xdm items within this sequence.
      */
-    public String str() {
-        String resultStr = null;
+    public String str() {        
+    	String result = null;
         
         StringBuffer strBuff = new StringBuffer();
-        for (int idx = 0; idx < rsList.size(); idx++) {
-           XObject item = rsList.get(idx);
-           if (idx < (rsList.size() - 1)) {
-              if (item instanceof XSAnyType) {
-                  strBuff.append(((XSAnyType)item).stringValue() + " ");    
-              }
-              else {
-                 strBuff.append((rsList.get(idx)).str() + " ");
-              }
+        int rsSize = m_list.size();
+        for (int idx = 0; idx < rsSize; idx++) {
+           XObject xObj = item(idx);
+           String itemStrValue = XslTransformEvaluationHelper.getStrVal(xObj);
+           if (idx < (rsSize - 1)) {        	           	   
+              strBuff.append(itemStrValue + " ");
            }
            else {
-              if (item instanceof XSAnyType) {
-                  strBuff.append(((XSAnyType)item).stringValue());     
-              }
-              else {
-                 strBuff.append((rsList.get(idx)).str());
-              }
+              strBuff.append(itemStrValue);
            }
         }
         
-        resultStr = strBuff.toString(); 
+        result = strBuff.toString(); 
         
-        return resultStr;
+        return result;
     }
     
     public boolean equals(Object obj) {

@@ -51,6 +51,9 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
     
     private static final long serialVersionUID = 4675724832355053777L;
 
+    /**
+     * Evaluate the function call.
+     */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         XObject evalResult = new ResultSequence();
@@ -100,7 +103,7 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
         }
         else if (m_arg2 instanceof NodeTest) {
            transformerImpl = getTransformerImplFromXPathExpression(m_arg2);
-            
+           
            elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg2, transformerImpl, srcLocator);          
         }
         else {
