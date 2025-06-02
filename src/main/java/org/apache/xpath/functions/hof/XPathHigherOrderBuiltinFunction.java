@@ -37,7 +37,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * This class provides few utility methods, to support XPath 3.1 
- * built-in higher order function evaluations. The language higher
+ * built-in higher order function call evaluation. The language higher
  * order functions do one or both of following : accept functions as
  * arguments, or return function as function call result.
  * 
@@ -50,13 +50,13 @@ public class XPathHigherOrderBuiltinFunction extends Function3Args {
     private static final long serialVersionUID = 5970365027214826130L;
 
     /**
-     * This method, evaluates an XPath expression to produce an xdm sequence, that
-     * can be used as argument to an XPath higher order function call.
+     * Method definition to evaluate an XPath expression to produce a sequence,
+     * that can be used as argument to an XPath higher order function call.
      *  
-     * @param xpathExpr      an XPath expression, that is evaluated by this method
-     * @param xctxt          an XPath context object
+     * @param xpathExpr      An XPath compiled expression
+     * @param xctxt          An XPath expression context object
      * 
-     * @return               an xdm sequence produced by this method.
+     * @return               A sequence returned by this method
      * 
      * @throws javax.xml.transform.TransformerException
      */
@@ -81,20 +81,20 @@ public class XPathHigherOrderBuiltinFunction extends Function3Args {
                 XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObj;           
                 DTMCursorIterator sourceNodes = xNodeSet.iter();
 
-                int nextNodeDtmHandle;
+                int nextNode;
 
-                while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-                    XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);
+                while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
+                    XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNode, dtmMgr);
                     String nodeStrValue = xNodeSetItem.str();
 
-                    DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
+                    DTM dtm = dtmMgr.getDTM(nextNode);
 
-                    if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
+                    if (dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) {
                         XSUntyped xsUntyped = new XSUntyped(nodeStrValue);                 
                         XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
                                                                                   xsUntyped, true);
                     }
-                    else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
+                    else if (dtm.getNodeType(nextNode) == DTM.ATTRIBUTE_NODE) {
                         XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
                         XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
                                                                                   xsUntypedAtomic, true);
@@ -117,19 +117,19 @@ public class XPathHigherOrderBuiltinFunction extends Function3Args {
             DTMManager dtmMgr = (DTMManager)xctxt;        
             DTMCursorIterator arg0DtmIterator = xpathExpr.asIterator(xctxt, contextNode);        
 
-            int nextNodeDtmHandle;
+            int nextNode;
 
-            while ((nextNodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
-                XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);            
+            while ((nextNode = arg0DtmIterator.nextNode()) != DTM.NULL) {
+                XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNode, dtmMgr);            
                 String nodeStrValue = xNodeSetItem.str();
 
-                DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
+                DTM dtm = dtmMgr.getDTM(nextNode);
 
-                if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
+                if (dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) {
                     XSUntyped xsUntyped = new XSUntyped(nodeStrValue);
                     resultSeq.add(xsUntyped);
                 }
-                else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
+                else if (dtm.getNodeType(nextNode) == DTM.ATTRIBUTE_NODE) {
                     XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
                     resultSeq.add(xsUntypedAtomic);
                 }
@@ -142,6 +142,10 @@ public class XPathHigherOrderBuiltinFunction extends Function3Args {
         else if (xpathExpr instanceof XPathForExpr) { 
            XObject xObj = ((XPathForExpr)xpathExpr).execute(xctxt);
            resultSeq = (ResultSequence)xObj;
+        }
+        else {
+        	XObject xObj = xpathExpr.execute(xctxt);
+        	resultSeq.add(xObj);
         }
 
         return resultSeq;

@@ -161,11 +161,41 @@ public class FnForEachTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslFnForEachTest12() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
+    public void xslFnForEachTest13() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnForEachTest14() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test14.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnForEachTest15() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test15.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnForEachTest16() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test16.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

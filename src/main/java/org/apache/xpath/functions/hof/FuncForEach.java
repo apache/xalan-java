@@ -25,10 +25,11 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
@@ -43,6 +44,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
@@ -68,8 +70,8 @@ public class FuncForEach extends Function2Args {
     */
    private int m_globals_size;
 
-   /**
-   * Implementation of the function. The function must return a valid object.
+  /**
+   * Evaluation of the function call. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
    * 
@@ -80,69 +82,109 @@ public class FuncForEach extends Function2Args {
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {                      
       
-        XObject funcEvaluationResult = null;
+        XObject result = null;
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        final int contextNode = xctxt.getCurrentNode();
+        final int contextNode = xctxt.getCurrentNode();                
         
-        Expression arg0 = getArg0();
-        Expression arg1 = getArg1();                
+        XObject xObjectArg = null;
         
-        DTMCursorIterator arg0DtmIterator = null;        
-        XObject arg0XsObject = null;
+        DTMCursorIterator dtmIterArg = null;                
         
         if (m_vars != null) {
-           arg0.fixupVariables(m_vars, m_globals_size);
+           m_arg0.fixupVariables(m_vars, m_globals_size);
         }
                   
-        if (arg0 instanceof LocPathIterator) {
-            arg0DtmIterator = arg0.asIterator(xctxt, contextNode);               
+        if (m_arg0 instanceof LocPathIterator) {
+            dtmIterArg = m_arg0.asIterator(xctxt, contextNode);               
         }
         else {            
-            arg0XsObject = arg0.execute(xctxt, contextNode);
+            xObjectArg = m_arg0.execute(xctxt, contextNode);
         }
-        
-        ResultSequence resultSeq = new ResultSequence();
                     
-        if (arg1 instanceof XPathInlineFunction) {
-            XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1;
+        if (m_arg1 instanceof XPathInlineFunction) {
+            XPathInlineFunction inlineFuncArg = (XPathInlineFunction)m_arg1;
+            
             verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
-            resultSeq = evaluateFnForEach(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg); 
+            
+            if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+            	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
+            }
+            
+            result = evaluateFnForEach(xctxt, xObjectArg, dtmIterArg, inlineFuncArg); 
         }
-        else if (arg1 instanceof XPathNamedFunctionReference) {
-            XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)arg1;
-            resultSeq = evaluateNamedFunctionReference(xctxt, srcLocator, arg0DtmIterator, arg0XsObject,
-            		                                   resultSeq, namedFuncRef);
+        else if (m_arg1 instanceof XPathNamedFunctionReference) {
+            XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)m_arg1;
+            
+            if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+            	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
+            }
+            
+            result = evaluateNamedFunctionReference(xObjectArg, dtmIterArg, namedFuncRef, xctxt);
         }
-        else if (arg1 instanceof Variable) {
+        else if (m_arg1 instanceof NodeTest) {
+            TransformerImpl transformerImpl = getTransformerImplFromXPathExpression(m_arg1);
+            
+        	ElemFunction elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg1, transformerImpl, srcLocator);
+        	
+        	if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+            	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
+            }
+        	
+        	result = evaluateFnForEach(xObjectArg, dtmIterArg, elemFunction, transformerImpl, xctxt); 
+        }
+        else if (m_arg1 instanceof Variable) {
             if (m_vars != null) {
-               arg1.fixupVariables(m_vars, m_globals_size);
+            	m_arg1.fixupVariables(m_vars, m_globals_size);
             }            
-            XObject arg1VarValue = arg1.execute(xctxt);
+            
+            XObject arg1VarValue = m_arg1.execute(xctxt);
+            
             if (arg1VarValue instanceof XPathInlineFunction) {
                 XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
+                
                 verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
-                resultSeq = evaluateFnForEach(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg);   
+                
+                if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+                	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
+                }
+                
+                result = evaluateFnForEach(xctxt, xObjectArg, dtmIterArg, inlineFuncArg);   
             }
             else if (arg1VarValue instanceof XPathNamedFunctionReference) {
             	XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)arg1VarValue;
-                resultSeq = evaluateNamedFunctionReference(xctxt, srcLocator, arg0DtmIterator, arg0XsObject,
-                		                                   resultSeq, namedFuncRef);
+            	
+            	if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+                	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
+                }
+            	
+            	result = evaluateNamedFunctionReference(xObjectArg, dtmIterArg, namedFuncRef, xctxt);
+            }
+            else if (arg1VarValue instanceof XMLNodeCursorImpl) {
+            	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg1VarValue;            	
+            	DTMCursorIterator dtmIter = xmlNodeCursorImpl.getContainedIter();
+            	TransformerImpl transformerImpl = getTransformerImplFromXPathExpression((NodeTest)dtmIter);
+
+            	ElemFunction elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)dtmIter, transformerImpl, srcLocator);
+
+            	if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+            		xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
+            	}
+
+            	result = evaluateFnForEach(xObjectArg, dtmIterArg, elemFunction, transformerImpl, xctxt); 
             }
             else {
-                throw new javax.xml.transform.TransformerException("FORG0006 : The 2nd argument to function call for-each(), "
-                                                                                               + "is not a function item.", xctxt.getSAXLocator());    
+                throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call fn:for-each, "
+                                                                                               + "is not a function item.", srcLocator);    
             }
         }
         else {
-            throw new javax.xml.transform.TransformerException("FORG0006 : The 2nd argument to function call for-each(), "
-                                                                                           + "is not a function item.", xctxt.getSAXLocator());               
+            throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call fn:for-each, "
+                                                                                               + "is not a function item.", srcLocator);               
         }            
         
-        funcEvaluationResult = resultSeq;
-        
-        return funcEvaluationResult;
+        return result;
   }
 
   /**
@@ -183,38 +225,38 @@ public class FuncForEach extends Function2Args {
                                                                                                 javax.xml.transform.TransformerException {
       List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
       if (funcParamList.size() != 1) {
-          throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied function fn:for-each's function item has " + 
-                                                                                             funcParamList.size() + " parameters. "
-                                                                                             + "Expected 1.", srcLocator);   
+          throw new javax.xml.transform.TransformerException("XPTY0004 : The function fn:for-each's function item argument has " + 
+					                                                                                             funcParamList.size() + " parameters. "
+					                                                                                             + "Expected 1.", srcLocator);   
       }
   }
   
   /**
    * Evaluate the function call fn:for-each.
    */
-  private ResultSequence evaluateFnForEach(XPathContext xctxt, XObject arg0XsObject, 
-                                               DTMCursorIterator dtmIter, XPathInlineFunction arg1) 
-                                                                                    throws TransformerException {
-        ResultSequence resultSeq = new ResultSequence(); 
-        
-        List<InlineFunctionParameter> funcParamList = arg1.getFuncParamList();
-        QName varQname = new QName((funcParamList.get(0)).getParamName());
-        
-        String funcBodyXPathExprStr = arg1.getFuncBodyXPathExprStr();
-        
-        if (funcBodyXPathExprStr == null || "".equals(funcBodyXPathExprStr)) {
-           return resultSeq;
-        }        
+  private ResultSequence evaluateFnForEach(XPathContext xctxt, XObject xObjectArg, 
+                                           DTMCursorIterator dtmIterArg, XPathInlineFunction xpathInlineFuncArg) 
+                                                                                                 throws TransformerException {
+        ResultSequence resultSeq = new ResultSequence();
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
+        List<InlineFunctionParameter> funcParamList = xpathInlineFuncArg.getFuncParamList();
+        QName varQname = new QName((funcParamList.get(0)).getParamName());
+        
+        String funcBodyXPathExprStr = xpathInlineFuncArg.getFuncBodyXPathExprStr();
+        
+        if (funcBodyXPathExprStr == null || "".equals(funcBodyXPathExprStr)) {
+           return resultSeq;
+        }                        
+        
         XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, null, XPath.SELECT, null);
         
-        if (arg0XsObject instanceof ResultSequence) {
+        if (xObjectArg instanceof ResultSequence) {
            XPathContext xpathContextNew = new XPathContext(false);
            Map<QName, XObject> inlineFunctionVarMap = xpathContextNew.getXPathVarMap();
         
-           ResultSequence inpResultSeq = (ResultSequence)arg0XsObject;
+           ResultSequence inpResultSeq = (ResultSequence)xObjectArg;
            for (int idx = 0; idx < inpResultSeq.size(); idx++) {
                XObject inpSeqItem = inpResultSeq.item(idx);
                if (varQname != null) {
@@ -227,15 +269,15 @@ public class FuncForEach extends Function2Args {
         
            inlineFunctionVarMap.clear();
         }
-        else if (dtmIter != null) {                  
+        else if (dtmIterArg != null) {                  
            Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
             
            final int contextNode = xctxt.getCurrentNode();           
             
-           int dtmNodeHandle;
-            
-           while (DTM.NULL != (dtmNodeHandle = dtmIter.nextNode())) {
-               XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(dtmNodeHandle, xctxt.getDTMManager());
+           int nextNode;
+           
+           while (DTM.NULL != (nextNode = dtmIterArg.nextNode())) {
+               XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(nextNode, xctxt.getDTMManager());
                if (varQname != null) {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
                }
@@ -262,10 +304,13 @@ public class FuncForEach extends Function2Args {
   /**
    * Evaluate XPath named function reference.
    */
-  private ResultSequence evaluateNamedFunctionReference(XPathContext xctxt, SourceLocator srcLocator,
-		                                                DTMCursorIterator dtmIter, XObject arg0XsObject, 
-		                                                ResultSequence resultSeq, XPathNamedFunctionReference namedFuncRef) 
-		                                                		                         throws TransformerException {	
+  private ResultSequence evaluateNamedFunctionReference(XObject xObjectArg, DTMCursorIterator dtmIterArg, 
+		                                                XPathNamedFunctionReference namedFuncRef, XPathContext xctxt) 
+		                                                		                           throws TransformerException {	
+	  ResultSequence resultSeq = null;
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
 	  String funcNamespace = namedFuncRef.getFuncNamespace();
 	  String funcLocalName = namedFuncRef.getFuncName();
 	  int funcArity = namedFuncRef.getFuncArity(); 
@@ -290,29 +335,31 @@ public class FuncForEach extends Function2Args {
 		  String funcIdStr = funcIdObj.toString();
 		  Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));               
 		  try {
-			  resultSeq = evaluateFnForEach(arg0XsObject, xctxt, dtmIter, function);
+			  resultSeq = evaluateFnForEach(xObjectArg, dtmIterArg, function, xctxt);
 		  } 
 		  catch (WrongNumberArgsException ex) {
 			  String expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;  
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : Wrong number of arguments provided, "
-					                                           + "during function call " + expandedFuncName + ".", srcLocator); 
+					                                           										+ "during function call " 
+					                                           										+ expandedFuncName + ".", srcLocator); 
 		  }               
 	  }
 
 	  return resultSeq;
-  }
+   }
    
    /**
-    * Get the result of function call fn:for-each, with function call's 2nd argument 
-    * specified as named function reference.
+    * Method definition to get the result of function call fn:for-each, when 
+    * function call's second argument is specified as named function reference.
     */
-   private ResultSequence evaluateFnForEach(XObject forEachSeq, XPathContext xctxt,
-          								    DTMCursorIterator dtmIter, Function function) 
-          								    		               throws WrongNumberArgsException, TransformerException {
+   private ResultSequence evaluateFnForEach(XObject xObjectArg, DTMCursorIterator dtmIterArg, 
+		                                    Function function, XPathContext xctxt) 
+          								    		                      throws WrongNumberArgsException, TransformerException {
+	 
 	  ResultSequence resultSeq = new ResultSequence();
 	  
-	  if (forEachSeq instanceof ResultSequence) {
-		 ResultSequence inpSeq = (ResultSequence)forEachSeq;
+	  if (xObjectArg instanceof ResultSequence) {
+		 ResultSequence inpSeq = (ResultSequence)xObjectArg;
 		 for (int idx = 0; idx < inpSeq.size(); idx++) {
 			XObject xObj = inpSeq.item(idx);
 			function.setArg(xObj, 0);
@@ -320,10 +367,11 @@ public class FuncForEach extends Function2Args {
 			resultSeq.add(funcResult);
 		 }
 	  }
-	  else if (dtmIter != null) {          
-		  int dtmNodeHandle;          
-          while (DTM.NULL != (dtmNodeHandle = dtmIter.nextNode())) {
-              XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(dtmNodeHandle, xctxt.getDTMManager());              
+	  else if (dtmIterArg != null) {          
+		  int nextNode;
+		  
+          while (DTM.NULL != (nextNode = dtmIterArg.nextNode())) {
+              XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(nextNode, xctxt.getDTMManager());              
               function.setArg(inpSeqItem, 0);
   			  XObject funcResult = function.execute(xctxt);
   			  resultSeq.add(funcResult);
@@ -332,5 +380,41 @@ public class FuncForEach extends Function2Args {
 
 	  return resultSeq;
    }
+   
+   /**
+    * Method definition to get the result of function call fn:for-each, when 
+    * function call's second argument is specified as an XSL stylesheet 
+    * function reference.
+    */
+   private ResultSequence evaluateFnForEach(XObject xObjectArg, DTMCursorIterator dtmIterArg, 
+		                                    ElemFunction elemFunction, TransformerImpl transformerImpl, 
+		                                    XPathContext xctxt) throws TransformerException {
+	   
+	   ResultSequence resultSeq = new ResultSequence();
 
+	   if (xObjectArg instanceof ResultSequence) {
+		   ResultSequence inpSeq = (ResultSequence)xObjectArg;
+		   for (int idx = 0; idx < inpSeq.size(); idx++) {
+			   XObject xObj = inpSeq.item(idx);				
+			   ResultSequence argSeq = new ResultSequence();
+			   argSeq.add(xObj);				
+			   XObject funcCallResult = elemFunction.evaluateXslFunction(transformerImpl, argSeq);
+			   resultSeq.add(funcCallResult);
+		   }
+	   }
+	   else if (dtmIterArg != null) {          
+		   int nextNode;
+		   
+		   while (DTM.NULL != (nextNode = dtmIterArg.nextNode())) {
+			   XMLNodeCursorImpl inpSeqItem = new XMLNodeCursorImpl(nextNode, xctxt.getDTMManager());              
+			   ResultSequence argSeq = new ResultSequence();
+			   argSeq.add(inpSeqItem);				
+			   XObject funcCallResult = elemFunction.evaluateXslFunction(transformerImpl, argSeq);
+			   resultSeq.add(funcCallResult);
+		   }
+	   }
+
+	   return resultSeq;
+   }
+   
 }

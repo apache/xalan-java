@@ -93,7 +93,7 @@ public class FuncFilter extends Function2Args {
         
         final int contextNode = xctxt.getCurrentNode();                               
         
-        XObject xsObjectArg = null;
+        XObject xObjectArg = null;
         
         DTMCursorIterator dtmIterArg = null;
                   
@@ -101,7 +101,7 @@ public class FuncFilter extends Function2Args {
             dtmIterArg = m_arg0.asIterator(xctxt, contextNode);               
         }
         else {
-            xsObjectArg = m_arg0.execute(xctxt, contextNode);
+            xObjectArg = m_arg0.execute(xctxt, contextNode);
         }
         
         ResultSequence resultSeq = new ResultSequence();
@@ -111,22 +111,22 @@ public class FuncFilter extends Function2Args {
             
             validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
             
-            if (xsObjectArg != null && !(xsObjectArg instanceof ResultSequence)) {
-            	xsObjectArg = castSingletonItemToResultSequence(xsObjectArg); 
+            if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+            	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
             }
             
-            resultSeq = evaluateFnFilter(xctxt, xsObjectArg, dtmIterArg, inlineFuncArg); 
+            resultSeq = evaluateFnFilter(xctxt, xObjectArg, dtmIterArg, inlineFuncArg); 
         }                
         else if (m_arg1 instanceof NodeTest) {
         	TransformerImpl transformerImpl = getTransformerImplFromXPathExpression(m_arg1);
             
         	ElemFunction elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg1, transformerImpl, srcLocator);
             
-        	if (xsObjectArg != null && !(xsObjectArg instanceof ResultSequence)) {
-            	xsObjectArg = castSingletonItemToResultSequence(xsObjectArg); 
+        	if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+            	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
             }
         	
-        	resultSeq = evaluateFnFilter(xctxt, xsObjectArg, dtmIterArg, elemFunction, transformerImpl);            
+        	resultSeq = evaluateFnFilter(xctxt, xObjectArg, dtmIterArg, elemFunction, transformerImpl);            
         }
         else if (m_arg1 instanceof Variable) {
             XObject arg1VarValue = m_arg1.execute(xctxt);
@@ -136,11 +136,11 @@ public class FuncFilter extends Function2Args {
                 
                 validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
                 
-                if (xsObjectArg != null && !(xsObjectArg instanceof ResultSequence)) {
-                	xsObjectArg = castSingletonItemToResultSequence(xsObjectArg); 
+                if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+                	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
                 }
                 
-                resultSeq = evaluateFnFilter(xctxt, xsObjectArg, dtmIterArg, inlineFuncArg);   
+                resultSeq = evaluateFnFilter(xctxt, xObjectArg, dtmIterArg, inlineFuncArg);   
             }
             else {
                 throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call fn:filter, "
@@ -360,24 +360,6 @@ public class FuncFilter extends Function2Args {
 	  }
 	  
 	  return resultSeq;
-  }
-  
-  /**
-   * Method definition to convert a singleton XDM item to a sequence 
-   * containing that one item.
-   * 
-   * @param xObj					    A singleton item to be cast to a sequence
-   * @return							An XObject instance representing the returned sequence						
-   */
-  private XObject castSingletonItemToResultSequence(XObject xObj) {	  
-	  XObject result = null;
-	  
-	  ResultSequence rSeq = new ResultSequence();
-	  rSeq.add(xObj);
-	  
-	  result = rSeq;
-	  
-	  return result;
   }
 
 }

@@ -33,6 +33,8 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
 import org.apache.xpath.patterns.NodeTest;
 
 /**
@@ -275,6 +277,24 @@ public class Function2Args extends FunctionOneArg
 	 }
 
 	 return transformerImpl; 
+ }
+ 
+ /**
+  * Method definition to convert a singleton XDM item to a sequence 
+  * containing that one item.
+  * 
+  * @param xObj					    A singleton item to be cast to a sequence
+  * @return							An XObject instance representing the returned sequence						
+  */
+ protected XObject castSingletonItemToResultSequence(XObject xObj) {	  
+	  XObject result = null;
+	  
+	  ResultSequence rSeq = new ResultSequence();
+	  rSeq.add(xObj);
+	  
+	  result = rSeq;
+	  
+	  return result;
  }
 
 }
