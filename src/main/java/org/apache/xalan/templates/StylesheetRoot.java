@@ -1574,7 +1574,7 @@ public class StylesheetRoot extends StylesheetComposed
 				}
 			}
 			else {
-				// An XML Schema document is available, at the uri referenced by xsl:import-schema 
+				// An XML Schema document is available, referenced by uri from xsl:import-schema 
 				// element's attribute 'schema-location'.				
 
 				NamedNodeMap importSchemaNodeAttributes = ((Element)elemTemplateElem).getAttributes();

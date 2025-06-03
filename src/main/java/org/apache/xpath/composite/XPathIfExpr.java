@@ -57,7 +57,8 @@ public class XPathIfExpr extends Expression {
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
-    private Vector m_vars;    
+    private Vector m_vars;
+    
     private int m_globals_size;
 
     public String getBranchConditionXPathStr() {

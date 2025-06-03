@@ -17,6 +17,7 @@
 package org.apache.xalan.xslt.util;
 
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
@@ -85,5 +86,11 @@ public class XslTransformSharedDatastore {
      * functional org.apache.xpath.compiler.OpCodes value will not exist. 
      */
     public static int xpathCallingOpCode = Integer.MIN_VALUE;
+    
+    /**
+     * This class field is used to return XPath named function reference 
+     * from a function call.
+     */
+    public static XPathNamedFunctionReference xpathNamedFunctionReference;
 
 }

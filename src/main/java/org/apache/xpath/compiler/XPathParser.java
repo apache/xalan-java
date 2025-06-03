@@ -37,7 +37,6 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemFunction;
-import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;

@@ -2357,8 +2357,9 @@ public class TransformerImpl extends Transformer
           xctxt.pushNamespaceContext(xslInstruction);
           
           if (initTemplateName != null) {
-             template = m_stylesheetRoot.getTemplateComposed(new QName(initTemplateName));             
+             template = m_stylesheetRoot.getTemplateComposed(new QName(initTemplateName));                                       
              if (template != null) {
+            	 m_xcontext.pushNamespaceContext(template);
             	 pushElemTemplateElement(template);
                  m_xcontext.pushCurrentNode(child);
                  pushPairCurrentMatched(template, child);
@@ -2367,7 +2368,7 @@ public class TransformerImpl extends Transformer
                  m_xcontext.pushContextNodeList(cnl);
                  
                  m_xcontext.setSAXLocator(template);
-           	     m_xcontext.getVarStack().link(template.m_frameSize);           	     
+           	     m_xcontext.getVarStack().link(template.m_frameSize);
            	     
            	     executeChildTemplates(template, true);
 

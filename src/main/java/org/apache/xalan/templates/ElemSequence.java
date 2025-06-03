@@ -27,6 +27,7 @@ import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
@@ -36,6 +37,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
@@ -54,8 +56,6 @@ import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import com.sun.org.apache.xml.internal.dtm.DTM;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSNumericType;
@@ -339,6 +339,9 @@ public class ElemSequence extends ElemTemplateElement
   
         if (xslSequenceVal == null) {
            xslSequenceVal = m_selectPattern.execute(xctxt, sourceNode, this);
+           if (xslSequenceVal instanceof XPathNamedFunctionReference) {
+         	  XslTransformSharedDatastore.xpathNamedFunctionReference = (XPathNamedFunctionReference)xslSequenceVal;  
+           }
         }        
       }
       else if (getFirstChildElem() == null) {
@@ -361,7 +364,7 @@ public class ElemSequence extends ElemTemplateElement
       if (m_isCalledFromXslFork) {
            m_xslSequenceEvalResult = xslSequenceVal;
       }            
-      else if (xslSequenceVal != null) {
+      else if ((xslSequenceVal != null) && (XslTransformSharedDatastore.xpathNamedFunctionReference == null)) {
     	  emitXslSequenceResultToSerializer(xctxt, transformer, xslSequenceVal);          
        }
     }

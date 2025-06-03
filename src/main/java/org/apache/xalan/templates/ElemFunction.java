@@ -36,7 +36,9 @@ import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
@@ -414,19 +416,28 @@ public class ElemFunction extends ElemTemplate
                                                                XPathContext xctxt, QName varQName) throws TransformerException {
      ResultSequence resultSequence = null;
      
-     XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)initialEvalResult;
-     
-     DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDOM.object());
-     
      final int contextNode = xctxt.getContextNode(); 
-     SourceLocator srcLocator = xctxt.getSAXLocator(); 
+     SourceLocator srcLocator = xctxt.getSAXLocator();
      
-     XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, 
-                                                                       xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+     XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
 
      XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
      SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+     
+     if (initialEvalResult instanceof XPathNamedFunctionReference) {
+    	 SequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
+    	 if (seqTypeFunctionTest.isAnyFunctionTest()) {
+    		 resultSequence = new ResultSequence();
+    		 resultSequence.add(initialEvalResult);
+    		 
+    		 return resultSequence;
+    	 }
+     }
+     
+     XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)initialEvalResult;
+     
+     DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDOM.object());
 
      Node localRootNode = dtmNodeList.item(0);
      NodeList nodeList = localRootNode.getChildNodes();
@@ -541,6 +552,10 @@ public class ElemFunction extends ElemTemplate
 	  else if (XslTransformSharedDatastore.xpathArray != null) {
 		  result = XslTransformSharedDatastore.xpathArray;
 		  XslTransformSharedDatastore.xpathArray = null;
+	  }
+	  else if (XslTransformSharedDatastore.xpathNamedFunctionReference != null) {
+		  result = XslTransformSharedDatastore.xpathNamedFunctionReference;
+		  XslTransformSharedDatastore.xpathNamedFunctionReference = null;
 	  }
 	  
 	  if (result == null) {		  

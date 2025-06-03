@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-02T11:20:13Z" fail="20" name="analyze-string" pass="33" skipped="5" statusUnknown="0" totalRun="58">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-03T10:35:48Z" fail="20" name="analyze-string" pass="33" skipped="5" statusUnknown="0" totalRun="58">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -53,17 +53,12 @@
    </testResult>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="fail" testName="analyze-string-090b">
-      <outResult>
-         <errTrace>Variable v1 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>Variable $v1 accessed before it is bound!.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="fail" testName="analyze-string-091b"/>
    <testResult status="fail" testName="analyze-string-092">
       <outResult>
-         <errTrace>Variable v1 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>Variable $v1 accessed before it is bound!.</errTrace>
          <errTrace>Expected ), but found: "s "</errTrace>
          <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XNumber cannot be cast to java.lang.String</errTrace>
       </outResult>

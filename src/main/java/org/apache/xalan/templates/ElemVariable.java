@@ -33,6 +33,7 @@ import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
@@ -44,6 +45,8 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.functions.XSLFunctionBuilder;
+import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
@@ -59,6 +62,7 @@ import org.apache.xpath.operations.ArrowOp;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
+import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.NodeList;
 
 import xml.xpath31.processor.types.XSAnyType;
@@ -480,7 +484,7 @@ public class ElemVariable extends ElemTemplateElement
               return xpath3ContextItem;
             }
         }
-        else if (selectExpression instanceof LocPathIterator) {                        
+        else if ((selectExpression instanceof LocPathIterator) && !isTopLevelVariableOrParam(selectExpression)) {        	
             int contextNode = xctxt.getContextNode();
             
             LocPathIterator locPathIterator = (LocPathIterator)selectExpression;
@@ -629,6 +633,64 @@ public class ElemVariable extends ElemTemplateElement
                   
                return var;
             }
+        }
+        else if (selectExpression instanceof NodeTest) {
+        	// Checking for the possibility of a top level xsl:variable or xsl:param 
+        	// instruction, referring to a named xsl:function reference.
+        	
+        	try {    			
+    			ExpressionNode expressionNode = selectExpression.getExpressionOwner();
+    			ExpressionNode stylesheetRootNode = null;
+    			while (expressionNode != null) {
+    				stylesheetRootNode = expressionNode;
+    				expressionNode = expressionNode.exprGetParent();                     
+    			}
+
+    			StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+    			TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();  			    			
+
+    			NodeTest nodeTest = (NodeTest)selectExpression; 
+    			String funcLocalNameRef = nodeTest.getLocalName();
+    			String funcNamespace = nodeTest.getNamespace();
+    			    			
+    			transformerImpl = stylesheetRoot.getTransformerImpl();  
+    			TemplateList templateList = stylesheetRoot.getTemplateListComposed();
+    			XSL3FunctionService m_xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
+    			
+    			ElemFunction elemFunction = null;
+    			
+    			if (m_xslFunctionService.isFuncArityWellFormed(funcLocalNameRef)) {        	   
+    				int hashCharIdx = funcLocalNameRef.indexOf('#');
+    				String funcNameRef2 = funcLocalNameRef.substring(0, hashCharIdx);
+    				int funcArity = Integer.valueOf(funcLocalNameRef.substring(hashCharIdx + 1));        		   
+    				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);        		   
+    				if (elemTemplate != null) {
+    					elemFunction = (ElemFunction)elemTemplate;
+    					int xslFuncDefnParamCount = elemFunction.getParamCount();                      
+    					String str = funcLocalNameRef.substring(hashCharIdx + 1);
+    					int funcRefParamCount = (Integer.valueOf(str)).intValue();
+    					if (funcRefParamCount != xslFuncDefnParamCount) {
+    						throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcLocalNameRef 
+																					    								     + " cannot resolve to a function "
+																					    								     + "definition.", srcLocator); 
+    					}
+    				}
+    			}
+    			else {
+    				throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcLocalNameRef 
+																							    					 + " cannot resolve to a function "
+																							    					 + "definition.", srcLocator);
+    			}
+
+    			if (elemFunction != null) {
+    				ElemFunctionItem elemFunctionObject = new ElemFunctionItem(elemFunction);
+
+    				return elemFunctionObject; 
+    			}
+    		}
+    		catch (Exception ex) {
+    			// NO OP
+    		}
         }
   
         if (var == null) {
@@ -1015,6 +1077,28 @@ public class ElemVariable extends ElemTemplateElement
       return null;
     }
     return super.appendChild(elem);
+  }
+  
+  /**
+   * Method definition to check whether, an attribute "select"'s xsl:variable or 
+   * xsl:param parent is an XSL stylesheet top level xsl:variable or xsl:param.  
+   * 
+   * @param selectExpression		 An xsl:variable's or xsl:param's compiled 
+   *                                 'select' expression.
+   * @return						 Boolean value true or false
+   */
+  private boolean isTopLevelVariableOrParam(Expression selectExpression) {
+	  boolean result = false;
+
+	  ExpressionNode exprNode = selectExpression.getExpressionOwner();
+	  if (exprNode != null) {
+		  exprNode = exprNode.exprGetParent();
+		  if (exprNode instanceof StylesheetRoot) {
+			  result = true; 
+		  }
+	  }
+
+	  return result;
   }
 
 }

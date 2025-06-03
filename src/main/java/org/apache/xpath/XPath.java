@@ -18,6 +18,9 @@
 package org.apache.xpath;
 
 import java.io.Serializable;
+import java.io.StringReader;
+import java.net.URI;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -29,10 +32,18 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.processor.StylesheetHandler;
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xerces.dom.DOMInputImpl;
+import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.xerces.impl.xs.XSLoaderImpl;
+import org.apache.xerces.xs.XSModel;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
@@ -44,13 +55,25 @@ import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.XPathExprFunctionSuffix;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.ArrowOp;
+import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.w3c.dom.DOMConfiguration;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * This class wraps an XPath expression object and provides 
@@ -799,7 +822,13 @@ public class XPath implements Serializable, ExpressionOwner
 
 	  try {    	
 		  if (isProcessAsNodeset) {
-			  result = m_mainExp.execute(xctxt);
+			  if (m_mainExp instanceof NodeTest) {
+				 // Check for the possibility of XPath named function reference				  
+				 result = evaluateXPathNamedFunctionReference((NodeTest)m_mainExp, xctxt);
+			  }
+			  else {
+			     result = m_mainExp.execute(xctxt);
+			  }
 		  }
 		  else {
 			  String xpathPatternStr = getPatternString();
@@ -940,5 +969,125 @@ public class XPath implements Serializable, ExpressionOwner
   public boolean getIsXslTryProcessing() {
 	  return m_is_xsltry_processing; 
   }
+  
+  /**
+   * Method definition to evaluate an XPath expression, specified as named function reference.
+   */
+  private XObject evaluateXPathNamedFunctionReference(NodeTest nodeTest, XPathContext xctxt) throws TransformerException {
+		
+	  XObject result = null;
+
+	  boolean isSchemaTypeRefFailed = false;
+	  
+	  try {				  			  
+		  String localName = nodeTest.getLocalName();				  
+		  int idx = localName.indexOf('#');
+		  String xsSimpleTypeName = localName.substring(0, idx);
+		  int arity = Integer.valueOf(localName.substring(idx + 1));				  
+		  String xsSimpleTypeNamespace = nodeTest.getNamespace();
+
+		  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;				  				  
+
+		  Node elemTemplateElem = stylesheetRoot.getFirstChildElem();				  				  
+		  while (elemTemplateElem != null && !(Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {   
+			  elemTemplateElem = elemTemplateElem.getNextSibling();
+		  }
+
+		  XSModel xsModel = null;
+
+		  if ((Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {
+			  NodeList nodeList = elemTemplateElem.getChildNodes();
+			  Node xsSchemaTopMostNode = nodeList.item(0);		   
+
+			  if (xsSchemaTopMostNode != null) {
+				  // An xsl:import-schema instruction's child contents specifies a literal XML Schema document
+
+				  DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
+				  LSSerializer lsSerializer = domImplLS.createLSSerializer();
+				  DOMConfiguration domConfig = lsSerializer.getDomConfig();
+				  domConfig.setParameter(XSL3FunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+				  String xmlSchemaDocumentStr = lsSerializer.writeToString((Document)xsSchemaTopMostNode);
+				  xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst(XSL3FunctionService.UTF_16, XSL3FunctionService.UTF_8);
+				  xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst("schema", "schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
+
+				  DOMInputImpl lsInput = new DOMInputImpl();
+				  lsInput.setCharacterStream(new StringReader(xmlSchemaDocumentStr));
+				  XSLoaderImpl xsLoader = new XSLoaderImpl();
+
+				  xsModel = xsLoader.load(lsInput);
+			  }
+			  else {
+				  // An XML Schema document is available, referenced by uri from xsl:import-schema 
+				  // element's attribute 'schema-location'.				
+
+				  NamedNodeMap importSchemaNodeAttributes = ((Element)elemTemplateElem).getAttributes();
+
+				  if (importSchemaNodeAttributes != null) {
+					  String xslSystemId = XslTransformSharedDatastore.xslSystemId;
+					  URL url = null;
+
+					  Node attrNode1 = importSchemaNodeAttributes.item(0);
+					  Node attrNode2 = importSchemaNodeAttributes.item(1);
+
+					  if (attrNode1 != null) {
+						  URI inpUri = new URI(attrNode1.getNodeValue());
+						  String stylesheetSystemId = xslSystemId;
+						  if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
+							  URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
+							  url = resolvedUri.toURL(); 
+							  if (!"namespace".equals(attrNode1.getNodeName())) {																								
+								  XSLoaderImpl xsLoader = new XSLoaderImpl();
+
+								  xsModel = xsLoader.loadURI(url.toString());
+							  }
+						  }
+					  }
+					  else if (attrNode2 != null) {
+						  URI inpUri = new URI(attrNode2.getNodeValue());
+						  String stylesheetSystemId = xslSystemId;
+
+						  if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
+							  URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
+							  url = resolvedUri.toURL();
+							  if ("schema-location".equals(attrNode2.getNodeName())) {
+								  XSLoaderImpl xsLoader = new XSLoaderImpl();
+
+								  xsModel = xsLoader.loadURI(url.toString());
+							  }
+						  }
+					  }
+				  }
+			  }
+		  }
+
+		  if (xsModel != null) {
+			  XSTypeDefinition xsTypeDefinition = xsModel.getTypeDefinition(xsSimpleTypeName, xsSimpleTypeNamespace);
+			  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)xsTypeDefinition;
+			  if (!((xsSimpleTypeDecl != null) && (arity != 1))) {
+				  XSString xsString = new XSString((Expression.XS_SIMPLE_TYPE_NAME));
+				  XObject xObj = XObject.create(xsString);
+				  xObj.setXsTypeDefinition(xsTypeDefinition);
+
+				  result = xObj;
+			  }
+			  else {
+				  result = nodeTest.execute(xctxt);
+			  }
+		  }
+		  else {
+			  result = nodeTest.execute(xctxt); 
+		  }
+	  }
+	  catch (Exception ex) {					  
+		  isSchemaTypeRefFailed = true;
+	  }
+
+	  if (isSchemaTypeRefFailed) {
+		  result = nodeTest.execute(xctxt); 
+	  }
+	  
+	  return result;
+	  
+	}
 
 }

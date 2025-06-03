@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-02T11:20:49Z" fail="8" name="position" pass="108" skipped="0" statusUnknown="1" totalRun="117">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-03T10:36:24Z" fail="8" name="position" pass="108" skipped="0" statusUnknown="1" totalRun="117">
    <testResult status="pass" testName="position-0101"/>
    <testResult status="fail" testName="position-0102"/>
    <testResult status="fail" testName="position-0103">
       <outResult>
          <errTrace>xsl:merge-source requires attribute: select</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://example.com/mf}construct-doc(), doesn't match the declared parameter type xs:integer*.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="position-0201"/>

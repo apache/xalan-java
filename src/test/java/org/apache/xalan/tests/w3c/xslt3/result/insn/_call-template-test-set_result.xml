@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-02T11:20:19Z" fail="16" name="call-template" pass="25" skipped="1" statusUnknown="0" totalRun="42">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-03T10:35:55Z" fail="15" name="call-template" pass="26" skipped="1" statusUnknown="0" totalRun="42">
    <testResult status="fail" testName="call-template-0001">
       <outResult>
          <errTrace>XPTY0004 : An error occured while evaluating an XPath expression ancestor-or-self::*.</errTrace>
@@ -17,7 +17,7 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt; Do Nothing! </outResult>
    </testResult>
    <testResult status="pass" testName="call-template-0107"/>
-   <testResult status="fail" testName="call-template-0108"/>
+   <testResult status="pass" testName="call-template-0108"/>
    <testResult status="fail" testName="call-template-0109">
       <outResult/>
    </testResult>
@@ -25,9 +25,7 @@
       <outResult/>
    </testResult>
    <testResult status="fail" testName="call-template-0111">
-      <outResult>
-         <errTrace>XTTE0590 : The required item type of the value of parameter in is xs:string. The supplied value doesn't match the expected item type.</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;xXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQ&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="call-template-0201"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>

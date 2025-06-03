@@ -66,6 +66,8 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    * We don't use, XalanJ XPath context's variable stack for this purpose.
    */
   protected static List<QName> m_xpathVarList = new ArrayList<QName>();
+  
+  public static final String XS_SIMPLE_TYPE_NAME = "XS_SIMPLE_TYPE_NAME";
 
   /**
    * Tell if this expression or it's subexpressions can traverse outside

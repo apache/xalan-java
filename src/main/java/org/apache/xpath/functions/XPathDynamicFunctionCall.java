@@ -34,6 +34,8 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
+import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
@@ -45,6 +47,7 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -168,7 +171,7 @@ public class XPathDynamicFunctionCall extends Expression {
 	           evalResult = evaluateXPathInlineFunction(xctxt, (XPathInlineFunction)functionRef, m_argList, prefixTable);
                
 	           if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
-	        	  evalResult = evaluateXPathNamedFunctionReference(xctxt, (XPathNamedFunctionReference)evalResult, prefixTable); 
+	        	  evalResult = evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)evalResult, m_trailingArgList, prefixTable, xctxt); 
 	           }
 	        }
     	    else if (functionRef instanceof XPathMap) {
@@ -266,6 +269,40 @@ public class XPathDynamicFunctionCall extends Expression {
      			  }
      		   }
     	    }
+    	    else if (functionRef instanceof ElemFunctionItem) {
+    	    	ElemFunction elemFunction = ((ElemFunctionItem)functionRef).getElemFunction();
+    	    	
+    	    	ResultSequence argSequence = new ResultSequence(); 
+	    		  for (int idx = 0; idx < m_argList.size(); idx++) {
+	    			  String argXPathStr = m_argList.get(idx);
+	    			  if (prefixTable != null) {
+	    				  argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+	    			  }
+
+	    			  XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	    			  if (m_vars != null) {
+	    				  argXPath.fixupVariables(m_vars, m_globals_size);
+	    			  }
+
+	    			  XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+	    			  argSequence.add(argValue);
+	    		  }
+	    		  
+	    		  ExpressionNode expressionNode = getExpressionOwner();
+	              ExpressionNode stylesheetRootNode = null;
+	              while (expressionNode != null) {
+	                 stylesheetRootNode = expressionNode;
+	                 expressionNode = expressionNode.exprGetParent();                     
+	              }
+	              StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+	    		  
+	    		  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+	    		  
+	    		  evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
+    	    }
+    	    else if (functionRef instanceof XPathNamedFunctionReference) {    	    	
+  	        	 evalResult = evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)functionRef, m_argList, prefixTable, xctxt); 
+    	    }
     	    else {
     	       Object obj1 = functionRef.object();
     	       if (obj1 instanceof Function) {
@@ -341,6 +378,41 @@ public class XPathDynamicFunctionCall extends Expression {
 																	                              + m_argList.size() + ".", srcLocator);  
     	    	  }
     	       }
+    	       else if (isFunctionRefXsSimpleTypeDefinition(functionRef)) {
+    	    	   XObject xObj = (((ResultSequence)functionRef)).item(0);
+    	    	   XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(xObj.getXsTypeDefinition());
+    	    	   int argCount = m_argList.size();
+    	    	   if (argCount == 1) {
+    	    		   String argXPathStr = m_argList.get(0);
+    	    		   if (prefixTable != null) {
+    	    			   argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    	    		   }
+
+    	    		   XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	    		   if (m_vars != null) {
+    	    			   argXPath.fixupVariables(m_vars, m_globals_size);
+    	    		   }
+
+    	    		   XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    	    		   String argStrValue = XslTransformEvaluationHelper.getStrVal(argValue);
+    	    		   try {
+						   xsSimpleTypeDecl.validate(argStrValue, null, null);
+						   evalResult = argValue; 
+					   } 
+    	    		   catch (InvalidDatatypeValueException ex) {
+    	    			   throw new javax.xml.transform.TransformerException("XPTY0004 : XPath dynamic function call $" + 
+    	    		                                                                                          m_funcRefVarName + "(" + argXPathStr + ") evaluation failed "
+    	    		                                                                                          + "with a type error : " + ex.getMessage(), srcLocator); 
+					   }
+    	    	   }
+    	    	   else {
+    	    		   throw new javax.xml.transform.TransformerException("XPTY0004 : XPath dynamic function call $" + m_funcRefVarName + "(..) has " + argCount + " "
+    	    		   		                                                                                  + "arguments. Expected 1.", srcLocator); 
+    	    	   }
+    	       }
+    	       else {
+    	    	   evalResult = XObject.create(new XSString("")); 
+    	       }
     	    }
       }
       else {
@@ -357,7 +429,7 @@ public class XPathDynamicFunctionCall extends Expression {
       
     }
 
-    @Override
+	@Override
     public void fixupVariables(Vector vars, int globalsSize) {
         m_vars = (Vector)(vars.clone());
         m_globals_size = globalsSize; 
@@ -545,16 +617,17 @@ public class XPathDynamicFunctionCall extends Expression {
     /**
      * Method definition to evaluate an XPath named function reference.
      * 
-     * @param xctxt							    An XPath context object
      * @param xpathNamedFuncRef                 An XPath compiled named function reference object
+     * @param argList                           List of argument XPath expressions for the function call
      * @param prefixTable                       An XML prefix table list object reference containing
      *                                          an XSL context namespace binding information.
+     * @param xctxt							    An XPath context object                                          
      * @return									The result of evaluation of an XPath named function
      *                                          reference.
      * @throws TransformerException
      */
-    private XObject evaluateXPathNamedFunctionReference(XPathContext xctxt, XPathNamedFunctionReference xpathNamedFuncRef, 
-    		                                            List<XMLNSDecl> prefixTable) throws TransformerException {
+    private XObject evaluateXPathNamedFunctionReference(XPathNamedFunctionReference xpathNamedFuncRef, 
+    		                                            List<String> argList, List<XMLNSDecl> prefixTable, XPathContext xctxt) throws TransformerException {
     	
     	XObject evalResult = null;
 
@@ -593,8 +666,8 @@ public class XPathDynamicFunctionCall extends Expression {
     		function.setNamespace(funcNamespace);
     		function.setFuncArity(funcArity);
 
-    		for (int idx = 0; idx < m_trailingArgList.size(); idx++) {
-    			String argXPathStr = m_trailingArgList.get(idx);
+    		for (int idx = 0; idx < argList.size(); idx++) {
+    			String argXPathStr = argList.get(idx);
     			if (prefixTable != null) {
     				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
     			}
@@ -621,8 +694,8 @@ public class XPathDynamicFunctionCall extends Expression {
     		ElemFunction elemFunction = xpathNamedFuncRef.getXslStylesheetFunction();
 
     		ResultSequence argSequence = new ResultSequence();
-    		for (int idx = 0; idx < m_trailingArgList.size(); idx++) {
-    			String argXPathStr = m_trailingArgList.get(idx);
+    		for (int idx = 0; idx < argList.size(); idx++) {
+    			String argXPathStr = argList.get(idx);
     			if (prefixTable != null) {
     				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
     			}
@@ -666,8 +739,8 @@ public class XPathDynamicFunctionCall extends Expression {
     		XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
     		funcObj.setFuncArity(funcArity);
 
-    		for (int idx = 0; idx < m_trailingArgList.size(); idx++) {
-    			String argXPathStr = m_trailingArgList.get(idx);
+    		for (int idx = 0; idx < argList.size(); idx++) {
+    			String argXPathStr = argList.get(idx);
     			if (prefixTable != null) {
     				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
     			}
@@ -770,5 +843,26 @@ public class XPathDynamicFunctionCall extends Expression {
 
     	return evalResult;		  
     }
+    
+    /**
+     * Method definition to check whether, an XPath dynamic function call
+     * resolves to an XPath simple type constructor function call.
+     */
+    private boolean isFunctionRefXsSimpleTypeDefinition(XObject functionRef) {
+		
+    	boolean result = false;
+		
+		if ((functionRef instanceof ResultSequence) && (((ResultSequence)functionRef).size() == 1)) {
+			XObject xObj = (((ResultSequence)functionRef)).item(0);
+			if (xObj instanceof XSString) {
+			   XSString xsString = (XSString)xObj;
+			   if ((Expression.XS_SIMPLE_TYPE_NAME).equals(xsString.stringValue()) && (xsString.getXsTypeDefinition() != null)) {
+				   result = true; 
+			   }
+			}
+		}
+		
+		return result;
+	}
 
 }
