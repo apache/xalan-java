@@ -159,7 +159,8 @@ public class FuncSort extends FunctionMultiArgs
                 			 DTMCursorIterator dtmIter = xmlNodeCursorImpl.getContainedIter();
                 			 
             			     transformerImpl = getTransformerImplFromXPathExpression((NodeTest)dtmIter);
-            			     elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)dtmIter, transformerImpl, srcLocator);
+            			     elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
+            			    		                                                                    (NodeTest)dtmIter, transformerImpl, srcLocator);
             			  }                      	  
                       	  
                       	  ResultSequence argSeq = new ResultSequence(); 
@@ -230,7 +231,8 @@ public class FuncSort extends FunctionMultiArgs
             	   else if (m_arg2 instanceof NodeTest) {
             		   transformerImpl = getTransformerImplFromXPathExpression(m_arg2);
                        
-                   	   elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg2, transformerImpl, srcLocator);
+                   	   elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
+                   			                                                                      (NodeTest)m_arg2, transformerImpl, srcLocator);
                    	   
                    	   ResultSequence argSeq = new ResultSequence(); 
                    	   argSeq.add(xNodeSetItem);
@@ -333,7 +335,8 @@ public class FuncSort extends FunctionMultiArgs
             	 else if (m_arg2 instanceof NodeTest) {
             		 transformerImpl = getTransformerImplFromXPathExpression(m_arg2);
 
-            		 elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg2, transformerImpl, srcLocator);
+            		 elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
+            				                                                                    (NodeTest)m_arg2, transformerImpl, srcLocator);
 
             		 ResultSequence argSeq = new ResultSequence(); 
             		 argSeq.add(inputSeqItem);

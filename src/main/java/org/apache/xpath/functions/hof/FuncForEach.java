@@ -27,6 +27,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
@@ -126,7 +127,8 @@ public class FuncForEach extends Function2Args {
         else if (m_arg1 instanceof NodeTest) {
             TransformerImpl transformerImpl = getTransformerImplFromXPathExpression(m_arg1);
             
-        	ElemFunction elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg1, transformerImpl, srcLocator);
+        	ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
+        			                                                                                 (NodeTest)m_arg1, transformerImpl, srcLocator);
         	
         	if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
             	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
@@ -166,7 +168,8 @@ public class FuncForEach extends Function2Args {
             	DTMCursorIterator dtmIter = xmlNodeCursorImpl.getContainedIter();
             	TransformerImpl transformerImpl = getTransformerImplFromXPathExpression((NodeTest)dtmIter);
 
-            	ElemFunction elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)dtmIter, transformerImpl, srcLocator);
+            	ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
+            			                                                                                (NodeTest)dtmIter, transformerImpl, srcLocator);
 
             	if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
             		xObjectArg = castSingletonItemToResultSequence(xObjectArg); 

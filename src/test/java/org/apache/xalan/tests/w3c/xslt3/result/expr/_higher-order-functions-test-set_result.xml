@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-03T10:36:17Z" fail="13" name="higher-order-functions" pass="11" skipped="0" statusUnknown="1" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-04T11:30:48Z" fail="6" name="higher-order-functions" pass="18" skipped="0" statusUnknown="1" totalRun="25">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -10,14 +10,14 @@
    <testResult status="pass" testName="higher-order-functions-009"/>
    <testResult status="pass" testName="higher-order-functions-010"/>
    <testResult status="fail" testName="higher-order-functions-011"/>
-   <testResult status="fail" testName="higher-order-functions-012"/>
-   <testResult status="fail" testName="higher-order-functions-013"/>
-   <testResult status="fail" testName="higher-order-functions-014"/>
-   <testResult status="fail" testName="higher-order-functions-015"/>
-   <testResult status="fail" testName="higher-order-functions-016"/>
-   <testResult status="fail" testName="higher-order-functions-017"/>
+   <testResult status="pass" testName="higher-order-functions-012"/>
+   <testResult status="pass" testName="higher-order-functions-013"/>
+   <testResult status="pass" testName="higher-order-functions-014"/>
+   <testResult status="pass" testName="higher-order-functions-015"/>
+   <testResult status="pass" testName="higher-order-functions-016"/>
+   <testResult status="pass" testName="higher-order-functions-017"/>
    <testResult status="pass" testName="higher-order-functions-018"/>
-   <testResult status="fail" testName="higher-order-functions-019"/>
+   <testResult status="pass" testName="higher-order-functions-019"/>
    <testResult status="fail" testName="higher-order-functions-020"/>
    <testResult status="fail" testName="higher-order-functions-021"/>
    <testResult status="fail" testName="higher-order-functions-022"/>

@@ -29,34 +29,34 @@ import java.util.List;
  */
 public class SequenceTypeFunctionTest {
 
-    private boolean fIsAnyFunctionTest;
+    private boolean m_isAnyFunctionTest;
 
-    private List<String> typedFunctionTestPrefixList;
+    private List<String> m_typedFunctionTestParamSpecList;
     
-    private String typedFunctionTestReturnType;
+    private String m_typedFunctionTestReturnType;
 
 	public boolean isAnyFunctionTest() {
-		return fIsAnyFunctionTest;
+		return m_isAnyFunctionTest;
 	}
 
 	public void setIsAnyFunctionTest(boolean isAnyFunctionTest) {
-		this.fIsAnyFunctionTest = isAnyFunctionTest;
+		this.m_isAnyFunctionTest = isAnyFunctionTest;
 	}
 
-	public List<String> getTypedFunctionTestPrefixList() {
-		return typedFunctionTestPrefixList;
+	public List<String> getTypedFunctionTestParamSpecList() {
+		return m_typedFunctionTestParamSpecList;
 	}
 
-	public void setTypedFunctionTestPrefixList(List<String> typedFunctionTestPrefix) {
-		this.typedFunctionTestPrefixList = typedFunctionTestPrefix;
+	public void setTypedFunctionTestParamSpecList(List<String> typedFunctionTestPrefix) {
+		this.m_typedFunctionTestParamSpecList = typedFunctionTestPrefix;
 	}
 
 	public String getTypedFunctionTestReturnType() {
-		return typedFunctionTestReturnType;
+		return m_typedFunctionTestReturnType;
 	}
 
 	public void setTypedFunctionTestReturnType(String typedFunctionTestReturnType) {
-		this.typedFunctionTestReturnType = typedFunctionTestReturnType;
+		this.m_typedFunctionTestReturnType = typedFunctionTestReturnType;
 	} 
 
 }

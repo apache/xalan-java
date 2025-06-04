@@ -29,15 +29,23 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.stream.IntStream;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.serializer.CharacterMapConfig;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
@@ -45,6 +53,7 @@ import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -55,6 +64,7 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Node;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
@@ -647,6 +657,66 @@ public class XslTransformEvaluationHelper {
     	}
 
     	return result;
+    }
+    
+    /**
+     * Function definition to get xsl:function's compiled ElemFunction object, 
+     * given a NodeTest expression.  
+     * 
+     * @param nodeTest							   An object instance for example, constructed from XPath 
+     *                                               named function references like fn0:abc#1.
+     * @param transformerImpl					       An XSL transform TransformerImpl object
+     * @param srcLocator						       SourceLocator object in XPath context
+     * @return									   An ElemFunction object if available, otherwise null
+     * 
+     * @throws javax.xml.transform.TransformerException
+     */
+    public static ElemFunction getElemFunctionFromNodeTestExpression(NodeTest nodeTest, TransformerImpl transformerImpl, 
+  		                                                             SourceLocator srcLocator) throws javax.xml.transform.TransformerException {
+
+  	  ElemFunction result = null;
+
+  	  String funcNameRef = nodeTest.getLocalName();
+  	  String funcNamespace = nodeTest.getNamespace();
+
+  	  ExpressionNode expressionNode = nodeTest.getExpressionOwner();
+  	  ExpressionNode stylesheetRootNode = null;
+  	  while (expressionNode != null) {
+  		  stylesheetRootNode = expressionNode;
+  		  expressionNode = expressionNode.exprGetParent();                     
+  	  }
+
+  	  StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;  	    	  
+
+  	  if (stylesheetRoot != null) {
+  		  transformerImpl = stylesheetRoot.getTransformerImpl();  
+  		  TemplateList templateList = stylesheetRoot.getTemplateListComposed();  		  
+  		  XSL3FunctionService xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();  		  
+  		  if (xslFunctionService.isFuncArityWellFormed(funcNameRef)) {        	   
+  			  int hashCharIdx = funcNameRef.indexOf('#');
+  			  String funcNameRef2 = funcNameRef.substring(0, hashCharIdx);
+  			  int funcArity = Integer.valueOf(funcNameRef.substring(hashCharIdx + 1));        		   
+  			  ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);        		   
+  			  if (elemTemplate != null) {
+  				  result = (ElemFunction)elemTemplate;
+  				  int xslFuncDefnParamCount = result.getParamCount();                      
+  				  String str = funcNameRef.substring(hashCharIdx + 1);
+  				  int funcRefParamCount = (Integer.valueOf(str)).intValue();
+  				  if (funcRefParamCount != xslFuncDefnParamCount) {
+  					  throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcNameRef 
+  																													   + " cannot resolve to a function "
+  																													   + "definition.", srcLocator); 
+  				  }
+  			  }
+  		  }
+  		  else {
+  			  throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcNameRef 
+  																											   + " cannot resolve to a function "
+  																											   + "definition.", srcLocator);
+  		  }
+  	  }
+
+  	  return result;  	  
     }
     
     /**

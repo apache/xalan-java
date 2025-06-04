@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-03T10:35:53Z" fail="26" name="try" pass="11" skipped="5" statusUnknown="0" totalRun="42">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-04T11:30:39Z" fail="26" name="try" pass="11" skipped="5" statusUnknown="0" totalRun="42">
    <testResult status="pass" testName="try-001"/>
    <testResult status="fail" testName="try-002">
       <outResult/>
@@ -38,7 +38,10 @@
       <outResult/>
    </testResult>
    <testResult status="fail" testName="try-019">
-      <outResult/>
+      <outResult>
+         <errTrace>XPST0008 : Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}value</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="try-020"/>
    <testResult status="fail" testName="try-021">

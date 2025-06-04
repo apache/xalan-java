@@ -88,7 +88,7 @@ public class FuncApply extends Function2Args {
         }
         else if (m_arg0 instanceof NodeTest) {
             transformerImpl = getTransformerImplFromXPathExpression(m_arg0);            
-            elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg0, transformerImpl, srcLocator);
+            elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)m_arg0, transformerImpl, srcLocator);
             result = getFnApplyResult(elemFunction, m_arg1, xctxt, transformerImpl);
         }
         else if (m_arg0 instanceof Variable) {           

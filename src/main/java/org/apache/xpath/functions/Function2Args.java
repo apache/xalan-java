@@ -15,27 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.templates.ElemFunction;
-import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.patterns.NodeTest;
 
 /**
  * Base class for functions that accept two arguments.
@@ -44,8 +34,6 @@ import org.apache.xpath.patterns.NodeTest;
 public class Function2Args extends FunctionOneArg
 {
   static final long serialVersionUID = 5574294996842710641L;
-  
-  private XSL3FunctionService m_xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
 
   /** The second argument passed to the function (at index 1).
    *  
@@ -192,65 +180,6 @@ public class Function2Args extends FunctionOneArg
   		return false;
   		
   	return true;
-  }
-  
-  /**
-   * Function definition to get xsl:function's compiled object ElemFunction, 
-   * given a NodeTest expression.  
-   * 
-   * @param nodeTest							   An object instance for example, constructed from XPath 
-   *                                               named function references like fn0:abc#1.
-   * @param transformerImpl					       An XSL transform TransformerImpl object
-   * @param srcLocator						       SourceLocator object in XPath context
-   * @return									   An ElemFunction object if available, otherwise null
-   * 
-   * @throws javax.xml.transform.TransformerException
-   */
-  protected ElemFunction getElemFunctionFromNodeTestExpression(NodeTest nodeTest, TransformerImpl transformerImpl, 
-		                                                       SourceLocator srcLocator) throws javax.xml.transform.TransformerException {
-
-	  ElemFunction result = null;
-
-	  String funcNameRef = nodeTest.getLocalName();
-	  String funcNamespace = nodeTest.getNamespace();
-
-	  ExpressionNode expressionNode = nodeTest.getExpressionOwner();
-	  ExpressionNode stylesheetRootNode = null;
-	  while (expressionNode != null) {
-		  stylesheetRootNode = expressionNode;
-		  expressionNode = expressionNode.exprGetParent();                     
-	  }
-
-	  StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
-
-	  if (stylesheetRoot != null) {
-		  transformerImpl = stylesheetRoot.getTransformerImpl();  
-		  TemplateList templateList = stylesheetRoot.getTemplateListComposed();        	   
-		  if (m_xslFunctionService.isFuncArityWellFormed(funcNameRef)) {        	   
-			  int hashCharIdx = funcNameRef.indexOf('#');
-			  String funcNameRef2 = funcNameRef.substring(0, hashCharIdx);
-			  int funcArity = Integer.valueOf(funcNameRef.substring(hashCharIdx + 1));        		   
-			  ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);        		   
-			  if (elemTemplate != null) {
-				  result = (ElemFunction)elemTemplate;
-				  int xslFuncDefnParamCount = result.getParamCount();                      
-				  String str = funcNameRef.substring(hashCharIdx + 1);
-				  int funcRefParamCount = (Integer.valueOf(str)).intValue();
-				  if (funcRefParamCount != xslFuncDefnParamCount) {
-					  throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcNameRef 
-																																  + " cannot resolve to a function "
-																																  + "definition.", srcLocator); 
-				  }
-			  }
-		  }
-		  else {
-			  throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcNameRef 
-																																  + " cannot resolve to a function "
-																																  + "definition.", srcLocator);
-		  }
-	  }
-
-	  return result;
   }
  
  /**

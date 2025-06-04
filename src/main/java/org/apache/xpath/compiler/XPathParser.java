@@ -339,8 +339,8 @@ public class XPathParser
 
       if (null != m_token)
       {    	
-    	// Retry once again, by parenthesizing the original 
-    	// XPath expression.
+    	// Retry XPath expression parse once again by parenthesizing the 
+    	// original XPath expression.
     	
         boolean isTrySecondTime = true;
         
@@ -349,15 +349,19 @@ public class XPathParser
         if (!(expression.startsWith("(") && expression.endsWith(")"))) {
         	String[] strArr = expression.split(",");
         	if (strArr.length > 1) {
-        	   boolean fl1 = true;
+        	   boolean isXPathExprStrHasBalancedParens = true;
         	   for (int idx = 0; idx < strArr.length; idx++) {
         		  String str1 = strArr[idx];
         		  if (!XslTransformEvaluationHelper.isStrHasBalancedParentheses(str1, '(', ')')) {
-        			  fl1 = false; 
+        			  isXPathExprStrHasBalancedParens = false; 
         		  }
         	   }
-        	   
-        	   if (fl1) {
+        	           	   
+        	   if (isXPathExprStrHasBalancedParens || tokenIs(',')) {
+        		   // We check for the token string "," as well, since
+        		   // an XPath parse might have finished without completing
+        		   // parse of all sequence items if it was an XPath literal 
+        		   // sequence constructor parse.
         		   newExpression = "(" + expression + ")"; 
         	   }
         	}
@@ -6112,23 +6116,23 @@ public class XPathParser
  		  sequenceTypeFunctionTest = new SequenceTypeFunctionTest();
  		  nextToken();
  		  consumeExpected('(');
- 		  List<String> typedFunctionTestPrefixList = new ArrayList<String>();    		  
+ 		  List<String> typedFunctionTestParamSpecList = new ArrayList<String>();    		  
  		  if (!lookahead(')', 1)) {
- 			 // There's at-least one parameter definition, for TypedFunctionTest
- 			 String typedFunctionTestPrefixPart = "";
+ 			 // There's at-least one parameter specification, for TypedFunctionTest
+ 			 String typedFunctionTestParamSpec = "";
  			 while (m_token != null) {
  				if (!(tokenIs(',') || tokenIs(')'))) {
- 				   typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
+ 				   typedFunctionTestParamSpec = typedFunctionTestParamSpec + m_token;
  				   nextToken();
  				}
  				else if (tokenIs(',')) {
- 				   if (!XslTransformEvaluationHelper.isStrHasBalancedParentheses(typedFunctionTestPrefixPart, '(', ')')) {
- 				      typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
+ 				   if (!XslTransformEvaluationHelper.isStrHasBalancedParentheses(typedFunctionTestParamSpec, '(', ')')) {
+ 				      typedFunctionTestParamSpec = typedFunctionTestParamSpec + m_token;
  				      nextToken();
  				   }
  				   else {
- 					  typedFunctionTestPrefixList.add(typedFunctionTestPrefixPart);
- 					  typedFunctionTestPrefixPart = "";
+ 					  typedFunctionTestParamSpecList.add(typedFunctionTestParamSpec);
+ 					  typedFunctionTestParamSpec = "";
  					  if (tokenIs(')')) {
  						 break;  
  					  }
@@ -6140,12 +6144,12 @@ public class XPathParser
  				else if (tokenIs(')')) {
  				   if (lookahead(',', 1) || lookahead(')', 1) || lookahead('*', 1) || 
  						                    lookahead('+', 1) || lookahead('?', 1)) {
- 					  typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
+ 					  typedFunctionTestParamSpec = typedFunctionTestParamSpec + m_token;
  					  nextToken(); 
  				   }
  				   else {
- 					  typedFunctionTestPrefixList.add(typedFunctionTestPrefixPart);
- 	 				  typedFunctionTestPrefixPart = "";
+ 					  typedFunctionTestParamSpecList.add(typedFunctionTestParamSpec);
+ 	 				  typedFunctionTestParamSpec = "";
  	 				  if (tokenIs(')')) {
  					     break;  
  				      }
@@ -6157,7 +6161,7 @@ public class XPathParser
  			 }
  		  }
  		  
- 		  sequenceTypeFunctionTest.setTypedFunctionTestPrefixList(typedFunctionTestPrefixList);
+ 		  sequenceTypeFunctionTest.setTypedFunctionTestParamSpecList(typedFunctionTestParamSpecList);
  		  
  		  consumeExpected(')');
  		  consumeExpected("as");

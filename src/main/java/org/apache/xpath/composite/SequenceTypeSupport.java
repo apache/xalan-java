@@ -52,6 +52,8 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -419,6 +421,30 @@ public class SequenceTypeSupport {
             int expectedType = seqExpectedTypeData.getBuiltInSequenceType();            
             int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
             SequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+            
+            if (srcValue instanceof XPathNamedFunctionReference) {
+            	XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)srcValue; 
+            	SequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
+            	if (seqTypeFunctionTest != null) {
+            		if (seqTypeFunctionTest.isAnyFunctionTest()) {
+            			return srcValue;
+            		}
+            		else {
+            			// REVISIT        		     		 
+            			List<String> funcParamSpecList = seqTypeFunctionTest.getTypedFunctionTestParamSpecList();
+            			String funcReturnSeqType = seqTypeFunctionTest.getTypedFunctionTestReturnType();
+            			
+            			String funcName = xpathNamedFunctionReference.getFuncName();
+            			int funcArity = xpathNamedFunctionReference.getFuncArity();
+            			FunctionTable funcTable = xctxt.getFunctionTable();
+            			Object funcIdInFuncTable = funcTable.getFunctionId(funcName);
+            			Function function = funcTable.getFunction((int)funcIdInFuncTable);
+            			if (function != null) {
+            				return srcValue; 
+            			}
+            		}
+            	}
+            }
             
             if ((srcValue instanceof ResultSequence) && (sequenceTypeKindTest == null)) {
             	ResultSequence rSeq = (ResultSequence)srcValue;
@@ -917,7 +943,7 @@ public class SequenceTypeSupport {
             	  else {
             		 List<InlineFunctionParameter> inlineFuncParameterList = inlineFunctionExpr.getFuncParamList();            		 
             		 
-            		 List<String> functionExpectedParamTypes = sequenceTypeFunctionTest.getTypedFunctionTestPrefixList();
+            		 List<String> functionExpectedParamTypes = sequenceTypeFunctionTest.getTypedFunctionTestParamSpecList();
             		 if (functionExpectedParamTypes.size() == inlineFuncParameterList.size()) {
             		    for (int idx = 0; idx < functionExpectedParamTypes.size(); idx++) {
             		       String expectedParamTypeStr = functionExpectedParamTypes.get(idx);

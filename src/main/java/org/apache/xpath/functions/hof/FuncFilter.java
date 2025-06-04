@@ -120,7 +120,7 @@ public class FuncFilter extends Function2Args {
         else if (m_arg1 instanceof NodeTest) {
         	TransformerImpl transformerImpl = getTransformerImplFromXPathExpression(m_arg1);
             
-        	ElemFunction elemFunction = getElemFunctionFromNodeTestExpression((NodeTest)m_arg1, transformerImpl, srcLocator);
+        	ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)m_arg1, transformerImpl, srcLocator);
             
         	if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
             	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 

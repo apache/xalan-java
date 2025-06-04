@@ -20,6 +20,7 @@ package org.apache.xalan.templates;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.transform.SourceLocator;
@@ -29,16 +30,20 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xerces.xs.XSTypeDefinition;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
@@ -47,6 +52,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
@@ -235,14 +241,14 @@ public class ElemFunction extends ElemTemplate
                  
                  if (paramAsAttrStrVal != null) {
                     try {
+                       XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
+                  	   XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+                  	   SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+                  	  
                        XMLNodeCursorImpl nodeSet = SequenceTypeSupport.getNodeReference(argValue);
                        if (nodeSet != null) {
-                    	  XSTypeDefinition typeDef = nodeSet.getXsTypeDefinition();                    	  
-                    	  if (typeDef != null) {
-                    		  XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                                             XPath.SELECT, null, true);            
-                              XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-                              SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+                    	  XSTypeDefinition typeDef = nodeSet.getXsTypeDefinition();                    	                      	                      	  
+                    	  if (typeDef != null) {                    		  
                               XSTypeDefinition typeDef2 = seqExpectedTypeData.getXsTypeDefinition();
                               if (typeDef2 != null && isTypeXsDefinitionEqual(typeDef, typeDef2)) {                            	  
                             	  argConvertedVal = nodeSet;                      			
@@ -252,8 +258,30 @@ public class ElemFunction extends ElemTemplate
                                                                                                   + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
                                                                                                   + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
                               }
+                    	  }                    	  
+                    	  else if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {                    		  
+                    		  DTMCursorIterator dtmIter = nodeSet.getContainedIter();                    		  
+                     		  if (dtmIter instanceof NodeTest) {
+                     			  try {
+                     				  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
+                     						                                                                         (NodeTest)dtmIter, transformer, srcLocator);
+                     				  if (elemFunction != null) {
+                     					  // REVISIT : To check for elemFunction object's conformance with details in 
+                     					  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()  
+                     					  argConvertedVal = new ElemFunctionItem(elemFunction);
+                     				  }
+                     			  }
+                     			  catch (TransformerException ex) {
+                     				  // NO OP
+                     			  }
+                     		  }
                     	  }
                        }
+                       else if ((seqExpectedTypeData.getSequenceTypeFunctionTest() != null) && (argValue instanceof XPathInlineFunction)) {
+                    	  // REVISIT : To check for argValue's conformance with details in 
+      					  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()
+                  		  argConvertedVal = argValue; 
+                  	   }
                        
                        if (argConvertedVal == null) {
                           argConvertedVal = SequenceTypeSupport.castXDMValueToAnotherType(argValue, paramAsAttrStrVal, null, 
@@ -427,12 +455,32 @@ public class ElemFunction extends ElemTemplate
      
      if (initialEvalResult instanceof XPathNamedFunctionReference) {
     	 SequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
-    	 if (seqTypeFunctionTest.isAnyFunctionTest()) {
-    		 resultSequence = new ResultSequence();
-    		 resultSequence.add(initialEvalResult);
-    		 
-    		 return resultSequence;
-    	 }
+    	 if (seqTypeFunctionTest != null) {
+    		 XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)initialEvalResult;    		 
+    		 if (seqTypeFunctionTest.isAnyFunctionTest()) {
+    			 resultSequence = new ResultSequence();
+    			 resultSequence.add(xpathNamedFunctionReference);
+
+    			 return resultSequence;
+    		 }
+    		 else {
+    			 // REVISIT        		     		 
+    			 List<String> funcParamSpecList = seqTypeFunctionTest.getTypedFunctionTestParamSpecList();
+    			 String funcReturnSeqType = seqTypeFunctionTest.getTypedFunctionTestReturnType();
+    			 
+    			 String funcName = xpathNamedFunctionReference.getFuncName();
+    			 int funcArity = xpathNamedFunctionReference.getFuncArity();
+    			 FunctionTable funcTable = xctxt.getFunctionTable();
+    			 Object funcIdInFuncTable = funcTable.getFunctionId(funcName);
+    			 Function function = funcTable.getFunction((int)funcIdInFuncTable);
+    			 if (function != null) {
+    				 resultSequence = new ResultSequence();
+    				 resultSequence.add(xpathNamedFunctionReference);
+
+    				 return resultSequence; 
+    			 }
+        	 }
+    	 }    	 
      }
      
      XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)initialEvalResult;

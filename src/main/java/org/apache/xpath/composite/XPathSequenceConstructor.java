@@ -17,6 +17,7 @@
 package org.apache.xpath.composite;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -35,6 +36,9 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -89,6 +93,8 @@ public class XPathSequenceConstructor extends Expression {
      * as performed within object of this class.  
      */
     private int m_globals_size;
+    
+    private XSL3FunctionService m_xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
     
     @Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
@@ -215,6 +221,20 @@ public class XPathSequenceConstructor extends Expression {
                        }
                    }
                }
+           }
+           else if (xpathExpr instanceof XSL3ConstructorOrExtensionFunction) {
+        	   XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)xpathExpr;        	           	   
+        	   XObject funcEvalResult = xsl3ConstructorOrExtensionFunction.execute(xctxt);        	           	   
+        	   String[] strParts = xpathExprStr.split("\\)\\(");
+        	   if (strParts.length > 1) {
+        		  String argStr = strParts[strParts.length - 1];
+        		  argStr = argStr.substring(0, argStr.length() - 1);
+        		  String[] argArray = argStr.split(",");
+        		  funcEvalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)funcEvalResult, Arrays.asList(argArray), 
+																                             prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
+																                             xctxt); 
+        	   }        	   
+        	   resultSeq.add(funcEvalResult);
            }
            else {
         	   if (m_vars != null) {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-03T10:35:55Z" fail="15" name="call-template" pass="26" skipped="1" statusUnknown="0" totalRun="42">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-04T11:30:39Z" fail="15" name="call-template" pass="26" skipped="1" statusUnknown="0" totalRun="42">
    <testResult status="fail" testName="call-template-0001">
       <outResult>
          <errTrace>XPTY0004 : An error occured while evaluating an XPath expression ancestor-or-self::*.</errTrace>

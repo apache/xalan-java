@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
+import java.util.Vector;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
@@ -34,6 +36,7 @@ import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
+import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.dom.DOMInputImpl;
@@ -45,9 +48,12 @@ import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.types.XSByte;
@@ -95,8 +101,9 @@ import xml.xpath31.processor.types.XSToken;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * This class provides support to evaluate XPath 3.1's XML Schema 
- * constructor function calls and XSL stylesheet function calls. 
+ * This class provides support to evaluate XPath 3.1 "XML Schema 
+ * constructor function calls" and "named function references", 
+ * and "XSL stylesheet function calls".
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -174,7 +181,15 @@ public class XSL3FunctionService {
     					// Evaluate XSL stylesheet function call
     					ResultSequence argSequence = new ResultSequence();
     					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);    					
+    						Expression argExpr = funcObj.getArg(idx);
+    						XObject argVal = null;
+    						if (!(argExpr instanceof XPathNamedFunctionReference)) { 
+    						    argVal = argExpr.execute(xctxt);
+    					    }
+    					    else {
+    					        argVal = (XPathNamedFunctionReference)argExpr; 	
+    					    }
+    						
     						argSequence.add(argVal);
     					}
 
@@ -585,6 +600,164 @@ public class XSL3FunctionService {
 
     	return isFuncArityWellFormed;
     }
+    
+    /**
+     * Method definition to evaluate an XPath named function reference.
+     * 
+     * @param xpathNamedFuncRef                 An XPath compiled named function reference object
+     * @param argList                           List of argument XPath expressions for the function call
+     * @param prefixTable                       An XML prefix table list object reference containing
+     *                                          an XSL context namespace binding information.
+     * @param varVecor                          Variable name declaration vector
+     * @param varGlobalsSize                    Variable declaration count information                     
+     * @param xctxt							    An XPath context object                                          
+     * @return									The result of evaluation of an XPath named function
+     *                                          reference.
+     * @throws TransformerException
+     */
+    public XObject evaluateXPathNamedFunctionReference(XPathNamedFunctionReference xpathNamedFuncRef, 
+    		                                           List<String> argList, List<XMLNSDecl> prefixTable, 
+    		                                           Vector varVecor, int varGlobalsSize, ExpressionNode expressionNode, 
+    		                                           XPathContext xctxt) throws TransformerException {
+    	
+    	XObject evalResult = null;
+
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
+
+    	int contextNode = xctxt.getCurrentNode(); 
+
+    	String funcNamespace = xpathNamedFuncRef.getFuncNamespace();
+    	String funcLocalName = xpathNamedFuncRef.getFuncName();
+    	int funcArity = xpathNamedFuncRef.getFuncArity();
+
+    	String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName; 
+
+    	FunctionTable funcTable = xctxt.getFunctionTable();
+
+    	Object funcIdObj = null;
+    	if (FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
+    		funcIdObj = funcTable.getFunctionId(funcLocalName);
+    	}
+    	else if (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
+    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
+    	}
+    	else if (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
+    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
+    	}
+    	else if (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
+    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
+    	}
+
+    	if (funcIdObj != null) {
+    		// Evaluate an XPath built-in function reference
+    		
+    		String funcIdStr = funcIdObj.toString();
+    		Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
+    		function.setLocalName(funcLocalName);
+    		function.setNamespace(funcNamespace);
+    		function.setFuncArity(funcArity);
+
+    		for (int idx = 0; idx < argList.size(); idx++) {
+    			String argXPathStr = argList.get(idx);
+    			if (prefixTable != null) {
+    				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    			}
+
+    			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    			if (varVecor != null) {
+    				argXPath.fixupVariables(varVecor, varGlobalsSize);
+    			}
+
+    			try {
+    				function.setArg(argXPath.getExpression(), idx);
+    			} 
+    			catch (WrongNumberArgsException ex) {
+    				// Return an empty sequence in case of this exception
+    				evalResult = new ResultSequence();
+    			}
+    		}
+
+    		evalResult = function.execute(xctxt);
+    	}
+    	else if (xpathNamedFuncRef.getXslStylesheetFunction() != null) {
+    		// Evaluate an XSL stylesheet function reference
+    		
+    		ElemFunction elemFunction = xpathNamedFuncRef.getXslStylesheetFunction();
+
+    		ResultSequence argSequence = new ResultSequence();
+    		for (int idx = 0; idx < argList.size(); idx++) {
+    			String argXPathStr = argList.get(idx);
+    			if (prefixTable != null) {
+    				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    			}
+
+    			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    			if (varVecor != null) {
+    				argXPath.fixupVariables(varVecor, varGlobalsSize);
+    			}
+
+    			try {
+    				XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    				argSequence.add(argValue);
+    			} 
+    			catch (TransformerException ex) {							
+    				// Return an empty sequence in case of this exception
+    				evalResult = new ResultSequence();
+    			}
+    		}
+
+    		ExpressionNode stylesheetRootNode = null;    		
+    		while (expressionNode != null) {
+    			stylesheetRootNode = expressionNode;
+    			expressionNode = expressionNode.exprGetParent();                     
+    		}
+
+    		StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+
+    		if (stylesheetRoot != null) {
+    			TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+
+    			evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
+    		}
+    		else {
+    			evalResult = new ResultSequence();  
+    		}
+    	}
+    	else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {
+    		// Evaluate an XPath schema type constructor function call reference
+    		
+    		XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
+    		funcObj.setFuncArity(funcArity);
+
+    		for (int idx = 0; idx < argList.size(); idx++) {
+    			String argXPathStr = argList.get(idx);
+    			if (prefixTable != null) {
+    				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    			}
+
+    			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    			if (varVecor != null) {
+    				argXPath.fixupVariables(varVecor, varGlobalsSize);
+    			}
+
+    			try {
+    				funcObj.setArg(argXPath.getExpression(), idx);
+    			} 
+    			catch (WrongNumberArgsException ex) {							
+    				// Return an empty sequence in case of this exception
+    				evalResult = new ResultSequence();
+    			}
+    		}
+
+    		evalResult = funcObj.execute(xctxt);        		  
+    	}
+    	else {
+    		throw new TransformerException("FODC0005 : An XSL function definition for named function reference " + funcQualifiedName + 
+    				                                                                                 " doesn't exist.", srcLocator);
+    	}
+    	
+    	return evalResult;
+	}
     
     /**
      * Evaluate the XPath built-in constructor function call.
