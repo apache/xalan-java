@@ -15,26 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import java.util.Map;
 
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.RegexEvaluationSupport;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.regex.Matcher;
 
 /**
- * Implementation of XSLT fn:regex-group function.
- * 
- * This function can be used within, XSLT instruction xsl:matching-substring.
+ * Implementation of XSLT 3.0 function fn:regex-group.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -55,6 +52,25 @@ public class FuncRegexGroup extends FunctionOneArg
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
         
         XObject result = null;
+        
+        // Check whether, function fn:regex-group is called within xsl:non-matching-substring 
+        // instruction, XPath pattern or xsl:function instruction. For these cases, function 
+        // fn:regex-group returns an empty sequence.
+        
+        // REVISIT : To check for function fn:regex-group use within XPath pattern
+        
+        ExpressionNode exprNode = getExpressionOwner();
+        
+        while (exprNode != null) {
+           if ((exprNode instanceof ElemNonMatchingSubstring) || (exprNode instanceof ElemFunction)) {
+        	   result = new ResultSequence();
+        	   
+        	   return result;
+           }
+           else {
+        	   exprNode = exprNode.exprGetParent(); 
+           }
+        }
         
         Expression arg0Expr = this.getArg0();
         

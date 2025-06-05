@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-04T11:30:37Z" fail="20" name="analyze-string" pass="33" skipped="5" statusUnknown="0" totalRun="58">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-05T10:25:07Z" fail="17" name="analyze-string" pass="36" skipped="5" statusUnknown="0" totalRun="58">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -8,7 +8,7 @@
    <testResult status="pass" testName="analyze-string-008"/>
    <testResult status="pass" testName="analyze-string-012"/>
    <testResult status="pass" testName="analyze-string-033"/>
-   <testResult status="fail" testName="analyze-string-034"/>
+   <testResult status="pass" testName="analyze-string-034"/>
    <testResult status="pass" testName="analyze-string-035"/>
    <testResult status="pass" testName="analyze-string-036"/>
    <testResult status="pass" testName="analyze-string-037"/>
@@ -29,10 +29,10 @@
    <testResult status="pass" testName="analyze-string-069"/>
    <testResult status="pass" testName="analyze-string-070"/>
    <testResult status="pass" testName="analyze-string-071"/>
-   <testResult status="fail" testName="analyze-string-072"/>
+   <testResult status="pass" testName="analyze-string-072"/>
    <testResult status="pass" testName="analyze-string-073"/>
    <testResult status="pass" testName="analyze-string-074"/>
-   <testResult status="fail" testName="analyze-string-075"/>
+   <testResult status="pass" testName="analyze-string-075"/>
    <testResult status="fail" testName="analyze-string-076"/>
    <testResult status="fail" testName="analyze-string-077"/>
    <testResult status="fail" testName="analyze-string-078"/>

@@ -50,6 +50,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.xalan.Version;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
@@ -672,13 +673,13 @@ public class Process
 			  }
 			  else if ("-INIT_TEMPLATE".equalsIgnoreCase(argv[i])) {
 				  if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-') {
-					  initialTemplateName = argv[++i]; 
-					  tfactory.setAttribute(XalanProperties.INIT_TEMPLATE, initialTemplateName);
+					  initialTemplateName = argv[++i]; 					  
 				  }
-				  else
-					  System.err.println(XSLMessages.createMessage(
-															  XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
-															  new Object[]{ "-IT" }));
+				  else {
+					 initialTemplateName = Constants.XSL_INITIAL_TEMPLATE_DEFAULT_NAME;  
+				  }
+				  
+				  tfactory.setAttribute(XalanProperties.INIT_TEMPLATE, initialTemplateName);
 			  }
 			  else
 				  System.err.println(

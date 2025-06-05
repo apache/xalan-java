@@ -45,10 +45,14 @@ import org.apache.xml.utils.res.XResourceBundle;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 // import org.apache.xalan.dtm.*;
 
@@ -802,6 +806,16 @@ public class ElemNumber extends ElemTemplateElement
     if (null != m_valueExpr)
     {
       XObject countObj = m_valueExpr.execute(xctxt, sourceNode, this);
+      
+      if (countObj instanceof ResultSequence) {
+    	  ResultSequence rSeq = (ResultSequence)countObj;
+    	  countObj = rSeq.item(0);
+    	  if (countObj instanceof XSNumericType) {
+    		 String strValue = ((XSNumericType)countObj).stringValue();
+    		 countObj = new XNumber(Double.valueOf(strValue));
+    	  }
+      }
+      
       //According to Errata E24
       double d_count = java.lang.Math.floor(countObj.num()+ 0.5);
       if (Double.isNaN(d_count)) return "NaN";

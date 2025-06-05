@@ -483,6 +483,8 @@ public class Constants extends org.apache.xml.utils.Constants
 
   public static final String XSL_PATTERN_TABLE_DELIM = "#####";
   
+  public static final String XSL_INITIAL_TEMPLATE_DEFAULT_NAME = "xsl:initial-template";
+  
   /** XSLT 3.0 xsl:try and xsl:catch processing constants */
   
   public static final String XSL_ERROR_NAMESACE = "http://www.w3.org/2005/xqt-errors";

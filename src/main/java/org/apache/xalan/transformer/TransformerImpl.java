@@ -2356,8 +2356,16 @@ public class TransformerImpl extends Transformer
         {
           xctxt.pushNamespaceContext(xslInstruction);
           
-          if (initTemplateName != null) {
-             template = m_stylesheetRoot.getTemplateComposed(new QName(initTemplateName));                                       
+          if (initTemplateName != null) {        	         	 
+        	 QName initTemplateQName = null;         	 
+        	 if ((Constants.XSL_INITIAL_TEMPLATE_DEFAULT_NAME).equals(initTemplateName)) {
+        		 initTemplateQName = new QName(Constants.S_XSLNAMESPACEURL, "initial-template"); 
+        	 }
+        	 else {
+        		 initTemplateQName = new QName(initTemplateName);  
+        	 }
+        	 
+             template = m_stylesheetRoot.getTemplateComposed(initTemplateQName);             
              if (template != null) {
             	 m_xcontext.pushNamespaceContext(template);
             	 pushElemTemplateElement(template);
