@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-06-05T10:25:35Z" desc="W3C XSLT 3.0 test suite results" fail="527" pass="1014" skipped="21" success="65.34%" totalRun="1584" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-06-05T15:53:34Z" desc="W3C XSLT 3.0 test suite results" fail="523" pass="1018" skipped="21" success="65.59%" totalRun="1584" xslt_processor="Xalan-J XSLT 3.0 development code">
   <decl>
     <character-map fail="12" pass="15" skipped="0" success="51.72%" totalRun="29"/>
     <function fail="39" pass="22" skipped="4" success="37.14%" totalRun="70"/>
   </decl>
   <expr>
     <axes fail="29" pass="172" skipped="0" success="85.57%" totalRun="201"/>
-    <castable fail="9" pass="0" skipped="0" success="0.0%" totalRun="9"/>
+    <castable fail="5" pass="4" skipped="0" success="44.44%" totalRun="9"/>
     <expression fail="0" pass="9" skipped="0" success="90.0%" totalRun="10"/>
     <for fail="2" pass="1" skipped="0" success="25.0%" totalRun="4"/>
     <higher-order-functions fail="6" pass="18" skipped="0" success="72.0%" totalRun="25"/>

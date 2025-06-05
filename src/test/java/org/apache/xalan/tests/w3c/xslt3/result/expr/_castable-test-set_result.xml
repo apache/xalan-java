@@ -1,20 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-05T10:25:15Z" fail="9" name="castable" pass="0" skipped="0" statusUnknown="0" totalRun="9">
-   <testResult status="fail" testName="castable-001"/>
-   <testResult status="fail" testName="castable-002">
-      <outResult>
-         <errTrace>XTTE0570 : The source xdm sequence cannot be cast to the provided sequence type.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="castable-003">
-      <outResult>
-         <errTrace>XTTE0570 : The source xdm sequence cannot be cast to the provided sequence type.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="castable-004">
-      <outResult>
-         <errTrace>XTTE0570 : The source xdm sequence cannot be cast to the provided sequence type.</errTrace>
-      </outResult>
-   </testResult>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-05T15:53:13Z" fail="5" name="castable" pass="4" skipped="0" statusUnknown="0" totalRun="9">
+   <testResult status="pass" testName="castable-001"/>
+   <testResult status="pass" testName="castable-002"/>
+   <testResult status="pass" testName="castable-003"/>
+   <testResult status="pass" testName="castable-004"/>
    <testResult status="fail" testName="castable-005">
       <outResult>
          <errTrace>Failed calling setNamespace method</errTrace>

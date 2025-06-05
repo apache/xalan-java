@@ -29,7 +29,12 @@ import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSDuration;
+import xml.xpath31.processor.types.XSFloat;
 
 /**
  * The XPath 3.1 "castable as" operation.
@@ -60,8 +65,42 @@ public class CastableAs extends Operation
       
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
-      try {
-         result = SequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData, true);
+      try {    	  
+    	 if ((left instanceof XSAnyAtomicType) && ((seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) || 
+    			                                   (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC))) {
+    		result = new XSBoolean(true);
+    		
+    		return result;
+    	 }
+    	 else if ((left instanceof XSBoolean) && ((seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_FLOAT) || 
+    			                                  (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DOUBLE) ||
+    			                                  (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DECIMAL) ||
+    			                                  (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INTEGER))) {
+    		result = new XSBoolean(true);
+     		
+     		return result; 
+    	 }
+    	 else if ((left instanceof XSFloat) && (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DECIMAL)) {
+            result = new XSBoolean(true);
+
+            return result; 
+         }
+    	 else if (((left instanceof XSDecimal) || (left instanceof XSFloat) || (left instanceof XSDouble)) && 
+    			                                                                     (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INTEGER)) {
+             result = new XSBoolean(true);
+
+             return result; 
+         }
+    	 else if ((left instanceof XSDuration) && ((seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DAYTIME_DURATION) || 
+                                                   (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_YEARMONTH_DURATION))) {
+    		 result = new XSBoolean(true);
+
+             return result; 
+    	 }
+    	 else { 
+            result = SequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData, true);
+    	 }
+         
          if (result != null) {
         	result = new XSBoolean(true); 
          }
@@ -69,14 +108,18 @@ public class CastableAs extends Operation
         	XSTypeDefinition typeDefn = seqTypedData.getXsTypeDefinition();
         	if ((typeDefn != null) && (typeDefn instanceof XSSimpleType)) {
         	    XSSimpleTypeDecl simpleTypeDecl = (XSSimpleTypeDecl)typeDefn;        	    
-        	    java.lang.String inpValue = XslTransformEvaluationHelper.getStrVal(left);
+        	    java.lang.String inpStrValue = XslTransformEvaluationHelper.getStrVal(left);
         	    try {
-					simpleTypeDecl.validate(inpValue, null, null);
+					simpleTypeDecl.validate(inpStrValue, null, null);
+					
 					result = new XSBoolean(true); 
 				} 
         	    catch (InvalidDatatypeValueException ex) {
 					result = new XSBoolean(false); 
 				}
+        	}
+        	else {
+        		result = new XSBoolean(false);
         	}
          }
       }

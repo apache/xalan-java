@@ -18,6 +18,7 @@ package org.apache.xpath.composite;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -403,7 +404,17 @@ public class SequenceTypeSupport {
            srcLocator = xctxt.getSAXLocator();
         }
         
-        try {
+        try {        	
+            if ((srcValue instanceof XMLNodeCursorImpl) && (expectedSeqTypeData != null)) {
+                if (expectedSeqTypeData.getBuiltInSequenceType() > 0) {
+                	// When XPath "cast as" operator's LHS is a node and RHS is a built-in 
+                	// simple type, we check "cast as" on string value of node.
+                	srcValue = srcValue.getFresh();
+                	String strValue = XslTransformEvaluationHelper.getStrVal(srcValue);
+                	srcValue = new XSString(strValue);
+                }
+            }
+        	
             XPath seqTypeXPath = null;
             XObject seqTypeExpressionEvalResult = null;
             SequenceTypeData seqExpectedTypeData = null;
@@ -896,13 +907,11 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSUntyped) {
                String srcStrVal = ((XSUntyped)srcValue).stringValue();
-               // Recursive call to this function
                result = castXdmValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
                                                                                                     expectedSeqTypeData, xctxt);
             }
             else if (srcValue instanceof XSUntypedAtomic) {
                String srcStrVal = ((XSUntypedAtomic)srcValue).stringValue();
-               // Recursive call to this function
                result = castXdmValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
                                                                                                     expectedSeqTypeData, xctxt);
             }
@@ -919,7 +928,6 @@ public class SequenceTypeSupport {
             else if (srcValue instanceof ResultSequence) {
                ResultSequence srcResultSeq = (ResultSequence)srcValue;
                if (srcResultSeq.size() == 1) {
-            	   // Recursive call to this function
                    result = castXdmValueToAnotherType(srcResultSeq.item(0), sequenceTypeXPathExprStr, expectedSeqTypeData, xctxt);   
                }               
                else if ((srcResultSeq.size() == 0) && (itemTypeOccurenceIndicator == 0)) {
@@ -1205,8 +1213,11 @@ public class SequenceTypeSupport {
                   result = new XSBoolean(true); 
                }
             }
-            else if (expectedType == XS_DECIMAL) {
-               result = new XSDecimal(srcStrVal);  
+            else if (expectedType == XS_DECIMAL) {                            
+               boolean isStrValueNumeric = isStrValueNumericFormat(srcStrVal);               
+               if (isStrValueNumeric) {
+            	   result = new XSDecimal(srcStrVal); 
+               }
             }
             else if (expectedType == XS_INTEGER) {
                result = new XSInteger(srcStrVal); 
@@ -1247,17 +1258,26 @@ public class SequenceTypeSupport {
             else if (expectedType == XS_UNSIGNED_BYTE) {
                result = new XSUnsignedByte(srcStrVal);
             }
-            else if (expectedType == XS_DOUBLE) {
-               result = new XSDouble(srcStrVal); 
+            else if (expectedType == XS_DOUBLE) {               
+            	boolean isStrValueNumeric = isStrValueNumericFormat(srcStrVal);                
+                if (isStrValueNumeric) {
+             	   result = new XSDouble(srcStrVal); 
+                }
             }
-            else if (expectedType == XS_FLOAT) {
-               result = new XSFloat(srcStrVal); 
+            else if (expectedType == XS_FLOAT) {               
+            	boolean isStrValueNumeric = isStrValueNumericFormat(srcStrVal);
+                if (isStrValueNumeric) {
+             	   result = new XSFloat(srcStrVal); 
+                }              
             }
             else if (expectedType == XS_DATE) {
                result = XSDate.parseDate(srcStrVal); 
             }
             else if (expectedType == XS_DATETIME) {
                result = XSDateTime.parseDateTime(srcStrVal); 
+            }
+            else if (expectedType == XS_TIME) {
+               result = XSTime.parseTime(srcStrVal); 
             }
             else if (expectedType == XS_DURATION) {
                result = XSDuration.parseDuration(srcStrVal); 
@@ -1298,6 +1318,26 @@ public class SequenceTypeSupport {
         
         return result;
     }
+
+    /**
+     * Method definition to check whether, the supplied string value
+     * is formatted as number.
+     * 
+     * @param strValue					The supplied string value
+     * @return
+     */
+	private static boolean isStrValueNumericFormat(String strValue) {		
+		boolean isStrValueNumeric = true;
+		
+        try {
+           BigDecimal bigDecimal = new BigDecimal(strValue);
+        }
+        catch (NumberFormatException ex) {
+        	isStrValueNumeric = false; 
+        }
+        
+        return isStrValueNumeric;
+	}
     
     /**
      * This method does numeric type conversion, and numeric type promotion as 
