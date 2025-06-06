@@ -106,6 +106,9 @@ public class Keywords
   
   /** Context item node test string. Added for XSLT 3.0. */
   private static final String NODETYPE_CONTEXT_ITEM_STRING = ".";
+  
+  /** Document node test string. Added for XSLT 3.0. */
+  private static final String NODETYPE_DOCUMENT_STRING = "document-node";
 
   /** Wildcard element string. */
   private static final String NODETYPE_ANYELEMENT_STRING = "*";
@@ -754,6 +757,7 @@ public class Keywords
 
 	  // Added for XSLT 3.0
 	  m_nodetypes.put(NODETYPE_CONTEXT_ITEM_STRING, new Integer(OpCodes.NODETYPE_CONTEXT_ITEM));
+	  m_nodetypes.put(NODETYPE_DOCUMENT_STRING, new Integer(OpCodes.NODETYPE_DOCUMENT));
 
 	  m_keywords.put(FROM_SELF_ABBREVIATED_STRING, new Integer(OpCodes.FROM_SELF));
 	  m_keywords.put(FUNC_ID_STRING, new Integer(FunctionTable.FUNC_ID));

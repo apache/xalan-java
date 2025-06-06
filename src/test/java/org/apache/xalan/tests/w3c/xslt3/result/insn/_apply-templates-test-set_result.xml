@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-05T15:52:59Z" fail="26" name="apply-templates" pass="22" skipped="2" statusUnknown="0" totalRun="50">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-06T10:11:00Z" fail="28" name="apply-templates" pass="20" skipped="2" statusUnknown="0" totalRun="50">
    <testResult status="fail" testName="apply-templates-001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
 &#13;
@@ -212,8 +212,20 @@
       </outResult>
    </testResult>
    <testResult status="pass" testName="conflict-resolution-1601"/>
-   <testResult status="pass" testName="conflict-resolution-1602"/>
-   <testResult status="pass" testName="conflict-resolution-1603"/>
+   <testResult status="fail" testName="conflict-resolution-1602">
+      <outResult>
+         <errTrace>Expected ), but found: element</errTrace>
+         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
+org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="conflict-resolution-1603">
+      <outResult>
+         <errTrace>Expected ), but found: element</errTrace>
+         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
+org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="conflict-resolution-1701"/>
    <testResult status="fail" testName="conflict-resolution-1801">
       <outResult>

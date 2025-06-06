@@ -555,6 +555,11 @@ public class OpCodes
    * Added for XSLT 3.0
    */
   public static final int NODETYPE_CONTEXT_ITEM = 1035;
+  
+  /**
+   * Added for XSLT 3.0
+   */
+  public static final int NODETYPE_DOCUMENT = 1036;
 
   /**
    * [FROM_stepType]

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>1,2</one>
+  <two>3,4,5</two>
+  <three>6,abc,8</three>
+  <four>10,11,12</four>
+</result>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>hello,there</one>
+  <two>abc,pqr</two>
+  <three>ok1,ok2</three>
+  <four>
+    <array>
+      <item>abc</item>
+      <item>pqr</item>
+    </array>
+  </four>
+  <five>
+    <map>
+      <entry value="ok1" key="one"/>
+      <entry value="ok2" key="two"/>
+    </map>
+  </five>
+</result>
