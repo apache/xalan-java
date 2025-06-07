@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:45Z" fail="7" name="attribute-set" pass="41" skipped="1" statusUnknown="1" totalRun="50">
+   <testResult status="pass" testName="attribute-set-0101"/>
+   <testResult status="fail" testName="attribute-set-0102">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="attribute-set-0104"/>
+   <testResult status="pass" testName="attribute-set-0105"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult testName="attribute-set-0106a"/>
+   <testResult status="pass" testName="attribute-set-0107"/>
+   <testResult status="fail" testName="attribute-set-0108">
+      <outResult>
+         <errTrace>xsl:next-match is not allowed in this position in the stylesheet</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="attribute-set-0201"/>
+   <testResult status="pass" testName="attribute-set-0202"/>
+   <testResult status="pass" testName="attribute-set-0203"/>
+   <testResult status="pass" testName="attribute-set-0204"/>
+   <testResult status="pass" testName="attribute-set-0205"/>
+   <testResult status="pass" testName="attribute-set-0206"/>
+   <testResult status="pass" testName="attribute-set-0207"/>
+   <testResult status="pass" testName="attribute-set-0208"/>
+   <testResult status="pass" testName="attribute-set-0209"/>
+   <testResult status="pass" testName="attribute-set-0210"/>
+   <testResult status="pass" testName="attribute-set-0211"/>
+   <testResult status="pass" testName="attribute-set-1001"/>
+   <testResult status="pass" testName="attribute-set-1002"/>
+   <testResult status="fail" testName="attribute-set-1003">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="attribute-set-1501"/>
+   <testResult status="pass" testName="attribute-set-1502"/>
+   <testResult status="pass" testName="attribute-set-1503"/>
+   <testResult status="pass" testName="attribute-set-1504"/>
+   <testResult status="pass" testName="attribute-set-1505"/>
+   <testResult status="pass" testName="attribute-set-1506"/>
+   <testResult status="pass" testName="attribute-set-1507"/>
+   <testResult status="pass" testName="attribute-set-1508"/>
+   <testResult status="pass" testName="attribute-set-1509"/>
+   <testResult status="pass" testName="attribute-set-1510"/>
+   <testResult status="pass" testName="attribute-set-1511"/>
+   <testResult status="pass" testName="attribute-set-1512"/>
+   <testResult status="pass" testName="attribute-set-1513"/>
+   <testResult status="pass" testName="attribute-set-1801"/>
+   <testResult status="pass" testName="attribute-set-1802"/>
+   <testResult status="pass" testName="attribute-set-1803"/>
+   <testResult status="pass" testName="attribute-set-1804"/>
+   <testResult status="pass" testName="attribute-set-1805"/>
+   <testResult status="pass" testName="attribute-set-1806"/>
+   <testResult status="pass" testName="attribute-set-1807"/>
+   <testResult status="fail" testName="attribute-set-1808"/>
+   <testResult status="pass" testName="attribute-set-1809"/>
+   <testResult status="pass" testName="attribute-set-1810"/>
+   <testResult status="fail" testName="attribute-set-1811"/>
+   <testResult status="pass" testName="attribute-set-1812"/>
+   <testResult status="fail" testName="attribute-set-1813"/>
+   <testResult status="fail" testName="attribute-set-1814">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="attribute-set-1815"/>
+</testrun>

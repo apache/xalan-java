@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-06-06T10:11:26Z" desc="W3C XSLT 3.0 test suite results" fail="525" pass="1016" skipped="21" success="65.47%" totalRun="1584" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-06-07T07:31:56Z" desc="W3C XSLT 3.0 test suite results" fail="822" pass="1275" skipped="34" success="60.49%" totalRun="2164" xslt_processor="Xalan-J XSLT 3.0 development code">
+  <attr>
+    <as fail="97" pass="11" skipped="0" success="10.09%" totalRun="109"/>
+    <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
+    <match fail="67" pass="57" skipped="8" success="47.45%" totalRun="137"/>
+    <select fail="7" pass="16" skipped="0" success="64.0%" totalRun="25"/>
+  </attr>
   <decl>
+    <attribute-set fail="7" pass="41" skipped="1" success="84.0%" totalRun="50"/>
     <character-map fail="12" pass="15" skipped="0" success="51.72%" totalRun="29"/>
     <function fail="39" pass="22" skipped="4" success="37.14%" totalRun="70"/>
+    <variable fail="11" pass="8" skipped="0" success="40.0%" totalRun="20"/>
   </decl>
   <expr>
     <axes fail="29" pass="172" skipped="0" success="85.57%" totalRun="201"/>
@@ -17,6 +25,7 @@
   </expr>
   <fn>
     <deep-equal fail="0" pass="2" skipped="0" success="100.0%" totalRun="2"/>
+    <format-number fail="33" pass="37" skipped="4" success="55.41%" totalRun="74"/>
     <key fail="3" pass="21" skipped="0" success="84.0%" totalRun="25"/>
     <position fail="8" pass="108" skipped="0" success="92.31%" totalRun="117"/>
     <root fail="4" pass="6" skipped="0" success="60.0%" totalRun="10"/>
@@ -35,8 +44,12 @@
     <sort fail="44" pass="35" skipped="0" success="43.75%" totalRun="80"/>
     <try fail="26" pass="11" skipped="5" success="38.1%" totalRun="42"/>
   </insn>
+  <misc>
+    <regex fail="12" pass="33" skipped="0" success="73.33%" totalRun="45"/>
+  </misc>
   <type>
     <boolean fail="22" pass="90" skipped="0" success="80.36%" totalRun="112"/>
+    <date fail="49" pass="35" skipped="0" success="41.18%" totalRun="85"/>
     <node fail="17" pass="15" skipped="0" success="46.88%" totalRun="32"/>
     <string fail="8" pass="128" skipped="0" success="94.12%" totalRun="136"/>
   </type>

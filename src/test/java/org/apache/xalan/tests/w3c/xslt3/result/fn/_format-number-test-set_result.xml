@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:31:28Z" fail="33" name="format-number" pass="37" skipped="4" statusUnknown="0" totalRun="74">
+   <testResult status="fail" testName="format-number-001"/>
+   <testResult status="fail" testName="format-number-002"/>
+   <testResult status="fail" testName="format-number-003"/>
+   <testResult status="fail" testName="format-number-004"/>
+   <testResult status="pass" testName="format-number-005"/>
+   <testResult status="pass" testName="format-number-006"/>
+   <testResult status="fail" testName="format-number-007"/>
+   <testResult status="fail" testName="format-number-008"/>
+   <testResult status="pass" testName="format-number-009"/>
+   <testResult status="pass" testName="format-number-010"/>
+   <testResult status="pass" testName="format-number-011"/>
+   <testResult status="pass" testName="format-number-012"/>
+   <testResult status="fail" testName="format-number-013"/>
+   <testResult status="pass" testName="format-number-014"/>
+   <testResult status="pass" testName="format-number-015"/>
+   <testResult status="pass" testName="format-number-016"/>
+   <testResult status="pass" testName="format-number-017"/>
+   <testResult status="pass" testName="format-number-018"/>
+   <testResult status="pass" testName="format-number-019"/>
+   <testResult status="pass" testName="format-number-020"/>
+   <testResult status="pass" testName="format-number-021"/>
+   <testResult status="pass" testName="format-number-022"/>
+   <testResult status="pass" testName="format-number-023"/>
+   <testResult status="pass" testName="format-number-024"/>
+   <testResult status="fail" testName="format-number-025"/>
+   <testResult status="fail" testName="format-number-026"/>
+   <testResult status="pass" testName="format-number-027"/>
+   <testResult status="pass" testName="format-number-028"/>
+   <testResult status="fail" testName="format-number-029"/>
+   <testResult status="pass" testName="format-number-030"/>
+   <testResult status="pass" testName="format-number-031"/>
+   <testResult status="fail" testName="format-number-032"/>
+   <testResult status="pass" testName="format-number-033"/>
+   <testResult status="fail" testName="format-number-034"/>
+   <testResult status="pass" testName="format-number-035"/>
+   <testResult status="fail" testName="format-number-036"/>
+   <testResult status="fail" testName="format-number-037"/>
+   <testResult status="pass" testName="format-number-038"/>
+   <testResult status="pass" testName="format-number-039"/>
+   <testResult status="pass" testName="format-number-040"/>
+   <testResult status="pass" testName="format-number-041"/>
+   <testResult status="pass" testName="format-number-042"/>
+   <testResult status="pass" testName="format-number-043"/>
+   <testResult status="fail" testName="format-number-044"/>
+   <testResult status="fail" testName="format-number-045"/>
+   <testResult status="fail" testName="format-number-046">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="format-number-047"/>
+   <testResult status="fail" testName="format-number-048"/>
+   <testResult status="pass" testName="format-number-049"/>
+   <testResult status="fail" testName="format-number-050">
+      <outResult>
+         <errTrace>Illegal value: 𚶰 used for CHAR attribute: decimal-separator. An attribute of type CHAR must be only 1 character!</errTrace>
+         <errTrace>Illegal value: 𚶱 used for CHAR attribute: grouping-separator. An attribute of type CHAR must be only 1 character!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="format-number-051">
+      <outResult>
+         <errTrace>Illegal value: 𐒠 used for CHAR attribute: zero-digit. An attribute of type CHAR must be only 1 character!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="format-number-052"/>
+   <testResult status="fail" testName="format-number-053">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="format-number-054">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="format-number-055">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="format-number-056">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;931&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="format-number-057n">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Malformed format string: 000.##0</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="format-number-058">
+      <outResult>
+         <errTrace>java.util.MissingResourceException: Can't find resource for bundle org.apache.xalan.res.XSLTErrorResources, key xsl:decimal-format names must be unique. Name "q" has been duplicated.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="format-number-059">
+      <outResult>
+         <errTrace>java.util.MissingResourceException: Can't find resource for bundle org.apache.xalan.res.XSLTErrorResources, key xsl:decimal-format names must be unique. Name "q" has been duplicated.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="format-number-060n">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;fred931.ginger&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="format-number-061">
+      <outResult>
+         <errTrace>Illegal value: :: used for CHAR attribute: decimal-separator. An attribute of type CHAR must be only 1 character!</errTrace>
+         <errTrace>Illegal value: !! used for CHAR attribute: grouping-separator. An attribute of type CHAR must be only 1 character!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="format-number-062"/>
+   <testResult status="pass" testName="format-number-063"/>
+   <testResult status="pass" testName="format-number-064"/>
+   <testResult status="pass" testName="format-number-065"/>
+   <testResult status="pass" testName="format-number-066"/>
+   <testResult status="fail" testName="format-number-067"/>
+   <testResult status="fail" testName="format-number-068">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;#e,ada,cab.afagaa0&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="format-number-069a"/>
+   <testResult status="fail" testName="format-number-069b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;1.2346E2&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+</testrun>

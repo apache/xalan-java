@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:37Z" fail="7" name="select" pass="16" skipped="0" statusUnknown="2" totalRun="25">
+   <testResult status="pass" testName="select-0101"/>
+   <testResult status="pass" testName="select-0102"/>
+   <testResult status="fail" testName="select-0201"/>
+   <testResult status="pass" testName="select-0202"/>
+   <testResult status="pass" testName="select-0301"/>
+   <testResult status="fail" testName="select-0302"/>
+   <testResult status="pass" testName="select-0401"/>
+   <testResult status="fail" testName="select-0501"/>
+   <testResult status="pass" testName="select-0601"/>
+   <testResult testName="select-0701"/>
+   <testResult status="pass" testName="select-0801"/>
+   <testResult status="pass" testName="select-0802"/>
+   <testResult status="pass" testName="select-0901"/>
+   <testResult status="pass" testName="select-0902"/>
+   <testResult status="pass" testName="select-1001"/>
+   <testResult status="pass" testName="select-1101"/>
+   <testResult status="fail" testName="select-1201">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="select-1202">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="select-1301"/>
+   <testResult status="fail" testName="select-1302">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="select-1401"/>
+   <testResult status="pass" testName="select-1402"/>
+   <testResult status="pass" testName="select-1501"/>
+   <testResult status="fail" testName="select-1502">
+      <outResult/>
+   </testResult>
+   <testResult testName="select-1503"/>
+</testrun>

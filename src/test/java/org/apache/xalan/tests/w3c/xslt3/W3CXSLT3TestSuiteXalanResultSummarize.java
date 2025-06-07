@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
  * Class implementation to produce W3C XSLT 3.0 test suite's summarized 
  * XML result document for Xalan-J XSLT 3.0 development implementation.
  * 
- * Steps to use this class:
+ * Steps to use this class in the sequence mentioned:
  * 
  * 1) Run W3C XSLT 3.0 test suite for Xalan-J implementation using class 
  *    org.apache.xalan.tests.w3c.xslt3.W3CXSLT3Tests.

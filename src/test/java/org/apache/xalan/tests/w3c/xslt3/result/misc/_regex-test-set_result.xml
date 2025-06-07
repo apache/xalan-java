@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:31:28Z" fail="12" name="regex" pass="33" skipped="0" statusUnknown="0" totalRun="45">
+   <testResult status="pass" testName="regex-001"/>
+   <testResult status="fail" testName="regex-002"/>
+   <testResult status="pass" testName="regex-003"/>
+   <testResult status="pass" testName="regex-004"/>
+   <testResult status="pass" testName="regex-005"/>
+   <testResult status="pass" testName="regex-009"/>
+   <testResult status="fail" testName="regex-010"/>
+   <testResult status="fail" testName="regex-011"/>
+   <testResult status="pass" testName="regex-013"/>
+   <testResult status="fail" testName="regex-014"/>
+   <testResult status="pass" testName="regex-015"/>
+   <testResult status="pass" testName="regex-016"/>
+   <testResult status="pass" testName="regex-017"/>
+   <testResult status="fail" testName="regex-018"/>
+   <testResult status="pass" testName="regex-019"/>
+   <testResult status="pass" testName="regex-020"/>
+   <testResult status="pass" testName="regex-021"/>
+   <testResult status="pass" testName="regex-022"/>
+   <testResult status="pass" testName="regex-023"/>
+   <testResult status="pass" testName="regex-024"/>
+   <testResult status="fail" testName="regex-025"/>
+   <testResult status="pass" testName="regex-026"/>
+   <testResult status="pass" testName="regex-027"/>
+   <testResult status="pass" testName="regex-028"/>
+   <testResult status="fail" testName="regex-029"/>
+   <testResult status="fail" testName="regex-030"/>
+   <testResult status="pass" testName="regex-031"/>
+   <testResult status="pass" testName="regex-032"/>
+   <testResult status="fail" testName="regex-038">
+      <outResult>
+         <errTrace>java.lang.IllegalArgumentException: Illegal group reference</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-039">
+      <outResult>
+         <errTrace>java.lang.IllegalArgumentException: Illegal group reference: group index is missing</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-040">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;a&gt;Some n HTML&lt;/a&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-041">
+      <outResult>
+         <errTrace>java.lang.IllegalArgumentException: character to be escaped is missing</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-043"/>
+   <testResult status="pass" testName="regex-044"/>
+   <testResult status="pass" testName="regex-054"/>
+   <testResult status="pass" testName="regex-055"/>
+   <testResult status="pass" testName="regex-056"/>
+   <testResult status="pass" testName="regex-057"/>
+   <testResult status="pass" testName="regex-058"/>
+   <testResult status="pass" testName="regex-059"/>
+   <testResult status="pass" testName="regex-060"/>
+   <testResult status="pass" testName="regex-061"/>
+   <testResult status="pass" testName="regex-062"/>
+   <testResult status="pass" testName="regex-066"/>
+   <testResult status="pass" testName="regex-068"/>
+</testrun>

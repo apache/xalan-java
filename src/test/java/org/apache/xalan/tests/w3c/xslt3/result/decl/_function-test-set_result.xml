@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-06T10:11:08Z" fail="39" name="function" pass="22" skipped="4" statusUnknown="5" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:45Z" fail="39" name="function" pass="22" skipped="4" statusUnknown="5" totalRun="70">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -71,7 +71,7 @@
    <testResult status="fail" testName="function-0501">
       <outResult>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="function-0601"/>

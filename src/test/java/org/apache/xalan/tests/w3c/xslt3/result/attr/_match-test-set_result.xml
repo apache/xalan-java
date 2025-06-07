@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:36Z" fail="67" name="match" pass="57" skipped="8" statusUnknown="5" totalRun="137">
+   <testResult status="pass" testName="match-001"/>
+   <testResult status="pass" testName="match-002"/>
+   <testResult status="pass" testName="match-003"/>
+   <testResult status="pass" testName="match-004"/>
+   <testResult status="pass" testName="match-005"/>
+   <testResult status="pass" testName="match-006"/>
+   <testResult status="pass" testName="match-007"/>
+   <testResult status="pass" testName="match-008"/>
+   <testResult status="pass" testName="match-009"/>
+   <testResult status="pass" testName="match-010"/>
+   <testResult status="pass" testName="match-011"/>
+   <testResult status="pass" testName="match-012"/>
+   <testResult status="pass" testName="match-013"/>
+   <testResult status="pass" testName="match-014"/>
+   <testResult status="pass" testName="match-015"/>
+   <testResult status="pass" testName="match-016"/>
+   <testResult status="pass" testName="match-017"/>
+   <testResult status="fail" testName="match-018">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="match-019"/>
+   <testResult status="pass" testName="match-020"/>
+   <testResult status="pass" testName="match-021"/>
+   <testResult status="pass" testName="match-022"/>
+   <testResult status="pass" testName="match-023"/>
+   <testResult status="fail" testName="match-024"/>
+   <testResult status="pass" testName="match-025"/>
+   <testResult status="pass" testName="match-026"/>
+   <testResult status="pass" testName="match-027"/>
+   <testResult status="pass" testName="match-028"/>
+   <testResult status="pass" testName="match-029"/>
+   <testResult status="pass" testName="match-030"/>
+   <testResult status="pass" testName="match-031"/>
+   <testResult status="pass" testName="match-032"/>
+   <testResult status="pass" testName="match-033"/>
+   <testResult status="pass" testName="match-034"/>
+   <testResult status="pass" testName="match-035"/>
+   <testResult status="fail" testName="match-036"/>
+   <testResult status="pass" testName="match-037"/>
+   <testResult status="pass" testName="match-038"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult testName="match-040"/>
+   <testResult status="pass" testName="match-041"/>
+   <testResult status="pass" testName="match-042"/>
+   <testResult status="pass" testName="match-043"/>
+   <testResult status="pass" testName="match-044"/>
+   <testResult status="pass" testName="match-045"/>
+   <testResult status="pass" testName="match-046"/>
+   <testResult status="pass" testName="match-047"/>
+   <testResult status="fail" testName="match-048"/>
+   <testResult status="fail" testName="match-049">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-050"/>
+   <testResult status="fail" testName="match-051">
+      <outResult>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'x'</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'y', '/', '/', 'YYY'</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'y'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-052"/>
+   <testResult status="pass" testName="match-053"/>
+   <testResult status="fail" testName="match-054"/>
+   <testResult status="fail" testName="match-055"/>
+   <testResult status="fail" testName="match-056"/>
+   <testResult status="pass" testName="match-057"/>
+   <testResult status="pass" testName="match-058"/>
+   <testResult status="fail" testName="match-059">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: XPST0051 A sequence type occurence indicator ']', is not recognized.
+javax.xml.transform.TransformerException: XPST0051 A sequence type occurence indicator ']', is not recognized.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-060">
+      <outResult>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', 'doc', ')'</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', 'foo', ')', '|', '.', '[', '.', 'instance', 'of', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-061">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: XPST0051 A sequence type occurence indicator ']', is not recognized.
+javax.xml.transform.TransformerException: XPST0051 A sequence type occurence indicator ']', is not recognized.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-062">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: XPST0051 A sequence type occurence indicator ']', is not recognized.
+javax.xml.transform.TransformerException: XPST0051 A sequence type occurence indicator ']', is not recognized.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-063"/>
+   <testResult status="fail" testName="match-064"/>
+   <testResult status="fail" testName="match-065"/>
+   <testResult status="fail" testName="match-066"/>
+   <testResult status="fail" testName="match-067">
+      <outResult>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-068">
+      <outResult>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'doc', ']'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-069">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-070"/>
+   <testResult status="fail" testName="match-071"/>
+   <testResult status="fail" testName="match-072"/>
+   <testResult status="fail" testName="match-073"/>
+   <testResult status="fail" testName="match-074"/>
+   <testResult status="fail" testName="match-075"/>
+   <testResult status="fail" testName="match-076"/>
+   <testResult testName="match-077"/>
+   <testResult status="pass" testName="match-078"/>
+   <testResult testName="match-079"/>
+   <testResult testName="match-080"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="match-081a">
+      <outResult>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'bar', '|', 'baz', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="fail" testName="match-082a"/>
+   <testResult status="fail" testName="match-082b"/>
+   <testResult status="fail" testName="match-082c">
+      <outResult>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'doc', '|', 'cod', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="pass" testName="match-088"/>
+   <testResult status="pass" testName="match-089"/>
+   <testResult status="fail" testName="match-090"/>
+   <testResult status="fail" testName="match-091"/>
+   <testResult status="pass" testName="match-092"/>
+   <testResult status="pass" testName="match-093"/>
+   <testResult status="pass" testName="match-094"/>
+   <testResult status="pass" testName="match-095"/>
+   <testResult status="pass" testName="match-096"/>
+   <testResult status="pass" testName="match-097"/>
+   <testResult status="fail" testName="match-098">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-099">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-100"/>
+   <testResult status="fail" testName="match-101">
+      <outResult>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+         <errTrace>Pattern literal (anotherpi) needs to be quoted!</errTrace>
+         <errTrace>Expected ), but found: anotherpi</errTrace>
+         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
+org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-102"/>
+   <testResult status="fail" testName="match-103"/>
+   <testResult status="pass" testName="match-104"/>
+   <testResult status="fail" testName="match-105">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-106">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-107">
+      <outResult>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+         <errTrace>Pattern literal (anotherpi) needs to be quoted!</errTrace>
+         <errTrace>Expected ), but found: anotherpi</errTrace>
+         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
+org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-108"/>
+   <testResult status="fail" testName="match-109"/>
+   <testResult status="fail" testName="match-110"/>
+   <testResult status="fail" testName="match-111"/>
+   <testResult status="fail" testName="match-112">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-113">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-114">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-115">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-116">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-117">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-118">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-119">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'for', '$', 't', 'in', '*', 'return', '$', 't', '/', '*', ']'</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-120">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'some', '$', 'v', 'in', '.', '/', '/', 'element', '(', ')', 'satisfies', '(', 'string', '(', '$', 'v', ')', 'ne', '''', ')', ']'</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-121">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'if', '(', 'count', '(', '/', '*', ')', 'le', '1', ')', 'then', 'last', '(', ')', 'else', '1', ']'</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-122">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '/', 'inner2', 'is', '/', 'doc', '/', '/', 'inner2', '[', '1', ']', ']'</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-123">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '/', '*', '=', '(', '1', 'to', '40', ')', ']'</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-124">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'data', '(', '.', ')', 'castable', 'as', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']'</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-125">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '*', 'intersect', '/', 'doc', '/', 'child', '::', '*', '/', 'child', '::', '*', ']'</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-126">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'current', '(', ')', '/', '*', ']'</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="match-127"/>
+   <testResult status="pass" testName="match-128"/>
+   <testResult status="fail" testName="match-129">
+      <outResult>
+         <errTrace>XPST0051 A sequence type occurence indicator ']', is not recognized.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-130">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="match-131"/>
+   <testResult status="fail" testName="match-132">
+      <outResult>
+         <errTrace>Prefix must resolve to a namespace: :match</errTrace>
+         <errTrace>Prefix must resolve to a namespace: matches</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: 'with', ':', ')', '.', '(', ':', '(', ':', 'comments', ':', ')', ':', ')', '[', '(', ':', 'the', ':', ')', '.', 'instance', '(', ':', ':', ')', 'of', '(', ')', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']', '[', '(', ':', 'of', ''1'', 'always', ')', '1', ']', '(', ':', '?', ':', ')'</errTrace>
+         <errTrace>Prefix must resolve to a namespace: :z</errTrace>
+         <errTrace>Prefix must resolve to a namespace: a</errTrace>
+         <errTrace>Prefix must resolve to a namespace: :b</errTrace>
+         <errTrace>Prefix must resolve to a namespace: :c</errTrace>
+         <errTrace>Prefix must resolve to a namespace: :d</errTrace>
+         <errTrace>Prefix must resolve to a namespace: :e</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: ')', ')', '.', '(', ')', '[', '.', 'instance', '(', ')', 'of', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']', '(', ')', '[', '2', ']', '(', ')'</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="match-133"/>
+</testrun>
