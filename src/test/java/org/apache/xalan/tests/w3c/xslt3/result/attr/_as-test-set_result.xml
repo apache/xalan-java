@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:35Z" fail="97" name="as" pass="11" skipped="0" statusUnknown="1" totalRun="109">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-09T11:59:39Z" fail="96" name="as" pass="12" skipped="0" statusUnknown="1" totalRun="109">
    <testResult status="fail" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
    <testResult status="fail" testName="as-0104">
       <outResult>
-         <errTrace>XTTE0590 : The value to parameter 'par1' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
+         <errTrace>XTDE0700 : No value supplied for the required parameter $par1. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0105"/>
@@ -105,7 +105,7 @@ javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base
    </testResult>
    <testResult status="pass" testName="as-0122"/>
    <testResult status="fail" testName="as-0123"/>
-   <testResult status="fail" testName="as-0124"/>
+   <testResult status="pass" testName="as-0124"/>
    <testResult status="fail" testName="as-0125"/>
    <testResult status="pass" testName="as-0126"/>
    <testResult status="fail" testName="as-0127"/>
@@ -261,7 +261,7 @@ javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base
    <testResult status="pass" testName="as-1212"/>
    <testResult status="fail" testName="as-1213">
       <outResult>
-         <errTrace>XTTE0590 : The value to parameter 'par2' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
+         <errTrace>XTDE0700 : No value supplied for the required parameter $par2. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-1214">
@@ -270,7 +270,7 @@ javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base
    <testResult status="fail" testName="as-1215"/>
    <testResult status="fail" testName="as-1216">
       <outResult>
-         <errTrace>XTTE0590 : The value to parameter 'par2' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
+         <errTrace>XTDE0700 : No value supplied for the required parameter $par2. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-1217"/>

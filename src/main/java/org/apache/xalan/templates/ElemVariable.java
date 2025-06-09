@@ -636,9 +636,9 @@ public class ElemVariable extends ElemTemplateElement
         }
         else if (selectExpression instanceof NodeTest) {
         	// Checking for the possibility of a top level xsl:variable or xsl:param 
-        	// instruction, referring to a named xsl:function reference.
+        	// instruction, referring to a named xsl:function reference.        	        	
         	
-        	try {    			
+        	try {            	
     			ExpressionNode expressionNode = selectExpression.getExpressionOwner();
     			ExpressionNode stylesheetRootNode = null;
     			while (expressionNode != null) {
@@ -657,13 +657,12 @@ public class ElemVariable extends ElemTemplateElement
     			TemplateList templateList = stylesheetRoot.getTemplateListComposed();
     			XSL3FunctionService m_xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
     			
-    			ElemFunction elemFunction = null;
-    			
-    			if (m_xslFunctionService.isFuncArityWellFormed(funcLocalNameRef)) {        	   
+    			if (!"".equals(funcLocalNameRef) && m_xslFunctionService.isFuncArityWellFormed(funcLocalNameRef)) {        	   
     				int hashCharIdx = funcLocalNameRef.indexOf('#');
     				String funcNameRef2 = funcLocalNameRef.substring(0, hashCharIdx);
     				int funcArity = Integer.valueOf(funcLocalNameRef.substring(hashCharIdx + 1));        		   
-    				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);        		   
+    				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);
+    				ElemFunction elemFunction = null;
     				if (elemTemplate != null) {
     					elemFunction = (ElemFunction)elemTemplate;
     					int xslFuncDefnParamCount = elemFunction.getParamCount();                      
@@ -671,21 +670,16 @@ public class ElemVariable extends ElemTemplateElement
     					int funcRefParamCount = (Integer.valueOf(str)).intValue();
     					if (funcRefParamCount != xslFuncDefnParamCount) {
     						throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcLocalNameRef 
-																					    								     + " cannot resolve to a function "
-																					    								     + "definition.", srcLocator); 
+																					    								+ " cannot resolve to a function "
+																					    								+ "definition.", srcLocator); 
     					}
+    					
+    					if (elemFunction != null) {
+    	    				ElemFunctionItem elemFunctionObject = new ElemFunctionItem(elemFunction);
+
+    	    				return elemFunctionObject; 
+    	    			}
     				}
-    			}
-    			else {
-    				throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcLocalNameRef 
-																							    					 + " cannot resolve to a function "
-																							    					 + "definition.", srcLocator);
-    			}
-
-    			if (elemFunction != null) {
-    				ElemFunctionItem elemFunctionObject = new ElemFunctionItem(elemFunction);
-
-    				return elemFunctionObject; 
     			}
     		}
     		catch (Exception ex) {
@@ -695,6 +689,14 @@ public class ElemVariable extends ElemTemplateElement
   
         if (var == null) {
            var = m_selectPattern.execute(xctxt, sourceNode, this);
+           if (this instanceof ElemParam) {
+        	   if (var instanceof XSString) {
+        		   var = new XSString((((XSString)var).stringValue()).trim());  
+        	   }
+        	   else if (var instanceof XString) {
+        		   var = new XString((((XString)var).str()).trim());  
+        	   }
+           }
         }
         
         if (var != null) {
@@ -1068,12 +1070,16 @@ public class ElemVariable extends ElemTemplateElement
    * child just added to the child list 
    */
   public ElemTemplateElement appendChild(ElemTemplateElement elem)
-  {
+  {	  
     // cannot have content and select
     if (m_selectPattern != null)
     {
-      error(XSLTErrorResources.ER_CANT_HAVE_CONTENT_AND_SELECT, 
-          new Object[]{"xsl:" + this.getNodeName()});
+      SourceLocator srcLocator = m_selectPattern.getLocator();	
+      Integer lineNo = srcLocator.getLineNumber();
+      Integer colNo = srcLocator.getColumnNumber();
+      
+      error(XSLTErrorResources.ER_CANT_HAVE_CONTENT_AND_SELECT_LOC_AWARE, 
+    		  		new Object[]{lineNo, colNo, "xsl:" + this.getNodeName()});
       return null;
     }
     return super.appendChild(elem);

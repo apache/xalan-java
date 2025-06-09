@@ -32,6 +32,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -70,6 +71,29 @@ public class ElemParam extends ElemVariable
   public String getTunnel()
   {
      return m_tunnelAttr;
+  }
+  
+  /**
+   * An optional "required" attribute.
+   */
+  private boolean m_required = true;
+  
+  /**
+   * Set the "required" attribute.
+   * 
+   * @param required
+   */
+  public void setRequired(boolean required) {
+	  m_required = required; 
+  }
+  
+  /**
+   * Get the "required" attribute.
+   * 
+   * @return
+   */
+  public boolean getRequired() {
+	  return m_required;
   }
 
   /**
@@ -123,7 +147,6 @@ public class ElemParam extends ElemVariable
   
   /**
    * Execute a variable declaration and push it onto the variable stack.
-   * @see <a href="http://www.w3.org/TR/xslt#variables">variables in XSLT Specification</a>
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -163,6 +186,7 @@ public class ElemParam extends ElemVariable
         
         try {
            XObject var = getValue(transformer, sourceNode);
+           
            if (var != null) {        	  
               transformer.getXPathContext().getVarStack().setLocalVariable(m_index, var);        	  
            }
@@ -173,9 +197,24 @@ public class ElemParam extends ElemVariable
            }
         }
         catch (TransformerException ex) {
-        	throw new TransformerException("XTTE0590 : The value to parameter '" + m_qname.toString() + "' cannot be assigned. "
-														                    + "Either the parameter's input is not available or parameter's value "
-														                    + "cannot be cast to an expected type.", srcLocator);   
+        	if (getParentElem() instanceof ElemTemplate) {        		
+        		org.apache.xpath.XPath selectXPathObj = getSelect();
+        		ElemTemplateElement elemTemplateElem = getFirstChildElem();
+        		if (!m_required && (selectXPathObj == null) && (elemTemplateElem == null)) {
+        			// Set the value of xsl:template parameter, to the default value i.e an empty sequence
+        		    transformer.getXPathContext().getVarStack().setLocalVariable(m_index, new ResultSequence());
+        		}
+        		else {
+        			throw new TransformerException("XTDE0700 : No value supplied for the required parameter $" + m_qname.toString() + ". "
+												        					+ "A value is required for the parameter because the"
+												        					+ " default value is not a valid instance of the required type.", srcLocator);
+        		}
+        	}
+        	else {
+	        	throw new TransformerException("XTTE0590 : The value to parameter '" + m_qname.toString() + "' cannot be assigned. "
+															                    + "Either the parameter's input is not available or parameter's value "
+															                    + "cannot be cast to an expected type.", srcLocator);
+        	}
         }	
     }
     else if (!(getParentElem() instanceof ElemFunction)) {

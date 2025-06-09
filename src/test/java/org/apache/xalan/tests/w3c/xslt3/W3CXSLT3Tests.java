@@ -71,7 +71,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ XslAsAttrTests.class, XslAvtAttrTests.class, XslMatchAttrTests.class, XslSelectAttrTests.class, XslAnalyzeStringTests.class,
 	            XslApplyTemplatesTests.class, XslForEachGroupTests.class, XslTryTests.class, XslAttributeTests.class, XslCallTemplateTests.class, 
 	            XslChooseTests.class, XslCopyTests.class, XslIterateTests.class, XslSequenceTests.class, XslElementTests.class, 
-	            XslSortTests.class, XslFunctionTests.class, XslVariableTests.class, XslCharacterMapTests.class, XslAttributeSetTests.class, 
+	            XslSortTests.class, XslVariableTests.class, XslFunctionTests.class, XslCharacterMapTests.class, XslAttributeSetTests.class, 
 	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class, XslMathTests.class, 
 	            XslNodeTestTests.class, XslPathTests.class, XslHigherOrderFunctionTests.class, XslPredicateTests.class, XslBooleanTests.class, 
 	            XslNodeTests.class, XslStringTests.class, XslDateTests.class, XslFnDeepEqualTests.class, XslFnPositionTests.class, 

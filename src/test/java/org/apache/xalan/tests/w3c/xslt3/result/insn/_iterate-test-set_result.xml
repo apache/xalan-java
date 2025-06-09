@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:42Z" fail="32" name="iterate" pass="11" skipped="0" statusUnknown="1" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-09T11:59:47Z" fail="32" name="iterate" pass="11" skipped="0" statusUnknown="1" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -120,7 +120,7 @@
    <testResult status="fail" testName="iterate-028">
       <outResult>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="iterate-029"/>
@@ -128,7 +128,7 @@
       <outResult>
          <errTrace>XTSE3120 : an xsl:next-iteration instruction is not in a tail position within the sequence constructor of currently active xsl:iterate instruction.</errTrace>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="iterate-031">

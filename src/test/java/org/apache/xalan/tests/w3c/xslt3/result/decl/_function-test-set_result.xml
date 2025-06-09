@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:45Z" fail="39" name="function" pass="22" skipped="4" statusUnknown="5" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-09T11:59:51Z" fail="39" name="function" pass="22" skipped="4" statusUnknown="5" totalRun="70">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -122,7 +122,7 @@
    </testResult>
    <testResult status="fail" testName="function-1026">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://xxx.com/}test(), doesn't match the declared parameter type xs:integer.</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://xxx.com/}test(), doesn't match the declared parameter type xs:integer.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-1027">
@@ -130,7 +130,7 @@
    </testResult>
    <testResult status="fail" testName="function-1028">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://xxx.com/}test(), doesn't match the declared parameter type xs:integer.</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://xxx.com/}test(), doesn't match the declared parameter type xs:integer.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-1029">
@@ -138,7 +138,7 @@
    </testResult>
    <testResult status="fail" testName="function-1030">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://xxx.com/}test(), doesn't match the declared parameter type xs:integer.</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://xxx.com/}test(), doesn't match the declared parameter type xs:integer.</errTrace>
       </outResult>
    </testResult>
    <testResult testName="function-1031"/>

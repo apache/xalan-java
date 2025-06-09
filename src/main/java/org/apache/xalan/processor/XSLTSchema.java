@@ -200,6 +200,11 @@ public class XSLTSchema extends XSLTElementDef
     // xsl:merge-source
     XSLTAttributeDef sortBeforeMergeAttrOpt = new XSLTAttributeDef(null, "sort-before-merge",
                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
+    
+    // Optional.
+    // xsl:param                                      
+    XSLTAttributeDef requiredAttrOpt = new XSLTAttributeDef(null, "required",
+                                     XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
 
     // xsl:key                                 
     XSLTAttributeDef useAttr = new XSLTAttributeDef(null, "use",
@@ -819,8 +824,8 @@ public class XSLTSchema extends XSLTElementDef
                                 Constants.S_XSLNAMESPACEURL, "param",
                                 null /*alias */,
                                 templateElements /* elements */,  // %template;>
-                                new XSLTAttributeDef[]{ nameAttrRequired,
-                                                        selectAttrOpt, asAttrOpt, tunnelAttrOpt }, 
+                                new XSLTAttributeDef[]{ nameAttrRequired, selectAttrOpt, 
+                                		                asAttrOpt, tunnelAttrOpt, requiredAttrOpt }, 
                                                         new ProcessorTemplateElem(),
                                                         ElemParam.class /* class object */, 19, true);
     XSLTElementDef xslText =
@@ -1160,7 +1165,7 @@ public class XSLTSchema extends XSLTElementDef
                                            templateElementsAndParams /* elements */,
                                            new XSLTAttributeDef[]{
                                                    matchAttrOpt,
-                                                   nameAttrOpt_ERROR,
+                                                   nameAttrOpt_ERROR,                                                   
                                                    priorityAttr,
                                                    modeAttr,
                                                    asAttrOpt,

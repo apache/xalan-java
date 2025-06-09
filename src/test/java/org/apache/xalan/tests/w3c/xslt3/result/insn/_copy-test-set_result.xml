@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:41Z" fail="43" name="copy" pass="16" skipped="0" statusUnknown="1" totalRun="60">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-09T11:59:46Z" fail="43" name="copy" pass="16" skipped="0" statusUnknown="1" totalRun="60">
    <testResult status="fail" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="fail" testName="copy-0103"/>
@@ -49,42 +49,42 @@
    <testResult status="fail" testName="copy-0611"/>
    <testResult status="fail" testName="copy-0612">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="copy-0613">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="copy-0614">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="copy-0615">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="copy-0616">
@@ -129,33 +129,33 @@
    </testResult>
    <testResult status="fail" testName="copy-0620">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
          <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="copy-0621">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
          <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="copy-0622">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
          <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="copy-0623">
       <outResult>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
-         <errTrace>XPTY0004 : Function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://local-functions/}in-scope-namespaces(), doesn't match the declared parameter type element(*).</errTrace>
          <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
       </outResult>
    </testResult>

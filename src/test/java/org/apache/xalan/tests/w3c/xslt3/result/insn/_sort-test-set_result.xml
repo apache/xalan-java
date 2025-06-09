@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:45Z" fail="44" name="sort" pass="35" skipped="0" statusUnknown="1" totalRun="80">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-09T11:59:50Z" fail="44" name="sort" pass="35" skipped="0" statusUnknown="1" totalRun="80">
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
    <testResult status="fail" testName="sort-003">
@@ -64,7 +64,7 @@
    <testResult status="fail" testName="sort-053"/>
    <testResult status="fail" testName="sort-054">
       <outResult>
-         <errTrace>XTTE0590 : The value to parameter 'v' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
+         <errTrace>XTDE0700 : No value supplied for the required parameter $v. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="sort-055">
@@ -78,7 +78,7 @@
    <testResult status="fail" testName="sort-061"/>
    <testResult status="fail" testName="sort-062">
       <outResult>
-         <errTrace>XTTE0590 : The value to parameter 'list1' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
+         <errTrace>XTDE0700 : No value supplied for the required parameter $list1. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="sort-063"/>

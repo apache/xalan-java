@@ -122,25 +122,33 @@ public class InstanceOf extends Operation
   public XObject operate(XObject left, XObject right) 
                                                  throws javax.xml.transform.TransformerException
   {
-      boolean isInstanceOf = false;
+      boolean result = false;
       
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
-      int seqType = seqTypedData.getBuiltInSequenceType();
+      int builtInSeqType = seqTypedData.getBuiltInSequenceType();
+      
       if ((left instanceof ResultSequence) && ((ResultSequence)left).size() == 0) {
-    	 if ((seqType != SequenceTypeSupport.EMPTY_SEQUENCE) && (seqType > 0)) {
-    	    return XBoolean.S_FALSE; 
+    	 if ((seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
+    		 (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
+    		 return XBoolean.S_TRUE; 
+    	 }
+    	 else if (builtInSeqType == SequenceTypeSupport.EMPTY_SEQUENCE) {
+    		 return XBoolean.S_TRUE;
+    	 }
+    	 else if (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ABSENT) {
+    		 return XBoolean.S_FALSE;
     	 }
       }
       
       try {
-         isInstanceOf = isInstanceOf(left, seqTypedData);
+         result = isInstanceOf(left, seqTypedData);
       }
       catch (Exception ex) {    	 
-    	 isInstanceOf = false; 
+    	 result = false; 
       }
       
-      return ((isInstanceOf == true) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+      return ((result == true) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
   }
 
   /**

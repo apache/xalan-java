@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:45Z" fail="11" name="variable" pass="8" skipped="0" statusUnknown="1" totalRun="20">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-09T11:59:50Z" fail="9" name="variable" pass="10" skipped="0" statusUnknown="1" totalRun="20">
    <testResult status="pass" testName="variable-0101"/>
    <testResult status="pass" testName="variable-0102"/>
    <testResult status="pass" testName="variable-0103"/>
    <testResult status="fail" testName="variable-0104"/>
-   <testResult status="fail" testName="variable-0105"/>
+   <testResult status="pass" testName="variable-0105"/>
    <testResult status="pass" testName="variable-0106"/>
-   <testResult status="fail" testName="variable-0107"/>
+   <testResult status="pass" testName="variable-0107"/>
    <testResult status="fail" testName="variable-0108"/>
-   <testResult status="fail" testName="variable-0109"/>
+   <testResult status="pass" testName="variable-0109"/>
    <testResult status="fail" testName="variable-0110"/>
    <testResult status="fail" testName="variable-0111">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out result="3"/&gt;</outResult>
@@ -20,7 +20,11 @@
          <errTrace>Variable $v accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="pass" testName="variable-0114"/>
+   <testResult status="fail" testName="variable-0114">
+      <outResult>
+         <errTrace>XPTY0004 : An XSL template call parameter value at position 2 for template {test:*}, doesn't match the declared parameter type xs:boolean.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="variable-0115"/>
    <testResult status="pass" testName="variable-0116"/>
    <testResult status="pass" testName="variable-0117"/>

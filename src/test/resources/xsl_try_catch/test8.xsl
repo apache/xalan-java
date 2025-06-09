@@ -15,11 +15,12 @@
        an xsl:try instruction. If an addition fails due to incorrectly typed 
        operands, then xsl:catch instruction produces a recovery result 
        (an XML element "error"), otherwise addition details get available
-       with an XML element "sum". When a particular addition operation fails, the 
-       subsequent xsl:for-each iterations are continued to be processed.
+       with an XML element "sum". When a particular XPath addition operation 
+       fails, the subsequent xsl:for-each iterations are continued to be 
+       processed.
        
        In the absence of xsl:try instruction processing, an XSL stylesheet 
-       processing gets aborted after the first addition operation failure.                     
+       processing will be aborted after the first addition operation failure.                     
   -->				
 
   <xsl:output method="xml" indent="yes"/>

@@ -405,6 +405,8 @@ public class XSLTErrorResources extends ListResourceBundle
 	 "ER_FUNCTION_NOT_FOUND"; 
   public static final String ER_CANT_HAVE_CONTENT_AND_SELECT = 
      "ER_CANT_HAVE_CONTENT_AND_SELECT";
+  public static final String ER_CANT_HAVE_CONTENT_AND_SELECT_LOC_AWARE = 
+     "ER_CANT_HAVE_CONTENT_AND_SELECT_LOC_AWARE";		  
   public static final String ER_INVALID_SET_PARAM_VALUE = "ER_INVALID_SET_PARAM_VALUE";    
   public static final String ER_SET_FEATURE_NULL_NAME =
   	"ER_SET_FEATURE_NULL_NAME";
@@ -1191,6 +1193,9 @@ public class XSLTErrorResources extends ListResourceBundle
     // an XSLT keyword in this case and must not be translated.
     { ER_CANT_HAVE_CONTENT_AND_SELECT,
      "The {0} element must not have both content and a select attribute."},
+    
+    { ER_CANT_HAVE_CONTENT_AND_SELECT_LOC_AWARE,
+     "Line : {0}, Column : {1}. The {2} element must not have both content and a select attribute."},
 
     // Note to translators:  This message indicates that the value argument
     // of setParameter must be a valid Java Object.

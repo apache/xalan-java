@@ -348,7 +348,7 @@ public class ElemTemplate extends ElemTemplateElement
 	  
 	  StylesheetRoot.ComposeState cstate = sroot.getComposeState();
 	  java.util.Vector vnames = cstate.getVariableNames();
-	  if(null != m_matchPattern)
+	  if (null != m_matchPattern)
 		  m_matchPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
 
 	  cstate.resetStackFrameSize();
@@ -441,7 +441,8 @@ public class ElemTemplate extends ElemTemplateElement
 		  }
 		  catch (TransformerException ex) {
 			  String errMesg = ex.getMessage();
-			  if ((errMesg != null) && (errMesg.startsWith("XTTE0505") || errMesg.startsWith("XTTE0590"))) {
+			  if ((errMesg != null) && (errMesg.startsWith("XTTE0505") || errMesg.startsWith("XTTE0590") || 
+					                                                      errMesg.startsWith("XTDE0700"))) {
 				  throw ex;   
 			  }
 			  else {
@@ -476,7 +477,8 @@ public class ElemTemplate extends ElemTemplateElement
 	  
 	  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
 	  
-	  Integer nodeDtmHandle = null;	  
+	  Integer nodeDtmHandle = null;
+	  
 	  try {
 		 nodeDtmHandle = Integer.valueOf(xslFunctionResult.toString());
 	     NodeList nodeList = (new XRTreeFrag(nodeDtmHandle.intValue(), xctxt, this)).convertToNodeset();

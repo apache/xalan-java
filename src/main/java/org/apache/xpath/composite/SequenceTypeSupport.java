@@ -716,7 +716,7 @@ public class SequenceTypeSupport {
                    }
                 }
                 else {
-                   result = castStringValueToAnExpectedType(srcStrVal, expectedType);
+                   result = castStringValueToAnExpectedType(srcStrVal, expectedType, sequenceTypeXPathExprStr);
                 }
             }
             else if (srcValue instanceof XSString) {           
@@ -735,7 +735,7 @@ public class SequenceTypeSupport {
                   }
                }
                else {
-                  result = castStringValueToAnExpectedType(srcStrVal, expectedType);
+                  result = castStringValueToAnExpectedType(srcStrVal, expectedType, sequenceTypeXPathExprStr);
                }
             }
             else if (srcValue instanceof XNumber) {
@@ -1195,12 +1195,18 @@ public class SequenceTypeSupport {
 		return nodeSet;
 	}
     
-    /**
-     * Cast a string value to an expected xdm type.
-     * 
-     * @throws TransformerException
-     */
-    private static XObject castStringValueToAnExpectedType(String srcStrVal, int expectedType) throws TransformerException {
+	/**
+	 * Method definition to cast a string value to an expected XDM type.
+	 * 
+	 * @param srcStrVal									  Source string value
+	 * @param expectedType								  An expected type's integer code	
+	 * @param sequenceTypeXPathExprStr					  An expected type's XPath sequence type string value 
+	 *                                                    as provided within an XSL stylesheet.
+	 * @return											  An XDM value produced after the type cast operation	
+	 * @throws TransformerException
+	 */
+    private static XObject castStringValueToAnExpectedType(String srcStrVal, int expectedType, 
+    		                                               String sequenceTypeXPathExprStr) throws TransformerException {
         
         XObject result = null;
         
@@ -1304,16 +1310,16 @@ public class SequenceTypeSupport {
                result = new XSGMonth(srcStrVal); 
             }
             else {
-               throw new TransformerException("XTTE0570 : The string value '" + srcStrVal + "' cannot be "
-                                                                                                  + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + "."); 
+               String effectiveTypeDefnStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : getDataTypeNameFromIntValue(expectedType);  	               
+               throw new TransformerException("XTTE0570 : The supplied value cannot be cast to type " + effectiveTypeDefnStr + "."); 
             }
         }
         catch (TransformerException ex) {
             throw ex;    
         }
         catch (Exception ex) {
-            throw new TransformerException("XTTE0570 : The string value '" + srcStrVal + "' cannot be cast to "
-                                                                                               + "a type " + getDataTypeNameFromIntValue(expectedType) + ".");
+        	String effectiveTypeDefnStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : getDataTypeNameFromIntValue(expectedType);        	
+        	throw new TransformerException("XTTE0570 : The supplied value cannot be cast to type " + effectiveTypeDefnStr + ".");
         }
         
         return result;

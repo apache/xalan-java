@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-07T07:29:49Z" fail="22" name="boolean" pass="90" skipped="0" statusUnknown="0" totalRun="112">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-09T11:59:55Z" fail="23" name="boolean" pass="89" skipped="0" statusUnknown="0" totalRun="112">
    <testResult status="pass" testName="boolean-001"/>
    <testResult status="pass" testName="boolean-002"/>
    <testResult status="pass" testName="boolean-003"/>
@@ -69,7 +69,7 @@
    <testResult status="fail" testName="boolean-068"/>
    <testResult status="fail" testName="boolean-069">
       <outResult>
-         <errTrace>XTTE0590 : The value to parameter 'set1' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
+         <errTrace>XTDE0700 : No value supplied for the required parameter $set1. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="boolean-070"/>
@@ -121,7 +121,7 @@
    <testResult status="pass" testName="boolean-106"/>
    <testResult status="pass" testName="boolean-107"/>
    <testResult status="pass" testName="boolean-108"/>
-   <testResult status="pass" testName="boolean-109"/>
+   <testResult status="fail" testName="boolean-109"/>
    <testResult status="pass" testName="boolean-110"/>
    <testResult status="pass" testName="boolean-111"/>
    <testResult status="pass" testName="boolean-112"/>

@@ -394,6 +394,7 @@ public class ElemValueOf extends ElemTemplateElement {
                   }
                   else if (expr instanceof Variable) {
                       XObject evalResult = ((Variable)expr).execute(xctxt);
+                      
                       String strValue = null;
                       
                       if (evalResult instanceof XSAnyType) {
@@ -434,6 +435,20 @@ public class ElemValueOf extends ElemTemplateElement {
                       }
                       else if (evalResult instanceof ResultSequence) {
                     	 strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult); 
+                      }
+                      else if (evalResult instanceof XMLNodeCursorImpl) {
+                    	 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;
+                    	 DTMCursorIterator iter = xmlNodeCursorImpl.iterRaw();
+                    	 int nextNode;                    	 
+                    	 StringBuffer strBuff = new StringBuffer();                    	                     	 
+                    	 while ((nextNode = iter.nextNode()) != DTM.NULL) {
+                    		 XMLNodeCursorImpl nodeImpl = new XMLNodeCursorImpl(nextNode, xctxt);
+                    		 String nodeStrValue = nodeImpl.str();
+                    		 strBuff.append(nodeStrValue + " ");
+                    	 }
+                    	 
+                    	 strValue = strBuff.toString();
+                    	 strValue = strValue.trim();
                       }
                       else {
                     	 strValue = XslTransformEvaluationHelper.getStrVal(evalResult);  

@@ -1469,13 +1469,14 @@ public class XSLTAttributeDef
   {
 
     // Is this already checked somewhere else?  -sb
-    if (!(value.equals("yes") || value.equals("true") || value.equals("no") || value.equals("false")))
+    if (!(value.equals("yes") || value.equals("true") || value.equals("1") || 
+    	  value.equals("no") || value.equals("false") || value.equals("0")))
     {
       handleError(handler, XSLTErrorResources.INVALID_BOOLEAN, new Object[] {name,value}, null);
       return null;
    }
  
-     return new Boolean((value.equals("yes") || value.equals("true")) ? true : false);
+     return new Boolean((value.equals("yes") || value.equals("true") || value.equals("1")) ? true : false);
   }
 
   /**

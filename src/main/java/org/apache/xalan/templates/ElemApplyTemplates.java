@@ -34,6 +34,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.StackGuard;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
@@ -42,8 +43,10 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathSequenceConstructor;
+import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -51,9 +54,11 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -469,6 +474,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
 				  guard.checkForInfiniteLoop();
 
 			  int currentFrameBottom;
+			  
+			  XPath templateMatchXPath = template.getMatch();
+			  String templateMatchPatternStr = templateMatchXPath.getPatternString();
+			  
 			  if (template.m_frameSize > 0)
 			  {
 				  xctxt.pushRTFContext();
@@ -492,7 +501,27 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  if (ewp.m_qnameID == ep.m_qnameID)                  
 								  {
 									  XObject obj = vars.getLocalVariable(i, argsFrame);
-									  vars.setLocalVariable(paramIndex, obj);
+
+									  XObject argConvertedVal = null;
+									  String paramAsAttrStrVal = ep.getAs();
+
+									  if (paramAsAttrStrVal != null) {
+										  argConvertedVal = getParamValueAsAttributeProcessing(obj, templateMatchPatternStr, 
+												                                               elem.getPrefixTable(), i, paramAsAttrStrVal, transformer, xctxt);
+									  }
+									  else {
+										  argConvertedVal = obj;  
+									  }
+
+									  if (argConvertedVal instanceof ResultSequence) {                
+										  XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)argConvertedVal, 
+												  xctxt);
+										  if (nodeSet != null) {
+											  argConvertedVal = nodeSet;  
+										  }
+									  }
+
+									  vars.setLocalVariable(paramIndex, argConvertedVal);
 									  break;
 								  }
 							  }              
@@ -624,6 +653,101 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  xctxt.popCurrentNode();
 		  sourceNodes.detach();
 	  }
+  }
+
+  /**
+   * Method definition to do type checking and required modification of xsl:template's xsl:param
+   * value using the XPath sequence type expression from xsl:param's 'as' attribute.
+   * 
+   * @param srcValue								      An XDM value on which type checking and 
+   *                                                      value conversion is required.
+   * @param templateMatchPatternStr                       xsl:template element's 'match' attribute's value
+   * @param prefixTable									  An XSL transformation's run-time XML namespace
+   *                                                      prefix table list.
+   * @param paramIdx									  An xsl:param's relative index value within sibling 
+   *                                                      xsl:param elements. 
+   * @param paramAsAttrStrVal							  String value of xsl:param's 'as' attribute
+   * @param transformer                                   An XSL transformation run-time TransformerImpl object
+   * @param xctxt										  An XPath context object
+   * @return											  An XDM value produced after conversion using xsl:param's 
+   *                                                      XPath sequence type 'as' attribute.
+   * @throws TransformerException
+   */
+  private XObject getParamValueAsAttributeProcessing(XObject srcValue, String templateMatchPatternStr, List prefixTable, 
+		                                             int paramIdx, String paramAsAttrStrVal, TransformerImpl transformer, 
+		                                             XPathContext xctxt) throws TransformerException {
+
+	  XObject argConvertedVal = null;
+
+	  SourceLocator srcLocator = xctxt.getSAXLocator(); 
+
+	  try {
+		  XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
+		  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+		  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+
+		  XMLNodeCursorImpl nodeSet = SequenceTypeSupport.getNodeReference(srcValue);
+		  if (nodeSet != null) {
+			  XSTypeDefinition typeDef = nodeSet.getXsTypeDefinition();                    	                      	                      	  
+			  if (typeDef != null) {                    		  
+				  XSTypeDefinition typeDef2 = seqExpectedTypeData.getXsTypeDefinition();
+				  if (typeDef2 != null && isTypeXsDefinitionEqual(typeDef, typeDef2)) {                            	  
+					  argConvertedVal = nodeSet;                      			
+				  }
+				  else {
+					  throw new TransformerException("XPTY0004 : An XSL template call parameter value at position " + (paramIdx + 1) + " for "
+																							  + "template {" + templateMatchPatternStr + "}, doesn't "
+																							  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
+				  }
+			  }                    	  
+			  else if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {                    		  
+				  DTMCursorIterator dtmIter = nodeSet.getContainedIter();                    		  
+				  if (dtmIter instanceof NodeTest) {
+					  try {
+						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
+								  																					(NodeTest)dtmIter, transformer, srcLocator);
+						  if (elemFunction != null) {
+							  // REVISIT : To check for elemFunction object's conformance with details in 
+							  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()  
+							  argConvertedVal = new ElemFunctionItem(elemFunction);
+						  }
+					  }
+					  catch (TransformerException ex) {
+						  // NO OP
+					  }
+				  }
+			  }
+		  }
+		  else if ((seqExpectedTypeData.getSequenceTypeFunctionTest() != null) && (srcValue instanceof XPathInlineFunction)) {
+			  // REVISIT : To check for argValue's conformance with details in 
+			  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()
+			  argConvertedVal = srcValue; 
+		  }
+
+		  if (argConvertedVal == null) {
+			  argConvertedVal = SequenceTypeSupport.castXDMValueToAnotherType(srcValue, paramAsAttrStrVal, null, xctxt, prefixTable);
+		  }
+
+		  if (argConvertedVal == null) {
+			  throw new TransformerException("XPTY0004 : An XSL template call parameter value at position " + (paramIdx + 1) + " for "
+																									  + "template {" + templateMatchPatternStr + "}, doesn't "
+																									  + "match the declared parameter type " + paramAsAttrStrVal + 
+																									  ".", srcLocator);
+		  }
+	  }
+	  catch (TransformerException ex) {
+		  if ((SequenceTypeSupport.INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR).equals(ex.getMessage())) {
+			  throw new TransformerException("XPTY0004 : The number of XPath inline function parameters, is not equal to "
+					  																			+ "the number of expected type specifications for them.", srcLocator);   
+		  }
+		  else {
+			  throw new TransformerException("XPTY0004 : An XSL template call parameter value at position " + (paramIdx + 1) + " for "
+																							    + "template {" + templateMatchPatternStr + "}, doesn't "
+																							    + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
+		  }
+	  }
+	  
+	  return argConvertedVal;	  
   }
 
   /**
@@ -858,6 +982,31 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	      result = true;
 	  }
 	  
+	  return result;
+  }
+  
+  /**
+   * Check whether two XSTypeDefinition objects, represent the same schema type. 
+   */
+  private boolean isTypeXsDefinitionEqual(XSTypeDefinition typeDef1, XSTypeDefinition typeDef2) {	  
+	  boolean result = false;
+
+	  String typeName1 = typeDef1.getName();
+	  String typeNamespace1 = typeDef1.getNamespace();
+
+	  String typeName2 = typeDef2.getName();
+	  String typeNamespace2 = typeDef2.getNamespace();
+	  
+	  if ((typeNamespace1 == null) && (typeNamespace2 == null)) {
+		 result = typeName1.equals(typeName2);   
+	  }
+	  else if (((typeNamespace1 == null) && (typeNamespace2 != null)) || ((typeNamespace1 != null) && (typeNamespace2 == null))) {
+		 result = false; 
+	  }
+	  else if (typeNamespace1.equals(typeNamespace2) && typeName1.equals(typeName2)) {
+		 result = true; 
+	  }
+
 	  return result;
   }
   

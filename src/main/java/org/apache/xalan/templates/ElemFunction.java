@@ -240,71 +240,8 @@ public class ElemFunction extends ElemTemplate
                  String paramAsAttrStrVal = ((ElemParam)elem).getAs();
                  
                  if (paramAsAttrStrVal != null) {
-                    try {
-                       XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
-                  	   XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-                  	   SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
-                  	  
-                       XMLNodeCursorImpl nodeSet = SequenceTypeSupport.getNodeReference(argValue);
-                       if (nodeSet != null) {
-                    	  XSTypeDefinition typeDef = nodeSet.getXsTypeDefinition();                    	                      	                      	  
-                    	  if (typeDef != null) {                    		  
-                              XSTypeDefinition typeDef2 = seqExpectedTypeData.getXsTypeDefinition();
-                              if (typeDef2 != null && isTypeXsDefinitionEqual(typeDef, typeDef2)) {                            	  
-                            	  argConvertedVal = nodeSet;                      			
-                              }
-                              else {
-                            	  throw new TransformerException("XPTY0004 : Function call argument at position " + (paramIdx + 1) + " for "
-                                                                                                  + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
-                                                                                                  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
-                              }
-                    	  }                    	  
-                    	  else if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {                    		  
-                    		  DTMCursorIterator dtmIter = nodeSet.getContainedIter();                    		  
-                     		  if (dtmIter instanceof NodeTest) {
-                     			  try {
-                     				  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-                     						                                                                         (NodeTest)dtmIter, transformer, srcLocator);
-                     				  if (elemFunction != null) {
-                     					  // REVISIT : To check for elemFunction object's conformance with details in 
-                     					  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()  
-                     					  argConvertedVal = new ElemFunctionItem(elemFunction);
-                     				  }
-                     			  }
-                     			  catch (TransformerException ex) {
-                     				  // NO OP
-                     			  }
-                     		  }
-                    	  }
-                       }
-                       else if ((seqExpectedTypeData.getSequenceTypeFunctionTest() != null) && (argValue instanceof XPathInlineFunction)) {
-                    	  // REVISIT : To check for argValue's conformance with details in 
-      					  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()
-                  		  argConvertedVal = argValue; 
-                  	   }
-                       
-                       if (argConvertedVal == null) {
-                          argConvertedVal = SequenceTypeSupport.castXDMValueToAnotherType(argValue, paramAsAttrStrVal, null, 
-                    		                                                                                        xctxt, elem.getPrefixTable());
-                       }
-                       
-                       if (argConvertedVal == null) {
-                          throw new TransformerException("XPTY0004 : Function call argument at position " + (paramIdx + 1) + " for "
-                                                                            + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
-                                                                            + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator); 
-                       }
-                    }
-                    catch (TransformerException ex) {
-                       if ((SequenceTypeSupport.INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR).equals(ex.getMessage())) {
-                    	  throw new TransformerException("XPTY0004 : The number of inline function parameters, is not equal to "
-                    	  		                                             + "the number of expected type specifications for them.", srcLocator);   
-                       }
-                       else {
-                          throw new TransformerException("XPTY0004 : Function call argument at position " + (paramIdx + 1) + " for "
-                                                                                 + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
-                                                                                 + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
-                       }
-                    }
+                    argConvertedVal = getParamValueAsAttributeProcessing(argValue, funcLocalName, funcNameSpaceUri, paramIdx, 
+                    		                                             elem.getPrefixTable(), paramAsAttrStrVal, transformer, xctxt);
                  }
                  else {
                 	argConvertedVal = argValue;  
@@ -398,7 +335,7 @@ public class ElemFunction extends ElemTemplate
       return funcResultConvertedVal;
   }
 
- /**
+  /**
    * This function is called after everything else has been
    * recomposed, and allows a xsl:function to set remaining
    * values that may be based on some other property that
@@ -743,5 +680,101 @@ public class ElemFunction extends ElemTemplate
 
 	  return seqTypeData;
   }
+  
+  /**
+   * Method definition to do type checking and required modification of xsl:function's xsl:param
+   * value using the XPath sequence type expression from xsl:param's 'as' attribute.
+   * 
+   * @param srcValue								      An XDM value on which type checking and 
+   *                                                      value conversion is required.
+   * @param funcLocalName								  An xsl:function's local name value from it's QName value
+   * @param funcNameSpaceUri                              An xsl:function's QName name's namespace uri                              	                                                      
+   * @param paramIdx									  An xsl:param's relative index value within sibling 
+   *                                                      xsl:param elements.
+   * @param prefixTable									  An XSL transformation's run-time XML namespace
+   *                                                      prefix table list.                                                       
+   * @param paramAsAttrStrVal							  String value of xsl:param's 'as' attribute
+   * @param transformer                                   An XSL transformation run-time TransformerImpl object
+   * @param xctxt										  An XPath context object
+   * @return											  An XDM value produced after conversion using xsl:param's 
+   *                                                      XPath sequence type 'as' attribute.
+   * @throws TransformerException
+   */
+  private XObject getParamValueAsAttributeProcessing(XObject srcValue, String funcLocalName, String funcNameSpaceUri, 
+		                                             int paramIdx, List prefixTable, String paramAsAttrStrVal, 
+		                                             TransformerImpl transformer, XPathContext xctxt) throws TransformerException {
+		
+	  XObject argConvertedVal = null;
+
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+
+	  try {
+		  XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
+		  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+		  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+
+		  XMLNodeCursorImpl nodeSet = SequenceTypeSupport.getNodeReference(srcValue);
+		  if (nodeSet != null) {
+			  XSTypeDefinition typeDef = nodeSet.getXsTypeDefinition();                    	                      	                      	  
+			  if (typeDef != null) {                    		  
+				  XSTypeDefinition typeDef2 = seqExpectedTypeData.getXsTypeDefinition();
+				  if (typeDef2 != null && isTypeXsDefinitionEqual(typeDef, typeDef2)) {                            	  
+					  argConvertedVal = nodeSet;                      			
+				  }
+				  else {
+					  throw new TransformerException("XPTY0004 : An xsl:function call argument at position " + (paramIdx + 1) + " for "
+																								  + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
+																								  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
+				  }
+			  }                    	  
+			  else if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {                    		  
+				  DTMCursorIterator dtmIter = nodeSet.getContainedIter();                    		  
+				  if (dtmIter instanceof NodeTest) {
+					  try {
+						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
+								  (NodeTest)dtmIter, transformer, srcLocator);
+						  if (elemFunction != null) {
+							  // REVISIT : To check for elemFunction object's conformance with details in 
+							  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()  
+							  argConvertedVal = new ElemFunctionItem(elemFunction);
+						  }
+					  }
+					  catch (TransformerException ex) {
+						  // NO OP
+					  }
+				  }
+			  }
+		  }
+		  else if ((seqExpectedTypeData.getSequenceTypeFunctionTest() != null) && (srcValue instanceof XPathInlineFunction)) {
+			  // REVISIT : To check for argValue's conformance with details in 
+			  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()
+			  argConvertedVal = srcValue; 
+		  }
+
+		  if (argConvertedVal == null) {
+			  argConvertedVal = SequenceTypeSupport.castXDMValueToAnotherType(srcValue, paramAsAttrStrVal, null, 
+					  xctxt, prefixTable);
+		  }
+
+		  if (argConvertedVal == null) {
+			  throw new TransformerException("XPTY0004 : An xsl:function call argument at position " + (paramIdx + 1) + " for "
+																					  + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
+																					  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator); 
+		  }
+	  }
+	  catch (TransformerException ex) {
+		  if ((SequenceTypeSupport.INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR).equals(ex.getMessage())) {
+			  throw new TransformerException("XPTY0004 : The number of XPath inline function parameters, is not equal to "
+					  																  + "the number of expected type specifications for them.", srcLocator);   
+		  }
+		  else {
+			  throw new TransformerException("XPTY0004 : An xsl:function call argument at position " + (paramIdx + 1) + " for "
+																					  + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
+																					  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
+		  }
+	  }
+
+	  return argConvertedVal;	  
+	}
 
 }

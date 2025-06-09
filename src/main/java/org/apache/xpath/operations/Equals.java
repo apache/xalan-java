@@ -21,13 +21,19 @@
 package org.apache.xpath.operations;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
+import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
@@ -76,6 +82,67 @@ public class Equals extends Operation
 			 boolean bool = XPathGeneralComparisonEqualityOpSupport.equals(new XSString(lStrVal), (ResultSequence)right, false);
 			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		 }
+	  }
+	  else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {
+		 result = (left.equals(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE);  
+	  }
+	  else if (left instanceof XMLNodeCursorImpl) {
+		 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
+		 DTMCursorIterator iter1 = xmlNodeCursorImpl.iterRaw();
+		 int nextNode;
+		 DTMManager dtmManager = iter1.getDTMManager();
+		 while ((nextNode = iter1.nextNode()) != DTM.NULL) {
+			XMLNodeCursorImpl xmlNodeCursorImpl1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			java.lang.String lStrValue = xmlNodeCursorImpl1.str();
+			try {
+				if (right instanceof XNumber) {
+					double lDbl = Double.valueOf(lStrValue);
+					XNumber rXNumber = (XNumber)right;
+					double rDbl = rXNumber.num();
+					if (lDbl == rDbl) {
+						return XBoolean.S_TRUE;
+					}
+				}
+				else if (right instanceof XSNumericType) {
+					double lDbl = Double.valueOf(lStrValue);
+					XSNumericType xsNumericType = (XSNumericType)right;
+					java.lang.String rStrValue = xsNumericType.stringValue();
+					double rDbl = Double.valueOf(rStrValue);
+					if (lDbl == rDbl) {
+					   return XBoolean.S_TRUE;
+					}
+				}
+				else if (right instanceof XSBoolean) {
+					java.lang.String rStrValue = ((XSBoolean)right).stringValue();
+					if (!"".equals(lStrValue) && ("1".equals(rStrValue) || "true".equals(rStrValue))) {
+						return XBoolean.S_TRUE;
+					}
+					else if ("".equals(lStrValue) && ("0".equals(rStrValue) || "false".equals(rStrValue))) {
+						return XBoolean.S_TRUE;
+					}
+				}
+				else if ((right instanceof XBoolean) || (right instanceof XBooleanStatic)) {
+					java.lang.String rStrValue = right.str();
+					if (!"".equals(lStrValue) && ("1".equals(rStrValue) || "true".equals(rStrValue))) {
+						return XBoolean.S_TRUE;
+					}
+					else if ("".equals(lStrValue) && ("0".equals(rStrValue) || "false".equals(rStrValue))) {
+						return XBoolean.S_TRUE;
+					}
+				}
+				else {
+					java.lang.String rStrValue = XslTransformEvaluationHelper.getStrVal(right);
+					if (lStrValue.equals(rStrValue)) {
+					   return XBoolean.S_TRUE;
+					}
+				}
+			}
+			catch (NumberFormatException ex) {
+				// NO OP
+			}
+		 }
+		 
+		 result = XBoolean.S_FALSE;
 	  }
 	  else {
 		 result = (left.equals(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
