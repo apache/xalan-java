@@ -846,7 +846,9 @@ public class XPathParser
   }
   
   private String getXPathStrFromComponentParts(List<String> xpathExprStrPartList) {
-      StringBuffer funcBodyXPathExprStrBuff = new StringBuffer();
+      
+	  StringBuffer funcBodyXPathExprStrBuff = new StringBuffer();
+      
       Object[] funcBodyXPathExprStrPartsArr = xpathExprStrPartList.toArray();
       
       for (int idx = 0; idx < funcBodyXPathExprStrPartsArr.length; idx++) {
@@ -872,7 +874,9 @@ public class XPathParser
                                                                                         " " : xpathExprStrPart);
       }
       
-      return (funcBodyXPathExprStrBuff.toString()).trim();
+      String strResult = funcBodyXPathExprStrBuff.toString();
+      
+      return strResult.trim();
   }
   
   /**

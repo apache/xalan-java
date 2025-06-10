@@ -74,7 +74,8 @@ public class XPathForExpr extends Expression {
     
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
-       ResultSequence finalResultSeq = new ResultSequence();
+       
+    	ResultSequence finalResultSeq = new ResultSequence();
        
        SourceLocator srcLocator = xctxt.getSAXLocator();
        
@@ -162,6 +163,22 @@ public class XPathForExpr extends Expression {
            if (prefixTable != null) {
               varBindingXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                             varBindingXPathStr, prefixTable);
+           }                     
+           
+           // Fixing XPath expression string like .a$b to 
+           // correct form as . a $b           
+           int indexPeriod = varBindingXPathStr.indexOf('.');
+           if (indexPeriod > 0) {
+        	   String str1 = varBindingXPathStr.substring(0, indexPeriod + 1);
+        	   String str2 = varBindingXPathStr.substring(indexPeriod + 1);
+        	   int idx$ = str2.indexOf('$');
+        	   if (idx$ > -1) {
+        		   String str3 = str2.substring(0, idx$);
+        		   String str4 = str2.substring(idx$);
+        		   str2 = str3 + " " + str4; 
+        	   }         	 
+
+        	   varBindingXPathStr = str1 + " " + str2;
            }
            
            XPath varBindingXPath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 
@@ -184,6 +201,9 @@ public class XPathForExpr extends Expression {
                }
                catch (ClassCastException ex) {
                   // no op
+               }
+               catch (Exception ex) {
+            	  // no op 
                }
                
                if (dtmIter != null) {
@@ -221,6 +241,29 @@ public class XPathForExpr extends Expression {
             		   } 
             	   }
                }
+               else {
+            	   XObject xsObj = varBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+            	   
+            	   if (xsObj instanceof XMLNodeCursorImpl) {
+                       XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xsObj;
+                       dtmIter = nodeSet.iterRaw();
+                       
+                       int nextNode;                              
+                       while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {       
+                          XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, xctxt);
+                          resultSeq2.add(node);
+                       }
+                   }
+            	   else if (xsObj instanceof ResultSequence) {
+                       ResultSequence rSeq = (ResultSequence)xsObj;
+                       for (int idx = 0; idx < rSeq.size(); idx++) {
+                           resultSeq2.add(rSeq.item(idx)); 
+                       }
+                   }
+                   else {
+                       resultSeq2.add(xsObj);
+                   }
+               }
            }
            else {
         	   XObject xsObj = varBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
@@ -229,8 +272,7 @@ public class XPathForExpr extends Expression {
                    XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xsObj;
                    DTMCursorIterator dtmIter = nodeSet.iterRaw();
                    
-                   int nextNode;
-                          
+                   int nextNode;                          
                    while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {       
                       XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, xctxt);
                       resultSeq2.add(node);

@@ -811,12 +811,10 @@ public class XPath implements Serializable, ExpressionOwner
 			  dtmIter = locPathIterator.asIterator(xctxt, contextNode);
 		  }
 		  catch (ClassCastException ex) {
-			  isProcessAsNodeset = false;
+			 isProcessAsNodeset = false;
 		  }
 		  catch (Exception ex) {
-			 String xpathExprStrErr = ((xpathExprStr != null) ? " " + xpathExprStr : "");
-			 throw new TransformerException("XPTY0004 : An error occured while evaluating an XPath expression" + 
-			                                                                                                xpathExprStrErr + ".", srcLocator);  
+			 isProcessAsNodeset = false;
 		  }
 	  }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-06-09T12:02:34Z" desc="W3C XSLT 3.0 test suite results" fail="819" pass="1278" skipped="34" success="60.63%" totalRun="2164" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-06-10T12:10:06Z" desc="W3C XSLT 3.0 test suite results" fail="814" pass="1283" skipped="34" success="60.86%" totalRun="2164" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="96" pass="12" skipped="0" success="11.01%" totalRun="109"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
@@ -10,7 +10,7 @@
     <attribute-set fail="7" pass="41" skipped="1" success="84.0%" totalRun="50"/>
     <character-map fail="12" pass="15" skipped="0" success="51.72%" totalRun="29"/>
     <function fail="39" pass="22" skipped="4" success="37.14%" totalRun="70"/>
-    <variable fail="9" pass="10" skipped="0" success="50.0%" totalRun="20"/>
+    <variable fail="3" pass="16" skipped="0" success="80.0%" totalRun="20"/>
   </decl>
   <expr>
     <axes fail="29" pass="172" skipped="0" success="85.57%" totalRun="201"/>
@@ -32,7 +32,7 @@
   </fn>
   <insn>
     <analyze-string fail="17" pass="36" skipped="5" success="70.69%" totalRun="58"/>
-    <apply-templates fail="28" pass="20" skipped="2" success="44.0%" totalRun="50"/>
+    <apply-templates fail="29" pass="19" skipped="2" success="42.0%" totalRun="50"/>
     <attribute fail="12" pass="7" skipped="0" success="33.33%" totalRun="21"/>
     <call-template fail="14" pass="27" skipped="1" success="66.67%" totalRun="42"/>
     <choose fail="6" pass="17" skipped="0" success="70.83%" totalRun="24"/>

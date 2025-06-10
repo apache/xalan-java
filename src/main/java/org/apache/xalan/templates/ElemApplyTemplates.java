@@ -214,7 +214,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 	  DTMCursorIterator sourceNodes = null;
 
-	  SourceLocator srcLocator = xctxt.getSAXLocator();    
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
 	  XObject varEvalResult = null;    
 	  ResultSequence resultSeq = null;
 	  QName xslTemplateInvokeMode = getMode();
@@ -487,12 +488,25 @@ public class ElemApplyTemplates extends ElemCallTemplate
 				  if (template.m_inArgsSize > 0)
 				  {
 					  int paramIndex = 0;
+					  
+					  List<QName> paramNameList = new ArrayList<QName>();
+					  
 					  for (ElemTemplateElement elem = template.getFirstChildElem(); 
 							  null != elem; elem = elem.getNextSiblingElem()) 
 					  {
 						  if (Constants.ELEMNAME_PARAMVARIABLE == elem.getXSLToken())
 						  {
 							  ElemParam ep = (ElemParam)elem;
+							  QName paramQName = ep.getName();
+							  
+							  paramNameList.add(paramQName);
+							  if (paramNameList.size() > 1) {
+								  List<QName> prevList = paramNameList.subList(0, paramNameList.size() - 1);
+								  if (prevList.contains(paramQName)) {
+									  throw new TransformerException("XTSE0580 : An XSL template parameter name '" + 
+								                                                              paramQName.toString() + "' is not unique.", srcLocator);
+								  }
+							  }
 
 							  int i;
 							  for (i = 0; i < nParams; i++) 
@@ -506,8 +520,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 									  String paramAsAttrStrVal = ep.getAs();
 
 									  if (paramAsAttrStrVal != null) {
-										  argConvertedVal = getParamValueAsAttributeProcessing(obj, templateMatchPatternStr, 
-												                                               elem.getPrefixTable(), i, paramAsAttrStrVal, transformer, xctxt);
+										  argConvertedVal = getParamValueAsAttributeProcessing(obj, templateMatchPatternStr, elem.getPrefixTable(), 
+												                                               i, paramAsAttrStrVal, transformer, srcLocator);
 									  }
 									  else {
 										  argConvertedVal = obj;  
@@ -668,18 +682,19 @@ public class ElemApplyTemplates extends ElemCallTemplate
    *                                                      xsl:param elements. 
    * @param paramAsAttrStrVal							  String value of xsl:param's 'as' attribute
    * @param transformer                                   An XSL transformation run-time TransformerImpl object
-   * @param xctxt										  An XPath context object
+   * @param srcLocator									  An XSL transformation SourceLocator object 
+   * 
    * @return											  An XDM value produced after conversion using xsl:param's 
    *                                                      XPath sequence type 'as' attribute.
    * @throws TransformerException
    */
   private XObject getParamValueAsAttributeProcessing(XObject srcValue, String templateMatchPatternStr, List prefixTable, 
 		                                             int paramIdx, String paramAsAttrStrVal, TransformerImpl transformer, 
-		                                             XPathContext xctxt) throws TransformerException {
+		                                             SourceLocator srcLocator) throws TransformerException {
 
 	  XObject argConvertedVal = null;
-
-	  SourceLocator srcLocator = xctxt.getSAXLocator(); 
+	  
+	  XPathContext xctxt = transformer.getXPathContext();
 
 	  try {
 		  XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
@@ -695,8 +710,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 					  argConvertedVal = nodeSet;                      			
 				  }
 				  else {
-					  throw new TransformerException("XPTY0004 : An XSL template call parameter value at position " + (paramIdx + 1) + " for "
-																							  + "template {" + templateMatchPatternStr + "}, doesn't "
+					  throw new TransformerException("XTTE0590 : An XSL template's parameter value at index " + (paramIdx + 1) + " for "
+																							  + "template {" + templateMatchPatternStr + "} doesn't "
 																							  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
 				  }
 			  }                    	  
@@ -729,21 +744,20 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  }
 
 		  if (argConvertedVal == null) {
-			  throw new TransformerException("XPTY0004 : An XSL template call parameter value at position " + (paramIdx + 1) + " for "
-																									  + "template {" + templateMatchPatternStr + "}, doesn't "
-																									  + "match the declared parameter type " + paramAsAttrStrVal + 
-																									  ".", srcLocator);
+			  throw new TransformerException("XTTE0590 : An XSL template's parameter value at index " + (paramIdx + 1) + " for "
+																								  + "template {" + templateMatchPatternStr + "} doesn't "
+																								  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
 		  }
 	  }
 	  catch (TransformerException ex) {
 		  if ((SequenceTypeSupport.INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR).equals(ex.getMessage())) {
-			  throw new TransformerException("XPTY0004 : The number of XPath inline function parameters, is not equal to "
-					  																			+ "the number of expected type specifications for them.", srcLocator);   
+			  throw new TransformerException("XTTE0590 : The number of XPath inline function parameters, is not equal to "
+					  																			  + "the number of expected type specifications for them.", srcLocator);   
 		  }
 		  else {
-			  throw new TransformerException("XPTY0004 : An XSL template call parameter value at position " + (paramIdx + 1) + " for "
-																							    + "template {" + templateMatchPatternStr + "}, doesn't "
-																							    + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
+			  throw new TransformerException("XTTE0590 : An XSL template's parameter value at index " + (paramIdx + 1) + " for "
+																								  + "template {" + templateMatchPatternStr + "} doesn't "
+																								  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
 		  }
 	  }
 	  

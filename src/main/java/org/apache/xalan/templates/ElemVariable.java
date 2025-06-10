@@ -353,6 +353,16 @@ public class ElemVariable extends ElemTemplateElement
     SourceLocator srcLocator = xctxt.getSAXLocator();
     
     Expression selectExpression = null;
+    
+    if ((this instanceof ElemParam) && m_isTopLevel) {
+       ElemParam elemParam = (ElemParam)this;
+       boolean isRequired = elemParam.getRequired();
+       if (isRequired && (m_selectPattern == null) && (getFirstChildElem() == null)) {
+    	  QName qName = elemParam.getName();
+    	  throw new TransformerException("XTDE0050 : No value supplied for XSL stylesheet's top level "
+    	  		                                            + "required parameter '" + qName.toString() + "'.", srcLocator);  
+       }
+    }
  
     try {        
       if (m_selectPattern != null) {          
@@ -869,6 +879,10 @@ public class ElemVariable extends ElemTemplateElement
        else {
     	  try {
              var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
+             if (var == null) {
+            	 throw new TransformerException("XTTE0570 : The supplied XDM item cannot be converted "
+            	 		                                         + "to an XPath sequence type " + m_asAttr + ".", srcLocator); 
+             }
     	  }
     	  catch (TransformerException ex) {
     		 throw ex; 

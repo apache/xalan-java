@@ -246,7 +246,6 @@ public class Variable extends Expression implements PathComponent
         XObject varValue = xpathVarMap.get(m_qname);
         
         if (varValue != null) {
-           // added for XPath 3.1
            if (varValue instanceof XMLNodeCursorImpl) {
               result = ((XMLNodeCursorImpl)varValue).getFresh();    
            }
@@ -271,7 +270,8 @@ public class Variable extends Expression implements PathComponent
            }
         }
         catch (javax.xml.transform.TransformerException ex) {
-           if (m_qname == null) {
+           java.lang.String exceptionMesg = ex.getMessage();
+           if ((m_qname == null) || ((exceptionMesg != null) && exceptionMesg.startsWith("XTDE0050 : No value supplied"))) {
               throw ex;   
            }
            else if (XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff != null) {

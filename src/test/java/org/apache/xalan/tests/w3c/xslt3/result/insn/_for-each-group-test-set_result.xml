@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-09T11:59:42Z" fail="29" name="for-each-group" pass="44" skipped="4" statusUnknown="1" totalRun="78">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-10T12:06:11Z" fail="29" name="for-each-group" pass="44" skipped="4" statusUnknown="1" totalRun="78">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -70,7 +70,7 @@
    </testResult>
    <testResult status="fail" testName="for-each-group-060">
       <outResult>
-         <errTrace>XPTY0004 : An error occured while evaluating an XPath expression.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
          <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Attribute: order has an illegal value: </errTrace>
       </outResult>
    </testResult>
@@ -86,7 +86,7 @@
    <testResult status="fail" testName="for-each-group-070"/>
    <testResult status="fail" testName="for-each-group-071">
       <outResult>
-         <errTrace>XPTY0004 : An error occured while evaluating an XPath expression @*.</errTrace>
+         <errTrace>XPTY0004 : The function call result for function {my}f(), doesn't match the declared function result type element()*.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="for-each-group-072"/>

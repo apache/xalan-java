@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-09T11:59:44Z" fail="14" name="call-template" pass="27" skipped="1" statusUnknown="0" totalRun="42">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-10T12:06:13Z" fail="14" name="call-template" pass="27" skipped="1" statusUnknown="0" totalRun="42">
    <testResult status="fail" testName="call-template-0001">
-      <outResult>
-         <errTrace>XPTY0004 : An error occured while evaluating an XPath expression ancestor-or-self::*.</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="call-template-0101"/>
    <testResult status="fail" testName="call-template-0102">

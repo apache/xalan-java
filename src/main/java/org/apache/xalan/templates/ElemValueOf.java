@@ -492,6 +492,9 @@ public class ElemValueOf extends ElemTemplateElement {
                      catch (ClassCastException ex) {
                         // no op
                      }
+                     catch (Exception ex) {
+                    	// no op 
+                     }
                      
                      if (dtmIter != null) {
                         int nextNode;
@@ -644,7 +647,15 @@ public class ElemValueOf extends ElemTemplateElement {
                 	  }
                   }
                   else {
-                     expr.executeCharsToContentHandler(xctxt, rth);
+                	  XObject evalResult = expr.execute(xctxt);                     
+                      String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                      if (m_separator != null) {
+                    	 strValue = strValue.replace(" ", m_separator);  
+                      }
+                      
+                      XString xStr = new XString(strValue);
+
+                      xStr.executeCharsToContentHandler(xctxt, rth);
                   }
               }
           }
