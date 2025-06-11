@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-10T12:06:09Z" fail="96" name="as" pass="12" skipped="0" statusUnknown="1" totalRun="109">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-11T11:11:29Z" fail="94" name="as" pass="14" skipped="0" statusUnknown="1" totalRun="109">
    <testResult status="fail" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
@@ -10,65 +10,65 @@
    <testResult status="fail" testName="as-0105"/>
    <testResult status="fail" testName="as-0106">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0106a">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0106b">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0107"/>
    <testResult status="fail" testName="as-0108"/>
-   <testResult status="fail" testName="as-0109"/>
+   <testResult status="pass" testName="as-0109"/>
    <testResult status="fail" testName="as-0110">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0110a">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0110b">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0111">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0111a">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0111b">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0112"/>
    <testResult status="fail" testName="as-0112a">
       <outResult>
-         <errTrace>XTTE0505 : The required result type of template a9 is xs:gYearMonth. But the template result doesn't conform to this required type.</errTrace>
+         <errTrace>XTTE0505 : The required result type of template a14 is xs:gMonthDay. But the template result doesn't conform to this required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0112b"/>
@@ -87,16 +87,10 @@ javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base
    <testResult status="pass" testName="as-0117"/>
    <testResult status="pass" testName="as-0118"/>
    <testResult status="fail" testName="as-0119">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="as-0120">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="as-0121">
       <outResult>
@@ -168,25 +162,22 @@ javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:NMTO
    <testResult status="fail" testName="as-0301"/>
    <testResult status="fail" testName="as-0302"/>
    <testResult status="fail" testName="as-0303"/>
-   <testResult status="fail" testName="as-0304"/>
+   <testResult status="pass" testName="as-0304"/>
    <testResult status="fail" testName="as-0401"/>
    <testResult status="fail" testName="as-0402"/>
    <testResult status="fail" testName="as-0501">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0501a">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0501b">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0601"/>
@@ -195,26 +186,26 @@ javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base
    <testResult status="fail" testName="as-0703"/>
    <testResult status="fail" testName="as-0801">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var7 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var7 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0801a">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var7 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var7 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0801b">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:base64Binary' is not recognized, within the provided sequence type expression.</errTrace>
+         <errTrace>Variable var7 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var7 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0802"/>
    <testResult status="fail" testName="as-0802a">
       <outResult>
-         <errTrace>XTTE0505 : The required result type of template a5 is xs:gYearMonth+. But the template result doesn't conform to this required type.</errTrace>
+         <errTrace>XTTE0505 : The required result type of template a7 is xs:gMonthDay+. But the template result doesn't conform to this required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0802b"/>

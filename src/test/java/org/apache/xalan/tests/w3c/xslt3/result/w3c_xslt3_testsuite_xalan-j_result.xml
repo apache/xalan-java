@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-06-10T12:10:06Z" desc="W3C XSLT 3.0 test suite results" fail="814" pass="1283" skipped="34" success="60.86%" totalRun="2164" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-06-11T11:14:34Z" desc="W3C XSLT 3.0 test suite results" fail="810" pass="1287" skipped="34" success="61.04%" totalRun="2164" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
-    <as fail="96" pass="12" skipped="0" success="11.01%" totalRun="109"/>
+    <as fail="94" pass="14" skipped="0" success="12.84%" totalRun="109"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
     <match fail="67" pass="57" skipped="8" success="47.45%" totalRun="137"/>
     <select fail="7" pass="16" skipped="0" success="64.0%" totalRun="25"/>
@@ -49,7 +49,7 @@
   </misc>
   <type>
     <boolean fail="23" pass="89" skipped="0" success="79.46%" totalRun="112"/>
-    <date fail="49" pass="35" skipped="0" success="41.18%" totalRun="85"/>
+    <date fail="47" pass="37" skipped="0" success="43.53%" totalRun="85"/>
     <node fail="17" pass="15" skipped="0" success="46.88%" totalRun="32"/>
     <string fail="8" pass="128" skipped="0" success="94.12%" totalRun="136"/>
   </type>

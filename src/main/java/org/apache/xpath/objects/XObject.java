@@ -357,6 +357,12 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   /** Constant for XPath 3.1 xs:gMonth object type */
   public static final int CLASS_GMONTH = 41;
+  
+  /** Constant for XPath 3.1 xs:base64Binary object type */
+  public static final int CLASS_BASE64BINARY = 42;
+  
+  /** Constant for XPath 3.1 xs:hexBinary object type */
+  public static final int CLASS_HEXBINARY = 43;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;
@@ -985,8 +991,8 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSGYear) && (obj2 instanceof XSGYear)) {
     	   XSGYear val1 = (XSGYear)this;
     	   XSGYear val2 = (XSGYear)obj2;
-    	   BigInteger year1 = (val1.getYear()).intValue();
-    	   BigInteger year2 = (val2.getYear()).intValue();
+    	   BigInteger year1 = BigInteger.valueOf(val1.getYear());
+    	   BigInteger year2 = BigInteger.valueOf(val2.getYear());
     	   if (year1.compareTo(year2) < 0) {
     		   return true; 
     	   }
@@ -1000,10 +1006,10 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSGYearMonth) && (obj2 instanceof XSGYearMonth)) {
     	   XSGYearMonth val1 = (XSGYearMonth)this;
     	   XSGYearMonth val2 = (XSGYearMonth)obj2;
-    	   BigInteger year1 = (val1.getYear()).intValue();
-    	   BigInteger year2 = (val2.getYear()).intValue();
-    	   BigInteger month1 = (val1.getMonth()).intValue();
-    	   BigInteger month2 = (val2.getMonth()).intValue();
+    	   BigInteger year1 = BigInteger.valueOf(val1.getYear());
+    	   BigInteger year2 = BigInteger.valueOf(val2.getYear());
+    	   BigInteger month1 = BigInteger.valueOf(val1.getMonth());
+    	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
     	   if (year1.compareTo(year2) < 0) {
     		  return true; 
     	   }
@@ -1304,8 +1310,8 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSGYear) && (obj2 instanceof XSGYear)) {
     	   XSGYear val1 = (XSGYear)this;
     	   XSGYear val2 = (XSGYear)obj2;
-    	   BigInteger year1 = (val1.getYear()).intValue();
-    	   BigInteger year2 = (val2.getYear()).intValue();
+    	   BigInteger year1 = BigInteger.valueOf(val1.getYear());
+    	   BigInteger year2 = BigInteger.valueOf(val2.getYear());
     	   if (year1.compareTo(year2) < 0) {
     		   return false; 
     	   }
@@ -1319,10 +1325,10 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSGYearMonth) && (obj2 instanceof XSGYearMonth)) {
     	   XSGYearMonth val1 = (XSGYearMonth)this;
     	   XSGYearMonth val2 = (XSGYearMonth)obj2;
-    	   BigInteger year1 = (val1.getYear()).intValue();
-    	   BigInteger year2 = (val2.getYear()).intValue();
-    	   BigInteger month1 = (val1.getMonth()).intValue();
-    	   BigInteger month2 = (val2.getMonth()).intValue();
+    	   BigInteger year1 = BigInteger.valueOf(val1.getYear());
+    	   BigInteger year2 = BigInteger.valueOf(val2.getYear());
+    	   BigInteger month1 = BigInteger.valueOf(val1.getMonth());
+    	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
     	   if (year1.compareTo(year2) < 0) {
     		  return false; 
     	   }

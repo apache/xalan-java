@@ -56,12 +56,14 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSGDay;
 import org.apache.xpath.types.XSGMonth;
 import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
+import org.apache.xpath.types.XSHexBinary;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
@@ -279,6 +281,12 @@ public class XSL3FunctionService {
 		    					break;
 		    				case Keywords.XS_GMONTH :    					
 		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGMonth.class, xctxt);
+		    					break;
+		    				case Keywords.XS_BASE64BINARY :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSBase64Binary.class, xctxt);
+		    					break;
+		    				case Keywords.XS_HEXBINARY :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSHexBinary.class, xctxt);
 		    					break;
 		    				case Keywords.FUNC_BOOLEAN_STRING :    					
 		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
@@ -763,10 +771,10 @@ public class XSL3FunctionService {
      * Evaluate the XPath built-in constructor function call.
      */
     private XObject evaluateXPathBuiltInConstructorFunctionCall(XSL3ConstructorOrExtensionFunction funcObj, 
-    		                                                     Class dataType, XPathContext xctxt) throws TransformerException, 
-                                                                                                 InstantiationException, IllegalAccessException, 
-                                                                                                 NoSuchMethodException, SecurityException, 
-                                                                                                 IllegalArgumentException, InvocationTargetException {
+    		                                                    Class dataType, XPathContext xctxt) throws TransformerException, 
+		                                                                                                   InstantiationException, IllegalAccessException, 
+		                                                                                                   NoSuchMethodException, SecurityException, 
+		                                                                                                   IllegalArgumentException, InvocationTargetException {
     	XObject evalResult = null;
     	
     	ResultSequence evalResultSequence = null;

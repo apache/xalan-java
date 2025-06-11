@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-10T12:06:24Z" fail="49" name="date" pass="35" skipped="0" statusUnknown="1" totalRun="85">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-11T11:12:22Z" fail="47" name="date" pass="37" skipped="0" statusUnknown="1" totalRun="85">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -94,8 +94,8 @@
    <testResult status="pass" testName="date-074a"/>
    <testResult status="pass" testName="date-075"/>
    <testResult status="pass" testName="date-075a"/>
-   <testResult status="fail" testName="date-076"/>
-   <testResult status="fail" testName="date-076a"/>
+   <testResult status="pass" testName="date-076"/>
+   <testResult status="pass" testName="date-076a"/>
    <testResult status="fail" testName="date-077"/>
    <testResult status="fail" testName="date-078"/>
    <testResult status="fail" testName="date-079"/>

@@ -483,6 +483,12 @@ public class Keywords
   /** xs:untyped data type string. */
   public static final String XS_UNTYPED = "untyped";
   
+  /** xs:base64Binary data type string. */
+  public static final String XS_BASE64BINARY = "base64Binary";
+  
+  /** xs:hexBinary data type string. */
+  public static final String XS_HEXBINARY = "hexBinary";
+  
   
   /** empty function string. */
   public static final String FUNC_EMPTY = "empty";

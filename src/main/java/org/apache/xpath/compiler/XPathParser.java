@@ -6130,6 +6130,12 @@ public class XPathParser
  	     case Keywords.XS_UNTYPED :
  	         xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_UNTYPED);
  	         break;
+ 	     case Keywords.XS_BASE64BINARY :
+ 	        xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_BASE64BINARY);
+ 	        break;
+ 	     case Keywords.XS_HEXBINARY :
+ 	        xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_HEXBINARY);
+ 	        break; 
  	     default :
  	        throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
  	                                                                                   + "recognized, within the provided sequence type expression.");        
@@ -6443,6 +6449,12 @@ public class XPathParser
  	    case Keywords.XS_UNTYPED :
  	    	seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_UNTYPED);
  	        break;
+ 	    case Keywords.XS_BASE64BINARY :
+	    	seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_BASE64BINARY);
+	        break;
+ 	    case Keywords.XS_HEXBINARY :
+	    	seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_HEXBINARY);
+	        break;	        
  	    default :
  	        throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
  	                                                                              + "recognized, within the provided sequence type expression.");        

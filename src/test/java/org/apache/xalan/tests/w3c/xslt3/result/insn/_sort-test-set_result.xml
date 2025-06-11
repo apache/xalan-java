@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-10T12:06:18Z" fail="44" name="sort" pass="35" skipped="0" statusUnknown="1" totalRun="80">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-11T11:11:55Z" fail="44" name="sort" pass="35" skipped="0" statusUnknown="1" totalRun="80">
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
    <testResult status="fail" testName="sort-003">
@@ -76,11 +76,7 @@
    <testResult status="fail" testName="sort-059"/>
    <testResult status="fail" testName="sort-060"/>
    <testResult status="fail" testName="sort-061"/>
-   <testResult status="fail" testName="sort-062">
-      <outResult>
-         <errTrace>XTDE0700 : No value supplied for the required parameter $list1. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="sort-062"/>
    <testResult status="fail" testName="sort-063"/>
    <testResult status="fail" testName="sort-064"/>
    <testResult status="fail" testName="sort-065"/>

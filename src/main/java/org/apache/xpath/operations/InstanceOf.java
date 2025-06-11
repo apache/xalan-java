@@ -56,12 +56,14 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSGDay;
 import org.apache.xpath.types.XSGMonth;
 import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
+import org.apache.xpath.types.XSHexBinary;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
@@ -306,19 +308,32 @@ public class InstanceOf extends Operation
     		                                                 (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSGYearMonth) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GYEAR_MONTH)) {
+      else if ((xdmValue instanceof XSGYearMonth) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GYEAR_MONTH) ||
+    		                                          (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSGYear) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GYEAR)) {
+      else if ((xdmValue instanceof XSGYear) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GYEAR) ||
+    		                                     (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSGMonthDay) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GMONTH_DAY)) {
+      else if ((xdmValue instanceof XSGMonthDay) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GMONTH_DAY) ||
+    		                                         (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSGDay) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GDAY)) {
+      else if ((xdmValue instanceof XSGDay) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GDAY) ||
+    		                                    (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSGMonth) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GMONTH)) {
+      else if ((xdmValue instanceof XSGMonth) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GMONTH) ||
+    		                                      (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+          isInstanceOf = true;  
+      }
+      else if ((xdmValue instanceof XSBase64Binary) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_BASE64BINARY) ||
+                                                        (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+          isInstanceOf = true;  
+      }
+      else if ((xdmValue instanceof XSHexBinary) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_HEXBINARY) ||
+                                                     (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
       else if (xdmValue instanceof XMLNodeCursorImpl) {

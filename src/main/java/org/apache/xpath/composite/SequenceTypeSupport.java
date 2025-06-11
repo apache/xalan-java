@@ -58,6 +58,7 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
@@ -201,6 +202,10 @@ public class SequenceTypeSupport {
     public static int XS_GDAY = 64;
     
     public static int XS_GMONTH = 65;
+    
+    public static int XS_BASE64BINARY = 66;
+    
+    public static int XS_HEXBINARY = 67;
     
     /** 
      * Following are constant int values denoting XPath 3.1 sequence
@@ -703,7 +708,7 @@ public class SequenceTypeSupport {
             if (srcValue instanceof XString) {
                 String srcStrVal = ((XString)srcValue).str();
                 
-                if (expectedType == STRING) {
+                if ((expectedType == STRING) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                    result = srcValue; 
                 }
                 else if (sequenceTypeKindTest != null) {
@@ -722,7 +727,7 @@ public class SequenceTypeSupport {
             else if (srcValue instanceof XSString) {           
                String srcStrVal = ((XSString)srcValue).stringValue();
                
-               if (expectedType == STRING) {
+               if ((expectedType == STRING) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
@@ -742,7 +747,7 @@ public class SequenceTypeSupport {
                XSDouble xsDouble = new XSDouble(((XNumber)srcValue).num());
                String srcStrVal = xsDouble.stringValue(); 
                
-               if (expectedType == XS_DOUBLE) {
+               if ((expectedType == XS_DOUBLE) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
@@ -775,9 +780,9 @@ public class SequenceTypeSupport {
                   }
                }
             }
-            else if (srcValue instanceof XBoolean) {
-               String srcStrVal = ((XBoolean)srcValue).str();
-               if (expectedType == BOOLEAN) {
+            else if ((srcValue instanceof XBoolean) || (srcValue instanceof XBooleanStatic)) {
+               String srcStrVal = srcValue.str();
+               if ((expectedType == BOOLEAN) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
@@ -787,7 +792,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSBoolean) {
                String srcStrVal = ((XSBoolean)srcValue).stringValue();
-               if (expectedType == BOOLEAN) {
+               if ((expectedType == BOOLEAN) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
@@ -797,7 +802,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSDate) {
                String srcStrVal = ((XSDate)srcValue).stringValue();
-               if (expectedType == XS_DATE) {
+               if ((expectedType == XS_DATE) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
@@ -807,7 +812,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSDateTime) {
                String srcStrVal = ((XSDateTime)srcValue).stringValue();
-               if (expectedType == XS_DATETIME) {
+               if ((expectedType == XS_DATETIME) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
@@ -817,7 +822,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSTime) {
                String srcStrVal = ((XSTime)srcValue).stringValue();
-               if (expectedType == XS_TIME) {
+               if ((expectedType == XS_TIME) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
@@ -827,7 +832,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSGYearMonth) {
             	String srcStrVal = ((XSGYearMonth)srcValue).stringValue();
-            	if (expectedType == XS_GYEAR_MONTH) {
+            	if ((expectedType == XS_GYEAR_MONTH) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
             		result = srcValue; 
             	}
             	else if (sequenceTypeKindTest != null) {
@@ -837,7 +842,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSGYear) {
             	String srcStrVal = ((XSGYear)srcValue).stringValue();
-            	if (expectedType == XS_GYEAR) {
+            	if ((expectedType == XS_GYEAR) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
             		result = srcValue; 
             	}
             	else if (sequenceTypeKindTest != null) {
@@ -847,7 +852,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSGMonthDay) {
             	String srcStrVal = ((XSGMonthDay)srcValue).stringValue();
-            	if (expectedType == XS_GMONTH_DAY) {
+            	if ((expectedType == XS_GMONTH_DAY) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
             		result = srcValue; 
             	}
             	else if (sequenceTypeKindTest != null) {
@@ -857,7 +862,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSGDay) {
             	String srcStrVal = ((XSGDay)srcValue).stringValue();
-            	if (expectedType == XS_GDAY) {
+            	if ((expectedType == XS_GDAY) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
             		result = srcValue; 
             	}
             	else if (sequenceTypeKindTest != null) {
@@ -867,7 +872,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSGMonth) {
             	String srcStrVal = ((XSGMonth)srcValue).stringValue();
-            	if (expectedType == XS_GMONTH) {
+            	if ((expectedType == XS_GMONTH) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
             		result = srcValue; 
             	}
             	else if (sequenceTypeKindTest != null) {
@@ -877,7 +882,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSDayTimeDuration) {
                String srcStrVal = ((XSDayTimeDuration)srcValue).stringValue();     
-               if ((expectedType == XS_DAYTIME_DURATION) || (expectedType == XS_DURATION)) {
+               if ((expectedType == XS_DAYTIME_DURATION) || (expectedType == XS_DURATION) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
@@ -887,7 +892,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSYearMonthDuration) {
                String srcStrVal = ((XSYearMonthDuration)srcValue).stringValue();      
-               if ((expectedType == XS_YEARMONTH_DURATION) || (expectedType == XS_DURATION)) {
+               if ((expectedType == XS_YEARMONTH_DURATION) || (expectedType == XS_DURATION) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
@@ -897,7 +902,7 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSDuration) {
                String srcStrVal = ((XSDuration)srcValue).stringValue();
-               if (expectedType == XS_DURATION) {
+               if ((expectedType == XS_DURATION) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
