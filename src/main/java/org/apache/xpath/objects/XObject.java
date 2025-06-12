@@ -938,8 +938,8 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSGDay) && (obj2 instanceof XSGDay)) {
     	  XSGDay val1 = (XSGDay)this;
     	  XSGDay val2 = (XSGDay)obj2;
-    	  BigInteger date1 = (val1.getDate()).intValue();
-   	      BigInteger date2 = (val2.getDate()).intValue();
+    	  BigInteger date1 = BigInteger.valueOf(val1.getDay());
+   	      BigInteger date2 = BigInteger.valueOf(val2.getDay());
    	      if (date1.compareTo(date2) < 0) {
  		     return true; 
  	      }
@@ -953,8 +953,8 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSGMonth) && (obj2 instanceof XSGMonth)) {
     	   XSGMonth val1 = (XSGMonth)this;
     	   XSGMonth val2 = (XSGMonth)obj2;
-    	   BigInteger month1 = (val1.getMonth()).intValue();
-    	   BigInteger month2 = (val2.getMonth()).intValue();
+    	   BigInteger month1 = BigInteger.valueOf(val1.getMonth());
+    	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
     	   if (month1.compareTo(month2) < 0) {
     		   return true; 
     	   }
@@ -968,10 +968,10 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSGMonthDay) && (obj2 instanceof XSGMonthDay)) {
     	   XSGMonthDay val1 = (XSGMonthDay)this;
     	   XSGMonthDay val2 = (XSGMonthDay)obj2;
-    	   BigInteger month1 = (val1.getMonth()).intValue();
-    	   BigInteger month2 = (val2.getMonth()).intValue();
-    	   BigInteger day1 = (val1.getDay()).intValue();
-    	   BigInteger day2 = (val2.getDay()).intValue();
+    	   BigInteger month1 = BigInteger.valueOf(val1.getMonth());
+    	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
+    	   BigInteger day1 = BigInteger.valueOf(val1.getDay());
+    	   BigInteger day2 = BigInteger.valueOf(val2.getDay());
     	   if (month1.compareTo(month2) < 0) {
     		  return true; 
     	   }
@@ -1257,8 +1257,8 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSGDay) && (obj2 instanceof XSGDay)) {
     	   XSGDay val1 = (XSGDay)this;
     	   XSGDay val2 = (XSGDay)obj2;
-    	   BigInteger date1 = (val1.getDate()).intValue();
-    	   BigInteger date2 = (val2.getDate()).intValue();
+    	   BigInteger date1 = BigInteger.valueOf(val1.getDay());
+    	   BigInteger date2 = BigInteger.valueOf(val2.getDay());
     	   if (date1.compareTo(date2) < 0) {
     		   return false; 
     	   }
@@ -1272,8 +1272,8 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSGMonth) && (obj2 instanceof XSGMonth)) {
     	   XSGMonth val1 = (XSGMonth)this;
     	   XSGMonth val2 = (XSGMonth)obj2;
-    	   BigInteger month1 = (val1.getMonth()).intValue();
-    	   BigInteger month2 = (val2.getMonth()).intValue();
+    	   BigInteger month1 = BigInteger.valueOf(val1.getMonth());
+    	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
     	   if (month1.compareTo(month2) < 0) {
     		   return false; 
     	   }
@@ -1287,10 +1287,10 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSGMonthDay) && (obj2 instanceof XSGMonthDay)) {
     	   XSGMonthDay val1 = (XSGMonthDay)this;
     	   XSGMonthDay val2 = (XSGMonthDay)obj2;
-    	   BigInteger month1 = (val1.getMonth()).intValue();
-    	   BigInteger month2 = (val2.getMonth()).intValue();
-    	   BigInteger day1 = (val1.getDay()).intValue();
-    	   BigInteger day2 = (val2.getDay()).intValue();
+    	   BigInteger month1 = BigInteger.valueOf(val1.getMonth());
+    	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
+    	   BigInteger day1 = BigInteger.valueOf(val1.getDay());
+    	   BigInteger day2 = BigInteger.valueOf(val2.getDay());
     	   if (month1.compareTo(month2) < 0) {
     		  return false; 
     	   }

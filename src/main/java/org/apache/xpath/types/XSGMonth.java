@@ -1,7 +1,5 @@
 package org.apache.xpath.types;
 
-import java.math.BigInteger;
-
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -9,7 +7,6 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
-import xml.xpath31.processor.types.XSInteger;
 
 /**
  * Implementation of XML Schema data type xs:gMonth.
@@ -20,7 +17,23 @@ public class XSGMonth extends XSAnyAtomicType {
 
 	private static final long serialVersionUID = -3607305468895616720L;
 
-	private XSInteger month;
+	/**
+	 * Class fields to represent components of XML Schema type xs:gMonth.  
+	 */
+	
+	private int m_month;
+	
+    private boolean m_isTimeZoneNegative;
+	
+	private boolean m_isTimeZoneUtc;
+	
+	private int m_timezone_hrs;
+	
+	private int m_timezone_min;
+	
+	private boolean m_isTimeZoned;
+	
+	private String m_gMonthStrValue;
 	
 	private static final String XS_GMONTH = "xs:gMonth";
 	
@@ -35,22 +48,8 @@ public class XSGMonth extends XSAnyAtomicType {
 	 * Class constructor.
 	 */
 	public XSGMonth(String gMonthStrValue) throws TransformerException {
-		if (gMonthStrValue.length() != 4) {
-		    throw new TransformerException("FOCA0003 : An xs:gMonth value cannot be "
-		    		                                                   + "constructed from string value " + gMonthStrValue);
-		}
-		else {
-			XSInteger xsInteger = new XSInteger(gMonthStrValue.substring(2));
-			BigInteger bigInt = xsInteger.intValue();
-			int int1 = bigInt.compareTo(BigInteger.valueOf(1));
-			int int2 = bigInt.compareTo(BigInteger.valueOf(12));
-			if ((int1 == -1) || (int2 == 1)) {
-				throw new TransformerException("FOCA0003 : An xs:gMonth value cannot be "
-                                                                      + "constructed from string value " + gMonthStrValue);
-			}
-			
-			this.month = xsInteger;
-		}
+		parse(gMonthStrValue);
+		m_gMonthStrValue = gMonthStrValue; 
 	}
 
 	@Override
@@ -75,21 +74,7 @@ public class XSGMonth extends XSAnyAtomicType {
 
 	@Override
 	public String stringValue() {
-		String resultStr = null;
-		
-		String monthStr = month.stringValue();
-		monthStr = (monthStr.length() == 1) ? "0"+monthStr : monthStr;
-		
-		resultStr = "--" + monthStr;
-		
-		return resultStr;
-	}
-	
-	/**
-	 * Get the month component from this xs:gMonth object instance. 
-	 */
-	public XSInteger getMonth() {
-		return month;
+		return m_gMonthStrValue;
 	}
 	
 	public int getType() {
@@ -99,27 +84,23 @@ public class XSGMonth extends XSAnyAtomicType {
 	/**
 	 * Implementation of operation equals, for the type xs:gMonth.
 	 */
-	public boolean eq(XSGMonth value) {
+	public boolean eq(XSGMonth obj2) {
 		boolean result = false;
-		
-		XSInteger thisMonth = this.getMonth();
-		XSInteger argMonth = value.getMonth();
-		
-		result = (thisMonth.intValue()).equals(argMonth.intValue());
-		
+
+		result = ((m_month == obj2.getMonth()) && (m_isTimeZoneNegative == obj2.isTimeZoneNegative()) && 
+				  (m_isTimeZoneUtc == obj2.isTimeZoneUtc()) && (m_timezone_hrs == obj2.getTimezoneHrs()) && 
+				  (m_timezone_min == obj2.getTimezoneMin()) && (m_isTimeZoned == obj2.isTimeZoned()));
+
 		return result;
 	}
 	
 	/**
 	 * Implementation of operation not equals, for the type xs:gMonth.
 	 */
-	public boolean ne(XSGMonth value) {
+	public boolean ne(XSGMonth obj2) {
         boolean result = false;
 		
-        XSInteger thisMonth = this.getMonth();
-		XSInteger argMonth = value.getMonth();
-		
-		result = !(thisMonth.intValue()).equals(argMonth.intValue());
+		result = !eq(obj2);
 		
 		return result;
 	}
@@ -127,6 +108,129 @@ public class XSGMonth extends XSAnyAtomicType {
 	@Override
 	public String typeName() {
 		return "gMonth";
+	}
+	
+	/**
+	 * Getter method definitions for various components of an XML Schema type xs:gMonth. 
+	 */
+	
+	public int getMonth() {
+		return m_month;
+	}
+
+	public boolean isTimeZoneNegative() {
+		return m_isTimeZoneNegative;
+	}
+
+	public boolean isTimeZoneUtc() {
+		return m_isTimeZoneUtc;
+	}
+
+	public int getTimezoneHrs() {
+		return m_timezone_hrs;
+	}
+
+	public int getTimezoneMin() {
+		return m_timezone_min;
+	}
+
+	public boolean isTimeZoned() {
+		return m_isTimeZoned;
+	}
+	
+	/**
+	 * Method definition to parse a string value to an XML Schema type 
+	 * xs:gMonth's component parts. 
+	 * 
+	 * @param gMonthStrValue						A string value that needs to be parsed 
+	 *                                              to a xs:gMonth value. 
+	 * @throws TransformerException
+	 */
+	private void parse(String gMonthStrValue) throws TransformerException {		
+		try {
+			if (gMonthStrValue.startsWith("--")) {
+				String suffixValue = gMonthStrValue.substring(2);
+				if (suffixValue.endsWith("Z")) {											
+					int zIdx = suffixValue.indexOf('Z');
+					String str2 = suffixValue.substring(0, zIdx);
+					m_month = Integer.valueOf(str2);
+					m_isTimeZoneUtc = true;
+					m_isTimeZoned = true;
+				}
+				else {
+					int plusIdx = suffixValue.indexOf('+');
+					if (plusIdx > -1) {
+						String str2 = suffixValue.substring(0, plusIdx);
+						m_month = Integer.valueOf(str2);
+						String timeZoneStr = suffixValue.substring(plusIdx + 1);
+						if (isTimeZoneStrCorrectlyFormatted(timeZoneStr)) {
+							String[] timeZoneStrParts = timeZoneStr.split(":");
+							m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
+							m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
+							if ((m_timezone_hrs == 0) && (m_timezone_min == 0)) {
+								m_isTimeZoneUtc = true;  
+							}
+							m_isTimeZoned = true;
+						}
+						else {
+							throw new TransformerException("FORG0001 : A string value " + gMonthStrValue + " cannot be parsed to a "
+                                                                                                         + "value of type xs:gMonth.");
+						}
+					}
+					else {
+						int minusIdx = suffixValue.indexOf('-');
+						if (minusIdx > -1) {
+							String str2 = suffixValue.substring(0, minusIdx);
+							m_month = Integer.valueOf(str2);
+							String timeZoneStr = suffixValue.substring(minusIdx + 1);
+							if (isTimeZoneStrCorrectlyFormatted(timeZoneStr)) {
+								String[] timeZoneStrParts = timeZoneStr.split(":");
+								m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
+								m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
+								if ((m_timezone_hrs == 0) && (m_timezone_min == 0)) {
+									m_isTimeZoneUtc = true;  
+								}
+								m_isTimeZoned = true;
+							}
+							else {
+								throw new TransformerException("FORG0001 : A string value " + gMonthStrValue + " cannot be parsed to a "
+                                        																	 + "value of type xs:gMonth.");
+							}
+						}
+						else {
+							m_month = Integer.valueOf(suffixValue);
+						}
+					}
+				}
+			}
+			else {
+				throw new TransformerException("FORG0001 : A string value " + gMonthStrValue + " cannot be parsed to a "
+					                                                                         + "value of type xs:gMonth.");
+			}
+		}
+		catch (Exception ex) {
+			throw new TransformerException("FORG0001 : A string value " + gMonthStrValue + " cannot be parsed to a "
+                    																     + "value of type xs:gMonth.");
+		}
+	}
+	
+	/**
+	 * Method definition to check the string format of a timezone string.
+	 * 
+	 * (The regex for timezone's string value is specified within XML Schema 
+	 *  datatypes specification)
+	 * 
+	 * @param strValue					The supplied string value of timezone
+	 * @return							Boolean true or false
+	 */
+	private boolean isTimeZoneStrCorrectlyFormatted(String strValue) {
+		boolean result = false;
+		
+		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("((0[0-9]|1[0-3]):[0-5][0-9]|14:00)");
+		java.util.regex.Matcher matcher = pattern.matcher(strValue);
+		result = matcher.matches(); 
+		
+		return result;
 	}
 
 }

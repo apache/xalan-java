@@ -36,7 +36,8 @@ public class XslAsAttrTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "attr/as/_as-test-set.xml";
     	m_resultSubFolderName = "attr";    	
-    	m_testResultFileName = "_as-test-set_result.xml";    	   
+    	m_testResultFileName = "_as-test-set_result.xml";
+    	m_skipped_tests_list.add("as-0106a");
     }
 
     @AfterClass

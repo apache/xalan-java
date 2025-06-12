@@ -384,7 +384,7 @@ public class ElemVariable extends ElemTemplateElement
             	String funcName = ((XSL3ConstructorOrExtensionFunction)selectExpression).getFunctionName();
             	String funcNamespace = ((XSL3ConstructorOrExtensionFunction)selectExpression).getNamespace();
             	
-            	String evalResultStrValue = (evalResult instanceof XSString) ? ((XSString)evalResult).stringValue() : null;            	
+            	String evalResultStrValue = XslTransformEvaluationHelper.getStrVal(evalResult);
             	if (m_asAttr != null && !(XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
                    evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {

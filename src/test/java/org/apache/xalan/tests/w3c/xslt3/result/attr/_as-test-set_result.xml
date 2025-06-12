@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-11T11:11:29Z" fail="94" name="as" pass="14" skipped="0" statusUnknown="1" totalRun="109">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-12T11:04:24Z" fail="80" name="as" pass="27" skipped="1" statusUnknown="1" totalRun="109">
    <testResult status="fail" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
@@ -8,95 +8,41 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0105"/>
-   <testResult status="fail" testName="as-0106">
-      <outResult>
-         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-0106a">
-      <outResult>
-         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-0106b">
-      <outResult>
-         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="as-0106"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="as-0106a"/>
+   <testResult status="pass" testName="as-0106b"/>
    <testResult status="fail" testName="as-0107"/>
    <testResult status="fail" testName="as-0108"/>
    <testResult status="pass" testName="as-0109"/>
-   <testResult status="fail" testName="as-0110">
-      <outResult>
-         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="as-0110"/>
    <testResult status="fail" testName="as-0110a">
-      <outResult>
-         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;var1&gt;true&lt;/var1&gt;&lt;var2&gt;true&lt;/var2&gt;&lt;var3&gt;true&lt;/var3&gt;&lt;var4&gt;true&lt;/var4&gt;&lt;var5&gt;true&lt;/var5&gt;&lt;var6&gt;true&lt;/var6&gt;&lt;var7&gt;true&lt;/var7&gt;&lt;var8&gt;true&lt;/var8&gt;&lt;var9&gt;true&lt;/var9&gt;&lt;var10&gt;true&lt;/var10&gt;&lt;var11&gt;true&lt;/var11&gt;&lt;var12&gt;true&lt;/var12&gt;&lt;var13&gt;true&lt;/var13&gt;&lt;var14&gt;true&lt;/var14&gt;&lt;var15&gt;true&lt;/var15&gt;&lt;var16&gt;true&lt;/var16&gt;&lt;var17&gt;true&lt;/var17&gt;&lt;var18&gt;true&lt;/var18&gt;&lt;var19&gt;true&lt;/var19&gt;&lt;var20&gt;true&lt;/var20&gt;&lt;var21&gt;true&lt;/var21&gt;&lt;var22&gt;true&lt;/var22&gt;&lt;var23&gt;true&lt;/var23&gt;&lt;var24&gt;true&lt;/var24&gt;&lt;var25&gt;true&lt;/var25&gt;&lt;var26&gt;true&lt;/var26&gt;&lt;var27&gt;true&lt;/var27&gt;&lt;var28&gt;true&lt;/var28&gt;&lt;var29&gt;true&lt;/var29&gt;&lt;var30&gt;true&lt;/var30&gt;&lt;var31&gt;true&lt;/var31&gt;&lt;var32&gt;true&lt;/var32&gt;&lt;var33&gt;true&lt;/var33&gt;&lt;var34&gt;true&lt;/var34&gt;&lt;var35&gt;true&lt;/var35&gt;&lt;var36&gt;true&lt;/var36&gt;&lt;var37&gt;true&lt;/var37&gt;&lt;var38&gt;true&lt;/var38&gt;&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="as-0110b">
-      <outResult>
-         <errTrace>Variable var14 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var14 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-0111">
-      <outResult>
-         <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="as-0110b"/>
+   <testResult status="fail" testName="as-0111"/>
    <testResult status="fail" testName="as-0111a">
       <outResult>
          <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
          <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="as-0111b">
-      <outResult>
-         <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="as-0111b"/>
    <testResult status="fail" testName="as-0112"/>
    <testResult status="fail" testName="as-0112a">
       <outResult>
-         <errTrace>XTTE0505 : The required result type of template a14 is xs:gMonthDay. But the template result doesn't conform to this required type.</errTrace>
+         <errTrace>XTTE0505 : The required result type of template a20 is xs:base64Binary. But the template result doesn't conform to this required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0112b"/>
-   <testResult status="fail" testName="as-0113">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-0114">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="as-0115">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="as-0113"/>
+   <testResult status="pass" testName="as-0114"/>
+   <testResult status="pass" testName="as-0115"/>
    <testResult status="fail" testName="as-0116"/>
    <testResult status="pass" testName="as-0117"/>
    <testResult status="pass" testName="as-0118"/>
-   <testResult status="fail" testName="as-0119">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="as-0120">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="as-0121">
-      <outResult>
-         <errTrace>XTTE0505 : The required result type of template a1 is xs:duration?. But the template result doesn't conform to this required type.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="as-0119"/>
+   <testResult status="pass" testName="as-0120"/>
+   <testResult status="pass" testName="as-0121"/>
    <testResult status="pass" testName="as-0122"/>
    <testResult status="fail" testName="as-0123"/>
    <testResult status="pass" testName="as-0124"/>
@@ -165,47 +111,29 @@ javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:NMTO
    <testResult status="pass" testName="as-0304"/>
    <testResult status="fail" testName="as-0401"/>
    <testResult status="fail" testName="as-0402"/>
-   <testResult status="fail" testName="as-0501">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="as-0501"/>
    <testResult status="fail" testName="as-0501a">
       <outResult>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="as-0501b">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="as-0501b"/>
    <testResult status="fail" testName="as-0601"/>
    <testResult status="pass" testName="as-0701"/>
    <testResult status="pass" testName="as-0702"/>
    <testResult status="fail" testName="as-0703"/>
-   <testResult status="fail" testName="as-0801">
-      <outResult>
-         <errTrace>Variable var7 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var7 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="as-0801"/>
    <testResult status="fail" testName="as-0801a">
       <outResult>
-         <errTrace>Variable var7 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var7 accessed before it is bound!.</errTrace>
+         <errTrace>Variable var11 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var11 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="as-0801b">
-      <outResult>
-         <errTrace>Variable var7 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var7 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="as-0801b"/>
    <testResult status="fail" testName="as-0802"/>
    <testResult status="fail" testName="as-0802a">
       <outResult>
-         <errTrace>XTTE0505 : The required result type of template a7 is xs:gMonthDay+. But the template result doesn't conform to this required type.</errTrace>
+         <errTrace>XTTE0505 : The required result type of template a11 is xs:base64Binary+. But the template result doesn't conform to this required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0802b"/>
@@ -215,33 +143,15 @@ javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:NMTO
    <testResult status="fail" testName="as-1201">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="as-1202">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="as-1203">
-      <outResult>
-         <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-1204">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="as-1205">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="as-1206">
-      <outResult>
-         <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="as-1202"/>
+   <testResult status="fail" testName="as-1203"/>
+   <testResult status="pass" testName="as-1204"/>
+   <testResult status="pass" testName="as-1205"/>
+   <testResult status="fail" testName="as-1206"/>
    <testResult status="fail" testName="as-1207">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="as-1208">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="as-1208"/>
    <testResult status="fail" testName="as-1209">
       <outResult/>
    </testResult>
@@ -265,35 +175,10 @@ javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:NMTO
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-1217"/>
-   <testResult status="fail" testName="as-1218">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-1219">
-      <outResult>
-         <errTrace>XTSE0010 : an instruction xslt:document is not known to the XSLT processor.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-1220">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-1221">
-      <outResult>
-         <errTrace>Variable par1 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $par1 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="as-1218"/>
+   <testResult status="fail" testName="as-1219"/>
+   <testResult status="fail" testName="as-1220"/>
+   <testResult status="fail" testName="as-1221"/>
    <testResult status="fail" testName="as-1222">
       <outResult>
          <errTrace>XTTE0570 : The required item type of an xdm input node is item(). The supplied value does'nt match an expected type.</errTrace>

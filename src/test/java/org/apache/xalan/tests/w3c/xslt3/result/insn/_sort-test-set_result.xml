@@ -1,11 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-11T11:11:55Z" fail="44" name="sort" pass="35" skipped="0" statusUnknown="1" totalRun="80">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-12T11:04:34Z" fail="44" name="sort" pass="35" skipped="0" statusUnknown="1" totalRun="80">
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
-   <testResult status="fail" testName="sort-003">
-      <outResult>
-         <errTrace>xsl:sequence is not allowed in this position in the stylesheet</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="sort-003"/>
    <testResult status="fail" testName="sort-004"/>
    <testResult status="pass" testName="sort-005"/>
    <testResult status="fail" testName="sort-006"/>
@@ -67,9 +63,7 @@
          <errTrace>XTDE0700 : No value supplied for the required parameter $v. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="sort-055">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="sort-055"/>
    <testResult status="fail" testName="sort-056"/>
    <testResult status="fail" testName="sort-057"/>
    <testResult status="fail" testName="sort-058"/>

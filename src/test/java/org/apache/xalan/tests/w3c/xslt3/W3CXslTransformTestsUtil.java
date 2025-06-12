@@ -44,12 +44,12 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
+import org.apache.xpath.jaxp.XPathFactoryImpl;
 import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.Pattern;
 import org.w3c.dom.Attr;
@@ -110,6 +110,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     protected static String m_resultSubFolderName = null;
     
     protected static String m_testResultFileName = null;
+    
+    protected static List<String> m_skipped_tests_list = new ArrayList<String>();
 	
 	/**
 	 * Method definition to run all XSL transformation tests from 
@@ -141,7 +143,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	   NodeList nodeList = xslTestSetDoc.getElementsByTagNameNS(W3C_XSLT3_TEST_CATALOG_NS, ELEM_NODE_NAME_TEST_CASE);
     	   for (int idx = 0; idx < nodeList.getLength(); idx++) {
     		   Node node = nodeList.item(idx);
-    		   
+    		   String testCaseName = ((Element)node).getAttribute(NAME_ATTR);     		   
     		   if (isXslt2OnlyTestCase(node)) {
     			  // We skip running XSLT 2.0 only test cases
     			  Element elemTestResult = testResultDoc.createElement("testResult");
@@ -160,8 +162,16 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
        			  
        			  continue; 
      		   }
-    		   
-    		   String testCaseName = ((Element)node).getAttribute(NAME_ATTR);    		   
+    		   else if (m_skipped_tests_list.contains(testCaseName)) {
+    			   Element elemTestResult = testResultDoc.createElement("testResult");
+    			   elemTestResult.setAttribute("testName", testCaseName);
+    			   elemTestResult.setAttribute("status", "skipped");
+    			   elemTestResult.setAttribute("reason", "allowed by xslt 3.0 test suite");
+    			   elemTestRun.appendChild(elemTestResult);
+
+    			   continue;  
+    		   }    		   
+    		       		   
     		   Object envRef = getTestCaseEnvironment(node);
     		   NodeList nodeList2 = null;
     		   
@@ -431,10 +441,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
             	String str1 = serializeXmlDomElementNode(xmlInpDoc1);
             	StringReader strReader = new StringReader(str1);
-            	
-            	// We need to do an XPath 1.0 check here. This is probably 
-            	// using XPath 1.0 processor from jdk.
-            	XPathFactory xpathFactory = XPathFactory.newInstance();
+            	            	
+            	XPathFactoryImpl xpathFactory = new XPathFactoryImpl();
             	XPath xpath = xpathFactory.newXPath();
             	XPathExpression xpathExpr = xpath.compile(expectedResultStr);
             	

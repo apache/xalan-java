@@ -67,12 +67,14 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSGDay;
 import org.apache.xpath.types.XSGMonth;
 import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
+import org.apache.xpath.types.XSHexBinary;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
@@ -88,6 +90,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
@@ -100,6 +103,7 @@ import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSUntyped;
@@ -705,7 +709,18 @@ public class SequenceTypeSupport {
             	}            	
             }
             
-            if (srcValue instanceof XString) {
+            if (srcValue instanceof XSAnyURI) {
+                String srcStrVal = ((XSAnyURI)srcValue).stringValue();
+                
+                if ((expectedType == XS_ANY_URI) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                   result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {
+                      result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                     "xs:anyURI", sequenceTypeXPathExprStr);
+                }
+            }
+            else if (srcValue instanceof XString) {
                 String srcStrVal = ((XString)srcValue).str();
                 
                 if ((expectedType == STRING) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
@@ -780,6 +795,16 @@ public class SequenceTypeSupport {
                   }
                }
             }
+            else if (srcValue instanceof XSBase64Binary) {
+                String srcStrVal = ((XSBase64Binary)srcValue).stringValue();
+                if ((expectedType == XS_BASE64BINARY) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                   result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                     "xs:base64Binary", sequenceTypeXPathExprStr);
+                }
+            }
             else if ((srcValue instanceof XBoolean) || (srcValue instanceof XBooleanStatic)) {
                String srcStrVal = srcValue.str();
                if ((expectedType == BOOLEAN) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
@@ -839,6 +864,26 @@ public class SequenceTypeSupport {
             		result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
             																					   "xs:gYearMonth", sequenceTypeXPathExprStr);
             	}
+            }
+            else if (srcValue instanceof XSHexBinary) {
+            	String srcStrVal = ((XSHexBinary)srcValue).stringValue();
+                if ((expectedType == XS_HEXBINARY) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                   result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                     "xs:hexBinary", sequenceTypeXPathExprStr);
+                }
+            }
+            else if (srcValue instanceof XSQName) {
+            	String srcStrVal = ((XSQName)srcValue).stringValue();
+                if ((expectedType == XS_QNAME) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                   result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                     "xs:hexBinary", sequenceTypeXPathExprStr);
+                }
             }
             else if (srcValue instanceof XSGYear) {
             	String srcStrVal = ((XSGYear)srcValue).stringValue();
@@ -1363,7 +1408,10 @@ public class SequenceTypeSupport {
         String dataTypeName = getDataTypeNameFromIntValue(expectedType);
         
         try {
-            if (srcXsNumericType instanceof XSFloat) {           
+        	if (expectedType == XS_ANY_ATOMIC_TYPE) {
+                result = srcXsNumericType;
+            }
+        	else if (srcXsNumericType instanceof XSFloat) {           
                if (expectedType == XS_FLOAT) {
                   // The source and expected data types are same. Return the original value unchanged.
                   result = srcXsNumericType; 

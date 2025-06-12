@@ -114,15 +114,14 @@ public class XSGYear extends XSAnyAtomicType {
 	}
 	
 	/**
-	 * Method definition to parse a string value into the type xs:gYear's 
-	 * component parts. 
+	 * Method definition to parse a string value to an XML Schema type 
+	 * xs:gYear's component parts. 
 	 * 
 	 * @param gYearMonthStrValue						A string value that needs to be parsed 
 	 *                                                  to a xs:gYear value. 
 	 * @throws TransformerException
 	 */
-	private void parse(String gYearStrValue) throws TransformerException {
-		
+	private void parse(String gYearStrValue) throws TransformerException {		
 		try {
 			int strLength = gYearStrValue.length();			
 			if (strLength > 0) {
@@ -141,13 +140,18 @@ public class XSGYear extends XSAnyAtomicType {
 							String str2 = suffixValue.substring(0, plusIdx);
 							m_year = Integer.valueOf(str2);
 							String timeZoneStr = suffixValue.substring(plusIdx + 1);
-							String[] timeZoneStrParts = timeZoneStr.split(":");
-							m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
-							m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
-							if ((m_timezone_hrs == 0) && (m_timezone_min == 0)) {
-								m_isTimeZoneUtc = true;  
+							if (isTimeZoneStrCorrectlyFormatted(timeZoneStr)) {
+								String[] timeZoneStrParts = timeZoneStr.split(":");
+								m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
+								m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
+								if ((m_timezone_hrs == 0) && (m_timezone_min == 0)) {
+									m_isTimeZoneUtc = true;  
+								}
+								m_isTimeZoned = true;
 							}
-							m_isTimeZoned = true;
+							else {
+								throw new TransformerException("FORG0001 : A string value " + gYearStrValue + " cannot be parsed to a value of type xs:gYear.");
+							}
 						}
 						else {
 							String[] strParts = suffixValue.split("-");
@@ -157,14 +161,19 @@ public class XSGYear extends XSAnyAtomicType {
 							}
 							else if (strArrLength == 2) {
 								m_year = Integer.valueOf(strParts[0]);
-								String[] timeZoneStrParts = (strParts[1]).split(":");
-								m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
-								m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
-								if ((m_timezone_hrs == 0) && (m_timezone_min == 0)) {
-									m_isTimeZoneUtc = true;  
+								if (isTimeZoneStrCorrectlyFormatted(strParts[1])) {
+									String[] timeZoneStrParts = (strParts[1]).split(":");
+									m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
+									m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
+									if ((m_timezone_hrs == 0) && (m_timezone_min == 0)) {
+										m_isTimeZoneUtc = true;  
+									}
+									m_isTimeZoned = true;
+									m_isTimeZoneNegative = true;
 								}
-								m_isTimeZoned = true;
-								m_isTimeZoneNegative = true;
+								else {
+									throw new TransformerException("FORG0001 : A string value " + gYearStrValue + " cannot be parsed to a value of type xs:gYear.");
+								}
 							}
 						}
 					}
@@ -249,6 +258,25 @@ public class XSGYear extends XSAnyAtomicType {
 
 	public boolean isTimeZoned() {
 		return m_isTimeZoned;
+	}
+	
+	/**
+	 * Method definition to check the string format of a timezone string.
+	 * 
+	 * (The regex for timezone's string value is specified within XML Schema 
+	 *  datatypes specification)
+	 * 
+	 * @param strValue					The supplied string value of timezone
+	 * @return							Boolean true or false
+	 */
+	private boolean isTimeZoneStrCorrectlyFormatted(String strValue) {
+		boolean result = false;
+		
+		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("((0[0-9]|1[0-3]):[0-5][0-9]|14:00)");
+		java.util.regex.Matcher matcher = pattern.matcher(strValue);
+		result = matcher.matches(); 
+		
+		return result;
 	}
 
 }

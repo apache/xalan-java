@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-11T11:11:57Z" fail="39" name="function" pass="22" skipped="4" statusUnknown="5" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-12T11:04:34Z" fail="39" name="function" pass="22" skipped="4" statusUnknown="5" totalRun="70">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -56,17 +56,8 @@
    <testResult status="pass" testName="function-0205"/>
    <testResult status="fail" testName="function-0301"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="fail" testName="function-0302b">
-      <outResult>
-         <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>Unknown error in XPath.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="function-0303">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="function-0302b"/>
+   <testResult status="fail" testName="function-0303"/>
    <testResult status="fail" testName="function-0401"/>
    <testResult status="fail" testName="function-0501">
       <outResult>
