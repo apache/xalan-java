@@ -55,11 +55,10 @@ public class FuncLocalNameFromQName extends FunctionDef1Arg {
 	  Expression arg0 = getArg0();
 	  XObject arg0Value = arg0.execute(xctxt);
 	  
-	  if (arg0Value instanceof XSQName) {
-		  XSNCName xsNCName = new XSNCName();
+	  if (arg0Value instanceof XSQName) {		  
 		  XSQName xsQname = (XSQName)arg0Value;
 	      String prefix = xsQname.getLocalPart();
-		  xsNCName.setStrVal(prefix);
+		  XSNCName xsNCName = new XSNCName(prefix);
 		  result = xsNCName;  
 	  }
 	  else {

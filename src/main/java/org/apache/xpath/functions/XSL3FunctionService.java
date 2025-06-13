@@ -64,7 +64,13 @@ import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
 import org.apache.xpath.types.XSHexBinary;
+import org.apache.xpath.types.XSID;
+import org.apache.xpath.types.XSIdRef;
+import org.apache.xpath.types.XSLanguage;
+import org.apache.xpath.types.XSNCName;
+import org.apache.xpath.types.XSName;
 import org.apache.xpath.types.XSNegativeInteger;
+import org.apache.xpath.types.XSNmToken;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
 import org.apache.xpath.types.XSPositiveInteger;
@@ -287,6 +293,24 @@ public class XSL3FunctionService {
 		    					break;
 		    				case Keywords.XS_HEXBINARY :    					
 		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSHexBinary.class, xctxt);
+		    					break;
+		    				case Keywords.XS_LANGUAGE :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSLanguage.class, xctxt);
+		    					break;
+		    				case Keywords.XS_NAME :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSName.class, xctxt);
+		    					break;
+		    				case Keywords.XS_NCNAME :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNCName.class, xctxt);
+		    					break;
+		    				case Keywords.XS_NMTOKEN :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNmToken.class, xctxt);
+		    					break;
+		    				case Keywords.XS_ID :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSID.class, xctxt);
+		    					break;
+		    				case Keywords.XS_IDREF :    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSIdRef.class, xctxt);
 		    					break;
 		    				case Keywords.FUNC_BOOLEAN_STRING :    					
 		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {

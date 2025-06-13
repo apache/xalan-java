@@ -75,7 +75,13 @@ import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
 import org.apache.xpath.types.XSHexBinary;
+import org.apache.xpath.types.XSID;
+import org.apache.xpath.types.XSIdRef;
+import org.apache.xpath.types.XSLanguage;
+import org.apache.xpath.types.XSNCName;
+import org.apache.xpath.types.XSName;
 import org.apache.xpath.types.XSNegativeInteger;
+import org.apache.xpath.types.XSNmToken;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
 import org.apache.xpath.types.XSPositiveInteger;
@@ -210,6 +216,18 @@ public class SequenceTypeSupport {
     public static int XS_BASE64BINARY = 66;
     
     public static int XS_HEXBINARY = 67;
+    
+    public static int XS_LANGUAGE = 68;
+    
+    public static int XS_NAME = 69;
+    
+    public static int XS_NCNAME = 70;
+    
+    public static int XS_NMTOKEN = 71;
+    
+    public static int XS_ID = 72;
+    
+    public static int XS_IDREF = 73;
     
     /** 
      * Following are constant int values denoting XPath 3.1 sequence
@@ -723,8 +741,27 @@ public class SequenceTypeSupport {
             else if (srcValue instanceof XString) {
                 String srcStrVal = ((XString)srcValue).str();
                 
-                if ((expectedType == STRING) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                if ((expectedType == STRING) || (expectedType == XS_NORMALIZED_STRING) || 
+                		                        (expectedType == XS_TOKEN) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                    result = srcValue; 
+                }
+                else if (expectedType == XS_LANGUAGE) {
+                   result = new XSLanguage(XslTransformEvaluationHelper.getStrVal(srcValue));
+                }
+                else if (expectedType == XS_NAME) {
+                   result = new XSName(XslTransformEvaluationHelper.getStrVal(srcValue));
+                }
+                else if (expectedType == XS_NCNAME) {
+                   result = new XSNCName(XslTransformEvaluationHelper.getStrVal(srcValue));
+                }
+                else if (expectedType == XS_NMTOKEN) {
+                    result = new XSNmToken(XslTransformEvaluationHelper.getStrVal(srcValue));
+                }
+                else if (expectedType == XS_ID) {
+                    result = new XSID(XslTransformEvaluationHelper.getStrVal(srcValue));
+                }
+                else if (expectedType == XS_IDREF) {
+                    result = new XSIdRef(XslTransformEvaluationHelper.getStrVal(srcValue));
                 }
                 else if (sequenceTypeKindTest != null) {
                    if (sequenceTypeKindTest.getKindVal() == TEXT_KIND) {
@@ -757,7 +794,7 @@ public class SequenceTypeSupport {
                else {
                   result = castStringValueToAnExpectedType(srcStrVal, expectedType, sequenceTypeXPathExprStr);
                }
-            }
+            }            
             else if (srcValue instanceof XNumber) {
                XSDouble xsDouble = new XSDouble(((XNumber)srcValue).num());
                String srcStrVal = xsDouble.stringValue(); 
@@ -875,6 +912,78 @@ public class SequenceTypeSupport {
                                                                                                      "xs:hexBinary", sequenceTypeXPathExprStr);
                 }
             }
+            else if (srcValue instanceof XSLanguage) {
+            	String srcStrVal = ((XSLanguage)srcValue).stringValue();
+                if ((expectedType == XS_LANGUAGE) || (expectedType == STRING) || 
+                		                             (expectedType == XS_NORMALIZED_STRING) || (expectedType == XS_TOKEN) || 
+                		                             (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                   result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                     "xs:language", sequenceTypeXPathExprStr);
+                }
+            }
+            else if (srcValue instanceof XSName) {
+            	String srcStrVal = ((XSName)srcValue).stringValue();
+                if ((expectedType == XS_NAME) || (expectedType == STRING) || 
+                		                         (expectedType == XS_NORMALIZED_STRING) || (expectedType == XS_TOKEN) || 
+                		                         (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                   result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                     "xs:Name", sequenceTypeXPathExprStr);
+                }
+            }
+            else if (srcValue instanceof XSNCName) {
+            	String srcStrVal = ((XSNCName)srcValue).stringValue();
+                if ((expectedType == XS_NCNAME) || (expectedType == XS_NAME) || (expectedType == STRING) || 
+                		                           (expectedType == XS_NORMALIZED_STRING) || (expectedType == XS_TOKEN) || 
+                		                           (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                   result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                     "xs:NCName", sequenceTypeXPathExprStr);
+                }
+            }
+            else if (srcValue instanceof XSNmToken) {
+            	String srcStrVal = ((XSNmToken)srcValue).stringValue();
+                if ((expectedType == XS_NMTOKEN) || (expectedType == STRING) || 
+                		                            (expectedType == XS_NORMALIZED_STRING) || (expectedType == XS_TOKEN) || 
+                		                            (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                   result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                     "xs:NMTOKEN", sequenceTypeXPathExprStr);
+                }
+            }
+            else if (srcValue instanceof XSID) {
+            	String srcStrVal = ((XSID)srcValue).stringValue();
+                if ((expectedType == XS_ID) || (expectedType == XS_NCNAME) || (expectedType == XS_NAME) || 
+                		                       (expectedType == STRING) || (expectedType == XS_NORMALIZED_STRING) || 
+                		                       (expectedType == XS_TOKEN) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                   result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                     "xs:ID", sequenceTypeXPathExprStr);
+                }
+            }
+            else if (srcValue instanceof XSIdRef) {
+            	String srcStrVal = ((XSIdRef)srcValue).stringValue();
+                if ((expectedType == XS_IDREF) || (expectedType == XS_NCNAME) || (expectedType == XS_NAME) || 
+                		                          (expectedType == STRING) || (expectedType == XS_NORMALIZED_STRING) || 
+                		                          (expectedType == XS_TOKEN) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                   result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                     "xs:ID", sequenceTypeXPathExprStr);
+                }
+            }
             else if (srcValue instanceof XSQName) {
             	String srcStrVal = ((XSQName)srcValue).stringValue();
                 if ((expectedType == XS_QNAME) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
@@ -882,7 +991,7 @@ public class SequenceTypeSupport {
                 }
                 else if (sequenceTypeKindTest != null) {
                    result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
-                                                                                                     "xs:hexBinary", sequenceTypeXPathExprStr);
+                                                                                                     "xs:QName", sequenceTypeXPathExprStr);
                 }
             }
             else if (srcValue instanceof XSGYear) {
@@ -979,7 +1088,10 @@ public class SequenceTypeSupport {
                ResultSequence srcResultSeq = (ResultSequence)srcValue;
                if (srcResultSeq.size() == 1) {
                    result = castXdmValueToAnotherType(srcResultSeq.item(0), sequenceTypeXPathExprStr, expectedSeqTypeData, xctxt);   
-               }               
+               }
+               else if ((srcResultSeq.size() == 0) && (expectedType == EMPTY_SEQUENCE)) {
+            	   result = srcResultSeq; 
+               }
                else if ((srcResultSeq.size() == 0) && (itemTypeOccurenceIndicator == 0)) {
             	   return null;
                }

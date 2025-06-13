@@ -24,40 +24,40 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of XML Schema data type xs:NCName.
+ * Implementation of XML Schema data type xs:ID.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  */
-public class XSNCName extends XSName {
+public class XSID extends XSNCName {
 	
-	private static final long serialVersionUID = 576149921912815294L;
+	private static final long serialVersionUID = 8985003138755990758L;
+
+	private String m_id = null;
 	
-    private String m_ncName = null;
-	
-	private static final String XS_NCNAME = "xs:NCName";
+	private static final String XS_ID = "xs:ID";
 	
 	/**
 	 * Default constructor.
 	 */
-	public XSNCName() {
+	public XSID() {
 	   // NO OP	
 	}
 	
 	/**
 	 * Class constructor.
 	 */
-	public XSNCName(String strValue) throws TransformerException {		
+	public XSID(String strValue) throws TransformerException {		
 		if (XML11Char.isXML11ValidNCName(strValue)) {
-			m_ncName = strValue;
+			m_id = strValue;
 		}
 		else {
-			throw new TransformerException("XTTE0570 : The string value '" + strValue + "' is not a valid XML 1.1 NCName.");
+			throw new TransformerException("XTTE0570 : The string value '" + strValue + "' is not a valid xs:ID value.");
 		}
 	}
 	
 	@Override
 	public String stringType() {
-		return XS_NCNAME;
+		return XS_ID;
 	}
 	
 	public ResultSequence constructor(ResultSequence seq) {
@@ -66,8 +66,8 @@ public class XSNCName extends XSName {
 		XObject xObj = seq.item(0);
 		String strVal = XslTransformEvaluationHelper.getStrVal(xObj);
 		try {
-			XSNCName xsNcName = new XSNCName(strVal);
-			result.add(xsNcName);
+			XSID xsId = new XSID(strVal);
+			result.add(xsId);
 		} catch (TransformerException ex) {
 			// NO OP
 		}
@@ -76,28 +76,28 @@ public class XSNCName extends XSName {
 	}
 	
 	public String stringValue() {
-		return m_ncName;
+		return m_id;
 	}
 	
 	public int getType() {
-		return CLASS_NCNAME;
+		return CLASS_ID;
 	}
 	
 	/**
-	 * Implementation of operation equals, for the type xs:NCName.
+	 * Implementation of operation equals, for the type xs:ID.
 	 */
-	public boolean eq(XSNCName obj2) {
+	public boolean eq(XSID obj2) {
 		boolean result = false;
 
-		result = m_ncName.equals(obj2.stringValue());
+		result = m_id.equals(obj2.stringValue());
 
 		return result;
 	}
 	
 	/**
-	 * Implementation of operation not equals, for the type xs:NCName.
+	 * Implementation of operation not equals, for the type xs:ID.
 	 */
-	public boolean ne(XSNCName obj2) {
+	public boolean ne(XSID obj2) {
         boolean result = false;
 		
 		result = !eq(obj2);
@@ -107,7 +107,7 @@ public class XSNCName extends XSName {
 	
 	@Override
 	public String typeName() {
-		return "NCName";
+		return "ID";
 	}
 
 }

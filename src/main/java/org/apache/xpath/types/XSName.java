@@ -18,7 +18,10 @@ package org.apache.xpath.types;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.serializer.utils.XML11Char;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSToken;
 
@@ -31,40 +34,82 @@ public class XSName extends XSToken {
 
 	private static final long serialVersionUID = 6658600221262283990L;
 	
-	private String fNameStr = null;
+	private String m_name = null;
 	
+	private static final String XS_NAME = "xs:Name";
+	
+	/**
+	 * Default constructor.
+	 */
 	public XSName() {
 	   // NO OP	
 	}
 	
-	public void setStrVal(String str) throws TransformerException {
-		if (isValidXMLName(str)) {
-		   fNameStr = str;
+	/**
+	 * Class constructor.
+	 */
+	public XSName(String strValue) throws TransformerException {		
+		if (XML11Char.isXML11ValidName(strValue)) {
+			m_name = strValue;
 		}
 		else {
-		   throw new TransformerException("The string value '" + str + "' is not a valid XML 1.1 name.");
+			throw new TransformerException("XTTE0570 : The string value '" + strValue + "' is not a valid XML 1.1 name.");
 		}
 	}
 	
-	public String stringValue() {
-		return fNameStr;
+	@Override
+	public String stringType() {
+		return XS_NAME;
 	}
-
-	/*
-	 * This method determines whether, a string represents a valid 
-	 * XML 1.1 name.
+	
+	public ResultSequence constructor(ResultSequence seq) {
+		ResultSequence result = new ResultSequence();
+		
+		XObject xObj = seq.item(0);
+		String strVal = XslTransformEvaluationHelper.getStrVal(xObj);
+		try {
+			XSName xsName = new XSName(strVal);
+			result.add(xsName);
+		} catch (TransformerException ex) {
+			// NO OP
+		}
+		
+		return result;
+	}
+	
+	public String stringValue() {
+		return m_name;
+	}
+	
+	public int getType() {
+		return CLASS_NAME;
+	}
+	
+	/**
+	 * Implementation of operation equals, for the type xs:Name.
 	 */
-	private boolean isValidXMLName(String str) {
-	   boolean isValidXMLName = true;
-	   
-	   for (int idx = 0; idx < str.length(); idx++) {
-		  if (!XML11Char.isXML11Valid(str.indexOf(idx))) {
-			 isValidXMLName = false;
-			 break;
-		  }
-	   }
-	   
-	   return isValidXMLName;
+	public boolean eq(XSName obj2) {
+		boolean result = false;
+
+		result = m_name.equals(obj2.stringValue());
+
+		return result;
+	}
+	
+	/**
+	 * Implementation of operation not equals, for the type xs:Name.
+	 */
+	public boolean ne(XSName obj2) {
+        boolean result = false;
+		
+		result = !eq(obj2);
+		
+		return result;
+	}
+	
+	@Override
+	public String typeName() {
+		return "Name";
 	}
 
 }

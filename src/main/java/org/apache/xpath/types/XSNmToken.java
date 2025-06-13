@@ -23,41 +23,43 @@ import org.apache.xml.serializer.utils.XML11Char;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSToken;
+
 /**
- * Implementation of XML Schema data type xs:NCName.
+ * Implementation of XML Schema data type xs:NMTOKEN.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  */
-public class XSNCName extends XSName {
+public class XSNmToken extends XSToken {
 	
-	private static final long serialVersionUID = 576149921912815294L;
+	private static final long serialVersionUID = -3703982257170795713L;
+
+	private String m_nmtoken = null;
 	
-    private String m_ncName = null;
-	
-	private static final String XS_NCNAME = "xs:NCName";
+	private static final String XS_NMTOKEN = "xs:NMTOKEN";
 	
 	/**
 	 * Default constructor.
 	 */
-	public XSNCName() {
+	public XSNmToken() {
 	   // NO OP	
 	}
 	
 	/**
 	 * Class constructor.
 	 */
-	public XSNCName(String strValue) throws TransformerException {		
-		if (XML11Char.isXML11ValidNCName(strValue)) {
-			m_ncName = strValue;
+	public XSNmToken(String strValue) throws TransformerException {		
+		if (XML11Char.isXML11ValidNmtoken(strValue)) {
+			m_nmtoken = strValue;
 		}
 		else {
-			throw new TransformerException("XTTE0570 : The string value '" + strValue + "' is not a valid XML 1.1 NCName.");
+			throw new TransformerException("XTTE0570 : The string value '" + strValue + "' is not a valid XML 1.1 Nmtoken.");
 		}
 	}
 	
 	@Override
 	public String stringType() {
-		return XS_NCNAME;
+		return XS_NMTOKEN;
 	}
 	
 	public ResultSequence constructor(ResultSequence seq) {
@@ -66,8 +68,8 @@ public class XSNCName extends XSName {
 		XObject xObj = seq.item(0);
 		String strVal = XslTransformEvaluationHelper.getStrVal(xObj);
 		try {
-			XSNCName xsNcName = new XSNCName(strVal);
-			result.add(xsNcName);
+			XSNmToken xsNmToken = new XSNmToken(strVal);
+			result.add(xsNmToken);
 		} catch (TransformerException ex) {
 			// NO OP
 		}
@@ -76,28 +78,28 @@ public class XSNCName extends XSName {
 	}
 	
 	public String stringValue() {
-		return m_ncName;
+		return m_nmtoken;
 	}
 	
 	public int getType() {
-		return CLASS_NCNAME;
+		return CLASS_NMTOKEN;
 	}
 	
 	/**
-	 * Implementation of operation equals, for the type xs:NCName.
+	 * Implementation of operation equals, for the type xs:NMTOKEN.
 	 */
-	public boolean eq(XSNCName obj2) {
+	public boolean eq(XSNmToken obj2) {
 		boolean result = false;
 
-		result = m_ncName.equals(obj2.stringValue());
+		result = m_nmtoken.equals(obj2.stringValue());
 
 		return result;
 	}
 	
 	/**
-	 * Implementation of operation not equals, for the type xs:NCName.
+	 * Implementation of operation not equals, for the type xs:NMTOKEN.
 	 */
-	public boolean ne(XSNCName obj2) {
+	public boolean ne(XSNmToken obj2) {
         boolean result = false;
 		
 		result = !eq(obj2);
@@ -107,7 +109,7 @@ public class XSNCName extends XSName {
 	
 	@Override
 	public String typeName() {
-		return "NCName";
+		return "NMTOKEN";
 	}
 
 }

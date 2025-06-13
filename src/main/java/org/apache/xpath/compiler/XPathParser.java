@@ -6135,10 +6135,28 @@ public class XPathParser
  	        break;
  	     case Keywords.XS_HEXBINARY :
  	        xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_HEXBINARY);
- 	        break; 
+ 	        break;
+ 	     case Keywords.XS_LANGUAGE :
+ 	        xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_LANGUAGE);
+ 	        break;
+ 	     case Keywords.XS_NAME :
+ 	        xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_NAME);
+ 	        break;
+ 	     case Keywords.XS_NCNAME :
+ 	        xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_NCNAME);
+ 	        break;
+ 	     case Keywords.XS_NMTOKEN :
+ 	    	xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_NMTOKEN);
+	        break;
+ 	     case Keywords.XS_ID :
+ 	    	xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_ID);
+	        break;
+ 	     case Keywords.XS_IDREF :
+ 	    	xpathSequenceTypeExpr.setBuiltInSequenceType(SequenceTypeSupport.XS_IDREF);
+	        break;	        
  	     default :
  	        throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
- 	                                                                                   + "recognized, within the provided sequence type expression.");        
+ 	                                                                                                + "recognized, within the provided sequence type expression.");        
  	  }
  	  
  	  nextToken();
@@ -6454,11 +6472,29 @@ public class XPathParser
 	        break;
  	    case Keywords.XS_HEXBINARY :
 	    	seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_HEXBINARY);
+	        break;
+ 	   case Keywords.XS_LANGUAGE :
+ 		    seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_LANGUAGE);
+	        break;
+ 	   case Keywords.XS_NAME :
+ 		    seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_NAME);
+	        break;
+ 	   case Keywords.XS_NCNAME :
+		    seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_NCNAME);
+	        break;
+ 	   case Keywords.XS_NMTOKEN :
+		    seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_NMTOKEN);
+	        break;
+ 	   case Keywords.XS_ID :
+		    seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_ID);
+	        break;
+ 	   case Keywords.XS_IDREF :
+		    seqTypeData.setBuiltInSequenceType(SequenceTypeSupport.XS_IDREF);
 	        break;	        
- 	    default :
+ 	   default :
  	        throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
- 	                                                                              + "recognized, within the provided sequence type expression.");        
-        }
+ 	                                                                                                + "recognized, within the provided sequence type expression.");        
+       }
    }
    
    /**

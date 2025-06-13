@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-12T11:04:30Z" fail="43" name="copy" pass="16" skipped="0" statusUnknown="1" totalRun="60">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-13T11:11:44Z" fail="43" name="copy" pass="16" skipped="0" statusUnknown="1" totalRun="60">
    <testResult status="fail" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="fail" testName="copy-0103"/>
@@ -223,7 +223,7 @@
       <outResult>
          <errTrace>XTSE0010 : an instruction xsl:where-populated is not known to the XSLT processor.</errTrace>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="copy-1214">
@@ -235,7 +235,7 @@
       <outResult>
          <errTrace>XTTE0570 : The xs:string value 'Boo!' cannot be cast to a type node().</errTrace>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult testName="copy-1216"/>

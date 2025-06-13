@@ -489,6 +489,24 @@ public class Keywords
   /** xs:hexBinary data type string. */
   public static final String XS_HEXBINARY = "hexBinary";
   
+  /** xs:language data type string. */
+  public static final String XS_LANGUAGE = "language";
+  
+  /** xs:Name data type string. */
+  public static final String XS_NAME = "Name";
+  
+  /** xs:NCName data type string. */
+  public static final String XS_NCNAME = "NCName";
+  
+  /** xs:NMTOKEN data type string. */
+  public static final String XS_NMTOKEN = "NMTOKEN";
+  
+  /** xs:ID data type string. */
+  public static final String XS_ID = "ID";
+  
+  /** xs:IDREF data type string. */
+  public static final String XS_IDREF = "IDREF";
+  
   
   /** empty function string. */
   public static final String FUNC_EMPTY = "empty";

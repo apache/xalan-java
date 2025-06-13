@@ -363,6 +363,24 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   /** Constant for XPath 3.1 xs:hexBinary object type */
   public static final int CLASS_HEXBINARY = 43;
+  
+  /** Constant for XPath 3.1 xs:language object type */
+  public static final int CLASS_LANGUAGE = 44;
+  
+  /** Constant for XPath 3.1 xs:Name object type */
+  public static final int CLASS_NAME = 45;
+  
+  /** Constant for XPath 3.1 xs:NCName object type */
+  public static final int CLASS_NCNAME = 46;
+  
+  /** Constant for XPath 3.1 xs:NMTOKEN object type */
+  public static final int CLASS_NMTOKEN = 47;
+  
+  /** Constant for XPath 3.1 xs:ID object type */
+  public static final int CLASS_ID = 48;
+  
+  /** Constant for XPath 3.1 xs:IDREF object type */
+  public static final int CLASS_IDREF = 49;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;

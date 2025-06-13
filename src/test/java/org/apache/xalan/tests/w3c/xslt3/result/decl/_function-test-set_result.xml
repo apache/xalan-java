@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-12T11:04:34Z" fail="39" name="function" pass="22" skipped="4" statusUnknown="5" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-13T11:11:52Z" fail="39" name="function" pass="22" skipped="4" statusUnknown="5" totalRun="70">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>

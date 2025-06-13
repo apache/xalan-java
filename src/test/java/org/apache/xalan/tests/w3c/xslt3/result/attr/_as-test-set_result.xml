@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-12T11:04:24Z" fail="80" name="as" pass="27" skipped="1" statusUnknown="1" totalRun="109">
-   <testResult status="fail" testName="as-0101"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-13T11:11:28Z" fail="77" name="as" pass="30" skipped="1" statusUnknown="1" totalRun="109">
+   <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
-   <testResult status="fail" testName="as-0104">
-      <outResult>
-         <errTrace>XTDE0700 : No value supplied for the required parameter $par1. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="as-0104"/>
    <testResult status="fail" testName="as-0105"/>
    <testResult status="pass" testName="as-0106"/>
    <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="as-0106a"/>
@@ -22,8 +18,8 @@
    <testResult status="fail" testName="as-0111"/>
    <testResult status="fail" testName="as-0111a">
       <outResult>
-         <errTrace>Variable var1 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var1 accessed before it is bound!.</errTrace>
+         <errTrace>Variable var20 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Variable $var20 accessed before it is bound!.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0111b"/>
@@ -64,42 +60,15 @@
    <testResult status="fail" testName="as-0140"/>
    <testResult status="fail" testName="as-0141"/>
    <testResult status="fail" testName="as-0142"/>
-   <testResult status="fail" testName="as-0143">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:language' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:language' is not recognized, within the provided sequence type expression.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-0144">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:language' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:language' is not recognized, within the provided sequence type expression.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-0144a">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:language' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:language' is not recognized, within the provided sequence type expression.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="as-0143"/>
+   <testResult status="fail" testName="as-0144"/>
+   <testResult status="fail" testName="as-0144a"/>
    <testResult status="fail" testName="as-0145"/>
-   <testResult status="fail" testName="as-0146">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:NMTOKEN' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:NMTOKEN' is not recognized, within the provided sequence type expression.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="as-0146"/>
    <testResult status="fail" testName="as-0147"/>
    <testResult status="fail" testName="as-0148"/>
    <testResult status="fail" testName="as-0149"/>
-   <testResult status="fail" testName="as-0150">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>Failed calling setSchemaLocation method</errTrace>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : An XML Schema type 'xs:NMTOKEN' is not recognized, within the provided sequence type expression.
-javax.xml.transform.TransformerException: XPST0051 : An XML Schema type 'xs:NMTOKEN' is not recognized, within the provided sequence type expression.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="as-0150"/>
    <testResult status="fail" testName="as-0151"/>
    <testResult status="fail" testName="as-0152">
       <outResult/>

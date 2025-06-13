@@ -21,6 +21,7 @@
 package org.apache.xpath.objects;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
@@ -32,7 +33,8 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
 {
-    static final long serialVersionUID = -6526177905590461251L;
+  static final long serialVersionUID = -6526177905590461251L;
+  
   public XRTreeFragSelectWrapper(Expression expr)
   {
     super(expr);
@@ -65,15 +67,17 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
   public XObject execute(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
-	 XObject m_selected;
-     m_selected = ((Expression)m_obj).execute(xctxt);
-     m_selected.allowDetachToRelease(m_allowRelease);
-     if (m_selected.getType() == CLASS_STRING)
-       return m_selected;
-     else
-       return new XString(m_selected.str());
+	  XObject m_selected;
+	  m_selected = ((Expression)m_obj).execute(xctxt);
+	  m_selected.allowDetachToRelease(m_allowRelease);
+	  if (m_selected.getType() == CLASS_STRING)
+		  return m_selected;
+	  else {
+		  String strValue = XslTransformEvaluationHelper.getStrVal(m_selected);
+		  return new XString(strValue);
+	  }
   }
-    
+
   /**
    * Detaches the <code>DTMIterator</code> from the set which it iterated
    * over, releasing any computational resources and placing the iterator

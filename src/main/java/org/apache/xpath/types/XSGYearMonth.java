@@ -5,6 +5,8 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.regex.Matcher;
+import org.apache.xpath.regex.Pattern;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 
@@ -305,9 +307,9 @@ public class XSGYearMonth extends XSAnyAtomicType {
 	private boolean isTimeZoneStrCorrectlyFormatted(String strValue) {
 		boolean result = false;
 		
-		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("((0[0-9]|1[0-3]):[0-5][0-9]|14:00)");
-		java.util.regex.Matcher matcher = pattern.matcher(strValue);
-		result = matcher.matches(); 
+		Pattern pattern = Pattern.compile("((0[0-9]|1[0-3]):[0-5][0-9]|14:00)");
+		Matcher matcher = pattern.matcher(strValue);
+		result = matcher.matches();  
 		
 		return result;
 	}
