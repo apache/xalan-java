@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-13T11:11:49Z" fail="44" name="sort" pass="35" skipped="0" statusUnknown="1" totalRun="80">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-14T16:35:11Z" fail="44" name="sort" pass="35" skipped="0" statusUnknown="1" totalRun="80">
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
    <testResult status="fail" testName="sort-003"/>
@@ -58,11 +58,7 @@
    <testResult status="fail" testName="sort-051"/>
    <testResult status="pass" testName="sort-052"/>
    <testResult status="fail" testName="sort-053"/>
-   <testResult status="fail" testName="sort-054">
-      <outResult>
-         <errTrace>XTDE0700 : No value supplied for the required parameter $v. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="sort-054"/>
    <testResult status="fail" testName="sort-055"/>
    <testResult status="fail" testName="sort-056"/>
    <testResult status="fail" testName="sort-057"/>

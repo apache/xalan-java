@@ -67,7 +67,9 @@ import org.w3c.dom.NodeList;
 
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Implementation of XSLT xsl:variable element.
@@ -766,17 +768,18 @@ public class ElemVariable extends ElemTemplateElement
        xctxt.popCurrentNode();
     }
     
-    if (m_asAttr != null) {       
+    if (m_asAttr != null) {
+    	XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+    	XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+    	SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+    	SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();    	    	
+    	
+    	int seqTypeKindVal = 0;    	
+    	if (seqTypeKindTest != null) {
+    		seqTypeKindVal = seqTypeKindTest.getKindVal();
+    	}
+        
        if (XslTransformSharedDatastore.xpathInlineFunction != null) {
-    	   XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                       XPath.SELECT, null, true);
-           XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-           SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
-           SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
-           int seqTypeKindVal = 0;
-           if (seqTypeKindTest != null) {
-              seqTypeKindVal = seqTypeKindTest.getKindVal();
-           }
            if ((seqExpectedTypeData.getSequenceTypeFunctionTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
     	      var = XslTransformSharedDatastore.xpathInlineFunction;
     	      XslTransformSharedDatastore.xpathInlineFunction = null;
@@ -787,15 +790,6 @@ public class ElemVariable extends ElemTemplateElement
            }
        }
        else if (XslTransformSharedDatastore.xpathArray != null) {
-    	   XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                       XPath.SELECT, null, true);
-           XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-           SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
-           SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
-           int seqTypeKindVal = 0;
-           if (seqTypeKindTest != null) {
-              seqTypeKindVal = seqTypeKindTest.getKindVal();
-           }
            if ((seqExpectedTypeData.getSequenceTypeArrayTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
     	      var = XslTransformSharedDatastore.xpathArray;
     	      XslTransformSharedDatastore.xpathArray = null;
@@ -806,15 +800,6 @@ public class ElemVariable extends ElemTemplateElement
            }
        }
        else if (XslTransformSharedDatastore.xpathMap != null) {
-    	   XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                       XPath.SELECT, null, true);
-           XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-           SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
-           SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
-           int seqTypeKindVal = 0;
-           if (seqTypeKindTest != null) {
-              seqTypeKindVal = seqTypeKindTest.getKindVal();
-           }
            if ((seqExpectedTypeData.getSequenceTypeMapTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
     	      var = XslTransformSharedDatastore.xpathMap;
     	      XslTransformSharedDatastore.xpathMap = null;
@@ -825,68 +810,98 @@ public class ElemVariable extends ElemTemplateElement
            }
        }
        else if (var instanceof XNodeSetForDOM) {
-          XObject variableConvertedVal = null;
-          
-          try {
-             ElemFunction elemFunction = ElemFunction.getXSLFunctionService();
-             variableConvertedVal = elemFunction.preprocessXslFunctionOrAVariableResult(var, m_asAttr, xctxt, m_qname);
-          }
-          catch (TransformerException ex) {
-             throw new TransformerException(ex.getMessage(), srcLocator); 
-          }
-          
-          if (variableConvertedVal != null) {
-             var = variableConvertedVal;    
-          }
-          else {
-             var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt); 
-          }
+    	   XObject variableConvertedVal = null;
+    	   
+    	   if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_QNAME) {
+    		   String strValue = var.str();
+    		   if (strValue.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
+    			   strValue = (strValue.replace(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX, " ")).trim();    			   
+    			   String regexStr = "\\{.*\\}.*";       // e.g, string value is  {uri}localName 
+    			   java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regexStr);
+    			   java.util.regex.Matcher matcher = pattern.matcher(strValue);
+    			   if (matcher.matches()) {
+    				   int i = strValue.indexOf('}');
+    				   String localName = strValue.substring(i + 1);
+    				   String namespaceUri = strValue.substring(1, i); 
+    				   var = new XSQName(null, localName, namespaceUri);
+    				   
+    				   return var;
+    			   }
+    		   }
+    	   }
+    	   
+    	   try {
+    		   ElemFunction elemFunction = ElemFunction.getXSLFunctionService();
+    		   variableConvertedVal = elemFunction.preprocessXslFunctionOrAVariableResult(var, m_asAttr, xctxt, m_qname);
+    	   }
+    	   catch (TransformerException ex) {
+    		   throw new TransformerException(ex.getMessage(), srcLocator); 
+    	   }
+
+    	   if (variableConvertedVal != null) {
+    		   var = variableConvertedVal;    
+    	   }
+    	   else {
+    		   var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt); 
+    	   }
        }
        else if (var instanceof XPathMap) {
-    	  try {
-    	     var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
-    	  }
-    	  catch (TransformerException ex) {
-    		 String errMesg = ex.getMessage();
-    		 boolean indicatorOne = errMesg.contains("value"); 
-    		 boolean indicatorTwo = errMesg.contains("cannot be cast to a type");
-    		 if (indicatorOne && indicatorTwo) {
-    		    errMesg = errMesg + " An error occured, while evaluating xdm map's key or value [map's sequenceType is '" + m_asAttr + "'].";
-    		    throw new TransformerException(errMesg, srcLocator);
-    		 }
-    		 else {
-    		    throw new TransformerException(errMesg, srcLocator);
-    		 }
-    	  }    	   
+    	   try {
+    		   var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
+    	   }
+    	   catch (TransformerException ex) {
+    		   String errMesg = ex.getMessage();
+    		   boolean indicatorOne = errMesg.contains("value"); 
+    		   boolean indicatorTwo = errMesg.contains("cannot be cast to a type");
+    		   if (indicatorOne && indicatorTwo) {
+    			   errMesg = errMesg + " An error occured, while evaluating xdm map's key or value [map's sequenceType is '" + m_asAttr + "'].";
+    			   throw new TransformerException(errMesg, srcLocator);
+    		   }
+    		   else {
+    			   throw new TransformerException(errMesg, srcLocator);
+    		   }
+    	   }    	   
        }
        else if (var instanceof XPathArray) {
-    	  try {
-      	     var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
-      	  }
-      	  catch (TransformerException ex) {
-      		 String errMesg = ex.getMessage();
-   		     boolean indicatorOne = errMesg.contains("value"); 
-   		     boolean indicatorTwo = errMesg.contains("cannot be cast to a type");
-   		     if (indicatorOne && indicatorTwo) {
-   		        errMesg = errMesg + " An error occured, while evaluating an xdm array [array's sequenceType is '" + m_asAttr + "'].";
-   		        throw new TransformerException(errMesg, srcLocator);
-   		     }
-   		     else {
-   		        throw new TransformerException(errMesg, srcLocator);
-   		     }
-      	  }
+    	   try {
+    		   var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
+    	   }
+    	   catch (TransformerException ex) {
+    		   String errMesg = ex.getMessage();
+    		   boolean indicatorOne = errMesg.contains("value"); 
+    		   boolean indicatorTwo = errMesg.contains("cannot be cast to a type");
+    		   if (indicatorOne && indicatorTwo) {
+    			   errMesg = errMesg + " An error occured, while evaluating an xdm array [array's sequenceType is '" + m_asAttr + "'].";
+    			   throw new TransformerException(errMesg, srcLocator);
+    		   }
+    		   else {
+    			   throw new TransformerException(errMesg, srcLocator);
+    		   }
+    	   }
+       }
+       else if (((var instanceof XString) || (var instanceof XSString)) && (selectExpression instanceof XRTreeFragSelectWrapper)) {
+           if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC) {
+        	   var = new XSUntypedAtomic(XslTransformEvaluationHelper.getStrVal(var)); 
+           }
+           else {
+        	   var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
+        	   if (var == null) {
+              	  throw new TransformerException("XTTE0570 : The supplied XDM item cannot be converted "
+              	 		                                             + "to an XPath sequence type " + m_asAttr + ".", srcLocator); 
+               }
+           }
        }
        else {
-    	  try {
-             var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
-             if (var == null) {
-            	 throw new TransformerException("XTTE0570 : The supplied XDM item cannot be converted "
-            	 		                                         + "to an XPath sequence type " + m_asAttr + ".", srcLocator); 
-             }
-    	  }
-    	  catch (TransformerException ex) {
-    		 throw ex; 
-    	  }
+    	   try {
+    		   var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
+    		   if (var == null) {
+    			   throw new TransformerException("XTTE0570 : The supplied XDM item cannot be converted "
+    					   																+ "to an XPath sequence type " + m_asAttr + ".", srcLocator); 
+    		   }
+    	   }
+    	   catch (TransformerException ex) {
+    		   throw ex; 
+    	   }
        }
     }
         

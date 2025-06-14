@@ -396,7 +396,7 @@ public class ElemTemplate extends ElemTemplateElement
 	  else {         
 		  try {                      
 			  XObject xslTemplateEvalResult = getXslTemplateResult(transformer, xctxt);
-
+			  
 			  if (xslTemplateEvalResult instanceof XPathInlineFunction) {
 				  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
 				  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
@@ -413,6 +413,7 @@ public class ElemTemplate extends ElemTemplateElement
 			  }
 			  else {
 				  xslTemplateEvalResult = SequenceTypeSupport.castXdmValueToAnotherType(xslTemplateEvalResult, m_asAttr, null, xctxt);
+				  
 				  if (xslTemplateEvalResult != null) {
 					  SerializationHandler handler = transformer.getSerializationHandler();
 
@@ -421,7 +422,15 @@ public class ElemTemplate extends ElemTemplateElement
 							  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xslTemplateEvalResult, transformer, handler, xctxt);
 						  }
 						  else {
-							  ElemCopyOf.copyOfActionOnResultSequence((ResultSequence)xslTemplateEvalResult, transformer, handler, xctxt, false); 
+							  ResultSequence rSeq = new ResultSequence();
+							  if (xslTemplateEvalResult instanceof ResultSequence) {
+								 rSeq = (ResultSequence)xslTemplateEvalResult;   
+							  }
+							  else {
+								  rSeq.add(xslTemplateEvalResult); 
+							  }
+							  
+							  ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false); 
 						  }
 					  } 
 					  catch (TransformerException ex) {
@@ -434,13 +443,13 @@ public class ElemTemplate extends ElemTemplateElement
 				  else {        
 					  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
 					  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-																								  + " is " + m_asAttr + ". But the template result "
-																								  + "doesn't conform to this required type.", srcLocator);  
+																								        + " is " + m_asAttr + ". But the template result "
+																								        + "doesn't conform to this required type.", srcLocator);  
 				  }
 			  }
 		  }
 		  catch (TransformerException ex) {
-			  String errMesg = ex.getMessage();
+			  String errMesg = ex.getMessage();			  
 			  if ((errMesg != null) && (errMesg.startsWith("XTTE0505") || errMesg.startsWith("XTTE0590") || 
 					                                                      errMesg.startsWith("XTDE0700"))) {
 				  throw ex;   

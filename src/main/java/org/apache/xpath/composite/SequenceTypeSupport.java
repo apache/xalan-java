@@ -34,6 +34,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
+import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -691,7 +692,7 @@ public class SequenceTypeSupport {
             	else if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE) {
             		if (srcValue instanceof ResultSequence) {
             			ResultSequence rSeq = (ResultSequence)srcValue;
-            			if ((rSeq.size() == 1) && ((itemTypeOccurenceIndicator == 0) || 
+            			if ((rSeq.size() == 1) && ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) || 
             					                   (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) || 
             					                   (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) ||
             					                   (itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY))) {
@@ -723,7 +724,48 @@ public class SequenceTypeSupport {
             				
          			        return result;
             			}
-            		}            		
+            		}
+            		else if (srcValue instanceof XNodeSetForDOM) {
+            			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)srcValue;
+            			DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
+            			DTMManager dtmManager = xctxt.getDTMManager();
+            			int docNodeHandle = dtmCursorIter.nextNode();
+            			DTM dtm = dtmManager.getDTM(docNodeHandle);
+            			int child = dtm.getFirstChild(docNodeHandle);
+            			if (dtm.getNodeType(child) == DTM.TEXT_NODE) {
+            				String nodeStrValue = dtm.getNodeValue(child);
+            				if (nodeStrValue.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
+            					nodeStrValue = (nodeStrValue.replace(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX, " ")).trim();
+            					if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) || 
+            							                                                 (itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY)) {             						            					
+            						String[] strArray = nodeStrValue.split(" ");
+            						ResultSequence rSeq = new ResultSequence();
+            						for (int idx = 0; idx < strArray.length; idx++) {
+            							rSeq.add(new XSString(strArray[idx]));
+            						}
+
+            						result = rSeq;
+            					}
+            					else {
+            						result = new XSString(nodeStrValue);
+            					}
+            				}
+            				else {
+            					result = new XSString(nodeStrValue);
+            				}
+            				
+            				return result;
+            			}
+            			else if (child == DTM.NULL) {
+            				// Return an empty sequence 
+            				result = new ResultSequence();
+            				
+            				return result;
+            			}
+            			else {
+            			   // Error handling	
+            			}
+            		}
             	}            	
             }
             
@@ -742,7 +784,8 @@ public class SequenceTypeSupport {
                 String srcStrVal = ((XString)srcValue).str();
                 
                 if ((expectedType == STRING) || (expectedType == XS_NORMALIZED_STRING) || 
-                		                        (expectedType == XS_TOKEN) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
+                		                        (expectedType == XS_TOKEN) || (expectedType == XS_ANY_ATOMIC_TYPE) || 
+                		                        (expectedType == XS_UNTYPED_ATOMIC)) {
                    result = srcValue; 
                 }
                 else if (expectedType == XS_LANGUAGE) {
@@ -1425,18 +1468,32 @@ public class SequenceTypeSupport {
             }
             else if (expectedType == XS_UNSIGNED_BYTE) {
                result = new XSUnsignedByte(srcStrVal);
-            }
-            else if (expectedType == XS_DOUBLE) {               
-            	boolean isStrValueNumeric = isStrValueNumericFormat(srcStrVal);                
-                if (isStrValueNumeric) {
-             	   result = new XSDouble(srcStrVal); 
-                }
-            }
-            else if (expectedType == XS_FLOAT) {               
-            	boolean isStrValueNumeric = isStrValueNumericFormat(srcStrVal);
+            }            
+            else if (expectedType == XS_FLOAT) {
+            	boolean isStrValueNumeric;
+            	if (!("INF".equals(srcStrVal) || "-INF".equals(srcStrVal))) {
+            	   isStrValueNumeric = isStrValueNumericFormat(srcStrVal);
+            	}
+            	else {
+            	   isStrValueNumeric = true;
+            	}
+            	
                 if (isStrValueNumeric) {
              	   result = new XSFloat(srcStrVal); 
                 }              
+            }
+            else if (expectedType == XS_DOUBLE) {               
+            	boolean isStrValueNumeric;
+            	if (!("INF".equals(srcStrVal) || "-INF".equals(srcStrVal))) {
+            	   isStrValueNumeric = isStrValueNumericFormat(srcStrVal);
+            	}
+            	else {
+            	   isStrValueNumeric = true;
+            	}
+            	
+                if (isStrValueNumeric) {
+             	   result = new XSDouble(srcStrVal); 
+                }
             }
             else if (expectedType == XS_DATE) {
                result = XSDate.parseDate(srcStrVal); 
@@ -1470,6 +1527,15 @@ public class SequenceTypeSupport {
             }
             else if (expectedType == XS_GMONTH) {
                result = new XSGMonth(srcStrVal); 
+            }
+            else if (expectedType == XS_BASE64BINARY) {
+               result = new XSBase64Binary(srcStrVal);
+            }
+            else if (expectedType == XS_HEXBINARY) {
+               result = new XSHexBinary(srcStrVal);
+            }
+            else if (expectedType == XS_ANY_URI) {
+               result = new XSAnyURI(srcStrVal);
             }
             else {
                String effectiveTypeDefnStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : getDataTypeNameFromIntValue(expectedType);  	               

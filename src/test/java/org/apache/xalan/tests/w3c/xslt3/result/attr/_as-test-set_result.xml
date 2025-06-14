@@ -1,33 +1,26 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-13T11:11:28Z" fail="77" name="as" pass="30" skipped="1" statusUnknown="1" totalRun="109">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-14T16:34:50Z" fail="70" name="as" pass="36" skipped="2" statusUnknown="1" totalRun="109">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
    <testResult status="pass" testName="as-0104"/>
-   <testResult status="fail" testName="as-0105"/>
+   <testResult status="pass" testName="as-0105"/>
    <testResult status="pass" testName="as-0106"/>
    <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="as-0106a"/>
    <testResult status="pass" testName="as-0106b"/>
-   <testResult status="fail" testName="as-0107"/>
-   <testResult status="fail" testName="as-0108"/>
+   <testResult status="pass" testName="as-0107"/>
+   <testResult status="pass" testName="as-0108"/>
    <testResult status="pass" testName="as-0109"/>
    <testResult status="pass" testName="as-0110"/>
-   <testResult status="fail" testName="as-0110a">
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="as-0110a"/>
+   <testResult status="pass" testName="as-0110b"/>
+   <testResult status="pass" testName="as-0111"/>
+   <testResult status="fail" testName="as-0111a">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;var1&gt;true&lt;/var1&gt;&lt;var2&gt;true&lt;/var2&gt;&lt;var3&gt;true&lt;/var3&gt;&lt;var4&gt;true&lt;/var4&gt;&lt;var5&gt;true&lt;/var5&gt;&lt;var6&gt;true&lt;/var6&gt;&lt;var7&gt;true&lt;/var7&gt;&lt;var8&gt;true&lt;/var8&gt;&lt;var9&gt;true&lt;/var9&gt;&lt;var10&gt;true&lt;/var10&gt;&lt;var11&gt;true&lt;/var11&gt;&lt;var12&gt;true&lt;/var12&gt;&lt;var13&gt;true&lt;/var13&gt;&lt;var14&gt;true&lt;/var14&gt;&lt;var15&gt;true&lt;/var15&gt;&lt;var16&gt;true&lt;/var16&gt;&lt;var17&gt;true&lt;/var17&gt;&lt;var18&gt;true&lt;/var18&gt;&lt;var19&gt;true&lt;/var19&gt;&lt;var20&gt;true&lt;/var20&gt;&lt;var21&gt;true&lt;/var21&gt;&lt;var22&gt;true&lt;/var22&gt;&lt;var23&gt;true&lt;/var23&gt;&lt;var24&gt;true&lt;/var24&gt;&lt;var25&gt;true&lt;/var25&gt;&lt;var26&gt;true&lt;/var26&gt;&lt;var27&gt;true&lt;/var27&gt;&lt;var28&gt;true&lt;/var28&gt;&lt;var29&gt;true&lt;/var29&gt;&lt;var30&gt;true&lt;/var30&gt;&lt;var31&gt;true&lt;/var31&gt;&lt;var32&gt;true&lt;/var32&gt;&lt;var33&gt;true&lt;/var33&gt;&lt;var34&gt;true&lt;/var34&gt;&lt;var35&gt;true&lt;/var35&gt;&lt;var36&gt;true&lt;/var36&gt;&lt;var37&gt;true&lt;/var37&gt;&lt;var38&gt;true&lt;/var38&gt;&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="pass" testName="as-0110b"/>
-   <testResult status="fail" testName="as-0111"/>
-   <testResult status="fail" testName="as-0111a">
-      <outResult>
-         <errTrace>Variable var20 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var20 accessed before it is bound!.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="as-0111b"/>
+   <testResult status="pass" testName="as-0111b"/>
    <testResult status="fail" testName="as-0112"/>
    <testResult status="fail" testName="as-0112a">
-      <outResult>
-         <errTrace>XTTE0505 : The required result type of template a20 is xs:base64Binary. But the template result doesn't conform to this required type.</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;template1&gt;P1Y2M3DT10H30M23S&lt;/template1&gt;&lt;template2&gt;-P1Y23DT59.123S&lt;/template2&gt;&lt;template3&gt;2000-01-16T00:00:00Z&lt;/template3&gt;&lt;template4&gt;-1999-05-31T13:20:00+14:00&lt;/template4&gt;&lt;template5&gt;13:20:00-05:00&lt;/template5&gt;&lt;template6&gt;00:00:00&lt;/template6&gt;&lt;template7&gt;-0012-12-03-05:00&lt;/template7&gt;&lt;template8&gt;1999-05-31&lt;/template8&gt;&lt;template9&gt;21999-05+14:00&lt;/template9&gt;&lt;template10&gt;1999-05&lt;/template10&gt;&lt;template11&gt;-0012-05:00&lt;/template11&gt;&lt;template12&gt;2005&lt;/template12&gt;&lt;template13&gt;--05-31&lt;/template13&gt;&lt;template14&gt;--05-31+14:00&lt;/template14&gt;&lt;template15&gt;---31+14:00&lt;/template15&gt;&lt;template16&gt;---31Z&lt;/template16&gt;&lt;template17&gt;--05+14:00&lt;/template17&gt;&lt;template18&gt;--05&lt;/template18&gt;&lt;template19&gt;true&lt;/template19&gt;&lt;template20&gt;PM24&lt;/template20&gt;&lt;template21&gt;07FF&lt;/template21&gt;&lt;template22&gt;INF&lt;/template22&gt;&lt;template23&gt;-0.00175&lt;/template23&gt;&lt;template24&gt;-3.4201&lt;/template24&gt;&lt;template25&gt;7.8899&lt;/template25&gt;&lt;template26&gt;0&lt;/template26&gt;&lt;template27&gt;0&lt;/template27&gt;&lt;template28&gt;0&lt;/template28&gt;&lt;template29&gt;INF&lt;/template29&gt;&lt;template30&gt;43&lt;/template30&gt;&lt;template31&gt;-300&lt;/template31&gt;&lt;template32&gt;http://www.mytypetest.org&lt;/template32&gt;&lt;template34&gt;PT1M39.998999999999995S&lt;/template34&gt;&lt;template35&gt;-PT1H40M&lt;/template35&gt;&lt;template36&gt;P1Y2M&lt;/template36&gt;&lt;template37&gt;-P1Y9M&lt;/template37&gt;&lt;template38&gt;hello&lt;/template38&gt;&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="as-0112b"/>
    <testResult status="fail" testName="as-0113"/>
@@ -40,7 +33,7 @@
    <testResult status="pass" testName="as-0120"/>
    <testResult status="pass" testName="as-0121"/>
    <testResult status="pass" testName="as-0122"/>
-   <testResult status="fail" testName="as-0123"/>
+   <testResult status="pass" testName="as-0123"/>
    <testResult status="pass" testName="as-0124"/>
    <testResult status="fail" testName="as-0125"/>
    <testResult status="pass" testName="as-0126"/>
@@ -93,16 +86,13 @@
    <testResult status="fail" testName="as-0703"/>
    <testResult status="fail" testName="as-0801"/>
    <testResult status="fail" testName="as-0801a">
-      <outResult>
-         <errTrace>Variable var11 is directly or indirectly referencing itself!</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Variable $var11 accessed before it is bound!.</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;var1&gt;truetrue&lt;/var1&gt;&lt;var2&gt;truetrue&lt;/var2&gt;&lt;var3&gt;truetrue&lt;/var3&gt;&lt;var4&gt;truetrue&lt;/var4&gt;&lt;var5&gt;truetrue&lt;/var5&gt;&lt;var6&gt;truetrue&lt;/var6&gt;&lt;var7&gt;truetrue&lt;/var7&gt;&lt;var8&gt;truetrue&lt;/var8&gt;&lt;var9&gt;truetrue&lt;/var9&gt;&lt;var10&gt;truetrue&lt;/var10&gt;&lt;var11&gt;truetrue&lt;/var11&gt;&lt;var12&gt;truetrue&lt;/var12&gt;&lt;var13&gt;truetrue&lt;/var13&gt;&lt;var14&gt;truetrue&lt;/var14&gt;&lt;var15&gt;truetrue&lt;/var15&gt;&lt;var16&gt;truetrue&lt;/var16&gt;&lt;var17&gt;truetrue&lt;/var17&gt;&lt;var18&gt;truetrue&lt;/var18&gt;&lt;var19&gt;truetrue&lt;/var19&gt;&lt;var20&gt;truetrue&lt;/var20&gt;&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="as-0801b"/>
    <testResult status="fail" testName="as-0802"/>
    <testResult status="fail" testName="as-0802a">
       <outResult>
-         <errTrace>XTTE0505 : The required result type of template a11 is xs:base64Binary+. But the template result doesn't conform to this required type.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0802b"/>

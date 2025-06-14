@@ -34,6 +34,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XMLNSDecl;
@@ -415,23 +416,78 @@ public class XSL3FunctionService {
 		    				case Keywords.XS_ANY_URI :    					
 		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSAnyURI.class, xctxt);
 		    					break;
-		    				case Keywords.XS_QNAME :
-		    					XSQName xsQName = new XSQName();
-		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-		    						Expression funcArg = funcObj.getArg(idx);    						
+		    				case Keywords.XS_QNAME :		    					
+		    					int argCount = funcObj.getArgCount();		    					
+		    					if (argCount == 1) {
+		    						Expression funcArg = funcObj.getArg(0);
 		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-		    						if (idx == 0) {
-		    							xsQName.setPrefix(argStr);	
-		    						}
-		    						else if (idx == 1) {
-		    							xsQName.setLocalPart(argStr);
-		    						}
-		    						else {
-		    							xsQName.setNamespaceUri(argStr);
-		    						}
+		    					    int colonIdx = argStr.indexOf(':');
+		    					    String prefix = null;
+		    					    String localName = null;
+		    					    String namespaceUri = null;
+		    					    if (colonIdx > -1) {
+		    					    	prefix = argStr.substring(0, colonIdx);
+		    					    	localName = argStr.substring(colonIdx + 1);
+		    					    }
+		    					    else {
+		    					    	localName = argStr; 
+		    					    }
+		    					    
+		    					    if (prefix != null) {
+		    					    	List<XMLNSDecl> prefixTable = null;
+		    					    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+
+		    					    	if (elemTemplateElement != null) {
+		    					    		prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+		    					    	}
+
+		    					    	if (prefixTable != null) {
+		    					    		for (int idx = 0; idx < prefixTable.size(); idx++) {
+		    					    			XMLNSDecl xmlNSDecl = prefixTable.get(idx);
+		    					    			String prefix1 = xmlNSDecl.getPrefix();
+		    					    			String uri1 = xmlNSDecl.getURI();
+		    					    			if (prefix1.equals(prefix)) {
+		    					    				namespaceUri = uri1;		    					    				
+		    					    				break;
+		    					    			}
+		    					    		}
+		    					    	}
+		    					    }
+		    					    
+		    					    evalResult = new XSQName(prefix, localName, namespaceUri);
 		    					}
-		
-		    					evalResult = xsQName;
+		    					else if (argCount == 2) {		    					    		    					    
+		    						String prefix = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(0), xctxt);
+		    						String localName = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(1), xctxt);
+		    						
+		    						List<XMLNSDecl> prefixTable = null;
+	    					    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+
+	    					    	if (elemTemplateElement != null) {
+	    					    		prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+	    					    	}
+
+	    					    	String namespaceUri = null;
+	    					    	if (prefixTable != null) {
+	    					    		for (int idx = 0; idx < prefixTable.size(); idx++) {
+	    					    			XMLNSDecl xmlNSDecl = prefixTable.get(idx);
+	    					    			String prefix1 = xmlNSDecl.getPrefix();
+	    					    			String uri1 = xmlNSDecl.getURI();
+	    					    			if (prefix1.equals(prefix)) {
+	    					    				namespaceUri = uri1;		    					    				
+	    					    				break;
+	    					    			}
+	    					    		}
+	    					    	}
+	    					    	
+	    					    	evalResult = new XSQName(prefix, localName, namespaceUri);
+		    					}
+		    					else if (argCount == 3) {
+		    						String prefix = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(0), xctxt);
+		    						String localName = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(1), xctxt);
+		    						String namespaceUri = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(2), xctxt);
+		    						evalResult = new XSQName(prefix, localName, namespaceUri);
+		    					}
 		
 		    					break;
 		    				default:
