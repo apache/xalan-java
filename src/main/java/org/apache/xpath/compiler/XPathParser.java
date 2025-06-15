@@ -4660,9 +4660,7 @@ public class XPathParser
       m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 1, OpCodes.NODETYPE_NODE);
     }
 
-    // There is probably a better way to test for this 
-    // transition... but it gets real hairy if you try 
-    // to do it in basis().
+    // There is probably a better way to test for this transition
     else if (tokenIs('*') || tokenIs('@') || tokenIs('_')
              || (m_token!= null && Character.isLetter(m_token.charAt(0))))
     {
@@ -4903,6 +4901,10 @@ public class XPathParser
         nextToken();
 
         int nt = ((Integer) nodeTestOp).intValue();
+        
+        if (nt == OpCodes.NODETYPE_DOCUMENT) {
+           nt = OpCodes.NODETYPE_ROOT;
+        }
 
         m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), nt);
         m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
@@ -6632,17 +6634,18 @@ public class XPathParser
    
    /**
     * This method checks, whether there's an XPath built-in node pattern like 
-    * node(), text(), comment() at an end of XPath expression string. XPath node 
-    * checks for these patterns with predicate as suffix also need to be 
-    * similarly excluded.
+    * node(), doument-node(), text(), comment() at an end of XPath expression 
+    * string. XPath node checks for these patterns with predicate as suffix 
+    * also need to be similarly excluded.
     */
    private boolean isXPathPatternExcludeTrailingNodeFunctions() {
 	   
 	  boolean isExclude = false;
 	  
 	  String currXPathPattern = m_ops.m_currentPattern;
-	  if (currXPathPattern.endsWith("node()") || currXPathPattern.endsWith("text()") || 
-			                                                            currXPathPattern.endsWith("comment()")) {
+	  if (currXPathPattern.endsWith("node()") || currXPathPattern.endsWith("document-node()") || 
+			                                     currXPathPattern.endsWith("text()") || 
+			                                     currXPathPattern.endsWith("comment()")) {
 		  isExclude = true; 
 	  }
 	  else {

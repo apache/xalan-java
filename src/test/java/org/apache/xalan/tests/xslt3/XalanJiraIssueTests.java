@@ -159,5 +159,29 @@ public class XalanJiraIssueTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslJiraIssueTest12() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "sample2.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "document-node-test1.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
+        
+        m_fileComparisonType = XSLTestConstants.TEXT;
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslJiraIssueTest13() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "sample2.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "document-node-test2.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
+        
+        m_fileComparisonType = XSLTestConstants.TEXT;
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

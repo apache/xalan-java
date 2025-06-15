@@ -227,7 +227,7 @@ public class Compiler extends OpMap
     case OpCodes.OP_STR_CONCAT :
       expr = strConcat(opPos); break;
     case OpCodes.OP_ARROW :
-      fIsCompileFuncPrecededByCompileArrow = true;
+      m_isCompileFuncPrecededByCompileArrow = true;
       expr = arrowOp(opPos);
       break;
     case OpCodes.OP_MINUS :
@@ -1454,12 +1454,12 @@ private static final boolean DEBUG = false;
            func.setArg(compile(p), i);
         }
         
-        if (fIsCompileFuncPrecededByCompileArrow) 
+        if (m_isCompileFuncPrecededByCompileArrow) 
         {
            // This allows us to, permit the absence of XPath function's 1st 
            // argument when evaluating with operator "=>".
            i++;
-           fIsCompileFuncPrecededByCompileArrow = false;
+           m_isCompileFuncPrecededByCompileArrow = false;
         }
         
         func.checkNumberArgs(i);
@@ -1864,5 +1864,5 @@ private static final boolean DEBUG = false;
    * We store within this class field, the fact that, there is
    * an XPath expression of kind "... => functionCall()".
    */
-  private boolean fIsCompileFuncPrecededByCompileArrow;
+  private boolean m_isCompileFuncPrecededByCompileArrow;
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-14T16:34:52Z" fail="67" name="match" pass="57" skipped="8" statusUnknown="5" totalRun="137">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-15T13:33:13Z" fail="66" name="match" pass="58" skipped="8" statusUnknown="5" totalRun="137">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -169,7 +169,7 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
          <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="match-100"/>
+   <testResult status="pass" testName="match-100"/>
    <testResult status="fail" testName="match-101">
       <outResult>
          <errTrace>Unknown nodetype: element</errTrace>
