@@ -4900,7 +4900,7 @@ public class XPathParser
       {
         nextToken();
 
-        int nt = ((Integer) nodeTestOp).intValue();
+        int nt = ((Integer) nodeTestOp).intValue();                
         
         if (nt == OpCodes.NODETYPE_DOCUMENT) {
            nt = OpCodes.NODETYPE_ROOT;

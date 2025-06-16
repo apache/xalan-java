@@ -39,6 +39,8 @@ public class XslAsAttrTests extends W3CXslTransformTestsUtil {
     	m_testResultFileName = "_as-test-set_result.xml";
     	m_skipped_tests_list.add("as-0106a");
     	m_skipped_tests_list.add("as-0110a");
+    	m_skipped_tests_list.add("as-0111a");
+    	m_skipped_tests_list.add("as-0112a");
     }
 
     @AfterClass

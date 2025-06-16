@@ -44,6 +44,13 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class FuncRound extends Function2Args
 {
       static final long serialVersionUID = -7970583902573826611L;
+      
+      /**
+       * Default constructor.
+       */
+      public FuncRound() {
+    	 // NO OP  
+      }
     
       /**
        * Execute the function. The function must return a valid object.

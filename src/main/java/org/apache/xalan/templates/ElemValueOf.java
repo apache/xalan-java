@@ -35,7 +35,9 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathLetExpr;
+import org.apache.xpath.functions.FuncRound;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
@@ -54,6 +56,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
@@ -341,9 +344,14 @@ public class ElemValueOf extends ElemTemplateElement {
                 	  XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
                       XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
                       if (evalResult != null) {
-                          String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);                                                       
-                          strValue = preProcessStrBeforeXslSerialization(strValue);                          
-                          (new XString(strValue)).dispatchCharactersEvents(rth);
+                    	  if (evalResult instanceof XSDayTimeDuration) {
+                    		  serializeXsDaytimeDurationValue((XSDayTimeDuration)evalResult, 3, xctxt, rth);
+                    	  }
+                    	  else {
+                    		  String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);                                                       
+                    		  strValue = preProcessStrBeforeXslSerialization(strValue);                          
+                    		  (new XString(strValue)).dispatchCharactersEvents(rth);
+                    	  }
                       }
                       else {
                           expr.executeCharsToContentHandler(xctxt, rth);   
@@ -837,6 +845,43 @@ public class ElemValueOf extends ElemTemplateElement {
 	  }
 	  
 	  return resultStr;
+   }
+   
+   /**
+    * Method definition to serialize xs:dayTimeDuration value, by serializing
+    * xs:dayTimeDuration value's seconds component upto a specified number
+    * of decimal places.  
+    * 
+    * @param xsDayTimeDurationValue					The supplied xs:dayTimeDuration value 
+    * @param precision								Precision value for mathematical rounding
+    * @param xctxt									XPath context object
+    * @param rth									An XSL SerializationHandler run-time object
+    * @throws WrongNumberArgsException
+    * @throws TransformerException
+    * @throws SAXException
+    */
+   private void serializeXsDaytimeDurationValue(XSDayTimeDuration xsDayTimeDurationValue, int precision, 
+		   										XPathContext xctxt, SerializationHandler rth)
+		   																				throws WrongNumberArgsException, TransformerException, SAXException {
+	   double dbl = xsDayTimeDurationValue.seconds();
+	   
+	   if (dbl != 0) {
+		   FuncRound funcRound = new FuncRound();
+		   funcRound.setArg0(new XSDouble(dbl));
+		   funcRound.setArg(new XSInteger(String.valueOf(precision)), 1);
+		   String roundedDblResult = (funcRound.execute(xctxt)).str();
+		   String xsDayTimeDurationStrValue = xsDayTimeDurationValue.stringValue();
+		   String secsStrValue = (Double.valueOf(dbl)).toString();
+		   int idx = xsDayTimeDurationStrValue.indexOf(secsStrValue);
+		   String prefixStr = xsDayTimeDurationStrValue.substring(0, idx);
+		   xsDayTimeDurationStrValue = prefixStr + roundedDblResult + "S";
+		   xsDayTimeDurationStrValue = preProcessStrBeforeXslSerialization(xsDayTimeDurationStrValue);
+		   
+		   (new XString(xsDayTimeDurationStrValue)).dispatchCharactersEvents(rth);
+	   }
+	   else {
+		   (new XString(xsDayTimeDurationValue.stringValue())).dispatchCharactersEvents(rth);
+	   }
    }
 
 }

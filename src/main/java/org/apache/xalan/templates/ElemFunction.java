@@ -67,6 +67,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
@@ -562,7 +563,7 @@ public class ElemFunction extends ElemTemplate
       XObject result = null;
      
       if (sequenceType == SequenceTypeSupport.BOOLEAN) {
-         boolean boolVal = ("false".equals(strVal) || "0".equals(strVal)) ? false : true;
+         boolean boolVal = ("true".equals(strVal) || "1".equals(strVal)) ? true : false;
          result = new XSBoolean(boolVal);
       }
       else if (sequenceType == SequenceTypeSupport.STRING) {
@@ -633,6 +634,9 @@ public class ElemFunction extends ElemTemplate
       }
       else if (sequenceType == SequenceTypeSupport.XS_FLOAT) {
          result = new XSFloat(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_ANY_URI) {
+         result = new XSAnyURI(strVal); 
       }
       else {
     	 result = new XSString(strVal); 

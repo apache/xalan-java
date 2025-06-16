@@ -775,6 +775,9 @@ public class SequenceTypeSupport {
                 if ((expectedType == XS_ANY_URI) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                    result = srcValue; 
                 }
+                else if (expectedType == STRING) {
+                   result = new XSString(srcStrVal);
+                }
                 else if (sequenceTypeKindTest != null) {
                       result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
                                                                                                      "xs:anyURI", sequenceTypeXPathExprStr);

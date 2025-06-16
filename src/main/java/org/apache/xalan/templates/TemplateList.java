@@ -103,6 +103,17 @@ public class TemplateList implements java.io.Serializable
 
     		XPath templateMatchXPath = template.getMatch();
     		String xpathPatternStr = templateMatchXPath.getPatternString();
+    		if ((xpathPatternStr.startsWith("child::") || xpathPatternStr.startsWith("attribute::")) && 
+    				                                                              xpathPatternStr.endsWith("document-node()")) {
+    		   /**
+    		    * XSL template definitions with match patterns like <xsl:template match="child::document-node()"> 
+    		    * & <xsl:template match="attribute::document-node()"> are allowed by XSLT 3.0 spec, but these
+    		    * XSL template definitions cannot match any XML document input nodes. Therefore, we make these 
+    		    * XSL template definitions as unavailable within XSL compiled stylesheet.
+    		    */
+    			
+    		   return;
+    		}
     		if (".".equals(xpathPatternStr) || xpathPatternStr.startsWith(".[")) {		 		 
     			insertPatternInTable(String.valueOf(xpathPatternStr), template);
     		}
