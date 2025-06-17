@@ -467,8 +467,8 @@ public class TransformerImpl extends Transformer
       xPath.setSecureProcessing(true);
     
     setXPathContext(xPath);
-    getXPathContext().setNamespaceContext(stylesheet);
-    m_stackGuard = new StackGuard(this);
+    getXPathContext().setNamespaceContext(stylesheet);    
+    m_stackGuard = new StackGuard(this);    
   }
   
   // ================ ExtensionsTable ===================
@@ -542,8 +542,9 @@ public class TransformerImpl extends Transformer
   //=========================
 
   /**
-   * Reset the state.  This needs to be called after a process() call
-   * is invoked, if the processor is to be used again.
+   * Reset TransformerImpl object instance's state. This needs 
+   * to be called after a process() call is invoked, if the 
+   * processor is to be used again.
    */
   public void reset()
   {
@@ -592,6 +593,8 @@ public class TransformerImpl extends Transformer
       // For now, reset the document cache each time.
       m_xcontext.getSourceTreeManager().reset();
     }
+    
+    XslTransformSharedDatastore.reset();
 
     //    m_reportInPostExceptionFromThread = false;
   }
@@ -729,7 +732,7 @@ public class TransformerImpl extends Transformer
       if (null == base)
       {
         base = m_stylesheetRoot.getBaseIdentifier();
-      }
+      }            
 
       // As a last resort, use the current user dir.
       if (null == base)

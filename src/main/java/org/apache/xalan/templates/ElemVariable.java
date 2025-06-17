@@ -758,6 +758,12 @@ public class ElemVariable extends ElemTemplateElement
     			  XslTransformSharedDatastore.xpathMap = null;
     		  }
     	  }
+    	  else if (XslTransformSharedDatastore.xslDocumentEvaluationResult != null) {
+    		  if (m_asAttr == null) {
+    			  var = XslTransformSharedDatastore.xslDocumentEvaluationResult;
+    			  XslTransformSharedDatastore.xslDocumentEvaluationResult = null;
+    		  }
+          }
     	  else {
     	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
     	     var = new XNodeSetForDOM(nodeList, xctxt);
@@ -807,6 +813,16 @@ public class ElemVariable extends ElemTemplateElement
            else {
         	  throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform "
         	  		                                                + "to variable's expected type " + m_asAttr + ".", srcLocator); 
+           }
+       }
+       else if (XslTransformSharedDatastore.xslDocumentEvaluationResult != null) {
+    	   if ((seqTypeKindVal == SequenceTypeSupport.DOCUMENT_KIND) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {
+    		  var = XslTransformSharedDatastore.xslDocumentEvaluationResult;
+    		  XslTransformSharedDatastore.xslDocumentEvaluationResult = null;
+    	   }
+    	   else {
+         	  throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform "
+         	  		                                                + "to variable's expected type " + m_asAttr + ".", srcLocator); 
            }
        }
        else if (var instanceof XNodeSetForDOM) {

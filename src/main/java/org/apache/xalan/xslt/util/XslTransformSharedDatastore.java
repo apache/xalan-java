@@ -18,6 +18,7 @@ package org.apache.xalan.xslt.util;
 
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
@@ -92,5 +93,28 @@ public class XslTransformSharedDatastore {
      * from a function call.
      */
     public static XPathNamedFunctionReference xpathNamedFunctionReference;
+    
+    /**
+     * This class field is used to refer to a document node, that an
+     * xsl:document instruction's evaluation has produced.
+     */
+    public static XMLNodeCursorImpl xslDocumentEvaluationResult;
+    
+    /**
+	 * Method definition to reset the variable values specified 
+	 * within this class.
+	 */
+	public static void reset() {
+		xslSystemId = null;
+		xpathInlineFunction = null;
+		xpathArray = null;
+		xpathMap = null;
+		stylesheetRoot = null;
+		xpathNodeCombiningExprRhsStrBuff = null;
+		templateMatchDotPatternPredicateStr = null;
+		xpathCallingOpCode = Integer.MIN_VALUE;
+		xpathNamedFunctionReference = null;
+		xslDocumentEvaluationResult = null;
+	}
 
 }

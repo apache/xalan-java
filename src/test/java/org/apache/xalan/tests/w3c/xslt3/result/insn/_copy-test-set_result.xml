@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-16T12:06:01Z" fail="43" name="copy" pass="16" skipped="0" statusUnknown="1" totalRun="60">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-17T16:18:37Z" fail="43" name="copy" pass="16" skipped="0" statusUnknown="1" totalRun="60">
    <testResult status="fail" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="fail" testName="copy-0103"/>
@@ -208,7 +208,8 @@
    <testResult status="fail" testName="copy-1208"/>
    <testResult status="fail" testName="copy-1209">
       <outResult>
-         <errTrace>XTSE0010 : an instruction xsl:document is not known to the XSLT processor.</errTrace>
+         <errTrace>XTSE0010 : an instruction xsl:on-empty is not known to the XSLT processor.</errTrace>
+         <errTrace>XTSE0010 : an instruction xsl:on-empty is not known to the XSLT processor.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="copy-1210">

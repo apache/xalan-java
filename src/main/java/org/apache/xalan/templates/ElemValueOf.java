@@ -61,6 +61,7 @@ import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSQName;
 
 /**
  * Implementation of XSLT xsl:value-of instruction.
@@ -347,6 +348,19 @@ public class ElemValueOf extends ElemTemplateElement {
                     	  if (evalResult instanceof XSDayTimeDuration) {
                     		  serializeXsDaytimeDurationValue((XSDayTimeDuration)evalResult, 3, xctxt, rth);
                     	  }
+                    	  else if (evalResult instanceof XSQName) {
+                    		  XSQName xsQName = (XSQName)evalResult;
+                    		  String nsPrefix = xsQName.getPrefix();
+                    		  String strValue = null;
+                    		  if ((nsPrefix != null) && !"".equals(nsPrefix)) {
+                    			 strValue = nsPrefix + ":" + xsQName.getLocalPart(); 
+                    		  }
+                    		  else {
+                    			 strValue = ((XSQName) evalResult).stringValue();  
+                    		  }
+                    		  
+                    		  (new XString(strValue)).dispatchCharactersEvents(rth);
+                    	  }
                     	  else {
                     		  String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);                                                       
                     		  strValue = preProcessStrBeforeXslSerialization(strValue);                          
@@ -400,7 +414,7 @@ public class ElemValueOf extends ElemTemplateElement {
                       
                       (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
-                  else if (expr instanceof Variable) {
+                  else if (expr instanceof Variable) {          	  
                       XObject evalResult = ((Variable)expr).execute(xctxt);
                       
                       String strValue = null;
@@ -444,19 +458,21 @@ public class ElemValueOf extends ElemTemplateElement {
                       else if (evalResult instanceof ResultSequence) {
                     	 strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult); 
                       }
-                      else if (evalResult instanceof XMLNodeCursorImpl) {
-                    	 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;
-                    	 DTMCursorIterator iter = xmlNodeCursorImpl.iterRaw();
-                    	 int nextNode;                    	 
-                    	 StringBuffer strBuff = new StringBuffer();                    	                     	 
-                    	 while ((nextNode = iter.nextNode()) != DTM.NULL) {
-                    		 XMLNodeCursorImpl nodeImpl = new XMLNodeCursorImpl(nextNode, xctxt);
-                    		 String nodeStrValue = nodeImpl.str();
-                    		 strBuff.append(nodeStrValue + " ");
-                    	 }
-                    	 
-                    	 strValue = strBuff.toString();
-                    	 strValue = strValue.trim();
+                      else if (evalResult instanceof XMLNodeCursorImpl) {                    	  
+                    	  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;
+                    	  DTMCursorIterator iter = xmlNodeCursorImpl.iterRaw();                    	  
+                    	  StringBuffer strBuff = new StringBuffer();
+                    	  int nextNode;
+                    	  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+                    		  XMLNodeCursorImpl nodeImpl = new XMLNodeCursorImpl(nextNode, xctxt);
+                    		  String nodeStrValue = nodeImpl.str();
+                    		  strBuff.append(nodeStrValue + " ");
+                    	  }
+
+                    	  strValue = strBuff.toString();
+                    	  if (strValue.length() > 1) {
+                    		 strValue = strValue.substring(0, strValue.length() - 1); 
+                    	  }
                       }
                       else {
                     	 strValue = XslTransformEvaluationHelper.getStrVal(evalResult);  

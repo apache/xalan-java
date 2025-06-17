@@ -32,6 +32,7 @@ import org.apache.xalan.templates.ElemComment;
 import org.apache.xalan.templates.ElemContextItem;
 import org.apache.xalan.templates.ElemCopy;
 import org.apache.xalan.templates.ElemCopyOf;
+import org.apache.xalan.templates.ElemDocument;
 import org.apache.xalan.templates.ElemElement;
 import org.apache.xalan.templates.ElemEvaluate;
 import org.apache.xalan.templates.ElemExsltFuncResult;
@@ -253,11 +254,11 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef errorsAttrOpt = new XSLTAttributeDef(null, "errors", XSLTAttributeDef.T_QNAMES,
                                                                                     false, false, XSLTAttributeDef.ERROR);
     
-    // xsl:element, xsl:attribute                                           
+    // xsl:element, xsl:attribute, xsl:document                                          
     XSLTAttributeDef typeAttrOpt = new XSLTAttributeDef(null, "type",
             										XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
     
-    // xsl:element, xsl:attribute                                           
+    // xsl:element, xsl:attribute, xsl:document                                         
     XSLTAttributeDef validationAttrOpt = new XSLTAttributeDef(null, "validation",
             										XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
         
@@ -515,13 +516,13 @@ public class XSLTSchema extends XSLTElementDef
                                                           XSLTAttributeDef.T_CDATA, false, false, 
                                                           XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[44];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[45];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[45];
+    XSLTElementDef[] templateElements = new XSLTElementDef[45];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[46];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[46];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[45];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[46];
     
-    XSLTElementDef[] charTemplateElements = new XSLTElementDef[26];
+    XSLTElementDef[] charTemplateElements = new XSLTElementDef[27];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
                                      templateElements /* elements */,
@@ -565,6 +566,14 @@ public class XSLTSchema extends XSLTElementDef
                                 		                 validationAttrOpt },
                                  new ProcessorTemplateElem(),
                                  ElemCopyOf.class /* class object */, 20, true);
+    
+    XSLTElementDef xslDocument = new XSLTElementDef(this,
+					             Constants.S_XSLNAMESPACEURL, "document",
+					             null /*alias */, templateElements /* elements */,
+					             new XSLTAttributeDef[]{ typeAttrOpt, validationAttrOpt },
+					             new ProcessorTemplateElem(),
+					             ElemDocument.class /* class object */, 20, true);
+    
     XSLTElementDef xslNumber = new XSLTElementDef(this,
                                  Constants.S_XSLNAMESPACEURL, "number",
                                  null /*alias */, null /* elements */,
@@ -950,6 +959,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslEvaluate;
     templateElements[i++] = xslContextItem;
     templateElements[i++] = xslCopyOf;
+    templateElements[i++] = xslDocument;
     templateElements[i++] = xslNumber;
     templateElements[i++] = xslChoose;
     templateElements[i++] = xslIf;
@@ -1000,6 +1010,7 @@ public class XSLTSchema extends XSLTElementDef
     charTemplateElements[i++] = xslValueOf;
     charTemplateElements[i++] = xslContextItem;
     charTemplateElements[i++] = xslCopyOf;
+    charTemplateElements[i++] = xslDocument;
     charTemplateElements[i++] = xslNumber;
     charTemplateElements[i++] = xslChoose;
     charTemplateElements[i++] = xslIf;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-16T12:06:27Z" fail="23" name="boolean" pass="89" skipped="0" statusUnknown="0" totalRun="112">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-17T16:18:47Z" fail="24" name="boolean" pass="88" skipped="0" statusUnknown="0" totalRun="112">
    <testResult status="pass" testName="boolean-001"/>
    <testResult status="pass" testName="boolean-002"/>
    <testResult status="pass" testName="boolean-003"/>
@@ -67,14 +67,10 @@
    <testResult status="fail" testName="boolean-066"/>
    <testResult status="fail" testName="boolean-067"/>
    <testResult status="fail" testName="boolean-068"/>
-   <testResult status="fail" testName="boolean-069">
-      <outResult>
-         <errTrace>XTDE0700 : No value supplied for the required parameter $set1. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="boolean-069"/>
    <testResult status="pass" testName="boolean-070"/>
    <testResult status="fail" testName="boolean-071"/>
-   <testResult status="pass" testName="boolean-072"/>
+   <testResult status="fail" testName="boolean-072"/>
    <testResult status="fail" testName="boolean-073"/>
    <testResult status="fail" testName="boolean-074"/>
    <testResult status="pass" testName="boolean-075"/>

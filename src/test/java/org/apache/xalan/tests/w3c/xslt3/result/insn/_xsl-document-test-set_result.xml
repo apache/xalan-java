@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-17T16:20:27Z" fail="13" name="xsl-document" pass="12" skipped="0" statusUnknown="0" totalRun="25">
+   <testResult status="pass" testName="xsl-document-0101"/>
+   <testResult status="fail" testName="xsl-document-0102">
+      <outResult>
+         <errTrace>ERROR! Unknown op code: 0</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="xsl-document-0103"/>
+   <testResult status="pass" testName="xsl-document-0104"/>
+   <testResult status="pass" testName="xsl-document-0105"/>
+   <testResult status="pass" testName="xsl-document-0106"/>
+   <testResult status="pass" testName="xsl-document-0107"/>
+   <testResult status="fail" testName="xsl-document-0201"/>
+   <testResult status="fail" testName="xsl-document-0202"/>
+   <testResult status="pass" testName="xsl-document-0203"/>
+   <testResult status="fail" testName="xsl-document-0301">
+      <outResult>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Expected ], but found: </errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="xsl-document-0302"/>
+   <testResult status="fail" testName="xsl-document-0401"/>
+   <testResult status="fail" testName="xsl-document-0402"/>
+   <testResult status="pass" testName="xsl-document-0403"/>
+   <testResult status="fail" testName="xsl-document-0404">
+      <outResult>
+         <errTrace>XTTE0505 : The variable x's value doesn't conform to variable's expected type node().</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="xsl-document-0501">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="xsl-document-0601">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="xsl-document-0602"/>
+   <testResult status="fail" testName="xsl-document-0603">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="xsl-document-0604"/>
+   <testResult status="pass" testName="xsl-document-0605"/>
+   <testResult status="fail" testName="xsl-document-0606"/>
+   <testResult status="pass" testName="xsl-document-0701"/>
+   <testResult status="fail" testName="xsl-document-0801"/>
+</testrun>

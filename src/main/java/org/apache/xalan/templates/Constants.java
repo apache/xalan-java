@@ -135,9 +135,11 @@ public class Constants extends org.apache.xml.utils.Constants
   
   ELEMNAME_OUTPUT_CHARACTER = 112,
   
-  ELEMNAME_CONTEXT_ITEM = 113;
+  ELEMNAME_CONTEXT_ITEM = 113,
   
-  // next available number : 114
+  ELEMNAME_DOCUMENT = 114;
+  
+  // next available number : 115
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -243,7 +245,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_CONTEXT_ITEM_STRING = "context-item",
       ELEMNAME_CONTEXT_ITEM_REQUIRED_STRING = "required",
       ELEMNAME_CONTEXT_ITEM_OPTIONAL_STRING = "optional",
-      ELEMNAME_CONTEXT_ITEM_ABSENT_STRING = "absent";
+      ELEMNAME_CONTEXT_ITEM_ABSENT_STRING = "absent",
+      ELEMNAME_DOCUMENT_STRING ="document";
   
   /**
    * Literals for EXSLT function elements.
