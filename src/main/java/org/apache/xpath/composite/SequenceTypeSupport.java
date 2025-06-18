@@ -256,8 +256,6 @@ public class SequenceTypeSupport {
     /**
      * Sequence type occurrence indicator values, for Xalan-J 
      * implementation.
-     * 
-     * @author Mukul Gandhi <mukulg@apache.org>
      */
     public static class OccurrenceIndicator {       
        // No occurrence indicator has been specified within an 
@@ -288,8 +286,6 @@ public class SequenceTypeSupport {
      * This class specifies min and max value ranges for XML Schema 
      * built-in types derived from type xs:integer, as defined by 
      * XML Schema specification.
-     * 
-     * @author Mukul Gandhi <mukulg@apache.org>
      */
     public static class XmlSchemaBuiltinNumericType {
     	

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -32,14 +33,17 @@ import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.ref.DTMNodeList;
+import org.apache.xml.dtm.ref.DTMNodeProxy;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
+import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
@@ -429,12 +433,14 @@ public class ElemFunction extends ElemTemplate
      NodeList nodeList = localRootNode.getChildNodes();
      int nodeSetLen = nodeList.getLength();
      
+     SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+     
      if (nodeSetLen == 1) {
         Node node = nodeList.item(0);
         short nodeType = node.getNodeType();
         if (nodeType == Node.TEXT_NODE) {
              String strVal = ((Text)node).getNodeValue();             
-             if (seqExpectedTypeData.getSequenceTypeKindTest() == null) {               
+             if (seqTypeKindTest == null) {               
                 resultSequence = new ResultSequence();                  
                 if (strVal.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX);
@@ -456,28 +462,65 @@ public class ElemFunction extends ElemTemplate
          }
      }
      
-     if (seqExpectedTypeData.getSequenceTypeKindTest() == null) {
-         if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                               (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
-                                                                                                               SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
-             if ((resultSequence != null) && (resultSequence.size() > 1)) {
-                String errMesg = null;
-                if (m_name != null) {
-                   errMesg = "XTTE0780 : A sequence of more than one item, is not allowed as a result of call to function '" + m_name.toString() + "'. "
-                                                                                + "The expected result type of this function is " + sequenceTypeXPathExprStr + "."; 
-                }
-                else if (varQName != null) {
-                   errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the value of variable '$" + varQName.toString() + "'. "
-                                                                                + "This variable has expected type " + sequenceTypeXPathExprStr + "."; 
-                }
-                else {
-                   errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the result of xsl:evaluate instruction's evaluation. "
-                            													+ "An xsl:evaluate instruction's expected type is " + sequenceTypeXPathExprStr + ".";
-                }
-                
-                throw new TransformerException(errMesg); 
-             }
+     if ((nodeSetLen == 1) && (seqTypeKindTest != null)) {
+    	 Node node = nodeList.item(0);
+         short nodeType = node.getNodeType();
+         if ((nodeType == Node.ELEMENT_NODE) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND)) {        	 
+        	 String typeNodeLocalName = seqTypeKindTest.getNodeLocalName();
+        	 String typeNodeNsUri = seqTypeKindTest.getNodeNsUri();
+        	 String typeDataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
+        	 String typeDataTypeUri = seqTypeKindTest.getDataTypeUri();
+        	 
+        	 String nodeLocalName = node.getLocalName();
+        	 String nodeNsUri = node.getNamespaceURI();
+        	 
+        	 XSTypeDefinition xsTypeDefn = xNodeSetForDOM.getXsTypeDefinition();
+        	 if (xsTypeDefn == null) {
+        		if (typeDataTypeLocalName == null) {
+        			if (typeNodeLocalName == null) {        				
+        				resultSequence = getResultSequenceFromNode(node, seqTypeKindTest, xctxt);
+        				
+        				return resultSequence;
+        			}        			
+        		}
+        		else if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeDataTypeUri) && (Keywords.XS_UNTYPED).equals(typeDataTypeLocalName)) {
+    				if ((nodeNsUri == null) && (typeNodeNsUri == null) && typeNodeLocalName.equals(nodeLocalName)) {
+    					resultSequence = getResultSequenceFromNode(node, seqTypeKindTest, xctxt);
+
+        				return resultSequence;
+    				}
+    				else if ((nodeNsUri != null) && (nodeNsUri.equals(typeNodeNsUri)) && typeNodeLocalName.equals(nodeLocalName)) {
+    					resultSequence = getResultSequenceFromNode(node, seqTypeKindTest, xctxt);
+
+        				return resultSequence;
+    				}
+    			}
+        	 }
+        	 else {
+        		// REVISIT
+        		// We need to do XML Schema validation of node 'node' with the type xsTypeDefn 
+        	 }
          }
+     }
+     else if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 0) || (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
+                                                                                                               SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
+    	 if ((resultSequence != null) && (resultSequence.size() > 1)) {
+    		 String errMesg = null;
+    		 if (m_name != null) {
+    			 errMesg = "XTTE0780 : A sequence of more than one item, is not allowed as a result of call to function '" + m_name.toString() + "'. "
+    					 																		+ "The expected result type of this function is " + sequenceTypeXPathExprStr + "."; 
+    		 }
+    		 else if (varQName != null) {
+    			 errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the value of variable '$" + varQName.toString() + "'. "
+    					 																		+ "This variable has expected type " + sequenceTypeXPathExprStr + "."; 
+    		 }
+    		 else {
+    			 errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the result of xsl:evaluate instruction's evaluation. "
+    					 																		+ "An xsl:evaluate instruction's expected type is " + sequenceTypeXPathExprStr + ".";
+    		 }
+
+    		 throw new TransformerException(errMesg); 
+    	 }
      }
      
      return resultSequence;
@@ -779,6 +822,27 @@ public class ElemFunction extends ElemTemplate
 	  }
 
 	  return argConvertedVal;	  
+	}
+  
+   /**
+    * Method definition to get an XML node instance as a ResultSequence object. 
+    * 
+    * @param node					An XML node instance
+    * @param seqTypeKindTest        SequenceTypeKindTest object with which the node has 
+    * 								been verified.
+    * @param xctxt					An XPath context object
+    * @return						ResultSequence object encapsulating the node
+    */
+    private ResultSequence getResultSequenceFromNode(Node node, SequenceTypeKindTest seqTypeKindTest, XPathContext xctxt) {
+		ResultSequence resultSequence = new ResultSequence();
+		
+		DTMNodeProxy dtmNodeProxy = (DTMNodeProxy)node;
+		int nodeHandle = dtmNodeProxy.getDTMNodeNumber();
+		XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nodeHandle, xctxt);
+		xmlNodeCursorImpl.setSeqTypeKindTest(seqTypeKindTest);
+		resultSequence.add(xmlNodeCursorImpl);
+		
+		return resultSequence;
 	}
 
 }

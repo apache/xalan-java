@@ -35,22 +35,22 @@ public class SequenceTypeKindTest {
     private int kindVal;
     
     /**
-     * An XML element or attribute node's local-name.
+     * An XML element or attribute node's local name.
      */
     private String nodeLocalName;
     
     /**
-     * An XML element or attribute node's namespace-uri.
+     * An XML element or attribute node's namespace uri.
      */
     private String nodeNsUri;
     
     /**
-     * Data type's local-name.
+     * Data type's local name.
      */
     private String dataTypeLocalName;
     
     /**
-     * Data type's namespace-uri.
+     * Data type's namespace uri.
      */
     private String dataTypeUri;
 
@@ -95,16 +95,19 @@ public class SequenceTypeKindTest {
     }
     
     /**
-     * Check whether, one SequenceTypeKindTest object is functionally
-     * equal to another SequenceTypeKindTest object.  
+     * Method definition to check whether, two SequenceTypeKindTest objects
+     * are functionally equal.   
      */
-    public boolean equal(SequenceTypeKindTest sequenceTypeKindTest) {
+    public boolean equal(SequenceTypeKindTest sequenceTypeKindTest2) {
+    	
     	boolean isEqual = true;
     	
-    	int kindVal2 = sequenceTypeKindTest.getKindVal();
-    	String nodeLocalName2 = sequenceTypeKindTest.getNodeLocalName();
-    	String nodeNsUri2 = sequenceTypeKindTest.getNodeNsUri();
-        String dataTypeLocalName2 = sequenceTypeKindTest.getNodeLocalName();
+    	int kindVal2 = sequenceTypeKindTest2.getKindVal();
+    	
+    	String nodeLocalName2 = sequenceTypeKindTest2.getNodeLocalName();
+    	String nodeNsUri2 = sequenceTypeKindTest2.getNodeNsUri();
+        String dataTypeLocalName2 = sequenceTypeKindTest2.getDataTypeLocalName();
+        String dataTypeUri2 = sequenceTypeKindTest2.getDataTypeUri();
         
         if (this.kindVal != kindVal2) {
            isEqual = false;
@@ -121,16 +124,13 @@ public class SequenceTypeKindTest {
         else if (!(this.nodeLocalName).equals(nodeLocalName2)) {
            isEqual = false;
         }
-        else if ((this.nodeNsUri == null) && (nodeNsUri2 == null)) {
-           isEqual = true;
-        }
         else if ((this.nodeNsUri == null) && (nodeNsUri2 != null)) {
            isEqual = false;
         }
         else if ((this.nodeNsUri != null) && (nodeNsUri2 == null)) {
            isEqual = false;
         }
-        else if (!(this.nodeNsUri).equals(nodeNsUri2)) {
+        else if ((nodeNsUri != null) && !(this.nodeNsUri).equals(nodeNsUri2)) {
            isEqual = false;
         }
         else if ((this.dataTypeLocalName == null) && (dataTypeLocalName2 == null)) {
@@ -142,7 +142,16 @@ public class SequenceTypeKindTest {
         else if ((this.dataTypeLocalName != null) && (dataTypeLocalName2 == null)) {
            isEqual = false;
         }
-        else if (!(this.dataTypeLocalName).equals(dataTypeLocalName2)) {
+        else if ((dataTypeLocalName != null) && !(this.dataTypeLocalName).equals(dataTypeLocalName2)) {
+           isEqual = false;
+        }
+        else if ((this.dataTypeUri == null) && (dataTypeUri2 != null)) {
+           isEqual = false;
+        }
+        else if ((this.dataTypeUri != null) && (dataTypeUri2 == null)) {
+           isEqual = false;
+        }
+        else if ((dataTypeUri != null) && !(this.dataTypeUri).equals(dataTypeUri2)) {
            isEqual = false;
         }
     	

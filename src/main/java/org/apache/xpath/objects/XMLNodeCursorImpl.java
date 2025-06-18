@@ -31,6 +31,7 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.NodeCursor;
+import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
@@ -104,6 +105,12 @@ public class XMLNodeCursorImpl extends NodeCursor
    * class field being true is for those such values. 
    */
   private static boolean m_is_transformed_atomic_value = false;
+  
+  /**
+   * An XPath sequence type kind test, that has been used to check
+   * this node's conformance with the sequence type kind test.
+   */
+  private static SequenceTypeKindTest m_seqTypeKindTest = null;
 
   /**
    * Construct a XMLNodeCursorImpl object.
@@ -1040,6 +1047,14 @@ public class XMLNodeCursorImpl extends NodeCursor
 
   public void setIsTransformedAtomicValue(boolean isTransformedAtomicValue) {
 	 this.m_is_transformed_atomic_value = isTransformedAtomicValue;
+  }
+
+  public void setSeqTypeKindTest(SequenceTypeKindTest seqTypeKindTest) {
+	 this.m_seqTypeKindTest = seqTypeKindTest;	
+  }
+  
+  public SequenceTypeKindTest getSeqTypeKindTest() {
+	 return m_seqTypeKindTest; 
   }
   
 }

@@ -106,7 +106,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * The XPath 3.1 "instance of" operation.
+ * An implementation of XPath 3.1 'instance of' operator.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -166,7 +166,7 @@ public class InstanceOf extends Operation
   private boolean isInstanceOf(XObject xdmValue, SequenceTypeData seqTypeData) throws ParserConfigurationException, SAXException, 
                                                                                                              IOException, TransformerException, Exception {
     
-      boolean isInstanceOf = false;
+      boolean isInstanceOf = false;     
       
       if ((xdmValue instanceof XSUntypedAtomic) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC)) {
           isInstanceOf = true;  
@@ -466,13 +466,13 @@ public class InstanceOf extends Operation
 
 		  List<Boolean> nodeSetSequenceTypeKindTestResultList = new ArrayList<Boolean>();
 
-		  int nextNodeDtmHandle;
-		  while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {                 
-			  DTM dtm = dtmIter.getDTM(nextNodeDtmHandle);
-			  java.lang.String nodeName = dtm.getNodeName(nextNodeDtmHandle);
-			  java.lang.String nodeNsUri = dtm.getNamespaceURI(nextNodeDtmHandle);
+		  int nextNode;
+		  while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {			   
+			  DTM dtm = dtmIter.getDTM(nextNode);
+			  java.lang.String nodeName = dtm.getNodeName(nextNode);
+			  java.lang.String nodeNsUri = dtm.getNamespaceURI(nextNode);
 
-			  if (dtm.getNodeType(nextNodeDtmHandle) == DTM.DOCUMENT_NODE) {
+			  if (dtm.getNodeType(nextNode) == DTM.DOCUMENT_NODE) {
 				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
 				  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND)) {
 					  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
@@ -482,9 +482,15 @@ public class InstanceOf extends Operation
 					  break;
 				  }
 			  }
-			  else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
+			  else if (dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) {
 				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
 				  if (seqTypeKindTest != null) {
+					  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());
+					  SequenceTypeKindTest seqTypeKindTest2 = xmlNodeCursorImpl.getSeqTypeKindTest();
+					  if ((nodeSetLen == 1) && (seqTypeKindTest2 != null) && seqTypeKindTest2.equal(seqTypeKindTest)) {
+						 return true; 
+					  }
+					  
 					  java.lang.String elemNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
 					  if (elemNodeKindTestNodeName == null || "".equals(elemNodeKindTestNodeName) || 
 							  																SequenceTypeSupport.STAR.equals(elemNodeKindTestNodeName)) {
@@ -496,7 +502,7 @@ public class InstanceOf extends Operation
 							                                                    		                                       seqTypeKindTest.getNodeNsUri()))) {
 						  XSTypeDefinition xsTypeDefn = seqTypeData.getXsTypeDefinition();
 						  if (xsTypeDefn != null) {
-							  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmIter.getDTMManager());
+							  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());
 							  if (SequenceTypeSupport.isXdmElemNodeValidWithSchemaType(node, m_xctxt, xsTypeDefn)) {
 								  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));
 							  }
@@ -506,7 +512,7 @@ public class InstanceOf extends Operation
 							  }
 						  }
 						  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(seqTypeKindTest.getDataTypeUri())) {
-							  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmIter.getDTMManager());
+							  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());
 							  
 							  // Check whether this element node has complexContent (i.e, presence of 
 							  // child element or attribute). If 'yes' then instance of check will 
@@ -625,7 +631,7 @@ public class InstanceOf extends Operation
 					  break;
 				  }
 			  }
-			  else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
+			  else if (dtm.getNodeType(nextNode) == DTM.ATTRIBUTE_NODE) {
 				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
 				  if (seqTypeKindTest != null) {
 					  java.lang.String attrNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
@@ -641,7 +647,7 @@ public class InstanceOf extends Operation
 						  if (xsTypeDefn != null) {
 							  if (xsTypeDefn instanceof XSSimpleType) {
 								  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)xsTypeDefn;
-								  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmIter.getDTMManager());
+								  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());
 								  try {
 								      xsSimpleTypeDecl.validate(node.str(), null, null);
 								      nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));
@@ -657,7 +663,7 @@ public class InstanceOf extends Operation
 							  }
 						  }
 						  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(seqTypeKindTest.getDataTypeUri())) {
-                              XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmIter.getDTMManager());							  
+                              XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());							  
 							  java.lang.String dataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
 							  java.lang.String xpathConstructorFuncExprStr = "xs:" + dataTypeLocalName + "('" + node.str() + "')";
 							  xpathConstructorFuncExprStr += " instance of xs:" + dataTypeLocalName; 							  
@@ -719,13 +725,13 @@ public class InstanceOf extends Operation
 					  break;
 				  } 
 			  }
-			  else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.TEXT_NODE) {
+			  else if (dtm.getNodeType(nextNode) == DTM.TEXT_NODE) {
 				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
 				  if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.TEXT_KIND) {
 					  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
 				  }
 			  }
-			  else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.NAMESPACE_NODE) {
+			  else if (dtm.getNodeType(nextNode) == DTM.NAMESPACE_NODE) {
 				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
 				  if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.NAMESPACE_NODE_KIND) {
 					  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
