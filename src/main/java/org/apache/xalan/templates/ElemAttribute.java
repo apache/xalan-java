@@ -74,6 +74,18 @@ public class ElemAttribute extends ElemElement
      * as performed within object of this class.  
      */
     private int m_globals_size;
+    
+    /**
+     * Class field to refer to an attribute's value, when the attribute 
+     * is not to be emitted to XSL transformation's output.
+     */
+    private String m_attrVal = null;
+    
+    /**
+     * Class field to store the fact that, whether to serialize an 
+     * attribute to XSL transform's output.
+     */
+    private boolean m_is_serialize = true;
 
   /**
    * Get an int constant identifying the type of element.
@@ -186,13 +198,11 @@ public class ElemAttribute extends ElemElement
    * @param nodeName              The name of the node, which may be null.
    * @param prefix                The prefix for the namespace, which may be null.
    * @param nodeNamespace         The namespace of the node, which may be null.
-   * @param transformer           non-null reference to the current transform-time state.
+   * @param transformer           non-null reference to the current transform-time state. 
    *
    * @throws TransformerException
    */
-  void constructNode(String nodeName, String prefix, String nodeNamespace, 
-                                                                 TransformerImpl transformer)
-                                                                            throws TransformerException {
+  void constructNode(String nodeName, String prefix, String nodeNamespace, TransformerImpl transformer) throws TransformerException {
     
         XPathContext xctxt = transformer.getXPathContext();
         
@@ -351,19 +361,24 @@ public class ElemAttribute extends ElemElement
             	 // The validation value 'preserve' is currently not implemented.
               }
               
-              try {
-                    // Let an XSL result tree handler add the attribute and its 
-            	    // string value.
-                    String localName = QName.getLocalPart(nodeName);
-                    if (prefix != null && prefix.length() > 0) {
-                        rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", attrVal, true);
-                    }
-                    else {
-                        rhandler.addAttribute("", localName, nodeName, "CDATA", attrVal, true);
-                    }
+              if (m_is_serialize) {
+            	  try {
+            		  // Let an XSL result tree handler add the attribute and its 
+            		  // string value.
+            		  String localName = QName.getLocalPart(nodeName);
+            		  if (prefix != null && prefix.length() > 0) {
+            			  rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", attrVal, true);
+            		  }
+            		  else {
+            			  rhandler.addAttribute("", localName, nodeName, "CDATA", attrVal, true);
+            		  }
+            	  }
+            	  catch (SAXException ex) {
+            		  throw new TransformerException("XTSE0840 : An error occured while processing XSL instruction xsl:attribute.", srcLocator);
+            	  }
               }
-              catch (SAXException ex) {
-            	  throw new TransformerException("XTSE0840 : An error occured while processing XSL instruction xsl:attribute.", srcLocator);
+              else {
+            	  m_attrVal = attrVal;
               }
         }
     
@@ -443,6 +458,22 @@ public class ElemAttribute extends ElemElement
 		if ((m_selectExpression != null) && (m_vars != null)) {
 			m_selectExpression.fixupVariables(m_vars, m_globals_size);
 		}
+	}
+
+	public String getAttrVal() {
+		return m_attrVal;
+	}
+
+	public void setAttrVal(String attrVal) {
+		this.m_attrVal = attrVal;
+	}
+	
+	public void setIsSerialize(boolean is_serialize) {
+		m_is_serialize = is_serialize;		
+	}
+	
+	public boolean getIsSerialize() {
+	   return m_is_serialize; 	
 	}
 
 }

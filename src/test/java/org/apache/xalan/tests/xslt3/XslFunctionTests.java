@@ -288,5 +288,35 @@ public class XslFunctionTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslFunctionTest25() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "doc1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test25.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test25.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFunctionTest26() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "doc1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test26.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test26.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFunctionTest27() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "doc1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test27.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test27.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

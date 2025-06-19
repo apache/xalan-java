@@ -56,6 +56,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XMLAttribute;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -219,7 +220,7 @@ public class ElemCopyOf extends ElemTemplateElement
                                                                         "select", m_selectExpression, value);
       }
 
-      SerializationHandler handler = transformer.getSerializationHandler();
+      SerializationHandler rhandler = transformer.getSerializationHandler();
 
       if (value != null) {
             int xObjectType = value.getType();
@@ -236,22 +237,38 @@ public class ElemCopyOf extends ElemTemplateElement
                 	  }
                   }
                   xNodeSet.setValidationAttrForValidation(validationStr);
-                  copyOfActionOnNodeSet(xNodeSet, transformer, handler, xctxt);          
+                  copyOfActionOnNodeSet(xNodeSet, transformer, rhandler, xctxt);          
                   break;
                 case XObject.CLASS_RTREEFRAG :
                   SerializerUtils.outputResultTreeFragment(
-                                                        handler, value, transformer.getXPathContext());
+                                                        rhandler, value, transformer.getXPathContext());
                   break;
                 case XObject.CLASS_RESULT_SEQUENCE :         
                   ResultSequence resultSequence = (ResultSequence)value;          
-                  copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, false);          
+                  copyOfActionOnResultSequence(resultSequence, transformer, rhandler, xctxt, false);          
                   break;
                 case XObject.CLASS_ARRAY : 
                   XPathArray xpathArray = (XPathArray)value;
                   List<XObject> nativeArr = xpathArray.getNativeArray();
                   ResultSequence resultSequenceArr = getResultSequenceFromXPathArray(nativeArr);
-                  copyOfActionOnResultSequence(resultSequenceArr, transformer, handler, xctxt, false);
+                  copyOfActionOnResultSequence(resultSequenceArr, transformer, rhandler, xctxt, false);
                   break;
+                case XObject.CLASS_UNKNOWN :
+                  if (value instanceof XMLAttribute) {
+                	  XMLAttribute xmlAttribute = (XMLAttribute)value;                	  
+                	  String prefix = xmlAttribute.getPrefix();
+                	  String localName = xmlAttribute.getLocalName();                	                  	   
+                	  String ns = xmlAttribute.getNamespaceUri();
+                	  String attrValue = xmlAttribute.getAttrValue();
+                	  String rawName = (prefix != null && !"".equals(prefix)) ? prefix + ":" + localName : localName;  
+                	  rhandler.addAttribute(
+                			             ns, 
+                			             localName, 
+                			             rawName, 
+                			             "CDATA", 
+                			             attrValue, false);
+                  }
+                  break;	
                 default :
                   // no op
             }
@@ -259,19 +276,19 @@ public class ElemCopyOf extends ElemTemplateElement
             if ((value instanceof XBoolean) || (value instanceof XNumber) || 
                                                                       (value instanceof XString)) {
                 strVal = value.str();
-                handler.characters(strVal.toCharArray(), 0, strVal.length());
+                rhandler.characters(strVal.toCharArray(), 0, strVal.length());
             }
             else if (value instanceof XSAnyAtomicType) {
                 strVal = ((XSAnyAtomicType)value).stringValue();
-                handler.characters(strVal.toCharArray(), 0, strVal.length());
+                rhandler.characters(strVal.toCharArray(), 0, strVal.length());
             }
             else if (value instanceof XSUntypedAtomic) {
                 strVal = ((XSUntypedAtomic)value).stringValue();
-                handler.characters(strVal.toCharArray(), 0, strVal.length());
+                rhandler.characters(strVal.toCharArray(), 0, strVal.length());
             }
             else if (value instanceof XSUntyped) {
                 strVal = ((XSUntyped)value).stringValue();
-                handler.characters(strVal.toCharArray(), 0, strVal.length());
+                rhandler.characters(strVal.toCharArray(), 0, strVal.length());
             }
             else if (value instanceof XPathMap) {
                 throw new TransformerException("XTDE0450 : Cannot add a map to an xdm node tree, "

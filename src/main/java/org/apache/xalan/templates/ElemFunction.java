@@ -57,6 +57,7 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.types.XMLAttribute;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
@@ -386,7 +387,8 @@ public class ElemFunction extends ElemTemplate
                                                                XPathContext xctxt, QName varQName) throws TransformerException {
      ResultSequence resultSequence = null;
      
-     final int contextNode = xctxt.getContextNode(); 
+     final int contextNode = xctxt.getContextNode();
+     
      SourceLocator srcLocator = xctxt.getSAXLocator();
      
      XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
@@ -394,6 +396,8 @@ public class ElemFunction extends ElemTemplate
      XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
      SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+     
+     SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
      
      if (initialEvalResult instanceof XPathNamedFunctionReference) {
     	 SequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
@@ -424,6 +428,29 @@ public class ElemFunction extends ElemTemplate
         	 }
     	 }    	 
      }
+     else if (initialEvalResult instanceof XMLAttribute) {
+    	 XMLAttribute xmlAttribute = (XMLAttribute)initialEvalResult;
+    	 String localName = xmlAttribute.getLocalName();
+    	 String nsUri = xmlAttribute.getNamespaceUri();
+    	 QName attrQName = new QName(nsUri, localName);
+    	 if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) {
+    		 String expectedLocalName = seqTypeKindTest.getNodeLocalName();    		 
+    		 if ((expectedLocalName != null) && !"".equals(expectedLocalName)) {
+    			 String expectedNsUri = seqTypeKindTest.getNodeNsUri();
+    			 QName expectedQName = new QName(expectedNsUri, expectedLocalName);
+    			 if (!attrQName.equals(expectedQName)) {
+    				 throw new TransformerException("XTTE0570 : An attribute '" + attrQName.toString() + "' produced during "
+    				 		                                                    + "XSL transformation doesn't match the expected type " + 
+    						                                                      sequenceTypeXPathExprStr + ".", srcLocator);
+    			 }
+    		 }
+    	 }
+    	 
+    	 resultSequence = new ResultSequence();
+		 resultSequence.add(initialEvalResult);
+
+		 return resultSequence;
+     }
      
      XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)initialEvalResult;
      
@@ -431,9 +458,7 @@ public class ElemFunction extends ElemTemplate
 
      Node localRootNode = dtmNodeList.item(0);
      NodeList nodeList = localRootNode.getChildNodes();
-     int nodeSetLen = nodeList.getLength();
-     
-     SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+     int nodeSetLen = nodeList.getLength();          
      
      if (nodeSetLen == 1) {
         Node node = nodeList.item(0);
@@ -559,38 +584,86 @@ public class ElemFunction extends ElemTemplate
    * instruction's evaluation semantics (the class ElemParam extends the class 
    * ElemVariable). 
    * 
-   * @param transformer				org.apache.xalan.transformer.TransformerImpl object
-   * @param xctxt           		xpath context object
-   * @return                		result of xsl:function's evaluation  
+   * @param transformer				An XSL TransformerImpl object
+   * @param xctxt           		An XPath context object
+   * @return                		Result of xsl:function's evaluation  
    * @throws TransformerException
    */
   private XObject getXslFunctionResult(TransformerImpl transformer, XPathContext xctxt) throws TransformerException {		
 	  
 	  XObject result = null;
 	  
-	  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
-	  
-	  if (XslTransformSharedDatastore.xpathInlineFunction != null) {
-		  result = XslTransformSharedDatastore.xpathInlineFunction;
-		  XslTransformSharedDatastore.xpathInlineFunction = null;
-	  }
-	  else if (XslTransformSharedDatastore.xpathMap != null) {
-		  result = XslTransformSharedDatastore.xpathMap;
-		  XslTransformSharedDatastore.xpathMap = null;
-	  }
-	  else if (XslTransformSharedDatastore.xpathArray != null) {
-		  result = XslTransformSharedDatastore.xpathArray;
-		  XslTransformSharedDatastore.xpathArray = null;
-	  }
-	  else if (XslTransformSharedDatastore.xpathNamedFunctionReference != null) {
-		  result = XslTransformSharedDatastore.xpathNamedFunctionReference;
-		  XslTransformSharedDatastore.xpathNamedFunctionReference = null;
+	  ElemTemplateElement firstChildElem = getFirstChildElem();
+	  ElemTemplateElement secondChildElem = null;
+	  if (firstChildElem != null) {
+		 secondChildElem = firstChildElem.getNextSiblingElem();  
 	  }
 	  
-	  if (result == null) {		  
-		  int nodeDtmHandle = Integer.valueOf(xslFunctionResult.toString());
-		  NodeList nodeList = (new XRTreeFrag(nodeDtmHandle, xctxt, this)).convertToNodeset();
-		  result = new XNodeSetForDOM(nodeList, xctxt);		  
+	  if ((firstChildElem instanceof ElemAttribute) && (secondChildElem == null)) {
+		  // An XSL function is emitting only an attribute node via xsl:attribute 
+		  // instruction.		  
+		  ElemAttribute elemAttr = (ElemAttribute)firstChildElem;
+		  AVT attrAvtName = elemAttr.getName();
+		  String prefix = null;
+		  String localName = attrAvtName.evaluate(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+		  String namespaceUri = null;
+		  int indexColon = localName.indexOf(':');
+		  if (indexColon > 0) {
+			 prefix = localName.substring(0, indexColon);
+			 localName = localName.substring(indexColon + 1); 
+			 List<XMLNSDecl> prefixTable = firstChildElem.getPrefixTable();
+			 for (int idx = 0; idx < prefixTable.size(); idx++) {
+				 XMLNSDecl xmlNSDecl = prefixTable.get(idx);
+				 String prefix1 = xmlNSDecl.getPrefix();
+				 if (prefix1.equals(prefix)) {
+					namespaceUri = xmlNSDecl.getURI();
+					break;
+				 }
+			 }
+		  }
+
+		  String attrValue = null;
+		  
+		  try {
+			 elemAttr.setIsSerialize(false);
+		     elemAttr.constructNode(localName, prefix, namespaceUri, transformer);
+		     attrValue = elemAttr.getAttrVal();
+		  }
+		  catch (TransformerException ex) {
+			 throw ex; 
+		  }
+		  finally {
+			 elemAttr.setIsSerialize(true);
+			 elemAttr.setAttrVal(null);
+		  }
+		  
+		  result = new XMLAttribute(localName, prefix, namespaceUri, attrValue);
+	  }
+	  else {
+		  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
+
+		  if (XslTransformSharedDatastore.xpathInlineFunction != null) {
+			  result = XslTransformSharedDatastore.xpathInlineFunction;
+			  XslTransformSharedDatastore.xpathInlineFunction = null;
+		  }
+		  else if (XslTransformSharedDatastore.xpathMap != null) {
+			  result = XslTransformSharedDatastore.xpathMap;
+			  XslTransformSharedDatastore.xpathMap = null;
+		  }
+		  else if (XslTransformSharedDatastore.xpathArray != null) {
+			  result = XslTransformSharedDatastore.xpathArray;
+			  XslTransformSharedDatastore.xpathArray = null;
+		  }
+		  else if (XslTransformSharedDatastore.xpathNamedFunctionReference != null) {
+			  result = XslTransformSharedDatastore.xpathNamedFunctionReference;
+			  XslTransformSharedDatastore.xpathNamedFunctionReference = null;
+		  }
+
+		  if (result == null) {		  
+			  int nodeDtmHandle = Integer.valueOf(xslFunctionResult.toString());
+			  NodeList nodeList = (new XRTreeFrag(nodeDtmHandle, xctxt, this)).convertToNodeset();
+			  result = new XNodeSetForDOM(nodeList, xctxt);		  
+		  }
 	  }
 
 	  return result;

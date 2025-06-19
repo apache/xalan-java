@@ -621,7 +621,7 @@ public class QName implements java.io.Serializable
 				  result = true;  
 			  }
 			  else {
-				  result = true;
+				  result = false;
 			  }
 		  }
 	  }

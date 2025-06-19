@@ -41,6 +41,7 @@ import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
@@ -56,6 +57,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XMLAttribute;
 import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSGDay;
@@ -166,17 +168,25 @@ public class InstanceOf extends Operation
   private boolean isInstanceOf(XObject xdmValue, SequenceTypeData seqTypeData) throws ParserConfigurationException, SAXException, 
                                                                                                              IOException, TransformerException, Exception {
     
-      boolean isInstanceOf = false;     
+      boolean isInstanceOf = false;
       
-      if ((xdmValue instanceof XSUntypedAtomic) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC)) {
+      SequenceTypeKindTest sequenceTypeKindTest = seqTypeData.getSequenceTypeKindTest();
+      
+      boolean isXdmValueString = ((xdmValue instanceof XString) || (xdmValue instanceof XSString));  
+      
+      if (isXdmValueString && "".equals(XslTransformEvaluationHelper.getStrVal(xdmValue)) && ((sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND) && 
+    		                                                                                  ((seqTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
+    		                                                                                   (seqTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)))) {
+    	  isInstanceOf = true;
+      }      
+      else if ((xdmValue instanceof XSUntypedAtomic) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC)) {
           isInstanceOf = true;  
       }
       else if ((xdmValue instanceof XSUntyped) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNTYPED)) {
           isInstanceOf = true;
       }
-      else if (((xdmValue instanceof XString) || (xdmValue instanceof XSString)) && 
-									                        ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) || 
-									                         (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if (isXdmValueString && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) || 
+									(seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
       else if (((xdmValue instanceof XString) || (xdmValue instanceof XSNormalizedString)) && 
@@ -394,6 +404,7 @@ public class InstanceOf extends Operation
           isInstanceOf = true;  
       }
       else if (xdmValue instanceof XMLNodeCursorImpl) {
+    	  xdmValue = xdmValue.getFresh();
     	  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xdmValue;
     	  if (xmlNodeCursorImpl.m_is_for_each_group) {
     		  // This XMLNodeCursorImpl object is constructed via xsl:for-each-group 
@@ -428,7 +439,7 @@ public class InstanceOf extends Operation
     			  }
     		  }
     	  }
-    	  else {
+    	  else {    		 
              isInstanceOf = isNodesetInstanceOfType((XMLNodeCursorImpl)xdmValue, seqTypeData);
     	  }
       }
@@ -440,6 +451,31 @@ public class InstanceOf extends Operation
       }
       else if (xdmValue instanceof XPathArray) {
     	  isInstanceOf = isXdmArrayConformsWithSeqType((XPathArray)xdmValue, seqTypeData);
+      }
+      else if (xdmValue instanceof XMLAttribute) {
+    	  XMLAttribute xmlAttribute = (XMLAttribute)xdmValue;
+    	  java.lang.String localName = xmlAttribute.getLocalName();
+    	  java.lang.String nsUri = xmlAttribute.getNamespaceUri();
+    	  QName attrQName = new QName(nsUri, localName);
+    	  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();
+    	  if (seqTypeKindTest != null) {
+    		  if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+    			  isInstanceOf = true; 
+    		  }
+    		  else if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) {
+    			  java.lang.String expectedLocalName = seqTypeKindTest.getNodeLocalName();    		 
+    			  if ((expectedLocalName != null) && !"".equals(expectedLocalName)) {
+    				  java.lang.String expectedNsUri = seqTypeKindTest.getNodeNsUri();
+    				  QName expectedQName = new QName(expectedNsUri, expectedLocalName);
+    				  if (attrQName.equals(expectedQName)) {
+    					  isInstanceOf = true;
+    				  }
+    			  }
+    			  else {
+    				  isInstanceOf = true;
+    			  }
+    		  }
+    	  }
       }
     
       return isInstanceOf;

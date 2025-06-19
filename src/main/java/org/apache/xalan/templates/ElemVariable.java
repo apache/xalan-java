@@ -782,7 +782,15 @@ public class ElemVariable extends ElemTemplateElement
 
     	int seqTypeKindVal = 0;    	
     	if (seqTypeKindTest != null) {
-    		seqTypeKindVal = seqTypeKindTest.getKindVal();
+    		seqTypeKindVal = seqTypeKindTest.getKindVal();    		
+    		if ((seqTypeKindVal == SequenceTypeSupport.DOCUMENT_KIND) && ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
+    				                                                                                                   SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
+    			                                                          (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
+    			                                                                                                       SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY))) {
+    			if (var.equals(XString.EMPTYSTRING)) {
+                   return var;
+    			}    			
+    		}    		    		
     	}
 
     	if (XslTransformSharedDatastore.xpathInlineFunction != null) {
