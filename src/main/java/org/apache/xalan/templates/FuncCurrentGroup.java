@@ -20,6 +20,8 @@ package org.apache.xalan.templates;
 import java.util.List;
 import java.util.Vector;
 
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function;
@@ -48,20 +50,30 @@ public class FuncCurrentGroup extends Function
    */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {
-       XMLNodeCursorImpl nodes = null;
+       XMLNodeCursorImpl currentGroupNodes = null;
+       
+       SourceLocator srcLocator = xctxt.getSAXLocator();
        
        TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            
        ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();       
       
        List<Integer> groupNodesDtmHandles = currElemTemplateElement.getGroupNodesDtmHandles();
-       while (groupNodesDtmHandles == null) {
+       while ((groupNodesDtmHandles == null) && (currElemTemplateElement != null)) {
            currElemTemplateElement = currElemTemplateElement.getParentElem();
-           groupNodesDtmHandles = currElemTemplateElement.getGroupNodesDtmHandles();
+           if (currElemTemplateElement != null) {
+             groupNodesDtmHandles = currElemTemplateElement.getGroupNodesDtmHandles();
+           }
        }
        
-       nodes = new XMLNodeCursorImpl(groupNodesDtmHandles, xctxt);
+       if (groupNodesDtmHandles != null) {
+          currentGroupNodes = new XMLNodeCursorImpl(groupNodesDtmHandles, xctxt);
+       }
+       else {
+    	  throw new javax.xml.transform.TransformerException("XTDE1061 : The fn:current-group function call couldn't "
+    	  		                                                                                     + "determine a group of XDM items.", srcLocator);  
+       }
               
-       return nodes;
+       return currentGroupNodes;
    }
 
    @Override

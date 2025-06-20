@@ -21,6 +21,8 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
@@ -397,10 +399,11 @@ public class ElemTemplate extends ElemTemplateElement
 		  try {                      
 			  XObject xslTemplateEvalResult = getXslTemplateResult(transformer, xctxt);
 			  
-			  if (xslTemplateEvalResult instanceof XPathInlineFunction) {
-				  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
-				  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-				  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+			  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+			  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+			  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+			  
+			  if (xslTemplateEvalResult instanceof XPathInlineFunction) {				  
 				  if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {            	  
 					  return;
 				  }
@@ -411,41 +414,57 @@ public class ElemTemplate extends ElemTemplateElement
 																								  + "doesn't conform to this required type.", srcLocator); 
 				  }
 			  }
+			  else if (xslTemplateEvalResult instanceof XMLNodeCursorImpl) {
+				  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xslTemplateEvalResult;
+				  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iterRaw();
+				  int nextNode = dtmCursorIterator.nextNode();
+				  DTM dtm = dtmCursorIterator.getDTM(nextNode);
+				  int childNode = dtm.getFirstChild(nextNode);
+				  if (((dtm.getNodeType(nextNode) == DTM.DOCUMENT_NODE) && (childNode == DTM.NULL)) && 
+						                                            ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+								                                     (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+					  xslTemplateEvalResult = new ResultSequence(); 
+				  }
+				  else {
+					  xslTemplateEvalResult = xslTemplateEvalResult.getFresh();						 
+					  xslTemplateEvalResult = SequenceTypeSupport.castXdmValueToAnotherType(xslTemplateEvalResult, m_asAttr, null, xctxt);
+				  }
+			  }
 			  else {
 				  xslTemplateEvalResult = SequenceTypeSupport.castXdmValueToAnotherType(xslTemplateEvalResult, m_asAttr, null, xctxt);
+			  }
 				  
-				  if (xslTemplateEvalResult != null) {
-					  SerializationHandler handler = transformer.getSerializationHandler();
+			  if (xslTemplateEvalResult != null) {
+				  SerializationHandler handler = transformer.getSerializationHandler();
 
-					  try {
-						  if (xslTemplateEvalResult instanceof XMLNodeCursorImpl) {
-							  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xslTemplateEvalResult, transformer, handler, xctxt);
+				  try {
+					  if (xslTemplateEvalResult instanceof XMLNodeCursorImpl) {
+						  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xslTemplateEvalResult, transformer, handler, xctxt);
+					  }
+					  else {
+						  ResultSequence rSeq = new ResultSequence();
+						  if (xslTemplateEvalResult instanceof ResultSequence) {
+							  rSeq = (ResultSequence)xslTemplateEvalResult;   
 						  }
 						  else {
-							  ResultSequence rSeq = new ResultSequence();
-							  if (xslTemplateEvalResult instanceof ResultSequence) {
-								 rSeq = (ResultSequence)xslTemplateEvalResult;   
-							  }
-							  else {
-								  rSeq.add(xslTemplateEvalResult); 
-							  }
-							  
-							  ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false); 
+							  rSeq.add(xslTemplateEvalResult); 
 						  }
-					  } 
-					  catch (TransformerException ex) {
-						  throw new TransformerException(ex.getMessage(), srcLocator); 
-					  } 
-					  catch (SAXException ex) {
-						  transformer.getErrorListener().fatalError(new TransformerException(ex)); 
-					  }        		           		     
-				  }
-				  else {        
-					  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
-					  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-																								        + " is " + m_asAttr + ". But the template result "
-																								        + "doesn't conform to this required type.", srcLocator);  
-				  }
+
+						  ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false); 
+					  }
+				  } 
+				  catch (TransformerException ex) {
+					  throw new TransformerException(ex.getMessage(), srcLocator); 
+				  } 
+				  catch (SAXException ex) {
+					  transformer.getErrorListener().fatalError(new TransformerException(ex)); 
+				  }        		           		     
+			  }
+			  else {        
+				  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
+				  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+																								    + " is " + m_asAttr + ". But the template result "
+																								    + "doesn't conform to this required type.", srcLocator);  
 			  }
 		  }
 		  catch (TransformerException ex) {
@@ -457,8 +476,8 @@ public class ElemTemplate extends ElemTemplateElement
 			  else {
 				  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
 				  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-																								  + " is " + m_asAttr + ". But the template result "
-																								  + "doesn't conform to this required type.", srcLocator);
+																								    + " is " + m_asAttr + ". But the template result "
+																								    + "doesn't conform to this required type.", srcLocator);
 			  }
 		  }
 	  }        

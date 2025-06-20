@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-06-19T11:57:20Z" desc="W3C XSLT 3.0 test suite results" fail="786" pass="1332" skipped="38" success="62.59%" totalRun="2189" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-06-20T11:52:40Z" desc="W3C XSLT 3.0 test suite results" fail="799" pass="1357" skipped="38" success="62.7%" totalRun="2225" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
-    <as fail="59" pass="45" skipped="4" success="44.95%" totalRun="109"/>
+    <as fail="56" pass="48" skipped="4" success="47.71%" totalRun="109"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
     <match fail="65" pass="59" skipped="8" success="48.91%" totalRun="137"/>
     <select fail="7" pass="16" skipped="0" success="64.0%" totalRun="25"/>
@@ -27,18 +27,18 @@
     <deep-equal fail="0" pass="2" skipped="0" success="100.0%" totalRun="2"/>
     <format-number fail="33" pass="37" skipped="4" success="55.41%" totalRun="74"/>
     <key fail="3" pass="21" skipped="0" success="84.0%" totalRun="25"/>
-    <position fail="8" pass="108" skipped="0" success="92.31%" totalRun="117"/>
+    <position fail="13" pass="124" skipped="0" success="89.86%" totalRun="138"/>
     <root fail="4" pass="6" skipped="0" success="60.0%" totalRun="10"/>
   </fn>
   <insn>
     <analyze-string fail="17" pass="36" skipped="5" success="70.69%" totalRun="58"/>
     <apply-templates fail="29" pass="19" skipped="2" success="42.0%" totalRun="50"/>
-    <attribute fail="12" pass="7" skipped="0" success="33.33%" totalRun="21"/>
+    <attribute fail="21" pass="8" skipped="0" success="26.67%" totalRun="30"/>
     <call-template fail="14" pass="27" skipped="1" success="66.67%" totalRun="42"/>
     <choose fail="6" pass="17" skipped="0" success="70.83%" totalRun="24"/>
     <copy fail="43" pass="16" skipped="0" success="26.67%" totalRun="60"/>
-    <element fail="14" pass="8" skipped="0" success="34.78%" totalRun="23"/>
-    <for-each-group fail="29" pass="44" skipped="4" success="61.54%" totalRun="78"/>
+    <element fail="18" pass="11" skipped="0" success="37.93%" totalRun="29"/>
+    <for-each-group fail="27" pass="46" skipped="4" success="64.1%" totalRun="78"/>
     <iterate fail="32" pass="11" skipped="0" success="25.0%" totalRun="44"/>
     <sequence fail="19" pass="7" skipped="0" success="25.93%" totalRun="27"/>
     <sort fail="44" pass="35" skipped="0" success="43.75%" totalRun="80"/>

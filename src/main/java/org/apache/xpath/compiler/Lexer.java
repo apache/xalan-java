@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.compiler;
 
 import java.util.Vector;
@@ -627,8 +624,9 @@ class Lexer
     if ((startSubstring >= 0) && (posOfNSSep >= 0))
     {
        prefix = pat.substring(startSubstring, posOfNSSep);
-    }    
-    String uName;
+    }
+    
+    String uName = null;
 
     if ((null != m_namespaceContext) &&!prefix.equals("*")
                                             &&!prefix.equals("xmlns"))
@@ -640,7 +638,18 @@ class Lexer
         }
         else
         {
-           if (((m_compiler.getTokenQueue()).indexOf("map") != -1)) 
+           ObjectVector tokenQueue = m_compiler.getTokenQueue();
+           int tokenQueueSize = m_compiler.getTokenQueueSize();
+           boolean isTokenQueueContainsMapToken = false;
+           for (int idx = 0; idx < tokenQueueSize; idx++) {
+        	   String tokenStrValue = (tokenQueue.elementAt(idx)).toString();
+        	   if ("map".equals(tokenStrValue)) {
+        		   isTokenQueueContainsMapToken = true;
+        		   break;
+        	   }
+           }
+           
+           if (isTokenQueueContainsMapToken) 
            {
         	   // Handle XPath "map" expression string 
         	   addToTokenQueue(":");
@@ -661,11 +670,26 @@ class Lexer
       uName = prefix;
     }
     
-    // Handle XPath "let" expression variable binding strings like $varName := val, 
-    // otherwise the character ':' as part of symbol := used for "let" expression 
-    // variable binding shall be treated for XML namespace processing.
+    /**
+     * Handle XPath "let" expression variable binding strings like $varName := val,
+     * otherwise the character ':' as part of symbol := used for "let" expression
+     * variable binding shall be considered for XML namespace processing.
+     */
+    
     boolean isLetExprNsCheckOk = false;
-    if (((m_compiler.getTokenQueue()).indexOf("let") != -1)) 
+    
+    ObjectVector tokenQueue = m_compiler.getTokenQueue();
+    int tokenQueueSize = m_compiler.getTokenQueueSize();
+    boolean isTokenQueueContainsLetToken = false;
+    for (int idx = 0; idx < tokenQueueSize; idx++) {
+ 	   String tokenStrValue = (tokenQueue.elementAt(idx)).toString();
+ 	   if ("let".equals(tokenStrValue)) {
+ 		   isTokenQueueContainsLetToken = true;
+ 		   break;
+ 	   }
+    }
+    
+    if (isTokenQueueContainsLetToken) 
     {
        if (":=".equals(pat.substring(posOfNSSep, posOfNSSep + 2)))
        {
@@ -721,11 +745,6 @@ class Lexer
                addToTokenQueue(xpathLetExprBindingVarNameStr);
                addToTokenQueue(":");    
             }    
-        }
-        else 
-        {
-		    m_processor.errorForDOM3(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE,
-						                 new String[] {prefix});  //"Prefix must resolve to a namespace: {0}";
         }		
     }
 

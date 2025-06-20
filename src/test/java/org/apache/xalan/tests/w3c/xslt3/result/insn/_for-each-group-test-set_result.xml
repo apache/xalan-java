@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-19T11:54:59Z" fail="29" name="for-each-group" pass="44" skipped="4" statusUnknown="1" totalRun="78">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-20T11:50:25Z" fail="27" name="for-each-group" pass="46" skipped="4" statusUnknown="1" totalRun="78">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -55,11 +55,7 @@
    <testResult status="fail" testName="for-each-group-054">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Position&lt;/th&gt;&lt;th&gt;Country&lt;/th&gt;&lt;th&gt;City List&lt;/th&gt;&lt;th&gt;Population&lt;/th&gt;&lt;/tr&gt;&lt;/table&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="for-each-group-055">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-055"/>
    <testResult status="pass" testName="for-each-group-056"/>
    <testResult status="fail" testName="for-each-group-059">
       <outResult>
@@ -112,11 +108,7 @@
    </testResult>
    <testResult status="pass" testName="for-each-group-080"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="fail" testName="for-each-group-081b">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-081b"/>
    <testResult status="fail" testName="for-each-group-082"/>
    <testResult status="pass" testName="for-each-group-083"/>
    <testResult testName="for-each-group-084"/>

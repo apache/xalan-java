@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -55,6 +56,7 @@ import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
@@ -616,57 +618,69 @@ public class SequenceTypeSupport {
 	            	   if (srcValue instanceof XNodeSetForDOM) {	            		   
 	            		   XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)srcValue;
 	            		   Object obj1 = xNodeSetForDOM.object();
-	            		   if (obj1 instanceof DTMNodeList) {
-	            			   DTMNodeList dtmNodeList = (DTMNodeList)obj1;
-	            			   DTMCursorIterator dtmCursorIter = dtmNodeList.getDTMIterator();
-	            			   int nodeHandle = dtmCursorIter.nextNode();
-	            			   DTM dtm = xctxt.getDTM(nodeHandle);
-	            			   int childNodeHandle = dtm.getFirstChild(nodeHandle);	            				  
-	            			   int nextSiblingNodeHandle = dtm.getNextSibling(childNodeHandle);
-	            			   String nodeExpectedLocalName = sequenceTypeKindTest.getNodeLocalName();
-	            			   String nodeExpectedNsUri = sequenceTypeKindTest.getNodeNsUri();	            			   
-	            			   if ((childNodeHandle != DTM.NULL) && (nextSiblingNodeHandle == DTM.NULL) && 
-	            					                                   ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) || 
-	            							                            (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE))) {
-	            				   Node node = dtm.getNode(childNodeHandle);
-	            				   String nodeLocalName = node.getLocalName();
-	            				   String nodeNsUri = node.getNamespaceURI();	            				   	            				   
-	            				   boolean isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
-	            				   if (isNodeNameOk) {
-	            					   result = new XMLNodeCursorImpl(childNodeHandle, xctxt);
+	            		   if (obj1 instanceof DTMNodeList) {	            			   
+	            			   String dataTypeExpectedLocalName = sequenceTypeKindTest.getDataTypeLocalName();
+	            			   String dataTypeExpectedNsUri = sequenceTypeKindTest.getDataTypeUri();
+	            			   if ((dataTypeExpectedLocalName == null) || (Keywords.XS_UNTYPED.equals(dataTypeExpectedLocalName) && 
+	            					                                       XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(dataTypeExpectedNsUri))) {
+	            				   // An XPath sequence type expression, hasn't specified an XML Schema 
+	            				   // data type or sequence type expression has specified the data type 
+	            				   // as xs:untyped.	            				   
+	            				   DTMNodeList dtmNodeList = (DTMNodeList)obj1;
+		            			   DTMCursorIterator dtmCursorIter = dtmNodeList.getDTMIterator();
+		            			   int nodeHandle = dtmCursorIter.nextNode();
+		            			   DTM dtm = xctxt.getDTM(nodeHandle);
+		            			   int childNodeHandle = dtm.getFirstChild(nodeHandle);	            				  
+		            			   int nextSiblingNodeHandle = dtm.getNextSibling(childNodeHandle);
+		            			   String nodeExpectedLocalName = sequenceTypeKindTest.getNodeLocalName();
+		            			   String nodeExpectedNsUri = sequenceTypeKindTest.getNodeNsUri();	            			   
+		            			   if ((childNodeHandle != DTM.NULL) && (nextSiblingNodeHandle == DTM.NULL) && 
+		            					                                   ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) || 
+		            							                            (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE))) {
+		            				   Node node = dtm.getNode(childNodeHandle);
+		            				   String nodeLocalName = node.getLocalName();
+		            				   String nodeNsUri = node.getNamespaceURI();	            				   	            				   
+		            				   boolean isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
+		            				   if (isNodeNameOk) {
+		            					   result = new XMLNodeCursorImpl(childNodeHandle, xctxt);
 
-		            				   return result;
-	            				   }	            				   
-	            			   }
-	            			   else if ((childNodeHandle != DTM.NULL) && (nextSiblingNodeHandle != DTM.NULL) && 
-	            					                                        ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) || 
-	            					                                         (itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY))) {
-	            				   List<Integer> seqNodeHandles = new ArrayList<Integer>();
-	            				   Node node = dtm.getNode(childNodeHandle);
-	            				   String nodeLocalName = node.getLocalName();
-	            				   String nodeNsUri = node.getNamespaceURI();
-	            				   boolean isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
-	            				   if (isNodeNameOk) {
-	            					   seqNodeHandles.add(Integer.valueOf(childNodeHandle));
-	            				   }
-	            				   node = dtm.getNode(nextSiblingNodeHandle);
-	            				   isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
-	            				   if (isNodeNameOk) {
-	            					   seqNodeHandles.add(Integer.valueOf(nextSiblingNodeHandle));
-	            				   }
-	            				   while ((nextSiblingNodeHandle = dtm.getNextSibling(nextSiblingNodeHandle)) != DTM.NULL) {
-	            					   node = dtm.getNode(nextSiblingNodeHandle);
+			            				   return result;
+		            				   }	            				   
+		            			   }
+		            			   else if ((childNodeHandle != DTM.NULL) && (nextSiblingNodeHandle != DTM.NULL) && 
+		            					                                        ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) || 
+		            					                                         (itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY))) {
+		            				   List<Integer> seqNodeHandles = new ArrayList<Integer>();
+		            				   Node node = dtm.getNode(childNodeHandle);
+		            				   String nodeLocalName = node.getLocalName();
+		            				   String nodeNsUri = node.getNamespaceURI();
+		            				   boolean isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
+		            				   if (isNodeNameOk) {
+		            					   seqNodeHandles.add(Integer.valueOf(childNodeHandle));
+		            				   }
+		            				   node = dtm.getNode(nextSiblingNodeHandle);
 		            				   isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
 		            				   if (isNodeNameOk) {
 		            					   seqNodeHandles.add(Integer.valueOf(nextSiblingNodeHandle));
-		            				   } 
-	            				   }
+		            				   }
+		            				   while ((nextSiblingNodeHandle = dtm.getNextSibling(nextSiblingNodeHandle)) != DTM.NULL) {
+		            					   node = dtm.getNode(nextSiblingNodeHandle);
+			            				   isNodeNameOk = isNodeNameOk(nodeLocalName, nodeNsUri, nodeExpectedLocalName, nodeExpectedNsUri);
+			            				   if (isNodeNameOk) {
+			            					   seqNodeHandles.add(Integer.valueOf(nextSiblingNodeHandle));
+			            				   } 
+		            				   }
 
-	            				   if (seqNodeHandles.size() > 0) {
-	            					   result = new XMLNodeCursorImpl(seqNodeHandles, xctxt);
+		            				   if (seqNodeHandles.size() > 0) {
+		            					   result = new XMLNodeCursorImpl(seqNodeHandles, xctxt);
 
-	            					   return result;
-	            				   }
+		            					   return result;
+		            				   }
+		            			   } 
+	            			   }
+	            			   else {
+	            				   // REVISIT
+	            				   // We need to validate an XML element instance node 
 	            			   }
 	            		   }
 	            	   }
@@ -2232,7 +2246,7 @@ public class SequenceTypeSupport {
 																			    String nodeExpectedNsUri) {
 		boolean result = true;
 		
-		if (!((nodeExpectedLocalName == null) || ("".equals(nodeExpectedLocalName)))) {
+		if (!((nodeExpectedLocalName == null) || ("".equals(nodeExpectedLocalName))) && !"*".equals(nodeExpectedLocalName)) {
 			if (!nodeLocalName.equals(nodeExpectedLocalName)) {
 				result = false;
 			}

@@ -24,6 +24,7 @@ import org.apache.xalan.tests.xpath3.FnContainsTests;
 import org.apache.xalan.tests.xpath3.FnContainsTokenTests;
 import org.apache.xalan.tests.xpath3.FnDistinctValuesTests;
 import org.apache.xalan.tests.xpath3.FnDocAvailableTests;
+import org.apache.xalan.tests.xpath3.FnEmptyTests;
 import org.apache.xalan.tests.xpath3.FnFilterTests;
 import org.apache.xalan.tests.xpath3.FnFoldLeftTests;
 import org.apache.xalan.tests.xpath3.FnFoldRightTests;
@@ -121,7 +122,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnTransformTests.class, FnStartsWithEndsWithTests.class, FnContainsTests.class,
                 FnSubstringBeforeAndAfterTests.class, XslTryCatchTests.class, XslCharacterMapTests.class,
                 XslInitialTemplateTests.class, XslContextItemTests.class, XPathOpLiteralSequenceTests.class,
-                XPathSequenceConstructorMiscTests.class, XslForEachGroupMiscTests.class, XPathDynamicFunctionCallMiscTests.class })
+                XPathSequenceConstructorMiscTests.class, XslForEachGroupMiscTests.class, XPathDynamicFunctionCallMiscTests.class,
+                FnEmptyTests.class })
 public class XalanXsl3TestSuite2 {
 
 }

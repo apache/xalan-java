@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-19T11:54:58Z" fail="65" name="match" pass="59" skipped="8" statusUnknown="5" totalRun="137">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-20T11:50:24Z" fail="65" name="match" pass="59" skipped="8" statusUnknown="5" totalRun="137">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -229,7 +229,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>function token not found.</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'for', '$', 't', 'in', '*', 'return', '$', 't', '/', '*', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
@@ -240,7 +240,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>function token not found.</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'some', '$', 'v', 'in', '.', '/', '/', 'element', '(', ')', 'satisfies', '(', 'string', '(', '$', 'v', ')', 'ne', '''', ')', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
@@ -251,7 +251,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>function token not found.</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'if', '(', 'count', '(', '/', '*', ')', 'le', '1', ')', 'then', 'last', '(', ')', 'else', '1', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
@@ -262,7 +262,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>function token not found.</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '/', 'inner2', 'is', '/', 'doc', '/', '/', 'inner2', '[', '1', ']', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
@@ -273,7 +273,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>function token not found.</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '/', '*', '=', '(', '1', 'to', '40', ')', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
@@ -284,7 +284,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>function token not found.</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'data', '(', '.', ')', 'castable', 'as', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
@@ -295,7 +295,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>function token not found.</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '*', 'intersect', '/', 'doc', '/', 'child', '::', '*', '/', 'child', '::', '*', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
@@ -306,7 +306,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
          <errTrace>function token not found.</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'current', '(', ')', '/', '*', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
@@ -325,19 +325,10 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="fail" testName="match-131"/>
    <testResult status="fail" testName="match-132">
       <outResult>
-         <errTrace>Prefix must resolve to a namespace: :match</errTrace>
-         <errTrace>Prefix must resolve to a namespace: matches</errTrace>
          <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: 'with', ':', ')', '.', '(', ':', '(', ':', 'comments', ':', ')', ':', ')', '[', '(', ':', 'the', ':', ')', '.', 'instance', '(', ':', ':', ')', 'of', '(', ')', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']', '[', '(', ':', 'of', ''1'', 'always', ')', '1', ']', '(', ':', '?', ':', ')'</errTrace>
-         <errTrace>Prefix must resolve to a namespace: :z</errTrace>
-         <errTrace>Prefix must resolve to a namespace: a</errTrace>
-         <errTrace>Prefix must resolve to a namespace: :b</errTrace>
-         <errTrace>Prefix must resolve to a namespace: :c</errTrace>
-         <errTrace>Prefix must resolve to a namespace: :d</errTrace>
-         <errTrace>Prefix must resolve to a namespace: :e</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: ')', ')', '.', '(', ')', '[', '.', 'instance', '(', ')', 'of', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']', '(', ')', '[', '2', ']', '(', ')'</errTrace>
+         <errTrace>Extra illegal tokens: 'also', 'with', ')', '.', '(', '(', 'comments', ')', ')', '[', '(', 'the', ')', '.', 'instance', '(', ')', 'of', '(', ')', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']', '[', '(', 'of', ''1'', 'always', ')', '1', ']', '(', '?', ')'</errTrace>
+         <errTrace>Unknown nodetype: (</errTrace>
+         <errTrace>Extra illegal tokens: '(', '(', ')', ')', '.', '(', ')', '[', '.', 'instance', '(', ')', 'of', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']', '(', ')', '[', '2', ']', '(', ')'</errTrace>
       </outResult>
    </testResult>
    <testResult testName="match-133"/>

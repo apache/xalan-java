@@ -378,11 +378,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));
     		
-    		if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
-    			handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
-    					                             trfFatalErrorList, expErrCodeName, resultStrWriter);
-    		}
-    		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName) || SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {    			
+    		if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName) || SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {    			
     			NodeList nodeList = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
     			int nodeListLength = nodeList.getLength();
     			
@@ -455,6 +451,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             		elemTestResult.setAttribute("status", "fail");
             	}
     		}
+            else if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
+            	handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
+                        							                trfFatalErrorList, expErrCodeName, resultStrWriter);
+            }
     	}
     	catch (SAXException ex) {
     		handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 

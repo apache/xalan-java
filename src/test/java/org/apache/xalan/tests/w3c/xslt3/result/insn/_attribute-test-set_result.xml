@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-19T11:55:00Z" fail="12" name="attribute" pass="7" skipped="0" statusUnknown="2" totalRun="21">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-20T11:50:25Z" fail="21" name="attribute" pass="8" skipped="0" statusUnknown="1" totalRun="30">
    <testResult status="fail" testName="attribute-0001"/>
    <testResult status="fail" testName="attribute-0002">
       <outResult/>
@@ -14,8 +14,6 @@
    <testResult status="fail" testName="attribute-0601">
       <outResult>
          <errTrace>Attempting to generate a namespace prefix with a null URI</errTrace>
-         <errTrace>Prefix must resolve to a namespace: http</errTrace>
-         <errTrace>Prefix must resolve to a namespace: http</errTrace>
       </outResult>
    </testResult>
    <testResult testName="attribute-0701"/>
@@ -39,5 +37,46 @@
    <testResult status="pass" testName="attribute-0901"/>
    <testResult status="pass" testName="attribute-0902"/>
    <testResult status="fail" testName="attribute-1101"/>
-   <testResult testName="attribute-1301"/>
+   <testResult status="fail" testName="attribute-1301"/>
+   <testResult status="fail" testName="attribute-1302"/>
+   <testResult status="pass" testName="attribute-1401"/>
+   <testResult status="fail" testName="attribute-1501">
+      <outResult>
+         <errTrace>Failed calling setNamespace method</errTrace>
+         <errTrace>org.apache.xpath.functions.FuncId only allows 1 arguments</errTrace>
+         <errTrace>org.apache.xpath.functions.FuncId only allows 1 arguments</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="attribute-1502">
+      <outResult>
+         <errTrace>Failed calling setNamespace method</errTrace>
+         <errTrace>org.apache.xpath.functions.FuncId only allows 1 arguments</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="attribute-1503">
+      <outResult>
+         <errTrace>Failed calling setNamespace method</errTrace>
+         <errTrace>org.apache.xpath.functions.FuncId only allows 1 arguments</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="attribute-1504">
+      <outResult>
+         <errTrace>Failed calling setNamespace method</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="attribute-1505">
+      <outResult>
+         <errTrace>Failed calling setNamespace method</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="attribute-1506">
+      <outResult>
+         <errTrace>Failed calling setNamespace method</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="attribute-1507">
+      <outResult>
+         <errTrace>Failed calling setNamespace method</errTrace>
+      </outResult>
+   </testResult>
 </testrun>

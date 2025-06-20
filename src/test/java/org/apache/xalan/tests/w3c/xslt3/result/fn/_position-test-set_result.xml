@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-19T11:56:49Z" fail="8" name="position" pass="108" skipped="0" statusUnknown="1" totalRun="117">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-20T11:52:14Z" fail="13" name="position" pass="124" skipped="0" statusUnknown="1" totalRun="138">
    <testResult status="pass" testName="position-0101"/>
    <testResult status="fail" testName="position-0102"/>
    <testResult status="fail" testName="position-0103">
@@ -109,7 +109,6 @@
    <testResult status="pass" testName="position-1601"/>
    <testResult status="fail" testName="position-1602">
       <outResult>
-         <errTrace>Prefix must resolve to a namespace: unpredictable</errTrace>
          <errTrace>Expected ), but found: ,</errTrace>
          <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to java.lang.String</errTrace>
       </outResult>
@@ -131,7 +130,40 @@
    <testResult status="pass" testName="position-2301"/>
    <testResult status="pass" testName="position-2401"/>
    <testResult status="pass" testName="position-2402"/>
-   <testResult status="fail" testName="position-2501"/>
-   <testResult status="fail" testName="position-2601"/>
-   <testResult testName="position-2701"/>
+   <testResult status="pass" testName="position-2501"/>
+   <testResult status="pass" testName="position-2601"/>
+   <testResult status="pass" testName="position-2701"/>
+   <testResult status="pass" testName="position-2801"/>
+   <testResult status="pass" testName="position-2802"/>
+   <testResult status="pass" testName="position-2803"/>
+   <testResult status="pass" testName="position-2804"/>
+   <testResult status="pass" testName="position-2805"/>
+   <testResult status="pass" testName="position-2806"/>
+   <testResult status="fail" testName="position-2901">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="position-2902">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="position-2903">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="position-3001">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="position-3002">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="position-3003">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="position-3004"/>
+   <testResult status="pass" testName="position-3101"/>
+   <testResult status="pass" testName="position-3102"/>
+   <testResult status="pass" testName="position-3103"/>
+   <testResult status="pass" testName="position-3104"/>
+   <testResult status="pass" testName="position-3201"/>
+   <testResult status="pass" testName="position-3301"/>
+   <testResult status="pass" testName="position-3302"/>
+   <testResult testName="position-3303"/>
 </testrun>

@@ -1,17 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-19T11:55:04Z" fail="19" name="sequence" pass="7" skipped="0" statusUnknown="1" totalRun="27">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-20T11:50:28Z" fail="19" name="sequence" pass="7" skipped="0" statusUnknown="1" totalRun="27">
    <testResult status="fail" testName="sequence-0101"/>
    <testResult status="fail" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
    <testResult status="pass" testName="sequence-0104"/>
    <testResult status="fail" testName="sequence-0105"/>
-   <testResult status="fail" testName="sequence-0106">
-      <outResult>
-         <errTrace>Prefix must resolve to a namespace: xs</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="sequence-0106"/>
    <testResult status="fail" testName="sequence-0107">
       <outResult>
-         <errTrace>Prefix must resolve to a namespace: xs</errTrace>
+         <errTrace>XTTE0570 : A sequence of more than one item, is not allowed as the value of variable '$q'. This variable has expected type xs:integer *.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="sequence-0108">
@@ -31,7 +27,7 @@
    </testResult>
    <testResult status="fail" testName="sequence-0115">
       <outResult>
-         <errTrace>Prefix must resolve to a namespace: xs</errTrace>
+         <errTrace>Empty expression!</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="sequence-0116"/>

@@ -16,6 +16,8 @@
  */
 package org.apache.xpath.functions;
 
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -23,7 +25,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of the empty() function.
+ * Implementation of XPath 3.1 function fn:empty.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -46,21 +48,33 @@ public class FuncEmpty extends FunctionOneArg {
         
         XObject result = null;
         
-        XObject xObject0 = m_arg0.execute(xctxt);
+        XObject arg0Obj = m_arg0.execute(xctxt);
         
-        if (xObject0 instanceof XMLNodeCursorImpl) {
-           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject0;
-           if (nodeSet.getLength() == 0) {
-              result = XBoolean.S_TRUE;  
-           }
-           else {
-              result = XBoolean.S_FALSE; 
-           }
+        if (arg0Obj instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg0Obj;
+           DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
+    	   if (dtmCursorIter.nextNode() == DTM.NULL) {
+    		   result = XBoolean.S_TRUE;  
+    	   }
+    	   else {
+    		   result = XBoolean.S_FALSE; 
+    	   }
         }
-        else if (xObject0 instanceof ResultSequence) {
-           ResultSequence resultSeq = (ResultSequence)xObject0;
+        else if (arg0Obj instanceof ResultSequence) {
+           ResultSequence resultSeq = (ResultSequence)arg0Obj;
            if (resultSeq.size() == 0) {
               result = XBoolean.S_TRUE; 
+           }
+           else if ((resultSeq.size() == 1) && (resultSeq.item(0) instanceof XMLNodeCursorImpl)) {
+        	   XObject xObj = resultSeq.item(0);
+        	   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+        	   DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
+        	   if (dtmCursorIter.nextNode() == DTM.NULL) {
+        		   result = XBoolean.S_TRUE;  
+        	   }
+        	   else {
+        		   result = XBoolean.S_FALSE; 
+        	   }
            }
            else {
               result = XBoolean.S_FALSE;
