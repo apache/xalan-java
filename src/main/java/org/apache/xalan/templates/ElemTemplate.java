@@ -17,6 +17,10 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -24,10 +28,13 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -35,6 +42,7 @@ import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.types.XMLAttribute;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -402,70 +410,148 @@ public class ElemTemplate extends ElemTemplateElement
 			  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
 			  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
 			  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+			  SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
 			  
-			  if (xslTemplateEvalResult instanceof XPathInlineFunction) {				  
-				  if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {            	  
-					  return;
-				  }
-				  else {
-					  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
-					  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-																								  + " is " + m_asAttr + ". But the template result "
-																								  + "doesn't conform to this required type.", srcLocator); 
+			  boolean isProcessXmlAttributeResult = false;
+			  if (xslTemplateEvalResult instanceof ResultSequence) {
+				  ResultSequence resultSequence = (ResultSequence)xslTemplateEvalResult;
+				  if ((resultSequence.size() > 0) && (resultSequence.item(0) instanceof XMLAttribute)) {
+					  isProcessXmlAttributeResult = true; 
 				  }
 			  }
-			  else if (xslTemplateEvalResult instanceof XMLNodeCursorImpl) {
-				  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xslTemplateEvalResult;
-				  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iterRaw();
-				  int nextNode = dtmCursorIterator.nextNode();
-				  DTM dtm = dtmCursorIterator.getDTM(nextNode);
-				  int childNode = dtm.getFirstChild(nextNode);
-				  if (((dtm.getNodeType(nextNode) == DTM.DOCUMENT_NODE) && (childNode == DTM.NULL)) && 
-						                                            ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-								                                     (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
-					  xslTemplateEvalResult = new ResultSequence(); 
-				  }
-				  else {
-					  xslTemplateEvalResult = xslTemplateEvalResult.getFresh();						 
-					  xslTemplateEvalResult = SequenceTypeSupport.castXdmValueToAnotherType(xslTemplateEvalResult, m_asAttr, null, xctxt);
-				  }
-			  }
-			  else {
-				  xslTemplateEvalResult = SequenceTypeSupport.castXdmValueToAnotherType(xslTemplateEvalResult, m_asAttr, null, xctxt);
-			  }
-				  
-			  if (xslTemplateEvalResult != null) {
+			  
+			  if (isProcessXmlAttributeResult) {
 				  SerializationHandler handler = transformer.getSerializationHandler();
+				  
+				  if (seqTypeKindTest != null) {
+					  if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) {
+						  String nodeExpectedLocalName = seqTypeKindTest.getNodeLocalName();
+						  String nodeExpectedNsUri = seqTypeKindTest.getNodeNsUri();
+						  String dataTypeExpectedLocalName = seqTypeKindTest.getDataTypeLocalName();
+						  String dataTypeExpectedNsUri = seqTypeKindTest.getDataTypeUri();
+						  if (((nodeExpectedLocalName == null) || ("".equals(nodeExpectedLocalName))) || 
+								                                                          (dataTypeExpectedLocalName == null) || (Keywords.XS_UNTYPED_ATOMIC.equals(dataTypeExpectedLocalName) && 
+								                                                           XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(dataTypeExpectedNsUri))) {						  
+							  ResultSequence rSeq = (ResultSequence)xslTemplateEvalResult;
+							  boolean isSeqTypeOccurenceIndicatorCheckOk = false;
+							  int seqTypeItemOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+							  if ((rSeq.size() == 0) && ((seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+									                     (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+								  isSeqTypeOccurenceIndicatorCheckOk = true; 
+							  }
+							  else if (rSeq.size() == 1) {
+								  isSeqTypeOccurenceIndicatorCheckOk = true;
+							  }
+							  else if ((rSeq.size() > 1) && ((seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+									                         (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY))) {
+								  isSeqTypeOccurenceIndicatorCheckOk = true;
+							  }
 
-				  try {
-					  if (xslTemplateEvalResult instanceof XMLNodeCursorImpl) {
-						  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xslTemplateEvalResult, transformer, handler, xctxt);
+							  if (isSeqTypeOccurenceIndicatorCheckOk) {
+								  for (int idx = 0; idx < rSeq.size(); idx++) {
+									  XMLAttribute xmlAttribute = (XMLAttribute)(rSeq.item(idx));
+									  String prefix = xmlAttribute.getPrefix();
+									  String localName = xmlAttribute.getLocalName();                	                  	   
+									  String ns = xmlAttribute.getNamespaceUri();
+									  String attrValue = xmlAttribute.getAttrValue();
+									  String rawName = (prefix != null && !"".equals(prefix)) ? prefix + ":" + localName : localName;
+									  QName attrNodeQname = new QName(ns, null, localName);
+									  QName seqTypeExpectedQname = new QName(nodeExpectedNsUri, null, nodeExpectedLocalName);
+									  if (((nodeExpectedLocalName == null) || ("".equals(nodeExpectedLocalName))) || "*".equals(nodeExpectedLocalName)) {								    
+										  handler.addAttribute(
+															  ns, 
+															  localName, 
+															  rawName, 
+															  "CDATA", 
+															  attrValue, false);
+									  }
+									  else if (attrNodeQname.equals(seqTypeExpectedQname)) {
+										  handler.addAttribute(
+															  ns, 
+															  localName, 
+															  rawName, 
+															  "CDATA", 
+															  attrValue, false); 
+									  }
+								  }
+							  }
+							  else {
+								  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
+								  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+																											   + " is " + m_asAttr + ". But the template result "
+																											   + "doesn't conform to this required type. The sequence "
+																											   + "type occurence indicator check failed.", srcLocator);
+							  }
+						  }
+					  }
+			     }
+			  }
+			  else {				  
+				  if (xslTemplateEvalResult instanceof XPathInlineFunction) {				  
+					  if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {            	  
+						  return;
 					  }
 					  else {
-						  ResultSequence rSeq = new ResultSequence();
-						  if (xslTemplateEvalResult instanceof ResultSequence) {
-							  rSeq = (ResultSequence)xslTemplateEvalResult;   
+						  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
+						  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+																										    + " is " + m_asAttr + ". But the template result "
+																										    + "doesn't conform to this required type.", srcLocator); 
+					  }
+				  }
+				  else if (xslTemplateEvalResult instanceof XMLNodeCursorImpl) {
+					  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xslTemplateEvalResult;
+					  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iterRaw();
+					  int nextNode = dtmCursorIterator.nextNode();
+					  DTM dtm = dtmCursorIterator.getDTM(nextNode);
+					  int childNode = dtm.getFirstChild(nextNode);
+					  if (((dtm.getNodeType(nextNode) == DTM.DOCUMENT_NODE) && (childNode == DTM.NULL)) && 
+							                                             ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+									                                      (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+						  xslTemplateEvalResult = new ResultSequence(); 
+					  }
+					  else {
+						  xslTemplateEvalResult = xslTemplateEvalResult.getFresh();						 
+						  xslTemplateEvalResult = SequenceTypeSupport.castXdmValueToAnotherType(xslTemplateEvalResult, m_asAttr, null, xctxt);
+						  xslTemplateEvalResult = xslTemplateEvalResult.getFresh();
+					  }
+				  }
+				  else {
+					  xslTemplateEvalResult = SequenceTypeSupport.castXdmValueToAnotherType(xslTemplateEvalResult, m_asAttr, null, xctxt);
+				  }
+
+				  if (xslTemplateEvalResult != null) {
+					  SerializationHandler handler = transformer.getSerializationHandler();
+
+					  try {
+						  if (xslTemplateEvalResult instanceof XMLNodeCursorImpl) {
+							  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xslTemplateEvalResult, transformer, handler, xctxt);
 						  }
 						  else {
-							  rSeq.add(xslTemplateEvalResult); 
-						  }
+							  ResultSequence rSeq = new ResultSequence();
+							  if (xslTemplateEvalResult instanceof ResultSequence) {
+								  rSeq = (ResultSequence)xslTemplateEvalResult;   
+							  }
+							  else {
+								  rSeq.add(xslTemplateEvalResult); 
+							  }
 
-						  ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false); 
-					  }
-				  } 
-				  catch (TransformerException ex) {
-					  throw new TransformerException(ex.getMessage(), srcLocator); 
-				  } 
-				  catch (SAXException ex) {
-					  transformer.getErrorListener().fatalError(new TransformerException(ex)); 
-				  }        		           		     
-			  }
-			  else {        
-				  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
-				  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-																								    + " is " + m_asAttr + ". But the template result "
-																								    + "doesn't conform to this required type.", srcLocator);  
-			  }
+							  ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false); 
+						  }
+					  } 
+					  catch (TransformerException ex) {
+						  throw new TransformerException(ex.getMessage(), srcLocator); 
+					  } 
+					  catch (SAXException ex) {
+						  transformer.getErrorListener().fatalError(new TransformerException(ex)); 
+					  }        		           		     
+				  }
+				  else {        
+					  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
+					  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+																									    + " is " + m_asAttr + ". But the template result "
+																									    + "doesn't conform to this required type.", srcLocator);  
+				  }
+		      }
 		  }
 		  catch (TransformerException ex) {
 			  String errMesg = ex.getMessage();			  
@@ -479,6 +565,9 @@ public class ElemTemplate extends ElemTemplateElement
 																								    + " is " + m_asAttr + ". But the template result "
 																								    + "doesn't conform to this required type.", srcLocator);
 			  }
+		  }
+		  catch (SAXException ex) {
+			  throw new TransformerException("XTTE0505 : " + ex.getMessage(), srcLocator);
 		  }
 	  }        
 
@@ -503,18 +592,56 @@ public class ElemTemplate extends ElemTemplateElement
 	  
 	  XObject result = null;
 	  
-	  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
+	  List<XslAttributeAndNamePair> xslAttrList = getAttributeChildDecls(xctxt);
 	  
-	  Integer nodeDtmHandle = null;
-	  
-	  try {
-		 nodeDtmHandle = Integer.valueOf(xslFunctionResult.toString());
-	     NodeList nodeList = (new XRTreeFrag(nodeDtmHandle.intValue(), xctxt, this)).convertToNodeset();
-	     result = new XNodeSetForDOM(nodeList, xctxt);
+	  if (xslAttrList == null) {
+		  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
+
+		  Integer nodeDtmHandle = null;
+
+		  try {
+			  nodeDtmHandle = Integer.valueOf(xslFunctionResult.toString());
+			  NodeList nodeList = (new XRTreeFrag(nodeDtmHandle.intValue(), xctxt, this)).convertToNodeset();
+			  result = new XNodeSetForDOM(nodeList, xctxt);
+		  }
+		  catch (NumberFormatException ex) {
+			  result = (XPathInlineFunction)xslFunctionResult;
+		  }
 	  }
-	  catch (NumberFormatException ex) {
-		 result = (XPathInlineFunction)xslFunctionResult;
-	  }	  
+	  else {
+		  // xsl:template instruction's content are all xsl:attribute declarations
+		  
+		  ResultSequence rSeq = new ResultSequence();
+		  
+		  for (int idx = 0; idx < xslAttrList.size(); idx++) {
+			 XslAttributeAndNamePair xslAttributeAndNamePair = xslAttrList.get(idx);
+			 QName attrName = xslAttributeAndNamePair.getAttrName();
+			 String localName = attrName.getLocalName();
+			 String prefix = attrName.getPrefix();
+			 String namespaceUri = attrName.getNamespaceURI();
+			 
+			 ElemAttribute elemAttr = xslAttributeAndNamePair.getElemAttr();
+			 String attrValue = null;
+			  
+			 try {
+				 elemAttr.setIsSerialize(false);
+				 elemAttr.constructNode(localName, prefix, namespaceUri, transformer);
+				 attrValue = elemAttr.getAttrVal();
+			 }
+			 catch (TransformerException ex) {
+				 throw ex; 
+			 }
+			 finally {
+				 elemAttr.setIsSerialize(true);
+				 elemAttr.setAttrVal(null);
+			 }
+			 
+			 XMLAttribute xmlAttribute = new XMLAttribute(localName, prefix, namespaceUri, attrValue);
+			 rSeq.add(xmlAttribute);
+		  }
+		  
+		  result = rSeq;
+	  }
 
 	  return result;
   }
@@ -527,6 +654,138 @@ public class ElemTemplate extends ElemTemplateElement
   public void recompose(StylesheetRoot root)
   {
 	  root.recomposeTemplates(this);
+  }
+  
+  /**
+   * A class representing a pair of an xsl:attribute's 
+   * name and the corresponding ElemAttribute object 
+   * instance. 
+   */
+  public class XslAttributeAndNamePair {
+	  
+	  public QName m_attrName = null;
+	  
+	  public ElemAttribute m_elemAttr = null;
+
+	  /**
+	   * Class constructor.
+	   * 
+	   * @param attrName			An attribute's name
+	   * @param elemAttr			An xsl:attribute object instance
+	   */
+	  public XslAttributeAndNamePair(QName attrName, ElemAttribute elemAttr) {
+		 m_attrName = attrName;
+		 m_elemAttr = elemAttr; 
+	  }
+	  
+	  public QName getAttrName() {
+		  return m_attrName;
+	  }
+
+	  public void setAttrName(QName attrName) {
+		  this.m_attrName = attrName;
+	  }
+
+	  public ElemAttribute getElemAttr() {
+		  return m_elemAttr;
+	  }
+
+	  public void setElemAttr(ElemAttribute elemAttr) {
+		  this.m_elemAttr = elemAttr;
+	  }	  
+	  
+  }
+  
+  /**
+   * Method definition to check whether, all XSL child elements of 
+   * xsl:template are xsl:attribute declarations, and return the 
+   * xsl:attribute information as a list. 
+   * 
+   * @param xctxt           An XPath context object
+   *  
+   * @return				List object instance of type List<XslAttributeAndNamePair>.
+   * 						Null value otherwise.
+   * 
+   * @throws TransformerException 
+   */
+  private List<XslAttributeAndNamePair> getAttributeChildDecls(XPathContext xctxt) throws TransformerException {	  
+	  
+	  List<XslAttributeAndNamePair> xslAttrList = new ArrayList<XslAttributeAndNamePair>();
+	  
+	  ElemTemplateElement obj1 = getFirstChildElem();
+	  int xslChildElemCount = 0;
+	  while (obj1 != null) {
+		 xslChildElemCount++;
+		 obj1 = obj1.getNextSiblingElem();
+	  }
+	  
+	  ElemTemplateElement xslChildElem = getFirstChildElem();
+	  int xslAttributeElemCount = 0;
+	  while (xslChildElem != null) {
+		 if (!(xslChildElem instanceof ElemAttribute)) {
+			xslAttrList = null;
+			
+			break;
+		 }
+		 else {
+			xslAttributeElemCount++;
+			ElemAttribute elemAttr = (ElemAttribute)xslChildElem;			
+			AVT attrName = elemAttr.getName();
+			
+			int contextNode = xctxt.getContextNode();
+			PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+			String attrNameStr = attrName.evaluate(xctxt, contextNode, prefixResolver);
+			int colonIdx = attrNameStr.indexOf(':');
+			QName attrQName = null;
+			if (colonIdx > 0) {
+			   // An attribute name is a namespace qualified name				
+			   String prefix = attrNameStr.substring(0, colonIdx);			   
+			   List<XMLNSDecl> prefixTable = this.getPrefixTable();
+			   String nsUri = null;
+			   
+               for (int idx = 0; idx < prefixTable.size(); idx++) {
+            	  XMLNSDecl xmlNSDecl = prefixTable.get(idx);            	  
+            	  if ((xmlNSDecl.getPrefix()).equals(prefix)) {
+            		  nsUri = xmlNSDecl.getURI();
+            		  break;
+            	  }
+               }
+               
+			   String localName = attrNameStr.substring(colonIdx + 1);
+			   attrQName = new QName(nsUri, prefix, localName);
+			}
+			else {
+			   attrQName = new QName(attrNameStr); 
+			}
+			
+			// xsl:attribute deduplication on attribute's name
+			
+			int pos = -1;
+			for (int idx = 0; idx < xslAttrList.size(); idx++) {
+			   XslAttributeAndNamePair xslAttributeAndNamePair = xslAttrList.get(idx);
+			   QName attrQName2 = xslAttributeAndNamePair.getAttrName();
+			   if (attrQName2.equals(attrQName)) {
+				  pos = idx;
+				  break;
+			   }
+			}
+			
+			if (pos > -1) {
+			   xslAttrList.remove(pos);			   
+			}
+			
+			XslAttributeAndNamePair xslAttributeAndNamePair = new XslAttributeAndNamePair(attrQName, elemAttr);
+			xslAttrList.add(xslAttributeAndNamePair);
+			
+			xslChildElem = xslChildElem.getNextSiblingElem(); 
+		 }
+	  }
+	  
+	  if ((xslAttrList != null) && !((xslChildElemCount > 0) && (xslChildElemCount == xslAttributeElemCount))) {
+		  xslAttrList = null; 
+	  }
+	  
+	  return xslAttrList;
   }
 
 }
