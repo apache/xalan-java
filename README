@@ -93,9 +93,9 @@ Produce list of Java files within folder xalan-j_xslt3.0_mvn : dir /s /b *.java 
 
 Filter specific files : java org.apache.xalan.xslt.Process -in file_filter.xsl -xsl file_filter.xsl -out filtered_file_list.txt
 
-Produce Java code documentation within folder xalan-j_xslt3.0_mvn/javadoc : javadoc -d javadoc @filtered_file_list.txt
+Produce Java code documentation : javadoc -d javadoc @filtered_file_list.txt
 
-Javadocs for Xalan-J XSLT 3.0 code base are located here: https://htmlpreview.github.io/?https://github.com/apache/xalan-java/blob/xalan-j_xslt3.0_mvn/javadoc/index.html   
+Javadocs for Xalan-J XSLT 3.0 code base are located here : https://xalan.apache.org/xalan-j/xsl3/javadoc/   
 
 7) The PDF document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides 
 various other details about Xalan-J's XSLT 3.0 and XPath 3.1 implementations.

@@ -16,7 +16,8 @@
 	                                      contains(., 'org\apache\xml\res\') or 
 										  contains(., 'org\apache\xalan\res\') or
 										  contains(., 'org\apache\xpath\res\') or
-										  contains(., 'org\apache\xml\utils\res\') or 
+										  contains(., 'org\apache\xml\utils\res\') or
+                                          contains(., 'org\apache\xalan\client\') or 										  
 										  contains(., 'org\apache\xalan\xsltc\'))]">
 	     <xsl:value-of select="."/><xsl:text>&#xa;</xsl:text>
 	  </xsl:for-each>
