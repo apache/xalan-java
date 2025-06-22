@@ -17,7 +17,7 @@
 
 Copyright 1999-2025 The Apache Software Foundation
 
-Document last modified : 2025-06-20
+Document last modified : 2025-06-22
 
 Authors:
    Gary Gregory <ggregory@apache.org>
@@ -83,7 +83,19 @@ W3CXSLT3Tests : To run W3C XSLT 3.0 test suite on Xalan-J's XSLT 3.0 implementat
 W3CXSLT3TestSuiteXalanResultSummarize : To produce an aggregated W3C XSLT 3.0 test suite results for Xalan-J's XSLT 3.0 implementation.
 
 Xalan-J's XSLT 3.0 implementation's conformance results with W3C XSLT 3.0 test suite are available at following location : 
-https://github.com/apache/xalan-java/blob/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/w3c_xslt3_testsuite_xalan-j_result.xml   
+https://github.com/apache/xalan-java/blob/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/w3c_xslt3_testsuite_xalan-j_result.xml
 
-The PDF document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides 
+6) Generating Xalan-J XSLT 3.0 code documentation using JDK's javadoc command 
+
+Following are the steps for Windows environment.
+
+Produce list of Java files within folder xalan-j_xslt3.0_mvn : dir /s /b *.java > file.lst
+
+Filter specific files : java org.apache.xalan.xslt.Process -in file_filter.xsl -xsl file_filter.xsl -out filtered_file_list.txt
+
+Produce Java code documentation within folder xalan-j_xslt3.0_mvn/javadoc : javadoc -d javadoc @filtered_file_list.txt
+
+Javadocs for Xalan-J XSLT 3.0 code base are located here: https://htmlpreview.github.io/?https://github.com/apache/xalan-java/blob/xalan-j_xslt3.0_mvn/javadoc/index.html   
+
+7) The PDF document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides 
 various other details about Xalan-J's XSLT 3.0 and XPath 3.1 implementations.
