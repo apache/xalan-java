@@ -24,8 +24,10 @@ import java.math.BigDecimal;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.ArithmeticOperation;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
@@ -64,6 +66,16 @@ public class Mult extends ArithmeticOperation
   public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException
   {
 	  XObject result = null;
+	  
+	  Expression leftOperandExpr = getLeftOperand();	  
+	  if (leftOperandExpr instanceof SelfIteratorNoPredicate) {
+		 left = getModifiedOperandValue(left, (SelfIteratorNoPredicate)leftOperandExpr);
+	  }
+	  
+      Expression rightOperandExpr = getRightOperand();	  
+	  if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
+		 right = getModifiedOperandValue(right, (SelfIteratorNoPredicate)rightOperandExpr);
+	  }
 	   
       if ((left instanceof XSUntyped) && (right instanceof XSUntyped)) {
           java.lang.String lStrVal = ((XSUntyped)left).stringValue();

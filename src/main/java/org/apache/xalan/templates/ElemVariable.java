@@ -39,6 +39,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.functions.Function;
@@ -218,6 +219,12 @@ public class ElemVariable extends ElemTemplateElement
    * The value of the "as" attribute.
    */
   private String m_asAttr;
+  
+  /**
+   * The value of this variable 'true' means that, the variable's
+   * value is XPath named function reference.
+   */
+  static boolean m_isXPathNamedFunctionRefSequenceVar = false;
   
   /**
    * Set the "as" attribute.
@@ -677,13 +684,13 @@ public class ElemVariable extends ElemTemplateElement
     				ElemFunction elemFunction = null;
     				if (elemTemplate != null) {
     					elemFunction = (ElemFunction)elemTemplate;
-    					int xslFuncDefnParamCount = elemFunction.getParamCount();                      
+    					int xslFuncDefnParamCount = elemFunction.getArity();                      
     					String str = funcLocalNameRef.substring(hashCharIdx + 1);
     					int funcRefParamCount = (Integer.valueOf(str)).intValue();
     					if (funcRefParamCount != xslFuncDefnParamCount) {
-    						throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcLocalNameRef 
-																					    								+ " cannot resolve to a function "
-																					    								+ "definition.", srcLocator); 
+    						throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcLocalNameRef + 
+																					    								     " cannot resolve to a function "
+																					    								     + "definition.", srcLocator); 
     					}
     					
     					if (elemFunction != null) {
@@ -764,6 +771,16 @@ public class ElemVariable extends ElemTemplateElement
     			  XslTransformSharedDatastore.xslDocumentEvaluationResult = null;
     		  }
           }
+    	  else if ((XslTransformSharedDatastore.xpathNamedFunctionRefSequence).size() > 0) {
+    		  if (m_asAttr == null) {
+    			  if ((XslTransformSharedDatastore.xpathNamedFunctionRefSequence).size() == 1) {
+    				 var = (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).item(0);  
+    			  }
+    			  else {
+    			     var = XslTransformSharedDatastore.xpathNamedFunctionRefSequence;
+    			  }
+    		  }
+    	  }
     	  else {
     	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
     	     var = new XNodeSetForDOM(nodeList, xctxt);
@@ -775,8 +792,10 @@ public class ElemVariable extends ElemTemplateElement
     }
     
     if (m_asAttr != null) {
-    	XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
-    	XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+    	XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	
+    	
+    	XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());    	
+    	
     	SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
     	SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();    	    	
 
@@ -827,6 +846,52 @@ public class ElemVariable extends ElemTemplateElement
     		if ((seqTypeKindVal == SequenceTypeSupport.DOCUMENT_KIND) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {
     			var = XslTransformSharedDatastore.xslDocumentEvaluationResult;
     			XslTransformSharedDatastore.xslDocumentEvaluationResult = null;
+    		}
+    		else {
+    			throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform "
+    																							   + "to variable's expected type " + m_asAttr + ".", srcLocator); 
+    		}
+    	}
+    	else if ((XslTransformSharedDatastore.xpathNamedFunctionRefSequence).size() > 0) {
+    		int funcItemSeqSize = (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).size();
+    		
+    		SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
+    		int seqTypeItemOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+    		boolean isSeqCardinalityOk = false;
+    		if ((funcItemSeqSize == 0) && ((seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+    				                       (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+    		   isSeqCardinalityOk = true;
+    		}
+    		else if ((funcItemSeqSize == 1) && ((seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) || 
+    				                            (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+    				                            (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) ||
+    				                            (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+    		   // An XPath sequence type occurrence indicator with value absent, or any 
+    		   // other occurrence indicator is ok for this case.
+    		   isSeqCardinalityOk = true;
+    		}
+    		else if ((seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
+    				 (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
+    		   // funcItemSeqSize > 1
+    		   isSeqCardinalityOk = true;
+    		}
+    		
+    		if (!isSeqCardinalityOk) {
+    			throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform to XPath sequence "
+    					                                                                           + "type's occurence indicator, implying that an XDM value's "
+    					                                                                           + "cardinality found as " + funcItemSeqSize + " is incorrect. "
+    					                                                                           + "The sequence type has been specified as " + m_asAttr + ".", srcLocator);
+    		}
+    		
+    		if ((sequenceTypeFunctionTest != null) && sequenceTypeFunctionTest.isAnyFunctionTest()) {
+    		   if ((XslTransformSharedDatastore.xpathNamedFunctionRefSequence).size() == 1) {
+    			  var = (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).item(0);
+    		   }
+    		   else {
+    		      var = XslTransformSharedDatastore.xpathNamedFunctionRefSequence;
+    		   }
+    		   
+    		   m_isXPathNamedFunctionRefSequenceVar = true;
     		}
     		else {
     			throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform "

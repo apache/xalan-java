@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-22T11:11:44Z" fail="27" name="for-each-group" pass="46" skipped="4" statusUnknown="1" totalRun="78">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-25T12:06:49Z" fail="27" name="for-each-group" pass="46" skipped="4" statusUnknown="1" totalRun="78">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -82,7 +82,7 @@
    <testResult status="fail" testName="for-each-group-070"/>
    <testResult status="fail" testName="for-each-group-071">
       <outResult>
-         <errTrace>XPTY0004 : The function call result for function {my}f(), doesn't match the declared function result type element()*.</errTrace>
+         <errTrace>XPTY0004 : The function call result for function {my}f, doesn't match the declared function result type element()*.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="for-each-group-072"/>

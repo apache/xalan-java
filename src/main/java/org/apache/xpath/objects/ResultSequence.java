@@ -80,6 +80,22 @@ public class ResultSequence extends XObject
     }
     
     /**
+     * Remove an item from the specified index.
+     * 
+     * @param idx
+     */
+    public void remove(int idx) {
+       m_list.remove(idx);
+    }
+    
+    /**
+     * Remove all items from the sequence object.
+     */
+    public void clear() {
+    	m_list.clear();
+    }
+    
+    /**
      * Get the size of the current sequence object.
      */
     public int size() {

@@ -663,10 +663,10 @@ public class XslTransformEvaluationHelper {
      * Function definition to get xsl:function's compiled ElemFunction object, 
      * given a NodeTest expression.  
      * 
-     * @param nodeTest							   An object instance for example, constructed from XPath 
-     *                                               named function references like fn0:abc#1.
-     * @param transformerImpl					       An XSL transform TransformerImpl object
-     * @param srcLocator						       SourceLocator object in XPath context
+     * @param nodeTest							   A NodeTest object instance constructed from XPath 
+     *                                             named function reference like fn0:abc#1.
+     * @param transformerImpl					   An XSL transform TransformerImpl object
+     * @param srcLocator						   SourceLocator object in XPath context
      * @return									   An ElemFunction object if available, otherwise null
      * 
      * @throws javax.xml.transform.TransformerException
@@ -699,20 +699,18 @@ public class XslTransformEvaluationHelper {
   			  ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);        		   
   			  if (elemTemplate != null) {
   				  result = (ElemFunction)elemTemplate;
-  				  int xslFuncDefnParamCount = result.getParamCount();                      
+  				  int xslFuncDefnParamCount = result.getArity();                      
   				  String str = funcNameRef.substring(hashCharIdx + 1);
   				  int funcRefParamCount = (Integer.valueOf(str)).intValue();
   				  if (funcRefParamCount != xslFuncDefnParamCount) {
-  					  throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcNameRef 
-  																													   + " cannot resolve to a function "
-  																													   + "definition.", srcLocator); 
+  					  throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcNameRef + " cannot resolve to a function "
+  																													                 + "definition.", srcLocator); 
   				  }
   			  }
   		  }
   		  else {
-  			  throw new javax.xml.transform.TransformerException("FORG0006 : An XSL named function reference " + funcNameRef 
-  																											   + " cannot resolve to a function "
-  																											   + "definition.", srcLocator);
+  			  throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcNameRef + " cannot resolve to a function "
+  																											                 + "definition.", srcLocator);
   		  }
   	  }
 

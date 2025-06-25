@@ -5742,6 +5742,9 @@ public class XPathParser
        }
        else if (tokenIs("function")) {
      	   parseFunctionItemSequenceType(xpathSequenceTypeExpr);
+     	   if (m_token != null) {
+              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse);  
+           }
        }
        else if (tokenIs("map")) {
      	   parseXdmMapSequenceType(xpathSequenceTypeExpr);    	  

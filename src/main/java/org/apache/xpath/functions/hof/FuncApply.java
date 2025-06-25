@@ -271,7 +271,7 @@ public class FuncApply extends Function2Args {
 	  else {
 		  XPathArrayConstructor xpathArrConstructor = (XPathArrayConstructor)arrXPathExpr;
 		  List<String> arrConsXPathParts = xpathArrConstructor.getArrayConstructorXPathParts();
-		  int xslFunctionParamCount = elemFunction.getParamCount();
+		  int xslFunctionParamCount = elemFunction.getArity();
 		  if (arrConsXPathParts.size() != xslFunctionParamCount) {
 			  throw new TransformerException("XPTY0004 : The number of arguments provided with function call fn:apply() "
 																                                     				+ "within its arguments array is " + arrConsXPathParts.size() + 

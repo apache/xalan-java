@@ -22,7 +22,10 @@ package org.apache.xpath.operations;
 
 import javax.xml.XMLConstants;
 
+import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
@@ -271,5 +274,59 @@ public class Operation extends Expression implements ExpressionOwner
   		return false;
   		
   	return true;
+  }
+  
+  /**
+   * Method definition to get a modified XPath expression operand value,
+   * if an XPath operand expression is a SelfIteratorNoPredicate iterator. 
+   * 
+   * @param opValue						        The supplied XPath expression operand value.
+   *                                            This could be value of either LHS or RHS 
+   *                                            operand of an XPath binary operator.
+   * @param selfIteratorNoPredicate				SelfIteratorNoPredicate iterator
+   * @return									The modified or an existing XPath expression 
+   *                                            operand value.
+   */
+  protected XObject getModifiedOperandValue(XObject opValue, SelfIteratorNoPredicate selfIteratorNoPredicate) {
+	  
+	  XObject result = opValue;
+
+	  ExpressionNode exprNode = selfIteratorNoPredicate.getExpressionOwner();
+	  XObject contextItem = getXPath3ContextItem(exprNode);
+	  if (contextItem != null) {
+		  result = contextItem;  
+	  }
+
+	  return result;
+  }
+  
+  /**
+   * Method definition to get an XPath context item, given 
+   * a supplied non-expression XSL stylesheet node.
+   * 
+   * Usually, XPath context has reference to context node's
+   * integer handle. For XPath expression ".", its possible that
+   * a compiled XPath context item is available within XPath context,
+   * which can be retrieved via this method definition.
+   * 
+   * @param exprNode			Non-expression stylesheet node
+   * @return					A context item if available within XPath context
+   */
+  private XObject getXPath3ContextItem(ExpressionNode exprNode) {
+	
+	  XObject result = null;
+
+	  ExpressionNode stylesheetRootNode = null;
+	  while (exprNode != null) {
+		  stylesheetRootNode = exprNode;
+		  exprNode = exprNode.exprGetParent();                     
+	  }
+
+	  StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+	  XPathContext xpathContext = transformerImpl.getXPathContext();
+	  result = xpathContext.getXPath3ContextItem();
+
+	  return result;
   }
 }

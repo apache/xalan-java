@@ -32,10 +32,10 @@ import org.junit.Test;
 public class XslHigherOrderFunctionTests extends XslTransformTestsUtil {        
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + 
-                                                                                                           "higher_order_functions/";
+                                                                                                           "xsl_higher_order_functions/";
     
     private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + 
-                                                                                                          "higher_order_functions/gold/";
+                                                                                                          "xsl_higher_order_functions/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -115,6 +115,30 @@ public class XslHigherOrderFunctionTests extends XslTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslHigherOrderFunctionTest8() {
+    	String xmlFilePath = null;    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test8.out";
+        
+        m_initTemplateName = "main";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslHigherOrderFunctionTest9() {
+    	String xmlFilePath = null;    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";
+        
+        m_initTemplateName = "main";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

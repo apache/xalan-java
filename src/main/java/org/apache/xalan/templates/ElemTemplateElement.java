@@ -279,8 +279,8 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * Get the owning root stylesheet.  This looks up the
-   * inheritance chain until it calls StylesheetRoot
+   * Get the owning root stylesheet. This looks up an
+   * object inheritance chain until it calls StylesheetRoot
    * on a Stylesheet object, which will return a reference
    * to the root stylesheet.
    *

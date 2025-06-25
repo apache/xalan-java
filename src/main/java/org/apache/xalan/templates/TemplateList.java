@@ -141,7 +141,7 @@ public class TemplateList implements java.io.Serializable
                                                                       new Object[]{});
         }
     	else {
-    		int funcArity = ((ElemFunction)template).getParamCount();    		
+    		int funcArity = ((ElemFunction)template).getArity();    		
     		XslFunctionDefinitionKey funcDefnKey = new XslFunctionDefinitionKey(template.getName(), funcArity);
     		ElemFunction existingXslFunction = m_functionDefinitionMap.get(funcDefnKey);
     		if (existingXslFunction == null)

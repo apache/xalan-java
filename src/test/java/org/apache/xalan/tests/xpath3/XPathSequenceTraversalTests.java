@@ -23,17 +23,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT 3.0 test cases, to test traversal of XDM sequences.
+ * XSLT 3.0 test cases, to test traversal of XPath sequences.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPathSequenceTests extends XslTransformTestsUtil {
+public class XPathSequenceTraversalTests extends XslTransformTestsUtil {
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_sequence/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xpath_sequence_traversal/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_sequence/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xpath_sequence_traversal/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -48,7 +48,7 @@ public class XPathSequenceTests extends XslTransformTestsUtil {
     }
 
     @Test
-    public void xslSequenceTest1() {
+    public void xslSequenceTraversalTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
@@ -58,7 +58,7 @@ public class XPathSequenceTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslSequenceTest2() {
+    public void xslSequenceTraversalTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         

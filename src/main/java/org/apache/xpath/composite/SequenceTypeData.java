@@ -111,7 +111,8 @@ public class SequenceTypeData extends XObject {
      * equal to another SequenceTypeData object.  
      */
 	public boolean equal(SequenceTypeData sequenceTypeData) {
-	    boolean isEqual = true;
+	    
+		boolean result = true;
 	    
 	    int seqType2 = sequenceTypeData.getBuiltInSequenceType();
 	    int occrInd2 = sequenceTypeData.getItemTypeOccurrenceIndicator();
@@ -119,16 +120,16 @@ public class SequenceTypeData extends XObject {
 	    
 	    if ((this.builtInSequenceType != 0) && (this.builtInSequenceType == seqType2) 
 	    		                           && (this.itemTypeOccurrenceIndicator == occrInd2)) {
-	       isEqual = true;
+	       result = true;
 	    }
 	    else if (this.itemTypeOccurrenceIndicator != occrInd2) {
-	       isEqual = false;
+	       result = false;
 	    }
 	    else if (!(this.sequenceTypeKindTest).equal(sequenceTypeKindTest2)) {
-	       isEqual = false;
+	       result = false;
 	    }
 	    
-	    return isEqual;
+	    return result;
 	}
 
 }

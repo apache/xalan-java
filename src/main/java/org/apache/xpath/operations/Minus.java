@@ -21,7 +21,9 @@ import java.math.BigDecimal;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.ArithmeticOperation;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
@@ -37,8 +39,6 @@ import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
-
-import java.lang.String;
 
 /**
  * An XPath '-' operation implementation.
@@ -66,6 +66,16 @@ public class Minus extends ArithmeticOperation
   public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException {
       
 	  XObject result = null;
+	  
+	  Expression leftOperandExpr = getLeftOperand();	  
+	  if (leftOperandExpr instanceof SelfIteratorNoPredicate) {
+		 left = getModifiedOperandValue(left, (SelfIteratorNoPredicate)leftOperandExpr);
+	  }
+	  
+      Expression rightOperandExpr = getRightOperand();	  
+	  if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
+		 right = getModifiedOperandValue(right, (SelfIteratorNoPredicate)rightOperandExpr);
+	  }
       
       if ((left instanceof XSUntyped) && (right instanceof XSUntyped)) {
           java.lang.String lStrVal = ((XSUntyped)left).stringValue();
@@ -124,7 +134,7 @@ public class Minus extends ArithmeticOperation
       else if ((left instanceof XNumber) && (right instanceof XMLNodeCursorImpl)) {          
           XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
           if (rNodeSet.getLength() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           else {
         	  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)left).num());
@@ -133,7 +143,7 @@ public class Minus extends ArithmeticOperation
         	     rBigDecimal = new BigDecimal(rNodeSet.str());
         	  }
         	  catch (NumberFormatException ex) {
-        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
@@ -148,7 +158,7 @@ public class Minus extends ArithmeticOperation
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XNumber)) {
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
@@ -156,7 +166,7 @@ public class Minus extends ArithmeticOperation
         		 lBigDecimal = new BigDecimal(lNodeSet.str());
         	  }
         	  catch (NumberFormatException ex) {
-        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
         	  }
         	  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)right).num());
         	  
@@ -172,7 +182,7 @@ public class Minus extends ArithmeticOperation
       else if ((left instanceof XSNumericType) && (right instanceof XMLNodeCursorImpl)) {
     	  XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
           if (rNodeSet.getLength() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           else {
         	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
@@ -181,7 +191,7 @@ public class Minus extends ArithmeticOperation
         	     rBigDecimal = new BigDecimal(rNodeSet.str());
         	  }
         	  catch (NumberFormatException ex) {
-        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
@@ -196,7 +206,7 @@ public class Minus extends ArithmeticOperation
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XSNumericType)) {
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
@@ -204,7 +214,7 @@ public class Minus extends ArithmeticOperation
         		 lBigDecimal = new BigDecimal(lNodeSet.str());
         	  }
         	  catch (NumberFormatException ex) {
-        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
         	  }
         	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
         	  
@@ -220,12 +230,12 @@ public class Minus extends ArithmeticOperation
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {          
           XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           
           XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
           if (rNodeSet.getLength() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           
           BigDecimal lBigDecimal = null;
@@ -233,7 +243,7 @@ public class Minus extends ArithmeticOperation
     		 lBigDecimal = new BigDecimal(lNodeSet.str());
     	  }
     	  catch (NumberFormatException ex) {
-    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
     	  }
     	  
     	  BigDecimal rBigDecimal = null;
@@ -241,7 +251,7 @@ public class Minus extends ArithmeticOperation
     	     rBigDecimal = new BigDecimal(rNodeSet.str());
     	  }
     	  catch (NumberFormatException ex) {
-    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
     	  }
     	  
     	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
@@ -255,7 +265,7 @@ public class Minus extends ArithmeticOperation
       else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
     	  ResultSequence lSeq = (ResultSequence)left;
           if (lSeq.size() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
@@ -263,7 +273,7 @@ public class Minus extends ArithmeticOperation
         		 lBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(lSeq.item(0)));
         	  }
         	  catch (NumberFormatException ex) {
-        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
         	  }
         	  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)right).num());
         	  
@@ -279,7 +289,7 @@ public class Minus extends ArithmeticOperation
       else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
     	  ResultSequence rSeq = (ResultSequence)right;
           if (rSeq.size() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           else {
         	  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)left).num());
@@ -288,7 +298,7 @@ public class Minus extends ArithmeticOperation
         	     rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(rSeq.item(0)));
         	  }
         	  catch (NumberFormatException ex) {
-        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
@@ -303,7 +313,7 @@ public class Minus extends ArithmeticOperation
       else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
     	  ResultSequence lSeq = (ResultSequence)left;
           if (lSeq.size() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
@@ -311,7 +321,7 @@ public class Minus extends ArithmeticOperation
         		 lBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(lSeq.item(0)));
         	  }
         	  catch (NumberFormatException ex) {
-        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
         	  }
         	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
         	  
@@ -327,7 +337,7 @@ public class Minus extends ArithmeticOperation
       else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
     	  ResultSequence rSeq = (ResultSequence)right;
           if (rSeq.size() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           else {
         	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
@@ -336,7 +346,7 @@ public class Minus extends ArithmeticOperation
         	     rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(rSeq.item(0)));
         	  }
         	  catch (NumberFormatException ex) {
-        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
@@ -365,12 +375,12 @@ public class Minus extends ArithmeticOperation
       else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
           ResultSequence lSeq = (ResultSequence)left;          
           if (lSeq.size() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           
           ResultSequence rSeq = (ResultSequence)right;          
           if (rSeq.size() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
           }
           
           XObject lXObj = ((ResultSequence)left).item(0);
@@ -395,7 +405,7 @@ public class Minus extends ArithmeticOperation
 	              rBigDecimal = new BigDecimal(rStr);
         	  }
         	  catch (NumberFormatException ex) {
-        		  error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});
+        		  error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
@@ -410,7 +420,7 @@ public class Minus extends ArithmeticOperation
       else if (left instanceof ResultSequence) {
           ResultSequence lSeq = (ResultSequence)left;          
           if (lSeq.size() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           
           XObject lXObj = ((ResultSequence)left).item(0);
@@ -433,7 +443,7 @@ public class Minus extends ArithmeticOperation
 	              rBigDecimal = new BigDecimal(rStr);
         	  }
         	  catch (NumberFormatException ex) {
-        		  error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});
+        		  error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
@@ -448,7 +458,7 @@ public class Minus extends ArithmeticOperation
       else if (left instanceof XMLNodeCursorImpl) {
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           if (lNodeSet.getLength() > 1) {
-        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS});  
+        	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS});  
           }
           
           BigDecimal lBigDecimal = null;
@@ -458,7 +468,7 @@ public class Minus extends ArithmeticOperation
              rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(right));
     	  }
     	  catch (NumberFormatException ex) {
-    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
     	  }
         	  
           BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
@@ -476,7 +486,7 @@ public class Minus extends ArithmeticOperation
              result = new XNumber(Double.valueOf(lStrVal) - Double.valueOf(rStrVal));
           }
           catch (NumberFormatException ex) {
-        	 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
+        	 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}); 
           }
       }
       

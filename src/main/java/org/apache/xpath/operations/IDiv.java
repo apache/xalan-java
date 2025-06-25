@@ -34,9 +34,11 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.ArithmeticOperation;
+import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -70,6 +72,16 @@ public class IDiv extends ArithmeticOperation
   public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException
   {
 	  XObject result = null;
+	  
+	  Expression leftOperandExpr = getLeftOperand();	  
+	  if (leftOperandExpr instanceof SelfIteratorNoPredicate) {
+		  left = getModifiedOperandValue(left, (SelfIteratorNoPredicate)leftOperandExpr);
+	  }
+
+	  Expression rightOperandExpr = getRightOperand();	  
+	  if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
+		  right = getModifiedOperandValue(right, (SelfIteratorNoPredicate)rightOperandExpr);
+	  }
 	  
 	  java.lang.String arg0Str = null;
 	  

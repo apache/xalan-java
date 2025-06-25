@@ -98,55 +98,20 @@ public class XPathDynamicFunctionCall extends Expression {
     private String[] m_xpathChainedArgListArr;
     
     /**
-     * The following two class fields are used during XPath.fixupVariables(..) 
-     * action as performed within object of this class.
-     */    
+     * The class fields m_vars & m_globals_size declared below are used during 
+     * XPath.fixupVariables(..) action as performed within object of this class.
+     */
+    
     private Vector m_vars;
     
     private int m_globals_size;
     
     private XSL3FunctionService m_xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
-
-    public String getFuncRefVarName() {
-        return m_funcRefVarName;
-    }
-
-    public void setFuncRefVarName(String funcRefVarName) {
-        this.m_funcRefVarName = funcRefVarName;
-    }
-
-    public List<String> getArgList() {
-        return m_argList;
-    }
-
-    public void setArgList(List<String> argList) {
-        this.m_argList = argList;
-    }
     
-    public void setIsFromUnaryLookupEvaluation(boolean isUnaryLookup) {
-		m_isUnaryLookup = isUnaryLookup; 		
-	}
-	
-	public boolean getIsFromUnaryLookupEvaluation() {
-		return m_isUnaryLookup;
-	}
 
-	public void setTrailingArgList(List<String> strList) {
-		m_trailingArgList = strList; 		
-	}
-	
-	public List<String> getTrailingArgList() {
-		return m_trailingArgList;
-	}
-	
-	public void setChainedArgXPathStrArray(String[] strArray) {	
-		m_xpathChainedArgListArr = strArray; 
-	}
-	
-	public String[] getChainedArgXPathStrArray() {
-		return m_xpathChainedArgListArr;
-	}
-
+    /**
+     * Evaluate an XPath dynamic function call expression.
+     */
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
         
@@ -365,39 +330,71 @@ public class XPathDynamicFunctionCall extends Expression {
     	    }
     	    else if (functionRef instanceof ElemFunctionItem) {
     	    	ElemFunction elemFunction = ((ElemFunctionItem)functionRef).getElemFunction();
-    	    	
+
     	    	ResultSequence argSequence = new ResultSequence(); 
-	    		  for (int idx = 0; idx < m_argList.size(); idx++) {
-	    			  String argXPathStr = m_argList.get(idx);
-	    			  if (prefixTable != null) {
-	    				  argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
-	    			  }
+    	    	for (int idx = 0; idx < m_argList.size(); idx++) {
+    	    		String argXPathStr = m_argList.get(idx);
+    	    		if (prefixTable != null) {
+    	    			argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    	    		}
 
-	    			  XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-	    			  if (m_vars != null) {
-	    				  argXPath.fixupVariables(m_vars, m_globals_size);
-	    			  }
+    	    		XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	    		if (m_vars != null) {
+    	    			argXPath.fixupVariables(m_vars, m_globals_size);
+    	    		}
 
-	    			  XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-	    			  argSequence.add(argValue);
-	    		  }
-	    		  
-	    		  ExpressionNode expressionNode = getExpressionOwner();
-	              ExpressionNode stylesheetRootNode = null;
-	              while (expressionNode != null) {
-	                 stylesheetRootNode = expressionNode;
-	                 expressionNode = expressionNode.exprGetParent();                     
-	              }
-	              StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
-	    		  
-	    		  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-	    		  
-	    		  evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
+    	    		XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    	    		argSequence.add(argValue);
+    	    	}
+
+    	    	ExpressionNode expressionNode = getExpressionOwner();
+    	    	ExpressionNode stylesheetRootNode = null;
+    	    	while (expressionNode != null) {
+    	    		stylesheetRootNode = expressionNode;
+    	    		expressionNode = expressionNode.exprGetParent();                     
+    	    	}
+    	    	StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+
+    	    	TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+
+    	    	evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
     	    }
-    	    else if (functionRef instanceof XPathNamedFunctionReference) {     	    	
-  	        	 evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)functionRef, m_argList, 
-  	        			 																 prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
-  	        			 																 xctxt); 
+    	    else if (functionRef instanceof XPathNamedFunctionReference) {
+    	    	ElemFunction elemFunction = ((XPathNamedFunctionReference)functionRef).getXslStylesheetFunction();
+    	    	if (elemFunction != null) {
+    	    		ResultSequence argSequence = new ResultSequence(); 
+        	    	for (int idx = 0; idx < m_argList.size(); idx++) {
+        	    		String argXPathStr = m_argList.get(idx);
+        	    		if (prefixTable != null) {
+        	    			argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+        	    		}
+
+        	    		XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	    		if (m_vars != null) {
+        	    			argXPath.fixupVariables(m_vars, m_globals_size);
+        	    		}
+
+        	    		XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+        	    		argSequence.add(argValue);
+        	    	}
+
+        	    	ExpressionNode expressionNode = getExpressionOwner();
+        	    	ExpressionNode stylesheetRootNode = null;
+        	    	while (expressionNode != null) {
+        	    		stylesheetRootNode = expressionNode;
+        	    		expressionNode = expressionNode.exprGetParent();                     
+        	    	}
+        	    	StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+
+        	    	TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+
+        	    	evalResult = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
+    	    	}
+    	    	else {
+    	    	   evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)functionRef, m_argList, 
+																						   prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
+																						   xctxt);
+    	    	}
     	    }
     	    else {
     	       Object obj1 = functionRef.object();
@@ -446,7 +443,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	  StylesheetRoot stylesheetRoot = functionRef.getXslStylesheetRoot();
 	    		  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();	    		  
     	    	  
-	    		  int funcArity = elemFunction.getParamCount();    	    	  
+	    		  int funcArity = elemFunction.getArity();    	    	  
     	    	  
     	    	  if ((m_argList != null) && (m_argList.size() == funcArity)) {    	    		  
     	    		  ResultSequence argSequence = new ResultSequence(); 
@@ -806,6 +803,46 @@ public class XPathDynamicFunctionCall extends Expression {
 		}
 		
 		return result;
+	}
+    
+    public String getFuncRefVarName() {
+        return m_funcRefVarName;
+    }
+
+    public void setFuncRefVarName(String funcRefVarName) {
+        this.m_funcRefVarName = funcRefVarName;
+    }
+
+    public List<String> getArgList() {
+        return m_argList;
+    }
+
+    public void setArgList(List<String> argList) {
+        this.m_argList = argList;
+    }
+    
+    public void setIsFromUnaryLookupEvaluation(boolean isUnaryLookup) {
+		m_isUnaryLookup = isUnaryLookup; 		
+	}
+	
+	public boolean getIsFromUnaryLookupEvaluation() {
+		return m_isUnaryLookup;
+	}
+
+	public void setTrailingArgList(List<String> strList) {
+		m_trailingArgList = strList; 		
+	}
+	
+	public List<String> getTrailingArgList() {
+		return m_trailingArgList;
+	}
+	
+	public void setChainedArgXPathStrArray(String[] strArray) {	
+		m_xpathChainedArgListArr = strArray; 
+	}
+	
+	public String[] getChainedArgXPathStrArray() {
+		return m_xpathChainedArgListArr;
 	}
 
 }

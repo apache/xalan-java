@@ -17,7 +17,7 @@
 package org.apache.xalan.xslt.util;
 
 import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -89,10 +89,10 @@ public class XslTransformSharedDatastore {
     public static int xpathCallingOpCode = Integer.MIN_VALUE;
     
     /**
-     * This class field is used to return XPath named function reference 
-     * from a function call.
+     * This class field is used to return XPath 'named function reference' 
+     * compiled information from an XSL stylesheet function call.
      */
-    public static XPathNamedFunctionReference xpathNamedFunctionReference;
+    public static ResultSequence xpathNamedFunctionRefSequence = new ResultSequence();
     
     /**
      * This class field is used to refer to a document node, that an
@@ -113,7 +113,7 @@ public class XslTransformSharedDatastore {
 		xpathNodeCombiningExprRhsStrBuff = null;
 		templateMatchDotPatternPredicateStr = null;
 		xpathCallingOpCode = Integer.MIN_VALUE;
-		xpathNamedFunctionReference = null;
+		xpathNamedFunctionRefSequence.clear();
 		xslDocumentEvaluationResult = null;
 	}
 
