@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-25T12:07:00Z" fail="7" name="predicate" pass="50" skipped="0" statusUnknown="0" totalRun="57">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-26T12:01:19Z" fail="7" name="predicate" pass="50" skipped="0" statusUnknown="0" totalRun="57">
    <testResult status="fail" testName="predicate-001"/>
    <testResult status="fail" testName="predicate-002"/>
    <testResult status="fail" testName="predicate-003"/>

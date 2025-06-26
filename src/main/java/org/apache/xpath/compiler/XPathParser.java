@@ -323,6 +323,15 @@ public class XPathParser
     m_xpathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs(); 
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
+    
+    // Remove XPath expression comments from the supplied expression,
+    // before parse of an XPath expression.
+    if (XslTransformEvaluationHelper.isStrHasBalancedXPathCommentDelim(expression)) {
+       expression = expression.replaceAll("\\(:.*:\\)", "");
+    }
+    else {
+       error(XPATHErrorResources.ER_UNCLOSED_XPATH_COMMENT, new Object[]{});
+    }
 
     lexer.tokenize(expression);
 
@@ -4253,9 +4262,45 @@ public class XPathParser
     	  }
        }
        else {
-    	   restoreTokenQueueScanPosition(prevTokQueueScanPosition);    	   
-    	   Expr(); 
-       }                     
+    	   restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    	  
+    	   // An XPath function argument is text(). Modify contents of XPath 
+    	   // parse token queue by replacing token string text() with ".".
+    	   if (tokenIs("text") && lookahead('(', 1) && lookahead(')', 2)) {
+    		   ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
+    		   List<String> tokenPrefixList = new ArrayList<String>();
+    		   for (int i = 0; i < m_queueMark - 1; i++) {
+    			   String str1 = (tokenQueue.elementAt(i)).toString();
+    			   tokenPrefixList.add(str1); 
+    		   }
+
+    		   List<String> tokenSuffixList = new ArrayList<String>();
+    		   int tokenQueueSize = tokenQueue.size();
+    		   for (int i = m_queueMark + 2; i < tokenQueueSize; i++) {
+    			   String str1 = (tokenQueue.elementAt(i)).toString();
+    			   tokenSuffixList.add(str1);
+    		   }    		  
+
+    		   tokenQueue.removeAllElements();
+
+    		   for (int j = 0; j < tokenPrefixList.size(); j++) {
+    			   tokenQueue.addElement(tokenPrefixList.get(j));  
+    		   }
+
+    		   tokenQueue.addElement(".");
+
+    		   for (int j = 0; j < tokenSuffixList.size(); j++) {
+    			   tokenQueue.addElement(tokenSuffixList.get(j)); 
+    		   }
+
+    		   tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + 1);
+    		   
+    		   m_token = ".";
+    		   m_tokenChar = '.';
+    	   }
+
+    	   Expr();
+        }                     
     }
     
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,

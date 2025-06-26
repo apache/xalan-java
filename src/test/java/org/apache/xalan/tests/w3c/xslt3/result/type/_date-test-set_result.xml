@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-25T12:07:00Z" fail="47" name="date" pass="37" skipped="0" statusUnknown="1" totalRun="85">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-26T12:01:19Z" fail="47" name="date" pass="37" skipped="0" statusUnknown="1" totalRun="85">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -63,12 +63,8 @@
          <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="date-054">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="date-055">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="date-054"/>
+   <testResult status="fail" testName="date-055"/>
    <testResult status="fail" testName="date-056"/>
    <testResult status="fail" testName="date-057"/>
    <testResult status="fail" testName="date-058"/>

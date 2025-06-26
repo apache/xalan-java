@@ -563,36 +563,81 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * This method definition, is used to check whether the supplied string 
-     * value has balanced parentheses pairs.
+     * Method definition to check, whether the supplied string value 
+     * has balanced parentheses pairs.
      */
-    public static boolean isStrHasBalancedParentheses(String str, char lParentType, char rParenType) {
+    public static boolean isStrHasBalancedParentheses(String strValue, char lParenChar, char rParenChar) {
        
-       boolean isStrHasBalancedParentheses = true;
+       boolean result = true;
        
        Stack<Character> charStack = new Stack<Character>();
        
-       int strLen = str.length();
+       int strLen = strValue.length();
        
        for(int idx = 0; idx < strLen; idx++) {
-           char ch = str.charAt(idx);
-           if (ch == lParentType) {
+           char ch = strValue.charAt(idx);
+           if (ch == lParenChar) {
               charStack.push(ch); 
            }
-           else if (ch == rParenType){
-              if (charStack.isEmpty() || (charStack.pop() != lParentType)) {
-                 // unbalanced parentheses
-                 isStrHasBalancedParentheses = false;
+           else if (ch == rParenChar){
+              if (charStack.isEmpty() || (charStack.pop() != lParenChar)) {
+                 // Unbalanced parentheses
+                 result = false;
                  break;
               }   
            }
        }
        
        if (!charStack.isEmpty()) {
-          isStrHasBalancedParentheses = false;
+          result = false;
        }
        
-       return isStrHasBalancedParentheses; 
+       return result; 
+    }
+    
+    /**
+     * Method definition to check, whether the supplied string value 
+     * has balanced XPath comment delimiters. XPath comments have
+     * lexical form (: comment text :)
+     */
+    public static boolean isStrHasBalancedXPathCommentDelim(String strValue) {
+        
+        boolean result = true;
+        
+        // Sufficiently random character strings, that're unlikely 
+        // to occur within an XPath expression.        
+        String lDelimStr = new String(new int[] { 2 }, 0, 1);
+        String rDelimStr = new String(new int[] { 3 }, 0, 1);
+        
+        char lDelimChar = lDelimStr.charAt(0);
+        char rDelimChar = rDelimStr.charAt(0);
+        
+        strValue = strValue.replace("(:", lDelimStr);        
+        strValue = strValue.replace(":)", rDelimStr);
+        
+        Stack<Character> charStack = new Stack<Character>();
+        
+        int strLen = strValue.length();
+        
+        for(int idx = 0; idx < strLen; idx++) {
+            char ch = strValue.charAt(idx);
+            if (ch == lDelimChar) {
+               charStack.push(ch); 
+            }
+            else if (ch == rDelimChar){
+               if (charStack.isEmpty() || (charStack.pop() != lDelimChar)) {
+                  // Unbalanced comment string
+                  result = false;
+                  break;
+               }   
+            }
+        }
+        
+        if (!charStack.isEmpty()) {
+           result = false;
+        }
+        
+        return result; 
     }
     
     /**

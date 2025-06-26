@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-25T12:08:33Z" fail="13" name="position" pass="124" skipped="0" statusUnknown="1" totalRun="138">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-26T12:02:58Z" fail="11" name="position" pass="126" skipped="0" statusUnknown="1" totalRun="138">
    <testResult status="pass" testName="position-0101"/>
    <testResult status="fail" testName="position-0102"/>
    <testResult status="fail" testName="position-0103">
@@ -15,9 +15,7 @@
    <testResult status="pass" testName="position-0601"/>
    <testResult status="pass" testName="position-0701"/>
    <testResult status="pass" testName="position-0702"/>
-   <testResult status="fail" testName="position-0801">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="position-0801"/>
    <testResult status="pass" testName="position-0901"/>
    <testResult status="pass" testName="position-0902"/>
    <testResult status="pass" testName="position-1001"/>
@@ -107,12 +105,7 @@
    <testResult status="pass" testName="position-1509"/>
    <testResult status="pass" testName="position-1510"/>
    <testResult status="pass" testName="position-1601"/>
-   <testResult status="fail" testName="position-1602">
-      <outResult>
-         <errTrace>Expected ), but found: ,</errTrace>
-         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to java.lang.String</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="position-1602"/>
    <testResult status="pass" testName="position-1701"/>
    <testResult status="pass" testName="position-1702"/>
    <testResult status="pass" testName="position-1703"/>

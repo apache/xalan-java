@@ -221,8 +221,8 @@ public class ElemVariable extends ElemTemplateElement
   private String m_asAttr;
   
   /**
-   * The value of this variable 'true' means that, the variable's
-   * value is XPath named function reference.
+   * The value of this variable 'true' signifies that, an 
+   * xsl:variable's value is XPath named function reference.
    */
   static boolean m_isXPathNamedFunctionRefSequenceVar = false;
   

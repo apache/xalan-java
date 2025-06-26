@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-06-25T12:09:05Z" desc="W3C XSLT 3.0 test suite results" fail="796" pass="1360" skipped="38" success="62.83%" totalRun="2225" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-06-26T12:03:33Z" desc="W3C XSLT 3.0 test suite results" fail="793" pass="1363" skipped="38" success="62.97%" totalRun="2225" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="53" pass="51" skipped="4" success="50.46%" totalRun="109"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
@@ -9,7 +9,7 @@
   <decl>
     <attribute-set fail="7" pass="41" skipped="1" success="84.0%" totalRun="50"/>
     <character-map fail="12" pass="15" skipped="0" success="51.72%" totalRun="29"/>
-    <function fail="39" pass="22" skipped="4" success="37.14%" totalRun="70"/>
+    <function fail="38" pass="23" skipped="4" success="38.57%" totalRun="70"/>
     <variable fail="3" pass="16" skipped="0" success="80.0%" totalRun="20"/>
   </decl>
   <expr>
@@ -27,7 +27,7 @@
     <deep-equal fail="0" pass="2" skipped="0" success="100.0%" totalRun="2"/>
     <format-number fail="33" pass="37" skipped="4" success="55.41%" totalRun="74"/>
     <key fail="3" pass="21" skipped="0" success="84.0%" totalRun="25"/>
-    <position fail="13" pass="124" skipped="0" success="89.86%" totalRun="138"/>
+    <position fail="11" pass="126" skipped="0" success="91.3%" totalRun="138"/>
     <root fail="4" pass="6" skipped="0" success="60.0%" totalRun="10"/>
   </fn>
   <insn>
