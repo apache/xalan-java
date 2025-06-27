@@ -47,7 +47,7 @@ public class FuncMathAsin extends FunctionOneArg
 	 * Class constructor.
 	 */
 	public FuncMathAsin() {
-	    m_arity = 1;
+		m_defined_arity = new Short[] { 1 };
 	}
 
     /**

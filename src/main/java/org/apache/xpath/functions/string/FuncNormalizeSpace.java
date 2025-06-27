@@ -37,6 +37,13 @@ import xml.xpath31.processor.types.XSString;
 public class FuncNormalizeSpace extends FunctionDef1Arg
 {
     static final long serialVersionUID = -3377956872032190880L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncNormalizeSpace() {
+  	   m_defined_arity = new Short[] { 0, 1 };
+    }    
 
   /**
    * Implementation of the function. The function must return

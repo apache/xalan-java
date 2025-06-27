@@ -37,6 +37,13 @@ public class FuncStartsWith extends XSL3StringCollationAwareFunction
   static final long serialVersionUID = 2194585774699567928L;
   
   /**
+   * Class constructor.
+   */
+  public FuncStartsWith() {
+	 m_defined_arity = new Short[] { 2, 3 };
+  }
+  
+  /**
    * The number of arguments passed to the fn:starts-with function 
    * call.
    */

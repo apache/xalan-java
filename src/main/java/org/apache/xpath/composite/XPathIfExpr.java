@@ -48,7 +48,7 @@ public class XPathIfExpr extends Expression {
     
     private static final long serialVersionUID = 4057572946055830336L;
 
-    private String m_branchConditionXPathStr;
+    private String m_ifConditionXPathStr;
     
     private String m_thenExprXPathStr;
     
@@ -61,12 +61,12 @@ public class XPathIfExpr extends Expression {
     
     private int m_globals_size;
 
-    public String getBranchConditionXPathStr() {
-        return m_branchConditionXPathStr;
+    public String getIfConditionXPathStr() {
+        return m_ifConditionXPathStr;
     }
 
-    public void setBranchConditionXPathStr(String branchConditionXPathStr) {
-        this.m_branchConditionXPathStr = branchConditionXPathStr;
+    public void setIfConditionXPathStr(String ifConditionXPathStr) {
+        this.m_ifConditionXPathStr = ifConditionXPathStr;
     }
 
     public String getThenExprXPathStr() {
@@ -105,31 +105,31 @@ public class XPathIfExpr extends Expression {
        }
        
        if (prefixTable != null) {
-          m_branchConditionXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                    m_branchConditionXPathStr, prefixTable);
+          m_ifConditionXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                    m_ifConditionXPathStr, prefixTable);
        }
        
-       XPath branchConditionXPath = new XPath(m_branchConditionXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+       XPath ifConditionXPath = new XPath(m_ifConditionXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                  XPath.SELECT, null);
        if (m_vars != null) {
-          branchConditionXPath.fixupVariables(m_vars, m_globals_size);
+          ifConditionXPath.fixupVariables(m_vars, m_globals_size);
        }
        
-       XObject branchConditionXPathResult = branchConditionXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());       
+       XObject ifConditionXPathResult = ifConditionXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());       
        
-       boolean branchConditionEvalResult = false;
-       boolean eagerBranchConditionCheck = false;
-       if ((branchConditionXPathResult instanceof XSString) || (branchConditionXPathResult instanceof XSAnyURI) || 
-    		                                                   (branchConditionXPathResult instanceof XSUntypedAtomic)) {
-    	   eagerBranchConditionCheck = true;
-    	   XSAnyType xsAnyType = (XSAnyType)branchConditionXPathResult;
+       boolean ifConditionEvalResult = false;
+       boolean eagerIfConditionCheck = false;
+       if ((ifConditionXPathResult instanceof XSString) || (ifConditionXPathResult instanceof XSAnyURI) || 
+    		                                               (ifConditionXPathResult instanceof XSUntypedAtomic)) {
+    	   eagerIfConditionCheck = true;
+    	   XSAnyType xsAnyType = (XSAnyType)ifConditionXPathResult;
     	   String strVal = xsAnyType.stringValue();
     	   if ((strVal != null) && (strVal.length() > 0)) {
-    		   branchConditionEvalResult = true;  
+    		   ifConditionEvalResult = true;  
     	   }
        }
        
-       if ((eagerBranchConditionCheck && branchConditionEvalResult) || (!eagerBranchConditionCheck && branchConditionXPathResult.bool())) {
+       if ((eagerIfConditionCheck && ifConditionEvalResult) || (!eagerIfConditionCheck && ifConditionXPathResult.bool())) {
            if (prefixTable != null) {
               m_thenExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                         m_thenExprXPathStr, prefixTable);
@@ -149,7 +149,7 @@ public class XPathIfExpr extends Expression {
               evalResult = thenExprXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
            }
        }
-       else if ((eagerBranchConditionCheck && !branchConditionEvalResult) || (!eagerBranchConditionCheck && !branchConditionXPathResult.bool())) {
+       else if ((eagerIfConditionCheck && !ifConditionEvalResult) || (!eagerIfConditionCheck && !ifConditionXPathResult.bool())) {
            if (prefixTable != null) {
               m_elseExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_elseExprXPathStr, 
                                                                                                           prefixTable);

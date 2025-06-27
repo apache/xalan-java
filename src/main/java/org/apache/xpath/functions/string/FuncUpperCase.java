@@ -35,7 +35,14 @@ import org.apache.xpath.objects.XString;
 public class FuncUpperCase extends FunctionDef1Arg
 {
     
-    private static final long serialVersionUID = 2596924943524147578L;
+     private static final long serialVersionUID = 2596924943524147578L;
+     
+     /**
+ 	  * Class constructor.
+ 	  */
+      public FuncUpperCase() {
+ 	      m_defined_arity = new Short[] { 1 };
+      }
 
      /**
        * Execute the function. The function must return a valid object.

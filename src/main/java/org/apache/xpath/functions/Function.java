@@ -29,13 +29,14 @@ import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XObject;
 
 /**
- * This is a superclass of all XPath functions.  This allows two
+ * This is a superclass of all XPath functions. This allows two
  * ways for the class to be called. One method is that the
  * super class processes the arguments and hands the results to
  * the derived class, the other method is that the derived
  * class may process it's own arguments, which is faster since
  * the arguments don't have to be added to an array, but causes
  * a larger code footprint.
+ * 
  * @xsl.usage advanced
  */
 public abstract class Function extends Expression
@@ -47,19 +48,14 @@ public abstract class Function extends Expression
     */
    protected Expression m_arg0;
    
-   protected final short FUNC_ARITY_NOT_KNOWN = -1;
-   
-   /**
-    * Number of arguments specified in the function 
-    * definition. Initialized to FUNC_ARITY_NOT_KNOWN.
-    */
-   protected short m_arity = FUNC_ARITY_NOT_KNOWN;
-   
    /**
     * Class field to represent, an XPath built-in function's
-    * arity for function's having more than one possible arity.
+    * arity which can have count 0 or greater. These are the
+    * function arity values defined by XPath 3.1 F&O spec, and
+    * are set to this variable by concrete function implementation 
+    * subclasses of this class.
     */
-   protected Short[] m_arityArr = null;
+   protected Short[] m_defined_arity = null;
    
    private String m_localName = null;
    
@@ -173,21 +169,13 @@ public abstract class Function extends Expression
   public void setArg0(Expression arg0) {
 	  this.m_arg0 = arg0; 
   }
-
-  public short getArity() {
-	  return m_arity;
-  }
-
-  public void setArity(short arity) {
-	  this.m_arity = arity;
+  
+  public Short[] getDefinedArity() {
+	 return m_defined_arity; 
   }
   
-  public Short[] getArityArray() {
-	 return m_arityArr; 
-  }
-  
-  public void setArityArray(Short[] arityArr) {
-	 this.m_arityArr = arityArr; 
+  public void setDefinedArity(Short[] definedArity) {
+	 this.m_defined_arity = definedArity; 
   }
 
   public String getLocalName() {

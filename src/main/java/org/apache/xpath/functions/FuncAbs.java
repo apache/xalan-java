@@ -37,7 +37,7 @@ public class FuncAbs extends FunctionDef1Arg
 	 * Class constructor.
 	 */
 	public FuncAbs() {
-	    m_arity = 1;
+		m_defined_arity = new Short[] { 1 };
 	}
 
 	/**

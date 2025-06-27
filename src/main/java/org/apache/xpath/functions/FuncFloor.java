@@ -37,7 +37,7 @@ public class FuncFloor extends FunctionDef1Arg
 	 * Class constructor.
 	 */
 	public FuncFloor() {
-	    m_arity = 1;
+		m_defined_arity = new Short[] { 1 };
 	}
 
   /**

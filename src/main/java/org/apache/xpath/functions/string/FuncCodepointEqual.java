@@ -40,6 +40,13 @@ public class FuncCodepointEqual extends Function2Args {
     private static final long serialVersionUID = -2518383964235644671L;
     
     /**
+	 * Class constructor.
+	 */
+    public FuncCodepointEqual() {
+	   m_defined_arity = new Short[] { 2 };
+    }
+    
+    /**
      * Execute the function. The function must return a valid object.
      * 
      * @param xctxt The current execution context.

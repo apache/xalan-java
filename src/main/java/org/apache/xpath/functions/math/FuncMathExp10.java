@@ -47,7 +47,7 @@ public class FuncMathExp10 extends FunctionOneArg
 	 * Class constructor.
 	 */
 	public FuncMathExp10() {
-	    m_arity = 1;
+		m_defined_arity = new Short[] { 1 };
 	}
 
     /**

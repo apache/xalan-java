@@ -42,6 +42,13 @@ import xml.xpath31.processor.types.XSString;
 public class FuncSubstring extends Function3Args
 {
     static final long serialVersionUID = -5996676095024715502L;
+    
+   /**
+	* Class constructor.
+	*/
+   public FuncSubstring() {
+	   m_defined_arity = new Short[] { 2, 3 };
+   }
 
   /**
    * Execute the function. The function must return a valid object.

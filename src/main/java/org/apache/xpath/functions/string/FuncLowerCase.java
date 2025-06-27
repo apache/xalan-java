@@ -36,8 +36,15 @@ public class FuncLowerCase extends FunctionDef1Arg
 {
 
      private static final long serialVersionUID = 1547894171087866269L;
-
+     
      /**
+ 	  * Class constructor.
+ 	  */
+      public FuncLowerCase() {
+ 	      m_defined_arity = new Short[] { 1 };
+      }
+
+      /**
        * Execute the function. The function must return a valid object.
        * 
        * @param xctxt The current execution context.

@@ -42,6 +42,13 @@ import xml.xpath31.processor.types.XSNumericType;
 public class FuncCodePointsToString extends FunctionOneArg {
 
     private static final long serialVersionUID = -4531182517520672452L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncCodePointsToString() {
+	    m_defined_arity = new Short[] { 1 };
+	}
 
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {

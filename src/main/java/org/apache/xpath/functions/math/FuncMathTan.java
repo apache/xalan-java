@@ -47,7 +47,7 @@ public class FuncMathTan extends FunctionOneArg
 	 * Class constructor.
 	 */
 	public FuncMathTan() {
-	    m_arity = 1;
+		m_defined_arity = new Short[] { 1 };
 	}
 
     /**

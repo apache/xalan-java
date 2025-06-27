@@ -38,6 +38,13 @@ public class FuncSubstringBefore extends XSL3StringCollationAwareFunction
   static final long serialVersionUID = 4110547161672431775L;
   
   /**
+   * Class constructor.
+   */
+  public FuncSubstringBefore() {
+	 m_defined_arity = new Short[] { 2, 3 };
+  }
+  
+  /**
    * The number of arguments passed to the fn:substring-before function 
    * call.
    */

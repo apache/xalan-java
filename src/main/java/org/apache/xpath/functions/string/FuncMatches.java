@@ -46,7 +46,14 @@ public class FuncMatches extends Function3Args {
     
    static final long serialVersionUID = 400116356230813776L;
    
-   private static final String FUNCTION_NAME = "matches()"; 
+   private static final String FUNCTION_NAME = "matches()";
+   
+   /**
+    * Class constructor.
+    */
+   public FuncMatches() {
+ 	  m_defined_arity = new Short[] { 2, 3 };
+   }
 
   /**
    * Execute the function. The function must return a valid object.

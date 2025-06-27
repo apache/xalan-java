@@ -52,12 +52,14 @@ public class FuncFunctionArity extends FunctionDef1Arg
 {
 	
 	private static final long serialVersionUID = 8093916820370748865L;
+	
+	final short FUNC_ARITY_NOT_KNOWN = -1; 
 
 	/**
 	 * Class constructor;
 	 */
 	public FuncFunctionArity() {
-	    m_arity = 1;
+		m_defined_arity = new Short[] { 1 };
 	}
 
 	/**
@@ -76,8 +78,6 @@ public class FuncFunctionArity extends FunctionDef1Arg
 		
 		Expression arg0 = getArg0();		
 		
-		short funcArity = FUNC_ARITY_NOT_KNOWN;
-		
 		if (arg0 instanceof Variable) {
 		   Variable var1 = (Variable)arg0;
 		   org.apache.xpath.XPath xpathSelectExpr = (var1.getElemVariable()).getSelect();
@@ -93,7 +93,7 @@ public class FuncFunctionArity extends FunctionDef1Arg
 			   ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)selectExpr, 
 					                                                                                          transformerImpl, srcLocator);
 			   if (elemFunction != null) {
-				   funcArity = elemFunction.getArity();
+				   short funcArity = elemFunction.getArity();
 				   result = new XSInteger(String.valueOf(funcArity));
 			   }
 			   else {
@@ -119,7 +119,7 @@ public class FuncFunctionArity extends FunctionDef1Arg
 			ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)arg0, 
 					                                                                                        transformerImpl, srcLocator);			
 			if (elemFunction != null) {
-			   funcArity = elemFunction.getArity();
+			   short funcArity = elemFunction.getArity();
 			   result = new XSInteger(String.valueOf(funcArity));
 			}
 			else {
@@ -189,33 +189,21 @@ public class FuncFunctionArity extends FunctionDef1Arg
 			 * stylesheet or an XPath literal expression. This arity value is
 			 * further verified below with an XPath function's actual arity value.
 			 */
-			final Short funcArity = xpathNamedFunctionReference.getArity();
+			final Short runTimeArity = xpathNamedFunctionReference.getArity();
 			
 			short funcActualArity = FUNC_ARITY_NOT_KNOWN; 
-			Short[] arityArr = function.getArityArray();
-			if (arityArr != null) {
-			   List<Short> list1 = Arrays.asList(arityArr);
-			   if (list1.contains(funcArity)) {
-				  funcActualArity = funcArity;
-				  result = new XSInteger(String.valueOf(funcActualArity));
-			   }
-			   else {
-				  String funcNameRefStr = "{" + funcNamespace + "}" + funcName + "#" + funcArity; 
-				  throw new TransformerException("XPST0017 : An XSL function definition for function reference " + funcNameRefStr 
-																												 + " not found.", srcLocator); 
-			   }
+			Short[] funcDefinedArityArr = function.getDefinedArity();						
+			List<Short> funcDefinedArityList = Arrays.asList(funcDefinedArityArr);
+			if (funcDefinedArityList.contains(runTimeArity)) {
+				funcActualArity = runTimeArity;
+				result = new XSInteger(String.valueOf(funcActualArity));
 			}
 			else {
-				funcActualArity = function.getArity();
-				if ((funcArity != FUNC_ARITY_NOT_KNOWN) && (funcActualArity == funcArity)) {
-					result = new XSInteger(String.valueOf(funcActualArity)); 
-				}
-				else {
-					String funcNameRefStr = "{" + funcNamespace + "}" + funcName + "#" + funcArity; 
-					throw new TransformerException("XPST0017 : An XSL function definition for function reference " + funcNameRefStr 
-																												   + " not found.", srcLocator);
-				}
+				String funcNameRefStr = "{" + funcNamespace + "}" + funcName + "#" + runTimeArity; 
+				throw new TransformerException("XPST0017 : An XSL function definition for function reference " + funcNameRefStr 
+																											   + " not found.", srcLocator); 
 			}
+			
 		}
 		
 		return result;

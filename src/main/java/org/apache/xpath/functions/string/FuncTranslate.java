@@ -36,6 +36,13 @@ public class FuncTranslate extends Function3Args
 {
   
    static final long serialVersionUID = -1672834340026116482L;
+   
+   /**
+	* Class constructor.
+	*/
+    public FuncTranslate() {
+	   m_defined_arity = new Short[] { 3 };
+    }
 
   /**
    * Execute the function. The function must return a valid object.

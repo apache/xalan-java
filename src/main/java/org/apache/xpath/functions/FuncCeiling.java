@@ -37,7 +37,7 @@ public class FuncCeiling extends FunctionDef1Arg
 	 * Class constructor.
 	 */
 	public FuncCeiling() {
-	    m_arity = 1;
+		m_defined_arity = new Short[] { 1 };
 	}
 
     /**

@@ -55,6 +55,13 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 	private static final long serialVersionUID = -1559008263985308212L;
 	
 	/**
+	 * Class constructor.
+	 */
+	public FuncAnalyzeString() {
+	   m_defined_arity = new Short[] { 2, 3 };
+	}
+	
+	/**
      * The number of arguments passed to the fn:analyze-string function 
      * call.
      */

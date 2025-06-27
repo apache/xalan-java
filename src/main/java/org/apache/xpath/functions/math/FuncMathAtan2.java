@@ -44,7 +44,7 @@ public class FuncMathAtan2 extends Function2Args {
 	 * Class constructor.
 	 */
 	public FuncMathAtan2() {
-	    m_arity = 2;
+		m_defined_arity = new Short[] { 2 };
 	}
     
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException

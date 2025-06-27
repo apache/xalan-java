@@ -33,6 +33,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncStringLength extends FunctionDef1Arg
 {
    static final long serialVersionUID = -159616417996519839L;
+   
+  /**
+   * Class constructor.
+   */
+  public FuncStringLength() {
+	 m_defined_arity = new Short[] { 0, 1 };
+  }
 
   /**
    * Execute the function. The function must return a valid object.

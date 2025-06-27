@@ -47,7 +47,7 @@ public class FuncMathCos extends FunctionOneArg
 	 * Class constructor.
 	 */
 	public FuncMathCos() {
-	    m_arity = 1;
+		m_defined_arity = new Short[] { 1 };
 	}
 
     /**

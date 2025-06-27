@@ -38,13 +38,24 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Execute the concat() function.
+ * Implementation of XPath 3.1 function fn:concat.
  * 
  * @xsl.usage advanced
  */
 public class FuncConcat extends FunctionMultiArgs
 {
     static final long serialVersionUID = 1737228885202314413L;
+    
+    /**
+	 * Class constructor.
+	 */
+    public FuncConcat() {
+       short maxArgSupported = (Short.MAX_VALUE - 1); 
+	   m_defined_arity = new Short[maxArgSupported];
+	   for (short idx = 2; idx <= maxArgSupported; idx++) {
+		  m_defined_arity[idx - 2] = idx;  
+	   }
+    }
 
   /**
    * Execute the function. The function must return

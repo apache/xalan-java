@@ -2596,7 +2596,7 @@ public class XPathParser
     	 }
       }
       
-      ifExpr.setBranchConditionXPathStr(branchConditionXPathExprStr);
+      ifExpr.setIfConditionXPathStr(branchConditionXPathExprStr);
       ifExpr.setThenExprXPathStr(thenXPathExprStr);
       ifExpr.setElseExprXPathStr(elseXPathStr);
       

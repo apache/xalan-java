@@ -48,6 +48,13 @@ public class FuncReplace extends Function4Args {
    static final long serialVersionUID = 400116356230813776L;
    
    private static final String FUNCTION_NAME = "replace()";
+   
+   /**
+    * Class constructor.
+    */
+   public FuncReplace() {
+ 	  m_defined_arity = new Short[] { 3, 4 };
+   }
 
   /**
    * Execute the function. The function must return a valid object.

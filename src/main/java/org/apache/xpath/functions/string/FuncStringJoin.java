@@ -55,6 +55,13 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 public class FuncStringJoin extends Function2Args {
 
    private static final long serialVersionUID = 4171534319684252331L;
+   
+   /**
+	* Class constructor.
+	*/
+   public FuncStringJoin() {
+	   m_defined_arity = new Short[] { 1, 2 };
+   }
 
    /**
    * Implementation of the function.

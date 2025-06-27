@@ -41,6 +41,13 @@ public class FuncStringToCodepoints extends FunctionDef1Arg
 {
 
    private static final long serialVersionUID = -2509583274718320399L;
+   
+   /**
+	* Class constructor.
+	*/
+   public FuncStringToCodepoints() {
+	  m_defined_arity = new Short[] { 1 };
+   }
 
   /**
    * Execute the function. The function must return

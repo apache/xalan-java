@@ -58,7 +58,7 @@ public class FuncData extends FunctionDef1Arg
    * Class constructor.
    */
   public FuncData() {
-	  m_arityArr = new Short[] {0, 1}; 
+	  m_defined_arity = new Short[] {0, 1}; 
   }
 
   /**

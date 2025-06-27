@@ -39,6 +39,13 @@ public class FuncEndsWith extends XSL3StringCollationAwareFunction
   static final long serialVersionUID = -4632201923330818748L;
   
   /**
+   * Class constructor.
+   */
+  public FuncEndsWith() {
+	 m_defined_arity = new Short[] { 2, 3 };
+  }
+  
+  /**
    * The number of arguments passed to the fn:ends-with function 
    * call.
    */

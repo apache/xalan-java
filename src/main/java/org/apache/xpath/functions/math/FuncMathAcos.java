@@ -47,7 +47,7 @@ public class FuncMathAcos extends FunctionOneArg
 	 * Class constructor.
 	 */
 	public FuncMathAcos() {
-	    m_arity = 1;
+		m_defined_arity = new Short[] { 1 };
 	}
 
     /**

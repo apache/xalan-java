@@ -42,8 +42,6 @@ import xml.xpath31.processor.types.XSBoolean;
 /**
  * Implementation of an XPath 3.1 function contains-token().
  * 
- * Ref : https://www.w3.org/TR/xpath-functions-31/#func-contains-token
- * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
@@ -51,6 +49,13 @@ import xml.xpath31.processor.types.XSBoolean;
 public class FuncContainsToken extends FunctionMultiArgs {
 
    private static final long serialVersionUID = -7113398825278491809L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncContainsToken() {
+ 	  m_defined_arity = new Short[] { 2, 3 };
+   }
 
    /**
    * Execute the function. The function must return a valid object.

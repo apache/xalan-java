@@ -16,6 +16,7 @@
  */
 package org.apache.xpath.functions;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -403,11 +404,15 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	  
     	    	  String funcNamespace = function.getNamespace();
  	    		  String funcLocalName = function.getLocalName();
- 	    		  int funcArity = function.getArity();
  	    		  
- 	    		  String expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;
+ 	    		  Short[] funcDefinedArity = function.getDefinedArity();
+ 	    		  List<Short> arityList = Arrays.asList(funcDefinedArity);
  	    		  
-    	    	  if (m_argList.size() == funcArity) {    	    		     	    		 
+ 	    		  final short runTimeArityValue = (short)(m_argList.size());
+ 	    		  
+ 	    		  String expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + runTimeArityValue;
+ 	    		  
+    	    	  if (arityList.contains(runTimeArityValue)) {    	    		 
     	    		 try {
     	    			 for (int idx = 0; idx < m_argList.size(); idx++) {
     	    				 String argXPathStr = m_argList.get(idx);
@@ -433,9 +438,9 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	  }
     	    	  else {
     	    		 throw new javax.xml.transform.TransformerException("XPTY0004 : The number of arguments provided for "
-    	    		 		                                                                     + "function call " + expandedFuncName + " is "
-    	    		 		                                                                     + "incorrect. Required " + funcArity + ", supplied " 
-    	    		 		                                                                     + m_argList.size() + ".", srcLocator); 
+    	    		 		                                                                        + "function call " + expandedFuncName + " is "
+    	    		 		                                                                        + "incorrect. Required " + runTimeArityValue + ", supplied " 
+    	    		 		                                                                        + m_argList.size() + ".", srcLocator); 
     	    	  }
     	       }
     	       else if (obj1 instanceof ElemFunction) {

@@ -36,6 +36,13 @@ public class FuncSubstringAfter extends XSL3StringCollationAwareFunction
 {
    
   static final long serialVersionUID = -8119731889862512194L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncSubstringAfter() {
+	 m_defined_arity = new Short[] { 2, 3 };
+  }
     
   /**
     * The number of arguments passed to the fn:substring-after function 

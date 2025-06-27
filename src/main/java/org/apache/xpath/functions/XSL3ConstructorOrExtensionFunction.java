@@ -71,11 +71,6 @@ public class XSL3ConstructorOrExtensionFunction extends Function
    *  @serial 
    */
   Object m_methodKey;
-  
-  /**
-   * Function's arity value.
-   */
-  private short m_arity;
 
   /**
    * Array of static expressions which represent the parameters to the
@@ -362,11 +357,4 @@ public class XSL3ConstructorOrExtensionFunction extends Function
       return m_extensionName;
   }
 
-  public short getArity() {
-	 return m_arity;
-  }
-
-  public void setArity(short arity) {
-	 this.m_arity = arity;
-  }  
 }

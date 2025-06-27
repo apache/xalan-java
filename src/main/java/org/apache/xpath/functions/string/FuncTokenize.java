@@ -49,7 +49,14 @@ public class FuncTokenize extends Function3Args {
 
   private static final long serialVersionUID = -7790625909187393478L;
   
-  private static final String FUNCTION_NAME = "tokenize()"; 
+  private static final String FUNCTION_NAME = "tokenize()";
+  
+  /**
+   * Class constructor.
+   */
+  public FuncTokenize() {
+	  m_defined_arity = new Short[] { 1, 2, 3 };
+  }
 
   /**
    * Execute the function. The function must return a valid object.

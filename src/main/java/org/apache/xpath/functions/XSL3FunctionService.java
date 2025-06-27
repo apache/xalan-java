@@ -743,7 +743,7 @@ public class XSL3FunctionService {
     		Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
     		function.setLocalName(funcLocalName);
     		function.setNamespace(funcNamespace);
-    		function.setArity(funcArity);
+    		function.setDefinedArity(new Short[] { funcArity });
 
     		for (int idx = 0; idx < argList.size(); idx++) {
     			String argXPathStr = argList.get(idx);
@@ -815,7 +815,7 @@ public class XSL3FunctionService {
     		// Evaluate an XPath schema type constructor function call reference
     		
     		XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
-    		funcObj.setArity(funcArity);
+    		funcObj.setDefinedArity(new Short[] { funcArity });
 
     		for (int idx = 0; idx < argList.size(); idx++) {
     			String argXPathStr = argList.get(idx);

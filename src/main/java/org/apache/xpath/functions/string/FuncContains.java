@@ -38,6 +38,13 @@ public class FuncContains extends XSL3StringCollationAwareFunction
   static final long serialVersionUID = 5084753781887919723L;
   
   /**
+   * Class constructor.
+   */
+  public FuncContains() {
+	 m_defined_arity = new Short[] { 2, 3 };
+  }
+  
+  /**
    * The number of arguments passed to the fn:contains function 
    * call.
    */

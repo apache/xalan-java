@@ -41,7 +41,7 @@ public class FuncMathPi extends Function
 	 * Class constructor.
 	 */
 	public FuncMathPi() {
-	    m_arity = 0;
+		m_defined_arity = new Short[] { 0 };
 	}
 
   /**

@@ -44,6 +44,13 @@ public class FuncCompare extends FunctionMultiArgs {
     private static final long serialVersionUID = 4648998919300586767L;
     
     /**
+	 * Class constructor.
+	 */
+    public FuncCompare() {
+	   m_defined_arity = new Short[] { 2, 3 };
+    }
+    
+    /**
      * The number of arguments passed to the fn:compare function 
      * call.
      */
