@@ -42,6 +42,13 @@ public class FuncMathExp10 extends FunctionOneArg
 {
 
     private static final long serialVersionUID = -9091454668780154373L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncMathExp10() {
+	    m_arity = 1;
+	}
 
     /**
      * Execute the function. The function must return a valid object.

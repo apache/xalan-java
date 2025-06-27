@@ -472,7 +472,7 @@ public class SequenceTypeSupport {
             			String funcReturnSeqType = seqTypeFunctionTest.getTypedFunctionTestReturnType();
             			
             			String funcName = xpathNamedFunctionReference.getFuncName();
-            			int funcArity = xpathNamedFunctionReference.getFuncArity();
+            			int funcArity = xpathNamedFunctionReference.getArity();
             			FunctionTable funcTable = xctxt.getFunctionTable();
             			Object funcIdInFuncTable = funcTable.getFunctionId(funcName);
             			Function function = funcTable.getFunction((int)funcIdInFuncTable);

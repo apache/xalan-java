@@ -27,13 +27,20 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of string() function.
+ * Implementation of XPath 3.1 function fn:string.
  * 
  * @xsl.usage advanced
  */
 public class FuncString extends FunctionDef1Arg
 {
    static final long serialVersionUID = -2206677149497712883L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncString() {
+	  m_arityArr = new Short[] {0, 1}; 
+   }
 
   /**
    * Execute the function. The function must return a valid object.
@@ -53,4 +60,5 @@ public class FuncString extends FunctionDef1Arg
 	  
 	  return result;
   }
+  
 }

@@ -196,7 +196,7 @@ public class FuncSort extends FunctionMultiArgs
              		  XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)m_arg2;
                       String funcNamespace = namedFuncRef.getFuncNamespace();
                       String funcLocalName = namedFuncRef.getFuncName();
-                      int funcArity = namedFuncRef.getFuncArity();
+                      int funcArity = namedFuncRef.getArity();
                       
                       FunctionTable funcTable = xctxt.getFunctionTable();
                       
@@ -300,7 +300,7 @@ public class FuncSort extends FunctionMultiArgs
             		 XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)m_arg2;
                      String funcNamespace = namedFuncRef.getFuncNamespace();
                      String funcLocalName = namedFuncRef.getFuncName();
-                     int funcArity = namedFuncRef.getFuncArity();
+                     int funcArity = namedFuncRef.getArity();
                      
                      FunctionTable funcTable = xctxt.getFunctionTable();
                      

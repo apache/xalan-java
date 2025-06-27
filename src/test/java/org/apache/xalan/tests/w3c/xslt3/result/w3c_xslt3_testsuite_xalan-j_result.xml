@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-06-26T12:03:33Z" desc="W3C XSLT 3.0 test suite results" fail="793" pass="1363" skipped="38" success="62.97%" totalRun="2225" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-06-27T12:23:54Z" desc="W3C XSLT 3.0 test suite results" fail="793" pass="1363" skipped="38" success="62.97%" totalRun="2225" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="53" pass="51" skipped="4" success="50.46%" totalRun="109"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>

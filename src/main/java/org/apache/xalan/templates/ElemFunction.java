@@ -364,7 +364,7 @@ public class ElemFunction extends ElemTemplate
         					if (funcResultConvertedVal instanceof XPathNamedFunctionReference) {
         					   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)funcResultConvertedVal;
         					   if (xpathNamedFunctionReference.getXslStylesheetFunction() == null) {
-        						   int actualFuncArity = xpathNamedFunctionReference.getFuncArity();
+        						   int actualFuncArity = xpathNamedFunctionReference.getArity();
         						   List<String> expectedParamList = sequenceTypeFunctionTest.getTypedFunctionTestParamSpecList();
         						   if (actualFuncArity != expectedParamList.size()) {
         							   throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
@@ -491,7 +491,7 @@ public class ElemFunction extends ElemTemplate
     			 String funcReturnSeqType = seqTypeFunctionTest.getTypedFunctionTestReturnType();
     			 
     			 String funcName = xpathNamedFunctionReference.getFuncName();
-    			 int funcArity = xpathNamedFunctionReference.getFuncArity();
+    			 int funcArity = xpathNamedFunctionReference.getArity();
     			 FunctionTable funcTable = xctxt.getFunctionTable();
     			 Object funcIdInFuncTable = funcTable.getFunctionId(funcName);
     			 Function function = funcTable.getFunction((int)funcIdInFuncTable);
@@ -637,8 +637,8 @@ public class ElemFunction extends ElemTemplate
   /**
    * Method definition, to return xsl:function definition's arity.
    */
-  public int getArity() {
-	 int paramCount = 0;
+  public short getArity() {
+	 short paramCount = 0;
 	 
 	 for (ElemTemplateElement elem = getFirstChildElem(); elem != null; elem = elem.getNextSiblingElem()) {
 		 if (elem instanceof ElemParam) {

@@ -42,6 +42,13 @@ public class FuncMathAtan extends FunctionOneArg
 {
 
     private static final long serialVersionUID = 7279664663962212944L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncMathAtan() {
+	    m_arity = 1;
+	}
 
     /**
      * Execute the function. The function must return a valid object.

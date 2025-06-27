@@ -35,7 +35,14 @@ public class FuncMathPi extends Function
     
    private static final long serialVersionUID = -5588383515962377796L;
    
-   private final double PI = 3.141592653589793; 
+   private final double PI = 3.141592653589793;
+   
+   /**
+	 * Class constructor.
+	 */
+	public FuncMathPi() {
+	    m_arity = 0;
+	}
 
   /**
    * Execute the function. The function must return a valid object.

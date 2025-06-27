@@ -42,6 +42,13 @@ public class FuncMathSin extends FunctionOneArg
 {
 
     private static final long serialVersionUID = -5033967904807150569L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncMathSin() {
+	    m_arity = 1;
+	}
 
     /**
      * Execute the function. The function must return a valid object.

@@ -403,7 +403,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	  
     	    	  String funcNamespace = function.getNamespace();
  	    		  String funcLocalName = function.getLocalName();
- 	    		  int funcArity = function.getFuncArity();
+ 	    		  int funcArity = function.getArity();
  	    		  
  	    		  String expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;
  	    		  

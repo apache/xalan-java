@@ -754,6 +754,9 @@ public class Keywords
   /** transform function string. */
   public static final String FUNC_TRANSFORM = "transform";
   
+  /** function-arity function string. */
+  public static final String FUNC_FUNCTION_ARITY = "function-arity";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

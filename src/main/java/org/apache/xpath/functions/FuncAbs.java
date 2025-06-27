@@ -31,20 +31,27 @@ import org.apache.xpath.objects.XObject;
 public class FuncAbs extends FunctionDef1Arg
 {
 
-      private static final long serialVersionUID = 7292919650996994647L;
-    
-      /**
-       * Execute the function. The function must return a valid object.
-       * 
-       * @param xctxt The current execution context.
-       * @return A valid XObject.
-       *
-       * @throws javax.xml.transform.TransformerException
-       */
-      public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-      {
-          String strValueOfArg = (getArg0AsString(xctxt)).toString();
-    
-          return new XNumber(Math.abs(Double.valueOf(strValueOfArg)));
-      }
+	private static final long serialVersionUID = 7292919650996994647L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncAbs() {
+	    m_arity = 1;
+	}
+
+	/**
+	 * Execute the function. The function must return a valid object.
+	 * 
+	 * @param xctxt The current execution context.
+	 * @return A valid XObject.
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
+		String strValueOfArg = (getArg0AsString(xctxt)).toString();
+
+		return new XNumber(Math.abs(Double.valueOf(strValueOfArg)));
+	}
 }

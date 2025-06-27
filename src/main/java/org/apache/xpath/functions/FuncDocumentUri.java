@@ -42,6 +42,13 @@ public class FuncDocumentUri extends FunctionDef1Arg
 {
 
 	private static final long serialVersionUID = 685581942265897866L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncDocumentUri() {
+		m_arityArr = new Short[] {0, 1}; 
+	}
 
 	/**
       * Execute the function. The function must return a valid object.

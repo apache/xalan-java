@@ -53,6 +53,13 @@ public class FuncData extends FunctionDef1Arg
 {
 
   private static final long serialVersionUID = 1734069066834829751L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncData() {
+	  m_arityArr = new Short[] {0, 1}; 
+  }
 
   /**
    * Execute the function. The function must return

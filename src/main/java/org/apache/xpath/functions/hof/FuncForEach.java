@@ -316,7 +316,7 @@ public class FuncForEach extends Function2Args {
 	  
 	  String funcNamespace = namedFuncRef.getFuncNamespace();
 	  String funcLocalName = namedFuncRef.getFuncName();
-	  int funcArity = namedFuncRef.getFuncArity(); 
+	  int funcArity = namedFuncRef.getArity(); 
 
 	  FunctionTable funcTable = xctxt.getFunctionTable();
 

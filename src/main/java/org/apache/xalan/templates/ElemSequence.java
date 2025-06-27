@@ -223,7 +223,7 @@ public class ElemSequence extends ElemTemplateElement
 							  // xsl:function XDM function item. 
 							  XPathNamedFunctionReference xpathNamedFunctionReference = new XPathNamedFunctionReference();
 							  xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, getStylesheetRoot());
-							  xpathNamedFunctionReference.setFuncArity(elemFunction.getArity());
+							  xpathNamedFunctionReference.setArity(elemFunction.getArity());
 
 							  (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).add(xpathNamedFunctionReference);
 
@@ -265,7 +265,7 @@ public class ElemSequence extends ElemTemplateElement
 							  if (elemFunction != null) {
 								  XPathNamedFunctionReference xpathNamedFunctionReference = new XPathNamedFunctionReference();
 								  xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, getStylesheetRoot());
-								  xpathNamedFunctionReference.setFuncArity(elemFunction.getArity());
+								  xpathNamedFunctionReference.setArity(elemFunction.getArity());
 
 								  (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).add(xpathNamedFunctionReference);							 
 							  } 

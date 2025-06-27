@@ -243,14 +243,15 @@ public class ElemParam extends ElemVariable
   }
   
   /**
-   * Check whether a string value is a valid, XSLT tunnel attribute value.
+   * Method definition to check, whether a string value is
+   * a valid XSLT tunnel attribute value.
    */
-  private boolean isValidTunnelParamValue(String val) {
+  private boolean isValidTunnelParamValue(String strVal) {
 	 boolean result = false;
 	 
 	 String[] allowedValuesStr = new String [] {"yes", "true", "1", "no", "false", "0"};
 	 List<String> strList = Arrays.asList(allowedValuesStr);
-	 result = strList.contains(val);
+	 result = strList.contains(strVal);
 	 
 	 return result;
   }

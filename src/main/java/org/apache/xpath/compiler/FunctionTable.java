@@ -547,6 +547,9 @@ public class FunctionTable
   
   /** The 'ends-with()' id. */
   public static final int FUNC_ENDS_WITH = 174;
+  
+  /** The 'function-arity()' id. */
+  public static final int FUNC_FUNCTION_ARITY = 175;
 
   // Proprietary
 
@@ -640,7 +643,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 175;
+  private static final int NUM_BUILT_IN_FUNCS = 176;
 
   /**
    * Number of built-in functions that may be added.
@@ -860,7 +863,9 @@ public class FunctionTable
 	   m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.json.FuncParseJson.class;
 	   m_functions[FUNC_JSON_DOC] = org.apache.xpath.functions.json.FuncJsonDoc.class;
 	   m_functions[FUNC_JSON_TO_XML] = org.apache.xpath.functions.json.FuncJsonToXml.class;
-	   m_functions[FUNC_XML_TO_JSON] = org.apache.xpath.functions.json.FuncXmlToJson.class;	   
+	   m_functions[FUNC_XML_TO_JSON] = org.apache.xpath.functions.json.FuncXmlToJson.class;
+	   
+	   m_functions[FUNC_FUNCTION_ARITY] = org.apache.xpath.functions.FuncFunctionArity.class;
   }
 
   static {
@@ -1065,7 +1070,9 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_PARSE_JSON, new Integer(FunctionTable.FUNC_PARSE_JSON));
 	  m_functionId.put(Keywords.FUNC_JSON_DOC, new Integer(FunctionTable.FUNC_JSON_DOC));
 	  m_functionId.put(Keywords.FUNC_JSON_TO_XML, new Integer(FunctionTable.FUNC_JSON_TO_XML));
-	  m_functionId.put(Keywords.FUNC_XML_TO_JSON, new Integer(FunctionTable.FUNC_XML_TO_JSON));	  
+	  m_functionId.put(Keywords.FUNC_XML_TO_JSON, new Integer(FunctionTable.FUNC_XML_TO_JSON));
+	  
+	  m_functionId.put(Keywords.FUNC_FUNCTION_ARITY, new Integer(FunctionTable.FUNC_FUNCTION_ARITY));
   }
   
   /**

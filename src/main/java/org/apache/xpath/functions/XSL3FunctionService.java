@@ -716,7 +716,7 @@ public class XSL3FunctionService {
 
     	String funcNamespace = xpathNamedFuncRef.getFuncNamespace();
     	String funcLocalName = xpathNamedFuncRef.getFuncName();
-    	int funcArity = xpathNamedFuncRef.getFuncArity();
+    	short funcArity = xpathNamedFuncRef.getArity();
 
     	String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName; 
 
@@ -743,7 +743,7 @@ public class XSL3FunctionService {
     		Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
     		function.setLocalName(funcLocalName);
     		function.setNamespace(funcNamespace);
-    		function.setFuncArity(funcArity);
+    		function.setArity(funcArity);
 
     		for (int idx = 0; idx < argList.size(); idx++) {
     			String argXPathStr = argList.get(idx);
@@ -815,7 +815,7 @@ public class XSL3FunctionService {
     		// Evaluate an XPath schema type constructor function call reference
     		
     		XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
-    		funcObj.setFuncArity(funcArity);
+    		funcObj.setArity(funcArity);
 
     		for (int idx = 0; idx < argList.size(); idx++) {
     			String argXPathStr = argList.get(idx);
@@ -846,6 +846,45 @@ public class XSL3FunctionService {
     	
     	return evalResult;
 	}
+    
+    /**
+     * Method definition to get an object instance of XPath built-in function.
+     * 
+     * @param funcName								Function name's string value
+     * @param funcNamespace							Function's XML namespace string value	
+     * @param xctxt									An XPath context object
+     * @return										Function object instance 
+     * @throws TransformerException
+     */
+    public Function getXPathBuiltInFunction(String funcName, String funcNamespace, XPathContext xctxt) throws TransformerException {
+        
+    	Function result = null;
+        
+        FunctionTable funcTable = xctxt.getFunctionTable();
+        
+        if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace)) {
+           Object funcId = funcTable.getFunctionIdForXPathBuiltinFuncs(funcName);
+           int funcIdValue = (int)Integer.valueOf(funcId.toString());
+           result = funcTable.getFunction(funcIdValue);
+        }
+        else if ((FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace)) {
+           Object funcId = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcName);
+           int funcIdValue = (int)Integer.valueOf(funcId.toString());
+           result = funcTable.getFunction(funcIdValue);
+        }
+        else if ((FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace)) {
+           Object funcId = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcName);
+           int funcIdValue = (int)Integer.valueOf(funcId.toString());
+           result = funcTable.getFunction(funcIdValue);
+        }
+        else if ((FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace)) {
+           Object funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcName);
+           int funcIdValue = (int)Integer.valueOf(funcId.toString());
+           result = funcTable.getFunction(funcIdValue);
+        }  
+        
+        return result;
+    }
     
     /**
      * Evaluate the XPath built-in constructor function call.

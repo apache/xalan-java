@@ -31,6 +31,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncNumber extends FunctionDef1Arg
 {
     static final long serialVersionUID = 7266745342264153076L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncNumber() {
+  	   m_arityArr = new Short[] {0, 1};  
+    }
 
   /**
    * Execute the function.  The function must return

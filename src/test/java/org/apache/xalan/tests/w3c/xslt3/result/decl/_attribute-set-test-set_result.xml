@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-26T12:01:15Z" fail="7" name="attribute-set" pass="41" skipped="1" statusUnknown="1" totalRun="50">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-27T12:21:55Z" fail="7" name="attribute-set" pass="41" skipped="1" statusUnknown="1" totalRun="50">
    <testResult status="pass" testName="attribute-set-0101"/>
    <testResult status="fail" testName="attribute-set-0102">
       <outResult/>

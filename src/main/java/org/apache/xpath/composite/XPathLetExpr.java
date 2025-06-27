@@ -128,7 +128,7 @@ public class XPathLetExpr extends Expression {
           if (xpathNamedFuncRef != null) {
         	  String funcNamespace = xpathNamedFuncRef.getFuncNamespace();
         	  String funcLocalName = xpathNamedFuncRef.getFuncName();
-        	  int funcArity = xpathNamedFuncRef.getFuncArity();
+        	  short funcArity = xpathNamedFuncRef.getArity();
         	  
         	  String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName; 
 
@@ -153,7 +153,7 @@ public class XPathLetExpr extends Expression {
         		  Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
         		  function.setLocalName(funcLocalName);
         		  function.setNamespace(funcNamespace);
-        		  function.setFuncArity(funcArity);
+        		  function.setArity(funcArity);
         		  varBindingEvalResult = new XObject(function);
         	  }
         	  else if (xpathNamedFuncRef.getXslStylesheetFunction() != null) {
@@ -163,7 +163,7 @@ public class XPathLetExpr extends Expression {
         	  }
         	  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {
         		  XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
-        		  funcObj.setFuncArity(funcArity);
+        		  funcObj.setArity(funcArity);
         		  varBindingEvalResult = new XObject(funcObj);        		  
         	  }
         	  else {

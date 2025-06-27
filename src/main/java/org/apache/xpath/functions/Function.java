@@ -47,11 +47,23 @@ public abstract class Function extends Expression
     */
    protected Expression m_arg0;
    
+   protected final short FUNC_ARITY_NOT_KNOWN = -1;
+   
+   /**
+    * Number of arguments specified in the function 
+    * definition. Initialized to FUNC_ARITY_NOT_KNOWN.
+    */
+   protected short m_arity = FUNC_ARITY_NOT_KNOWN;
+   
+   /**
+    * Class field to represent, an XPath built-in function's
+    * arity for function's having more than one possible arity.
+    */
+   protected Short[] m_arityArr = null;
+   
    private String m_localName = null;
    
    private String m_namespace = null;
-   
-   private int m_funcArity = 0;
 
    /**
    * Set an argument expression for a function.  This method is called by the 
@@ -155,34 +167,43 @@ public abstract class Function extends Expression
   
   public Expression getArg0()
   {
-    return m_arg0;
+	  return m_arg0;
+  }
+
+  public void setArg0(Expression arg0) {
+	  this.m_arg0 = arg0; 
+  }
+
+  public short getArity() {
+	  return m_arity;
+  }
+
+  public void setArity(short arity) {
+	  this.m_arity = arity;
   }
   
-  public void setArg0(Expression arg0) {
-	m_arg0 = arg0; 
+  public Short[] getArityArray() {
+	 return m_arityArr; 
+  }
+  
+  public void setArityArray(Short[] arityArr) {
+	 this.m_arityArr = arityArr; 
   }
 
   public String getLocalName() {
-	return m_localName;
+	  return m_localName;
   }
 
   public void setLocalName(String localName) {
-	this.m_localName = localName;
+	  this.m_localName = localName;
   }
 
   public String getNamespace() {
-	return m_namespace;
+	  return m_namespace;
   }
 
   public void setNamespace(String namespace) {
-	this.m_namespace = namespace;
+	  this.m_namespace = namespace;
   }
-
-  public int getFuncArity() {
-	return m_funcArity;
-  }
-
-  public void setFuncArity(int funcArity) {
-	this.m_funcArity = funcArity;
-  }
+  
 }

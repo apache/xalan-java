@@ -41,6 +41,13 @@ public class FuncBaseUri extends FunctionDef1Arg
 {
 
 	private static final long serialVersionUID = -637288976892401962L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncBaseUri() {
+		m_arityArr = new Short[] {0, 1}; 
+	}
 
 	/**
       * Execute the function. The function must return a valid object.

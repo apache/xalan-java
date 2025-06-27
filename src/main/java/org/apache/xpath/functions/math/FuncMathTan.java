@@ -42,6 +42,13 @@ public class FuncMathTan extends FunctionOneArg
 {
 
     private static final long serialVersionUID = -3352805345293481131L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncMathTan() {
+	    m_arity = 1;
+	}
 
     /**
      * Execute the function. The function must return a valid object.

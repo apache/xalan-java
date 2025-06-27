@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <a>1</a>
+    <b>1</b>
+  </one>
+  <two>
+    <a>2</a>
+    <b>2</b>
+  </two>
+  <three>
+    <a>1</a>
+    <b>2</b>
+  </three>
+</result>

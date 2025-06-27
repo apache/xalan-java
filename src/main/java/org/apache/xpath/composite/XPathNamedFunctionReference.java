@@ -50,7 +50,7 @@ public class XPathNamedFunctionReference extends XObject {
 	/**
 	 * Function's arity value.
 	 */
-	private int m_funcArity = -1;
+	private Short m_arity;
 	
 	/**
 	 * An XSL stylesheet function object reference.
@@ -85,12 +85,12 @@ public class XPathNamedFunctionReference extends XObject {
 		this.m_funcName = funcName;
 	}
 
-	public int getFuncArity() {
-		return m_funcArity;
+	public Short getArity() {
+		return m_arity;
 	}
 
-	public void setFuncArity(int funcArity) {
-		this.m_funcArity = funcArity;
+	public void setArity(Short arity) {
+		this.m_arity = arity;
 	}
 	
 	public ElemFunction getXslStylesheetFunction() {

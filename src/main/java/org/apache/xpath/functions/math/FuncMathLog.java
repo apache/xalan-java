@@ -42,6 +42,13 @@ public class FuncMathLog extends FunctionOneArg
 {
     
     private static final long serialVersionUID = -2616839360135167252L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncMathLog() {
+	    m_arity = 1;
+	}
 
     /**
      * Execute the function. The function must return a valid object.

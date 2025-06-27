@@ -126,7 +126,7 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
            XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)xpathNamedFunctionReference;
            String funcNamespace = namedFuncRef.getFuncNamespace();
            String funcLocalName = namedFuncRef.getFuncName();
-           int funcArity = namedFuncRef.getFuncArity();
+           int funcArity = namedFuncRef.getArity();
            
            FunctionTable funcTable = xctxt.getFunctionTable();
            

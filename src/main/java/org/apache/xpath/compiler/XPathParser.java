@@ -6801,7 +6801,7 @@ public class XPathParser
 					m_xpathNamedFunctionReference.setFuncName(funcName);
 					m_xpathNamedFunctionReference.setFuncNamespace(funcNamespaceUri);					
 					String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
-					m_xpathNamedFunctionReference.setFuncArity(Integer.valueOf(funcArityStr));
+					m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
 
 					m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
 					        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -6832,7 +6832,7 @@ public class XPathParser
 				m_xpathNamedFunctionReference.setFuncName(funcName);
 				m_xpathNamedFunctionReference.setFuncNamespace(funcNamespaceUri);					
 				String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
-				m_xpathNamedFunctionReference.setFuncArity(Integer.valueOf(funcArityStr));
+				m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
 
 				m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
 						m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -6866,7 +6866,7 @@ public class XPathParser
 					m_xpathNamedFunctionReference.setFuncName(funcName);
 					m_xpathNamedFunctionReference.setFuncNamespace(funcNamespaceUri);					
 					String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
-					m_xpathNamedFunctionReference.setFuncArity(Integer.valueOf(funcArityStr));
+					m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
 					m_xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, stylesheetRoot);
 
 					m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
@@ -6911,7 +6911,7 @@ public class XPathParser
 			m_xpathNamedFunctionReference.setFuncName(funcName);
 			m_xpathNamedFunctionReference.setFuncNamespace(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);			
 			String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
-			m_xpathNamedFunctionReference.setFuncArity(Integer.valueOf(funcArityStr));
+			m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
 
 			m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
 			        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);

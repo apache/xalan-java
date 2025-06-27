@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-26T12:01:08Z" fail="27" name="for-each-group" pass="46" skipped="4" statusUnknown="1" totalRun="78">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-27T12:21:49Z" fail="27" name="for-each-group" pass="46" skipped="4" statusUnknown="1" totalRun="78">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -95,14 +95,14 @@
    <testResult status="pass" testName="for-each-group-078a"/>
    <testResult status="fail" testName="for-each-group-078b">
       <outResult>
-         <errTrace>XPST0008 : Variable 'f' has not been declared, or its declaration is not in scope.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
          <errTrace>Unknown error in XPath.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="for-each-group-079a"/>
    <testResult status="fail" testName="for-each-group-079b">
       <outResult>
-         <errTrace>XPST0008 : Variable 'f' has not been declared, or its declaration is not in scope.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
          <errTrace>Unknown error in XPath.</errTrace>
       </outResult>
    </testResult>

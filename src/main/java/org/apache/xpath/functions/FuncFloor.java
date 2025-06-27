@@ -32,6 +32,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncFloor extends FunctionDef1Arg
 {
     static final long serialVersionUID = 2326752233236309265L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncFloor() {
+	    m_arity = 1;
+	}
 
   /**
    * Execute the function. The function must return

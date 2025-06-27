@@ -32,6 +32,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncCeiling extends FunctionDef1Arg
 {
     static final long serialVersionUID = -1275988936390464739L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncCeiling() {
+	    m_arity = 1;
+	}
 
     /**
      * Execute the function. The function must return

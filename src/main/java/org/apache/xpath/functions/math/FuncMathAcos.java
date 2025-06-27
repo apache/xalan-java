@@ -42,6 +42,13 @@ public class FuncMathAcos extends FunctionOneArg
 {
 
     private static final long serialVersionUID = 8892228442916107939L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncMathAcos() {
+	    m_arity = 1;
+	}
 
     /**
      * Execute the function. The function must return a valid object.

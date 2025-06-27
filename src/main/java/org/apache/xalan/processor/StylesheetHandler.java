@@ -110,7 +110,7 @@ public class StylesheetHandler extends DefaultHandler
     Class func = org.apache.xalan.templates.FuncDocument.class;
     m_funcTable.installFunction("document", func);
 
-    func = org.apache.xalan.templates.FuncFormatNumb.class;
+    func = org.apache.xalan.templates.FuncFormatNumber.class;
 
     m_funcTable.installFunction("format-number", func);
 

@@ -35,12 +35,20 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * Execute the FormatNumber() function.
+ * Implementation of an XPath 3.1 function fn:format-number.
+ * 
  * @xsl.usage advanced
  */
-public class FuncFormatNumb extends Function3Args
+public class FuncFormatNumber extends Function3Args
 {
     static final long serialVersionUID = -8869935264870858636L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncFormatNumber() {
+  	   m_arityArr = new Short[] {2, 3}; 
+    }
 
   /**
    * Execute the function.  The function must return

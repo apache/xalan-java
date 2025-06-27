@@ -42,6 +42,13 @@ public class FuncMathSqrt extends FunctionOneArg
 {
 
     private static final long serialVersionUID = 5691792456759543428L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncMathSqrt() {
+	    m_arity = 1;
+	}
 
     /**
      * Execute the function. The function must return a valid object.

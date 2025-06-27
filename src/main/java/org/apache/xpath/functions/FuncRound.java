@@ -46,10 +46,10 @@ public class FuncRound extends Function2Args
       static final long serialVersionUID = -7970583902573826611L;
       
       /**
-       * Default constructor.
+       * Class constructor.
        */
       public FuncRound() {
-    	 // NO OP  
+    	  m_arityArr = new Short[] {1, 2};  
       }
     
       /**

@@ -40,6 +40,13 @@ public class FuncMathPow extends Function2Args {
 
     private static final long serialVersionUID = 1342863964649663483L;
     
+    /**
+	 * Class constructor.
+	 */
+	public FuncMathPow() {
+	    m_arity = 2;
+	}
+    
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         XObject result = null;
