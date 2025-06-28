@@ -146,5 +146,29 @@ public class XPathNamedFunctionReferenceTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslNamedFunctionReferenceTest11() {
+    	String xmlFilePath = null; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
+        
+        m_initTemplateName = "main";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslNamedFunctionReferenceTest12() {
+    	String xmlFilePath = null; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
+        
+        m_initTemplateName = "main";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }
