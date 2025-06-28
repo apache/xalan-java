@@ -20,6 +20,7 @@ package org.apache.xpath.functions;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -56,7 +57,7 @@ public class FuncFunctionArity extends FunctionDef1Arg
 	final short FUNC_ARITY_NOT_KNOWN = -1; 
 
 	/**
-	 * Class constructor;
+	 * Class constructor.
 	 */
 	public FuncFunctionArity() {
 		m_defined_arity = new Short[] { 1 };
@@ -175,35 +176,54 @@ public class FuncFunctionArity extends FunctionDef1Arg
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
+		/**
+		 * This is an XPath function's arity value, computed mainly during
+		 * XPath parse of function expression specified within an XSL
+		 * stylesheet or an XPath literal expression. This arity value is
+		 * further verified below with an XPath function's arity value 
+		 * defined within XPath 3.1 F&O spec and correspondingly configured
+		 * within Xalan-J code.
+		 */
+		final Short runTimeArity = xpathNamedFunctionReference.getArity();
+		
+		short funcActualArity = FUNC_ARITY_NOT_KNOWN;
+		
 		String funcName = xpathNamedFunctionReference.getFuncName();
-		String funcNamespace = xpathNamedFunctionReference.getFuncNamespace();			   
+		String funcNamespace = xpathNamedFunctionReference.getFuncNamespace();
+		
+		String funcNameRefStr = "{" + funcNamespace + "}" + funcName + "#" + runTimeArity;
+		
 		if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) || (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace) ||
 				                                                                 (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace) || 
-				                                                                 (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace)) {				   
+				                                                                 (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace) ||
+				                                                                 (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(funcNamespace)) {				   
 			XSL3FunctionService xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
 			Function function = xsl3FunctionService.getXPathBuiltInFunction(funcName, funcNamespace, xctxt);
 			
-			/**
-			 * This is an XPath function's arity value, computed mainly during
-			 * XPath parse of function expression specified within an XSL
-			 * stylesheet or an XPath literal expression. This arity value is
-			 * further verified below with an XPath function's actual arity value.
-			 */
-			final Short runTimeArity = xpathNamedFunctionReference.getArity();
-			
-			short funcActualArity = FUNC_ARITY_NOT_KNOWN; 
-			Short[] funcDefinedArityArr = function.getDefinedArity();						
-			List<Short> funcDefinedArityList = Arrays.asList(funcDefinedArityArr);
-			if (funcDefinedArityList.contains(runTimeArity)) {
-				funcActualArity = runTimeArity;
-				result = new XSInteger(String.valueOf(funcActualArity));
-			}
+			if ((function == null) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(funcNamespace)) {
+				if (xsl3FunctionService.isXmlSchemaBuiltInAtomicTypeName(funcName)) {  
+				   funcActualArity = 1;
+				   result = new XSInteger(String.valueOf(funcActualArity));
+				}
+			}									
 			else {
-				String funcNameRefStr = "{" + funcNamespace + "}" + funcName + "#" + runTimeArity; 
-				throw new TransformerException("XPST0017 : An XSL function definition for function reference " + funcNameRefStr 
-																											   + " not found.", srcLocator); 
+				Short[] funcDefinedArityArr = function.getDefinedArity();						
+				List<Short> funcDefinedArityList = Arrays.asList(funcDefinedArityArr);
+				if (funcDefinedArityList.contains(runTimeArity)) {
+					funcActualArity = runTimeArity;
+					result = new XSInteger(String.valueOf(funcActualArity));
+				}
+				else {					 
+					throw new TransformerException("XPST0017 : An XSL function definition for function reference " + funcNameRefStr 
+																												   + " not found.", srcLocator); 
+				}
 			}
 			
+		}
+		
+		if (result == null) {
+			throw new TransformerException("XPST0017 : An XSL function definition for function reference " + funcNameRefStr 
+					   																					   + " not found.", srcLocator);
 		}
 		
 		return result;

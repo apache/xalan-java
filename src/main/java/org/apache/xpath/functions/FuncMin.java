@@ -57,6 +57,13 @@ public class FuncMin extends FunctionMultiArgs
   private static final long serialVersionUID = 3366369283941946933L;
   
   /**
+   * Class constructor.
+   */
+  public FuncMin() {
+	  m_defined_arity = new Short[] { 1, 2 };
+  }
+  
+  /**
    * The number of arguments passed to the fn:min function 
    * call.
    */

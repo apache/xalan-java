@@ -36,6 +36,13 @@ import xml.xpath31.processor.types.XSQName;
 public class FuncPrefixFromQName extends FunctionDef1Arg {
 
    private static final long serialVersionUID = -543831700974347652L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncPrefixFromQName() {
+ 	  m_defined_arity = new Short[] { 1 };
+   }
 
    /**
    * Implementation of the function. The function must return

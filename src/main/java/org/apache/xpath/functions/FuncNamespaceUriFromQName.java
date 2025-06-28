@@ -36,6 +36,13 @@ import xml.xpath31.processor.types.XSQName;
 public class FuncNamespaceUriFromQName extends FunctionDef1Arg {
 
 	private static final long serialVersionUID = 4356910888178229773L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncNamespaceUriFromQName() {
+		m_defined_arity = new Short[] { 1 };
+	}
 
    /**
    * Implementation of the function. The function must return

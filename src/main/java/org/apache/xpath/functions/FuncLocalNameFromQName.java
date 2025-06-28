@@ -36,6 +36,13 @@ import xml.xpath31.processor.types.XSQName;
 public class FuncLocalNameFromQName extends FunctionDef1Arg {
 
 	private static final long serialVersionUID = -6264955161789592394L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncLocalNameFromQName() {
+		m_defined_arity = new Short[] { 1 };
+	}
 
    /**
    * Implementation of the function. The function must return

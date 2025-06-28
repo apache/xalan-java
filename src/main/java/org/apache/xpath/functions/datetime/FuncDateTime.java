@@ -42,6 +42,13 @@ public class FuncDateTime extends Function2Args
 {
 
   private static final long serialVersionUID = 4597387349539359750L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncDateTime() {
+  	 m_defined_arity = new Short[] { 2 };	
+  }
 
   /**
    * Execute the function. The function must return

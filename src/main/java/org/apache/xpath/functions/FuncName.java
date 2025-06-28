@@ -40,6 +40,13 @@ import xml.xpath31.processor.types.XSString;
 public class FuncName extends FunctionMultiArgs {
 
   private static final long serialVersionUID = -3263417937216412681L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncName() {
+	  m_defined_arity = new Short[] { 0, 1 };
+  }
 
   /**
    * Implementation of the function. The function must return

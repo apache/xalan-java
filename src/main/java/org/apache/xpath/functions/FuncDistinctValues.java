@@ -45,6 +45,13 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 public class FuncDistinctValues extends FunctionMultiArgs {
     
    private static final long serialVersionUID = -1637800188441824456L;
+   
+   /**
+    * Default constructor.
+    */
+   public FuncDistinctValues() {
+ 	  m_defined_arity = new Short[] { 1, 2 }; 
+   }
 
   /**
    * Execute the function. The function must return a valid object.

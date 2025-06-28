@@ -38,6 +38,13 @@ public class FuncSecondsFromDateTime extends FunctionOneArg
 {
 
   private static final long serialVersionUID = -4967761326818696933L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncSecondsFromDateTime() {
+  	 m_defined_arity = new Short[] { 1 };	
+  }
 
   /**
    * Execute the function. The function must return

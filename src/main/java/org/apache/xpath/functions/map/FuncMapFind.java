@@ -43,6 +43,13 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 public class FuncMapFind extends Function2Args {
 
 	private static final long serialVersionUID = -7140205339584548625L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncMapFind() {
+		m_defined_arity = new Short[] { 2 };	
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{

@@ -887,6 +887,145 @@ public class XSL3FunctionService {
     }
     
     /**
+     * Method definition to check whether the supplied string value
+     * is an XML Schema built-in atomic type name.
+     * 
+     * @param xsTypeNameStr				  The supplied string value
+     * @return							  Boolean value true or false
+     */
+    public boolean isXmlSchemaBuiltInAtomicTypeName(String xsTypeNameStr) {
+       
+       boolean result = false;
+       
+       switch (xsTypeNameStr) {
+          case Keywords.XS_STRING :
+        	  result = true;        	  
+        	  break;
+          case Keywords.XS_NORMALIZED_STRING :
+        	  result = true;        	  
+        	  break;
+          case Keywords.XS_TOKEN :
+        	  result = true;
+        	  break;
+          case Keywords.XS_DECIMAL :
+        	  result = true;
+        	  break;
+          case Keywords.XS_FLOAT :
+        	  result = true;
+        	  break;
+          case Keywords.XS_DOUBLE :
+        	  result = true;
+        	  break;
+          case Keywords.XS_INTEGER :
+        	  result = true;
+        	  break;
+          case Keywords.XS_NON_POSITIVE_INTEGER :
+        	  result = true;
+        	  break;
+          case Keywords.XS_NEGATIVE_INTEGER :
+        	  result = true;
+        	  break;
+          case Keywords.XS_NON_NEGATIVE_INTEGER :
+        	  result = true;
+        	  break;
+          case Keywords.XS_POSITIVE_INTEGER :
+        	  result = true;
+        	  break;
+          case Keywords.XS_LONG :
+        	  result = true;
+        	  break;
+          case Keywords.XS_INT :
+        	  result = true;
+        	  break;
+          case Keywords.XS_SHORT :
+        	  result = true;
+        	  break;
+          case Keywords.XS_BYTE :
+        	  result = true;
+        	  break;
+          case Keywords.XS_UNSIGNED_LONG :
+        	  result = true;
+        	  break;
+          case Keywords.XS_UNSIGNED_INT :
+        	  result = true;
+        	  break;
+          case Keywords.XS_UNSIGNED_SHORT :
+        	  result = true;
+        	  break;
+          case Keywords.XS_UNSIGNED_BYTE :
+        	  result = true;
+        	  break;
+          case Keywords.XS_DATE :
+        	  result = true;
+        	  break;
+          case Keywords.XS_DATETIME :
+        	  result = true;
+        	  break;
+          case Keywords.XS_DURATION :
+        	  result = true;
+        	  break;
+          case Keywords.XS_YEAR_MONTH_DURATION :
+        	  result = true;
+        	  break;
+          case Keywords.XS_DAY_TIME_DURATION :
+        	  result = true;
+        	  break;
+          case Keywords.XS_TIME :
+        	  result = true;
+        	  break;
+          case Keywords.XS_GYEAR_MONTH :
+        	  result = true;
+        	  break;
+          case Keywords.XS_GYEAR :
+        	  result = true;
+        	  break;
+          case Keywords.XS_GMONTH_DAY :
+        	  result = true;
+        	  break;
+          case Keywords.XS_GDAY :
+        	  result = true;
+        	  break;
+          case Keywords.XS_GMONTH :
+        	  result = true;
+        	  break;
+          case Keywords.XS_ANY_URI :
+        	  result = true;
+        	  break;   	  
+          case Keywords.XS_QNAME :
+        	  result = true;
+        	  break;
+          case Keywords.XS_BASE64BINARY :
+        	  result = true;
+        	  break;
+          case Keywords.XS_HEXBINARY :
+        	  result = true;
+        	  break;
+          case Keywords.XS_LANGUAGE :
+        	  result = true;
+        	  break;
+          case Keywords.XS_NAME :
+        	  result = true;
+        	  break;
+          case Keywords.XS_NCNAME :
+        	  result = true;
+        	  break;
+          case Keywords.XS_NMTOKEN :
+        	  result = true;
+        	  break;
+          case Keywords.XS_ID :
+        	  result = true;
+        	  break;
+          case Keywords.XS_IDREF :
+        	  result = true;
+        	  break;
+          default:
+        	  // no op
+       }
+       
+       return result;
+    }
+    
+    /**
      * Evaluate the XPath built-in constructor function call.
      */
     private XObject evaluateXPathBuiltInConstructorFunctionCall(XSL3ConstructorOrExtensionFunction funcObj, 

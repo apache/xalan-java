@@ -43,6 +43,13 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class FuncUnparsedText extends Function2Args {
   
   private static final long serialVersionUID = 1760543978696171233L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncUnparsedText() {
+	  m_defined_arity = new Short[] { 1, 2 };  
+  }
 
   /**
    * Execute the function. The function must return a valid object.

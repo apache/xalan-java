@@ -78,6 +78,13 @@ public class FuncCollection extends JsonFunction
 	 * fn:collection function's implementation.
 	 */
 	private static final String[] ALLOWED_FILE_EXTS = {XML, JSON, TEXT, CSV};
+	
+	/**
+     * Default constructor.
+     */
+    public FuncCollection() {
+    	m_defined_arity = new Short[] { 0, 1 };	
+    }
 
 	/**
 	 * Execute the function. The function must return a valid object.

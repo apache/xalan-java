@@ -34,6 +34,13 @@ import org.apache.xpath.objects.XString;
 public class FuncUnparsedTextLines extends FuncUnparsedText {
 
 	private static final long serialVersionUID = 2726874035370568232L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncUnparsedTextLines() {
+		m_defined_arity = new Short[] { 1, 2 };  
+	}
 
 	/**
 	 * Execute the function. The function must return a valid object.

@@ -39,6 +39,13 @@ import xml.xpath31.processor.types.XSNumericType;
 public class FuncSubarray extends FunctionMultiArgs {
 
 	private static final long serialVersionUID = 8678849210209571670L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncSubarray() {
+		m_defined_arity = new Short[] { 2, 3 };
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 	    

@@ -45,6 +45,13 @@ import xml.xpath31.processor.types.XSString;
 public class FuncInScopePrefixes extends FunctionOneArg {
 
    private static final long serialVersionUID = 2372823852330912332L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncInScopePrefixes() {
+	   m_defined_arity = new Short[] { 1 };
+   }
 
    /**
    * Implementation of the function. The function must return

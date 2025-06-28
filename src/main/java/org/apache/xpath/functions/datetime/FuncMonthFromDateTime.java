@@ -38,6 +38,13 @@ public class FuncMonthFromDateTime extends FunctionOneArg
 {
 
   private static final long serialVersionUID = 8318631526916045541L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncMonthFromDateTime() {
+  	 m_defined_arity = new Short[] { 1 };	
+  }
 
   /**
    * Execute the function. The function must return

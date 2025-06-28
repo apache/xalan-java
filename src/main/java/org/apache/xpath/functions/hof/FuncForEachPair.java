@@ -53,6 +53,13 @@ import org.apache.xpath.patterns.NodeTest;
 public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
 
     private static final long serialVersionUID = 5864311267789581972L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncForEachPair() {
+ 	   m_defined_arity = new Short[] { 3 };
+    }
 
     /**
      * Evaluation of the function call. The function must return a valid object.

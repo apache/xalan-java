@@ -96,6 +96,12 @@ public class FuncTransform extends FunctionDef1Arg
     
     public static final String OUTPUT = "output";
     
+    /**
+     * Class constructor.
+     */
+    public FuncTransform() {
+ 	   m_defined_arity = new Short[] { 1 };
+    }
 
 	/**
 	 * Execute the function. The function must return a valid object.

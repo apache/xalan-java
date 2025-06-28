@@ -50,6 +50,13 @@ import org.apache.xpath.patterns.NodeTest;
 public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
     
     private static final long serialVersionUID = -3772850377799360556L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncFoldLeft() {
+ 	   m_defined_arity = new Short[] { 3 };
+    }
 
     /**
      * Evaluate the function call.

@@ -44,6 +44,13 @@ import xml.xpath31.processor.types.XSBoolean;
 public class FuncLang extends FunctionMultiArgs {
 	
 	   private static final long serialVersionUID = -7868705139354872185L;
+	   
+	   /**
+	    * Class constructor.
+	    */
+	   public FuncLang() {
+		   m_defined_arity = new Short[] { 1, 2 };
+	   }
 
 	   /**
 	   * Implementation of the function. The function must return

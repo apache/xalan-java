@@ -32,6 +32,13 @@ import org.apache.xpath.objects.XString;
 public class FuncGenerateId extends FunctionDef1Arg
 {
     static final long serialVersionUID = 973544842091724273L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncGenerateId() {
+	   m_defined_arity = new Short[] { 0, 1 };
+	}
 
   /**
    * Execute the function.  The function must return

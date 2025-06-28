@@ -38,6 +38,13 @@ import org.apache.xpath.operations.Variable;
 public class FuncArrayReverse extends FunctionOneArg {
 
 	private static final long serialVersionUID = 8786348949335466009L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncArrayReverse() {
+		m_defined_arity = new Short[] { 1 };
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{

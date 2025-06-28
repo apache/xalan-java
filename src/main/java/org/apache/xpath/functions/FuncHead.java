@@ -32,6 +32,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncHead extends FunctionOneArg {
 
     private static final long serialVersionUID = -9160853897326799993L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncHead() {
+	   m_defined_arity = new Short[] { 1 };
+	}
 
     /**
      * Execute the function. The function must return a valid object.

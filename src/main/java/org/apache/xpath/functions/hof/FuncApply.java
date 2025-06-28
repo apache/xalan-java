@@ -61,6 +61,13 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class FuncApply extends Function2Args {
 
    private static final long serialVersionUID = 1073550747347273561L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncApply() {
+	   m_defined_arity = new Short[] { 2 };
+   }
 
    /**
     * Evaluate the function call.

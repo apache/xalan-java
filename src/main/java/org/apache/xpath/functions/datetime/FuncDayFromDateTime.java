@@ -37,7 +37,14 @@ import xml.xpath31.processor.types.XSInteger;
 public class FuncDayFromDateTime extends FunctionOneArg
 {
 
-	private static final long serialVersionUID = -442601948858028023L;
+   private static final long serialVersionUID = -442601948858028023L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncDayFromDateTime() {
+   	  m_defined_arity = new Short[] { 1 };	
+   }
 
    /**
    * Execute the function. The function must return

@@ -35,6 +35,13 @@ import org.apache.xpath.operations.Variable;
 public class FuncMapPut extends Function3Args {
 
 	private static final long serialVersionUID = -749857579667076961L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncMapPut() {
+		m_defined_arity = new Short[] { 3 };	
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{

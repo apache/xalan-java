@@ -37,6 +37,13 @@ public class FuncNamespaceUri extends FunctionDef1Arg
 {
 
    private static final long serialVersionUID = 6358386272825912243L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncNamespaceUri() {
+ 	  m_defined_arity = new Short[] { 0, 1 };
+   }
 
   /**
    * Implementation of the function. The function must return

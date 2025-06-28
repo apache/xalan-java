@@ -37,6 +37,13 @@ import xml.xpath31.processor.types.XSQName;
 public class FuncNodeName extends FunctionDef1Arg {
 
    private static final long serialVersionUID = -6613114399818352830L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncNodeName() {
+	   m_defined_arity = new Short[] { 0, 1 };
+   }
 
    /**
    * Execute the function. The function must return a valid object.

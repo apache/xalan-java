@@ -36,6 +36,14 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class FuncSystemProperty extends FunctionOneArg
 {
     static final long serialVersionUID = 3694874980992204867L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncSystemProperty() {
+  	   m_defined_arity = new Short[] { 1 };  
+    }
+    
   /**
    * The path/filename of the property file: XSLTInfo.properties
    * Maintenance note: see also

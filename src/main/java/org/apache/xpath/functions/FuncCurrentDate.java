@@ -30,9 +30,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 import xml.xpath31.processor.types.XSDate;
 
 /**
- * Execute the current-date() function.
- * 
- * This function returns the current date.
+ * Implementation of XPath 3.1 function fn:current-date.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -41,6 +39,13 @@ import xml.xpath31.processor.types.XSDate;
 public class FuncCurrentDate extends Function {
 
    private static final long serialVersionUID = -8672902204838660435L;
+   
+   /**
+    * Default constructor.
+    */
+   public FuncCurrentDate() {
+	   m_defined_arity = new Short[] { 0 };	
+   }
 
   /**
    * Execute the function. The function must return a valid object.

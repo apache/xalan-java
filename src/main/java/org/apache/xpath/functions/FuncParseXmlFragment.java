@@ -44,6 +44,13 @@ import org.w3c.dom.NodeList;
 public class FuncParseXmlFragment extends FunctionOneArg {
 
     private static final long serialVersionUID = -3212697250471567672L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncParseXmlFragment() {
+ 	   m_defined_arity = new Short[] { 1 };
+    }
 
     /**
      * Execute the function. The function must return a valid object.

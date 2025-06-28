@@ -38,6 +38,13 @@ public class FuncDayFromDate extends FunctionOneArg
 {
 
   private static final long serialVersionUID = 8805032226367863328L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncDayFromDate() {
+  	 m_defined_arity = new Short[] { 1 };	
+  }
 
   /**
    * Execute the function. The function must return

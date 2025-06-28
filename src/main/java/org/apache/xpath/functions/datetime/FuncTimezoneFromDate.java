@@ -38,6 +38,13 @@ public class FuncTimezoneFromDate extends FunctionOneArg
 {
 
   private static final long serialVersionUID = 9099356275948507441L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncTimezoneFromDate() {
+  	 m_defined_arity = new Short[] { 1 };	
+  }
 
   /**
    * Execute the function. The function must return

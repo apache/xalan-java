@@ -61,6 +61,13 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	
 	private static final String[] OPTIONS_ARR = new String[] { OPTION_REJECT, OPTION_USE_FIRST, OPTION_USE_LAST, 
 			                                                   OPTION_USE_ANY, OPTION_COMBINE };
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncMapMerge() {
+		m_defined_arity = new Short[] { 1, 2 };	
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{

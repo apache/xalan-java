@@ -45,6 +45,13 @@ import org.apache.xpath.operations.Variable;
 public class FuncArrayForEachPair extends Function3Args {
 
 	private static final long serialVersionUID = -8011606044596320698L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncArrayForEachPair() {
+		m_defined_arity = new Short[] { 3 };
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {

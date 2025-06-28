@@ -33,8 +33,8 @@ import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * A class providing common methods and code, that're used
- * by XPath 3.1 implementation for functions fn:parse-json 
+ * A class providing common methods and code, that are used
+ * by Xalan-J's implementation of XPath 3.1 functions fn:parse-json 
  * and fn:json-doc.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>

@@ -41,6 +41,13 @@ public class FuncSubsequence extends FunctionMultiArgs {
     private static final long serialVersionUID = -3680881808988095370L;
     
     /**
+     * Class constructor.
+     */
+    public FuncSubsequence() {
+  	   m_defined_arity = new Short[] { 2, 3 };  
+    }
+    
+    /**
      * The number of arguments passed to the fn:sort function 
      * call.
      */

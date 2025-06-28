@@ -40,6 +40,13 @@ import xml.xpath31.processor.types.XSInteger;
 public class FuncMonthsFromDuration extends FunctionOneArg {
 
     private static final long serialVersionUID = -2529130205133544977L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncMonthsFromDuration() {
+    	m_defined_arity = new Short[] { 1 };	
+    }
 
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {

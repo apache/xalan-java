@@ -31,6 +31,13 @@ import org.apache.xpath.objects.XString;
 public class FuncUnparsedEntityURI extends FunctionOneArg
 {
     static final long serialVersionUID = 845309759097448178L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncUnparsedEntityURI() {
+  	   m_defined_arity = new Short[] { 1, 2 };  
+    }
 
   /**
    * Execute the function.  The function must return

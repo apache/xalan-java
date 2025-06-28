@@ -51,43 +51,43 @@ public class Keywords
   private static Hashtable m_nodetypes = new Hashtable();
 
   /** ancestor axes string. */
-  private static final String FROM_ANCESTORS_STRING = "ancestor";
+  static final String FROM_ANCESTORS_STRING = "ancestor";
 
   /** ancestor-or-self axes string. */
-  private static final String FROM_ANCESTORS_OR_SELF_STRING = "ancestor-or-self";
+  static final String FROM_ANCESTORS_OR_SELF_STRING = "ancestor-or-self";
 
   /** attribute axes string. */
-  private static final String FROM_ATTRIBUTES_STRING = "attribute";
+  static final String FROM_ATTRIBUTES_STRING = "attribute";
 
   /** child axes string. */
-  private static final String FROM_CHILDREN_STRING = "child";
+  static final String FROM_CHILDREN_STRING = "child";
 
   /** descendant-or-self axes string. */
-  private static final String FROM_DESCENDANTS_STRING = "descendant";
+  static final String FROM_DESCENDANTS_STRING = "descendant";
 
   /** ancestor axes string. */
-  private static final String FROM_DESCENDANTS_OR_SELF_STRING = "descendant-or-self";
+  static final String FROM_DESCENDANTS_OR_SELF_STRING = "descendant-or-self";
 
   /** following axes string. */
-  private static final String FROM_FOLLOWING_STRING = "following";
+  static final String FROM_FOLLOWING_STRING = "following";
 
   /** following-sibling axes string. */
-  private static final String FROM_FOLLOWING_SIBLINGS_STRING = "following-sibling";
+  static final String FROM_FOLLOWING_SIBLINGS_STRING = "following-sibling";
 
   /** parent axes string. */
-  private static final String FROM_PARENT_STRING = "parent";
+  static final String FROM_PARENT_STRING = "parent";
 
   /** preceding axes string. */
-  private static final String FROM_PRECEDING_STRING = "preceding";
+  static final String FROM_PRECEDING_STRING = "preceding";
 
   /** preceding-sibling axes string. */
-  private static final String FROM_PRECEDING_SIBLINGS_STRING = "preceding-sibling";
+  static final String FROM_PRECEDING_SIBLINGS_STRING = "preceding-sibling";
 
   /** self axes string. */
-  private static final String FROM_SELF_STRING = "self";
+  static final String FROM_SELF_STRING = "self";
 
   /** namespace axes string. */
-  private static final String FROM_NAMESPACE_STRING = "namespace";
+  static final String FROM_NAMESPACE_STRING = "namespace";
 
   /** self axes abreviated string. */
   private static final String FROM_SELF_ABBREVIATED_STRING = ".";

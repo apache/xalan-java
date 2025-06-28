@@ -64,6 +64,8 @@ public class FuncParseJson extends JsonFunction {
     public FuncParseJson() {
        OPTIONS_SUPPORTED_LIST.add(XSLJsonConstants.LIBERAL);
        OPTIONS_SUPPORTED_LIST.add(XSLJsonConstants.DUPLICATES);
+       
+       m_defined_arity = new Short[] { 1, 2 };
     }
     
     /**

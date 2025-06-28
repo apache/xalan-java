@@ -41,6 +41,13 @@ import xml.xpath31.processor.types.XSString;
 public class FuncMapGet extends Function2Args {
 
 	private static final long serialVersionUID = -749857579667076961L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncMapGet() {
+		m_defined_arity = new Short[] { 2 };	
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 		

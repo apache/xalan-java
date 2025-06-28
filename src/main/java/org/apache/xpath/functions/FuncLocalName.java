@@ -38,6 +38,13 @@ import xml.xpath31.processor.types.XSString;
 public class FuncLocalName extends FunctionDef1Arg {
 	
 	private static final long serialVersionUID = -1472285426859105850L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncLocalName() {
+		m_defined_arity = new Short[] { 0, 1 };
+	}
 
 	/**
 	  * Implementation of the function. The function must return

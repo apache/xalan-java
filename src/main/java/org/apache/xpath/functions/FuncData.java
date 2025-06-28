@@ -37,13 +37,7 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Implementation of an XPath 3.1 function data().
- * 
- * Ref : https://www.w3.org/TR/xpath-functions-31/#func-data
- * 
- * This implementation of function fn:data() assumes that,
- * an XML input document has not been validated with an 
- * XML schema.
+ * Implementation of XPath 3.1 function fn:data.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

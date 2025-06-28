@@ -37,6 +37,13 @@ import xml.xpath31.processor.types.XSTime;
 public class FuncSecondsFromTime extends FunctionOneArg
 {
   private static final long serialVersionUID = -5441092496752221630L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncSecondsFromTime() {
+  	 m_defined_arity = new Short[] { 1 };	
+  }
 
   /**
    * Execute the function. The function must return

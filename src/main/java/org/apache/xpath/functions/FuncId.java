@@ -38,6 +38,13 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class FuncId extends FunctionOneArg
 {
     static final long serialVersionUID = 8930573966143567310L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncId() {
+	   m_defined_arity = new Short[] { 1, 2 };
+	}
 
   /**
    * Fill in a list with nodes that match a space delimited list if ID 

@@ -36,6 +36,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncUnordered extends FunctionOneArg {
 
     private static final long serialVersionUID = 4192924071383539197L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncUnordered() {
+  	   m_defined_arity = new Short[] { 1 };  
+    }
 
     /**
      * Execute the function. The function must return a valid object.

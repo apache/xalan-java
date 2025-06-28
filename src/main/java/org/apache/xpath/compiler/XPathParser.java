@@ -135,7 +135,7 @@ public class XPathParser
   private static final String CONTINUE_AFTER_FATAL_ERROR = "CONTINUE_AFTER_FATAL_ERROR";
 
   /**
-   * Results from checking FilterExpr syntax
+   * Results from checking FilterExpr syntax.
    */
   protected final static int FILTER_MATCH_FAILED     = 0;
   protected final static int FILTER_MATCH_PRIMARY    = 1;
@@ -6622,7 +6622,7 @@ public class XPathParser
     * an XPath axis name prefix.
     * 
     * @param strValue			Supplied string value
-    * @return					true if the supplied string value has an 
+    * @return					Boolean true if the supplied string value has an 
     *                           XPath axis name prefix.
     */
    public static boolean isStrHasXPathAxisNamePrefix(String strValue) {
@@ -6631,49 +6631,49 @@ public class XPathParser
 
 	   int idx = strValue.indexOf("::");
 	   if (idx >= 0) {
-		   String xpathAxis = strValue.substring(0, idx);
-		   switch (xpathAxis) {
-		   case "ancestor":
+		   String xpathAxisStrValue = strValue.substring(0, idx);
+		   switch (xpathAxisStrValue) {
+		   case Keywords.FROM_ANCESTORS_STRING:
 			   result = true;
 			   break;
-		   case "ancestor-or-self":
+		   case Keywords.FROM_ANCESTORS_OR_SELF_STRING:
 			   result = true;
 			   break;
-		   case "attribute":
+		   case Keywords.FROM_ATTRIBUTES_STRING:
 			   result = true;
 			   break;
-		   case "child":
+		   case Keywords.FROM_CHILDREN_STRING:
 			   result = true;
 			   break;
-		   case "descendant":
+		   case Keywords.FROM_DESCENDANTS_STRING:
 			   result = true;
 			   break;
-		   case "descendant-or-self":
+		   case Keywords.FROM_DESCENDANTS_OR_SELF_STRING:
 			   result = true;
 			   break;
-		   case "following":
+		   case Keywords.FROM_FOLLOWING_STRING:
 			   result = true;
 			   break;
-		   case "following-sibling":
+		   case Keywords.FROM_FOLLOWING_SIBLINGS_STRING:
 			   result = true;
 			   break;
-		   case "parent":
+		   case Keywords.FROM_PARENT_STRING:
 			   result = true;
 			   break;
-		   case "preceding":
+		   case Keywords.FROM_PRECEDING_STRING:
 			   result = true;
 			   break;
-		   case "preceding-sibling":
+		   case Keywords.FROM_PRECEDING_SIBLINGS_STRING:
 			   result = true;
 			   break;
-		   case "self":
+		   case Keywords.FROM_SELF_STRING:
 			   result = true;
 			   break;
-		   case "namespace":
+		   case Keywords.FROM_NAMESPACE_STRING:
 			   result = true;
 			   break;
 		   default:	   
-			   // NO OP
+			   // no op
 		   }
 	   }
 

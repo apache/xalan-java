@@ -37,6 +37,13 @@ import xml.xpath31.processor.types.XSNumericType;
 public class FuncInsertBefore extends Function3Args {
 
     private static final long serialVersionUID = 4238468031173924757L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncInsertBefore() {
+ 	   m_defined_arity = new Short[] { 3 };
+    }
 
     /**
      * Execute the function. The function must return a valid object.

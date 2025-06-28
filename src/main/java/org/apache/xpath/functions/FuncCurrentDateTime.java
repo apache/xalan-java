@@ -30,20 +30,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 import xml.xpath31.processor.types.XSDateTime;
 
 /**
- * Execute the current-dateTime() function.
- * 
- * This function returns the current date and time (with timezone),
- * stored within the current XPath context.
- * 
- * XPath 3.1 spec mentions following, about this function,
- * 
- * "If the implementation supports data types from XSD 1.1 then the returned 
- * value will be an instance of xs:dateTimeStamp. Otherwise, the only guarantees 
- * are that it will be an instance of xs:dateTime and will have a timezone 
- * component."
- * 
- * The implementation of function fn:current-dateTime(), provided by this class,
- * returns an instance of xs:dateTime. 
+ * Implementation of XPath 3.1 function fn:current-dateTime.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -52,6 +39,13 @@ import xml.xpath31.processor.types.XSDateTime;
 public class FuncCurrentDateTime extends Function {
 
    private static final long serialVersionUID = -2032033071326423919L;
+   
+   /**
+    * Default constructor.
+    */
+   public FuncCurrentDateTime() {
+	   m_defined_arity = new Short[] { 0 };	
+   }
 
    /**
    * Execute the function. The function must return a valid object.

@@ -39,6 +39,13 @@ import org.apache.xpath.patterns.StepPattern;
 public class FuncCurrent extends Function
 {
     static final long serialVersionUID = 5715316804877715008L;
+    
+    /**
+     * Default constructor.
+     */
+    public FuncCurrent() {
+    	m_defined_arity = new Short[] { 0 };	
+    }
 
   /**
    * Execute the function.  The function must return

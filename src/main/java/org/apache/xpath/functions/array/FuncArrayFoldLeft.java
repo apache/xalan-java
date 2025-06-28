@@ -46,6 +46,13 @@ import org.apache.xpath.operations.Variable;
 public class FuncArrayFoldLeft extends Function3Args {
     
 	private static final long serialVersionUID = 6784981690288113546L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncArrayFoldLeft() {
+		m_defined_arity = new Short[] { 3 };
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {

@@ -37,6 +37,13 @@ import xml.xpath31.processor.types.XSNumericType;
 public class FuncRemove extends Function2Args {
 
     private static final long serialVersionUID = -8240867333953131047L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncRemove() {
+    	m_defined_arity = new Short[] { 2 };
+    }
 
     /**
      * Execute the function. The function must return a valid object.

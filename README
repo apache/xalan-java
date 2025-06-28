@@ -17,7 +17,7 @@
 
 Copyright 1999-2025 The Apache Software Foundation
 
-Document last modified : 2025-06-27
+Document last modified : 2025-06-28
 
 Authors:
    Gary Gregory <ggregory@apache.org>
@@ -59,16 +59,16 @@ The Maven build results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXalanXSLT3Tests
-[INFO] Tests run: 1107, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 38.404 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
+[INFO] Tests run: 1108, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 41.92 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 1107, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1108, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  01:46 min
+[INFO] Total time:  01:31 min
 
 
 If the user needs to run Xalan-J's XSLT 3.0 implementation via Java code, the value of JVM's system property 

@@ -60,6 +60,13 @@ public class FuncForEach extends Function2Args {
    private static final long serialVersionUID = 2912594883291006421L;
    
    /**
+    * Class constructor.
+    */
+   public FuncForEach() {
+	   m_defined_arity = new Short[] { 2 };
+   }
+   
+   /**
     * This class field is used during, XPath.fixupVariables(..) action 
     * as performed within object of this class.  
     */    

@@ -37,6 +37,13 @@ public class FuncLast extends Function
   private boolean m_isTopLevel;
   
   /**
+   * Class constructor.
+   */
+  public FuncLast() {
+	  m_defined_arity = new Short[] { 0 };
+  }
+  
+  /**
    * Figure out if we're executing a toplevel expression.
    * If so, we can't be inside of a predicate. 
    */

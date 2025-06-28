@@ -39,6 +39,13 @@ public class FuncQName extends Function2Args
 {
 
 	private static final long serialVersionUID = -8738986526447227857L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncQName() {
+		m_defined_arity = new Short[] { 2 };
+	}
 
 	/**
       * Execute the function. The function must return a valid object.

@@ -33,6 +33,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncSum extends FunctionOneArg
 {
     static final long serialVersionUID = -2719049259574677519L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncSum() {
+  	   m_defined_arity = new Short[] { 1, 2 };  
+    }
 
   /**
    * Execute the function.  The function must return

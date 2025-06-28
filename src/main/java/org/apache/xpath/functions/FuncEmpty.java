@@ -34,6 +34,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncEmpty extends FunctionOneArg {
     
     private static final long serialVersionUID = 8023120626582040786L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncEmpty() {
+		m_defined_arity = new Short[] { 1 }; 
+	}
 
     /**
      * Execute the function. The function must return a valid object.

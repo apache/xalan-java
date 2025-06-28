@@ -38,6 +38,13 @@ import org.apache.xpath.operations.Variable;
 public class FuncMapKeys extends FunctionOneArg {
 	
 	private static final long serialVersionUID = -7109316358636297324L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncMapKeys() {
+		m_defined_arity = new Short[] { 1 };	
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{

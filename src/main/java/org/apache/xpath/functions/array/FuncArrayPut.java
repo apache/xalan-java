@@ -41,6 +41,13 @@ import xml.xpath31.processor.types.XSNumericType;
 public class FuncArrayPut extends Function3Args {
 
 	private static final long serialVersionUID = -3699572884716214890L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncArrayPut() {
+		m_defined_arity = new Short[] { 3 };
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{

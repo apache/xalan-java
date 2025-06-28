@@ -55,6 +55,13 @@ public class FuncMax extends FunctionMultiArgs
 {
 
    private static final long serialVersionUID = 6488632087250018194L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncMax() {
+	   m_defined_arity = new Short[] { 1, 2 };
+   }
     
    /**
     * The number of arguments passed to the fn:max function 

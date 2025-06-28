@@ -47,6 +47,13 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 public class FuncIndexOf extends FunctionMultiArgs {
 
    private static final long serialVersionUID = 2912594883291006421L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncIndexOf() {
+	   m_defined_arity = new Short[] { 2, 3 };
+   }
 
   /**
    * Execute the function. The function must return a valid object.

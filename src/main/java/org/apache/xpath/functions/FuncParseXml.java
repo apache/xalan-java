@@ -43,6 +43,13 @@ import org.xml.sax.ErrorHandler;
 public class FuncParseXml extends FunctionOneArg {
 
     private static final long serialVersionUID = -6262670777202140694L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncParseXml() {
+ 	   m_defined_arity = new Short[] { 1 };
+    }
 
     /**
      * Execute the function. The function must return a valid object.

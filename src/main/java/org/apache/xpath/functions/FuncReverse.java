@@ -16,8 +16,6 @@
  */
 package org.apache.xpath.functions;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
@@ -33,6 +31,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncReverse extends FunctionOneArg {
 
     private static final long serialVersionUID = -6427731983746707296L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncReverse() {
+    	m_defined_arity = new Short[] { 1 };
+    }
 
     /**
      * Execute the function. The function must return a valid object.

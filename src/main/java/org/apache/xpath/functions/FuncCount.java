@@ -33,6 +33,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncCount extends FunctionOneArg
 {
     static final long serialVersionUID = -7116225100474153751L;
+    
+    /**
+     * Default constructor.
+     */
+    public FuncCount() {
+    	m_defined_arity = new Short[] { 1 };	
+    }
 
   /**
    * Execute the function. The function must return a valid object.

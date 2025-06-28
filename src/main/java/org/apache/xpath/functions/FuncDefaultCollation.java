@@ -34,6 +34,13 @@ import xml.xpath31.processor.types.XSString;
 public class FuncDefaultCollation extends Function {
 
   private static final long serialVersionUID = 2310223969416091883L;
+  
+  /**
+   * Default constructor.
+   */
+  public FuncDefaultCollation() {
+	  m_defined_arity = new Short[] { 0 }; 
+  }
 
   /**
    * Execute the function. The function must return a valid object.

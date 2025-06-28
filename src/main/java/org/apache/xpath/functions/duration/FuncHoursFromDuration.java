@@ -40,6 +40,13 @@ import xml.xpath31.processor.types.XSInteger;
 public class FuncHoursFromDuration extends FunctionOneArg {
 
     private static final long serialVersionUID = -7046073260941724285L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncHoursFromDuration() {
+    	m_defined_arity = new Short[] { 1 };	
+    }
 
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {

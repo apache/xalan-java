@@ -41,6 +41,13 @@ public class FuncPosition extends Function
   public static int m_forEachGroupGroupByPos = 0;
   
   /**
+   * Class constructor.
+   */
+  public FuncPosition() {
+	  m_defined_arity = new Short[] { 0 };
+  }
+  
+  /**
    * Figure out if we're executing a toplevel expression.
    * If so, we can't be inside of a predicate. 
    */

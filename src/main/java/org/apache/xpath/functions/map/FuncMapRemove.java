@@ -43,6 +43,13 @@ import org.apache.xpath.operations.Variable;
 public class FuncMapRemove extends Function2Args {
 
 	private static final long serialVersionUID = 85207005600072930L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncMapRemove() {
+		m_defined_arity = new Short[] { 2 };	
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 		

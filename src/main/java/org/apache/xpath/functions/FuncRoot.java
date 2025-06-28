@@ -32,13 +32,20 @@ import org.apache.xpath.objects.XObject;
 /**
  * Implementation of an XPath 3.1 fn:root function.
  * 
- * Author : Mukul Gandhi <mukulg@apache.org>
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
 public class FuncRoot extends FunctionMultiArgs {
 	
 	   private static final long serialVersionUID = -7868705139354872185L;
+	   
+	   /**
+	    * Class constructor.
+	    */
+	   public FuncRoot() {
+		   m_defined_arity = new Short[] { 0, 1 };
+	   }
 
 	   /**
 	   * Implementation of the function. The function must return

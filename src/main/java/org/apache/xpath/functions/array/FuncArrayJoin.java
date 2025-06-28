@@ -39,6 +39,13 @@ import org.apache.xpath.operations.Variable;
 public class FuncArrayJoin extends FunctionOneArg {
 
 	private static final long serialVersionUID = -6855946670900692995L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncArrayJoin() {
+		m_defined_arity = new Short[] { 1 };
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{

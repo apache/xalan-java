@@ -32,6 +32,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncExists extends FunctionOneArg {
 
     private static final long serialVersionUID = -3106224966062352967L;
+    
+    /**
+	 * Class constructor.
+	 */
+	public FuncExists() {
+		m_defined_arity = new Short[] { 1 }; 
+	}
 
     /**
      * Execute the function. The function must return a valid object.

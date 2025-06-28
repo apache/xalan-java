@@ -38,6 +38,13 @@ public class FuncYearFromDate extends FunctionOneArg
 {
 
    private static final long serialVersionUID = -2445864502968307459L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncYearFromDate() {
+   	  m_defined_arity = new Short[] { 1 };	
+   }
 
    /**
    * Execute the function. The function must return

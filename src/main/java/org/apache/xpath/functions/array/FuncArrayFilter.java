@@ -55,6 +55,13 @@ public class FuncArrayFilter extends Function2Args {
    private static final long serialVersionUID = -7341393974878279742L;
    
    /**
+	* Class constructor.
+	*/
+   public FuncArrayFilter() {
+	  m_defined_arity = new Short[] { 2 };
+   }
+   
+   /**
     * This class field is used during, XPath.fixupVariables(..) action 
     * as performed within object of this class.  
     */    

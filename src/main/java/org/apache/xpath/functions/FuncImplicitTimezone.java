@@ -44,6 +44,13 @@ import xml.xpath31.processor.types.XSDuration;
 public class FuncImplicitTimezone extends Function {
 
    private static final long serialVersionUID = -429445379499398972L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncImplicitTimezone() {
+	   m_defined_arity = new Short[] { 0 };
+   }
 
   /**
    * Execute the function. The function must return a valid object.

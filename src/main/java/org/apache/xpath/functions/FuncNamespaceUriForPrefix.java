@@ -43,6 +43,13 @@ import xml.xpath31.processor.types.XSAnyURI;
 public class FuncNamespaceUriForPrefix extends Function2Args {
 
 	private static final long serialVersionUID = 6212323137442859818L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncNamespaceUriForPrefix() {
+		m_defined_arity = new Short[] { 2 };
+	}
 
    /**
    * Implementation of the function. The function must return

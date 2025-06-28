@@ -63,6 +63,13 @@ public class FuncSort extends FunctionMultiArgs
     private static final long serialVersionUID = -7037457505611880167L;
     
     /**
+     * Class constructor.
+     */
+    public FuncSort() {
+ 	   m_defined_arity = new Short[] { 1, 2, 3 };
+    }
+    
+    /**
      * The number of arguments passed to the fn:sort function 
      * call.
      */

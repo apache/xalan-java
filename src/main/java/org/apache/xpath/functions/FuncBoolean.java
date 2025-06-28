@@ -51,7 +51,7 @@ public class FuncBoolean extends FunctionOneArg
      * Default constructor.
      */
     public FuncBoolean() {
-       // no op	
+    	m_defined_arity = new Short[] { 1 };	
     }
     
     /**

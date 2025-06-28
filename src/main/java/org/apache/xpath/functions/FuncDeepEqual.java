@@ -60,7 +60,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
    * Default constructor.
    */
   public FuncDeepEqual() {
-	 // NO OP  
+	  m_defined_arity = new Short[] {2, 3}; 
   }
   
   /**

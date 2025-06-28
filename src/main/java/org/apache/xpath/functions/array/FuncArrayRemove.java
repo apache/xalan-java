@@ -40,6 +40,13 @@ import xml.xpath31.processor.types.XSNumericType;
 public class FuncArrayRemove extends Function2Args {
 
 	private static final long serialVersionUID = 7890619596202668602L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncArrayRemove() {
+		m_defined_arity = new Short[] { 2 };
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 		

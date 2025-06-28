@@ -33,6 +33,13 @@ import xml.xpath31.processor.types.XSBoolean;
 public class FuncNot extends FunctionOneArg
 {
    static final long serialVersionUID = 7299699961076329790L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncNot() {
+   	 m_defined_arity = new Short[] { 1 };	
+   }
 
   /**
    * Implementation of the function. The function must return

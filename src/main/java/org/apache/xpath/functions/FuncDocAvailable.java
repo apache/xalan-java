@@ -36,6 +36,13 @@ import xml.xpath31.processor.types.XSBoolean;
 public class FuncDocAvailable extends FunctionOneArg {
 
 	private static final long serialVersionUID = -737728533828222724L;
+	
+	/**
+     * Default constructor.
+     */
+    public FuncDocAvailable() {
+    	m_defined_arity = new Short[] { 1 };	
+    }
 
 	/**
      * Execute the function. The function must return a valid object.

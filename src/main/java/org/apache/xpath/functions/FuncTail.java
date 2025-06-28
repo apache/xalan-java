@@ -16,13 +16,12 @@
  */
 package org.apache.xpath.functions;
 
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
-
-import com.sun.org.apache.xml.internal.dtm.DTM;
 
 /**
  * Implementation of the tail() function.
@@ -34,6 +33,13 @@ import com.sun.org.apache.xml.internal.dtm.DTM;
 public class FuncTail extends FunctionOneArg {
 
     private static final long serialVersionUID = -7505231181568257145L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncTail() {
+  	   m_defined_arity = new Short[] { 1 };  
+    }
 
     /**
      * Execute the function. The function must return a valid object.

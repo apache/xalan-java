@@ -37,6 +37,13 @@ public class FuncAvg extends FunctionOneArg
 {
 
   private static final long serialVersionUID = 6282866669363344636L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncAvg() {
+	  m_defined_arity = new Short[] { 1 };
+  }
 
   /**
    * Execute the function. The function must return

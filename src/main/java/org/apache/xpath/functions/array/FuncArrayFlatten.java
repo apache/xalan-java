@@ -36,6 +36,13 @@ import org.apache.xpath.operations.Variable;
 public class FuncArrayFlatten extends FunctionOneArg {
 
 	private static final long serialVersionUID = -2684722783678792071L;
+	
+	/**
+	 * Class constructor.
+	 */
+	public FuncArrayFlatten() {
+		m_defined_arity = new Short[] { 1 };
+	}
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
