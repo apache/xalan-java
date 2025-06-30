@@ -887,8 +887,8 @@ public class XSL3FunctionService {
     }
     
     /**
-     * Method definition to check whether the supplied string value
-     * is an XML Schema built-in atomic type name.
+     * Method definition to check, whether the supplied string
+     * value is an XML Schema built-in atomic type name.
      * 
      * @param xsTypeNameStr				  The supplied string value
      * @return							  Boolean value true or false

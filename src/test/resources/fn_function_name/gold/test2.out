@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <a>xs:date</a>
+    <b>xs:date</b>
+    <c>xs:decimal</c>
+  </one>
+  <two>
+    <a>xs:date</a>
+    <b>xs:date</b>
+    <c>xs:decimal</c>
+  </two>
+</result>

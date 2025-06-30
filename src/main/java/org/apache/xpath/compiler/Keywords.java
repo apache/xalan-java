@@ -757,6 +757,9 @@ public class Keywords
   /** function-arity function string. */
   public static final String FUNC_FUNCTION_ARITY = "function-arity";
   
+  /** function-name function string. */
+  public static final String FUNC_FUNCTION_NAME = "function-name";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

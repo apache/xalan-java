@@ -1970,7 +1970,7 @@ public class SequenceTypeSupport {
         int nodeSetLen = xdmNodeSet.getLength();
                 
         if ((nodeSetLen == 0) && 
-            ((sequenceTypeKindTest != null) && isSequenceTypeExprOneOfTheNodeKinds(sequenceTypeKindTest.getKindVal())) && 
+            ((sequenceTypeKindTest != null) && isSequenceTypeExprNodeKind(sequenceTypeKindTest.getKindVal())) && 
             (itemTypeOccurenceIndicator == 0)) {
         	// Here, an input value is an empty sequence, and the sequence type expression refers 
         	// to one the various node kinds and no occurrence indicator character has been 
@@ -2225,17 +2225,17 @@ public class SequenceTypeSupport {
     
     /**
      * Check whether the, xdm sequence type's xalan-j kind value refers to one of 
-     * the various node kinds.
+     * the various xdm node kinds.
      */
-    private static boolean isSequenceTypeExprOneOfTheNodeKinds(int seqTypekindVal) {
-		boolean isXdmItemOneOfTheNodeKinds = false;
+    private static boolean isSequenceTypeExprNodeKind(int seqTypekindVal) {		
+    	boolean result = false;
 		
-		isXdmItemOneOfTheNodeKinds = ((seqTypekindVal == SequenceTypeSupport.ELEMENT_KIND) || 
-				                      (seqTypekindVal == SequenceTypeSupport.ATTRIBUTE_KIND) || 
-				                      (seqTypekindVal == SequenceTypeSupport.NAMESPACE_NODE_KIND) || 
-				                      (seqTypekindVal == SequenceTypeSupport.NODE_KIND));
+		result = ((seqTypekindVal == SequenceTypeSupport.ELEMENT_KIND) || 
+										                      (seqTypekindVal == SequenceTypeSupport.ATTRIBUTE_KIND) || 
+										                      (seqTypekindVal == SequenceTypeSupport.NAMESPACE_NODE_KIND) || 
+										                      (seqTypekindVal == SequenceTypeSupport.NODE_KIND));
 		
-		return isXdmItemOneOfTheNodeKinds; 
+		return result; 
 	}
     
     /**

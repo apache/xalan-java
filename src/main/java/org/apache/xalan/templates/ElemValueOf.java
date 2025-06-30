@@ -373,10 +373,22 @@ public class ElemValueOf extends ElemTemplateElement {
                   }
                   else if (expr instanceof Function) {
                       XObject evalResult = ((Function)expr).execute(xctxt);
-                      String strValue = null;
-                      
+                      String strValue = null;                      
                       if (evalResult instanceof XSAnyType) {
-                    	  strValue = ((XSAnyType)evalResult).stringValue();    
+                    	  if (evalResult instanceof XSQName) {
+                    		 XSQName xsQname = (XSQName)evalResult;
+                    		 String localName = xsQname.getLocalPart();
+                    		 String prefix = xsQname.getPrefix();
+                    		 if ((prefix != null) && !"".equals(prefix)) {
+                    			strValue = prefix + ":" + localName; 
+                    		 }
+                    		 else {
+                    			strValue = ((XSQName)evalResult).stringValue(); 
+                    		 }
+                    	  }
+                    	  else {
+                    	     strValue = ((XSAnyType)evalResult).stringValue();
+                    	  }
                       }                                            
                       else if (evalResult instanceof XMLNodeCursorImpl) {
                     	  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;

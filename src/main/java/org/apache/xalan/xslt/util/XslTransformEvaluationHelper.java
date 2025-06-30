@@ -734,7 +734,6 @@ public class XslTransformEvaluationHelper {
   	  StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;  	    	  
 
   	  if (stylesheetRoot != null) {
-  		  transformerImpl = stylesheetRoot.getTransformerImpl();  
   		  TemplateList templateList = stylesheetRoot.getTemplateListComposed();  		  
   		  XSL3FunctionService xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();  		  
   		  if (xslFunctionService.isFuncArityWellFormed(funcNameRef)) {        	   

@@ -4210,14 +4210,12 @@ public class XPathParser
   	   mapFuncArg();	
     }
     else if (lookahead(':', 1)) {
-       // XPath parse of named function reference, for XPath built-in 
-   	   // functions & stylesheet functions
-    	
+       // XPath parse of named function reference, for XPath built-in functions 
+   	   // and stylesheet functions.    	
        handleXPathParseNamedFuncRefWithNSQual(opPos);
     }
     else if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
-    	// XPath parse of named function reference, for XPath built-in functions
-    	
+    	// XPath parse of named function reference, for XPath built-in functions    	
     	handleXPathParseNamedFuncRefWithoutNSQual(opPos);
     }
     else if (tokenIs("for")) {
@@ -6791,21 +6789,18 @@ public class XPathParser
 				nextToken();
 				consumeExpected(':');
 				String funcName = m_token.substring(0, m_token.indexOf('#'));
-				int funcTok = getFunctionToken(funcName, funcNamespaceUri);    			
-				if (funcTok >= 0) {
-					String namedFuncRef = m_token;										
-					nextToken();					
-					insertOp(opPos, 2, OpCodes.OP_NAMED_FUNCTION_REFERENCE);
+				String namedFuncRef = m_token;										
+				nextToken();					
+				insertOp(opPos, 2, OpCodes.OP_NAMED_FUNCTION_REFERENCE);
 
-					m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
-					m_xpathNamedFunctionReference.setFuncName(funcName);
-					m_xpathNamedFunctionReference.setFuncNamespace(funcNamespaceUri);					
-					String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
-					m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
+				m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
+				m_xpathNamedFunctionReference.setFuncName(funcName);
+				m_xpathNamedFunctionReference.setFuncNamespace(funcNamespaceUri);					
+				String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
+				m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
 
-					m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-					        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-				}
+				m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+						                    m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);			
 			}
 			else {
 				restoreTokenQueueScanPosition(prevTokQueueScanPosition);

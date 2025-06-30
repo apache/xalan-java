@@ -104,7 +104,7 @@ public class FuncFunctionArity extends FunctionDef1Arg
 						                                                                                          + " not found.", srcLocator);  
 			   }
 		   }
-		   if (xObj instanceof XPathInlineFunction) {
+		   else if (xObj instanceof XPathInlineFunction) {
 			   XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)xObj;
 			   List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
 			   result = new XSInteger(String.valueOf(funcParamList.size()));

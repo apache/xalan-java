@@ -550,6 +550,9 @@ public class FunctionTable
   
   /** The 'function-arity()' id. */
   public static final int FUNC_FUNCTION_ARITY = 175;
+  
+  /** The 'function-name()' id. */
+  public static final int FUNC_FUNCTION_NAME = 176;
 
   // Proprietary
 
@@ -643,7 +646,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 176;
+  private static final int NUM_BUILT_IN_FUNCS = 177;
 
   /**
    * Number of built-in functions that may be added.
@@ -866,6 +869,7 @@ public class FunctionTable
 	   m_functions[FUNC_XML_TO_JSON] = org.apache.xpath.functions.json.FuncXmlToJson.class;
 	   
 	   m_functions[FUNC_FUNCTION_ARITY] = org.apache.xpath.functions.FuncFunctionArity.class;
+	   m_functions[FUNC_FUNCTION_NAME] = org.apache.xpath.functions.FuncFunctionName.class;
   }
 
   static {
@@ -1073,6 +1077,7 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_XML_TO_JSON, new Integer(FunctionTable.FUNC_XML_TO_JSON));
 	  
 	  m_functionId.put(Keywords.FUNC_FUNCTION_ARITY, new Integer(FunctionTable.FUNC_FUNCTION_ARITY));
+	  m_functionId.put(Keywords.FUNC_FUNCTION_NAME, new Integer(FunctionTable.FUNC_FUNCTION_NAME));
   }
   
   /**

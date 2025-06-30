@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <a>fn:substring</a>
+    <b>fn:substring</b>
+    <c>math:pi</c>
+  </one>
+  <two>
+    <a>fn:substring</a>
+    <b>fn:substring</b>
+    <c>math:pi</c>
+  </two>
+</result>

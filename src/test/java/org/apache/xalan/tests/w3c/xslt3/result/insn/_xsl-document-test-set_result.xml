@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-28T10:54:55Z" fail="13" name="xsl-document" pass="12" skipped="0" statusUnknown="0" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-30T12:06:44Z" fail="13" name="xsl-document" pass="12" skipped="0" statusUnknown="0" totalRun="25">
    <testResult status="pass" testName="xsl-document-0101"/>
    <testResult status="fail" testName="xsl-document-0102">
       <outResult>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="xsl-document-0103"/>
@@ -17,7 +17,7 @@
    <testResult status="fail" testName="xsl-document-0301">
       <outResult>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="xsl-document-0302"/>
