@@ -356,5 +356,9 @@ public class XSL3ConstructorOrExtensionFunction extends Function
     else
       return m_extensionName;
   }
+  
+  public Vector getArgVector() {
+	 return m_argVec;  
+  }
 
 }

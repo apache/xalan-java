@@ -286,6 +286,8 @@ public class Compiler extends OpMap
       expr = xpathExprWithFuncCallSuffix(opPos); break;
     case OpCodes.OP_CONTEXT_ITEM_WITH_PREDICATE :
       expr = xpathContextItemWithPredicate(opPos); break;
+    case OpCodes.OP_XPATH_FUNC_CALL_EXTENDED_ARG :
+      expr = xpathExpressionFuncCallExtendedArg(opPos); break;  
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ "quo" });
       break;
@@ -1657,7 +1659,15 @@ private static final boolean DEBUG = false;
    */
   Expression xpathContextItemWithPredicate(int opPos) throws TransformerException
   {
-      return XPathParser.xpathContextItemWithPredicate;
+      return XPathParser.m_xpathContextItemWithPredicate;
+  }
+  
+  /**
+   * Compile an XPath expression function call extended argument list.
+   */
+  Expression xpathExpressionFuncCallExtendedArg(int opPos) throws TransformerException
+  {
+      return XPathParser.m_xpathExprFuncCallExtendedArg;
   }
   
   /**

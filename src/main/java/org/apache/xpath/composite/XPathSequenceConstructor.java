@@ -17,7 +17,6 @@
 package org.apache.xpath.composite;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -224,16 +223,7 @@ public class XPathSequenceConstructor extends Expression {
            }
            else if (xpathExpr instanceof XSL3ConstructorOrExtensionFunction) {
         	   XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)xpathExpr;        	           	   
-        	   XObject funcEvalResult = xsl3ConstructorOrExtensionFunction.execute(xctxt);        	           	   
-        	   String[] strParts = xpathExprStr.split("\\)\\(");
-        	   if (strParts.length > 1) {
-        		  String argStr = strParts[strParts.length - 1];
-        		  argStr = argStr.substring(0, argStr.length() - 1);
-        		  String[] argArray = argStr.split(",");
-        		  funcEvalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)funcEvalResult, Arrays.asList(argArray), 
-																                             prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
-																                             xctxt); 
-        	   }        	   
+        	   XObject funcEvalResult = xsl3ConstructorOrExtensionFunction.execute(xctxt);        	           	           	          	   
         	   resultSeq.add(funcEvalResult);
            }
            else {

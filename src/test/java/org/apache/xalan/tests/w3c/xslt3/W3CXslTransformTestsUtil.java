@@ -97,6 +97,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     
     private static final String EXPECTED_NODE_KIND_ASSERT_ALL_OF = "all-of";
     
+    private static final String EXPECTED_NODE_KIND_ASSERT_ANY_OF = "any-of";
+    
     private static final String EXPECTED_NODE_KIND_ASSERT = "assert";
     
     private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";        
@@ -250,8 +252,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   StreamSource xsltStreamSrc = new StreamSource(xslStylesheetUriStr);
     		   
     		   try {
-    		      runW3CXSLTTestSuiteXslTransformAndProduceResult(testCaseName, xmlInpDomSource, xsltStreamSrc, 
-    		    		                                          expectedResultElem, elemTestRun, testResultDoc);
+    		      runW3CXSLTTestSuiteXslTransformAndEmitResult(testCaseName, xmlInpDomSource, xsltStreamSrc, 
+    		    		                                                     expectedResultElem, elemTestRun, testResultDoc);
     		   }
     		   catch (Exception ex) {
     			  System.out.println("Test case name : " + testCaseName + ", Exception message : " + ex.getMessage()); 
@@ -311,10 +313,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     }
     
     /**
-     * This method definition runs one W3C XSLT 3.0 test case within a test set, 
-     * on Xalan-J's XSLT 3 implementation.
+     * Method definition to run, one W3C XSLT 3.0 test case within a test set, 
+     * using Xalan-J's XSLT 3 implementation.
      */
-    private void runW3CXSLTTestSuiteXslTransformAndProduceResult(String testCaseName, DOMSource xmlInpDomSource, 
+    private void runW3CXSLTTestSuiteXslTransformAndEmitResult(String testCaseName, DOMSource xmlInpDomSource, 
     		                                                     StreamSource xsltStreamSrc, Element expectedResultElem,  
             													 Element elemTestRun, Document testResultDoc) throws Exception {    	    	
 
@@ -339,6 +341,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		Node nodeExpected = (expectedResultElem.getFirstChild()).getNextSibling();
     		String expectedNodeKindName = nodeExpected.getNodeName();
+    		
     		if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
     			expErrCodeName = ((Element)nodeExpected).getAttribute("code");
     		}
@@ -393,7 +396,24 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			else {
     				testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter);
     		    }
-    		}    		
+    		}
+    		else if (EXPECTED_NODE_KIND_ASSERT_ANY_OF.equals(expectedNodeKindName)) {
+    			Node childNode = nodeExpected.getFirstChild();
+    			while (childNode != null) {
+    				if ((childNode instanceof Element) && EXPECTED_NODE_KIND_ASSERT_XML.equals(((Element)childNode).getNodeName())) {
+    					String xmlStr1 = ((Element)childNode).getTextContent();
+    					String xmlStr2 = resultStrWriter.toString();
+    					if (isTwoXmlHtmlStrEqual(xmlStr1, xmlStr2)) {
+    						elemTestResult.setAttribute("status", "pass");
+    						break;
+    					}
+    					else {
+    						elemTestResult.setAttribute("status", "fail");
+    					}
+    				}    				
+    				childNode = childNode.getNextSibling();
+    			}
+    		}
             else if (EXPECTED_NODE_KIND_ASSERT_XML.equals(expectedNodeKindName)) {
             	Element elemNode = (Element)nodeExpected;
             	String fileName = elemNode.getAttribute(FILE_ATTR);
@@ -407,14 +427,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             		expectedResultStr = elemNode.getTextContent();            		
             	}
 
-            	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
-            	String str1 = serializeXmlDomElementNode(xmlInpDoc1);
+            	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));            	
+            	String xmlHtmlStr1 = serializeXmlDomElementNode(xmlInpDoc1);
 
             	Document xmlInpDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
+            	String xmlHtmlStr2 = serializeXmlDomElementNode(xmlInpDoc2);
 
-            	String str2 = serializeXmlDomElementNode(xmlInpDoc2);
-
-            	if (isTwoXmlHtmlStrEqual(str1, str2)) {            		
+            	if (isTwoXmlHtmlStrEqual(xmlHtmlStr1, xmlHtmlStr2)) {            		
             		elemTestResult.setAttribute("status", "pass");
             	}
             	else {
@@ -435,8 +454,9 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	}
 
             	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
-            	String str1 = serializeXmlDomElementNode(xmlInpDoc1);
-            	StringReader strReader = new StringReader(str1);
+            	String xmlStr1 = serializeXmlDomElementNode(xmlInpDoc1);
+            	
+            	StringReader strReader = new StringReader(xmlStr1);
             	            	
             	XPathFactoryImpl xpathFactory = new XPathFactoryImpl();
             	XPath xpath = xpathFactory.newXPath();
@@ -536,10 +556,12 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
 
 		Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
-		String str1 = serializeXmlDomElementNode(xmlInpDoc1);
-		String str2 = serializeXmlDomElementNode(expectedResultDoc);
+		
+		String xmlStr1 = serializeXmlDomElementNode(xmlInpDoc1);
+		
+		String xmlStr2 = serializeXmlDomElementNode(expectedResultDoc);
 
-		if (isTwoXmlHtmlStrEqual(str1, str2)) {
+		if (isTwoXmlHtmlStrEqual(xmlStr1, xmlStr2)) {
 			elemTestResult.setAttribute("status", "pass");
 		}
 		else {

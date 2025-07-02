@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-06-30T12:04:38Z" fail="36" name="function" pass="24" skipped="4" statusUnknown="6" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-02T12:31:53Z" fail="38" name="function" pass="26" skipped="4" statusUnknown="2" totalRun="70">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
    <testResult status="pass" testName="function-0002"/>
-   <testResult testName="function-0003"/>
-   <testResult status="fail" testName="function-0004"/>
+   <testResult status="pass" testName="function-0003"/>
+   <testResult status="pass" testName="function-0004"/>
    <testResult status="pass" testName="function-0101"/>
    <testResult status="pass" testName="function-0102"/>
    <testResult status="pass" testName="function-0103"/>
@@ -76,7 +76,7 @@
    </testResult>
    <testResult status="fail" testName="function-1007"/>
    <testResult status="fail" testName="function-1009"/>
-   <testResult testName="function-1011"/>
+   <testResult status="fail" testName="function-1011"/>
    <testResult status="pass" testName="function-1012"/>
    <testResult status="fail" testName="function-1013"/>
    <testResult status="fail" testName="function-1014"/>
@@ -86,8 +86,8 @@
          <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Found more than one XSL stylesheet function named: x:test with arity 1</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="function-1017"/>
-   <testResult testName="function-1018"/>
+   <testResult status="fail" testName="function-1017"/>
+   <testResult status="fail" testName="function-1018"/>
    <testResult testName="function-1019"/>
    <testResult status="pass" testName="function-1020"/>
    <testResult status="fail" testName="function-1021">

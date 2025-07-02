@@ -330,7 +330,7 @@ public class ElemFunction extends ElemTemplate
         				                            (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) ||
         				                            (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
         		   // An XPath sequence type occurrence indicator with value absent, or any 
-        		   // other occurrence indicator is ok for this case.
+        		   // other occurrence indicator is ok.
         		   isSeqCardinalityOk = true;
         		}
         		else if ((seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||

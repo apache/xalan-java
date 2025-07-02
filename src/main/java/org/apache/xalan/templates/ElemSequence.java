@@ -76,14 +76,14 @@ public class ElemSequence extends ElemTemplateElement
   private static final long serialVersionUID = 4299774714317634314L;
   
   /**
-   * Boolean value to indicate that, whether xsl:sequence instruction 
-   * is called from xsl:fork instruction. 
+   * Boolean value to indicate, whether xsl:sequence instruction 
+   * has been called from xsl:fork instruction. 
    */
   private boolean m_isCalledFromXslFork;
   
   /**
-   * xsl:sequence instruction's evaluation result. This is useful
-   * when xsl:sequence instruction is called from xsl:fork 
+   * An xsl:sequence instruction's evaluation result, when 
+   * xsl:sequence instruction has been called from xsl:fork 
    * instruction.
    */
   private XObject m_xslSequenceEvalResult = null;
@@ -315,7 +315,7 @@ public class ElemSequence extends ElemTemplateElement
 					  dtmIter = locPathIterator.asIterator(xctxt, contextNode);
 				  }
 				  catch (ClassCastException ex) {
-					  // no op
+					  // NO OP
 				  }
 
 				  if (dtmIter != null) {               
@@ -401,10 +401,15 @@ public class ElemSequence extends ElemTemplateElement
 			  }
 
 			  if (xslSequenceVal == null) {
-				  xslSequenceVal = m_selectPattern.execute(xctxt, sourceNode, this);
-				  if (xslSequenceVal instanceof XPathNamedFunctionReference) {
-					 (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)xslSequenceVal);  
+				  if (selectExpression instanceof XPathNamedFunctionReference) {
+					 (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)selectExpression); 
 				  }
+				  else {
+					  xslSequenceVal = m_selectPattern.execute(xctxt, sourceNode, this);
+					  if (xslSequenceVal instanceof XPathNamedFunctionReference) {
+						  (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)xslSequenceVal);  
+					  }
+				  }				  				  
 			  }        
 		  }
 		  else if (getFirstChildElem() == null) {
@@ -417,17 +422,16 @@ public class ElemSequence extends ElemTemplateElement
 		  }
 
 		  if (xslSequenceVal == null) {
-			  // The result of evaluation of xsl:sequence instruction here,
-			  // is an empty sequence.
-			  XPath emptySeqXPath = new XPath(XPathParser.XPATH_EXPR_STR_EMPTY_SEQUENCE, srcLocator, 
-					  null, XPath.SELECT, null);
-			  xslSequenceVal = emptySeqXPath.execute(xctxt, DTM.NULL, null);
+			  // An xsl:sequence instruction's evaluation result here 
+			  // will be an empty sequence.
+			  XPath xpathObj = new XPath(XPathParser.XPATH_EXPR_STR_EMPTY_SEQUENCE, srcLocator, null, XPath.SELECT, null);
+			  xslSequenceVal = xpathObj.execute(xctxt, DTM.NULL, null);
 		  }
 
 		  if (m_isCalledFromXslFork) {
 			  m_xslSequenceEvalResult = xslSequenceVal;
 		  }            		  
-		  else if (xslSequenceVal != null) {
+		  else {
 			  emitXslSequenceResultToSerializer(xctxt, transformer, xslSequenceVal);          
 		  }
 	  }

@@ -762,8 +762,10 @@ public class OpCodes
   public static final int OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX = 85;
   
   public static final int OP_CONTEXT_ITEM_WITH_PREDICATE = 86;
+  
+  public static final int OP_XPATH_FUNC_CALL_EXTENDED_ARG = 87;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 87;
+  private static final int NEXT_FREE_ID = 88;
   
 }

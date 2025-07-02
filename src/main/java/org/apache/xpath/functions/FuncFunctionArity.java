@@ -130,6 +130,37 @@ public class FuncFunctionArity extends FunctionDef1Arg
 					                                                                                          + " not found.", srcLocator); 
 			}
 		}
+		else if (arg0 instanceof XSL3ConstructorOrExtensionFunction) {
+			XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)arg0;
+			XObject xObj = xsl3ConstructorOrExtensionFunction.execute(xctxt);
+			if (xObj instanceof XPathNamedFunctionReference) {
+				XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xObj;
+				String localName = xpathNamedFunctionReference.getFuncName();
+				String namespace = xpathNamedFunctionReference.getFuncNamespace();
+				Short arity = xpathNamedFunctionReference.getArity(); 
+				if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) || (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
+					(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
+					FunctionTable funcTable = xctxt.getFunctionTable();
+					Object funcId = funcTable.getFunctionId(localName);
+					if (funcId != null) {
+						Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
+						List<Short> funcDefinedArity = Arrays.asList(function.getDefinedArity());
+						if (funcDefinedArity.contains(arity)) {
+							result = new XSInteger(String.valueOf(arity));
+						}
+						else {
+							throw new TransformerException("XPST0017 : An XSL function definition for function reference {" 
+						                                                                     + namespace + "}" + localName + "#" + arity + " not found.", srcLocator);	
+						}
+					}					
+				}
+			}
+			else if (xObj instanceof XPathInlineFunction) {
+				XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)xObj;
+				List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
+				result = new XSInteger(String.valueOf(funcParamList.size()));
+			}
+		}
 		else if (arg0 instanceof XPathInlineFunction) {
 			XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)arg0;
 			List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
@@ -140,8 +171,8 @@ public class FuncFunctionArity extends FunctionDef1Arg
 	}
     
 	/**
-	 * Method definition to get an XSL transformation's TransformerImpl 
-	 * object instance within the current XSL transformation context. 
+	 * Method definition to get, an XSL transformation's TransformerImpl 
+	 * object instance available within the current XSL transformation context. 
 	 * 
 	 * @return						TransformerImpl object instance
 	 */

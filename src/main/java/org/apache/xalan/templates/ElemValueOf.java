@@ -64,9 +64,7 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSQName;
 
 /**
- * Implementation of XSLT xsl:value-of instruction.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-value-of
+ * Implementation of XSLT 3.0 xsl:value-of instruction.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Ilene Seelemann

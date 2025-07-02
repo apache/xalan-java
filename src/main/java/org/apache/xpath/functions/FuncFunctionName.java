@@ -108,18 +108,30 @@ public class FuncFunctionName extends FunctionDef1Arg
 		}
 		else if (arg0 instanceof NodeTest) {
 			NodeTest nodeTest = (NodeTest)arg0;
-			
+
 			result = getFunctionNameFromNodeTestExpr(nodeTest, srcLocator);
-		 }
-		 else if (arg0 instanceof XPathInlineFunction) {
+		}		
+		else if (arg0 instanceof XSL3ConstructorOrExtensionFunction) {
+			XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)arg0;
+			XObject xObj = xsl3ConstructorOrExtensionFunction.execute(xctxt);
+			if (xObj instanceof XPathNamedFunctionReference) {
+				XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xObj;
+				
+				result = getFunctionNameFromNamedFuncRef(xpathNamedFunctionReference, funcTable, srcLocator);
+			}
+			else if (xObj instanceof XPathInlineFunction) {
+			    result = new ResultSequence();
+			}
+		}
+		else if (arg0 instanceof XPathInlineFunction) {
 			result = new ResultSequence();
-		 }
-		 else {
+		}
+		else {
 			throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for the supplied function "
-						                                                                                + "reference not found.", srcLocator); 
-		 }
-		
-		 return result;
+																												+ "reference not found.", srcLocator); 
+		}
+
+		return result;
 	}
 
 	/**
@@ -274,8 +286,8 @@ public class FuncFunctionName extends FunctionDef1Arg
 
 		StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode; 
 		ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-				nodeTest, stylesheetRoot.getTransformerImpl(), 
-				srcLocator);
+																									nodeTest, stylesheetRoot.getTransformerImpl(), 
+																									srcLocator);
 		String funcNameRef = nodeTest.getLocalName();
 		String namespace = nodeTest.getNamespace();
 		int hashCharIdx = funcNameRef.indexOf('#');

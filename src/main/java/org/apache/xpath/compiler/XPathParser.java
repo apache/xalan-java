@@ -57,6 +57,7 @@ import org.apache.xpath.composite.SequenceTypeMapTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathContextItemWithPredicate;
+import org.apache.xpath.composite.XPathExprFuncCallExtendedArg;
 import org.apache.xpath.composite.XPathExprFunctionCallSuffix;
 import org.apache.xpath.composite.XPathExprFunctionSuffix;
 import org.apache.xpath.composite.XPathForExpr;
@@ -256,7 +257,9 @@ public class XPathParser
   
   static XPathExprFunctionCallSuffix m_xpathExprWithFuncCallSuffix = null;
   
-  static XPathContextItemWithPredicate xpathContextItemWithPredicate = null;
+  static XPathContextItemWithPredicate m_xpathContextItemWithPredicate = null;
+  
+  static XPathExprFuncCallExtendedArg m_xpathExprFuncCallExtendedArg = null;
   
   private String m_arrowOpRemainingXPathExprStr = null;
   
@@ -1818,7 +1821,7 @@ public class XPathParser
      	 
      	 insertOp(opPos1, 2, OpCodes.OP_CONTEXT_ITEM_WITH_PREDICATE);
      	 
-		 xpathContextItemWithPredicate = new XPathContextItemWithPredicate();
+		 m_xpathContextItemWithPredicate = new XPathContextItemWithPredicate();
 		 
 		 consumeExpected('[');
 		 StringBuffer xpathPredicateSuffixStrBuff = new StringBuffer();
@@ -1850,8 +1853,8 @@ public class XPathParser
         	 xpathPredicateSuffixStr = prefixStr + suffixStr;  
          }
 		 
-		 xpathContextItemWithPredicate.setXPathPredicateSuffixExpr(xpathPredicateSuffixStr);		 
-		 xpathContextItemWithPredicate.setContextItemChar('.');
+		 m_xpathContextItemWithPredicate.setXPathPredicateSuffixExpr(xpathPredicateSuffixStr);		 
+		 m_xpathContextItemWithPredicate.setContextItemChar('.');
 		 
 		 m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
                   								 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
@@ -4506,6 +4509,60 @@ public class XPathParser
     }
     else {
     	m_isParseSequenceTypeExprWithUserDefinedType = false;	
+    }
+    
+    if (tokenIs('(')) {
+    	/**
+    	 * XPath parse of a possible function argument literal list suffix. 
+    	 * This can handle an XPath function call syntax like prefix:func1(args1)(args2), 
+    	 * where an XPath expression syntax prefix:func1(args1) returns a function item 
+    	 * that can be called with it's required arguments (i.e, args2).
+    	 */
+    	
+    	appendOp(2, OpCodes.OP_XPATH_FUNC_CALL_EXTENDED_ARG);
+    	
+    	consumeExpected('(');
+    	
+    	List<String> funcArgrgXPathExprStrList = new ArrayList<String>();
+    	
+    	while (!tokenIs(')') && m_token != null)
+        {
+    		if (tokenIs(','))
+    		{
+    			error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG, null);
+    		}
+
+    		StringBuffer strBuff = new StringBuffer();
+    		while (!(tokenIs(',') || tokenIs(')')) && m_token != null) {
+    			strBuff.append(m_token);
+    			nextToken();
+    		}
+
+    		String strValue = strBuff.toString();
+    		if (strValue.length() > 0) {
+    			funcArgrgXPathExprStrList.add(strValue);
+    		}
+
+    		if (!tokenIs(')'))
+    		{
+    			consumeExpected(',');
+
+    			if (tokenIs(')'))
+    			{
+    				error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG, null);
+    			}
+    		}
+        }
+    	
+    	m_xpathExprFuncCallExtendedArg = new XPathExprFuncCallExtendedArg();    	
+    	if (funcArgrgXPathExprStrList.size() > 0) {    		
+    		m_xpathExprFuncCallExtendedArg.setFunctionArgXPathExprStrList(funcArgrgXPathExprStrList);
+    	}
+    	
+    	consumeExpected(')');
+    	
+    	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
     }
 
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);

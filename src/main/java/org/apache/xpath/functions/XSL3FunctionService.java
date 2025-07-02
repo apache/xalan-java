@@ -24,7 +24,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.xml.XMLConstants;
@@ -33,6 +39,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
@@ -54,9 +61,14 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathExprFuncCallExtendedArg;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSGDay;
@@ -182,27 +194,120 @@ public class XSL3FunctionService {
     				}
 
     				TemplateList templateList = stylesheetRoot.getTemplateListComposed();
-
-    				int argCount = funcObj.getArgCount();
-    				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcName), argCount);
+    				
+    				Vector argVector = funcObj.getArgVector();
+    				int xslFuncArgCount = 0;
+    				ResultSequence xslFuncArgSequence = new ResultSequence();
+    				List<String> funcExtArgStrList = null;
+    				for (int idx = 0; idx < argVector.size(); idx++) {
+    					Expression argExpr = (Expression)(argVector.elementAt(idx));
+    					if (!(argExpr instanceof XPathExprFuncCallExtendedArg)) {
+    						XObject xslFuncArgVal = null;
+    						if (!(argExpr instanceof XPathNamedFunctionReference)) { 
+    							xslFuncArgVal = argExpr.execute(xctxt);
+    						}
+    						else {
+    							xslFuncArgVal = (XPathNamedFunctionReference)argExpr; 	
+    						}
+    						xslFuncArgSequence.add(xslFuncArgVal);
+    						xslFuncArgCount++;	
+    					}
+    					else {    						    						
+    						XPathExprFuncCallExtendedArg xpathExprFuncCallExtendedArg = (XPathExprFuncCallExtendedArg)argExpr;
+    						funcExtArgStrList = xpathExprFuncCallExtendedArg.getFunctionArgXPathExprStrList();
+    					}
+    				}
+    				
+    				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcName), xslFuncArgCount);
 
     				if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
-    					// Evaluate XSL stylesheet function call
-    					ResultSequence argSequence = new ResultSequence();
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						Expression argExpr = funcObj.getArg(idx);
-    						XObject argVal = null;
-    						if (!(argExpr instanceof XPathNamedFunctionReference)) { 
-    						    argVal = argExpr.execute(xctxt);
-    					    }
-    					    else {
-    					        argVal = (XPathNamedFunctionReference)argExpr; 	
-    					    }
-    						
-    						argSequence.add(argVal);
+    					// Evaluate XSL stylesheet function call    					
+    					ElemFunction elemFunction = (ElemFunction)elemTemplate;
+    					
+    					evalResult = elemFunction.evaluateXslFunction(transformerImpl, xslFuncArgSequence);
+    					
+    					if ((evalResult instanceof XPathNamedFunctionReference) && (funcExtArgStrList != null)) {
+    					   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)evalResult;    					   
+    					   String localName = xpathNamedFunctionReference.getFuncName();
+    					   String namespace = xpathNamedFunctionReference.getFuncNamespace();
+    					   Short arity = xpathNamedFunctionReference.getArity();    					   
+    					   if ((int)arity == funcExtArgStrList.size()) {
+    						  if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) || (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
+    							  (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
+    							  FunctionTable funcTable = xctxt.getFunctionTable();
+    							  Object funcId = funcTable.getFunctionId(localName);
+    							  if (funcId != null) {
+    								 Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
+    								 List<Short> funcDefinedArity = Arrays.asList(function.getDefinedArity());
+    								 if (funcDefinedArity.contains(arity)) {
+    									for (int idx = 0; idx < funcExtArgStrList.size(); idx++) {
+    									   String xpathExprStr = funcExtArgStrList.get(idx);
+    									   XPath argXPath = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);    									   
+    									   try {
+											  function.setArg(argXPath.getExpression(), idx);
+										   } 
+    									   catch (WrongNumberArgsException ex) {
+											  // NO OP
+										   }    									
+    									}
+    									
+    									evalResult = function.execute(xctxt);
+    								 }
+    								 else {
+    									throw new TransformerException("XPTY0004 : The function arity value specified in an XPath named "
+    											                                         + "function reference is " + arity + ", but the corresponding "
+    											                                         + "XPath function {" + namespace + "}" + localName + " doesn't allow this arity.", srcLocator);  
+    								 }
+    							  }
+    							  else {
+    								  throw new TransformerException("XPTY0004 : The function {" + namespace + "}" + localName + " referred "
+    								  		                                                     + "within an XPath expression is not found.", srcLocator); 
+    							  }
+    						  }
+    					   }
+    					   else {
+    						  throw new TransformerException("XPTY0004 : The number of arguments provided during an XPath function call {" + namespace + "}" + localName 
+    								                                                    + " is " + funcExtArgStrList.size() + ", but the corresponding XPath named function "
+    								                                                    + "reference specifies the function arity value as " + arity + ".", srcLocator); 
+    					   }
     					}
+    					else if ((evalResult instanceof XPathInlineFunction) && (funcExtArgStrList != null)) {
+    						int paramIdx = 0;    						
+    						Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();    						
+    						for (ElemTemplateElement elem = elemFunction.getFirstChildElem(); elem != null; 
+    								                                                               elem = elem.getNextSiblingElem()) {
+    							if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
+    								ElemParam elemParam = (ElemParam)elem;
+    								QName paramName = elemParam.getName();
+    								XObject argValue = xslFuncArgSequence.item(paramIdx);
+    								xpathVarMap.put(paramName, argValue);
+    								paramIdx++;
+    							}
+    							else {
+    								break; 
+    							}
+    						}
+    						
+    						XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)evalResult;
+    						
+    						List<String> xpathInlineFuncArgList = new ArrayList<String>(); 
+    						for (int idx = 0; idx < funcExtArgStrList.size(); idx++) {
+    							String xpathExprStr = funcExtArgStrList.get(idx);								
+    							xpathInlineFuncArgList.add(xpathExprStr);    							
+    						}
+    						
+    						List<XMLNSDecl> prefixTable = null;
+					    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
 
-    					evalResult = ((ElemFunction)elemTemplate).evaluateXslFunction(transformerImpl, argSequence);
+					    	if (elemTemplateElement != null) {
+					    		prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+					    	}
+					    						    	
+					        // REVISIT, for the first null argument & an argument 0
+    						evalResult = evaluateXPathInlineFunction(xpathInlineFunction, xpathInlineFuncArgList, 
+                                                                     xctxt, prefixTable, null, 0, 
+                                                                     ((Expression)xpathExpr).getXPathVarList(), null);    						
+    					}
     					
     					return evalResult;
     				}    				
@@ -1024,6 +1129,155 @@ public class XSL3FunctionService {
        
        return result;
     }
+    
+    /**
+     * Method definition to evaluate an XPath inline function expression.
+     * 
+     * @param xpathInlineFunction			        An XPath compiled inline function reference object		
+     * @param argList                               A list of XPath string values for argument information of 
+     *                                              inline function reference.
+     * @param xctxt									An XPath context object                                              
+     * @param prefixTable                           An XML prefix table list object reference containing
+     *                                              an XSL context namespace binding information.
+     * @param varVector                             Collection of variable names within an XSL current evaluation 
+     *                                              context.                                              
+     * @param varGlobalSize                         An integer value to resolve variable names within an XSL
+     *                                              current evaluation context. 
+     * @param xpathVarList                          List of variable names to support resolving XSL run-time
+     *                                              XPath expression evaluation.
+     * @param xslDynFuncCallVarName                 If this method is called to evaluate an XPath dynamic 
+     *                                              function call, this argument contains name of the variable
+     *                                              referring to an XPath function that will be called.
+     * 
+     * @return									    The result of evaluation of an XPath inline function expression.
+     * @throws TransformerException
+     */
+    public XObject evaluateXPathInlineFunction(XPathInlineFunction xpathInlineFunction, List<String> argList, 
+    		                                   XPathContext xctxt, List<XMLNSDecl> prefixTable, Vector varVector, 
+    		                                   int varGlobalSize, List<QName> xpathVarList, String xslDynFuncCallVarName) throws TransformerException {
+    	
+    	XObject evalResult = null;
+    	
+    	Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
+
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
+
+    	final int contextNode = xctxt.getCurrentNode(); 
+
+    	String inlineFnXPathStr = xpathInlineFunction.getFuncBodyXPathExprStr();
+    	List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();           
+
+    	int argCount1 = argList.size();
+
+    	if (argCount1 != funcParamList.size()) {
+    		throw new javax.xml.transform.TransformerException("XPTY0004 : Number of arguments required for "
+																		    				+ "XPath dynamic function call is " + funcParamList.size() + ". "
+																		    				+ "Arguments provided : " + argCount1 + ".", srcLocator);    
+    	}	           	           
+
+    	Map<QName, XObject> functionParamAndArgMap = new HashMap<QName, XObject>();
+
+    	for (int idx = 0; idx < funcParamList.size(); idx++) {
+    		InlineFunctionParameter funcParam = funcParamList.get(idx);                                                         
+
+    		String argXPathStr = argList.get(idx);
+
+    		if (prefixTable != null) {
+    			argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    		}
+
+    		XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    		if (varVector != null) {
+    			argXPath.fixupVariables(varVector, varGlobalSize);
+    		}
+
+    		XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+
+    		String funcParamName = funcParam.getParamName();
+    		SequenceTypeData paramType = funcParam.getParamType();
+
+    		if (paramType != null) {
+    			try {
+    				argValue = SequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
+    				if (argValue == null) {
+    					if (xslDynFuncCallVarName != null) {
+    					    throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
+			    							                                              + "function call $" + xslDynFuncCallVarName + ", "
+			    							                                              + "doesn't match an expected type.", srcLocator);
+    					}
+    					else {
+    						throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of an XPath "
+                                                                                          + "function call, doesn't match an expected type.", srcLocator);
+    					}
+    				}
+    			}
+    			catch (TransformerException ex) {
+    				if (xslDynFuncCallVarName != null) {
+					    throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
+		    							                                              + "function call $" + xslDynFuncCallVarName + ", "
+		    							                                              + "doesn't match an expected type.", srcLocator);
+					}
+					else {
+						throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of an XPath "
+                                                                                      + "function call, doesn't match an expected type.", srcLocator);
+					} 
+    			}
+    		}
+
+    		xpathVarList.add(new QName(funcParamName));
+
+    		functionParamAndArgMap.put(new QName(funcParamName), argValue);
+    	}
+
+    	inlineFunctionVarMap.putAll(functionParamAndArgMap);
+
+    	if (prefixTable != null) {
+    		inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXPathStr, prefixTable);
+    	}
+
+    	XPath inlineFnXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	if (varVector != null) {
+    		inlineFnXPath.fixupVariables(varVector, varGlobalSize);
+    	}
+
+    	evalResult = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+
+    	SequenceTypeData funcReturnType = xpathInlineFunction.getReturnType();
+    	if (funcReturnType != null) {
+    		try {
+    			evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, null, funcReturnType, null);
+    			if (evalResult == null) {
+    				if (xslDynFuncCallVarName != null) {
+    				    throw new TransformerException("XTTE0505 : An item type of result of dynamic function call $"+ xslDynFuncCallVarName + ", "
+    						                                                                         + "doesn't match an expected type.", srcLocator);
+    				}
+    				else {
+    					throw new TransformerException("XTTE0505 : An item type of result of an XPath function call, doesn't match "
+    							                                                                     + "an expected type.", srcLocator);
+    				}
+    			}
+    		}
+    		catch (TransformerException ex) {
+    			if (xslDynFuncCallVarName != null) {
+				    throw new TransformerException("XTTE0505 : An item type of result of dynamic function call $"+ xslDynFuncCallVarName + ", "
+						                                                                             + "doesn't match an expected type.", srcLocator);
+				}
+				else {
+					throw new TransformerException("XTTE0505 : An item type of result of an XPath function call, doesn't match "
+							                                                                         + "an expected type.", srcLocator);
+				}  
+    		}
+    	}
+
+    	Set<QName> keysOfArgVariables = functionParamAndArgMap.keySet();    	
+    	Iterator<QName> iter = keysOfArgVariables.iterator();    	
+    	while (iter.hasNext()) {
+    		QName key = iter.next();
+    		inlineFunctionVarMap.remove(key);
+    	}
+    	
+    	return evalResult;
+	}
     
     /**
      * Evaluate the XPath built-in constructor function call.

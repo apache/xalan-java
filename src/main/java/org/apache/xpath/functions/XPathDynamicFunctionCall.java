@@ -17,7 +17,6 @@
 package org.apache.xpath.functions;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +42,8 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.ElemFunctionItem;
-import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -109,7 +105,6 @@ public class XPathDynamicFunctionCall extends Expression {
     
     private XSL3FunctionService m_xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
     
-
     /**
      * Evaluate an XPath dynamic function call expression.
      */
@@ -160,12 +155,14 @@ public class XPathDynamicFunctionCall extends Expression {
             }
                 	    
     	    if (functionRef instanceof XPathInlineFunction) {    	    		    	    	
-	           evalResult = evaluateXPathInlineFunction(xctxt, (XPathInlineFunction)functionRef, m_argList, prefixTable);
+	           evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)functionRef, m_argList, 
+	        		                                                           xctxt, prefixTable, m_vars, m_globals_size, 
+	        		                                                           m_xpathVarList, m_funcRefVarName);
                
 	           if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
 	        	  evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)evalResult, m_trailingArgList, 
-	        			                                                                 prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
-	        			                                                                 xctxt); 
+	        			                                                                  prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
+	        			                                                                  xctxt); 
 	           }
 	        }
     	    else if (functionRef instanceof XPathMap) {
@@ -526,7 +523,9 @@ public class XPathDynamicFunctionCall extends Expression {
       }
        
       if ((evalResult instanceof XPathInlineFunction) && (m_trailingArgList != null)) {
-    	 evalResult = evaluateXPathInlineFunction(xctxt, (XPathInlineFunction)evalResult, m_trailingArgList, prefixTable); 
+    	 evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)evalResult, m_trailingArgList, 
+    			                                                        xctxt, prefixTable, m_vars, m_globals_size, 
+    			                                                        m_xpathVarList, m_funcRefVarName); 
       }
                
       return evalResult;
@@ -582,122 +581,6 @@ public class XPathDynamicFunctionCall extends Expression {
     	}
 
     	evalResult = xpathArr.get(intVal - 1);
-    	
-    	return evalResult;
-	}
-    
-    /**
-     * Method definition to evaluate an XPath inline function reference.
-     * 
-     * @param xctxt									An XPath context object
-     * @param xpathInlineFunction			        An XPath compiled inline function reference object		
-     * @param argList                               A list of XPath string values for argument information of 
-     *                                              inline function reference.
-     * @param prefixTable                           An XML prefix table list object reference containing
-     *                                              an XSL context namespace binding information.
-     * @return									    The result of evaluation of an XPath inline function
-     *                                              reference.
-     * @throws TransformerException
-     */
-    private XObject evaluateXPathInlineFunction(XPathContext xctxt, XPathInlineFunction xpathInlineFunction, 
-    		                                    List<String> argList, List<XMLNSDecl> prefixTable) throws TransformerException {
-    	
-    	XObject evalResult = null;
-    	
-    	Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
-
-    	SourceLocator srcLocator = xctxt.getSAXLocator();
-
-    	final int contextNode = xctxt.getCurrentNode(); 
-
-    	String inlineFnXPathStr = xpathInlineFunction.getFuncBodyXPathExprStr();
-    	List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();           
-
-    	int argCount1 = argList.size();
-
-    	if (argCount1 != funcParamList.size()) {
-    		throw new javax.xml.transform.TransformerException("XPTY0004 : Number of arguments required for "
-																		    				+ "XPath dynamic function call is " + funcParamList.size() + ". "
-																		    				+ "Arguments provided : " + argCount1 + ".", srcLocator);    
-    	}	           	           
-
-    	Map<QName, XObject> functionParamAndArgMap = new HashMap<QName, XObject>();
-
-    	for (int idx = 0; idx < funcParamList.size(); idx++) {
-    		InlineFunctionParameter funcParam = funcParamList.get(idx);                                                         
-
-    		String argXPathStr = argList.get(idx);
-
-    		if (prefixTable != null) {
-    			argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
-    		}
-
-    		XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-    		if (m_vars != null) {
-    			argXPath.fixupVariables(m_vars, m_globals_size);
-    		}
-
-    		XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-
-    		String funcParamName = funcParam.getParamName();
-    		SequenceTypeData paramType = funcParam.getParamType();
-
-    		if (paramType != null) {
-    			try {
-    				argValue = SequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
-    				if (argValue == null) {
-    					throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
-			    							                                              + "function call $" + m_funcRefVarName + ", "
-			    							                                              + "doesn't match an expected type.", srcLocator);  
-    				}
-    			}
-    			catch (TransformerException ex) {
-    				throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
-		    						                                                  + "function call $" + m_funcRefVarName + ", "
-		    						                                                  + "doesn't match an expected type.", srcLocator); 
-    			}
-    		}
-
-    		m_xpathVarList.add(new QName(funcParamName));
-
-    		functionParamAndArgMap.put(new QName(funcParamName), argValue);
-    	}
-
-    	inlineFunctionVarMap.putAll(functionParamAndArgMap);
-
-    	if (prefixTable != null) {
-    		inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXPathStr, prefixTable);
-    	}
-
-    	XPath inlineFnXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
-    			XPath.SELECT, null);
-    	if (m_vars != null) {
-    		inlineFnXPath.fixupVariables(m_vars, m_globals_size);
-    	}
-
-    	evalResult = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-
-    	SequenceTypeData funcReturnType = xpathInlineFunction.getReturnType();
-    	if (funcReturnType != null) {
-    		try {
-    			evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, null, funcReturnType, null);
-    			if (evalResult == null) {
-    				throw new TransformerException("XTTE0505 : An item type of result of dynamic function call $"+ m_funcRefVarName + ", "
-    						                                                                         + "doesn't match an expected type.", srcLocator);  
-    			}
-    		}
-    		catch (TransformerException ex) {
-    			throw new TransformerException("XTTE0505 : An item type of result of dynamic function call $"+ m_funcRefVarName + ", "
-    					                                                                             + "doesn't match an expected type.", srcLocator);  
-    		}
-    	}
-
-    	Set<QName> keysOfArgVariables = functionParamAndArgMap.keySet();    	
-    	Iterator<QName> iter = keysOfArgVariables.iterator();    	
-    	while (iter.hasNext()) {
-    		QName key = iter.next();
-    		inlineFunctionVarMap.remove(key);
-    	}
     	
     	return evalResult;
 	}

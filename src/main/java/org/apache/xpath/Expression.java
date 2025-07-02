@@ -596,6 +596,10 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   	return m_parent.getColumnNumber();
   }
   
+  public List<QName> getXPathVarList() {
+	 return m_xpathVarList;  
+  }
+  
   /**
    * This method definition, evaluates an XPath expression suffix function call funcCall(..) 
    * within an expression like like /a/b/funcCall(..).
