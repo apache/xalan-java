@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-02T12:31:53Z" fail="8" name="attribute-set" pass="41" skipped="1" statusUnknown="0" totalRun="50">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-02T16:50:10Z" fail="8" name="attribute-set" pass="41" skipped="1" statusUnknown="0" totalRun="50">
    <testResult status="pass" testName="attribute-set-0101"/>
    <testResult status="fail" testName="attribute-set-0102">
       <outResult/>
@@ -6,7 +6,11 @@
    <testResult status="pass" testName="attribute-set-0104"/>
    <testResult status="pass" testName="attribute-set-0105"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="fail" testName="attribute-set-0106a"/>
+   <testResult status="fail" testName="attribute-set-0106a">
+      <outResult>
+         <errTrace>xsl:attribute-set set1 used itself, which will cause an infinite loop.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="attribute-set-0107"/>
    <testResult status="fail" testName="attribute-set-0108">
       <outResult>

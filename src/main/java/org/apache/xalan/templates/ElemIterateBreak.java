@@ -27,10 +27,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXException;
 
-/*
+/**
  * Implementation of the XSLT 3.0 xsl:break instruction.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-iterate
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -146,7 +144,7 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
        */
        public void execute(TransformerImpl transformer) throws TransformerException
        {
-            XPathContext xpathContext = transformer.getXPathContext();
+            XPathContext xctxt = transformer.getXPathContext();
             
             boolean isXslBreakDescendantOfXslIterate = false;
             
@@ -154,9 +152,7 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
                 isXslBreakDescendantOfXslIterate = true;    
             }
             else {
-                throw new TransformerException("XTSE3120 : an xsl:break instruction doesn't have "
-                                                                 + "xsl:iterate instruction as ancestor.", 
-                                                                                   xpathContext.getSAXLocator());   
+                throw new TransformerException("XTSE3120 : An xsl:break instruction doesn't have xsl:iterate instruction as ancestor.", xctxt.getSAXLocator());   
             }
                       
             if (isXslBreakDescendantOfXslIterate && isXslInstructionInTailPositionOfSequenceConstructor(this)) {              
@@ -164,9 +160,8 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
                 transformer.setXslIterateBreakEvaluated(true);
             }
             else {
-                throw new TransformerException("XTSE3120 : an xsl:break instruction is not in a "
-                                                                + "tail position within the sequence constructor of currently "
-                                                                + "active xsl:iterate instruction.", xpathContext.getSAXLocator());    
+                throw new TransformerException("XTSE3120 : An xsl:break instruction is not in a tail position within the sequence "
+                		                                                                      + "constructor of an xsl:iterate instruction.", xctxt.getSAXLocator());    
             }
        }
 
@@ -182,8 +177,8 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
            XPathContext xctxt = transformer.getXPathContext();
            
            if ((xpathSelectPatternStr != null) && (this.m_firstChild != null)) {
-              throw new TransformerException("XTSE3125 : an xsl:break element with a 'select' attribute "
-                                                                                 + "must be empty.", xctxt.getSAXLocator());          
+              throw new TransformerException("XTSE3125 : An xsl:break instruction with a 'select' attribute must have an empty "
+              		                                                                         + "sequence constructor.", xctxt.getSAXLocator());          
            }
            else {               
               if (xpathSelectPatternStr != null) {
@@ -208,27 +203,27 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
            }
        }
        
-       /*
+       /**
         * Determine whether, an xsl:break instruction has xsl:iterate instruction 
         * as ancestor. 
         */
        private boolean isXslBreakDescendantOfXslIterate(ElemIterateBreak xslNextInstr) {
            
-           boolean isXslBreakDescendantOfXslIterate = false;
+           boolean result = false;
            
-           ElemTemplateElement xslParentElement = xslNextInstr.m_parentNode;
+           ElemTemplateElement xslParentElem = xslNextInstr.m_parentNode;
            
-           while (!isXslBreakDescendantOfXslIterate && (xslParentElement != null)) {
-              if (xslParentElement instanceof ElemIterate) {
-                  isXslBreakDescendantOfXslIterate = true;
+           while (xslParentElem != null) {
+              if (xslParentElem instanceof ElemIterate) {
+                  result = true;
                   break;
               }
               else {
-                  xslParentElement = xslParentElement.m_parentNode; 
+                  xslParentElem = xslParentElem.m_parentNode; 
               }
            }
            
-           return  isXslBreakDescendantOfXslIterate;   
+           return  result;   
        }       
       
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-02T12:31:53Z" fail="38" name="function" pass="26" skipped="4" statusUnknown="2" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-02T16:50:10Z" fail="39" name="function" pass="26" skipped="4" statusUnknown="1" totalRun="70">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -76,7 +76,9 @@
    </testResult>
    <testResult status="fail" testName="function-1007"/>
    <testResult status="fail" testName="function-1009"/>
-   <testResult status="fail" testName="function-1011"/>
+   <testResult status="fail" testName="function-1011">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out result=""/&gt;</outResult>
+   </testResult>
    <testResult status="pass" testName="function-1012"/>
    <testResult status="fail" testName="function-1013"/>
    <testResult status="fail" testName="function-1014"/>
@@ -86,9 +88,19 @@
          <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Found more than one XSL stylesheet function named: x:test with arity 1</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="function-1017"/>
-   <testResult status="fail" testName="function-1018"/>
-   <testResult testName="function-1019"/>
+   <testResult status="fail" testName="function-1017">
+      <outResult>
+         <errTrace>Unknown error in XPath.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-1018">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:x="http://xxx.com/" one="banana"/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="function-1019">
+      <outResult>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://xxx.com/}test, doesn't match the declared parameter type xs:integer.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="function-1020"/>
    <testResult status="fail" testName="function-1021">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:x="http://xxx.com/"/&gt;</outResult>

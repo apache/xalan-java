@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-02T12:31:51Z" fail="32" name="iterate" pass="11" skipped="0" statusUnknown="1" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-02T16:50:07Z" fail="29" name="iterate" pass="15" skipped="0" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
    <testResult status="pass" testName="iterate-004"/>
-   <testResult status="fail" testName="iterate-006">
+   <testResult status="pass" testName="iterate-006"/>
+   <testResult status="pass" testName="iterate-007">
       <outResult>
-         <errTrace>XTSE3120 : An xsl:next-iteration instruction doesn't have xsl:iterate instruction as an ancestor.</errTrace>
+         <errTrace>XTSE3120 : An xsl:break instruction doesn't have xsl:iterate instruction as ancestor.</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="iterate-007"/>
    <testResult status="fail" testName="iterate-008">
       <outResult>
          <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of basketCost</errTrace>
@@ -93,16 +93,8 @@
    <testResult status="fail" testName="iterate-019"/>
    <testResult status="fail" testName="iterate-020"/>
    <testResult status="fail" testName="iterate-021"/>
-   <testResult status="fail" testName="iterate-022">
-      <outResult>
-         <errTrace>XTSE0580 : within xsl:iterate, the number of xsl:param elements are not equal to number of xsl:next-iteration's xsl:with-param elements.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="iterate-023">
-      <outResult>
-         <errTrace>XTSE3120 : an xsl:next-iteration instruction is not in a tail position within the sequence constructor of currently active xsl:iterate instruction.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="iterate-022"/>
+   <testResult status="pass" testName="iterate-023"/>
    <testResult status="fail" testName="iterate-024">
       <outResult>
          <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of count</errTrace>
@@ -114,7 +106,7 @@
    <testResult status="pass" testName="iterate-026"/>
    <testResult status="fail" testName="iterate-027">
       <outResult>
-         <errTrace>XTSE3130 : within xsl:iterate, xsl:param and xsl:with-param names at position 1 are not same.</errTrace>
+         <errTrace>XTSE3130 : Within xsl:iterate, xsl:param and xsl:with-param names at position 1 are not same.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="iterate-028">
@@ -126,14 +118,14 @@
    <testResult status="pass" testName="iterate-029"/>
    <testResult status="fail" testName="iterate-030">
       <outResult>
-         <errTrace>XTSE3120 : an xsl:next-iteration instruction is not in a tail position within the sequence constructor of currently active xsl:iterate instruction.</errTrace>
+         <errTrace>XTSE0010 : An xsl:next-iteration instruction is not in a tail position within the sequence constructor of an xsl:iterate instruction.</errTrace>
          <errTrace>ERROR! Unknown op code: 0</errTrace>
          <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="iterate-031">
       <outResult>
-         <errTrace>XTSE3120 : an xsl:next-iteration instruction is not in a tail position within the sequence constructor of currently active xsl:iterate instruction.</errTrace>
+         <errTrace>XTSE0010 : An xsl:next-iteration instruction is not in a tail position within the sequence constructor of an xsl:iterate instruction.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="iterate-032"/>

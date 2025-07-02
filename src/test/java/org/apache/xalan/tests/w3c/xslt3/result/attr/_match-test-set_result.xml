@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-02T12:31:47Z" fail="65" name="match" pass="59" skipped="8" statusUnknown="5" totalRun="137">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-02T16:50:03Z" fail="69" name="match" pass="59" skipped="8" statusUnknown="1" totalRun="137">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -42,7 +42,10 @@
    <testResult status="pass" testName="match-037"/>
    <testResult status="pass" testName="match-038"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult testName="match-040"/>
+   <testResult status="fail" testName="match-040">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:f="http://f.com/"&gt;OK!&lt;/out&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:f="http://f.com/"&gt;OK!&lt;/out&gt;</outResult>
+   </testResult>
    <testResult status="pass" testName="match-041"/>
    <testResult status="pass" testName="match-042"/>
    <testResult status="pass" testName="match-043"/>
@@ -126,10 +129,31 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
    <testResult status="fail" testName="match-074"/>
    <testResult status="fail" testName="match-075"/>
    <testResult status="fail" testName="match-076"/>
-   <testResult testName="match-077"/>
+   <testResult status="fail" testName="match-077">
+      <outResult>
+         <errTrace>Unknown nodetype: copy-of</errTrace>
+         <errTrace>Extra illegal tokens: 'copy-of', '(', '$', 'x', ')', '/', '/', 'a'</errTrace>
+      </outResult>
+      <outResult>
+         <errTrace>Unknown nodetype: copy-of</errTrace>
+         <errTrace>Extra illegal tokens: 'copy-of', '(', '$', 'x', ')', '/', '/', 'a'</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="match-078"/>
-   <testResult testName="match-079"/>
-   <testResult testName="match-080"/>
+   <testResult status="fail" testName="match-079">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:f="http://f.com/"&gt;OK!&lt;/out&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:f="http://f.com/"&gt;OK!&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="match-080">
+      <outResult>
+         <errTrace>Unknown nodetype: key</errTrace>
+         <errTrace>Extra illegal tokens: 'key', '(', ''k'', ',', '42', ')', '/', '/', 'a'</errTrace>
+      </outResult>
+      <outResult>
+         <errTrace>Unknown nodetype: key</errTrace>
+         <errTrace>Extra illegal tokens: 'key', '(', ''k'', ',', '42', ')', '/', '/', 'a'</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="fail" testName="match-081a">
       <outResult>

@@ -36,10 +36,8 @@ import org.apache.xpath.objects.XRTreeFrag;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/*
+/**
  * Implementation of the XSLT 3.0 xsl:next-iteration instruction.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-iterate
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -158,7 +156,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
             XPathContext xpathContext = transformer.getXPathContext();
             
             if (!isXslNextIterationDescendantOfXslIterate(this)) {
-                throw new TransformerException("XTSE3120 : An xsl:next-iteration instruction doesn't "
+                throw new TransformerException("XTSE0010 : An xsl:next-iteration instruction doesn't "
                                                                                 + "have xsl:iterate instruction as an ancestor.", 
                                                                                       xpathContext.getSAXLocator()); 
             }
@@ -167,9 +165,9 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
                 elemIterateNextIterationProcessing(transformer);
             }
             else {
-                throw new TransformerException("XTSE3120 : an xsl:next-iteration instruction is not in a "
-                                                                                           + "tail position within the sequence constructor of currently "
-                                                                                           + "active xsl:iterate instruction.", xpathContext.getSAXLocator());   
+                throw new TransformerException("XTSE0010 : An xsl:next-iteration instruction is not in a "
+                                                                                           + "tail position within the sequence constructor of "
+                                                                                           + "an xsl:iterate instruction.", xpathContext.getSAXLocator());   
             }
        }
        
@@ -203,7 +201,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
                     paramWithparamDataObj.setNameVal(withParamNameVal);
                     paramWithparamDataObj.setSelectVal(withParamSelectXPath);
                     if (fWithparamList.contains(paramWithparamDataObj)) {
-                        throw new TransformerException("XTSE0670 : duplicate xsl:with-param parameter name '" + withParamNameVal + 
+                        throw new TransformerException("XTSE0670 : Duplicate xsl:with-param parameter name '" + withParamNameVal + 
                                                                                                             "'", xctxt.getSAXLocator());   
                     }
                     else {
@@ -213,7 +211,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
             }
             
             if ((ElemIterate.fXslIterateParamWithparamDataList).size() != fWithparamList.size()) {
-                throw new TransformerException("XTSE0580 : within xsl:iterate, the number of xsl:param elements are not equal to "
+                throw new TransformerException("XTSE3130 : Within xsl:iterate, the number of xsl:param elements are not equal to "
                                                                 + "number of xsl:next-iteration's xsl:with-param elements.", xctxt.getSAXLocator());     
             }
             else {
@@ -221,7 +219,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
                    XslIterateParamWithparamData paramData = (ElemIterate.fXslIterateParamWithparamDataList).get(idx);
                    XslIterateParamWithparamData withParamData = fWithparamList.get(idx);
                    if (!(paramData.getNameVal()).equals(withParamData.getNameVal())) {
-                       throw new TransformerException("XTSE3130 : within xsl:iterate, xsl:param and xsl:with-param names at position " + 
+                       throw new TransformerException("XTSE3130 : Within xsl:iterate, xsl:param and xsl:with-param names at position " + 
                                                                                                   (idx + 1) + " are not same.", xctxt.getSAXLocator());        
                    }
                }
@@ -298,20 +296,19 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
            return elemWithParam;
         }
         
-        /*
-         * Determine whether, an xsl:next-iteration instruction has xsl:iterate instruction 
-         * as ancestor. 
+        /**
+         * Method definition to determine, whether an xsl:next-iteration instruction has 
+         * xsl:iterate instruction as ancestor. 
          */
         private boolean isXslNextIterationDescendantOfXslIterate(ElemIterateNextIteration 
-                                                                                    xslNextInstr) {
-            
-            boolean isXslNextIterationDescendantOfXslIterate = false;
+                                                                                    xslNextInstr) {        	
+            boolean result = false;
             
             ElemTemplateElement xslParentElement = xslNextInstr.m_parentNode;
             
             while (xslParentElement != null) {
                if (xslParentElement instanceof ElemIterate) {
-                   isXslNextIterationDescendantOfXslIterate = true;
+                   result = true;
                    break;
                }
                else {
@@ -319,7 +316,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
                }
             }
             
-            return  isXslNextIterationDescendantOfXslIterate;   
+            return  result;   
         }
       
 }

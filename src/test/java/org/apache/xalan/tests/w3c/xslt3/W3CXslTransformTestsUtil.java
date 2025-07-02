@@ -92,8 +92,6 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	private static final String FILE_ATTR = "file";
 	
 	private static final String TRUE = "true";
-	
-	private static final String EXPECTED_NODE_KIND_ERROR = "error";
     
     private static final String EXPECTED_NODE_KIND_ASSERT_ALL_OF = "all-of";
     
@@ -101,7 +99,9 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     
     private static final String EXPECTED_NODE_KIND_ASSERT = "assert";
     
-    private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";        
+    private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";
+    
+    private static final String EXPECTED_NODE_KIND_ERROR = "error";
     
     private static final String SERIALIZATION_MATCHES = "serialization-matches";
     
@@ -399,19 +399,30 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ANY_OF.equals(expectedNodeKindName)) {
     			Node childNode = nodeExpected.getFirstChild();
+    			boolean isTestCasePass = false;
+    			boolean isAssertXml = false;
     			while (childNode != null) {
     				if ((childNode instanceof Element) && EXPECTED_NODE_KIND_ASSERT_XML.equals(((Element)childNode).getNodeName())) {
+    					isAssertXml = true;
     					String xmlStr1 = ((Element)childNode).getTextContent();
     					String xmlStr2 = resultStrWriter.toString();
     					if (isTwoXmlHtmlStrEqual(xmlStr1, xmlStr2)) {
     						elemTestResult.setAttribute("status", "pass");
+    						isTestCasePass = true;
     						break;
-    					}
-    					else {
-    						elemTestResult.setAttribute("status", "fail");
-    					}
-    				}    				
+    					}    					
+    				}
+    				else if ((childNode instanceof Element) && EXPECTED_NODE_KIND_ERROR.equals(((Element)childNode).getNodeName())) {
+    					expErrCodeName = ((Element)childNode).getAttribute("code"); 
+    					handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
+				                                             trfFatalErrorList, expErrCodeName, resultStrWriter);
+    				}
+    				
     				childNode = childNode.getNextSibling();
+    			}
+    			
+    			if (isAssertXml && !isTestCasePass) {
+    			   elemTestResult.setAttribute("status", "fail");
     			}
     		}
             else if (EXPECTED_NODE_KIND_ASSERT_XML.equals(expectedNodeKindName)) {
