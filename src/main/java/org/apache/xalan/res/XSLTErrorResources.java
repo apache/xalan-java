@@ -807,7 +807,7 @@ public class XSLTErrorResources extends ListResourceBundle
       "Found more than one template named: {0}"},
     
     { ER_DUPLICATE_XSL_FUNCTION,
-      "Found more than one XSL stylesheet function named: {0} with arity {1}"},
+      "XTSE0770 : Found more than one XSL stylesheet function named: {0} with arity {1}"},
 
     { ER_INVALID_KEY_CALL,
       "Invalid function call: recursive key() calls are not allowed"},

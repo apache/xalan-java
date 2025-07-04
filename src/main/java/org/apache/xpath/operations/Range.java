@@ -21,6 +21,8 @@
 package org.apache.xpath.operations;
 
 import java.math.BigInteger;
+import java.util.PrimitiveIterator.OfInt;
+import java.util.stream.IntStream;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
@@ -28,8 +30,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -37,10 +39,8 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
-import java.lang.String;
-
 /**
- * The XPath 3.1 range "to" operation.
+ * Implementation of XPath 3.1 range "to" operator.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -97,13 +97,30 @@ public class Range extends Operation
       }
                   
       BigInteger lBigInt = getBigIntValue(xctxt, lObj);
-      BigInteger rBigInt = getBigIntValue(xctxt, rObj);
+      BigInteger rBigInt = getBigIntValue(xctxt, rObj);      
       
-      while (rBigInt.compareTo(lBigInt) >= 0) {
-    	 XSInteger resultItem = new XSInteger(lBigInt);
-         result.add(resultItem);
-         lBigInt = lBigInt.add(BigInteger.valueOf((long)1));
-      }
+      if (rBigInt.compareTo(lBigInt) >= 0) {
+    	  BigInteger maxIntValue = new BigInteger((Integer.valueOf(Integer.MAX_VALUE - 1)).toString());
+    	  if (rBigInt.compareTo(maxIntValue) <= 0) {
+    		  // Using primitive int value comparisons to produce the result
+    		  int lInt = lBigInt.intValue();
+    		  int rInt = rBigInt.intValue();
+    		  IntStream intStr = IntStream.rangeClosed(lInt, rInt);
+
+    		  OfInt intIter = intStr.iterator();          
+    		  while (intIter.hasNext()) {        	  
+    			  XSInteger resultItem = new XSInteger((intIter.next()).toString());
+    			  result.add(resultItem); 
+    		  }
+    	  }
+    	  else {
+    		  // Using BigInteger value comparisons to produce the result
+    		  for (BigInteger bigIntVal = lBigInt; bigIntVal.compareTo(rBigInt) <= 0; bigIntVal = bigIntVal.add(BigInteger.ONE)) {
+    			  XSInteger resultItem = new XSInteger(bigIntVal);
+    			  result.add(resultItem);
+    		  }
+    	  }
+      }      
       
       return result;      
     }
@@ -119,7 +136,7 @@ public class Range extends Operation
     	SourceLocator srcLocator = xctxt.getSAXLocator();
 
     	if (xpathToOperand instanceof XSNumericType) {
-    		String strVal = ((XSNumericType)xpathToOperand).stringValue();
+    		java.lang.String strVal = ((XSNumericType)xpathToOperand).stringValue();
     		try {
      	       result = new BigInteger(strVal);
      	    }
@@ -140,7 +157,7 @@ public class Range extends Operation
 
     	}
     	else {
-    	    String strVal = XslTransformEvaluationHelper.getStrVal(xpathToOperand);
+    		java.lang.String strVal = XslTransformEvaluationHelper.getStrVal(xpathToOperand);
     	    try {
     	       result = new BigInteger(strVal);
     	    }

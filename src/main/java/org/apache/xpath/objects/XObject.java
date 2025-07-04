@@ -708,11 +708,6 @@ public class XObject extends Expression implements Serializable, Cloneable
     case CLASS_UNKNOWN :
       result = m_obj;
       break;
-
-    // %TBD%  What to do here?
-    //    case CLASS_RTREEFRAG :
-    //      result = rtree(support);
-    //      break;
     default :
       error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
             new Object[]{ getTypeString(),
@@ -735,24 +730,22 @@ public class XObject extends Expression implements Serializable, Cloneable
    */
   public boolean lessThan(XObject obj2)
           throws javax.xml.transform.TransformerException
-  {
+  {	  
+      boolean result = false;
+	  
+	  if (obj2.getType() == XObject.CLASS_NODESET) {
+		  result = obj2.greaterThan(this);
+	  }
+	  else if (this instanceof XSNumericType) {
+		 String lStrVal = ((XSNumericType)this).stringValue();
+		 double lVal = Double.valueOf(lStrVal);
+		 result = (lVal < obj2.num()); 
+	  }
+	  else {
+	     result = (this.num() < obj2.num());
+	  }
 
-    // In order to handle the 'all' semantics of 
-    // nodeset comparisons, we always call the 
-    // nodeset function.  Because the arguments 
-    // are backwards, we call the opposite comparison
-    // function.
-    if (obj2.getType() == XObject.CLASS_NODESET) {
-       return obj2.greaterThan(this);
-    }
-    else if (this instanceof XSNumericType) {
-       XSNumericType lXsNumericType = (XSNumericType)this;
-       String lStr = lXsNumericType.stringValue();
-       return Double.valueOf(lStr) < obj2.num();
-    }
-    else {
-       return this.num() < obj2.num();
-    }
+	  return result;
   }
   
   /**
@@ -1432,16 +1425,21 @@ public class XObject extends Expression implements Serializable, Cloneable
   public boolean greaterThan(XObject obj2)
           throws javax.xml.transform.TransformerException
   {
+	  boolean result = false;
+	  
+	  if (obj2.getType() == XObject.CLASS_NODESET) {
+		  result = obj2.lessThan(this);
+	  }
+	  else if (this instanceof XSNumericType) {
+		 String lStrVal = ((XSNumericType)this).stringValue();
+		 double lVal = Double.valueOf(lStrVal);
+		 result = (lVal > obj2.num()); 
+	  }
+	  else {
+	     result = (this.num() > obj2.num());
+	  }
 
-    // In order to handle the 'all' semantics of 
-    // nodeset comparisons, we always call the 
-    // nodeset function.  Because the arguments 
-    // are backwards, we call the opposite comparison
-    // function.
-    if (obj2.getType() == XObject.CLASS_NODESET)
-      return obj2.lessThan(this);
-
-    return this.num() > obj2.num();
+	  return result;
   }
 
   /**

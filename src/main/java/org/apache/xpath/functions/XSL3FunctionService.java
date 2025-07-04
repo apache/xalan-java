@@ -771,9 +771,9 @@ public class XSL3FunctionService {
     }
     
     /**
-     * Method definition to syntactically check, well-formedness of function arity of 
-     * the function to be called, for named function references specified with syntax 
-     * functionNameString#integerLiteral.
+     * Method definition to check, whether function arity of the function 
+     * to be called is well-formed, for named function references specified 
+     * with syntax functionNameString#integerLiteral.
      */
     public boolean isFuncArityWellFormed(String funcRefStr) {	      	
     	boolean isFuncArityWellFormed = true;

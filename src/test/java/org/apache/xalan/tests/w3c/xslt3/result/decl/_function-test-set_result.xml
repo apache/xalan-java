@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-02T16:50:10Z" fail="39" name="function" pass="26" skipped="4" statusUnknown="1" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-04T11:48:33Z" fail="38" name="function" pass="27" skipped="4" statusUnknown="1" totalRun="70">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -83,11 +83,7 @@
    <testResult status="fail" testName="function-1013"/>
    <testResult status="fail" testName="function-1014"/>
    <testResult status="fail" testName="function-1015"/>
-   <testResult status="fail" testName="function-1016">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Found more than one XSL stylesheet function named: x:test with arity 1</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-1016"/>
    <testResult status="fail" testName="function-1017">
       <outResult>
          <errTrace>Unknown error in XPath.</errTrace>
