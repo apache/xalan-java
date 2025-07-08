@@ -30,7 +30,10 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SubContextList;
 import org.apache.xpath.compiler.PsuedoNames;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * This class represents a single pattern match step.
@@ -38,7 +41,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class StepPattern extends NodeTest implements SubContextList, ExpressionOwner
 {
-    static final long serialVersionUID = 9071668960168152644L;
+  static final long serialVersionUID = 9071668960168152644L;
 
   /** The axis for this test. */
   protected int m_axis;
@@ -725,6 +728,11 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
         try
         {
           XObject pred = m_predicates[i].execute(xctxt);
+          
+          if (pred instanceof XSNumericType) {
+        	 String strValue = ((XSNumericType)pred).stringValue();
+        	 pred = new XNumber(Double.valueOf(strValue));
+          }
 
           try
           {

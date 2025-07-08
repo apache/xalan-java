@@ -1095,8 +1095,10 @@ public class XPathParser
                    nextToken();                
                }
                else if (lookahead(null, 2)) {
-                   nextToken();                
-                   setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);
+                   nextToken();
+                   if (!(m_isXPathPredicateParsingActive && tokenIs(']'))) {
+                      setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);
+                   }                   
                }
                else {
                    throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is "

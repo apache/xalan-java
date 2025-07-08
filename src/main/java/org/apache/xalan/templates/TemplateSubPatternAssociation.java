@@ -33,9 +33,9 @@ import org.apache.xpath.patterns.StepPattern;
  * A class to contain a match pattern and it's corresponding template.
  * This class also defines a node in a match pattern linked list.
  */
-class TemplateSubPatternAssociation implements Serializable, Cloneable
+public class TemplateSubPatternAssociation implements Serializable, Cloneable
 {
-    static final long serialVersionUID = -8902606755229903350L;
+  static final long serialVersionUID = -8902606755229903350L;
 
   /** Step pattern           */
   StepPattern m_stepPattern;

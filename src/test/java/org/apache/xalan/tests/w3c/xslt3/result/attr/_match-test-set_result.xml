@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-04T11:48:27Z" fail="68" name="match" pass="60" skipped="8" statusUnknown="1" totalRun="137">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-08T10:31:56Z" fail="61" name="match" pass="67" skipped="8" statusUnknown="1" totalRun="137">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -16,11 +16,7 @@
    <testResult status="pass" testName="match-015"/>
    <testResult status="pass" testName="match-016"/>
    <testResult status="pass" testName="match-017"/>
-   <testResult status="fail" testName="match-018">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-018"/>
    <testResult status="pass" testName="match-019"/>
    <testResult status="pass" testName="match-020"/>
    <testResult status="pass" testName="match-021"/>
@@ -42,9 +38,10 @@
    <testResult status="pass" testName="match-037"/>
    <testResult status="pass" testName="match-038"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="fail" testName="match-040">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:f="http://f.com/"&gt;OK!&lt;/out&gt;</outResult>
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:f="http://f.com/"&gt;OK!&lt;/out&gt;</outResult>
+   <testResult status="pass" testName="match-040">
+      <outResult>
+         <errTrace>XPST0017 : An XSL stylesheet function {http://f.com/}special referred within an XPath expression has not been declared in the stylesheet.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="match-041"/>
    <testResult status="pass" testName="match-042"/>
@@ -54,11 +51,7 @@
    <testResult status="pass" testName="match-046"/>
    <testResult status="pass" testName="match-047"/>
    <testResult status="pass" testName="match-048"/>
-   <testResult status="fail" testName="match-049">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-049"/>
    <testResult status="fail" testName="match-050"/>
    <testResult status="fail" testName="match-051">
       <outResult>
@@ -77,12 +70,7 @@
    <testResult status="fail" testName="match-056"/>
    <testResult status="pass" testName="match-057"/>
    <testResult status="pass" testName="match-058"/>
-   <testResult status="fail" testName="match-059">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 A sequence type occurence indicator ']', is not recognized.
-javax.xml.transform.TransformerException: XPST0051 A sequence type occurence indicator ']', is not recognized.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-059"/>
    <testResult status="fail" testName="match-060">
       <outResult>
          <errTrace>Unknown nodetype: element</errTrace>
@@ -91,18 +79,8 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
          <errTrace>Extra illegal tokens: 'element', '(', 'foo', ')', '|', '.', '[', '.', 'instance', 'of', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']'</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="match-061">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 A sequence type occurence indicator ']', is not recognized.
-javax.xml.transform.TransformerException: XPST0051 A sequence type occurence indicator ']', is not recognized.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="match-062">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 A sequence type occurence indicator ']', is not recognized.
-javax.xml.transform.TransformerException: XPST0051 A sequence type occurence indicator ']', is not recognized.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-061"/>
+   <testResult status="pass" testName="match-062"/>
    <testResult status="fail" testName="match-063"/>
    <testResult status="fail" testName="match-064"/>
    <testResult status="fail" testName="match-065"/>
@@ -188,11 +166,7 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
    <testResult status="fail" testName="match-098">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="match-099">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-099"/>
    <testResult status="pass" testName="match-100"/>
    <testResult status="fail" testName="match-101">
       <outResult>

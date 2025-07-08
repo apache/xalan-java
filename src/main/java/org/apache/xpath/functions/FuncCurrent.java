@@ -22,6 +22,7 @@ package org.apache.xpath.functions;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
@@ -48,7 +49,7 @@ public class FuncCurrent extends Function
     }
 
   /**
-   * Execute the function.  The function must return
+   * Execute the function. The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
@@ -58,26 +59,34 @@ public class FuncCurrent extends Function
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
    
-    SubContextList subContextList = xctxt.getCurrentNodeList();
-    int currentNode = DTM.NULL;
+	  SubContextList subContextList = xctxt.getCurrentNodeList();
+	  int currentNode = DTM.NULL;
 
-    if (null != subContextList) {
-        if (subContextList instanceof PredicatedNodeTest) {
-            LocPathIterator iter = ((PredicatedNodeTest)subContextList)
-                                                          .getLocPathIterator();
-            currentNode = iter.getCurrentContextNode();
-         } else if(subContextList instanceof StepPattern) {
-           throw new RuntimeException(XSLMessages.createMessage(
-              XSLTErrorResources.ER_PROCESSOR_ERROR,null));
-         }
-    } else {
-        // not predicate => ContextNode == CurrentNode
-        currentNode = xctxt.getContextNode();
-    }
-    return new XMLNodeCursorImpl(currentNode, xctxt.getDTMManager());
+	  if (null != subContextList) {
+		  if (subContextList instanceof PredicatedNodeTest) {
+			  LocPathIterator iter = ((PredicatedNodeTest)subContextList).getLocPathIterator();
+			  currentNode = iter.getCurrentContextNode();
+		  }
+		  else if (getExpressionOwner() instanceof ElemTemplate) {
+			  // This indicates that, an XPath fn:current function call 
+			  // occurs within xsl:template instruction 'match' attribute's 
+			  // value.
+			  currentNode = xctxt.getCurrentNode();
+		  }
+		  else if(subContextList instanceof StepPattern) {        	         	 
+			  throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSOR_ERROR,null));
+
+		  }
+	  } 
+	  else {
+		  // not predicate => ContextNode == CurrentNode
+		  currentNode = xctxt.getContextNode();
+	  }
+
+	  return new XMLNodeCursorImpl(currentNode, xctxt.getDTMManager());
   }
-  
-  /**
+
+/**
    * No arguments to process, so this does nothing.
    */
   public void fixupVariables(java.util.Vector vars, int globalsSize)

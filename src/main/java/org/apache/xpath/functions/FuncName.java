@@ -99,7 +99,7 @@ public class FuncName extends FunctionMultiArgs {
 	  }
 	  
 	  if (nodeHandle == DTM.NULL) {
-		 throw new javax.xml.transform.TransformerException("XPTY0004: The 1st argument of XPath function "
+		 throw new javax.xml.transform.TransformerException("XPTY0004 : The first argument of XPath function "
 		 		                                                                    + "fn:name is not a node, or there's no context node.", srcLocator); 
 	  }
 	  
@@ -121,16 +121,35 @@ public class FuncName extends FunctionMultiArgs {
   }
 
   /**
-   *  Get node-name string value of xpath node.
+   * Method definition to get, an XPath node name's string value
+   * given an XPath node's integer handle.
+   * 
+   * @param nodeHandle					An XPath node's integer handle
+   * @param xctxt                       An XPath context object						
+   * @return                            An XPath node name's string value 
    */
   private String getNodeNameStrFromNodeHandle(int nodeHandle, XPathContext xctxt) {	  
-	  String nodeNameStr = null;
 	  
+	  String result = null;
+
 	  DTM dtm = xctxt.getDTM(nodeHandle);
-	  Node node = dtm.getNode(nodeHandle);
-	  nodeNameStr = node.getNodeName();
-	  
-	  return nodeNameStr;
+	  if ((dtm.getNodeType(nodeHandle) == DTM.DOCUMENT_NODE) || (dtm.getNodeType(nodeHandle) == DTM.COMMENT_NODE) 
+			                                                 || (dtm.getNodeType(nodeHandle) == DTM.TEXT_NODE)) {
+		  result = "";
+	  }
+	  else if (dtm.getNodeType(nodeHandle) == DTM.NAMESPACE_NODE) {
+		  Node node = dtm.getNode(nodeHandle);
+		  String nsNodeName = node.getNodeName();
+		  if ((nsNodeName == null) || ("".equals(nsNodeName))) {
+			  result = ""; 
+		  }
+	  }
+	  else {
+		  Node node = dtm.getNode(nodeHandle);
+		  result = node.getNodeName();
+	  }
+
+	  return result;
   }
   
 }

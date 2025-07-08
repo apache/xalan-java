@@ -116,8 +116,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     protected static List<String> m_skipped_tests_list = new ArrayList<String>();
 	
 	/**
-	 * Method definition to run all XSL transformation tests from 
-	 * a test set.
+	 * Method definition to run, all XSL transformation tests from 
+	 * a W3C XSLT 3.0 test set.
 	 */
     public void runXslTestSet() {    	
     	
@@ -313,8 +313,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     }
     
     /**
-     * Method definition to run, one W3C XSLT 3.0 test case within a test set, 
-     * using Xalan-J's XSLT 3 implementation.
+     * Method definition to run, a particular W3C XSLT 3.0 test case within a test set.
      */
     private void runW3CXSLTTestSuiteXslTransformAndEmitResult(String testCaseName, DOMSource xmlInpDomSource, 
     		                                                     StreamSource xsltStreamSrc, Element expectedResultElem,  
@@ -421,7 +420,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				childNode = childNode.getNextSibling();
     			}
     			
-    			if (isAssertXml && !isTestCasePass) {
+    			if (isAssertXml && !isTestCasePass && !"pass".equals(elemTestResult.getAttribute("status"))) {
     			   elemTestResult.setAttribute("status", "fail");
     			}
     		}
@@ -863,10 +862,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	}
     
     /**
-     * Method definition to get a list of all XML element nodes within 
+     * Method definition to get, a list of all XML element nodes within 
      * the supplied XML element node, including the supplied node as well.
      * 
-     * @param elemNode			   The supplied element node
+     * @param elemNode			   An XML supplied element node
      * @param result               A list object to contain information produced
      *                             by this method definition, which the caller
      *                             of this method uses to access this information.
@@ -975,11 +974,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     }
     
     /**
-     * Method definition to get an ISO formatted date string for the supplied 
+     * Method definition to get, an ISO formatted date string for the supplied 
      * java.util.Date value.
      *  
-     * @param date				The supplied date object value
-     * @return					The formatted date string
+     * @param date				The supplied java.util.Date object value
+     * @return					The formatted date value string
      */
     private String getDateISOString(Date dateValue) {
     	String result = null;
@@ -993,7 +992,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     }
     
     /**
-     * Method definition to handle an expected XSL transformation error.
+     * Method definition to handle, an XSL transformation expected error.
      * 
      * @param testResultDoc
      * @param elemTestResult

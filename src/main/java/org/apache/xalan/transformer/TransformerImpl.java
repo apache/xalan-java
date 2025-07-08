@@ -28,6 +28,7 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -66,6 +67,8 @@ import org.apache.xalan.templates.OutputProperties;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetComposed;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.TemplateList;
+import org.apache.xalan.templates.TemplateSubPatternAssociation;
 import org.apache.xalan.templates.XUnresolvedVariable;
 import org.apache.xalan.trace.GenerateEvent;
 import org.apache.xalan.trace.TraceManager;
@@ -93,11 +96,15 @@ import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.ThreadControllerWrapper;
 import org.apache.xpath.Arg;
+import org.apache.xpath.Expression;
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Operation;
+import org.apache.xpath.patterns.StepPattern;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
@@ -710,15 +717,43 @@ public class TransformerImpl extends Transformer
   {
 	  
 	m_source = source;
+	
+	/**
+	 * Before starting doing an XSL transformation, check whether for every
+	 * xsl:template instruction having 'match' attribute, within a stylesheet 
+	 * if xsl:template instruction's XPath match pattern has one or more predicates 
+	 * with XSL stylesheet function call references, the corresponding xsl:function 
+	 * definition is present within the stylesheet. This check throws an exception 
+	 * on first occurrence of this error. 
+	 */	
+	try {
+		TemplateList templList = m_stylesheetRoot.getTemplateListComposed();
+		TemplateSubPatternAssociation templatePatternAssoc = templList.getWildCardPatterns();
+		while (templatePatternAssoc != null) {
+			StepPattern stepPattern = templatePatternAssoc.getStepPattern();
+			Expression[] predicateArr = stepPattern.getPredicates();
+			if (predicateArr != null) {
+				for (int idx = 0; idx < predicateArr.length; idx++) {
+					Expression xpathExpr = predicateArr[idx];
+					checkXslFunctionDeclaration(xpathExpr, templList);				
+				}	
+			}		
+
+			// Check within the next item of TemplateSubPatternAssociation 
+			// linked list. 
+			templatePatternAssoc = templatePatternAssoc.getNext();
+		}
+	}
+	catch (TransformerException ex) {
+		m_errorHandler.fatalError(ex);
+		
+		return;
+	}
 
     try
     {
-        
-      // Patch for bugzilla #13863.  If we don't reset the namespaceContext
-      // then we will get a NullPointerException if transformer is reused 
-      // (for stylesheets that use xsl:key).  Not sure if this should go 
-      // here or in reset(). -is  
-      if(getXPathContext().getNamespaceContext() == null){
+               
+      if (getXPathContext().getNamespaceContext() == null){
          getXPathContext().setNamespaceContext(getStylesheet());
       }
       
@@ -4253,6 +4288,49 @@ public class TransformerImpl extends Transformer
 				serializerBase.setCharMapConfig(charMapConfig);
 			}
 		}			
+	}
+	
+	/**
+	 * Method definition to check, whether within an XPath expression, any XSL 
+	 * stylesheet function references have a corresponding declaration present 
+	 * within the stylesheet. 
+	 * 
+	 * @param xpathExpr				   An XPath expression object
+	 * @param templList		           A TemplateList object containing all the compiled 
+	 *                                 representations of XSL stylesheet templates and
+	 *                                 functions. 
+	 * @return
+	 * @throws TransformerException                         
+	 */
+	private void checkXslFunctionDeclaration(Expression xpathExpr, TemplateList templList) throws TransformerException {	  
+
+		if (xpathExpr instanceof XSL3ConstructorOrExtensionFunction) {
+			XSL3ConstructorOrExtensionFunction func1 = (XSL3ConstructorOrExtensionFunction)xpathExpr;
+			String localName = func1.getFunctionName();
+			String namespaceUri = func1.getNamespace();			
+			
+			if ((namespaceUri != null) && !((Constants.S_EXTENSIONS_JAVA_URL).equals(namespaceUri) || (FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespaceUri) ||
+				                                                                  (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespaceUri) || 
+				                                                                  (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespaceUri) ||
+				                                                                  (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespaceUri) ||
+				                                                                  (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(namespaceUri))) {
+				int funcArity = (func1.getArgVector()).size();
+				QName qName = new QName(namespaceUri, localName);
+				ElemTemplate elemTemplate = templList.getXslFunction(qName, funcArity);
+				if (elemTemplate == null) {
+					throw new TransformerException("XPST0017 : An XSL stylesheet function " + qName.toString() + " referred within "
+							                                                                + "an XPath expression has not been declared "
+							                                                                + "in the stylesheet.", xpathExpr.getExpressionOwner()); 
+				}
+			}
+		} 
+		else if (xpathExpr instanceof Operation) {
+			Operation opnExpr = (Operation)xpathExpr;
+			Expression leftOperand = opnExpr.getLeftOperand();
+			Expression rightOperand = opnExpr.getRightOperand();			
+			checkXslFunctionDeclaration(leftOperand, templList);
+			checkXslFunctionDeclaration(rightOperand, templList);
+		}
 	}
 
 }  // end TransformerImpl class

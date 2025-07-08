@@ -101,8 +101,7 @@ public class TemplateList implements java.io.Serializable
         {
     		Expression matchExpr = matchXPath.getExpression();
 
-    		XPath templateMatchXPath = template.getMatch();
-    		String xpathPatternStr = templateMatchXPath.getPatternString();
+    		String xpathPatternStr = matchXPath.getPatternString();
     		if ((xpathPatternStr.startsWith("child::") || xpathPatternStr.startsWith("attribute::")) && 
     				                                                              xpathPatternStr.endsWith("document-node()")) {
     		   /**
@@ -114,6 +113,7 @@ public class TemplateList implements java.io.Serializable
     			
     		   return;
     		}
+    		
     		if (".".equals(xpathPatternStr) || xpathPatternStr.startsWith(".[")) {		 		 
     			insertPatternInTable(String.valueOf(xpathPatternStr), template);
     		}
@@ -161,7 +161,7 @@ public class TemplateList implements java.io.Serializable
     
   }
 
-/** Flag to indicate whether in DEBUG mode          */
+  /** Boolean value to indicate whether in DEBUG mode */
   final static boolean DEBUG = false;
 
   /**
@@ -495,19 +495,19 @@ public class TemplateList implements java.io.Serializable
   }
   
   /**
-   * Locate an XSL named function.
+   * Locate an XSL stylesheet function.
    * 
-   * @param qname	Qualified name of an XSL function.
-   * @param arity	XSL function definition's arity
+   * @param qname			     An XSL stylesheet function's name
+   * @param arity		       	 An XSL stylesheet function's arity
    * 
-   * @return        An XSL function definition object instance, or null 
-   *                if not found.
+   * @return                     An XSL stylesheet function's compiled
+   *                             object.
    */
   public ElemTemplate getXslFunction(QName qname, int arity)
   {
 	  XslFunctionDefinitionKey xslFunctionDefinitionKey = new XslFunctionDefinitionKey(qname, arity);
 
-	  return (ElemTemplate) (m_functionDefinitionMap.get(xslFunctionDefinitionKey));
+	  return (ElemTemplate)(m_functionDefinitionMap.get(xslFunctionDefinitionKey));
   }
 
   /**
@@ -1028,6 +1028,14 @@ public class TemplateList implements java.io.Serializable
 
   public Hashtable getPatternTable() {
 	  return m_patternTable;
+  }
+
+  public TemplateSubPatternAssociation getWildCardPatterns() {
+	  return m_wildCardPatterns;
+  }
+
+  public void setWildCardPatterns(TemplateSubPatternAssociation wildCardPatterns) {
+	  this.m_wildCardPatterns = wildCardPatterns;
   }
 
 }

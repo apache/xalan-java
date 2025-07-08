@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-04T11:48:27Z" fail="29" name="apply-templates" pass="19" skipped="2" statusUnknown="0" totalRun="50">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-08T10:31:57Z" fail="29" name="apply-templates" pass="19" skipped="2" statusUnknown="0" totalRun="50">
    <testResult status="fail" testName="apply-templates-001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
 &#13;
@@ -143,17 +143,9 @@
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="pass" testName="conflict-resolution-0401c"/>
-   <testResult status="fail" testName="conflict-resolution-0501">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="conflict-resolution-0501"/>
    <testResult status="pass" testName="conflict-resolution-0502"/>
-   <testResult status="fail" testName="conflict-resolution-0503">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="conflict-resolution-0503"/>
    <testResult status="pass" testName="conflict-resolution-0601"/>
    <testResult status="fail" testName="conflict-resolution-0701">
       <outResult/>
@@ -206,11 +198,7 @@
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="conflict-resolution-1501">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: XSLT TransformerFactory Error</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="conflict-resolution-1501"/>
    <testResult status="pass" testName="conflict-resolution-1601"/>
    <testResult status="fail" testName="conflict-resolution-1602">
       <outResult>
