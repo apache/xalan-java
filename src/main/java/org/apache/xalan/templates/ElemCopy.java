@@ -174,7 +174,7 @@ public class ElemCopy extends ElemUse
 				  SerializerUtils.processNSDecls(rthandler, sourceNode, nodeType, dtm);
 
 				  if (type != null) {
-					  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+					  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 					  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
 					  if (xsModel != null) {
 						  XSTypeDefinition xsTypeDefn = xsModel.getTypeDefinition(type.getLocalName(), type.getNamespace());
@@ -202,7 +202,7 @@ public class ElemCopy extends ElemUse
 								  												   + "values : strict, lax, preserve, strip.", srcLocator);  
 					  }
 					  else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
-						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 						  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
 						  if (xsModel != null) {
 							  Node srcNode = dtm.getNode(sourceNode);
@@ -228,7 +228,7 @@ public class ElemCopy extends ElemUse
 						  }
 					  }
 					  else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
-						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 						  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
 						  if (xsModel != null) {
 							  Node srcNode = dtm.getNode(sourceNode);

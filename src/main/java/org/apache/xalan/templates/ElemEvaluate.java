@@ -571,10 +571,10 @@ public class ElemEvaluate extends ElemTemplateElement {
 				ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, true);          
 				break;
 			case XObject.CLASS_ARRAY :
-				XslTransformSharedDatastore.xpathArray = (XPathArray)xdmItem;				          
+				XslTransformSharedDatastore.m_xpathArray = (XPathArray)xdmItem;				          
 				break;
 			case XObject.CLASS_MAP :
-				XslTransformSharedDatastore.xpathMap = (XPathMap)xdmItem;				          
+				XslTransformSharedDatastore.m_xpathMap = (XPathMap)xdmItem;				          
 				break;
 			default :
 				// no op
@@ -599,14 +599,14 @@ public class ElemEvaluate extends ElemTemplateElement {
 		
 		XObject resultWithAsAttribute = null;
 		
-		if (XslTransformSharedDatastore.xpathInlineFunction != null) {
+		if (XslTransformSharedDatastore.m_xpathInlineFunction != null) {
 			XPath seqTypeXPath = new XPath(m_asAttrVal, srcLocator, xctxt.getNamespaceContext(), 
 																						XPath.SELECT, null, true);
 			XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
 			SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
 			if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {              	   
-				resultWithAsAttribute = XslTransformSharedDatastore.xpathInlineFunction;
-				XslTransformSharedDatastore.xpathInlineFunction = null;
+				resultWithAsAttribute = XslTransformSharedDatastore.m_xpathInlineFunction;
+				XslTransformSharedDatastore.m_xpathInlineFunction = null;
 			}
 			else {
 				throw new TransformerException("XTTE0505 : An xsl:evaluate instruction's evaluation result doesn't conform "
@@ -688,14 +688,14 @@ public class ElemEvaluate extends ElemTemplateElement {
 		
 		XObject result = null;
 		
-		if (XslTransformSharedDatastore.xpathInlineFunction != null) {
+		if (XslTransformSharedDatastore.m_xpathInlineFunction != null) {
 			XPath seqTypeXPath = new XPath(withParamAsAttrVal, srcLocator, xctxt.getNamespaceContext(), 
 																									XPath.SELECT, null, true);
 			XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
 			SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
 			if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {              	   
-				result = XslTransformSharedDatastore.xpathInlineFunction;
-				XslTransformSharedDatastore.xpathInlineFunction = null;
+				result = XslTransformSharedDatastore.m_xpathInlineFunction;
+				XslTransformSharedDatastore.m_xpathInlineFunction = null;
 			}
 			else {
 				throw new TransformerException("XTTE0505 : An xsl:evaluate parameter " + withParamQName.getLocalName() + "'s value doesn't conform "

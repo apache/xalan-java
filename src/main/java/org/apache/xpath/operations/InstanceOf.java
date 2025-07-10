@@ -634,7 +634,7 @@ public class InstanceOf extends Operation
 					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
                               																	&& (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
                               																				seqTypeKindTest.getNodeNsUri()))) {
-						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 						  XSModel xsModel = stylesheetRoot.getXsModel();
 						  if (xsModel != null) {
 							  XSElementDeclaration elemDecl = xsModel.getElementDeclaration(elemNodeKindTestNodeName, seqTypeKindTest.getNodeNsUri());
@@ -728,7 +728,7 @@ public class InstanceOf extends Operation
 					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
 																								  && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
 																										  nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
-						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 						  XSModel xsModel = stylesheetRoot.getXsModel();
 						  if (xsModel != null) {
 							  XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrNodeKindTestNodeName, seqTypeKindTest.getNodeNsUri());

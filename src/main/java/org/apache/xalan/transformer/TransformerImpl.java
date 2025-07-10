@@ -56,12 +56,14 @@ import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemCharacterMap;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
+import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOutputCharacter;
 import org.apache.xalan.templates.ElemSort;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemTextLiteral;
+import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.OutputProperties;
 import org.apache.xalan.templates.Stylesheet;
@@ -723,8 +725,8 @@ public class TransformerImpl extends Transformer
 	 * xsl:template instruction having 'match' attribute, within a stylesheet 
 	 * if xsl:template instruction's XPath match pattern has one or more predicates 
 	 * with XSL stylesheet function call references, the corresponding xsl:function 
-	 * definition is present within the stylesheet. This check throws an exception 
-	 * on first occurrence of this error. 
+	 * definition is present within the stylesheet. This check emits an exception 
+	 * on first occurrence of an error for this requirement. 
 	 */	
 	try {
 		TemplateList templList = m_stylesheetRoot.getTemplateListComposed();
@@ -739,7 +741,7 @@ public class TransformerImpl extends Transformer
 				}	
 			}		
 
-			// Check within the next item of TemplateSubPatternAssociation 
+			// Iterate to the next item of TemplateSubPatternAssociation 
 			// linked list. 
 			templatePatternAssoc = templatePatternAssoc.getNext();
 		}
@@ -749,10 +751,11 @@ public class TransformerImpl extends Transformer
 		
 		return;
 	}
+	
+	updateXPathDefaultNamespace(m_stylesheetRoot, m_stylesheetRoot.getXpathDefaultNamespace());
 
     try
-    {
-               
+    {               
       if (getXPathContext().getNamespaceContext() == null){
          getXPathContext().setNamespaceContext(getStylesheet());
       }
@@ -919,14 +922,14 @@ public class TransformerImpl extends Transformer
       reset();
     }
   }
-  
+
   private void fatalError(Throwable throwable) throws TransformerException
   {
-    if (throwable instanceof org.xml.sax.SAXParseException)
-      m_errorHandler.fatalError(new TransformerException(throwable.getMessage(),new SAXSourceLocator((org.xml.sax.SAXParseException)throwable)));
-    else
-      m_errorHandler.fatalError(new TransformerException(throwable));
-    
+	  if (throwable instanceof org.xml.sax.SAXParseException)
+		  m_errorHandler.fatalError(new TransformerException(throwable.getMessage(),new SAXSourceLocator((org.xml.sax.SAXParseException)throwable)));
+	  else
+		  m_errorHandler.fatalError(new TransformerException(throwable));
+
   }
 
   /**
@@ -2732,8 +2735,8 @@ public class TransformerImpl extends Transformer
 			  xctxt.setSAXLocator(t);
 			  m_currentTemplateElements.setElementAt(t,currentTemplateElementsTop);
 			  t.execute(this);
-			  if (XslTransformSharedDatastore.xpathInlineFunction != null) {
-				  result = XslTransformSharedDatastore.xpathInlineFunction;
+			  if (XslTransformSharedDatastore.m_xpathInlineFunction != null) {
+				  result = XslTransformSharedDatastore.m_xpathInlineFunction;
 				  break;
 			  }
 		  }
@@ -4292,13 +4295,13 @@ public class TransformerImpl extends Transformer
 	
 	/**
 	 * Method definition to check, whether within an XPath expression, any XSL 
-	 * stylesheet function references have a corresponding declaration present 
-	 * within the stylesheet. 
+	 * stylesheet function call reference has a corresponding xsl:function 
+	 * definition present within the stylesheet. 
 	 * 
 	 * @param xpathExpr				   An XPath expression object
 	 * @param templList		           A TemplateList object containing all the compiled 
-	 *                                 representations of XSL stylesheet templates and
-	 *                                 functions. 
+	 *                                 representations of XSL stylesheet templates.
+	 *                                  
 	 * @return
 	 * @throws TransformerException                         
 	 */
@@ -4318,9 +4321,10 @@ public class TransformerImpl extends Transformer
 				QName qName = new QName(namespaceUri, localName);
 				ElemTemplate elemTemplate = templList.getXslFunction(qName, funcArity);
 				if (elemTemplate == null) {
-					throw new TransformerException("XPST0017 : An XSL stylesheet function " + qName.toString() + " referred within "
-							                                                                + "an XPath expression has not been declared "
-							                                                                + "in the stylesheet.", xpathExpr.getExpressionOwner()); 
+					throw new TransformerException("XPST0017 : An XSL stylesheet function call " + qName.toString() + " referred within "
+							                                                                     + "an XPath expression, doesn't have a corresponding "
+							                                                                     + "xsl:function definition in the stylesheet.", 
+							                                                                     xpathExpr.getExpressionOwner()); 
 				}
 			}
 		} 
@@ -4332,6 +4336,97 @@ public class TransformerImpl extends Transformer
 			checkXslFunctionDeclaration(rightOperand, templList);
 		}
 	}
+	
+	/**
+	 * This method definition, does depth first traversal of an XSL 
+	 * compiled stylesheet tree, starting from StylesheetRoot object 
+	 * and updates value of attribute xpath-default-namespace of each 
+	 * node from its parent node if the node doesn't have value of 
+	 * attribute 'xpath-default-namespace' specified. 
+	 * 
+	 * @param elemTemplateElem						An XSL stylesheet supplied node from where
+	 *                                              the traversal starts.
+	 * @param xpathDefaultNamespace                 Value of attribute 'xpath-default-namespace'
+	 *                                              of the supplied node. 
+	 */
+	private void updateXPathDefaultNamespace(ElemTemplateElement elemTemplateElem, String xpathDefaultNamespace) {
+		  
+		  if (elemTemplateElem != null) {		  
+			  ElemTemplateElement xslElem = elemTemplateElem.getFirstChildElem();
+			  while (xslElem != null) {				  
+				  if (xslElem instanceof ElemTemplate) {
+					  if (((ElemTemplate)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemTemplate)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemTemplate)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemValueOf) {
+					  if (((ElemValueOf)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemValueOf)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemValueOf)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemForEachGroup) {
+					  if (((ElemForEachGroup)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemForEachGroup)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemForEachGroup)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemLiteralResult) {
+					  if (((ElemLiteralResult)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemLiteralResult)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemLiteralResult)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  
+				  ElemTemplateElement childElem = xslElem.getFirstChildElem();
+				  if (childElem instanceof ElemTemplate) {
+					  if (((ElemTemplate)childElem).getXpathDefaultNamespace() == null) {
+						  ((ElemTemplate)childElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemTemplate)childElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if ((childElem instanceof ElemValueOf) && (((ElemValueOf)childElem).getXpathDefaultNamespace() == null)) {
+					  if (((ElemValueOf)childElem).getXpathDefaultNamespace() == null) {
+						  ((ElemValueOf)childElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemValueOf)childElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if ((childElem instanceof ElemForEachGroup) && (((ElemForEachGroup)childElem).getXpathDefaultNamespace() == null)) {
+					  if (((ElemForEachGroup)childElem).getXpathDefaultNamespace() == null) {
+						  ((ElemForEachGroup)childElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemForEachGroup)childElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if ((childElem instanceof ElemLiteralResult) && (((ElemLiteralResult)childElem).getXpathDefaultNamespace() == null)) {
+					  if (((ElemLiteralResult)childElem).getXpathDefaultNamespace() == null) {
+						  ((ElemLiteralResult)childElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemLiteralResult)childElem).getXpathDefaultNamespace();  
+					  }
+				  }
+
+				  updateXPathDefaultNamespace(childElem, xpathDefaultNamespace);
+
+				  xslElem = xslElem.getNextSiblingElem();
+			  }		 
+		  }
+	  }
 
 }  // end TransformerImpl class
 

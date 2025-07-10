@@ -38,33 +38,33 @@ public class XslTransformSharedDatastore {
      * This class field represents, an XSL stylesheet 
      * document's uri, if available.
      */
-    public static String xslSystemId;
+    public static String m_xslSystemId;
     
     /**
      * This class field represents, XDM function items that 
      * are returned from XSL stylesheet xsl:function calls.
      */
-    public static XPathInlineFunction xpathInlineFunction;
+    public static XPathInlineFunction m_xpathInlineFunction;
     
     /**
      * This class field represents, XDM array values
      * returned from evaluation of xsl:evaluate 
      * instruction.
      */
-    public static XPathArray xpathArray;
+    public static XPathArray m_xpathArray;
     
     /**
      * This class field represents, XDM map values
      * returned from evaluation of xsl:evaluate 
      * instruction.
      */
-    public static XPathMap xpathMap;
+    public static XPathMap m_xpathMap;
     
     /**
      * This class field represents, compiled representation 
      * of an XSL stylesheet root object.
      */
-    public static StylesheetRoot stylesheetRoot;
+    public static StylesheetRoot m_stylesheetRoot;
     
     /**
      * This class field represents, a string buffer value which is
@@ -72,13 +72,13 @@ public class XslTransformSharedDatastore {
      * with a node combining operator like union (and equivalently '|'), 
      * intersect or except.
      */
-    public static StringBuffer xpathNodeCombiningExprRhsStrBuff;
+    public static StringBuffer m_xpathNodeCombiningExprRhsStrBuff;
     
     /**
      * This class field represents, XPath predicate suffix for XSL 
      * template definition like xsl:template match=".[..]".
      */
-    public static String templateMatchDotPatternPredicateStr;
+    public static String m_templateMatchDotPatternPredicateStr;
     
     /**
      * This class field represents, an org.apache.xpath.compiler.OpCodes 
@@ -86,35 +86,35 @@ public class XslTransformSharedDatastore {
      * is initialized to a reasonably safest integer value for which, a 
      * functional org.apache.xpath.compiler.OpCodes value will not exist. 
      */
-    public static int xpathCallingOpCode = Integer.MIN_VALUE;
+    public static int m_xpathCallingOpCode = Integer.MIN_VALUE;
     
     /**
      * This class field is used to return XPath 'named function reference' 
      * compiled information from an XSL stylesheet function call.
      */
-    public static ResultSequence xpathNamedFunctionRefSequence = new ResultSequence();
+    public static ResultSequence m_xpathNamedFunctionRefSequence = new ResultSequence();
     
     /**
      * This class field is used to refer to a document node, that an
      * xsl:document instruction's evaluation has produced.
      */
-    public static XMLNodeCursorImpl xslDocumentEvaluationResult;
+    public static XMLNodeCursorImpl m_xslDocumentEvaluationResult;
     
     /**
 	 * Method definition to reset the variable values specified 
 	 * within this class.
 	 */
 	public static void reset() {
-		xslSystemId = null;
-		xpathInlineFunction = null;
-		xpathArray = null;
-		xpathMap = null;
-		stylesheetRoot = null;
-		xpathNodeCombiningExprRhsStrBuff = null;
-		templateMatchDotPatternPredicateStr = null;
-		xpathCallingOpCode = Integer.MIN_VALUE;
-		xpathNamedFunctionRefSequence.clear();
-		xslDocumentEvaluationResult = null;
+		m_xslSystemId = null;
+		m_xpathInlineFunction = null;
+		m_xpathArray = null;
+		m_xpathMap = null;
+		m_stylesheetRoot = null;
+		m_xpathNodeCombiningExprRhsStrBuff = null;
+		m_templateMatchDotPatternPredicateStr = null;
+		m_xpathCallingOpCode = Integer.MIN_VALUE;
+		m_xpathNamedFunctionRefSequence.clear();
+		m_xslDocumentEvaluationResult = null;
 	}
 
 }

@@ -209,6 +209,31 @@ public class ElemValueOf extends ElemTemplateElement {
   {
     return m_disableOutputEscaping;
   }
+  
+  /**
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -291,7 +316,11 @@ public class ElemValueOf extends ElemTemplateElement {
       transformer.getTraceManager().emitTraceEvent(this);
 
     try
-    {      
+    {     
+    	if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
+    	   m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	}
+    	
         xctxt.pushNamespaceContext(this);
 
         int current = xctxt.getCurrentNode();

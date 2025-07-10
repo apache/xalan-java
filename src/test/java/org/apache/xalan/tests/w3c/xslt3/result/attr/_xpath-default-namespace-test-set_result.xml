@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-10T17:30:32Z" fail="19" name="xpath-default-namespace" pass="7" skipped="0" statusUnknown="0" totalRun="26">
+   <testResult status="fail" testName="xpath-default-namespace-0101"/>
+   <testResult status="fail" testName="xpath-default-namespace-0102"/>
+   <testResult status="fail" testName="xpath-default-namespace-0103"/>
+   <testResult status="pass" testName="xpath-default-namespace-0104"/>
+   <testResult status="fail" testName="xpath-default-namespace-0105"/>
+   <testResult status="fail" testName="xpath-default-namespace-0106">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="xpath-default-namespace-0107">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="xpath-default-namespace-0108"/>
+   <testResult status="fail" testName="xpath-default-namespace-0201">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="xpath-default-namespace-0202">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="xpath-default-namespace-0301"/>
+   <testResult status="fail" testName="xpath-default-namespace-0401"/>
+   <testResult status="pass" testName="xpath-default-namespace-0501"/>
+   <testResult status="fail" testName="xpath-default-namespace-0502"/>
+   <testResult status="fail" testName="xpath-default-namespace-0503"/>
+   <testResult status="pass" testName="xpath-default-namespace-0601"/>
+   <testResult status="fail" testName="xpath-default-namespace-0701"/>
+   <testResult status="fail" testName="xpath-default-namespace-0702">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="xpath-default-namespace-0703">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="xpath-default-namespace-0801">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="xpath-default-namespace-0901"/>
+   <testResult status="pass" testName="xpath-default-namespace-1001"/>
+   <testResult status="pass" testName="xpath-default-namespace-1101"/>
+   <testResult status="pass" testName="xpath-default-namespace-1102"/>
+   <testResult status="fail" testName="xpath-default-namespace-1201"/>
+   <testResult status="fail" testName="xpath-default-namespace-1202">
+      <outResult/>
+   </testResult>
+</testrun>

@@ -36,7 +36,12 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
@@ -46,6 +51,7 @@ import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.utils.ObjectVector;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.LetExprVarBinding;
@@ -277,6 +283,8 @@ public class XPathParser
   
   private TokenQueueScanPosition m_prevTokQueueScanPosition = null;
   
+  private ExpressionNode m_expr_parent = null;
+  
   
   /**
    * The parser constructor.
@@ -284,7 +292,7 @@ public class XPathParser
   public XPathParser(ErrorListener errorListener, javax.xml.transform.SourceLocator sourceLocator)
   {
     m_errorListener = errorListener;
-    m_sourceLocator = sourceLocator;
+    m_sourceLocator = sourceLocator;    
   }
 
   /**
@@ -323,7 +331,9 @@ public class XPathParser
     
     m_xpathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
     
-    m_xpathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs(); 
+    m_xpathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs();
+    
+    m_expr_parent = (ExpressionNode)m_sourceLocator;
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
     
@@ -3570,7 +3580,7 @@ public class XPathParser
 
     		String seqExprStr = seqExprStrBuff.toString();
     		if (seqExprStr.contains(",")) {
-    			XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff = seqExprStrBuff;
+    			XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff = seqExprStrBuff;
 
     			int tokenQueueSize = m_ops.m_tokenQueue.size();
     			for (int idx = (prevTokQueueScanPosition.getQueueMark() - 1); idx < tokenQueueSize; idx++) {
@@ -4271,17 +4281,17 @@ public class XPathParser
     	   // parse token queue by replacing token string text() with ".".
     	   if (tokenIs("text") && lookahead('(', 1) && lookahead(')', 2)) {
     		   ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
-    		   List<String> tokenPrefixList = new ArrayList<String>();
+    		   List<Object> tokenPrefixList = new ArrayList<Object>();
     		   for (int i = 0; i < m_queueMark - 1; i++) {
-    			   String str1 = (tokenQueue.elementAt(i)).toString();
-    			   tokenPrefixList.add(str1); 
+    			   Object obj1 = tokenQueue.elementAt(i);
+    			   tokenPrefixList.add(obj1); 
     		   }
 
-    		   List<String> tokenSuffixList = new ArrayList<String>();
+    		   List<Object> tokenSuffixList = new ArrayList<Object>();
     		   int tokenQueueSize = tokenQueue.size();
     		   for (int i = m_queueMark + 2; i < tokenQueueSize; i++) {
-    			   String str1 = (tokenQueue.elementAt(i)).toString();
-    			   tokenSuffixList.add(str1);
+    			   Object obj1 = tokenQueue.elementAt(i);
+    			   tokenSuffixList.add(obj1);
     		   }    		  
 
     		   tokenQueue.removeAllElements();
@@ -4806,13 +4816,63 @@ public class XPathParser
     int axesType = 0;
     
     boolean funcMatchFound = false;
+    
+    String xpathDefaultNamespace = null;
+    
+    if (m_expr_parent instanceof ElemTemplateElement) {
+       xpathDefaultNamespace = getXPathDefaultNamespaceValue((ElemTemplateElement)m_expr_parent);
+    }
 
     if (lookahead("::", 1))
     {
+      String axesName = m_token;	
       axesType = AxisName();
 
+      nextToken();      
       nextToken();
-      nextToken();
+      
+      if ((Keywords.FROM_ANCESTORS_STRING).equals(axesName) || (Keywords.FROM_ANCESTORS_OR_SELF_STRING).equals(axesName) || 
+    		           (Keywords.FROM_CHILDREN_STRING).equals(axesName) || (Keywords.FROM_DESCENDANTS_STRING).equals(axesName) || 
+    		           (Keywords.FROM_DESCENDANTS_OR_SELF_STRING).equals(axesName) || (Keywords.FROM_FOLLOWING_STRING).equals(axesName) || 
+    		           (Keywords.FROM_FOLLOWING_SIBLINGS_STRING).equals(axesName) || (Keywords.FROM_PARENT_STRING).equals(axesName) || 
+    		           (Keywords.FROM_PRECEDING_STRING).equals(axesName) || (Keywords.FROM_PRECEDING_SIBLINGS_STRING).equals(axesName) || 
+    		           (Keywords.FROM_SELF_STRING).equals(axesName)) {    	  
+    	  if ((xpathDefaultNamespace != null) && !tokenIs(xpathDefaultNamespace)) {
+    		  // Modify token queue's contents, by adding tokens xpathDefaultNamespace 
+    		  // and ":" prior to this token.
+    		  ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
+    		  List<Object> tokenPrefixList = new ArrayList<Object>();
+    		  for (int i = 0; i < m_queueMark - 1; i++) {
+    			  Object obj1 = tokenQueue.elementAt(i);
+    			  tokenPrefixList.add(obj1); 
+    		  }
+
+    		  List<Object> tokenSuffixList = new ArrayList<Object>();
+    		  int tokenQueueSize = tokenQueue.size();
+    		  for (int i = m_queueMark - 1; i < tokenQueueSize; i++) {
+    			  Object obj1 = tokenQueue.elementAt(i);
+    			  tokenSuffixList.add(obj1);
+    		  }    		  
+
+    		  tokenQueue.removeAllElements();
+
+    		  for (int j = 0; j < tokenPrefixList.size(); j++) {
+    			  tokenQueue.addElement(tokenPrefixList.get(j));  
+    		  }
+
+    		  tokenQueue.addElement(xpathDefaultNamespace);
+    		  tokenQueue.addElement(":");
+
+    		  for (int j = 0; j < tokenSuffixList.size(); j++) {
+    			  tokenQueue.addElement(tokenSuffixList.get(j)); 
+    		  }
+
+    		  tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + 2);
+
+    		  m_token = xpathDefaultNamespace;
+    		  m_tokenChar = xpathDefaultNamespace.charAt(0);
+    	  }
+      }
     }
     else if (tokenIs('@'))
     {
@@ -4870,7 +4930,7 @@ public class XPathParser
     	   
     	   while (m_token != null) {
     		   xpathTwoStr += m_token;
-    		   // The following is copy of the code of nextToken() 
+    		   // The following is copy of the code from nextToken() 
     		   // function, with minor modification for this need.
     		   if (m_queueMark < m_ops.getTokenQueueSize())
     		   {
@@ -4919,6 +4979,42 @@ public class XPathParser
     else
     {       
         axesType = OpCodes.FROM_CHILDREN;
+        
+        if ((xpathDefaultNamespace != null) && !tokenIs(xpathDefaultNamespace)) {
+        	// Modify token queue's contents, by adding tokens xpathDefaultNamespace 
+        	// and ":" prior to this token.
+        	ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
+        	List<Object> tokenPrefixList = new ArrayList<Object>();
+        	for (int i = 0; i < m_queueMark - 1; i++) {
+        		Object obj1 = tokenQueue.elementAt(i);
+        		tokenPrefixList.add(obj1); 
+        	}
+
+        	List<Object> tokenSuffixList = new ArrayList<Object>();
+        	int tokenQueueSize = tokenQueue.size();
+        	for (int i = m_queueMark - 1; i < tokenQueueSize; i++) {
+        		Object obj1 = tokenQueue.elementAt(i);
+        		tokenSuffixList.add(obj1);
+        	}    		  
+
+        	tokenQueue.removeAllElements();
+
+        	for (int j = 0; j < tokenPrefixList.size(); j++) {
+        		tokenQueue.addElement(tokenPrefixList.get(j));  
+        	}
+
+        	tokenQueue.addElement(xpathDefaultNamespace);
+        	tokenQueue.addElement(":");
+
+        	for (int j = 0; j < tokenSuffixList.size(); j++) {
+        		tokenQueue.addElement(tokenSuffixList.get(j)); 
+        	}
+
+        	tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + 2);
+
+        	m_token = xpathDefaultNamespace;
+        	m_tokenChar = xpathDefaultNamespace.charAt(0);        	
+   	    }
 
         appendOp(2, axesType);
     }
@@ -5927,8 +6023,8 @@ public class XPathParser
 		                                                                                  throws TransformerException {
 	   m_isParseSequenceTypeExprWithUserDefinedType = true;
 	   
-	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
-	   String xslSystemId = XslTransformSharedDatastore.xslSystemId;
+	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
+	   String xslSystemId = XslTransformSharedDatastore.m_xslSystemId;
 
 	   String type_namespace = null;
 	   String type_name = null;
@@ -5982,7 +6078,7 @@ public class XPathParser
    private void parseImportSchemaWithChildSchemaContents(XPathSequenceTypeExpr xpathSequenceTypeExpr, String typeNamespace,
 		                                                 String typeName, Node xsSchemaTopMostNode) throws TransformerException {
 	   
-	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 	   XSModel xsModel = stylesheetRoot.getXsModel();
 	   
 	   if (xsModel != null) {
@@ -6029,7 +6125,7 @@ public class XPathParser
    private void parseImportSchemaFromExternalLocation(XPathSequenceTypeExpr xpathSequenceTypeExpr, String xslSystemId,
 		                                              String typeNamespace, String typeName, Node elemTemplateElem) throws TransformerException {
 	   
-	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 	   XSModel xsModel = stylesheetRoot.getXsModel();
 
 	   if (xsModel != null) {
@@ -6738,10 +6834,10 @@ public class XPathParser
    }
    
    /**
-    * This method checks, whether there's an XPath built-in node pattern like 
-    * node(), doument-node(), text(), comment() at an end of XPath expression 
-    * string. XPath node checks for these patterns with predicate as suffix 
-    * also need to be similarly excluded.
+    * Method definition to check, whether there's an XPath built-in 
+    * node pattern like node(), doument-node(), text(), comment() as 
+    * a suffix of XPath expression string. XPath node checks for these 
+    * patterns with predicate as suffix are also done.
     */
    private boolean isXPathPatternExcludeTrailingNodeFunctions() {
 	   
@@ -6900,7 +6996,7 @@ public class XPathParser
 		else if (lookahead(':', 1)) {
 			TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
 			
-			StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+			StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 			String funcNamespaceUri = m_token;			
 			nextToken();
 			consumeExpected(':');
@@ -7048,6 +7144,56 @@ public class XPathParser
 				  }
 			  }
 		  }
+	}
+	
+	/**
+	 * This method definition, finds xpath-default-namespace attribute's effective
+	 * value for the current XPath expression evaluation, by searching information
+	 * on an XSL current node and if not found their then information within the
+	 * ancestor nodes upto StylesheetRoot object.
+	 * 
+	 * The search for effective value of xpath-default-namespace attribute stops
+	 * at the nearest XSL parent node where a non-null value of xpath-default-namespace 
+	 * is found.  
+	 * 
+	 * @param xpathExprXslParentNode			    An XSL supplied parent node of the
+	 *                                              XPath expression.
+	 * @return										xpath-default-namespace attribute's 
+	 *                                              effective value for XPath expression.
+	 */
+	private String getXPathDefaultNamespaceValue(ElemTemplateElement xpathExprXslParentNode) {
+		
+		String result = null;
+
+		if (xpathExprXslParentNode instanceof StylesheetRoot) {
+			result = ((StylesheetRoot)xpathExprXslParentNode).getXpathDefaultNamespace(); 
+		}
+		else if (xpathExprXslParentNode instanceof ElemTemplate) {
+			result = ((ElemTemplate)xpathExprXslParentNode).getXpathDefaultNamespace();
+			if (result == null) {
+				result = getXPathDefaultNamespaceValue(((ElemTemplate)xpathExprXslParentNode).getParentElem()); 
+			}
+		}
+		else if (xpathExprXslParentNode instanceof ElemForEachGroup) {
+			result = ((ElemForEachGroup)xpathExprXslParentNode).getXpathDefaultNamespace();
+			if (result == null) {
+				result = getXPathDefaultNamespaceValue(((ElemForEachGroup)xpathExprXslParentNode).getParentElem()); 
+			}
+		}
+		else if (xpathExprXslParentNode instanceof ElemValueOf) {
+			result = ((ElemValueOf)xpathExprXslParentNode).getXpathDefaultNamespace();
+			if (result == null) {
+				result = getXPathDefaultNamespaceValue(((ElemValueOf)xpathExprXslParentNode).getParentElem()); 
+			}
+		}
+		else if (xpathExprXslParentNode instanceof ElemLiteralResult) {
+			result = ((ElemLiteralResult)xpathExprXslParentNode).getXpathDefaultNamespace();
+			if (result == null) {
+				result = getXPathDefaultNamespaceValue(((ElemLiteralResult)xpathExprXslParentNode).getParentElem()); 
+			}
+		}
+
+		return result;
 	}
   
 }

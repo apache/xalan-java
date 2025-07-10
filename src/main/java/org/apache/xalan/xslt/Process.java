@@ -737,7 +737,7 @@ public class Process
 				  }
 				  else
 				  {
-					  XslTransformSharedDatastore.xslSystemId = SystemIDResolver.getAbsoluteURI(xslFileName); 
+					  XslTransformSharedDatastore.m_xslSystemId = SystemIDResolver.getAbsoluteURI(xslFileName); 
 					  stylesheet = tfactory.newTemplates(new StreamSource(xslFileName));
 				  }
 			  }

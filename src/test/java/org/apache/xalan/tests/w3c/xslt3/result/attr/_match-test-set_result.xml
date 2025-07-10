@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-08T10:31:56Z" fail="61" name="match" pass="67" skipped="8" statusUnknown="1" totalRun="137">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-10T17:27:07Z" fail="61" name="match" pass="67" skipped="8" statusUnknown="1" totalRun="137">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -40,7 +40,7 @@
    <testResult status="skipped" xsltVersion="2.0 only"/>
    <testResult status="pass" testName="match-040">
       <outResult>
-         <errTrace>XPST0017 : An XSL stylesheet function {http://f.com/}special referred within an XPath expression has not been declared in the stylesheet.</errTrace>
+         <errTrace>XPST0017 : An XSL stylesheet function call {http://f.com/}special referred within an XPath expression, doesn't have a corresponding xsl:function definition in the stylesheet.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="match-041"/>

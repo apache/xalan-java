@@ -335,7 +335,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
         SourceLocator causeLocator = ((TransformerException)cause).getLocator();
         if(null != causeLocator) {
           if (causeLocator.getSystemId() == null) {
-              xslSystemId = XslTransformSharedDatastore.xslSystemId;    
+              xslSystemId = XslTransformSharedDatastore.m_xslSystemId;    
           }
           locator = causeLocator;
         }

@@ -528,6 +528,31 @@ public class ElemLiteralResult extends ElemUse
             ? m_rawName.substring(0,len)
             : "";
   }
+  
+  /**
+   * Class field to, represent the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
 
 
   /**
@@ -1311,6 +1336,8 @@ public class ElemLiteralResult extends ElemUse
         XPathContext xctxt = transformer.getXPathContext();
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
+        
+        String abc = getXpathDefaultNamespace();
 
         try
         {
@@ -1434,7 +1461,7 @@ public class ElemLiteralResult extends ElemUse
           			validateXslElementAttributeResultWithBuiltInSchemaType(xmlStr, type, xctxt, LITERAL_RESULT_ELEMENT);
              	 }
           		 else {    			 
-          			 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+          			 XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
           			 
           			 if (xsModel != null) {
           				 // An XML input document has been validated with a schema.          				 
@@ -1461,7 +1488,7 @@ public class ElemLiteralResult extends ElemUse
             																									+ "values : strict, lax, preserve, strip.", srcLocator);
             	}
             	else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
-            		XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+            		XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
             		if (xsModel != null) {    			 
             			String nodeLocalName = QName.getLocalPart(nodeName);
             			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);
@@ -1485,7 +1512,7 @@ public class ElemLiteralResult extends ElemUse
             		// whereas strict validation fails if there is no available top-level element declaration in 
             		// the schema.
 
-            		XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+            		XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
             		if (xsModel != null) {
             			String nodeLocalName = QName.getLocalPart(nodeName);
             			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);

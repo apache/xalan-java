@@ -579,6 +579,19 @@ public class XSLTElementDef
     XSLTAttributeDef defaultDef = null;
     XSLTAttributeDef[] attrDefs = getAttributes();
     int nAttrDefs = attrDefs.length;
+    
+    
+    for (int k = 0; k < nAttrDefs; k++)
+    {
+    	XSLTAttributeDef attrDef = attrDefs[k];
+        String uriDef = attrDef.getNamespace();
+        String nameDef = attrDef.getName();
+        
+        if ("xpath-default-namespace".equals(localName) && "xpath-default-namespace".equals(nameDef) 
+        		                                                                 && equalsMayBeNullOrZeroLen(uri, uriDef)) {
+        	return attrDef;
+        }
+    }
 
     for (int k = 0; k < nAttrDefs; k++)
     {

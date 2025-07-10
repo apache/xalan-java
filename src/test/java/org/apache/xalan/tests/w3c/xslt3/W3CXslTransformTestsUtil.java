@@ -18,6 +18,7 @@ package org.apache.xalan.tests.w3c.xslt3;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -104,6 +106,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     private static final String EXPECTED_NODE_KIND_ERROR = "error";
     
     private static final String SERIALIZATION_MATCHES = "serialization-matches";
+    
+    private static final String ASSERT_SERIALIZATION = "assert-serialization";
     
     private static final String W3C_XSLT3_TEST_CATALOG_NS = "http://www.w3.org/2012/10/xslt-test-catalog";
     
@@ -380,7 +384,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));
     		
-    		if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName) || SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {    			
+    		if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName) || SERIALIZATION_MATCHES.equals(expectedNodeKindName) || 
+    				                                                             ASSERT_SERIALIZATION.equals(expectedNodeKindName)) {    			
     			NodeList nodeList = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
     			int nodeListLength = nodeList.getLength();
     			
@@ -388,6 +393,41 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			
     			if (SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {
     				testCaseOneSerializationMatchCheck(elemTestResult, nodeExpected, resultStrWriter, xslTransformMethod);
+    			}
+    			else if (ASSERT_SERIALIZATION.equals(expectedNodeKindName)) {    				
+    				String fileName = ((Element)nodeExpected).getAttribute("file");
+    				String serMethod = ((Element)nodeExpected).getAttribute("method");    // assuming this to be "text"
+    				String encoding = ((Element)nodeExpected).getAttribute("encoding");
+    				int idx = m_xslTransformTestSetFilePath.lastIndexOf('/');
+    				String fileUriStr = m_xslTransformTestSetFilePath.substring(0, idx) + '/' + fileName;    				
+    				FileInputStream fileInpStr = new FileInputStream(new File(new URI(fileUriStr)));
+    				byte[] byteArr = new byte[512];
+    				int bytesRead = 0;
+    				StringBuffer strBuff = new StringBuffer();
+    				Charset charSet = null;
+    				if (!"".equals(encoding)) {
+    				   charSet = Charset.forName(encoding);
+    				}
+    				while ((bytesRead = fileInpStr.read(byteArr)) != -1) {
+    				   String str1 = null;
+    				   if (charSet != null) {
+    				      str1 = new String(byteArr, 0, bytesRead, charSet);
+    				   }
+    				   else {
+    					  str1 = new String(byteArr, 0, bytesRead);  
+    				   }
+    				   strBuff.append(str1);
+    				}
+    				
+    				fileInpStr.close();
+    				
+    				String expectedResultStr = strBuff.toString();
+    				if ((resultStrWriter.toString()).equals(expectedResultStr)) {
+    					elemTestResult.setAttribute("status", "pass");
+    				}
+    				else {
+    				    elemTestResult.setAttribute("status", "fail");
+    				}    				
     			}
     			else if (nodeListLength > 0) {
     			    testCaseMultipleSerializationMatchChecks(elemTestResult, resultStrWriter, nodeList, xslTransformMethod);
@@ -405,6 +445,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					isAssertXml = true;
     					String xmlStr1 = ((Element)childNode).getTextContent();
     					String xmlStr2 = resultStrWriter.toString();
+    					int idx = xmlStr2.indexOf("?>");
+    					if (idx != -1) {
+    					   xmlStr2 = xmlStr2.substring(idx + 2);
+    					}
     					if (isTwoXmlHtmlStrEqual(xmlStr1, xmlStr2)) {
     						elemTestResult.setAttribute("status", "pass");
     						isTestCasePass = true;
@@ -1049,8 +1093,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	 */
 	public class XslSerializationMatchesMetaData {
 		
-		// One of the variable m_strArr or m_strValue will be null 
-		// while the other will be non-null.
+		// One of the variable m_strArr or m_strValue will be null, 
+		// whereas the other will be non-null.
 		
 		// String array information to assert on an XML 
 		// attribute name and value.

@@ -127,8 +127,7 @@ public class StylesheetRoot extends StylesheetComposed
     /**
      * An XSL transformation initial template name.
      */
-    private String m_init_template_name = null;
-    
+    private String m_init_template_name = null; 
     
   /**
    * Uses an XSL stylesheet document.
@@ -1585,7 +1584,7 @@ public class StylesheetRoot extends StylesheetComposed
 						ValidationErrorHandler valErrorHandler = new ValidationErrorHandler();
 						sf.setErrorHandler(valErrorHandler);
 						
-						String xslSystemId = XslTransformSharedDatastore.xslSystemId;
+						String xslSystemId = XslTransformSharedDatastore.m_xslSystemId;
 						URL url = null;
 
 						Node attrNode1 = importSchemaNodeAttributes.item(0);

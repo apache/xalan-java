@@ -175,7 +175,7 @@ public class Variable extends Expression implements PathComponent
 		  return;    
 	  }
 	  
-	  if (XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff == null) {
+	  if (XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff == null) {
 		  java.lang.String msg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_COULD_NOT_FIND_VAR, 
 				  																				   new Object[]{m_qname.toString()});
 
@@ -274,13 +274,13 @@ public class Variable extends Expression implements PathComponent
            if ((m_qname == null) || ((exceptionMesg != null) && exceptionMesg.startsWith("XTDE0050 : No value supplied"))) {
               throw ex;   
            }
-           else if (XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff != null) {
-        	   java.lang.String xpathExprStr = XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff.toString();        	   
+           else if (XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff != null) {
+        	   java.lang.String xpathExprStr = XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff.toString();        	   
         	   XPath xpath = new XPath(xpathExprStr, xctxt.getSAXLocator(), xctxt.getNamespaceContext(), 
         			                                                                                   XPath.SELECT, null);
         	   result = xpath.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
         	   
-        	   XslTransformSharedDatastore.xpathNodeCombiningExprRhsStrBuff = null;
+        	   XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff = null;
            }           
            else {
         	  try {

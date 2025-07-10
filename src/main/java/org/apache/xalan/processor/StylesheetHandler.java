@@ -1211,8 +1211,8 @@ public class StylesheetHandler extends DefaultHandler
 		  m_stylesheetRoot.setSource_location(m_source_location);  		
 	  }
 
-	  XslTransformSharedDatastore.stylesheetRoot = m_stylesheetRoot;
-	  XslTransformSharedDatastore.xslSystemId = getSystemId();
+	  XslTransformSharedDatastore.m_stylesheetRoot = m_stylesheetRoot;
+	  XslTransformSharedDatastore.m_xslSystemId = getSystemId();
 	  
 	  m_stylesheetRoot.setInitTemplateName(m_init_template_name);
 
@@ -1222,7 +1222,7 @@ public class StylesheetHandler extends DefaultHandler
   /** The root stylesheet of the stylesheets tree. */
   StylesheetRoot m_stylesheetRoot;
         
-        /** The last stylesheet that was popped off the stylesheets stack. */
+  /** The previous stylesheet that was popped off the stylesheets stack. */
   Stylesheet m_lastPoppedStylesheet;
 
   /**

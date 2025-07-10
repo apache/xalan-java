@@ -227,7 +227,9 @@ public class XPath implements Serializable, ExpressionOwner
           ErrorListener errorListener)
             throws javax.xml.transform.TransformerException
   { 
-    initFunctionTable();     
+    
+	initFunctionTable();
+    
     if(null == errorListener)
       errorListener = new org.apache.xml.utils.DefaultErrorHandler();
     
@@ -389,7 +391,9 @@ public class XPath implements Serializable, ExpressionOwner
           String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type,
           ErrorListener errorListener, boolean isSequenceTypeXPathExpr)
             throws javax.xml.transform.TransformerException {
-      initFunctionTable();     
+      
+	  initFunctionTable();
+      
       if(null == errorListener)
         errorListener = new org.apache.xml.utils.DefaultErrorHandler();
       
@@ -426,6 +430,7 @@ public class XPath implements Serializable, ExpressionOwner
   public XPath(Expression expr)
   {  
     this.setExpression(expr);
+    
     initFunctionTable();   
   }
   
@@ -908,7 +913,7 @@ public class XPath implements Serializable, ExpressionOwner
 		  int arity = Integer.valueOf(localName.substring(idx + 1));				  
 		  String xsSimpleTypeNamespace = nodeTest.getNamespace();
 
-		  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;				  				  
+		  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;				  				  
 
 		  Node elemTemplateElem = stylesheetRoot.getFirstChildElem();				  				  
 		  while (elemTemplateElem != null && !(Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {   
@@ -945,7 +950,7 @@ public class XPath implements Serializable, ExpressionOwner
 				  NamedNodeMap importSchemaNodeAttributes = ((Element)elemTemplateElem).getAttributes();
 
 				  if (importSchemaNodeAttributes != null) {
-					  String xslSystemId = XslTransformSharedDatastore.xslSystemId;
+					  String xslSystemId = XslTransformSharedDatastore.m_xslSystemId;
 					  URL url = null;
 
 					  Node attrNode1 = importSchemaNodeAttributes.item(0);

@@ -313,10 +313,10 @@ public class ElemFunction extends ElemTemplate
 									                                                                            funcAsAttrStrVal + ".", srcLocator); 
               	}
              }
-             else if (((XslTransformSharedDatastore.xpathNamedFunctionRefSequence).size() > 0) && !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {
+             else if (((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() > 0) && !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {
             	SequenceTypeData seqExpectedTypeData = getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
             	
-            	int funcItemSeqSize = (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).size();
+            	int funcItemSeqSize = (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size();
         		
         		SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
         		int seqTypeItemOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
@@ -348,19 +348,19 @@ public class ElemFunction extends ElemTemplate
             	
         		if (sequenceTypeFunctionTest != null) {
         			if (sequenceTypeFunctionTest.isAnyFunctionTest()) {
-        				if ((XslTransformSharedDatastore.xpathNamedFunctionRefSequence).size() == 1) {
-        					funcResultConvertedVal = (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).item(0);
-        					(XslTransformSharedDatastore.xpathNamedFunctionRefSequence).remove(0);
+        				if ((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() == 1) {
+        					funcResultConvertedVal = (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).item(0);
+        					(XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).remove(0);
         				}
         				else {
-        					funcResultConvertedVal = XslTransformSharedDatastore.xpathNamedFunctionRefSequence;
+        					funcResultConvertedVal = XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence;
         				}
 
         				return funcResultConvertedVal;
         			}
         			else {
-        				if ((XslTransformSharedDatastore.xpathNamedFunctionRefSequence).size() == 1) {
-        					funcResultConvertedVal = (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).item(0);        					
+        				if ((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() == 1) {
+        					funcResultConvertedVal = (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).item(0);        					
         					if (funcResultConvertedVal instanceof XPathNamedFunctionReference) {
         					   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)funcResultConvertedVal;
         					   if (xpathNamedFunctionReference.getXslStylesheetFunction() == null) {
@@ -377,12 +377,12 @@ public class ElemFunction extends ElemTemplate
         					   }
         					}
         					
-        					(XslTransformSharedDatastore.xpathNamedFunctionRefSequence).remove(0);
+        					(XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).remove(0);
         				}
         				else {
         					// REVISIT
-        					funcResultConvertedVal = XslTransformSharedDatastore.xpathNamedFunctionRefSequence;
-        					(XslTransformSharedDatastore.xpathNamedFunctionRefSequence).clear();
+        					funcResultConvertedVal = XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence;
+        					(XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).clear();
         				}
 
         				return funcResultConvertedVal;
@@ -717,17 +717,17 @@ public class ElemFunction extends ElemTemplate
 	  else {
 		  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
 
-		  if (XslTransformSharedDatastore.xpathInlineFunction != null) {
-			  result = XslTransformSharedDatastore.xpathInlineFunction;			  
-			  XslTransformSharedDatastore.xpathInlineFunction = null;
+		  if (XslTransformSharedDatastore.m_xpathInlineFunction != null) {
+			  result = XslTransformSharedDatastore.m_xpathInlineFunction;			  
+			  XslTransformSharedDatastore.m_xpathInlineFunction = null;
 		  }
-		  else if (XslTransformSharedDatastore.xpathMap != null) {
-			  result = XslTransformSharedDatastore.xpathMap;			  
-			  XslTransformSharedDatastore.xpathMap = null;
+		  else if (XslTransformSharedDatastore.m_xpathMap != null) {
+			  result = XslTransformSharedDatastore.m_xpathMap;			  
+			  XslTransformSharedDatastore.m_xpathMap = null;
 		  }
-		  else if (XslTransformSharedDatastore.xpathArray != null) {
-			  result = XslTransformSharedDatastore.xpathArray;			  
-			  XslTransformSharedDatastore.xpathArray = null;
+		  else if (XslTransformSharedDatastore.m_xpathArray != null) {
+			  result = XslTransformSharedDatastore.m_xpathArray;			  
+			  XslTransformSharedDatastore.m_xpathArray = null;
 		  }
 
 		  if (result == null) {		  

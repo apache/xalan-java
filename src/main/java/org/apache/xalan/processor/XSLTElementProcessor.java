@@ -305,56 +305,86 @@ public class XSLTElementProcessor extends ElemTemplateElement
     // Keep track of XSLTAttributeDefs that were invalid
     List errorDefs = new ArrayList();    
     int nAttrs = attributes.getLength();
-
-    for (int i = 0; i < nAttrs; i++)
+    
+    /**
+     * Make XSL stylesheet attribute 'xpath-default-namespace' as the first
+     * attribute, to the emitted XSL stylesheet complied tree for the
+     * current stylesheet element. This ensures that, any other attribute
+     * on the current element, for example XSL 'select' attributes have
+     * xpath-default-namespace information available to them.
+     */
+    for (int i = 0; i < nAttrs; i++) 
     {
-      String attrUri = attributes.getURI(i);
-      // Hack for Crimson.  -sb
-      if((null != attrUri) && (attrUri.length() == 0)
-                           && (attributes.getQName(i).startsWith("xmlns:") || 
-                               attributes.getQName(i).equals("xmlns")))
-      {
-        attrUri = org.apache.xalan.templates.Constants.S_XMLNAMESPACEURI;
-      }
-      String attrLocalName = attributes.getLocalName(i);
-      XSLTAttributeDef attrDef = def.getAttributeDef(attrUri, attrLocalName);
+    	String xpathDefNamespaceattrUri = attributes.getURI(i);
+		String xpathDefNamespaceattrLocalName = attributes.getLocalName(i);
+		String xpathDefNamespaceattrQName = attributes.getQName(i);
+		String xpathDefNamespaceattrValue = attributes.getValue(i);
+		
+    	if ("xpath-default-namespace".equals(xpathDefNamespaceattrLocalName)) {    		
+    		XSLTAttributeDef xpathDefNamespaceAttrDef = def.getAttributeDef(xpathDefNamespaceattrUri, xpathDefNamespaceattrLocalName);
 
-      if (null == attrDef)
-      {
-        if (!isCompatibleMode)
-        {
-          // This element does not allow this attribute
-          handler.error(XSLTErrorResources.ER_ATTR_NOT_ALLOWED, new Object[]{attributes.getQName(i), rawName}, null);                        
-        }
-        else
-        {
-          undefines.addAttribute(attrUri, attrLocalName,
-                                 attributes.getQName(i),
-                                 attributes.getType(i),
-                                 attributes.getValue(i));
-        }
-      }
-      else
-      {
-        //handle secure processing
-        if(handler.getStylesheetProcessor()==null)
-            System.out.println("stylesheet processor null");
-        if(attrDef.getName().compareTo("*")==0 && handler.getStylesheetProcessor().isSecureProcessing())
-        {            
-            handler.error(XSLTErrorResources.ER_ATTR_NOT_ALLOWED, new Object[]{attributes.getQName(i), rawName}, null);            
-        }
-        else
-        {
-            boolean success = attrDef.setAttrValue(handler, attrUri, attrLocalName,
-												                                 attributes.getQName(i), attributes.getValue(i),
-												                                 target);
-            // Now we only add the element if it passed a validation check
-            if (success)
-                processedDefs.add(attrDef);
-            else
-                errorDefs.add(attrDef);
-        }
-      }
+    		boolean success = xpathDefNamespaceAttrDef.setAttrValue(handler, xpathDefNamespaceattrUri, xpathDefNamespaceattrLocalName,
+    				                                                xpathDefNamespaceattrQName, xpathDefNamespaceattrValue, target);
+    		if (success)
+    			processedDefs.add(xpathDefNamespaceAttrDef);
+    		else
+    			errorDefs.add(xpathDefNamespaceAttrDef);
+
+    		break;
+    	}	
+    }
+    
+    for (int i = 0; i < nAttrs; i++)
+    {    	
+    	if (!"xpath-default-namespace".equals(attributes.getLocalName(i))) {
+    		String attrUri = attributes.getURI(i);
+    		// Hack for Crimson.  -sb
+    		if((null != attrUri) && (attrUri.length() == 0)
+    				&& (attributes.getQName(i).startsWith("xmlns:") || 
+    						attributes.getQName(i).equals("xmlns")))
+    		{
+    			attrUri = org.apache.xalan.templates.Constants.S_XMLNAMESPACEURI;
+    		}
+    		String attrLocalName = attributes.getLocalName(i);
+    		XSLTAttributeDef attrDef = def.getAttributeDef(attrUri, attrLocalName);
+
+    		if (null == attrDef)
+    		{
+    			if (!isCompatibleMode)
+    			{
+    				// This element does not allow this attribute
+    				handler.error(XSLTErrorResources.ER_ATTR_NOT_ALLOWED, new Object[]{attributes.getQName(i), rawName}, null);                        
+    			}
+    			else
+    			{
+    				undefines.addAttribute(attrUri, attrLocalName,
+    						attributes.getQName(i),
+    						attributes.getType(i),
+    						attributes.getValue(i));
+    			}
+    		}
+    		else
+    		{
+    			//handle secure processing
+    			if(handler.getStylesheetProcessor()==null)
+    				System.out.println("stylesheet processor null");
+    			if(attrDef.getName().compareTo("*")==0 && handler.getStylesheetProcessor().isSecureProcessing())
+    			{            
+    				handler.error(XSLTErrorResources.ER_ATTR_NOT_ALLOWED, new Object[]{attributes.getQName(i), rawName}, null);            
+    			}
+    			else
+    			{
+    				boolean success = attrDef.setAttrValue(handler, attrUri, attrLocalName,
+    						attributes.getQName(i), attributes.getValue(i),
+    						target);
+    				// Now we only add the element if it passed a validation check
+    				if (success)
+    					processedDefs.add(attrDef);
+    				else
+    					errorDefs.add(attrDef);
+    			}
+    		}    		    		
+    	}    	    		
     }
 
     XSLTAttributeDef[] attrDefs = def.getAttributes();

@@ -137,7 +137,7 @@ public class ElemDocument extends ElemTemplateElement
 			  }
 		  }
 		  else {
-		      XslTransformSharedDatastore.xslDocumentEvaluationResult = new XMLNodeCursorImpl(nodeHandle, xctxt);
+		      XslTransformSharedDatastore.m_xslDocumentEvaluationResult = new XMLNodeCursorImpl(nodeHandle, xctxt);
 		  }
 	  }
 	  else {

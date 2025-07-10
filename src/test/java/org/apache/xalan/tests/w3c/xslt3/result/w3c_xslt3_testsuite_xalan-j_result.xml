@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-07-08T10:34:00Z" desc="W3C XSLT 3.0 test suite results" fail="779" pass="1389" skipped="38" success="64.13%" totalRun="2225" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-07-10T17:30:48Z" desc="W3C XSLT 3.0 test suite results" fail="797" pass="1398" skipped="38" success="63.79%" totalRun="2251" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="53" pass="51" skipped="4" success="50.46%" totalRun="109"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
     <match fail="61" pass="67" skipped="8" success="54.74%" totalRun="137"/>
-    <select fail="6" pass="17" skipped="0" success="68.0%" totalRun="25"/>
+    <select fail="6" pass="18" skipped="0" success="72.0%" totalRun="25"/>
+    <xpath-default-namespace fail="19" pass="7" skipped="0" success="26.92%" totalRun="26"/>
   </attr>
   <decl>
     <attribute-set fail="8" pass="41" skipped="1" success="84.0%" totalRun="50"/>
@@ -13,7 +14,7 @@
     <variable fail="3" pass="16" skipped="0" success="80.0%" totalRun="20"/>
   </decl>
   <expr>
-    <axes fail="21" pass="180" skipped="0" success="89.55%" totalRun="201"/>
+    <axes fail="20" pass="181" skipped="0" success="90.05%" totalRun="201"/>
     <castable fail="5" pass="4" skipped="0" success="44.44%" totalRun="9"/>
     <expression fail="0" pass="9" skipped="0" success="90.0%" totalRun="10"/>
     <for fail="2" pass="1" skipped="0" success="25.0%" totalRun="4"/>

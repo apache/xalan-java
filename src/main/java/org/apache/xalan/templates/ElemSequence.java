@@ -225,7 +225,7 @@ public class ElemSequence extends ElemTemplateElement
 							  xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, getStylesheetRoot());
 							  xpathNamedFunctionReference.setArity(elemFunction.getArity());
 
-							  (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).add(xpathNamedFunctionReference);
+							  (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).add(xpathNamedFunctionReference);
 
 							  return;
 						  }
@@ -267,7 +267,7 @@ public class ElemSequence extends ElemTemplateElement
 								  xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, getStylesheetRoot());
 								  xpathNamedFunctionReference.setArity(elemFunction.getArity());
 
-								  (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).add(xpathNamedFunctionReference);							 
+								  (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).add(xpathNamedFunctionReference);							 
 							  } 
 						  }
 						  else {
@@ -275,7 +275,7 @@ public class ElemSequence extends ElemTemplateElement
 						  }
 					  }
 
-					  if ((XslTransformSharedDatastore.xpathNamedFunctionRefSequence).size() > 0) {
+					  if ((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() > 0) {
 						  return; 
 					  }
 			      }
@@ -402,12 +402,12 @@ public class ElemSequence extends ElemTemplateElement
 
 			  if (xslSequenceVal == null) {
 				  if (selectExpression instanceof XPathNamedFunctionReference) {
-					 (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)selectExpression); 
+					 (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)selectExpression); 
 				  }
 				  else {
 					  xslSequenceVal = m_selectPattern.execute(xctxt, sourceNode, this);
 					  if (xslSequenceVal instanceof XPathNamedFunctionReference) {
-						  (XslTransformSharedDatastore.xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)xslSequenceVal);  
+						  (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)xslSequenceVal);  
 					  }
 				  }				  				  
 			  }        
@@ -458,10 +458,10 @@ public class ElemSequence extends ElemTemplateElement
 		                                                                                  XObject xslSequenceVal)
 		                                                                         throws TransformerException, SAXException {
 	  if (xslSequenceVal instanceof XPathInlineFunction) {
-		  XslTransformSharedDatastore.xpathInlineFunction = (XPathInlineFunction)xslSequenceVal;   
+		  XslTransformSharedDatastore.m_xpathInlineFunction = (XPathInlineFunction)xslSequenceVal;   
 	  }
 	  else if (xslSequenceVal instanceof XPathMap) {
-		  XslTransformSharedDatastore.xpathMap = (XPathMap)xslSequenceVal;
+		  XslTransformSharedDatastore.m_xpathMap = (XPathMap)xslSequenceVal;
 	  }
 	  else {
 		  SerializationHandler handler = transformer.getSerializationHandler();

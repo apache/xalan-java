@@ -558,7 +558,7 @@ public class SequenceTypeSupport {
             	dtmIter.reset();
             	if ((nodeName.equals(sequenceTypeKindTest.getNodeLocalName())) && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
             																						sequenceTypeKindTest.getNodeNsUri()))) {
-            		StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+            		StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
             		XSModel xsModel = stylesheetRoot.getXsModel();
             		if (xsModel != null) {
             			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeName, nodeNsUri);
@@ -2063,7 +2063,7 @@ public class SequenceTypeSupport {
                         }
                         else if ((sequenceTypeKindTest.getKindVal() == SCHEMA_ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
                                 																   && (isTwoXmlNamespaceValuesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
-                        	StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+                        	StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
                         	XSModel xsModel = stylesheetRoot.getXsModel();
                         	if (xsModel != null) {
                         		XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrNodeKindTestNodeName, sequenceTypeKindTest.getNodeNsUri());

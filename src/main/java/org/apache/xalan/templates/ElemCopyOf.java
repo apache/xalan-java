@@ -499,7 +499,7 @@ public class ElemCopyOf extends ElemTemplateElement
 		  String validation = nodeSet.getValidationAttrForValidation();
 
 		  if (type != null) {
-			  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+			  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 			  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
 			  if (xsModel != null) {
 				  String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);        				  
@@ -517,7 +517,7 @@ public class ElemCopyOf extends ElemTemplateElement
 		  }
 		  else if (validation != null) {
 			  if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
-				  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+				  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 				  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
 				  if (xsModel != null) {
 					  String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
@@ -545,7 +545,7 @@ public class ElemCopyOf extends ElemTemplateElement
 				  }
 			  }
 			  else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
-				  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+				  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 				  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
 				  if (xsModel != null) {
 					  String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
@@ -604,7 +604,7 @@ public class ElemCopyOf extends ElemTemplateElement
 		  String validation = nodeSet.getValidationAttrForValidation();
 
 		  if (type != null) {
-			  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+			  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 			  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
 			  if (xsModel != null) {
 				  XSTypeDefinition xsTypeDefn = xsModel.getTypeDefinition(type.getLocalName(), type.getNamespace());
@@ -644,7 +644,7 @@ public class ElemCopyOf extends ElemTemplateElement
 		  }
 		  else if (validation != null) {
 			  if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
-				  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+				  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
 				  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
 				  if (xsModel != null) {
 					  XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrLocalName, attrNodeNs);
@@ -673,7 +673,7 @@ public class ElemCopyOf extends ElemTemplateElement
 				  }
 			  }
 			  else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
-				  XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+				  XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
 				  if (xsModel != null) {
 					  XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrLocalName, attrNodeNs);
 					  if (attrDecl != null) {

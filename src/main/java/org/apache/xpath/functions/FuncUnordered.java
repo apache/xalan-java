@@ -27,7 +27,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of the unordered() function.
+ * Implementation of an XPath 3.1 function fn:unordered.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -65,7 +65,7 @@ public class FuncUnordered extends FunctionOneArg {
                                                                                       xObject0, xctxt);
         List<XObject> sequenceAsList = rsArg0.getResultSequenceItems();
         
-        // randomly permute the list of input sequence items
+        // Randomly permute the list of input sequence items
         Collections.shuffle(sequenceAsList);
         
         for (int idx = 0; idx < sequenceAsList.size(); idx++) {

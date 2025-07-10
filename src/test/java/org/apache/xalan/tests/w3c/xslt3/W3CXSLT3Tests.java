@@ -20,6 +20,7 @@ import org.apache.xalan.tests.w3c.xslt3.attr.XslAsAttrTests;
 import org.apache.xalan.tests.w3c.xslt3.attr.XslAvtAttrTests;
 import org.apache.xalan.tests.w3c.xslt3.attr.XslMatchAttrTests;
 import org.apache.xalan.tests.w3c.xslt3.attr.XslSelectAttrTests;
+import org.apache.xalan.tests.w3c.xslt3.attr.XslXPathDefaultNamespaceAttrTests;
 import org.apache.xalan.tests.w3c.xslt3.decl.XslAttributeSetTests;
 import org.apache.xalan.tests.w3c.xslt3.decl.XslCharacterMapTests;
 import org.apache.xalan.tests.w3c.xslt3.decl.XslFunctionTests;
@@ -77,7 +78,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XslNodeTestTests.class, XslPathTests.class, XslHigherOrderFunctionTests.class, XslPredicateTests.class, XslBooleanTests.class, 
 	            XslNodeTests.class, XslStringTests.class, XslDateTests.class, XslFnDeepEqualTests.class, XslFnPositionTests.class, 
 	            XslAnalyzeStringTests.class, XslFnRootTests.class, XslFnKeyTests.class, XslFnFormatNumberTests.class, XslMiscRegexTests.class,
-	            XslDocumentTests.class })
+	            XslDocumentTests.class, XslXPathDefaultNamespaceAttrTests.class })
 public class W3CXSLT3Tests {
 
 }

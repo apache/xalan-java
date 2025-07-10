@@ -114,6 +114,10 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     // Store xpath which will be needed when firing Selected Event
     m_xpath = xpath;    
   }
+  
+  public XPath getXPath() {
+	 return m_xpath; 
+  }
 
   /**
    * Get the "select" attribute.

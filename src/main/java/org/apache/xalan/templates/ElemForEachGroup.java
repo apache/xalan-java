@@ -60,7 +60,6 @@ import org.apache.xpath.types.ForEachGroupCompositeGroupingKey;
 import org.apache.xpath.types.StringWithCollation;
 import org.w3c.dom.Node;
 
-import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
@@ -130,6 +129,12 @@ public class ElemForEachGroup extends ElemTemplateElement
   private Vector m_sortElems = null;
   
   /**
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+  
+  /**
    * The class constructor.
    */
   public ElemForEachGroup() {}
@@ -167,6 +172,25 @@ public class ElemForEachGroup extends ElemTemplateElement
          m_sortElems = new Vector();
     
       m_sortElems.addElement(sortElem);
+  }
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
   }
 
   /**
@@ -509,6 +533,14 @@ public class ElemForEachGroup extends ElemTemplateElement
         XPathContext xctxt = transformer.getXPathContext();
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
+        
+        if (m_xpath_default_namespace != null) {    		
+     	   m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+     	}
+        
+        if ((m_xpath_default_namespace != null) && (m_GroupStartingWithExpression != null)) {    		
+        	m_GroupStartingWithExpression = new XPath(m_GroupStartingWithExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+      	}
         
         int forEachGroupGroupingAttributesCount = getForEachGroupGroupingAttributesCount();
         

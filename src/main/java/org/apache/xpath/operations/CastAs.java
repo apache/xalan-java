@@ -70,7 +70,7 @@ public class CastAs extends Operation
       }
       
       try {
-    	  if (XslTransformSharedDatastore.xpathCallingOpCode == OpCodes.OP_IDIV) {
+    	  if (XslTransformSharedDatastore.m_xpathCallingOpCode == OpCodes.OP_IDIV) {
     		  if (left instanceof XSDecimal) {
     			  XSDecimal xsDecimal = (XSDecimal)left;
     			  double dblValue = (xsDecimal.getValue()).doubleValue();
@@ -110,7 +110,7 @@ public class CastAs extends Operation
       }
       finally {
     	  // Reset the value of variable XslTransformSharedDatastore.xpathCallingOpCode 
-    	  XslTransformSharedDatastore.xpathCallingOpCode = Integer.MIN_VALUE;
+    	  XslTransformSharedDatastore.m_xpathCallingOpCode = Integer.MIN_VALUE;
       }
       
       // Evaluate XPath "cast as" expression, when XPath "idiv" expression 
