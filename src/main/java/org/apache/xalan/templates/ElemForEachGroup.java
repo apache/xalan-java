@@ -535,12 +535,20 @@ public class ElemForEachGroup extends ElemTemplateElement
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
         if (m_xpath_default_namespace != null) {    		
-     	   m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+        	if (m_GroupStartingWithExpression != null) {
+        		m_GroupStartingWithExpression = new XPath(m_GroupStartingWithExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        	}
+
+        	if (m_GroupEndingWithExpression != null) {
+        		m_GroupEndingWithExpression = new XPath(m_GroupEndingWithExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        	}
+
+        	if (m_GroupAdjacentExpression != null) {
+        		m_GroupAdjacentExpression = new XPath(m_GroupAdjacentExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        	}     	  
      	}
-        
-        if ((m_xpath_default_namespace != null) && (m_GroupStartingWithExpression != null)) {    		
-        	m_GroupStartingWithExpression = new XPath(m_GroupStartingWithExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-      	}
         
         int forEachGroupGroupingAttributesCount = getForEachGroupGroupingAttributesCount();
         

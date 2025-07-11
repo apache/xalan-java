@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                
-			   version="3.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xpath-default-namespace="http://ns0" 
+			    version="3.0">
+			    
+   <!-- Author: mukulg@apache.org -->			    
 			   
-   <!-- Author: mukulg@apache.org -->			   
-			   
-   <!-- use with test1.xml -->
+   <!-- use with test2.xml -->
    
-   <!-- An XSL stylesheet test case, to test XSL attribute 
-        'xpath-default-namespace'. -->			   
+   <!-- An XSL stylesheet test case, to test XSLT attribute 
+        'xpath-default-namespace' when using xsl:for-each 
+        instruction. -->			   
    
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/">
       <result>
-	     <a>
-		   <xsl:value-of select="doc/a" xpath-default-namespace="http://ns0"/>
-		 </a>
-		 <b>
-		   <xsl:value-of select="doc/b" xpath-default-namespace="http://ns0"/>
-		 </b>
-		 <c>
-		   <xsl:value-of select="doc/c" xpath-default-namespace="http://ns0"/>
-		 </c>
+	     <xsl:for-each select="doc/*">
+		   <number>
+		     <xsl:value-of select="."/>
+		   </number>
+		 </xsl:for-each>
 	  </result>
    </xsl:template>
    

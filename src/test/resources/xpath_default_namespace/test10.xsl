@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                
-			   version="3.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                              
+			    version="3.0">
+			    
+   <!-- Author: mukulg@apache.org -->			    
 			   
-   <!-- Author: mukulg@apache.org -->			   
-			   
-   <!-- use with test1.xml -->
+   <!-- use with test3.xml -->
    
-   <!-- An XSL stylesheet test case, to test XSL attribute 
-        'xpath-default-namespace'. -->			   
+   <!-- An XSL stylesheet test case, to test XSLT attribute 
+        'xpath-default-namespace' when using xsl:apply-templates 
+        instruction. -->			   
    
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/">
       <result>
-	     <a>
-		   <xsl:value-of select="doc/a" xpath-default-namespace="http://ns0"/>
-		 </a>
-		 <b>
-		   <xsl:value-of select="doc/b" xpath-default-namespace="http://ns0"/>
-		 </b>
-		 <c>
-		   <xsl:value-of select="doc/c" xpath-default-namespace="http://ns0"/>
-		 </c>
+		<xsl:apply-templates select="doc/a | doc/b | doc/c" xpath-default-namespace="http://ns0"/>
 	  </result>
+   </xsl:template>
+   
+   <xsl:template match="*">
+	  <xsl:element name="{local-name()}">
+	    <xsl:copy-of select="@*"/>
+		<xsl:apply-templates/>
+	  </xsl:element>
    </xsl:template>
    
    <!--

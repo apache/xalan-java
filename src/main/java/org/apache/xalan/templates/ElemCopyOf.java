@@ -82,7 +82,6 @@ public class ElemCopyOf extends ElemTemplateElement
 
   /**
    * The required select attribute contains an expression.
-   * @serial
    */
   public XPath m_selectExpression = null;
   
@@ -90,6 +89,12 @@ public class ElemCopyOf extends ElemTemplateElement
    * True if the pattern is a simple ".".
    */
   private boolean m_isDot = false;
+  
+  /**
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
   
   /**
    * This class field is used during, XPath.fixupVariables(..) action 
@@ -131,6 +136,25 @@ public class ElemCopyOf extends ElemTemplateElement
   public XPath getSelect()
   {
     return m_selectExpression;
+  }
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+ 	 m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+ 	 return m_xpath_default_namespace;
   }
   
   /**
@@ -206,6 +230,10 @@ public class ElemCopyOf extends ElemTemplateElement
       int sourceNode = xctxt.getCurrentNode();
       
       XObject value = null;
+      
+      if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
+    	  m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+      }
       
       XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
       if (m_isDot && (xpath3ContextItem != null)) {

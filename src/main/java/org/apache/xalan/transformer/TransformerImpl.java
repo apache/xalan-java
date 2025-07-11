@@ -52,10 +52,13 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemCharacterMap;
+import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
+import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOutputCharacter;
@@ -4339,10 +4342,10 @@ public class TransformerImpl extends Transformer
 	
 	/**
 	 * This method definition, does depth first traversal of an XSL 
-	 * compiled stylesheet tree, starting from StylesheetRoot object 
+	 * stylesheet compiled tree, starting from StylesheetRoot object 
 	 * and updates value of attribute xpath-default-namespace of each 
-	 * node from its parent node if the node doesn't have value of 
-	 * attribute 'xpath-default-namespace' specified. 
+	 * node from its parent node, if the node doesn't have attribute 
+	 * 'xpath-default-namespace' specified. 
 	 * 
 	 * @param elemTemplateElem						An XSL stylesheet supplied node from where
 	 *                                              the traversal starts.
@@ -4362,12 +4365,20 @@ public class TransformerImpl extends Transformer
 						  xpathDefaultNamespace = ((ElemTemplate)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
-				  else if (xslElem instanceof ElemValueOf) {
-					  if (((ElemValueOf)xslElem).getXpathDefaultNamespace() == null) {
-						  ((ElemValueOf)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+				  else if (xslElem instanceof ElemApplyTemplates) {
+					  if (((ElemApplyTemplates)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemApplyTemplates)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
 					  }
 					  else {
-						  xpathDefaultNamespace = ((ElemValueOf)xslElem).getXpathDefaultNamespace();  
+						  xpathDefaultNamespace = ((ElemApplyTemplates)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemForEach) {
+					  if (((ElemForEach)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemForEach)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemForEach)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
 				  else if (xslElem instanceof ElemForEachGroup) {
@@ -4378,6 +4389,30 @@ public class TransformerImpl extends Transformer
 						  xpathDefaultNamespace = ((ElemForEachGroup)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
+				  else if (xslElem instanceof ElemIterate) {
+					  if (((ElemIterate)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemIterate)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemIterate)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemValueOf) {
+					  if (((ElemValueOf)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemValueOf)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemValueOf)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemCopyOf) {
+					  if (((ElemCopyOf)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemCopyOf)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemCopyOf)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }				  
 				  else if (xslElem instanceof ElemLiteralResult) {
 					  if (((ElemLiteralResult)xslElem).getXpathDefaultNamespace() == null) {
 						  ((ElemLiteralResult)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
@@ -4387,41 +4422,76 @@ public class TransformerImpl extends Transformer
 					  }
 				  }
 				  
-				  ElemTemplateElement childElem = xslElem.getFirstChildElem();
-				  if (childElem instanceof ElemTemplate) {
-					  if (((ElemTemplate)childElem).getXpathDefaultNamespace() == null) {
-						  ((ElemTemplate)childElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
+				  
+				  if (elemTemplateChild != null) {
+					  if (elemTemplateChild instanceof ElemTemplate) {
+						  if (((ElemTemplate)elemTemplateChild).getXpathDefaultNamespace() == null) {
+							  ((ElemTemplate)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
+						  }
+						  else {
+							  xpathDefaultNamespace = ((ElemTemplate)elemTemplateChild).getXpathDefaultNamespace();  
+						  }
 					  }
-					  else {
-						  xpathDefaultNamespace = ((ElemTemplate)childElem).getXpathDefaultNamespace();  
+					  else if ((elemTemplateChild instanceof ElemApplyTemplates) && (((ElemApplyTemplates)elemTemplateChild).getXpathDefaultNamespace() == null)) {
+						  if (((ElemApplyTemplates)elemTemplateChild).getXpathDefaultNamespace() == null) {
+							  ((ElemApplyTemplates)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
+						  }
+						  else {
+							  xpathDefaultNamespace = ((ElemApplyTemplates)elemTemplateChild).getXpathDefaultNamespace();  
+						  }
 					  }
-				  }
-				  else if ((childElem instanceof ElemValueOf) && (((ElemValueOf)childElem).getXpathDefaultNamespace() == null)) {
-					  if (((ElemValueOf)childElem).getXpathDefaultNamespace() == null) {
-						  ((ElemValueOf)childElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  else if ((elemTemplateChild instanceof ElemForEach) && (((ElemForEach)elemTemplateChild).getXpathDefaultNamespace() == null)) {
+						  if (((ElemForEach)elemTemplateChild).getXpathDefaultNamespace() == null) {
+							  ((ElemForEach)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
+						  }
+						  else {
+							  xpathDefaultNamespace = ((ElemForEach)elemTemplateChild).getXpathDefaultNamespace();  
+						  }
 					  }
-					  else {
-						  xpathDefaultNamespace = ((ElemValueOf)childElem).getXpathDefaultNamespace();  
+					  else if ((elemTemplateChild instanceof ElemForEachGroup) && (((ElemForEachGroup)elemTemplateChild).getXpathDefaultNamespace() == null)) {
+						  if (((ElemForEachGroup)elemTemplateChild).getXpathDefaultNamespace() == null) {
+							  ((ElemForEachGroup)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
+						  }
+						  else {
+							  xpathDefaultNamespace = ((ElemForEachGroup)elemTemplateChild).getXpathDefaultNamespace();  
+						  }
 					  }
-				  }
-				  else if ((childElem instanceof ElemForEachGroup) && (((ElemForEachGroup)childElem).getXpathDefaultNamespace() == null)) {
-					  if (((ElemForEachGroup)childElem).getXpathDefaultNamespace() == null) {
-						  ((ElemForEachGroup)childElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  else if ((elemTemplateChild instanceof ElemIterate) && (((ElemIterate)elemTemplateChild).getXpathDefaultNamespace() == null)) {
+						  if (((ElemIterate)elemTemplateChild).getXpathDefaultNamespace() == null) {
+							  ((ElemIterate)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
+						  }
+						  else {
+							  xpathDefaultNamespace = ((ElemIterate)elemTemplateChild).getXpathDefaultNamespace();  
+						  }
 					  }
-					  else {
-						  xpathDefaultNamespace = ((ElemForEachGroup)childElem).getXpathDefaultNamespace();  
+					  else if ((elemTemplateChild instanceof ElemValueOf) && (((ElemValueOf)elemTemplateChild).getXpathDefaultNamespace() == null)) {
+						  if (((ElemValueOf)elemTemplateChild).getXpathDefaultNamespace() == null) {
+							  ((ElemValueOf)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
+						  }
+						  else {
+							  xpathDefaultNamespace = ((ElemValueOf)elemTemplateChild).getXpathDefaultNamespace();  
+						  }
 					  }
-				  }
-				  else if ((childElem instanceof ElemLiteralResult) && (((ElemLiteralResult)childElem).getXpathDefaultNamespace() == null)) {
-					  if (((ElemLiteralResult)childElem).getXpathDefaultNamespace() == null) {
-						  ((ElemLiteralResult)childElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  else if ((elemTemplateChild instanceof ElemCopyOf) && (((ElemCopyOf)elemTemplateChild).getXpathDefaultNamespace() == null)) {
+						  if (((ElemCopyOf)elemTemplateChild).getXpathDefaultNamespace() == null) {
+							  ((ElemCopyOf)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
+						  }
+						  else {
+							  xpathDefaultNamespace = ((ElemCopyOf)elemTemplateChild).getXpathDefaultNamespace();  
+						  }
+					  }				  
+					  else if ((elemTemplateChild instanceof ElemLiteralResult) && (((ElemLiteralResult)elemTemplateChild).getXpathDefaultNamespace() == null)) {
+						  if (((ElemLiteralResult)elemTemplateChild).getXpathDefaultNamespace() == null) {
+							  ((ElemLiteralResult)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
+						  }
+						  else {
+							  xpathDefaultNamespace = ((ElemLiteralResult)elemTemplateChild).getXpathDefaultNamespace();  
+						  }
 					  }
-					  else {
-						  xpathDefaultNamespace = ((ElemLiteralResult)childElem).getXpathDefaultNamespace();  
-					  }
-				  }
 
-				  updateXPathDefaultNamespace(childElem, xpathDefaultNamespace);
+					  updateXPathDefaultNamespace(elemTemplateChild, xpathDefaultNamespace);
+			      }
 
 				  xslElem = xslElem.getNextSiblingElem();
 			  }		 

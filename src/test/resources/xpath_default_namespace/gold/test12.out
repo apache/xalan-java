@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group group_key="m1">
+    <a m1="p">1</a>
+    <b m1="q">2</b>
+    <c m1="r">3</c>
+  </group>
+  <group group_key="m2">
+    <d m2="x">4</d>
+    <e m2="y">5</e>
+    <f m2="z">6</f>
+  </group>
+</result>

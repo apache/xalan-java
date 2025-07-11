@@ -87,6 +87,12 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * 
    */
   private boolean m_isDefaultTemplate = false;
+  
+  /**
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
 
   /**
    * Set the mode attribute for this element.
@@ -118,6 +124,25 @@ public class ElemApplyTemplates extends ElemCallTemplate
   public void setIsDefaultTemplate(boolean b)
   {
 	  m_isDefaultTemplate = b;
+  }
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
   }
 
   /**
@@ -219,6 +244,11 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  XObject varEvalResult = null;    
 	  ResultSequence resultSeq = null;
 	  QName xslTemplateInvokeMode = getMode();
+	  
+	  if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
+		  m_xpath = new XPath(m_xpath.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	  m_selectExpression = m_xpath.getExpression(); 
+      }
 
 	  if (m_selectExpression instanceof XPathSequenceConstructor) {
 		  resultSeq = (ResultSequence)(((XPathSequenceConstructor)m_selectExpression).execute(xctxt));

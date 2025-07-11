@@ -36,8 +36,12 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemApplyTemplates;
+import org.apache.xalan.templates.ElemCopyOf;
+import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -292,7 +296,7 @@ public class XPathParser
   public XPathParser(ErrorListener errorListener, javax.xml.transform.SourceLocator sourceLocator)
   {
     m_errorListener = errorListener;
-    m_sourceLocator = sourceLocator;    
+    m_sourceLocator = sourceLocator;
   }
 
   /**
@@ -327,13 +331,13 @@ public class XPathParser
     m_namespaceContext = namespaceContext;
     m_functionTable = compiler.getFunctionTable();
     
+    m_expr_parent = (ExpressionNode)m_sourceLocator;
+    
     m_isSequenceTypeXPathExpr = isSequenceTypeXPathExpr;
     
     m_xpathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
     
     m_xpathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs();
-    
-    m_expr_parent = (ExpressionNode)m_sourceLocator;
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
     
@@ -7174,10 +7178,28 @@ public class XPathParser
 				result = getXPathDefaultNamespaceValue(((ElemTemplate)xpathExprXslParentNode).getParentElem()); 
 			}
 		}
+		else if (xpathExprXslParentNode instanceof ElemApplyTemplates) {
+			result = ((ElemApplyTemplates)xpathExprXslParentNode).getXpathDefaultNamespace();
+			if (result == null) {
+				result = getXPathDefaultNamespaceValue(((ElemApplyTemplates)xpathExprXslParentNode).getParentElem()); 
+			}
+		}
+		else if (xpathExprXslParentNode instanceof ElemForEach) {
+			result = ((ElemForEach)xpathExprXslParentNode).getXpathDefaultNamespace();
+			if (result == null) {
+				result = getXPathDefaultNamespaceValue(((ElemForEach)xpathExprXslParentNode).getParentElem()); 
+			}
+		}
 		else if (xpathExprXslParentNode instanceof ElemForEachGroup) {
 			result = ((ElemForEachGroup)xpathExprXslParentNode).getXpathDefaultNamespace();
 			if (result == null) {
 				result = getXPathDefaultNamespaceValue(((ElemForEachGroup)xpathExprXslParentNode).getParentElem()); 
+			}
+		}
+		else if (xpathExprXslParentNode instanceof ElemIterate) {
+			result = ((ElemIterate)xpathExprXslParentNode).getXpathDefaultNamespace();
+			if (result == null) {
+				result = getXPathDefaultNamespaceValue(((ElemIterate)xpathExprXslParentNode).getParentElem()); 
 			}
 		}
 		else if (xpathExprXslParentNode instanceof ElemValueOf) {
@@ -7186,6 +7208,12 @@ public class XPathParser
 				result = getXPathDefaultNamespaceValue(((ElemValueOf)xpathExprXslParentNode).getParentElem()); 
 			}
 		}
+		else if (xpathExprXslParentNode instanceof ElemCopyOf) {
+			result = ((ElemCopyOf)xpathExprXslParentNode).getXpathDefaultNamespace();
+			if (result == null) {
+				result = getXPathDefaultNamespaceValue(((ElemCopyOf)xpathExprXslParentNode).getParentElem()); 
+			}
+		}		
 		else if (xpathExprXslParentNode instanceof ElemLiteralResult) {
 			result = ((ElemLiteralResult)xpathExprXslParentNode).getXpathDefaultNamespace();
 			if (result == null) {

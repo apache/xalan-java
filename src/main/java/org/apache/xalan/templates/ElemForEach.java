@@ -94,12 +94,17 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    */
   protected Expression m_selectExpression = null;
   
+  /**
+   * Class field to store, XPath expression for subsequent 
+   * processing.
+   */
+  protected XPath m_xpath = null;
   
   /**
-   * Used to fix bug#16889
-   * Store XPath away for later processing.
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
    */
-  protected XPath m_xpath = null;  
+  private String m_xpath_default_namespace = null;
 
   /**
    * Set the "select" attribute.
@@ -109,14 +114,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   public void setSelect(XPath xpath)
   {
     m_selectExpression = xpath.getExpression();
-    
-    // The following line is part of the codes added to fix bug#16889
-    // Store xpath which will be needed when firing Selected Event
     m_xpath = xpath;    
-  }
-  
-  public XPath getXPath() {
-	 return m_xpath; 
   }
 
   /**
@@ -128,6 +126,25 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   {
     return m_selectExpression;
   }
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
 
   /**
    * This function is called after everything else has been
@@ -135,7 +152,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    * values that may be based on some other property that
    * depends on recomposition.
    *
-   * NEEDSDOC @param sroot
+   * @param sroot            StylesheetRoot object
    *
    * @throws TransformerException
    */
@@ -336,6 +353,11 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     xctxt.setLast(0);
     
     DTMCursorIterator resultSeqDtmIterator = null;
+    
+    if (m_xpath_default_namespace != null) {    		
+    	m_xpath = new XPath(m_xpath.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	m_selectExpression = m_xpath.getExpression();
+  	}
     
     if (m_selectExpression instanceof Function) {
         XObject evalResult = ((Function)m_selectExpression).execute(xctxt);

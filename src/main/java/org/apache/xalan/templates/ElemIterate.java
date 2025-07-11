@@ -67,10 +67,23 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
       * The "select" expression.
       */
      protected Expression m_selectExpression = null;
+     
+     /**
+      * Class field to store, XPath expression for subsequent 
+      * processing.
+      */
+     protected XPath m_xpath = null;
+     
+     /**
+      * This class field, represents the value of "xpath-default-namespace" 
+      * attribute.
+      */
+     private String m_xpath_default_namespace = null;
 
      public void setSelect(XPath xpath)
      {
          m_selectExpression = xpath.getExpression();
+         m_xpath = xpath;
      }
 
      /**
@@ -81,6 +94,25 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
      public Expression getSelect()
      {
          return m_selectExpression;
+     }
+     
+     /**
+      * Set the value of "xpath-default-namespace" attribute.
+      *
+      * @param v   Value of the "xpath-default-namespace" attribute
+      */
+     public void setXpathDefaultNamespace(String v)
+     {
+    	 m_xpath_default_namespace = v; 
+     }
+
+     /**
+      * Get the value of "xpath-default-namespace" attribute.
+      *  
+      * @return		  The value of "xpath-default-namespace" attribute 
+      */
+     public String getXpathDefaultNamespace() {
+    	 return m_xpath_default_namespace;
      }
 
      /**
@@ -180,6 +212,11 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            
            xctxt.setPos(0);
            xctxt.setLast(0);
+           
+           if (m_xpath_default_namespace != null) {    		
+        	   m_xpath = new XPath(m_xpath.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);        	   
+        	   m_selectExpression = m_xpath.getExpression();
+           }
            
            // Clear the, xsl:iterate->xsl:param list storage before this xsl:iterate 
            // instruction's evaluation.

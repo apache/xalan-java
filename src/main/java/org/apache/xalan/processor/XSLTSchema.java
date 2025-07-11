@@ -571,7 +571,7 @@ public class XSLTSchema extends XSLTElementDef
                                  null /*alias */, null /* elements */,
                                  new XSLTAttributeDef[]{ selectAttrRequired,
                                 		                 typeAttrOpt,
-                                		                 validationAttrOpt },
+                                		                 validationAttrOpt, xpathDefaultNamespaceAttrOpt },
                                  new ProcessorTemplateElem(),
                                  ElemCopyOf.class /* class object */, 20, true);
     
@@ -624,7 +624,7 @@ public class XSLTSchema extends XSLTElementDef
                                          new XSLTElementDef[]{ xslSort,
                                                                xslWithParam } /* elements */, new XSLTAttributeDef[]{
                                                                  selectAttrDefNode,
-                                                                 modeAttr }, 
+                                                                 modeAttr, xpathDefaultNamespaceAttrOpt }, 
                                                                         new ProcessorTemplateElem(),
                                          ElemApplyTemplates.class /* class object */, 20, true);
     XSLTElementDef xslApplyImports =
@@ -637,7 +637,7 @@ public class XSLTSchema extends XSLTElementDef
                                   Constants.S_XSLNAMESPACEURL, "for-each",
                                   null /*alias */, templateElementsAndSort,  // (#PCDATA %instructions; %result-elements; | xsl:sort)*
                                   new XSLTAttributeDef[]{ selectAttrRequired,
-                                                          spaceAttr }, 
+                                		                  xpathDefaultNamespaceAttrOpt, spaceAttr }, 
                                                new ProcessorTemplateElem(),
                                   ElemForEach.class /* class object */, true, false, true, 20, true);
     
@@ -747,7 +747,8 @@ public class XSLTSchema extends XSLTElementDef
     
     XSLTElementDef xslIterate = new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "iterate",
                                                    null /*alias */, templateElementsAndParams,
-                                                   new XSLTAttributeDef[]{ selectAttrRequired }, new ProcessorTemplateElem(),
+                                                   new XSLTAttributeDef[]{ selectAttrRequired,
+                                                		                   xpathDefaultNamespaceAttrOpt }, new ProcessorTemplateElem(),
                                                    ElemIterate.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslIterateOnCompletion = new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "on-completion",
