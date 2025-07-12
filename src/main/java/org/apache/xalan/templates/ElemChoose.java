@@ -20,12 +20,14 @@
  */
 package org.apache.xalan.templates;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
@@ -39,7 +41,32 @@ import xml.xpath31.processor.types.XSAnyType;
  */
 public class ElemChoose extends ElemTemplateElement
 {
-   static final long serialVersionUID = -3070117361903102033L;
+  static final long serialVersionUID = -3070117361903102033L;
+  
+  /**
+   * Class field to, represent the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
 
   /**
    * Get an int constant identifying the type of element.
@@ -93,19 +120,25 @@ public class ElemChoose extends ElemTemplateElement
       {
         found = true;
 
-        ElemWhen when = (ElemWhen) childElem;
+        ElemWhen when = (ElemWhen) childElem;                
 
         // must be xsl:when
         XPathContext xctxt = transformer.getXPathContext();
+        SourceLocator srcLocator = xctxt.getSAXLocator(); 
+        XPath whenTest = when.getTest();
+        if (when.getXpathDefaultNamespace() != null) {
+           whenTest = new XPath(whenTest.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        }
+        
         int sourceNode = xctxt.getCurrentNode();
 
         if (transformer.getDebug())
         {
-            XObject test = when.getTest().execute(xctxt, sourceNode, when);
+            XObject test = whenTest.execute(xctxt, sourceNode, when);
 
             if (transformer.getDebug())
                transformer.getTraceManager().emitSelectedEvent(sourceNode, when,
-                                                                        "test", when.getTest(), test);
+                                                                        "test", whenTest, test);
             if (test.bool())
             {
                transformer.getTraceManager().emitTraceEvent(when);
@@ -139,12 +172,12 @@ public class ElemChoose extends ElemTemplateElement
                 int contextNode = docFragDtm.getFirstChild(docFragDtm.getDocument());            
                 xctxtNew.pushCurrentNode(contextNode);
                 xctxtNew.setSAXLocator(this);
-                if ((when.getTest()).bool(xctxtNew, contextNode, this)) {
+                if (whenTest.bool(xctxtNew, contextNode, this)) {
                     transformer.executeChildTemplates(when, true);
                     return;
                 }  
             }        
-            else if ((when.getTest()).bool(xctxt, sourceNode, this)) {
+            else if (whenTest.bool(xctxt, sourceNode, this)) {
                transformer.executeChildTemplates(when, true);
                return;
             }  

@@ -141,6 +141,31 @@ public class ElemSequence extends ElemTemplateElement
   public XPath getSelect() {
      return m_selectPattern;
   }
+  
+  /**
+   * Class field to, represent the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -194,6 +219,10 @@ public class ElemSequence extends ElemTemplateElement
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
 	  Expression selectExpression = null;
+	  
+	  if (m_xpath_default_namespace != null) {
+		  m_selectPattern = new XPath(m_selectPattern.getPatternString(), xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null);
+	  }
 
 	  try {        
 		  if (m_selectPattern != null) {

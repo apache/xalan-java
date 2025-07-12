@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-11T13:02:23Z" fail="29" name="apply-templates" pass="19" skipped="2" statusUnknown="0" totalRun="50">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-12T10:14:27Z" fail="28" name="apply-templates" pass="20" skipped="2" statusUnknown="0" totalRun="50">
    <testResult status="fail" testName="apply-templates-001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
 &#13;
@@ -150,7 +150,7 @@
    <testResult status="fail" testName="conflict-resolution-0701">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="conflict-resolution-0702"/>
+   <testResult status="pass" testName="conflict-resolution-0702"/>
    <testResult status="fail" testName="conflict-resolution-0703">
       <outResult/>
    </testResult>

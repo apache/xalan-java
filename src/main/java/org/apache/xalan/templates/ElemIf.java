@@ -44,7 +44,7 @@ import xml.xpath31.processor.types.XSAnyType;
  */
 public class ElemIf extends ElemTemplateElement
 {
-    static final long serialVersionUID = 2158774632427453022L;
+  static final long serialVersionUID = 2158774632427453022L;
 
   /**
    * The xsl:if element must have a test attribute, which specifies an expression.
@@ -72,6 +72,31 @@ public class ElemIf extends ElemTemplateElement
   public XPath getTest()
   {
     return m_test;
+  }
+  
+  /**
+   * Class field to, represent the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
   }
 
   /**
@@ -132,6 +157,10 @@ public class ElemIf extends ElemTemplateElement
 
     XPathContext xctxt = transformer.getXPathContext();
     int sourceNode = xctxt.getCurrentNode();
+    
+    if (m_xpath_default_namespace != null) {
+       m_test = new XPath(m_test.getPatternString(), xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null);
+    }
 
     if (transformer.getDebug())
     {

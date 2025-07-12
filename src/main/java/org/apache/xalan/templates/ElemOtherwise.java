@@ -32,7 +32,32 @@ package org.apache.xalan.templates;
  */
 public class ElemOtherwise extends ElemTemplateElement
 {
-    static final long serialVersionUID = 1863944560970181395L;
+   static final long serialVersionUID = 1863944560970181395L;
+   
+   /**
+    * Class field to, represent the value of "xpath-default-namespace" 
+    * attribute.
+    */
+   private String m_xpath_default_namespace = null;
+   
+   /**
+    * Set the value of "xpath-default-namespace" attribute.
+    *
+    * @param v   Value of the "xpath-default-namespace" attribute
+    */
+   public void setXpathDefaultNamespace(String v)
+   {
+ 	  m_xpath_default_namespace = v; 
+   }
+
+   /**
+    * Get the value of "xpath-default-namespace" attribute.
+    *  
+    * @return		  The value of "xpath-default-namespace" attribute 
+    */
+   public String getXpathDefaultNamespace() {
+ 	  return m_xpath_default_namespace;
+   }
 
   /**
    * Get an int constant identifying the type of element.

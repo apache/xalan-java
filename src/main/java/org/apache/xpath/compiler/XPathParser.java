@@ -37,15 +37,20 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemApplyTemplates;
+import org.apache.xalan.templates.ElemChoose;
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemOtherwise;
+import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemValueOf;
+import org.apache.xalan.templates.ElemWhen;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
@@ -287,7 +292,7 @@ public class XPathParser
   
   private TokenQueueScanPosition m_prevTokQueueScanPosition = null;
   
-  private ExpressionNode m_expr_parent = null;
+  private String m_xpathDefaultNamespace = null;
   
   
   /**
@@ -331,7 +336,7 @@ public class XPathParser
     m_namespaceContext = namespaceContext;
     m_functionTable = compiler.getFunctionTable();
     
-    m_expr_parent = (ExpressionNode)m_sourceLocator;
+    // m_expr_parent = (ExpressionNode)m_sourceLocator;
     
     m_isSequenceTypeXPathExpr = isSequenceTypeXPathExpr;
     
@@ -4821,10 +4826,9 @@ public class XPathParser
     
     boolean funcMatchFound = false;
     
-    String xpathDefaultNamespace = null;
-    
-    if (m_expr_parent instanceof ElemTemplateElement) {
-       xpathDefaultNamespace = getXPathDefaultNamespaceValue((ElemTemplateElement)m_expr_parent);
+    ExpressionNode exprParent = (ExpressionNode)m_sourceLocator;
+    if (exprParent instanceof ElemTemplateElement) {
+       m_xpathDefaultNamespace = getXPathDefaultNamespace((ElemTemplateElement)exprParent);
     }
 
     if (lookahead("::", 1))
@@ -4840,10 +4844,14 @@ public class XPathParser
     		           (Keywords.FROM_DESCENDANTS_OR_SELF_STRING).equals(axesName) || (Keywords.FROM_FOLLOWING_STRING).equals(axesName) || 
     		           (Keywords.FROM_FOLLOWING_SIBLINGS_STRING).equals(axesName) || (Keywords.FROM_PARENT_STRING).equals(axesName) || 
     		           (Keywords.FROM_PRECEDING_STRING).equals(axesName) || (Keywords.FROM_PRECEDING_SIBLINGS_STRING).equals(axesName) || 
-    		           (Keywords.FROM_SELF_STRING).equals(axesName)) {    	  
-    	  if ((xpathDefaultNamespace != null) && !tokenIs(xpathDefaultNamespace)) {
-    		  // Modify token queue's contents, by adding tokens xpathDefaultNamespace 
-    		  // and ":" prior to this token.
+    		           (Keywords.FROM_SELF_STRING).equals(axesName)) {
+    	  
+    	  if ((m_xpathDefaultNamespace != null) && !tokenIs(m_xpathDefaultNamespace)) {
+    		  /**
+    		   * Modify token queue's contents, by adding tokens xpathDefaultNamespace
+    		   * and ":" prior to this token. This makes XPath expression namespace
+    		   * qualified with xpathDefaultNamespace.
+    		   */
     		  ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
     		  List<Object> tokenPrefixList = new ArrayList<Object>();
     		  for (int i = 0; i < m_queueMark - 1; i++) {
@@ -4864,7 +4872,7 @@ public class XPathParser
     			  tokenQueue.addElement(tokenPrefixList.get(j));  
     		  }
 
-    		  tokenQueue.addElement(xpathDefaultNamespace);
+    		  tokenQueue.addElement(m_xpathDefaultNamespace);
     		  tokenQueue.addElement(":");
 
     		  for (int j = 0; j < tokenSuffixList.size(); j++) {
@@ -4873,8 +4881,8 @@ public class XPathParser
 
     		  tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + 2);
 
-    		  m_token = xpathDefaultNamespace;
-    		  m_tokenChar = xpathDefaultNamespace.charAt(0);
+    		  m_token = m_xpathDefaultNamespace;
+    		  m_tokenChar = m_xpathDefaultNamespace.charAt(0);
     	  }
       }
     }
@@ -4984,9 +4992,12 @@ public class XPathParser
     {       
         axesType = OpCodes.FROM_CHILDREN;
         
-        if ((xpathDefaultNamespace != null) && !tokenIs(xpathDefaultNamespace)) {
-        	// Modify token queue's contents, by adding tokens xpathDefaultNamespace 
-        	// and ":" prior to this token.
+        if ((m_xpathDefaultNamespace != null) && !tokenIs(m_xpathDefaultNamespace)) {
+        	/**
+  		     * Modify token queue's contents, by adding tokens xpathDefaultNamespace
+   		     * and ":" prior to this token. This makes XPath expression namespace
+  		     * qualified with xpathDefaultNamespace.
+  		     */
         	ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
         	List<Object> tokenPrefixList = new ArrayList<Object>();
         	for (int i = 0; i < m_queueMark - 1; i++) {
@@ -5007,7 +5018,7 @@ public class XPathParser
         		tokenQueue.addElement(tokenPrefixList.get(j));  
         	}
 
-        	tokenQueue.addElement(xpathDefaultNamespace);
+        	tokenQueue.addElement(m_xpathDefaultNamespace);
         	tokenQueue.addElement(":");
 
         	for (int j = 0; j < tokenSuffixList.size(); j++) {
@@ -5016,8 +5027,8 @@ public class XPathParser
 
         	tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + 2);
 
-        	m_token = xpathDefaultNamespace;
-        	m_tokenChar = xpathDefaultNamespace.charAt(0);        	
+        	m_token = m_xpathDefaultNamespace;
+        	m_tokenChar = m_xpathDefaultNamespace.charAt(0);        	
    	    }
 
         appendOp(2, axesType);
@@ -6837,6 +6848,10 @@ public class XPathParser
 	   return result;	   
    }
    
+   public void setXPathDefaultNamespace(String xpathDefaultNamespace) {
+	   m_xpathDefaultNamespace = xpathDefaultNamespace;  
+   }
+   
    /**
     * Method definition to check, whether there's an XPath built-in 
     * node pattern like node(), doument-node(), text(), comment() as 
@@ -7151,77 +7166,107 @@ public class XPathParser
 	}
 	
 	/**
-	 * This method definition, finds xpath-default-namespace attribute's effective
-	 * value for the current XPath expression evaluation, by searching information
-	 * on an XSL current node and if not found their then information within the
-	 * ancestor nodes upto StylesheetRoot object.
-	 * 
-	 * The search for effective value of xpath-default-namespace attribute stops
-	 * at the nearest XSL parent node where a non-null value of xpath-default-namespace 
-	 * is found.  
-	 * 
-	 * @param xpathExprXslParentNode			    An XSL supplied parent node of the
-	 *                                              XPath expression.
-	 * @return										xpath-default-namespace attribute's 
-	 *                                              effective value for XPath expression.
-	 */
-	private String getXPathDefaultNamespaceValue(ElemTemplateElement xpathExprXslParentNode) {
-		
-		String result = null;
+     * Method definition to get, XML attribute xpath-default-namespace's effective
+     * value for the current XPath expression evaluation, by searching information
+     * on an XSL current node and if not found their then information within the
+     * ancestor nodes upto StylesheetRoot object.
+     * 
+     * The search for effective value of attribute xpath-default-namespace completes
+     * at the nearest XSL parent node where a non-null value of xpath-default-namespace 
+     * is found.  
+     * 
+     * @param xpathExprXslParentNode			    An XSL supplied non-expression parent node of
+     *                                              the XPath expression.
+     * @return										An attribute xpath-default-namespace's effective 
+     *                                              value for XPath expression.
+     */
+    private String getXPathDefaultNamespace(ElemTemplateElement xpathExprXslParentNode) {
 
-		if (xpathExprXslParentNode instanceof StylesheetRoot) {
-			result = ((StylesheetRoot)xpathExprXslParentNode).getXpathDefaultNamespace(); 
-		}
-		else if (xpathExprXslParentNode instanceof ElemTemplate) {
-			result = ((ElemTemplate)xpathExprXslParentNode).getXpathDefaultNamespace();
-			if (result == null) {
-				result = getXPathDefaultNamespaceValue(((ElemTemplate)xpathExprXslParentNode).getParentElem()); 
-			}
-		}
-		else if (xpathExprXslParentNode instanceof ElemApplyTemplates) {
-			result = ((ElemApplyTemplates)xpathExprXslParentNode).getXpathDefaultNamespace();
-			if (result == null) {
-				result = getXPathDefaultNamespaceValue(((ElemApplyTemplates)xpathExprXslParentNode).getParentElem()); 
-			}
-		}
-		else if (xpathExprXslParentNode instanceof ElemForEach) {
-			result = ((ElemForEach)xpathExprXslParentNode).getXpathDefaultNamespace();
-			if (result == null) {
-				result = getXPathDefaultNamespaceValue(((ElemForEach)xpathExprXslParentNode).getParentElem()); 
-			}
-		}
-		else if (xpathExprXslParentNode instanceof ElemForEachGroup) {
-			result = ((ElemForEachGroup)xpathExprXslParentNode).getXpathDefaultNamespace();
-			if (result == null) {
-				result = getXPathDefaultNamespaceValue(((ElemForEachGroup)xpathExprXslParentNode).getParentElem()); 
-			}
-		}
-		else if (xpathExprXslParentNode instanceof ElemIterate) {
-			result = ((ElemIterate)xpathExprXslParentNode).getXpathDefaultNamespace();
-			if (result == null) {
-				result = getXPathDefaultNamespaceValue(((ElemIterate)xpathExprXslParentNode).getParentElem()); 
-			}
-		}
-		else if (xpathExprXslParentNode instanceof ElemValueOf) {
-			result = ((ElemValueOf)xpathExprXslParentNode).getXpathDefaultNamespace();
-			if (result == null) {
-				result = getXPathDefaultNamespaceValue(((ElemValueOf)xpathExprXslParentNode).getParentElem()); 
-			}
-		}
-		else if (xpathExprXslParentNode instanceof ElemCopyOf) {
-			result = ((ElemCopyOf)xpathExprXslParentNode).getXpathDefaultNamespace();
-			if (result == null) {
-				result = getXPathDefaultNamespaceValue(((ElemCopyOf)xpathExprXslParentNode).getParentElem()); 
-			}
-		}		
-		else if (xpathExprXslParentNode instanceof ElemLiteralResult) {
-			result = ((ElemLiteralResult)xpathExprXslParentNode).getXpathDefaultNamespace();
-			if (result == null) {
-				result = getXPathDefaultNamespaceValue(((ElemLiteralResult)xpathExprXslParentNode).getParentElem()); 
-			}
-		}
+    	String result = null;
 
-		return result;
-	}
+    	if (xpathExprXslParentNode instanceof StylesheetRoot) {
+    		result = ((StylesheetRoot)xpathExprXslParentNode).getXpathDefaultNamespace(); 
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemTemplate) {
+    		result = ((ElemTemplate)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemTemplate)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemApplyTemplates) {
+    		result = ((ElemApplyTemplates)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemApplyTemplates)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemForEach) {
+    		result = ((ElemForEach)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemForEach)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemForEachGroup) {
+    		result = ((ElemForEachGroup)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemForEachGroup)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemIterate) {
+    		result = ((ElemIterate)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemIterate)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemValueOf) {
+    		result = ((ElemValueOf)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemValueOf)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemCopyOf) {
+    		result = ((ElemCopyOf)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemCopyOf)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}		
+    	else if (xpathExprXslParentNode instanceof ElemLiteralResult) {
+    		result = ((ElemLiteralResult)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemLiteralResult)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemChoose) {
+    		result = ((ElemChoose)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemChoose)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemWhen) {
+    		result = ((ElemWhen)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemWhen)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemOtherwise) {
+    		result = ((ElemOtherwise)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemOtherwise)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemIf) {
+    		result = ((ElemIf)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemIf)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemSequence) {
+    		result = ((ElemSequence)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemSequence)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+
+    	return result;
+    }
   
 }

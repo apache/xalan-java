@@ -36,7 +36,7 @@ import org.apache.xpath.XPath;
  */
 public class ElemWhen extends ElemTemplateElement
 {
-    static final long serialVersionUID = 5984065730262071360L;
+  static final long serialVersionUID = 5984065730262071360L;
 
   /**
    * Each xsl:when element has a single attribute, test,
@@ -68,6 +68,31 @@ public class ElemWhen extends ElemTemplateElement
   {
     return m_test;
   }
+  
+  /**
+   * Class field to, represent the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -90,10 +115,10 @@ public class ElemWhen extends ElemTemplateElement
   public void compose(StylesheetRoot sroot) 
     throws javax.xml.transform.TransformerException
   {
-    super.compose(sroot);
-    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
-    if(null != m_test)
-      m_test.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+	  super.compose(sroot);
+	  java.util.Vector vnames = sroot.getComposeState().getVariableNames();
+	  if (m_test != null)
+		  m_test.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());	  
   }
 
   /**

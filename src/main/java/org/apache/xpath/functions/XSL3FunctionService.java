@@ -133,9 +133,9 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
 public class XSL3FunctionService {
 	
 	/**
-	  * Class field declarations, specifying constant values used by this
-	  * implementation.
-	  * 		
+	 * Class field declarations, specifying constant values used by this
+	 * implementation.
+	 * 		
 	 */
 	
 	public static final String UTF_8 = "UTF-8";

@@ -554,7 +554,6 @@ public class ElemLiteralResult extends ElemUse
 	  return m_xpath_default_namespace;
   }
 
-
   /**
    * The "extension-element-prefixes" property, actually contains URIs.
    * @serial

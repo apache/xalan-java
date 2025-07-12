@@ -55,19 +55,24 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemCharacterMap;
+import org.apache.xalan.templates.ElemChoose;
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
+import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemNumber;
+import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemOutputCharacter;
+import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemSort;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.ElemVariable;
+import org.apache.xalan.templates.ElemWhen;
 import org.apache.xalan.templates.OutputProperties;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetComposed;
@@ -4341,11 +4346,10 @@ public class TransformerImpl extends Transformer
 	}
 	
 	/**
-	 * This method definition, does depth first traversal of an XSL 
-	 * stylesheet compiled tree, starting from StylesheetRoot object 
-	 * and updates value of attribute xpath-default-namespace of each 
-	 * node from its parent node, if the node doesn't have attribute 
-	 * 'xpath-default-namespace' specified. 
+	 * This method definition, does depth first traversal of an XSL stylesheet 
+	 * compiled tree, starting from StylesheetRoot object and updates attribute 
+	 * xpath-default-namespace's value of each node from value of its parent node, 
+	 * if the node doesn't have attribute 'xpath-default-namespace' specified. 
 	 * 
 	 * @param elemTemplateElem						An XSL stylesheet supplied node from where
 	 *                                              the traversal starts.
@@ -4353,10 +4357,10 @@ public class TransformerImpl extends Transformer
 	 *                                              of the supplied node. 
 	 */
 	private void updateXPathDefaultNamespace(ElemTemplateElement elemTemplateElem, String xpathDefaultNamespace) {
-		  
+		
 		  if (elemTemplateElem != null) {		  
-			  ElemTemplateElement xslElem = elemTemplateElem.getFirstChildElem();
-			  while (xslElem != null) {				  
+			  ElemTemplateElement xslElem = elemTemplateElem; 
+			  while (xslElem != null) {
 				  if (xslElem instanceof ElemTemplate) {
 					  if (((ElemTemplate)xslElem).getXpathDefaultNamespace() == null) {
 						  ((ElemTemplate)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
@@ -4421,77 +4425,49 @@ public class TransformerImpl extends Transformer
 						  xpathDefaultNamespace = ((ElemLiteralResult)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
+				  else if (xslElem instanceof ElemChoose) {
+					  if (((ElemChoose)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemChoose)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemChoose)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemWhen) {
+					  if (((ElemWhen)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemWhen)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemWhen)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemOtherwise) {
+					  if (((ElemOtherwise)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemOtherwise)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemOtherwise)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemIf) {
+					  if (((ElemIf)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemIf)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemIf)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemSequence) {
+					  if (((ElemSequence)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemSequence)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemSequence)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
 				  
 				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
-				  
-				  if (elemTemplateChild != null) {
-					  if (elemTemplateChild instanceof ElemTemplate) {
-						  if (((ElemTemplate)elemTemplateChild).getXpathDefaultNamespace() == null) {
-							  ((ElemTemplate)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
-						  }
-						  else {
-							  xpathDefaultNamespace = ((ElemTemplate)elemTemplateChild).getXpathDefaultNamespace();  
-						  }
-					  }
-					  else if ((elemTemplateChild instanceof ElemApplyTemplates) && (((ElemApplyTemplates)elemTemplateChild).getXpathDefaultNamespace() == null)) {
-						  if (((ElemApplyTemplates)elemTemplateChild).getXpathDefaultNamespace() == null) {
-							  ((ElemApplyTemplates)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
-						  }
-						  else {
-							  xpathDefaultNamespace = ((ElemApplyTemplates)elemTemplateChild).getXpathDefaultNamespace();  
-						  }
-					  }
-					  else if ((elemTemplateChild instanceof ElemForEach) && (((ElemForEach)elemTemplateChild).getXpathDefaultNamespace() == null)) {
-						  if (((ElemForEach)elemTemplateChild).getXpathDefaultNamespace() == null) {
-							  ((ElemForEach)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
-						  }
-						  else {
-							  xpathDefaultNamespace = ((ElemForEach)elemTemplateChild).getXpathDefaultNamespace();  
-						  }
-					  }
-					  else if ((elemTemplateChild instanceof ElemForEachGroup) && (((ElemForEachGroup)elemTemplateChild).getXpathDefaultNamespace() == null)) {
-						  if (((ElemForEachGroup)elemTemplateChild).getXpathDefaultNamespace() == null) {
-							  ((ElemForEachGroup)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
-						  }
-						  else {
-							  xpathDefaultNamespace = ((ElemForEachGroup)elemTemplateChild).getXpathDefaultNamespace();  
-						  }
-					  }
-					  else if ((elemTemplateChild instanceof ElemIterate) && (((ElemIterate)elemTemplateChild).getXpathDefaultNamespace() == null)) {
-						  if (((ElemIterate)elemTemplateChild).getXpathDefaultNamespace() == null) {
-							  ((ElemIterate)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
-						  }
-						  else {
-							  xpathDefaultNamespace = ((ElemIterate)elemTemplateChild).getXpathDefaultNamespace();  
-						  }
-					  }
-					  else if ((elemTemplateChild instanceof ElemValueOf) && (((ElemValueOf)elemTemplateChild).getXpathDefaultNamespace() == null)) {
-						  if (((ElemValueOf)elemTemplateChild).getXpathDefaultNamespace() == null) {
-							  ((ElemValueOf)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
-						  }
-						  else {
-							  xpathDefaultNamespace = ((ElemValueOf)elemTemplateChild).getXpathDefaultNamespace();  
-						  }
-					  }
-					  else if ((elemTemplateChild instanceof ElemCopyOf) && (((ElemCopyOf)elemTemplateChild).getXpathDefaultNamespace() == null)) {
-						  if (((ElemCopyOf)elemTemplateChild).getXpathDefaultNamespace() == null) {
-							  ((ElemCopyOf)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
-						  }
-						  else {
-							  xpathDefaultNamespace = ((ElemCopyOf)elemTemplateChild).getXpathDefaultNamespace();  
-						  }
-					  }				  
-					  else if ((elemTemplateChild instanceof ElemLiteralResult) && (((ElemLiteralResult)elemTemplateChild).getXpathDefaultNamespace() == null)) {
-						  if (((ElemLiteralResult)elemTemplateChild).getXpathDefaultNamespace() == null) {
-							  ((ElemLiteralResult)elemTemplateChild).setXpathDefaultNamespace(xpathDefaultNamespace);
-						  }
-						  else {
-							  xpathDefaultNamespace = ((ElemLiteralResult)elemTemplateChild).getXpathDefaultNamespace();  
-						  }
-					  }
-
-					  updateXPathDefaultNamespace(elemTemplateChild, xpathDefaultNamespace);
-			      }
+				  updateXPathDefaultNamespace(elemTemplateChild, xpathDefaultNamespace);
 
 				  xslElem = xslElem.getNextSiblingElem();
 			  }		 

@@ -167,5 +167,75 @@ public class XPathDefaultNamespaceTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xpathDefaultNamespaceTest13() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathDefaultNamespaceTest14() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test14.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathDefaultNamespaceTest15() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test15.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathDefaultNamespaceTest16() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test16.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathDefaultNamespaceTest17() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test17.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathDefaultNamespaceTest18() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test18.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathDefaultNamespaceTest19() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test19.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }
