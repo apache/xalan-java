@@ -64,13 +64,13 @@ public class OpMap
    */
   static final int MAXTOKENQUEUESIZE = 500;
 
-  /*
+  /**
    * Amount to grow token queue when it becomes full
    */
   static final int BLOCKTOKENQUEUESIZE = 500;
   
   /**
-   *  TokenStack is the queue of used tokens. The current token is the token at the
+   * TokenStack is the queue of used tokens. The current token is the token at the
    * end of the m_tokenQueue. The idea is that the queue can be marked and a sequence
    * of tokens can be reused.
    */
@@ -99,12 +99,7 @@ public class OpMap
   }
 
   /**
-   * The current size of the token queue.
-   */
-//  public int m_tokenQueueSize = 0;
-
-  /**
-    * Get size of the token queue.
+   * Get size of the token queue.
    *
    * @return The size of the token queue.
    */
@@ -123,7 +118,7 @@ public class OpMap
   OpMapVector m_opMap = null;
 
   /**
-    * Get the opcode list that describes the XPath operations.  It contains
+   * Get the opcode list that describes the XPath operations.  It contains
    * operations codes and indexes into the m_tokenQueue.
    * I use an array instead of a full parse tree in order to cut down
    * on the number of objects created.
@@ -145,8 +140,7 @@ public class OpMap
   public static final int MAPINDEX_LENGTH = 1;
 
   /**
-   * Replace the large arrays
-   * with a small array.
+   * Replace the large arrays with a small array.
    */
   void shrink()
   {
@@ -168,7 +162,7 @@ public class OpMap
   }
 
   /**
-  * Given an operation position, return the current op.
+   * Given an operation position, return the current op.
    *
    * @param opPos index into op map.
    * @return the op that corresponds to the opPos argument.
@@ -179,7 +173,7 @@ public class OpMap
   }
 
   /**
-  * Set the op at index to the given int.
+   * Set the op at index to the given int.
    *
    * @param opPos index into op map.
    * @param value Value to set
@@ -395,7 +389,6 @@ public class OpMap
 
     int argLenOfStep = getArgLengthOfStep(opPosOfStep);
 
-    // System.out.println("getStepNS.argLenOfStep: "+argLenOfStep);
     if (argLenOfStep == 3)
     {
       int index = m_opMap.elementAt(opPosOfStep + 4);
@@ -422,7 +415,6 @@ public class OpMap
 
     int argLenOfStep = getArgLengthOfStep(opPosOfStep);
 
-    // System.out.println("getStepLocalName.argLenOfStep: "+argLenOfStep);
     int index;
 
     switch (argLenOfStep)
@@ -444,8 +436,6 @@ public class OpMap
       break;  // Should assert error
     }
 
-    // int index = (argLenOfStep == 3) ? m_opMap[opPosOfStep+5] 
-    //                                  : ((argLenOfStep == 1) ? -3 : -2);
     if (index >= 0)
       return (String) m_tokenQueue.elementAt(index).toString();
     else if (OpCodes.ELEMWILDCARD == index)

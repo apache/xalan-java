@@ -59,6 +59,7 @@ import org.apache.xalan.templates.ElemChoose;
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
+import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
@@ -4352,7 +4353,7 @@ public class TransformerImpl extends Transformer
 	 * if the node doesn't have attribute 'xpath-default-namespace' specified. 
 	 * 
 	 * @param elemTemplateElem						An XSL stylesheet supplied node from where
-	 *                                              the traversal starts.
+	 *                                              the stylesheet traversal starts.
 	 * @param xpathDefaultNamespace                 Value of attribute 'xpath-default-namespace'
 	 *                                              of the supplied node. 
 	 */
@@ -4361,12 +4362,28 @@ public class TransformerImpl extends Transformer
 		  if (elemTemplateElem != null) {		  
 			  ElemTemplateElement xslElem = elemTemplateElem; 
 			  while (xslElem != null) {
-				  if (xslElem instanceof ElemTemplate) {
+				  if (xslElem instanceof ElemVariable) {
+					  if (((ElemVariable)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemVariable)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemVariable)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemTemplate) {
 					  if (((ElemTemplate)xslElem).getXpathDefaultNamespace() == null) {
 						  ((ElemTemplate)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
 					  }
 					  else {
 						  xpathDefaultNamespace = ((ElemTemplate)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemFunction) {
+					  if (((ElemFunction)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemFunction)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemFunction)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
 				  else if (xslElem instanceof ElemApplyTemplates) {

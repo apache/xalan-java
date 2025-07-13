@@ -50,6 +50,7 @@ import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemValueOf;
+import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.ElemWhen;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -7187,6 +7188,18 @@ public class XPathParser
     	if (xpathExprXslParentNode instanceof StylesheetRoot) {
     		result = ((StylesheetRoot)xpathExprXslParentNode).getXpathDefaultNamespace(); 
     	}
+    	else if (xpathExprXslParentNode instanceof ElemVariable) {
+    		result = ((ElemVariable)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemVariable)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemFunction) {
+    		result = ((ElemFunction)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemFunction)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
     	else if (xpathExprXslParentNode instanceof ElemTemplate) {
     		result = ((ElemTemplate)xpathExprXslParentNode).getXpathDefaultNamespace();
     		if (result == null) {
@@ -7264,7 +7277,7 @@ public class XPathParser
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemSequence)xpathExprXslParentNode).getParentElem()); 
     		}
-    	}
+    	}    	
 
     	return result;
     }

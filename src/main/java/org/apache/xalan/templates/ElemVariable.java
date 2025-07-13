@@ -271,6 +271,31 @@ public class ElemVariable extends ElemTemplateElement
   {
     return m_isTopLevel;
   }
+  
+  /**
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -363,6 +388,10 @@ public class ElemVariable extends ElemTemplateElement
     SourceLocator srcLocator = xctxt.getSAXLocator();
     
     Expression selectExpression = null;
+    
+    if ((m_selectPattern != null) && (m_xpath_default_namespace != null)) {    		
+       m_selectPattern = new XPath(m_selectPattern.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+ 	}
     
     if ((this instanceof ElemParam) && m_isTopLevel) {
        ElemParam elemParam = (ElemParam)this;

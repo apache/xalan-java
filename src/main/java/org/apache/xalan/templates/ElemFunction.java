@@ -99,6 +99,31 @@ public class ElemFunction extends ElemTemplate
 {
 
   private static final long serialVersionUID = 4973132678982467288L;
+  
+  /**
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
 
   /**
    * Class constructor.
@@ -902,7 +927,7 @@ public class ElemFunction extends ElemTemplate
 	  try {
 		  XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
 		  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-		  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+		  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;          
 
 		  XMLNodeCursorImpl nodeSet = SequenceTypeSupport.getNodeReference(srcValue);
 		  if (nodeSet != null) {
@@ -923,7 +948,7 @@ public class ElemFunction extends ElemTemplate
 				  if (dtmIter instanceof NodeTest) {
 					  try {
 						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-								  (NodeTest)dtmIter, transformer, srcLocator);
+								                                                                               (NodeTest)dtmIter, transformer, srcLocator);
 						  if (elemFunction != null) {
 							  // REVISIT : To check for elemFunction object's conformance with details in 
 							  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()  
@@ -943,8 +968,7 @@ public class ElemFunction extends ElemTemplate
 		  }
 
 		  if (argConvertedVal == null) {
-			  argConvertedVal = SequenceTypeSupport.castXDMValueToAnotherType(srcValue, paramAsAttrStrVal, null, 
-					  xctxt, prefixTable);
+			  argConvertedVal = SequenceTypeSupport.castXDMValueToAnotherType(srcValue, paramAsAttrStrVal, null, xctxt, prefixTable);
 		  }
 
 		  if (argConvertedVal == null) {

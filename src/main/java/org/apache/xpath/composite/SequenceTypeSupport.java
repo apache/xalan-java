@@ -1963,8 +1963,6 @@ public class SequenceTypeSupport {
                                                                                                      throws TransformerException {
         XObject result = null;
         
-        // srcValue = srcValue.getFresh();
-        
         XMLNodeCursorImpl xdmNodeSet = (XMLNodeCursorImpl)srcValue;
         
         int nodeSetLen = xdmNodeSet.getLength();
@@ -1980,8 +1978,7 @@ public class SequenceTypeSupport {
         	return result;
         }
         
-        if ((nodeSetLen > 1) && ((itemTypeOccurenceIndicator == 0) || (itemTypeOccurenceIndicator == 
-                                                                                             OccurrenceIndicator.ZERO_OR_ONE))) {
+        if ((nodeSetLen > 1) && ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) || (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE))) {
             throw new TransformerException("XTTE0570 : A sequence of size " + nodeSetLen + ", cannot be cast to a type " 
                                                                                                            + sequenceTypeXPathExprStr + ".", srcLocator);  
         }
@@ -2025,9 +2022,11 @@ public class SequenceTypeSupport {
                   else {
                      if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
                         String elemNodeKindTestNodeName = sequenceTypeKindTest.getNodeLocalName();
+                        String nodeNsUri1 = nodeNsUri; 
                         if (elemNodeKindTestNodeName == null || "".equals(elemNodeKindTestNodeName) || 
                                                                                                 STAR.equals(elemNodeKindTestNodeName)) {
-                           elemNodeKindTestNodeName = nodeName;  
+                           elemNodeKindTestNodeName = nodeName;
+                           nodeNsUri = null;
                         }
                         
                         if ((sequenceTypeKindTest.getKindVal() == ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
@@ -2043,6 +2042,8 @@ public class SequenceTypeSupport {
                            		                                                + "The supplied value " + nodeName + " does'nt match an expected "
                            		                                                + "type.", srcLocator); 
                         }
+                        
+                        nodeNsUri = nodeNsUri1; 
                         
                         if (nodeSetLen == 1) {
                            result = nodeSetItem;

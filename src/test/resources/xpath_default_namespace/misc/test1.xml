@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- An XML document structure borrowed from w3c xslt 3.0 
+     test case xpath-default-namespace-0101. -->
+<info xmlns="http://ns0">
+	<item attr="atr1">
+	   <subitem>a 1</subitem>
+	</item>
+	<item attr="atr2">
+	   <subitem>b 23</subitem>
+	</item>
+	<item attr="atr3">
+	   <subitem>c 456</subitem>
+	</item>
+	<str>
+	   <substr>hello 1</substr>
+	</str>
+	<str>
+	   <substr>hello 12</substr>
+	</str>
+	<str>
+	   <substr>hello 123</substr>
+	</str>
+</info>
+  

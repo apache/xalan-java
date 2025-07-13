@@ -829,7 +829,7 @@ public class XSLTSchema extends XSLTElementDef
                                    null /*alias */,
                                    templateElements /* elements */,  // %template;>
                                    new XSLTAttributeDef[]{ nameAttrRequired,
-                                                           selectAttrOpt, asAttrOpt }, 
+                                                           selectAttrOpt, asAttrOpt, xpathDefaultNamespaceAttrOpt }, 
                                   new ProcessorTemplateElem(),
                                    ElemVariable.class /* class object */, 20, true);
     XSLTElementDef xslSequence = new XSLTElementDef(this,
@@ -1201,7 +1201,7 @@ public class XSLTSchema extends XSLTElementDef
                                           templateElementsAndParams /* elements */,
                                           new XSLTAttributeDef[] {
                                                   nameAttrRequired,
-                                                  asAttrOpt }, 
+                                                  asAttrOpt, xpathDefaultNamespaceAttrOpt }, 
                                           new ProcessorTemplate(), ElemFunction.class /* class object */, true, 20, true),
                                   new XSLTElementDef(
                                            this,

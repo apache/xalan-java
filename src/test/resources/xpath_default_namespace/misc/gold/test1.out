@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <elem strLength="3" name="subitem"/>
+    <elem strLength="4" name="subitem"/>
+    <elem strLength="5" name="subitem"/>
+  </one>
+  <two>
+    <elem strLength="7" name="substr"/>
+    <elem strLength="8" name="substr"/>
+    <elem strLength="9" name="substr"/>
+  </two>
+</result>
