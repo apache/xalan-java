@@ -1,0 +1,23 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>CheerpJ 3 Xalan XSLT 3 development branch XSLT 3 workbench</title>
+  </head>
+  <body>
+    <section>
+      <h1>Release 0.0.4 beta</h1>
+      <section>
+        <h2>Features using Xalan Java XSLT 3 development branch</h2>
+        <ol>
+          <li>XSLT 3.0 against XML input</li>
+          <li>optional automatic evaluation of XSLT as CheerpJ 3 also allows to run Java code (e.g. Xalan) from a web worker</li>
+          <li>errors and warnings are hopefully now all reported in the result/output editor pane</li>
+        </ol>
+      </section>
+      <section>
+        <h2>Supported XSLT 3.0 and XPath 3.1 features</h2>
+        <p>See documentation at <a href="https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf">https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf</a>
+</p>
+      </section>
+    </section>
+  </body>
+</html>

@@ -26,6 +26,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
@@ -53,8 +54,6 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSNumericType;
-
-// import org.apache.xalan.dtm.*;
 
 /**
  * Implement xsl:number.
@@ -129,8 +128,7 @@ public class ElemNumber extends ElemTemplateElement
 		public boolean handlesNullPrefixes() {
 			return handleNullPrefix;
 		}
-
-}
+  }
     
   /**
    * Only nodes are counted that match this pattern.
@@ -480,8 +478,31 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Shouldn't this be in the transformer?  Big worries about threads...
    */
+  
+  /**
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
 
-  // private XResourceBundle thisBundle;
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
 
   /**
    * Table to help in converting decimals to roman numerals.
@@ -560,26 +581,30 @@ public class ElemNumber extends ElemTemplateElement
             throws TransformerException
   {
 
-     if (transformer.getDebug())
-      transformer.getTraceManager().emitTraceEvent(this);
+	  if (transformer.getDebug())
+		  transformer.getTraceManager().emitTraceEvent(this);
 
-    int sourceNode = transformer.getXPathContext().getCurrentNode();
-    String countString = getCountString(transformer, sourceNode);
+	  XPathContext xctxt = transformer.getXPathContext();
 
-    try
-    {
-      transformer.getResultTreeHandler().characters(countString.toCharArray(),
-                                                    0, countString.length());
-    }
-    catch(SAXException se)
-    {
-      throw new TransformerException(se);
-    }
-    finally
-    {
-      if (transformer.getDebug())
-	    transformer.getTraceManager().emitTraceEndEvent(this); 
-    }
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+
+	  int sourceNode = transformer.getXPathContext().getCurrentNode();
+	  String countString = getCountString(transformer, sourceNode);
+
+	  try
+	  {
+		  transformer.getResultTreeHandler().characters(countString.toCharArray(), 
+				                                                             0, countString.length());
+	  }
+	  catch(SAXException se)
+	  {
+		  throw new TransformerException(se);
+	  }
+	  finally
+	  {
+		  if (transformer.getDebug())
+			  transformer.getTraceManager().emitTraceEndEvent(this); 
+	  }
   }
 
   /**

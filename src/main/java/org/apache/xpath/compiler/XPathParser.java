@@ -45,6 +45,7 @@ import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemTemplate;
@@ -337,8 +338,6 @@ public class XPathParser
     m_namespaceContext = namespaceContext;
     m_functionTable = compiler.getFunctionTable();
     
-    // m_expr_parent = (ExpressionNode)m_sourceLocator;
-    
     m_isSequenceTypeXPathExpr = isSequenceTypeXPathExpr;
     
     m_xpathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
@@ -477,12 +476,13 @@ public class XPathParser
 
   /**
    * Given an string, init an XPath object for pattern matches,
-   * in order that a parse doesn't
-   * have to be done each time the expression is evaluated.
-   * @param compiler The XPath object to be initialized.
-   * @param expression A String representing the XPath.
-   * @param namespaceContext An object that is able to resolve prefixes in
-   * the XPath to namespaces.
+   * in order that a parse doesn't have to be done each time 
+   * the expression is evaluated.
+   * 
+   * @param compiler 							The XPath object to be initialized
+   * @param expression 							An XPath expression string
+   * @param namespaceContext 					An object that is able to resolve prefixes in
+   *                                            the XPath to namespaces.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -494,6 +494,8 @@ public class XPathParser
     m_ops = compiler;
     m_namespaceContext = namespaceContext;
     m_functionTable = compiler.getFunctionTable();
+    
+    m_expression = expression;
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
 
@@ -502,7 +504,7 @@ public class XPathParser
     m_ops.setOp(0, OpCodes.OP_MATCHPATTERN);
     m_ops.setOp(OpMap.MAPINDEX_LENGTH, 2);
 
-    nextToken();
+    nextToken();    
     Pattern();
 
     if (null != m_token)
@@ -528,6 +530,64 @@ public class XPathParser
 
     m_ops.shrink();
   }
+  
+  /**
+   * Given an string, init an XPath object for pattern matches,
+   * in order that a parse doesn't have to be done each time 
+   * the expression is evaluated.
+   * 
+   * @param compiler                            The XPath object to be initialized
+   * @param expression                          An XPath expression string
+   * @param namespaceContext                    An object that is able to resolve prefixes in
+   *                                            the XPath to namespaces.
+   * @param xpathDefaultNamespace               Non-null value of XSL transformation 
+   *                                            xpath-default-namespace.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public void initMatchPattern(Compiler compiler, String expression, PrefixResolver namespaceContext,
+			                                                                     String xpathDefaultNamespace) throws javax.xml.transform.TransformerException {
+	  m_ops = compiler;
+	  m_namespaceContext = namespaceContext;
+	  m_xpathDefaultNamespace = xpathDefaultNamespace;
+	  
+	  m_expression = expression;
+	  	  
+	  m_functionTable = compiler.getFunctionTable();
+
+	  Lexer lexer = new Lexer(compiler, namespaceContext, this);
+
+	  lexer.tokenize(expression);
+
+	  m_ops.setOp(0, OpCodes.OP_MATCHPATTERN);
+	  m_ops.setOp(OpMap.MAPINDEX_LENGTH, 2);
+
+	  nextToken();
+	  Pattern();
+
+	  if (null != m_token)
+	  {
+		  String extraTokens = "";
+
+		  while (null != m_token)
+		  {
+			  extraTokens += "'" + m_token + "'";
+
+			  nextToken();
+
+			  if (null != m_token)
+				  extraTokens += ", ";
+		  }
+
+		  error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
+				  new Object[]{ extraTokens });
+	  }
+
+	  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
+	  m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH)+1);
+
+	  m_ops.shrink();		
+  }
 
   /** The error listener where syntax errors are to be sent.
    */
@@ -537,7 +597,12 @@ public class XPathParser
   javax.xml.transform.SourceLocator m_sourceLocator;
   
   /** The table contains build-in functions and customized functions */
-  private FunctionTable m_functionTable;  
+  private FunctionTable m_functionTable; 
+  
+  /**
+   * An XPath expression string.
+   */
+  private String m_expression;
 
   /**
    * Allow an application to register an error event handler, where syntax 
@@ -4289,34 +4354,8 @@ public class XPathParser
     	  
     	   // An XPath function argument is text(). Modify contents of XPath 
     	   // parse token queue by replacing token string text() with ".".
-    	   if (tokenIs("text") && lookahead('(', 1) && lookahead(')', 2)) {
-    		   ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
-    		   List<Object> tokenPrefixList = new ArrayList<Object>();
-    		   for (int i = 0; i < m_queueMark - 1; i++) {
-    			   Object obj1 = tokenQueue.elementAt(i);
-    			   tokenPrefixList.add(obj1); 
-    		   }
-
-    		   List<Object> tokenSuffixList = new ArrayList<Object>();
-    		   int tokenQueueSize = tokenQueue.size();
-    		   for (int i = m_queueMark + 2; i < tokenQueueSize; i++) {
-    			   Object obj1 = tokenQueue.elementAt(i);
-    			   tokenSuffixList.add(obj1);
-    		   }    		  
-
-    		   tokenQueue.removeAllElements();
-
-    		   for (int j = 0; j < tokenPrefixList.size(); j++) {
-    			   tokenQueue.addElement(tokenPrefixList.get(j));  
-    		   }
-
-    		   tokenQueue.addElement(".");
-
-    		   for (int j = 0; j < tokenSuffixList.size(); j++) {
-    			   tokenQueue.addElement(tokenSuffixList.get(j)); 
-    		   }
-
-    		   tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + 1);
+    	   if (tokenIs("text") && lookahead('(', 1) && lookahead(')', 2)) {    		   
+    		   mutateTokenQueue(new String[] { "." }, 0, m_queueMark + 2, 1);
     		   
     		   m_token = ".";
     		   m_tokenChar = '.';
@@ -4829,70 +4868,38 @@ public class XPathParser
     
     ExpressionNode exprParent = (ExpressionNode)m_sourceLocator;
     if (exprParent instanceof ElemTemplateElement) {
-       m_xpathDefaultNamespace = getXPathDefaultNamespace((ElemTemplateElement)exprParent);
+        m_xpathDefaultNamespace = getXPathDefaultNamespace((ElemTemplateElement)exprParent);
     }
 
     if (lookahead("::", 1))
     {
-      String axesName = m_token;	
-      axesType = AxisName();
+    	String axesName = m_token;	
+    	axesType = AxisName();
 
-      nextToken();      
-      nextToken();
-      
-      if ((Keywords.FROM_ANCESTORS_STRING).equals(axesName) || (Keywords.FROM_ANCESTORS_OR_SELF_STRING).equals(axesName) || 
-    		           (Keywords.FROM_CHILDREN_STRING).equals(axesName) || (Keywords.FROM_DESCENDANTS_STRING).equals(axesName) || 
-    		           (Keywords.FROM_DESCENDANTS_OR_SELF_STRING).equals(axesName) || (Keywords.FROM_FOLLOWING_STRING).equals(axesName) || 
-    		           (Keywords.FROM_FOLLOWING_SIBLINGS_STRING).equals(axesName) || (Keywords.FROM_PARENT_STRING).equals(axesName) || 
-    		           (Keywords.FROM_PRECEDING_STRING).equals(axesName) || (Keywords.FROM_PRECEDING_SIBLINGS_STRING).equals(axesName) || 
-    		           (Keywords.FROM_SELF_STRING).equals(axesName)) {
-    	  
-    	  if ((m_xpathDefaultNamespace != null) && !tokenIs(m_xpathDefaultNamespace)) {
-    		  /**
-    		   * Modify token queue's contents, by adding tokens xpathDefaultNamespace
-    		   * and ":" prior to this token. This makes XPath expression namespace
-    		   * qualified with xpathDefaultNamespace.
-    		   */
-    		  ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
-    		  List<Object> tokenPrefixList = new ArrayList<Object>();
-    		  for (int i = 0; i < m_queueMark - 1; i++) {
-    			  Object obj1 = tokenQueue.elementAt(i);
-    			  tokenPrefixList.add(obj1); 
-    		  }
+    	nextToken();      
+    	nextToken();
 
-    		  List<Object> tokenSuffixList = new ArrayList<Object>();
-    		  int tokenQueueSize = tokenQueue.size();
-    		  for (int i = m_queueMark - 1; i < tokenQueueSize; i++) {
-    			  Object obj1 = tokenQueue.elementAt(i);
-    			  tokenSuffixList.add(obj1);
-    		  }    		  
+    	if ((Keywords.FROM_ANCESTORS_STRING).equals(axesName) || (Keywords.FROM_ANCESTORS_OR_SELF_STRING).equals(axesName) || 
+						    			(Keywords.FROM_CHILDREN_STRING).equals(axesName) || (Keywords.FROM_DESCENDANTS_STRING).equals(axesName) || 
+						    			(Keywords.FROM_DESCENDANTS_OR_SELF_STRING).equals(axesName) || (Keywords.FROM_FOLLOWING_STRING).equals(axesName) || 
+						    			(Keywords.FROM_FOLLOWING_SIBLINGS_STRING).equals(axesName) || (Keywords.FROM_PARENT_STRING).equals(axesName) || 
+						    			(Keywords.FROM_PRECEDING_STRING).equals(axesName) || (Keywords.FROM_PRECEDING_SIBLINGS_STRING).equals(axesName) || 
+						    			(Keywords.FROM_SELF_STRING).equals(axesName)) {
 
-    		  tokenQueue.removeAllElements();
-
-    		  for (int j = 0; j < tokenPrefixList.size(); j++) {
-    			  tokenQueue.addElement(tokenPrefixList.get(j));  
-    		  }
-
-    		  tokenQueue.addElement(m_xpathDefaultNamespace);
-    		  tokenQueue.addElement(":");
-
-    		  for (int j = 0; j < tokenSuffixList.size(); j++) {
-    			  tokenQueue.addElement(tokenSuffixList.get(j)); 
-    		  }
-
-    		  tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + 2);
-
-    		  m_token = m_xpathDefaultNamespace;
-    		  m_tokenChar = m_xpathDefaultNamespace.charAt(0);
-    	  }
-      }
+    		if ((m_xpathDefaultNamespace != null) && !tokenIs(m_xpathDefaultNamespace)) {    			
+    			mutateTokenQueue(new String[] { m_xpathDefaultNamespace, ":" }, 0, m_queueMark - 1, 2);
+    			
+    			m_token = m_xpathDefaultNamespace;
+    			m_tokenChar = m_xpathDefaultNamespace.charAt(0);
+    		}
+    	}
     }
     else if (tokenIs('@'))
     {
-      axesType = OpCodes.FROM_ATTRIBUTES;
+    	axesType = OpCodes.FROM_ATTRIBUTES;
 
-      appendOp(2, axesType);
-      nextToken();            
+    	appendOp(2, axesType);
+    	nextToken();            
     }
     else if (!isXPathPatternExcludeTrailingNodeFunctions() && (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3))))
     {
@@ -4993,43 +5000,16 @@ public class XPathParser
     {       
         axesType = OpCodes.FROM_CHILDREN;
         
-        if ((m_xpathDefaultNamespace != null) && !tokenIs(m_xpathDefaultNamespace)) {
-        	/**
-  		     * Modify token queue's contents, by adding tokens xpathDefaultNamespace
-   		     * and ":" prior to this token. This makes XPath expression namespace
-  		     * qualified with xpathDefaultNamespace.
-  		     */
-        	ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
-        	List<Object> tokenPrefixList = new ArrayList<Object>();
-        	for (int i = 0; i < m_queueMark - 1; i++) {
-        		Object obj1 = tokenQueue.elementAt(i);
-        		tokenPrefixList.add(obj1); 
-        	}
-
-        	List<Object> tokenSuffixList = new ArrayList<Object>();
-        	int tokenQueueSize = tokenQueue.size();
-        	for (int i = m_queueMark - 1; i < tokenQueueSize; i++) {
-        		Object obj1 = tokenQueue.elementAt(i);
-        		tokenSuffixList.add(obj1);
-        	}    		  
-
-        	tokenQueue.removeAllElements();
-
-        	for (int j = 0; j < tokenPrefixList.size(); j++) {
-        		tokenQueue.addElement(tokenPrefixList.get(j));  
-        	}
-
-        	tokenQueue.addElement(m_xpathDefaultNamespace);
-        	tokenQueue.addElement(":");
-
-        	for (int j = 0; j < tokenSuffixList.size(); j++) {
-        		tokenQueue.addElement(tokenSuffixList.get(j)); 
-        	}
-
-        	tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + 2);
-
-        	m_token = m_xpathDefaultNamespace;
-        	m_tokenChar = m_xpathDefaultNamespace.charAt(0);        	
+        boolean isXPathDefaultNsProcessingSkip = false;
+        if (tokenIs("node") && lookahead('(', 1) && lookahead(')', 2)) {
+        	isXPathDefaultNsProcessingSkip = true;
+        }
+        
+        if (!isXPathDefaultNsProcessingSkip && (m_xpathDefaultNamespace != null) && !tokenIs(m_xpathDefaultNamespace)) {        	
+        	mutateTokenQueue(new String[] { m_xpathDefaultNamespace, ":" }, 0, m_queueMark - 1, 2);
+        	
+			m_token = m_xpathDefaultNamespace;
+			m_tokenChar = m_xpathDefaultNamespace.charAt(0);        	
    	    }
 
         appendOp(2, axesType);
@@ -5410,11 +5390,14 @@ public class XPathParser
    * Pattern  ::=  LocationPathPattern
    * | Pattern '|' LocationPathPattern
    *
-   *
    * @throws javax.xml.transform.TransformerException
    */
   protected void Pattern() throws javax.xml.transform.TransformerException
   {
+	  
+	if (m_xpathDefaultNamespace != null) {
+	   mutateTokenQueueXPathMatchPattern();	
+	}
 
     while (true)
     {
@@ -5432,8 +5415,6 @@ public class XPathParser
   }
 
   /**
-   *
-   *
    * LocationPathPattern  ::=  '/' RelativePathPattern?
    * | IdKeyPattern (('/' | '//') RelativePathPattern)?
    * | '//'? RelativePathPattern
@@ -5533,7 +5514,7 @@ public class XPathParser
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
-
+  
   /**
    *
    * IdKeyPattern  ::=  'id' '(' Literal ')'
@@ -6849,10 +6830,6 @@ public class XPathParser
 	   return result;	   
    }
    
-   public void setXPathDefaultNamespace(String xpathDefaultNamespace) {
-	   m_xpathDefaultNamespace = xpathDefaultNamespace;  
-   }
-   
    /**
     * Method definition to check, whether there's an XPath built-in 
     * node pattern like node(), doument-node(), text(), comment() as 
@@ -7277,9 +7254,128 @@ public class XPathParser
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemSequence)xpathExprXslParentNode).getParentElem()); 
     		}
-    	}    	
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemNumber) {
+    		result = ((ElemNumber)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemNumber)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	} 
 
     	return result;
+    }
+    
+    /**
+     * Method definition, to mutate XPath expression token queue contents by 
+     * adding tokens from the supplied array in order, prior to the current 
+     * token.
+     * 
+     * @param newTokenArr						   An array of token string values, to add at 
+     *                                             specified position within token queue.
+     * @param start1					           Starting token queue index value for token 
+     *                                             prefix list.
+     * @param start2                               Starting token queue index value for token 
+     *                                             suffix list.
+     * @param newTokenQueueSize					   New token queue size to be set on the token 
+     *                                             queue object.	
+     */
+    private void mutateTokenQueue(String[] newTokenArr, int start1, int start2, int newTokenQueueSize) {
+    	ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
+		List<Object> tokenPrefixList = new ArrayList<Object>();
+		for (int i = start1; i < m_queueMark - 1; i++) {
+			Object obj1 = tokenQueue.elementAt(i);
+			tokenPrefixList.add(obj1); 
+		}
+
+		List<Object> tokenSuffixList = new ArrayList<Object>();
+		int tokenQueueSize = tokenQueue.size();
+		for (int i = start2; i < tokenQueueSize; i++) {
+			Object obj1 = tokenQueue.elementAt(i);
+			tokenSuffixList.add(obj1);
+		}    		  
+
+		tokenQueue.removeAllElements();
+
+		for (int j = 0; j < tokenPrefixList.size(); j++) {
+			tokenQueue.addElement(tokenPrefixList.get(j));  
+		}
+
+		for (int i = 0; i < newTokenArr.length; i++) {
+		   tokenQueue.addElement(newTokenArr[i]);
+		}
+
+		for (int j = 0; j < tokenSuffixList.size(); j++) {
+			tokenQueue.addElement(tokenSuffixList.get(j)); 
+		}
+
+		tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + newTokenQueueSize);
+    }
+    
+    /**
+     * Mutate XPath expression's token queue, for match pattern to consider
+     * XSL stylesheet's xpath-default-namespace value.
+     */
+    private void mutateTokenQueueXPathMatchPattern() {
+    	
+    	if (!("/".equals(m_expression) || "*".equals(m_expression) || m_expression.contains(":") 
+    			                                                   || m_expression.contains("(") 
+    			                                                   || m_expression.contains(")") 
+    			                                                   || m_expression.contains("@"))) {    		
+    		// REVISIT : This implementation supports simple XPath step 
+    		// and union patterns.
+
+    		String[] strArr = null;
+    		if (m_expression.contains("|")) {
+    			strArr = m_expression.split("\\|");
+
+    			int newArrSize = strArr.length + (strArr.length - 1);
+    			String[] strArr1 = new String[newArrSize];
+    			int j = 0;
+    			for (int i = 0; i < strArr.length; i++) {
+    				String strValue = (strArr[i]).trim();
+    				char chr = strValue.charAt(0);
+    				String suffixStr1 = strValue.substring(1);
+    				strArr1[j++] = ((chr == '/') ? ("/" + m_xpathDefaultNamespace + ":" + suffixStr1) : 
+    					                                                                      (m_xpathDefaultNamespace + ":" + strValue));
+    				if (i < (strArr.length - 1)) {
+    					strArr1[j++] = "|"; 
+    				}
+    			}
+
+    			strArr = strArr1; 
+    		}
+    		else {
+    			char chr = m_expression.charAt(0);
+    			String suffixStr1 = m_expression.substring(1);
+    			String newStr = (chr == '/') ? ("/" + m_xpathDefaultNamespace + ":" + suffixStr1) : 
+    				                                                                      (m_xpathDefaultNamespace + ":" + m_expression); 
+    			strArr = new String[] { newStr }; 
+    		}
+
+    		ObjectVector tokenQueue = m_ops.getTokenQueue(); 
+    		tokenQueue.removeAllElements();
+
+    		int j = 0;
+    		for (int i = 0; i < strArr.length; i++) {
+    			String strValue = strArr[i];
+    			if (!"|".equals(strValue)) {
+    				int j1 = strValue.lastIndexOf(':');
+    				tokenQueue.addElement(strValue.substring(0, j1));
+    				tokenQueue.addElement(":");
+    				tokenQueue.addElement(strValue.substring(j1 + 1));
+    				j += 3;
+    			}
+    			else {
+    				tokenQueue.addElement("|");
+    				j++;
+    			}
+    		}
+
+    		tokenQueue.setSize(j);
+
+    		m_token = m_xpathDefaultNamespace;
+    		m_tokenChar = m_xpathDefaultNamespace.charAt(0);		  
+    	}
     }
   
 }

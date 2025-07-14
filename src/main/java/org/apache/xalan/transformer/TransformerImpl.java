@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
@@ -110,12 +111,14 @@ import org.apache.xpath.Arg;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.VariableStack;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.patterns.StepPattern;
+import org.apache.xpath.patterns.UnionPattern;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
@@ -4357,7 +4360,8 @@ public class TransformerImpl extends Transformer
 	 * @param xpathDefaultNamespace                 Value of attribute 'xpath-default-namespace'
 	 *                                              of the supplied node. 
 	 */
-	private void updateXPathDefaultNamespace(ElemTemplateElement elemTemplateElem, String xpathDefaultNamespace) {
+	private void updateXPathDefaultNamespace(ElemTemplateElement elemTemplateElem, String xpathDefaultNamespace) 
+			                                                                    throws javax.xml.transform.TransformerException {
 		
 		  if (elemTemplateElem != null) {		  
 			  ElemTemplateElement xslElem = elemTemplateElem; 
@@ -4371,13 +4375,58 @@ public class TransformerImpl extends Transformer
 					  }
 				  }
 				  else if (xslElem instanceof ElemTemplate) {
-					  if (((ElemTemplate)xslElem).getXpathDefaultNamespace() == null) {
-						  ((ElemTemplate)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  ElemTemplate elemTemplate = (ElemTemplate)xslElem;
+					  if (elemTemplate.getXpathDefaultNamespace() == null) {
+						  elemTemplate.setXpathDefaultNamespace(xpathDefaultNamespace);
 					  }
 					  else {
-						  xpathDefaultNamespace = ((ElemTemplate)xslElem).getXpathDefaultNamespace();  
+						  xpathDefaultNamespace = elemTemplate.getXpathDefaultNamespace();  
 					  }
-				  }
+					  
+					  XPath matchXPath = elemTemplate.getMatch();
+					  if ((matchXPath != null) && (xpathDefaultNamespace != null)) {
+						 /**
+						  * If an xsl:template definition has an attribute 'match', and a 
+						  * non-null xpath-default-namespace is available for this template, 
+						  * we recompile xsl:template's XPath 'match' pattern to produce 'match' 
+						  * pattern's XPath expression object which is XML namespace aware.
+						  */
+						 String xpathPatternStr = matchXPath.getPatternString();
+						 XPathContext xctxt = getXPathContext();
+						 SourceLocator srcLocator = xctxt.getSAXLocator();
+						 /**
+						  * This XPath constructor call recompiles an XPath 'match' pattern 
+						  * using XPathParser object which makes use of xpath-default-namespace's 
+						  * value.
+						  */
+						 matchXPath = new XPath(xpathPatternStr, srcLocator, xctxt.getNamespaceContext(), 
+								                                                              XPath.MATCH, null, xpathDefaultNamespace);
+						 elemTemplate.setMatch(matchXPath);
+						 
+						 // Modify Xalan-J's XPath pattern table 'Hashtable', with the modified
+						 // xsl:template object.
+						 
+						 TemplateList xslTemplateList = m_stylesheetRoot.getTemplateListComposed();
+						 Hashtable patternTable = xslTemplateList.getPatternTable();
+						 Expression matchExpr = matchXPath.getExpression();
+						 if (matchExpr instanceof StepPattern) {
+							 TemplateSubPatternAssociation templatePatternAssoc = new TemplateSubPatternAssociation(elemTemplate, 
+									                                                                                        (StepPattern)matchExpr, xpathPatternStr);							 
+							 patternTable.put(xpathPatternStr, templatePatternAssoc);
+						 }
+						 else if (matchExpr instanceof UnionPattern) {
+							 UnionPattern xpathUnionPattern = (UnionPattern)matchExpr;
+							 StepPattern[] stepPatternArr = xpathUnionPattern.getPatterns();
+							 for (int i = 0; i < stepPatternArr.length; i++) {
+								 StepPattern stepPattern = (StepPattern)stepPatternArr[i];
+								 String targetStr = stepPattern.getTargetString();
+								 TemplateSubPatternAssociation templatePatternAssoc = new TemplateSubPatternAssociation(elemTemplate, 
+										 																						stepPattern, targetStr);
+								 patternTable.put(targetStr, templatePatternAssoc);
+							 }
+				    	 }
+					  }
+				  }				  
 				  else if (xslElem instanceof ElemFunction) {
 					  if (((ElemFunction)xslElem).getXpathDefaultNamespace() == null) {
 						  ((ElemFunction)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
@@ -4480,6 +4529,37 @@ public class TransformerImpl extends Transformer
 					  }
 					  else {
 						  xpathDefaultNamespace = ((ElemSequence)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemNumber) {
+					  ElemNumber elemNumber = (ElemNumber)xslElem;
+					  if (elemNumber.getXpathDefaultNamespace() == null) {
+						  elemNumber.setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = elemNumber.getXpathDefaultNamespace();  
+					  }
+					  					  
+					  if (xpathDefaultNamespace != null) {
+						  // Recompile xsl:number instruction attribute's 'count' and 'from' 
+						  // XPath patterns if applicable, using xpath-default-namespace information.  
+						  XPath countXPath = elemNumber.getCount();						  
+						  if (countXPath != null) {
+							  String xpathPatternStr = countXPath.getPatternString();
+							  XPathContext xctxt = getXPathContext();
+							  SourceLocator srcLocator = xctxt.getSAXLocator();
+							  countXPath = new XPath(xpathPatternStr, srcLocator, xctxt.getNamespaceContext(), XPath.MATCH, null, xpathDefaultNamespace);
+							  elemNumber.setCount(countXPath); 
+						  }
+						  
+						  XPath fromXPath = elemNumber.getFrom();
+						  if (fromXPath != null) {
+							  String xpathPatternStr = fromXPath.getPatternString();
+							  XPathContext xctxt = getXPathContext();
+							  SourceLocator srcLocator = xctxt.getSAXLocator();
+							  fromXPath = new XPath(xpathPatternStr, srcLocator, xctxt.getNamespaceContext(), XPath.MATCH, null, xpathDefaultNamespace);
+							  elemNumber.setCount(fromXPath); 
+						  }
 					  }
 				  }
 				  

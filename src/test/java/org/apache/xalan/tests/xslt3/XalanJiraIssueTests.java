@@ -183,5 +183,15 @@ public class XalanJiraIssueTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslJiraIssueTest14() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "xhtml-elements-sample2.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "xpath-default-namespace-test1.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test14.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

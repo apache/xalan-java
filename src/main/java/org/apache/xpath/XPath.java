@@ -187,14 +187,15 @@ public class XPath implements Serializable, ExpressionOwner
     return m_mainExp;
   }
 
-  /** The pattern string, mainly kept around for diagnostic purposes.
-   *  @serial  */
+  /** 
+   * The pattern string, mainly kept around for diagnostic 
+   * purposes.
+   */
   String m_patternString;
 
   /**
    * Return the XPath string associated with this object.
-   *
-   *
+
    * @return the XPath string associated with this object.
    */
   public String getPatternString()
@@ -244,6 +245,63 @@ public class XPath implements Serializable, ExpressionOwner
     }
     else if (MATCH == type)
       parser.initMatchPattern(compiler, exprString, prefixResolver);
+    else
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
+
+    Expression expr = compiler.compile(0);
+    if (expr instanceof ArrowOp) {
+       ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
+    }
+    
+    this.setExpression(expr);
+    
+    if((null != locator) && locator instanceof ExpressionNode)
+    {
+    	expr.exprSetParent((ExpressionNode)locator);
+    }
+
+  }
+  
+  /**
+   * Construct an XPath object.  
+   *
+   * This method initializes an XPathParser and compiles an XPath expression 
+   * string.
+   * 
+   * @param exprString 								An XPath expression
+   * @param locator                                 The location of the expression, 
+   *                                                may be null.
+   * @param prefixResolver                          A prefix resolver to use to resolve prefixes 
+   *                                                to namespace URIs.
+   * @param type                                    One of {@link #SELECT} or {@link #MATCH}.
+   * @param errorListener                           The error listener, or null if default 
+   *                                                should be used.
+   * @param xpathDefaultNamespace                   Non-null value of XSL transformation 
+   *                                                xpath-default-namespace.
+   *
+   * @throws javax.xml.transform.TransformerException if syntax or other error.
+   */
+  public XPath(String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type,
+                                                             ErrorListener errorListener, String xpathDefaultNamespace)
+                                                                                  throws javax.xml.transform.TransformerException
+  { 
+    
+	initFunctionTable();
+    
+    if(null == errorListener)
+      errorListener = new org.apache.xml.utils.DefaultErrorHandler();
+    
+    m_patternString = exprString;
+
+    XPathParser parser = new XPathParser(errorListener, locator);
+    Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
+    
+    if (SELECT == type) {
+      parser.initXPath(compiler, exprString, prefixResolver, false);
+      m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
+    }
+    else if (MATCH == type)
+      parser.initMatchPattern(compiler, exprString, prefixResolver, xpathDefaultNamespace);
     else
       throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
 

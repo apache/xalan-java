@@ -593,7 +593,8 @@ public class XSLTSchema extends XSLTElementDef
                                                          langAttr,
                                                          letterValueAttr,
                                                          groupingSeparatorAVT,
-                                                         groupingSizeAttr }, 
+                                                         groupingSizeAttr,
+                                                         xpathDefaultNamespaceAttrOpt }, 
                                         new ProcessorTemplateElem(),
                                  ElemNumber.class /* class object */, 20, true);
 

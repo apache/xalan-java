@@ -35,7 +35,12 @@ public class XslApplyTemplatesTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/apply-templates/_apply-templates-test-set.xml";
     	m_resultSubFolderName = "insn";
-    	m_testResultFileName = "_apply-templates-test-set_result.xml";    	   
+    	m_testResultFileName = "_apply-templates-test-set_result.xml";
+    	
+    	// XSLT20+ test using mode = '#current'. Not yet implemented with Xalan-J.
+    	m_skipped_tests_list.add("conflict-resolution-0801");
+    	// XSLT20+ test using mode = '#default'. Not yet implemented with Xalan-J.
+    	m_skipped_tests_list.add("conflict-resolution-0802");
     }
 
     @AfterClass

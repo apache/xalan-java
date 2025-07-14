@@ -61,7 +61,7 @@ public class TemplateSubPatternAssociation implements Serializable, Cloneable
    * @param pattern An executable XSLT StepPattern.
    * @param pat For now a Nodelist that contains old-style element patterns.
    */
-  TemplateSubPatternAssociation(ElemTemplate template, StepPattern pattern, String pat)
+  public TemplateSubPatternAssociation(ElemTemplate template, StepPattern pattern, String pat)
   {
 	  m_pattern = pat;
 	  m_template = template;

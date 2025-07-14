@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-13T16:37:56Z" fail="28" name="apply-templates" pass="20" skipped="2" statusUnknown="0" totalRun="50">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-14T16:50:26Z" fail="25" name="apply-templates" pass="21" skipped="2" statusUnknown="0" totalRun="48">
    <testResult status="fail" testName="apply-templates-001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
 &#13;
@@ -151,21 +151,7 @@
       <outResult/>
    </testResult>
    <testResult status="pass" testName="conflict-resolution-0702"/>
-   <testResult status="fail" testName="conflict-resolution-0703">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="conflict-resolution-0801">
-      <outResult>
-         <errTrace>Illegal value: #current used for QNAME attribute: mode</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="conflict-resolution-0802">
-      <outResult>
-         <errTrace>Illegal value: #default used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value: a b #default used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value: #current used for QNAME attribute: mode</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="conflict-resolution-0703"/>
    <testResult status="pass" testName="conflict-resolution-0901"/>
    <testResult status="fail" testName="conflict-resolution-1001"/>
    <testResult status="fail" testName="conflict-resolution-1101"/>
