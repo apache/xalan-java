@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><result xmlns="http://ns0">
+  <item attr="atr2">
+       <subitem>b</subitem>
+	</item>
+  <item attr="atr3">
+	   <subitem>c</subitem>
+	</item>
+</result>

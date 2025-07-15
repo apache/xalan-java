@@ -538,10 +538,12 @@ public class ElemForEachGroup extends ElemTemplateElement
         	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
         	if (m_GroupStartingWithExpression != null) {
+        		// REVISIT : This is pattern, and not expression
         		m_GroupStartingWithExpression = new XPath(m_GroupStartingWithExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
         	}
 
         	if (m_GroupEndingWithExpression != null) {
+        		// REVISIT : This is pattern, and not expression
         		m_GroupEndingWithExpression = new XPath(m_GroupEndingWithExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
         	}
 
