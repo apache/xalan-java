@@ -21,6 +21,7 @@
 package org.apache.xalan.templates;
 
 import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathFactory;
@@ -31,6 +32,7 @@ import xml.xpath31.processor.types.XSAnyType;
 
 /**
  * Simple string part of a complex AVT.
+ * 
  * @xsl.usage internal
  */
 public class AVTPartXPath extends AVTPart
@@ -133,6 +135,14 @@ public class AVTPartXPath extends AVTPart
           XPathContext xctxt, FastStringBuffer buf, int context, org.apache.xml.utils.PrefixResolver nsNode)
             throws javax.xml.transform.TransformerException
   {
+	  
+	ExpressionNode exprParentNode = (m_xpath.getExpression()).exprGetParent();
+	if (exprParentNode instanceof ElemTemplateElement) {
+		String xpathDefaultNamespace = XPathParser.getXPathDefaultNamespace((ElemTemplateElement)exprParentNode);
+		if (xpathDefaultNamespace != null) {
+		   m_xpath = new XPath(m_xpath.getPatternString(), xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null);		
+		}
+	}
 
     XObject xobj = m_xpath.execute(xctxt, context, nsNode);
 

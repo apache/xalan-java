@@ -564,6 +564,12 @@ public class XPathParser
 
 	  nextToken();
 	  Pattern();
+	  
+	  if ((m_xpathDefaultNamespace != null) && (m_expression.startsWith("/")) && (m_queueMark == 2)) {
+		  nextToken();
+		  nextToken();
+		  nextToken();
+	  }
 
 	  if (null != m_token)
 	  {
@@ -7158,7 +7164,7 @@ public class XPathParser
      * @return										An attribute xpath-default-namespace's effective 
      *                                              value for XPath expression.
      */
-    private String getXPathDefaultNamespace(ElemTemplateElement xpathExprXslParentNode) {
+    public static String getXPathDefaultNamespace(ElemTemplateElement xpathExprXslParentNode) {
 
     	String result = null;
 
@@ -7359,11 +7365,22 @@ public class XPathParser
     		for (int i = 0; i < strArr.length; i++) {
     			String strValue = strArr[i];
     			if (!"|".equals(strValue)) {
-    				int j1 = strValue.lastIndexOf(':');
-    				tokenQueue.addElement(strValue.substring(0, j1));
-    				tokenQueue.addElement(":");
-    				tokenQueue.addElement(strValue.substring(j1 + 1));
-    				j += 3;
+    				if (strValue.startsWith("/")) {
+    				    tokenQueue.addElement("/");    				    
+    				    String strValueSuffix = strValue.substring(1);
+    				    int j1 = strValueSuffix.lastIndexOf(':');
+    					tokenQueue.addElement(strValueSuffix.substring(0, j1));
+    					tokenQueue.addElement(":");
+    					tokenQueue.addElement(strValueSuffix.substring(j1 + 1));
+    					j += 4;
+    				}
+    				else {
+    					int j1 = strValue.lastIndexOf(':');
+    					tokenQueue.addElement(strValue.substring(0, j1));
+    					tokenQueue.addElement(":");
+    					tokenQueue.addElement(strValue.substring(j1 + 1));
+    					j += 3;
+    				}    				    				
     			}
     			else {
     				tokenQueue.addElement("|");

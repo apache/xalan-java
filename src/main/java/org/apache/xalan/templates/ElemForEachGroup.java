@@ -91,22 +91,22 @@ public class ElemForEachGroup extends ElemTemplateElement
   /**
    * An XPath expression for 'group-by' attribute.
    */
-  private XPath m_GroupByExpression = null;  
+  private XPath m_groupByExpression = null;  
   
   /**
    * An XPath expression for 'group-starting-with' attribute.
    */  
-  private XPath m_GroupStartingWithExpression = null;
+  private XPath m_groupStartingWithExpression = null;
   
   /**
    * An XPath expression for 'group-ending-with' attribute.
    */
-  private XPath m_GroupEndingWithExpression = null;
+  private XPath m_groupEndingWithExpression = null;
   
   /**
    * An XPath expression for 'group-adjacent' attribute.
    */
-  private XPath m_GroupAdjacentExpression = null;
+  private XPath m_groupAdjacentExpression = null;
   
   /**
    * An attribute 'composite''s boolean value.
@@ -220,7 +220,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public void setGroupBy(XPath xpath)
   {
-      m_GroupByExpression = xpath;
+      m_groupByExpression = xpath;
   }
   
   /**
@@ -230,7 +230,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public XPath getGroupBy()
   {
-      return m_GroupByExpression;
+      return m_groupByExpression;
   }
   
   /**
@@ -240,7 +240,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public void setGroupStartingWith(XPath xpath)
   {
-      m_GroupStartingWithExpression = xpath;   
+      m_groupStartingWithExpression = xpath;   
   }
   
   /**
@@ -250,7 +250,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public XPath getGroupStartingWith()
   {
-      return m_GroupStartingWithExpression;
+      return m_groupStartingWithExpression;
   }
   
   /**
@@ -260,7 +260,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public void setGroupEndingWith(XPath xpath)
   {
-      m_GroupEndingWithExpression = xpath;   
+      m_groupEndingWithExpression = xpath;   
   }
   
   /**
@@ -270,7 +270,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public XPath getGroupEndingWith()
   {
-      return m_GroupEndingWithExpression;
+      return m_groupEndingWithExpression;
   }
   
   /**
@@ -280,7 +280,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public void setGroupAdjacent(XPath xpath)
   {
-      m_GroupAdjacentExpression = xpath;   
+      m_groupAdjacentExpression = xpath;   
   }
   
   /**
@@ -290,7 +290,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public XPath getGroupAdjacent()
   {
-      return m_GroupAdjacentExpression;
+      return m_groupAdjacentExpression;
   }
   
   /**
@@ -354,20 +354,20 @@ public class ElemForEachGroup extends ElemTemplateElement
             m_selectExpression.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
         }
         
-        if (m_GroupByExpression != null) {
-        	m_GroupByExpression.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+        if (m_groupByExpression != null) {
+        	m_groupByExpression.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
         }
         
-        if (m_GroupStartingWithExpression != null) {
-        	m_GroupStartingWithExpression.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+        if (m_groupStartingWithExpression != null) {
+        	m_groupStartingWithExpression.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
         }
         
-        if (m_GroupEndingWithExpression != null) {
-        	m_GroupEndingWithExpression.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+        if (m_groupEndingWithExpression != null) {
+        	m_groupEndingWithExpression.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
         }
         
-        if (m_GroupAdjacentExpression != null) {
-        	m_GroupAdjacentExpression.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+        if (m_groupAdjacentExpression != null) {
+        	m_groupAdjacentExpression.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
         }
   }
   
@@ -518,8 +518,7 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * This method performs the actual XSLT transformation logic, on XSL contents of 
-   * xsl:for-each-group element.
+   * Method definition, to do xsl:for-each-group instruction's XSL transformation.
    *
    * @param transformer              non-null reference to the the current transform-time state.
    *
@@ -534,36 +533,75 @@ public class ElemForEachGroup extends ElemTemplateElement
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        if (m_xpath_default_namespace != null) {    		
-        	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-
-        	if (m_GroupStartingWithExpression != null) {
-        		// REVISIT : This is pattern, and not expression
-        		m_GroupStartingWithExpression = new XPath(m_GroupStartingWithExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
-        	}
-
-        	if (m_GroupEndingWithExpression != null) {
-        		// REVISIT : This is pattern, and not expression
-        		m_GroupEndingWithExpression = new XPath(m_GroupEndingWithExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
-        	}
-
-        	if (m_GroupAdjacentExpression != null) {
-        		m_GroupAdjacentExpression = new XPath(m_GroupAdjacentExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
-        	}     	  
-     	}
-        
         int forEachGroupGroupingAttributesCount = getForEachGroupGroupingAttributesCount();
         
         if (forEachGroupGroupingAttributesCount == 0) {
             throw new TransformerException("XTSE1080 : None of the attributes 'group-by', 'group-adjacent', "
 										                                              + "'group-starting-with', 'group-ending-with' is present on "
-										                                              + "xsl:for-each-group element.", srcLocator);     
+										                                              + "xsl:for-each-group instruction.", srcLocator);     
         }
          
         if (forEachGroupGroupingAttributesCount > 1) {
            throw new TransformerException("XTSE1080 : Only one of the attributes 'group-by', 'group-adjacent', "
-									                                                 + "'group-starting-with', 'group-ending-with' is allowed to be "
-									                                                 + "present on xsl:for-each-group element.", srcLocator);     
+									                                                 + "'group-starting-with', 'group-ending-with' can be "
+									                                                 + "present on xsl:for-each-group instruction.", srcLocator);     
+        }
+        
+        if (m_groupStartingWithExpression != null) {
+        	try {
+        	   // Verify that, xsl:for-each-group instruction's attribute group-starting-with's 
+        	   // value has a syntax conforming to an XPath pattern. 
+        	   XPath groupStartingWithXPath = new XPath(m_groupStartingWithExpression.getPatternString(), srcLocator, 
+        			                                                                                    xctxt.getNamespaceContext(), XPath.MATCH, null);
+        	}
+        	catch (TransformerException ex) {
+        		String errMessageStr = "XTSE0340 : xsl:for-each-group instruction's attribute group-starting-with's "
+        				                                                                   + "stylesheet value has syntax error. " + ex.getMessage() 
+        				                                                                   + ". This value must conform to an XPath pattern.";
+        		throw new TransformerException(errMessageStr, srcLocator); 
+        	}
+        }
+        
+        if (m_groupEndingWithExpression != null) {
+        	try {
+        	   // Verify that, xsl:for-each-group instruction's attribute group-ending-with's 
+         	   // value has a syntax conforming to an XPath pattern.
+        	   XPath groupEndingWithXPath = new XPath(m_groupEndingWithExpression.getPatternString(), srcLocator, 
+        			                                                                                xctxt.getNamespaceContext(), XPath.MATCH, null);
+        	}
+        	catch (TransformerException ex) {
+        		String errMessageStr = "XTSE0340 : xsl:for-each-group instruction's attribute group-ending-with's "
+																                          + "stylesheet value has syntax error. " + ex.getMessage() 
+																                          + ". This value must conform to an XPath pattern.";
+        		
+        		throw new TransformerException(errMessageStr, srcLocator); 
+        	}
+        }
+        
+        if (m_xpath_default_namespace != null) {
+        	// Recompile xsl:for-each-group instruction's attributes, to consider 
+        	// XSL stylesheet namespace xpath-default-namespace. 
+        	
+        	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+        	if (m_groupByExpression != null) {
+        		m_groupByExpression = new XPath(m_groupByExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        	}
+
+        	if (m_groupStartingWithExpression != null) {
+        		m_groupStartingWithExpression = new XPath(m_groupStartingWithExpression.getPatternString(), srcLocator, 
+        																								xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        	}
+
+        	if (m_groupEndingWithExpression != null) {
+        		m_groupEndingWithExpression = new XPath(m_groupEndingWithExpression.getPatternString(), srcLocator, 
+        																								xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        	}
+
+        	if (m_groupAdjacentExpression != null) {
+        		m_groupAdjacentExpression = new XPath(m_groupAdjacentExpression.getPatternString(), srcLocator, 
+        																							xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        	}
         }
         
         final int sourceNode = xctxt.getCurrentNode();
@@ -645,16 +683,16 @@ public class ElemForEachGroup extends ElemTemplateElement
          */
         List<List<Integer>> xslForEachGroupStartingWithEndingWith = new ArrayList<List<Integer>>();
         
-        if (m_GroupByExpression != null) {
+        if (m_groupByExpression != null) {
         	constructGroupsForGroupBy(xctxt, sourceNodes, xslForEachGroupMap);
         }        
-        else if (m_GroupStartingWithExpression != null) {
+        else if (m_groupStartingWithExpression != null) {
         	constructGroupsForGroupStartingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith, isInpSeqAllAtomicValues);
         }
-        else if (m_GroupEndingWithExpression != null) {                          
+        else if (m_groupEndingWithExpression != null) {                          
         	constructGroupsForGroupEndingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith, isInpSeqAllAtomicValues);
         }
-        else if (m_GroupAdjacentExpression != null) {
+        else if (m_groupAdjacentExpression != null) {
         	constructGroupsForGroupAdjacent(xctxt, sourceNodes, xslForEachGroupAdjacentList);
         }
         
@@ -884,7 +922,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 		  
 		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
 			  FuncPosition.m_forEachGroupGroupByPos = ++pos; 
-			  XObject xpathEvalResult = m_GroupByExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());
+			  XObject xpathEvalResult = m_groupByExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());
 			  Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
 
 			  if (!m_composite) {
@@ -973,7 +1011,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 			  if (idx == 0) {
 				  int parentNode = dtm.getParent(nextNode);
 				  XObject groupStartingWithEvalResult = null;			  
-				  groupStartingWithEvalResult = m_GroupStartingWithExpression.execute(xctxt, parentNode, xctxt.getNamespaceContext());
+				  groupStartingWithEvalResult = m_groupStartingWithExpression.execute(xctxt, parentNode, xctxt.getNamespaceContext());
 				  XMLNodeCursorImpl grpStartingWithNodeInit = (XMLNodeCursorImpl)groupStartingWithEvalResult;
 				  DTMCursorIterator dtmCursorIter = grpStartingWithNodeInit.getContainedIter();
 				  while (DTM.NULL != (nextNode = dtmCursorIter.nextNode())) {            	 
@@ -1008,7 +1046,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 			  }
 
 			  xctxt.setXPath3ContextItem(xObj);				  
-			  XObject xObjResult = m_GroupStartingWithExpression.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+			  XObject xObjResult = m_groupStartingWithExpression.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
 			  if ((xObjResult instanceof XBooleanStatic) || (xObjResult instanceof XBoolean) || (xObjResult instanceof XSBoolean)) {
 				  if (xObjResult.bool()) {
 					 grpStartNodeHandles.add(Integer.valueOf(nextNode)); 
@@ -1085,7 +1123,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 			  DTM dtm = xctxt.getDTM(nextNode);
 			  if (idx == 0) {
 				  int parentNode = dtm.getParent(nextNode);
-				  XObject groupStartingWithEvalResult = m_GroupEndingWithExpression.execute(xctxt, parentNode, xctxt.getNamespaceContext());
+				  XObject groupStartingWithEvalResult = m_groupEndingWithExpression.execute(xctxt, parentNode, xctxt.getNamespaceContext());
 				  XMLNodeCursorImpl grpStartingWithNodeInit = (XMLNodeCursorImpl)groupStartingWithEvalResult;
 				  DTMCursorIterator dtmCursorIter = grpStartingWithNodeInit.getContainedIter();
 				  while (DTM.NULL != (nextNode = dtmCursorIter.nextNode())) {            	 
@@ -1120,7 +1158,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 			  }
 
 			  xctxt.setXPath3ContextItem(xObj);				  
-			  XObject xObjResult = m_GroupEndingWithExpression.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+			  XObject xObjResult = m_groupEndingWithExpression.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
 			  if ((xObjResult instanceof XBooleanStatic) || (xObjResult instanceof XBoolean) || (xObjResult instanceof XSBoolean)) {
 				  if (xObjResult.bool()) {
 					  grpEndNodeHandles.add(Integer.valueOf(nextNode)); 
@@ -1196,7 +1234,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 	 int nextNode;
 	 
 	 while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {	     
-	     XObject xpathEvalResult = m_GroupAdjacentExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());                 
+	     XObject xpathEvalResult = m_groupAdjacentExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());                 
 	     Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
 	     
 	     if (m_composite) {
@@ -1313,19 +1351,19 @@ public class ElemForEachGroup extends ElemTemplateElement
 
         int forEachGroupGroupingAttributesCount = 0;
         
-        if (m_GroupByExpression != null) {
+        if (m_groupByExpression != null) {
            forEachGroupGroupingAttributesCount++;    
         }
         
-        if (m_GroupAdjacentExpression != null) {
+        if (m_groupAdjacentExpression != null) {
            forEachGroupGroupingAttributesCount++;    
         }
         
-        if (m_GroupStartingWithExpression != null) {
+        if (m_groupStartingWithExpression != null) {
            forEachGroupGroupingAttributesCount++;    
         }
         
-        if (m_GroupEndingWithExpression != null) {
+        if (m_groupEndingWithExpression != null) {
            forEachGroupGroupingAttributesCount++;    
         }
         
