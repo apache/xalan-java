@@ -6,10 +6,10 @@
    <!-- Author: mukulg@apache.org -->
    
    <!-- use with test2.xml -->
-   
+        
    <!-- An XSL stylesheet test case, to test xsl:for-each-group instruction 
-        to group XML input information within a namespace, and using XSLT 
-        attribute xpath-default-namespace. -->                
+        using attribute 'group-ending-with' to group XML input information 
+        within a namespace, and using XSLT attribute xpath-default-namespace. -->                        
 
    <xsl:output method="xml" indent="yes"/>
 

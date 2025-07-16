@@ -1,30 +1,27 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xpath-default-namespace="http://ns0"
-                version="3.0">
+				xmlns="http://ns0"
+                version="3.0">               
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test2.xml -->
-        
+   <!-- use with test4.xml -->
+   
    <!-- An XSL stylesheet test case, to test xsl:for-each-group instruction 
-        using attribute 'group-ending-with' to group XML input information 
-        within a namespace, and using XSLT attribute xpath-default-namespace. -->                         
+        using attribute 'group-adjacent' to group XML input information within 
+        a namespace, and using XSLT attribute xpath-default-namespace. -->                 
 
    <xsl:output method="xml" indent="yes"/>
 
-   <xsl:template match="/body">
-      <chapter>
-         <xsl:for-each-group select="*" group-ending-with="h2">
-           <xsl:variable name="currGrp" select="current-group()"/>
-           <xsl:variable name="currGrpLastItem" select="$currGrp[count($currGrp)]"/>
-           <section title="{$currGrpLastItem}">
-      	     <xsl:for-each select="$currGrp[self::p]">
-      	        <para><xsl:value-of select="."/></para>
-      	     </xsl:for-each> 
-           </section>
-         </xsl:for-each-group>
-      </chapter>
+   <xsl:template match="/elem">
+      <result>
+        <xsl:for-each-group select="a" group-adjacent="concat(p,'#',q)">
+           <group grpKey="{current-grouping-key()}">
+              <xsl:copy-of select="current-group()"/>
+           </group>
+        </xsl:for-each-group>
+      </result>
    </xsl:template>
    
    <!--
