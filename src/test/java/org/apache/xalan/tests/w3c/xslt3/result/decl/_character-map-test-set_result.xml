@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-16T11:46:30Z" fail="13" name="character-map" pass="15" skipped="0" statusUnknown="1" totalRun="29">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-17T16:34:26Z" fail="12" name="character-map" pass="15" skipped="1" statusUnknown="1" totalRun="28">
    <testResult status="pass" testName="character-map-001"/>
    <testResult status="pass" testName="character-map-002"/>
    <testResult status="pass" testName="character-map-003"/>
@@ -8,9 +8,7 @@
    <testResult status="pass" testName="character-map-007"/>
    <testResult status="pass" testName="character-map-008"/>
    <testResult status="pass" testName="character-map-009"/>
-   <testResult status="fail" testName="character-map-010">
-      <outResult/>
-   </testResult>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="character-map-010"/>
    <testResult status="pass" testName="character-map-011"/>
    <testResult status="pass" testName="character-map-012"/>
    <testResult status="fail" testName="character-map-013">

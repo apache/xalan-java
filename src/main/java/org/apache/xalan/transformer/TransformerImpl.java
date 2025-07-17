@@ -4261,7 +4261,9 @@ public class TransformerImpl extends Transformer
 													ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
 													Integer chrCodePoint = elemOutputCharacter.getCharacter();
 													String str = elemOutputCharacter.getString();
-													charMapConfig.put(chrCodePoint, str);
+													if (chrCodePoint != null) {
+													   charMapConfig.put(chrCodePoint, str);
+													}
 													elemTemplateElem = elemTemplateElem.getNextSiblingElem();
 												}
 											}
@@ -4277,7 +4279,9 @@ public class TransformerImpl extends Transformer
 									ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
 									Integer chrCodePoint = elemOutputCharacter.getCharacter();
 									String str = elemOutputCharacter.getString();
-									charMapConfig.put(chrCodePoint, str);
+									if (chrCodePoint != null) {
+									   charMapConfig.put(chrCodePoint, str);
+									}
 									elemTemplateElem = elemTemplateElem.getNextSiblingElem();
 								}
 							}
@@ -4289,7 +4293,9 @@ public class TransformerImpl extends Transformer
 									ElemOutputCharacter elemOutputCharacter = (ElemOutputCharacter)elemTemplateElem;
 									Integer chrCodePoint = elemOutputCharacter.getCharacter();
 									String str = elemOutputCharacter.getString();
-									charMapConfig.put(chrCodePoint, str);
+									if (chrCodePoint != null) {
+									   charMapConfig.put(chrCodePoint, str);
+									}
 									elemTemplateElem = elemTemplateElem.getNextSiblingElem();
 								}
 							}

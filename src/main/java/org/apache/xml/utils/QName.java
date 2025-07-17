@@ -619,10 +619,7 @@ public class QName implements java.io.Serializable
 			  }
 			  else if ((thisNs == null) && (argNs == null)){
 				  result = true;  
-			  }
-			  else {
-				  result = false;
-			  }
+			  }			  
 		  }
 	  }
 

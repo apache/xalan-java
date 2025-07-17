@@ -109,14 +109,14 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 					   totalFail += fail;
 					   int skipped = Integer.valueOf(docElem.getAttribute("skipped"));
 					   totalSkipped += skipped;
-					   double successPer = (((pass + skipped) / (double)totalRun)) * 100;
-					   double roundedDbl = (Double.valueOf(decimalFormat.format(Double.valueOf(String.valueOf(successPer))))).doubleValue();
+					   double successPer = ((pass / (double)totalRun)) * 100;
+					   double successPerDbl = (Double.valueOf(decimalFormat.format(Double.valueOf(String.valueOf(successPer))))).doubleValue();
 					   Element testSetElem = document.createElement(testSetName);
 					   testSetElem.setAttribute("totalRun", String.valueOf(totalRun));
 					   testSetElem.setAttribute("pass", String.valueOf(pass));
 					   testSetElem.setAttribute("fail", String.valueOf(fail));
 					   testSetElem.setAttribute("skipped", String.valueOf(skipped));
-					   testSetElem.setAttribute("success", String.valueOf(roundedDbl) + "%");
+					   testSetElem.setAttribute("success", String.valueOf(successPerDbl) + "%");
 					   testSetKindElem.appendChild(testSetElem);
 					}
 					
@@ -124,7 +124,7 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 				}
 			}
 			
-			double totalSuccessPer = (((totalPass + totalSkipped) / (double)totalCount)) * 100;
+			double totalSuccessPer = ((totalPass / (double)totalCount)) * 100;
 			double totalSuccessPerDbl = (Double.valueOf(decimalFormat.format(Double.valueOf(String.valueOf(totalSuccessPer))))).doubleValue();
 			testResultElem.setAttribute("totalRun", String.valueOf(totalCount));
 			testResultElem.setAttribute("pass", String.valueOf(totalPass));

@@ -1457,7 +1457,7 @@ public class XSLTAttributeDef
    * @param uri The Namespace URI, or an empty string.
    * @param name The local name (without prefix), or empty string if not namespace processing.
    * @param rawName The qualified name (with prefix).
-   * @param value A string that should be "yes" or "no".
+   * @param value A string that should be "yes", "no", "true", "false", "1", "0"
    *
    * @return Boolean object representation of the value.
    *
@@ -1468,15 +1468,18 @@ public class XSLTAttributeDef
             throws org.xml.sax.SAXException
   {
 
-    // Is this already checked somewhere else?  -sb
-    if (!(value.equals("yes") || value.equals("true") || value.equals("1") || 
-    	  value.equals("no") || value.equals("false") || value.equals("0")))
-    {
-      handleError(handler, XSLTErrorResources.INVALID_BOOLEAN, new Object[] {name,value}, null);
-      return null;
-   }
- 
-     return new Boolean((value.equals("yes") || value.equals("true") || value.equals("1")) ? true : false);
+	  // Is this already checked somewhere else?  -sb
+	  String normalizedValueStr = value.trim();
+	  if (!("yes".equals(normalizedValueStr) || "true".equals(normalizedValueStr) || "1".equals(normalizedValueStr) || 
+			                                    "no".equals(normalizedValueStr) || "false".equals(normalizedValueStr) 
+			                                                                    || "0".equals(normalizedValueStr)))
+	  {      
+		  handleError(handler, XSLTErrorResources.INVALID_BOOLEAN, new Object[] {name,value}, null);
+		  return null;
+	  }
+
+	  return new Boolean(("yes".equals(normalizedValueStr) || "true".equals(normalizedValueStr) 
+			                                               || "1".equals(normalizedValueStr)) ? true : false);
   }
 
   /**

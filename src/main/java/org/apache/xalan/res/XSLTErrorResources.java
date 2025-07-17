@@ -1086,10 +1086,11 @@ public class XSLTErrorResources extends ListResourceBundle
   // This code is shared with warning codes.
   // SystemId Unknown
     { INVALID_TCHAR,
-     "Illegal value: {1} used for CHAR attribute: {0}. An attribute of type CHAR must be only 1 character!"},
+     "XTSE0020 : Illegal value: {1} used for CHAR attribute: {0}. An attribute of type CHAR must be only one character."},
     
     { INVALID_T_UNICODE_CHAR,
-     "Illegal value: {1} used for UNICODE_CHAR attribute: {0}. An attribute of type UNICODE_CHAR must be only 1 unicode character."},
+     "XTSE0020 : Illegal value: {1} used for UNICODE_CHAR attribute: {0}. An attribute of type UNICODE_CHAR must be "
+                                                                                                      + "only one unicode character."},
 
     // Note to translators:  The following message is used if the value of
     // an attribute in a stylesheet is invalid.  "QNAME" is the XML data-type of

@@ -124,6 +124,75 @@ public class ElemFunction extends ElemTemplate
   public String getXpathDefaultNamespace() {
 	  return m_xpath_default_namespace;
   }
+  
+  /**
+   * This class field, represents the value of "override" 
+   * attribute.
+   */
+  private boolean m_override;
+  
+  
+  /**
+   * This class field, indicates that xsl:function instruction 
+   * has attribute "override" declared with either of the 
+   * values 'true' or 'false'. 
+   */
+  private boolean m_override_attr_declared;
+
+  /**
+   * Set the value of "override" attribute.
+   *
+   * @param v   Value of the "override" attribute
+   */
+  public void setOverride(boolean bool)
+  {
+	  m_override = bool;	  
+	  m_override_attr_declared = true;
+  }
+
+  /**
+   * Get the value of "override" attribute.
+   *  
+   * @return		  The value of "override" attribute 
+   */
+  public boolean getOverride() {
+	  return m_override;
+  }
+  
+  /**
+   * This class field, represents the value of "override-extension-function" 
+   * attribute. An xsl:function's attributes "override-extension-function" and 
+   * "override" are synonym. An xsl:function attribute "override" is deprecated 
+   * with XSLT 3.0. 
+   */
+  private boolean m_override_extension_function;
+  
+  /**
+   * This class field, indicates that xsl:function instruction has attribute 
+   * "override-extension-function" declared with either of the values 
+   * 'true' or 'false'. 
+   */
+  private boolean m_override_extension_function_attr_declared;
+
+  /**
+   * Set the value of "override-extension-function" attribute.
+   *
+   * @param v   Value of the "override-extension-function" attribute
+   */
+  public void setOverrideExtensionFunction(boolean bool)
+  {
+	  m_override_extension_function = bool;	  
+	  m_override_extension_function_attr_declared = true;
+  }
+
+  /**
+   * Get the value of "override-extension-function" attribute.
+   *  
+   * @return		  The value of "override-extension-function" attribute 
+   */
+  public boolean getOverrideExtensionFunction() {
+	  return m_override_extension_function;
+  }
 
   /**
    * Class constructor.
@@ -202,8 +271,9 @@ public class ElemFunction extends ElemTemplate
                    xslParamMap.put(new QName(xslParamName), Integer.valueOf(idx)); 
                 }
                 else {
-                   throw new TransformerException("XPST0017 : The xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-                                                                             ", has more than one xsl:param '" + xslParamName + "' declaration.", srcLocator); 
+                   throw new TransformerException("XPST0017 : An xsl:function instruction {" + funcNameSpaceUri + "}" + funcLocalName + " "
+                   		                                                                     + "has more than one xsl:param '" + 
+                		                                                                       xslParamName + "' declaration.", srcLocator); 
                 }
             }
          }
@@ -214,8 +284,9 @@ public class ElemFunction extends ElemTemplate
                 xslParamMap.put(elemParamQName, Integer.valueOf(idx)); 
              }
              else {
-                throw new TransformerException("XPST0017 : The xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-                                                                          ", has more than one xsl:param '" + elemParamQName + "' declaration.", srcLocator); 
+            	 throw new TransformerException("XPST0017 : An xsl:function instruction {" + funcNameSpaceUri + "}" + funcLocalName + " "
+                                                                                           + "has more than one xsl:param '" + elemParamQName.toString() 
+                                                                                           + "' declaration.", srcLocator); 
              } 
          }
          
@@ -1012,5 +1083,13 @@ public class ElemFunction extends ElemTemplate
 		
 		return resultSequence;
 	}
+    
+    public boolean isOverrideAttrDeclared() {
+    	return m_override_attr_declared;
+    }
+    
+    public boolean isOverrideExtensionFunctionAttrDeclared() {
+    	return m_override_extension_function_attr_declared;
+    }
 
 }

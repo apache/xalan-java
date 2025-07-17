@@ -138,22 +138,47 @@ public class TemplateList implements java.io.Serializable
     	if (template.getName() == null)
         {
             template.error(XSLTErrorResources.ER_XSL_FUNCTION_NEED_NAME_ATTRIB,
-                                                                      new Object[]{});
+                                                                      new Object[]{});            
         }
     	else {
-    		int funcArity = ((ElemFunction)template).getArity();    		
-    		XslFunctionDefinitionKey funcDefnKey = new XslFunctionDefinitionKey(template.getName(), funcArity);
-    		ElemFunction existingXslFunction = m_functionDefinitionMap.get(funcDefnKey);
-    		if (existingXslFunction == null)
-    		{
-    			m_functionDefinitionMap.put(funcDefnKey, (ElemFunction)template);
+    		ElemFunction newFunc = (ElemFunction)template;
+    		int funcArity = newFunc.getArity();
+    		boolean isOverrideDecl = newFunc.isOverrideAttrDeclared();
+    		boolean isOverrideExtDecl = newFunc.isOverrideExtensionFunctionAttrDeclared();
+    		if (isOverrideDecl && isOverrideExtDecl && (newFunc.getOverride() != newFunc.getOverrideExtensionFunction())) {
+    			  QName funcName = newFunc.getName();
+    	    	  template.error("XTSE0020 : An xsl:function instruction " + funcName.toString() + " has both "
+															                            + "the attributes 'override' and 'override-extension-function', "
+															                            + "but they don't have the same value.");
+    	    }
+    		
+    		if (!isOverrideDecl) {
+    			// An attribute 'override' is not declared. We set its value to default "yes".
+    			newFunc.setOverride(true);
+    		}
+    		
+    		if (!isOverrideExtDecl) {
+    			// An attribute 'override-extension-function' is not declared. We set its value to default "yes".
+    			newFunc.setOverrideExtensionFunction(true);
+    		}
+    		
+    		XslFunctionDefinitionKey funcDefnKey = new XslFunctionDefinitionKey(newFunc.getName(), funcArity, newFunc.getOverride());
+    		ElemFunction xslFunctionObj = m_functionDefinitions.get(funcDefnKey);
+    		if (xslFunctionObj == null) {
+    			m_functionDefinitions.put(funcDefnKey, newFunc);
     		}
     		else {
-    			int existingPrecedence = existingXslFunction.getStylesheetComposed().getImportCountComposed();
-    			int newPrecedence = template.getStylesheetComposed().getImportCountComposed();
-    			if (newPrecedence == existingPrecedence) {
-    				template.error(XSLTErrorResources.ER_DUPLICATE_XSL_FUNCTION,
-    																		  new Object[]{ existingXslFunction.getName(), funcDefnKey.getArity() });
+    			int existingPrecedence = xslFunctionObj.getStylesheetComposed().getImportCountComposed();
+    			int newPrecedence = newFunc.getStylesheetComposed().getImportCountComposed();
+    			if (newPrecedence == existingPrecedence) {    				
+    				if ((isOverrideDecl && newFunc.getOverride()) || (isOverrideExtDecl && newFunc.getOverrideExtensionFunction())) {
+    					m_functionDefinitions.remove(funcDefnKey);
+    					m_functionDefinitions.put(funcDefnKey, newFunc);
+    				}
+    				else {
+    				    template.error(XSLTErrorResources.ER_DUPLICATE_XSL_FUNCTION,
+    																		  new Object[]{ xslFunctionObj.getName(), funcDefnKey.getArity() });
+    				}
     			}
     		}
     	 }
@@ -505,9 +530,13 @@ public class TemplateList implements java.io.Serializable
    */
   public ElemTemplate getXslFunction(QName qname, int arity)
   {
-	  XslFunctionDefinitionKey xslFunctionDefinitionKey = new XslFunctionDefinitionKey(qname, arity);
+	  XslFunctionDefinitionKey xslFunctionDefinitionKey = new XslFunctionDefinitionKey(qname, arity, true);
+	  ElemFunction elemFunc = m_functionDefinitions.get(xslFunctionDefinitionKey);
+	  if (elemFunc == null) {
+		  elemFunc = m_functionDefinitions.get(new XslFunctionDefinitionKey(qname, arity, false));  
+	  }
 
-	  return (ElemTemplate)(m_functionDefinitionMap.get(xslFunctionDefinitionKey));
+	  return elemFunc;
   }
 
   /**
@@ -866,9 +895,10 @@ public class TemplateList implements java.io.Serializable
   private Hashtable m_namedTemplates = new Hashtable(89);
   
   /**
-   * An java.util.Map object to store xsl:function definitions within an XSL stylesheet. 
+   * An java.util.Map object to store xsl:function definitions 
+   * within an XSL stylesheet. 
    */
-  private Map<XslFunctionDefinitionKey, ElemFunction> m_functionDefinitionMap = new HashMap<XslFunctionDefinitionKey, ElemFunction>();
+  private Map<XslFunctionDefinitionKey, ElemFunction> m_functionDefinitions = new HashMap<XslFunctionDefinitionKey, ElemFunction>();
 
   /**
    * This table is keyed on the target elements

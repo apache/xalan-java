@@ -192,23 +192,23 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef nameAVT_NCNAMERequired = new XSLTAttributeDef(null, "name",
                                          XSLTAttributeDef.T_NCNAME, true, true, XSLTAttributeDef.WARNING);
                                         
-    // Optional.
+    // Optional
     // Static error if invalid
     // xsl:template, xsl:decimal-format                                      
     XSLTAttributeDef nameAttrOpt_ERROR = new XSLTAttributeDef(null, "name",
                                      XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
     
-    // Optional.
+    // Optional
     // xsl:merge-source
     XSLTAttributeDef nameAttrOpt = new XSLTAttributeDef(null, "name",
                                      XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.WARNING);
     
-    // Optional.
+    // Optional
     // xsl:merge-source
     XSLTAttributeDef sortBeforeMergeAttrOpt = new XSLTAttributeDef(null, "sort-before-merge",
                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
     
-    // Optional.
+    // Optional
     // xsl:param                                      
     XSLTAttributeDef requiredAttrOpt = new XSLTAttributeDef(null, "required",
                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
@@ -255,7 +255,7 @@ public class XSLTSchema extends XSLTElementDef
                                               XSLTAttributeDef.T_QNAMES,
                                               false, false, XSLTAttributeDef.ERROR);
     
-    // Optional.
+    // Optional
     // xsl:catch      
     XSLTAttributeDef errorsAttrOpt = new XSLTAttributeDef(null, "errors", XSLTAttributeDef.T_QNAMES,
                                                                                     false, false, XSLTAttributeDef.ERROR);
@@ -280,16 +280,16 @@ public class XSLTSchema extends XSLTElementDef
                                             "select",
                                             XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
     
-    // Optional.
+    // Optional
     // xsl:for-each-group
     XSLTAttributeDef compositeAttrOpt = new XSLTAttributeDef(null, "composite",
                                                       XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
-    // Optional.
+    // Optional
     // xsl:for-each-group 
     XSLTAttributeDef collationAttrOpt = new XSLTAttributeDef(null, "collation", 
     	                                              XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
-    // Optional.
+    // Optional
     // xsl:value-of
     XSLTAttributeDef separatorAttrOpt = new XSLTAttributeDef(null,
 									                   "separator",
@@ -301,7 +301,7 @@ public class XSLTSchema extends XSLTElementDef
 								            "xpath",
 								            XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
     
-    // Optional.
+    // Optional
     // xsl:evaluate
     XSLTAttributeDef contextItemAttrOpt = new XSLTAttributeDef(null,
 									                   "context-item",
@@ -312,58 +312,58 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef regexAVTRequired = new XSLTAttributeDef(null, "regex",
                                               XSLTAttributeDef.T_AVT, true, true, XSLTAttributeDef.ERROR);
     
-    // Optional.                                       
+    // Optional                                       
     // xsl:analyze-string                              
     XSLTAttributeDef flagsAttrOpt = new XSLTAttributeDef(null,
                                              "flags",
                                              XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
-    // Optional.                                       
+    // Optional                                       
     // xsl:for-each-group                             
     XSLTAttributeDef groupByAttrOpt = new XSLTAttributeDef(null,
                                             "group-by",
                                             XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
-    // Optional.                                       
+    // Optional                                       
     // xsl:for-each-group                             
     XSLTAttributeDef groupAdjacentAttrOpt = new XSLTAttributeDef(null,
                                                   "group-adjacent",
                                                   XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
-    // Optional.                                       
+    // Optional                                       
     // xsl:for-each-group                             
     XSLTAttributeDef groupStartingWithAttrOpt = new XSLTAttributeDef(null,
                                                   "group-starting-with",
                                                   XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
-    // Optional.                                       
+    // Optional                                       
     // xsl:for-each-group                             
     XSLTAttributeDef groupEndingWithAttrOpt = new XSLTAttributeDef(null,
                                                   "group-ending-with",
                                                   XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
 
-    // Optional.                                          
+    // Optional                                          
     // xsl:variable, xsl:value-of, xsl:param, xsl:with-param, xsl:attribute, xsl:break, 
     // xsl:on-completion, xsl:sequence, xsl:try, xsl:catch                                       
     XSLTAttributeDef selectAttrOpt = new XSLTAttributeDef(null, "select",
                                        XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
-    // Optional.
+    // Optional
     // xsl:variable, xsl:param, xsl:with-param, xsl:template, xsl:function, xsl:evaluate, xsl:context-item
     XSLTAttributeDef asAttrOpt = new XSLTAttributeDef(null, "as",
                                        XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
-    // Optional.
+    // Optional
     // xsl:param, xsl:with-param 
     XSLTAttributeDef tunnelAttrOpt = new XSLTAttributeDef(null, "tunnel",
                                            XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
 
-    // Optional.
+    // Optional
     // Default: "node()"
     // xsl:apply-templates                                           
     XSLTAttributeDef selectAttrDefNode = new XSLTAttributeDef(null, "select",
                                            XSLTAttributeDef.T_EXPR, false, XSLTAttributeDef.ERROR, "node()");
-    // Optional.
+    // Optional
     // Default: "."
     // xsl:sort                                        
     XSLTAttributeDef selectAttrDefDot = new XSLTAttributeDef(null, "select",
@@ -388,13 +388,13 @@ public class XSLTSchema extends XSLTElementDef
                                          "default", Constants.ATTRVAL_STRIP, "preserve",
                                          Constants.ATTRVAL_PRESERVE);
     
-    // Optional.
+    // Optional
     // Default: "no"
     // xsl:source-document
     XSLTAttributeDef streamableAttr = new XSLTAttributeDef(null, "streamable",
                                           XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     
-    // Optional.
+    // Optional
     // Default: "yes"
     // xsl:try
     XSLTAttributeDef rollbackOutputAttrOpt = new XSLTAttributeDef(null, "rollback-output",
@@ -495,10 +495,20 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslValidationAttrOpt =
     	      new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "validation",
     	                           XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
-    // Optional.
+    // Optional
     // xsl:context-item
     XSLTAttributeDef useAttrOpt = new XSLTAttributeDef(null, "use",
                                                       XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
+    // xsl:function
+    XSLTAttributeDef overrideAttrOpt = new XSLTAttributeDef(null, "override",
+                                                            XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
+    
+    // Optional
+    // xsl:function
+    XSLTAttributeDef overrideExtFunctionAttrOpt = new XSLTAttributeDef(null, "override-extension-function",
+                                                                       XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
                            
     XSLTElementDef charData = new XSLTElementDef(this, null, "text()",
                                 null /*alias */, null /* elements */, null,  /* attributes */
@@ -1202,7 +1212,8 @@ public class XSLTSchema extends XSLTElementDef
                                           templateElementsAndParams /* elements */,
                                           new XSLTAttributeDef[] {
                                                   nameAttrRequired,
-                                                  asAttrOpt, xpathDefaultNamespaceAttrOpt }, 
+                                                  asAttrOpt, xpathDefaultNamespaceAttrOpt, 
+                                                  overrideAttrOpt, overrideExtFunctionAttrOpt }, 
                                           new ProcessorTemplate(), ElemFunction.class /* class object */, true, 20, true),
                                   new XSLTElementDef(
                                            this,

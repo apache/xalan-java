@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-16T11:46:29Z" fail="38" name="function" pass="27" skipped="4" statusUnknown="1" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-17T16:34:25Z" fail="31" name="function" pass="34" skipped="4" statusUnknown="1" totalRun="66">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -8,24 +8,22 @@
    <testResult status="pass" testName="function-0101"/>
    <testResult status="pass" testName="function-0102"/>
    <testResult status="pass" testName="function-0103"/>
-   <testResult status="fail" testName="function-0104"/>
+   <testResult status="pass" testName="function-0104"/>
    <testResult status="pass" testName="function-0105"/>
-   <testResult status="fail" testName="function-0106"/>
+   <testResult status="pass" testName="function-0106"/>
    <testResult status="pass" testName="function-0107"/>
-   <testResult status="fail" testName="function-0108"/>
+   <testResult status="pass" testName="function-0108"/>
    <testResult status="pass" testName="function-0109"/>
-   <testResult status="fail" testName="function-0110"/>
+   <testResult status="pass" testName="function-0110"/>
    <testResult status="pass" testName="function-0111"/>
-   <testResult status="fail" testName="function-0112"/>
+   <testResult status="pass" testName="function-0112"/>
    <testResult status="pass" testName="function-0113"/>
-   <testResult status="fail" testName="function-0114"/>
+   <testResult status="pass" testName="function-0114"/>
    <testResult status="fail" testName="function-0115">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;17&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="function-0116"/>
-   <testResult status="fail" testName="function-0117">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;17&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="function-0117"/>
    <testResult status="fail" testName="function-0118">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;17&lt;/out&gt;</outResult>
    </testResult>

@@ -1335,8 +1335,6 @@ public class ElemLiteralResult extends ElemUse
         XPathContext xctxt = transformer.getXPathContext();
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
-        
-        String abc = getXpathDefaultNamespace();
 
         try
         {
@@ -1383,7 +1381,7 @@ public class ElemLiteralResult extends ElemUse
                     XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
                     String avtStr = avt.getSimpleString();
                     String stringedValue = null;
-                    if ("{.}".equals(avtStr) && xpath3ContextItem != null) {
+                    if ((xpath3ContextItem != null) && "{.}".equals(avtStr)) {
                         if (xpath3ContextItem instanceof XSAnyType) {
                            stringedValue = ((XSAnyType)xpath3ContextItem).stringValue();    
                         }

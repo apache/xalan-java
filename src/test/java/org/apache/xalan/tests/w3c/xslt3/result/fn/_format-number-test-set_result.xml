@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-16T11:48:34Z" fail="33" name="format-number" pass="37" skipped="4" statusUnknown="0" totalRun="74">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-17T16:36:26Z" fail="32" name="format-number" pass="38" skipped="4" statusUnknown="0" totalRun="70">
    <testResult status="fail" testName="format-number-001"/>
    <testResult status="fail" testName="format-number-002"/>
    <testResult status="fail" testName="format-number-003"/>
@@ -52,13 +52,13 @@
    <testResult status="pass" testName="format-number-049"/>
    <testResult status="fail" testName="format-number-050">
       <outResult>
-         <errTrace>Illegal value: 𚶰 used for CHAR attribute: decimal-separator. An attribute of type CHAR must be only 1 character!</errTrace>
-         <errTrace>Illegal value: 𚶱 used for CHAR attribute: grouping-separator. An attribute of type CHAR must be only 1 character!</errTrace>
+         <errTrace>XTSE0020 : Illegal value: 𚶰 used for CHAR attribute: decimal-separator. An attribute of type CHAR must be only one character.</errTrace>
+         <errTrace>XTSE0020 : Illegal value: 𚶱 used for CHAR attribute: grouping-separator. An attribute of type CHAR must be only one character.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="format-number-051">
       <outResult>
-         <errTrace>Illegal value: 𐒠 used for CHAR attribute: zero-digit. An attribute of type CHAR must be only 1 character!</errTrace>
+         <errTrace>XTSE0020 : Illegal value: 𐒠 used for CHAR attribute: zero-digit. An attribute of type CHAR must be only one character.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="format-number-052"/>
@@ -94,12 +94,7 @@
    <testResult status="fail" testName="format-number-060n">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;fred931.ginger&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="format-number-061">
-      <outResult>
-         <errTrace>Illegal value: :: used for CHAR attribute: decimal-separator. An attribute of type CHAR must be only 1 character!</errTrace>
-         <errTrace>Illegal value: !! used for CHAR attribute: grouping-separator. An attribute of type CHAR must be only 1 character!</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="format-number-061"/>
    <testResult status="pass" testName="format-number-062"/>
    <testResult status="pass" testName="format-number-063"/>
    <testResult status="pass" testName="format-number-064"/>

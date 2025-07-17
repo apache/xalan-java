@@ -39,15 +39,19 @@ public class XslFunctionDefinitionKey {
 	 */
 	private int m_arity;
 	
+	private boolean m_isOverride;
+	
 	/**
 	 * Class constructor.
 	 * 
-	 * @param name				An xsl:function definition's name
-	 * @param arity				An xsl:function definition's arity
+	 * @param name				   An xsl:function definition's name
+	 * @param arity				   An xsl:function definition's arity
+	 * @param isOverride		   An xsl:function definition's override value
 	 */
-	public XslFunctionDefinitionKey(QName name, int arity) {
+	public XslFunctionDefinitionKey(QName name, int arity, boolean isOverride) {
 		this.m_name = name;
 		this.m_arity = arity;
+		this.m_isOverride = isOverride; 
 	}
 
 	public QName getName() {
@@ -66,14 +70,23 @@ public class XslFunctionDefinitionKey {
 		this.m_arity = arity;
 	}
 	
-	public boolean equals(Object obj) {
+	public boolean getOverride() {
+		return m_isOverride;
+	}
+
+	public void setOverride(boolean bool) {
+		this.m_isOverride = bool;
+	}
+	
+	public boolean equals(Object obj2) {
 		boolean result = false;
 		
-		if (obj instanceof XslFunctionDefinitionKey) {
-		    XslFunctionDefinitionKey funcDefnKey = (XslFunctionDefinitionKey)obj;
+		if (obj2 instanceof XslFunctionDefinitionKey) {
+		    XslFunctionDefinitionKey funcDefnKey = (XslFunctionDefinitionKey)obj2;
 		    QName funcName = funcDefnKey.getName();
 		    int arity = funcDefnKey.getArity();
-		    if (funcName.equals(this.m_name) && (arity == this.m_arity)) {
+		    boolean isOverride = funcDefnKey.getOverride(); 
+		    if (funcName.equals(this.m_name) && (arity == this.m_arity) && (isOverride == this.m_isOverride)) {
 		       result = true;
 		    }
 		}
@@ -82,17 +95,18 @@ public class XslFunctionDefinitionKey {
 	}
 	
 	public int hashCode() {
-		int result = 0;
+		int result;
 		
-		int qNameHashCode = m_name.hashCode();
-		int arityHashCode = (Integer.valueOf(m_arity)).hashCode();
-		
-		long sum1 = (qNameHashCode + (long)arityHashCode);
+		int qNameHashCode = (this.m_name).hashCode();
+		int arityHashCode = (Integer.valueOf(this.m_arity)).hashCode();
+		int isOverrideHashCode = (Boolean.valueOf(this.m_isOverride)).hashCode();
+				
+		long sum1 = (long)(qNameHashCode + arityHashCode + isOverrideHashCode);
 		if (sum1 <= Integer.MAX_VALUE) {
 			result = (int)sum1; 
 		}
 		else {
-			result = (int)(sum1 / 2); 
+			result = ((int)sum1 / 2); 
 		}  
 		
 		return result;

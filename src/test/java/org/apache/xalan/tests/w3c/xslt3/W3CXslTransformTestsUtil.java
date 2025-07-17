@@ -51,6 +51,7 @@ import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
+import org.apache.xml.utils.XML11Char;
 import org.apache.xpath.jaxp.XPathFactoryImpl;
 import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.Pattern;
@@ -293,7 +294,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
         		  }
         	   }
         	   
-        	   int totalTestsRun = (testsPassCount + testsfailCount + testsSkippedCount + testStatusUnknownCount);    
+        	   int totalTestsRun = (testsPassCount + testsfailCount + testStatusUnknownCount);    
         	   
         	   elemTestRun.setAttribute("pass", String.valueOf(testsPassCount));
         	   elemTestRun.setAttribute("fail", String.valueOf(testsfailCount));
@@ -514,6 +515,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	            	
             	XPathFactoryImpl xpathFactory = new XPathFactoryImpl();
             	XPath xpath = xpathFactory.newXPath();
+            	
+            	if (XML11Char.isXML11ValidNCName(expectedResultStr)) {
+            		expectedResultStr = "exists(" + expectedResultStr + ")";
+            	}
+            	
             	XPathExpression xpathExpr = xpath.compile(expectedResultStr);
             	
             	String xpathEvalResult = xpathExpr.evaluate(new InputSource(strReader));
