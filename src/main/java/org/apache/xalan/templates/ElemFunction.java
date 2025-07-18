@@ -193,6 +193,31 @@ public class ElemFunction extends ElemTemplate
   public boolean getOverrideExtensionFunction() {
 	  return m_override_extension_function;
   }
+  
+  /**
+   * This class field, represents the value of "new-each-time" 
+   * attribute.
+   */
+  private String m_newEachTime = null;
+
+  /**
+   * Set the value of "new-each-time" attribute.
+   *
+   * @param v   Value of the "new-each-time" attribute
+   */
+  public void setNewEachTime(String v)
+  {
+	  m_newEachTime = v; 
+  }
+
+  /**
+   * Get the value of "new-each-time" attribute.
+   *  
+   * @return		  The value of "new-each-time" attribute 
+   */
+  public String getNewEachTime() {
+	  return m_newEachTime;
+  }
 
   /**
    * Class constructor.
@@ -271,7 +296,7 @@ public class ElemFunction extends ElemTemplate
                    xslParamMap.put(new QName(xslParamName), Integer.valueOf(idx)); 
                 }
                 else {
-                   throw new TransformerException("XPST0017 : An xsl:function instruction {" + funcNameSpaceUri + "}" + funcLocalName + " "
+                   throw new TransformerException("XPST0017 : An xsl:function declaration {" + funcNameSpaceUri + "}" + funcLocalName + " "
                    		                                                                     + "has more than one xsl:param '" + 
                 		                                                                       xslParamName + "' declaration.", srcLocator); 
                 }
@@ -281,10 +306,16 @@ public class ElemFunction extends ElemTemplate
              ElemParam elemParam = (ElemParam)elem;
              QName elemParamQName = elemParam.getName();
              if (xslParamMap.get(elemParamQName) == null) {
+                if (!elemParam.getRequired()) {
+                	throw new TransformerException("XTSE0020 : An xsl:function definition {" + funcNameSpaceUri + "}" + funcLocalName + " "
+                                                                                              + "xsl:param attribute 'required''s value "
+                                                                                              + "cannot be 'no' with lexical forms no, false, 0.", srcLocator); 
+                }
+            	 
                 xslParamMap.put(elemParamQName, Integer.valueOf(idx)); 
              }
              else {
-            	 throw new TransformerException("XPST0017 : An xsl:function instruction {" + funcNameSpaceUri + "}" + funcLocalName + " "
+            	 throw new TransformerException("XPST0017 : An xsl:function definition {" + funcNameSpaceUri + "}" + funcLocalName + " "
                                                                                            + "has more than one xsl:param '" + elemParamQName.toString() 
                                                                                            + "' declaration.", srcLocator); 
              } 
@@ -294,9 +325,9 @@ public class ElemFunction extends ElemTemplate
       }
       
       if (xslParamMap.size() != argSequence.size()) {
-         throw new TransformerException("XPST0017 : For the xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-                                                                       ", the number of arguments provided with function call is not equal "
-                                                                       + "to number of function's xsl:param declarations.", srcLocator);  
+         throw new TransformerException("XPST0017 : An xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+					                                                                       " call's argument count is not equal "
+					                                                                       + "to number of xsl:function's xsl:param declarations.", srcLocator);  
       }
       
       Collection<Integer> xslParamIdxs = xslParamMap.values();
@@ -305,28 +336,52 @@ public class ElemFunction extends ElemTemplate
          Arrays.sort(idxArr);
          int currVal = ((Integer)idxArr[0]).intValue();
          if (currVal != 0) {
-            throw new TransformerException("XPST0017 : For the xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-                                                                          ", there's a non xsl:param declaration as first child "
-                                                                          + "element of xsl:function.", srcLocator); 
+            throw new TransformerException("XPST0017 : An xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+				                                                                           " definition has a non xsl:param declaration as first child "
+				                                                                           + "element of xsl:function.", srcLocator); 
          }
          
          for (int idx1 = 1; idx1 < idxArr.length; idx1++) {
             int nextVal = ((Integer)idxArr[idx1]).intValue();
             if (nextVal != (currVal + 1)) {
-               throw new TransformerException("XPST0017 : For the xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-                                                                             ", there's a non xsl:param declaration between two "
-                                                                             + "xsl:param declarations.", srcLocator); 
+               throw new TransformerException("XPST0017 : An xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+			                                                                               " definition has a non xsl:param declaration between two "
+			                                                                               + "xsl:param declarations.", srcLocator); 
             }
             else {
                currVal = nextVal;  
             }
          }
-      }            
+      }
+      
+      if (m_newEachTime != null) {
+    	 String xslFuncNewEachTimeNormalizedValue = m_newEachTime.trim();
+    	 if (!("yes".equals(xslFuncNewEachTimeNormalizedValue) || "true".equals(xslFuncNewEachTimeNormalizedValue) 
+    			                                               || "1".equals(xslFuncNewEachTimeNormalizedValue) 
+    			                                               || "no".equals(xslFuncNewEachTimeNormalizedValue) 
+    			                                               || "false".equals(xslFuncNewEachTimeNormalizedValue) 
+    			                                               || "0".equals(xslFuncNewEachTimeNormalizedValue) 
+    			                                               || "maybe".equals(xslFuncNewEachTimeNormalizedValue))) {
+    		 throw new TransformerException("XTSE0020 : An xsl:function definition " + "{" + funcNameSpaceUri + "}" + funcLocalName + " "
+    		 		                                                                 + "specifies a disallowed value " + m_newEachTime + " for attribute 'new-each-time'. "
+							                                                         + "An xsl:function definition's attribute 'new-each-time' may have one of following "
+							                                                         + "values : yes, true, 1, no, false, 0, maybe.", srcLocator);
+    		 
+    	 }
+    	 else {
+    		// REVISIT
+    		 
+    		// We may try to provide functional implementation of xsl:function instruction's 
+    		// attribute 'new-each-time'.
+    	 }    	 
+      }
       
       if (xslParamMap.size() > 0) {
-          // Add all of the xsl:function parameter value mappings to xpath context's
-          // variable stack, after which the XSL instructions after xsl:param declarations
-          // can dereference those parameters.                   
+    	  /**
+    	   * Add all of the xsl:function parameter value mappings to xpath context's
+    	   * variable stack, after which the XSL instructions after xsl:param declarations
+    	   * can dereference those parameters.
+    	   */
           
     	  VariableStack varStack = xctxt.getVarStack();
     	  
@@ -382,7 +437,7 @@ public class ElemFunction extends ElemTemplate
             	   return funcResultConvertedVal;
             	}
             	else {
-            	   throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+            	   throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
 										                                                                         ", doesn't match the declared function result type " + 
 										                                                                         funcAsAttrStrVal + ".", srcLocator); 
             	}
@@ -393,7 +448,7 @@ public class ElemFunction extends ElemTemplate
              	   return funcResultConvertedVal;
              	}
              	else {
-             	   throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+             	   throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
 										                                                                         ", doesn't match the declared function result type " + 
 										                                                                         funcAsAttrStrVal + ".", srcLocator); 
              	}
@@ -404,7 +459,7 @@ public class ElemFunction extends ElemTemplate
               	   return funcResultConvertedVal;
               	}
               	else {
-              	   throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+              	   throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
 									                                                                            ", doesn't match the declared function result type " + 
 									                                                                            funcAsAttrStrVal + ".", srcLocator); 
               	}
@@ -436,7 +491,7 @@ public class ElemFunction extends ElemTemplate
         		}
         		
         		if (!isSeqCardinalityOk) {
-        			throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+        			throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
 													                                                    ", doesn't match the declared function result type " + funcAsAttrStrVal + ". The cardinality " + 
 													        					                        funcItemSeqSize + " of function's result, doesn't conform to what is specified in xsl:function "
 													        					                        + "result's 'as' attribute value " + funcAsAttrStrVal + ".", srcLocator);
@@ -463,7 +518,7 @@ public class ElemFunction extends ElemTemplate
         						   int actualFuncArity = xpathNamedFunctionReference.getArity();
         						   List<String> expectedParamList = sequenceTypeFunctionTest.getTypedFunctionTestParamSpecList();
         						   if (actualFuncArity != expectedParamList.size()) {
-        							   throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+        							   throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
                                                                                                                              ", doesn't match the declared function result type " + funcAsAttrStrVal + 
                                                                                                                              ". The function arity specification doesn't match.", srcLocator); 
         						   }        						   
@@ -492,7 +547,7 @@ public class ElemFunction extends ElemTemplate
                 funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
                 
                 if (funcResultConvertedVal == null) {
-                   throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+                   throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
                                                                                                                           ", doesn't match the declared function result type " + 
                 		                                                                                                  funcAsAttrStrVal + ".", srcLocator);   
                 }

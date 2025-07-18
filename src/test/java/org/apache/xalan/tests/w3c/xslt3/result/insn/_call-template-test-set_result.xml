@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-17T16:34:16Z" fail="14" name="call-template" pass="27" skipped="1" statusUnknown="0" totalRun="41">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-18T11:45:11Z" fail="14" name="call-template" pass="27" skipped="1" statusUnknown="0" totalRun="41">
    <testResult status="fail" testName="call-template-0001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
    </testResult>
@@ -26,7 +26,7 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;xXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQ&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="call-template-0201"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="call-template-0401" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="call-template-0401a">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
   top-level-a&#13;

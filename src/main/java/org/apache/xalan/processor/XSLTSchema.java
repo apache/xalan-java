@@ -503,12 +503,17 @@ public class XSLTSchema extends XSLTElementDef
     // Optional
     // xsl:function
     XSLTAttributeDef overrideAttrOpt = new XSLTAttributeDef(null, "override",
-                                                            XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
+                                                            XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     
     // Optional
     // xsl:function
     XSLTAttributeDef overrideExtFunctionAttrOpt = new XSLTAttributeDef(null, "override-extension-function",
-                                                                       XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
+                                                                       XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
+    // xsl:function
+    XSLTAttributeDef newEachTimeAttrOpt = new XSLTAttributeDef(null, "new-each-time",
+                                                                       XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
                            
     XSLTElementDef charData = new XSLTElementDef(this, null, "text()",
                                 null /*alias */, null /* elements */, null,  /* attributes */
@@ -1213,7 +1218,7 @@ public class XSLTSchema extends XSLTElementDef
                                           new XSLTAttributeDef[] {
                                                   nameAttrRequired,
                                                   asAttrOpt, xpathDefaultNamespaceAttrOpt, 
-                                                  overrideAttrOpt, overrideExtFunctionAttrOpt }, 
+                                                  overrideAttrOpt, overrideExtFunctionAttrOpt, newEachTimeAttrOpt }, 
                                           new ProcessorTemplate(), ElemFunction.class /* class object */, true, 20, true),
                                   new XSLTElementDef(
                                            this,

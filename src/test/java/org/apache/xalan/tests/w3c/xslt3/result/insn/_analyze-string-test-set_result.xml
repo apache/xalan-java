@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-17T16:36:24Z" fail="17" name="analyze-string" pass="36" skipped="5" statusUnknown="0" totalRun="53">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-18T11:46:56Z" fail="17" name="analyze-string" pass="36" skipped="5" statusUnknown="0" totalRun="53">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -13,9 +13,9 @@
    <testResult status="pass" testName="analyze-string-036"/>
    <testResult status="pass" testName="analyze-string-037"/>
    <testResult status="pass" testName="analyze-string-042"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="analyze-string-045" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="analyze-string-046" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="analyze-string-047" xsltVersion="xslt 2.0 only"/>
    <testResult status="pass" testName="analyze-string-048"/>
    <testResult status="pass" testName="analyze-string-049"/>
    <testResult status="pass" testName="analyze-string-050"/>
@@ -51,11 +51,11 @@
         &lt;no-match&gt;presencial&lt;/no-match&gt; &#13;
 &lt;/ales&gt;</outResult>
    </testResult>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="analyze-string-090a" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="analyze-string-090b">
       <outResult/>
    </testResult>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="analyze-string-091a" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="analyze-string-091b"/>
    <testResult status="fail" testName="analyze-string-092">
       <outResult>

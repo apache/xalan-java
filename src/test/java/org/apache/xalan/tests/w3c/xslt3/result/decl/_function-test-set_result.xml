@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-17T16:34:25Z" fail="31" name="function" pass="34" skipped="4" statusUnknown="1" totalRun="66">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-18T11:45:16Z" fail="27" name="function" pass="38" skipped="4" statusUnknown="1" totalRun="66">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -19,20 +19,14 @@
    <testResult status="pass" testName="function-0112"/>
    <testResult status="pass" testName="function-0113"/>
    <testResult status="pass" testName="function-0114"/>
-   <testResult status="fail" testName="function-0115">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;17&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="function-0115"/>
    <testResult status="pass" testName="function-0116"/>
    <testResult status="pass" testName="function-0117"/>
-   <testResult status="fail" testName="function-0118">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;17&lt;/out&gt;</outResult>
-   </testResult>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="pass" testName="function-0118"/>
+   <testResult status="skipped" testName="function-0119a" xsltVersion="xslt 2.0 only"/>
    <testResult status="pass" testName="function-0119b"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="fail" testName="function-0120b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;true&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="skipped" testName="function-0120a" xsltVersion="xslt 2.0 only"/>
+   <testResult status="pass" testName="function-0120b"/>
    <testResult status="fail" testName="function-0121">
       <outResult/>
    </testResult>
@@ -46,8 +40,8 @@
    <testResult status="pass" testName="function-0202"/>
    <testResult status="pass" testName="function-0203"/>
    <testResult status="pass" testName="function-0205"/>
-   <testResult status="fail" testName="function-0301"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="pass" testName="function-0301"/>
+   <testResult status="skipped" testName="function-0302" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="function-0302b"/>
    <testResult status="fail" testName="function-0303"/>
    <testResult status="fail" testName="function-0401"/>
@@ -61,7 +55,7 @@
    <testResult status="pass" testName="function-0602"/>
    <testResult status="fail" testName="function-0701">
       <outResult>
-         <errTrace>XPTY0004 : The function call result for function {http://www.wrox.com/5067/tour}place-knight, doesn't match the declared function result type xs:integer*.</errTrace>
+         <errTrace>XPTY0004 : An xsl:function call result for function {http://www.wrox.com/5067/tour}place-knight, doesn't match the declared function result type xs:integer*.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-0901"/>
@@ -100,7 +94,7 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:x="http://xxx.com/"/&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="function-1022"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="function-1023" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="function-1024">
       <outResult>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>

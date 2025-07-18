@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-17T16:34:15Z" fail="26" name="try" pass="11" skipped="5" statusUnknown="0" totalRun="37">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-18T11:45:11Z" fail="26" name="try" pass="11" skipped="5" statusUnknown="0" totalRun="37">
    <testResult status="pass" testName="try-001"/>
    <testResult status="fail" testName="try-002">
       <outResult/>
@@ -29,11 +29,11 @@
       </outResult>
    </testResult>
    <testResult status="pass" testName="try-012"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="try-013" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="try-014"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="try-015" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="try-016"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="try-017" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="try-018">
       <outResult/>
    </testResult>
@@ -56,8 +56,8 @@
    <testResult status="fail" testName="try-024">
       <outResult/>
    </testResult>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="try-025" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="try-026" xsltVersion="xslt 2.0 only"/>
    <testResult status="pass" testName="try-027"/>
    <testResult status="fail" testName="try-028">
       <outResult>

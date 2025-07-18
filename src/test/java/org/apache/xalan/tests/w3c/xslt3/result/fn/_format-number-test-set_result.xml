@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-17T16:36:26Z" fail="32" name="format-number" pass="38" skipped="4" statusUnknown="0" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-18T11:46:59Z" fail="32" name="format-number" pass="38" skipped="4" statusUnknown="0" totalRun="70">
    <testResult status="fail" testName="format-number-001"/>
    <testResult status="fail" testName="format-number-002"/>
    <testResult status="fail" testName="format-number-003"/>
@@ -74,7 +74,7 @@
    <testResult status="fail" testName="format-number-056">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;931&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="format-number-057" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="format-number-057n">
       <outResult>
          <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Malformed format string: 000.##0</errTrace>
@@ -90,7 +90,7 @@
          <errTrace>java.util.MissingResourceException: Can't find resource for bundle org.apache.xalan.res.XSLTErrorResources, key xsl:decimal-format names must be unique. Name "q" has been duplicated.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="format-number-060" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="format-number-060n">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;fred931.ginger&lt;/out&gt;</outResult>
    </testResult>
@@ -108,6 +108,6 @@
    <testResult status="fail" testName="format-number-069b">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;1.2346E2&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
-   <testResult status="skipped" xsltVersion="2.0 only"/>
+   <testResult status="skipped" testName="format-number-069c" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="format-number-070" xsltVersion="xslt 2.0 only"/>
 </testrun>

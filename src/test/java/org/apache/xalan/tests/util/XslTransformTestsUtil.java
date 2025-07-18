@@ -499,7 +499,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     
     /**
      * When running W3C XSLT 3.0 test suite, check whether the test case 
-     * is intended for XSLT 2.0 version only.
+     * is specified for XSLT 2.0 version only.
      *  
      * @param testCaseNode
      * @return						Boolean value true or false						
@@ -521,6 +521,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      				 String xsltSpecVersion = elem1.getAttribute("value");
      				 if ("XSLT20".equals(xsltSpecVersion)) {
      					result = true;
+     					
      					break; 
      				 }
      			 }

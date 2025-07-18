@@ -154,15 +154,17 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   if (isXslt2OnlyTestCase(node)) {
     			  // We skip running XSLT 2.0 only test cases
     			  Element elemTestResult = testResultDoc.createElement("testResult");
+    			  elemTestResult.setAttribute("testName", testCaseName);
     			  elemTestResult.setAttribute("status", "skipped");
-    			  elemTestResult.setAttribute("xsltVersion", "2.0 only");
+    			  elemTestResult.setAttribute("xsltVersion", "xslt 2.0 only");
     			  elemTestRun.appendChild(elemTestResult);
     			  
     			  continue; 
     		   }
     		   else if (isStreamingFeatureTestCase(node)) {
-     			  // We skip running streaming feature test cases
+     			  // We skip running XSLT 3.0 streaming feature test cases
        			  Element elemTestResult = testResultDoc.createElement("testResult");
+       			  elemTestResult.setAttribute("testName", testCaseName);
        			  elemTestResult.setAttribute("status", "skipped");
        			  elemTestResult.setAttribute("feature", "streaming");
        			  elemTestRun.appendChild(elemTestResult);
@@ -170,6 +172,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
        			  continue; 
      		   }
     		   else if (m_skipped_tests_list.contains(testCaseName)) {
+    			   /**
+    			    * We skip running W3C XSLT 3.0 test cases available within this
+    			    * test suite, that're configured to be skipped within this XSLT test
+    			    * suite driver and approved by XSLT WG and Xalan-J's analysis.
+    			    */
     			   Element elemTestResult = testResultDoc.createElement("testResult");
     			   elemTestResult.setAttribute("testName", testCaseName);
     			   elemTestResult.setAttribute("status", "skipped");
@@ -321,7 +328,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      * Method definition to run, a particular W3C XSLT 3.0 test case within a test set.
      */
     private void runW3CXSLTTestSuiteXslTransformAndEmitResult(String testCaseName, DOMSource xmlInpDomSource, 
-    		                                                     StreamSource xsltStreamSrc, Element expectedResultElem,  
+    		                                                     StreamSource xslStreamSrc, Element expectedResultElem,  
             													 Element elemTestRun, Document testResultDoc) throws Exception {    	    	
 
     	Element elemTestResult = testResultDoc.createElement("testResult");
@@ -339,9 +346,9 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		if (m_initTemplateName != null) {
     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);
-    		}
+    		}    		    		
     		
-    		Transformer transformer = m_xslTransformerFactory.newTransformer(xsltStreamSrc);    		    		
+    		Transformer transformer = m_xslTransformerFactory.newTransformer(xslStreamSrc);    		    		
     		
     		Node nodeExpected = (expectedResultElem.getFirstChild()).getNextSibling();
     		String expectedNodeKindName = nodeExpected.getNodeName();
@@ -376,7 +383,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		Source xmlInpSrc = null;
     		if ((m_initTemplateName != null) && (xmlInpDomSource == null)) {
-    			xmlInpSrc = xsltStreamSrc;
+    			xmlInpSrc = xslStreamSrc;
     			((TransformerImpl)transformer).setXMLSourceAbsent(true);
     		}
     		else {

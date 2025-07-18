@@ -637,7 +637,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
               ? null
               : transformer.processSortKeys(this, sourceNode);
 
-      // Sort if we need to.
+      // Sort if we need to
       if (null != keys)
          sourceNodes = sortNodes(xctxt, keys, sourceNodes);
 
@@ -763,16 +763,16 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
-    int type = ((ElemTemplateElement) newChild).getXSLToken();
+	super.appendChild(newChild);
+	  
+	int type = ((ElemTemplateElement) newChild).getXSLToken();
 
     if (Constants.ELEMNAME_SORT == type)
     {
       setSortElem((ElemSort) newChild);
-
-      return newChild;
     }
-    else
-      return super.appendChild(newChild);
+    
+    return newChild;
   }
   
   /**

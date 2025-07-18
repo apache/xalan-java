@@ -1127,7 +1127,7 @@ public class XSLTErrorResources extends ListResourceBundle
 // of the attribute, and should not be translated.  The substitution text {1} is
 // the attribute value and {0} is the attribute name.
     { INVALID_BOOLEAN,
-     "Illegal value: {1} used for boolean attribute: {0} "},
+     "XTSE0020 : Illegal value: {1} used for boolean attribute: {0} "},
 
 // Note to translators:  The following message is used if the value of
 // an attribute in a stylesheet is invalid.  "number" is the XSLT data-type
