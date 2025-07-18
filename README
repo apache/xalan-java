@@ -17,11 +17,11 @@
 
 Copyright 1999-2025 The Apache Software Foundation
 
-Document last modified : 2025-07-16
+Document last modified : 2025-07-18
 
 Authors:
    Gary Gregory <ggregory@apache.org>
-   Joseph Kesselman <jkesselm@apache.org>
+   Joseph Kesselman <keshlam@alum.mit.edu>
    Mukul Gandhi <mukulg@apache.org>
 
 This GitHub repos branch has src code configured as Maven (https://maven.apache.org/) build, for 
@@ -59,16 +59,16 @@ The Maven build results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXalanXSLT3Tests
-[INFO] Tests run: 1147, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 74.128 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
+[INFO] Tests run: 1154, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 71.844 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 1147, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1154, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  02:19 min
+[INFO] Total time:  02:28 min
 
 
 If the user needs to run Xalan-J's XSLT 3.0 implementation via Java code, the value of JVM's system property 

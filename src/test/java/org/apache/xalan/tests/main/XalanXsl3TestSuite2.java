@@ -79,6 +79,7 @@ import org.apache.xalan.tests.xslt3.XslForEachGroupMiscTests;
 import org.apache.xalan.tests.xslt3.XslForEachGroupTests;
 import org.apache.xalan.tests.xslt3.XslForEachGroupWithSortTests;
 import org.apache.xalan.tests.xslt3.XslForkTests;
+import org.apache.xalan.tests.xslt3.XslFunctionMiscTests;
 import org.apache.xalan.tests.xslt3.XslInitialTemplateTests;
 import org.apache.xalan.tests.xslt3.XslIterateTests;
 import org.apache.xalan.tests.xslt3.XslMergeTests;
@@ -128,7 +129,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XslInitialTemplateTests.class, XslContextItemTests.class, XPathOpLiteralSequenceTests.class,
                 XPathSequenceConstructorMiscTests.class, XslForEachGroupMiscTests.class, XPathDynamicFunctionCallMiscTests.class,
                 FnEmptyTests.class, FnFunctionNameTests.class, FnFunctionArityTests.class, XPathDefaultNamespaceTests.class,
-                XPathDefaultNamespaceMiscTests.class })
+                XPathDefaultNamespaceMiscTests.class, XslFunctionMiscTests.class })
 public class XalanXsl3TestSuite2 {
 
 }
