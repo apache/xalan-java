@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <a>hello 1</a>
+  <b>
+    <item>5</item>
+    <item>25</item>
+  </b>
+  <c>hello 3</c>
+</result>
