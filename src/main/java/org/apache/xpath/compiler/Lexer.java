@@ -17,6 +17,8 @@
  */
 package org.apache.xpath.compiler;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.xml.utils.ObjectVector;
@@ -635,6 +637,9 @@ class Lexer
       {
         if (prefix.length() > 0) {
            uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(prefix);
+           if ((uName == null) && (SharedLexerState.m_nsMap != null)) {
+        	   uName = getNsForPrefixLexer(prefix);
+           }
         }
         else
         {
@@ -657,12 +662,18 @@ class Lexer
            }
            else {
               uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(prefix);
+              if ((uName == null) && (SharedLexerState.m_nsMap != null)) {
+            	  uName = getNsForPrefixLexer(prefix);
+              }
            }
         }
       }
       catch (ClassCastException cce)
       {
         uName = m_namespaceContext.getNamespaceForPrefix(prefix);
+        if ((uName == null) && (SharedLexerState.m_nsMap != null)) {
+        	uName = getNsForPrefixLexer(prefix);
+        }
       }
     }
     else
@@ -749,6 +760,32 @@ class Lexer
     }
 
     return -1;
+  }
+
+  /**
+   * Get XML namespace uri for the supplied prefix, from
+   * xsl:stylesheet element's namespace declarations for
+   * included XSL stylesheet via xsl:include instruction.
+   * 
+   * @param prefix				The supplied XML namespace prefix
+   * @return					An XML namespace uri for the supplied
+   *                            prefix.
+   */
+  private String getNsForPrefixLexer(String prefix) {
+	  String uName = null;
+
+	  Map<String, String> nsMap = SharedLexerState.m_nsMap;
+	  Iterator<String> mapKeyIter = (nsMap.keySet()).iterator();
+	  while (mapKeyIter.hasNext()) {
+		  String nsPrefix = mapKeyIter.next();
+		  String nsUri = nsMap.get(nsPrefix); 
+		  if (nsPrefix.equals(prefix)) {
+			  uName = nsUri;			  
+			  break;
+		  }
+	  }
+
+	  return uName;
   }
   
   /**

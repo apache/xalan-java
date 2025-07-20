@@ -114,6 +114,7 @@ import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.SharedLexerState;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
@@ -616,8 +617,7 @@ public class TransformerImpl extends Transformer
     }
     
     XslTransformSharedDatastore.reset();
-
-    //    m_reportInPostExceptionFromThread = false;
+    SharedLexerState.reset();
   }
 
   /**

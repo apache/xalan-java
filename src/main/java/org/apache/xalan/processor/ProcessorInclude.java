@@ -21,8 +21,13 @@
 package org.apache.xalan.processor;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
@@ -32,11 +37,18 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xerces.dom.DeferredAttrNSImpl;
+import org.apache.xml.utils.Constants;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.TreeWalker;
+import org.apache.xpath.compiler.SharedLexerState;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -190,7 +202,9 @@ public class ProcessorInclude extends XSLTElementProcessor
   {
     XSL3TransformerFactoryImpl processor = handler.getStylesheetProcessor();
     URIResolver uriresolver = processor.getURIResolver();
-
+    
+    saveNsBindingsXSLIncludedStylesheet(handler);    
+    
     try
     {
       Source source = null;
@@ -390,5 +404,51 @@ public class ProcessorInclude extends XSLTElementProcessor
         }
 
         return baseURI;
+    }
+    
+    /**
+     * Method definition to, save XML namespace bindings for the
+     * included XSL stylesheet via xsl:include instruction.
+     * 
+     * @param handler						 XSL StylesheetHandler object
+     * @throws SAXException
+     */
+    private void saveNsBindingsXSLIncludedStylesheet(StylesheetHandler handler) throws SAXException {
+    	try {
+    		 String xslIncludedStylesheetAbsUri = SystemIDResolver.getAbsoluteURI(getHref(), handler.getBaseIdentifier());
+    		 System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    		 
+    		 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    		 dbf.setNamespaceAware(true);
+    		 
+    		 DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+    		 
+    		 Document xslDocument = dBuilder.parse(xslIncludedStylesheetAbsUri);
+    		 Element docElemNode = xslDocument.getDocumentElement();
+    		 NamedNodeMap attrNodeMap = docElemNode.getAttributes();
+    		 Map<String, String> nsValueMap = new HashMap<String, String>();
+    		 for (int idx = 0; idx < attrNodeMap.getLength(); idx++) {
+    			 DeferredAttrNSImpl attrNode = (DeferredAttrNSImpl)attrNodeMap.item(idx);
+    			 String attrLocalName = attrNode.getLocalName();
+    			 String attrValue = attrNode.getNodeValue();			 
+    			 if (!("exclude-result-prefixes".equals(attrLocalName) || "version".equals(attrLocalName) || 
+    					                                                   Constants.S_XSLNAMESPACEURL.equals(attrValue))) {
+    				nsValueMap.put(attrLocalName, attrValue);
+    			 }
+    		 }
+    		 
+    		 if (nsValueMap.size() > 0) {
+    			 SharedLexerState.m_nsMap = nsValueMap;  
+    		 }
+    	} 
+        catch (ParserConfigurationException ex) {
+        	handler.error(ex.getMessage(), ex);
+        }
+        catch (IOException ex) {
+        	handler.error(ex.getMessage(), ex);
+        }
+        catch (TransformerException ex) {
+    		handler.error(ex.getMessage(), ex);
+    	}
     }
 }
