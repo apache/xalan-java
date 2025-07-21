@@ -426,7 +426,14 @@ public class ProcessorInclude extends XSLTElementProcessor
     		 Document xslDocument = dBuilder.parse(xslIncludedStylesheetAbsUri);
     		 Element docElemNode = xslDocument.getDocumentElement();
     		 NamedNodeMap attrNodeMap = docElemNode.getAttributes();
-    		 Map<String, String> nsValueMap = new HashMap<String, String>();
+    		 Map<String, String> nsValueMap = null;
+    		 if (SharedLexerState.m_nsMap == null) {
+    		    nsValueMap = new HashMap<String, String>();
+    		 }
+    		 else {
+    			nsValueMap = SharedLexerState.m_nsMap;  
+    		 }
+    		 
     		 for (int idx = 0; idx < attrNodeMap.getLength(); idx++) {
     			 DeferredAttrNSImpl attrNode = (DeferredAttrNSImpl)attrNodeMap.item(idx);
     			 String attrLocalName = attrNode.getLocalName();

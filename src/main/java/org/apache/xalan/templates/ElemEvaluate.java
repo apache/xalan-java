@@ -372,8 +372,8 @@ public class ElemEvaluate extends ElemTemplateElement {
 	    				ElemWithParam ewp = m_withParamElems[i];
 	    				QName withParamQname = ewp.getName();
 	    				if (i > 0) {
-	    					for (int ii = 0; ii < i; ii++) {
-	    						ElemWithParam prevWithParam = m_withParamElems[ii];
+	    					for (int j = 0; j < i; j++) {
+	    						ElemWithParam prevWithParam = m_withParamElems[j];
 	    						QName prevWithParamQname = prevWithParam.getName();
 	    						if (withParamQname.equals(prevWithParamQname.getNamespace(), prevWithParamQname.getLocalPart())) {
 	    							throw new TransformerException("XTTE0505 : An xsl:evaluate instruction has xsl:with-param '" + 

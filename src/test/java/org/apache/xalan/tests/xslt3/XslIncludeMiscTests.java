@@ -29,11 +29,11 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XslIncludeTests extends XslTransformTestsUtil {     
+public class XslIncludeMiscTests extends XslTransformTestsUtil {     
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_include/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_include/misc/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_include/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_include/misc/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {        
@@ -63,26 +63,6 @@ public class XslIncludeTests extends XslTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
-    }
-    
-    @Test
-    public void xslIncludeTest3() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
-    }
-    
-    @Test
-    public void xslIncludeTest4() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }

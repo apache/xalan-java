@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-20T16:41:24Z" fail="5" name="castable" pass="4" skipped="0" statusUnknown="0" totalRun="9">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-21T12:10:22Z" fail="5" name="castable" pass="4" skipped="0" statusUnknown="0" totalRun="9">
    <testResult status="pass" testName="castable-001"/>
    <testResult status="pass" testName="castable-002"/>
    <testResult status="pass" testName="castable-003"/>

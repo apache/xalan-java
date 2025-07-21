@@ -231,7 +231,7 @@ public class XPath implements Serializable, ExpressionOwner
     
 	initFunctionTable();
     
-    if(null == errorListener)
+    if (errorListener == null)
       errorListener = new org.apache.xml.utils.DefaultErrorHandler();
     
     m_patternString = exprString;
@@ -255,7 +255,7 @@ public class XPath implements Serializable, ExpressionOwner
     
     this.setExpression(expr);
     
-    if((null != locator) && locator instanceof ExpressionNode)
+    if ((locator != null) && locator instanceof ExpressionNode)
     {
     	expr.exprSetParent((ExpressionNode)locator);
     }
@@ -288,7 +288,7 @@ public class XPath implements Serializable, ExpressionOwner
     
 	initFunctionTable();
     
-    if(null == errorListener)
+    if (errorListener == null)
       errorListener = new org.apache.xml.utils.DefaultErrorHandler();
     
     m_patternString = exprString;
@@ -312,7 +312,7 @@ public class XPath implements Serializable, ExpressionOwner
     
     this.setExpression(expr);
     
-    if((null != locator) && locator instanceof ExpressionNode)
+    if ((locator != null) && locator instanceof ExpressionNode)
     {
     	expr.exprSetParent((ExpressionNode)locator);
     }
@@ -339,8 +339,9 @@ public class XPath implements Serializable, ExpressionOwner
           ErrorListener errorListener, FunctionTable funcTable)
             throws javax.xml.transform.TransformerException
   { 
-    m_funcTable = funcTable;     
-    if(null == errorListener)
+    m_funcTable = funcTable;
+    
+    if(errorListener == null)
       errorListener = new org.apache.xml.utils.DefaultErrorHandler();
     
     m_patternString = exprString;
@@ -411,7 +412,7 @@ public class XPath implements Serializable, ExpressionOwner
 
     this.setExpression(expr);
     
-    if((null != locator) && locator instanceof ExpressionNode)
+    if ((locator != null) && locator instanceof ExpressionNode)
     {
     	expr.exprSetParent((ExpressionNode)locator);
     }
@@ -452,7 +453,7 @@ public class XPath implements Serializable, ExpressionOwner
       
 	  initFunctionTable();
       
-      if(null == errorListener)
+      if (errorListener == null)
         errorListener = new org.apache.xml.utils.DefaultErrorHandler();
       
       m_patternString = exprString;
@@ -472,7 +473,7 @@ public class XPath implements Serializable, ExpressionOwner
 
       this.setExpression(expr);
       
-      if((null != locator) && locator instanceof ExpressionNode)
+      if ((locator != null) && locator instanceof ExpressionNode)
       {
           expr.exprSetParent((ExpressionNode)locator);
       } 

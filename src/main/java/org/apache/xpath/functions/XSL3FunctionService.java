@@ -42,6 +42,7 @@ import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XMLNSDecl;
@@ -122,9 +123,9 @@ import xml.xpath31.processor.types.XSToken;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * This class provides support to evaluate XPath 3.1 "XML Schema 
- * constructor function calls" and "named function references", 
- * and "XSL stylesheet function calls".
+ * This class definition, provides support to evaluate XPath schema 
+ * constructor function calls, evaluating XPath named function references, 
+ * and evaluating XSL stylesheet xsl:function calls.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -135,7 +136,6 @@ public class XSL3FunctionService {
 	/**
 	 * Class field declarations, specifying constant values used by this
 	 * implementation.
-	 * 		
 	 */
 	
 	public static final String UTF_8 = "UTF-8";
@@ -147,13 +147,14 @@ public class XSL3FunctionService {
 	public static final String XS_VALID_TRUE = "XS_VALID_TRUE";
     
 	/**
-	 * Process a call to an XPath constructor function, or an XSL 
-	 * stylesheet function.
+	 * Method definition, to evaluate a function call referred within an 
+	 * XPath expression, excluding XPath built-in function calls which 
+	 * are handled by their respective classes.
 	 * 
-	 * @param transformerImpl             xsl transformation implementation object
-	 * @param xpathExpr                   xpath expression object
-	 * @param xctxt                       xpath context object
-	 * @return                            evaluation result of an XPath function call 
+	 * @param xpathExpr                   An XPath expression object
+	 * @param transformerImpl             An XSL transformation TransformerImpl object
+	 * @param xctxt                       An XPath context object
+	 * @return                            An XPath function call result for functions
 	 *                                    handled by this method.
 	 * @throws TransformerException
 	 */
@@ -174,11 +175,14 @@ public class XSL3FunctionService {
     		String funcNamespace = funcObj.getNamespace();
     		
     		if (!(Constants.S_EXTENSIONS_JAVA_URL).equals(funcNamespace)) {
-    			// Both XPath constructor (prefix:typeName) and XSL stylesheet function 
-    			// calls (xsl:function), are syntactically similar to Xalan-J XPath 
-    			// extension function calls (prefix:functionName). The implementation
-    			// here need not run when an XSL stylesheet specifies Xalan-J XPath 
-    			// extension function.
+    			/**
+    			 * XPath constructor (prefix:typeName) and XSL stylesheet function
+    			 * calls (xsl:function), are syntactically similar to Xalan-J XPath
+    			 * extension function calls (prefix:functionName). The implementation
+    			 * here need not run when an XSL stylesheet specifies Xalan-J XPath
+    			 * extension function call.
+    			 */
+
     			ExpressionNode expressionNode = xpathExpr.getExpressionOwner();
     			ExpressionNode stylesheetRootNode = null;
     			while (expressionNode != null) {
@@ -186,7 +190,16 @@ public class XSL3FunctionService {
     				expressionNode = expressionNode.exprGetParent();                     
     			}
 
-    			stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+    			ElemFunction elemFunction = null;
+
+    			if (stylesheetRootNode instanceof Stylesheet) {
+    				Stylesheet stylesheet = (Stylesheet)stylesheetRootNode;
+
+    				stylesheetRoot = stylesheet.getStylesheetRoot();    				
+    			}    			
+    			else {
+    				stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+    			}
 
     			if (stylesheetRoot != null) {
     				if (transformerImpl == null) {
@@ -194,7 +207,7 @@ public class XSL3FunctionService {
     				}
 
     				TemplateList templateList = stylesheetRoot.getTemplateListComposed();
-    				
+
     				Vector argVector = funcObj.getArgVector();
     				int xslFuncArgCount = 0;
     				ResultSequence xslFuncArgSequence = new ResultSequence();
@@ -217,65 +230,66 @@ public class XSL3FunctionService {
     						funcExtArgStrList = xpathExprFuncCallExtendedArg.getFunctionArgXPathExprStrList();
     					}
     				}
-    				
+
     				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcName), xslFuncArgCount);
 
     				if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
     					// Evaluate XSL stylesheet function call    					
-    					ElemFunction elemFunction = (ElemFunction)elemTemplate;
-    					
+    					elemFunction = (ElemFunction)elemTemplate;
+
     					evalResult = elemFunction.evaluateXslFunction(transformerImpl, xslFuncArgSequence);
-    					
+
     					if ((evalResult instanceof XPathNamedFunctionReference) && (funcExtArgStrList != null)) {
-    					   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)evalResult;    					   
-    					   String localName = xpathNamedFunctionReference.getFuncName();
-    					   String namespace = xpathNamedFunctionReference.getFuncNamespace();
-    					   Short arity = xpathNamedFunctionReference.getArity();    					   
-    					   if ((int)arity == funcExtArgStrList.size()) {
-    						  if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) || (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
-    							  (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
-    							  FunctionTable funcTable = xctxt.getFunctionTable();
-    							  Object funcId = funcTable.getFunctionId(localName);
-    							  if (funcId != null) {
-    								 Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
-    								 List<Short> funcDefinedArity = Arrays.asList(function.getDefinedArity());
-    								 if (funcDefinedArity.contains(arity)) {
-    									for (int idx = 0; idx < funcExtArgStrList.size(); idx++) {
-    									   String xpathExprStr = funcExtArgStrList.get(idx);
-    									   XPath argXPath = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);    									   
-    									   try {
-											  function.setArg(argXPath.getExpression(), idx);
-										   } 
-    									   catch (WrongNumberArgsException ex) {
-											  // NO OP
-										   }    									
+    						XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)evalResult;    					   
+    						String localName = xpathNamedFunctionReference.getFuncName();
+    						String namespace = xpathNamedFunctionReference.getFuncNamespace();
+    						Short arity = xpathNamedFunctionReference.getArity();    					   
+    						if ((int)arity == funcExtArgStrList.size()) {
+    							if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) || (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
+    									                                                             (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || 
+    									                                                             (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
+    								FunctionTable funcTable = xctxt.getFunctionTable();
+    								Object funcId = funcTable.getFunctionId(localName);
+    								if (funcId != null) {
+    									Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
+    									List<Short> funcDefinedArity = Arrays.asList(function.getDefinedArity());
+    									if (funcDefinedArity.contains(arity)) {
+    										for (int idx = 0; idx < funcExtArgStrList.size(); idx++) {
+    											String xpathExprStr = funcExtArgStrList.get(idx);
+    											XPath argXPath = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);    									   
+    											try {
+    												function.setArg(argXPath.getExpression(), idx);
+    											} 
+    											catch (WrongNumberArgsException ex) {
+    												// NO OP
+    											}    									
+    										}
+
+    										evalResult = function.execute(xctxt);
     									}
-    									
-    									evalResult = function.execute(xctxt);
-    								 }
-    								 else {
-    									throw new TransformerException("XPTY0004 : The function arity value specified in an XPath named "
-    											                                         + "function reference is " + arity + ", but the corresponding "
-    											                                         + "XPath function {" + namespace + "}" + localName + " doesn't allow this arity.", srcLocator);  
-    								 }
-    							  }
-    							  else {
-    								  throw new TransformerException("XPTY0004 : The function {" + namespace + "}" + localName + " referred "
-    								  		                                                     + "within an XPath expression is not found.", srcLocator); 
-    							  }
-    						  }
-    					   }
-    					   else {
-    						  throw new TransformerException("XPTY0004 : The number of arguments provided during an XPath function call {" + namespace + "}" + localName 
-    								                                                    + " is " + funcExtArgStrList.size() + ", but the corresponding XPath named function "
-    								                                                    + "reference specifies the function arity value as " + arity + ".", srcLocator); 
-    					   }
+    									else {
+    										throw new TransformerException("XPTY0004 : The function arity value specified in an XPath named "
+									    												+ "function reference is " + arity + ", but the corresponding "
+									    												+ "XPath function {" + namespace + "}" + localName + " doesn't allow this arity.", srcLocator);  
+    									}
+    								}
+    								else {
+    									throw new TransformerException("XPTY0004 : The function {" + namespace + "}" + localName + " referred "
+    																					+ "within an XPath expression is not found.", srcLocator); 
+    								}
+    							}
+    						}
+    						else {
+    							throw new TransformerException("XPTY0004 : The number of arguments provided during an XPath function call {" + namespace + "}" + localName 
+												    									+ " is " + funcExtArgStrList.size() + ", but the corresponding XPath named function "
+												    									+ "reference specifies the function arity value as " + arity + ".", srcLocator); 
+    						}
     					}
     					else if ((evalResult instanceof XPathInlineFunction) && (funcExtArgStrList != null)) {
     						int paramIdx = 0;    						
     						Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();    						
     						for (ElemTemplateElement elem = elemFunction.getFirstChildElem(); elem != null; 
-    								                                                               elem = elem.getNextSiblingElem()) {
+    								elem = elem.getNextSiblingElem()) {
     							if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
     								ElemParam elemParam = (ElemParam)elem;
     								QName paramName = elemParam.getName();
@@ -287,339 +301,337 @@ public class XSL3FunctionService {
     								break; 
     							}
     						}
-    						
+
     						XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)evalResult;
-    						
+
     						List<String> xpathInlineFuncArgList = new ArrayList<String>(); 
     						for (int idx = 0; idx < funcExtArgStrList.size(); idx++) {
     							String xpathExprStr = funcExtArgStrList.get(idx);								
     							xpathInlineFuncArgList.add(xpathExprStr);    							
     						}
-    						
-    						List<XMLNSDecl> prefixTable = null;
-					    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
 
-					    	if (elemTemplateElement != null) {
-					    		prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-					    	}
-					    						    	
-					        // REVISIT, for the first null argument & an argument 0
+    						List<XMLNSDecl> prefixTable = null;
+    						ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+
+    						if (elemTemplateElement != null) {
+    							prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+    						}
+
     						evalResult = evaluateXPathInlineFunction(xpathInlineFunction, xpathInlineFuncArgList, 
-                                                                     xctxt, prefixTable, null, 0, 
-                                                                     ((Expression)xpathExpr).getXPathVarList(), null);    						
+    								xctxt, prefixTable, null, 0, 
+    								((Expression)xpathExpr).getXPathVarList(), null);    						
     					}
-    					
+
     					return evalResult;
-    				}    				
+    				}
     			}
-    			
+
     			if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {                
     				// Evaluate XPath constructor function call, for schema types 
     				// in XML Schema namespace.
-    				
+
     				ResultSequence argSequence = new ResultSequence();
     				ResultSequence evalResultSequence = null;
 
     				try {
-	    				switch (funcName) {
-		    				case Keywords.XS_STRING :
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSString.class, xctxt);
-		    					break;
-		    				case Keywords.XS_NORMALIZED_STRING :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNormalizedString.class, xctxt);
-		    					break;
-		    				case Keywords.XS_TOKEN :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSToken.class, xctxt);
-		    					break;
-		    				case Keywords.XS_DECIMAL :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSDecimal.class, xctxt);
-		    					break;
-		    				case Keywords.XS_FLOAT :  					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSFloat.class, xctxt);
-		    					break;
-		    				case Keywords.XS_DOUBLE :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSDouble.class, xctxt);    					
-		    					break;
-		    				case Keywords.XS_INTEGER :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSInteger.class, xctxt);    					
-		    					break;
-		    				case Keywords.XS_NON_POSITIVE_INTEGER :
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNonPositiveInteger.class, xctxt);
-		    					break;
-		    				case Keywords.XS_NEGATIVE_INTEGER :
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNegativeInteger.class, xctxt);
-		    					break;
-		    				case Keywords.XS_NON_NEGATIVE_INTEGER :
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNonNegativeInteger.class, xctxt);
-		    					break;
-		    				case Keywords.XS_POSITIVE_INTEGER :    					 
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSPositiveInteger.class, xctxt);
-		    					break;
-		    				case Keywords.XS_LONG :
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSLong.class, xctxt);
-		    					break;
-		    				case Keywords.XS_INT :
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSInt.class, xctxt);
-		    					break;
-		    				case Keywords.XS_SHORT :
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSShort.class, xctxt);
-		    					break;
-		    				case Keywords.XS_BYTE :
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSByte.class, xctxt);
-		    					break;
-		    				case Keywords.XS_UNSIGNED_LONG :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedLong.class, xctxt);
-		    					break;
-		    				case Keywords.XS_UNSIGNED_INT :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedInt.class, xctxt);
-		    					break;
-		    				case Keywords.XS_UNSIGNED_SHORT :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedShort.class, xctxt);
-		    					break;
-		    				case Keywords.XS_UNSIGNED_BYTE :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedByte.class, xctxt);
-		    					break;
-		    				case Keywords.XS_GYEAR_MONTH :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGYearMonth.class, xctxt);
-		    					break;
-		    				case Keywords.XS_GYEAR :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGYear.class, xctxt);
-		    					break;
-		    				case Keywords.XS_GMONTH_DAY :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGMonthDay.class, xctxt);
-		    					break;
-		    				case Keywords.XS_GDAY :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGDay.class, xctxt);
-		    					break;
-		    				case Keywords.XS_GMONTH :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGMonth.class, xctxt);
-		    					break;
-		    				case Keywords.XS_BASE64BINARY :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSBase64Binary.class, xctxt);
-		    					break;
-		    				case Keywords.XS_HEXBINARY :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSHexBinary.class, xctxt);
-		    					break;
-		    				case Keywords.XS_LANGUAGE :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSLanguage.class, xctxt);
-		    					break;
-		    				case Keywords.XS_NAME :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSName.class, xctxt);
-		    					break;
-		    				case Keywords.XS_NCNAME :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNCName.class, xctxt);
-		    					break;
-		    				case Keywords.XS_NMTOKEN :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNmToken.class, xctxt);
-		    					break;
-		    				case Keywords.XS_ID :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSID.class, xctxt);
-		    					break;
-		    				case Keywords.XS_IDREF :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSIdRef.class, xctxt);
-		    					break;
-		    				case Keywords.FUNC_BOOLEAN_STRING :    					
-		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-		    						Expression funcArg = funcObj.getArg(idx);    						
-		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-		    						Boolean boolVal = Boolean.valueOf(("0".equals(argStr) || "false".equals(argStr)) ? 
-		    								                                                               "false" : "true");
-		    						argSequence.add(new XSBoolean(boolVal));
-		    					}
-		    					evalResultSequence = (new XSBoolean()).constructor(argSequence);
-		    					evalResult = evalResultSequence.item(0);
-		
-		    					break;
-		    				case Keywords.XS_DATE :
-		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-		    						Expression funcArg = funcObj.getArg(idx);    						
-		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);    						    						
-		    						argSequence.add(XSDate.parseDate(argStr));
-		    					}
-		    					evalResultSequence = (new XSDate()).constructor(argSequence); 
-		    					evalResult = evalResultSequence.item(0);
-		
-		    					break;
-		    				case Keywords.XS_DATETIME :
-		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-		    						Expression funcArg = funcObj.getArg(idx);    						
-		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-		    						argSequence.add(XSDateTime.parseDateTime(argStr));
-		    					}
-		    					evalResultSequence = (new XSDateTime()).constructor(argSequence); 
-		    					evalResult = evalResultSequence.item(0);
-		
-		    					break;
-		    				case Keywords.XS_DURATION :
-		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-		    						Expression funcArg = funcObj.getArg(idx);    						
-		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-		    						XSDuration xsDuration = XSDuration.parseDuration(argStr);
-		    						if (xsDuration != null) {
-		    							argSequence.add(xsDuration);
-		    							evalResultSequence = (new XSDuration()).constructor(argSequence); 
-		    							evalResult = evalResultSequence.item(0);
-		    						}
-		    						else {
-		    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:duration value '" + 
-		    																							argStr + "' is present in the input.", srcLocator); 
-		    						}
-		    					}
-		
-		    					break;
-		    				case Keywords.XS_YEAR_MONTH_DURATION :                   
-		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-		    						Expression funcArg = funcObj.getArg(idx);    						
-		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-		    						XSDuration xsDuration = XSYearMonthDuration.parseYearMonthDuration(argStr);
-		    						if (xsDuration != null) {
-		    							argSequence.add(xsDuration);
-		    							evalResultSequence = (new XSYearMonthDuration()).constructor(argSequence); 
-		    							evalResult = evalResultSequence.item(0);
-		    						}
-		    						else {
-		    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:yearMonthDuration value '" + 
-		    																							argStr + "' is present in the input.", srcLocator); 
-		    						}
-		    					}
-		
-		    					break;
-		    				case Keywords.XS_DAY_TIME_DURATION :                 
-		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-		    						Expression funcArg = funcObj.getArg(idx);    						
-		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-		    						XSDuration xsDuration = XSDayTimeDuration.parseDayTimeDuration(argStr);
-		    						if (xsDuration != null) {
-		    							argSequence.add(xsDuration);
-		    							evalResultSequence = (new XSDayTimeDuration()).constructor(argSequence); 
-		    							evalResult = evalResultSequence.item(0);
-		    						}
-		    						else {
-		    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:dayTimeDuration value '" + 
-		    																							argStr + "' is present in the input.", srcLocator); 
-		    						}                            
-		    					}
-		
-		    					break;
-		    				case Keywords.XS_TIME :                 
-		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-		    						Expression funcArg = funcObj.getArg(idx);    						
-		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-		    						XSTime xsTime = XSTime.parseTime(argStr);
-		    						if (xsTime != null) {
-		    							argSequence.add(xsTime);
-		    							evalResultSequence = (new XSTime()).constructor(argSequence); 
-		    							evalResult = evalResultSequence.item(0);
-		    						}
-		    						else {
-		    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:time value '" + 
-		    																							argStr + "' is present in the input.", srcLocator); 
-		    						}                            
-		    					}
-		
-		    					break;
-		    				case Keywords.XS_ANY_URI :    					
-		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSAnyURI.class, xctxt);
-		    					break;
-		    				case Keywords.XS_QNAME :		    					
-		    					int argCount = funcObj.getArgCount();		    					
-		    					if (argCount == 1) {
-		    						Expression funcArg = funcObj.getArg(0);
-		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-		    					    int colonIdx = argStr.indexOf(':');
-		    					    String prefix = null;
-		    					    String localName = null;
-		    					    String namespaceUri = null;
-		    					    if (colonIdx > -1) {
-		    					    	prefix = argStr.substring(0, colonIdx);
-		    					    	localName = argStr.substring(colonIdx + 1);
-		    					    }
-		    					    else {
-		    					    	localName = argStr; 
-		    					    }
-		    					    
-		    					    if (prefix != null) {
-		    					    	List<XMLNSDecl> prefixTable = null;
-		    					    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+    					switch (funcName) {
+    					case Keywords.XS_STRING :
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSString.class, xctxt);
+    						break;
+    					case Keywords.XS_NORMALIZED_STRING :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNormalizedString.class, xctxt);
+    						break;
+    					case Keywords.XS_TOKEN :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSToken.class, xctxt);
+    						break;
+    					case Keywords.XS_DECIMAL :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSDecimal.class, xctxt);
+    						break;
+    					case Keywords.XS_FLOAT :  					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSFloat.class, xctxt);
+    						break;
+    					case Keywords.XS_DOUBLE :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSDouble.class, xctxt);    					
+    						break;
+    					case Keywords.XS_INTEGER :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSInteger.class, xctxt);    					
+    						break;
+    					case Keywords.XS_NON_POSITIVE_INTEGER :
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNonPositiveInteger.class, xctxt);
+    						break;
+    					case Keywords.XS_NEGATIVE_INTEGER :
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNegativeInteger.class, xctxt);
+    						break;
+    					case Keywords.XS_NON_NEGATIVE_INTEGER :
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNonNegativeInteger.class, xctxt);
+    						break;
+    					case Keywords.XS_POSITIVE_INTEGER :    					 
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSPositiveInteger.class, xctxt);
+    						break;
+    					case Keywords.XS_LONG :
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSLong.class, xctxt);
+    						break;
+    					case Keywords.XS_INT :
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSInt.class, xctxt);
+    						break;
+    					case Keywords.XS_SHORT :
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSShort.class, xctxt);
+    						break;
+    					case Keywords.XS_BYTE :
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSByte.class, xctxt);
+    						break;
+    					case Keywords.XS_UNSIGNED_LONG :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedLong.class, xctxt);
+    						break;
+    					case Keywords.XS_UNSIGNED_INT :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedInt.class, xctxt);
+    						break;
+    					case Keywords.XS_UNSIGNED_SHORT :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedShort.class, xctxt);
+    						break;
+    					case Keywords.XS_UNSIGNED_BYTE :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedByte.class, xctxt);
+    						break;
+    					case Keywords.XS_GYEAR_MONTH :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGYearMonth.class, xctxt);
+    						break;
+    					case Keywords.XS_GYEAR :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGYear.class, xctxt);
+    						break;
+    					case Keywords.XS_GMONTH_DAY :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGMonthDay.class, xctxt);
+    						break;
+    					case Keywords.XS_GDAY :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGDay.class, xctxt);
+    						break;
+    					case Keywords.XS_GMONTH :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSGMonth.class, xctxt);
+    						break;
+    					case Keywords.XS_BASE64BINARY :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSBase64Binary.class, xctxt);
+    						break;
+    					case Keywords.XS_HEXBINARY :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSHexBinary.class, xctxt);
+    						break;
+    					case Keywords.XS_LANGUAGE :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSLanguage.class, xctxt);
+    						break;
+    					case Keywords.XS_NAME :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSName.class, xctxt);
+    						break;
+    					case Keywords.XS_NCNAME :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNCName.class, xctxt);
+    						break;
+    					case Keywords.XS_NMTOKEN :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNmToken.class, xctxt);
+    						break;
+    					case Keywords.XS_ID :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSID.class, xctxt);
+    						break;
+    					case Keywords.XS_IDREF :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSIdRef.class, xctxt);
+    						break;
+    					case Keywords.FUNC_BOOLEAN_STRING :    					
+    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    							Expression funcArg = funcObj.getArg(idx);    						
+    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    							Boolean boolVal = Boolean.valueOf(("0".equals(argStr) || "false".equals(argStr)) ? "false" : "true");
+    							argSequence.add(new XSBoolean(boolVal));
+    						}
+    						evalResultSequence = (new XSBoolean()).constructor(argSequence);
+    						evalResult = evalResultSequence.item(0);
 
-		    					    	if (elemTemplateElement != null) {
-		    					    		prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-		    					    	}
+    						break;
+    					case Keywords.XS_DATE :
+    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    							Expression funcArg = funcObj.getArg(idx);    						
+    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);    						    						
+    							argSequence.add(XSDate.parseDate(argStr));
+    						}
+    						evalResultSequence = (new XSDate()).constructor(argSequence); 
+    						evalResult = evalResultSequence.item(0);
 
-		    					    	if (prefixTable != null) {
-		    					    		for (int idx = 0; idx < prefixTable.size(); idx++) {
-		    					    			XMLNSDecl xmlNSDecl = prefixTable.get(idx);
-		    					    			String prefix1 = xmlNSDecl.getPrefix();
-		    					    			String uri1 = xmlNSDecl.getURI();
-		    					    			if (prefix1.equals(prefix)) {
-		    					    				namespaceUri = uri1;		    					    				
-		    					    				break;
-		    					    			}
-		    					    		}
-		    					    	}
-		    					    }
-		    					    
-		    					    evalResult = new XSQName(prefix, localName, namespaceUri);
-		    					}
-		    					else if (argCount == 2) {		    					    		    					    
-		    						String prefix = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(0), xctxt);
-		    						String localName = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(1), xctxt);
-		    						
-		    						List<XMLNSDecl> prefixTable = null;
-	    					    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+    						break;
+    					case Keywords.XS_DATETIME :
+    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    							Expression funcArg = funcObj.getArg(idx);    						
+    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    							argSequence.add(XSDateTime.parseDateTime(argStr));
+    						}
+    						evalResultSequence = (new XSDateTime()).constructor(argSequence); 
+    						evalResult = evalResultSequence.item(0);
 
-	    					    	if (elemTemplateElement != null) {
-	    					    		prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-	    					    	}
+    						break;
+    					case Keywords.XS_DURATION :
+    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    							Expression funcArg = funcObj.getArg(idx);    						
+    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    							XSDuration xsDuration = XSDuration.parseDuration(argStr);
+    							if (xsDuration != null) {
+    								argSequence.add(xsDuration);
+    								evalResultSequence = (new XSDuration()).constructor(argSequence); 
+    								evalResult = evalResultSequence.item(0);
+    							}
+    							else {
+    								throw new TransformerException("FORG0001 : An incorrectly formatted xs:duration value '" + 
+    																									argStr + "' is present in the input.", srcLocator); 
+    							}
+    						}
 
-	    					    	String namespaceUri = null;
-	    					    	if (prefixTable != null) {
-	    					    		for (int idx = 0; idx < prefixTable.size(); idx++) {
-	    					    			XMLNSDecl xmlNSDecl = prefixTable.get(idx);
-	    					    			String prefix1 = xmlNSDecl.getPrefix();
-	    					    			String uri1 = xmlNSDecl.getURI();
-	    					    			if (prefix1.equals(prefix)) {
-	    					    				namespaceUri = uri1;		    					    				
-	    					    				break;
-	    					    			}
-	    					    		}
-	    					    	}
-	    					    	
-	    					    	evalResult = new XSQName(prefix, localName, namespaceUri);
-		    					}
-		    					else if (argCount == 3) {
-		    						String prefix = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(0), xctxt);
-		    						String localName = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(1), xctxt);
-		    						String namespaceUri = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(2), xctxt);
-		    						evalResult = new XSQName(prefix, localName, namespaceUri);
-		    					}
-		
-		    					break;
-		    				default:
-		    					// NO OP
-	    				}
-    			    }
-    			    catch (Exception ex) {
-    			       String exceptionMesgStr = null;
-    			       if (ex instanceof InvocationTargetException) {
-    			    	  Throwable throwable = ((InvocationTargetException)ex).getTargetException();
-    			    	  exceptionMesgStr = throwable.getMessage();
-    			       }
-    			       else {
-    			          exceptionMesgStr = (ex.getMessage() != null) ? ex.getMessage() : "";
-    			       }
-    			       
-    			       exceptionMesgStr = exceptionMesgStr.equals("") ? "" : (exceptionMesgStr + ".");
-    			       if (exceptionMesgStr.endsWith("..")) {
-    			    	   exceptionMesgStr = exceptionMesgStr.substring(0, exceptionMesgStr.length() - 1); 
-    			       }
-    			       
-    			       String errMesgStrTrailingSuffix = ((exceptionMesgStr != null) && (exceptionMesgStr.length() > 0)) ? " "+ exceptionMesgStr : ""; 
-    			       
-    			       throw new TransformerException("FODC0005 : A dynamic error has occured, evaluating XPath built-in "
-    			       		                                                             + "constructor function call for xs:" + funcName + "." + 
-    			    		                                                                errMesgStrTrailingSuffix, srcLocator);
-    			    }
+    						break;
+    					case Keywords.XS_YEAR_MONTH_DURATION :                   
+    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    							Expression funcArg = funcObj.getArg(idx);    						
+    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    							XSDuration xsDuration = XSYearMonthDuration.parseYearMonthDuration(argStr);
+    							if (xsDuration != null) {
+    								argSequence.add(xsDuration);
+    								evalResultSequence = (new XSYearMonthDuration()).constructor(argSequence); 
+    								evalResult = evalResultSequence.item(0);
+    							}
+    							else {
+    								throw new TransformerException("FORG0001 : An incorrectly formatted xs:yearMonthDuration value '" + 
+    																									argStr + "' is present in the input.", srcLocator); 
+    							}
+    						}
+
+    						break;
+    					case Keywords.XS_DAY_TIME_DURATION :                 
+    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    							Expression funcArg = funcObj.getArg(idx);    						
+    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    							XSDuration xsDuration = XSDayTimeDuration.parseDayTimeDuration(argStr);
+    							if (xsDuration != null) {
+    								argSequence.add(xsDuration);
+    								evalResultSequence = (new XSDayTimeDuration()).constructor(argSequence); 
+    								evalResult = evalResultSequence.item(0);
+    							}
+    							else {
+    								throw new TransformerException("FORG0001 : An incorrectly formatted xs:dayTimeDuration value '" + 
+    																									argStr + "' is present in the input.", srcLocator); 
+    							}                            
+    						}
+
+    						break;
+    					case Keywords.XS_TIME :                 
+    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    							Expression funcArg = funcObj.getArg(idx);    						
+    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    							XSTime xsTime = XSTime.parseTime(argStr);
+    							if (xsTime != null) {
+    								argSequence.add(xsTime);
+    								evalResultSequence = (new XSTime()).constructor(argSequence); 
+    								evalResult = evalResultSequence.item(0);
+    							}
+    							else {
+    								throw new TransformerException("FORG0001 : An incorrectly formatted xs:time value '" + 
+    																									argStr + "' is present in the input.", srcLocator); 
+    							}                            
+    						}
+
+    						break;
+    					case Keywords.XS_ANY_URI :    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSAnyURI.class, xctxt);
+    						break;
+    					case Keywords.XS_QNAME :		    					
+    						int argCount = funcObj.getArgCount();		    					
+    						if (argCount == 1) {
+    							Expression funcArg = funcObj.getArg(0);
+    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    							int colonIdx = argStr.indexOf(':');
+    							String prefix = null;
+    							String localName = null;
+    							String namespaceUri = null;
+    							if (colonIdx > -1) {
+    								prefix = argStr.substring(0, colonIdx);
+    								localName = argStr.substring(colonIdx + 1);
+    							}
+    							else {
+    								localName = argStr; 
+    							}
+
+    							if (prefix != null) {
+    								List<XMLNSDecl> prefixTable = null;
+    								ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+
+    								if (elemTemplateElement != null) {
+    									prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+    								}
+
+    								if (prefixTable != null) {
+    									for (int idx = 0; idx < prefixTable.size(); idx++) {
+    										XMLNSDecl xmlNSDecl = prefixTable.get(idx);
+    										String prefix1 = xmlNSDecl.getPrefix();
+    										String uri1 = xmlNSDecl.getURI();
+    										if (prefix1.equals(prefix)) {
+    											namespaceUri = uri1;		    					    				
+    											break;
+    										}
+    									}
+    								}
+    							}
+
+    							evalResult = new XSQName(prefix, localName, namespaceUri);
+    						}
+    						else if (argCount == 2) {		    					    		    					    
+    							String prefix = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(0), xctxt);
+    							String localName = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(1), xctxt);
+
+    							List<XMLNSDecl> prefixTable = null;
+    							ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+
+    							if (elemTemplateElement != null) {
+    								prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+    							}
+
+    							String namespaceUri = null;
+    							if (prefixTable != null) {
+    								for (int idx = 0; idx < prefixTable.size(); idx++) {
+    									XMLNSDecl xmlNSDecl = prefixTable.get(idx);
+    									String prefix1 = xmlNSDecl.getPrefix();
+    									String uri1 = xmlNSDecl.getURI();
+    									if (prefix1.equals(prefix)) {
+    										namespaceUri = uri1;		    					    				
+    										break;
+    									}
+    								}
+    							}
+
+    							evalResult = new XSQName(prefix, localName, namespaceUri);
+    						}
+    						else if (argCount == 3) {
+    							String prefix = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(0), xctxt);
+    							String localName = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(1), xctxt);
+    							String namespaceUri = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(2), xctxt);
+    							evalResult = new XSQName(prefix, localName, namespaceUri);
+    						}
+
+    						break;
+    					default:
+    						// NO OP
+    					}
+    				}
+    				catch (Exception ex) {
+    					String exceptionMesgStr = null;
+    					if (ex instanceof InvocationTargetException) {
+    						Throwable throwable = ((InvocationTargetException)ex).getTargetException();
+    						exceptionMesgStr = throwable.getMessage();
+    					}
+    					else {
+    						exceptionMesgStr = (ex.getMessage() != null) ? ex.getMessage() : "";
+    					}
+
+    					exceptionMesgStr = exceptionMesgStr.equals("") ? "" : (exceptionMesgStr + ".");
+    					if (exceptionMesgStr.endsWith("..")) {
+    						exceptionMesgStr = exceptionMesgStr.substring(0, exceptionMesgStr.length() - 1); 
+    					}
+
+    					String errMesgStrTrailingSuffix = ((exceptionMesgStr != null) && (exceptionMesgStr.length() > 0)) ? " "+ exceptionMesgStr : ""; 
+
+    					throw new TransformerException("FODC0005 : A XPath dynamic error has occured, evaluating "
+																	    							+ "constructor function call for xs:" + funcName + "." + 
+																	    							errMesgStrTrailingSuffix, srcLocator);
+    				}
     			}
     			else {
     				// We check and evaluate below, XPath constructor function calls to 
@@ -664,18 +676,20 @@ public class XSL3FunctionService {
     									XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)xsTypeDefinition;
     									XObject xsSimpleTypeInpObj = (funcObj.getArg(0)).execute(xctxt);
     									String argStrVal = XslTransformEvaluationHelper.getStrVal(xsSimpleTypeInpObj);
-										xsSimpleTypeDecl.validate(argStrVal, null, null);
-										evalResult = new XSString(XS_VALID_TRUE);
-										evalResult.setObject(argStrVal);
+    									xsSimpleTypeDecl.validate(argStrVal, null, null);
+    									evalResult = new XSString(XS_VALID_TRUE);
+    									evalResult.setObject(argStrVal);
     									evalResult.setXsTypeDefinition(xsTypeDefinition);    								}
     								else {
     									throw new javax.xml.transform.TransformerException("FODC0005 : There's no in-scope schema type definition available "
-    																					           + "with name {" + funcNamespace + "}:" + funcName + ".", srcLocator);							
+    																													+ "with name {" + funcNamespace + "}:" 
+    											                                                                        + funcName + ".", srcLocator);							
     								}	    							    						
     							}
     							else {
     								throw new javax.xml.transform.TransformerException("FODC0005 : While processing xsl:import-schema instruction, a compiled "
-    																					       + "representation of an XML Schema document could not be built.", srcLocator);
+    										                                                                            + "representation of an XML Schema document "
+    										                                                                            + "could not be built.", srcLocator);
     							}
     						}
     						catch (InvalidDatatypeValueException ex) {
@@ -738,21 +752,25 @@ public class XSL3FunctionService {
     									}
     									else {
     										throw new javax.xml.transform.TransformerException("FODC0005 : There's no in-scope schema type definition available "
-    																						           + "with name {" + funcNamespace + "}:" + funcName + ".", srcLocator);							
+    																														+ "with name {" + funcNamespace + "}:" 
+    												                                                                        + funcName + ".", srcLocator);							
     									}
     								}
     								else {
     									throw new javax.xml.transform.TransformerException("FODC0005 : While processing xsl:import-schema instruction, a compiled "
-    																					           + "representation of an XML Schema document could not be built.", srcLocator);
+    											                                                                            + "representation of an XML Schema document "
+    											                                                                            + "could not be built.", srcLocator);
     								}
     							}
     							catch (URISyntaxException ex) {
     								throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
-    																				           + "is not a valid absolute uri, or cannot be resolved to an absolute uri.", srcLocator);   
+    										                                                                                + "is not a valid absolute uri, or cannot "
+    										                                                                                + "be resolved to an absolute uri.", srcLocator);   
     							}
     							catch (MalformedURLException ex) {
     								throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
-    																				           + "is not a valid absolute uri, or cannot be resolved to an absolute uri.", srcLocator); 
+    										                                                                                + "is not a valid absolute uri, or cannot be "
+    										                                                                                + "resolved to an absolute uri.", srcLocator); 
     							}
     							catch (InvalidDatatypeValueException ex) {
     								throw new TransformerException(ex.getMessage(), srcLocator);
