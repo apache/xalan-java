@@ -70,6 +70,27 @@ public class NotEquals extends Operation
 			  boolean bool = XPathGeneralComparisonEqualityOpSupport.equals((XString)left, (ResultSequence)right, true);
 			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		  }
+		  else if (left instanceof ResultSequence) {
+			  ResultSequence resultSeqLhs = (ResultSequence)left;
+			  ResultSequence resultSeqRhs = (ResultSequence)right;
+			  boolean isResult = false;
+			  for (int i = 0; i < resultSeqLhs.size(); i++) {
+				  XObject xObj1 = resultSeqLhs.item(i); 
+				  for (int j = 0; j < resultSeqRhs.size(); j++) {
+					  XObject xObj2 = resultSeqRhs.item(j);
+					  if (!xObj1.equals(xObj2)) {
+						  isResult = true;
+						  break;
+					  }
+				  }
+
+				  if (isResult) {
+					  break; 
+				  }
+			  }
+
+			  result = (isResult ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  }
 		  else {
 			  java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
 			  boolean bool = XPathGeneralComparisonEqualityOpSupport.equals(new XSString(lStrVal), (ResultSequence)right, true);

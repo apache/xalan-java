@@ -58,7 +58,28 @@ public class Lt extends Operation
 		 else if (left instanceof XSNumericType) {
 			 boolean bool = XPathGeneralComparisonRelationalOpSupport.lessThan((XSNumericType)left, (ResultSequence)right, false);
 			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
-		 }		 
+		 }
+		 else if (left instanceof ResultSequence) {
+			 ResultSequence resultSeqLhs = (ResultSequence)left;
+			 ResultSequence resultSeqRhs = (ResultSequence)right;
+			 boolean isResult = false;
+			 for (int i = 0; i < resultSeqLhs.size(); i++) {
+				 XObject xObj1 = resultSeqLhs.item(i); 
+				 for (int j = 0; j < resultSeqRhs.size(); j++) {
+					 XObject xObj2 = resultSeqRhs.item(j);
+					 if (xObj1.lessThan(xObj2)) {
+						 isResult = true;
+						 break;
+					 }
+				 }
+
+				 if (isResult) {
+					 break; 
+				 }
+			 }
+
+			 result = (isResult ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
+		 }
 	  }
 	  else {
 		 result = left.lessThan(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;

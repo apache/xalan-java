@@ -72,6 +72,7 @@ import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeMapTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathArrayComparison;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathContextItemWithPredicate;
 import org.apache.xpath.composite.XPathExprFuncCallExtendedArg;
@@ -277,6 +278,8 @@ public class XPathParser
   static XPathContextItemWithPredicate m_xpathContextItemWithPredicate = null;
   
   static XPathExprFuncCallExtendedArg m_xpathExprFuncCallExtendedArg = null;
+  
+  static XPathArrayComparison m_xpathArrayComparison = null;
   
   private String m_arrowOpRemainingXPathExprStr = null;
   
@@ -1511,6 +1514,138 @@ public class XPathParser
                                                     m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
              return;             
+          }          
+                    
+          if (isSquareArrayConstructor) {
+        	  // XPath parse of general comparison (i.e, =, !=, <, <=, >, >=) between 
+        	  // an xdm array on LHS and another XPath operand on RHS.
+        	  
+        	  TokenQueueScanPosition prevTokenQueueScanPos = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);        	  
+        	          	  
+        	  StringBuffer arrItemXPathStrBuff = new StringBuffer();
+        	  while (!(tokenIs(']') || (m_token == null))) {
+        		  while (!(tokenIs(',') || tokenIs(']') || (m_token == null))) {
+        		     arrItemXPathStrBuff.append(m_token);
+        		     nextToken();
+        		  }
+        		  
+        		  if (tokenIs(',')) {
+        			  nextToken();
+        			  seqOrArrayXPathItems.add(arrItemXPathStrBuff.toString());
+        			  arrItemXPathStrBuff = new StringBuffer();        			  
+        			  continue;
+        		  }
+        		  
+        		  if (tokenIs(']')) {
+        			  nextToken();
+        			  seqOrArrayXPathItems.add(arrItemXPathStrBuff.toString());        			  
+        			  break; 
+        		  }        		  
+        	  }        	          	        		       		          	          	  
+        	  
+        	  if (m_token != null) {
+        		 m_xpathArrayComparison = new XPathArrayComparison();
+        		 List<String> arrComparisonXpathRhs = new ArrayList<String>();
+        		 
+        		 boolean isRelnComparison = false;
+        		 if (tokenIs('=')) {
+        			isRelnComparison = true;
+        			m_xpathArrayComparison.setComparisonOpCode(OpCodes.OP_EQUALS);
+        			nextToken();
+        		 }
+        		 else if (tokenIs('!') && lookahead('=', 1)) {
+        			isRelnComparison = true; 
+         			m_xpathArrayComparison.setComparisonOpCode(OpCodes.OP_NOTEQUALS);
+         			nextToken();
+         			nextToken();
+         		 }
+        		 else if (tokenIs('<') && lookahead('=', 1)) {
+         			isRelnComparison = true; 
+          			m_xpathArrayComparison.setComparisonOpCode(OpCodes.OP_LTE);
+          			nextToken();
+          			nextToken();
+          		 }
+        		 else if (tokenIs('<')) {
+         			isRelnComparison = true;
+         			m_xpathArrayComparison.setComparisonOpCode(OpCodes.OP_LT);
+         			nextToken();
+         		 }
+        		 else if (tokenIs('>') && lookahead('=', 1)) {
+          			isRelnComparison = true; 
+           			m_xpathArrayComparison.setComparisonOpCode(OpCodes.OP_GTE);
+           			nextToken();
+           			nextToken();
+           		 }
+        		 else if (tokenIs('>')) {
+          			isRelnComparison = true;
+          			m_xpathArrayComparison.setComparisonOpCode(OpCodes.OP_GT);
+          			nextToken();
+          		 }
+        		 
+            	 if (isRelnComparison) {            		             		             		             		             		             		             		             		             		 
+            		 StringBuffer seqArrItemXPathStrBuff = new StringBuffer();            		 
+            		 if (lookahead(null, 1)) {
+            			 arrComparisonXpathRhs.add(m_token);
+            			 nextToken();
+            		 }
+            		 else if (tokenIs('(')) {
+            			 consumeExpected('(');
+            			 while (m_token != null) {
+            				 if (tokenIs(')')) { 
+            					 arrComparisonXpathRhs.add(seqArrItemXPathStrBuff.toString());
+            					 consumeExpected(')'); 
+            				 }
+            				 else if (tokenIs(',')) {
+            					 nextToken();
+            					 arrComparisonXpathRhs.add(seqArrItemXPathStrBuff.toString());
+            					 seqArrItemXPathStrBuff = new StringBuffer();
+            				 }
+            				 else {
+            					 seqArrItemXPathStrBuff.append(m_token);
+            					 nextToken(); 
+            				 }            				 
+            			 }
+            	     }
+            		 else if (tokenIs('[')) {
+            			 consumeExpected('(');
+            			 while (m_token != null) {
+            				 if (tokenIs(']')) { 
+            					 arrComparisonXpathRhs.add(seqArrItemXPathStrBuff.toString());
+            					 consumeExpected(')'); 
+            				 }
+            				 else if (tokenIs(',')) {
+            					 nextToken();
+            					 arrComparisonXpathRhs.add(seqArrItemXPathStrBuff.toString());
+            					 seqArrItemXPathStrBuff = new StringBuffer();
+            				 }
+            				 else {
+            					 seqArrItemXPathStrBuff.append(m_token);
+            					 nextToken(); 
+            				 }            				 
+            			 }
+            	     }            		 
+            		             		 
+            		 m_xpathArrayComparison.setArrayConstructorXPathLhs(seqOrArrayXPathItems);
+            		 m_xpathArrayComparison.setSeqArrConstructorXPathRhs(arrComparisonXpathRhs);
+            		 
+            		 int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+            		 
+            		 insertOp(opPos, 2, OpCodes.OP_ARRAY_COMPARISON);
+            		 
+            		 m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+                                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+
+                     return;
+            	 }
+            	 else {
+            		 seqOrArrayXPathItems.clear();            		 
+            		 restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+            	 }
+        	  }
+        	  else {
+        		 seqOrArrayXPathItems.clear();        		 
+        		 restoreTokenQueueScanPosition(prevTokenQueueScanPos); 
+        	  }
           }
           
           while (m_token != null) {                            

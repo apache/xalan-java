@@ -287,7 +287,9 @@ public class Compiler extends OpMap
     case OpCodes.OP_CONTEXT_ITEM_WITH_PREDICATE :
       expr = xpathContextItemWithPredicate(opPos); break;
     case OpCodes.OP_XPATH_FUNC_CALL_EXTENDED_ARG :
-      expr = xpathExpressionFuncCallExtendedArg(opPos); break;  
+      expr = xpathExpressionFuncCallExtendedArg(opPos); break;
+    case OpCodes.OP_ARRAY_COMPARISON :
+      expr = xpathExpressionArrayComparison(opPos); break;  
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ "quo" });
       break;
@@ -1668,6 +1670,15 @@ private static final boolean DEBUG = false;
   Expression xpathExpressionFuncCallExtendedArg(int opPos) throws TransformerException
   {
       return XPathParser.m_xpathExprFuncCallExtendedArg;
+  }
+  
+  /**
+   * Compile an XPath expression, representing a general comparison between 
+   * an XPath array and another operand.
+   */
+  Expression xpathExpressionArrayComparison(int opPos) throws TransformerException
+  {
+	  return XPathParser.m_xpathArrayComparison;
   }
   
   /**
