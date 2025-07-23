@@ -85,7 +85,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
  *         Christine Li <jycli@apache.org>
  *         
  * @author Mukul Gandhi <mukulg@apache.org>
- *         (XSLT 3 specific changes, to this class)
+ *         (XSLT 3.0 specific changes, to this class)
  *
  * @xsl.usage advanced
  */

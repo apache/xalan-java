@@ -46,7 +46,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Scott Boag <scott_boag@us.ibm.com>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
- *         (XSLT 3 specific changes, to this class)
+ *         (XPath 3.1 specific changes, to this class)
  */
 public class Minus extends ArithmeticOperation
 {

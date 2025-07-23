@@ -289,7 +289,7 @@ public class OpMap
     else
     {
       error(org.apache.xpath.res.XPATHErrorResources.ER_UNKNOWN_OPCODE,
-            new Object[]{ String.valueOf(stepType) });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
+            new Object[]{ m_currentPattern, String.valueOf(stepType) });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
       return -1;
     }
   }

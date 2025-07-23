@@ -31,7 +31,7 @@ import java.util.Hashtable;
  * @author Christine Li <jycli@apache.org>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
- *         (XPath 3 specific changes, to this class)
+ *         (XPath 3.1 specific changes, to this class)
  * 
  * @xsl.usage internal
  */

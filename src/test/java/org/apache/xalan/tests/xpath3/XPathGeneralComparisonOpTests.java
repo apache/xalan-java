@@ -189,5 +189,45 @@ public class XPathGeneralComparisonOpTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xpathGeneralComparisonOpTest15() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test15.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathGeneralComparisonOpTest16() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test16.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathGeneralComparisonOpTest17() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test17.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xpathGeneralComparisonOpTest18() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test18.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

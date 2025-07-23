@@ -122,7 +122,7 @@ import xml.xpath31.processor.types.XSInteger;
  *         Henry Zongaro <zongaro@ca.ibm.com>, Christine Li <jycli@apache.org>
  *         
  * @author Mukul Gandhi <mukulg@apache.org>
- *         (XPath 3 specific changes, to this class)
+ *         (XPath 3.1 specific changes, to this class)
  * 
  * @xsl.usage general
  */
@@ -392,10 +392,12 @@ public class XPathParser
         	   }
         	           	   
         	   if (isXPathExprStrHasBalancedParens || tokenIs(',')) {
-        		   // We check for the token string "," as well, since
-        		   // an XPath parse might have finished without completing
-        		   // parse of all sequence items if it was an XPath literal 
-        		   // sequence constructor parse.
+        		   /**
+        		    * We check for the token string "," as well, since
+        		    * an XPath parse might have finished without completing
+        		    * parse of all sequence items if it was an XPath literal
+        		    * sequence constructor parse.
+        		    */
         		   newExpression = "(" + expression + ")"; 
         	   }
         	}
@@ -1520,6 +1522,8 @@ public class XPathParser
         	  // XPath parse of general comparison (i.e, =, !=, <, <=, >, >=) between 
         	  // an xdm array on LHS and another XPath operand on RHS.
         	  
+        	  List<String> arrComparisonXpathLhs = new ArrayList<String>();
+        	  
         	  TokenQueueScanPosition prevTokenQueueScanPos = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);        	  
         	          	  
         	  StringBuffer arrItemXPathStrBuff = new StringBuffer();
@@ -1531,17 +1535,17 @@ public class XPathParser
         		  
         		  if (tokenIs(',')) {
         			  nextToken();
-        			  seqOrArrayXPathItems.add(arrItemXPathStrBuff.toString());
+        			  arrComparisonXpathLhs.add(arrItemXPathStrBuff.toString());
         			  arrItemXPathStrBuff = new StringBuffer();        			  
         			  continue;
         		  }
         		  
         		  if (tokenIs(']')) {
         			  nextToken();
-        			  seqOrArrayXPathItems.add(arrItemXPathStrBuff.toString());        			  
+        			  arrComparisonXpathLhs.add(arrItemXPathStrBuff.toString());        			  
         			  break; 
         		  }        		  
-        	  }        	          	        		       		          	          	  
+        	  }
         	  
         	  if (m_token != null) {
         		 m_xpathArrayComparison = new XPathArrayComparison();
@@ -1582,22 +1586,21 @@ public class XPathParser
           			nextToken();
           		 }
         		 
-            	 if (isRelnComparison) {            		             		             		             		             		             		             		             		             		 
-            		 StringBuffer seqArrItemXPathStrBuff = new StringBuffer();            		 
-            		 if (lookahead(null, 1)) {
-            			 arrComparisonXpathRhs.add(m_token);
-            			 nextToken();
-            		 }
-            		 else if (tokenIs('(')) {
-            			 consumeExpected('(');
+            	 if (isRelnComparison) {            		             		             		             		             		             		             		             		             		             		             		             		             		 
+            		 if (tokenIs('[')) {
+            			 // The RHS operand is a literal array constructor            			 
+            			 consumeExpected('[');
+            			 StringBuffer seqArrItemXPathStrBuff = new StringBuffer();
             			 while (m_token != null) {
-            				 if (tokenIs(')')) { 
-            					 arrComparisonXpathRhs.add(seqArrItemXPathStrBuff.toString());
-            					 consumeExpected(')'); 
+            				 if (tokenIs(']')) {
+            					 if (seqArrItemXPathStrBuff.length() > 0) {
+            					    arrComparisonXpathRhs.add(seqArrItemXPathStrBuff.toString());
+            					 }
+            					 consumeExpected(']');            					 
             				 }
-            				 else if (tokenIs(',')) {
-            					 nextToken();
+            				 else if (tokenIs(',')) {            					 
             					 arrComparisonXpathRhs.add(seqArrItemXPathStrBuff.toString());
+            					 nextToken();
             					 seqArrItemXPathStrBuff = new StringBuffer();
             				 }
             				 else {
@@ -1606,26 +1609,17 @@ public class XPathParser
             				 }            				 
             			 }
             	     }
-            		 else if (tokenIs('[')) {
-            			 consumeExpected('(');
+            		 else {
+            			 // The RHS operand XPath expression
+            			 StringBuffer seqArrItemXPathStrBuff = new StringBuffer();
             			 while (m_token != null) {
-            				 if (tokenIs(']')) { 
-            					 arrComparisonXpathRhs.add(seqArrItemXPathStrBuff.toString());
-            					 consumeExpected(')'); 
-            				 }
-            				 else if (tokenIs(',')) {
-            					 nextToken();
-            					 arrComparisonXpathRhs.add(seqArrItemXPathStrBuff.toString());
-            					 seqArrItemXPathStrBuff = new StringBuffer();
-            				 }
-            				 else {
-            					 seqArrItemXPathStrBuff.append(m_token);
-            					 nextToken(); 
-            				 }            				 
+            				 seqArrItemXPathStrBuff.append(m_token);
+        					 nextToken(); 
             			 }
-            	     }            		 
+            			 arrComparisonXpathRhs.add(seqArrItemXPathStrBuff.toString());
+            		 }
             		             		 
-            		 m_xpathArrayComparison.setArrayConstructorXPathLhs(seqOrArrayXPathItems);
+            		 m_xpathArrayComparison.setArrayConstructorXPathLhs(arrComparisonXpathLhs);
             		 m_xpathArrayComparison.setSeqArrConstructorXPathRhs(arrComparisonXpathRhs);
             		 
             		 int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
@@ -1638,12 +1632,14 @@ public class XPathParser
                      return;
             	 }
             	 else {
-            		 seqOrArrayXPathItems.clear();            		 
+            		 seqOrArrayXPathItems.clear();
+            		 
             		 restoreTokenQueueScanPosition(prevTokenQueueScanPos);
             	 }
         	  }
         	  else {
-        		 seqOrArrayXPathItems.clear();        		 
+        		 seqOrArrayXPathItems.clear();
+        		 
         		 restoreTokenQueueScanPosition(prevTokenQueueScanPos); 
         	  }
           }

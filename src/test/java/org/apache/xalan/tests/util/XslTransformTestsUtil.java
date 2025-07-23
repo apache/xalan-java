@@ -620,7 +620,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
 	}
 	
 	/**
-     * This method definition checks whether, two XML or HTML
+     * Method definition, to check whether two XML or HTML
      * string values represent equal document content.
      */
     protected boolean isTwoXmlHtmlStrEqual(String str1, String str2) {

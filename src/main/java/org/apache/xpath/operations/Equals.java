@@ -31,6 +31,7 @@ import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSBoolean;
@@ -59,6 +60,14 @@ public class Equals extends Operation
           throws javax.xml.transform.TransformerException
   {
 	  XObject result = null;
+	  
+	  if (left instanceof XPathArray) {
+		 left = ((XPathArray)left).atomize();
+	  }
+	  
+	  if (right instanceof XPathArray) {
+		 right = ((XPathArray)right).atomize(); 
+	  }
 	  	  
 	  if (right instanceof ResultSequence) {
 		 if (left instanceof XNumber) {
@@ -85,9 +94,16 @@ public class Equals extends Operation
 				 XObject xObj1 = resultSeqLhs.item(i); 
 				 for (int j = 0; j < resultSeqRhs.size(); j++) {
 					XObject xObj2 = resultSeqRhs.item(j);
-					if (xObj1.equals(xObj2)) {
-						isEqual = true;
-						break;
+					if (xObj2 instanceof ResultSequence) {
+					   XObject r1 = operate(xObj1, xObj2);
+					   isEqual = r1.bool();
+					}					
+					else if (xObj1.equals(xObj2)) {
+					   isEqual = true;						
+					}
+					
+					if (isEqual) {
+					   break;	
 					}
 				 }
 				 

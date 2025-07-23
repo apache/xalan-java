@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-22T12:55:37Z" fail="27" name="function" pass="38" skipped="4" statusUnknown="1" totalRun="66">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-23T11:35:02Z" fail="27" name="function" pass="38" skipped="4" statusUnknown="1" totalRun="66">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -47,7 +47,7 @@
    <testResult status="fail" testName="function-0401"/>
    <testResult status="fail" testName="function-0501">
       <outResult>
-         <errTrace>ERROR! Unknown op code: 0</errTrace>
+         <errTrace>XPST0003 : An XPath expression /out/section[1]/actor[1][@name="User"][children/child="Administrator"][empty(parents/node())] has syntax error. Unknown op code : 0.</errTrace>
          <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>

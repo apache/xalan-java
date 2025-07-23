@@ -94,6 +94,23 @@ public class XPathArray extends XObject {
    }
    
    /**
+    * Method definition, to atomize an XPath array 
+    * to a sequence.
+    * 
+    * @return		        ResultSequence object		
+    */
+   public ResultSequence atomize() {
+	   ResultSequence result = new ResultSequence();
+	   
+	   for (int i = 0; i < this.size(); i++) {
+		   XObject arrItem = this.get(i);
+		   result.add(arrItem);
+	   }
+
+	   return result;
+   }
+   
+   /**
     * Get the string value of this XPathArray object.
     * 
     * This method, produces a default serialization of this

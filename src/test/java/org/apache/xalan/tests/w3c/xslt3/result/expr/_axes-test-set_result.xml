@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-22T12:55:43Z" fail="20" name="axes" pass="181" skipped="0" statusUnknown="0" totalRun="201">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-23T11:35:05Z" fail="20" name="axes" pass="181" skipped="0" statusUnknown="0" totalRun="201">
    <testResult status="pass" testName="axes-001"/>
    <testResult status="pass" testName="axes-002"/>
    <testResult status="pass" testName="axes-003"/>
@@ -65,7 +65,7 @@
    <testResult status="fail" testName="axes-060"/>
    <testResult status="fail" testName="axes-061">
       <outResult>
-         <errTrace>ERROR! Unknown op code: 21</errTrace>
+         <errTrace>XPST0003 : An XPath expression                 /out/u = "2,9,3,4"                /out/u = "9,2,3,4"              has syntax error. Unknown op code : 21.</errTrace>
          <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>

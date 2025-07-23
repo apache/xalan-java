@@ -243,7 +243,7 @@ public abstract class SerializerBase
     protected char[] m_attrBuff = new char[30];
     
     /**
-     * This class field supports, XSLT 3 instruction xsl:character-map 
+     * This class field supports, XSLT 3.0 xsl:character-map instruction 
      * processing.
      */
     private CharacterMapConfig m_charMapConfig = new CharacterMapConfig();

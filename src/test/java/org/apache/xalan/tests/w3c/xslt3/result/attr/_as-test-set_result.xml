@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-22T12:54:59Z" fail="53" name="as" pass="51" skipped="4" statusUnknown="1" totalRun="105">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-23T11:34:36Z" fail="53" name="as" pass="51" skipped="4" statusUnknown="1" totalRun="105">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
@@ -131,7 +131,7 @@
    <testResult status="fail" testName="as-1222">
       <outResult>
          <errTrace>XTTE0570 : The required item type of an xdm input node is item(). The supplied value does'nt match an expected type.</errTrace>
-         <errTrace>ERROR! Unknown op code: -1</errTrace>
+         <errTrace>XPST0003 : An XPath expression /out/par1/normalize-space() = "hello namespaced true" has syntax error. Unknown op code : -1.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>

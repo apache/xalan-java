@@ -79,7 +79,7 @@ import org.apache.xalan.templates.ElemWithParam;
 import org.apache.xml.utils.QName;
 
 /**
- * This class defines the allowed structure for an XSLT 3 stylesheet, and the
+ * This class defines the allowed structure for an XSLT 3.0 stylesheet, and the
  * mapping between Xalan classes and the markup elements in the stylesheet.
  * 
  * @see <a href="https://www.w3.org/TR/xslt-30/#xsd11-schema-for-xslt">XSD 1.1 Schema for XSLT Stylesheets</a>

@@ -474,7 +474,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
       "Could not get variable named {0}"},
 
   { ER_UNKNOWN_OPCODE,
-     "ERROR! Unknown op code: {0}"},
+     "XPST0003 : An XPath expression {0} has syntax error. Unknown op code : {1}."},
 
   { ER_EXTRA_ILLEGAL_TOKENS,
      "Extra illegal tokens: {0}"},

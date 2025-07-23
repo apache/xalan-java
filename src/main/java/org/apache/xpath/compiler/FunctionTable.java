@@ -36,7 +36,7 @@ import org.apache.xpath.functions.Function;
  * @author Christine Li <jycli@apache.org>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
- *         (XPath 3 specific changes, to this class)
+ *         (XPath 3.1 specific changes, to this class)
  */
 public class FunctionTable
 {

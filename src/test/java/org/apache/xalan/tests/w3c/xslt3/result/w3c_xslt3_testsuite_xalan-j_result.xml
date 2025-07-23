@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-07-22T12:59:54Z" desc="W3C XSLT 3.0 test suite results" fail="777" pass="1415" skipped="39" success="64.03%" totalRun="2210" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-07-23T11:37:14Z" desc="W3C XSLT 3.0 test suite results" fail="775" pass="1417" skipped="39" success="64.12%" totalRun="2210" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="53" pass="51" skipped="4" success="48.57%" totalRun="105"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
     <match fail="61" pass="67" skipped="8" success="51.94%" totalRun="129"/>
-    <select fail="6" pass="18" skipped="0" success="72.0%" totalRun="25"/>
+    <select fail="5" pass="19" skipped="0" success="76.0%" totalRun="25"/>
     <xpath-default-namespace fail="17" pass="9" skipped="0" success="34.62%" totalRun="26"/>
   </attr>
   <decl>
@@ -29,7 +29,7 @@
     <format-number fail="32" pass="38" skipped="4" success="54.29%" totalRun="70"/>
     <key fail="3" pass="21" skipped="0" success="84.0%" totalRun="25"/>
     <position fail="11" pass="126" skipped="0" success="91.3%" totalRun="138"/>
-    <root fail="4" pass="6" skipped="0" success="60.0%" totalRun="10"/>
+    <root fail="3" pass="7" skipped="0" success="70.0%" totalRun="10"/>
   </fn>
   <insn>
     <analyze-string fail="17" pass="36" skipped="5" success="67.92%" totalRun="53"/>

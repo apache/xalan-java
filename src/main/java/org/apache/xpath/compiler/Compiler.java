@@ -105,7 +105,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  *         Christine Li <jycli@apache.org>
  *         
  * @author Mukul Gandhi <mukulg@apache.org>
- *         (XPath 3 specific changes, to this class)         
+ *         (XPath 3.1 specific changes, to this class)         
  * 
  * @xsl.usage advanced
  */
@@ -122,7 +122,7 @@ public class Compiler extends OpMap
    *                     may be null, but which, if not null, must be valid over 
    *                     the long haul, in other words, it will not be cloned.
    * @param funcTable    The FunctionTable object where the xpath build-in 
-   *                     functions are stored.
+   *                     functions are stored.                 
    */
   public Compiler(ErrorListener errorHandler, SourceLocator locator, FunctionTable funcTable)
   {
@@ -291,11 +291,11 @@ public class Compiler extends OpMap
     case OpCodes.OP_ARRAY_COMPARISON :
       expr = xpathExpressionArrayComparison(opPos); break;  
     case OpCodes.OP_QUO:
-      error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ "quo" });
+      error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });
       break;
     default :
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE,
-            new Object[]{ Integer.toString(getOp(opPos)) });
+            new Object[]{ m_currentPattern, Integer.toString(getOp(opPos)) });
     }
     
     return expr;

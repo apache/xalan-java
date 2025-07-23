@@ -61,6 +61,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -490,9 +491,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	}
 
             	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));            	
+            	normalizeXmlDocumentText(xmlInpDoc1);
+            	
             	String xmlHtmlStr1 = serializeXmlDomElementNode(xmlInpDoc1);
 
             	Document xmlInpDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));
+            	normalizeXmlDocumentText(xmlInpDoc2);
+            	
             	String xmlHtmlStr2 = serializeXmlDomElementNode(xmlInpDoc2);
 
             	if (isTwoXmlHtmlStrEqual(xmlHtmlStr1, xmlHtmlStr2)) {            		
@@ -1096,6 +1101,41 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 			Element resultOutElem = testResultDoc.createElement("outResult");
 			resultOutElem.setTextContent(resultStrWriter.toString());
 			elemTestResult.appendChild(resultOutElem);
+		}
+	}
+	
+	/**
+     * Method definition, to normalize an XML document content
+     * if an XML document's top most element only contains text 
+     * node children.
+     * 
+     * @param document					 The supplied XML document
+     */
+	private void normalizeXmlDocumentText(Document document) {
+		Element docElem = document.getDocumentElement();
+		StringBuffer strBuff = new StringBuffer();
+		NodeList nodeList = docElem.getChildNodes();
+		boolean isAllTextNode = true;
+		for (int i = 0; i < nodeList.getLength(); i++) {
+		    Node node = nodeList.item(i);
+		    if (node.getNodeType() == Node.TEXT_NODE) {
+		    	strBuff.append(node.getTextContent());
+		    }
+		    else {
+		    	isAllTextNode = false;
+		    	break;
+		    }
+		}
+		
+		if (isAllTextNode) {
+		    String normalizedTextNodeValue = (strBuff.toString()).trim();
+		    for (int i = 0; i < nodeList.getLength(); i++) {
+		    	Node node = nodeList.item(i);
+		    	docElem.removeChild(node);            	    	
+		    }
+		    
+		    Text textNode = document.createTextNode(normalizedTextNodeValue);
+		    docElem.appendChild(textNode);
 		}
 	}
 	

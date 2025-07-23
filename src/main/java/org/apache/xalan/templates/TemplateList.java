@@ -437,7 +437,7 @@ public class TemplateList implements java.io.Serializable
   /**
    * Add a template to the template list.
    * 
-   * This method definition supports XSLT 3 xsl:template pattern strings 
+   * This method definition supports XSLT 3.0 xsl:template pattern strings 
    * like ".", and .[...] (this is XPath pattern '.' followed by predicate 
    * that imposes a boolean filter condition on context value '.'. Only 
    * one predicate is supported here).
