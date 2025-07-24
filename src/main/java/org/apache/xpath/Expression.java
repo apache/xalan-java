@@ -32,10 +32,17 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Equals;
+import org.apache.xpath.operations.Lt;
+import org.apache.xpath.operations.NotEquals;
+import org.apache.xpath.operations.VcGt;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.xml.sax.ContentHandler;
 
@@ -639,8 +646,8 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    * @return								Result of function call evaluation
    * @throws TransformerException
    */
-  protected XObject evaluateXPathSuffixDfc(XPathContext xctxt, XPathDynamicFunctionCall dfc, XMLNodeCursorImpl xdmNodeObj)
-		  																												throws TransformerException {
+  protected XObject evaluateXPathSuffixDfc(XPathContext xctxt, XPathDynamicFunctionCall dfc, 
+		                                                                 XMLNodeCursorImpl xdmNodeObj) throws TransformerException {
 	  XObject evalResult = null;
 
 	  xctxt.setXPath3ContextItem(xdmNodeObj);
@@ -654,6 +661,94 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
 	  evalResult = dfc.execute(xctxt);
 
 	  return evalResult;
+  }
+  
+  /**
+   * Method definition, to compare two XPath sequences for a particular
+   * XPath general comparison operator (i.e, =, !=, <, <=, >, >=).
+   * 
+   * @param resultSeqLhs						The supplied LHS sequence
+   * @param resultSeqRhs                        The supplied RHS sequence
+   * @param cmpOpCode                           Xalan-J's XPath general comparison 
+   *                                            operator's op code.
+   * @return                                    Result of evaluation
+   * @throws TransformerException
+   */
+  protected XObject compareSequence(ResultSequence resultSeqLhs, ResultSequence resultSeqRhs, 
+		                                                                  int cmpOpCode) throws TransformerException {
+	  
+	  XObject result = null;
+
+	  if (cmpOpCode == OpCodes.OP_EQUALS) {
+		  Equals equals = new Equals();            
+		  result = equals.operate(resultSeqLhs, resultSeqRhs);
+	  }        
+	  else if (cmpOpCode == OpCodes.OP_NOTEQUALS) {
+		  NotEquals notEquals = new NotEquals();                                    
+		  result = notEquals.operate(resultSeqLhs, resultSeqRhs);
+	  }
+	  else if (cmpOpCode == OpCodes.OP_LT) {
+		  Lt lessThan = new Lt();                                    
+		  result = lessThan.operate(resultSeqLhs, resultSeqRhs);
+	  }
+	  else if (cmpOpCode == OpCodes.OP_LTE) {
+		  Lt lessThan = new Lt();
+		  Equals equals = new Equals();
+		  XObject result1 = lessThan.operate(resultSeqLhs, resultSeqRhs);
+		  XObject result2 = result = equals.operate(resultSeqLhs, resultSeqRhs);
+		  boolean boolResult = (result1.bool() || result2.bool());
+		  result = (boolResult ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+	  }
+	  else if (cmpOpCode == OpCodes.OP_GTE) {
+		  VcGt vcGt = new VcGt();
+		  Equals equals = new Equals();
+
+		  boolean isGt = false;
+		  for (int i = 0; i < resultSeqLhs.size(); i++) {
+			  XObject xObj1 = resultSeqLhs.item(i); 
+			  for (int j = 0; j < resultSeqRhs.size(); j++) {
+				  XObject xObj2 = resultSeqRhs.item(j);
+				  XObject xObj1Bool = vcGt.operate(xObj1, xObj2);
+				  if (xObj1Bool.bool()) {
+					  isGt = true;
+					  break;
+				  }
+			  }
+
+			  if (isGt) {
+				  break; 
+			  }
+		  }
+
+		  XObject eqResult = equals.operate(resultSeqLhs, resultSeqRhs);
+		  boolean boolResult = (isGt || eqResult.bool());
+
+		  result = (boolResult ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+	  }
+	  else if (cmpOpCode == OpCodes.OP_GT) {
+		  VcGt vcGt = new VcGt();
+
+		  boolean isGt = false;
+		  for (int i = 0; i < resultSeqLhs.size(); i++) {
+			  XObject xObj1 = resultSeqLhs.item(i); 
+			  for (int j = 0; j < resultSeqRhs.size(); j++) {
+				  XObject xObj2 = resultSeqRhs.item(j);
+				  XObject xObj1Bool = vcGt.operate(xObj1, xObj2);
+				  if (xObj1Bool.bool()) {
+					  isGt = true;
+					  break;
+				  }
+			  }
+
+			  if (isGt) {
+				  break; 
+			  }
+		  }
+
+		  result = (isGt ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+	  }
+
+	  return result;
   }
 
 }

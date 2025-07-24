@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-23T11:35:03Z" fail="12" name="character-map" pass="15" skipped="1" statusUnknown="1" totalRun="28">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-24T11:41:15Z" fail="12" name="character-map" pass="15" skipped="1" statusUnknown="1" totalRun="28">
    <testResult status="pass" testName="character-map-001"/>
    <testResult status="pass" testName="character-map-002"/>
    <testResult status="pass" testName="character-map-003"/>

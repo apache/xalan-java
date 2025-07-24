@@ -36,22 +36,24 @@ import org.apache.xpath.objects.XObject;
 
 /**
  * This class definition, provides implementation of XPath general 
- * comparison operators (i.e, =, !=, <, <=, >, >=) for XPath array 
- * as LHS operand and another appropriate XPath operand as RHS.
+ * comparison operators (i.e, =, !=, <, <=, >, >=) for XPath ExprSingle 
+ * expression (one of the XPath expressions 'for', 'let', 'some', 
+ * 'every', 'if') as LHS operand and another appropriate XPath operand 
+ * as RHS.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPathArrayComparison extends Expression {
+public class XPath3ExprSingleComparison extends Expression {
 
-	private static final long serialVersionUID = -5811334732284992044L;
-
+	private static final long serialVersionUID = 5684685034365152001L;
+	
 	/**
-	 * An XPath expression list for general comparison operator's 
+	 * An XPath expression string for general comparison operator's 
 	 * LHS operand.
 	 */
-	private List<String> m_arrayConstructorXPathLhs = new ArrayList<String>();
+    private String m_xpathExprLhs = null;
 	
 	/**
 	 * An XPath expression list for general comparison operator's 
@@ -74,8 +76,8 @@ public class XPathArrayComparison extends Expression {
 	 * This class field is used during, XPath.fixupVariables(..) action 
 	 * as performed within object of this class.  
 	 */
-	private int m_globals_size;
-
+	private int m_globals_size;	
+	
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
         
@@ -91,36 +93,38 @@ public class XPathArrayComparison extends Expression {
             prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
         }
         
-        ResultSequence resultSeqLhs = new ResultSequence(); 
-        for (int idx = 0; idx < m_arrayConstructorXPathLhs.size(); idx++) {
-        	String xpathExprStr = m_arrayConstructorXPathLhs.get(idx);        	
-        	if (prefixTable != null) {
-        	   xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
-    		}
-        	
-        	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-			if (m_vars != null) {
-			   xpathObj.fixupVariables(m_vars, m_globals_size);
-			}
-			
-			XObject xObj = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-			resultSeqLhs.add(xObj);
+        if (prefixTable != null) {
+        	m_xpathExprLhs = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpathExprLhs, prefixTable);
+        }
+
+        XPath xpathObj = new XPath(m_xpathExprLhs, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        if (m_vars != null) {
+        	xpathObj.fixupVariables(m_vars, m_globals_size);
+        }
+
+        XObject xObjLhs = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+        ResultSequence resultSeqLhs = new ResultSequence();
+        if (xObjLhs instanceof ResultSequence) {
+           resultSeqLhs = (ResultSequence)xObjLhs;
+        }
+        else {
+           resultSeqLhs.add(xObjLhs);
         }
         
         ResultSequence resultSeqRhs = new ResultSequence();
         for (int idx = 0; idx < m_seqArrConstructorXPathRhs.size(); idx++) {
         	String xpathExprStr = m_seqArrConstructorXPathRhs.get(idx);        	
         	if (prefixTable != null) {
-        	   xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
-    		}
-        	
-        	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-			if (m_vars != null) {
-			   xpathObj.fixupVariables(m_vars, m_globals_size);
-			}
-			
-			XObject xObj = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-			resultSeqRhs.add(xObj);
+        		xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+        	}
+
+        	XPath xpathObj2 = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	if (m_vars != null) {
+        		xpathObj2.fixupVariables(m_vars, m_globals_size);
+        	}
+
+        	XObject xObj = xpathObj2.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+        	resultSeqRhs.add(xObj);
         }
         
         result = compareSequence(resultSeqLhs, resultSeqRhs, m_comparisonOpCode);
@@ -144,20 +148,12 @@ public class XPathArrayComparison extends Expression {
         return false;
     }
 
-	public List<String> getArrayConstructorXPathLhs() {
-		return m_arrayConstructorXPathLhs;
+	public String getXPathExprLhs() {
+		return m_xpathExprLhs;
 	}
 
-	public void setArrayConstructorXPathLhs(List<String> arrayConstructorXPathLhs) {
-		this.m_arrayConstructorXPathLhs = arrayConstructorXPathLhs;
-	}
-
-	public List<String> getSeqArrConstructorXPathRhs() {
-		return m_seqArrConstructorXPathRhs;
-	}
-
-	public void setSeqArrConstructorXPathRhs(List<String> seqArrConstructorXPathRhs) {
-		this.m_seqArrConstructorXPathRhs = seqArrConstructorXPathRhs;
+	public void setXPathExprLhs(String xpathExprLhs) {
+		this.m_xpathExprLhs = xpathExprLhs;
 	}
 
 	public int getComparisonOpCode() {
@@ -166,6 +162,14 @@ public class XPathArrayComparison extends Expression {
 
 	public void setComparisonOpCode(int comparisonOpCode) {
 		this.m_comparisonOpCode = comparisonOpCode;
+	}
+
+	public List<String> getSeqArrConstructorXPathRhs() {
+		return m_seqArrConstructorXPathRhs;
+	}
+
+	public void setSeqArrConstructorXPathRhs(List<String> seqArrConstructorXPathRhs) {
+		this.m_seqArrConstructorXPathRhs = seqArrConstructorXPathRhs;
 	}
 
 }

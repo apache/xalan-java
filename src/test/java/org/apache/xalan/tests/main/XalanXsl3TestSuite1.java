@@ -44,6 +44,7 @@ import org.apache.xalan.tests.xpath3.XPathArrayTests;
 import org.apache.xalan.tests.xpath3.XPathArrowOpTests;
 import org.apache.xalan.tests.xpath3.XPathCastTests;
 import org.apache.xalan.tests.xpath3.XPathExprFunctionCallSuffixTests;
+import org.apache.xalan.tests.xpath3.XPathGeneralComparisonOpMiscTests;
 import org.apache.xalan.tests.xpath3.XPathGeneralComparisonOpTests;
 import org.apache.xalan.tests.xpath3.XPathInlineFunctionExprTests;
 import org.apache.xalan.tests.xpath3.XPathMapOtherTests;
@@ -107,7 +108,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathExprFunctionCallSuffixTests.class, XslEvaluateTests.class, XslValueofTests.class,
                 XslCopyofValidationTests.class, XslCopyValidationTests.class, FnPositionTests.class,
                 XslForEachGroupWithCollationTests.class, XslMiscTests.class, FnSortMiscTests.class,
-                XslTemplateMiscTests.class })
+                XslTemplateMiscTests.class, XPathGeneralComparisonOpMiscTests.class })
 public class XalanXsl3TestSuite1 {
 
 }

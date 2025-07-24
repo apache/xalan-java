@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 test cases to test general comparison 
+ * XPath 3.1 test cases, to test XPath general comparison 
  * operators =, !=, <, <=, >, >=.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>

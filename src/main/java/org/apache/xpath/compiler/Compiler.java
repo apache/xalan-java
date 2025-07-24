@@ -289,7 +289,9 @@ public class Compiler extends OpMap
     case OpCodes.OP_XPATH_FUNC_CALL_EXTENDED_ARG :
       expr = xpathExpressionFuncCallExtendedArg(opPos); break;
     case OpCodes.OP_ARRAY_COMPARISON :
-      expr = xpathExpressionArrayComparison(opPos); break;  
+      expr = xpathExpressionArrayComparison(opPos); break;
+    case OpCodes.OP_EXPR_SINGLE_COMPARISON_XPATH3 :
+      expr = xpath3ExpressionSingleComparison(opPos); break;  
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });
       break;
@@ -1673,12 +1675,22 @@ private static final boolean DEBUG = false;
   }
   
   /**
-   * Compile an XPath expression, representing a general comparison between 
-   * an XPath array and another operand.
+   * Compile an XPath expression, representing an XPath general comparison 
+   * between an XPath literal array and another xdm operand.
    */
   Expression xpathExpressionArrayComparison(int opPos) throws TransformerException
   {
 	  return XPathParser.m_xpathArrayComparison;
+  }
+  
+  /**
+   * Compile an XPath expression, representing an XPath general comparison 
+   * between parenthesized ExprSingle expression of types 'for', 'let', 
+   * 'some', 'every', 'if' and another xdm operand.
+   */
+  Expression xpath3ExpressionSingleComparison(int opPos) throws TransformerException
+  {
+	  return XPathParser.m_xpath3ExprSingleComparison;
   }
   
   /**
