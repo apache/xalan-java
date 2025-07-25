@@ -271,7 +271,7 @@ public class Variable extends Expression implements PathComponent
         }
         catch (javax.xml.transform.TransformerException ex) {
            java.lang.String exceptionMesg = ex.getMessage();
-           if ((m_qname == null) || ((exceptionMesg != null) && exceptionMesg.startsWith("XTDE0050 : No value supplied"))) {
+           if ((m_qname == null) || ((exceptionMesg != null) && (exceptionMesg.startsWith("XTDE0050") || exceptionMesg.startsWith("XPTY")))) {
               throw ex;   
            }
            else if (XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff != null) {

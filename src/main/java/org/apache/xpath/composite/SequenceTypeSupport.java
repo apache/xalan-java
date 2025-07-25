@@ -369,7 +369,7 @@ public class SequenceTypeSupport {
      * 
      * @throws TransformerException
      */
-    public static XObject castXDMValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
+    public static XObject castXdmValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
                                                     SequenceTypeData seqExpectedTypeDataInp,  
                                                     XPathContext xctxt, List prefixTable) throws TransformerException {
     	XObject result = null;
@@ -1240,13 +1240,11 @@ public class SequenceTypeSupport {
              			 XObject mapKeyValTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(mapKey, null, keySeqTypeData, xctxt);
              			 String mapSequenceTypeStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : "";
              			 if (mapKeyValTypeCheckResult == null) {             				
-             				throw new TransformerException("XPTY0004 : XPath map entry key's [entry's key name: '" + keyStrVal + "'] value doesn't conform to the key's expected "
-             						                                            + "type [map's sequenceType is '" + mapSequenceTypeStr + "']."); 
+             				throw new TransformerException("XPTY0004 : An XPath map entry with key '" + keyStrVal + "', doesn't have a value of specified XPath sequence type."); 
              			 }
              			 XObject mapEntryValTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(mapEntry, null, valueSeqTypeData, xctxt);
              			 if (mapEntryValTypeCheckResult == null) {
-             				throw new TransformerException("XPTY0004 : XPath map entry's [entry's key name: '" + keyStrVal + "'] value doesn't conform to the map entry value's expected "
-             						                                            + "type [map's sequenceType is '" + mapSequenceTypeStr + "'].");  
+             				throw new TransformerException("XPTY0004 : An XPath map entry with key '" + keyStrVal + "', doesn't have a value of specified XPath sequence type.");  
              			 }           			 
              		  }
              		  
@@ -1275,7 +1273,7 @@ public class SequenceTypeSupport {
              			 String arrayItemSequenceTypeStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : "";
              			 if (arrayItemTypeCheckResult == null) {             				
              				throw new TransformerException("XPTY0004 : One or more, of XPath array's item doesn't conform to array item's expected "
-             						                                                             + "type '" + arrayItemSequenceTypeStr + "'."); 
+             						                                                                                       + "type '" + arrayItemSequenceTypeStr + "'."); 
              			 }           			 
              		  }
              		  

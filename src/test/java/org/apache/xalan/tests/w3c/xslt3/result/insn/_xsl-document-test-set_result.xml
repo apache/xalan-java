@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-24T11:43:13Z" fail="13" name="xsl-document" pass="12" skipped="0" statusUnknown="0" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-25T11:33:25Z" fail="13" name="xsl-document" pass="12" skipped="0" statusUnknown="0" totalRun="25">
    <testResult status="pass" testName="xsl-document-0101"/>
    <testResult status="fail" testName="xsl-document-0102">
       <outResult>
@@ -26,7 +26,7 @@
    <testResult status="pass" testName="xsl-document-0403"/>
    <testResult status="fail" testName="xsl-document-0404">
       <outResult>
-         <errTrace>XTTE0570 : The supplied XDM item doesn't match an XPath sequence type node().</errTrace>
+         <errTrace>XTTE0570 : The supplied xdm item doesn't match an XPath sequence type node().</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="xsl-document-0501">

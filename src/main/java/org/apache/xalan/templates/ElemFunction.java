@@ -41,6 +41,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeKindTest;
@@ -431,9 +432,11 @@ public class ElemFunction extends ElemTemplate
       
       if (funcAsAttrStrVal != null) {
     	 // Process xsl:function's evaluation result with "as" attribute
-         try {        	 
+    	  
+         try {
+        	 SequenceTypeData seqExpectedTypeData = getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
+        	 
              if (funcResultConvertedVal instanceof XPathInlineFunction) {            	
-            	SequenceTypeData seqExpectedTypeData = getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
             	if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {
             	   return funcResultConvertedVal;
             	}
@@ -444,7 +447,6 @@ public class ElemFunction extends ElemTemplate
             	}
              }
              else if (funcResultConvertedVal instanceof XPathMap) {            	
-             	SequenceTypeData seqExpectedTypeData = getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
              	if (seqExpectedTypeData.getSequenceTypeMapTest() != null) {
              	   return funcResultConvertedVal;
              	}
@@ -454,10 +456,40 @@ public class ElemFunction extends ElemTemplate
 										                                                                         funcAsAttrStrVal + ".", srcLocator); 
              	}
              }
-             else if (funcResultConvertedVal instanceof XPathArray) {            	
-              	SequenceTypeData seqExpectedTypeData = getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
-              	if (seqExpectedTypeData.getSequenceTypeArrayTest() != null) {
-              	   return funcResultConvertedVal;
+             else if (funcResultConvertedVal instanceof XPathArray) {
+            	SequenceTypeArrayTest seqTypeArrayTest = seqExpectedTypeData.getSequenceTypeArrayTest(); 
+              	if (seqTypeArrayTest != null) {
+              	   if (seqTypeArrayTest.isAnyArrayTest()) {
+              		  // XPath sequence type is array(*), that matches any xdm array
+              		  return funcResultConvertedVal; 
+              	   }
+              	   else {
+              		  /**
+              		   * Verify that, all the xdm array items match array test's item type.
+              		   * For e.g, for XPath sequence type array(xs:integer), all xdm array 
+              		   * items should conform to schema type xs:integer.
+              		   */
+              		  SequenceTypeData arrItemType = seqTypeArrayTest.getArrayItemTypeInfo();              		  
+              		  XPathArray xpathArr = (XPathArray)funcResultConvertedVal;
+              		  for (int i = 0; i < xpathArr.size(); i++) {
+              			 XObject xObj = xpathArr.get(i);
+              			 try {
+              				 XObject xObjResult = SequenceTypeSupport.castXdmValueToAnotherType(xObj, null, arrItemType, xctxt);
+              				 if (xObjResult == null) {
+              					 throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                                                             ", doesn't match the declared function result type " + 
+                                                                                                             funcAsAttrStrVal + ".", srcLocator);
+              				 }
+              			 }
+              			 catch (TransformerException ex) {
+              				 throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                                                             ", doesn't match the declared function result type " + 
+                                                                                                             funcAsAttrStrVal + ".", srcLocator);
+              			 }
+              		  }
+              		  
+              		  return funcResultConvertedVal;
+              	   }
               	}
               	else {
               	   throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
@@ -465,9 +497,8 @@ public class ElemFunction extends ElemTemplate
 									                                                                            funcAsAttrStrVal + ".", srcLocator); 
               	}
              }
-             else if (((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() > 0) && !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {
-            	SequenceTypeData seqExpectedTypeData = getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
-            	
+             else if (((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() > 0) && 
+            		                                                                      !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {            	
             	int funcItemSeqSize = (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size();
         		
         		SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
@@ -1095,7 +1126,7 @@ public class ElemFunction extends ElemTemplate
 		  }
 
 		  if (argConvertedVal == null) {
-			  argConvertedVal = SequenceTypeSupport.castXDMValueToAnotherType(srcValue, paramAsAttrStrVal, null, xctxt, prefixTable);
+			  argConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(srcValue, paramAsAttrStrVal, null, xctxt, prefixTable);
 		  }
 
 		  if (argConvertedVal == null) {

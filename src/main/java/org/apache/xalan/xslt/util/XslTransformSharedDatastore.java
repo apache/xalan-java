@@ -41,20 +41,19 @@ public class XslTransformSharedDatastore {
     public static String m_xslSystemId;
     
     /**
-     * This class field represents, XDM function items that 
+     * This class field represents, xdm function items that 
      * are returned from XSL stylesheet xsl:function calls.
      */
     public static XPathInlineFunction m_xpathInlineFunction;
     
     /**
-     * This class field represents, XDM array values
-     * returned from evaluation of xsl:evaluate 
-     * instruction.
+     * This class field represents, xdm array values returned from 
+     * evaluation of xsl:sequence & xsl:evaluate instruction.
      */
     public static XPathArray m_xpathArray;
     
     /**
-     * This class field represents, XDM map values
+     * This class field represents, xdm map values
      * returned from evaluation of xsl:evaluate 
      * instruction.
      */

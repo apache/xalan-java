@@ -214,20 +214,23 @@ public class XSL3FunctionService {
     				List<String> funcExtArgStrList = null;
     				for (int idx = 0; idx < argVector.size(); idx++) {
     					Expression argExpr = (Expression)(argVector.elementAt(idx));
-    					if (!(argExpr instanceof XPathExprFuncCallExtendedArg)) {
-    						XObject xslFuncArgVal = null;
-    						if (!(argExpr instanceof XPathNamedFunctionReference)) { 
-    							xslFuncArgVal = argExpr.execute(xctxt);
-    						}
-    						else {
-    							xslFuncArgVal = (XPathNamedFunctionReference)argExpr; 	
-    						}
-    						xslFuncArgSequence.add(xslFuncArgVal);
-    						xslFuncArgCount++;	
-    					}
-    					else {    						    						
+    					if (argExpr instanceof XPathExprFuncCallExtendedArg) {    						    						
     						XPathExprFuncCallExtendedArg xpathExprFuncCallExtendedArg = (XPathExprFuncCallExtendedArg)argExpr;
     						funcExtArgStrList = xpathExprFuncCallExtendedArg.getFunctionArgXPathExprStrList();
+    					}
+    					else {    						    						
+    						XObject xslFuncArgVal = null;
+    						if (argExpr instanceof XPathNamedFunctionReference) {     							
+    							xslFuncArgVal = (XPathNamedFunctionReference)argExpr;
+    						}
+    						else if ((argExpr instanceof SelfIteratorNoPredicate) && (xctxt.getXPath3ContextItem() != null)) {
+    							xslFuncArgVal = xctxt.getXPath3ContextItem(); 
+    						}
+    						else {
+    							xslFuncArgVal = argExpr.execute(xctxt); 	
+    						}
+    						xslFuncArgSequence.add(xslFuncArgVal);
+    						xslFuncArgCount++;
     					}
     				}
 
@@ -318,8 +321,8 @@ public class XSL3FunctionService {
     						}
 
     						evalResult = evaluateXPathInlineFunction(xpathInlineFunction, xpathInlineFuncArgList, 
-    								xctxt, prefixTable, null, 0, 
-    								((Expression)xpathExpr).getXPathVarList(), null);    						
+    								                                                      xctxt, prefixTable, null, 0, 
+    								                                                      ((Expression)xpathExpr).getXPathVarList(), null);    						
     					}
 
     					return evalResult;

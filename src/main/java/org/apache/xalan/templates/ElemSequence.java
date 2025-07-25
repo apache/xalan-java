@@ -38,9 +38,11 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
@@ -49,6 +51,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
@@ -290,7 +293,7 @@ public class ElemSequence extends ElemTemplateElement
 						  Expression xpathExpr = xpathObj.getExpression();
 						  if (xpathExpr instanceof NodeTest) {
 							  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-									  (NodeTest)xpathExpr, transformer, srcLocator);
+									                                                                                    (NodeTest)xpathExpr, transformer, srcLocator);
 							  if (elemFunction != null) {
 								  XPathNamedFunctionReference xpathNamedFunctionReference = new XPathNamedFunctionReference();
 								  xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, getStylesheetRoot());
@@ -309,6 +312,12 @@ public class ElemSequence extends ElemTemplateElement
 					  }
 			      }
 			  }
+			  else if (selectExpression instanceof XPathArrayConstructor) {
+				  XPathArrayConstructor xpathArrayCons = (XPathArrayConstructor)selectExpression;
+				  XslTransformSharedDatastore.m_xpathArray = (XPathArray)(xpathArrayCons.execute(xctxt));
+				  
+				  return;
+			  }
 
 			  if (selectExpression instanceof XSL3ConstructorOrExtensionFunction) {
 				  XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)selectExpression;
@@ -322,9 +331,15 @@ public class ElemSequence extends ElemTemplateElement
 				  }            
 			  }
 			  else if ((selectExpression instanceof Function) || (selectExpression instanceof SimpleMapOperator) || 
-					                                              (selectExpression instanceof Range)) {
-				  xslSequenceVal = selectExpression.execute(xctxt);
-			  }
+					                                             (selectExpression instanceof Range) ||
+					                                             (selectExpression instanceof XPathDynamicFunctionCall)) {
+				  xslSequenceVal = m_selectPattern.execute(xctxt, sourceNode, this);
+				  if (xslSequenceVal instanceof XPathArray) {
+					 XslTransformSharedDatastore.m_xpathArray = (XPathArray)xslSequenceVal;
+					 
+					 return;
+				  }
+			  }			  
 			  else if (selectExpression instanceof Operation) {
 				  Operation xpathOperation = (Operation)selectExpression;            
 				  XObject leftOperand = (xpathOperation.getLeftOperand()).execute(xctxt);
@@ -383,8 +398,7 @@ public class ElemSequence extends ElemTemplateElement
 							  xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathIndexExprStr, prefixTable);
 						  }
 
-						  XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), 
-								  XPath.SELECT, null);
+						  XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
 						  if (m_vars != null) {
 							  xpathIndexObj.fixupVariables(m_vars, m_globals_size);  
@@ -545,7 +559,7 @@ public class ElemSequence extends ElemTemplateElement
    * values that may be based on some other property that
    * depends on recomposition.
    */
-  public void compose(StylesheetRoot sroot) throws TransformerException {    
+  public void compose(StylesheetRoot sroot) throws TransformerException {	  
      StylesheetRoot.ComposeState cstate = sroot.getComposeState();
     
      java.util.Vector vnames = cstate.getVariableNames();

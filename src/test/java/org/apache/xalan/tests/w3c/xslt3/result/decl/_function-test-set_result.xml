@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-24T11:41:13Z" fail="27" name="function" pass="38" skipped="4" statusUnknown="1" totalRun="66">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-25T11:31:41Z" fail="25" name="function" pass="40" skipped="4" statusUnknown="1" totalRun="66">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -105,26 +105,14 @@
    <testResult status="fail" testName="function-1025">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="function-1026">
-      <outResult>
-         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://xxx.com/}test, doesn't match the declared parameter type xs:integer.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="function-1026"/>
    <testResult status="fail" testName="function-1027">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="function-1028">
-      <outResult>
-         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://xxx.com/}test, doesn't match the declared parameter type xs:integer.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-1028"/>
    <testResult status="fail" testName="function-1029">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="function-1030">
-      <outResult>
-         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://xxx.com/}test, doesn't match the declared parameter type xs:integer.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-1030"/>
    <testResult testName="function-1031"/>
 </testrun>

@@ -6238,8 +6238,9 @@ public class XPathParser
     * XPath parse of sequence type expressions.
     */
    private XPathSequenceTypeExpr SequenceTypeExpr(boolean isXPathInlineFunctionParse) 
- 		                                                                 throws javax.xml.transform.TransformerException {
-       int opPos = 0;
+		                                                                         throws javax.xml.transform.TransformerException {
+       
+	   int opPos = 0;
        
        if (!isXPathInlineFunctionParse) {
           opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);                  
@@ -6317,10 +6318,10 @@ public class XPathParser
            }
        }
        else if (tokenIs("map")) {
-     	   parseXdmMapSequenceType(xpathSequenceTypeExpr);    	  
+     	   parseXdmMapSequenceType(xpathSequenceTypeExpr, false);
        }
        else if (tokenIs("array")) {
-           parseXdmArraySequenceType(xpathSequenceTypeExpr);
+           parseXdmArraySequenceType(xpathSequenceTypeExpr, false);
        }
        else if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
            parseXdmBuiltInXmlSchemaSequenceType(xpathSequenceTypeExpr, isXPathInlineFunctionParse);         
@@ -6830,7 +6831,7 @@ public class XPathParser
    /**
     * XPath parse of map sequence type expressions.
     */
-   private void parseXdmMapSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
+   private void parseXdmMapSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr, boolean isNested) throws TransformerException {
  	  
  	  SequenceTypeMapTest sequenceTypeMapTest = null;
  	  
@@ -6856,10 +6857,8 @@ public class XPathParser
  		  while ((m_token != null) && !tokenIs(',')) {
  			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
  			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
- 			    consumeExpected(':');
- 			    
- 			    populateSequenceTypeData(keySequenceTypeData);
- 			 
+ 			    consumeExpected(':'); 			    
+ 			    populateSequenceTypeData(keySequenceTypeData); 			 
  			    nextToken();
  		     }
  		  }
@@ -6870,13 +6869,27 @@ public class XPathParser
  			  if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
  				  consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
  				  consumeExpected(':');
-
  				  populateSequenceTypeData(valueSequenceTypeData);    	             	         
-
  				  nextToken();     	         
  				  consumeExpected(')');
- 			  }     			      		   
+ 			  }
+ 			  else if (tokenIs("map")) {
+ 				  XPathSequenceTypeExpr xpathSequenceTypeExpr2 = new XPathSequenceTypeExpr();  
+ 				  parseXdmMapSequenceType(xpathSequenceTypeExpr2, true);
+ 				  SequenceTypeMapTest seqTypeMapTest2 = xpathSequenceTypeExpr2.getSequenceTypeMapTest();
+ 				  valueSequenceTypeData.setSequenceTypeMapTest(seqTypeMapTest2);
+ 			  }
+ 			  else if (tokenIs("array")) {
+ 				  XPathSequenceTypeExpr xpathSequenceTypeExpr2 = new XPathSequenceTypeExpr();  
+ 				  parseXdmArraySequenceType(xpathSequenceTypeExpr2, true);
+ 				  SequenceTypeArrayTest seqTypeArrayTest2 = xpathSequenceTypeExpr2.getSequenceTypeArrayTest();
+ 				  valueSequenceTypeData.setSequenceTypeArrayTest(seqTypeArrayTest2);
+ 			  }
  		  }
+ 		  
+ 		  if (isNested) {
+ 		      consumeExpected(')');  
+ 	      } 		  		  
  		
  		  sequenceTypeMapTest.setKeySequenceTypeData(keySequenceTypeData);
  		  sequenceTypeMapTest.setValueSequenceTypeData(valueSequenceTypeData);
@@ -6888,7 +6901,7 @@ public class XPathParser
    /**
     * XPath parse of array sequence type expressions.
     */
-   private void parseXdmArraySequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
+   private void parseXdmArraySequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr, boolean isNested) throws TransformerException {
  	  
  	  SequenceTypeArrayTest sequenceTypeArrayTest = null;
  	  
@@ -6920,7 +6933,10 @@ public class XPathParser
  		     }
  		  }
  		  
- 		  consumeExpected(')');
+ 		  consumeExpected(')'); 		  
+ 		  if (isNested) {
+ 			 consumeExpected(')');  
+ 		  }
  		  
  		  sequenceTypeArrayTest.setArrayItemTypeInfo(arrayItemSequenceType);  	    	  
  		  xpathSequenceTypeExpr.setSequenceTypeArrayTest(sequenceTypeArrayTest); 

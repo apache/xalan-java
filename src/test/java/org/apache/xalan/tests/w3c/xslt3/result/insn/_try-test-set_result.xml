@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-24T11:41:01Z" fail="26" name="try" pass="11" skipped="5" statusUnknown="0" totalRun="37">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-25T11:31:35Z" fail="26" name="try" pass="11" skipped="5" statusUnknown="0" totalRun="37">
    <testResult status="pass" testName="try-001"/>
    <testResult status="fail" testName="try-002">
       <outResult/>
@@ -39,8 +39,8 @@
    </testResult>
    <testResult status="fail" testName="try-019">
       <outResult>
-         <errTrace>XPST0008 : Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}value</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>FODC0002 : The data from uri 'rubbish.xml' cannot be retrieved.</errTrace>
+         <errTrace>FODC0002 : The data from uri 'rubbish.xml' cannot be retrieved.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="try-020"/>
