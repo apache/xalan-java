@@ -26,6 +26,7 @@ import org.apache.xpath.objects.XPathMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONParserConfiguration;
 
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDecimal;
@@ -33,9 +34,8 @@ import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * A class providing common methods and code, that are used
- * by Xalan-J's implementation of XPath 3.1 functions fn:parse-json 
- * and fn:json-doc.
+ * A class providing common implementation code, that is used by Xalan-J's
+ * implementation of XPath 3.1 functions fn:parse-json & fn:json-doc.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -46,30 +46,36 @@ public class JsonFunction extends FunctionMultiArgs {
 	private static final long serialVersionUID = 1094611901554413886L;
 	
 	/**
-	 * Given an input string as argument to this function, the function does 
-	 * JSON parse of the string, and returns an XDM map or array object instance 
-	 * corresponding to the input JSON string.
+	 * Given a supplied string value as an argument to this function, the function 
+	 * does JSON parse of the string, and returns an equivalent xdm value.
 	 * 
-	 * @param strValue            an input string value
-	 * @return                    an XDM object instance of one of following types : XPathMap, 
-	 *                            XPathArray, XSDouble, XSBoolean, ResultSequence, XSString.  
+	 * @param jsonStrVal                       Supplied JSON document string value
+	 * @param optionIsLiberal                  Function call JSON option liberal's value
+	 * @param optionDuplicatesValStr           Function call JSON option duplicates's value
+	 *  
+	 * @return                                 An xdm value of type XPathMap, XPathArray, XSDouble, XSBoolean, 
+     *                                         ResultSequence (representing json null values), XSString. These 
+     *                                         are the possible xdm values to which a JSON value can translate 
+     *                                         to. 
 	 * @throws JSONException
 	 */
-	protected XObject getJsonXdmValueFromStr(String strValue) throws JSONException {
-		
+	protected XObject getJsonXdmValueFromStr(String jsonStrVal, boolean optionIsLiberal, String optionDuplicatesValStr) throws JSONException {
+				
 		XObject result = null;
 		
-		if ((strValue.trim()).charAt(0) == '{') {
-			JSONObject jsonObj = new JSONObject(strValue);
+		JSONParserConfiguration jsonParserConf = getJsonParserConfiguration(optionIsLiberal, optionDuplicatesValStr);
+		
+		if ((jsonStrVal.trim()).charAt(0) == '{') {
+			JSONObject jsonObj = new JSONObject(jsonStrVal, jsonParserConf);
 			result = getXdmMapFromJSONObject(jsonObj);
 		}
-		else if ((strValue.trim()).charAt(0) == '[') {
-			JSONArray jsonArr = new JSONArray(strValue);
+		else if ((jsonStrVal.trim()).charAt(0) == '[') {
+			JSONArray jsonArr = new JSONArray(jsonStrVal, jsonParserConf);
 			result = getXdmArrayFromJSONArray(jsonArr);
 		}
 		else {
 			try {
-				Double dbl = Double.valueOf(strValue);
+				Double dbl = Double.valueOf(jsonStrVal);
 				result = new XSDouble(dbl);
 			}
 			catch (NumberFormatException ex) {
@@ -77,39 +83,40 @@ public class JsonFunction extends FunctionMultiArgs {
 			}
 
 			if (result == null) {
-				if ("false".equals(strValue) || "0".equals(strValue) 
-						                 || "true".equals(strValue) || "1".equals(strValue)) {
-					result = new XSBoolean(Boolean.valueOf(strValue));
+				if ("false".equals(jsonStrVal) || "0".equals(jsonStrVal) 
+						                                         || "true".equals(jsonStrVal) 
+						                                         || "1".equals(jsonStrVal)) {
+					result = new XSBoolean(Boolean.valueOf(jsonStrVal));
 				}
 			}
 
 			if (result == null) {
-				if ("null".equals(strValue)) {
-					// return an, empty sequence
+				if ("null".equals(jsonStrVal)) {
+					// Return an, empty sequence
 					result = new ResultSequence();
 				}
 			}
 
 			if (result == null) {
-				if (strValue.startsWith("\"") && strValue.endsWith("\"")) {
-					strValue = strValue.substring(1, strValue.length()-1);
-					if (strValue.length() == 0) {
-						strValue = ""; 
+				if (jsonStrVal.startsWith("\"") && jsonStrVal.endsWith("\"")) {
+					jsonStrVal = jsonStrVal.substring(1, jsonStrVal.length()-1);
+					if (jsonStrVal.length() == 0) {
+						jsonStrVal = ""; 
 					}
-					result = new XSString(strValue);
+					result = new XSString(jsonStrVal);
 				}
-				else if (strValue.startsWith("'") && strValue.endsWith("'")) {
-					strValue = strValue.substring(1, strValue.length()-1);
-					if (strValue.length() == 0) {
-						strValue = ""; 
+				else if (jsonStrVal.startsWith("'") && jsonStrVal.endsWith("'")) {
+					jsonStrVal = jsonStrVal.substring(1, jsonStrVal.length()-1);
+					if (jsonStrVal.length() == 0) {
+						jsonStrVal = ""; 
 					}
-					result = new XSString(strValue); 
+					result = new XSString(jsonStrVal); 
 				}
 				else {
-					if (strValue.length() == 0) {
-						strValue = ""; 
+					if (jsonStrVal.length() == 0) {
+						jsonStrVal = ""; 
 					}
-					result = new XSString(strValue);
+					result = new XSString(jsonStrVal);
 				}
 			}
 		}
@@ -119,10 +126,10 @@ public class JsonFunction extends FunctionMultiArgs {
 
 	/**
 	 * Given a JSONObject object instance as argument to this function, the 
-	 * function returns an XDM map object. 
+	 * function returns an xdm map object. 
 	 * 
-	 * @param jsonObj     a JSONObject object instance
-	 * @return            an XDM map object
+	 * @param jsonObj                 A JSONObject object instance
+	 * @return                        An xdm map object
 	 */
 	private XPathMap getXdmMapFromJSONObject(JSONObject jsonObj) {
     	
@@ -186,10 +193,10 @@ public class JsonFunction extends FunctionMultiArgs {
     
 	/**
 	 * Given a JSONArray object instance as argument to this function, the 
-	 * function returns an XDM array object. 
+	 * function returns an xdm array object. 
 	 * 
-	 * @param jsonArr     a JSONArray object instance
-	 * @return            an XDM array object
+	 * @param jsonArr                A JSONArray object instance
+	 * @return                       An xdm array object
 	 */
     private XPathArray getXdmArrayFromJSONArray(JSONArray jsonArr) {
     	
@@ -223,5 +230,43 @@ public class JsonFunction extends FunctionMultiArgs {
 
     	return xpathArrResult;
     }
+    
+    /**
+	 * Method definition, to get org.json library's JSONParserConfiguration object for 
+	 * the supplied XPath 3.1 option 'liberal' & 'duplicates' values to parse JSON 
+	 * string values.
+	 * 
+	 * @param optionIsLiberal                        Value of JSON parse 'liberal' option
+	 * @param optionDuplicatesValStr                 Value of JSON parse 'duplicates' option
+	 * @return                                       org.json.JSONParserConfiguration object
+	 */
+	private JSONParserConfiguration getJsonParserConfiguration(boolean optionIsLiberal, String optionDuplicatesValStr) {
+		
+		JSONParserConfiguration jsonParserConf = new JSONParserConfiguration();
+		
+		if (optionIsLiberal) {
+			jsonParserConf = jsonParserConf.withStrictMode(false);
+		}
+
+		if (XSLJsonConstants.DUPLICATES_REJECT.equals(optionDuplicatesValStr)) {
+			jsonParserConf = jsonParserConf.withOverwriteDuplicateKey(false);
+			jsonParserConf = jsonParserConf.useFirstDuplicateKey(false); 	
+		}
+		else if (XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr)) {
+			/**
+			 * org.json library classes JSONObject & JSONParserConfiguration are modified
+			 * slightly (and, included within Xalan-J's XPath 3.1 implementation code) to 
+			 * implement this XPath feature.
+			 */
+			jsonParserConf = jsonParserConf.useFirstDuplicateKey(true);
+			jsonParserConf = jsonParserConf.withOverwriteDuplicateKey(false);
+		}
+		else if (XSLJsonConstants.DUPLICATES_USE_LAST.equals(optionDuplicatesValStr)) {
+			jsonParserConf = jsonParserConf.useFirstDuplicateKey(false);
+			jsonParserConf = jsonParserConf.withOverwriteDuplicateKey(true); 	
+		}
+		
+		return jsonParserConf;
+	}
 
 }

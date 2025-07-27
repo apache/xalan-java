@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <a key="item1">
+      <id>1</id>
+      <desc>hello 1</desc>
+    </a>
+    <a key="item2">
+      <id>4</id>
+      <desc>hello 4</desc>
+    </a>
+  </one>
+  <two>
+    <a key="item1">
+      <id>3</id>
+      <desc>hello 3</desc>
+    </a>
+    <a key="item2">
+      <id>5</id>
+      <desc>hello 5</desc>
+    </a>
+  </two>
+</result>

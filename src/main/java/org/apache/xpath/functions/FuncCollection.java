@@ -34,6 +34,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.Constants;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.json.JsonFunction;
+import org.apache.xpath.functions.json.XSLJsonConstants;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -179,7 +180,7 @@ public class FuncCollection extends JsonFunction
 						File fileObj = new File(dirPathStr + SLASH_CHAR_STR + fileNameStr);
 						byte[] byteArr = Files.readAllBytes(Paths.get(fileObj.toURI()));
 						String strValue = new String(byteArr);							
-						XObject xObj = getJsonXdmValueFromStr(strValue);							
+						XObject xObj = getJsonXdmValueFromStr(strValue, false, XSLJsonConstants.DUPLICATES_USE_FIRST);							
 						resultSeq.add(xObj);
 					}
 					catch (Exception ex) {

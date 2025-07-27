@@ -52,11 +52,6 @@
 			<version>1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20250107</version>
-		</dependency>
-		<dependency>
 			<groupId>edu.princeton.cs</groupId>
 			<artifactId>java_cup</artifactId>
 			<version>1.0</version>

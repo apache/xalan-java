@@ -690,7 +690,7 @@ Used by: Xalan-Java 2, Xalan-C++
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 The following Java software components that are provided as part of Xalan-J's 
-XSLT 3 implementation, are provided with Mozilla Public License (MPL) 2.0:
+XSLT 3.0 implementation, are provided with Mozilla Public License (MPL) 2.0:
 
 Java library 'rhino-1.7.14.jar' : JavaScript implementation in Java
 Source :  https://github.com/mozilla/rhino
@@ -1072,3 +1072,17 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
   This Source Code Form is "Incompatible With Secondary Licenses", as
   defined by the Mozilla Public License, v. 2.0.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+The following Java software components that are provided as part of Xalan-J's 
+XSLT 3.0 implementation, are provided with Software license 'Public Domain':
+
+Source code of package org.json is included with Xalan-J's implementation
+Source :  https://github.com/stleary/JSON-java
+Used by : Xalan-Java 2's XPath 3.1 implementation
+
+Modification notes : Package org.json's classes JSONObject and JSONParserConfiguration 
+                     have been modified by Xalan-J project.
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ 

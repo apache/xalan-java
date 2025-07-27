@@ -50,11 +50,10 @@ public class FuncParseJson extends JsonFunction {
 
 	private static final long serialVersionUID = 8542161858023543436L;
 	
-	private static final List<String> OPTIONS_SUPPORTED_LIST = new ArrayList<String>();
+	private static final List<String> OPTION_SUPPORTED_LIST = new ArrayList<String>();
 	
 	/**
-     * The number of arguments passed to the fn:parse-json function 
-     * call.
+     * The number of arguments passed to the fn:json-doc function call.
      */
     private int fNumOfArgs = 0;
     
@@ -62,8 +61,8 @@ public class FuncParseJson extends JsonFunction {
      * Class constructor.
      */
     public FuncParseJson() {
-       OPTIONS_SUPPORTED_LIST.add(XSLJsonConstants.LIBERAL);
-       OPTIONS_SUPPORTED_LIST.add(XSLJsonConstants.DUPLICATES);
+       OPTION_SUPPORTED_LIST.add(XSLJsonConstants.LIBERAL);
+       OPTION_SUPPORTED_LIST.add(XSLJsonConstants.DUPLICATES);
        
        m_defined_arity = new Short[] { 1, 2 };
     }
@@ -87,18 +86,23 @@ public class FuncParseJson extends JsonFunction {
         
         if ((arg0 == null) && (arg1 == null)) {
            throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:parse-json needs to have "
-            		                                                      + "at-least one argument.", srcLocator);
+            		                                                                                    + "at-least one argument.", srcLocator);
         }
         else if (m_arg2 != null) {
            throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:parse-json can "
-            		                                                      + "have either 1 or two arguments.", srcLocator);
+            		                                                                                    + "have either one or two arguments.", srcLocator);
         }
         
+        boolean optionIsLiberalVal = false;
+        
+        String optionDuplicatesValStr = XSLJsonConstants.DUPLICATES_USE_FIRST;  
+        
         if (fNumOfArgs == 1) {
-           result = getJsonXdmValue(arg0, xctxt);           
+           result = getJsonXdmValue(arg0, xctxt, optionIsLiberalVal, optionDuplicatesValStr);           
         }
         else {
            // fn:parse-json function was called, with two arguments
+        	
            XObject arg1Value = null;
            if (arg1 instanceof Variable) {
         	  arg1Value = ((Variable)arg1).execute(xctxt);
@@ -108,61 +112,49 @@ public class FuncParseJson extends JsonFunction {
            }
            
            if (arg1Value instanceof XPathMap) {
-        	  XPathMap optionsMap = (XPathMap)arg1Value;
+        	  XPathMap optionsMap = (XPathMap)arg1Value;        	          	   
         	  
         	  Map<XObject, XObject> optionsNativeMap = optionsMap.getNativeMap();
         	  Set<Entry<XObject,XObject>> optionEntries = optionsNativeMap.entrySet();
         	  Iterator<Entry<XObject,XObject>> optionsIter = optionEntries.iterator();
-        	  String optionDuplicatesValStr = null;
+        	  
         	  while (optionsIter.hasNext()) {
         		 Entry<XObject,XObject> mapEntry = optionsIter.next();
         		 String keyStr = XslTransformEvaluationHelper.getStrVal(mapEntry.getKey());
         		 XObject optionValue = mapEntry.getValue();
-        		 if (!OPTIONS_SUPPORTED_LIST.contains(keyStr)) {
-        			throw new javax.xml.transform.TransformerException("FOUT1190 : An option '" + keyStr + "' used during "
-        					                                       + "function call fn:parse-json, is not supported. "
-        					                                       + "This implementation supports, only the options 'liberal' & 'duplicates' "
-        					                                       + "for the function fn:parse-json.", srcLocator); 
+        		 if (!OPTION_SUPPORTED_LIST.contains(keyStr)) {
+        			throw new javax.xml.transform.TransformerException("FOUT1190 : An option '" + keyStr + "' used with function call "
+        					                                                                    + "fn:parse-json, is not supported. This implementation "
+        					                                                                    + "supports, fn:parse-json options 'liberal', 'duplicates'.", srcLocator); 
         		 }
-        		 else if (XSLJsonConstants.LIBERAL.equals(keyStr)) {
+        		 
+        		 if (XSLJsonConstants.LIBERAL.equals(keyStr)) {
         			if ((optionValue instanceof XSBoolean) || (optionValue instanceof XBooleanStatic)) {
-        			   boolean liberalVal = optionValue.bool();
-        			   if (liberalVal) {
-        				  throw new javax.xml.transform.TransformerException("FOUT1190 : An implementation for function fn:parse-json, doesn't "
-        				  		                                         + "support an option liberal=true. An input JSON string to function "
-        				  		                                         + "fn:parse-json, should strictly conform to the JSON syntax rules, "
-        				  		                                         + "as specified by RFC 7159.", srcLocator);  
-        			   }
+        			   optionIsLiberalVal = optionValue.bool();        			   
         			}
         			else {
         			   throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:parse-json option "
-        			   		                                           + "\"liberal\"'s value is not of type xs:boolean.", 
-        			   		                                           srcLocator);
+					        			   		                                               + "\"liberal\"'s value is not of type xs:boolean.", srcLocator);
         			}
         		 }
         		 else if (XSLJsonConstants.DUPLICATES.equals(keyStr)) {
         			optionDuplicatesValStr = XslTransformEvaluationHelper.getStrVal(optionValue);
-        			if (!(XSLJsonConstants.DUPLICATES_REJECT.equals(optionDuplicatesValStr) || 
-        				  XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) || 
+        			
+        			if (!(XSLJsonConstants.DUPLICATES_REJECT.equals(optionDuplicatesValStr) ||
+        				  XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) ||
         				  XSLJsonConstants.DUPLICATES_USE_LAST.equals(optionDuplicatesValStr))) {
         				throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:parse-json option "
-                                                                        + "\"duplicates\"'s value is not one of following : 'reject', 'use-first', "
-                                                                        + "'use-last'.", srcLocator);
-        			}
-        			else if (XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) || 
-        					XSLJsonConstants.DUPLICATES_USE_LAST.equals(optionDuplicatesValStr)) {
-        				throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:parse-json option \"duplicates\"'s value "
-        						                                        + "'use-first', or 'use-last' is not supported. There should be no duplicate "
-        						                                        + "keys within an input JSON document.", srcLocator);
-        			}
+				                                                                               + "\"duplicates\"'s value is not one of following : 'reject', 'use-first', "
+				                                                                               + "'use-last'.", srcLocator);
+        			}        			
         		 }
         	  }
         	  
-        	  result = getJsonXdmValue(arg0, xctxt);
+        	  result = getJsonXdmValue(arg0, xctxt, optionIsLiberalVal, optionDuplicatesValStr);
            }
            else {
-        	  throw new javax.xml.transform.TransformerException("FOUT1190 : The 2nd argument passed to function call "
-        	  		                                                              + "fn:parse-json is not a map.", srcLocator);  
+        	  throw new javax.xml.transform.TransformerException("FOUT1190 : The second argument provided for function call "
+        	  		                                                                           + "fn:parse-json to represent 'options' is not a map.", srcLocator);  
            }
         }
             
@@ -198,19 +190,23 @@ public class FuncParseJson extends JsonFunction {
     }
 
     /**
-     * This method parses an input string value using a JSON parser, 
-     * and returns an applicable XDM object representation corresponding to 
-     * JSON value.
+     * Method definition to JSON parse an input string, and return a corresponding 
+     * xdm value.
      * 
-     * @param xpath      Represents 1st argument provided to function 
-     *                   fn:parse-json.
-     * @param xctxt      XPath context object
-     * @return           an xdm object of type XPathMap, XPathArray, XSDouble,
-     *                   XSBoolean, ResultSequence, XSString. 
+     * @param xpath                              Represents first argument provided to function fn:parse-json.
+     * @param xctxt                              XPath context object
+     * @param optionIsLiberal                    Function call fn:parse-json option liberal's value.
+     * @param optionDuplicatesValStr             Function call fn:parse-json option duplicates's value.
+     * 
+     * @return                                   An xdm value of type XPathMap, XPathArray, XSDouble,
+     *                                           XSBoolean, ResultSequence, XSString (these are the possible
+     *                                           XPath values to which a JSON value can translate to). 
      *  
      * @throws javax.xml.transform.TransformerException
      */
-	private XObject getJsonXdmValue(Expression xpath, XPathContext xctxt) throws javax.xml.transform.TransformerException {
+	private XObject getJsonXdmValue(Expression xpath, XPathContext xctxt, boolean optionIsLiberal, 
+			                                                              String optionDuplicatesValStr) 
+			                                                            		      throws javax.xml.transform.TransformerException {
 		
 		XObject result = null;
 		
@@ -220,13 +216,14 @@ public class FuncParseJson extends JsonFunction {
 		String arg0StrValue = XslTransformEvaluationHelper.getStrVal(arg0Value);
 		
 		try {			
-			result = getJsonXdmValueFromStr(arg0StrValue);
+			result = getJsonXdmValueFromStr(arg0StrValue, optionIsLiberal, optionDuplicatesValStr);
 		}
-		catch (JSONException ex) {
-			throw new javax.xml.transform.TransformerException("FOUT1190 : The 1st argument provided with function call "
-					                                                 + "fn:parse-json is not a correct json lexical string. The JSON "
-					                                                 + "parser produced following error : " + ex.getMessage() + ".", 
-					                                                 srcLocator); 
+		catch (JSONException ex) {			
+		    throw new javax.xml.transform.TransformerException("FOUT1190 : The function call fn:parse-json's first argument is not a "
+		    		                                                                 + "correct JSON lexical string. The XPath JSON parse options used were : "
+		    		                                                                 + "liberal: " + optionIsLiberal + ", duplicates: " + 
+		    		                                                                 optionDuplicatesValStr + ". The JSON parser emitted following error message: " + 
+		    		                                                                 ex.getMessage() + ".", srcLocator);
 		}
 		
 		return result;

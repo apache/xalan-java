@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <key name="item1">1</key>
+    <key name="item2">4</key>
+  </one>
+  <two>
+    <key name="item1">3</key>
+    <key name="item2">5</key>
+  </two>
+</result>

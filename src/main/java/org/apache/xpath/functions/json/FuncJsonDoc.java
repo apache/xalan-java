@@ -55,11 +55,10 @@ public class FuncJsonDoc extends JsonFunction {
 	
 	private static final long serialVersionUID = 4521998080023197937L;
 
-	private static final List<String> OPTIONS_SUPPORTED_LIST = new ArrayList<String>();
+	private static final List<String> OPTION_SUPPORTED_LIST = new ArrayList<String>();
 	
 	/**
-     * The number of arguments passed to the fn:json-doc function 
-     * call.
+     * The number of arguments passed to the fn:json-doc function call.
      */
     private int fNumOfArgs = 0;
     
@@ -67,8 +66,8 @@ public class FuncJsonDoc extends JsonFunction {
      * Class constructor.
      */
     public FuncJsonDoc() {
-       OPTIONS_SUPPORTED_LIST.add(XSLJsonConstants.LIBERAL);
-       OPTIONS_SUPPORTED_LIST.add(XSLJsonConstants.DUPLICATES);
+       OPTION_SUPPORTED_LIST.add(XSLJsonConstants.LIBERAL);
+       OPTION_SUPPORTED_LIST.add(XSLJsonConstants.DUPLICATES);
        
        m_defined_arity = new Short[] { 1, 2 };
     }
@@ -92,18 +91,23 @@ public class FuncJsonDoc extends JsonFunction {
         
         if ((arg0 == null) && (arg1 == null)) {
            throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:json-doc needs to have "
-            		                                                      + "at-least one argument.", srcLocator);
+            		                                                                                    + "at-least one argument.", srcLocator);
         }
         else if (m_arg2 != null) {
            throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:json-doc can "
-            		                                                      + "have either 1 or two arguments.", srcLocator);
+            		                                                                                    + "have either one or two arguments.", srcLocator);
         }
         
+        boolean optionIsLiberalVal = false;
+        
+        String optionDuplicatesValStr = XSLJsonConstants.DUPLICATES_USE_FIRST; 
+        
         if (fNumOfArgs == 1) {
-           result = getFnJsonDocResult(arg0, xctxt);           
+           result = getFnJsonDocResult(arg0, xctxt, optionIsLiberalVal, optionDuplicatesValStr);           
         }
         else {
            // fn:json-doc function was called, with two arguments
+        	
            XObject arg1Value = null;
            if (arg1 instanceof Variable) {
         	  arg1Value = ((Variable)arg1).execute(xctxt);
@@ -118,56 +122,44 @@ public class FuncJsonDoc extends JsonFunction {
         	  Map<XObject, XObject> optionsNativeMap = optionsMap.getNativeMap();
         	  Set<Entry<XObject,XObject>> optionEntries = optionsNativeMap.entrySet();
         	  Iterator<Entry<XObject,XObject>> optionsIter = optionEntries.iterator();
-        	  String optionDuplicatesValStr = null;
+        	  
         	  while (optionsIter.hasNext()) {
-        		 Entry<XObject,XObject> mapEntry = optionsIter.next();
-        		 String keyStr = XslTransformEvaluationHelper.getStrVal(mapEntry.getKey());
-        		 XObject optionValue = mapEntry.getValue();
-        		 if (!OPTIONS_SUPPORTED_LIST.contains(keyStr)) {
-        			throw new javax.xml.transform.TransformerException("FOUT1190 : An option '" + keyStr + "' used during "
-        					                                       + "function call fn:json-doc, is not supported. "
-        					                                       + "This implementation supports, only the options 'liberal' & 'duplicates' "
-        					                                       + "for the function fn:json-doc.", srcLocator); 
-        		 }
-        		 else if (XSLJsonConstants.LIBERAL.equals(keyStr)) {
-        			if ((optionValue instanceof XSBoolean) || (optionValue instanceof XBooleanStatic)) {
-        			   boolean liberalVal = optionValue.bool();
-        			   if (liberalVal) {
-        				  throw new javax.xml.transform.TransformerException("FOUT1190 : An implementation for function fn:json-doc, doesn't "
-        				  		                                         + "support an option liberal=true. An input JSON string to function "
-        				  		                                         + "fn:json-doc, should strictly conform to the JSON syntax rules, "
-        				  		                                         + "as specified by RFC 7159.", srcLocator);  
-        			   }
-        			}
-        			else {
-        			   throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-doc option "
-        			   		                                           + "\"liberal\"'s value is not of type xs:boolean.", 
-        			   		                                           srcLocator);
-        			}
-        		 }
-        		 else if (XSLJsonConstants.DUPLICATES.equals(keyStr)) {
-        			optionDuplicatesValStr = XslTransformEvaluationHelper.getStrVal(optionValue);
-        			if (!(XSLJsonConstants.DUPLICATES_REJECT.equals(optionDuplicatesValStr) || 
-        				  XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) || 
-        				  XSLJsonConstants.DUPLICATES_USE_LAST.equals(optionDuplicatesValStr))) {
-        				throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-doc option "
-                                                                        + "\"duplicates\"'s value is not one of following : 'reject', 'use-first', "
-                                                                        + "'use-last'.", srcLocator);
-        			}
-        			else if (XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) || 
-        					XSLJsonConstants.DUPLICATES_USE_LAST.equals(optionDuplicatesValStr)) {
-        				throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-doc option \"duplicates\"'s value "
-        						                                        + "'use-first', or 'use-last' is not supported. There should be no duplicate "
-        						                                        + "keys within an input JSON document.", srcLocator);
-        			}
-        		 }
+        		  Entry<XObject,XObject> mapEntry = optionsIter.next();
+         		 String keyStr = XslTransformEvaluationHelper.getStrVal(mapEntry.getKey());
+         		 XObject optionValue = mapEntry.getValue();
+         		 if (!OPTION_SUPPORTED_LIST.contains(keyStr)) {
+         			throw new javax.xml.transform.TransformerException("FOUT1190 : An option '" + keyStr + "' used with function call "
+         					                                                                    + "fn:json-doc, is not supported. This implementation "
+         					                                                                    + "supports, fn:json-doc options 'liberal', 'duplicates'.", srcLocator); 
+         		 }
+         		 
+         		 if (XSLJsonConstants.LIBERAL.equals(keyStr)) {
+         			if ((optionValue instanceof XSBoolean) || (optionValue instanceof XBooleanStatic)) {
+         			   optionIsLiberalVal = optionValue.bool();        			   
+         			}
+         			else {
+         			   throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-doc option "
+ 					        			   		                                               + "\"liberal\"'s value is not of type xs:boolean.", srcLocator);
+         			}
+         		 }
+         		 else if (XSLJsonConstants.DUPLICATES.equals(keyStr)) {
+         			optionDuplicatesValStr = XslTransformEvaluationHelper.getStrVal(optionValue);
+         			
+         			if (!(XSLJsonConstants.DUPLICATES_REJECT.equals(optionDuplicatesValStr) ||
+         				  XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) ||
+         				  XSLJsonConstants.DUPLICATES_USE_LAST.equals(optionDuplicatesValStr))) {
+         				throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-doc option "
+ 				                                                                               + "\"duplicates\"'s value is not one of following : 'reject', 'use-first', "
+ 				                                                                               + "'use-last'.", srcLocator);
+         			}        			
+         		 }
         	  }
         	  
-        	  result = getFnJsonDocResult(arg0, xctxt);
+        	  result = getFnJsonDocResult(arg0, xctxt, optionIsLiberalVal, optionDuplicatesValStr);
            }
            else {
-        	  throw new javax.xml.transform.TransformerException("FOUT1190 : The 2nd argument passed to function call "
-        	  		                                                              + "fn:json-doc is not a map.", srcLocator);  
+        	   throw new javax.xml.transform.TransformerException("FOUT1190 : The second argument provided for function call "
+                                                                                              + "fn:json-doc to represent 'options' is not a map.", srcLocator);  
            }
         }
             
@@ -203,18 +195,24 @@ public class FuncJsonDoc extends JsonFunction {
     }
 
     /**
-     * This method parses a string value (that is expected to be a json string), 
-     * to xdm object representations for JSON data values.
+     * Method definition to JSON parse an input string, and return a corresponding 
+     * xdm value.
      * 
-     * @param xpath      1st argument provided to function fn:json-doc
-     * @param xctxt      XPath context object
-     * @return           an xdm object of type XPathMap, XPathArray, XSDouble,
-     *                   XSBoolean, ResultSequence, XSString.
+     * @param xpath                              Represents first argument provided to function fn:parse-json
+     * @param xctxt                              XPath context object
+     * @param optionIsLiberal                    Function call fn:json-doc option liberal's value
+     * @param optionDuplicatesValStr             Function call fn:json-doc option duplicates's value
+     * 
+     * @return                                   An xdm value of type XPathMap, XPathArray, XSDouble, XSBoolean, 
+     *                                           ResultSequence (representing json null values), XSString. These 
+     *                                           are the possible xdm values to which a JSON value can translate 
+     *                                           to. 
      *  
      * @throws javax.xml.transform.TransformerException
      */
-	private XObject getFnJsonDocResult(Expression xpath, XPathContext xctxt) 
-			                                                        throws javax.xml.transform.TransformerException {
+	private XObject getFnJsonDocResult(Expression xpath, XPathContext xctxt, boolean optionIsLiberal, 
+                                                                             String optionDuplicatesValStr) 
+			                                                                                         throws javax.xml.transform.TransformerException {
 		
 		XObject result = null;
 		
@@ -223,8 +221,6 @@ public class FuncJsonDoc extends JsonFunction {
 		XObject arg0Value = xpath.execute(xctxt);
 		String hrefStrVal = XslTransformEvaluationHelper.getStrVal(arg0Value);
 		
-		// If the first argument is a relative uri reference, then 
-		// resolve that relative uri with base uri of the stylesheet.
 		URL resolvedArg0Url = null;
 
 		try {
@@ -232,6 +228,8 @@ public class FuncJsonDoc extends JsonFunction {
 			String stylesheetSystemId = srcLocator.getSystemId();  // base uri of stylesheet, if available
 
 			if (!arg0Uri.isAbsolute() && (stylesheetSystemId != null)) {
+				// If the first argument is a relative uri reference, then 
+				// resolve the relative uri using base uri of the stylesheet.
 				URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
 				resolvedArg0Url = resolvedUriArg.toURL(); 
 			}
@@ -242,26 +240,26 @@ public class FuncJsonDoc extends JsonFunction {
 
 			String urlStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
 			
-			result = getJsonXdmValueFromStr(urlStrContents);
+			result = getJsonXdmValueFromStr(urlStrContents, optionIsLiberal, optionDuplicatesValStr);
 
 		}
 		catch (URISyntaxException ex) {
 			throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
-					+ "or cannot be resolved to an absolute uri.", srcLocator);  
+					                                                                  + "or cannot be resolved to an absolute uri.", srcLocator);  
 		}
 		catch (MalformedURLException ex) {
 			throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
-					+ "or cannot be resolved to an absolute uri.", srcLocator);
+					                                                                  + "or cannot be resolved to an absolute uri.", srcLocator);
 		}
 		catch (IOException ex) {
-			throw new javax.xml.transform.TransformerException("FODC0002 : The data from uri '" + hrefStrVal + "' cannot be "
-					+ "retrieved.", srcLocator);
+			throw new javax.xml.transform.TransformerException("FODC0002 : The information from uri '" + hrefStrVal + "' cannot be retrieved.", srcLocator);
 		}
 		catch (JSONException ex) {
-			throw new javax.xml.transform.TransformerException("FOUT1190 : The 1st argument provided to function call "
-					                                                 + "fn:json-doc is not a correct json lexical string. The JSON "
-					                                                 + "parser produced following error : " + ex.getMessage() + ".", 
-					                                                 srcLocator); 
+			throw new javax.xml.transform.TransformerException("FOUT1190 : The function call fn:parse-json's first argument is not a "
+																                      + "correct JSON lexical string. The XPath JSON parse options used were : "
+																                      + "liberal: " + optionIsLiberal + ", duplicates: " + 
+																                      optionDuplicatesValStr + ". The JSON parser emitted following error message: " + 
+																                      ex.getMessage() + ".", srcLocator); 
 		}
 		
 		return result;
