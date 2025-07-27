@@ -17,8 +17,7 @@
 package org.apache.xalan.tests.util;
 
 /**
- * A class defining constants, used by Xalan-J's 
- * XSL 3 test suite.
+ * A class defining few constants, used by Xalan-J's XSL 3 test suite.
  *  
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -45,23 +44,12 @@ public class XSLTestConstants {
     
     /**
      * Few XSL tests within this test suite, require the workstation where these tests 
-     * are running to be connected to web. To enable proper working of these tests, the 
-     * value of this class field needs to be set to boolean 'true'. 
+     * are running to be connected to web to access few test related files saved on Apache 
+     * Xalan-J's server host. To enable proper working of these tests, the value of this 
+     * class field needs to be set to boolean 'true'. If this variable is set to 'false',
+     * these Xalan-J tests won't run and the tests build shall pass with a reduced total 
+     * tests count. 
      */
     public static final boolean IS_TESTS_USING_ONLINE_URIS_ENABLED = true;
-    
-    /**
-     * Few XSL tests within this test suite, require specifying absolute URI of local files 
-     * with file: scheme. The following two class field variables are used for these XSL tests 
-     * within this test suite. Both the file local absolute URI prefixes file:/d:/ and file:/d:/// are 
-     * appropriate examples for Windows. For Linux, there are similar URI naming conventions. User running
-     * this test suite on Windows needs to change values of following two class field variables as 
-     * per Xalan-J's XSLT 3.0 implementation src code's local folder. For Linux, an appropriate local 
-     * absolute URI prefix needs to be specified. 
-     */
-    
-    public static final String LOCAL_BASE_URI_PREFIX_FOR_TESTS_1 = "file:/d:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/resources/";
-    
-    public static final String LOCAL_BASE_URI_PREFIX_FOR_TESTS_2 = "file:/d:///eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/resources/";
 
 }

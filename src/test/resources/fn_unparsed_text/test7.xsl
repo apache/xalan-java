@@ -11,9 +11,7 @@
 	
 	<xsl:output method="xml" indent="yes"/>
 	
-	<xsl:param name="localBaseUriPrefix" as="xs:string"/>
-	
-	<xsl:variable name="fileStrContents" select="unparsed-text($localBaseUriPrefix || 'fn_unparsed_text/person.json', 'UTF-8')" as="xs:string"/>
+	<xsl:variable name="fileStrContents" select="unparsed-text('person.json', 'UTF-8')" as="xs:string"/>
 	
 	<xsl:template match="/">
 	   <xsl:copy-of select="json-to-xml($fileStrContents)"/>

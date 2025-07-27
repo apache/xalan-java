@@ -25,33 +25,23 @@ Authors:
    Mukul Gandhi <mukulg@apache.org>
 
 This GitHub repos branch has src code configured as Maven (https://maven.apache.org/) build, for 
-Xalan-J's implementation of XSLT 3.0 and XPath 3.1 specifications.
+Xalan-J's implementation of XSLT 3.0 and XPath 3.1 specifications. XSLT, XPath and XQuery languages
+are collectively named as XSL (Extensible Stylesheet Language). There are various places within Xalan-J's
+source code and documents, where we use the name XSL to refer to XSLT 3.0 and XPath 3.1.
 
-Following are the steps to produce Xalan-J's XSLT 3.0 build jar file (containing Xalan-J's XSLT 3.0 and 
-XPath 3.1 run-time processors) and running Xalan-J's XSLT 3.0 conformance tests:
+Following are the steps, to run Xalan-J's XSLT 3.0 and XPath 3.1 conformance tests and produce 
+XSLT 3.0 build jar file (containing Xalan-J's XSLT 3.0 and XPath 3.1 run-time processors):  
 
-1) Set JAVA_HOME environment variable pointing to the local JDK installation folder. JDK version 1.8/8 has been used
-to develop and test Xalan-J's src code available within this code base repos. JDK versions greater than 1.8 shall also 
-work fine to compile and run Xalan-J's XSLT 3.0 processor built from this code base repos
+1) Set JAVA_HOME environment variable referring to JDK's local installation folder. JDK version 1.8/8 has been used
+to develop and test Xalan-J's src code available within this code base repos branch. JDK versions greater than 1.8 
+shall also work fine to compile and run Xalan-J's XSLT 3.0 processor built from this code base repos branch.
 
-2) Java Maven build tool needs to be installed on local workstation, using JDK installation referred by 
-JAVA_HOME environment variable.
+2) Java Maven build tool needs to be installed on local workstation, using JDK installation referred by JAVA_HOME 
+environment variable.
 
-3) To successfully run Xalan-J's XSLT 3.0 tests available within this test suite (the root folder path for this 
-is : src/test/java/org/apache/xalan/tests/main), within the Java class org.apache.xalan.tests.util.XSLTestConstants 
-please change the value of class field variables LOCAL_BASE_URI_PREFIX_FOR_TESTS_1 and LOCAL_BASE_URI_PREFIX_FOR_TESTS_2 
-as per local workstation where this test suite runs.
+3) Run the following Maven build command:
 
-4) Run Maven build command 'mvn clean install -DskipTests' from the local workstation folder 
-where Maven build's pom.xml file is located. This shall produce the Java jar file xalan-java-3.0.1.jar 
-within Maven build's local folder 'target'.
-
-The file system folder 'libs' contains various jar file dependencies, provided as convenience to users, that 
-are needed by Xalan-J's XSLT 3.0 implementation.
-
-To run Xalan-J's XSLT 3.0 conformance tests, the following command needs to be run:
-
-mvn clean test -Dtest=AllXalanXSLT3Tests
+mvn clean install test -Dtest=AllXalanXSLT3Tests
 
 The Maven build results like following shall be produced: 
 
@@ -59,43 +49,49 @@ The Maven build results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXalanXSLT3Tests
-[INFO] Tests run: 1184, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 40.528 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
+[INFO] Tests run: 1183, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 31.474 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 1184, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1183, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
+[INFO]
+[INFO] --- jar:3.3.0:jar (default-jar) @ xalan-java ---
+[INFO] Building jar: {folder prefix}\xalan-j_xslt3.0_mvn\target\xalan-java-3.0.1.jar
+
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  02:08 min
+[INFO] Total time:  01:14 min
 
 
-If the user needs to run Xalan-J's XSLT 3.0 implementation via Java code, the value of JVM's system property 
+If the user needs to run Xalan-J's XSLT 3.0 implementation via Java application code, the value of JVM's system property 
 javax.xml.transform.TransformerFactory needs to be set to org.apache.xalan.processor.XSL3TransformerFactoryImpl.
 
-5) This code base repos branch also has Xalan-J's XSLT 3.0 test drivers for W3C XSLT 3.0 test suite (https://github.com/w3c/xslt30-test).
+4) This code base repos branch also has Xalan-J's XSLT 3.0 test drivers for W3C XSLT 3.0 test suite (located at, 
+https://github.com/w3c/xslt30-test).
 
-Xalan-J's XSLT 3.0 code repos folder src/test/java/org/apache/xalan/tests/w3c/xslt3 has following Java classes for this purpose:
+The code repos folder src/test/java/org/apache/xalan/tests/w3c/xslt3 has following Java classes for this purpose:
 
-W3CXSLT3Tests : To run W3C XSLT 3.0 test suite on Xalan-J's XSLT 3.0 implementation.
+W3CXSLT3Tests : To run various W3C XSLT 3.0 test sets, to test Xalan-J's XSLT 3.0 implementation.
 
-W3CXSLT3TestSuiteXalanResultSummarize : To produce an aggregated W3C XSLT 3.0 test suite results for Xalan-J's XSLT 3.0 implementation.
+W3CXSLT3TestSuiteXalanResultSummarize : To produce an aggregated W3C XSLT 3.0 test suite results, for Xalan-J's 
+XSLT 3.0 implementation.
 
 Xalan-J's XSLT 3.0 implementation's conformance results with W3C XSLT 3.0 test suite are available at following location : 
 https://github.com/apache/xalan-java/blob/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/w3c_xslt3_testsuite_xalan-j_result.xml
 
-6) Generating Xalan-J XSLT 3.0 code documentation using JDK's javadoc command 
+5) Generating Xalan-J code base documentation for this dev repos branch, using JDK's javadoc command 
 
-Following are the steps for Windows environment.
+Following are the steps to do this, for Windows environment.
 
 Produce list of Java files within folder xalan-j_xslt3.0_mvn : dir /s /b *.java > file.lst
 
 Filter specific files : java org.apache.xalan.xslt.Process -in file_filter.xsl -xsl file_filter.xsl -out filtered_file_list.txt
 
-Produce Java code documentation : javadoc -d javadoc @filtered_file_list.txt
+Produce Xalan-J code documentation for this dev repos branch : javadoc -d javadoc @filtered_file_list.txt
 
-Javadocs for Xalan-J XSLT 3.0 code base are located here : https://xalan.apache.org/xalan-j/xsl3/javadoc/   
+Javadocs for Xalan-J code documentation for this dev repos branch are located here : https://xalan.apache.org/xalan-j/xsl3/javadoc/   
 
-7) The PDF document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides 
-various other details about Xalan-J's XSLT 3.0 and XPath 3.1 implementations.
+6) The PDF document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides various other 
+details about Xalan-J's XSLT 3.0 and XPath 3.1 implementations.
