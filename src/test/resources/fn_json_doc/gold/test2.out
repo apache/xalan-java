@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <object key="item1">
+    <id>1</id>
+    <desc>hello 1</desc>
+    <info color="green" weight="2" size="5.1"/>
+  </object>
+  <object key="item2">
+    <id>2</id>
+    <desc>hello 2</desc>
+    <info color="blue" weight="3" size="6.1"/>
+  </object>
+  <object key="item3">
+    <id>3</id>
+    <desc>hello 3</desc>
+    <info color="blue" weight="4" size="7.1"/>
+  </object>
+  <object key="item4">
+    <id>4</id>
+    <desc>hello 4</desc>
+    <info color="blue" weight="5" size="8.1"/>
+  </object>
+  <object key="item5">
+    <id>5</id>
+    <desc>hello 5</desc>
+    <info color="green" weight="6" size="9.1"/>
+  </object>
+</result>
