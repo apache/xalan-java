@@ -412,14 +412,15 @@ public class ElemVariable extends ElemTemplateElement
         	XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
             XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
             
-            QName asAttrQName = null;
-            
-            if (m_asAttr != null) {
-            	PrefixResolver prefixResolver = xctxt.getNamespaceContext();
-            	asAttrQName = new QName(m_asAttr, prefixResolver);
-            }
-            
             if (evalResult != null) {
+            	if ((m_asAttr != null) && ((evalResult instanceof XPathMap) || (evalResult instanceof XPathArray))) {
+            		SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, srcLocator);
+            		SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+            		if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+            			return evalResult;
+            		}
+            	}
+            	
             	String funcName = ((XSL3ConstructorOrExtensionFunction)selectExpression).getFunctionName();
             	String funcNamespace = ((XSL3ConstructorOrExtensionFunction)selectExpression).getNamespace();
             	
@@ -433,6 +434,8 @@ public class ElemVariable extends ElemTemplateElement
                    }
                 }
             	else if (m_asAttr != null && (XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	   PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+            	   QName asAttrQName = new QName(m_asAttr, prefixResolver);
             	   String typeName = asAttrQName.getLocalName();
             	   String typeNamespace = asAttrQName.getNamespace();
             	   if (funcName.equals(typeName) && typeNamespace.equals(funcNamespace)) {            		  
@@ -969,7 +972,7 @@ public class ElemVariable extends ElemTemplateElement
     			boolean bool2 = errMesg.contains("cannot be cast to a type");
     			if (bool1 && bool2) {
     				errMesg = errMesg + " An error occured, while evaluating an xdm map's key or value. The corresponding "
-    						                                                                         + "XPath sequence type is specified as " + m_asAttr + ".";
+    						                                                                         + "XPath sequence type specified is " + m_asAttr + ".";
     				throw new TransformerException(errMesg, srcLocator);
     			}
     			else {

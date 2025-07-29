@@ -6319,9 +6319,15 @@ public class XPathParser
        }
        else if (tokenIs("map")) {
      	   parseXdmMapSequenceType(xpathSequenceTypeExpr, false);
+     	   if ((m_token != null) && !tokenIs(')')) {
+              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse);  
+           }
        }
        else if (tokenIs("array")) {
            parseXdmArraySequenceType(xpathSequenceTypeExpr, false);
+           if ((m_token != null) && !tokenIs(')')) {
+              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse);  
+           }
        }
        else if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
            parseXdmBuiltInXmlSchemaSequenceType(xpathSequenceTypeExpr, isXPathInlineFunctionParse);         

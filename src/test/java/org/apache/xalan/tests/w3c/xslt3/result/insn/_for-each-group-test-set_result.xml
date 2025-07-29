@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-27T10:04:38Z" fail="26" name="for-each-group" pass="47" skipped="4" statusUnknown="1" totalRun="74">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-29T10:15:50Z" fail="26" name="for-each-group" pass="47" skipped="4" statusUnknown="1" totalRun="74">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" testName="for-each-group-002a" xsltVersion="xslt 2.0 only"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -82,7 +82,7 @@
    <testResult status="fail" testName="for-each-group-070"/>
    <testResult status="fail" testName="for-each-group-071">
       <outResult>
-         <errTrace>XPTY0004 : An xsl:function call result for function {my}f, doesn't match the declared function result type element()*.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="for-each-group-072"/>

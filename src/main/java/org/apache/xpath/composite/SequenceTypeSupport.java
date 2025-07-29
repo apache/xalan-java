@@ -1224,7 +1224,8 @@ public class SequenceTypeSupport {
              		  Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
              		  Set<XObject> mapKeys = nativeMap.keySet();
              		  Iterator<XObject> keysIter = mapKeys.iterator();
-             		  // We check below each of map's entry, with expected type of map entry's keys and values 
+             		  // The following code, checks each of map's entry with expected 
+             		  // type of map entry's key and value. 
              		  while (keysIter.hasNext()) {
              			 XObject mapKey = keysIter.next();
              			 XObject mapEntry = nativeMap.get(mapKey);
@@ -1410,9 +1411,31 @@ public class SequenceTypeSupport {
 		
 		return nodeSet;
 	}
+	
+	/**
+	 * Method definition, to produce SequenceTypeData object from, the supplied
+	 * XPath sequence type string value.
+	 * 
+	 * @param seqTypeStr						An XPath sequence type string value
+	 * @param xctxt                             An XPath context object
+	 * @param srcLocator                        An XSL transformation SourceLocator object
+	 * @return                                  SequenceTypeData object
+	 * @throws TransformerException
+	 */
+    public static SequenceTypeData getSequenceTypeDataFromSeqTypeStr(String seqTypeStr, XPathContext xctxt, 
+                                                                     SourceLocator srcLocator) throws TransformerException {
+    	SequenceTypeData seqTypeData = null;
+
+    	XPath seqTypeXPath = new XPath(seqTypeStr, srcLocator, xctxt.getNamespaceContext(), 
+    			                                                                       XPath.SELECT, null, true);
+    	XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+    	seqTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+
+    	return seqTypeData;
+    }
     
 	/**
-	 * Method definition to cast a string value to an expected XDM type.
+	 * Method definition, to cast a string value to an expected XDM type.
 	 * 
 	 * @param srcStrVal									  Source string value
 	 * @param expectedType								  An expected type's integer code	
