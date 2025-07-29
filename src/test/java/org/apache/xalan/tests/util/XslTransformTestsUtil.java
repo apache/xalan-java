@@ -69,6 +69,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     protected static TransformerFactory m_xslTransformerFactory = null;
     
+    protected static String m_encoding = null;
+    
     protected static String m_initTemplateName = null;
     
     /**
@@ -135,7 +137,11 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            
            if (xmlFilePath != null) {
               String xmlDocumentUriStr = ((new File(xmlFilePath)).toURI()).toString();
-              Node node = m_xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
+              InputSource inpSrc = new InputSource(xmlDocumentUriStr);
+              if (m_encoding != null) {
+            	 inpSrc.setEncoding(m_encoding); 
+              }
+              Node node = m_xmlDocumentBuilder.parse(inpSrc);
               xmlDomSrc = new DOMSource(node, xmlDocumentUriStr);
            }
            

@@ -49,6 +49,7 @@ public class XSL3StringCollationAwareFunction extends FunctionMultiArgs {
 	 * @throws TransformerException
 	 */
 	protected String getArgStringValue(XPathContext xctxt, Expression arg) throws TransformerException {
+		
 		String result = null;
 		
 		if (arg instanceof NodeTest) {

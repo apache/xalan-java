@@ -553,6 +553,9 @@ public class FunctionTable
   
   /** The 'function-name()' id. */
   public static final int FUNC_FUNCTION_NAME = 176;
+  
+  /** The 'normalize-unicode()' id. */
+  public static final int FUNC_NORMALIZE_UNICODE = 177;
 
   // Proprietary
 
@@ -646,7 +649,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 177;
+  private static final int NUM_BUILT_IN_FUNCS = 178;
 
   /**
    * Number of built-in functions that may be added.
@@ -702,6 +705,7 @@ public class FunctionTable
 	  m_functions[FUNC_SUBSTRING_BEFORE] = org.apache.xpath.functions.string.FuncSubstringBefore.class;
 	  m_functions[FUNC_SUBSTRING_AFTER] = org.apache.xpath.functions.string.FuncSubstringAfter.class;
 	  m_functions[FUNC_NORMALIZE_SPACE] = org.apache.xpath.functions.string.FuncNormalizeSpace.class;
+	  m_functions[FUNC_NORMALIZE_UNICODE] = org.apache.xpath.functions.string.FuncNormalizeUnicode.class;
 	  m_functions[FUNC_TRANSLATE] = org.apache.xpath.functions.string.FuncTranslate.class;
 	  m_functions[FUNC_CONCAT] = org.apache.xpath.functions.string.FuncConcat.class;
 	  m_functions[FUNC_SYSTEM_PROPERTY] = org.apache.xpath.functions.FuncSystemProperty.class;
@@ -903,6 +907,7 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_SUBSTRING_BEFORE_STRING, new Integer(FunctionTable.FUNC_SUBSTRING_BEFORE));
 	  m_functionId.put(Keywords.FUNC_SUBSTRING_AFTER_STRING, new Integer(FunctionTable.FUNC_SUBSTRING_AFTER));
 	  m_functionId.put(Keywords.FUNC_NORMALIZE_SPACE_STRING, new Integer(FunctionTable.FUNC_NORMALIZE_SPACE));
+	  m_functionId.put(Keywords.FUNC_NORMALIZE_UNICODE, new Integer(FunctionTable.FUNC_NORMALIZE_UNICODE));
 	  m_functionId.put(Keywords.FUNC_TRANSLATE_STRING, new Integer(FunctionTable.FUNC_TRANSLATE));
 	  m_functionId.put(Keywords.FUNC_CONCAT_STRING, new Integer(FunctionTable.FUNC_CONCAT));
 	  m_functionId.put(Keywords.FUNC_SYSTEM_PROPERTY_STRING, new Integer(FunctionTable.FUNC_SYSTEM_PROPERTY));

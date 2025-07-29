@@ -760,6 +760,9 @@ public class Keywords
   /** function-name function string. */
   public static final String FUNC_FUNCTION_NAME = "function-name";
   
+  /** normalize-unicode function string. */
+  public static final String FUNC_NORMALIZE_UNICODE = "normalize-unicode";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
