@@ -113,7 +113,7 @@ public class FuncNormalizeUnicode extends XSL3StringCollationAwareFunction
 			  		                                                                                    + "conversion using FULLY-NORMALIZED normalizer form.", srcLocator);  
 		  }
 		  else {
-			 throw new javax.xml.transform.TransformerException("FOCH0003 : Allowed values for fn:normalize-unicode normalizationForm "
+			  throw new javax.xml.transform.TransformerException("FOCH0003 : Allowed values for fn:normalize-unicode normalizationForm "
 			 		                                                                                    + "argument are NFC, NFD, NFKC, NFKD, FULLY-NORMALIZED. This "
 			 		                                                                                    + "implementation doesn't support fn:normalize-unicode string "
 			 		                                                                                    + "conversion using FULLY-NORMALIZED normalizer form.", srcLocator);

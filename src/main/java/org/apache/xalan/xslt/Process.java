@@ -17,8 +17,11 @@
  */
 package org.apache.xalan.xslt;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.Properties;
@@ -89,6 +92,7 @@ public class Process
     System.out.println(resbundle.getString("optionXSVAL"));  //"   [-XSVAL (Request XML Schema validation of XML input document)]");
     System.out.println(resbundle.getString("optionXSLEVALUATE"));  //"   [-XSLEVALUATE (Request xsl:evaluate instruction to be enabled)]");
     System.out.println(resbundle.getString("optionINIT_TEMPLATE"));  //" [-INIT_TEMPLATE (Specify an XSL template's name to select an initial template for transformation)]");
+    System.out.println(resbundle.getString("optionENCODING"));  //" [-ENCODING (Specify value of encoding to be used for XML input and stylesheet documents. Use format utf_8 (default), iso_8859_1 etc.)]");
     System.out.println(resbundle.getString("optionOUT"));  //"   [-OUT outputFileName]");
 
     // System.out.println(resbundle.getString("optionE")); //"   [-E (Do not expand entity refs)]");
@@ -160,7 +164,7 @@ public class Process
 	  boolean isSecureProcessing = false;    
 	  boolean isSchemaValidation = false;    
 	  boolean isXslEvaluate = false;
-	  String initialTemplateName = null;
+	  String initialTemplateName = null;	  
 
 	  /**
 	   * The default java.io.PrintWriter diagnostic writer.
@@ -220,13 +224,11 @@ public class Process
 			  doExit(msg);
 		  }
 
-		  boolean formatOutput = false;
 		  boolean useSourceLocation = false;
 		  String inFileName = null;
 		  String outFileName = null;
 		  String dumpFileName = null;
 		  String xslFileName = null;
-		  String treedumpFileName = null;
 		  PrintTraceListener tracer = null;
 		  String outputType = null;
 		  String media = null;
@@ -236,12 +238,13 @@ public class Process
 		  EntityResolver entityResolver = null;
 		  ContentHandler contentHandler = null;
 		  int recursionLimit=-1;
+		  String encoding = "UTF-8";
 
 		  for (int i = 0; i < argv.length; i++)
 		  {
 			  if ("-XSLTC".equalsIgnoreCase(argv[i]))
 			  {
-				  // The -XSLTC option has been processed.
+				  // The -XSLTC option has been processed
 			  }
 			  else if ("-TT".equalsIgnoreCase(argv[i]))
 			  {
@@ -313,6 +316,15 @@ public class Process
 															  XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
 															  new Object[]{ "-IN" }));
 			  }
+			  else if ("-OUT".equalsIgnoreCase(argv[i]))
+			  {
+				  if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-')
+					  outFileName = argv[++i];
+				  else
+					  System.err.println(XSLMessages.createMessage(
+															  XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+															  new Object[]{ "-OUT" }));
+			  }
 			  else if ("-MEDIA".equalsIgnoreCase(argv[i]))
 			  {
 				  if (i + 1 < argv.length)
@@ -322,14 +334,16 @@ public class Process
 															  XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
 															  new Object[]{ "-MEDIA" }));
 			  }
-			  else if ("-OUT".equalsIgnoreCase(argv[i]))
+			  else if ("-ENCODING".equalsIgnoreCase(argv[i]))
 			  {
-				  if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-')
-					  outFileName = argv[++i];
+				  if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-') {
+					  String encStr = argv[++i];
+					  encoding = encStr.replace('_', '-');
+				  }
 				  else
 					  System.err.println(XSLMessages.createMessage(
 															  XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
-															  new Object[]{ "-OUT" }));
+															  new Object[]{ "-ENCODING" }));
 			  }
 			  else if ("-XSL".equalsIgnoreCase(argv[i]))
 			  {
@@ -557,7 +571,7 @@ public class Process
 					  printInvalidXalanOption("-XO");
 				  }
 			  }
-			  // Specify the destination directory for the translet classes.
+			  // Specify the destination directory for the translet classes
 			  else if ("-XD".equalsIgnoreCase(argv[i]))
 			  {
 				  if (useXSLTC)
@@ -578,7 +592,7 @@ public class Process
 					  printInvalidXalanOption("-XD");
 				  }
 			  }
-			  // Specify the jar file name which the translet classes are packaged into.
+			  // Specify the jar file name which the translet classes are packaged into
 			  else if ("-XJ".equalsIgnoreCase(argv[i]))
 			  {
 				  if (useXSLTC)
@@ -603,7 +617,7 @@ public class Process
 				  }
 
 			  }
-			  // Specify the package name prefix for the generated translet classes.
+			  // Specify the package name prefix for the generated translet classes
 			  else if ("-XP".equalsIgnoreCase(argv[i]))
 			  {
 				  if (useXSLTC)
@@ -625,7 +639,7 @@ public class Process
 				  }
 
 			  }
-			  // Enable template inlining.
+			  // Enable template inlining
 			  else if ("-XN".equalsIgnoreCase(argv[i]))
 			  {
 				  if (useXSLTC)
@@ -695,8 +709,8 @@ public class Process
 			  doExit(msg);
 		  }
 
-		  // Note that there are usage cases for calling us without a -IN arg
-		  // The main XSL transformation occurs here!
+		  // Note that there are usage cases for calling this class without 
+		  // a -IN arg. The main XSL transformation occurs here.
 		  try
 		  {
 			  long start = System.currentTimeMillis();
@@ -726,19 +740,33 @@ public class Process
 					  }
 
 					  DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-					  Document xslDOM = docBuilder.parse(new InputSource(xslFileName));
+					  InputSource inpSrc = new InputSource(xslFileName);
+					  if (encoding != null) {
+						 inpSrc.setEncoding(encoding); 
+					  }
+					  
+					  Document xslDOM = docBuilder.parse(inpSrc);
 
 					  stylesheet = tfactory.newTemplates(new DOMSource(xslDOM, xslFileName));
 				  }
 				  if (flavor.equals("s2s"))
 				  {
-					  SAXSource saxSource = new SAXSource(new InputSource(xslFileName)); 
+					  InputSource inpSrc = new InputSource(xslFileName);
+					  if (encoding != null) {
+						 inpSrc.setEncoding(encoding); 
+					  }
+					  
+					  SAXSource saxSource = new SAXSource(inpSrc); 
 					  stylesheet = tfactory.newTemplates(saxSource);
 				  }
 				  else
-				  {
-					  XslTransformSharedDatastore.m_xslSystemId = SystemIDResolver.getAbsoluteURI(xslFileName); 
-					  stylesheet = tfactory.newTemplates(new StreamSource(xslFileName));
+				  {					  					  
+					  XslTransformSharedDatastore.m_xslSystemId = SystemIDResolver.getAbsoluteURI(xslFileName);
+					  
+					  InputStream inputStr = new FileInputStream(new File(xslFileName));						 
+					  StreamSource streamSrc = new StreamSource(inputStr);
+					  					  
+					  stylesheet = tfactory.newTemplates(streamSrc);
 				  }
 			  }
 
@@ -764,7 +792,7 @@ public class Process
 
 			  SAXTransformerFactory stf = (SAXTransformerFactory) tfactory;
 
-			  // This is currently controlled via TransformerFactoryImpl.
+			  // This is currently controlled via TransformerFactoryImpl
 			  if (!useXSLTC && useSourceLocation)
 				  stf.setAttribute(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);        
 
@@ -865,9 +893,15 @@ public class Process
 						  if (entityResolver != null)
 							  docBuilder.setEntityResolver(entityResolver);
 
-						  Node xmlDoc = docBuilder.parse(new InputSource(inFileName));
+						  InputSource inpSrc = new InputSource(inFileName);
+						  if (encoding != null) {
+							 inpSrc.setEncoding(encoding); 
+						  }
+						  
+						  Node xmlDoc = docBuilder.parse(inpSrc);						  
+						  
 						  Document doc = docBuilder.newDocument();
-						  org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
+						  org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();						  						  
 
 						  transformer.transform(new DOMSource(xmlDoc, inFileName), new DOMResult(outNode));
 
@@ -897,9 +931,13 @@ public class Process
 
 						  Document doc = docBuilder.newDocument();
 						  org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
+						  
+						  InputSource inpSrc = new InputSource(inFileName);
+						  if (encoding != null) {
+							 inpSrc.setEncoding(encoding); 
+						  }
 
-						  transformer.transform(new SAXSource(new InputSource(inFileName)),
-								  new DOMResult(outNode));
+						  transformer.transform(new SAXSource(inpSrc), new DOMResult(outNode));
 
 						  // Now serialize output to disk with identity transformer
 						  Transformer identityTransformer = stf.newTransformer();
@@ -1113,8 +1151,8 @@ public class Process
 				  doExit(msg);
 			  }
 
-			  // close output streams
-			  if (null != outFileName && strResult!=null)
+			  // Close output streams, associated with XSL transformation result
+			  if ((outFileName != null) && (strResult != null))
 			  {
 				  java.io.OutputStream out = strResult.getOutputStream();
 				  java.io.Writer writer = strResult.getWriter();
@@ -1148,7 +1186,7 @@ public class Process
 			  }
 
 			  if ((throwable instanceof NullPointerException)
-					  || (throwable instanceof ClassCastException))
+					                                     || (throwable instanceof ClassCastException))
 				  doStackDumpOnError = true;
 
 			  diagnosticsWriter.println();
