@@ -591,6 +591,10 @@ public class XSLTElementDef
         		                                                                 && equalsMayBeNullOrZeroLen(uri, uriDef)) {
         	return attrDef;
         }
+        else if ("expand-text".equals(localName) && "expand-text".equals(nameDef) 
+                                                                                 && equalsMayBeNullOrZeroLen(uri, uriDef)) {
+            return attrDef;
+        }
     }
 
     for (int k = 0; k < nAttrDefs; k++)

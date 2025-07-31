@@ -61,10 +61,10 @@ import xml.xpath31.processor.types.XSAnyType;
  */
 public class ElemLiteralResult extends ElemUse
 {
-    static final long serialVersionUID = -8703409074421657260L;
+   static final long serialVersionUID = -8703409074421657260L;
 
-    /** The return value as Empty String. */
-    private static final String EMPTYSTRING = "";
+   /** The return value as Empty String. */
+   private static final String EMPTYSTRING = "";
 
   /**
    * Tells if this element represents a root element
@@ -552,6 +552,40 @@ public class ElemLiteralResult extends ElemUse
    */
   public String getXpathDefaultNamespace() {
 	  return m_xpath_default_namespace;
+  }
+  
+  // Variable to indicate whether, an attribute 'expand-text' 
+  // is there on XSL literal result element.
+  private boolean m_expand_text_declared;
+  
+  /**
+   * This class field, represents the value of "expand-text" 
+   * attribute.
+   */
+  private boolean m_expand_text;
+
+  /**
+   * Set the value of "expand-text" attribute.
+   *
+   * @param v   Value of the "expand-text" attribute
+   */
+  public void setExpandText(boolean v)
+  {
+	  m_expand_text = v;
+	  m_expand_text_declared = true;
+  }
+
+  /**
+   * Get the value of "expand-text" attribute.
+   *  
+   * @return		  The value of "expand-text" attribute 
+   */
+  public boolean getExpandText() {
+	  return m_expand_text;
+  }
+  
+  public boolean getExpandTextDeclared() {
+	  return m_expand_text_declared;
   }
 
   /**

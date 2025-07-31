@@ -296,6 +296,40 @@ public class ElemVariable extends ElemTemplateElement
   public String getXpathDefaultNamespace() {
 	  return m_xpath_default_namespace;
   }
+  
+  // Variable to indicate whether, an attribute 'expand-text' 
+  // is there on xsl:variable instruction.
+  private boolean m_expand_text_declared;
+  
+  /**
+   * This class field, represents the value of "expand-text" 
+   * attribute.
+   */
+  private boolean m_expand_text;
+
+  /**
+   * Set the value of "expand-text" attribute.
+   *
+   * @param v   Value of the "expand-text" attribute
+   */
+  public void setExpandText(boolean v)
+  {
+	  m_expand_text = v;
+	  m_expand_text_declared = true;
+  }
+
+  /**
+   * Get the value of "expand-text" attribute.
+   *  
+   * @return		  The value of "expand-text" attribute 
+   */
+  public boolean getExpandText() {
+	  return m_expand_text;
+  }
+  
+  public boolean getExpandTextDeclared() {
+	  return m_expand_text_declared;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -735,7 +769,7 @@ public class ElemVariable extends ElemTemplateElement
     		}
         }
   
-        if (var == null) {
+        if (var == null) {        	        	
            var = m_selectPattern.execute(xctxt, sourceNode, this);           
            if (this instanceof ElemParam) {
         	   if (var instanceof XSString) {
@@ -816,7 +850,7 @@ public class ElemVariable extends ElemTemplateElement
     	  }
     	  else {
     	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
-    	     var = new XNodeSetForDOM(nodeList, xctxt);
+    	     var = new XNodeSetForDOM(nodeList, xctxt);    	         	         	         	     
     	  }
       }
     }
@@ -1231,18 +1265,19 @@ public class ElemVariable extends ElemTemplateElement
    */
   public ElemTemplateElement appendChild(ElemTemplateElement elem)
   {	  
-    // cannot have content and select
-    if (m_selectPattern != null)
-    {
-      SourceLocator srcLocator = m_selectPattern.getLocator();	
-      Integer lineNo = srcLocator.getLineNumber();
-      Integer colNo = srcLocator.getColumnNumber();
-      
-      error(XSLTErrorResources.ER_CANT_HAVE_CONTENT_AND_SELECT_LOC_AWARE, 
-    		  		new Object[]{lineNo, colNo, "xsl:" + this.getNodeName()});
-      return null;
-    }
-    return super.appendChild(elem);
+	  // Cannot have content and select both
+	  if (m_selectPattern != null)
+	  {
+		  SourceLocator srcLocator = m_selectPattern.getLocator();	
+		  Integer lineNo = srcLocator.getLineNumber();
+		  Integer colNo = srcLocator.getColumnNumber();
+
+		  error(XSLTErrorResources.ER_CANT_HAVE_CONTENT_AND_SELECT_LOC_AWARE, 
+				                                           new Object[]{lineNo, colNo, "xsl:" + this.getNodeName()});
+		  return null;
+	  }
+	  
+	  return super.appendChild(elem);
   }
   
   /**

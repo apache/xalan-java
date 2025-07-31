@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-29T17:00:24Z" fail="29" name="iterate" pass="15" skipped="0" statusUnknown="0" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-31T17:06:20Z" fail="28" name="iterate" pass="16" skipped="0" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -133,22 +133,21 @@
    <testResult status="fail" testName="iterate-034">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="iterate-035"/>
-   <testResult status="fail" testName="iterate-036"/>
-   <testResult status="fail" testName="iterate-037">
+   <testResult status="pass" testName="iterate-035"/>
+   <testResult status="fail" testName="iterate-036">
       <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
+         <errTrace>FOAR0001 : An integer division by zero error.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
+   </testResult>
+   <testResult status="fail" testName="iterate-037">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="iterate-038">
-      <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="iterate-039">
-      <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="iterate-040">
       <outResult/>
@@ -157,14 +156,10 @@
       <outResult/>
    </testResult>
    <testResult status="fail" testName="iterate-042">
-      <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="iterate-043">
-      <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="iterate-901">
       <outResult>

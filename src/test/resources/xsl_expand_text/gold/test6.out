@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <a>{$x + $y} hello {2 * $x} there {3 + $y}</a>
+</result>

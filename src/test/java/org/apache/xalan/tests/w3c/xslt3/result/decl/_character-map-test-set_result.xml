@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-29T17:00:31Z" fail="12" name="character-map" pass="15" skipped="1" statusUnknown="1" totalRun="28">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-31T17:06:27Z" fail="12" name="character-map" pass="15" skipped="1" statusUnknown="1" totalRun="28">
    <testResult status="pass" testName="character-map-001"/>
    <testResult status="pass" testName="character-map-002"/>
    <testResult status="pass" testName="character-map-003"/>
@@ -52,11 +52,9 @@
    <testResult status="fail" testName="character-map-028"/>
    <testResult status="fail" testName="character-map-901">
       <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
          <errTrace>xsl:output-character requires attribute: character</errTrace>
       </outResult>
       <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:stylesheet element!</errTrace>
          <errTrace>xsl:output-character requires attribute: character</errTrace>
       </outResult>
    </testResult>

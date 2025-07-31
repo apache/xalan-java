@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-31T17:08:29Z" fail="44" name="expand-text" pass="18" skipped="0" statusUnknown="0" totalRun="62">
+   <testResult status="pass" testName="cvt-001"/>
+   <testResult status="pass" testName="cvt-002"/>
+   <testResult status="pass" testName="cvt-003"/>
+   <testResult status="pass" testName="cvt-004"/>
+   <testResult status="pass" testName="cvt-005"/>
+   <testResult status="pass" testName="cvt-006"/>
+   <testResult status="fail" testName="cvt-007">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-008">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out a="{1,2} {3,4}{5,6}" b="{1,2} {3,4}{5,6}"/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="cvt-009">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out a="{1,2} {3,4}{5,6}" b="{1,2} {3,4}{5,6}"/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="cvt-010">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out a="{1,2} {3,4}{5,6}" b="{1,2} {3,4}{5,6}"/&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="cvt-011"/>
+   <testResult status="pass" testName="cvt-012"/>
+   <testResult status="fail" testName="cvt-013">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
+            The year was {&lt;bold&gt;$year&lt;/bold&gt;}&#13;
+        &lt;/out&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
+            The year was {&lt;bold&gt;$year&lt;/bold&gt;}&#13;
+        &lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="cvt-014"/>
+   <testResult status="fail" testName="cvt-015">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;4 &#13;
+        }&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="cvt-016">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;4}&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="cvt-017"/>
+   <testResult status="pass" testName="cvt-018"/>
+   <testResult status="fail" testName="cvt-019"/>
+   <testResult status="pass" testName="cvt-020"/>
+   <testResult status="fail" testName="cvt-021"/>
+   <testResult status="pass" testName="cvt-022"/>
+   <testResult status="fail" testName="cvt-023"/>
+   <testResult status="fail" testName="cvt-024"/>
+   <testResult status="fail" testName="cvt-025">
+      <outResult>
+         <errTrace>Variable $d accessed before it is bound!.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="cvt-026"/>
+   <testResult status="fail" testName="cvt-027">
+      <outResult>
+         <errTrace>Illegal value: Q{http://www.example.com/foo}var used for QNAME attribute: name</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="cvt-028">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="cvt-029">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-030">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-031">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-032">
+      <outResult>
+         <errTrace>Variable $stylesheet.attributes accessed before it is bound!.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="cvt-033">
+      <outResult>
+         <errTrace>Empty expression!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="cvt-034"/>
+   <testResult status="fail" testName="cvt-035a">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-035b">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-035c">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-036a">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-036b">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-036c">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-037a">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-037b">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-037c">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-038a">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-038b">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-038c">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-039a">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-039b">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-039c">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-040a">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-040b">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-040c">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="cvt-041"/>
+   <testResult status="fail" testName="cvt-042"/>
+   <testResult status="pass" testName="cvt-043"/>
+   <testResult status="fail" testName="cvt-044"/>
+   <testResult status="pass" testName="cvt-045"/>
+   <testResult status="pass" testName="cvt-046"/>
+   <testResult status="pass" testName="cvt-047"/>
+   <testResult status="fail" testName="cvt-048">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="cvt-049"/>
+   <testResult status="fail" testName="cvt-050">
+      <outResult/>
+   </testResult>
+</testrun>

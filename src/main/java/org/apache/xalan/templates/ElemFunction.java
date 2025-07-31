@@ -56,6 +56,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.operations.CastAs;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.types.XMLAttribute;
 import org.apache.xpath.types.XSByte;
@@ -241,6 +242,40 @@ public class ElemFunction extends ElemTemplate
   {
       return super.getName();
   }
+  
+  // Variable to indicate whether, an attribute 'expand-text' 
+  // is there on xsl:function instruction.
+  private boolean m_expand_text_declared;
+  
+  /**
+   * This class field, represents the value of "expand-text" 
+   * attribute.
+   */
+  private boolean m_expand_text;
+
+  /**
+   * Set the value of "expand-text" attribute.
+   *
+   * @param v   Value of the "expand-text" attribute
+   */
+  public void setExpandText(boolean v)
+  {
+	  m_expand_text = v;
+	  m_expand_text_declared = true;
+  }
+
+  /**
+   * Get the value of "expand-text" attribute.
+   *  
+   * @return		  The value of "expand-text" attribute 
+   */
+  public boolean getExpandText() {
+	  return m_expand_text;
+  }
+  
+  public boolean getExpandTextDeclared() {
+	  return m_expand_text_declared;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -282,8 +317,19 @@ public class ElemFunction extends ElemTemplate
       // Validate few of the information of xsl:function's xsl:param declarations      
       Map<QName, Integer> xslParamMap = new HashMap<QName, Integer>();
       int idx = 0;
+      
       PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+      boolean isOnlyElemTextLiteral = false;
+      boolean isOtherElem = false;
       for (ElemTemplateElement elem = getFirstChildElem(); elem != null; elem = elem.getNextSiblingElem()) {
+    	 if ((elem instanceof ElemTextLiteral) && !isOtherElem) {
+    		isOnlyElemTextLiteral = true; 
+         }
+    	 else if (!(elem instanceof ElemParam)) {
+    		isOtherElem = true;
+    		isOnlyElemTextLiteral = false;
+    	 }
+    	 
          String nodeName = elem.getNodeName();         
          if (nodeName.contains(":")) {
             String nsPrefix = nodeName.substring(0, nodeName.indexOf(':'));
@@ -432,8 +478,17 @@ public class ElemFunction extends ElemTemplate
       if (funcAsAttrStrVal != null) {
     	 // Process xsl:function's evaluation result with "as" attribute
     	  
-         try {
-        	 SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
+    	  try {
+    		SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
+    		
+    	    if (isOnlyElemTextLiteral) {
+    		    funcResultConvertedVal = new XSString((XslTransformEvaluationHelper.getStrVal(funcResultConvertedVal)).trim());
+    		    
+    		    CastAs castAs = new CastAs();
+    		    funcResultConvertedVal = castAs.operate(funcResultConvertedVal, seqExpectedTypeData);
+    		    
+    		    return funcResultConvertedVal;
+    	    }    	          	         	 
         	 
              if (funcResultConvertedVal instanceof XPathInlineFunction) {
             	SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-29T17:00:27Z" fail="44" name="sort" pass="36" skipped="0" statusUnknown="0" totalRun="80">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-31T17:06:24Z" fail="44" name="sort" pass="36" skipped="0" statusUnknown="0" totalRun="80">
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
    <testResult status="fail" testName="sort-003"/>
@@ -91,13 +91,9 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;First,Second,Third,Fourth,Fifth,Sixth,Seventh,&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="sort-079">
-      <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the t:transform element!</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="sort-080">
-      <outResult>
-         <errTrace>"expand-text" attribute is not allowed on the xsl:transform element!</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
    </testResult>
 </testrun>

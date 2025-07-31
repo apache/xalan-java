@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-07-29T17:02:44Z" desc="W3C XSLT 3.0 test suite results" fail="771" pass="1421" skipped="39" success="64.3%" totalRun="2210" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-07-31T17:14:31Z" desc="W3C XSLT 3.0 test suite results" fail="814" pass="1440" skipped="39" success="63.38%" totalRun="2272" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="51" pass="53" skipped="4" success="50.48%" totalRun="105"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
+    <expand-text fail="44" pass="18" skipped="0" success="29.03%" totalRun="62"/>
     <match fail="61" pass="67" skipped="8" success="51.94%" totalRun="129"/>
     <select fail="5" pass="19" skipped="0" success="76.0%" totalRun="25"/>
     <xpath-default-namespace fail="17" pass="9" skipped="0" success="34.62%" totalRun="26"/>
@@ -40,7 +41,7 @@
     <copy fail="43" pass="16" skipped="0" success="26.67%" totalRun="60"/>
     <element fail="18" pass="11" skipped="0" success="37.93%" totalRun="29"/>
     <for-each-group fail="26" pass="47" skipped="4" success="63.51%" totalRun="74"/>
-    <iterate fail="29" pass="15" skipped="0" success="34.09%" totalRun="44"/>
+    <iterate fail="28" pass="16" skipped="0" success="36.36%" totalRun="44"/>
     <sequence fail="18" pass="8" skipped="0" success="29.63%" totalRun="27"/>
     <sort fail="44" pass="36" skipped="0" success="45.0%" totalRun="80"/>
     <try fail="26" pass="11" skipped="5" success="29.73%" totalRun="37"/>

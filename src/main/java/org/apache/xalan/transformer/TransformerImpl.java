@@ -765,6 +765,8 @@ public class TransformerImpl extends Transformer
 	}
 	
 	updateXPathDefaultNamespace(m_stylesheetRoot, m_stylesheetRoot.getXpathDefaultNamespace());
+	
+	updateExpandTextAttrValue(m_stylesheetRoot, m_stylesheetRoot.getExpandText());
 
     try
     {               
@@ -2629,8 +2631,17 @@ public class TransformerImpl extends Transformer
       return;      
     
     if (elem.hasTextLitOnly() && m_optimizer)
-    {      
-      char[] chars = ((ElemTextLiteral)t).getChars();
+    { 
+      ElemTextLiteral elemTextLiteral = (ElemTextLiteral)t;
+      
+      char[] chars = elemTextLiteral.getChars();
+      
+      String strValue = String.valueOf(chars);      
+      boolean isExpandText = elemTextLiteral.getExpandTextValue(elemTextLiteral.getParentElem());
+      if (isExpandText) {
+         strValue = elemTextLiteral.getStrValueAfterExpandTextProcessing(strValue, this);
+      }
+      
       try
       {
         // Have to push stuff on for tooling...
@@ -2639,8 +2650,7 @@ public class TransformerImpl extends Transformer
         if (m_serializationHandler instanceof SerializerBase) {
         	CharacterMapConfig charMapConfig = ((SerializerBase)m_serializationHandler).getCharMapConfig();
         	if (charMapConfig != null) {
-        		// xsl:character-map transformation
-        		String strValue = String.valueOf(chars);        	        	
+        		// xsl:character-map transformation        	        	
         		strValue = XslTransformEvaluationHelper.characterMapTransformation(strValue, charMapConfig);
         		chars = strValue.toCharArray();
         	}
@@ -4582,6 +4592,158 @@ public class TransformerImpl extends Transformer
 			  }		 
 		  }
 	  }
+	
+	  /**
+	   * Method definition, to update XSL expand-text value on stylesheet 
+	   * elements.
+	   * 
+	   * @param elemTemplateElem									The supplied ElemTemplateElement 
+	   *                                                            object.                                    
+	   * @param expandText											The supplied XSL expand-text value
+	   * @throws javax.xml.transform.TransformerException
+	   */
+	  private void updateExpandTextAttrValue(ElemTemplateElement elemTemplateElem, boolean expandText) 
+			                                                                                         throws javax.xml.transform.TransformerException {
+
+		  if (elemTemplateElem != null) {		  
+			  ElemTemplateElement xslElem = elemTemplateElem; 
+			  while (xslElem != null) {
+				  if (xslElem instanceof ElemVariable) {
+					  if (!(((ElemVariable)xslElem).getExpandTextDeclared())) {
+						  ((ElemVariable)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemVariable)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemTemplate) {
+					  if (!(((ElemTemplate)xslElem).getExpandTextDeclared())) {
+						  ((ElemTemplate)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemTemplate)xslElem).getExpandText();  
+					  }
+				  }				  
+				  else if (xslElem instanceof ElemFunction) {
+					  if (!(((ElemFunction)xslElem).getExpandTextDeclared())) {
+						  ((ElemFunction)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemFunction)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemApplyTemplates) {
+					  if (!(((ElemApplyTemplates)xslElem).getExpandTextDeclared())) {
+						  ((ElemApplyTemplates)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemApplyTemplates)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemForEach) {
+					  if (!(((ElemForEach)xslElem).getExpandTextDeclared())) {
+						  ((ElemForEach)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemForEach)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemForEachGroup) {
+					  if (!(((ElemForEachGroup)xslElem).getExpandTextDeclared())) {
+						  ((ElemForEachGroup)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemForEachGroup)xslElem).getExpandText();  
+					  }					  
+				  }
+				  else if (xslElem instanceof ElemIterate) {
+					  if (!(((ElemIterate)xslElem).getExpandTextDeclared())) {
+						  ((ElemIterate)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemIterate)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemValueOf) {
+					  if (!(((ElemValueOf)xslElem).getExpandTextDeclared())) {
+						  ((ElemValueOf)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemValueOf)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemCopyOf) {
+					  if (!(((ElemCopyOf)xslElem).getExpandTextDeclared())) {
+						  ((ElemCopyOf)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemCopyOf)xslElem).getExpandText();  
+					  }
+				  }				  
+				  else if (xslElem instanceof ElemLiteralResult) {
+					  if (!(((ElemLiteralResult)xslElem).getExpandTextDeclared())) {
+						  ((ElemLiteralResult)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemLiteralResult)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemChoose) {
+					  if (!(((ElemChoose)xslElem).getExpandTextDeclared())) {
+						  ((ElemChoose)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemChoose)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemWhen) {
+					  if (!(((ElemWhen)xslElem).getExpandTextDeclared())) {
+						  ((ElemWhen)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemWhen)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemOtherwise) {
+					  if (!(((ElemOtherwise)xslElem).getExpandTextDeclared())) {
+						  ((ElemOtherwise)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemOtherwise)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemIf) {
+					  if (!(((ElemIf)xslElem).getExpandTextDeclared())) {
+						  ((ElemIf)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemIf)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemSequence) {
+					  if (!(((ElemSequence)xslElem).getExpandTextDeclared())) {
+						  ((ElemSequence)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemSequence)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemNumber) {
+					  if (!(((ElemNumber)xslElem).getExpandTextDeclared())) {
+						  ((ElemNumber)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemNumber)xslElem).getExpandText();  
+					  }
+				  }
+
+				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
+				  updateExpandTextAttrValue(elemTemplateChild, expandText);
+
+				  xslElem = xslElem.getNextSiblingElem();
+			  }		 
+		 }
+   }
 
 }  // end TransformerImpl class
 

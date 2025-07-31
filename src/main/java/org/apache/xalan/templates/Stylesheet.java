@@ -382,6 +382,31 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	public String getXpathDefaultNamespace() {
 		return m_xpath_default_namespace;
 	}
+	
+	/**
+	 * This class field, represents the value of "expand-text" 
+	 * attribute.
+	 */
+	private boolean m_expand_text;
+
+	/**
+	 * Set the value of "expand-text" attribute.
+	 *
+	 * @param v   Value of the "expand-text" attribute
+	 */
+	public void setExpandText(boolean v)
+	{
+		m_expand_text = v; 
+	}
+
+	/**
+	 * Get the value of "expand-text" attribute.
+	 *  
+	 * @return		  The value of "expand-text" attribute 
+	 */
+	public boolean getExpandText() {
+		return m_expand_text;
+	}
 
 	/**
 	 * The "version" property.
