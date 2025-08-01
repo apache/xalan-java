@@ -38,7 +38,7 @@ public class ProcessorCharacters extends XSLTElementProcessor
     static final long serialVersionUID = 8632900007814162650L;
 
   /**
-   * Receive notification of the start of the non-text event.  This
+   * Receive notification of the start of the non-text event. This
    * is sent to the current processor when any non-text event occurs.
    *
    * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
@@ -81,9 +81,14 @@ public class ProcessorCharacters extends XSLTElementProcessor
       m_accumulator.getChars(0, nChars, chars, 0);
       elem.setChars(chars);
 
-      ElemTemplateElement parent = handler.getElemTemplateElement();
-
+      ElemTemplateElement parent = handler.getElemTemplateElement();                  
       parent.appendChild(elem);
+            
+      if (m_xslTextElement != null) {
+    	 // REVISIT 
+       	 m_xslTextElement.appendChild(elem);  
+      }
+      
     }
 
     m_accumulator.setLength(0);
@@ -94,7 +99,6 @@ public class ProcessorCharacters extends XSLTElementProcessor
 
   /**
    * Receive notification of character data inside an element.
-   *
    *
    * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param ch The characters.

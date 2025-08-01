@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-07-31T17:14:31Z" desc="W3C XSLT 3.0 test suite results" fail="814" pass="1440" skipped="39" success="63.38%" totalRun="2272" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-08-01T17:46:31Z" desc="W3C XSLT 3.0 test suite results" fail="813" pass="1440" skipped="40" success="63.41%" totalRun="2271" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="51" pass="53" skipped="4" success="50.48%" totalRun="105"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
-    <expand-text fail="44" pass="18" skipped="0" success="29.03%" totalRun="62"/>
+    <expand-text fail="43" pass="19" skipped="0" success="30.65%" totalRun="62"/>
     <match fail="61" pass="67" skipped="8" success="51.94%" totalRun="129"/>
     <select fail="5" pass="19" skipped="0" success="76.0%" totalRun="25"/>
     <xpath-default-namespace fail="17" pass="9" skipped="0" success="34.62%" totalRun="26"/>
@@ -48,7 +48,7 @@
     <xsl-document fail="13" pass="12" skipped="0" success="48.0%" totalRun="25"/>
   </insn>
   <misc>
-    <regex fail="12" pass="33" skipped="0" success="73.33%" totalRun="45"/>
+    <regex fail="12" pass="32" skipped="1" success="72.73%" totalRun="44"/>
   </misc>
   <type>
     <boolean fail="24" pass="88" skipped="0" success="78.57%" totalRun="112"/>

@@ -333,8 +333,10 @@ public class ElemForEachGroup extends ElemTemplateElement
       return m_collationUri;
   }
   
-  // Variable to indicate whether, an attribute 'expand-text' 
-  // is there on xsl:for-each-group instruction.
+  /**
+   * Variable to indicate whether, an attribute 'expand-text'
+   * is declared on xsl:for-each-group instruction.
+   */
   private boolean m_expand_text_declared;
 
   /**
@@ -357,6 +359,10 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  return m_expand_text;
   }
   
+  /**
+   * Get a boolean value indicating whether, an "expand-text" 
+   * attribute has been declared. 
+   */
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }

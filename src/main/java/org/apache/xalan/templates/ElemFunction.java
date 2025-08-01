@@ -243,8 +243,10 @@ public class ElemFunction extends ElemTemplate
       return super.getName();
   }
   
-  // Variable to indicate whether, an attribute 'expand-text' 
-  // is there on xsl:function instruction.
+  /**
+   * Variable to indicate whether, an attribute 'expand-text'
+   * is declared on xsl:function instruction.
+   */
   private boolean m_expand_text_declared;
   
   /**
@@ -273,6 +275,10 @@ public class ElemFunction extends ElemTemplate
 	  return m_expand_text;
   }
   
+  /**
+   * Get a boolean value indicating whether, an "expand-text" 
+   * attribute has been declared. 
+   */
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }

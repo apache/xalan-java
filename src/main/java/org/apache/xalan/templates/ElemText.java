@@ -38,7 +38,7 @@ import org.w3c.dom.DOMException;
  */
 public class ElemText extends ElemTemplateElement
 {
-    static final long serialVersionUID = 1383140876182316711L;
+  static final long serialVersionUID = 1383140876182316711L;
 
   /**
    * Tells if this element should disable escaping.
@@ -95,6 +95,71 @@ public class ElemText extends ElemTemplateElement
   {
     return m_disableOutputEscaping;
   }
+  
+  /**
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	 return m_xpath_default_namespace;
+  }
+  
+  /**
+   * Variable to indicate whether, an attribute 'expand-text'
+   * is declared on xsl:text instruction.
+   */
+  private boolean m_expand_text_declared;
+  
+  /**
+   * This class field, represents the value of "expand-text" 
+   * attribute.
+   */
+  private boolean m_expand_text;
+
+  /**
+   * Set the value of "expand-text" attribute.
+   *
+   * @param v   Value of the "expand-text" attribute
+   */
+  public void setExpandText(boolean v)
+  {
+	  m_expand_text = v;
+	  m_expand_text_declared = true;
+  }
+
+  /**
+   * Get the value of "expand-text" attribute.
+   *  
+   * @return		  The value of "expand-text" attribute 
+   */
+  public boolean getExpandText() {
+	  return m_expand_text;
+  }
+
+  /**
+   * Get a boolean value indicating whether, an "expand-text" 
+   * attribute has been declared. 
+   */
+  public boolean getExpandTextDeclared() {
+	  return m_expand_text_declared;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -129,8 +194,10 @@ public class ElemText extends ElemTemplateElement
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
+	  
+	super.appendChild(newChild);	  
 
-    int type = ((ElemTemplateElement) newChild).getXSLToken();
+    int type = ((ElemTemplateElement)newChild).getXSLToken();
 
     switch (type)
     {
@@ -144,6 +211,7 @@ public class ElemText extends ElemTemplateElement
     //" to " + this.m_elemName);
     }
 
-    return super.appendChild(newChild);
+    return newChild;
   }
+
 }

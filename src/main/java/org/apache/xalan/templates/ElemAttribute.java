@@ -64,6 +64,12 @@ public class ElemAttribute extends ElemElement
     protected Expression m_selectExpression = null;
     
     /**
+     * Class field to store, XPath expression for subsequent 
+     * processing.
+     */
+    protected XPath m_xpath = null;
+    
+    /**
      * This class field is used during, XPath.fixupVariables(..) action 
      * as performed within object of this class.  
      */    
@@ -86,6 +92,71 @@ public class ElemAttribute extends ElemElement
      * attribute to XSL transform's output.
      */
     private boolean m_is_serialize = true;
+    
+    /**
+     * This class field, represents the value of "xpath-default-namespace" 
+     * attribute.
+     */
+    private String m_xpath_default_namespace = null;
+
+    /**
+     * Set the value of "xpath-default-namespace" attribute.
+     *
+     * @param v   Value of the "xpath-default-namespace" attribute
+     */
+    public void setXpathDefaultNamespace(String v)
+    {
+  	    m_xpath_default_namespace = v; 
+    }
+
+    /**
+     * Get the value of "xpath-default-namespace" attribute.
+     *  
+     * @return		  The value of "xpath-default-namespace" attribute 
+     */
+    public String getXpathDefaultNamespace() {
+  	   return m_xpath_default_namespace;
+    }
+    
+    /**
+     * Variable to indicate whether, an attribute 'expand-text'
+     * is declared on xsl:attribute instruction.
+     */
+    private boolean m_expand_text_declared;
+    
+    /**
+     * This class field, represents the value of "expand-text" 
+     * attribute.
+     */
+    private boolean m_expand_text;
+
+    /**
+     * Set the value of "expand-text" attribute.
+     *
+     * @param v   Value of the "expand-text" attribute
+     */
+    public void setExpandText(boolean v)
+    {
+  	    m_expand_text = v;
+  	    m_expand_text_declared = true;
+    }
+
+    /**
+     * Get the value of "expand-text" attribute.
+     *  
+     * @return		  The value of "expand-text" attribute 
+     */
+    public boolean getExpandText() {
+    	return m_expand_text;
+    }
+
+    /**
+     * Get a boolean value indicating whether, an "expand-text" 
+     * attribute has been declared. 
+     */
+    public boolean getExpandTextDeclared() {
+    	return m_expand_text_declared;
+    }
 
   /**
    * Get an int constant identifying the type of element.
@@ -115,7 +186,8 @@ public class ElemAttribute extends ElemElement
    */
   public void setSelect(XPath xpath)
   {
-      m_selectExpression = xpath.getExpression();  
+      m_selectExpression = xpath.getExpression();
+      m_xpath = xpath;
   }
 
   /**
@@ -207,15 +279,18 @@ public class ElemAttribute extends ElemElement
         XPathContext xctxt = transformer.getXPathContext();
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
+        
+        if (m_xpath_default_namespace != null) {    		
+     	    m_xpath = new XPath(m_xpath.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);        	   
+     	    m_selectExpression = m_xpath.getExpression();
+        }
     
         if (null != nodeName && nodeName.length() > 0) {
               SerializationHandler rhandler = transformer.getSerializationHandler();
               
-              // XSLT 3.0 spec changes wrt XSLT 1.0 : The string value of the new attribute node may be
-              // defined either by using the select attribute, or by the sequence constructor that forms 
-              // the content of the xsl:attribute element. These are mutually exclusive. i.e, if the
-              // select attribute is present then the sequence constructor must be empty, and if the 
-              // sequence constructor is non-empty then the select attribute must be absent.              
+              /**
+               * Cannot have both, xsl:attribute 'select' attribute and child content.
+               */
               if (m_selectExpression != null && this.m_firstChild != null) {
                   throw new TransformerException("XTSE0840 : An xsl:attribute element with a select attribute must "
                                                                   + "have an empty child sequence constructor.", srcLocator);   

@@ -554,8 +554,10 @@ public class ElemLiteralResult extends ElemUse
 	  return m_xpath_default_namespace;
   }
   
-  // Variable to indicate whether, an attribute 'expand-text' 
-  // is there on XSL literal result element.
+  /**
+   * Variable to indicate whether, an attribute 'expand-text'
+   * is declared on XSL literal result element.
+   */
   private boolean m_expand_text_declared;
   
   /**
@@ -584,6 +586,10 @@ public class ElemLiteralResult extends ElemUse
 	  return m_expand_text;
   }
   
+  /**
+   * Get a boolean value indicating whether, an "expand-text" 
+   * attribute has been declared. 
+   */
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }

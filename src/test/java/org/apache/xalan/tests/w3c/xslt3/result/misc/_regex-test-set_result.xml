@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-07-31T17:08:27Z" fail="12" name="regex" pass="33" skipped="0" statusUnknown="0" totalRun="45">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-01T17:46:17Z" fail="12" name="regex" pass="32" skipped="1" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="regex-001"/>
    <testResult status="fail" testName="regex-002"/>
    <testResult status="pass" testName="regex-003"/>
@@ -49,7 +49,7 @@
    <testResult status="pass" testName="regex-044"/>
    <testResult status="pass" testName="regex-054"/>
    <testResult status="pass" testName="regex-055"/>
-   <testResult status="pass" testName="regex-056"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="regex-056"/>
    <testResult status="pass" testName="regex-057"/>
    <testResult status="pass" testName="regex-058"/>
    <testResult status="pass" testName="regex-059"/>

@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
  */
 public class ElemElement extends ElemUse
 {
-    static final long serialVersionUID = -324619535592435183L;
+  static final long serialVersionUID = -324619535592435183L;
 
   /**
    * The name attribute is interpreted as an attribute value template.
@@ -119,6 +119,71 @@ public class ElemElement extends ElemUse
   public AVT getNamespace()
   {
     return m_namespace_avt;
+  }
+  
+  /**
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	 return m_xpath_default_namespace;
+  }
+  
+  /**
+   * Variable to indicate whether, an attribute 'expand-text'
+   * is declared on xsl:element instruction.
+   */
+  private boolean m_expand_text_declared;
+  
+  /**
+   * This class field, represents the value of "expand-text" 
+   * attribute.
+   */
+  private boolean m_expand_text;
+
+  /**
+   * Set the value of "expand-text" attribute.
+   *
+   * @param v   Value of the "expand-text" attribute
+   */
+  public void setExpandText(boolean v)
+  {
+	  m_expand_text = v;
+	  m_expand_text_declared = true;
+  }
+
+  /**
+   * Get the value of "expand-text" attribute.
+   *  
+   * @return		  The value of "expand-text" attribute 
+   */
+  public boolean getExpandText() {
+	  return m_expand_text;
+  }
+
+  /**
+   * Get a boolean value indicating whether, an "expand-text" 
+   * attribute has been declared. 
+   */
+  public boolean getExpandTextDeclared() {
+	  return m_expand_text_declared;
   }
 
   /**

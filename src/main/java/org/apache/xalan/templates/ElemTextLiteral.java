@@ -33,6 +33,7 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.serializer.SerializerBase;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
 
@@ -184,7 +185,7 @@ public class ElemTextLiteral extends ElemTemplateElement
     
     Vector vars = sroot.getComposeState().getVariableNames(); 
     m_vars = (Vector)(vars.clone());
-    m_globals_size = sroot.getComposeState().getGlobalsSize();        
+    m_globals_size = sroot.getComposeState().getGlobalsSize();
   }
 
   /**
@@ -226,7 +227,8 @@ public class ElemTextLiteral extends ElemTemplateElement
       
       String strValue = new String(m_ch);
       
-      boolean isExpandText = getExpandTextValue(getParentElem());
+      ElemTemplateElement elemTemplateElem = getParentElem();      
+      boolean isExpandText = getExpandTextValue(elemTemplateElem);
       if (isExpandText) {
          strValue = getStrValueAfterExpandTextProcessing(strValue, transformer);
       }
@@ -295,8 +297,8 @@ public class ElemTextLiteral extends ElemTemplateElement
    *                                         an XSL expand-text transformation. 
    * @throws TransformerException
    */
-  public String getStrValueAfterExpandTextProcessing(String strValue, 
-		                                             TransformerImpl transformer) throws TransformerException {
+  public String getStrValueAfterExpandTextProcessing(String strValue, TransformerImpl transformer) 
+		                                                                                       throws TransformerException {
 	 
 	  String result = strValue;	 	 
 
@@ -324,14 +326,18 @@ public class ElemTextLiteral extends ElemTemplateElement
 			  strBuff.append(str1);
 			  remainingStr = strValue.substring(j + 1); 
 		  }
+		  
+		  ElemTemplateElement elemTemplateElem = getParentElem();
+		  
+		  String xpathDefaultNamespace = XPathParser.getXPathDefaultNamespace(elemTemplateElem);
 
-		  // Traversing the string value from left to right, and applying expand-text 
+		  // Traverse the string value from left to right, and apply expand-text 
 		  // processing to each substring {...} that is found.
 		  while (i > -1) {
 			  if (prefixTable != null) {
 				  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
 			  }
-			  XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, xpathDefaultNamespace);
 			  if (m_vars != null) {
 				  xpathObj.fixupVariables(m_vars, m_globals_size);
 			  }				 
@@ -424,6 +430,15 @@ public class ElemTextLiteral extends ElemTemplateElement
   	}
   	else if (elemTemplateElem instanceof ElemNumber) {
   		result = ((ElemNumber)elemTemplateElem).getExpandText();  		
+  	}
+  	else if (elemTemplateElem instanceof ElemText) {
+  		result = ((ElemText)elemTemplateElem).getExpandText();  		
+  	} 
+  	else if (elemTemplateElem instanceof ElemAttribute) {
+  		result = ((ElemAttribute)elemTemplateElem).getExpandText();  		
+  	}
+  	else if (elemTemplateElem instanceof ElemElement) {
+  		result = ((ElemElement)elemTemplateElem).getExpandText();  		
   	} 
 
   	return result;

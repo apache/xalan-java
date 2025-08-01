@@ -30,7 +30,7 @@ import org.apache.xalan.templates.ElemText;
  */
 public class ProcessorText extends ProcessorTemplateElem
 {
-    static final long serialVersionUID = 5170229307201307523L;
+   static final long serialVersionUID = 5170229307201307523L;
 
   /**
    * Append the current template element to the current
@@ -48,11 +48,11 @@ public class ProcessorText extends ProcessorTemplateElem
             throws org.xml.sax.SAXException
   {
 
-    // Don't push this element onto the element stack.
+    // Don't push this element onto the element stack
     ProcessorCharacters charProcessor =
-      (ProcessorCharacters) handler.getProcessorFor(null, "text()", "text");
+      (ProcessorCharacters)handler.getProcessorFor(null, "text()", "text");
 
-    charProcessor.setXslTextElement((ElemText) elem);
+    charProcessor.setXslTextElement((ElemText)elem);        
 
     ElemTemplateElement parent = handler.getElemTemplateElement();
 
@@ -74,7 +74,7 @@ public class ProcessorText extends ProcessorTemplateElem
   {
 
     ProcessorCharacters charProcessor 
-      = (ProcessorCharacters) handler.getProcessorFor(null, "text()", "text");
+      = (ProcessorCharacters)handler.getProcessorFor(null, "text()", "text");
 
     charProcessor.setXslTextElement(null);
 

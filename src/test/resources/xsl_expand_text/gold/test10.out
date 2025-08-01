@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <a>8</a>
+  <b>5</b>
+  <c>6</c>
+  <d>{fn0:apply(doc/a,doc/b,$mult)}</d>
+</result>

@@ -534,8 +534,6 @@ public class XSLTSchema extends XSLTElementDef
 				                                       null,
 				                                       ElemTextLiteral.class /* should be null? -sb */);
 
-    charData.setType(XSLTElementDef.T_PCDATA);
-
     XSLTAttributeDef resultAttr = new XSLTAttributeDef(null, "*",
                                                        XSLTAttributeDef.T_AVT, false, true, 
                                                        XSLTAttributeDef.WARNING);
@@ -843,7 +841,8 @@ public class XSLTSchema extends XSLTElementDef
                                     new XSLTAttributeDef[]{ nameAVTRequired,
                                                             namespaceAVTOpt,
                                                             spaceAttr, selectAttrOpt, typeAttrOpt, 
-                                                            validationAttrOpt }, 
+                                                            validationAttrOpt, xpathDefaultNamespaceAttrOpt, 
+                                                            expandTextAttrOpt }, 
                                     new ProcessorTemplateElem(),
                                     ElemAttribute.class /* class object */, 20, true);
     XSLTElementDef xslCallTemplate =
@@ -879,12 +878,15 @@ public class XSLTSchema extends XSLTElementDef
                                                         new ProcessorTemplateElem(),
                                                         ElemParam.class /* class object */, 19, true);
     XSLTElementDef xslText =
-      new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "text",
-                         null /*alias */,
-                         new XSLTElementDef[]{ charData } /* elements */,
-                         new XSLTAttributeDef[]{ disableOutputEscapingAttr },
-                         new ProcessorText(),
-                         ElemText.class /* class object */, 20, true);
+						       new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "text",
+						                         null /*alias */,
+						                         new XSLTElementDef[]{ charData } /* elements */,
+						                         new XSLTAttributeDef[]{ disableOutputEscapingAttr, xpathDefaultNamespaceAttrOpt,
+						                        		                 expandTextAttrOpt },
+						                         new ProcessorText(),
+						                         ElemText.class /* class object */, 20, true);
+    
+    
     XSLTElementDef xslProcessingInstruction =
       new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL,
                          "processing-instruction", null /*alias */,
@@ -902,7 +904,8 @@ public class XSLTSchema extends XSLTElementDef
                                                           namespaceAVTOpt,
                                                           useAttributeSetsAttr,
                                                           spaceAttr, typeAttrOpt, 
-                                                          validationAttrOpt }, 
+                                                          validationAttrOpt, xpathDefaultNamespaceAttrOpt, 
+                                                          expandTextAttrOpt }, 
                                                new ProcessorTemplateElem(),
                                   ElemElement.class /* class object */, 20, true);
     XSLTElementDef xslComment = new XSLTElementDef(this,

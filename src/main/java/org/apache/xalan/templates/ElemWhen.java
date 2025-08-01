@@ -94,8 +94,10 @@ public class ElemWhen extends ElemTemplateElement
 	  return m_xpath_default_namespace;
   }
   
-  // Variable to indicate whether, an attribute 'expand-text' 
-  // is there on xsl:when instruction.
+  /**
+   * Variable to indicate whether, an attribute 'expand-text'
+   * is declared on xsl:when instruction.
+   */
   private boolean m_expand_text_declared;
   
   /**
@@ -124,6 +126,10 @@ public class ElemWhen extends ElemTemplateElement
 	  return m_expand_text;
   }
   
+  /**
+   * Get a boolean value indicating whether, an "expand-text" 
+   * attribute has been declared. 
+   */
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }

@@ -138,8 +138,10 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
          return m_selectExpression;
      }
 
-     // Variable to indicate whether, an attribute 'expand-text' 
-     // is there on xsl:iterate instruction.
+     /**
+      * Variable to indicate whether, an attribute 'expand-text'
+      * is declared on xsl:iterate instruction.
+      */
      private boolean m_expand_text_declared;
 
      /**
@@ -162,6 +164,10 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
    	     return m_expand_text;
      }
      
+     /**
+      * Get a boolean value indicating whether, an "expand-text" 
+      * attribute has been declared. 
+      */
      public boolean getExpandTextDeclared() {
    	     return m_expand_text_declared;
      }

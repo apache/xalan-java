@@ -37,8 +37,10 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemApplyTemplates;
+import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.ElemChoose;
 import org.apache.xalan.templates.ElemCopyOf;
+import org.apache.xalan.templates.ElemElement;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemFunction;
@@ -50,6 +52,8 @@ import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemText;
+import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.ElemWhen;
@@ -5243,6 +5247,9 @@ public class XPathParser
     
     ExpressionNode exprParent = (ExpressionNode)m_sourceLocator;
     if (exprParent instanceof ElemTemplateElement) {
+    	if (exprParent instanceof ElemTextLiteral) {
+    	   exprParent = ((ElemTemplateElement)exprParent).getParentElem();	
+    	}    	
         m_xpathDefaultNamespace = getXPathDefaultNamespace((ElemTemplateElement)exprParent);
     }
 
@@ -7657,7 +7664,25 @@ public class XPathParser
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemNumber)xpathExprXslParentNode).getParentElem()); 
     		}
-    	} 
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemText) {
+    		result = ((ElemText)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemText)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemAttribute) {
+    		result = ((ElemAttribute)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemAttribute)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemElement) {
+    		result = ((ElemElement)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemElement)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}    	
 
     	return result;
     }

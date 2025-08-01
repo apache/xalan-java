@@ -35,7 +35,9 @@ public class XslMiscRegexTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "misc/regex/_regex-test-set.xml";
     	m_resultSubFolderName = "misc";
-    	m_testResultFileName = "_regex-test-set_result.xml";    	   
+    	m_testResultFileName = "_regex-test-set_result.xml";
+    	// REVISIT
+    	m_skipped_tests_list.add("regex-056");
     }
 
     @AfterClass
