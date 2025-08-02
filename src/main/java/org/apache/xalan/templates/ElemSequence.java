@@ -499,11 +499,7 @@ public class ElemSequence extends ElemTemplateElement
 		  else if (getFirstChildElem() == null) {
 			  xslSequenceVal = XString.EMPTYSTRING;
 		  }
-		  else {			  			    	 
-			  int sequenceConstructDtmHandle = transformer.transformToRTF(this);
-			  NodeList nodeList = (new XRTreeFrag(sequenceConstructDtmHandle, xctxt, this)).convertToNodeset();		
-			  xslSequenceVal = new XNodeSetForDOM(nodeList, xctxt);
-			  
+		  else {			  			    	 			  			  
 			  boolean isOnlyElemTextLiteral = false;
 			  boolean isOtherElem = false;
 			  for (ElemTemplateElement elem = getFirstChildElem(); elem != null; elem = elem.getNextSiblingElem()) {
@@ -518,8 +514,30 @@ public class ElemSequence extends ElemTemplateElement
 			  }
 			  
 			  if (isOnlyElemTextLiteral) {
-				 xslSequenceVal = new XSString((XslTransformEvaluationHelper.getStrVal(xslSequenceVal)).trim());	    		  
+				  String str1 = transformer.transformToString(this);
+				  
+				  boolean isExpandText = false;
+				  if (m_expand_text_declared) {
+					  isExpandText = m_expand_text;  
+				  }
+				  else {
+					  ElemTemplateElement elemTemplateElem = getParentElem();      
+					  isExpandText = getExpandTextValue(elemTemplateElem);
+				  }
+				  
+				  if (isExpandText) {					  
+					  str1 = getStrValueAfterExpandTextProcessing(str1.trim(), transformer, m_vars, m_globals_size);
+					  xslSequenceVal = new XSString(str1);
+				  }
+				  else {
+					  xslSequenceVal = new XSString(str1); 
+				  }
 	    	  }
+			  else {
+				 int sequenceConstructDtmHandle = transformer.transformToRTF(this);
+				 NodeList nodeList = (new XRTreeFrag(sequenceConstructDtmHandle, xctxt, this)).convertToNodeset();		
+				 xslSequenceVal = new XNodeSetForDOM(nodeList, xctxt); 
+			  }
 		  }
 
 		  if (xslSequenceVal == null) {

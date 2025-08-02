@@ -20,6 +20,8 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Vector;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
@@ -37,7 +39,93 @@ import org.w3c.dom.DOMException;
  */
 public class ElemComment extends ElemTemplateElement
 {
-    static final long serialVersionUID = -8813199122875770142L;
+  static final long serialVersionUID = -8813199122875770142L;
+      
+  private Vector m_vars;
+  
+  private int m_globals_size;
+  
+  /**
+   * Class field to, represent the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
+  
+  /**
+   * Variable to indicate whether, an attribute 'expand-text'
+   * is declared on xsl:comment instruction.
+   */
+  private boolean m_expand_text_declared;
+  
+  /**
+   * This class field, represents the value of "expand-text" 
+   * attribute.
+   */
+  private boolean m_expand_text;
+
+  /**
+   * Set the value of "expand-text" attribute.
+   *
+   * @param v   Value of the "expand-text" attribute
+   */
+  public void setExpandText(boolean v)
+  {
+	  m_expand_text = v;
+	  m_expand_text_declared = true;
+  }
+
+  /**
+   * Get the value of "expand-text" attribute.
+   *  
+   * @return		  The value of "expand-text" attribute 
+   */
+  public boolean getExpandText() {
+	  return m_expand_text;
+  }
+
+  /**
+   * Get a boolean value indicating whether, an "expand-text" 
+   * attribute has been declared. 
+   */
+  public boolean getExpandTextDeclared() {
+	  return m_expand_text_declared;
+  }
+  
+  /**
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   */
+  public void compose(StylesheetRoot sroot) throws TransformerException {	  
+	  StylesheetRoot.ComposeState cstate = sroot.getComposeState();
+
+	  java.util.Vector vnames = cstate.getVariableNames();
+
+	  m_vars = (Vector)vnames.clone();
+	  m_globals_size = cstate.getGlobalsSize();
+
+	  super.compose(sroot);
+  }
 
   /**
    * Get an int constant identifying the type of element.
@@ -85,6 +173,19 @@ public class ElemComment extends ElemTemplateElement
       // | xsl:attribute
       // ">
       String data = transformer.transformToString(this);
+      
+      boolean isExpandText = false;
+      if (m_expand_text_declared) {
+    	 isExpandText = m_expand_text;  
+      }
+      else {
+         ElemTemplateElement elemTemplateElem = getParentElem();      
+         isExpandText = getExpandTextValue(elemTemplateElem);
+      }
+      
+      if (isExpandText) {
+    	 data = getStrValueAfterExpandTextProcessing(data, transformer, m_vars, m_globals_size);
+      }
 
       transformer.getResultTreeHandler().comment(data);
     }
@@ -147,5 +248,13 @@ public class ElemComment extends ElemTemplateElement
     }
 
     return super.appendChild(newChild);
+  }
+  
+  /**
+   * This after the template's children have been composed.
+   */
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {
+     super.endCompose(sroot);
   }
 }

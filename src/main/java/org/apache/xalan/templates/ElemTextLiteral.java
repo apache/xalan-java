@@ -20,10 +20,8 @@
  */
 package org.apache.xalan.templates;
 
-import java.util.List;
 import java.util.Vector;
 
-import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
@@ -31,10 +29,6 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.serializer.CharacterMapConfig;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.serializer.SerializerBase;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.XPathParser;
-import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
 
 /**
@@ -230,7 +224,7 @@ public class ElemTextLiteral extends ElemTemplateElement
       ElemTemplateElement elemTemplateElem = getParentElem();      
       boolean isExpandText = getExpandTextValue(elemTemplateElem);
       if (isExpandText) {
-         strValue = getStrValueAfterExpandTextProcessing(strValue, transformer);
+         strValue = getStrValueAfterExpandTextProcessing(strValue, transformer, m_vars, m_globals_size);
       }
       
       if (rth instanceof SerializerBase) {    	  
@@ -284,164 +278,15 @@ public class ElemTextLiteral extends ElemTemplateElement
   
   public void endCompose(StylesheetRoot sroot) throws TransformerException
   {    
-    super.endCompose(sroot);
+     super.endCompose(sroot);
   }
   
-  /**
-   * Method definition, to transform the supplied string value for 
-   * expand-text processing.
-   * 
-   * @param strValue						 The supplied string value
-   * @param transformer					     An TransformerImpl object instance	
-   * @return								 The string value after applying 
-   *                                         an XSL expand-text transformation. 
-   * @throws TransformerException
-   */
-  public String getStrValueAfterExpandTextProcessing(String strValue, TransformerImpl transformer) 
-		                                                                                       throws TransformerException {
-	 
-	  String result = strValue;	 	 
-
-	  XPathContext xctxt = transformer.getXPathContext();
-	  int contextNode = xctxt.getCurrentNode();
-
-	  SourceLocator srcLocator = xctxt.getSAXLocator();
-
-	  int i = strValue.indexOf('{');
-	  int j = strValue.indexOf('}');
-	  StringBuffer strBuff = new StringBuffer();
-	  if (i < j) {
-		  List<XMLNSDecl> prefixTable = null;
-		  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();            
-		  if (elemTemplateElement != null) {
-			  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-		  }
-
-		  String str1 = null;
-		  String xpathExprStr = null;
-		  String remainingStr = null;
-		  if (i > -1) {
-			  str1 = strValue.substring(0, i);    		       		   
-			  xpathExprStr = strValue.substring(i + 1, j);
-			  strBuff.append(str1);
-			  remainingStr = strValue.substring(j + 1); 
-		  }
-		  
-		  ElemTemplateElement elemTemplateElem = getParentElem();
-		  
-		  String xpathDefaultNamespace = XPathParser.getXPathDefaultNamespace(elemTemplateElem);
-
-		  // Traverse the string value from left to right, and apply expand-text 
-		  // processing to each substring {...} that is found.
-		  while (i > -1) {
-			  if (prefixTable != null) {
-				  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
-			  }
-			  XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, xpathDefaultNamespace);
-			  if (m_vars != null) {
-				  xpathObj.fixupVariables(m_vars, m_globals_size);
-			  }				 
-
-			  XObject xObj = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-			  String str2 = XslTransformEvaluationHelper.getStrVal(xObj);
-
-			  strBuff.append(str2);
-
-			  i = remainingStr.indexOf('{');
-			  j = remainingStr.indexOf('}');
-			  
-			  if ((i < j) && (i > -1)) {
-				  str1 = remainingStr.substring(0, i);    		       		   
-				  xpathExprStr = remainingStr.substring(i + 1, j);
-				  strBuff.append(str1);
-				  remainingStr = remainingStr.substring(j + 1); 
-			  }
-			  else {
-				  strBuff.append(remainingStr);
-			  }
-		  }
-	  }
-
-	  if (strBuff.length() > 0) {
-		  result = strBuff.toString();
-	  }
-
-	  return result;
+  public Vector getXslVars() {
+     return m_vars;	  
   }
   
-  /**
-   * Method definition, to get an effective value of XSL 'expand-text', 
-   * that needs to be applied.
-   * 
-   * @param elemTemplateElem				The context XSL stylesheet element 
-   * @return								An effective value of XSL 'expand-text' 
-   */
-  public boolean getExpandTextValue(ElemTemplateElement elemTemplateElem) {
-
-  	boolean result = false;
-
-  	if (elemTemplateElem instanceof StylesheetRoot) {
-  		result = ((StylesheetRoot)elemTemplateElem).getExpandText(); 
-  	}
-  	else if (elemTemplateElem instanceof ElemVariable) {
-  		result = ((ElemVariable)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemFunction) {
-  		result = ((ElemFunction)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemTemplate) {
-  		result = ((ElemTemplate)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemApplyTemplates) {
-  		result = ((ElemApplyTemplates)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemForEach) {
-  		result = ((ElemForEach)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemForEachGroup) {
-  		result = ((ElemForEachGroup)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemIterate) {
-  		result = ((ElemIterate)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemValueOf) {
-  		result = ((ElemValueOf)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemCopyOf) {
-  		result = ((ElemCopyOf)elemTemplateElem).getExpandText();  		
-  	}		
-  	else if (elemTemplateElem instanceof ElemLiteralResult) {
-  		result = ((ElemLiteralResult)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemChoose) {
-  		result = ((ElemChoose)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemWhen) {
-  		result = ((ElemWhen)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemOtherwise) {
-  		result = ((ElemOtherwise)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemIf) {
-  		result = ((ElemIf)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemSequence) {
-  		result = ((ElemSequence)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemNumber) {
-  		result = ((ElemNumber)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemText) {
-  		result = ((ElemText)elemTemplateElem).getExpandText();  		
-  	} 
-  	else if (elemTemplateElem instanceof ElemAttribute) {
-  		result = ((ElemAttribute)elemTemplateElem).getExpandText();  		
-  	}
-  	else if (elemTemplateElem instanceof ElemElement) {
-  		result = ((ElemElement)elemTemplateElem).getExpandText();  		
-  	} 
-
-  	return result;
+  public int getXslVarsGlobalSize() {
+	 return m_globals_size; 
   }
   
 }

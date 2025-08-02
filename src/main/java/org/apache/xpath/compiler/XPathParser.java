@@ -39,6 +39,8 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.ElemChoose;
+import org.apache.xalan.templates.ElemComment;
+import org.apache.xalan.templates.ElemCopy;
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemElement;
 import org.apache.xalan.templates.ElemForEach;
@@ -49,6 +51,7 @@ import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
+import org.apache.xalan.templates.ElemPI;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -7622,7 +7625,13 @@ public class XPathParser
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemCopyOf)xpathExprXslParentNode).getParentElem()); 
     		}
-    	}		
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemCopy) {
+    		result = ((ElemCopy)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemCopy)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
     	else if (xpathExprXslParentNode instanceof ElemLiteralResult) {
     		result = ((ElemLiteralResult)xpathExprXslParentNode).getXpathDefaultNamespace();
     		if (result == null) {
@@ -7682,7 +7691,19 @@ public class XPathParser
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemElement)xpathExprXslParentNode).getParentElem()); 
     		}
-    	}    	
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemComment) {
+    		result = ((ElemComment)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemComment)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemPI) {
+    		result = ((ElemPI)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemPI)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
 
     	return result;
     }

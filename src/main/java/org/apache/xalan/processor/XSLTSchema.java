@@ -893,7 +893,8 @@ public class XSLTSchema extends XSLTElementDef
                          charTemplateElements /* elements */,  // %char-template;>
                          new XSLTAttributeDef[]{
                                                   nameAVT_NCNAMERequired,
-                                                  spaceAttr }, 
+                                                  spaceAttr, xpathDefaultNamespaceAttrOpt, 
+                                                  expandTextAttrOpt }, 
                                         new ProcessorTemplateElem(),
                           ElemPI.class /* class object */, 20, true);
     XSLTElementDef xslElement = new XSLTElementDef(this,
@@ -912,7 +913,8 @@ public class XSLTSchema extends XSLTElementDef
                                   Constants.S_XSLNAMESPACEURL, "comment",
                                   null /*alias */,
                                   charTemplateElements /* elements */,  // %char-template;>
-                                  new XSLTAttributeDef[]{ spaceAttr },
+                                  new XSLTAttributeDef[]{ spaceAttr, xpathDefaultNamespaceAttrOpt, 
+                                		                             expandTextAttrOpt },
                                   new ProcessorTemplateElem(),
                                   ElemComment.class /* class object */, 20, true);
     XSLTElementDef xslCopy =
@@ -922,7 +924,8 @@ public class XSLTSchema extends XSLTElementDef
                                                   spaceAttr,
                                                   useAttributeSetsAttr,
                                                   typeAttrOpt,
-                         		                  validationAttrOpt }, 
+                         		                  validationAttrOpt, 
+                         		                  xpathDefaultNamespaceAttrOpt, expandTextAttrOpt }, 
                                         new ProcessorTemplateElem(),
                           ElemCopy.class /* class object */, 20, true);
     XSLTElementDef xslMessage = new XSLTElementDef(this,

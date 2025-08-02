@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <?pi-test This is processing instruction within this stylesheet. 7.?>
+  <!--This is comment within this stylesheet. 5.-->
+</result>

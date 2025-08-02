@@ -58,6 +58,8 @@ import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemCharacterMap;
 import org.apache.xalan.templates.ElemChoose;
+import org.apache.xalan.templates.ElemComment;
+import org.apache.xalan.templates.ElemCopy;
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemElement;
 import org.apache.xalan.templates.ElemForEach;
@@ -69,6 +71,7 @@ import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemOutputCharacter;
+import org.apache.xalan.templates.ElemPI;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemSort;
 import org.apache.xalan.templates.ElemTemplate;
@@ -2642,12 +2645,13 @@ public class TransformerImpl extends Transformer
       String strValue = String.valueOf(chars);      
       boolean isExpandText = elemTextLiteral.getExpandTextValue(elemTextLiteral.getParentElem());
       if (isExpandText) {
-         strValue = elemTextLiteral.getStrValueAfterExpandTextProcessing(strValue, this);
+    	 Vector xslVars = elemTextLiteral.getXslVars();
+    	 int xslVarsGlobalSize = elemTextLiteral.getXslVarsGlobalSize();
+         strValue = t.getStrValueAfterExpandTextProcessing(strValue, this, xslVars, xslVarsGlobalSize);
       }
       
       try
       {
-        // Have to push stuff on for tooling...
         this.pushElemTemplateElement(t);
         
         if (m_serializationHandler instanceof SerializerBase) {
@@ -4369,10 +4373,11 @@ public class TransformerImpl extends Transformer
 	}
 	
 	/**
-	 * This method definition, does depth first traversal of an XSL stylesheet 
-	 * compiled tree, starting from StylesheetRoot object and updates attribute 
-	 * xpath-default-namespace's value of each node from value of its parent node, 
-	 * if the node doesn't have attribute 'xpath-default-namespace' specified. 
+	 * Method definition, to do depth first traversal of an XSL stylesheet 
+	 * compiled styleheet object tree, starting from StylesheetRoot object 
+	 * and updates attribute xpath-default-namespace's value of each node 
+	 * from value of its parent node, if the node doesn't have attribute 
+	 * 'xpath-default-namespace' specified. 
 	 * 
 	 * @param elemTemplateElem						An XSL stylesheet supplied node from where
 	 *                                              the stylesheet traversal starts.
@@ -4507,7 +4512,15 @@ public class TransformerImpl extends Transformer
 					  else {
 						  xpathDefaultNamespace = ((ElemCopyOf)xslElem).getXpathDefaultNamespace();  
 					  }
-				  }				  
+				  }
+				  else if (xslElem instanceof ElemCopy) {
+					  if (((ElemCopy)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemCopy)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemCopy)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }	
 				  else if (xslElem instanceof ElemLiteralResult) {
 					  if (((ElemLiteralResult)xslElem).getXpathDefaultNamespace() == null) {
 						  ((ElemLiteralResult)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
@@ -4611,6 +4624,22 @@ public class TransformerImpl extends Transformer
 						  xpathDefaultNamespace = ((ElemElement)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
+				  else if (xslElem instanceof ElemComment) {
+					  if (((ElemComment)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemComment)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemComment)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemPI) {
+					  if (((ElemPI)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemPI)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemPI)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
 				  
 				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
 				  updateXPathDefaultNamespace(elemTemplateChild, xpathDefaultNamespace);
@@ -4621,8 +4650,7 @@ public class TransformerImpl extends Transformer
 	  }
 	
 	  /**
-	   * Method definition, to update XSL expand-text value on stylesheet 
-	   * elements.
+	   * Method definition, to update XSL expand-text value on stylesheet elements.
 	   * 
 	   * @param elemTemplateElem									The supplied ElemTemplateElement 
 	   *                                                            object.                                    
@@ -4706,7 +4734,15 @@ public class TransformerImpl extends Transformer
 					  else {
 						  expandText = ((ElemCopyOf)xslElem).getExpandText();  
 					  }
-				  }				  
+				  }
+				  else if (xslElem instanceof ElemCopy) {
+					  if (!(((ElemCopy)xslElem).getExpandTextDeclared())) {
+						  ((ElemCopy)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemCopy)xslElem).getExpandText();  
+					  }
+				  }	
 				  else if (xslElem instanceof ElemLiteralResult) {
 					  if (!(((ElemLiteralResult)xslElem).getExpandTextDeclared())) {
 						  ((ElemLiteralResult)xslElem).setExpandText(expandText);
@@ -4785,6 +4821,23 @@ public class TransformerImpl extends Transformer
 					  }
 					  else {
 						  expandText = ((ElemElement)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemComment) {
+					  if (!(((ElemComment)xslElem).getExpandTextDeclared())) {
+						  ((ElemComment)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemComment)xslElem).getExpandText();  
+					  }
+				  }
+				  
+				  else if (xslElem instanceof ElemPI) {
+					  if (!(((ElemPI)xslElem).getExpandTextDeclared())) {
+						  ((ElemPI)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemPI)xslElem).getExpandText();  
 					  }
 				  }
 
