@@ -1456,6 +1456,7 @@ public class ElemLiteralResult extends ElemUse
             // Process xsl:type & xsl:validation attributes, if present
             
             QName type = getType();
+            
             String validation = getValidation();
             
             if ((type != null) && (validation != null)) {

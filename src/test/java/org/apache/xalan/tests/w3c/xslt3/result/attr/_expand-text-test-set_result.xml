@@ -1,22 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T09:37:33Z" fail="43" name="expand-text" pass="19" skipped="0" statusUnknown="0" totalRun="62">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T16:04:20Z" fail="37" name="expand-text" pass="25" skipped="0" statusUnknown="0" totalRun="62">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
    <testResult status="pass" testName="cvt-004"/>
    <testResult status="pass" testName="cvt-005"/>
    <testResult status="pass" testName="cvt-006"/>
-   <testResult status="fail" testName="cvt-007">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-008">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out a="{1,2} {3,4}{5,6}" b="{1,2} {3,4}{5,6}"/&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="cvt-009">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out a="{1,2} {3,4}{5,6}" b="{1,2} {3,4}{5,6}"/&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="cvt-010">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out a="{1,2} {3,4}{5,6}" b="{1,2} {3,4}{5,6}"/&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="cvt-007"/>
+   <testResult status="pass" testName="cvt-008"/>
+   <testResult status="pass" testName="cvt-009"/>
+   <testResult status="pass" testName="cvt-010"/>
    <testResult status="pass" testName="cvt-011"/>
    <testResult status="pass" testName="cvt-012"/>
    <testResult status="fail" testName="cvt-013">
@@ -61,15 +53,9 @@
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="cvt-029">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-030">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-031">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="cvt-029"/>
+   <testResult status="fail" testName="cvt-030"/>
+   <testResult status="pass" testName="cvt-031"/>
    <testResult status="fail" testName="cvt-032">
       <outResult>
          <errTrace>Variable $stylesheet.attributes accessed before it is bound!.</errTrace>

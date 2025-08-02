@@ -274,8 +274,7 @@ public class ElemElement extends ElemUse
 
  	SerializationHandler rhandler = transformer.getSerializationHandler();
     XPathContext xctxt = transformer.getXPathContext();
-    int sourceNode = xctxt.getCurrentNode();
-    
+    int sourceNode = xctxt.getCurrentNode();    
     
     String nodeName = m_name_avt == null ? null : m_name_avt.evaluate(xctxt, sourceNode, this);
 

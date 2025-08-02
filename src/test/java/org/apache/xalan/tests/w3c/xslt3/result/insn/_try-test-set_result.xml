@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T09:35:15Z" fail="26" name="try" pass="11" skipped="5" statusUnknown="0" totalRun="37">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T16:02:38Z" fail="26" name="try" pass="11" skipped="5" statusUnknown="0" totalRun="37">
    <testResult status="pass" testName="try-001"/>
    <testResult status="fail" testName="try-002">
       <outResult/>
@@ -37,12 +37,7 @@
    <testResult status="fail" testName="try-018">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="try-019">
-      <outResult>
-         <errTrace>FODC0002 : The data from uri 'rubbish.xml' cannot be retrieved.</errTrace>
-         <errTrace>FODC0002 : The data from uri 'rubbish.xml' cannot be retrieved.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="try-019"/>
    <testResult status="pass" testName="try-020"/>
    <testResult status="fail" testName="try-021">
       <outResult/>

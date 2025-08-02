@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T09:37:27Z" fail="17" name="analyze-string" pass="36" skipped="5" statusUnknown="0" totalRun="53">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T16:04:19Z" fail="16" name="analyze-string" pass="37" skipped="5" statusUnknown="0" totalRun="53">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -52,9 +52,7 @@
 &lt;/ales&gt;</outResult>
    </testResult>
    <testResult status="skipped" testName="analyze-string-090a" xsltVersion="xslt 2.0 only"/>
-   <testResult status="fail" testName="analyze-string-090b">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="analyze-string-090b"/>
    <testResult status="skipped" testName="analyze-string-091a" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="analyze-string-091b"/>
    <testResult status="fail" testName="analyze-string-092">
@@ -66,9 +64,7 @@
    </testResult>
    <testResult status="pass" testName="analyze-string-093"/>
    <testResult status="pass" testName="analyze-string-094"/>
-   <testResult status="fail" testName="analyze-string-095">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="analyze-string-095"/>
    <testResult status="fail" testName="analyze-string-096"/>
    <testResult status="fail" testName="analyze-string-097">
       <outResult>
@@ -80,15 +76,9 @@
          <errTrace>XTTE1540 : An error occured while evaluating an XSL stylesheet xsl:copy-of instruction.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="analyze-string-098">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="analyze-string-098"/>
    <testResult status="fail" testName="analyze-string-099">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="analyze-string-100">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: XPTY0004 : The required item type of the first argument of function fn:regex-group() is xs:integer.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="analyze-string-100"/>
 </testrun>

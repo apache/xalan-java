@@ -1,11 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T09:37:24Z" fail="11" name="position" pass="126" skipped="0" statusUnknown="1" totalRun="138">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T16:04:19Z" fail="11" name="position" pass="126" skipped="0" statusUnknown="1" totalRun="138">
    <testResult status="pass" testName="position-0101"/>
    <testResult status="fail" testName="position-0102"/>
-   <testResult status="fail" testName="position-0103">
-      <outResult>
-         <errTrace>xsl:merge-source requires attribute: select</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="position-0103"/>
    <testResult status="pass" testName="position-0201"/>
    <testResult status="pass" testName="position-0202"/>
    <testResult status="pass" testName="position-0301"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T09:35:22Z" fail="28" name="iterate" pass="16" skipped="0" statusUnknown="0" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T16:02:41Z" fail="28" name="iterate" pass="16" skipped="0" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -104,11 +104,7 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;12345678910&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="iterate-026"/>
-   <testResult status="fail" testName="iterate-027">
-      <outResult>
-         <errTrace>XTSE3130 : Within xsl:iterate, xsl:param and xsl:with-param names at position 1 are not same.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="iterate-027"/>
    <testResult status="fail" testName="iterate-028">
       <outResult>
          <errTrace>XPST0003 : An XPath expression /out/text()[. = "exit at 12 of 76"] has syntax error. Unknown op code : 0.</errTrace>

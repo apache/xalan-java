@@ -43,7 +43,7 @@ import xml.xpath31.processor.types.XSString;
  */
 public class Equals extends Operation
 {
-    static final long serialVersionUID = -2658315633903426134L;
+  static final long serialVersionUID = -2658315633903426134L;
 
   /**
    * Apply the operation to two operands, and return the result.
@@ -68,6 +68,45 @@ public class Equals extends Operation
 	  if (right instanceof XPathArray) {
 		 right = ((XPathArray)right).atomize(); 
 	  }
+	  
+	  XObject lObj = null;
+	  XObject rObj = null;
+	  
+	  if ((left instanceof XMLNodeCursorImpl) && ((right instanceof XString) || (right instanceof XSString))) {
+		  lObj = left;
+		  rObj = right;
+	  }
+	  else if ((right instanceof XMLNodeCursorImpl) && ((left instanceof XString) || (left instanceof XSString))) {
+		  lObj = right;
+		  rObj = left;
+	  }
+	  
+	  if (lObj != null) {		  
+		  if (rObj instanceof XString) {
+			  java.lang.String strL = lObj.str();
+			  java.lang.String strR = rObj.str();			
+			  if (strL.equals(strR)) {
+				  result = XBoolean.S_TRUE; 
+			  }
+			  else {
+				  result = XBoolean.S_FALSE;
+			  }
+
+			  return result;
+		  }
+		  else if (rObj instanceof XSString) {
+			  java.lang.String strL = lObj.str();
+			  java.lang.String strR = ((XSString)rObj).stringValue();
+			  if (strL.equals(strR)) {
+				  result = XBoolean.S_TRUE; 
+			  }
+			  else {
+				  result = XBoolean.S_FALSE;
+			  }
+
+			  return result;
+		  }
+      }
 	  	  
 	  if (right instanceof ResultSequence) {
 		 if (left instanceof XNumber) {

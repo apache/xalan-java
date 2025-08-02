@@ -618,8 +618,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		Document expectedResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStrBuff.toString()).getBytes()));    			    			
 
 		Document verificationXslDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(verificationXslStylesheetStr.getBytes()));
+		
+		Object xslInitTemplateVal = m_xslTransformerFactory.getAttribute(XalanProperties.INIT_TEMPLATE);
+		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, null);
 
 		Transformer transformer = m_xslTransformerFactory.newTransformer(new DOMSource(verificationXslDoc));
+		
+		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, xslInitTemplateVal);
 
 		StringWriter strWriter = new StringWriter();
 		

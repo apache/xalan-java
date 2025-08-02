@@ -131,10 +131,10 @@ public class XSLTSchema extends XSLTElementDef
                                            XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.WARNING);
     
     XSLTAttributeDef expandTextAttrOpt = new XSLTAttributeDef(null, "expand-text",
-                                           XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
+                                           XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     
     XSLTAttributeDef xslExpandTextAttrOpt = new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "expand-text",
-                                           XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
+                                           XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     
     // Required.
     // xsl:output-character                                     

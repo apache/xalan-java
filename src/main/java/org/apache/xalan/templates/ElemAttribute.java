@@ -315,9 +315,23 @@ public class ElemAttribute extends ElemElement
             	  // the value of an attribute for emitting to XSLT transformation's 
             	  // output.          
                   attrVal = transformer.transformToString(this);
+                  
+                  boolean isExpandText = false;
+                  if (m_expand_text_declared) {
+                	  isExpandText = m_expand_text;  
+                  }
+                  else {
+                      ElemTemplateElement elemTemplateElem = getParentElem();      
+                      isExpandText = getExpandTextValue(elemTemplateElem);
+                  }
+                  
+                  if (isExpandText) {
+                	  attrVal = getStrValueAfterExpandTextProcessing(attrVal, transformer, m_vars, m_globals_size);
+                  }
               }
               
               QName type = getType();
+              
               String validation = getValidation();
               
               if ((type != null) && (validation != null)) {
@@ -326,22 +340,21 @@ public class ElemAttribute extends ElemElement
               }
               
               if (type != null) {
-            	  // An xsl:attribute instruction has an attribute "type".
+            	  // An xsl:attribute instruction, has an attribute "type"
             	  
-            	  // An attribute node constructed needs to be validated
-            	  // by this type.
+            	  // An attribute node constructed, needs to be validated by this type
             	  
             	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(type.getNamespace())) {
-            		 // An attribute value needs to be validated with an XML Schema built-in type.    			 
+            		 // An attribute value, needs to be validated with an XML Schema built-in type    			 
           			 validateXslElementAttributeResultWithBuiltInSchemaType(attrVal, type, xctxt, ATTRIBUTE); 
             	  }
             	  else {
             		 XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
          			 
          			 if (xsModel != null) {
-         				// An XML input document has been validated with a schema.
+         				// An XML input document has been validated with a schema
          				 
-         				// An attribute value needs to be validated with an XML Schema 
+         				// An attribute value, needs to be validated with an XML Schema 
          				// user-defined type.
          				 
          				XSTypeDefinition typeDefn = xsModel.getTypeDefinition(type.getLocalName(), type.getNamespace());
@@ -369,7 +382,7 @@ public class ElemAttribute extends ElemElement
             	  }
               }
               else if (validation != null) {
-             	 // An xsl:attribute instruction has an attribute "validation".
+             	 // An xsl:attribute instruction has an attribute "validation"
             	  
              	 // An attribute node constructed needs to be validated
              	 // by an attribute declaration available in the schema.
