@@ -20,19 +20,29 @@
  */
 package org.apache.xpath.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * The '>' operation expression executer.
  */
 public class Gt extends Operation
 {
-    static final long serialVersionUID = 8927078751014375950L;
+   static final long serialVersionUID = 8927078751014375950L;
 
   /**
    * Apply the operation to two operands, and return the result.
@@ -50,6 +60,84 @@ public class Gt extends Operation
   {
 	  
       XObject result = null;
+      
+      if (left instanceof XPathArray) {
+		  left = ((XPathArray)left).atomize();
+	  }
+
+	  if (right instanceof XPathArray) {
+		  right = ((XPathArray)right).atomize(); 
+	  }
+	  
+	  XObject lObj = null;
+	  XObject rObj = null;
+	  
+	  List<java.lang.String> strList = new ArrayList<java.lang.String>();
+	  
+	  if ((left instanceof XMLNodeCursorImpl) && ((right instanceof XString) || (right instanceof XSString))) {
+		  lObj = left;
+		  rObj = right;
+		  
+		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
+		  DTMManager dtmManager = nodeRef.getDTMManager();
+		  DTMCursorIterator iter = nodeRef.iter();
+		  int nextNode = DTM.NULL;
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl nodeRef1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String nodeStrValue = nodeRef1.str();
+			  strList.add(nodeStrValue);
+		  }
+		  
+		  lObj = lObj.getFresh();
+		  left = left.getFresh();
+	  }
+	  else if ((right instanceof XMLNodeCursorImpl) && ((left instanceof XString) || (left instanceof XSString))) {
+		  lObj = right;
+		  rObj = left;
+		  
+		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
+		  DTMManager dtmManager = nodeRef.getDTMManager();
+		  DTMCursorIterator iter = nodeRef.iter();
+		  int nextNode = DTM.NULL;
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl nodeRef1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String nodeStrValue = nodeRef1.str();
+			  strList.add(nodeStrValue);
+		  }
+		  
+		  lObj = lObj.getFresh();
+		  right = right.getFresh();
+	  }
+	  
+	  if (strList.size() > 0) {		  
+		  if (rObj instanceof XString) {
+			  java.lang.String strR = rObj.str();			
+			  for (int i = 0; i < strList.size(); i++) {
+				 java.lang.String str2 = strList.get(i);
+				 if (str2.compareTo(strR) > 0) {
+					return XBoolean.S_TRUE; 
+				 }
+			  }
+			  
+			  return XBoolean.S_FALSE;
+		  }
+		  else if (rObj instanceof XSString) {
+			  java.lang.String strR = ((XSString)rObj).stringValue();
+			  for (int i = 0; i < strList.size(); i++) {
+				  java.lang.String str2 = strList.get(i);
+				  if (str2.compareTo(strR) > 0) {
+					  return XBoolean.S_TRUE; 
+				  }
+			  }
+
+			  return XBoolean.S_FALSE;
+		  }
+      }
+	  else if ((lObj != null) && (strList.size() == 0)) {
+		  result = XBoolean.S_FALSE;
+		  
+		  return result;
+	  }
   	  
 	  if (right instanceof ResultSequence) {
 		 if (left instanceof XNumber) {

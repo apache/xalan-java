@@ -1119,20 +1119,22 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  // xsl:for-each-group's group-starting-with attribute.
 	  
 	  int noOfGroups = xslForEachGroupStartingWith.size();
-	  List<Integer> lastGroup = xslForEachGroupStartingWith.get(noOfGroups - 1);
-	  int lastGroupSize = lastGroup.size();
-	  int lastNodeHandleOfLastGroup = lastGroup.get(lastGroupSize - 1);
-	  	  
-	  List<Integer> groupNodeHandles = new ArrayList<Integer>();
-	  for (int idx2 = 0; idx2 < allNodeHandleList.size(); idx2++) {            	   
-		  if (lastNodeHandleOfLastGroup < allNodeHandleList.get(idx2)) {
-			  groupNodeHandles.add(allNodeHandleList.get(idx2));  
-		  }
-	  }
+	  if (noOfGroups > 0) {
+		  List<Integer> lastGroup = xslForEachGroupStartingWith.get(noOfGroups - 1);
+		  int lastGroupSize = lastGroup.size();
+		  int lastNodeHandleOfLastGroup = lastGroup.get(lastGroupSize - 1);
 
-	  if (groupNodeHandles.size() > 0) {
-		  xslForEachGroupStartingWith.add(groupNodeHandles);
-	  }
+		  List<Integer> groupNodeHandles = new ArrayList<Integer>();
+		  for (int idx2 = 0; idx2 < allNodeHandleList.size(); idx2++) {            	   
+			  if (lastNodeHandleOfLastGroup < allNodeHandleList.get(idx2)) {
+				  groupNodeHandles.add(allNodeHandleList.get(idx2));  
+			  }
+		  }
+		  
+		  if (groupNodeHandles.size() > 0) {
+			  xslForEachGroupStartingWith.add(groupNodeHandles);
+		  }
+	  }	  
   }
 
   /**
@@ -1238,17 +1240,19 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  // Getting node handles of the last group, for xsl:for-each-group's 
 	  // group-ending-with attribute.
 	  
-	  int temp = grpEndNodeHandles.size();             
-	  int grpEndNodeHandle = grpEndNodeHandles.get(temp - 1);
-	  List<Integer> groupNodeHandles = new ArrayList<Integer>();
-	  for (int idx2 = 0; idx2 < allNodeHandleList.size(); idx2++) {            	   
-		  if (allNodeHandleList.get(idx2) > grpEndNodeHandle) {
-			  groupNodeHandles.add(allNodeHandleList.get(idx2));  
+	  int temp = grpEndNodeHandles.size();
+	  if (temp > 0) {
+		  int grpEndNodeHandle = grpEndNodeHandles.get(temp - 1);
+		  List<Integer> groupNodeHandles = new ArrayList<Integer>();
+		  for (int idx2 = 0; idx2 < allNodeHandleList.size(); idx2++) {            	   
+			  if (allNodeHandleList.get(idx2) > grpEndNodeHandle) {
+				  groupNodeHandles.add(allNodeHandleList.get(idx2));  
+			  }
 		  }
-	  }
-	  
-	  if (groupNodeHandles.size() > 0) {
-		  xslForEachGroupEndingWith.add(groupNodeHandles);
+
+		  if (groupNodeHandles.size() > 0) {
+			  xslForEachGroupEndingWith.add(groupNodeHandles);
+		  }
 	  }
   }
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T16:02:37Z" fail="25" name="apply-templates" pass="21" skipped="2" statusUnknown="0" totalRun="46">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-03T11:02:08Z" fail="25" name="apply-templates" pass="21" skipped="4" statusUnknown="0" totalRun="46">
    <testResult status="fail" testName="apply-templates-001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
 &#13;
@@ -152,6 +152,8 @@
    </testResult>
    <testResult status="pass" testName="conflict-resolution-0702"/>
    <testResult status="pass" testName="conflict-resolution-0703"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0801"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0802"/>
    <testResult status="pass" testName="conflict-resolution-0901"/>
    <testResult status="fail" testName="conflict-resolution-1001"/>
    <testResult status="fail" testName="conflict-resolution-1101"/>

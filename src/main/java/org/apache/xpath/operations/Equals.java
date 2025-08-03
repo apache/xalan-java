@@ -20,6 +20,9 @@
  */
 package org.apache.xpath.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -72,20 +75,47 @@ public class Equals extends Operation
 	  XObject lObj = null;
 	  XObject rObj = null;
 	  
+	  List<java.lang.String> strList = new ArrayList<java.lang.String>();
+	  
 	  if ((left instanceof XMLNodeCursorImpl) && ((right instanceof XString) || (right instanceof XSString))) {
 		  lObj = left;
 		  rObj = right;
+		  
+		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
+		  DTMManager dtmManager = nodeRef.getDTMManager();
+		  DTMCursorIterator iter = nodeRef.iter();
+		  int nextNode = DTM.NULL;
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl nodeRef1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String nodeStrValue = nodeRef1.str();
+			  strList.add(nodeStrValue);
+		  }
+		  
+		  lObj = lObj.getFresh();
+		  left = left.getFresh();
 	  }
 	  else if ((right instanceof XMLNodeCursorImpl) && ((left instanceof XString) || (left instanceof XSString))) {
 		  lObj = right;
 		  rObj = left;
+		  
+		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
+		  DTMManager dtmManager = nodeRef.getDTMManager();
+		  DTMCursorIterator iter = nodeRef.iter();
+		  int nextNode = DTM.NULL;
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl nodeRef1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String nodeStrValue = nodeRef1.str();
+			  strList.add(nodeStrValue);
+		  }
+		  
+		  lObj = lObj.getFresh();
+		  right = right.getFresh();
 	  }
 	  
-	  if (lObj != null) {		  
+	  if (strList.size() > 0) {			  
 		  if (rObj instanceof XString) {
-			  java.lang.String strL = lObj.str();
 			  java.lang.String strR = rObj.str();			
-			  if (strL.equals(strR)) {
+			  if (strList.contains(strR)) {
 				  result = XBoolean.S_TRUE; 
 			  }
 			  else {
@@ -95,9 +125,8 @@ public class Equals extends Operation
 			  return result;
 		  }
 		  else if (rObj instanceof XSString) {
-			  java.lang.String strL = lObj.str();
 			  java.lang.String strR = ((XSString)rObj).stringValue();
-			  if (strL.equals(strR)) {
+			  if (strList.contains(strR)) {
 				  result = XBoolean.S_TRUE; 
 			  }
 			  else {
@@ -107,6 +136,11 @@ public class Equals extends Operation
 			  return result;
 		  }
       }
+	  else if ((lObj != null) && (strList.size() == 0)) {
+		  result = XBoolean.S_FALSE;
+		  
+		  return result;
+	  }
 	  	  
 	  if (right instanceof ResultSequence) {
 		 if (left instanceof XNumber) {

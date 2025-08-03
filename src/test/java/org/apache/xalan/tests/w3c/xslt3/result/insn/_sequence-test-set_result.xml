@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-02T16:02:41Z" fail="18" name="sequence" pass="8" skipped="0" statusUnknown="1" totalRun="27">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-03T11:02:19Z" fail="18" name="sequence" pass="7" skipped="1" statusUnknown="1" totalRun="26">
    <testResult status="fail" testName="sequence-0101"/>
    <testResult status="fail" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -34,7 +34,7 @@
    <testResult status="pass" testName="sequence-0117"/>
    <testResult status="pass" testName="sequence-0118"/>
    <testResult status="fail" testName="sequence-0119"/>
-   <testResult status="pass" testName="sequence-0120"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="sequence-0120"/>
    <testResult status="pass" testName="sequence-0121"/>
    <testResult status="fail" testName="sequence-0122"/>
    <testResult status="fail" testName="sequence-0123"/>
