@@ -6940,17 +6940,26 @@ public class XPathParser
  		  while ((m_token != null) && !tokenIs(')')) {
  			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
  			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
- 			    consumeExpected(':');
- 			    
- 			    populateSequenceTypeData(arrayItemSequenceType);
- 			 
+ 			    consumeExpected(':'); 			    
+ 			    populateSequenceTypeData(arrayItemSequenceType); 			 
  			    nextToken();
  		     }
+ 			 else if (tokenIs("map")) {
+ 				XPathSequenceTypeExpr xpathSequenceTypeExpr2 = new XPathSequenceTypeExpr();  
+				parseXdmMapSequenceType(xpathSequenceTypeExpr2, true);
+				SequenceTypeMapTest seqTypeMapTest = xpathSequenceTypeExpr2.getSequenceTypeMapTest();
+				arrayItemSequenceType.setSequenceTypeMapTest(seqTypeMapTest);
+ 			 }
+ 			 else if (tokenIs("array")) {
+ 				XPathSequenceTypeExpr xpathSequenceTypeExpr2 = new XPathSequenceTypeExpr();  
+				parseXdmArraySequenceType(xpathSequenceTypeExpr2, true);
+				SequenceTypeArrayTest seqTypeArrTest = xpathSequenceTypeExpr2.getSequenceTypeArrayTest();
+				arrayItemSequenceType.setSequenceTypeArrayTest(seqTypeArrTest);
+ 			 }
  		  }
  		  
- 		  consumeExpected(')'); 		  
- 		  if (isNested) {
- 			 consumeExpected(')');  
+ 		  if (!tokenIs(null)) {
+ 		     consumeExpected(')');
  		  }
  		  
  		  sequenceTypeArrayTest.setArrayItemTypeInfo(arrayItemSequenceType);  	    	  
@@ -6959,7 +6968,7 @@ public class XPathParser
    }
 
    /**
-    * This method is used by XPath parse of map and array sequence 
+    * Method definition, to support XPath parse of map and array sequence
     * type expressions.
     */
    private void populateSequenceTypeData(SequenceTypeData seqTypeData) throws TransformerException {
