@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<doc xmlns="http://ns0">
+	<item attr="atr1">
+	   <subitem>a</subitem>
+	</item>
+	<item attr="atr2">
+	   <subitem>b</subitem>
+	</item>
+	<item attr="atr3">
+	   <subitem>c</subitem>
+	</item>
+	<str>
+	   <substr>hello 1</substr>
+	</str>
+	<str>
+	   <substr>hello 2</substr>
+	</str>
+	<str>
+	   <substr>hello 3</substr>
+	</str>
+</doc>
+  

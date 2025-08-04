@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <subitem>a</subitem>
+  <subitem>b</subitem>
+  <subitem>c</subitem>
+  <substr>hello 1</substr>
+  <substr>hello 2</substr>
+  <substr>hello 3</substr>
+</result>

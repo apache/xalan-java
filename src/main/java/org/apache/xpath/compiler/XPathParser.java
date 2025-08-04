@@ -5781,7 +5781,7 @@ public class XPathParser
   {
 	  
 	if (m_xpathDefaultNamespace != null) {
-	   mutateTokenQueueXPathMatchPattern();	
+	   mutateTokenQueueXPathMatchPattern();
 	}
 
     while (true)
@@ -5924,10 +5924,9 @@ public class XPathParser
    */
   protected void RelativePathPattern()
               throws javax.xml.transform.TransformerException
-  {
-
+  {	      
     // Caller will have consumed any '/' or '//' preceding the
-    // RelativePathPattern, so let StepPattern know it can't begin with a '/'
+    // RelativePathPattern, so let StepPattern know it can't begin with a '/' 
     boolean trailingSlashConsumed = StepPattern(false);
 
     while (tokenIs('/'))
@@ -7764,28 +7763,54 @@ public class XPathParser
     			                                                   || m_expression.contains("(") 
     			                                                   || m_expression.contains(")") 
     			                                                   || m_expression.contains("@"))) {    		
-    		// REVISIT : This implementation supports simple XPath step 
-    		// and union patterns.
+    		// REVISIT : This implementation supports simple XPath step and union patterns, 
+    		// when using XSL attribute xpath-default-namespace.
 
-    		String[] strArr = null;
+    		String[] strArr = null;    		
     		if (m_expression.contains("|")) {
-    			strArr = m_expression.split("\\|");
+    			strArr = m_expression.split("\\|");    			
+    			List<String> strList = new ArrayList<String>();    			
+    			for (int i = 0; i < strArr.length; i++) {
+    				String strValue = (strArr[i]).trim();
+    				if (strValue.contains("/")) {
+    					String[] strArr1 = strValue.split("/");
+    	    			for (int j = 0; j < strArr1.length; j++) {
+    	    				String strValue2 = (strArr1[j]).trim();
+    	    				strList.add(m_xpathDefaultNamespace + ":" + strValue2);
+    	    				if (j < (strArr1.length - 1)) {
+    	    					strList.add("/");
+    	    				}
+    	    			}
+    				}
+    				else {
+    					char chr = strValue.charAt(0);
+    					String suffixStr1 = strValue.substring(1);
+    					String str1 = ((chr == '/') ? ("/" + m_xpathDefaultNamespace + ":" + suffixStr1) : (m_xpathDefaultNamespace + ":" + strValue)); 
+    					strList.add(str1);
+    				}
+    				
+    				if (i < (strArr.length - 1)) {
+    					strList.add("|");
+    				}
+    			}
 
-    			int newArrSize = strArr.length + (strArr.length - 1);
+    			strArr = strList.toArray(strArr);
+    		}
+    		else if (m_expression.contains("/")) {
+    		    strArr = m_expression.split("/");
+    		    
+    		    int newArrSize = strArr.length + (strArr.length - 1);
     			String[] strArr1 = new String[newArrSize];
     			int j = 0;
     			for (int i = 0; i < strArr.length; i++) {
     				String strValue = (strArr[i]).trim();
-    				char chr = strValue.charAt(0);
-    				String suffixStr1 = strValue.substring(1);
-    				strArr1[j++] = ((chr == '/') ? ("/" + m_xpathDefaultNamespace + ":" + suffixStr1) : 
-    					                                                                      (m_xpathDefaultNamespace + ":" + strValue));
+    				strArr1[j++] = (m_xpathDefaultNamespace + ":" + strValue);
     				if (i < (strArr.length - 1)) {
-    					strArr1[j++] = "|"; 
+    					strArr1[j++] = "/"; 
     				}
     			}
 
-    			strArr = strArr1; 
+    			strArr = strArr1;
     		}
     		else {
     			char chr = m_expression.charAt(0);
@@ -7801,7 +7826,15 @@ public class XPathParser
     		int j = 0;
     		for (int i = 0; i < strArr.length; i++) {
     			String strValue = strArr[i];
-    			if (!"|".equals(strValue)) {
+    			if ("|".equals(strValue)) {
+    				tokenQueue.addElement("|");
+    				j++;
+    			}
+    			else if ("/".equals(strValue)) {
+    				tokenQueue.addElement("/");
+    				j++;
+    			}
+    			else {
     				if (strValue.startsWith("/")) {
     				    tokenQueue.addElement("/");    				    
     				    String strValueSuffix = strValue.substring(1);
@@ -7818,11 +7851,7 @@ public class XPathParser
     					tokenQueue.addElement(strValue.substring(j1 + 1));
     					j += 3;
     				}    				    				
-    			}
-    			else {
-    				tokenQueue.addElement("|");
-    				j++;
-    			}
+    			}    			
     		}
 
     		tokenQueue.setSize(j);

@@ -768,7 +768,7 @@ public class TransformerImpl extends Transformer
 		m_errorHandler.fatalError(ex);
 		
 		return;
-	}
+	}		
 	
 	updateXPathDefaultNamespace(m_stylesheetRoot, m_stylesheetRoot.getXpathDefaultNamespace());
 	
@@ -4427,20 +4427,25 @@ public class TransformerImpl extends Transformer
 							  */
 							 xpathPatternStr = ((xpathPatternStr.startsWith("/")) ? xpathPatternStr.substring(1) : 
 								                                                                            xpathPatternStr);
+							 if (srcLocator == null) {
+								srcLocator = (SourceLocator)elemTemplate;
+							 }							 
+							 
 							 matchXPath = new XPath(xpathPatternStr, srcLocator, xctxt.getNamespaceContext(), 
 									                                                                        XPath.MATCH, null, xpathDefaultNamespace);
 							 elemTemplate.setMatch(matchXPath);
 
-							 // Modify XPath pattern hashtable, with the modified xsl:template object.						 
+							 // Modify XPath pattern hashtable, with the modified xsl:template object						 
 							 TemplateList xslTemplateList = m_stylesheetRoot.getTemplateListComposed();
 							 Hashtable patternTable = xslTemplateList.getPatternTable();						 
 							 Expression matchExpr = matchXPath.getExpression();
 							 if (matchExpr instanceof StepPattern) {
 								 StepPattern stepPattern = (StepPattern)matchExpr;
+								 String targetStr = stepPattern.getTargetString();
 								 TemplateSubPatternAssociation templatePatternAssoc = new TemplateSubPatternAssociation(elemTemplate, 
-										                                                                                          stepPattern, xpathPatternStr);
+										                                                                                          stepPattern, targetStr);
 
-								 patternTable.put(xpathPatternStr, templatePatternAssoc);
+								 patternTable.put(targetStr, templatePatternAssoc);
 							 }
 							 else if (matchExpr instanceof UnionPattern) {
 								 UnionPattern xpathUnionPattern = (UnionPattern)matchExpr;
