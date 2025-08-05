@@ -2338,9 +2338,11 @@ public class ElemTemplateElement extends UnImplNode
 
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
+	  StringBuffer strBuff = new StringBuffer();
+	  
 	  int i = strValue.indexOf('{');
 	  int j = strValue.indexOf('}');
-	  StringBuffer strBuff = new StringBuffer();
+	  
 	  if (i < j) {
 		  List<XMLNSDecl> prefixTable = null;
 		  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();            
@@ -2352,10 +2354,22 @@ public class ElemTemplateElement extends UnImplNode
 		  String xpathExprStr = null;
 		  String remainingStr = null;
 		  if (i > -1) {
-			  str1 = strValue.substring(0, i);    		       		   
-			  xpathExprStr = strValue.substring(i + 1, j);
-			  strBuff.append(str1);
-			  remainingStr = strValue.substring(j + 1); 
+			  str1 = strValue.substring(0, i);
+			  if ((strValue.charAt(i + 1) == '{') && (strValue.charAt(j + 1) == '}')) {
+				 /**
+				  * The substring with form {{abc}} is an XSL expand-text escape
+				  * sequence, and results in an output {abc} without evaluating
+				  * an XPath expression.
+				  */
+				 str1 = (str1 + strValue.substring(i + 1, j + 1));
+				 remainingStr = strValue.substring(j + 2);
+			  }
+			  else {
+			     xpathExprStr = strValue.substring(i + 1, j);
+			     remainingStr = strValue.substring(j + 1);
+			  }
+			  
+			  strBuff.append(str1);			   
 		  }
 		  
 		  ElemTemplateElement elemTemplateElem = getParentElem();
@@ -2365,27 +2379,37 @@ public class ElemTemplateElement extends UnImplNode
 		  // Traverse the string value from left to right, and apply expand-text 
 		  // processing to each substring {...} that is found.
 		  while (i > -1) {
-			  if (prefixTable != null) {
-				  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+			  if (xpathExprStr != null) {
+				  if (prefixTable != null) {
+					  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+				  }
+				  XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, xpathDefaultNamespace);
+				  if (vars != null) {
+					  xpathObj.fixupVariables(vars, varsGlobalsSize);
+				  }				 
+
+				  XObject xObj = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+				  String str2 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+				  strBuff.append(str2);
 			  }
-			  XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, xpathDefaultNamespace);
-			  if (vars != null) {
-				  xpathObj.fixupVariables(vars, varsGlobalsSize);
-			  }				 
-
-			  XObject xObj = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-			  String str2 = XslTransformEvaluationHelper.getStrVal(xObj);
-
-			  strBuff.append(str2);
 
 			  i = remainingStr.indexOf('{');
 			  j = remainingStr.indexOf('}');
 			  
-			  if ((i < j) && (i > -1)) {
-				  str1 = remainingStr.substring(0, i);    		       		   
-				  xpathExprStr = remainingStr.substring(i + 1, j);
+			  if ((i < j) && (i > -1)) {				  
+				  str1 = remainingStr.substring(0, i);
+				  if ((remainingStr.charAt(i + 1) == '{') && (remainingStr.charAt(j + 1) == '}')) {
+					 // An XSL expand-text escape sequence
+					 str1 = (str1 + remainingStr.substring(i + 1, j + 1));
+					 remainingStr = remainingStr.substring(j + 2);
+				  }
+				  else {
+				     xpathExprStr = remainingStr.substring(i + 1, j);
+				     remainingStr = remainingStr.substring(j + 1);
+				  }
+				  
 				  strBuff.append(str1);
-				  remainingStr = remainingStr.substring(j + 1); 
 			  }
 			  else {
 				  strBuff.append(remainingStr);

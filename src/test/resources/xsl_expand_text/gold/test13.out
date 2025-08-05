@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <a>hello {1 + 2} there. 3 is nice</a>
+  <b>hello {{1 + 2}} there. {1 + 2} is nice</b>
+  <c>hello {1 + $x} there. 6 is nice</c>
+</result>

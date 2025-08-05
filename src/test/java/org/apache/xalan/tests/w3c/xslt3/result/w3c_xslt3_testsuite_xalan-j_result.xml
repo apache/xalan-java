@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-08-04T16:31:44Z" desc="W3C XSLT 3.0 test suite results" fail="804" pass="1448" skipped="43" success="63.79%" totalRun="2270" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-08-05T11:47:28Z" desc="W3C XSLT 3.0 test suite results" fail="803" pass="1449" skipped="43" success="63.83%" totalRun="2270" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="51" pass="53" skipped="4" success="50.48%" totalRun="105"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
-    <expand-text fail="37" pass="25" skipped="0" success="40.32%" totalRun="62"/>
+    <expand-text fail="36" pass="26" skipped="0" success="41.94%" totalRun="62"/>
     <match fail="61" pass="67" skipped="8" success="51.94%" totalRun="129"/>
     <select fail="5" pass="19" skipped="0" success="76.0%" totalRun="25"/>
     <xpath-default-namespace fail="15" pass="11" skipped="0" success="42.31%" totalRun="26"/>
