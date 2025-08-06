@@ -36,6 +36,7 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.utils.NamespaceSupport2;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.StringToIntTable;
 import org.apache.xml.utils.StringVector;
@@ -834,6 +835,8 @@ public class XSLTAttributeDef
     		}
     	 }
       }
+                  
+      value = processUriQualifiedName(handler, value);
       
       expr = handler.createXPath(value, owner);  
 
@@ -922,6 +925,8 @@ public class XSLTAttributeDef
      	 throw new TransformerException("XTSE1070 : A current-grouping-key() function cannot be used within a pattern. "
      	 		                                                             + "An erroneous pattern string used within the stylesheet is " + value + ".");   
       }
+      
+      value = processUriQualifiedName(handler, value);
       
       XPath pattern = handler.createMatchPatternXPath(value, owner);
 
@@ -1018,8 +1023,27 @@ public class XSLTAttributeDef
   {
 
      try 
-        {	
-   	      QName qname = new QName(value, handler, true);
+        {
+    	  QName qname = null;    	  
+    	  if (value.startsWith("Q{")) {
+    		 // Support for XPath 3.1 URI qualified names    
+    		 int i = value.indexOf('}');
+    		 if (i > 2) {
+    		    String nsUri = value.substring(2, i);
+    		    String localName = value.substring(i + 1);
+    		    qname = new QName(nsUri, localName, true);
+    		 }
+    		 
+    		 if (qname == null) {
+    			handleError(handler,XSLTErrorResources.ER_ABSENT_NAMESPACE_URI, new Object[] {owner.getNodeName()}, null);
+    			
+    			return null; 
+        	 }
+    	  }
+    	  else {
+   	         qname = new QName(value, handler, true);
+    	  }    	      	  
+   	      
           return qname;
         }
         catch (IllegalArgumentException ie)
@@ -1821,6 +1845,60 @@ public class XSLTAttributeDef
 										                                  + "having balanced parenthesis pairs '(' and ')'."); 
 	  }
 
+	  return result;
+  }
+  
+  /**
+   * Method definition, to do transformation of the supplied string value,
+   * to support XPath 3.1 URI qualified names.
+   * 
+   * URIQualifiedName	   ::=   	BracedURILiteral NCName
+   * BracedURILiteral	   ::=   	"Q" "{" [^{}]* "}"
+   * 
+   * @param handler							Xalan-J StylesheetHandler object						
+   * @param strValue					    Supplied string value, that is either
+   *                                        an XPath expression string or an XPath 
+   *                                        match pattern.
+   * @return								String value after applying URIQualifiedName 
+   * 										transformation. 
+   */
+  private String processUriQualifiedName(StylesheetHandler handler, String strValue) {
+	  
+	  String result = strValue;
+	  
+	  NamespaceSupport2 nsSupport = (NamespaceSupport2)(handler.getNamespaceSupport());
+	  /**
+	   * The following code, replaces each occurrence of substring like Q{uri}abc 
+	   * within the supplied string with replacement text prefix:abc (the prefix value 
+	   * is a random string), and registers the prefix & uri mapping within Xalan-J 
+	   * NamespaceSupport2 object if the relevant namespace binding is not already 
+	   * available within NamespaceSupport2 object.  
+	   */
+	  int i = result.indexOf("Q{");      
+	  while (i > -1) {
+		  int j = result.indexOf('}');
+		  if (i < j) {
+			  String nsUri = result.substring(i + 2, j);
+			  String str1 = String.valueOf(Math.random());
+			  int idx = str1.indexOf('.');
+			  String nsPrefix = "a1_" + str1.substring(idx + 1, idx + 5);
+			  if (nsSupport.getPrefix(nsUri) == null) {    		    
+				  nsSupport.declarePrefix(nsPrefix, nsUri);
+			  }
+			  else {
+				  nsPrefix = nsSupport.getPrefix(nsUri);  
+			  }
+			  String strPrefix1 = "";
+			  if (i > 0) {
+				  strPrefix1 = result.substring(0, i);
+			  }
+			  String substStr1 = nsPrefix + ":";
+			  result = strPrefix1 + substStr1 + result.substring(j + 1);
+
+			  i = result.indexOf("Q{");
+		  }
+	  }
+	  
 	  return result;
   }
   

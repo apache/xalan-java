@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-05T11:47:17Z" fail="36" name="expand-text" pass="26" skipped="0" statusUnknown="0" totalRun="62">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-06T12:09:27Z" fail="36" name="expand-text" pass="26" skipped="0" statusUnknown="0" totalRun="62">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
@@ -44,8 +44,7 @@
    <testResult status="fail" testName="cvt-026"/>
    <testResult status="fail" testName="cvt-027">
       <outResult>
-         <errTrace>Illegal value: Q{http://www.example.com/foo}var used for QNAME attribute: name</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of $</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="cvt-028">

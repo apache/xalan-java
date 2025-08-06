@@ -171,7 +171,7 @@ public final class SystemIDResolver
   {
     if(!isAbsolutePath(systemId))
       return false;
-    // On Windows, an absolute path starts with "[drive_letter]:\".
+    // On Windows, an absolute path starts with "[drive_letter]:\"
     if (systemId.length() > 2 
         && systemId.charAt(1) == ':'
         && Character.isLetter(systemId.charAt(0))

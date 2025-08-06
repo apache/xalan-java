@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  */
 public class QName implements java.io.Serializable
 {
-    static final long serialVersionUID = 467434581652829920L;
+  static final long serialVersionUID = 467434581652829920L;
 
   /**
    * The local name.

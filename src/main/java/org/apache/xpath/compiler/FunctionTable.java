@@ -30,13 +30,13 @@ import org.apache.xpath.functions.FuncDoc;
 import org.apache.xpath.functions.Function;
 
 /**
- * The function table for XPath 3.1.
+ * The function table for XPath 3.1 and XSLT 3.0.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Christine Li <jycli@apache.org>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
- *         (XPath 3.1 specific changes, to this class)
+ *         (XPath 3.1 and XSLT 3.0 specific changes, to this class)
  */
 public class FunctionTable
 {
@@ -710,7 +710,7 @@ public class FunctionTable
 	  m_functions[FUNC_CONCAT] = org.apache.xpath.functions.string.FuncConcat.class;
 	  m_functions[FUNC_SYSTEM_PROPERTY] = org.apache.xpath.functions.FuncSystemProperty.class;
 	  m_functions[FUNC_EXT_FUNCTION_AVAILABLE] = org.apache.xpath.functions.FuncExtFunctionAvailable.class;
-	  m_functions[FUNC_EXT_ELEM_AVAILABLE] = org.apache.xpath.functions.FuncExtElementAvailable.class;
+	  m_functions[FUNC_EXT_ELEM_AVAILABLE] = org.apache.xpath.functions.FuncElemAvailable.class;
 	  m_functions[FUNC_SUBSTRING] = org.apache.xpath.functions.string.FuncSubstring.class;
 	  m_functions[FUNC_STRING_LENGTH] = org.apache.xpath.functions.string.FuncStringLength.class;
 	  m_functions[FUNC_DOCLOCATION] = org.apache.xpath.functions.FuncDoclocation.class;
@@ -912,7 +912,7 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_CONCAT_STRING, new Integer(FunctionTable.FUNC_CONCAT));
 	  m_functionId.put(Keywords.FUNC_SYSTEM_PROPERTY_STRING, new Integer(FunctionTable.FUNC_SYSTEM_PROPERTY));
 	  m_functionId.put(Keywords.FUNC_EXT_FUNCTION_AVAILABLE_STRING, new Integer(FunctionTable.FUNC_EXT_FUNCTION_AVAILABLE));
-	  m_functionId.put(Keywords.FUNC_EXT_ELEM_AVAILABLE_STRING, new Integer(FunctionTable.FUNC_EXT_ELEM_AVAILABLE));
+	  m_functionId.put(Keywords.FUNC_ELEM_AVAILABLE_STRING, new Integer(FunctionTable.FUNC_EXT_ELEM_AVAILABLE));
 	  m_functionId.put(Keywords.FUNC_SUBSTRING_STRING, new Integer(FunctionTable.FUNC_SUBSTRING));
 	  m_functionId.put(Keywords.FUNC_STRING_LENGTH_STRING, new Integer(FunctionTable.FUNC_STRING_LENGTH));
 	  m_functionId.put(Keywords.FUNC_UNPARSED_ENTITY_URI_STRING, new Integer(FunctionTable.FUNC_UNPARSED_ENTITY_URI));

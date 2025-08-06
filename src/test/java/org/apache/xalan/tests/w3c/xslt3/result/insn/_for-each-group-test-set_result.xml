@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-05T11:45:00Z" fail="26" name="for-each-group" pass="47" skipped="4" statusUnknown="1" totalRun="74">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-06T12:07:09Z" fail="26" name="for-each-group" pass="47" skipped="4" statusUnknown="1" totalRun="74">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" testName="for-each-group-002a" xsltVersion="xslt 2.0 only"/>
    <testResult status="pass" testName="for-each-group-002"/>

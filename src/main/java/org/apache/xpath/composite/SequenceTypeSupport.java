@@ -689,12 +689,14 @@ public class SequenceTypeSupport {
 	            	   if (srcValue instanceof XMLNodeCursorImpl) {
 	            		  XMLNodeCursorImpl nodeSet1 = (XMLNodeCursorImpl)srcValue;
 	            		  DTMManager dtmMgr = nodeSet1.getDTMManager();
-	            		  int nodeHandle = nodeSet1.nextNode();
-	            		  DTM dtm = dtmMgr.getDTM(nodeHandle);
-	            		  if (dtm.getNodeType(nodeHandle) == DTM.DOCUMENT_NODE) {
-	            			 result = srcValue;
-	            			 
-	            			 return result;
+	            		  int nodeHandle = nodeSet1.getCurrentNode();
+	            		  if (nodeHandle != DTM.NULL) {
+	            			  DTM dtm = dtmMgr.getDTM(nodeHandle);
+	            			  if (dtm.getNodeType(nodeHandle) == DTM.DOCUMENT_NODE) {  
+	            				  result = srcValue;
+
+	            				  return result;
+	            			  }
 	            		  }
 	            	   }
 	            	}	            	
@@ -1239,7 +1241,6 @@ public class SequenceTypeSupport {
              			 SequenceTypeData keySeqTypeData = sequenceTypeMapTest.getKeySequenceTypeData();
              			 SequenceTypeData valueSeqTypeData = sequenceTypeMapTest.getValueSequenceTypeData();
              			 XObject mapKeyValTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(mapKey, null, keySeqTypeData, xctxt);
-             			 String mapSequenceTypeStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : "";
              			 if (mapKeyValTypeCheckResult == null) {             				
              				throw new TransformerException("XPTY0004 : An XPath map entry with key '" + keyStrVal + "', doesn't have a value of specified XPath sequence type."); 
              			 }

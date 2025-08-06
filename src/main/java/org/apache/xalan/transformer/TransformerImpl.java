@@ -548,7 +548,14 @@ public class TransformerImpl extends Transformer
   public boolean elementAvailable(String ns, String elemName)
           throws javax.xml.transform.TransformerException
   {
-    return getExtensionsTable().elementAvailable(ns, elemName);   
+	  boolean result = false;
+	  
+	  ExtensionsTable extTable = getExtensionsTable();
+	  if (extTable != null) {
+		 result = extTable.elementAvailable(ns, elemName);
+	  }
+	  
+      return result;   
   }
    
   public Object extFunction(String ns, String funcName, 

@@ -292,7 +292,7 @@ public class AVT implements java.io.Serializable, XSLTVisitable
 
                           // What's another curly doing here?
                           error = XSLMessages.createMessage(
-                                                            XSLTErrorResources.ER_NO_CURLYBRACE, null);  //"Error: Can not have \"{\" within expression.";
+                                                            XSLTErrorResources.ER_NO_CURLYBRACE, null);  //"Error: Can not have \"{\" within expression";
                           
                           lookahead = null;  // breaks out of inner while loop
 

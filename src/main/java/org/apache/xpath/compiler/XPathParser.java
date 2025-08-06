@@ -4356,7 +4356,7 @@ public class XPathParser
        matchFound = true;
     }
     else if ((m_tokenChar == '$') && (lookahead('?', 2))) {
-       // XPath parse for unary lookup operation on map & array references.       
+       // XPath parse for unary lookup operator on map & array references       
        
        // e.g, $map1?a (get xdm map's entry value, for key named 'a'), 
        // $array1?3 (get xdm item for array index 3).

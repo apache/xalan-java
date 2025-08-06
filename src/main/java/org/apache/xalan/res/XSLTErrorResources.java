@@ -347,6 +347,7 @@ public class XSLTErrorResources extends ListResourceBundle
   public static final String ER_ATTRIB_VALUE_NOT_RECOGNIZED = 
 	 "ER_ATTRIB_VALUE_NOT_RECOGNIZED";
   public static final String ER_NULL_URI_NAMESPACE = "ER_NULL_URI_NAMESPACE";
+  public static final String ER_ABSENT_NAMESPACE_URI = "ER_ABSENT_NAMESPACE_URI";
   public static final String ER_NUMBER_TOO_BIG = "ER_NUMBER_TOO_BIG";
   public static final String  ER_CANNOT_FIND_SAX1_DRIVER = 
 	 "ER_CANNOT_FIND_SAX1_DRIVER";
@@ -1007,6 +1008,9 @@ public class XSLTErrorResources extends ListResourceBundle
 
     { ER_NULL_URI_NAMESPACE,
      "Attempting to generate a namespace prefix with a null URI"},
+    
+    { ER_ABSENT_NAMESPACE_URI,
+     "XTSE0740 : An XSL {0}''s name attribute doesn''t have a URI reference"},
 
     { ER_NUMBER_TOO_BIG,
      "Attempting to format a number bigger than the largest Long integer"},

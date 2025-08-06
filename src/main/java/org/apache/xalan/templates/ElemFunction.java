@@ -428,54 +428,60 @@ public class ElemFunction extends ElemTemplate
     	 }    	 
       }
       
-      if (xslParamMap.size() > 0) {
-    	  /**
-    	   * Add all of the xsl:function parameter value mappings to xpath context's
-    	   * variable stack, after which the XSL instructions after xsl:param declarations
-    	   * can dereference those parameters.
-    	   */
-          
-    	  VariableStack varStack = xctxt.getVarStack();
-    	  
-          varStack.unlink();
-          int argsFrame = varStack.link(xslParamMap.size());            
-                    
-          int paramIdx = 0;
-          for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
-                                                                  elem = elem.getNextSiblingElem()) {
-              if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
-                 XObject argValue = argSequence.item(paramIdx);                 
-                 XObject argConvertedVal = null;
-                 String paramAsAttrStrVal = ((ElemParam)elem).getAs();
-                 
-                 if (paramAsAttrStrVal != null) {
-                	List prefixTable = elem.getPrefixTable();
-                    argConvertedVal = getParamValueAsAttributeProcessing(argValue, funcLocalName, funcNameSpaceUri, paramIdx, 
-                    		                                             prefixTable, paramAsAttrStrVal, transformer, xctxt);
-                 }
-                 else {
-                	argConvertedVal = argValue;  
-                 }
-                 
-                 if (argConvertedVal instanceof ResultSequence) {                
-                    XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)argConvertedVal, 
-                                                                                                                                xctxt);
-                    if (nodeSet != null) {
-                       argConvertedVal = nodeSet;  
-                    }
-                 }
-                 
-                 varStack.setLocalVariable(paramIdx, argConvertedVal, argsFrame);
-                 paramIdx++;
-              }
-              else {
-                 break; 
-              }
-          }                    
-      }            
+      VariableStack varStack = xctxt.getVarStack();            
+      int argsFrame = 0;
       
-      // Get xsl:function's result, before processing with "as" attribute
-      result = getXslFunctionResult(transformer, xctxt);
+      try {
+    	  if (xslParamMap.size() > 0) {
+    		  /**
+    		   * Add all of the xsl:function parameter value mappings to XPath context's
+    		   * variable stack, after which the XSL instructions following xsl:param 
+    		   * declarations can dereference those parameters.
+    		   */
+    		  argsFrame = varStack.link(xslParamMap.size());
+
+    		  int paramIdx = 0;
+    		  for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
+    				                                                  elem = elem.getNextSiblingElem()) {
+    			  if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
+    				  XObject argValue = argSequence.item(paramIdx);                 
+    				  XObject argConvertedVal = null;
+    				  String paramAsAttrStrVal = ((ElemParam)elem).getAs();
+
+    				  if (paramAsAttrStrVal != null) {
+    					  List prefixTable = elem.getPrefixTable();
+    					  argConvertedVal = getParamValueAsAttributeProcessing(argValue, funcLocalName, funcNameSpaceUri, paramIdx, 
+    							                                               prefixTable, paramAsAttrStrVal, transformer, xctxt);
+    				  }
+    				  else {
+    					  argConvertedVal = argValue;  
+    				  }
+
+    				  if (argConvertedVal instanceof ResultSequence) {                
+    					  XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(
+    							                                                                              (ResultSequence)argConvertedVal, xctxt);
+    					  if (nodeSet != null) {
+    						  argConvertedVal = nodeSet;  
+    					  }
+    				  }
+
+    				  varStack.setLocalVariable(paramIdx, argConvertedVal, argsFrame);
+    				  paramIdx++;
+    			  }
+    			  else {
+    				  break; 
+    			  }
+    		  }                    
+    	  }            
+
+    	  // Get xsl:function's result, before processing with "as" attribute
+    	  result = getXslFunctionResult(transformer, xctxt);
+      }
+      finally {
+    	  if (xslParamMap.size() > 0) {
+    		  varStack.unlink(); 
+    	  }    	  
+      }
                         
       XObject funcResultConvertedVal = result;
       
@@ -1155,7 +1161,7 @@ public class ElemFunction extends ElemTemplate
 			  throw new TransformerException("XPTY0004 : An xsl:function call argument at position " + (paramIdx + 1) + " for "
 																					  + "function {" + funcNameSpaceUri + "}" + funcLocalName + ", doesn't "
 																					  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator); 
-		  }
+		  }		  
 	  }
 	  catch (TransformerException ex) {
 		  if ((SequenceTypeSupport.INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR).equals(ex.getMessage())) {

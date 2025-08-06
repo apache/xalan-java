@@ -24,7 +24,7 @@ import java.util.Hashtable;
 
 /**
  * Table of strings to operation code lookups
- * to support implementation of XPath.
+ * to support implementation of XSLT and XPath.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Gary L Peskin <garyp@apache.org>
@@ -216,7 +216,7 @@ public class Keywords
   public static final String FUNC_EXT_FUNCTION_AVAILABLE_STRING = "function-available";
 
   /** element-available function string (XSLT). */
-  public static final String FUNC_EXT_ELEM_AVAILABLE_STRING = "element-available";
+  public static final String FUNC_ELEM_AVAILABLE_STRING = "element-available";
 
   /** substring function string. */
   public static final String FUNC_SUBSTRING_STRING = "substring";
