@@ -556,6 +556,9 @@ public class FunctionTable
   
   /** The 'normalize-unicode()' id. */
   public static final int FUNC_NORMALIZE_UNICODE = 177;
+  
+  /** The 'round-half-to-even()' id. */
+  public static final int FUNC_ROUND_HALF_TO_EVEN = 178;
 
   // Proprietary
 
@@ -649,7 +652,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 178;
+  private static final int NUM_BUILT_IN_FUNCS = 179;
 
   /**
    * Number of built-in functions that may be added.
@@ -694,6 +697,7 @@ public class FunctionTable
 	  m_functions[FUNC_FLOOR] = org.apache.xpath.functions.FuncFloor.class;
 	  m_functions[FUNC_CEILING] = org.apache.xpath.functions.FuncCeiling.class;
 	  m_functions[FUNC_ROUND] = org.apache.xpath.functions.FuncRound.class;
+	  m_functions[FUNC_ROUND_HALF_TO_EVEN] = org.apache.xpath.functions.FuncRoundHalfToEven.class;
 	  m_functions[FUNC_SUM] = org.apache.xpath.functions.FuncSum.class;
 	  m_functions[FUNC_STRING] = org.apache.xpath.functions.FuncString.class;
 
@@ -896,6 +900,7 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_FLOOR_STRING, new Integer(FunctionTable.FUNC_FLOOR));
 	  m_functionId.put(Keywords.FUNC_CEILING_STRING, new Integer(FunctionTable.FUNC_CEILING));
 	  m_functionId.put(Keywords.FUNC_ROUND_STRING, new Integer(FunctionTable.FUNC_ROUND));
+	  m_functionId.put(Keywords.FUNC_ROUND_HALF_TO_EVEN_STRING, new Integer(FunctionTable.FUNC_ROUND_HALF_TO_EVEN));
 	  m_functionId.put(Keywords.FUNC_SUM_STRING, new Integer(FunctionTable.FUNC_SUM));
 	  m_functionId.put(Keywords.FUNC_STRING_STRING, new Integer(FunctionTable.FUNC_STRING));
 

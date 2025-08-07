@@ -20,7 +20,7 @@
  */
 package org.apache.xpath.functions;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
 
 import javax.xml.transform.SourceLocator;
 
@@ -36,24 +36,33 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSNumericType;
+
 /**
- * Implementation of XPath 3.1 function fn:round.
+ * Implementation of XPath 3.1 function fn:round-half-to-even.
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncRound extends Function2Args
+public class FuncRoundHalfToEven extends Function2Args
 {
-      static final long serialVersionUID = -7970583902573826611L;
       
-      /**
-       * Class constructor.
-       */
-      public FuncRound() {
+	 private static final long serialVersionUID = 4199285731813500143L;
+
+	 /**
+      * Class constructor.
+      */
+      public FuncRoundHalfToEven() {
     	  m_defined_arity = new Short[] { 1, 2 };  
       }
     
       /**
-       * Execute the function. The function must return a valid object.
+       * Implementation of the function. The function must return a valid object.
        * 
        * @param xctxt The current execution context.
        * @return A valid XObject.
@@ -70,45 +79,89 @@ public class FuncRound extends Function2Args
           
           if ((strValueOfArg0 == null) || "".equals(strValueOfArg0.trim())) {
               throw new javax.xml.transform.TransformerException("FORG0006 : The first argument to function "
-                                                                                                          + "fn:round() is empty.", srcLocator);
+                                                                                                          + "fn:round-half-to-even is empty.", srcLocator);
           }
           
-          if (m_arg1 == null) {
-             try {
-                result = new XNumber(Math.round(Double.valueOf(strValueOfArg0)));
-                
-                return result;
-             }
-             catch (Exception ex) {
-                throw new javax.xml.transform.TransformerException("FORG0006 : An error occured, while evaluating one argument "
-                                                                                                               + "version of function fn:round(). "
-                                                                                                               + "Please verify the function call with respect to function signature.", 
-                                                                                                                       srcLocator); 
-             }
+          int precision = 0;
+          
+          if (m_arg1 != null) {
+        	  try {
+        	     String strValueOfArg1 = (getArgAsString(m_arg1, xctxt)).toString();        	     
+        	     precision = (Integer.valueOf(strValueOfArg1)).intValue();
+        	  }
+        	  catch (Exception ex) {
+        		  throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function fn:round-half-to-even, "
+        		  		                                                            + "is not a valid value for precision which must be "
+        		  		                                                            + "an xs:integer value.", srcLocator); 
+        	  }
+          }
+          
+          if (!((m_arg0 instanceof XSNumericType) || (m_arg0 instanceof XNumber))) {
+        	  m_arg0 = m_arg0.execute(xctxt); 
+          }
+          
+          if (m_arg0 instanceof XSFloat) {
+        	  XSFloat arg0XsFloat = (XSFloat)m_arg0;
+        	  
+        	  if (arg0XsFloat.nan() || arg0XsFloat.zero() || arg0XsFloat.negativeZero() || arg0XsFloat.infinite()){
+        		  result = arg0XsFloat; 
+        	  }
+        	  else {
+        		  BigDecimal arg0Decimal = new BigDecimal(arg0XsFloat.stringValue());        		  
+        		  BigDecimal roundValue = arg0Decimal.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
+        		  
+        		  result = new XSFloat(roundValue.floatValue());
+        	  }
+          }
+          else if (m_arg0 instanceof XSDouble) {
+        	  XSDouble arg0XsDouble = (XSDouble)m_arg0;
+        	  
+        	  if (arg0XsDouble.nan() || arg0XsDouble.zero() || arg0XsDouble.negativeZero() || arg0XsDouble.infinite()) {
+        		 result = arg0XsDouble;  
+        	  }
+        	  else {
+        		  BigDecimal arg0Decimal = new BigDecimal(arg0XsDouble.stringValue());        		  
+        		  BigDecimal roundValue = arg0Decimal.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
+        		  
+        		  result = new XSDouble(roundValue.floatValue()); 
+        	  }
+          }
+          else if (m_arg0 instanceof XSDecimal) {
+        	  XSDecimal arg0XsDecimal = (XSDecimal)m_arg0;        	  
+        	  
+        	  BigDecimal arg0Decimal = new BigDecimal(arg0XsDecimal.stringValue());
+        	  BigDecimal roundValue = arg0Decimal.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
+    		  
+    		  result = new XSDecimal(roundValue);
+          }
+          else if (m_arg0 instanceof XSInteger) {
+        	  XSInteger arg0XsInteger = (XSInteger)m_arg0;        	  
+        	  
+        	  BigDecimal arg0Decimal = new BigDecimal(arg0XsInteger.stringValue());
+        	  BigDecimal roundValue = arg0Decimal.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
+    		  
+    		  result = new XSInteger(roundValue.toBigInteger());
+          }
+          else if (m_arg0 instanceof XSNumericType) {
+        	  String arg0StrValue = ((XSNumericType)m_arg0).stringValue();
+        	  XSDecimal arg0XsDecimal = new XSDecimal(arg0StrValue);
+        	  
+        	  BigDecimal arg0Decimal = new BigDecimal(arg0XsDecimal.stringValue());
+        	  BigDecimal roundValue = arg0Decimal.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
+    		  
+    		  result = new XSDecimal(roundValue);
+          }
+          else if (m_arg0 instanceof XNumber) {
+        	  XNumber xNumber = (XNumber)m_arg0;
+        	  
+        	  BigDecimal arg0Decimal = new BigDecimal(xNumber.num());
+        	  BigDecimal roundValue = arg0Decimal.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
+    		  
+    		  result = new XSDecimal(roundValue);
           }
           else {
-              try {
-                  String strValueOfArg1 = (getArgAsString(m_arg1, xctxt)).toString();
-    
-                  int arg1AsInt = (Integer.valueOf(strValueOfArg1)).intValue();
-                     
-                  if (arg1AsInt >= 0) {
-                     DecimalFormat decimalFormat = new DecimalFormat("#." + getStrForZeros(arg1AsInt));
-                     double valAfterRounding = (Double.valueOf(decimalFormat.format(Double.valueOf(
-                                                                                                    strValueOfArg0)))).doubleValue();
-                     result = new XNumber(valAfterRounding);
-                  }
-                  else {
-                     throw new javax.xml.transform.TransformerException("FORG0006 : A negative integer value of second argument to "
-                                                                                                                     + "function fn:round() is not supported.", 
-                                                                                                                     srcLocator); 
-                  }
-              }
-              catch (Exception ex) {
-                  throw new javax.xml.transform.TransformerException("FORG0006 : An error occured, while evaluating two argument "
-                                                                                                 + "version of function fn:round(). Please verify the function call "
-                                                                                                 + "with respect to function signature.", srcLocator);
-              }
+        	  throw new javax.xml.transform.TransformerException("FORG0006 : The first argument to function fn:round-half-to-even "
+        	  		                                                                                                       + "is not numeric.", srcLocator);
           }
           
           return result;
@@ -185,20 +238,5 @@ public class FuncRound extends Function2Args
           }
             
           return resultVal;
-      }
-      
-      /*
-       * Given a non-negative integer value, return a string comprising those many 
-       * characters '0'. We use the string value returned by this method, to construct 
-       * a java.text.DecimalFormat object instance.
-       */
-      private String getStrForZeros(int strSize) {
-         String strVal = "";
-         
-         for (int idx = 0; idx < strSize; idx++) {
-            strVal = strVal + "0";  
-         }
-         
-         return strVal;
       }
 }

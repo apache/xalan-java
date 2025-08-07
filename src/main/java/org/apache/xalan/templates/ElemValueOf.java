@@ -424,13 +424,20 @@ public class ElemValueOf extends ElemTemplateElement {
                     		  }
                     		  else {
                     			 strValue = ((XSQName) evalResult).stringValue();  
-                    		  }
+                    		  }                    		  
+                    		  if (m_separator != null) {
+                     			 strValue = strValue.replace(" ", m_separator); 
+                     		  }
                     		  
                     		  (new XString(strValue)).dispatchCharactersEvents(rth);
                     	  }
                     	  else {
                     		  String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);                                                       
-                    		  strValue = preProcessStrBeforeXslSerialization(strValue);                          
+                    		  strValue = preProcessStrBeforeXslSerialization(strValue);                    		  
+                    		  if (m_separator != null) {
+                    			 strValue = strValue.replace(" ", m_separator); 
+                    		  }
+                    		  
                     		  (new XString(strValue)).dispatchCharactersEvents(rth);
                     	  }
                       }

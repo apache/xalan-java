@@ -175,6 +175,9 @@ public class Keywords
 
   /** round function string. */
   public static final String FUNC_ROUND_STRING = "round";
+  
+  /** round-half-to-even function string. */
+  public static final String FUNC_ROUND_HALF_TO_EVEN_STRING = "round-half-to-even";
 
   /** sum function string. */
   public static final String FUNC_SUM_STRING = "sum";

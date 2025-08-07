@@ -5715,49 +5715,56 @@ public class XPathParser
   }
 
   /**
-   *
-   * Number ::= [0-9]+('.'[0-9]+)? | '.'[0-9]+
-   *
+   *  
+   * NON_SCIENTIFIC_NUMBER ::= [0-9]+('.'[0-9]+)? | '.'[0-9]+
+   * 
+   * SCIENTIFIC_NUMBER := NON_SCIENTIFIC_NUMBER [e|E] [+|-]? [0-9]+
+   * 
+   * Number := NON_SCIENTIFIC_NUMBER | SCIENTIFIC_NUMBER  
    *
    * @throws javax.xml.transform.TransformerException
    */
   protected void Number() throws javax.xml.transform.TransformerException
   {
 
-    if (null != m_token)
-    {          	
-      
-      double num;
+    if (m_token != null)
+    {
+    	
       XNumber xNumber = null;
+      String numberStrValue = "";
       
       try
-      {          
-          BigDecimal bigDecimal = new BigDecimal(m_token);
-          num = bigDecimal.doubleValue();
-          
-          xNumber = new XNumber(num);
-          
-          if (!(m_token.contains(".") || m_token.contains("e") || m_token.contains("E"))) {
-        	  // if a literal number doesn't contain ., e and E, then the literal is of type xs:integer
-        	  XSInteger xsInteger = new XSInteger(m_token);
-        	  xNumber.setXsInteger(xsInteger);
+      {       	  
+    	  if ((m_token.endsWith("e") || m_token.endsWith("E")) && (lookahead('+', 1) || lookahead('-', 1))) {
+    		  numberStrValue = m_token;
+    		  nextToken();
+    		  numberStrValue += m_token;
+    		  nextToken();
+    		  numberStrValue += m_token;
+    	  }
+    	  else {
+    		  numberStrValue = m_token;
+    	  }
+    	  
+    	  BigDecimal bigDecimal = new BigDecimal(numberStrValue);
+    	  xNumber = new XNumber(bigDecimal.doubleValue());
+    	  
+          if (!(numberStrValue.contains(".") || numberStrValue.contains("e") || numberStrValue.contains("E"))) {
+        	  // If a numeric literal doesn't contain ., e and E, then the literal is of type xs:integer        	          	  
+        	  xNumber.setXsInteger(new XSInteger(numberStrValue));
           }
-          else if (m_token.contains(".") && !(m_token.contains("e") || m_token.contains("E"))) {
-        	  // if a literal number contains . but not e and E, then the literal is of type xs:decimal
-        	  XSDecimal xsDecimal = new XSDecimal(m_token);
-        	  xNumber.setXsDecimal(xsDecimal);
+          else if (numberStrValue.contains(".") && !(numberStrValue.contains("e") || numberStrValue.contains("E"))) {
+        	  // If a numeric literal contains ., but not e and E, then the literal is of type xs:decimal        	  
+        	  xNumber.setXsDecimal(new XSDecimal(numberStrValue));
           }
-          else if (m_token.contains("e") || m_token.contains("E")) {
-        	  // if a literal number contains e or E, then the literal is of type xs:double
-        	  XSDouble xsDouble = new XSDouble(m_token);
-        	  xNumber.setXsDouble(xsDouble);
+          else if (numberStrValue.contains("e") || numberStrValue.contains("E")) {
+        	  // If a numeric literal contains e or E, then the literal is of type xs:double        	  
+        	  xNumber.setXsDouble(new XSDouble(numberStrValue));
           }
       }
-      catch (NumberFormatException nfe)
+      catch (Exception ex)
       {
-        num = 0.0;  // to shut up compiler.
-
-        error(XPATHErrorResources.ER_COULDNOT_BE_FORMATTED_TO_NUMBER, new Object[]{ m_token });
+    	  error(XPATHErrorResources.ER_COULDNOT_BE_FORMATTED_TO_NUMBER, new Object[]{ numberStrValue });
       }
 
       m_ops.m_tokenQueue.setElementAt(xNumber, m_queueMark - 1);

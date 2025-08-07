@@ -37,6 +37,7 @@ import org.apache.xalan.tests.xpath3.FnMinTests;
 import org.apache.xalan.tests.xpath3.FnNormalizeUnicodeTests;
 import org.apache.xalan.tests.xpath3.FnParseXmlFragmentTests;
 import org.apache.xalan.tests.xpath3.FnParseXmlTests;
+import org.apache.xalan.tests.xpath3.FnRoundHalfToEvenTests;
 import org.apache.xalan.tests.xpath3.FnRoundTests;
 import org.apache.xalan.tests.xpath3.FnSortTests;
 import org.apache.xalan.tests.xpath3.FnStartsWithEndsWithTests;
@@ -137,7 +138,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnEmptyTests.class, FnFunctionNameTests.class, FnFunctionArityTests.class, XPathDefaultNamespaceTests.class,
                 XPathDefaultNamespaceMiscTests.class, XslFunctionMiscTests.class, XslIncludeTests.class, 
                 XslIncludeMiscTests.class, FnNormalizeUnicodeTests.class, XslExpandTextTests.class,
-                XslJsonValidationTests.class, XPathUriQualifiedNameTests.class })
+                XslJsonValidationTests.class, XPathUriQualifiedNameTests.class, FnRoundHalfToEvenTests.class })
 public class XalanXsl3TestSuite2 {
 
 }
