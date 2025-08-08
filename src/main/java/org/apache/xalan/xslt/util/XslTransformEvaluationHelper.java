@@ -74,6 +74,7 @@ import org.w3c.dom.ls.LSSerializer;
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSUntyped;
@@ -169,19 +170,38 @@ public class XslTransformEvaluationHelper {
     
     /**
      * Given an XObject object reference, return the string value 
-     * of the object. 
+     * for the object. 
      */
-    public static String getStrVal(XObject xObj) {
-       String strVal = null;
+    public static String getStrVal(XObject xObj) {       
        
-       if (xObj instanceof XSAnyType) {
-          strVal = ((XSAnyType)xObj).stringValue();    
+       String result = null;
+       
+       if (xObj instanceof XSDecimal) {    	  
+    	  result = (((XSDecimal)xObj).getValue()).toPlainString();
+    	  int i = result.indexOf('.');
+    	  if (i > -1) {
+    		  // Delete trailing 0's to RHS of decimal point, for string value
+    		  String prefix = result.substring(0, i);
+    		  String suffix = result.substring(i + 1);
+    		  int suffixLength = suffix.length();
+    		  int j = suffixLength;
+    		  for (j = (suffixLength - 1); j > -1; j--) {
+    			  if (suffix.charAt(j) != '0') {
+    				  break; 
+    			  }
+    		  }    		
+    		  suffix = suffix.substring(0, j + 1);
+    		  result = (suffix.length() > 0) ? (prefix + "." + suffix) : prefix;
+    	  }
+       }
+       else if (xObj instanceof XSAnyType) {
+          result = ((XSAnyType)xObj).stringValue();    
        }
        else {
-          strVal = xObj.str();  
+          result = xObj.str();  
        }
        
-       return strVal;
+       return result;
     }
     
     /**

@@ -24,18 +24,17 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
-import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * The unary '-' operation expression executer.
+ * An XPath unary '-' operation expression executer.
  */
 public class Neg extends UnaryOperation
 {
     static final long serialVersionUID = -6280607702375702291L;
 
   /**
-   * Apply the operation to two operands, and return the result.
-   *
+   * Apply XPath unary operator to an operand, and return the result.
    *
    * @param right non-null reference to the evaluated right operand.
    *
@@ -47,8 +46,10 @@ public class Neg extends UnaryOperation
   {
     XObject result = null;
     
-    if (right instanceof XSDouble) {
-       result = new XNumber(-(((XSDouble)right).doubleValue()));   
+    if (right instanceof XSNumericType) {
+       java.lang.String strValue = ((XSNumericType)right).stringValue();
+       
+       result = new XNumber(-1 * (Double.valueOf(strValue))); 
     }
     else {
        result = new XNumber(-right.num());  

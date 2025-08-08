@@ -2896,6 +2896,42 @@ public class XPathParser
   {
       int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
       
+      // XPath parse of, sequence of two or more 'if' expressions
+      m_prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+      
+      StringBuffer strBuff = new StringBuffer();      
+      while (m_token != null) {
+    	 if (tokenIs("and") || tokenIs("or")) {
+    		strBuff.append(" " + m_token + " "); 
+    	 }
+    	 else {
+    	    strBuff.append(m_token);
+    	 }
+    	 
+    	 nextToken();
+      }
+      
+      String strValue = strBuff.toString();
+      
+      String[] strArr = strValue.split(",if");
+      if (strArr.length > 1) {
+    	 // There are sequence of, at-least two XPath 'if' expressions
+    	 for (int i = 1; i < strArr.length; i++) {
+    		strArr[i] = "if" + strArr[i]; 
+    	 }
+    	 
+    	 List<String> strList = Arrays.asList(strArr);
+    	 
+    	 insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);                 
+         m_xpathSequenceConstructor = new XPathSequenceConstructor();
+         m_xpathSequenceConstructor.setSequenceConstructorXPathParts(strList);
+         
+         return null;
+      }
+      else {
+    	 restoreTokenQueueScanPosition(m_prevTokQueueScanPosition);
+      }
+      
       insertOp(opPos, 2, OpCodes.OP_IF_EXPR);
       
       XPathIfExpr ifExpr = new XPathIfExpr();
@@ -5716,11 +5752,11 @@ public class XPathParser
 
   /**
    *  
+   * Number := NON_SCIENTIFIC_NUMBER | SCIENTIFIC_NUMBER
+   *  
    * NON_SCIENTIFIC_NUMBER ::= [0-9]+('.'[0-9]+)? | '.'[0-9]+
    * 
-   * SCIENTIFIC_NUMBER := NON_SCIENTIFIC_NUMBER [e|E] [+|-]? [0-9]+
-   * 
-   * Number := NON_SCIENTIFIC_NUMBER | SCIENTIFIC_NUMBER  
+   * SCIENTIFIC_NUMBER := NON_SCIENTIFIC_NUMBER [e|E] [+|-]? [0-9]+  
    *
    * @throws javax.xml.transform.TransformerException
    */

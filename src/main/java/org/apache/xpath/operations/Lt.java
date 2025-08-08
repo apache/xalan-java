@@ -79,7 +79,7 @@ public class Lt extends Operation
 		  
 		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
 		  DTMManager dtmManager = nodeRef.getDTMManager();
-		  DTMCursorIterator iter = nodeRef.iter();
+		  DTMCursorIterator iter = nodeRef.iterRaw();
 		  int nextNode = DTM.NULL;
 		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
 			  XMLNodeCursorImpl nodeRef1 = new XMLNodeCursorImpl(nextNode, dtmManager);
@@ -96,7 +96,7 @@ public class Lt extends Operation
 		  
 		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
 		  DTMManager dtmManager = nodeRef.getDTMManager();
-		  DTMCursorIterator iter = nodeRef.iter();
+		  DTMCursorIterator iter = nodeRef.iterRaw();
 		  int nextNode = DTM.NULL;
 		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
 			  XMLNodeCursorImpl nodeRef1 = new XMLNodeCursorImpl(nextNode, dtmManager);

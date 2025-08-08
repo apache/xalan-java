@@ -100,6 +100,11 @@ public class XslTransformSharedDatastore {
     public static XMLNodeCursorImpl m_xslDocumentEvaluationResult;
     
     /**
+     * Class field, to support Xalan-J's test driver for W3C XSLT 3.0 test suite. 
+     */
+    public static boolean m_is_xsl_test_invocation = false;
+    
+    /**
 	 * Method definition to reset the variable values specified 
 	 * within this class.
 	 */
@@ -114,6 +119,7 @@ public class XslTransformSharedDatastore {
 		m_xpathCallingOpCode = Integer.MIN_VALUE;
 		m_xpathNamedFunctionRefSequence.clear();
 		m_xslDocumentEvaluationResult = null;
-	}
+		m_is_xsl_test_invocation = false;
+	}		
 
 }

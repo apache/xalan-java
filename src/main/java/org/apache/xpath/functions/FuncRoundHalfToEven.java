@@ -152,12 +152,21 @@ public class FuncRoundHalfToEven extends Function2Args
     		  result = new XSDecimal(roundValue);
           }
           else if (m_arg0 instanceof XNumber) {
-        	  XNumber xNumber = (XNumber)m_arg0;
+        	  XNumber xNumber = (XNumber)m_arg0;        	  
         	  
-        	  BigDecimal arg0Decimal = new BigDecimal(xNumber.num());
-        	  BigDecimal roundValue = arg0Decimal.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
+        	  XSDecimal xsDecimal = xNumber.getXsDecimal();
+        	  
+        	  BigDecimal arg0Decimal = null;
+        	  if (xsDecimal != null) {
+        		 arg0Decimal = xsDecimal.getValue(); 
+        	  }
+        	  else {
+        	     arg0Decimal = new BigDecimal(xNumber.num());
+        	  }
+        	  
+        	  BigDecimal roundValue = arg0Decimal.setScale(precision, BigDecimal.ROUND_HALF_EVEN);       	  
     		  
-    		  result = new XSDecimal(roundValue);
+    		  result = new XSDecimal(roundValue);    		  
           }
           else {
         	  throw new javax.xml.transform.TransformerException("FORG0006 : The first argument to function fn:round-half-to-even "

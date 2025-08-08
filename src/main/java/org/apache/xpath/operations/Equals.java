@@ -83,8 +83,8 @@ public class Equals extends Operation
 		  
 		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
 		  DTMManager dtmManager = nodeRef.getDTMManager();
-		  DTMCursorIterator iter = nodeRef.iter();
-		  int nextNode = DTM.NULL;
+		  DTMCursorIterator iter = nodeRef.iterRaw();
+		  int nextNode = DTM.NULL;		  
 		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
 			  XMLNodeCursorImpl nodeRef1 = new XMLNodeCursorImpl(nextNode, dtmManager);
 			  java.lang.String nodeStrValue = nodeRef1.str();
@@ -100,7 +100,7 @@ public class Equals extends Operation
 		  
 		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
 		  DTMManager dtmManager = nodeRef.getDTMManager();
-		  DTMCursorIterator iter = nodeRef.iter();
+		  DTMCursorIterator iter = nodeRef.iterRaw();
 		  int nextNode = DTM.NULL;
 		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
 			  XMLNodeCursorImpl nodeRef1 = new XMLNodeCursorImpl(nextNode, dtmManager);

@@ -65,16 +65,14 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    */
   private ExpressionNode m_parent;
   
+  public static final String XS_SIMPLE_TYPE_NAME = "XS_SIMPLE_TYPE_NAME";
+  
   /** 
-   * XPath 3.1 support for, XPath.fixupVariables(..) action for feature 
-   * implementations like XPath function item, "for", "let", 'quantified' 
-   * expressions.
-   * 
-   * We don't use, XalanJ XPath context's variable stack for this purpose.
+   * This class field implements support for, XPath.fixupVariables(..) 
+   * function call for implementations like XPath function item, 'for', 
+   * 'let', and quantified expressions.
    */
   protected static List<QName> m_xpathVarList = new ArrayList<QName>();
-  
-  public static final String XS_SIMPLE_TYPE_NAME = "XS_SIMPLE_TYPE_NAME";
 
   /**
    * Tell if this expression or it's subexpressions can traverse outside

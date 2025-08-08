@@ -25,6 +25,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -382,7 +383,7 @@ public class ElemValueOf extends ElemTemplateElement {
                 		                                    + "'select' attribute and non-empty content.", srcLocator);
         	 }
         	 else {
-        		expr = m_selectExpression.getExpression(); 
+        		expr = m_selectExpression.getExpression();        		
         	 }
           }          
           else {
@@ -390,13 +391,36 @@ public class ElemValueOf extends ElemTemplateElement {
         	  
         	  return;
           }
+          
+          if ((XslTransformSharedDatastore.m_is_xsl_test_invocation) && (expr instanceof LocPathIterator)) {
+        	  // Support for, Xalan-J's test driver for W3C XSLT 3.0 test suite
+        	  
+        	  LocPathIterator locPathIterator = (LocPathIterator)expr;
+        	  
+        	  try {
+        		  DTMCursorIterator dtmIter = locPathIterator.asIterator(xctxt, current);
+        		  
+        		  // If a non-empty node exists, return true else return false
+        		  if (dtmIter.nextNode() != DTM.NULL) {
+        			  (new XString("true")).dispatchCharactersEvents(rth);
+        		  }
+        		  else {
+        			  (new XString("false")).dispatchCharactersEvents(rth);
+        		  }
+        		  
+        		  return;
+        	  }
+        	  catch (Exception ex) {
+        		  // NO OP 
+        	  }
+          }
 
           if (transformer.getDebug())
           {
             XObject obj = expr.execute(xctxt);
 
-            transformer.getTraceManager().emitSelectedEvent(current, this,
-                                                       "select", m_selectExpression, obj);
+            transformer.getTraceManager().emitSelectedEvent(current, this, "select", 
+            		                                                             m_selectExpression, obj);
             obj.dispatchCharactersEvents(rth);
           }
           else
@@ -461,7 +485,7 @@ public class ElemValueOf extends ElemTemplateElement {
                     		 }
                     	  }
                     	  else {
-                    	     strValue = ((XSAnyType)evalResult).stringValue();
+                    		 strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                     	  }
                       }                                            
                       else if (evalResult instanceof XMLNodeCursorImpl) {
@@ -599,16 +623,13 @@ public class ElemValueOf extends ElemTemplateElement {
                      try {
                         dtmIter = locPathIterator.asIterator(xctxt, current);
                      }
-                     catch (ClassCastException ex) {
-                        // no op
-                     }
                      catch (Exception ex) {
-                    	// no op 
-                     }
+                    	// NO OP 
+                     }                     
                      
-                     if (dtmIter != null) {
-                        int nextNode;
+                     if (dtmIter != null) {                        
                         StringBuffer strBuff = new StringBuffer();
+                        int nextNode;
                         while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
                         {
                            XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
@@ -628,15 +649,15 @@ public class ElemValueOf extends ElemTemplateElement {
                            else {
                               resultStr = xdmNodeObj.str();
                            }
+                           
                            strBuff.append(resultStr + " ");
                         }
-                         
-                        String nodeSetStrValue = strBuff.toString();
+                        
+                        String nodeSetStrValue = strBuff.toString();                                                
                         if (nodeSetStrValue.length() > 1) {
-                           nodeSetStrValue = nodeSetStrValue.substring(0, 
-                                                                 nodeSetStrValue.length() - 1);
-                           (new XString(nodeSetStrValue)).dispatchCharactersEvents(rth);
-                        }
+                        	nodeSetStrValue = nodeSetStrValue.substring(0, nodeSetStrValue.length() - 1);
+                        	(new XString(nodeSetStrValue)).dispatchCharactersEvents(rth);
+                        }                        
                      }
                      else {
                         String xpathPatternStr = m_selectExpression.getPatternString();

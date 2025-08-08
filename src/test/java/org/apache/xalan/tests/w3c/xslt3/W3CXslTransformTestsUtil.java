@@ -51,6 +51,7 @@ import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.utils.XML11Char;
 import org.apache.xpath.jaxp.XPathFactoryImpl;
 import org.apache.xpath.regex.Matcher;
@@ -628,11 +629,19 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
 		StringWriter strWriter = new StringWriter();
 		
-		Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));    				
+		Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
 		
-		transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
+		XslTransformSharedDatastore.m_is_xsl_test_invocation = true;
+		try {
+		   transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
+		}
+		finally {
+		   XslTransformSharedDatastore.m_is_xsl_test_invocation = false;
+		}
+		
+		String str2 = strWriter.toString();
 
-		Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((strWriter.toString()).getBytes()));
+		Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(str2.getBytes()));
 		
 		String xmlStr1 = serializeXmlDomElementNode(xmlInpDoc1);
 		

@@ -20,6 +20,7 @@
  */
 package org.apache.xalan.templates;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
@@ -37,11 +38,10 @@ import xml.xpath31.processor.types.XSAnyType;
  */
 public class AVTPartXPath extends AVTPart
 {
-    static final long serialVersionUID = -4460373807550527675L;
+  static final long serialVersionUID = -4460373807550527675L;
 
   /**
    * The XPath object contained in this part.
-   * @serial
    */
   private XPath m_xpath;
   
@@ -147,8 +147,9 @@ public class AVTPartXPath extends AVTPart
     XObject xobj = m_xpath.execute(xctxt, context, nsNode);
 
     if (xobj != null) {
-        if (xobj instanceof XSAnyType) {
-           ((XSAnyType)xobj).appendToFsb(buf);
+    	if (xobj instanceof XSAnyType) {           
+           String str1 = XslTransformEvaluationHelper.getStrVal(xobj);           
+           buf.append(str1);
         }
         else {
            xobj.appendToFsb(buf);

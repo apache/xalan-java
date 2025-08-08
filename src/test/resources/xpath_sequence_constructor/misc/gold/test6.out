@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <a>A B</a>
+    <b>C D</b>
+    <c>E F</c>
+  </one>
+  <two>
+    <a>G I</a>
+    <b>J L</b>
+    <c>M O</c>
+  </two>
+</result>

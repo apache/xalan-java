@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-07T12:04:55Z" fail="25" name="apply-templates" pass="21" skipped="4" statusUnknown="0" totalRun="46">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-08T16:29:17Z" fail="24" name="apply-templates" pass="22" skipped="4" statusUnknown="0" totalRun="46">
    <testResult status="fail" testName="apply-templates-001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
 &#13;
@@ -182,7 +182,7 @@
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="conflict-resolution-1501"/>
+   <testResult status="pass" testName="conflict-resolution-1501"/>
    <testResult status="pass" testName="conflict-resolution-1601"/>
    <testResult status="fail" testName="conflict-resolution-1602">
       <outResult>

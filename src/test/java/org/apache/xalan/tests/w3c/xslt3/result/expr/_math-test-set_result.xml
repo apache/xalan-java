@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-07T12:05:37Z" fail="37" name="math" pass="110" skipped="0" statusUnknown="1" totalRun="148">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-08T16:29:52Z" fail="31" name="math" pass="117" skipped="0" statusUnknown="1" totalRun="149">
+   <testResult status="pass" testName="math-3315"/>
    <testResult status="pass" testName="math-0101"/>
    <testResult status="pass" testName="math-0102"/>
    <testResult status="fail" testName="math-0103"/>
@@ -38,7 +39,7 @@
    <testResult status="pass" testName="math-1510"/>
    <testResult status="pass" testName="math-1511"/>
    <testResult status="pass" testName="math-1512"/>
-   <testResult status="fail" testName="math-1513"/>
+   <testResult status="pass" testName="math-1513"/>
    <testResult status="pass" testName="math-1514"/>
    <testResult status="pass" testName="math-1515"/>
    <testResult status="pass" testName="math-1516"/>
@@ -122,8 +123,8 @@
    <testResult status="pass" testName="math-3001"/>
    <testResult status="fail" testName="math-3101"/>
    <testResult status="pass" testName="math-3201"/>
-   <testResult status="fail" testName="math-3301"/>
-   <testResult status="fail" testName="math-3301a"/>
+   <testResult status="pass" testName="math-3301"/>
+   <testResult status="pass" testName="math-3301a"/>
    <testResult status="fail" testName="math-3302"/>
    <testResult status="fail" testName="math-3302a"/>
    <testResult status="fail" testName="math-3303"/>
@@ -145,8 +146,8 @@
    <testResult status="pass" testName="math-3311"/>
    <testResult status="pass" testName="math-3312"/>
    <testResult status="fail" testName="math-3313"/>
-   <testResult status="fail" testName="math-3314"/>
-   <testResult status="fail" testName="math-3315"/>
-   <testResult status="fail" testName="math-3316"/>
+   <testResult status="pass" testName="math-3314"/>
+   <testResult status="pass" testName="math-3315"/>
+   <testResult status="pass" testName="math-3316"/>
    <testResult testName="math-3317"/>
 </testrun>
