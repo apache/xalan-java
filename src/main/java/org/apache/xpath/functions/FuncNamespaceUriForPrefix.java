@@ -129,7 +129,6 @@ public class FuncNamespaceUriForPrefix extends Function2Args {
 		  return xsAnyUri;  
 	   }
 	   else {
-		  // Recursive call to this function
 		  xsAnyUri = getNamespaceUriForPrefix(nsPrefixStr, node.getParentNode()); 
 	   }
 	   

@@ -156,7 +156,6 @@ public class ArrowOp extends Operation
        
        java.lang.String xpathStr2 = xpath.getArrowOpRemainingXPathExprStr();
        if (xpathStr2 != null) {
-    	  // Recursive call to this function
           result = getFinalResult(result, xpathStr2, xctxt); 
        }
        

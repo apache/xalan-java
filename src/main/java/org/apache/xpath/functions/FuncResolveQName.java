@@ -197,7 +197,6 @@ public class FuncResolveQName extends Function2Args
 		   nsUri = attrNode.getNodeValue();
 		}
 		else {
-		   // Recursive call to this function
 		   nsUri = getNsuriFromInscopeNamespacesOfXMLElement(node.getParentNode(), nsPrefix);
 		}
 		

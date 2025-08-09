@@ -37,6 +37,7 @@ import org.apache.xalan.tests.w3c.xslt3.expr.XslPathTests;
 import org.apache.xalan.tests.w3c.xslt3.expr.XslPredicateTests;
 import org.apache.xalan.tests.w3c.xslt3.fn.XslFnDeepEqualTests;
 import org.apache.xalan.tests.w3c.xslt3.fn.XslFnFormatNumberTests;
+import org.apache.xalan.tests.w3c.xslt3.fn.XslFnJsonToXmlTests;
 import org.apache.xalan.tests.w3c.xslt3.fn.XslFnKeyTests;
 import org.apache.xalan.tests.w3c.xslt3.fn.XslFnPositionTests;
 import org.apache.xalan.tests.w3c.xslt3.fn.XslFnRootTests;
@@ -79,7 +80,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XslNodeTestTests.class, XslPathTests.class, XslHigherOrderFunctionTests.class, XslPredicateTests.class, XslBooleanTests.class, 
 	            XslNodeTests.class, XslStringTests.class, XslDateTests.class, XslFnDeepEqualTests.class, XslFnPositionTests.class, 
 	            XslAnalyzeStringTests.class, XslFnRootTests.class, XslFnKeyTests.class, XslFnFormatNumberTests.class, XslMiscRegexTests.class,
-	            XslDocumentTests.class, XslXPathDefaultNamespaceAttrTests.class, XslExpandTextAttrTests.class })
+	            XslDocumentTests.class, XslXPathDefaultNamespaceAttrTests.class, XslExpandTextAttrTests.class, XslFnJsonToXmlTests.class })
 public class W3CXSLT3Tests {
 
 }

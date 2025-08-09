@@ -346,7 +346,6 @@ public class XPathCollationSupport {
              // get all, except the first item in the list 'list2'
              list2 = list2.subList(1, list2.size());
              
-             // recursive call to this function
              comparisonResult = compareCodepointArrays(getIntArrayFromIntegerList(list1), 
                                                                        getIntArrayFromIntegerList(list2));     
           }

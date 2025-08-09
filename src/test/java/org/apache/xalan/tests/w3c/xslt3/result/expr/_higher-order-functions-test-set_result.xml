@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-08T16:29:56Z" fail="6" name="higher-order-functions" pass="18" skipped="0" statusUnknown="1" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-09T15:31:35Z" fail="6" name="higher-order-functions" pass="18" skipped="0" statusUnknown="1" totalRun="25">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>

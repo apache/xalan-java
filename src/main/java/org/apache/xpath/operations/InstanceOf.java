@@ -817,7 +817,6 @@ public class InstanceOf extends Operation
 
 	  for (int idx = 0; idx < srcResultSeq.size(); idx++) {
 		  XObject seqItem = (XObject)(srcResultSeq.item(idx));
-		  // Recursive call to this function
 		  if (!isInstanceOf(seqItem, sequenceTypeDataNew)) {
 			  isInstanceOfOnSeqItem = false;
 			  break;

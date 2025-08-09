@@ -305,7 +305,6 @@ public class XPathForExpr extends Expression {
                              
                forExprVarBindingMap.put(new QName(varName), xdmItem);
                
-               // Recursive call to this function
                ResultSequence rSeq = getForExpressionEvalResult(listIter, returnExprXPath, xctxt);
                
                // Append xdm items of sequence 'rSeq', to the final sequence object 'resultSeq'   

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-09T15:33:30Z" fail="20" name="json-to-xml" pass="12" skipped="0" statusUnknown="1" totalRun="33">
+   <testResult status="pass" testName="json-to-xml-001"/>
+   <testResult status="pass" testName="json-to-xml-002"/>
+   <testResult status="pass" testName="json-to-xml-003"/>
+   <testResult status="pass" testName="json-to-xml-004"/>
+   <testResult status="pass" testName="json-to-xml-005"/>
+   <testResult status="pass" testName="json-to-xml-006"/>
+   <testResult status="pass" testName="json-to-xml-007"/>
+   <testResult status="pass" testName="json-to-xml-008"/>
+   <testResult status="pass" testName="json-to-xml-009"/>
+   <testResult status="pass" testName="json-to-xml-010"/>
+   <testResult status="pass" testName="json-to-xml-011"/>
+   <testResult status="pass" testName="json-to-xml-012"/>
+   <testResult status="fail" testName="json-to-xml-101"/>
+   <testResult status="fail" testName="json-to-xml-escape-001"/>
+   <testResult status="fail" testName="json-to-xml-escape-002"/>
+   <testResult status="fail" testName="json-to-xml-escape-003">
+      <outResult>
+         <errTrace>misquoted literal... expected double quote!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-escape-004">
+      <outResult>
+         <errTrace>misquoted literal... expected double quote!</errTrace>
+         <errTrace>misquoted literal... expected double quote!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-escape-005">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-escape-006">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-duplicates-001">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-duplicates-002">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-duplicates-003">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+&#13;
+     &#13;
+&#13;
+    &#13;
+&#13;
+    &#13;
+       {"one": {"a":2, "b":3, "c":4, "a":5},&#13;
+        "two": {"a":2, "b":3, "c":4, "a":5},&#13;
+        "one": {"a":3, "b":4, "c":5, "a":6},&#13;
+        "two": {"a":3, "b":4, "c":5, "a":6}&#13;
+       }&#13;
+        &#13;
+        &#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-duplicates-004">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+&#13;
+     &#13;
+&#13;
+    &#13;
+&#13;
+    &#13;
+       {"one": {"a":2, "b":3, "c":4, "a":5},&#13;
+        "two": {"a":2, "b":3, "c":4, "a":5},&#13;
+        "one": {"a":3, "b":4, "c":5, "a":6},&#13;
+        "two": {"a":3, "b":4, "c":5, "a":6}&#13;
+       }&#13;
+        &#13;
+        &#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-duplicates-005">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+&#13;
+     &#13;
+&#13;
+    &#13;
+&#13;
+    &#13;
+       {"one": {"a":2, "b":3, "c":4, "a":5},&#13;
+        "two": {"a":2, "b":3, "c":4, "a":5},&#13;
+        "one": {"a":3, "b":4, "c":5, "a":6},&#13;
+        "two": {"a":3, "b":4, "c":5, "a":6}&#13;
+       }&#13;
+        &#13;
+        &#13;
+&#13;
+    &#13;
+        &#13;
+    &#13;
+&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-typed-001">
+      <outResult>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : An option 'validate' used during function call fn:json-to-xml, is not supported. This implementation supports, only the options 'liberal' &amp; 'duplicates' for the function fn:json-to-xml.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-typed-002">
+      <outResult>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : An option 'validate' used during function call fn:json-to-xml, is not supported. This implementation supports, only the options 'liberal' &amp; 'duplicates' for the function fn:json-to-xml.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-typed-003">
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-typed-004">
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-typed-005">
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-typed-006">
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-typed-007">
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-typed-010">
+      <outResult>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : An option 'validate' used during function call fn:json-to-xml, is not supported. This implementation supports, only the options 'liberal' &amp; 'duplicates' for the function fn:json-to-xml.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="json-to-xml-error-001"/>
+</testrun>

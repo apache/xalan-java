@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-08-08T16:32:07Z" desc="W3C XSLT 3.0 test suite results" fail="786" pass="1470" skipped="43" success="64.64%" totalRun="2274" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-08-09T15:33:52Z" desc="W3C XSLT 3.0 test suite results" fail="806" pass="1482" skipped="43" success="64.24%" totalRun="2307" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="51" pass="53" skipped="4" success="50.48%" totalRun="105"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
@@ -28,6 +28,7 @@
   <fn>
     <deep-equal fail="0" pass="2" skipped="0" success="100.0%" totalRun="2"/>
     <format-number fail="32" pass="38" skipped="4" success="54.29%" totalRun="70"/>
+    <json-to-xml fail="20" pass="12" skipped="0" success="36.36%" totalRun="33"/>
     <key fail="3" pass="21" skipped="0" success="84.0%" totalRun="25"/>
     <position fail="11" pass="126" skipped="0" success="91.3%" totalRun="138"/>
     <root fail="3" pass="7" skipped="0" success="70.0%" totalRun="10"/>

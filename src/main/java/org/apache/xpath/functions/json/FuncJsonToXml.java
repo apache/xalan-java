@@ -310,18 +310,19 @@ public class FuncJsonToXml extends FunctionMultiArgs
 	    				  boolElem.appendChild(text);
 	    				  arrayElem.appendChild(boolElem);  
 	    			  }
+	    			  else if (JSONObject.NULL.equals(arrItem)) {
+	         			  Element nullElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NULL);
+	         	          arrayElem.appendChild(nullElem);  
+	         		  }
 	    			  else if (arrItem instanceof JSONObject) {
-	    				  // Recursive call to this function
 	    				  constructXmlDom(arrItem, document, arrayElem, null);
 	    			  }
 	    			  else if (arrItem instanceof JSONArray) {
-	    				  // Recursive call to this function
 	    				  constructXmlDom(arrItem, document, arrayElem, null);
 	    			  }
 	    		  }
 	      	   }
 	      	   else if (value instanceof JSONObject) {
-	      		  // Recursive call to this function
 	      		  constructXmlDom(value, document, mapElem, key); 
 	      	   }
 	      	   else if (JSONObject.NULL.equals(value)) {
@@ -367,12 +368,14 @@ public class FuncJsonToXml extends FunctionMultiArgs
     	          boolElem.appendChild(text);
     	          arrayElem.appendChild(boolElem);  
     		   }
+    		   else if (JSONObject.NULL.equals(arrItem)) {
+     			  Element nullElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NULL);
+     	          arrayElem.appendChild(nullElem);  
+     		   }
     		   else if (arrItem instanceof JSONObject) {
-    			  // Recursive call to this function
       		      constructXmlDom(arrItem, document, arrayElem, null);
       		   }
     		   else if (arrItem instanceof JSONArray) {
-    			  // Recursive call to this function
     		      constructXmlDom(arrItem, document, arrayElem, null);
     		   }    		   
     		}
