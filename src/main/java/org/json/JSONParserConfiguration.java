@@ -15,13 +15,16 @@ public class JSONParserConfiguration extends ParserConfiguration {
     private boolean useNativeNulls;
     
     /**
-     * Used to indicate whether to overwrite duplicate key or not. Used for
-     * Apache Xalan-J's implementation of XPath 3.1 functions fn:parse-json & 
-     * fn:json-doc for the option 'duplicates': 'use-first'.
-     * 
-     * Modification by : Mukul Gandhi <mukulg@apache.org>, on behalf of Apache Xalan-J team  
+     * [Mukul Gandhi, Apache Xalan-J] Added to help implement XPath 3.1 JSON 
+     * document support.
      */
     private boolean useFirstDuplicateKey;
+    
+    /**
+     * [Mukul Gandhi, Apache Xalan-J] Added to help implement XPath 3.1 JSON 
+     * document support.
+     */
+    private boolean retainAllDuplicateKeys;
 
     /**
      * Configuration with the default values.
@@ -30,6 +33,7 @@ public class JSONParserConfiguration extends ParserConfiguration {
         super();
         this.overwriteDuplicateKey = false;
         this.useFirstDuplicateKey = false;
+        this.retainAllDuplicateKeys = false;
         // DO NOT DELETE THE FOLLOWING LINE -- it is used for strictMode testing
         // this.strictMode = true;        
     }
@@ -45,6 +49,7 @@ public class JSONParserConfiguration extends ParserConfiguration {
         JSONParserConfiguration clone = new JSONParserConfiguration();
         clone.overwriteDuplicateKey = overwriteDuplicateKey;
         clone.useFirstDuplicateKey = useFirstDuplicateKey;
+        clone.retainAllDuplicateKeys = retainAllDuplicateKeys;
         clone.strictMode = strictMode;
         clone.maxNestingDepth = maxNestingDepth;
         clone.keepStrings = keepStrings;
@@ -86,22 +91,23 @@ public class JSONParserConfiguration extends ParserConfiguration {
     }
     
     /**
-     * Controls the parser's behavior when meeting duplicate keys.
-     * If set to false, the parser will throw a JSONException when meeting a duplicate key.
-     * Or the duplicate key's value will be overwritten.
-     * 
-     * Used to indicate whether to overwrite duplicate key or not. Used for Apache Xalan-J's 
-     * implementation of XPath 3.1 functions fn:parse-json & fn:json-doc for the option 
-     * 'duplicates': 'use-first'.
-     * 
-     * Modification by : Mukul Gandhi, on behalf of Apache Xalan-J team  
-     *
-     * @param useFirstDuplicateKey defines should the parser overwrite duplicate keys.
-     * @return The existing configuration will not be modified. A new configuration is returned.
+     * [Mukul Gandhi, Apache Xalan-J] Added to help implement XPath 3.1 JSON 
+     * document support.
      */
     public JSONParserConfiguration useFirstDuplicateKey(final boolean useFirstDuplicateKey) {
         JSONParserConfiguration clone = this.clone();
         clone.useFirstDuplicateKey = useFirstDuplicateKey;
+
+        return clone;
+    }
+    
+    /**
+     * [Mukul Gandhi, Apache Xalan-J] Added to help implement XPath 3.1 JSON 
+     * document support.
+     */
+    public JSONParserConfiguration retainAllDuplicateKeys(final boolean retainAllDuplicateKeys) {
+        JSONParserConfiguration clone = this.clone();
+        clone.retainAllDuplicateKeys = retainAllDuplicateKeys;
 
         return clone;
     }
@@ -161,19 +167,19 @@ public class JSONParserConfiguration extends ParserConfiguration {
     }
     
     /**
-     * The parser's behavior when meeting duplicate keys, controls whether the parser should
-     * overwrite duplicate keys or not.
-     * 
-     * Used to indicate whether to overwrite duplicate key or not. Used for Apache Xalan-J's 
-     * implementation of XPath 3.1 functions fn:parse-json & fn:json-doc for the option 
-     * 'duplicates': 'use-first'.
-     * 
-     * Modification by : Mukul Gandhi, on behalf of Apache Xalan-J team 
-     *
-     * @return The <code>useFirstDuplicateKey</code> configuration value.
+     * [Mukul Gandhi, Apache Xalan-J] Added to help implement XPath 3.1 JSON 
+     * document support.
      */
     public boolean isFirstDuplicateKey() {
     	return this.useFirstDuplicateKey;
+    }
+    
+    /**
+     * [Mukul Gandhi, Apache Xalan-J] Added to help implement XPath 3.1 JSON 
+     * document support.
+     */
+    public boolean isRetainAllDuplicateKeys() {
+    	return this.retainAllDuplicateKeys;
     }
     
     /**

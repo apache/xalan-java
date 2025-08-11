@@ -228,6 +228,14 @@ public class JSONObject {
         if (x.nextClean() != '{') {
             throw x.syntaxError("A JSONObject text must begin with '{'");
         }
+           
+        /**
+         * [Mukul Gandhi, Apache Xalan-J] Variable to add a sequence number as 
+         * prefix to JSONObject key's value for, Xalan-J's function fn:json-to-xml 
+         * duplicates option 'retain'.
+         */
+        int count = 0;
+        
         for (;;) {
             c = x.nextClean();
             switch (c) {
@@ -256,12 +264,12 @@ public class JSONObject {
                 boolean keyExists = this.opt(key) != null;
                 
                 /**
-                 * The following code is slightly modified by : Mukul Gandhi <mukulg@apache.org>, on
-                 * behalf of Apache Xalan-J team, for implementation of XPath 3.1 functions fn:parse-json
-                 * & fn:json-doc for the option 'duplicates': 'use-first'.
+                 * [Mukul Gandhi, Apache Xalan-J] The following code is slightly modified to 
+                 * help implement XPath 3.1 JSON document support.
                  */
-                
-                if (keyExists && !(jsonParserConfiguration.isOverwriteDuplicateKey() || jsonParserConfiguration.isFirstDuplicateKey())) {
+                if (keyExists && !(jsonParserConfiguration.isOverwriteDuplicateKey() || 
+                		           jsonParserConfiguration.isFirstDuplicateKey() || 
+                		           jsonParserConfiguration.isRetainAllDuplicateKeys())) {
                     throw x.syntaxError("Duplicate key \"" + key + "\"");
                 }
 
@@ -272,7 +280,11 @@ public class JSONObject {
                 	if (keyExists) {
                 		if (jsonParserConfiguration.isOverwriteDuplicateKey()) {
                 			this.put(key, value);
-                		}
+                		}                		                		
+                	}
+                	else if (jsonParserConfiguration.isRetainAllDuplicateKeys()) {
+                		String keyStr1 = (++count) + "_" + key;
+                		this.put(keyStr1, value);
                 	}
                 	else {
                 		this.put(key, value);

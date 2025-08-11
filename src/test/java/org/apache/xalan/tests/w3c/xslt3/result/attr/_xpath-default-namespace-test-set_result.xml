@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-09T15:33:28Z" fail="15" name="xpath-default-namespace" pass="11" skipped="0" statusUnknown="0" totalRun="26">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-11T18:00:19Z" fail="15" name="xpath-default-namespace" pass="11" skipped="0" statusUnknown="0" totalRun="26">
    <testResult status="pass" testName="xpath-default-namespace-0101"/>
    <testResult status="pass" testName="xpath-default-namespace-0102"/>
    <testResult status="pass" testName="xpath-default-namespace-0103"/>

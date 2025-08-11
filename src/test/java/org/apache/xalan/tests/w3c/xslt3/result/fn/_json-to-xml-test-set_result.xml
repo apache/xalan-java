@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-09T15:33:30Z" fail="20" name="json-to-xml" pass="12" skipped="0" statusUnknown="1" totalRun="33">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-11T18:00:21Z" fail="21" name="json-to-xml" pass="12" skipped="0" statusUnknown="1" totalRun="34">
+   <testResult status="fail" testName="json-to-xml-duplicates-001">
+      <outResult/>
+   </testResult>
    <testResult status="pass" testName="json-to-xml-001"/>
    <testResult status="pass" testName="json-to-xml-002"/>
    <testResult status="pass" testName="json-to-xml-003"/>
@@ -54,7 +57,7 @@
         &#13;
 &#13;
     &#13;
-        &#13;
+       &#13;
     &#13;
 &#13;
 &#13;
@@ -77,7 +80,7 @@
         &#13;
 &#13;
     &#13;
-        &#13;
+       &#13;
     &#13;
 &#13;
 &#13;
@@ -100,7 +103,7 @@
         &#13;
 &#13;
     &#13;
-        &#13;
+       &#13;
     &#13;
 &#13;
 &#13;
@@ -108,12 +111,12 @@
    </testResult>
    <testResult status="fail" testName="json-to-xml-typed-001">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : An option 'validate' used during function call fn:json-to-xml, is not supported. This implementation supports, only the options 'liberal' &amp; 'duplicates' for the function fn:json-to-xml.</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are incompatible.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="json-to-xml-typed-002">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : An option 'validate' used during function call fn:json-to-xml, is not supported. This implementation supports, only the options 'liberal' &amp; 'duplicates' for the function fn:json-to-xml.</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are incompatible.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="json-to-xml-typed-003">
@@ -143,7 +146,7 @@
    </testResult>
    <testResult status="fail" testName="json-to-xml-typed-010">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : An option 'validate' used during function call fn:json-to-xml, is not supported. This implementation supports, only the options 'liberal' &amp; 'duplicates' for the function fn:json-to-xml.</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are incompatible.</errTrace>
       </outResult>
    </testResult>
    <testResult testName="json-to-xml-error-001"/>

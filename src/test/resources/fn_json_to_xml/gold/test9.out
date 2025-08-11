@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><array xmlns="http://www.w3.org/2005/xpath-functions">
+  <map>
+    <number key="a">1</number>
+    <number key="b">2</number>
+    <number key="a">3</number>
+  </map>
+  <map>
+    <number key="p">5</number>
+    <number key="q">6</number>
+    <number key="p">7</number>
+  </map>
+</array>

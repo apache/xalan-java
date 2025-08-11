@@ -579,7 +579,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			while (keyIter.hasNext()) {
     			   String key = keyIter.next();
     			   String value = xslParamMap.get(key);
-    			   transformer.setParameter(key, value);
+    			   ((TransformerImpl)transformer).setParameter(key, value);
     			}
     		}
     		

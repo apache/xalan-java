@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><map xmlns="http://www.w3.org/2005/xpath-functions">
+  <number key="a">1</number>
+  <map key="b">
+    <number key="x">10</number>
+    <number key="y">11</number>
+    <number key="x">12</number>
+  </map>
+  <number key="b">3</number>
+  <number key="a">4</number>
+</map>

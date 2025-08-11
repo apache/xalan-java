@@ -51,6 +51,12 @@ public class XSLJsonConstants {
 	public static final String DUPLICATES_USE_LAST = "use-last";
 	
 	public static final String DUPLICATES_RETAIN = "retain";
+	
+	public static final String VALIDATE = "validate";
+	
+	public static final boolean VALIDATE_FALSE = false;
+	
+	public static final boolean VALIDATE_TRUE = true;		
 		
 	// This refers to an XML Schema document provided within Xalan-J 
 	// XSL 3 codebase, as specified within XPath and XQuery F&O 3.1 spec.

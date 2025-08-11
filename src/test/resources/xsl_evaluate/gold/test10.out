@@ -5,7 +5,6 @@
     <number>3</number>
   </array>
   <map key="detail">
-    <string key="mesg2">there</string>
     <string key="mesg1">hello</string>
     <map key="moreInfo">
       <string key="a1">this</string>
@@ -20,5 +19,6 @@
       </array>
       <string key="a3">nice</string>
     </map>
+    <string key="mesg2">there</string>
   </map>
 </map>

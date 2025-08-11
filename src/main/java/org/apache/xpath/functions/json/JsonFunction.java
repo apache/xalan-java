@@ -240,7 +240,7 @@ public class JsonFunction extends FunctionMultiArgs {
 	 * @param optionDuplicatesValStr                 Value of JSON parse 'duplicates' option
 	 * @return                                       org.json.JSONParserConfiguration object
 	 */
-	private JSONParserConfiguration getJsonParserConfiguration(boolean optionIsLiberal, String optionDuplicatesValStr) {
+	public JSONParserConfiguration getJsonParserConfiguration(boolean optionIsLiberal, String optionDuplicatesValStr) {
 		
 		JSONParserConfiguration jsonParserConf = new JSONParserConfiguration();
 		
@@ -250,7 +250,8 @@ public class JsonFunction extends FunctionMultiArgs {
 
 		if (XSLJsonConstants.DUPLICATES_REJECT.equals(optionDuplicatesValStr)) {
 			jsonParserConf = jsonParserConf.withOverwriteDuplicateKey(false);
-			jsonParserConf = jsonParserConf.useFirstDuplicateKey(false); 	
+			jsonParserConf = jsonParserConf.useFirstDuplicateKey(false); 
+			jsonParserConf = jsonParserConf.retainAllDuplicateKeys(false);
 		}
 		else if (XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr)) {
 			/**
@@ -260,10 +261,17 @@ public class JsonFunction extends FunctionMultiArgs {
 			 */
 			jsonParserConf = jsonParserConf.useFirstDuplicateKey(true);
 			jsonParserConf = jsonParserConf.withOverwriteDuplicateKey(false);
+			jsonParserConf = jsonParserConf.retainAllDuplicateKeys(false);
 		}
 		else if (XSLJsonConstants.DUPLICATES_USE_LAST.equals(optionDuplicatesValStr)) {
+			jsonParserConf = jsonParserConf.withOverwriteDuplicateKey(true);
 			jsonParserConf = jsonParserConf.useFirstDuplicateKey(false);
-			jsonParserConf = jsonParserConf.withOverwriteDuplicateKey(true); 	
+			jsonParserConf = jsonParserConf.retainAllDuplicateKeys(false);			 	
+		}
+		else if (XSLJsonConstants.DUPLICATES_RETAIN.equals(optionDuplicatesValStr)) {
+			jsonParserConf = jsonParserConf.retainAllDuplicateKeys(true);
+			jsonParserConf = jsonParserConf.withOverwriteDuplicateKey(false);
+			jsonParserConf = jsonParserConf.useFirstDuplicateKey(false);						 	
 		}
 		
 		return jsonParserConf;
