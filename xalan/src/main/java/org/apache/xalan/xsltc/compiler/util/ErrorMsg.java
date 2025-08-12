@@ -251,7 +251,7 @@ public final class ErrorMsg {
     }
 
     private String formatLine() {
-	StringBuffer result = new StringBuffer();
+	StringBuilder result = new StringBuilder();
 	if (_url != null) {
 	    result.append(_url);
 	    result.append(": ");

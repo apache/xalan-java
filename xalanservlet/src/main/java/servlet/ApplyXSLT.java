@@ -656,7 +656,7 @@ public class ApplyXSLT extends HttpServlet
       mesg = "";
     else mesg = "<B>" + mesg + "</B>";
     StringTokenizer tokens = new StringTokenizer(mesg, EOL);
-    StringBuffer strBuf = new StringBuffer();
+    StringBuilder strBuf = new StringBuilder();
     while (tokens.hasMoreTokens())
       strBuf.append(tokens.nextToken() + EOL + "<BR>");
     mesg = strBuf.toString();

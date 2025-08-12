@@ -630,7 +630,7 @@ public class SimpleResultTreeImpl extends EmptySerializer implements DOM, DTM
         if (_size == 1)
             _text = _textArray[0];
         else {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             for (int i = 0; i < _size; i++) {
                 buffer.append(_textArray[i]);
             }

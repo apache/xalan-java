@@ -284,7 +284,7 @@ public class Hashtable {
     public String toString() {
 	int i;
 	int max = size() - 1;
-	StringBuffer buf = new StringBuffer();
+	StringBuilder buf = new StringBuilder();
 	Enumeration k = keys();
 	Enumeration e = elements();
 	buf.append("{");

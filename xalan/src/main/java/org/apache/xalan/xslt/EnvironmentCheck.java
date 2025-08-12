@@ -843,7 +843,7 @@ public class EnvironmentCheck
         XALAN1_VERSION_CLASS, ObjectFactory.findClassLoader(), true);
 
       // Found Xalan-J 1.x, grab it's version fields
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       Field f = clazz.getField("PRODUCT");
 
       buf.append(f.get(null));
@@ -876,7 +876,7 @@ public class EnvironmentCheck
         XALAN2_VERSION_CLASS, ObjectFactory.findClassLoader(), true);
 
       // Found Xalan-J 2.x, grab it's version fields
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       Field f = clazz.getField("S_VERSION");
       buf.append(f.get(null));
 

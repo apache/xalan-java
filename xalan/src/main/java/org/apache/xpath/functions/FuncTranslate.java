@@ -51,7 +51,7 @@ public class FuncTranslate extends Function3Args
 
     // A vector to contain the new characters.  We'll use it to construct
     // the result string.
-    StringBuffer sbuffer = new StringBuffer();
+    StringBuilder sbuffer = new StringBuilder();
 
     for (int i = 0; i < theFirstStringLength; i++)
     {

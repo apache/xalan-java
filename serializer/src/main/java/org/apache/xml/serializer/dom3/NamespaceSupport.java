@@ -322,7 +322,7 @@ public class NamespaceSupport {
 	}
         
         public String toString(){
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             for (int i=0;i<size;i++){
                 buf.append(prefixes[i]);
                 buf.append(" ");

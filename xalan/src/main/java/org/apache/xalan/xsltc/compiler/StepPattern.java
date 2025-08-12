@@ -148,7 +148,7 @@ class StepPattern extends RelativePathPattern {
     }
 	
     public String toString() {
-	final StringBuffer buffer = new StringBuffer("stepPattern(\"");
+	final StringBuilder buffer = new StringBuilder("stepPattern(\"");
     buffer.append(Axis.getNames(_axis))
 	    .append("\", ")
 	    .append(_isEpsilon ? 

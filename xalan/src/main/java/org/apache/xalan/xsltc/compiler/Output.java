@@ -239,7 +239,7 @@ final class Output extends TopLevelElement {
 	    _cdata = null;
 	}
 	else {
-	    StringBuffer expandedNames = new StringBuffer();
+	    StringBuilder expandedNames = new StringBuilder();
 	    StringTokenizer tokens = new StringTokenizer(_cdata);
 
 	    // Make sure to store names in expanded form

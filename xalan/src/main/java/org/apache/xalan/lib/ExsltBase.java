@@ -47,7 +47,7 @@ public abstract class ExsltBase
       if (value == null)
       {
         NodeList nodelist = n.getChildNodes();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (int i = 0; i < nodelist.getLength(); i++)
         {
           Node childNode = nodelist.item(i);

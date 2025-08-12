@@ -1289,7 +1289,7 @@ public final class ToUnknownStream extends SerializerBase
     {
         
         if (m_tracer != null) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
                 
             sb.append('<');
             sb.append(elementName);
