@@ -43,12 +43,6 @@ public abstract class ExtensionHandlerJava extends ExtensionHandler
    * needed.
    *
    * @param namespaceUri the extension namespace URI that I'm implementing
-   * @param funcNames    string containing list of functions of extension NS
-   * @param lang         language of code implementing the extension
-   * @param srcURL       value of src attribute (if any) - treated as a URL
-   *                     or a classname depending on the value of lang. If
-   *                     srcURL is not null, then scriptSrc is ignored.
-   * @param scriptSrc    the actual script code (if any)
    * @param scriptLang   the scripting language
    * @param className    the extension class name 
    */

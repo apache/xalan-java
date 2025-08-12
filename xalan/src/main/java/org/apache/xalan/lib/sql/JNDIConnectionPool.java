@@ -88,7 +88,7 @@ public class JNDIConnectionPool implements ConnectionPool
   }
   
   /**
-   * Sets the path for the jndi datasource 
+   * Sets the path for the jndi datasource
    * @param jndiPath 
    */
   public void setJndiPath(String jndiPath)
@@ -97,8 +97,7 @@ public class JNDIConnectionPool implements ConnectionPool
   }
 
   /**
-   * Returns the path for the jndi datasource 
-   * @param jndiPath 
+   * Returns the path for the jndi datasource
    */
   public String getJndiPath()
   {
@@ -108,8 +107,8 @@ public class JNDIConnectionPool implements ConnectionPool
   /**
    * Always returns true.
    * This method was intended to indicate if the pool was enabled, however, in
-   * this implementation that is not relavant.
-   * @return 
+   * this implementation that is not relevant.
+   * @return true
    */
   public boolean isEnabled()
   {

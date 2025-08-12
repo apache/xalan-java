@@ -585,8 +585,6 @@ public class ElemNumber extends ElemTemplateElement
    * @param newChild Child to add to child list
    *
    * @return Child just added to child list
-   *
-   * @throws DOMException
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
@@ -613,7 +611,7 @@ public class ElemNumber extends ElemTemplateElement
    *
    * @return the first ancestor that matches the given pattern
    *
-   * @throws javax.xml.transform.TransformerException
+   * @throws javax.xml.transform.TransformerException if cannot get match score
    */
   int findAncestor(
           XPathContext xctxt, XPath fromMatchPattern, XPath countMatchPattern, 
@@ -1593,7 +1591,7 @@ public class ElemNumber extends ElemTemplateElement
    * @param val Value to convert -- must be greater than zero.
    * @param table a table containing one character for each digit in the radix
    * @return String representing alpha count of number.
-   * @see TransformerImpl#DecimalToRoman
+   * @see org.apache.xalan.transformer.DecimalToRoman
    *
    * Note that the radix of the conversion is inferred from the size
    * of the table.
@@ -1617,11 +1615,10 @@ public class ElemNumber extends ElemTemplateElement
    * count using the sequence A B C ... Z AA AB AC.... etc.
    * 
    * @param val Value to convert -- must be greater than zero.
-   * @param table a table containing one character for each digit in the radix
    * @param aTable Array of alpha characters representing numbers
    * @param stringBuf Buffer where to save the string representing alpha count of number.
    * 
-   * @see TransformerImpl#DecimalToRoman
+   * @see org.apache.xalan.transformer.DecimalToRoman
    *
    * Note that the radix of the conversion is inferred from the size
    * of the table.
@@ -1722,7 +1719,7 @@ public class ElemNumber extends ElemTemplateElement
    * @param thisBundle Resource bundle to use
    * 
    * @return String representing alpha count of number.
-   * @see XSLProcessor#DecimalToRoman
+   * @see org.apache.xalan.transformer.DecimalToRoman
    *
    * Note that the radix of the conversion is inferred from the size
    * of the table.
@@ -1933,7 +1930,7 @@ public class ElemNumber extends ElemTemplateElement
    * @param prefixesAreOK true_ to enable prefix notation (e.g. 4 = "IV"),
    * false_ to disable prefix notation (e.g. 4 = "IIII").
    * @return Roman numeral string.
-   * @see DecimalToRoman
+   * @see org.apache.xalan.transformer.DecimalToRoman
    * @see m_romanConvertTable
    */
   protected String long2roman(long val, boolean prefixesAreOK)

@@ -202,7 +202,7 @@ public class XConnection
    * <code>org.apache.xalan.lib.sql.ConnectionPool</code> or a JNDI datasource.
    *
    * @param exprContext Context automatically passed from the XSLT sheet.
-   * @param name The name of the ConnectionPool or the JNDI DataSource path.
+   * @param connPoolName The name of the ConnectionPool or the JNDI DataSource path.
    *
    */
   public XConnection( ExpressionContext exprContext, String connPoolName )
