@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +75,7 @@ import org.w3c.dom.ls.LSSerializer;
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
@@ -169,8 +171,7 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Given an XObject object reference, return the string value 
-     * for the object. 
+     * Method definition, to get string value of XPath 3.1 xdm object. 
      */
     public static String getStrVal(XObject xObj) {       
        
@@ -193,6 +194,61 @@ public class XslTransformEvaluationHelper {
     		  suffix = suffix.substring(0, j + 1);
     		  result = (suffix.length() > 0) ? (prefix + "." + suffix) : prefix;
     	  }
+       }
+       else if (xObj instanceof XSDateTime) {
+    	   XSDateTime xsDateTime = (XSDateTime)xObj;
+    	   
+           Calendar calendar = xsDateTime.getCalendar();                                 
+           String strValue = ((XSDateTime)xObj).stringValue();           
+           
+           int milliSecs = calendar.get(Calendar.MILLISECOND);
+           boolean ms1 = false;
+           if ((milliSecs % 100) == 0) {
+              milliSecs = (calendar.get(Calendar.MILLISECOND)) / 100;
+              ms1 = true;
+           }
+           
+           if (milliSecs == 0) {
+        	  result = strValue; 
+           }
+           else {
+        	  String milliSecStr = null;
+        	  if (ms1) {
+        		 milliSecStr = String.valueOf(milliSecs);  
+        	  }
+        	  else if (milliSecs < 10) {
+        		 milliSecStr = "00" + milliSecs;   
+        	  }
+        	  else if (milliSecs < 100) {
+        		 milliSecStr = "0" + milliSecs; 
+        	  }
+        	  else if (milliSecs > 100) {
+        		 milliSecStr = String.valueOf(milliSecs);  
+        	  }
+        	   
+        	  int idx = strValue.indexOf('T');
+        	  String prefixStr = strValue.substring(0, idx);
+        	  String suffixStr = strValue.substring(idx);
+        	  int timeZoneIdx = suffixStr.indexOf('+');
+        	  if (timeZoneIdx == -1) {
+        		 timeZoneIdx = suffixStr.indexOf('-'); 
+        	  }
+        	  if (timeZoneIdx == -1) {
+         		 timeZoneIdx = suffixStr.indexOf('Z'); 
+         	  }        	  
+        	  if (timeZoneIdx > -1) {
+        		 String timeStr = suffixStr.substring(0, timeZoneIdx);
+        		 timeStr = timeStr + "." + milliSecStr;
+        		 String timeZoneStr = suffixStr.substring(timeZoneIdx);
+        		 strValue = prefixStr + timeStr + timeZoneStr;  
+        	  }
+        	  else {
+        		 suffixStr = suffixStr + "." + milliSecStr;
+        		 strValue = prefixStr + suffixStr;  
+        	  }
+        	  
+        	  result = strValue;
+           }
        }
        else if (xObj instanceof XSAnyType) {
           result = ((XSAnyType)xObj).stringValue();    

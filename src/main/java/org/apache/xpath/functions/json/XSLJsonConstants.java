@@ -58,8 +58,11 @@ public class XSLJsonConstants {
 	
 	public static final boolean VALIDATE_TRUE = true;		
 		
-	// This refers to an XML Schema document provided within Xalan-J 
-	// XSL 3 codebase, as specified within XPath and XQuery F&O 3.1 spec.
+	/**
+	 * This class field, refers to an XML Schema document file name, for an
+	 * XML schema to validate XPath 3.1 function fn:json-to-xml's result
+	 * and fn:xml-to-json's input values.
+	 */
 	public static final String XML_JSON_SCHEMA_FILE_NAME = "schema-for-json.xsd";
 	
 	public static final int JSON_INDENT_FACTOR = 1;

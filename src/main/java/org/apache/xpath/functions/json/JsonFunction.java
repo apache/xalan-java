@@ -16,8 +16,20 @@
  */
 package org.apache.xpath.functions.json;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.Iterator;
 
+import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+
+import org.apache.xml.utils.Constants;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -27,6 +39,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONParserConfiguration;
+import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDecimal;
@@ -232,9 +245,8 @@ public class JsonFunction extends FunctionMultiArgs {
     }
     
     /**
-	 * Method definition, to get org.json library's JSONParserConfiguration object for 
-	 * the supplied XPath 3.1 option 'liberal' & 'duplicates' values to parse JSON 
-	 * string values.
+	 * Method definition, to get org.json library's JSONParserConfiguration object for
+	 * the supplied XPath 3.1 JSON parse options 'liberal' and 'duplicates'.
 	 * 
 	 * @param optionIsLiberal                        Value of JSON parse 'liberal' option
 	 * @param optionDuplicatesValStr                 Value of JSON parse 'duplicates' option
@@ -253,12 +265,7 @@ public class JsonFunction extends FunctionMultiArgs {
 			jsonParserConf = jsonParserConf.useFirstDuplicateKey(false); 
 			jsonParserConf = jsonParserConf.retainAllDuplicateKeys(false);
 		}
-		else if (XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr)) {
-			/**
-			 * org.json library classes JSONObject & JSONParserConfiguration are modified
-			 * slightly (and, included within Xalan-J's XPath 3.1 implementation code) to 
-			 * implement this XPath feature.
-			 */
+		else if (XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr)) {			
 			jsonParserConf = jsonParserConf.useFirstDuplicateKey(true);
 			jsonParserConf = jsonParserConf.withOverwriteDuplicateKey(false);
 			jsonParserConf = jsonParserConf.retainAllDuplicateKeys(false);
@@ -276,5 +283,62 @@ public class JsonFunction extends FunctionMultiArgs {
 		
 		return jsonParserConf;
 	}
+	
+	/**
+     * Method definition, to check whether the supplied XML document string is valid 
+     * according JSON's XML serialization schema document schema-for-json.xsd provided
+     * by XPath 3.1 F&O spec. 
+     * 
+     * @param xmlDocumentStr              The supplied XML document string that needs 
+     *                                    to be validated with an XML Schema document.
+     * 
+     * @return                            Boolean value 'true', if the supplied XML 
+     *                                    document is valid.
+     * @throws javax.xml.transform.TransformerException
+     */
+    protected boolean isXmlStrValidWithJsonSchema(String xmlDocumentStr) throws 
+                                                                       javax.xml.transform.TransformerException {
+        boolean isXmlStrValid = false;
+        
+        System.setProperty(Constants.XML_SCHEMA_FACTORY_KEY, Constants.XML_SCHEMA_FACTORY_VALUE);
+         
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        
+        try {
+        	String xmlSchemaFileName = XSLJsonConstants.XML_JSON_SCHEMA_FILE_NAME;
+        	
+        	BufferedReader buffReader = new BufferedReader(new InputStreamReader(
+        			                                                          getClass().getResourceAsStream(xmlSchemaFileName)));
+        	final int CHAR_BUFF_SIZE = 512;   // char buffer size in bytes
+        	char[] charBuff = new char[CHAR_BUFF_SIZE];
+        	int bytesRead = 0;
+        	StringBuffer strBuff = new StringBuffer();
+        	while ((bytesRead = buffReader.read(charBuff)) != -1) {
+        		String str = new String(charBuff, 0, bytesRead);
+        		strBuff.append(str);
+        	}
+        	
+        	Source xmlSchemaSource = new StreamSource(new StringReader(strBuff.toString()));
+        	
+        	Schema schema = schemaFactory.newSchema(xmlSchemaSource);
+        				
+			Validator validator = schema.newValidator();
+			StringReader xmlInputStrReader = new StringReader(xmlDocumentStr);
+			validator.validate(new StreamSource(xmlInputStrReader));
+			isXmlStrValid = true;
+		} 
+        catch (SAXException ex) {
+			throw new javax.xml.transform.TransformerException("FOAP0001 : An XML Schema validation of function fn:xml-to-json's "
+					                                                  + "1st argument which is an XML node, failed with following XML Schema "
+					                                                  + "validation result details : " + ex.getMessage()); 
+		}
+        catch (IOException ex) {
+        	throw new javax.xml.transform.TransformerException("FOAP0001 : An XML Schema validation of function fn:xml-to-json's "
+        			                                                  + "1st argument which is an XML node, failed with following XML Schema "
+        			                                                  + "validation result details : " + ex.getMessage());
+        }        
+        
+        return isXmlStrValid; 
+    }
 
 }

@@ -20,27 +20,15 @@
  */
 package org.apache.xpath.functions.json;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
-import org.apache.xml.utils.Constants;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -51,7 +39,6 @@ import org.json.JSONObject;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSString;
@@ -67,12 +54,10 @@ import xml.xpath31.processor.types.XSString;
  * 
  * @xsl.usage advanced
  */
-public class FuncXmlToJson extends FunctionMultiArgs
+public class FuncXmlToJson extends JsonFunction
 {
 
 	private static final long serialVersionUID = -7072675375842927045L;
-	
-	private static final int CHAR_BUFF_SIZE = 512;   // char buffer size in bytes
 	
 	/**
      * Class constructor.
@@ -185,7 +170,7 @@ public class FuncXmlToJson extends FunctionMultiArgs
    	    
    	    try {
    	       xmlDocStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);   	       
-   	       if (isXmlStrValidWithSchema(xmlDocStr, XSLJsonConstants.XML_JSON_SCHEMA_FILE_NAME)) {
+   	       if (isXmlStrValidWithJsonSchema(xmlDocStr)) {
    	    	  Object obj = getJsonFromXmlNode(node, null);
    	    	  if (obj instanceof JSONObject) {
    	    		 String jsonStr = jsonIndent ? ((JSONObject)obj).toString(XSLJsonConstants.JSON_INDENT_FACTOR) : 
@@ -209,60 +194,6 @@ public class FuncXmlToJson extends FunctionMultiArgs
  	    }
         
         return result;
-    }
-    
-    /**
-     * This function checks, whether an XML document input string is valid according 
-     * to XML schema constraints. An XML schema used by this function, is constructed
-     * from an XML Schema document file 'schema-for-json.xsd'.
-     * 
-     * @param xmlDocumentStr              An XML document string that needs to be validated by an 
-     *                                    XML Schema document.
-     * @param xmlSchemaFileName           XML Schema document's file name
-     * 
-     * @return                            true, or false indicating whether an XML input document is valid,
-     *                                    or invalid when validated by an XML Schema document.
-     * @throws javax.xml.transform.TransformerException
-     */
-    private boolean isXmlStrValidWithSchema(String xmlDocumentStr, String xmlSchemaFileName) throws 
-                                                                       javax.xml.transform.TransformerException {
-        boolean isXmlStrValid = false;
-        
-        System.setProperty(Constants.XML_SCHEMA_FACTORY_KEY, Constants.XML_SCHEMA_FACTORY_VALUE);
-         
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        try {
-        	BufferedReader buffReader = new BufferedReader(new InputStreamReader(
-        			                                                          getClass().getResourceAsStream(xmlSchemaFileName)));
-        	char[] charBuff = new char[CHAR_BUFF_SIZE];
-        	int bytesRead = 0;
-        	StringBuffer strBuff = new StringBuffer();
-        	while ((bytesRead = buffReader.read(charBuff)) != -1) {
-        		String str = new String(charBuff, 0, bytesRead);
-        		strBuff.append(str);
-        	}
-        	
-        	Source xmlSchemaSource = new StreamSource(new StringReader(strBuff.toString()));
-        	
-        	Schema schema = schemaFactory.newSchema(xmlSchemaSource);
-        				
-			Validator validator = schema.newValidator();
-			StringReader xmlInputStrReader = new StringReader(xmlDocumentStr);
-			validator.validate(new StreamSource(xmlInputStrReader));
-			isXmlStrValid = true;
-		} 
-        catch (SAXException ex) {
-			throw new javax.xml.transform.TransformerException("FOAP0001 : An XML Schema validation of function fn:xml-to-json's "
-					                                                  + "1st argument which is an XML node, failed with following XML Schema "
-					                                                  + "validation result details : " + ex.getMessage()); 
-		}
-        catch (IOException ex) {
-        	throw new javax.xml.transform.TransformerException("FOAP0001 : An XML Schema validation of function fn:xml-to-json's "
-        			                                                  + "1st argument which is an XML node, failed with following XML Schema "
-        			                                                  + "validation result details : " + ex.getMessage());
-        }        
-        
-        return isXmlStrValid; 
     }
     
     /**

@@ -52,13 +52,20 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 
+import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XML11Char;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.jaxp.XPathFactoryImpl;
+import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.Pattern;
 import org.w3c.dom.Attr;
@@ -273,7 +280,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   StreamSource xslStreamSrc = new StreamSource(xslStylesheetUriStr);
     		   
     		   try {
-    			  Map<String, String> xslParamMap = new HashMap<String, String>();
+    			  Map<String, XObject> xslParamMap = new HashMap<String, XObject>();
     		      runW3CXSLTTestSuiteXslTransformAndEmitResult(testCaseName, xmlInpDomSource, xslStreamSrc, xslParamMap, 
     		    		                                                     expectedResultElem, elemTestRun, testResultDoc);
     		   }
@@ -434,7 +441,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   }
     		   }
     		       		   
-    		   Map<String,String> xslParamMap = new HashMap<String,String>();
+    		   Map<String,XObject> xslParamMap = new HashMap<String,XObject>();
     		   Element expectedResultElem = null;
     		   
     		   Node childNode = node.getFirstChild();
@@ -458,8 +465,12 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     							   }
                                    else if ("param".equals(elemLocalName)) {
     								   String paramNameStr = ((Element)elemNode2).getAttribute("name");
-    								   String paramSelectXPathStr = ((Element)elemNode2).getAttribute("select");
-    								   xslParamMap.put(paramNameStr, paramSelectXPathStr);
+    								   String paramXPathStr = ((Element)elemNode2).getAttribute("select");    								   
+    								   XPathContext xctxt = new XPathContext(false); 
+    								   org.apache.xpath.XPath paramXPathObj = new org.apache.xpath.XPath(paramXPathStr, null, xctxt.getNamespaceContext(), 
+    										                                                                           org.apache.xpath.XPath.SELECT, null);
+    								   XObject xObj = paramXPathObj.execute(xctxt, DTM.NULL, null);    								   
+    								   xslParamMap.put(paramNameStr, xObj);
     							   }
     						   }
     						   
@@ -480,6 +491,16 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   byte[] byteArr = xslStylesheetEnvInpStr.getBytes(StandardCharsets.UTF_8);
     			   InputStream inpStream = new ByteArrayInputStream(byteArr);    		       		   
     			   xmlInpDomSource = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
+
+    			   if (m_initTemplateName == null) {
+    				   Transformer transformer = m_xslTransformerFactory.newTransformer(xmlInpDomSource);
+    				   TransformerImpl transformerImpl = (TransformerImpl)transformer;
+    				   StylesheetRoot stylesheetRoot = transformerImpl.getStylesheet();
+    				   ElemTemplate xslInitialTemplate = stylesheetRoot.getTemplateComposed(new QName(Constants.S_XSLNAMESPACEURL, "initial-template"));
+    				   if (xslInitialTemplate != null) {
+    					  m_initTemplateName = "xsl:initial-template";
+    				   }
+    			   }
     		   }
     		   
                StreamSource xslStreamSrc = new StreamSource(new StringReader(xslStylesheetEnvInpStr), m_xslTransformTestSetFilePath);
@@ -552,7 +573,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      * Method definition to run, a particular W3C XSLT 3.0 test case within a test set.
      */
     private void runW3CXSLTTestSuiteXslTransformAndEmitResult(String testCaseName, DOMSource xmlInpDomSource, 
-    		                                                  StreamSource xslStreamSrc, Map<String, String> xslParamMap, 
+    		                                                  StreamSource xslStreamSrc, Map<String, XObject> xslParamMap, 
     		                                                  Element expectedResultElem, Element elemTestRun, Document testResultDoc) throws Exception {    	    	
 
     	Element elemTestResult = testResultDoc.createElement("testResult");
@@ -578,7 +599,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			Iterator<String> keyIter = keySet.iterator();
     			while (keyIter.hasNext()) {
     			   String key = keyIter.next();
-    			   String value = xslParamMap.get(key);
+    			   XObject value = xslParamMap.get(key);
     			   ((TransformerImpl)transformer).setParameter(key, value);
     			}
     		}

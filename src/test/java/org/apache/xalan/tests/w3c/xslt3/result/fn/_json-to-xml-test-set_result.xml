@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-11T18:00:21Z" fail="21" name="json-to-xml" pass="12" skipped="0" statusUnknown="1" totalRun="34">
-   <testResult status="fail" testName="json-to-xml-duplicates-001">
-      <outResult/>
-   </testResult>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-12T11:05:09Z" fail="15" name="json-to-xml" pass="17" skipped="0" statusUnknown="1" totalRun="33">
    <testResult status="pass" testName="json-to-xml-001"/>
    <testResult status="pass" testName="json-to-xml-002"/>
    <testResult status="pass" testName="json-to-xml-003"/>
@@ -34,89 +31,19 @@
    <testResult status="fail" testName="json-to-xml-escape-006">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="json-to-xml-duplicates-001">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="json-to-xml-duplicates-002">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="json-to-xml-duplicates-003">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-&#13;
-     &#13;
-&#13;
-    &#13;
-&#13;
-    &#13;
-       {"one": {"a":2, "b":3, "c":4, "a":5},&#13;
-        "two": {"a":2, "b":3, "c":4, "a":5},&#13;
-        "one": {"a":3, "b":4, "c":5, "a":6},&#13;
-        "two": {"a":3, "b":4, "c":5, "a":6}&#13;
-       }&#13;
-        &#13;
-        &#13;
-&#13;
-    &#13;
-       &#13;
-    &#13;
-&#13;
-&#13;
-</outResult>
-   </testResult>
-   <testResult status="fail" testName="json-to-xml-duplicates-004">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-&#13;
-     &#13;
-&#13;
-    &#13;
-&#13;
-    &#13;
-       {"one": {"a":2, "b":3, "c":4, "a":5},&#13;
-        "two": {"a":2, "b":3, "c":4, "a":5},&#13;
-        "one": {"a":3, "b":4, "c":5, "a":6},&#13;
-        "two": {"a":3, "b":4, "c":5, "a":6}&#13;
-       }&#13;
-        &#13;
-        &#13;
-&#13;
-    &#13;
-       &#13;
-    &#13;
-&#13;
-&#13;
-</outResult>
-   </testResult>
-   <testResult status="fail" testName="json-to-xml-duplicates-005">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-&#13;
-     &#13;
-&#13;
-    &#13;
-&#13;
-    &#13;
-       {"one": {"a":2, "b":3, "c":4, "a":5},&#13;
-        "two": {"a":2, "b":3, "c":4, "a":5},&#13;
-        "one": {"a":3, "b":4, "c":5, "a":6},&#13;
-        "two": {"a":3, "b":4, "c":5, "a":6}&#13;
-       }&#13;
-        &#13;
-        &#13;
-&#13;
-    &#13;
-       &#13;
-    &#13;
-&#13;
-&#13;
-</outResult>
-   </testResult>
+   <testResult status="pass" testName="json-to-xml-duplicates-001"/>
+   <testResult status="pass" testName="json-to-xml-duplicates-002"/>
+   <testResult status="pass" testName="json-to-xml-duplicates-003"/>
+   <testResult status="pass" testName="json-to-xml-duplicates-004"/>
+   <testResult status="pass" testName="json-to-xml-duplicates-005"/>
    <testResult status="fail" testName="json-to-xml-typed-001">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are incompatible.</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are not compatible.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="json-to-xml-typed-002">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are incompatible.</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are not compatible.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="json-to-xml-typed-003">
@@ -146,7 +73,7 @@
    </testResult>
    <testResult status="fail" testName="json-to-xml-typed-010">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are incompatible.</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are not compatible.</errTrace>
       </outResult>
    </testResult>
    <testResult testName="json-to-xml-error-001"/>

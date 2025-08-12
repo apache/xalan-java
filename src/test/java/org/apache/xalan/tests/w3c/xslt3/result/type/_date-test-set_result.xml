@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-11T17:57:45Z" fail="47" name="date" pass="37" skipped="0" statusUnknown="1" totalRun="85">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-12T11:03:30Z" fail="45" name="date" pass="39" skipped="0" statusUnknown="1" totalRun="85">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
-   <testResult status="fail" testName="date-004"/>
-   <testResult status="fail" testName="date-005"/>
+   <testResult status="pass" testName="date-004"/>
+   <testResult status="pass" testName="date-005"/>
    <testResult status="pass" testName="date-006"/>
    <testResult status="pass" testName="date-007"/>
    <testResult status="pass" testName="date-008"/>
