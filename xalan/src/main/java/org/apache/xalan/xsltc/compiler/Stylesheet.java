@@ -808,6 +808,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	addStaticField(classGen, "[" + STRING_SIG, STATIC_URIS_ARRAY_FIELD);
 	addStaticField(classGen, "[I", STATIC_TYPES_ARRAY_FIELD);
 	addStaticField(classGen, "[" + STRING_SIG, STATIC_NAMESPACE_ARRAY_FIELD);
+        addStaticField(classGen, MAP_SIG, STATIC_NS_MAP_FIELD );
         // Create fields of type char[] that will contain literal text from
         // the stylesheet.
         final int charDataFieldCount = getXSLTC().getCharacterDataCount();
@@ -926,6 +927,20 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    il.append(AASTORE);
             staticConst.markChunkEnd();
 	}
+
+        // Create the namespace -> prefix map
+        staticConst.markChunkStart();
+        il.append(new NEW(cpg.addClass(HASHMAP_CLASS)));
+        il.append(DUP);
+        final int init = cpg.addMethodref(HASHMAP_CLASS, "<init>","()V");
+        il.append(new INVOKESPECIAL(init));
+
+        int nsMapRef = cpg.addFieldref(_className,
+                STATIC_NS_MAP_FIELD,
+                MAP_SIG);
+        il.append(new PUTSTATIC(nsMapRef));
+        staticConst.markChunkEnd();
+
 
         // Put the tree of stylesheet namespace declarations into the translet
         final Vector namespaceAncestors = getXSLTC().getNSAncestorPointers();

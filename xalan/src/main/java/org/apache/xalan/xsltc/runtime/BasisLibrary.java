@@ -27,6 +27,9 @@ import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Collections;
 
 import javax.xml.transform.dom.DOMSource;
 
@@ -1599,8 +1602,42 @@ public final class BasisLibrary {
      * This function is used in the execution of xsl:element
      */
     private static int prefixIndex = 0;		// not thread safe!!
+    private static Map<String,String> nsMap = Collections.synchronizedMap(new HashMap());
     public static String generatePrefix() {
-	return ("ns" + prefixIndex++);
+        return ("ns" + prefixIndex++);
+    }
+    // This will record a new prefix used globally by XSLTC
+    // it *shouldn't be used anymore, but there might still be an edge case
+    public static String generatePrefix(String namespace) {
+        if(nsMap.containsKey(namespace)){
+            return nsMap.get(namespace);
+        }
+        else{
+            // Create a prefix, add to map and return it
+            String result = generatePrefix();
+            nsMap.put(namespace,result);
+            return result;
+        }
+    }
+    // This will record a new prefix (if there isn't one already)
+    // and add it to the qname if it doesn't already have a prefix.
+    // This stores the new prefix in the map belonging to the translet
+    // so we don't leak prefix between separate translets.
+    public static String addPrefix(String qname, String namespace, Map prefixMap){
+        // if it already has a prefix we don't need to do anything
+        if(qname.indexOf(':') == -1){
+            if(prefixMap.containsKey(namespace)){
+                return prefixMap.get(namespace)+":"+qname;
+            }
+            else{
+                String prefix = "ns"+prefixMap.size();
+                prefixMap.put(namespace,prefix);
+                return prefix+":"+qname;
+            }
+        }
+        else{
+            return qname;
+        }
     }
 
     public static final String RUN_TIME_INTERNAL_ERR =
