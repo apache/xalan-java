@@ -35,7 +35,7 @@ jobs:
         java-version: 8
     - name: 'Build Xalan jars'
       run: |
-        mvn --no-transfer-progress clean compile site test
+        mvn --no-transfer-progress clean compile site verify
     - uses: actions/checkout@v3
       name: 'Checkout xalan-test'
       with:
@@ -45,20 +45,18 @@ jobs:
     - name: 'Cheat xalan-test up to be sibling of xalan-java'
       run: |
         mv xalan-test ..; ls ..
-    - name: "Invoke xalan-test from xalan-java"
+    - name: 'Run xalan-test tests'
+      working-directory: ../xalan-test
+# NOTE: "alltest" target includes conformance tests known not to run in Xalan,
+# as well as having dependencies on some targets which have since been edited
+# out. The following is our typical minimal build test as documented in README,
+# minus conf.xsltc since that one is currently throwing four known failures and
+# isn't set up to say "but that's not a regression".
+
+# NOTE: Adjustments made for mvn build leaving things in a slightly different
+# place than ant build did (and recreating /lib).
       run: |
-        mvn --no-transfer-progress verify
-#     - name: 'OLD: Run xalan-test tests directly'
-#       working-directory: ../xalan-test
-# # NOTE: "alltest" target includes conformance tests known not to run in Xalan,
-# # as well as having dependencies on some targets which have since been edited
-# # out. The following is our typical minimal build test as documented in README,
-# # minus conf.xsltc since that one is currently throwing four known failures and
-# # isn't set up to say "but that's not a regression".
-# # NOTE: Adjustments made for mvn build leaving things in a slightly different
-# # place than ant build did (and recreating /lib).
-#     run: |
-#       ls; ant -debug jar extensions.classes smoketest apitest -Dxalan.relpath=../xalan-java -Dparserjar=../xalan-java/lib/xercesImpl-2.12.2.jar -Dxml-apis.jar=../xalan-java/lib/xml-apis-1.4.01.jar
+        ls; ant -debug jar extensions.classes smoketest apitest -Dxalan.relpath=../xalan-java -Dparserjar=../xalan-java/lib/xercesImpl-2.12.2.jar -Dxml-apis.jar=../xalan-java/lib/xml-apis-1.4.01.jar
 
 # Build distribution artifacts: Used to pull xalan-test back down as child and
 # run fulldist:
@@ -67,5 +65,9 @@ jobs:
 # fulldist isn't currently a separate target in the mvn build process
 # A near-equivalent is being performed every time to build the .tar.gz
 # and .zip distribution files.
-
-# TODO: REVIEW new handling of xalan-test.
+#
+# BUT NOTE that the binary distro has traditionally included
+# xalan-test as a subdirectory; maven build doesn't yet pull that in.
+# Discussion is in progress about whether it is (a) necessary, (b) a good
+# idea.
+# TODO: REVIEW.
