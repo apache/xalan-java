@@ -49,7 +49,6 @@
           <postBuildHookScript>verify</postBuildHookScript>
           <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
           <goals>
-            <goal>clean</goal>
             <goal>test</goal>
           </goals>
           <settingsFile>src/it/settings.xml</settingsFile>
@@ -61,6 +60,94 @@
           <!--<invokerTest>VersionCheck_*Boot*</invokerTest>-->
         </configuration>
       </plugin>
+
+      <!-- Invoke sibling xalan-test project for conformance tests?
+	   The Ant build for Xalan did *not* do so automagically,
+	   though it had convenience targets for doing so an
+	   for warning if the test suite was not where it was
+	   expected to be.
+
+           Ideally we want that done before packaging, so a current
+           conformance run (at least the essential targets) is run
+           befroe the tests and results are bundled into the
+           source distribution archive file.
+
+           Unfortunately there are a number of complications.
+
+           1) The right time to run this would be just before the package
+           phase, to ensure the most current results are included in
+           that package. Unfortunately as currently written the tests
+           are taking advantage of packaging to avoid having to
+           specify the version number as part of the jarfile
+           names. Simplest fix may be to change the xalan-test
+           classpaths for xalan to reference our target/*
+           (the only form of wildcard permitted in classpaths,
+           acceptable here since it's only be the xalan products),
+           or to have the copy-dependencies run in pre-package.
+
+           2) Some of the tasks and tools written for xalan-test
+           assumed they were being executed from the xalan-test/
+           directory, and the maven-antrun-plugin does not seem to
+           offer a good way to change "current directory" before
+           running, no matter whether <ant> or <subant> is used.
+           Similarly, some of the classpath setup for xalan-test was
+           being done in the front-end build.* scripts rather than in
+           the actual ant build.xml. 
+
+           We could/should at some point rationalize the test driver
+           But exec:exec does appear to allow setting
+           <workingdirectory>, and adding to the classpath via
+           -lib. It isn't as pretty as using the <antrun> task would
+           be.  But it appears to do the job.
+
+           Since the ant build packaged but did not normally run the
+           tests (or check for a successful run having been done), we
+           don't actually have to do this right now. It's desirable if
+           the test source includes proof of recent run against that
+           source, but deferrable.
+      -->
+
+      <!-- <plugin> -->
+      <!--   <groupId>org.codehaus.mojo</groupId> -->
+      <!--   <artifactId>exec-maven-plugin</artifactId> -->
+      <!--   <version>3.5.1</version> -->
+      <!--   <executions> -->
+      <!--     <execution> -->
+      <!--       <id>xalan-test attempt</id> -->
+      <!--       <phase>pre-package</phase> -->
+      <!--       <goals> -->
+      <!--         <goal>exec</goal> -->
+      <!--       </goals> -->
+      <!--     </execution> -->
+      <!--   </executions> -->
+      <!--   <configuration> -->
+      <!--       <executable>ant</executable> -->
+      <!--       <workingDirectory>../../xalan-test</workingDirectory> -->
+      <!--       <addOutputToClasspath>true</addOutputToClasspath> -->
+      <!--       <addResourcesToClasspath>true</addResourcesToClasspath> -->
+      <!--       <arguments> -->
+      <!--         <!-\- Use -lib to make sure we're on Ant's classpath -->
+      <!--              (something that the front-end xalan-test/build -->
+      <!--              scripts we doing).  This arguably should not be -->
+      <!--              needed (especially now that we should no longer -->
+      <!--              need endorsed or boot path overrides), but without -->
+      <!--              it the tests may not resolve the XSLTC transformer -->
+      <!--              factory class. Yes, that means the xalan-test ant -->
+      <!--              build is sloppy. We knew that. -->
+      <!--         -\-> -->
+      <!--         <argument>-lib</argument> -->
+      <!--         <argument>../xalan-java/build:../build:../xalan-java/lib/endorsed:../lib/endorsed</argument> -->
+
+      <!--         <argument>clean</argument> -->
+      <!--         <argument>jar</argument> -->
+      <!--         <argument>extensions.classes</argument> -->
+      <!--         <argument>smoketest</argument> -->
+      <!--         <argument>apitest</argument> -->
+      <!--         <argument>conf.xsltc</argument> -->
+      <!--       </arguments> -->
+      <!--   </configuration> -->
+      <!-- </plugin> -->
+
     </plugins>
   </build>
 </project>

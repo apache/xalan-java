@@ -413,6 +413,16 @@
           </executions>
         </plugin>
 
+	<!-- Exec is currently our best bet for invoking the separate
+	     xalan-test project's ant built, due to sensitivities that
+	     currently has upon workingdir and classpath.  See
+	     integration-tests/
+	     -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.5.1</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -521,6 +531,11 @@
       <dependency>
         <groupId>xalan</groupId>
         <artifactId>xalansamples</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>integration-test</artifactId>
         <version>${project.version}</version>
       </dependency>
 
