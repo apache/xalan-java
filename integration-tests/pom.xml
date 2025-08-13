@@ -49,7 +49,6 @@
           <postBuildHookScript>verify</postBuildHookScript>
           <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
           <goals>
-            <goal>clean</goal>
             <goal>test</goal>
           </goals>
           <settingsFile>src/it/settings.xml</settingsFile>
@@ -61,6 +60,41 @@
           <!--<invokerTest>VersionCheck_*Boot*</invokerTest>-->
         </configuration>
       </plugin>
+
+
+      <!-- Invoke sibling xalan-test project for conformance tests-->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+	    <id>xalan-test attempt</id>
+            <phase>test</phase>
+            <configuration>
+              <target>
+		<subant
+		     buildpath="../../xalan-test/build.xml"
+		     antfile="../../xalan-test/build.xml"
+		     inheritall="true"
+		     failonerror="true"
+		     verbose="true"
+		     >
+		  <target name="clean"/>
+		  <target name="jar"/>
+		  <target name="extensions.classes"/>
+		  <target name="smoketest"/>
+		  <target name="apitest"/>
+		  <target name="conf.xsltc"/>
+		</subant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 </project>
