@@ -30,6 +30,7 @@ import org.apache.xerces.impl.Constants;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.utils.DateTimeUtil;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
@@ -741,6 +742,15 @@ public class XObject extends Expression implements Serializable, Cloneable
 		 double lVal = Double.valueOf(lStrVal);
 		 result = (lVal < obj2.num()); 
 	  }
+	  else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
+		 return DateTimeUtil.isBefore((XSDateTime)this, (XSDateTime)obj2); 
+	  }
+	  else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+		 return DateTimeUtil.isBefore((XSDate)this, (XSDate)obj2);
+	  }
+	  else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
+		 return DateTimeUtil.isBefore((XSTime)this, (XSTime)obj2);
+	  }
 	  else {
 	     result = (this.num() < obj2.num());
 	  }
@@ -864,10 +874,10 @@ public class XObject extends Expression implements Serializable, Cloneable
           return ((XSInt)this).lt((XSInt)obj2);    
        }
        else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
-          return ((XSDate)this).lt((XSDate)obj2);    
+    	  return DateTimeUtil.isBefore((XSDate)this, (XSDate)obj2);
        }
        else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
-          return ((XSDateTime)this).lt((XSDateTime)obj2);    
+    	  return DateTimeUtil.isBefore((XSDateTime)this, (XSDateTime)obj2);   
        }
        else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
           return ((XSTime)this).lt((XSTime)obj2);    
@@ -1186,10 +1196,10 @@ public class XObject extends Expression implements Serializable, Cloneable
           return ((XSInt)this).gt((XSInt)obj2);    
        }
        else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
-          return ((XSDate)this).gt((XSDate)obj2);    
+    	   return DateTimeUtil.isAfter((XSDate)this, (XSDate)obj2);
        }
        else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
-          return ((XSDateTime)this).gt((XSDateTime)obj2);    
+    	   return DateTimeUtil.isAfter((XSDateTime)this, (XSDateTime)obj2);   
        }       
        else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
           return ((XSTime)this).gt((XSTime)obj2);    
@@ -1409,6 +1419,15 @@ public class XObject extends Expression implements Serializable, Cloneable
     // function.
     if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.greaterThanOrEqual(this);
+    else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
+      return DateTimeUtil.lessThanOrEqual((XSDateTime)this, (XSDateTime)obj2);
+    }
+    else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+      return DateTimeUtil.lessThanOrEqual((XSDate)this, (XSDate)obj2); 
+	}
+    else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
+      return DateTimeUtil.lessThanOrEqual((XSTime)this, (XSTime)obj2); 
+  	}
 
     return this.num() <= obj2.num();
   }
@@ -1434,6 +1453,15 @@ public class XObject extends Expression implements Serializable, Cloneable
 		 String lStrVal = ((XSNumericType)this).stringValue();
 		 double lVal = Double.valueOf(lStrVal);
 		 result = (lVal > obj2.num()); 
+	  }
+	  else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
+		 return DateTimeUtil.isAfter((XSDateTime)this, (XSDateTime)obj2); 
+	  }
+	  else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+		 return DateTimeUtil.isAfter((XSDate)this, (XSDate)obj2); 
+	  }
+	  else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
+		 return DateTimeUtil.isAfter((XSTime)this, (XSTime)obj2); 
 	  }
 	  else {
 	     result = (this.num() > obj2.num());
@@ -1461,7 +1489,16 @@ public class XObject extends Expression implements Serializable, Cloneable
     // are backwards, we call the opposite comparison
     // function.
     if (obj2.getType() == XObject.CLASS_NODESET)
-      return obj2.lessThanOrEqual(this);
+      return obj2.lessThanOrEqual(this);    
+    else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
+      return DateTimeUtil.lessThanOrEqual((XSDateTime)obj2, (XSDateTime)this);	
+    }
+    else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+      return DateTimeUtil.lessThanOrEqual((XSDate)obj2, (XSDate)this); 
+  	}
+    else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
+      return DateTimeUtil.lessThanOrEqual((XSTime)obj2, (XSTime)this); 
+    }
 
     return this.num() >= obj2.num();
   }
@@ -1564,13 +1601,23 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  result = lStr.equals(rStr);
 	  }
 	  else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
-		  result = ((XSDate)this).equals((XSDate)obj2);    
+		try {
+		   result = DateTimeUtil.isEqual((XSDate)this, (XSDate)obj2);
+		} 
+		catch (TransformerException ex) {
+           return false;
+		}
 	  }
-	  else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
-		  result = ((XSDateTime)this).equals((XSDateTime)obj2);    
+	  else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {		  
+		  result = DateTimeUtil.isEqual((XSDateTime)this, (XSDateTime)obj2);
 	  }
 	  else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
-		  result = ((XSTime)this).equals((XSTime)obj2);    
+		  try {
+			  result = DateTimeUtil.isEqual((XSTime)this, (XSTime)obj2);
+		  } 
+		  catch (TransformerException ex) {
+			  return false;
+		  }    
 	  }	        
 	  else if (obj2.getType() == XObject.CLASS_NODESET) {
 		  result = obj2.equals(this);
@@ -1842,7 +1889,7 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  }
 	  else if (this instanceof XSDate) {
 		  if (obj2 instanceof XSDate) {
-			  result = ((XSDate)this).equals((XSDate)obj2);
+			 result = DateTimeUtil.isEqual((XSDate)this, (XSDate)obj2);
 		  }
 		  else {
 			  result = false; 
@@ -1850,7 +1897,7 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  }    
 	  else if (this instanceof XSDateTime) {
 		  if (obj2 instanceof XSDateTime) {
-			  result = ((XSDateTime)this).equals((XSDateTime)obj2);
+			 result = DateTimeUtil.isEqual((XSDateTime)this, (XSDateTime)obj2);
 		  }
 		  else {
 			  result = false; 
@@ -1971,8 +2018,7 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean notEquals(XObject obj2)
-          throws javax.xml.transform.TransformerException
+  public boolean notEquals(XObject obj2) throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -1980,6 +2026,25 @@ public class XObject extends Expression implements Serializable, Cloneable
     // nodeset function.
     if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.notEquals(this);
+    else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {		  
+	  return !DateTimeUtil.isEqual((XSDateTime)this, (XSDateTime)obj2);
+	}
+    else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+      try {
+		 return !DateTimeUtil.isEqual((XSDate)this, (XSDate)obj2);
+	  } 
+      catch (TransformerException ex) {
+		 return false;
+	  }
+    }
+    else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
+    	try {
+    		return !DateTimeUtil.isEqual((XSTime)this, (XSTime)obj2);
+    	} 
+    	catch (TransformerException ex) {
+    		return false;
+    	}
+    }
 
     return !equals(obj2);
   }
@@ -2065,16 +2130,16 @@ public class XObject extends Expression implements Serializable, Cloneable
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!isSameClass(expr))
-  		return false;
-  		
-  	// If equals at the expression level calls deepEquals, I think we're 
-  	// still safe from infinite recursion since this object overrides 
-  	// equals.  I hope.
-  	if(!this.equals((XObject)expr))
-  		return false;
-  		
-  	return true;
+	  if(!isSameClass(expr))
+		  return false;
+
+	  // If equals at the expression level calls deepEquals, I think we're 
+	  // still safe from infinite recursion since this object overrides 
+	  // equals.  I hope.
+	  if(!this.equals((XObject)expr))
+		  return false;
+
+	  return true;
   }
 
   public void setTunnel(String tunnelStrVal) {

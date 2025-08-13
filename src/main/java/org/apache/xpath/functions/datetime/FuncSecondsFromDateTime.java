@@ -17,6 +17,8 @@
  */
 package org.apache.xpath.functions.datetime;
 
+import java.util.Calendar;
+
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.Expression;
@@ -25,7 +27,7 @@ import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSDateTime;
-import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSDecimal;
 
 /**
  * Implementation of fn:seconds-from-dateTime function.
@@ -47,8 +49,9 @@ public class FuncSecondsFromDateTime extends FunctionOneArg
   }
 
   /**
-   * Execute the function. The function must return
+   * Implementation of the function. The function must return
    * a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
@@ -71,8 +74,40 @@ public class FuncSecondsFromDateTime extends FunctionOneArg
 	  }
 	  else {
 		 XSDateTime xsDateTimeVal = (XSDateTime)arg0Val;
-		 XSInteger xsInteger = new XSInteger(xsDateTimeVal.second() + "");
-		 result = xsInteger;
+		 
+		 Calendar calendar = xsDateTimeVal.getCalendar();
+		 int seconds = calendar.get(Calendar.SECOND);
+		 int milliSecs = calendar.get(Calendar.MILLISECOND);
+		 boolean ms1 = false;
+		 if ((milliSecs % 100) == 0) {
+			 milliSecs = (calendar.get(Calendar.MILLISECOND)) / 100;
+			 ms1 = true;
+		 }
+		 
+		 String secondsStr = null;		 
+		 if (milliSecs == 0) {
+			 secondsStr = String.valueOf(seconds); 
+		 }
+		 else {
+			 String milliSecStr = null;
+			 if (ms1) {
+				 milliSecStr = String.valueOf(milliSecs);  
+			 }
+			 else if (milliSecs < 10) {
+				 milliSecStr = "00" + milliSecs;   
+			 }
+			 else if (milliSecs < 100) {
+				 milliSecStr = "0" + milliSecs; 
+			 }
+			 else if (milliSecs > 100) {
+				 milliSecStr = String.valueOf(milliSecs);  
+			 }
+			 
+			 secondsStr = seconds + "." + milliSecStr;  
+		 }
+		 
+		 result = new XSDecimal(secondsStr); 
+
 	  }
 	  
 	  return result;

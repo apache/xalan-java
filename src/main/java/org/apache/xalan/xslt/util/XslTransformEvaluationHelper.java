@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +42,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.serializer.CharacterMapConfig;
+import org.apache.xml.utils.DateTimeUtil;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
@@ -83,8 +83,8 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * This class, defines few utility methods, that provide support for
- * Xalan-J's XSL 3 transformation processor implementation.
+ * This class definition, specifies few utility methods that provide 
+ * support for Xalan-J's XSLT 3.0 transformation processor implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -196,59 +196,7 @@ public class XslTransformEvaluationHelper {
     	  }
        }
        else if (xObj instanceof XSDateTime) {
-    	   XSDateTime xsDateTime = (XSDateTime)xObj;
-    	   
-           Calendar calendar = xsDateTime.getCalendar();                                 
-           String strValue = ((XSDateTime)xObj).stringValue();           
-           
-           int milliSecs = calendar.get(Calendar.MILLISECOND);
-           boolean ms1 = false;
-           if ((milliSecs % 100) == 0) {
-              milliSecs = (calendar.get(Calendar.MILLISECOND)) / 100;
-              ms1 = true;
-           }
-           
-           if (milliSecs == 0) {
-        	  result = strValue; 
-           }
-           else {
-        	  String milliSecStr = null;
-        	  if (ms1) {
-        		 milliSecStr = String.valueOf(milliSecs);  
-        	  }
-        	  else if (milliSecs < 10) {
-        		 milliSecStr = "00" + milliSecs;   
-        	  }
-        	  else if (milliSecs < 100) {
-        		 milliSecStr = "0" + milliSecs; 
-        	  }
-        	  else if (milliSecs > 100) {
-        		 milliSecStr = String.valueOf(milliSecs);  
-        	  }
-        	   
-        	  int idx = strValue.indexOf('T');
-        	  String prefixStr = strValue.substring(0, idx);
-        	  String suffixStr = strValue.substring(idx);
-        	  int timeZoneIdx = suffixStr.indexOf('+');
-        	  if (timeZoneIdx == -1) {
-        		 timeZoneIdx = suffixStr.indexOf('-'); 
-        	  }
-        	  if (timeZoneIdx == -1) {
-         		 timeZoneIdx = suffixStr.indexOf('Z'); 
-         	  }        	  
-        	  if (timeZoneIdx > -1) {
-        		 String timeStr = suffixStr.substring(0, timeZoneIdx);
-        		 timeStr = timeStr + "." + milliSecStr;
-        		 String timeZoneStr = suffixStr.substring(timeZoneIdx);
-        		 strValue = prefixStr + timeStr + timeZoneStr;  
-        	  }
-        	  else {
-        		 suffixStr = suffixStr + "." + milliSecStr;
-        		 strValue = prefixStr + suffixStr;  
-        	  }
-        	  
-        	  result = strValue;
-           }
+    	  result = DateTimeUtil.getXSDateTimeStrValue((XSDateTime)xObj);    	
        }
        else if (xObj instanceof XSAnyType) {
           result = ((XSAnyType)xObj).stringValue();    

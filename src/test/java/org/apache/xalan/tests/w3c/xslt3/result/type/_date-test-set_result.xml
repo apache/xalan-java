@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-12T11:03:30Z" fail="45" name="date" pass="39" skipped="0" statusUnknown="1" totalRun="85">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-13T16:18:25Z" fail="30" name="date" pass="54" skipped="0" statusUnknown="1" totalRun="85">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -7,16 +7,16 @@
    <testResult status="pass" testName="date-006"/>
    <testResult status="pass" testName="date-007"/>
    <testResult status="pass" testName="date-008"/>
-   <testResult status="fail" testName="date-009"/>
+   <testResult status="pass" testName="date-009"/>
    <testResult status="pass" testName="date-010"/>
    <testResult status="pass" testName="date-011"/>
    <testResult status="pass" testName="date-012"/>
-   <testResult status="fail" testName="date-013"/>
-   <testResult status="fail" testName="date-014"/>
-   <testResult status="fail" testName="date-015"/>
-   <testResult status="fail" testName="date-016"/>
-   <testResult status="fail" testName="date-017"/>
-   <testResult status="fail" testName="date-018"/>
+   <testResult status="pass" testName="date-013"/>
+   <testResult status="pass" testName="date-014"/>
+   <testResult status="pass" testName="date-015"/>
+   <testResult status="pass" testName="date-016"/>
+   <testResult status="pass" testName="date-017"/>
+   <testResult status="pass" testName="date-018"/>
    <testResult status="fail" testName="date-019"/>
    <testResult status="fail" testName="date-019a"/>
    <testResult status="pass" testName="date-020"/>
@@ -30,22 +30,22 @@
    <testResult status="pass" testName="date-028"/>
    <testResult status="pass" testName="date-029"/>
    <testResult status="pass" testName="date-030"/>
-   <testResult status="fail" testName="date-031"/>
+   <testResult status="pass" testName="date-031"/>
    <testResult status="fail" testName="date-032"/>
    <testResult status="pass" testName="date-033"/>
    <testResult status="pass" testName="date-034"/>
    <testResult status="pass" testName="date-035"/>
-   <testResult status="fail" testName="date-036"/>
+   <testResult status="pass" testName="date-036"/>
    <testResult status="pass" testName="date-037"/>
    <testResult status="pass" testName="date-038"/>
    <testResult status="pass" testName="date-039"/>
-   <testResult status="fail" testName="date-040"/>
-   <testResult status="fail" testName="date-041"/>
-   <testResult status="fail" testName="date-042"/>
-   <testResult status="fail" testName="date-043"/>
+   <testResult status="pass" testName="date-040"/>
+   <testResult status="pass" testName="date-041"/>
+   <testResult status="pass" testName="date-042"/>
+   <testResult status="pass" testName="date-043"/>
    <testResult status="fail" testName="date-044"/>
-   <testResult status="fail" testName="date-045"/>
-   <testResult status="fail" testName="date-046"/>
+   <testResult status="pass" testName="date-045"/>
+   <testResult status="pass" testName="date-046"/>
    <testResult status="pass" testName="date-047"/>
    <testResult status="pass" testName="date-048"/>
    <testResult status="pass" testName="date-049"/>

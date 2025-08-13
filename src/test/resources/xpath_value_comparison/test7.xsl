@@ -26,7 +26,7 @@
    <xsl:variable name="timeZoneOffsetStr" select="java:org.apache.xalan.tests.util.XslTransformTestsUtil.getDefaultTimezoneOffsetStr()"/>                                                                    
 
    <xsl:template match="/">            
-      <elem>                       
+      <elem>                      
         <result1><xsl:value-of select="xs:date('2023-06-19') lt current-date()"/></result1>
         <result2><xsl:value-of select="xs:date('2023-06-20') lt current-date()"/></result2>
         <result3><xsl:value-of select="xs:date('2023-06-21') lt current-date()"/></result3>
