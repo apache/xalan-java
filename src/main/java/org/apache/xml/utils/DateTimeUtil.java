@@ -124,7 +124,7 @@ public class DateTimeUtil {
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
 		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-		   odt1 = odt1.plusYears(yearValue + (yearValue - 9999));
+		   odt1 = odt1.plusYears(yearValue - 9999);
 		}
 		else {
 		   odt1 = OffsetDateTime.parse(str1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -138,7 +138,7 @@ public class DateTimeUtil {
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
 		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-		   odt2 = odt1.plusYears(yearValue + (yearValue - 9999));
+		   odt2 = odt2.plusYears(yearValue - 9999);
 		}
 		else {
 		   odt2 = OffsetDateTime.parse(str2, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -188,7 +188,7 @@ public class DateTimeUtil {
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
 		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-		   odt1 = odt1.plusYears(yearValue + (yearValue - 9999));
+		   odt1 = odt1.plusYears(yearValue - 9999);
 		}
 		else {
 		   odt1 = OffsetDateTime.parse(str1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -202,7 +202,7 @@ public class DateTimeUtil {
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
 		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-		   odt2 = odt1.plusYears(yearValue + (yearValue - 9999));
+		   odt2 = odt2.plusYears(yearValue - 9999);
 		}
 		else {
 		   odt2 = OffsetDateTime.parse(str2, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -252,7 +252,7 @@ public class DateTimeUtil {
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
 		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-		   odt1 = odt1.plusYears(yearValue + (yearValue - 9999));
+		   odt1 = odt1.plusYears(yearValue - 9999);
 		}
 		else {
 		   odt1 = OffsetDateTime.parse(str1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -266,7 +266,7 @@ public class DateTimeUtil {
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
 		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-		   odt2 = odt1.plusYears(yearValue + (yearValue - 9999));
+		   odt2 = odt2.plusYears(yearValue - 9999);
 		}
 		else {
 		   odt2 = OffsetDateTime.parse(str2, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -316,7 +316,7 @@ public class DateTimeUtil {
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
 		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-		   odt1 = odt1.plusYears(yearValue + (yearValue - 9999));
+		   odt1 = odt1.plusYears(yearValue - 9999);
 		}
 		else {
 		   odt1 = OffsetDateTime.parse(str1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -330,7 +330,7 @@ public class DateTimeUtil {
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
 		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-		   odt2 = odt1.plusYears(yearValue + (yearValue - 9999));
+		   odt2 = odt2.plusYears(yearValue - 9999);
 		}
 		else {
 		   odt2 = OffsetDateTime.parse(str2, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
