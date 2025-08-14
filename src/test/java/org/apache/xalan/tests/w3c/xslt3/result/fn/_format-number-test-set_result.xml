@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-13T16:20:24Z" fail="32" name="format-number" pass="38" skipped="4" statusUnknown="0" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-14T16:50:45Z" fail="32" name="format-number" pass="38" skipped="4" statusUnknown="0" totalRun="70">
    <testResult status="fail" testName="format-number-001"/>
    <testResult status="fail" testName="format-number-002"/>
    <testResult status="fail" testName="format-number-003"/>

@@ -44,7 +44,7 @@ import org.w3c.dom.Node;
  */
 public class ElemSort extends ElemTemplateElement
 {
-    static final long serialVersionUID = -4991510257335851938L;
+  static final long serialVersionUID = -4991510257335851938L;
 
   /**
    * xsl:sort has a select attribute whose value is an expression.

@@ -880,7 +880,7 @@ public class XObject extends Expression implements Serializable, Cloneable
     	  return DateTimeUtil.isBefore((XSDateTime)this, (XSDateTime)obj2);   
        }
        else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
-          return ((XSTime)this).lt((XSTime)obj2);    
+    	  return DateTimeUtil.isBefore((XSTime)this, (XSTime)obj2);    
        }
        else if ((this instanceof XNumber) && (obj2 instanceof XNumber)) {
           return ((XNumber)this).num() < ((XNumber)obj2).num(); 
@@ -1202,7 +1202,7 @@ public class XObject extends Expression implements Serializable, Cloneable
     	   return DateTimeUtil.isAfter((XSDateTime)this, (XSDateTime)obj2);   
        }       
        else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
-          return ((XSTime)this).gt((XSTime)obj2);    
+    	   return DateTimeUtil.isAfter((XSTime)this, (XSTime)obj2);    
        }
        else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
      	  String lStr = ((XSNumericType)this).stringValue();
@@ -1905,7 +1905,7 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  }
 	  else if (this instanceof XSTime) {
 		  if (obj2 instanceof XSTime) {
-			  result = ((XSTime)this).equals((XSTime)obj2);
+			  result = DateTimeUtil.isEqual((XSTime)this, (XSTime)obj2);
 		  }
 		  else {
 			  result = false; 

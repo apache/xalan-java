@@ -1,7 +1,7 @@
 package org.apache.xml.utils;
 
 import java.time.Instant;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
@@ -13,8 +13,8 @@ import xml.xpath31.processor.types.XSTime;
 
 /**
  * This class definition, specifies few utility methods to support 
- * implementation of XPath 3.1 data model xs:dateTime, xs:date and 
- * xs:time value comparisons.
+ * XPath 3.1 data model xs:dateTime, xs:date and xs:time value 
+ * comparisons.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -116,13 +116,35 @@ public class DateTimeUtil {
 		   // For comparison purpose, if xs:dateTime value is not in a timezone,
 		   // then its assumed to be in UTC timezone.
 		   str2 = str2 + "Z"; 
+		}				
+		
+		int yearIdx = str1.indexOf('-');
+		int yearValue = Integer.valueOf(str1.substring(0, yearIdx));
+		OffsetDateTime odt1 = null;
+		if (yearValue > 9999) {
+		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
+		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		   odt1 = odt1.plusYears(yearValue + (yearValue - 9999));
 		}
-
-		DateTimeFormatter dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-		ZonedDateTime zt1 = ZonedDateTime.parse(str1, dtf);
-		ZonedDateTime zt2 = ZonedDateTime.parse(str2, dtf);
-		Instant instant1 = zt1.toInstant();
-		Instant instant2 = zt2.toInstant();
+		else {
+		   odt1 = OffsetDateTime.parse(str1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		}
+		
+		Instant instant1 = odt1.toInstant();				
+		
+		yearIdx = str2.indexOf('-');
+		yearValue = Integer.valueOf(str2.substring(0, yearIdx));
+		OffsetDateTime odt2 = null;
+		if (yearValue > 9999) {
+		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
+		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		   odt2 = odt1.plusYears(yearValue + (yearValue - 9999));
+		}
+		else {
+		   odt2 = OffsetDateTime.parse(str2, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		}
+				
+		Instant instant2 = odt2.toInstant();
 
 		result = instant1.equals(instant2);
 
@@ -159,12 +181,34 @@ public class DateTimeUtil {
 		   // then its assumed to be in UTC timezone.
 		   str2 = str2 + "Z"; 
 		}
-
-		DateTimeFormatter dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-		ZonedDateTime zt1 = ZonedDateTime.parse(str1, dtf);
-		ZonedDateTime zt2 = ZonedDateTime.parse(str2, dtf);
-		Instant instant1 = zt1.toInstant();
-		Instant instant2 = zt2.toInstant();
+		
+		int yearIdx = str1.indexOf('-');
+		int yearValue = Integer.valueOf(str1.substring(0, yearIdx));
+		OffsetDateTime odt1 = null;
+		if (yearValue > 9999) {
+		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
+		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		   odt1 = odt1.plusYears(yearValue + (yearValue - 9999));
+		}
+		else {
+		   odt1 = OffsetDateTime.parse(str1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		}
+		
+		Instant instant1 = odt1.toInstant();				
+		
+		yearIdx = str2.indexOf('-');
+		yearValue = Integer.valueOf(str2.substring(0, yearIdx));
+		OffsetDateTime odt2 = null;
+		if (yearValue > 9999) {
+		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
+		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		   odt2 = odt1.plusYears(yearValue + (yearValue - 9999));
+		}
+		else {
+		   odt2 = OffsetDateTime.parse(str2, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		}
+				
+		Instant instant2 = odt2.toInstant();
 
 		result = instant1.isBefore(instant2);
 
@@ -201,12 +245,34 @@ public class DateTimeUtil {
 		   // then its assumed to be in UTC timezone.
 		   str2 = str2 + "Z"; 
 		}
-
-		DateTimeFormatter dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-		ZonedDateTime zt1 = ZonedDateTime.parse(str1, dtf);
-		ZonedDateTime zt2 = ZonedDateTime.parse(str2, dtf);
-		Instant instant1 = zt1.toInstant();
-		Instant instant2 = zt2.toInstant();
+		
+		int yearIdx = str1.indexOf('-');
+		int yearValue = Integer.valueOf(str1.substring(0, yearIdx));
+		OffsetDateTime odt1 = null;
+		if (yearValue > 9999) {
+		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
+		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		   odt1 = odt1.plusYears(yearValue + (yearValue - 9999));
+		}
+		else {
+		   odt1 = OffsetDateTime.parse(str1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		}
+		
+		Instant instant1 = odt1.toInstant();				
+		
+		yearIdx = str2.indexOf('-');
+		yearValue = Integer.valueOf(str2.substring(0, yearIdx));
+		OffsetDateTime odt2 = null;
+		if (yearValue > 9999) {
+		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
+		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		   odt2 = odt1.plusYears(yearValue + (yearValue - 9999));
+		}
+		else {
+		   odt2 = OffsetDateTime.parse(str2, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		}
+				
+		Instant instant2 = odt2.toInstant();
 
 		result = instant1.isAfter(instant2);
 
@@ -243,12 +309,34 @@ public class DateTimeUtil {
 		   // then its assumed to be in UTC timezone.
 		   str2 = str2 + "Z"; 
 		}
-
-		DateTimeFormatter dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-		ZonedDateTime zt1 = ZonedDateTime.parse(str1, dtf);
-		ZonedDateTime zt2 = ZonedDateTime.parse(str2, dtf);
-		Instant instant1 = zt1.toInstant();
-		Instant instant2 = zt2.toInstant();
+		
+		int yearIdx = str1.indexOf('-');
+		int yearValue = Integer.valueOf(str1.substring(0, yearIdx));
+		OffsetDateTime odt1 = null;
+		if (yearValue > 9999) {
+		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
+		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		   odt1 = odt1.plusYears(yearValue + (yearValue - 9999));
+		}
+		else {
+		   odt1 = OffsetDateTime.parse(str1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		}
+		
+		Instant instant1 = odt1.toInstant();				
+		
+		yearIdx = str2.indexOf('-');
+		yearValue = Integer.valueOf(str2.substring(0, yearIdx));
+		OffsetDateTime odt2 = null;
+		if (yearValue > 9999) {
+		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
+		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		   odt2 = odt1.plusYears(yearValue + (yearValue - 9999));
+		}
+		else {
+		   odt2 = OffsetDateTime.parse(str2, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		}
+				
+		Instant instant2 = odt2.toInstant();
 
 		result = (instant1.isBefore(instant2) || instant1.equals(instant2));
 
