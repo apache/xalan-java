@@ -69,12 +69,21 @@
         <executions>
           <execution>
 	    <id>xalan-test attempt</id>
-            <phase>verify</phase>
+            <phase>test</phase>
             <configuration>
               <target>
+		<!-- <ant> task is simpler. I'd hoped it would let us shift
+		     current directory (so we didn't have to add baseDir
+		     references to supporting code that assumed execution
+		     with working directory xalan-test), but current evidence
+		     is no such luck.
+		     <subant> doesn't, but lets us control failonerror and
+		     verbose.
+		     I'm *guessing* we may want inheritall.
+		-->
 		<subant
 		     buildpath="../../xalan-test/build.xml"
-		     antfile="../../xalan-test/build.xml"
+		     genericantfile="../../xalan-test/build.xml"
 		     inheritall="true"
 		     failonerror="true"
 		     verbose="true"
