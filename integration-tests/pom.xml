@@ -61,48 +61,111 @@
         </configuration>
       </plugin>
 
+      <!-- Invoke sibling xalan-test project for conformance tests.
+           
+           Warning: Some of the tasks and tools written for xalan-test
+           assumed they were being executed from the xalan-test/
+           directory, and the maven-antrun-plugin does not seem to
+           offer a good way to change "current directory" before
+           running, no matter whether <ant> or <subant> is used.
+           Similarly, some of the classpath setup for xalan-test was
+           being done in the front-end build.* scripts rather than in
+           the actual ant build.xml.
 
-      <!-- Invoke sibling xalan-test project for conformance tests-->
+           We could/should at some point rationalize the test driver
+           But exec:exec does appear to allow setting <workingdirectory>, 
+           and adding to the classpath via -lib.
+
+           It isn't as pretty as using the <antrun> task would be.
+           But it appears to do the job.
+
+           NOTE TOO: If we want to include the results of this test in
+           the source distribution archives, this needs to run before
+           "package". We may want to consider having
+           pre-integration-test ensure that xalan-test is indeed
+           available. See also
+           https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+      -->
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.1.0</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.1</version>
         <executions>
           <execution>
-	    <id>xalan-test attempt</id>
-            <phase>test</phase>
-            <configuration>
-              <target>
-		<!-- <ant> task is simpler. I'd hoped it would let us shift
-		     current directory (so we didn't have to add baseDir
-		     references to supporting code that assumed execution
-		     with working directory xalan-test), but current evidence
-		     is no such luck.
-		     <subant> doesn't, but lets us control failonerror and
-		     verbose.
-		     I'm *guessing* we may want inheritall.
-		-->
-		<subant
-		     buildpath="../../xalan-test/build.xml"
-		     genericantfile="../../xalan-test/build.xml"
-		     inheritall="true"
-		     failonerror="true"
-		     verbose="true"
-		     >
-		  <target name="clean"/>
-		  <target name="jar"/>
-		  <target name="extensions.classes"/>
-		  <target name="smoketest"/>
-		  <target name="apitest"/>
-		  <target name="conf.xsltc"/>
-		</subant>
-              </target>
-            </configuration>
+            <id>xalan-test attempt</id>
+            <phase>integration-test</phase>
             <goals>
-              <goal>run</goal>
+              <goal>exec</goal>
             </goals>
           </execution>
         </executions>
+        <configuration>
+            <executable>ant</executable>
+            <workingDirectory>../../xalan-test</workingDirectory>
+            <addOutputToClasspath>true</addOutputToClasspath>
+            <addResourcesToClasspath>true</addResourcesToClasspath>
+            <arguments>
+              <!-- Make sure we're on Ant's classpath (something that
+                   the front-end xalan-test/build scripts we doing).
+                   This arguably should not be needed (especially now
+                   that we should no longer need endorsed or boot path
+                   overrides), but without it we don't resolve the
+                   XSLTC transformer factory class. Yes, that means
+                   the xalan-test ant build is sloppy. We knew that.
+              -->
+              <argument>-lib</argument>
+              <argument>../xalan-java/build:../build:../xalan-java/lib/endorsed:../lib/endorsed</argument>
+
+              <argument>clean</argument>
+              <argument>jar</argument>
+              <argument>extensions.classes</argument>
+              <argument>smoketest</argument>
+              <argument>apitest</argument>
+              <argument>conf.xsltc</argument>
+            </arguments>
+        </configuration>
       </plugin>
+
+      <!-- <plugin> -->
+      <!--   <artifactId>maven-antrun-plugin</artifactId> -->
+      <!--   <version>3.1.0</version> -->
+      <!--   <executions> -->
+      <!--     <execution> -->
+      <!--          <id>xalan-test attempt</id> -->
+      <!--       <phase>test</phase> -->
+      <!--       <configuration> -->
+      <!--         <target> -->
+      <!--              <!-\- <ant> task is simpler. I'd hoped it would let us shift -->
+      <!--                   current directory (so we didn't have to add baseDir -->
+      <!--                   references to supporting code that assumed execution -->
+      <!--                   with working directory xalan-test), but current evidence -->
+      <!--                   is no such luck. -->
+      <!--                   <subant> doesn't, but lets us control failonerror and -->
+      <!--                   verbose. -->
+      <!--                   I'm *guessing* we may want inheritall. -->
+      <!--              -\-> -->
+      <!--              <subant -->
+      <!--                   buildpath="../../xalan-test/build.xml" -->
+      <!--                   genericantfile="../../xalan-test/build.xml" -->
+      <!--                   inheritall="true" -->
+      <!--                   failonerror="true" -->
+      <!--                   verbose="true" -->
+      <!--                   > -->
+      <!--                <target name="clean"/> -->
+      <!--                <target name="jar"/> -->
+      <!--                <target name="extensions.classes"/> -->
+      <!--                <target name="smoketest"/> -->
+      <!--                   <target name="apitest"/> -->
+      <!--                <target name="conf.xsltc"/> -->
+      <!--              </subant> -->
+      <!--         </target> -->
+      <!--       </configuration> -->
+      <!--       <goals> -->
+      <!--         <goal>run</goal> -->
+      <!--       </goals> -->
+      <!--     </execution> -->
+      <!--   </executions> -->
+      <!-- </plugin> -->
 
     </plugins>
   </build>
