@@ -81,10 +81,11 @@
 
            NOTE TOO: If we want to include the results of this test in
            the source distribution archives, this needs to run before
-           "package". We may want to consider having
-           pre-integration-test ensure that xalan-test is indeed
-           available. See also
-           https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+           "package". THAT IS NOT WHAT IS CURRENTLY HAPPENING.
+	   Maven only supports dependencies at the module level,
+	   with phase ordering only guaranteed within each module,
+	   so the fix appears to be to break this out into
+	   another module and make distribution depend upon it
       -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -93,7 +94,7 @@
         <executions>
           <execution>
             <id>xalan-test attempt</id>
-            <phase>integration-test</phase>
+            <phase>test</phase>
             <goals>
               <goal>exec</goal>
             </goals>
