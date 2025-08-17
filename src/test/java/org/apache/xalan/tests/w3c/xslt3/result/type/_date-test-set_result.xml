@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-14T16:49:11Z" fail="28" name="date" pass="56" skipped="0" statusUnknown="1" totalRun="85">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-17T16:41:51Z" fail="28" name="date" pass="56" skipped="0" statusUnknown="1" totalRun="85">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -55,7 +55,7 @@
    <testResult status="fail" testName="date-053">
       <outResult>
          <errTrace>FODC0005 : A XPath dynamic error has occured, evaluating constructor function call for xs:duration. XTTE0570 : The supplied string value 'P28DT11H65M' cannot be parsed to a xs:duration value.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="date-054"/>

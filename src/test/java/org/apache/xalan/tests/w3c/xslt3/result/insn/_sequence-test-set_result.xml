@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-14T16:48:56Z" fail="18" name="sequence" pass="7" skipped="1" statusUnknown="1" totalRun="26">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-17T16:41:36Z" fail="17" name="sequence" pass="8" skipped="1" statusUnknown="1" totalRun="26">
    <testResult status="fail" testName="sequence-0101"/>
    <testResult status="fail" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -15,7 +15,7 @@
          <errTrace>XTTE0570 : A sequence of more than one item, is not allowed as the value of variable '$q'. This variable has expected type xs:integer *.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="sequence-0109"/>
+   <testResult status="pass" testName="sequence-0109"/>
    <testResult status="fail" testName="sequence-0110"/>
    <testResult status="fail" testName="sequence-0111"/>
    <testResult status="pass" testName="sequence-0112"/>

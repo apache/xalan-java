@@ -132,7 +132,10 @@ public class XPathSequenceConstructor extends Expression {
            }
            
            XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                      XPath.SELECT, null);           
+                                                                                      XPath.SELECT, null);
+           if (m_vars != null) {
+              xpathObj.fixupVariables(m_vars, m_globals_size);
+           }
            
            Expression xpathExpr = xpathObj.getExpression();
            

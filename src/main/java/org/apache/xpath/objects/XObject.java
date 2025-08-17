@@ -916,45 +916,57 @@ public class XObject extends Expression implements Serializable, Cloneable
           String lStr = (((XString)this)).str();
           String rStr = (((XString)obj2)).str();                      
            
-          XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
-           
-          int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
-                                                                                            collationUri);
-           
-          return (comparisonResult < 0) ? true : false;
+          if (collationUri == null) {
+        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+          }
+          else {
+        	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
+        	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+        	  
+        	  return (comparisonResult < 0) ? true : false;
+          }
        }
        else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
           String lStr = (((XSString)this)).stringValue();
           String rStr = (((XSString)obj2)).stringValue();                      
            
-          XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
-           
-          int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
-                                                                                            collationUri);
-           
-          return (comparisonResult < 0) ? true : false;
+          if (collationUri == null) {
+        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+          }
+          else {
+        	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
+        	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+        	  
+        	  return (comparisonResult < 0) ? true : false;
+          }
        }
        else if ((this instanceof XSString) && (obj2 instanceof XString)) {
           String lStr = (((XSString)this)).stringValue();
           String rStr = (((XString)obj2)).str();                      
            
-          XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
-           
-          int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
-                                                                                            collationUri);
-           
-          return (comparisonResult < 0) ? true : false;
+          if (collationUri == null) {
+        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+          }
+          else {
+        	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
+        	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+        	  
+        	  return (comparisonResult < 0) ? true : false;
+          }
        }
        else if ((this instanceof XString) && (obj2 instanceof XSString)) {
           String lStr = (((XString)this)).str();
           String rStr = (((XSString)obj2)).stringValue();                      
            
-          XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
-           
-          int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
-                                                                                            collationUri);
-           
-          return (comparisonResult < 0) ? true : false;
+          if (collationUri == null) {
+        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+          }
+          else {
+        	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
+        	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+        	  
+        	  return (comparisonResult < 0) ? true : false;
+          }
        }
        else if ((this instanceof XSGDay) && (obj2 instanceof XSGDay)) {
     	  XSGDay val1 = (XSGDay)this;
@@ -1235,45 +1247,57 @@ public class XObject extends Expression implements Serializable, Cloneable
           String lStr = (((XString)this)).str();
           String rStr = (((XString)obj2)).str();
           
-          XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
-          
-          int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
-                                                                                            collationUri);
-          
-          return (comparisonResult > 0) ? true : false;
+          if (collationUri == null) {
+        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+          }
+          else {
+        	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
+        	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+        	  
+        	  return (comparisonResult > 0) ? true : false;
+          }
        }
        else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
           String lStr = (((XSString)this)).stringValue();
           String rStr = (((XSString)obj2)).stringValue();                      
            
-          XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
-           
-          int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
-                                                                                            collationUri);
-           
-          return (comparisonResult > 0) ? true : false;
+          if (collationUri == null) {
+        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+          }
+          else {
+        	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
+        	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+        	  
+        	  return (comparisonResult > 0) ? true : false;
+          }
        }
        else if ((this instanceof XSString) && (obj2 instanceof XString)) {
           String lStr = (((XSString)this)).stringValue();
           String rStr = (((XString)obj2)).str();                      
            
-          XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
-           
-          int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
-                                                                                            collationUri);
-           
-          return (comparisonResult > 0) ? true : false;
+          if (collationUri == null) {
+        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+          }
+          else {
+        	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
+        	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+        	  
+        	  return (comparisonResult > 0) ? true : false;
+          }
        }
        else if ((this instanceof XString) && (obj2 instanceof XSString)) {
           String lStr = (((XString)this)).str();
           String rStr = (((XSString)obj2)).stringValue();                      
            
-          XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
-           
-          int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
-                                                                                            collationUri);
-           
-          return (comparisonResult > 0) ? true : false;
+          if (collationUri == null) {
+        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+          }
+          else {
+        	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
+        	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+        	  
+        	  return (comparisonResult > 0) ? true : false;
+          }
        }
        else if ((this instanceof XSGDay) && (obj2 instanceof XSGDay)) {
     	   XSGDay val1 = (XSGDay)this;
@@ -1690,7 +1714,7 @@ public class XObject extends Expression implements Serializable, Cloneable
 		if (obj2 instanceof ResultSequence) {
 		   obj2 = ((ResultSequence)obj2).item(0);	
 		}		
-		isEqual = this.vcEquals((XObject)obj2, null, true);
+		isEqual = this.vcEquals((XObject)obj2, null, null, true);
 	 } 
 	 catch (TransformerException ex) {
 	    // no op
@@ -1717,7 +1741,9 @@ public class XObject extends Expression implements Serializable, Cloneable
    * of value comparison operator "eq".
    *
    * @param obj2                Object to compare this to
-   * @param expressionOwner     this object is used, for error reporting 
+   * @param expressionOwner     this object is used, for error reporting
+   * @param collationUri        Collation if available, to be used for comparing 
+   *                            string values.  
    * @param isEqTest            is this method called, to check "eq" or "ne"
    *                            operation. true, if that's "eq" check and false
    *                            otherwise. 
@@ -1726,10 +1752,12 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @throws javax.xml.transform.TransformerException 
    */
-  public boolean vcEquals(XObject obj2, ExpressionNode expressionOwner, boolean isEqTest) 
-                                                               throws javax.xml.transform.TransformerException
+  public boolean vcEquals(XObject obj2, ExpressionNode expressionOwner, String collationUri, boolean isEqTest) 
+                                                                                          throws javax.xml.transform.TransformerException
   {	 
 	  boolean result = false;
+	  
+	  XPathContext xctxt = new XPathContext();
 	  
 	  XSTypeDefinition xsObj1Type = this.getXsTypeDefinition();
 	  XSTypeDefinition xsObj2Type = obj2.getXsTypeDefinition();
@@ -1787,13 +1815,13 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  if ((lXsNumericValue != null) && (rXsNumericValue == null)) {
-			  result = lXsNumericValue.vcEquals(obj2, expressionOwner, isEqTest); 
+			  result = lXsNumericValue.vcEquals(obj2, expressionOwner, null, isEqTest); 
 		  }
 		  else if ((lXsNumericValue == null) && (rXsNumericValue != null)) {
-			  result = rXsNumericValue.vcEquals(this, expressionOwner, isEqTest); 
+			  result = rXsNumericValue.vcEquals(this, expressionOwner, null, isEqTest); 
 		  }
 		  else if ((lXsNumericValue != null) && (rXsNumericValue != null)) {
-			  result = lXsNumericValue.vcEquals(rXsNumericValue, expressionOwner, isEqTest); 
+			  result = lXsNumericValue.vcEquals(rXsNumericValue, expressionOwner, null, isEqTest); 
 		  }		  
 		  else if (strVal1.equals(strVal2)) {			  
 			  result = true;
@@ -1867,25 +1895,60 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  result = isEqual;
 	  }
 	  else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
-		  result = ((XSString)this).equals((XSString)obj2);    
+		  String lStr = ((XSString)this).stringValue();
+		  String rStr = ((XSString)obj2).stringValue();
+		  
+		  if (collationUri == null) {
+			  return lStr.equals(rStr);  
+		  }
+		  else {
+			  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+			  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+			  
+			  return (comparisonResult == 0) ? true : false;  
+		  }
 	  }
 	  else if ((this instanceof XString) && (obj2 instanceof XString)) {
-		  String lStr = (((XString)this)).str();
-		  String rStr = (((XString)obj2)).str();
-
-		  result = (new XSString(lStr)).equals(new XSString(rStr));
+		  String lStr = ((XString)this).str();
+		  String rStr = ((XString)obj2).str();
+		  
+		  if (collationUri == null) {
+			  return lStr.equals(rStr);  
+		  }
+		  else {
+			  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+			  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+			  
+			  return (comparisonResult == 0) ? true : false;  
+		  }
 	  }
 	  else if ((this instanceof XSString) && (obj2 instanceof XString)) {
-		  String lStr = ((((XSString)this))).stringValue();
-		  String rStr = (((XString)obj2)).str();
-
-		  result = (new XSString(lStr)).equals(new XSString(rStr));
+		  String lStr = ((XSString)this).stringValue();
+		  String rStr = ((XString)obj2).str();
+		  
+		  if (collationUri == null) {
+			  return lStr.equals(rStr);  
+		  }
+		  else {
+			  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+			  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+			  
+			  return (comparisonResult == 0) ? true : false;  
+		  }
 	  }
 	  else if ((this instanceof XString) && (obj2 instanceof XSString)) {
-		  String lStr = (((XString)this)).str();
-		  String rStr = ((((XSString)obj2))).stringValue();
-
-		  result = (new XSString(lStr)).equals(new XSString(rStr));
+		  String lStr = ((XString)this).str();
+		  String rStr = ((XSString)obj2).stringValue();
+		  
+		  if (collationUri == null) {
+			  return lStr.equals(rStr);  
+		  }
+		  else {
+			  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+			  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+			  
+			  return (comparisonResult == 0) ? true : false;  
+		  }
 	  }
 	  else if (this instanceof XSDate) {
 		  if (obj2 instanceof XSDate) {

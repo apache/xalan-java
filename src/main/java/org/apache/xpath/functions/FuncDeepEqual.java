@@ -212,7 +212,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 						  break; 
 					  }	 
 				  }
-				  else if (!item1.vcEquals(item2, null, true)) {
+				  else if (!item1.vcEquals(item2, null, null, true)) {
 					  result = false;
 					  break;
 				  }

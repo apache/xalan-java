@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <num>-7</num>
+    <num>1</num>
+    <num>3.1</num>
+    <num>3.2</num>
+    <num>3.4</num>
+    <num>4</num>
+    <num>5</num>
+    <num>5</num>
+    <num>5</num>
+  </one>
+  <two>
+    <num>5</num>
+    <num>5</num>
+    <num>5</num>
+    <num>4</num>
+    <num>3.4</num>
+    <num>3.2</num>
+    <num>3.1</num>
+    <num>1</num>
+    <num>-7</num>
+  </two>
+</result>

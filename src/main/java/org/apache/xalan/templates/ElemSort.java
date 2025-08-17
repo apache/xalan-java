@@ -26,21 +26,8 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 
 /**
- * Implement xsl:sort.
- * <pre>
- * <!ELEMENT xsl:sort EMPTY>
- * <!ATTLIST xsl:sort
- *   select %expr; "."
- *   lang %avt; #IMPLIED
- *   data-type %avt; "text"
- *   order %avt; "ascending"
- *   case-order %avt; #IMPLIED
- * >
- * <!-- xsl:sort cannot occur after any other elements or
- * any non-whitespace character -->
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#sorting">sorting in XSLT Specification</a>
- * @xsl.usage advanced
+ * A class definition, to implement XSLT 3.0's xsl:sort 
+ * instruction. 
  */
 public class ElemSort extends ElemTemplateElement
 {
@@ -279,6 +266,30 @@ public class ElemSort extends ElemTemplateElement
   public AVT getCaseOrder()
   {
     return m_caseorder_avt;
+  }
+  
+  /**
+   * This class field, represents an optional collation URI specified 
+   * with xsl:sort instruction.
+   */
+  private String m_collation = null;
+  
+  /**
+   * Get the value of xsl:sort's collation URI.
+   * 
+   * @return				Collation URI value
+   */
+  public String getCollation() {
+	 return m_collation; 
+  }
+  
+  /**
+   * Set the value of xsl:sort's collation URI value.
+   * 
+   * @param collation				Collation URI value
+   */
+  public void setCollation(String collation) {
+	 m_collation = collation; 
   }
 
   /**

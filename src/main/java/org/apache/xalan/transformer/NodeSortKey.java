@@ -62,7 +62,6 @@ public class NodeSortKey
   /**
    * Constructor NodeSortKey
    *
-   *
    * @param transformer non null transformer instance
    * @param selectPat Select pattern for this key 
    * @param treatAsNumbers Flag indicating whether the result will be a number
@@ -127,5 +126,14 @@ public class NodeSortKey
 
       m_col = Collator.getInstance();
     }
+  }
+  
+  /**
+   * Get the XPath pattern for this sort key.
+   * 
+   * @return				  XPath pattern for sort key
+   */
+  public XPath getSelectPattern() {
+	 return m_selectPat; 
   }
 }

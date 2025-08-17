@@ -632,7 +632,7 @@ public class XSLTSchema extends XSLTElementDef
                                                   langAttr,
                                                   dataTypeAttr,
                                                   orderAttr,
-                                                  caseOrderAttr }, 
+                                                  caseOrderAttr, collationAttrOpt }, 
                                        new ProcessorTemplateElem(),
                                                 ElemSort.class/* class object */, 19, true );
     XSLTElementDef xslWithParam = new XSLTElementDef(this,
