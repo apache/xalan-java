@@ -455,7 +455,15 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             return;
         }
         else if (evalResult instanceof XPathArray) {
-        	processSequenceOrArray(transformer, xctxt, evalResult);
+        	XPathArray xpathArr = (XPathArray)evalResult;
+        	List<XObject> list1 = xpathArr.getNativeArray();
+        	ResultSequence rSeq = new ResultSequence();
+        	int size = list1.size();
+        	for (int idx = 0; idx < size; idx++) {
+        	   rSeq.add(list1.get(idx));
+        	}
+        	
+        	processSequenceOrArray(transformer, xctxt, rSeq);
         	
         	return;
         }

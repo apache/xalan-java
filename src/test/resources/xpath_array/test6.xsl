@@ -17,22 +17,18 @@
    <xsl:template match="/">
       <xsl:variable name="arr1" select="['a', 'b', 'c']" as="array(xs:string)"/>
       <xsl:variable name="seq1" select="('d', 'e')" as="xs:string*"/>
-      <xsl:variable name="resultArr" select="array:append($arr1, $seq1)" as="array(xs:string)"/>  
+      <xsl:variable name="resultArr" select="array:append($arr1, $seq1)" as="array(*)"/>  
       <result>   	     	     	     
 	     <arrAfterAppend arrSize="{array:size($resultArr)}" traversalMethod="xsl:for-each">
 	       <!-- using xsl:for-each to traverse array -->	        
 	       <xsl:for-each select="$resultArr">
-	          <arrItem>
-	             <xsl:value-of select="."/>
-	          </arrItem>  
+	          <xsl:value-of select="if (position() != last()) then (. || ' ') else (.)"/>
 	       </xsl:for-each>
 	     </arrAfterAppend>
 	     <arrAfterAppend arrSize="{array:size($resultArr)}" traversalMethod="xsl:iterate">
-	       <!-- using xsl:iterate to traverse array -->	        
+	       <!-- using xsl:iterate to traverse array -->        
 	       <xsl:iterate select="$resultArr">
-	          <arrItem>
-	             <xsl:value-of select="."/>
-	          </arrItem>  
+	          <xsl:value-of select="if (position() != last()) then (. || ' ') else (.)"/>  
 	       </xsl:iterate>
 	     </arrAfterAppend>
 	  </result>

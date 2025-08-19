@@ -30,6 +30,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyType;
@@ -119,11 +120,12 @@ public class XPathIfExpr extends Expression {
        
        boolean ifConditionEvalResult = false;
        boolean eagerIfConditionCheck = false;
+       String strVal = null;
        if ((ifConditionXPathResult instanceof XSString) || (ifConditionXPathResult instanceof XSAnyURI) || 
     		                                               (ifConditionXPathResult instanceof XSUntypedAtomic)) {
     	   eagerIfConditionCheck = true;
     	   XSAnyType xsAnyType = (XSAnyType)ifConditionXPathResult;
-    	   String strVal = xsAnyType.stringValue();
+    	   strVal = xsAnyType.stringValue();
     	   if ((strVal != null) && (strVal.length() > 0)) {
     		   ifConditionEvalResult = true;  
     	   }
@@ -139,10 +141,20 @@ public class XPathIfExpr extends Expression {
                                                                                                XPath.SELECT, null);
            if (m_vars != null) {
               thenExprXPath.fixupVariables(m_vars, m_globals_size);
-           }
+           }                      
            
            Expression expr = thenExprXPath.getExpression();
-           if (expr instanceof XPathNamedFunctionReference) {
+           XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
+                      
+           if ((expr instanceof SelfIteratorNoPredicate) && (ifConditionEvalResult || (xpath3CtxtItem != null))) {
+        	  if (ifConditionEvalResult) {
+        		 evalResult = new XSString(strVal); 
+        	  }
+        	  else {
+        		 evalResult = xpath3CtxtItem;  
+        	  }        	    
+           }
+           else if (expr instanceof XPathNamedFunctionReference) {
         	  evalResult = (XPathNamedFunctionReference)expr;   
            }
            else {
@@ -162,7 +174,11 @@ public class XPathIfExpr extends Expression {
            }
            
            Expression expr = elseExprXPath.getExpression();
-           if (expr instanceof XPathNamedFunctionReference) {
+           XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
+           if ((expr instanceof SelfIteratorNoPredicate) && (xpath3CtxtItem != null)) {
+        	  evalResult = xpath3CtxtItem;  
+           }
+           else if (expr instanceof XPathNamedFunctionReference) {
         	  evalResult = (XPathNamedFunctionReference)expr;   
            }
            else {

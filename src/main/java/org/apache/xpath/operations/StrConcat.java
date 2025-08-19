@@ -19,6 +19,7 @@ package org.apache.xpath.operations;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
@@ -48,9 +49,23 @@ public class StrConcat extends Operation
         
     	XObject result = null;
 
-    	XObject left = m_left.execute(xctxt);
+    	XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
+    	
+    	XObject left = null;    	
+    	if ((m_left instanceof SelfIteratorNoPredicate) && (xpath3CtxtItem != null)) {
+    	   left = xpath3CtxtItem; 
+    	}
+    	else {
+    	   left = m_left.execute(xctxt);
+    	}
 
-    	XObject right = m_right.execute(xctxt);
+    	XObject right = null;
+    	if ((m_right instanceof SelfIteratorNoPredicate) && (xpath3CtxtItem != null)) {
+    	   right = xpath3CtxtItem; 
+    	}
+    	else {
+    	   right = m_right.execute(xctxt);
+    	}
 
     	result = new XString(XslTransformEvaluationHelper.getStrVal(left) + 
     			                                       XslTransformEvaluationHelper.getStrVal(right));

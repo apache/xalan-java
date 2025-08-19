@@ -69,7 +69,9 @@ public class FuncPosition extends Function
   {
     
     if (xctxt.getXPath3ContextPosition() != -1) {
-       return xctxt.getXPath3ContextPosition();
+       int pos = xctxt.getXPath3ContextPosition();
+       
+       return pos;
     }
     
     if (xctxt.getContextNode() == DTM.NULL) {

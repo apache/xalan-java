@@ -19,6 +19,8 @@ package org.apache.xpath.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+
 import xml.xpath31.processor.types.XSAnyType;
 
 /**
@@ -97,14 +99,34 @@ public class XPathArray extends XObject {
     * Method definition, to atomize an XPath array 
     * to a sequence.
     * 
-    * @return		        ResultSequence object		
+    * @return		              The result of atomization of an XPath array		
     */
    public ResultSequence atomize() {
+	   
 	   ResultSequence result = new ResultSequence();
 	   
 	   for (int i = 0; i < this.size(); i++) {
 		   XObject arrItem = this.get(i);
-		   result.add(arrItem);
+		   
+		   if (arrItem instanceof ResultSequence) {
+		      ResultSequence expandedResultSeq = new ResultSequence();
+	          XslTransformEvaluationHelper.expandResultSequence((ResultSequence)arrItem, expandedResultSeq);
+	          for (int j = 0; j < expandedResultSeq.size(); j++) {
+	        	 XObject xObj = expandedResultSeq.item(j);
+	        	 result.add(xObj);
+	          }
+	       }
+		   if (arrItem instanceof XPathArray) {
+	          XPathArray xpathArr = (XPathArray)arrItem;
+	          ResultSequence rSeq = xpathArr.atomize(); 
+	          for (int j = 0; j < rSeq.size(); j++) {
+	        	  XObject xObj = rSeq.item(j);
+	        	  result.add(xObj);
+		      }
+	       }
+	       else {
+		      result.add(arrItem);
+	       }
 	   }
 
 	   return result;

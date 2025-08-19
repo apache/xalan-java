@@ -61,6 +61,7 @@ import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
@@ -94,21 +95,28 @@ public class XslTransformEvaluationHelper {
     
     /**
      * Given an xdm input sequence, expand that sequence to produce a new sequence
-     * none of whose items are sequence with cardinality greater than one.
+     * none of whose items are sequence or array with cardinality greater than one.
      * 
-     * The caller of this method, needs to pass an xdm sequence to be expanded
+     * The caller of this method, needs to supply an xdm sequence to be expanded
      * as an argument, and another argument reference to get the result from this 
      * method.
      */
     public static void expandResultSequence(ResultSequence seqToBeExpanded, 
-                                                                  ResultSequence finalResultSeq) {               
+                                                                  ResultSequence result) {               
         for (int idx = 0; idx < seqToBeExpanded.size(); idx++) {
-          XObject xObject = seqToBeExpanded.item(idx);
-          if (xObject instanceof ResultSequence) {
-             expandResultSequence((ResultSequence)xObject, finalResultSeq); 
+          XObject seqItem = seqToBeExpanded.item(idx);
+          if (seqItem instanceof ResultSequence) {
+             expandResultSequence((ResultSequence)seqItem, result); 
+          }
+          if (seqItem instanceof XPathArray) {
+             ResultSequence rSeq = ((XPathArray)seqItem).atomize();
+             for (int idx2 = 0; idx2 < rSeq.size(); idx2++) {
+            	XObject xObject2 = rSeq.item(idx2);            	
+            	result.add(xObject2);
+             }
           }
           else {
-             finalResultSeq.add(xObject);
+             result.add(seqItem);
           }
        }
     }

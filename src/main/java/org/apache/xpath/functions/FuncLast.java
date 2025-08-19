@@ -66,7 +66,9 @@ public class FuncLast extends Function
   {
       
     if (xctxt.getXPath3ContextSize() != -1) {
-        return xctxt.getXPath3ContextSize();
+    	int contextSize = xctxt.getXPath3ContextSize();
+    	
+        return contextSize;
     }
     
     if (xctxt.getContextNode() == DTM.NULL) {

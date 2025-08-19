@@ -440,6 +440,17 @@ public class SequenceTypeSupport {
                 	srcValue = new XSString(strValue);
                 }
             }
+            else if ((srcValue instanceof ResultSequence) && (expectedSeqTypeData != null)) {
+            	int seqTypeBuiltInType = expectedSeqTypeData.getBuiltInSequenceType();
+            	int itemTypeOccIndicator = expectedSeqTypeData.getItemTypeOccurrenceIndicator();
+            	ResultSequence rSeq = (ResultSequence)srcValue;
+            	int seqSize = rSeq.size();
+                if ((seqSize > 1) && (seqTypeBuiltInType > 0) && 
+                	((itemTypeOccIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) || 
+                			                                                     (itemTypeOccIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+                	throw new TransformerException("XPTY0004 : An XPath sequence with size " + seqSize + ", does'nt match with an xdm atomic type.", srcLocator);
+                }
+            }
         	
             XPath seqTypeXPath = null;
             XObject seqTypeExpressionEvalResult = null;
@@ -466,13 +477,8 @@ public class SequenceTypeSupport {
             		if (seqTypeFunctionTest.isAnyFunctionTest()) {
             			return srcValue;
             		}
-            		else {
-            			// REVISIT        		     		 
-            			List<String> funcParamSpecList = seqTypeFunctionTest.getTypedFunctionTestParamSpecList();
-            			String funcReturnSeqType = seqTypeFunctionTest.getTypedFunctionTestReturnType();
-            			
+            		else {        		     		             			
             			String funcName = xpathNamedFunctionReference.getFuncName();
-            			int funcArity = xpathNamedFunctionReference.getArity();
             			FunctionTable funcTable = xctxt.getFunctionTable();
             			Object funcIdInFuncTable = funcTable.getFunctionId(funcName);
             			Function function = funcTable.getFunction((int)funcIdInFuncTable);
@@ -1267,15 +1273,10 @@ public class SequenceTypeSupport {
              		  // We check below each of array items, with an expected type 
              		  while (arrIter.hasNext()) {
              			 XObject arrItem = arrIter.next();
-             			 if (arrItem instanceof ResultSequence) {
-             				arrItem = ((ResultSequence)arrItem).item(0);
-             			 }
              			 SequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
              			 XObject arrayItemTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(arrItem, null, arrayItemTypeInfo, xctxt);
-             			 String arrayItemSequenceTypeStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : "";
              			 if (arrayItemTypeCheckResult == null) {             				
-             				throw new TransformerException("XPTY0004 : One or more, of XPath array's item doesn't conform to array item's expected "
-             						                                                                                       + "type '" + arrayItemSequenceTypeStr + "'."); 
+             				throw new TransformerException("XPTY0004 : One or more, of XPath array's item doesn't conform to array item's expected type."); 
              			 }           			 
              		  }
              		  

@@ -17,7 +17,7 @@
 
 Copyright 1999-2025 The Apache Software Foundation
 
-Document last modified : 2025-08-17
+Document last modified : 2025-08-19
 
 Authors:
    Gary Gregory <ggregory@apache.org>
@@ -49,11 +49,11 @@ The Maven build results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXalanXSLT3Tests
-[INFO] Tests run: 1259, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 41.436 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
+[INFO] Tests run: 1263, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 89.466 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 1259, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1263, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO]
 [INFO] --- jar:3.3.0:jar (default-jar) @ xalan-java ---
@@ -62,7 +62,7 @@ The Maven build results like following shall be produced:
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  01:59 min
+[INFO] Total time:  03:10 min
 
 
 If the user needs to run Xalan-J's XSLT 3.0 implementation via Java application code, the value of JVM's system property 
@@ -78,7 +78,9 @@ W3CXSLT3Tests : To run various W3C XSLT 3.0 test sets, to test Xalan-J's XSLT 3.
 [Important] : Running all W3C XSLT 3.0 test sets configured for Xalan-J's XSLT 3.0 implementation is a bit slow,
 due to a W3C XSL test case type\date\date-020.xsl which has a long running xsl:for-each instruction like
 <xsl:for-each select="1 to 1000000"> ... that is intended to test, that current date/time returned by XPath 
-function fn:current-dateTime() doesn't change throughout an XSL transformation.
+function fn:current-dateTime() doesn't change throughout an XSL transformation. To fasten run-time of this
+W3C XSLT 3.0 test case, we may modify this xsl:for-each instruction for e.g to <xsl:for-each select="1 to 10000">,
+without changing the intent of this test case.
 
 W3CXSLT3TestSuiteXalanResultSummarize : To produce an aggregated W3C XSLT 3.0 test suite results, for Xalan-J's 
 XSLT 3.0 implementation.

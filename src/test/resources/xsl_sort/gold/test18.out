@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><map xmlns="http://www.w3.org/2005/xpath-functions">
+  <map key="hello">
+    <number key="a">30</number>
+    <map key="b">
+      <number key="Alpha">3.1</number>
+      <number key="Beta">2.1</number>
+      <number key="Mu">1.1</number>
+    </map>
+    <number key="c">10</number>
+  </map>
+  <map key="hellp">
+    <number key="x">20</number>
+    <number key="y">30</number>
+    <number key="z">10</number>
+  </map>
+  <number key="hellq">4</number>
+  <number key="hellr">1</number>
+  <number key="hells">5</number>
+</map>

@@ -6983,9 +6983,29 @@ public class XPathParser
  		  while ((m_token != null) && !tokenIs(')')) {
  			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
  			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
- 			    consumeExpected(':'); 			    
- 			    populateSequenceTypeData(arrayItemSequenceType); 			 
- 			    nextToken();
+ 			    consumeExpected(':'); 			     			    
+ 			    if (lookahead(SequenceTypeSupport.Q_MARK, 1)) {
+ 			    	populateSequenceTypeData(arrayItemSequenceType); 			    	
+ 			    	arrayItemSequenceType.setItemTypeOccurrenceIndicator(SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE);
+ 			    	nextToken();
+ 			    	nextToken();
+ 			    }
+ 			    else if (lookahead(SequenceTypeSupport.STAR, 1)) {
+ 			    	populateSequenceTypeData(arrayItemSequenceType);
+ 			    	arrayItemSequenceType.setItemTypeOccurrenceIndicator(SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY);
+ 			    	nextToken();
+ 			    	nextToken();
+ 			    }
+ 			    else if (lookahead(SequenceTypeSupport.PLUS, 1)) {
+ 			    	populateSequenceTypeData(arrayItemSequenceType);
+ 			    	arrayItemSequenceType.setItemTypeOccurrenceIndicator(SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY);
+ 			    	nextToken();
+ 			    	nextToken();
+ 			    }
+ 			    else {
+ 			    	populateSequenceTypeData(arrayItemSequenceType);
+ 			    	nextToken();
+ 			    }
  		     }
  			 else if (tokenIs("map")) {
  				XPathSequenceTypeExpr xpathSequenceTypeExpr2 = new XPathSequenceTypeExpr();  
@@ -6998,6 +7018,26 @@ public class XPathParser
 				parseXdmArraySequenceType(xpathSequenceTypeExpr2, true);
 				SequenceTypeArrayTest seqTypeArrTest = xpathSequenceTypeExpr2.getSequenceTypeArrayTest();
 				arrayItemSequenceType.setSequenceTypeArrayTest(seqTypeArrTest);
+ 			 }
+ 			 else if (tokenIs("item")) {
+ 				nextToken();
+ 				SequenceTypeKindTest seqTypeKindTest = new SequenceTypeKindTest();
+ 				seqTypeKindTest.setKindVal(SequenceTypeSupport.ITEM_KIND);
+ 				arrayItemSequenceType.setSequenceTypeKindTest(seqTypeKindTest);
+ 				consumeExpected('(');
+ 				consumeExpected(')');
+ 				if (tokenIs(SequenceTypeSupport.Q_MARK)) { 			    	
+ 			    	arrayItemSequenceType.setItemTypeOccurrenceIndicator(SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE);
+ 			    	nextToken();
+ 			    }
+ 			    else if (tokenIs(SequenceTypeSupport.STAR)) {
+ 			    	arrayItemSequenceType.setItemTypeOccurrenceIndicator(SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY);
+ 			    	nextToken();
+ 			    }
+ 			    else if (tokenIs(SequenceTypeSupport.PLUS)) {
+ 			    	arrayItemSequenceType.setItemTypeOccurrenceIndicator(SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY);
+ 			    	nextToken();
+ 			    }
  			 }
  		  }
  		  

@@ -20,15 +20,22 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
@@ -56,10 +63,10 @@ public class FuncData extends FunctionDef1Arg
   }
 
   /**
-   * Execute the function. The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * Implementation of the function. The function must return a valid object.
+   * 
+   * @param xctxt                           An XPath context object
+   * @return                                A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -67,89 +74,119 @@ public class FuncData extends FunctionDef1Arg
   {
       ResultSequence result = new ResultSequence();
       
-      XObject fnDataEffectiveArgValue = null;
+      SourceLocator srcLocator = xctxt.getSAXLocator();
+      
+      XObject argObj = null;
+      
+      int contextNode = xctxt.getCurrentNode();
       
       if (m_arg0 == null) {
-         // Handles fn:data function call of the form, fn:data()
+         // The function call fn:data is called with no arguments
          XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
          if (xpath3ContextItem != null) {
-            fnDataEffectiveArgValue = xpath3ContextItem;  
+            argObj = xpath3ContextItem;  
          }
-         else {
-            int contextNodeDtmHandle = xctxt.getContextNode();
-            fnDataEffectiveArgValue = new XMLNodeCursorImpl(contextNodeDtmHandle, xctxt); 
+         else if (contextNode != DTM.NULL) {
+            argObj = new XMLNodeCursorImpl(contextNode, xctxt); 
          }
       }
       else {
          // An explicit argument was provided, to the fn:data 
          // function call.
-         fnDataEffectiveArgValue = m_arg0.execute(xctxt); 
+         argObj = m_arg0.execute(xctxt); 
       }
       
-      if (fnDataEffectiveArgValue instanceof XMLNodeCursorImpl) {
-         XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)fnDataEffectiveArgValue;
+      if (argObj instanceof XMLNodeCursorImpl) {
+         XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)argObj;
+                  
+         DTMCursorIterator dtmIter = xmlNodeCursorImpl.iterRaw();
          
-         int nextNodeDtmHandle;
-         DTMCursorIterator dtmIter = xNodeSet.iterRaw();
-         while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {
-            XMLNodeCursorImpl inpNode = new XMLNodeCursorImpl(nextNodeDtmHandle, xctxt.getDTMManager());
-            DTM nodeDtm = inpNode.getDTM(nextNodeDtmHandle);
-            if (nodeDtm.getNodeType(nextNodeDtmHandle) == DTM.DOCUMENT_NODE) {
-               // REVISIT
-               XSUntyped xsUntypedVal = new XSUntyped(inpNode.str());
+         DTMManager dtmManager = xctxt.getDTMManager();
+         
+         int nextNode = DTM.NULL;
+         while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
+            XMLNodeCursorImpl xmlNodeCursorImpl1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+            
+            DTM dtm = xmlNodeCursorImpl1.getDTM(nextNode);
+            
+            if (dtm.getNodeType(nextNode) == DTM.DOCUMENT_NODE) {
+               XSUntyped xsUntypedVal = new XSUntyped(xmlNodeCursorImpl1.str());
                result.add(xsUntypedVal); 
             }
-            else if (nodeDtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
-               XSUntyped xsUntypedVal = new XSUntyped(inpNode.str());
+            else if (dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) {
+               XSUntyped xsUntypedVal = new XSUntyped(xmlNodeCursorImpl1.str());
                result.add(xsUntypedVal);
             }
-            else if ((nodeDtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) ||
-                     (nodeDtm.getNodeType(nextNodeDtmHandle) == DTM.TEXT_NODE)) {
-               XSUntypedAtomic xsUntypedAtomicVal = new XSUntypedAtomic(inpNode.str());
+            else if ((dtm.getNodeType(nextNode) == DTM.ATTRIBUTE_NODE) ||
+                     (dtm.getNodeType(nextNode) == DTM.TEXT_NODE)) {
+               XSUntypedAtomic xsUntypedAtomicVal = new XSUntypedAtomic(xmlNodeCursorImpl1.str());
                result.add(xsUntypedAtomicVal);
             }
             else {
-               result.add(new XSString(inpNode.str())); 
+               result.add(new XSString(xmlNodeCursorImpl1.str())); 
             }
          }
       }
-      else if (fnDataEffectiveArgValue instanceof ResultSequence) {
-         ResultSequence inpResultSeq = (ResultSequence)fnDataEffectiveArgValue;
+      else if (argObj instanceof ResultSequence) {
+         ResultSequence rSeq = (ResultSequence)argObj;
+         
          ResultSequence expandedResultSeq = new ResultSequence();
-         XslTransformEvaluationHelper.expandResultSequence(inpResultSeq, expandedResultSeq);
+         XslTransformEvaluationHelper.expandResultSequence(rSeq, expandedResultSeq);
+         
          for (int idx = 0; idx < expandedResultSeq.size(); idx++) {
             XObject xdmItem = expandedResultSeq.item(idx);
-            if ((xdmItem instanceof XBoolean) || (xdmItem instanceof XNumber) || 
-                (xdmItem instanceof XString) || (xdmItem instanceof XSAnyAtomicType) || 
+            if ((xdmItem instanceof XSAnyAtomicType) || (xdmItem instanceof XBooleanStatic) || 
+            	(xdmItem instanceof XBoolean) || (xdmItem instanceof XNumber) || (xdmItem instanceof XString) ||
                 (xdmItem instanceof XSUntypedAtomic) || (xdmItem instanceof XSUntyped)) {
                result.add(xdmItem); 
             }
             else if (xdmItem instanceof XMLNodeCursorImpl) {
-               XMLNodeCursorImpl xdmNode = (XMLNodeCursorImpl)xdmItem;               
-               int nodeDtmHandle = (xdmNode.iterRaw()).item(0);
-               DTM nodeDtm = xdmNode.getDTM(nodeDtmHandle);
-               if (nodeDtm.getNodeType(nodeDtmHandle) == DTM.DOCUMENT_NODE) {
-                  // REVISIT
-                  XSUntyped xsUntypedVal = new XSUntyped(xdmNode.str());
-                  result.add(xsUntypedVal); 
+               XMLNodeCursorImpl xmlNodeCursorImpl1 = (XMLNodeCursorImpl)xdmItem;
+               
+               DTMCursorIterator dtmIter = xmlNodeCursorImpl1.iterRaw();
+               
+               DTMManager dtmManager = xctxt.getDTMManager();
+               
+               int nextNode = DTM.NULL;
+               while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
+            	   XMLNodeCursorImpl xmlNodeCursorImpl2 = new XMLNodeCursorImpl(nextNode, dtmManager);
+                   
+                   DTM dtm = xmlNodeCursorImpl2.getDTM(nextNode);
+                   
+                   if (dtm.getNodeType(nextNode) == DTM.DOCUMENT_NODE) {
+                      XSUntyped xsUntypedVal = new XSUntyped(xmlNodeCursorImpl2.str());
+                      result.add(xsUntypedVal); 
+                   }
+                   else if (dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) {
+                      XSUntyped xsUntypedVal = new XSUntyped(xmlNodeCursorImpl2.str());
+                      result.add(xsUntypedVal);
+                   }
+                   else if ((dtm.getNodeType(nextNode) == DTM.ATTRIBUTE_NODE) ||
+                            (dtm.getNodeType(nextNode) == DTM.TEXT_NODE)) {
+                      XSUntypedAtomic xsUntypedAtomicVal = new XSUntypedAtomic(xmlNodeCursorImpl2.str());
+                      result.add(xsUntypedAtomicVal);
+                   }
+                   else {
+                      result.add(new XSString(xmlNodeCursorImpl2.str())); 
+                   }
                }
-               else if (nodeDtm.getNodeType(nodeDtmHandle) == DTM.ELEMENT_NODE) {
-                  XSUntyped xsUntypedVal = new XSUntyped(xdmNode.str());
-                  result.add(xsUntypedVal);
-               }
-               else if ((nodeDtm.getNodeType(nodeDtmHandle) == DTM.ATTRIBUTE_NODE) ||
-                        (nodeDtm.getNodeType(nodeDtmHandle) == DTM.TEXT_NODE)) {
-                  XSUntypedAtomic xsUntypedAtomicVal = new XSUntypedAtomic(xdmNode.str());
-                  result.add(xsUntypedAtomicVal);
-               }
-               else {
-                  result.add(new XSString(xdmNode.str())); 
-               }
+            }
+            else if ((xdmItem instanceof XPathInlineFunction) || (xdmItem instanceof XPathMap)) {
+               throw new javax.xml.transform.TransformerException("FOTY0013 : An error occured while evaluating the function "
+               		                                                                         + "call fn:data. An XSL function or a map cannot be atomized.", srcLocator);
             }
          }
       }
+      else if (argObj instanceof XPathArray) {
+    	 result = ((XPathArray)argObj).atomize();
+      }
+      else if ((m_arg0 instanceof Function) || (argObj instanceof XPathInlineFunction) 
+    		                                || (argObj instanceof XPathMap)) {
+    	 throw new javax.xml.transform.TransformerException("FOTY0013 : An error occured while evaluating the function call fn:data. "
+    	  		                                                                            + "An XSL function or a map cannot be atomized.", srcLocator); 
+      }
       else {
-         result.add(fnDataEffectiveArgValue); 
+         result.add(argObj); 
       }
       
       return result; 

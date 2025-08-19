@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <array size="5">
+      <item>1</item>
+      <item>2</item>
+      <item>a</item>
+      <item>b</item>
+      <item>c</item>
+    </array>
+  </one>
+  <two>
+    <array size="4">
+      <item>1</item>
+      <item>2</item>
+      <item>3 4</item>
+      <item>m n o p q</item>
+    </array>
+  </two>
+</result>

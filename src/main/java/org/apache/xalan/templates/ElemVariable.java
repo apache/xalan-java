@@ -42,6 +42,7 @@ import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
@@ -773,6 +774,9 @@ public class ElemVariable extends ElemTemplateElement
     		catch (Exception ex) {
     			// NO OP
     		}
+        }
+        else if (selectExpression instanceof XPathArrayConstructor) {
+        	var = ((XPathArrayConstructor)selectExpression).execute(xctxt);
         }
   
         if (var == null) {        	        	

@@ -90,11 +90,12 @@ public class XPathArrayConstructor extends Expression {
             prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
         }
         
-        // We evaluate below all the, XPath expression parts within the list 
-        // 'sqrArrayConstructorXPathParts', and concatenate the sequences resulting
-        // from each of them, to get the final result sequence that is returned by
-        // this method.
-        for (int idx = 0; idx < m_arrayConstructorXPathParts.size(); idx++) {
+        /**
+         * The following code evaluates all the, XPath expression strings for 
+         * the array, and concatenates all these evaluation results.
+         */
+        int arrSize = m_arrayConstructorXPathParts.size();
+        for (int idx = 0; idx < arrSize; idx++) {
            String xpathExprStr = m_arrayConstructorXPathParts.get(idx);
            
            if (prefixTable != null) {
