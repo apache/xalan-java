@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><result>
   <doc uri="output"/>
-  <doc uri="result1.xml">
-    <result1>
-   <a>1</a>
-   <b>2</b>
-   <c>3</c>
-</result1>
-  </doc>
   <doc uri="result2.xml">
     <result2>
    <d>4</d>
@@ -14,5 +7,12 @@
    <f>6</f>
    <g>7</g>
 </result2>
+  </doc>
+  <doc uri="result1.xml">
+    <result1>
+   <a>1</a>
+   <b>2</b>
+   <c>3</c>
+</result1>
   </doc>
 </result>
