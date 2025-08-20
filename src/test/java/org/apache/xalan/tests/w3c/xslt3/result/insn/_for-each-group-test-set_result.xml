@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-19T11:18:21Z" fail="26" name="for-each-group" pass="47" skipped="4" statusUnknown="1" totalRun="74">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-20T11:37:39Z" fail="25" name="for-each-group" pass="48" skipped="4" statusUnknown="1" totalRun="74">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" testName="for-each-group-002a" xsltVersion="xslt 2.0 only"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -52,9 +52,7 @@
    <testResult status="fail" testName="for-each-group-053">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Position&lt;/th&gt;&lt;th&gt;Country&lt;/th&gt;&lt;th&gt;City List&lt;/th&gt;&lt;th&gt;Population&lt;/th&gt;&lt;/tr&gt;&lt;/table&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="for-each-group-054">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Position&lt;/th&gt;&lt;th&gt;Country&lt;/th&gt;&lt;th&gt;City List&lt;/th&gt;&lt;th&gt;Population&lt;/th&gt;&lt;/tr&gt;&lt;/table&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-054"/>
    <testResult status="pass" testName="for-each-group-055"/>
    <testResult status="pass" testName="for-each-group-056"/>
    <testResult status="fail" testName="for-each-group-059">

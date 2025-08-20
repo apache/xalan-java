@@ -38,7 +38,7 @@ public class NodeSortKey
   /** Select pattern for this sort key          */
   XPath m_selectPat;
 
-  /** Flag indicating whether to treat thee result as a number     */
+  /** Flag indicating whether to treat the result as a number     */
   boolean m_treatAsNumbers;
 
   /** Flag indicating whether to sort in descending order      */

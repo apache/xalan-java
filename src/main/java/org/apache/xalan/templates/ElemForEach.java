@@ -315,7 +315,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   }
 
   /**
-   * Execute the xsl:for-each transformation
+   * Evaluation of the xsl:for-each XSL transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -345,8 +345,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   }
 
   /**
-   * Get template element associated with this
-   *
+   * Get template element associated with this.
    *
    * @return template element associated with this (itself)
    */
@@ -356,8 +355,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   }
 
   /**
-   * Sort given nodes
-   *
+   * Sort the given xdm nodes.
    *
    * @param xctxt The XPath runtime state for the sort.
    * @param keys Vector of sort keyx
@@ -400,8 +398,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   public void transformSelectedNodes(TransformerImpl transformer) throws 
                                                              TransformerException {
     
-    XPathContext xctxt = transformer.getXPathContext();
-    
+    final XPathContext xctxt = transformer.getXPathContext();    
     final int sourceNode = xctxt.getCurrentNode();
     
     SourceLocator srcLocator = xctxt.getSAXLocator();
@@ -413,6 +410,20 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	m_xpath = new XPath(m_xpath.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
     	m_selectExpression = m_xpath.getExpression();
   	}
+    
+    if (m_sortElems != null) {
+    	int sortElemCount = m_sortElems.size();
+    	for (int idx = 0; idx < sortElemCount; idx++) {
+    	    ElemSort elemSort = (ElemSort)m_sortElems.get(idx);
+    	    if (idx > 0) {
+    	       if (elemSort.isStableDeclared()) {
+    	    	  throw new javax.xml.transform.TransformerException("XTSE1017 : Only the first xsl:sort element in a sequence of "
+    	    	  		                                                                       + "xsl:sort elements can have an attribute named "
+    	    	  		                                                                       + "'stable'.", srcLocator);	
+    	       }
+    	    }    	    
+    	}
+    }
     
     if (m_selectExpression instanceof Function) {
         XObject evalResult = ((Function)m_selectExpression).execute(xctxt);
@@ -644,8 +655,9 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     boolean bool1 = false;
     
     if (m_sortElems != null) {
-    	for (int idx = 0; idx < m_sortElems.size(); idx++) {
-    	    ElemSort elemSort = (ElemSort)m_sortElems.get(idx);
+    	int sortElemCount = m_sortElems.size();
+    	for (int idx = 0; idx < sortElemCount; idx++) {
+    	    ElemSort elemSort = (ElemSort)m_sortElems.get(idx);    	    
     	    AVT langAvt = elemSort.getLang();
     	    String collation = elemSort.getCollation();
     	    if ((langAvt != null) || (collation != null)) {
@@ -706,7 +718,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     		xctxt.pushContextNodeList(sourceNodes);
     		transformer.pushElemTemplateElement(null);
 
-    		// Should be able to get this from the iterator but there must be a bug
     		DTM dtm = xctxt.getDTM(sourceNode);
     		int docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
     		int child;
@@ -747,25 +758,14 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     				transformer.getTraceManager().emitTraceEndEvent(this);
     			}
 
-
-    			// KLUGE: Implement <?xalan:doc_cache_off?> 
-    			// ASSUMPTION: This will be set only when the XPath was indeed
-    			// a call to the Document() function. Calling it in other
-    			// situations is likely to fry Xalan.
-    			//
-    			// %REVIEW% We need a MUCH cleaner solution -- one that will
-    			// handle cleaning up after document() and getDTM() in other
-    			// contexts. The whole SourceTreeManager mechanism should probably
-    			// be moved into DTMManager rather than being explicitly invoked in
-    			// FuncDocument and here.
-    			if(m_doc_cache_off)
-    			{
-    				if(DEBUG)
-    					System.out.println("JJK***** CACHE RELEASE *****\n"+
-    							"\tdtm="+dtm.getDocumentBaseURI());
-    				// NOTE: This will work because this is _NOT_ a shared DTM, and thus has
-    				// only a single Document node. If it could ever be an RTF or other
-    				// shared DTM, this would require substantial rework.
+    			
+    			if (m_doc_cache_off)
+    			{    				
+    				/**
+    				 * This will work because this is _NOT_ a shared DTM, and thus has
+    				 * only a single Document node. If it could ever be an RTF or other
+    				 * shared DTM, this would require substantial rework.
+    				 */
     				xctxt.getSourceTreeManager().removeDocumentFromCache(dtm.getDocument());
     				xctxt.release(dtm,false);
     			}
@@ -777,8 +777,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	{
     		if (transformer.getDebug())
     			transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
-    					"select", new XPath(m_selectExpression),
-    					new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
+													    					"select", new XPath(m_selectExpression),
+													    					new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
 
     		xctxt.popSAXLocator();
     		xctxt.popContextNodeList();
@@ -927,8 +927,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 		   int xslSortElemCount = getSortElemCount();
 		   
 		   List<SortableItem> sortableItemList = new ArrayList<SortableItem>();					   
-
-		   for (int idx = 0; idx < xdmItemList.size(); idx++) {
+		   int inpSeqSize = xdmItemList.size();
+		   for (int idx = 0; idx < inpSeqSize; idx++) {
 			   XObject resultSeqItem = xdmItemList.get(idx);
 			   SortableItem sortableItem = null;
 			   List<SortKey> sortKeyList = new ArrayList<SortKey>();
@@ -1035,7 +1035,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   }
 				   }						  
 
-				   String collation = elemSort.getCollation();
+				   String collation = elemSort.getCollation();				   
 				   
 				   SortKey sortKey = new SortKey(sorkKeyObj, sortOrderStr, collation, caseOrderStr, langStr);
 				   if (collation != null) {
@@ -1098,8 +1098,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    	   private String m_collation = null;
    	   
    	   /**
-   	    * This class field is true if xsl:sort has a 'collation' 
-   	    * attribute, otherwise false.
+   	    * This class field is true if xsl:sort has declared a 
+   	    * 'collation' attribute, otherwise false.
    	    */
    	   private boolean m_collation_declared = false;
    	   
@@ -1196,7 +1196,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 	    */
 	   public SortableItem(XObject inpItem, List<SortKey> sortKeyList) {
 		   this.m_inputItem = inpItem;
-		   this.m_sortKeyList = sortKeyList; 
+		   this.m_sortKeyList = sortKeyList;
 	   }
 
 	   @Override
@@ -1204,8 +1204,9 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 		   
 		   int result = 0;
 		   
-		   try {			   
-			   for (int idx = 0; idx < m_sortKeyList.size(); idx++) {
+		   try {
+			   int sortKeyCount = m_sortKeyList.size();
+			   for (int idx = 0; idx < sortKeyCount; idx++) {
 				   SortKey sortKey = m_sortKeyList.get(idx);				  
 				   List<SortKey> sortKeyList2 = obj2.getSortKeyList();
 				   int size2 = sortKeyList2.size();
@@ -1227,8 +1228,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
 							   if (!isSortKeyEqual) {
 								   boolean lessThan = sortKeyLessThan(m_collation_declared, m_collation, m_sortOrderStr, m_caseOrderStr, 
-										                              m_langStr, sortKeyObj, sortKeyObj2);
-								   result = (lessThan ? -1 : 1);
+										                              m_langStr, sortKeyObj, sortKeyObj2);								   
+								   result = (lessThan ? -1 : 1);  
 							   }
 							   else {
 								   break;
@@ -1452,11 +1453,11 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 	   }
 
 	   /**
-	    * A method definition, to compare two sort key values for equality. If a xsl:sort 
+	    * A method definition, to check whether two sort key values are equal. If a xsl:sort 
 	    * instruction specifies a collation URI, xsl:sort instruction's 'lang' attribute is
 	    * ignored. When xsl:sort instruction doesn't specify both collation URI and 'lang' 
-	    * attributes, the sort keys are compared using a lexicographic comparison which is
-	    * equivalent to using a unicode codepoint collation.
+	    * attributes, the sort keys are compared using lexicographic comparison (which is
+	    * equivalent to using a unicode codepoint collation).
 	    * 
 	    * @param m_collation_declared				   Boolean value true, if xsl:sort instruction has 
 	    *                                              specified a 'collation' attribute.
@@ -1512,7 +1513,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
 	   public void setSortKeyList(List<SortKey> sortKeyList) {
 		   this.m_sortKeyList = sortKeyList;  
-	   }	   
+	   }
    }
    
 }

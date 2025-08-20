@@ -23,8 +23,7 @@ package org.apache.xalan.transformer;
 import java.text.CollationKey;
 import java.util.Vector;
 
-import javax.xml.transform.TransformerException;
-
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
@@ -32,7 +31,12 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * This class can sort vectors of DOM nodes according to a select pattern.
+ * This class can sort vectors of xdm nodes according 
+ * to an XPath select pattern.
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Joseph Kesselman <jkesselm@apache.org>
+ * 
  * @xsl.usage internal
  */
 public class NodeSorter
@@ -43,11 +47,6 @@ public class NodeSorter
 
   /** Vector of NodeSortKeys          */
   Vector m_keys;  // vector of NodeSortKeys
-
-//  /**
-//   * TODO: Adjust this for locale.
-//   */
-//  NumberFormat m_formatter = NumberFormat.getNumberInstance();
 
   /**
    * Construct a NodeSorter, passing in the XSL TransformerFactory
@@ -64,217 +63,183 @@ public class NodeSorter
   /**
    * Given a vector of nodes, sort each node according to
    * the criteria in the keys.
+   * 
    * @param v an vector of Nodes.
    * @param keys a vector of NodeSortKeys.
-   * @param support XPath context to use
+   * @param xctxt XPath context to use
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void sort(DTMCursorIterator v, Vector keys, XPathContext support)
-          throws javax.xml.transform.TransformerException
+  public void sort(DTMCursorIterator v, Vector keys, XPathContext xctxt) 
+		                                                                throws javax.xml.transform.TransformerException
   {
 
-    m_keys = keys;
+	  m_keys = keys;
 
-    // QuickSort2(v, 0, v.size() - 1 );
-    int n = v.getLength();
+	  int n = v.getLength();
 
-    // %OPT% Change mergesort to just take a DTMIterator?
-    // We would also have to adapt DTMIterator to have the function 
-    // of NodeCompareElem.
-    
-    // Create a vector of node compare elements
-    // based on the input vector of nodes
-    Vector nodes = new Vector();
+	  // Create a vector of node compare elements based 
+	  // on an input vector of nodes.
+	  Vector nodes = new Vector();
 
-    for (int i = 0; i < n; i++)
-    {
-      NodeCompareElem elem = new NodeCompareElem(v.item(i));
+	  for (int i = 0; i < n; i++)
+	  {
+		  NodeCompareElem elem = new NodeCompareElem(v.item(i));
 
-      nodes.addElement(elem);
-    }
+		  nodes.addElement(elem);
+	  }
 
-    Vector scratchVector = new Vector();
+	  Vector scratchVector = new Vector();
 
-    mergesort(nodes, scratchVector, 0, n - 1, support);
+	  mergesort(nodes, scratchVector, 0, n - 1, xctxt);
 
-    // return sorted vector of nodes
-    for (int i = 0; i < n; i++)
-    {
-      v.setItem(((NodeCompareElem) nodes.elementAt(i)).m_node, i);
-    }
-    v.setCurrentPos(0);
+	  // return sorted vector of nodes
+	  for (int i = 0; i < n; i++)
+	  {
+		  v.setItem(((NodeCompareElem) nodes.elementAt(i)).m_node, i);
+	  }
 
-    // old code...
-    //NodeVector scratchVector = new NodeVector(n);
-    //mergesort(v, scratchVector, 0, n - 1, support);
+	  v.setCurrentPos(0);
   }
 
   /**
    * Return the results of a compare of two nodes.
-   * TODO: Optimize compare -- cache the getStringExpr results, key by m_selectPat + hash of node.
    *
    * @param n1 First node to use in compare
    * @param n2 Second node to use in compare
    * @param kIndex Index of NodeSortKey to use for sort
-   * @param support XPath context to use
+   * @param xctxt XPath context to use
    *
    * @return The results of the compare of the two nodes.
    *
-   * @throws TransformerException
+   * @throws javax.xml.transform.TransformerException
    */
-  int compare(
-          NodeCompareElem n1, NodeCompareElem n2, int kIndex, XPathContext support)
-            throws TransformerException
+  int compare(NodeCompareElem n1, NodeCompareElem n2, int kIndex, XPathContext xctxt) 
+		                                                                             throws javax.xml.transform.TransformerException
   {
 
-    int result = 0;
-    NodeSortKey k = (NodeSortKey) m_keys.elementAt(kIndex);
+	  int result = 0;
+	  
+	  NodeSortKey k = (NodeSortKey) m_keys.elementAt(kIndex);
 
-    if (k.m_treatAsNumbers)
-    {
-      double n1Num, n2Num;
+	  if (k.m_treatAsNumbers)
+	  {
+		  double n1Num, n2Num;
 
-      if (kIndex == 0)
-      {
-        n1Num = ((Double) n1.m_key1Value).doubleValue();
-        n2Num = ((Double) n2.m_key1Value).doubleValue();
-      }
-      else if (kIndex == 1)
-      {
-        n1Num = ((Double) n1.m_key2Value).doubleValue();
-        n2Num = ((Double) n2.m_key2Value).doubleValue();
-      }
+		  if (kIndex == 0)
+		  {
+			  n1Num = ((Double) n1.m_key1Value).doubleValue();
+			  n2Num = ((Double) n2.m_key1Value).doubleValue();
+		  }
+		  else if (kIndex == 1)
+		  {
+			  n1Num = ((Double) n1.m_key2Value).doubleValue();
+			  n2Num = ((Double) n2.m_key2Value).doubleValue();
+		  }
+		  else
+		  {
+			  // Get values dynamically
+			  XObject r1 = k.m_selectPat.execute(m_execContext, n1.m_node,
+					                             k.m_namespaceContext);
+			  XObject r2 = k.m_selectPat.execute(m_execContext, n2.m_node,
+					                             k.m_namespaceContext);
+			  n1Num = r1.num();
 
-      /* Leave this in case we decide to use an array later
-      if (kIndex < maxkey)
-      {
-      double n1Num = (double)n1.m_keyValue[kIndex];
-      double n2Num = (double)n2.m_keyValue[kIndex];
-      }*/
-      else
-      {
+			  // Can't use NaN for compare. They are never equal. Use zero instead.
+			  // That way we can keep elements in document order. 
+			  n2Num = r2.num();
+		  }
 
-        // Get values dynamically
-        XObject r1 = k.m_selectPat.execute(m_execContext, n1.m_node,
-                                           k.m_namespaceContext);
-        XObject r2 = k.m_selectPat.execute(m_execContext, n2.m_node,
-                                           k.m_namespaceContext);
-        n1Num = r1.num();
+		  if ((n1Num == n2Num) && ((kIndex + 1) < m_keys.size()))
+		  {
+			  result = compare(n1, n2, kIndex + 1, xctxt);
+		  }
+		  else
+		  {
+			  double diff;
+			  if (Double.isNaN(n1Num))
+			  {
+				  if (Double.isNaN(n2Num))
+					  diff = 0.0;
+				  else
+					  diff = -1;
+			  }
+			  else if (Double.isNaN(n2Num))
+				  diff = 1;
+			  else
+				  diff = n1Num - n2Num;
 
-        // Can't use NaN for compare. They are never equal. Use zero instead.
-        // That way we can keep elements in document order. 
-        //n1Num = Double.isNaN(d) ? 0.0 : d;
-        n2Num = r2.num();
-        //n2Num = Double.isNaN(d) ? 0.0 : d;
-      }
+			  // process order parameter 
+			  result = (int) ((diff < 0.0)
+					  ? (k.m_descending ? 1 : -1)
+							  : (diff > 0.0) ? (k.m_descending ? -1 : 1) : 0);
+		  }
+	  }  // end treat as numbers 
+	  else
+	  {
+		  CollationKey n1String, n2String;
 
-      if ((n1Num == n2Num) && ((kIndex + 1) < m_keys.size()))
-      {
-        result = compare(n1, n2, kIndex + 1, support);
-      }
-      else
-      {
-        double diff;
-        if (Double.isNaN(n1Num))
-        {
-          if (Double.isNaN(n2Num))
-            diff = 0.0;
-          else
-            diff = -1;
-        }
-        else if (Double.isNaN(n2Num))
-           diff = 1;
-        else
-          diff = n1Num - n2Num;
+		  if (kIndex == 0)
+		  {
+			  n1String = (CollationKey) n1.m_key1Value;
+			  n2String = (CollationKey) n2.m_key1Value;
+		  }
+		  else if (kIndex == 1)
+		  {
+			  n1String = (CollationKey) n1.m_key2Value;
+			  n2String = (CollationKey) n2.m_key2Value;
+		  }
+		  else
+		  {
+			  // Get values dynamically
+			  XObject r1 = k.m_selectPat.execute(m_execContext, n1.m_node,
+					                             k.m_namespaceContext);
+			  XObject r2 = k.m_selectPat.execute(m_execContext, n2.m_node,
+					                             k.m_namespaceContext);
 
-        // process order parameter 
-        result = (int) ((diff < 0.0)
-                        ? (k.m_descending ? 1 : -1)
-                        : (diff > 0.0) ? (k.m_descending ? -1 : 1) : 0);
-      }
-    }  // end treat as numbers 
-    else
-    {
-      CollationKey n1String, n2String;
+			  n1String = k.m_col.getCollationKey(r1.str());
+			  n2String = k.m_col.getCollationKey(r2.str());
+		  }
 
-      if (kIndex == 0)
-      {
-        n1String = (CollationKey) n1.m_key1Value;
-        n2String = (CollationKey) n2.m_key1Value;
-      }
-      else if (kIndex == 1)
-      {
-        n1String = (CollationKey) n1.m_key2Value;
-        n2String = (CollationKey) n2.m_key2Value;
-      }
+		  // Use collation keys for faster compare, but note that whitespaces 
+		  // etc... are treated differently from if we were comparing Strings.
+		  result = n1String.compareTo(n2String);
 
-      /* Leave this in case we decide to use an array later
-      if (kIndex < maxkey)
-      {
-        String n1String = (String)n1.m_keyValue[kIndex];
-        String n2String = (String)n2.m_keyValue[kIndex];
-      }*/
-      else
-      {
+		  //Process caseOrder parameter
+		  if (k.m_caseOrderUpper)
+		  {
+			  String tempN1 = n1String.getSourceString().toLowerCase();
+			  String tempN2 = n2String.getSourceString().toLowerCase();
 
-        // Get values dynamically
-        XObject r1 = k.m_selectPat.execute(m_execContext, n1.m_node,
-                                           k.m_namespaceContext);
-        XObject r2 = k.m_selectPat.execute(m_execContext, n2.m_node,
-                                           k.m_namespaceContext);
+			  if (tempN1.equals(tempN2))
+			  {
+				  //java defaults to upper case is greater
+				  result = result == 0 ? 0 : -result;
+			  }
+		  }
 
-        n1String = k.m_col.getCollationKey(r1.str());
-        n2String = k.m_col.getCollationKey(r2.str());
-      }
+		  //Process order parameter
+		  if (k.m_descending)
+		  {
+			  result = -result;
+		  }
+	  }  //end else
 
-      // Use collation keys for faster compare, but note that whitespaces 
-      // etc... are treated differently from if we were comparing Strings.
-      result = n1String.compareTo(n2String);
+	  if (result == 0)
+	  {
+		  if ((kIndex + 1) < m_keys.size())
+		  {
+			  result = compare(n1, n2, kIndex + 1, xctxt);
+		  }
+	  }
 
-      //Process caseOrder parameter
-      if (k.m_caseOrderUpper)
-      {
-        String tempN1 = n1String.getSourceString().toLowerCase();
-        String tempN2 = n2String.getSourceString().toLowerCase();
+	  if (result == 0)
+	  {      
+		  DTM dtm = xctxt.getDTM(n1.m_node); // %OPT%
+		  result = dtm.isNodeAfter(n1.m_node, n2.m_node) ? -1 : 1;
+	  }
 
-        if (tempN1.equals(tempN2))
-        {
-
-          //java defaults to upper case is greater.
-          result = result == 0 ? 0 : -result;
-        }
-      }
-
-      //Process order parameter
-      if (k.m_descending)
-      {
-        result = -result;
-      }
-    }  //end else
-
-    if (0 == result)
-    {
-      if ((kIndex + 1) < m_keys.size())
-      {
-        result = compare(n1, n2, kIndex + 1, support);
-      }
-    }
-
-    if (0 == result)
-    {
-
-      // I shouldn't have to do this except that there seems to 
-      // be a glitch in the mergesort
-      // if(r1.getType() == r1.CLASS_NODESET)
-      // {
-      DTM dtm = support.getDTM(n1.m_node); // %OPT%
-      result = dtm.isNodeAfter(n1.m_node, n2.m_node) ? -1 : 1;
-
-      // }
-    }
-
-    return result;
+	  return result;
   }
 
   /**
@@ -288,170 +253,69 @@ public class NodeSorter
    * @param b Second vector of  nodes to compare 
    * @param l Left boundary of  partition
    * @param r Right boundary of  partition
-   * @param support XPath context to use
+   * @param xctxt XPath context to use
    *
-   * @throws TransformerException
+   * @throws javax.xml.transform.TransformerException
    */
-  void mergesort(Vector a, Vector b, int l, int r, XPathContext support)
-          throws TransformerException
+  void mergesort(Vector a, Vector b, int l, int r, XPathContext xctxt) 
+		                                                              throws javax.xml.transform.TransformerException
   {
 
-    if ((r - l) > 0)
-    {
-      int m = (r + l) / 2;
+	  if ((r - l) > 0)
+	  {
+		  int m = (r + l) / 2;
 
-      mergesort(a, b, l, m, support);
-      mergesort(a, b, m + 1, r, support);
+		  mergesort(a, b, l, m, xctxt);
+		  mergesort(a, b, m + 1, r, xctxt);
 
-      int i, j, k;
+		  int i, j, k;
 
-      for (i = m; i >= l; i--)
-      {
+		  for (i = m; i >= l; i--)
+		  {
+			  // Use insert if we need to increment vector size
+			  if (i >= b.size())
+				  b.insertElementAt(a.elementAt(i), i);
+			  else
+				  b.setElementAt(a.elementAt(i), i);
+		  }
 
-        // b[i] = a[i];
-        // Use insert if we need to increment vector size.
-        if (i >= b.size())
-          b.insertElementAt(a.elementAt(i), i);
-        else
-          b.setElementAt(a.elementAt(i), i);
-      }
+		  i = l;
 
-      i = l;
+		  for (j = (m + 1); j <= r; j++)
+		  {
+			  if (r + m + 1 - j >= b.size())
+				  b.insertElementAt(a.elementAt(j), r + m + 1 - j);
+			  else
+				  b.setElementAt(a.elementAt(j), r + m + 1 - j);
+		  }
 
-      for (j = (m + 1); j <= r; j++)
-      {
+		  j = r;
 
-        // b[r+m+1-j] = a[j];
-        if (r + m + 1 - j >= b.size())
-          b.insertElementAt(a.elementAt(j), r + m + 1 - j);
-        else
-          b.setElementAt(a.elementAt(j), r + m + 1 - j);
-      }
+		  int compVal;
 
-      j = r;
+		  for (k = l; k <= r; k++)
+		  {
+			  if (i == j)
+				  compVal = -1;
+			  else
+				  compVal = compare((NodeCompareElem) b.elementAt(i),
+						  (NodeCompareElem) b.elementAt(j), 0, xctxt);
 
-      int compVal;
+			  if (compVal < 0)
+			  {
+				  a.setElementAt(b.elementAt(i), k);
 
-      for (k = l; k <= r; k++)
-      {
+				  i++;
+			  }
+			  else if (compVal > 0)
+			  { 
+				  a.setElementAt(b.elementAt(j), k);
 
-        // if(b[i] < b[j])
-        if (i == j)
-          compVal = -1;
-        else
-          compVal = compare((NodeCompareElem) b.elementAt(i),
-                            (NodeCompareElem) b.elementAt(j), 0, support);
-
-        if (compVal < 0)
-        {
-
-          // a[k]=b[i];
-          a.setElementAt(b.elementAt(i), k);
-
-          i++;
-        }
-        else if (compVal > 0)
-        {
-
-          // a[k]=b[j]; 
-          a.setElementAt(b.elementAt(j), k);
-
-          j--;
-        }
-      }
-    }
+				  j--;
+			  }
+		  }
+	  }
   }
-
-  /**
-   * This is a generic version of C.A.R Hoare's Quick Sort
-   * algorithm.  This will handle arrays that are already
-   * sorted, and arrays with duplicate keys.<BR>
-   *
-   * If you think of a one dimensional array as going from
-   * the lowest index on the left to the highest index on the right
-   * then the parameters to this function are lowest index or
-   * left and highest index or right.  The first time you call
-   * this function it will be with the parameters 0, a.length - 1.
-   *
-   * @param v       a vector of integers 
-   * @param lo0     left boundary of array partition
-   * @param hi0     right boundary of array partition
-   *
-   */
-
-  /*  private void QuickSort2(Vector v, int lo0, int hi0, XPathContext support)
-      throws javax.xml.transform.TransformerException,
-             java.net.MalformedURLException,
-             java.io.FileNotFoundException,
-             java.io.IOException
-    {
-      int lo = lo0;
-      int hi = hi0;
-
-      if ( hi0 > lo0)
-      {
-        // Arbitrarily establishing partition element as the midpoint of
-        // the array.
-        Node midNode = (Node)v.elementAt( ( lo0 + hi0 ) / 2 );
-
-        // loop through the array until indices cross
-        while( lo <= hi )
-        {
-          // find the first element that is greater than or equal to
-          // the partition element starting from the left Index.
-          while( (lo < hi0) && (compare((Node)v.elementAt(lo), midNode, 0, support) < 0) )
-          {
-            ++lo;
-          } // end while
-
-          // find an element that is smaller than or equal to
-          // the partition element starting from the right Index.
-          while( (hi > lo0) && (compare((Node)v.elementAt(hi), midNode, 0, support) > 0) )
-          {
-            --hi;
-          }
-
-          // if the indexes have not crossed, swap
-          if( lo <= hi )
-          {
-            swap(v, lo, hi);
-            ++lo;
-            --hi;
-          }
-        }
-
-        // If the right index has not reached the left side of array
-        // must now sort the left partition.
-        if( lo0 < hi )
-        {
-          QuickSort2( v, lo0, hi, support );
-        }
-
-        // If the left index has not reached the right side of array
-        // must now sort the right partition.
-        if( lo < hi0 )
-        {
-          QuickSort2( v, lo, hi0, support );
-        }
-      }
-    } // end QuickSort2  */
-
-//  /**
-//   * Simple function to swap two elements in
-//   * a vector.
-//   * 
-//   * @param v Vector of nodes to swap
-//   * @param i Index of first node to swap
-//   * @param i Index of second node to swap
-//   */
-//  private void swap(Vector v, int i, int j)
-//  {
-//
-//    int node = (Node) v.elementAt(i);
-//
-//    v.setElementAt(v.elementAt(j), i);
-//    v.setElementAt(node, j);
-//  }
 
   /**
    * This class holds the value(s) from executing the given
@@ -483,7 +347,6 @@ public class NodeSorter
     /**
      * Constructor NodeCompareElem
      *
-     *
      * @param node Current node
      *
      * @throws javax.xml.transform.TransformerException
@@ -509,7 +372,7 @@ public class NodeSorter
         }
         else
         {
-          m_key1Value = k1.m_col.getCollationKey(r.str());
+          m_key1Value = k1.m_col.getCollationKey(XslTransformEvaluationHelper.getStrVal(r));
         }
 
         if (r.getType() == XObject.CLASS_NODESET)
@@ -539,18 +402,7 @@ public class NodeSorter
           } else {
             m_key2Value = k2.m_col.getCollationKey(r2.str());
           }
-        }
-
-        /* Leave this in case we decide to use an array later
-        while (kIndex <= m_keys.size() && kIndex < maxkey)
-        {
-          NodeSortKey k = (NodeSortKey)m_keys.elementAt(kIndex);
-          XObject r = k.m_selectPat.execute(m_execContext, node, k.m_namespaceContext);
-          if(k.m_treatAsNumbers)
-            m_KeyValue[kIndex] = r.num();
-          else
-            m_KeyValue[kIndex] = r.str();
-        } */
+        }        
       }  // end if not empty    
     }
   }  // end NodeCompareElem class

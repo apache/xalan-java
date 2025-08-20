@@ -291,6 +291,52 @@ public class ElemSort extends ElemTemplateElement
   public void setCollation(String collation) {
 	 m_collation = collation; 
   }
+  
+  /**
+   * This class field, represents an optional 'stable' 
+   * attribute's value (default 'true') specified with xsl:sort 
+   * instruction.
+   * 
+   * XSLT 3.0 spec, section "13.1.1 The Sorting Process" defines
+   * the meaning of a stable sort.
+   */
+  private boolean m_stable = true;
+  
+  /**
+   * A boolean value indicating, whether xsl:sort element has 
+   * declared an attribute named 'stable.
+   */
+  private boolean m_isStableDeclared = false;
+  
+  /**
+   * Get the value of xsl:sort 'stable' attribute's value.
+   * 
+   * @return				'stable' attribute's value
+   */
+  public boolean getStable() {
+	 return m_stable; 
+  }
+  
+  /**
+   * Set the value of xsl:sort 'stable' attribute's value.
+   * 
+   * @param stable				'stable' attribute's value
+   */
+  public void setStable(boolean stable) {
+	 m_stable = stable;
+	 m_isStableDeclared = true;
+  }
+  
+  /**
+   * Check whether, xsl:sort instruction has an attribute 
+   * named 'stable' declared.
+   * 
+   * @return				   Boolean value true, if xsl:sort instruction has 
+   *                           an attribute named 'stable' declared, otherwise false.
+   */
+  public boolean isStableDeclared() {
+	 return m_isStableDeclared; 
+  }
 
   /**
    * Get an int constant identifying the type of element.

@@ -44,12 +44,12 @@
   </xsl:template>
   
   <!-- An XSL stylesheet recursive named template, to sort
-       {http://www.w3.org/2005/xpath-functions}map elements on 
-       their 'key' attribute. -->
+       {http://www.w3.org/2005/xpath-functions}map elements 
+       with their 'key' attribute. -->
   <xsl:template name="sortedXdmMap">
      <xsl:param name="map1"/>
 	 <map>
-	     <xsl:if test="$map1/@key != ''">
+	     <xsl:if test="$map1/@key">
 		    <xsl:attribute name="key" select="$map1/@key"/>
 		 </xsl:if>
 		 <xsl:for-each select="$map1/*">

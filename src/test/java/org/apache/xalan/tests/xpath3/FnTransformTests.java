@@ -159,7 +159,14 @@ public class FnTransformTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
+        String goldFilePath = null;
+        String osName = System.getProperty("os.name");
+        if (osName.startsWith("Windows")) {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
+        }
+        else {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11_linux.out";	
+        }
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
@@ -169,7 +176,14 @@ public class FnTransformTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
+        String goldFilePath = null;
+        String osName = System.getProperty("os.name");
+        if (osName.startsWith("Windows")) {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
+        }
+        else {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12_linux.out";	
+        }
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

@@ -291,9 +291,14 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef compositeAttrOpt = new XSLTAttributeDef(null, "composite",
                                                       XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
     // Optional
-    // xsl:for-each-group 
+    // xsl:for-each-group, xsl:sort 
     XSLTAttributeDef collationAttrOpt = new XSLTAttributeDef(null, "collation", 
     	                                              XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
+    // xsl:sort
+    XSLTAttributeDef stableAttrOpt = new XSLTAttributeDef(null, "stable",
+                                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     
     // Optional
     // xsl:value-of
@@ -632,7 +637,7 @@ public class XSLTSchema extends XSLTElementDef
                                                   langAttr,
                                                   dataTypeAttr,
                                                   orderAttr,
-                                                  caseOrderAttr, collationAttrOpt }, 
+                                                  caseOrderAttr, collationAttrOpt, stableAttrOpt }, 
                                        new ProcessorTemplateElem(),
                                                 ElemSort.class/* class object */, 19, true );
     XSLTElementDef xslWithParam = new XSLTElementDef(this,
