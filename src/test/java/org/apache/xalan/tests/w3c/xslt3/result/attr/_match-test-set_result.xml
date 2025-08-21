@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-21T11:02:23Z" fail="61" name="match" pass="67" skipped="8" statusUnknown="1" totalRun="129">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-21T15:07:37Z" fail="59" name="match" pass="69" skipped="8" statusUnknown="1" totalRun="129">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -106,7 +106,7 @@
    <testResult status="fail" testName="match-073"/>
    <testResult status="fail" testName="match-074"/>
    <testResult status="fail" testName="match-075"/>
-   <testResult status="fail" testName="match-076"/>
+   <testResult status="pass" testName="match-076"/>
    <testResult status="fail" testName="match-077">
       <outResult>
          <errTrace>Unknown nodetype: copy-of</errTrace>
@@ -140,7 +140,7 @@
       </outResult>
    </testResult>
    <testResult status="skipped" testName="match-082" xsltVersion="xslt 2.0 only"/>
-   <testResult status="fail" testName="match-082a"/>
+   <testResult status="pass" testName="match-082a"/>
    <testResult status="fail" testName="match-082b"/>
    <testResult status="fail" testName="match-082c">
       <outResult>

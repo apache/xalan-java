@@ -1001,7 +1001,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   Class clazz1 = resultSeqItem.getClass();
 					   if (!clazz1.equals(clazz0)) {
 						   // All the sequence items are not of the same type								 
-						   throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm input sequence processed by xsl:for-each's "
+						   throw new javax.xml.transform.TransformerException("XTDE1030 : An xdm input sequence processed by xsl:for-each's "
 																											           + "xsl:sort instruction, dosn't have items of "
 																											           + "the same type.", srcLocator); 
 					   }

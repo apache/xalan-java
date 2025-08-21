@@ -63,7 +63,6 @@ import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
-import org.apache.xml.utils.XML11Char;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
@@ -783,14 +782,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             else if (EXPECTED_NODE_KIND_ASSERT.equals(expectedNodeKindName)) {
             	Element elemNode = (Element)nodeExpected;
             	String fileName = elemNode.getAttribute(FILE_ATTR);
-            	String expectedXPathStr = null;
+            	String xslTrfExpectedResultXPathStr = null;
             	if (!"".equals(fileName)) {
             		URI uri = new URI(m_xslTransformTestSetFilePath);
             		uri = uri.resolve(fileName);
-            		expectedXPathStr = getStringContentFromUrl(uri.toURL());
+            		xslTrfExpectedResultXPathStr = getStringContentFromUrl(uri.toURL());
             	}
             	else {
-            		expectedXPathStr = elemNode.getTextContent();            		
+            		xslTrfExpectedResultXPathStr = elemNode.getTextContent();            		
             	}
 
             	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
@@ -798,9 +797,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	
             	StringReader strReader = new StringReader(xmlStr1);             	            	
             	
-            	if (XML11Char.isXML11ValidNCName(expectedXPathStr)) {
-            		expectedXPathStr = "exists(" + expectedXPathStr + ")";
-            	}
+                xslTrfExpectedResultXPathStr = "if (" + xslTrfExpectedResultXPathStr + ") then "
+                		                                                           + "true() else exists(" + xslTrfExpectedResultXPathStr + ")";
             	
             	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);            	            	
             	
@@ -810,13 +808,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	
             	Document document = docBuilder.parse(new InputSource(strReader));
             	
-            	expectedXPathStr = expectedXPathStr.replace('\'', '"');
+            	xslTrfExpectedResultXPathStr = xslTrfExpectedResultXPathStr.replace('\'', '"');
             	
             	String xslStylesheetStr = "<?xml version=\"1.0\"?>" +
 					            			"<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"3.0\">" +
 					            			"  <xsl:output method=\"text\"/>" +
 					            			"  <xsl:template match=\"/\">" +
-					            			"     <xsl:value-of select='" + expectedXPathStr + "'/>" +
+					            			"     <xsl:value-of select='" + xslTrfExpectedResultXPathStr + "'/>" +
 					            			"  </xsl:template>" +
 					            			"</xsl:stylesheet>";            	
             	

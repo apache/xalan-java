@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-21T11:02:44Z" fail="36" name="expand-text" pass="26" skipped="0" statusUnknown="0" totalRun="62">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-21T15:07:58Z" fail="29" name="expand-text" pass="33" skipped="0" statusUnknown="0" totalRun="62">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
@@ -19,7 +19,7 @@
             The year was {&lt;bold&gt;$year&lt;/bold&gt;}&#13;
         &lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="cvt-014"/>
+   <testResult status="pass" testName="cvt-014"/>
    <testResult status="fail" testName="cvt-015">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;4 &#13;
         }&lt;/out&gt;</outResult>
@@ -33,15 +33,15 @@
    <testResult status="pass" testName="cvt-020"/>
    <testResult status="pass" testName="cvt-021"/>
    <testResult status="pass" testName="cvt-022"/>
-   <testResult status="fail" testName="cvt-023"/>
-   <testResult status="fail" testName="cvt-024"/>
+   <testResult status="pass" testName="cvt-023"/>
+   <testResult status="pass" testName="cvt-024"/>
    <testResult status="fail" testName="cvt-025">
       <outResult>
          <errTrace>Variable $d accessed before it is bound!.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="cvt-026"/>
+   <testResult status="pass" testName="cvt-026"/>
    <testResult status="fail" testName="cvt-027">
       <outResult>
          <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of $</errTrace>
@@ -120,10 +120,10 @@
    <testResult status="fail" testName="cvt-040c">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="cvt-041"/>
-   <testResult status="fail" testName="cvt-042"/>
+   <testResult status="pass" testName="cvt-041"/>
+   <testResult status="pass" testName="cvt-042"/>
    <testResult status="pass" testName="cvt-043"/>
-   <testResult status="fail" testName="cvt-044"/>
+   <testResult status="pass" testName="cvt-044"/>
    <testResult status="pass" testName="cvt-045"/>
    <testResult status="pass" testName="cvt-046"/>
    <testResult status="pass" testName="cvt-047"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-21T11:02:22Z" fail="51" name="as" pass="53" skipped="4" statusUnknown="1" totalRun="105">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-21T15:07:36Z" fail="31" name="as" pass="73" skipped="4" statusUnknown="1" totalRun="105">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
@@ -50,8 +50,8 @@
    <testResult status="fail" testName="as-0141"/>
    <testResult status="fail" testName="as-0142"/>
    <testResult status="pass" testName="as-0143"/>
-   <testResult status="fail" testName="as-0144"/>
-   <testResult status="fail" testName="as-0144a"/>
+   <testResult status="pass" testName="as-0144"/>
+   <testResult status="pass" testName="as-0144a"/>
    <testResult status="fail" testName="as-0145"/>
    <testResult status="fail" testName="as-0146"/>
    <testResult status="fail" testName="as-0147"/>
@@ -63,28 +63,28 @@
       <outResult/>
    </testResult>
    <testResult status="pass" testName="as-0201"/>
-   <testResult status="fail" testName="as-0301"/>
-   <testResult status="fail" testName="as-0302"/>
-   <testResult status="fail" testName="as-0303"/>
+   <testResult status="pass" testName="as-0301"/>
+   <testResult status="pass" testName="as-0302"/>
+   <testResult status="pass" testName="as-0303"/>
    <testResult status="pass" testName="as-0304"/>
-   <testResult status="fail" testName="as-0401"/>
-   <testResult status="fail" testName="as-0402"/>
-   <testResult status="fail" testName="as-0501"/>
+   <testResult status="pass" testName="as-0401"/>
+   <testResult status="pass" testName="as-0402"/>
+   <testResult status="pass" testName="as-0501"/>
    <testResult status="fail" testName="as-0501a">
       <outResult>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="as-0501b"/>
+   <testResult status="pass" testName="as-0501b"/>
    <testResult status="fail" testName="as-0601"/>
    <testResult status="pass" testName="as-0701"/>
    <testResult status="pass" testName="as-0702"/>
    <testResult status="fail" testName="as-0703"/>
-   <testResult status="fail" testName="as-0801"/>
+   <testResult status="pass" testName="as-0801"/>
    <testResult status="fail" testName="as-0801a">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;var1&gt;truetrue&lt;/var1&gt;&lt;var2&gt;truetrue&lt;/var2&gt;&lt;var3&gt;truetrue&lt;/var3&gt;&lt;var4&gt;truetrue&lt;/var4&gt;&lt;var5&gt;truetrue&lt;/var5&gt;&lt;var6&gt;truetrue&lt;/var6&gt;&lt;var7&gt;truetrue&lt;/var7&gt;&lt;var8&gt;truetrue&lt;/var8&gt;&lt;var9&gt;truetrue&lt;/var9&gt;&lt;var10&gt;truetrue&lt;/var10&gt;&lt;var11&gt;truetrue&lt;/var11&gt;&lt;var12&gt;truetrue&lt;/var12&gt;&lt;var13&gt;truetrue&lt;/var13&gt;&lt;var14&gt;truetrue&lt;/var14&gt;&lt;var15&gt;truetrue&lt;/var15&gt;&lt;var16&gt;truetrue&lt;/var16&gt;&lt;var17&gt;truetrue&lt;/var17&gt;&lt;var18&gt;truetrue&lt;/var18&gt;&lt;var19&gt;truetrue&lt;/var19&gt;&lt;var20&gt;truetrue&lt;/var20&gt;&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="as-0801b"/>
+   <testResult status="pass" testName="as-0801b"/>
    <testResult status="fail" testName="as-0802"/>
    <testResult status="fail" testName="as-0802a">
       <outResult>
@@ -93,17 +93,17 @@
    </testResult>
    <testResult status="fail" testName="as-0802b"/>
    <testResult status="pass" testName="as-0901"/>
-   <testResult status="fail" testName="as-1001"/>
+   <testResult status="pass" testName="as-1001"/>
    <testResult status="fail" testName="as-1101"/>
    <testResult status="fail" testName="as-1201">
       <outResult/>
    </testResult>
    <testResult status="pass" testName="as-1202"/>
-   <testResult status="fail" testName="as-1203"/>
+   <testResult status="pass" testName="as-1203"/>
    <testResult status="pass" testName="as-1204"/>
    <testResult status="pass" testName="as-1205"/>
-   <testResult status="fail" testName="as-1206"/>
-   <testResult status="fail" testName="as-1207"/>
+   <testResult status="pass" testName="as-1206"/>
+   <testResult status="pass" testName="as-1207"/>
    <testResult status="pass" testName="as-1208"/>
    <testResult status="fail" testName="as-1209">
       <outResult/>
@@ -124,10 +124,10 @@
    <testResult status="fail" testName="as-1215"/>
    <testResult status="fail" testName="as-1216"/>
    <testResult status="fail" testName="as-1217"/>
-   <testResult status="fail" testName="as-1218"/>
-   <testResult status="fail" testName="as-1219"/>
-   <testResult status="fail" testName="as-1220"/>
-   <testResult status="fail" testName="as-1221"/>
+   <testResult status="pass" testName="as-1218"/>
+   <testResult status="pass" testName="as-1219"/>
+   <testResult status="pass" testName="as-1220"/>
+   <testResult status="pass" testName="as-1221"/>
    <testResult status="fail" testName="as-1222">
       <outResult>
          <errTrace>XTTE0570 : The required item type of an xdm input node is item(). The supplied value does'nt match an expected type.</errTrace>
@@ -136,6 +136,6 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-1301"/>
-   <testResult status="fail" testName="as-1302"/>
+   <testResult status="pass" testName="as-1302"/>
    <testResult testName="as-1303"/>
 </testrun>
