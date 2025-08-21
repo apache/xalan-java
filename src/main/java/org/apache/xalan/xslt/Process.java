@@ -59,7 +59,7 @@ import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.SystemIDResolver;
 import org.w3c.dom.Document;
@@ -761,7 +761,7 @@ public class Process
 				  }
 				  else
 				  {					  					  
-					  XslTransformSharedDatastore.m_xslSystemId = SystemIDResolver.getAbsoluteURI(xslFileName);
+					  XslTransformData.m_xslSystemId = SystemIDResolver.getAbsoluteURI(xslFileName);
 					  
 					  InputStream inputStr = new FileInputStream(new File(xslFileName));						 
 					  StreamSource streamSrc = new StreamSource(inputStr);

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-20T11:38:02Z" fail="15" name="json-to-xml" pass="17" skipped="0" statusUnknown="1" totalRun="33">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-21T11:02:44Z" fail="15" name="json-to-xml" pass="17" skipped="0" statusUnknown="1" totalRun="33">
    <testResult status="pass" testName="json-to-xml-001"/>
    <testResult status="pass" testName="json-to-xml-002"/>
    <testResult status="pass" testName="json-to-xml-003"/>
@@ -36,41 +36,13 @@
    <testResult status="pass" testName="json-to-xml-duplicates-003"/>
    <testResult status="pass" testName="json-to-xml-duplicates-004"/>
    <testResult status="pass" testName="json-to-xml-duplicates-005"/>
-   <testResult status="fail" testName="json-to-xml-typed-001">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are not compatible.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="json-to-xml-typed-002">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are not compatible.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="json-to-xml-typed-003">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="json-to-xml-typed-004">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="json-to-xml-typed-005">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="json-to-xml-typed-006">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="json-to-xml-typed-007">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="json-to-xml-typed-001"/>
+   <testResult status="fail" testName="json-to-xml-typed-002"/>
+   <testResult status="fail" testName="json-to-xml-typed-003"/>
+   <testResult status="fail" testName="json-to-xml-typed-004"/>
+   <testResult status="fail" testName="json-to-xml-typed-005"/>
+   <testResult status="fail" testName="json-to-xml-typed-006"/>
+   <testResult status="fail" testName="json-to-xml-typed-007"/>
    <testResult status="fail" testName="json-to-xml-typed-010">
       <outResult>
          <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are not compatible.</errTrace>

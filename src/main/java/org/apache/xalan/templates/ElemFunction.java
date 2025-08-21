@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.ref.DTMNodeList;
@@ -534,9 +534,9 @@ public class ElemFunction extends ElemTemplate
 																			            				 funcAsAttrStrVal + ".", srcLocator);
             	 }             	            	              	
              }
-             else if (((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() > 0) && 
+             else if (((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) && 
             		                                                                      !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {            	
-            	int funcItemSeqSize = (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size();
+            	int funcItemSeqSize = (XslTransformData.m_xpathNamedFunctionRefSequence).size();
         		
         		SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
         		int seqTypeItemOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
@@ -568,19 +568,19 @@ public class ElemFunction extends ElemTemplate
             	
         		if (sequenceTypeFunctionTest != null) {
         			if (sequenceTypeFunctionTest.isAnyFunctionTest()) {
-        				if ((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() == 1) {
-        					funcResultConvertedVal = (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).item(0);
-        					(XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).remove(0);
+        				if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() == 1) {
+        					funcResultConvertedVal = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);
+        					(XslTransformData.m_xpathNamedFunctionRefSequence).remove(0);
         				}
         				else {
-        					funcResultConvertedVal = XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence;
+        					funcResultConvertedVal = XslTransformData.m_xpathNamedFunctionRefSequence;
         				}
 
         				return funcResultConvertedVal;
         			}
         			else {
-        				if ((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() == 1) {
-        					funcResultConvertedVal = (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).item(0);        					
+        				if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() == 1) {
+        					funcResultConvertedVal = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);        					
         					if (funcResultConvertedVal instanceof XPathNamedFunctionReference) {
         					   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)funcResultConvertedVal;
         					   if (xpathNamedFunctionReference.getXslStylesheetFunction() == null) {
@@ -597,12 +597,12 @@ public class ElemFunction extends ElemTemplate
         					   }
         					}
         					
-        					(XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).remove(0);
+        					(XslTransformData.m_xpathNamedFunctionRefSequence).remove(0);
         				}
         				else {
         					// REVISIT
-        					funcResultConvertedVal = XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence;
-        					(XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).clear();
+        					funcResultConvertedVal = XslTransformData.m_xpathNamedFunctionRefSequence;
+        					(XslTransformData.m_xpathNamedFunctionRefSequence).clear();
         				}
 
         				return funcResultConvertedVal;
@@ -943,17 +943,17 @@ public class ElemFunction extends ElemTemplate
 	  else {
 		  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
 
-		  if (XslTransformSharedDatastore.m_xpathInlineFunction != null) {
-			  result = XslTransformSharedDatastore.m_xpathInlineFunction;			  
-			  XslTransformSharedDatastore.m_xpathInlineFunction = null;
+		  if (XslTransformData.m_xpathInlineFunction != null) {
+			  result = XslTransformData.m_xpathInlineFunction;			  
+			  XslTransformData.m_xpathInlineFunction = null;
 		  }
-		  else if (XslTransformSharedDatastore.m_xpathMap != null) {
-			  result = XslTransformSharedDatastore.m_xpathMap;			  
-			  XslTransformSharedDatastore.m_xpathMap = null;
+		  else if (XslTransformData.m_xpathMap != null) {
+			  result = XslTransformData.m_xpathMap;			  
+			  XslTransformData.m_xpathMap = null;
 		  }
-		  else if (XslTransformSharedDatastore.m_xpathArray != null) {
-			  result = XslTransformSharedDatastore.m_xpathArray;			  
-			  XslTransformSharedDatastore.m_xpathArray = null;
+		  else if (XslTransformData.m_xpathArray != null) {
+			  result = XslTransformData.m_xpathArray;			  
+			  XslTransformData.m_xpathArray = null;
 		  }
 
 		  if (result == null) {		  

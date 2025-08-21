@@ -15,13 +15,13 @@
 		<result>
 		  <one>
 			  <xsl:for-each select="num">
-				<xsl:sort data-type="number"/>
+				<xsl:sort select="." data-type="number"/>
 				<num><xsl:value-of select="."/></num>
 			  </xsl:for-each>
 		  </one>
 		  <two>
 			  <xsl:for-each select="num">
-				<xsl:sort data-type="number" order="descending"/>
+				<xsl:sort select="." data-type="number" order="descending"/>
 				<num><xsl:value-of select="."/></num>
 			  </xsl:for-each>
 		  </two>

@@ -39,7 +39,7 @@ import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.NamespaceSupport2;
 import org.apache.xml.utils.NodeConsumer;
@@ -1211,8 +1211,8 @@ public class StylesheetHandler extends DefaultHandler
 		  m_stylesheetRoot.setSource_location(m_source_location);  		
 	  }
 
-	  XslTransformSharedDatastore.m_stylesheetRoot = m_stylesheetRoot;
-	  XslTransformSharedDatastore.m_xslSystemId = getSystemId();
+	  XslTransformData.m_stylesheetRoot = m_stylesheetRoot;
+	  XslTransformData.m_xslSystemId = getSystemId();
 	  
 	  m_stylesheetRoot.setInitTemplateName(m_init_template_name);
 

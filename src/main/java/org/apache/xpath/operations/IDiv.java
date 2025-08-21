@@ -31,7 +31,7 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.ArithmeticOperation;
 import org.apache.xpath.Expression;
@@ -137,7 +137,7 @@ public class IDiv extends ArithmeticOperation
 
   	    	  XPath xpath = new XPath(xpathCastAsStr, srcLocator, iDivOpPrefixResolver, XPath.SELECT, null);
 
-  	    	  XslTransformSharedDatastore.m_xpathCallingOpCode = OpCodes.OP_IDIV;
+  	    	  XslTransformData.m_xpathCallingOpCode = OpCodes.OP_IDIV;
 
   	    	  // Get the result of XPath 'idiv' operator evaluation
   	    	  result = xpath.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());

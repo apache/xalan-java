@@ -48,7 +48,7 @@ import org.apache.xalan.processor.XSLTSchema;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
 import org.apache.xerces.xs.XSModel;
@@ -1584,7 +1584,7 @@ public class StylesheetRoot extends StylesheetComposed
 						ValidationErrorHandler valErrorHandler = new ValidationErrorHandler();
 						sf.setErrorHandler(valErrorHandler);
 						
-						String xslSystemId = XslTransformSharedDatastore.m_xslSystemId;
+						String xslSystemId = XslTransformData.m_xslSystemId;
 						URL url = null;
 
 						Node attrNode1 = importSchemaNodeAttributes.item(0);

@@ -27,7 +27,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
@@ -818,43 +818,43 @@ public class ElemVariable extends ElemTemplateElement
     		  rootNodeHandleOfRtf = transformer.transformToRTF(this);
     	  }
     	  
-    	  if (XslTransformSharedDatastore.m_xpathInlineFunction != null) {
+    	  if (XslTransformData.m_xpathInlineFunction != null) {
     		  // This condition is met after method call transformer.transformToGlobalRTF/transformer.transformToRTF 
     		  // previously.
     		  if (m_asAttr == null) {
-    			  var = XslTransformSharedDatastore.m_xpathInlineFunction;
-    			  XslTransformSharedDatastore.m_xpathInlineFunction = null;
+    			  var = XslTransformData.m_xpathInlineFunction;
+    			  XslTransformData.m_xpathInlineFunction = null;
     		  }
     	  }
-    	  else if (XslTransformSharedDatastore.m_xpathArray != null) {
+    	  else if (XslTransformData.m_xpathArray != null) {
     		  // This condition is met after method call transformer.transformToGlobalRTF/transformer.transformToRTF 
     		  // previously.
     		  if (m_asAttr == null) {
-    			  var = XslTransformSharedDatastore.m_xpathArray;
-    			  XslTransformSharedDatastore.m_xpathArray = null;
+    			  var = XslTransformData.m_xpathArray;
+    			  XslTransformData.m_xpathArray = null;
     		  }
     	  }
-    	  else if (XslTransformSharedDatastore.m_xpathMap != null) {
+    	  else if (XslTransformData.m_xpathMap != null) {
     		  // This condition is met after method call transformer.transformToGlobalRTF/transformer.transformToRTF 
     		  // previously.
     		  if (m_asAttr == null) {
-    			  var = XslTransformSharedDatastore.m_xpathMap;
-    			  XslTransformSharedDatastore.m_xpathMap = null;
+    			  var = XslTransformData.m_xpathMap;
+    			  XslTransformData.m_xpathMap = null;
     		  }
     	  }
-    	  else if (XslTransformSharedDatastore.m_xslDocumentEvaluationResult != null) {
+    	  else if (XslTransformData.m_xslDocumentEvaluationResult != null) {
     		  if (m_asAttr == null) {
-    			  var = XslTransformSharedDatastore.m_xslDocumentEvaluationResult;
-    			  XslTransformSharedDatastore.m_xslDocumentEvaluationResult = null;
+    			  var = XslTransformData.m_xslDocumentEvaluationResult;
+    			  XslTransformData.m_xslDocumentEvaluationResult = null;
     		  }
           }
-    	  else if ((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() > 0) {
+    	  else if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) {
     		  if (m_asAttr == null) {
-    			  if ((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() == 1) {
-    				 var = (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).item(0);  
+    			  if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() == 1) {
+    				 var = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);  
     			  }
     			  else {
-    			     var = XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence;
+    			     var = XslTransformData.m_xpathNamedFunctionRefSequence;
     			  }
     		  }
     	  }
@@ -889,44 +889,44 @@ public class ElemVariable extends ElemTemplateElement
     		}    		    		
     	}
 
-    	if (XslTransformSharedDatastore.m_xpathInlineFunction != null) {
+    	if (XslTransformData.m_xpathInlineFunction != null) {
     		if ((seqExpectedTypeData.getSequenceTypeFunctionTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
-    			var = XslTransformSharedDatastore.m_xpathInlineFunction;
-    			XslTransformSharedDatastore.m_xpathInlineFunction = null;
+    			var = XslTransformData.m_xpathInlineFunction;
+    			XslTransformData.m_xpathInlineFunction = null;
     		}
     		else {
     			throw new TransformerException("XTTE0570 : The supplied xdm item doesn't match an XPath sequence type " + m_asAttr + ".", srcLocator); 
     		}
     	}
-    	else if (XslTransformSharedDatastore.m_xpathArray != null) {
+    	else if (XslTransformData.m_xpathArray != null) {
     		if ((seqExpectedTypeData.getSequenceTypeArrayTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
-    			var = XslTransformSharedDatastore.m_xpathArray;
-    			XslTransformSharedDatastore.m_xpathArray = null;
+    			var = XslTransformData.m_xpathArray;
+    			XslTransformData.m_xpathArray = null;
     		}
     		else {
     			throw new TransformerException("XTTE0570 : The supplied xdm item doesn't match an XPath sequence type " + m_asAttr + ".", srcLocator); 
     		}
     	}
-    	else if (XslTransformSharedDatastore.m_xpathMap != null) {
+    	else if (XslTransformData.m_xpathMap != null) {
     		if ((seqExpectedTypeData.getSequenceTypeMapTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
-    			var = XslTransformSharedDatastore.m_xpathMap;
-    			XslTransformSharedDatastore.m_xpathMap = null;
+    			var = XslTransformData.m_xpathMap;
+    			XslTransformData.m_xpathMap = null;
     		}
     		else {
     			throw new TransformerException("XTTE0570 : The supplied xdm item doesn't match an XPath sequence type " + m_asAttr + ".", srcLocator); 
     		}
     	}
-    	else if (XslTransformSharedDatastore.m_xslDocumentEvaluationResult != null) {
+    	else if (XslTransformData.m_xslDocumentEvaluationResult != null) {
     		if ((seqTypeKindVal == SequenceTypeSupport.DOCUMENT_KIND) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {
-    			var = XslTransformSharedDatastore.m_xslDocumentEvaluationResult;
-    			XslTransformSharedDatastore.m_xslDocumentEvaluationResult = null;
+    			var = XslTransformData.m_xslDocumentEvaluationResult;
+    			XslTransformData.m_xslDocumentEvaluationResult = null;
     		}
     		else {
     			throw new TransformerException("XTTE0570 : The supplied xdm item doesn't match an XPath sequence type " + m_asAttr + ".", srcLocator); 
     		}
     	}
-    	else if ((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() > 0) {
-    		int funcItemSeqSize = (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size();
+    	else if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) {
+    		int funcItemSeqSize = (XslTransformData.m_xpathNamedFunctionRefSequence).size();
     		
     		SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
     		int seqTypeItemOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
@@ -957,11 +957,11 @@ public class ElemVariable extends ElemTemplateElement
     		}
     		
     		if ((sequenceTypeFunctionTest != null) && sequenceTypeFunctionTest.isAnyFunctionTest()) {
-    		   if ((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() == 1) {
-    			  var = (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).item(0);
+    		   if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() == 1) {
+    			  var = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);
     		   }
     		   else {
-    		      var = XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence;
+    		      var = XslTransformData.m_xpathNamedFunctionRefSequence;
     		   }
     		   
     		   m_isXPathNamedFunctionRefSequenceVar = true;

@@ -28,7 +28,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
@@ -571,10 +571,10 @@ public class ElemEvaluate extends ElemTemplateElement {
 				ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, true);          
 				break;
 			case XObject.CLASS_ARRAY :
-				XslTransformSharedDatastore.m_xpathArray = (XPathArray)xdmItem;				          
+				XslTransformData.m_xpathArray = (XPathArray)xdmItem;				          
 				break;
 			case XObject.CLASS_MAP :
-				XslTransformSharedDatastore.m_xpathMap = (XPathMap)xdmItem;				          
+				XslTransformData.m_xpathMap = (XPathMap)xdmItem;				          
 				break;
 			default :
 				// no op
@@ -599,14 +599,14 @@ public class ElemEvaluate extends ElemTemplateElement {
 		
 		XObject resultWithAsAttribute = null;
 		
-		if (XslTransformSharedDatastore.m_xpathInlineFunction != null) {
+		if (XslTransformData.m_xpathInlineFunction != null) {
 			XPath seqTypeXPath = new XPath(m_asAttrVal, srcLocator, xctxt.getNamespaceContext(), 
 																						XPath.SELECT, null, true);
 			XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
 			SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
 			if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {              	   
-				resultWithAsAttribute = XslTransformSharedDatastore.m_xpathInlineFunction;
-				XslTransformSharedDatastore.m_xpathInlineFunction = null;
+				resultWithAsAttribute = XslTransformData.m_xpathInlineFunction;
+				XslTransformData.m_xpathInlineFunction = null;
 			}
 			else {
 				throw new TransformerException("XTTE0505 : An xsl:evaluate instruction's evaluation result doesn't conform "
@@ -688,14 +688,14 @@ public class ElemEvaluate extends ElemTemplateElement {
 		
 		XObject result = null;
 		
-		if (XslTransformSharedDatastore.m_xpathInlineFunction != null) {
+		if (XslTransformData.m_xpathInlineFunction != null) {
 			XPath seqTypeXPath = new XPath(withParamAsAttrVal, srcLocator, xctxt.getNamespaceContext(), 
 																									XPath.SELECT, null, true);
 			XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
 			SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
 			if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {              	   
-				result = XslTransformSharedDatastore.m_xpathInlineFunction;
-				XslTransformSharedDatastore.m_xpathInlineFunction = null;
+				result = XslTransformData.m_xpathInlineFunction;
+				XslTransformData.m_xpathInlineFunction = null;
 			}
 			else {
 				throw new TransformerException("XTTE0505 : An xsl:evaluate parameter " + withParamQName.getLocalName() + "'s value doesn't conform "

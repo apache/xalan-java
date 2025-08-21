@@ -25,7 +25,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -392,7 +392,7 @@ public class ElemValueOf extends ElemTemplateElement {
         	  return;
           }
           
-          if ((XslTransformSharedDatastore.m_is_xsl_test_invocation) && (expr instanceof LocPathIterator)) {
+          if ((XslTransformData.m_is_xsl_test_invocation) && (expr instanceof LocPathIterator)) {
         	  // Support for, Xalan-J's test driver for W3C XSLT 3.0 test suite
         	  
         	  LocPathIterator locPathIterator = (LocPathIterator)expr;

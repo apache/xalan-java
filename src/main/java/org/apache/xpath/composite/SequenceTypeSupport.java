@@ -39,7 +39,7 @@ import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xerces.impl.xs.SchemaGrammar;
 import org.apache.xerces.impl.xs.XSDDescription;
 import org.apache.xerces.impl.xs.XSElementDecl;
@@ -564,7 +564,7 @@ public class SequenceTypeSupport {
             	dtmIter.reset();
             	if ((nodeName.equals(sequenceTypeKindTest.getNodeLocalName())) && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
             																						sequenceTypeKindTest.getNodeNsUri()))) {
-            		StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
+            		StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
             		XSModel xsModel = stylesheetRoot.getXsModel();
             		if (xsModel != null) {
             			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeName, nodeNsUri);
@@ -2087,7 +2087,7 @@ public class SequenceTypeSupport {
                         }
                         else if ((sequenceTypeKindTest.getKindVal() == SCHEMA_ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
                                 																   && (isTwoXmlNamespaceValuesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
-                        	StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
+                        	StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
                         	XSModel xsModel = stylesheetRoot.getXsModel();
                         	if (xsModel != null) {
                         		XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrNodeKindTestNodeName, sequenceTypeKindTest.getNodeNsUri());

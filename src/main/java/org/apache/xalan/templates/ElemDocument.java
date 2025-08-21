@@ -23,7 +23,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPathContext;
@@ -137,7 +137,7 @@ public class ElemDocument extends ElemTemplateElement
 			  }
 		  }
 		  else {
-		      XslTransformSharedDatastore.m_xslDocumentEvaluationResult = new XMLNodeCursorImpl(nodeHandle, xctxt);
+		      XslTransformData.m_xslDocumentEvaluationResult = new XMLNodeCursorImpl(nodeHandle, xctxt);
 		  }
 	  }
 	  else {

@@ -31,7 +31,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
@@ -634,7 +634,7 @@ public class InstanceOf extends Operation
 					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
                               																	&& (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
                               																				seqTypeKindTest.getNodeNsUri()))) {
-						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
+						  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 						  XSModel xsModel = stylesheetRoot.getXsModel();
 						  if (xsModel != null) {
 							  XSElementDeclaration elemDecl = xsModel.getElementDeclaration(elemNodeKindTestNodeName, seqTypeKindTest.getNodeNsUri());
@@ -728,7 +728,7 @@ public class InstanceOf extends Operation
 					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
 																								  && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
 																										  nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
-						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
+						  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 						  XSModel xsModel = stylesheetRoot.getXsModel();
 						  if (xsModel != null) {
 							  XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrNodeKindTestNodeName, seqTypeKindTest.getNodeNsUri());

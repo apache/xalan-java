@@ -21,7 +21,7 @@
 package org.apache.xpath.operations;
 
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.OpCodes;
@@ -70,7 +70,7 @@ public class CastAs extends Operation
       }
       
       try {
-    	  if (XslTransformSharedDatastore.m_xpathCallingOpCode == OpCodes.OP_IDIV) {
+    	  if (XslTransformData.m_xpathCallingOpCode == OpCodes.OP_IDIV) {
     		  if (left instanceof XSDecimal) {
     			  XSDecimal xsDecimal = (XSDecimal)left;
     			  double dblValue = (xsDecimal.getValue()).doubleValue();
@@ -110,7 +110,7 @@ public class CastAs extends Operation
       }
       finally {
     	  // Reset the value of variable XslTransformSharedDatastore.xpathCallingOpCode 
-    	  XslTransformSharedDatastore.m_xpathCallingOpCode = Integer.MIN_VALUE;
+    	  XslTransformData.m_xpathCallingOpCode = Integer.MIN_VALUE;
       }
       
       // Evaluate XPath "cast as" expression, when XPath "idiv" expression 

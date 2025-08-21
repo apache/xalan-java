@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-08-20T11:38:13Z" desc="W3C XSLT 3.0 test suite results" fail="775" pass="1513" skipped="43" success="65.58%" totalRun="2307" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-08-21T11:02:54Z" desc="W3C XSLT 3.0 test suite results" fail="770" pass="1519" skipped="43" success="65.81%" totalRun="2308" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="51" pass="53" skipped="4" success="50.48%" totalRun="105"/>
     <avt fail="15" pass="20" skipped="0" success="57.14%" totalRun="35"/>
     <expand-text fail="36" pass="26" skipped="0" success="41.94%" totalRun="62"/>
     <match fail="61" pass="67" skipped="8" success="51.94%" totalRun="129"/>
     <select fail="5" pass="19" skipped="0" success="76.0%" totalRun="25"/>
-    <xpath-default-namespace fail="15" pass="11" skipped="0" success="42.31%" totalRun="26"/>
+    <xpath-default-namespace fail="14" pass="12" skipped="0" success="46.15%" totalRun="26"/>
   </attr>
   <decl>
     <attribute-set fail="8" pass="41" skipped="1" success="83.67%" totalRun="49"/>
@@ -20,7 +20,7 @@
     <expression fail="0" pass="9" skipped="0" success="90.0%" totalRun="10"/>
     <for fail="2" pass="1" skipped="0" success="25.0%" totalRun="4"/>
     <higher-order-functions fail="6" pass="18" skipped="0" success="72.0%" totalRun="25"/>
-    <math fail="31" pass="117" skipped="0" success="78.52%" totalRun="149"/>
+    <math fail="31" pass="118" skipped="0" success="78.67%" totalRun="150"/>
     <nodetest fail="36" pass="2" skipped="0" success="5.26%" totalRun="38"/>
     <path fail="3" pass="7" skipped="0" success="70.0%" totalRun="10"/>
     <predicate fail="7" pass="50" skipped="0" success="87.72%" totalRun="57"/>
@@ -44,7 +44,7 @@
     <for-each-group fail="25" pass="48" skipped="4" success="64.86%" totalRun="74"/>
     <iterate fail="26" pass="18" skipped="0" success="40.91%" totalRun="44"/>
     <sequence fail="17" pass="8" skipped="1" success="30.77%" totalRun="26"/>
-    <sort fail="38" pass="42" skipped="0" success="52.5%" totalRun="80"/>
+    <sort fail="34" pass="46" skipped="0" success="57.5%" totalRun="80"/>
     <try fail="26" pass="11" skipped="5" success="29.73%" totalRun="37"/>
     <xsl-document fail="13" pass="12" skipped="0" success="48.0%" totalRun="25"/>
   </insn>

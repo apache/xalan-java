@@ -27,7 +27,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xerces.xs.XSElementDeclaration;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xml.serializer.SerializationHandler;
@@ -441,7 +441,7 @@ public class ElemElement extends ElemUse
     			validateXslElementAttributeResultWithBuiltInSchemaType(xmlStr, type, xctxt, XSL_ELEMENT);
        	     }
     		 else {    			 
-    			 XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
+    			 XSModel xsModel = (XslTransformData.m_stylesheetRoot).getXsModel();
     			 
     			 if (xsModel != null) {
     				 // An XML input document has been validated with a schema.
@@ -469,7 +469,7 @@ public class ElemElement extends ElemUse
     		 		                                                                        + "values : strict, lax, preserve, strip.", srcLocator);
     	 }
     	 else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
-    		 XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
+    		 XSModel xsModel = (XslTransformData.m_stylesheetRoot).getXsModel();
     		 if (xsModel != null) {    			 
     			 String nodeLocalName = QName.getLocalPart(nodeName);
     			 XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);
@@ -493,7 +493,7 @@ public class ElemElement extends ElemUse
 			 // whereas strict validation fails if there is no available top-level element declaration in 
 			 // the schema.
         	 
-        	 XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
+        	 XSModel xsModel = (XslTransformData.m_stylesheetRoot).getXsModel();
     		 if (xsModel != null) {
     			 String nodeLocalName = QName.getLocalPart(nodeName);
     			 XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);

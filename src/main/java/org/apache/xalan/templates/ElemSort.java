@@ -20,8 +20,13 @@
  */
 package org.apache.xalan.templates;
 
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 
@@ -358,6 +363,19 @@ public class ElemSort extends ElemTemplateElement
   {
     return Constants.ELEMNAME_SORT_STRING;
   }
+  
+  public void execute(TransformerImpl transformer) throws TransformerException 
+  {
+	  XPathContext xctxt = transformer.getXPathContext();
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+	  ElemTemplateElement elemTemplateElem = this.getFirstChildElem();
+	  if ((m_selectExpression != null) && (elemTemplateElem != null)) {
+		 throw new javax.xml.transform.TransformerException("XTSE1015 : An xsl:sort instruction with an attribute "
+		 		                                                                              + "'select' should have an empty contained sequence constructor.", srcLocator); 
+	  }
+  }
 
   /**
    * Add a child to the child list.
@@ -370,13 +388,9 @@ public class ElemSort extends ElemTemplateElement
    */
   public Node appendChild(Node newChild) throws DOMException
   {
-
-    error(XSLTErrorResources.ER_CANNOT_ADD,
-          new Object[]{ newChild.getNodeName(),
-                        this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-
-    //" to " + this.m_elemName);
-    return null;
+	  super.appendChild(newChild);
+	  
+	  return newChild;
   }
   
   /**

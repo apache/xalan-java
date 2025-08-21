@@ -84,7 +84,7 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * This class definition, specifies few utility methods that provide 
+ * A class definition, that has few utility methods that provide 
  * support for Xalan-J's XSLT 3.0 transformation processor implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>

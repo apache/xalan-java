@@ -32,7 +32,7 @@ import org.apache.xpath.objects.XPathMap;
  * 
  * @xsl.usage advanced
  */
-public class XslTransformSharedDatastore {
+public class XslTransformData {
     
 	/**    
      * This class field represents, an XSL stylesheet 

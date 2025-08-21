@@ -26,7 +26,6 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.transformer.NodeSortKey;
 import org.apache.xalan.transformer.NodeSorter;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -561,9 +560,10 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             
             if (xpathPatternStr.startsWith("$") && xpathPatternStr.contains("[") && 
                                                                               xpathPatternStr.endsWith("]")) {              
-               // Here we handle the case, when an XPath expression has syntax of type $varName[expr], 
-               // for example $varName[1], $varName[$idx], $varName[funcCall(arg)] etc, and $varName 
-               // resolves to a 'ResultSequence' object.
+               /**
+            	* An XPath expression is of type $varName[expr] (for e.g $varName[1], $varName[$idx], 
+            	* $varName[funcCall(arg)] etc), and $varName resolves to a 'ResultSequence' object. 
+            	*/
                      
                String varRefXPathExprStr = "$" + xpathPatternStr.substring(1, xpathPatternStr.indexOf('['));
                String xpathIndexExprStr = xpathPatternStr.substring(xpathPatternStr.indexOf('[') + 1, 
@@ -654,8 +654,9 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     
     boolean bool1 = false;
     
+    int sortElemCount = 0;
     if (m_sortElems != null) {
-    	int sortElemCount = m_sortElems.size();
+    	sortElemCount = m_sortElems.size();
     	for (int idx = 0; idx < sortElemCount; idx++) {
     	    ElemSort elemSort = (ElemSort)m_sortElems.get(idx);    	    
     	    AVT langAvt = elemSort.getLang();
@@ -666,33 +667,42 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	}
     }
     
-    final Vector sortKeys = (m_sortElems == null) ? null 
-    		                                  : transformer.processSortKeys(this, sourceNode);
     boolean bool2 = false;
-    if (!bool1 && (sortKeys != null)) {
-    	int vecSize = sortKeys.size();
-    	if (vecSize > 0) {
-    	   for (int i = 0; i < vecSize; i++) {
-    		  NodeSortKey nodeSortKey = (NodeSortKey)sortKeys.get(i);
-    		  XPath selectPatternXPath = nodeSortKey.getSelectPattern();
-    		  Expression expression = selectPatternXPath.getExpression();
-    		  if (expression instanceof XSL3ConstructorOrExtensionFunction) {
-    			  XSL3ConstructorOrExtensionFunction func1 = (XSL3ConstructorOrExtensionFunction)expression;
-    			  String namespace = func1.getNamespace();
-    			  if (!Constants.S_EXTENSIONS_JAVA_URL.equals(namespace)) {
-    				  bool2 = true;
-    				  break;
-    			  }
-    		  }
-    	   }
+    if (!bool1 && (sortElemCount > 0)) {
+    	for (int i = 0; i < sortElemCount; i++) {
+    		ElemSort sort = (ElemSort) m_sortElems.get(i);
+    		if (sort.getFirstChildElem() == null) {
+    			XPath selectPatternXPath = sort.getSelect();
+    			if (selectPatternXPath == null) {
+    				selectPatternXPath = new XPath(".", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);  
+    			}
+    			Expression expression = selectPatternXPath.getExpression();
+    			if (expression instanceof XSL3ConstructorOrExtensionFunction) {
+    				XSL3ConstructorOrExtensionFunction func1 = (XSL3ConstructorOrExtensionFunction)expression;
+    				String namespace = func1.getNamespace();
+    				if (!Constants.S_EXTENSIONS_JAVA_URL.equals(namespace)) {
+    					bool2 = true;
+    					break;
+    				}
+    			}
+    		}
+    		else {
+    			bool2 = true;
+    			break;  
+    		}
     	}
     }
     
-    if (!(bool1 || bool2)) {    	    	
+    if (!(bool1 || bool2)) {
+    	// We use Xalan-J's XSLT 1.0 processor sort algorithm here
+    	
     	DTMCursorIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
 
     	try
     	{
+    		final Vector sortKeys = (m_sortElems == null) ? null 
+                                                          : transformer.processSortKeys(this, sourceNode);
+    		
     		// Sort if we need to
     		if (sortKeys != null)
     		    sourceNodes = sortNodes(xctxt, sortKeys, sourceNodes);
@@ -997,25 +1007,51 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   }
 				   }
 
-				   XObject sorkKeyObj = null;						  
-				   if (selectXPath.getExpression() instanceof SelfIteratorNoPredicate) {
-					   sorkKeyObj = resultSeqItem; 
-				   }
-				   else if (resultSeqItem instanceof XMLNodeCursorImpl) {
-					   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)resultSeqItem;
-					   int contextNode = xmlNodeCursorImpl.asNode(xctxt);
-					   sorkKeyObj = selectXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+				   XObject sorkKeyObj = null;
+				   if (selectXPath != null) {
+					   if (selectXPath.getExpression() instanceof SelfIteratorNoPredicate) {
+						   sorkKeyObj = resultSeqItem; 
+					   }
+					   else if (resultSeqItem instanceof XMLNodeCursorImpl) {
+						   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)resultSeqItem;
+						   int contextNode = xmlNodeCursorImpl.asNode(xctxt);
+						   sorkKeyObj = selectXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+					   }
+					   else {
+						   XObject prevContextItem = xctxt.getXPath3ContextItem();						  
+						   xctxt.setXPath3ContextItem(resultSeqItem);
+						   try {
+						      sorkKeyObj = selectXPath.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+						   }
+						   finally {
+						      xctxt.setXPath3ContextItem(prevContextItem);
+						   }
+					   }
+			       }
+				   else if (elemSort.getFirstChildElem() != null) {					   					   
+					   if (resultSeqItem instanceof XMLNodeCursorImpl) {
+						   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)resultSeqItem;
+						   int contextNode = xmlNodeCursorImpl.asNode(xctxt);
+						   xctxt.pushCurrentNode(contextNode);
+						   String str1 = transformer.transformToString(elemSort);
+						   sorkKeyObj = new XSString(str1);
+						   xctxt.popCurrentNode();
+					   }
+					   else {
+						   XObject xpath3PrevCtxtItem = xctxt.getXPath3ContextItem();
+						   xctxt.setXPath3ContextItem(resultSeqItem);
+						   String str1 = transformer.transformToString(elemSort);
+						   xctxt.setXPath3ContextItem(xpath3PrevCtxtItem);
+						   sorkKeyObj = new XSString(str1);   
+					   }
 				   }
 				   else {
-					   XObject prevContextItem = xctxt.getXPath3ContextItem();						  
-					   xctxt.setXPath3ContextItem(resultSeqItem);
-					   sorkKeyObj = selectXPath.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
-					   xctxt.setXPath3ContextItem(prevContextItem); 
+					   sorkKeyObj = resultSeqItem; 
 				   }
 
-				   // For variable dataTypeStr's value other than "text" and "number",
-				   // SortableItem class's method 'compareTo' takes care of the right 
-				   // comparison between sort keys.
+				   // If variable dataTypeStr's value is other than "text" or "number",
+				   // the SortableItem class's method 'compareTo' takes care of the 
+				   // right comparison between sort keys.
 
 				   if ("text".equals(dataTypeStr)) {
 					   if ((sorkKeyObj instanceof XString) || (sorkKeyObj instanceof XSString) || (sorkKeyObj instanceof XMLNodeCursorImpl)) { 

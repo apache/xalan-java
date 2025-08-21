@@ -72,6 +72,7 @@ import org.apache.xalan.tests.xslt3.XslImportSchemaTests;
 import org.apache.xalan.tests.xslt3.XslLiteralResultElementValidationTests;
 import org.apache.xalan.tests.xslt3.XslMiscTests;
 import org.apache.xalan.tests.xslt3.XslRecursiveFunctionTests;
+import org.apache.xalan.tests.xslt3.XslSortSeqConstructorTests;
 import org.apache.xalan.tests.xslt3.XslTemplateMiscTests;
 import org.apache.xalan.tests.xslt3.XslTunnelParameterTests;
 import org.apache.xalan.tests.xslt3.XslValueofTests;
@@ -108,7 +109,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathExprFunctionCallSuffixTests.class, XslEvaluateTests.class, XslValueofTests.class,
                 XslCopyofValidationTests.class, XslCopyValidationTests.class, FnPositionTests.class,
                 XslForEachGroupWithCollationTests.class, XslMiscTests.class, FnSortMiscTests.class,
-                XslTemplateMiscTests.class, XPathGeneralComparisonOpMiscTests.class })
+                XslTemplateMiscTests.class, XPathGeneralComparisonOpMiscTests.class, XslSortSeqConstructorTests.class })
 public class XalanXsl3TestSuite1 {
 
 }

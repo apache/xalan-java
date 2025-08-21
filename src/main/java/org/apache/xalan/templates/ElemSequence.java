@@ -27,7 +27,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
@@ -298,7 +298,7 @@ public class ElemSequence extends ElemTemplateElement
 							  xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, getStylesheetRoot());
 							  xpathNamedFunctionReference.setArity(elemFunction.getArity());
 
-							  (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).add(xpathNamedFunctionReference);
+							  (XslTransformData.m_xpathNamedFunctionRefSequence).add(xpathNamedFunctionReference);
 
 							  return;
 						  }
@@ -340,7 +340,7 @@ public class ElemSequence extends ElemTemplateElement
 								  xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, getStylesheetRoot());
 								  xpathNamedFunctionReference.setArity(elemFunction.getArity());
 
-								  (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).add(xpathNamedFunctionReference);							 
+								  (XslTransformData.m_xpathNamedFunctionRefSequence).add(xpathNamedFunctionReference);							 
 							  } 
 						  }
 						  else {
@@ -348,14 +348,14 @@ public class ElemSequence extends ElemTemplateElement
 						  }
 					  }
 
-					  if ((XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).size() > 0) {
+					  if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) {
 						  return; 
 					  }
 			      }
 			  }
 			  else if (selectExpression instanceof XPathArrayConstructor) {
 				  XPathArrayConstructor xpathArrayCons = (XPathArrayConstructor)selectExpression;
-				  XslTransformSharedDatastore.m_xpathArray = (XPathArray)(xpathArrayCons.execute(xctxt));
+				  XslTransformData.m_xpathArray = (XPathArray)(xpathArrayCons.execute(xctxt));
 				  
 				  return;
 			  }
@@ -376,7 +376,7 @@ public class ElemSequence extends ElemTemplateElement
 					                                             (selectExpression instanceof XPathDynamicFunctionCall)) {
 				  xslSequenceVal = m_selectPattern.execute(xctxt, sourceNode, this);
 				  if (xslSequenceVal instanceof XPathArray) {
-					 XslTransformSharedDatastore.m_xpathArray = (XPathArray)xslSequenceVal;
+					 XslTransformData.m_xpathArray = (XPathArray)xslSequenceVal;
 					 
 					 return;
 				  }
@@ -486,12 +486,12 @@ public class ElemSequence extends ElemTemplateElement
 
 			  if (xslSequenceVal == null) {
 				  if (selectExpression instanceof XPathNamedFunctionReference) {
-					 (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)selectExpression); 
+					 (XslTransformData.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)selectExpression); 
 				  }
 				  else {
 					  xslSequenceVal = m_selectPattern.execute(xctxt, sourceNode, this);
 					  if (xslSequenceVal instanceof XPathNamedFunctionReference) {
-						  (XslTransformSharedDatastore.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)xslSequenceVal);  
+						  (XslTransformData.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)xslSequenceVal);  
 					  }
 				  }				  				  
 			  }        
@@ -577,10 +577,10 @@ public class ElemSequence extends ElemTemplateElement
 		                                                                                  XObject xslSequenceVal)
 		                                                                         throws TransformerException, SAXException {
 	  if (xslSequenceVal instanceof XPathInlineFunction) {
-		  XslTransformSharedDatastore.m_xpathInlineFunction = (XPathInlineFunction)xslSequenceVal;   
+		  XslTransformData.m_xpathInlineFunction = (XPathInlineFunction)xslSequenceVal;   
 	  }
 	  else if (xslSequenceVal instanceof XPathMap) {
-		  XslTransformSharedDatastore.m_xpathMap = (XPathMap)xslSequenceVal;
+		  XslTransformData.m_xpathMap = (XPathMap)xslSequenceVal;
 	  }
 	  else {
 		  SerializationHandler handler = transformer.getSerializationHandler();

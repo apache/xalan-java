@@ -62,7 +62,7 @@ import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.ElemWhen;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
 import org.apache.xerces.xs.XSModel;
@@ -4073,7 +4073,7 @@ public class XPathParser
 
     		String seqExprStr = seqExprStrBuff.toString();
     		if (seqExprStr.contains(",")) {
-    			XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff = seqExprStrBuff;
+    			XslTransformData.m_xpathNodeCombiningExprRhsStrBuff = seqExprStrBuff;
 
     			int tokenQueueSize = m_ops.m_tokenQueue.size();
     			for (int idx = (prevTokQueueScanPosition.getQueueMark() - 1); idx < tokenQueueSize; idx++) {
@@ -6454,8 +6454,8 @@ public class XPathParser
 		                                                                                  throws TransformerException {
 	   m_isParseSequenceTypeExprWithUserDefinedType = true;
 	   
-	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
-	   String xslSystemId = XslTransformSharedDatastore.m_xslSystemId;
+	   StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
+	   String xslSystemId = XslTransformData.m_xslSystemId;
 
 	   String type_namespace = null;
 	   String type_name = null;
@@ -6509,7 +6509,7 @@ public class XPathParser
    private void parseImportSchemaWithChildSchemaContents(XPathSequenceTypeExpr xpathSequenceTypeExpr, String typeNamespace,
 		                                                 String typeName, Node xsSchemaTopMostNode) throws TransformerException {
 	   
-	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
+	   StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 	   XSModel xsModel = stylesheetRoot.getXsModel();
 	   
 	   if (xsModel != null) {
@@ -6556,7 +6556,7 @@ public class XPathParser
    private void parseImportSchemaFromExternalLocation(XPathSequenceTypeExpr xpathSequenceTypeExpr, String xslSystemId,
 		                                              String typeNamespace, String typeName, Node elemTemplateElem) throws TransformerException {
 	   
-	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
+	   StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 	   XSModel xsModel = stylesheetRoot.getXsModel();
 
 	   if (xsModel != null) {
@@ -7491,7 +7491,7 @@ public class XPathParser
 		else if (lookahead(':', 1)) {
 			TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
 			
-			StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;
+			StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 			String funcNamespaceUri = m_token;			
 			nextToken();
 			consumeExpected(':');

@@ -631,9 +631,9 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef xslSort = new XSLTElementDef(this,
                                                 Constants.S_XSLNAMESPACEURL,
                                                 "sort", null /*alias */,
-                                                null /* elements */,
+                                                templateElements,
                                                 new XSLTAttributeDef[]{
-                                                  selectAttrDefDot,
+                                                  selectAttrOpt,
                                                   langAttr,
                                                   dataTypeAttr,
                                                   orderAttr,

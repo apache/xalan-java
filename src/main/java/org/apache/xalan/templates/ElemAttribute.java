@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
@@ -349,7 +349,7 @@ public class ElemAttribute extends ElemElement
           			 validateXslElementAttributeResultWithBuiltInSchemaType(attrVal, type, xctxt, ATTRIBUTE); 
             	  }
             	  else {
-            		 XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
+            		 XSModel xsModel = (XslTransformData.m_stylesheetRoot).getXsModel();
          			 
          			 if (xsModel != null) {
          				// An XML input document has been validated with a schema
@@ -392,7 +392,7 @@ public class ElemAttribute extends ElemElement
              		 		                                                                        + "values : strict, lax, preserve, strip.", srcLocator);
              	 }
              	 else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
-             		 XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
+             		 XSModel xsModel = (XslTransformData.m_stylesheetRoot).getXsModel();
              		 if (xsModel != null) {
              			 String localName = QName.getLocalPart(nodeName);
              			 XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(localName, nodeNamespace);
@@ -425,7 +425,7 @@ public class ElemAttribute extends ElemElement
              		 // whereas strict validation fails if there is no available top-level attribute declaration in 
              		 // the schema.
 
-             		 XSModel xsModel = (XslTransformSharedDatastore.m_stylesheetRoot).getXsModel();
+             		 XSModel xsModel = (XslTransformData.m_stylesheetRoot).getXsModel();
              		 if (xsModel != null) {
              			 String localName = QName.getLocalPart(nodeName);             			 
             			 XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(localName, nodeNamespace);

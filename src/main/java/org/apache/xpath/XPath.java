@@ -38,7 +38,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
@@ -972,7 +972,7 @@ public class XPath implements Serializable, ExpressionOwner
 		  int arity = Integer.valueOf(localName.substring(idx + 1));				  
 		  String xsSimpleTypeNamespace = nodeTest.getNamespace();
 
-		  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.m_stylesheetRoot;				  				  
+		  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;				  				  
 
 		  Node elemTemplateElem = stylesheetRoot.getFirstChildElem();				  				  
 		  while (elemTemplateElem != null && !(Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {   
@@ -1009,7 +1009,7 @@ public class XPath implements Serializable, ExpressionOwner
 				  NamedNodeMap importSchemaNodeAttributes = ((Element)elemTemplateElem).getAttributes();
 
 				  if (importSchemaNodeAttributes != null) {
-					  String xslSystemId = XslTransformSharedDatastore.m_xslSystemId;
+					  String xslSystemId = XslTransformData.m_xslSystemId;
 					  URL url = null;
 
 					  Node attrNode1 = importSchemaNodeAttributes.item(0);

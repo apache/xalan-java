@@ -27,7 +27,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemCatch;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
@@ -175,7 +175,7 @@ public class Variable extends Expression implements PathComponent
 		  return;    
 	  }
 	  
-	  if (XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff == null) {
+	  if (XslTransformData.m_xpathNodeCombiningExprRhsStrBuff == null) {
 		  java.lang.String msg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_COULD_NOT_FIND_VAR, 
 				  																				   new Object[]{m_qname.toString()});
 
@@ -275,13 +275,13 @@ public class Variable extends Expression implements PathComponent
         		                                                                                      || exceptionMesg.startsWith("FOUT")))) {
               throw ex;   
            }
-           else if (XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff != null) {
-        	   java.lang.String xpathExprStr = XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff.toString();        	   
+           else if (XslTransformData.m_xpathNodeCombiningExprRhsStrBuff != null) {
+        	   java.lang.String xpathExprStr = XslTransformData.m_xpathNodeCombiningExprRhsStrBuff.toString();        	   
         	   XPath xpath = new XPath(xpathExprStr, xctxt.getSAXLocator(), xctxt.getNamespaceContext(), 
         			                                                                                   XPath.SELECT, null);
         	   result = xpath.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
         	   
-        	   XslTransformSharedDatastore.m_xpathNodeCombiningExprRhsStrBuff = null;
+        	   XslTransformData.m_xpathNodeCombiningExprRhsStrBuff = null;
            }           
            else {
         	  try {
