@@ -416,18 +416,6 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslForEachGroupTest37() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37.xsl"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test37.out";
-        
-        m_fileComparisonType = XSLTestConstants.JSON;
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
     public void xslForEachGroupTest38() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "for_each_group_ending_with.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "for_each_group_ending_with.xsl";

@@ -174,7 +174,6 @@ public class XslResultDocumentTests extends XslTransformTestsUtil {
         String goldFileName1 = "result3.json";
         
         String goldFilePath1 = XSL_TRANSFORM_GOLD_DIRPATH + goldFileName1;
-
         
         try {
         	String goldFileContentStr1 = getFileContentAsString(goldFilePath1);

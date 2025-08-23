@@ -258,5 +258,17 @@ public class XslSortTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslSortTest22() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test22.out";
+        
+        m_fileComparisonType = XSLTestConstants.JSON;
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }
