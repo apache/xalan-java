@@ -16,10 +16,9 @@
  */
 package org.apache.xpath.functions.array;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -51,8 +50,6 @@ public class FuncArraySize extends FunctionOneArg {
 	{
 	    XObject result = null;
 	       
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
-	       
 	    Expression arg0 = getArg0();
 	    
 	    XObject xObject = null;
@@ -70,6 +67,17 @@ public class FuncArraySize extends FunctionOneArg {
 	       }
 	       else {
 	    	  result = new XSInteger("1");  
+	       }
+	    }
+	    else if ((arg0 instanceof SelfIteratorNoPredicate) && (xctxt.getXPath3ContextItem() != null)) {
+	       XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
+	       if (xpath3CtxtItem instanceof XPathArray) {
+	          XPathArray xpathArr = (XPathArray)xpath3CtxtItem;
+	          
+	          result = new XSInteger("" + xpathArr.size());
+	       }
+	       else {
+	    	  result = new XSInteger("0"); 
 	       }
 	    }
 	    else {

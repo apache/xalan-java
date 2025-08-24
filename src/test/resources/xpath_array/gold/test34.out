@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <array contents="" size="0" status="true"/>
+  </one>
+  <two>
+    <array contents="1" size="1" status="true"/>
+  </two>
+  <three>
+    <array contents="1 2 3" size="3" status="true"/>
+  </three>
+  <four>
+    <array contents="" size="0" status="true"/>
+    <array contents="1" size="1" status="true"/>
+  </four>
+  <five>
+    <array contents="" size="0" status="true"/>
+    <array contents="1" size="1" status="true"/>
+    <array contents="2 3" size="2" status="true"/>
+  </five>
+</result>

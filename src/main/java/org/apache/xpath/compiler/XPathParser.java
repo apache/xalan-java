@@ -61,8 +61,8 @@ import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.ElemWhen;
 import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
 import org.apache.xerces.xs.XSModel;
@@ -1560,6 +1560,28 @@ public class XPathParser
                     seqOrArrayXPathItems.add(xpathExprStr);
                  }
               }
+              else if (tokenIs('[')) {
+            	 StringBuffer arrStrBuff = new StringBuffer();
+            	 arrStrBuff.append(m_token);
+            	 nextToken();
+            	 while (!((tokenIs(',') && XslTransformEvaluationHelper.isStrHasBalancedParentheses(arrStrBuff.toString(), '[',']')) || 
+            			                                                                                           (isSequenceConstructor && tokenIs(')')) || 
+            			                                                                                           (isSquareArrayConstructor && tokenIs(']')) || 
+            			                                                                                            (m_token == null))) {           		 
+            		arrStrBuff.append(m_token);
+            		nextToken();
+            	 }
+            	 if (tokenIs(']') && !lookahead(null, 1)) {
+            		arrStrBuff.append(m_token);
+            		consumeExpected(']');
+            	 }
+            	 String str1 = arrStrBuff.toString();
+            	 seqOrArrayXPathItems.add(str1);
+            	 if (tokenIs(',') || (isSequenceConstructor && tokenIs(')')) || 
+            			             (isSquareArrayConstructor && tokenIs(']'))) {            		
+            	    nextToken();            	    
+            	 }
+              }              
               else {
                  List<String> xpathExprTokens = new ArrayList<String>();                 
                  
@@ -1654,10 +1676,10 @@ public class XPathParser
           
           boolean isXPathParseOkToProceed = true;
           
-          if (isSquareArrayConstructor) {
+          /*if (isSquareArrayConstructor) {
         	 // Compact the array items
              compactArrayItems(seqOrArrayXPathItems);
-	      }
+	      }*/
 	  
           // We verify here that, each XPath string within the list 
           // 'xpathExprParts' has balanced parentheses pairs.
@@ -1702,6 +1724,12 @@ public class XPathParser
 	    			 // XPath parse of expressions like (for ...). i.e, XPath 'for' 
 	    			 // and other such expressions contained within '(' & ')'.
 	    			 isXPathParseOkToProceed = true; 
+	    		 }
+	    		 else if (seqOrArrayXPathItems.size() == 1) {
+	    			 String str1 = seqOrArrayXPathItems.get(0);
+	    			 if (!(str1.startsWith("[") && str1.endsWith("]"))) {
+	    				isXPathParseOkToProceed = false; 
+	    			 }
 	    		 }
 	    		 else {
 	    			 isXPathParseOkToProceed = false;
