@@ -19,12 +19,14 @@ package org.apache.xpath.functions;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -81,9 +83,31 @@ public class FuncFunctionArity extends FunctionDef1Arg
 		
 		if (arg0 instanceof Variable) {
 		   Variable var1 = (Variable)arg0;
-		   org.apache.xpath.XPath xpathSelectExpr = (var1.getElemVariable()).getSelect();
-		   Expression selectExpr = xpathSelectExpr.getExpression();
+		   Expression selectExpr = null;
+		   ElemVariable elemVariable = var1.getElemVariable();
+		   if (elemVariable != null) {
+			  org.apache.xpath.XPath xpathSelectExpr = elemVariable.getSelect();
+			  selectExpr = xpathSelectExpr.getExpression();
+		   }
+		   else {
+			   Map<QName,XObject> xpathVarMap = xctxt.getXPathVarMap();
+			   QName varQName = var1.getQName();
+			   XObject varValue = xpathVarMap.get(varQName);
+			   if (varValue != null) {
+				   Object obj1 = varValue.object();
+				   if (obj1 instanceof Function) {
+					   Function func1 = (Function)obj1;
+					   // REVISIT   function arity may have more than one value
+					   short arity = (func1.getDefinedArity())[0];					   
+					   result = new XSInteger("" + arity);
+					   
+					   return result;
+				   }
+			   }
+		   }
+		   
 		   XObject xObj = var1.execute(xctxt);
+		   
 		   if (xObj instanceof XPathNamedFunctionReference) {
 			   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xObj;
 			   
@@ -211,9 +235,8 @@ public class FuncFunctionArity extends FunctionDef1Arg
 		 * This is an XPath function's arity value, computed mainly during
 		 * XPath parse of function expression specified within an XSL
 		 * stylesheet or an XPath literal expression. This arity value is
-		 * further verified below with an XPath function's arity value 
-		 * defined within XPath 3.1 F&O spec and correspondingly configured
-		 * within Xalan-J code.
+		 * verified below with an XPath function's arity value defined within 
+		 * XPath 3.1 F&O spec and correspondingly configured within Xalan-J code.
 		 */
 		final Short runTimeArity = xpathNamedFunctionReference.getArity();
 		
@@ -223,6 +246,8 @@ public class FuncFunctionArity extends FunctionDef1Arg
 		String funcNamespace = xpathNamedFunctionReference.getFuncNamespace();
 		
 		String funcNameRefStr = "{" + funcNamespace + "}" + funcName + "#" + runTimeArity;
+		
+		ElemFunction elemFunction = xpathNamedFunctionReference.getXslStylesheetFunction();
 		
 		if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) || (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace) ||
 				                                                                 (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace) || 
@@ -250,6 +275,9 @@ public class FuncFunctionArity extends FunctionDef1Arg
 				}
 			}
 			
+		}
+		else if (elemFunction != null) {
+			result = new XSInteger("" + elemFunction.getArity()); 
 		}
 		
 		if (result == null) {

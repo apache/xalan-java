@@ -19,12 +19,14 @@ package org.apache.xpath.functions;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
@@ -80,8 +82,39 @@ public class FuncFunctionName extends FunctionDef1Arg
 		
 		if (arg0 instanceof Variable) {
 			Variable var1 = (Variable)arg0;
-			org.apache.xpath.XPath xpathSelectExpr = (var1.getElemVariable()).getSelect();
-			Expression selectExpr = xpathSelectExpr.getExpression();
+			Expression selectExpr = null;
+			ElemVariable elemVariable = var1.getElemVariable();
+			if (elemVariable != null) {
+			   org.apache.xpath.XPath xpathSelectExpr = elemVariable.getSelect();
+			   selectExpr = xpathSelectExpr.getExpression();
+			}
+			else {
+			   Map<QName,XObject> xpathVarMap = xctxt.getXPathVarMap();
+			   QName varQName = var1.getQName();
+			   XObject varValue = xpathVarMap.get(varQName);
+			   if (varValue != null) {
+				   Object obj1 = varValue.object();				   
+				   if (obj1 instanceof XSL3ConstructorOrExtensionFunction) {
+					   XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)obj1;
+					   String localName = xsl3ConstructorOrExtensionFunction.getFunctionName();
+					   String namespace = xsl3ConstructorOrExtensionFunction.getNamespace();
+					   
+					   result = new XSQName(null, localName, namespace);
+
+					   return result;
+				   }
+				   else if (obj1 instanceof Function) {
+					   Function func1 = (Function)obj1;
+					   String localName = func1.getLocalName();
+					   String namespace = func1.getNamespace();
+					   
+					   result = new XSQName(null, localName, namespace);
+
+					   return result;
+				   }
+			   }
+			}
+			
 			XObject xObj = var1.execute(xctxt);
 			if (xObj instanceof XPathNamedFunctionReference) {
 			   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xObj;
@@ -257,7 +290,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 			result = new XSQName(prefix, localName, namespace);
 		}
 		else {
-			// REVISIT
+			result = new XSQName(prefix, localName, namespace);
 		}
 		
 		return result;

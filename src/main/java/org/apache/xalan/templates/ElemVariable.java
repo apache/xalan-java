@@ -26,8 +26,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
@@ -950,18 +950,112 @@ public class ElemVariable extends ElemTemplateElement
     		}
     		
     		if (!isSeqCardinalityOk) {
-    			throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform to XPath sequence "
-    					                                                                           + "type's occurence indicator, implying that an XDM value's "
-    					                                                                           + "cardinality found as " + funcItemSeqSize + " is incorrect. "
-    					                                                                           + "The sequence type has been specified as " + m_asAttr + ".", srcLocator);
+    			throw new TransformerException("XTTE0505 : An xsl:variable " + m_qname.getLocalName() + "'s value doesn't conform to XPath sequence "
+    					                                                                              + "type's occurence indicator, implying that an xdm value's "
+    					                                                                              + "cardinality found as " + funcItemSeqSize + " is incorrect. "
+    					                                                                              + "The sequence type has been specified as " + m_asAttr + ".", srcLocator);
     		}
     		
-    		if ((sequenceTypeFunctionTest != null) && sequenceTypeFunctionTest.isAnyFunctionTest()) {
-    		   if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() == 1) {
-    			  var = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);
+    		if (sequenceTypeFunctionTest != null) {
+    		   int funcRefCount = (XslTransformData.m_xpathNamedFunctionRefSequence).size();
+    		   if (sequenceTypeFunctionTest.isAnyFunctionTest()) {	
+    			   if (funcRefCount == 1) {
+    				   var = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);
+    			   }
+    			   else {
+    				   var = XslTransformData.m_xpathNamedFunctionRefSequence;
+    			   }
     		   }
     		   else {
-    		      var = XslTransformData.m_xpathNamedFunctionRefSequence;
+    			   List<String> funcParamSpecList = sequenceTypeFunctionTest.getTypedFunctionTestParamSpecList();
+    			   String funcReturnTypeSpec = sequenceTypeFunctionTest.getTypedFunctionTestReturnType();
+    			   
+    			   List<XMLNSDecl> prefixTable = (List<XMLNSDecl>)this.getPrefixTable();
+    			   
+    			   for (int idx = 0; idx < funcRefCount; idx++) {
+    				  XPathNamedFunctionReference funcRef1 = (XPathNamedFunctionReference)((XslTransformData.m_xpathNamedFunctionRefSequence).item(idx));
+    				  ElemFunction elemFunction = funcRef1.getXslStylesheetFunction();
+    				  if (elemFunction != null) {
+    					  int xpathNamedFuncRefArity = funcRef1.getArity();
+    					  int funcTypeSpecArity = funcParamSpecList.size();
+    					  if (xpathNamedFuncRefArity == funcTypeSpecArity) {
+    						 List<ElemParam> elemFuncParamList = elemFunction.getFuncParamList();
+    						 for (int i = 0; i < elemFuncParamList.size(); i++) {
+    							 boolean ok1 = false;
+    							 for (int j = 0; j < funcParamSpecList.size(); j++) {
+                                    if (i == j) {
+                                       ElemParam elemParam1 = elemFuncParamList.get(i);
+                                       String paramSpec1 = funcParamSpecList.get(j);
+                                       String elemParamAs = elemParam1.getAs();
+                                       if (elemParamAs == null) {                                    	  
+                                    	  ok1 = true;
+                                    	  break;  
+                                       }
+                                       else {
+                                    	  // Check equality of data type objects, corresponding to 
+                                    	  // paramSpec1 and elemParamAs at the same positional index.
+                                    	   
+                                    	  elemParamAs = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(elemParamAs, prefixTable);                                    	   
+                                    	  XPath seqTypeXPath1 = new XPath(elemParamAs, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
+                                       	  XObject seqTypeExpressionEvalResult1 = seqTypeXPath1.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
+                                       	  SequenceTypeData seqExpectedTypeData1 = (SequenceTypeData)seqTypeExpressionEvalResult1;
+                                       	  
+                                       	  paramSpec1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(paramSpec1, prefixTable);
+                                       	  XPath seqTypeXPath2 = new XPath(paramSpec1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
+                                     	  XObject seqTypeExpressionEvalResult2 = seqTypeXPath2.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
+                                     	  SequenceTypeData seqExpectedTypeData2 = (SequenceTypeData)seqTypeExpressionEvalResult2;
+                                     	  
+                                     	  if (!seqExpectedTypeData1.equal(seqExpectedTypeData2)) {
+                                     		 throw new TransformerException("XPTY0004 : An xsl:variable " + m_qname.getLocalName() + "'s value doesn't conform to "
+                                     		 		                                                                               + "xsl:variable's type specification " + m_asAttr + ". The "
+                                     		 		                                                                               + "function parameter specifications doesn't match.", srcLocator);
+                                     	  }
+                                       }
+                                    }
+    							 }
+    							 
+    							 if (ok1) {
+    								continue; 
+    							 }
+    						 }
+    					  }
+    					  else {
+    						  throw new TransformerException("XPTY0004 : An xsl:variable " + m_qname.getLocalName() + "'s value doesn't conform to "
+                                                                                                                    + "xsl:variable's type specification " + m_asAttr + ". The "
+                                                                                                                    + "function arities doesn't match.", srcLocator); 
+    					  }
+    					  
+    					  String elemFuncAs = elemFunction.getAs();
+    					  if ((elemFuncAs != null) && (funcReturnTypeSpec != null)) {
+    						  elemFuncAs = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(elemFuncAs, prefixTable);
+    						  XPath seqTypeXPath1 = new XPath(elemFuncAs, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
+    						  XObject seqTypeExpressionEvalResult1 = seqTypeXPath1.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
+    						  SequenceTypeData seqExpectedTypeData1 = (SequenceTypeData)seqTypeExpressionEvalResult1;
+
+    						  funcReturnTypeSpec = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(funcReturnTypeSpec, prefixTable);
+    						  XPath seqTypeXPath2 = new XPath(funcReturnTypeSpec, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
+    						  XObject seqTypeExpressionEvalResult2 = seqTypeXPath2.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
+    						  SequenceTypeData seqExpectedTypeData2 = (SequenceTypeData)seqTypeExpressionEvalResult2;
+
+    						  if (!seqExpectedTypeData1.equal(seqExpectedTypeData2)) {
+    							  throw new TransformerException("XPTY0004 : An xsl:variable " + m_qname.getLocalName() + "'s value doesn't conform to "
+    									                                                                                + "xsl:variable's type specification " + m_asAttr + ". The "
+    									                                                                                + "function return types doesn't match.", srcLocator);
+    						  }
+    					  }
+    				  }
+    				  else {
+    					  // REVISIT     To possibly handle other types of function references, 
+    					  //             that XPathNamedFunctionReference represents.
+    				  }
+    			   }
+    			   
+    			   if (funcRefCount == 1) {
+    				   var = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);
+    			   }
+    			   else {
+    				   var = XslTransformData.m_xpathNamedFunctionRefSequence;
+    			   }
     		   }
     		   
     		   m_isXPathNamedFunctionRefSequenceVar = true;

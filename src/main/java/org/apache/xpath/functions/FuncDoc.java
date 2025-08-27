@@ -25,6 +25,7 @@ import java.net.URL;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
@@ -126,7 +127,7 @@ public class FuncDoc extends FunctionOneArg {
         		}
         	}
 
-        	String urlResourceStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
+        	String urlResourceStrContents = StringUtil.getStringContentFromUrl(resolvedArg0Url);
 
         	result = FuncParseXml.getNodeSetFromStr(urlResourceStrContents, xctxt, m_errorHandler);
         }

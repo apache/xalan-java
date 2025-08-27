@@ -35,7 +35,7 @@ import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xml.utils.NamespaceSupport2;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.StringToIntTable;
@@ -1839,7 +1839,7 @@ public class XSLTAttributeDef
 		  }
 	  }
 	  
-	  if (!XslTransformEvaluationHelper.isStrHasBalancedParentheses(result, '(', ')')) {
+	  if (!StringUtil.isStrHasBalancedParentheses(result, '(', ')')) {
 		  throw new TransformerException("An xsl:for-each-group instruction's group-by value \"" + 
 										                                  groupByStrValue + "\" doesn't have or evaluates to a string "
 										                                  + "having balanced parenthesis pairs '(' and ')'."); 

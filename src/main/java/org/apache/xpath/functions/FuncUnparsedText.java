@@ -26,6 +26,7 @@ import java.net.URL;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
@@ -112,7 +113,7 @@ public class FuncUnparsedText extends Function2Args {
         	  }
           }
               
-          String urlStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
+          String urlStrContents = StringUtil.getStringContentFromUrl(resolvedArg0Url);
 
           String resultStr = null;
           if (encodingStr != null) {

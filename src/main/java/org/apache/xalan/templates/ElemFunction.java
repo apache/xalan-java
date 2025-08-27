@@ -17,6 +17,7 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,8 +29,8 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.ref.DTMNodeList;
@@ -488,7 +489,7 @@ public class ElemFunction extends ElemTemplate
       String funcAsAttrStrVal = getAs();
       
       if (funcAsAttrStrVal != null) {
-    	 // Process xsl:function's evaluation result with "as" attribute
+    	  // Process xsl:function's evaluation result with "as" attribute
     	  
     	  try {
     		SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
@@ -534,8 +535,7 @@ public class ElemFunction extends ElemTemplate
 																			            				 funcAsAttrStrVal + ".", srcLocator);
             	 }             	            	              	
              }
-             else if (((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) && 
-            		                                                                      !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {            	
+             else if (((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) && !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {            
             	int funcItemSeqSize = (XslTransformData.m_xpathNamedFunctionRefSequence).size();
         		
         		SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
@@ -591,16 +591,12 @@ public class ElemFunction extends ElemTemplate
                                                                                                                              ", doesn't match the declared function result type " + funcAsAttrStrVal + 
                                                                                                                              ". The function arity specification doesn't match.", srcLocator); 
         						   }        						   
-        					   }
-        					   else {
-        						   // REVISIT
-        					   }
+        					   }        					   
         					}
         					
         					(XslTransformData.m_xpathNamedFunctionRefSequence).remove(0);
         				}
         				else {
-        					// REVISIT
         					funcResultConvertedVal = XslTransformData.m_xpathNamedFunctionRefSequence;
         					(XslTransformData.m_xpathNamedFunctionRefSequence).clear();
         				}
@@ -631,6 +627,9 @@ public class ElemFunction extends ElemTemplate
          catch (TransformerException ex) {
             throw new TransformerException(ex.getMessage(), srcLocator); 
          }
+    	 finally {
+    		ElemVariable.m_isXPathNamedFunctionRefSequenceVar = false;    		 
+    	 }
       }
       
       if (funcResultConvertedVal instanceof ResultSequence) {
@@ -1205,6 +1204,22 @@ public class ElemFunction extends ElemTemplate
     
     public boolean isOverrideExtensionFunctionAttrDeclared() {
     	return m_override_extension_function_attr_declared;
+    }
+    
+    /**
+     * Method definition, to get xsl:function's parameter information.
+     * 
+     * @return                   List of ElemParam objects, or null.
+     */
+    public List<ElemParam> getFuncParamList() {
+    	List<ElemParam> funcParamList = new ArrayList<ElemParam>();
+    	
+    	ElemTemplateElement elemTemplateElem = this.getFirstChildElem();
+    	if (elemTemplateElem instanceof ElemParam) {
+    	   funcParamList.add((ElemParam)elemTemplateElem);
+    	}
+    	
+    	return funcParamList; 
     }
 
 }

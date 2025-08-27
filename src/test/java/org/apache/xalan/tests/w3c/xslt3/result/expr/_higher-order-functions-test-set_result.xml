@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-21T15:07:54Z" fail="6" name="higher-order-functions" pass="18" skipped="0" statusUnknown="1" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-27T11:54:36Z" fail="2" name="higher-order-functions" pass="22" skipped="0" statusUnknown="1" totalRun="25">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -9,7 +9,7 @@
    <testResult status="pass" testName="higher-order-functions-008"/>
    <testResult status="pass" testName="higher-order-functions-009"/>
    <testResult status="pass" testName="higher-order-functions-010"/>
-   <testResult status="fail" testName="higher-order-functions-011"/>
+   <testResult status="pass" testName="higher-order-functions-011"/>
    <testResult status="pass" testName="higher-order-functions-012"/>
    <testResult status="pass" testName="higher-order-functions-013"/>
    <testResult status="pass" testName="higher-order-functions-014"/>
@@ -18,9 +18,9 @@
    <testResult status="pass" testName="higher-order-functions-017"/>
    <testResult status="pass" testName="higher-order-functions-018"/>
    <testResult status="pass" testName="higher-order-functions-019"/>
-   <testResult status="fail" testName="higher-order-functions-020"/>
-   <testResult status="fail" testName="higher-order-functions-021"/>
-   <testResult status="fail" testName="higher-order-functions-022"/>
+   <testResult status="pass" testName="higher-order-functions-020"/>
+   <testResult status="pass" testName="higher-order-functions-021"/>
+   <testResult status="pass" testName="higher-order-functions-022"/>
    <testResult status="fail" testName="higher-order-functions-023"/>
    <testResult status="fail" testName="higher-order-functions-024"/>
    <testResult testName="higher-order-functions-025"/>

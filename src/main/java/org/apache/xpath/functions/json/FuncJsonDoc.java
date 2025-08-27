@@ -31,6 +31,7 @@ import java.util.Set;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
@@ -238,7 +239,7 @@ public class FuncJsonDoc extends JsonFunction {
 				resolvedArg0Url = new URL(hrefStrVal);   
 			}
 
-			String urlStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
+			String urlStrContents = StringUtil.getStringContentFromUrl(resolvedArg0Url);
 			
 			result = getJsonXdmValueFromStr(urlStrContents, optionIsLiberal, optionDuplicatesValStr);
 

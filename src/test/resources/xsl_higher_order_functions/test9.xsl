@@ -23,9 +23,7 @@
        <xsl:sequence select="$x + 2"/>
     </xsl:function>
     
-    <xsl:variable name="f" as="function(*)*">
-      <xsl:sequence select="(fn0:g#1, fn0:h#1)"/>
-    </xsl:variable>
+    <xsl:variable name="f" select="(fn0:g#1, fn0:h#1)" as="function(*)*"/>
     
     <xsl:template name="main">
        <result>

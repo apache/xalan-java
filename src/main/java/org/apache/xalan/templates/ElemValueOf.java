@@ -24,8 +24,8 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -36,6 +36,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathLetExpr;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.FuncRound;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.WrongNumberArgsException;
@@ -619,15 +620,16 @@ public class ElemValueOf extends ElemTemplateElement {
                      Function func = locPathIterator.getFuncExpr();
                      XPathDynamicFunctionCall dfc = locPathIterator.getDynamicFuncCallExpr();
                      
-                     DTMCursorIterator dtmIter = null;                     
+                     DTMCursorIterator dtmIter = null;
+                     boolean isLocPathIterOk = true;
                      try {
                         dtmIter = locPathIterator.asIterator(xctxt, current);
                      }
                      catch (Exception ex) {
-                    	// NO OP 
-                     }                     
+                    	isLocPathIterOk = false;
+                     }
                      
-                     if (dtmIter != null) {                        
+                     if ((dtmIter != null) && isLocPathIterOk) {                        
                         StringBuffer strBuff = new StringBuffer();
                         int nextNode;
                         while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
@@ -663,10 +665,13 @@ public class ElemValueOf extends ElemTemplateElement {
                         String xpathPatternStr = m_selectExpression.getPatternString();
                         
                         if (xpathPatternStr.startsWith("$") && xpathPatternStr.contains("[") && 
-                                                                                    xpathPatternStr.endsWith("]")) {
-                           // Within this 'if' clause, we handle the case, where the XPath expression is
-                           // syntactically of type $varName[expr], for example $varName[1], $varName[$idx],
-                           // $varName[funcCall(arg)] etc, and $varName resolves to a 'ResultSequence' object.
+                                                                                    xpathPatternStr.endsWith("]") && 
+                                                                                    !(xpathPatternStr.contains("(") || xpathPatternStr.contains(")"))) {
+                           /**
+                            * Here, we handle the case where the XPath expression is of type $varName[expr],
+                            * for example $varName[1], $varName[$idx], $varName[funcCall(arg)] etc, and
+                            * $varName resolves to a 'ResultSequence' object.
+                            */
                             
                            String varRefXPathExprStr = "$" + xpathPatternStr.substring(1, xpathPatternStr.indexOf('['));
                            String xpathIndexExprStr = xpathPatternStr.substring(xpathPatternStr.indexOf('[') + 1, 
@@ -743,6 +748,124 @@ public class ElemValueOf extends ElemTemplateElement {
                                                                                                        + "reference, is not numeric.", srcLocator);  
                               }
                            }                           
+                        }
+                        else if (xpathPatternStr.startsWith("$")) {
+                           /**
+                            * Evaluating an XPath expression like $varRef[a](b,..)[c]. A typical 
+                            * example is, an XPath expression $varRef[a] is a 'function item' 
+                            * reference that is provided arguments (b,..). The function call 
+                            * result of, expression $varRef[a](b,..) is filtered with index 
+                            * accessor [c].
+                            */
+                        	
+                           int idx = xpathPatternStr.indexOf('[');
+                           if (idx > -1) {
+                        	   String prefix1 = xpathPatternStr.substring(0, idx);
+                        	   String suffix1 = null;
+                        	   if (idx > 0) {
+                        	      suffix1 = xpathPatternStr.substring(idx);
+                        	   }
+
+                        	   ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+                        	   List<XMLNSDecl> prefixTable = null;
+                        	   if (elemTemplateElement != null) {
+                        		   prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+                        	   }
+
+                        	   if (prefixTable != null) {
+                        		   prefix1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(prefix1, prefixTable);
+                        	   }
+
+                        	   XPath xpathObj = new XPath(prefix1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                        	   if (m_vars != null) {
+                        		  xpathObj.fixupVariables(m_vars, m_globals_size);                            
+                        	   }
+
+                        	   XObject prefixEvalResult = xpathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+                        	   if (prefixEvalResult instanceof XPathNamedFunctionReference) {
+                        		   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)prefixEvalResult;                        		   
+                        		   ResultSequence rSeq = new ResultSequence();
+                        		   rSeq.add(xpathNamedFunctionReference);                        		   
+                        		   prefixEvalResult = rSeq; 
+                        	   }
+                        	   
+                        	   try {
+                        		   if (prefixEvalResult instanceof ResultSequence) {
+                        			   ResultSequence rSeq = (ResultSequence)prefixEvalResult;
+                        			   int i = suffix1.indexOf('(');
+                        			   int j = suffix1.indexOf(')');
+                        			   String a1 = null;
+                        			   String[] b1 = null;
+                        			   String c1 = null;
+                        			   if ((i > -1) && (j > -1) && (i < j)) {
+                        				   String str1 = suffix1.substring(0, i);
+                        				   if (str1.startsWith("[") && str1.endsWith("]")) {
+                        					   int strLen1 = str1.length();
+                        					   a1 = str1.substring(1, strLen1 - 1);
+                        				   }
+                        				   
+                        				   String str2 = suffix1.substring(i + 1, j);
+                        				   b1 = str2.split(",");                        				   
+                        				   String str3 = suffix1.substring(j + 1);
+                        				   if (str3.startsWith("[") && str3.endsWith("]")) {
+                        					   int strLen3 = str3.length();
+                        					   c1 = str3.substring(1, strLen3 - 1);
+                        				   }
+                        			   }
+                        			   
+                        			   XPath xpath = new XPath(a1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        							   if (m_vars != null) {
+        								   xpath.fixupVariables(m_vars, m_globals_size);                            
+        							   }
+
+        							   XObject aXObj = xpath.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+        							   Integer aInt = Integer.valueOf(XslTransformEvaluationHelper.getStrVal(aXObj));
+                        			   XObject xObj = rSeq.item(aInt - 1);
+                        			   
+                        			   if ((xObj != null) && (xObj instanceof XPathNamedFunctionReference)) {
+                        				   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xObj;
+                        				   ElemFunction elemFunction = xpathNamedFunctionReference.getXslStylesheetFunction();
+                        				   if (elemFunction != null) {
+                        					   int argCount = b1.length; 
+                        					   if (elemFunction.getArity() == argCount) {
+                        						   ResultSequence argResultSeq = new ResultSequence();
+                        						   for (int idx2 = 0; idx2 < argCount; idx2++) {
+                        							   XPath argXpathObj = new XPath(b1[idx2], srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                        							   if (m_vars != null) {
+                        								   argXpathObj.fixupVariables(m_vars, m_globals_size);                            
+                        							   }
+
+                        							   XObject argXObj = argXpathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+                        							   argResultSeq.add(argXObj);
+                        						   }
+
+                        						   XObject xslFuncEvalResult = elemFunction.evaluateXslFunction(transformer, argResultSeq);
+                        						   if (xslFuncEvalResult instanceof ResultSequence) {
+                        							   ResultSequence rSeq2 = (ResultSequence)xslFuncEvalResult;
+                        							   xpath = new XPath(c1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                        							   if (m_vars != null) {
+                        								   xpath.fixupVariables(m_vars, m_globals_size);                            
+                        							   }
+
+                        							   XObject cXObj = xpath.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+                        							   Integer cInt = Integer.valueOf(XslTransformEvaluationHelper.getStrVal(cXObj));
+                        							   if (cInt > 0) {
+                        								   xslFuncEvalResult = rSeq2.item(cInt - 1); 
+                        							   }
+                        						   }
+
+                        						   String strValue = XslTransformEvaluationHelper.getStrVal(xslFuncEvalResult);
+
+                        						   (new XString(strValue)).dispatchCharactersEvents(rth);
+                        					   }
+                        				   }
+                        			   }
+                        		   }
+                        	   }
+                        	   catch (Exception ex) {
+                        		   // NO OP
+                        	   }
+                           }
                         }
                      }
                   }

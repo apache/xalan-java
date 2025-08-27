@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-08-21T15:08:09Z" desc="W3C XSLT 3.0 test suite results" fail="711" pass="1579" skipped="43" success="68.38%" totalRun="2309" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-08-27T11:55:11Z" desc="W3C XSLT 3.0 test suite results" fail="707" pass="1583" skipped="43" success="68.56%" totalRun="2309" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="31" pass="73" skipped="4" success="69.52%" totalRun="105"/>
     <avt fail="15" pass="20" skipped="0" success="57.14%" totalRun="35"/>
@@ -19,7 +19,7 @@
     <castable fail="5" pass="4" skipped="0" success="44.44%" totalRun="9"/>
     <expression fail="0" pass="9" skipped="0" success="90.0%" totalRun="10"/>
     <for fail="2" pass="1" skipped="0" success="25.0%" totalRun="4"/>
-    <higher-order-functions fail="6" pass="18" skipped="0" success="72.0%" totalRun="25"/>
+    <higher-order-functions fail="2" pass="22" skipped="0" success="88.0%" totalRun="25"/>
     <math fail="25" pass="124" skipped="0" success="82.67%" totalRun="150"/>
     <nodetest fail="36" pass="2" skipped="0" success="5.26%" totalRun="38"/>
     <path fail="3" pass="7" skipped="0" success="70.0%" totalRun="10"/>

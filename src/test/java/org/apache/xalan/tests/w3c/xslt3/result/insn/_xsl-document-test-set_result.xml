@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-21T15:07:58Z" fail="13" name="xsl-document" pass="12" skipped="0" statusUnknown="0" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-27T11:54:57Z" fail="13" name="xsl-document" pass="12" skipped="0" statusUnknown="0" totalRun="25">
    <testResult status="pass" testName="xsl-document-0101"/>
    <testResult status="fail" testName="xsl-document-0102">
       <outResult>
          <errTrace>XPST0003 : An XPath expression /out/node()[1][self::comment()][.="Valuable comment"] has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="xsl-document-0103"/>
@@ -17,7 +17,7 @@
    <testResult status="fail" testName="xsl-document-0301">
       <outResult>
          <errTrace>XPST0003 : An XPath expression /out/node()[1][self::*:e1][namespace-uri()="http://www.example.org/foo"][@t1="1"][@t2="2"][@t3="3"] has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="xsl-document-0302"/>

@@ -41,12 +41,13 @@
 	   <xsl:variable name="size" select="map:get($info,'size')" as="xs:double"/>
 	   <xsl:variable name="weight" select="map:get($info,'weight')" as="xs:double"/>
 	   <xsl:variable name="color" select="map:get($info,'color')" as="xs:string"/>
-	   <xsl:sequence select="let $m1 := map {}, $m1 := map:put($m1,'id',$id), 
-	                                            $m1 := map:put($m1,'desc',$desc),
-								                $i1 := map {}, $i1 := map:put($i1,'size',$size),
-											    $i1 := map:put($i1,'weight',$weight),
-										        $i1 := map:put($i1,'color',$color),
-											    $m1 := map:put($m1,'info',$i1) return $m1"/>
+       <xsl:sequence select="map {'id' : $id, 
+                                  'desc' : $desc, 
+                                  'info' : map {'size' : $size, 
+                                                'weight' : $weight, 
+                                                'color' : $color
+                                               }
+                                 }"/>											    
 	</xsl:function>
 	
 	<!--

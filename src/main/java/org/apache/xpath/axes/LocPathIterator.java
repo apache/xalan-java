@@ -285,7 +285,6 @@ public abstract class LocPathIterator extends PredicatedNodeTest
             throws javax.xml.transform.TransformerException
   {
     XMLNodeCursorImpl iter = new XMLNodeCursorImpl((LocPathIterator)m_clones.getInstance());
-
     iter.setRoot(contextNode, xctxt);
 
     return iter;

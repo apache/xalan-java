@@ -161,7 +161,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
            result = new XMLNodeCursorImpl(nodeHandleList, dtmMgr);
         }
         else {
-        	obj1 = exprEvalResult.object();	
+           obj1 = exprEvalResult.object();	
         }
         
         if (result == null) {

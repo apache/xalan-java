@@ -44,6 +44,7 @@ import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.patterns.NodeTest;
 
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSNumericType;
@@ -109,7 +110,7 @@ public class XPathSequenceConstructor extends Expression {
         
         int contextNode = xctxt.getContextNode();
         
-        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)(xctxt.getNamespaceContext());
         List<XMLNSDecl> prefixTable = null;
         if (elemTemplateElement != null) {
             prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
@@ -123,7 +124,8 @@ public class XPathSequenceConstructor extends Expression {
         
         ResultSequence resultSeq = new ResultSequence();
         
-        for (int idx = 0; idx < m_sequenceConstructorXPathParts.size(); idx++) {
+        int seqConstructorPartsSize = m_sequenceConstructorXPathParts.size();
+        for (int idx = 0; idx < seqConstructorPartsSize; idx++) {
            String xpathExprStr = m_sequenceConstructorXPathParts.get(idx);
            
            if (prefixTable != null) {
@@ -152,10 +154,31 @@ public class XPathSequenceConstructor extends Expression {
                
                if (dtmIter != null) {
                   int nextNode;
+                  boolean isEmptyNodeSet = true;
                   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
                   {
+                	  isEmptyNodeSet = false;
                       XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNode, xctxt);
-                      resultSeq.add(xNodeSetItem);
+                      resultSeq.add(xNodeSetItem);                                            
+                  }
+                  
+                  if (isEmptyNodeSet) {
+                	  String funcNameRef = ((NodeTest)xpathExpr).getLocalName();
+                	  XSL3FunctionService xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
+                	  int hashCharIdx = funcNameRef.indexOf('#');
+                	  if ((hashCharIdx > -1) && xslFunctionService.isFuncArityWellFormed(funcNameRef)) {
+                		  if (prefixTable != null) {
+                			  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+                		  }
+
+                		  XPath xpathObj2 = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                		  if (m_vars != null) {
+                			  xpathObj2.fixupVariables(m_vars, m_globals_size);
+                		  }
+
+                		  Expression xpathExpr2 = xpathObj2.getExpression();
+                		  resultSeq.add((XPathNamedFunctionReference)xpathExpr2);
+                	  }
                   }
                }
                else if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && 
@@ -228,6 +251,9 @@ public class XPathSequenceConstructor extends Expression {
         	   XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)xpathExpr;        	           	   
         	   XObject funcEvalResult = xsl3ConstructorOrExtensionFunction.execute(xctxt);        	           	           	          	   
         	   resultSeq.add(funcEvalResult);
+           }
+           else if (xpathExpr instanceof XPathNamedFunctionReference) {
+        	   resultSeq.add((XPathNamedFunctionReference)xpathExpr);
            }
            else {
         	   if (m_vars != null) {
@@ -345,7 +371,7 @@ public class XPathSequenceConstructor extends Expression {
         	result = newResultSeq;
         }
         else {
-           result = resultSeq; 	
+        	result = resultSeq;
         }
         
         return result;

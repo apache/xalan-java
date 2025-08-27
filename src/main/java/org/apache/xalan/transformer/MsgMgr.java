@@ -299,11 +299,7 @@ public class MsgMgr
   {
 
     String formattedMsg = XSLMessages.createMessage(msg, args);
-
-    // Locator locator = m_stylesheetLocatorStack.isEmpty()
-    //                   ? null :
-    //                    ((Locator)m_stylesheetLocatorStack.peek());
-    // Locator locator = null;
+    
     ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)

@@ -352,6 +352,27 @@ public class ElemSequence extends ElemTemplateElement
 						  return; 
 					  }
 			      }
+				  else if (xObjTemp instanceof ResultSequence) {
+					  ResultSequence rSeq = (ResultSequence)xObjTemp;
+					  boolList = new ArrayList<Boolean>();
+					  for (int idx = 0; idx < rSeq.size(); idx++) {
+						  XObject xObj = rSeq.item(idx);
+						  if (xObj instanceof XPathNamedFunctionReference) {
+							  boolList.add(Boolean.valueOf(true));
+						  }
+					  }
+					  
+					  if (boolList.size() == rSeq.size()) {
+						  for (int idx = 0; idx < rSeq.size(); idx++) {
+							  XObject xObj = rSeq.item(idx);
+							  (XslTransformData.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)xObj);
+						  }
+					  }
+					  
+					  if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) {
+						  return; 
+					  }
+				  }
 			  }
 			  else if (selectExpression instanceof XPathArrayConstructor) {
 				  XPathArrayConstructor xpathArrayCons = (XPathArrayConstructor)selectExpression;

@@ -17,7 +17,6 @@
 package org.apache.xpath.composite;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -85,7 +84,7 @@ public class XPathLetExpr extends Expression {
           prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
        }              
        
-       Map<QName, XObject> letExprVarBindingMap = new HashMap<QName, XObject>();
+       Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
        
        for (int idx = 0; idx < m_letExprVarBindingList.size(); idx++) {          
           LetExprVarBinding letExprVarBinding = m_letExprVarBindingList.get(idx);
@@ -123,6 +122,9 @@ public class XPathLetExpr extends Expression {
           }
           else if (expr instanceof XPathNamedFunctionReference) {
         	  xpathNamedFuncRef = (XPathNamedFunctionReference)expr; 
+          }
+          else if (expr instanceof Function) {
+        	  varBindingEvalResult = expr.execute(xctxt);
           }
           
           if (xpathNamedFuncRef != null) {
@@ -181,11 +183,8 @@ public class XPathLetExpr extends Expression {
           
           m_xpathVarList.add(new QName(varName));
           
-          letExprVarBindingMap.put(new QName(varName), varBindingEvalResult);
+          xpathVarMap.put(new QName(varName), varBindingEvalResult);
        }              
-       
-       Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
-       xpathVarMap.putAll(letExprVarBindingMap);
        
        if (prefixTable != null) {
           m_returnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
@@ -202,7 +201,7 @@ public class XPathLetExpr extends Expression {
        evalResult = returnExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        
        if (evalResult == null) {
-          // To return an empty sequence
+          // Return an empty sequence
           evalResult = new ResultSequence();   
        }
         

@@ -213,7 +213,7 @@ public class Process
 		  try
 		  {
 			  tfactory = TransformerFactory.newInstance();
-			  tfactory.setErrorListener(new DefaultErrorHandler(false));
+			  tfactory.setErrorListener(new DefaultErrorHandler(true));
 		  }
 		  catch (TransformerFactoryConfigurationError err)
 		  {
@@ -829,7 +829,7 @@ public class Process
 					  ((TransformerImpl)transformer).setProperty(TransformerImpl.XSL_EVALUATE_PROPERTY, Boolean.TRUE);
 				  }
 
-				  transformer.setErrorListener(new DefaultErrorHandler(false));
+				  transformer.setErrorListener(new DefaultErrorHandler(true));
 
 				  // Override the output format?
 				  if (null != outputType)
@@ -907,7 +907,7 @@ public class Process
 
 						  // Now serialize output to disk with identity transformer
 						  Transformer identityTransformer = stf.newTransformer();
-						  identityTransformer.setErrorListener(new DefaultErrorHandler(false));
+						  identityTransformer.setErrorListener(new DefaultErrorHandler(true));
 
 						  Properties serializationProps = stylesheet.getOutputProperties();
 
@@ -941,7 +941,7 @@ public class Process
 
 						  // Now serialize output to disk with identity transformer
 						  Transformer identityTransformer = stf.newTransformer();
-						  identityTransformer.setErrorListener(new DefaultErrorHandler(false));
+						  identityTransformer.setErrorListener(new DefaultErrorHandler(true));
 
 						  Properties serializationProps = stylesheet.getOutputProperties();
 
