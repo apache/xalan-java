@@ -768,8 +768,10 @@ public class OpCodes
   public static final int OP_ARRAY_COMPARISON = 88;
   
   public static final int OP_EXPR_SINGLE_COMPARISON_XPATH3 = 89;
+  
+  public static final int OP_FUNC_ARG_PLACEHOLDER = 90;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 90;
+  private static final int NEXT_FREE_ID = 91;
   
 }

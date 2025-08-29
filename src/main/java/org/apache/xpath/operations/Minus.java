@@ -20,10 +20,13 @@ package org.apache.xpath.operations;
 import java.math.BigDecimal;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
 import org.apache.xpath.ArithmeticOperation;
 import org.apache.xpath.Expression;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
@@ -66,6 +69,35 @@ public class Minus extends ArithmeticOperation
   public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException {
       
 	  XObject result = null;
+	  
+	  Object lObj = left.object();
+	  Object rObj = right.object();
+	  
+	  XPathContext xctxt = new XPathContext(true); 
+
+	  if ((lObj instanceof FuncArgPlaceholder) && (rObj instanceof FuncArgPlaceholder)) {
+		  java.lang.String xpathInlineFuncExprStr = "function($arg0, $arg1) { $arg0 - $arg1 }";
+		  XPath xpathObj = new XPath(xpathInlineFuncExprStr, null, null, XPath.SELECT, null);
+		  result = xpathObj.execute(xctxt, DTM.NULL, null);
+		  
+		  return result;
+	  }
+	  else if ((lObj instanceof FuncArgPlaceholder) && !(rObj instanceof FuncArgPlaceholder)) {
+		  java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(right);
+		  java.lang.String xpathInlineFuncExprStr = "function($arg0) { $arg0 - " + rStr + " }";
+		  XPath xpathObj = new XPath(xpathInlineFuncExprStr, null, null, XPath.SELECT, null);
+		  result = xpathObj.execute(xctxt, DTM.NULL, null);
+		  
+		  return result;
+	  }
+	  else if (!(lObj instanceof FuncArgPlaceholder) && (rObj instanceof FuncArgPlaceholder)) {
+		  java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(left);
+		  java.lang.String xpathInlineFuncExprStr = "function($arg1) { " + lStr + " - $arg1 }";
+		  XPath xpathObj = new XPath(xpathInlineFuncExprStr, null, null, XPath.SELECT, null);
+		  result = xpathObj.execute(xctxt, DTM.NULL, null);
+		  
+		  return result;
+	  }
 	  
 	  Expression leftOperandExpr = getLeftOperand();	  
 	  if (leftOperandExpr instanceof SelfIteratorNoPredicate) {

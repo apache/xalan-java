@@ -41,6 +41,7 @@ import org.apache.xpath.compiler.XPathParser.XPathSequenceConsFuncArgs;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
+import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.WrongNumberArgsException;
@@ -291,7 +292,9 @@ public class Compiler extends OpMap
     case OpCodes.OP_ARRAY_COMPARISON :
       expr = xpathExpressionArrayComparison(opPos); break;
     case OpCodes.OP_EXPR_SINGLE_COMPARISON_XPATH3 :
-      expr = xpath3ExpressionSingleComparison(opPos); break;  
+      expr = xpath3ExpressionSingleComparison(opPos); break;
+    case OpCodes.OP_FUNC_ARG_PLACEHOLDER :
+      expr = funcArgumentPlaceholder(opPos); break; 
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });
       break;
@@ -1691,6 +1694,18 @@ private static final boolean DEBUG = false;
   Expression xpath3ExpressionSingleComparison(int opPos) throws TransformerException
   {
 	  return XPathParser.m_xpath3ExprSingleComparison;
+  }
+  
+  /**
+   * Compile an XPath expression string '?', representing a function argument
+   * placeholder.
+   */
+  Expression funcArgumentPlaceholder(int opPos) throws TransformerException
+  {
+	  FuncArgPlaceholder funcArgPlaceHolder = (XPathParser.m_funcArgPlaceHolderList).get(0);
+	  (XPathParser.m_funcArgPlaceHolderList).remove(0);
+	  
+	  return funcArgPlaceHolder;
   }
   
   /**

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-27T11:54:13Z" fail="18" name="function" pass="50" skipped="4" statusUnknown="1" totalRun="69">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-29T01:16:50Z" fail="32" name="function" pass="56" skipped="22" statusUnknown="0" totalRun="88">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -116,5 +116,73 @@
    <testResult status="pass" testName="function-1031"/>
    <testResult status="pass" testName="function-1032"/>
    <testResult status="pass" testName="function-1033"/>
-   <testResult testName="function-1034"/>
+   <testResult status="fail" testName="function-1034">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="function-1035">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="function-1101"/>
+   <testResult status="fail" testName="function-1201">
+      <outResult>
+         <errTrace>XTTE0570 : An empty sequence is not allowed, as result of evaluation for sequence type's occurence indicator +.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-1301"/>
+   <testResult status="pass" testName="function-1401"/>
+   <testResult status="pass" testName="function-1501"/>
+   <testResult status="fail" testName="function-1601">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="function-1701">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="function-1901"/>
+   <testResult status="skipped" testName="function-1902" xsltVersion="xslt 2.0 only"/>
+   <testResult status="pass" testName="function-2001"/>
+   <testResult status="skipped" testName="function-2002" xsltVersion="xslt 2.0 only"/>
+   <testResult status="fail" testName="function-2101">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="function-2102">
+      <outResult>
+         <errTrace>Illegal value: foo:test? used for QNAME attribute: name</errTrace>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: xsl:function must have a name attribute.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-2103">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;abc&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="function-2104"/>
+   <testResult status="pass" testName="function-2105"/>
+   <testResult status="fail" testName="function-2106">
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: XPST0017 : An xsl:function {http://example.com/namespace}pi call's argument count is not equal to number of xsl:function's xsl:param declarations.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-2107">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;abc&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="function-2108">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;abc&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="function-2109">
+      <outResult/>
+   </testResult>
+   <testResult feature="streaming" status="skipped" testName="function-5001"/>
+   <testResult feature="streaming" status="skipped" testName="function-5002"/>
+   <testResult feature="streaming" status="skipped" testName="function-5003"/>
+   <testResult feature="streaming" status="skipped" testName="function-5004"/>
+   <testResult feature="streaming" status="skipped" testName="function-5005"/>
+   <testResult feature="streaming" status="skipped" testName="function-5006"/>
+   <testResult feature="streaming" status="skipped" testName="function-5007"/>
+   <testResult feature="streaming" status="skipped" testName="function-5011"/>
+   <testResult feature="streaming" status="skipped" testName="function-5012"/>
+   <testResult feature="streaming" status="skipped" testName="function-5013"/>
+   <testResult feature="streaming" status="skipped" testName="function-5014"/>
+   <testResult feature="streaming" status="skipped" testName="function-5015"/>
+   <testResult feature="streaming" status="skipped" testName="function-5015a"/>
+   <testResult feature="streaming" status="skipped" testName="function-5016"/>
+   <testResult feature="streaming" status="skipped" testName="function-5017"/>
+   <testResult feature="streaming" status="skipped" testName="function-5018"/>
 </testrun>

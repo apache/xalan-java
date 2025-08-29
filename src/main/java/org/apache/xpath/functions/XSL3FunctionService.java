@@ -1208,11 +1208,22 @@ public class XSL3FunctionService {
     		}
 
     		XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-    		if (varVector != null) {
-    			argXPath.fixupVariables(varVector, varGlobalSize);
+    		
+    		Expression argExpr = argXPath.getExpression();
+    		XObject argValue = null;    		
+    		if ((argExpr instanceof SelfIteratorNoPredicate) && (xctxt.getXPath3ContextItem() != null)) {
+    			argValue = xctxt.getXPath3ContextItem(); 	
     		}
+            else if (argExpr instanceof FuncArgPlaceholder) {
+    			argValue = XObject.create((FuncArgPlaceholder)argExpr); 
+    		}
+    		else {
+    			if (varVector != null) {
+    				argXPath.fixupVariables(varVector, varGlobalSize);
+    			}
 
-    		XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    			argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    		}
 
     		String funcParamName = funcParam.getParamName();
     		SequenceTypeData paramType = funcParam.getParamType();

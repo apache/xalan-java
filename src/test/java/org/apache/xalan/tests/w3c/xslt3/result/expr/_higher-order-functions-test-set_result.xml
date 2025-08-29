@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-27T11:54:36Z" fail="2" name="higher-order-functions" pass="22" skipped="0" statusUnknown="1" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-29T01:18:11Z" fail="49" name="higher-order-functions" pass="22" skipped="5" statusUnknown="0" totalRun="71">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -23,5 +23,238 @@
    <testResult status="pass" testName="higher-order-functions-022"/>
    <testResult status="fail" testName="higher-order-functions-023"/>
    <testResult status="fail" testName="higher-order-functions-024"/>
-   <testResult testName="higher-order-functions-025"/>
+   <testResult status="fail" testName="higher-order-functions-025"/>
+   <testResult status="fail" testName="higher-order-functions-026"/>
+   <testResult status="fail" testName="higher-order-functions-027"/>
+   <testResult status="fail" testName="higher-order-functions-028"/>
+   <testResult status="fail" testName="higher-order-functions-029"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-030"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-031"/>
+   <testResult status="fail" testName="higher-order-functions-032">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: XPST0051 A sequence type occurence indicator ',', is not recognized.
+javax.xml.transform.TransformerException: XPST0051 A sequence type occurence indicator ',', is not recognized.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-033"/>
+   <testResult status="fail" testName="higher-order-functions-034"/>
+   <testResult status="fail" testName="higher-order-functions-035"/>
+   <testResult status="fail" testName="higher-order-functions-036"/>
+   <testResult status="fail" testName="higher-order-functions-037">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-038"/>
+   <testResult status="fail" testName="higher-order-functions-039"/>
+   <testResult status="fail" testName="higher-order-functions-040"/>
+   <testResult status="fail" testName="higher-order-functions-041">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-042">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-043"/>
+   <testResult status="fail" testName="higher-order-functions-044"/>
+   <testResult status="fail" testName="higher-order-functions-045"/>
+   <testResult status="fail" testName="higher-order-functions-046"/>
+   <testResult status="fail" testName="higher-order-functions-047"/>
+   <testResult status="fail" testName="higher-order-functions-048">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-049">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-050">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;2008-10-02&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-051">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-052">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-053">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;false&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-054">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;true&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-055">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;false&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-056">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;NaN&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-057">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;4&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-058">
+      <outResult>
+         <errTrace>A relative location path was expected following the '/' or '//' token.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-059">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-060">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-061">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-062">
+      <outResult>
+         <errTrace>org.apache.xpath.functions.string.FuncSubstringBefore only allows 2 or 3 arguments</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: XPST0008 : Variable 'ops' has not been declared, or its declaration is not in scope.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-063">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-064">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-065">
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: XPST0008 : Variable 'roundToCeiling' has not been declared, or its declaration is not in scope.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-066">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-067">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-068">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-069">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-070">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+  &#13;
+  dictum&#13;
+  2012-01-01T09:00:00&#13;
+  2012-01-03T18:00:00&#13;
+  &#13;
+    &#13;
+      2012-01-01&#13;
+      &#13;
+        2012-01-01T09:00:00&#13;
+        2012-01-01T10:30:00&#13;
+        &#13;
+          &#13;
+            John Smith&#13;
+          &#13;
+          &#13;
+            Bob Black&#13;
+          &#13;
+        &#13;
+      &#13;
+      &#13;
+        2012-01-01T09:00:00&#13;
+        2012-01-01T10:30:00&#13;
+        &#13;
+          &#13;
+            Peter Brown&#13;
+          &#13;
+          &#13;
+            William Taylor&#13;
+          &#13;
+        &#13;
+      &#13;
+    &#13;
+    &#13;
+      2012-01-02&#13;
+      &#13;
+        2012-01-02T12:00:00&#13;
+        2012-01-02T13:30:00&#13;
+        &#13;
+          &#13;
+            John Smith&#13;
+          &#13;
+          &#13;
+            Peter Brown&#13;
+          &#13;
+        &#13;
+      &#13;
+      &#13;
+        2012-01-02T10:00:00&#13;
+        2012-01-02T11:30:00&#13;
+        &#13;
+          &#13;
+            Bob Black&#13;
+          &#13;
+          &#13;
+            William Taylor&#13;
+          &#13;
+        &#13;
+      &#13;
+    &#13;
+    &#13;
+      2012-01-03&#13;
+      &#13;
+        2012-01-03T12:00:00&#13;
+        2012-01-03T13:30:00&#13;
+        &#13;
+          &#13;
+            John Smith&#13;
+          &#13;
+          &#13;
+            William Taylor&#13;
+          &#13;
+        &#13;
+      &#13;
+      &#13;
+        2012-01-03T10:00:00&#13;
+        2012-01-03T11:30:00&#13;
+        &#13;
+          &#13;
+            Peter Brown&#13;
+          &#13;
+          &#13;
+            Bob Black&#13;
+          &#13;
+        &#13;
+      &#13;
+    &#13;
+  &#13;
+  &#13;
+    &#13;
+      John Smith&#13;
+      smith@domain.org&#13;
+    &#13;
+    &#13;
+      Peter Brown&#13;
+      brown@domain.org&#13;
+    &#13;
+    &#13;
+      Bob Black&#13;
+      black@domain.org&#13;
+    &#13;
+    &#13;
+      William Taylor&#13;
+      taylor@domain.org&#13;
+    &#13;
+  &#13;
+</outResult>
+   </testResult>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-071"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-072"/>
+   <testResult status="fail" testName="higher-order-functions-073">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-074">
+      <outResult/>
+   </testResult>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-075"/>
+   <testResult status="fail" testName="higher-order-functions-076">
+      <outResult/>
+   </testResult>
 </testrun>

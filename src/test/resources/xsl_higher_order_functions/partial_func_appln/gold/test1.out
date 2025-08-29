@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>true,false</one>
+  <two>true,false</two>
+  <three>true,false</three>
+  <four>true,false</four>
+  <five>
+    <x>true,false</x>
+    <y>true,false</y>
+  </five>
+</result>

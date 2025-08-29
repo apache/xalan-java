@@ -26,7 +26,7 @@
 	      <xsl:for-each select="$srchKeyWords">
 	        <xsl:variable name="keyWord" select="."/>
 	        <srchResult> 
-	          <xsl:copy-of select="$srchInp[$filterCheck(., $keyWord)]"/>
+	          <xsl:copy-of select="$srchInp[$filterCheck(self::word, $keyWord)]"/>
 	        </srchResult>
 	      </xsl:for-each>
       </result>

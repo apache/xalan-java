@@ -19,7 +19,11 @@ package org.apache.xpath.functions.math;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
+import org.apache.xpath.Expression;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -51,33 +55,69 @@ public class FuncMathPow extends Function2Args {
     {
         XObject result = null;
         
-        SourceLocator srcLocator = xctxt.getSAXLocator();
+        SourceLocator srcLocator = xctxt.getSAXLocator();                                
         
-        XObject arg0Result = getEffectiveFuncArgValue(getArg0(), xctxt);        
-        XObject arg1Result = getEffectiveFuncArgValue(getArg1(), xctxt);
+        XObject arg0Result = null;
+        XObject arg1Result = null;
         
-        double lDouble = getDoubleValue(arg0Result, srcLocator, "first");
-        double rDouble = getDoubleValue(arg1Result, srcLocator, "second");
+        Expression arg0Expr = getArg0();
+        Expression arg1Expr = getArg1();
         
-        result = new XSDouble(Math.pow(lDouble, rDouble));
+        if ((arg0Expr instanceof FuncArgPlaceholder) && (arg1Expr instanceof FuncArgPlaceholder)) {
+        	String xpathInlineFuncExprStr = "function($arg0, $arg1) { math:pow($arg0, $arg1) }";
+    	    
+    	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	    	
+	    	result = xpathObj.execute(xctxt, DTM.NULL, null);
+        }
+        else if ((arg0Expr instanceof FuncArgPlaceholder) && !(arg1Expr instanceof FuncArgPlaceholder)) {
+        	arg1Result = getEffectiveFuncArgValue(arg1Expr, xctxt);
+        	double rDouble = getDoubleValue(arg1Result, srcLocator, "second");
+            String xpathInlineFuncExprStr = "function($arg0) { math:pow($arg0, " + rDouble + ") }";
+    	    
+    	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	    	
+	    	result = xpathObj.execute(xctxt, DTM.NULL, null);
+        }
+        else if (!(arg0Expr instanceof FuncArgPlaceholder) && (arg1Expr instanceof FuncArgPlaceholder)) {
+        	arg0Result = getEffectiveFuncArgValue(arg0Expr, xctxt);
+        	double lDouble = getDoubleValue(arg0Result, srcLocator, "first");
+            String xpathInlineFuncExprStr = "function($arg1) { math:pow(" + lDouble + ", $arg1) }";
+    	    
+    	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	    	
+	    	result = xpathObj.execute(xctxt, DTM.NULL, null);
+        }
+        else {        	
+            arg0Result = getEffectiveFuncArgValue(arg0Expr, xctxt);            
+            arg1Result = getEffectiveFuncArgValue(arg1Expr, xctxt);            
+            
+            double lDouble = getDoubleValue(arg0Result, srcLocator, "first");        
+            double rDouble = getDoubleValue(arg1Result, srcLocator, "second");
+            
+            result = new XSDouble(Math.pow(lDouble, rDouble));
+            
+            return result;
+        }                
         
         return result;
     }
     
     /*
-     * Get an 'double' value from an object of type XObject. 
+     * Method definition, to get a primitive double value, from 
+     * an XObject object instance. 
      */
     private double getDoubleValue(XObject xObject, SourceLocator srcLocator, String argNumStr) 
                                                                                  throws javax.xml.transform.TransformerException {
         
-        double resultVal = 0.0;
+        double result = 0.0;
         
         if (xObject instanceof XNumber) {
-           resultVal = ((XNumber)xObject).num();
+           result = ((XNumber)xObject).num();
         }
         else if (xObject instanceof XSNumericType) {
            String strVal = ((XSNumericType)xObject).stringValue();
-           resultVal = (new XSDouble(strVal)).doubleValue();
+           result = (new XSDouble(strVal)).doubleValue();
         }
         else if (xObject instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObject;
@@ -98,7 +138,7 @@ public class FuncMathPow extends Function2Args {
                                                                                                  + "to a double value.", srcLocator);
               }
                
-              resultVal = arg;
+              result = arg;
            }
         }
         else if (xObject instanceof ResultSequence) {
@@ -121,7 +161,7 @@ public class FuncMathPow extends Function2Args {
                                                                                                   + "to a double value.", srcLocator);
                }
                 
-               resultVal = arg;
+               result = arg;
             }
         }
         else {
@@ -129,7 +169,7 @@ public class FuncMathPow extends Function2Args {
                                                                                                      + "math:pow is not xs:double.", srcLocator); 
         }
         
-        return resultVal; 
+        return result; 
     }
 
 }

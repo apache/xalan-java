@@ -96,6 +96,7 @@ import org.apache.xpath.composite.XPathQuantifiedExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
+import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
@@ -291,6 +292,8 @@ public class XPathParser
   static XPathArrayComparison m_xpathArrayComparison = null;
   
   static XPath3ExprSingleComparison m_xpath3ExprSingleComparison = null;
+  
+  static List<FuncArgPlaceholder> m_funcArgPlaceHolderList = new ArrayList<FuncArgPlaceholder>();
   
   private String m_arrowOpRemainingXPathExprStr = null;
   
@@ -2004,6 +2007,22 @@ public class XPathParser
 		 m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
                   								 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
 		 
+	  }
+	  else if (tokenIs("?")) {
+		  // A function argument placeholder, for a function call partial 
+		  // function application.
+
+		  int opPos1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+
+		  appendOp(2, OpCodes.OP_FUNC_ARG_PLACEHOLDER);
+
+		  consumeExpected('?');
+
+		  FuncArgPlaceholder funcArgPlaceholder = new FuncArgPlaceholder();
+		  m_funcArgPlaceHolderList.add(funcArgPlaceholder);
+
+		  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
+				                                  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
 	  }
       else {
          ExprSingle();                  
@@ -4645,7 +4664,7 @@ public class XPathParser
     	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
     			                                                           m_queueMark, m_tokenChar, m_token);
     	if (lookahead(')', 1)) {
-	        // an XPath function argument is () (i.e, an empty sequence)	        
+	        // An XPath function argument is () (i.e, an empty sequence)	        
 	        consumeExpected('(');
 	        consumeExpected(')');                            
 	        
@@ -4748,6 +4767,16 @@ public class XPathParser
     else if (tokenIs("map")) {
        // XPath literal map expression as, function argument    	
   	   mapFuncArg();	
+    }
+    else if (tokenIs("?")) {
+       // A function argument placeholder, for a function call partial 
+       // function application.    	
+       appendOp(2, OpCodes.OP_FUNC_ARG_PLACEHOLDER);
+       
+       consumeExpected('?');
+       
+       FuncArgPlaceholder funcArgPlaceholder = new FuncArgPlaceholder();
+       m_funcArgPlaceHolderList.add(funcArgPlaceholder);
     }
     else if (lookahead(':', 1)) {
        // XPath parse of named function reference, for XPath built-in functions 
