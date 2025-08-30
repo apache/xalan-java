@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <x>true</x>
+    <y>false</y>
+  </one>
+  <two>
+    <x>true</x>
+    <y>false</y>
+  </two>
+  <three>
+    <x>true</x>
+    <y>false</y>
+  </three>
+  <four>
+    <x>true</x>
+    <y>false</y>
+  </four>
+  <five>
+    <x>true</x>
+    <y>true</y>
+    <z>false</z>
+  </five>
+</result>

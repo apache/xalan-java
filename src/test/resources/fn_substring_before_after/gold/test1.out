@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><result>
   <one>hel</one>
-  <two>Hel</two>
+  <two>
+    <a>Hello</a>
+    <b>Hello</b>
+  </two>
 </result>

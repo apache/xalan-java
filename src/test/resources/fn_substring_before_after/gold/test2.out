@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><result>
   <one>ld</one>
-  <two>test string</two>
+  <two>
+    <a>test string</a>
+    <b>test string</b>
+  </two>
 </result>

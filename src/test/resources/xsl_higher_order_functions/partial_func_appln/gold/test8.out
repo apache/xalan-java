@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <X>
+    <one>
+      <x>0</x>
+      <y>-1</y>
+      <z>1</z>
+    </one>
+    <two>
+      <x>0</x>
+      <y>-1</y>
+      <z>1</z>
+    </two>
+    <three>
+      <x>0</x>
+      <y>-1</y>
+      <z>1</z>
+    </three>
+  </X>
+  <Y>
+    <p>0</p>
+    <q>1</q>
+    <r>-1</r>
+  </Y>
+</result>

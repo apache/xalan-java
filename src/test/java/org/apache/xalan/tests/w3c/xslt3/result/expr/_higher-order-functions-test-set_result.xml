@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-29T01:18:11Z" fail="49" name="higher-order-functions" pass="22" skipped="5" statusUnknown="0" totalRun="71">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-30T16:44:54Z" fail="48" name="higher-order-functions" pass="23" skipped="5" statusUnknown="0" totalRun="71">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -109,15 +109,9 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
          <errTrace>javax.xml.transform.TransformerException: XPST0008 : Variable 'ops' has not been declared, or its declaration is not in scope.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="higher-order-functions-063">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="higher-order-functions-063"/>
    <testResult status="fail" testName="higher-order-functions-064">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"/&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-065">
       <outResult>

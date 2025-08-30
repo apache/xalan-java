@@ -15,7 +15,8 @@
 	      <xsl:value-of select="substring-after('hello world', 'lo wor')"/>
 		</one>
 		<two>
-	      <xsl:value-of select="substring-after('HelStrasse test string', 'Straße ', 'http://www.w3.org/2013/collation/UCA?lang=de;strength=primary')"/>
+	      <a><xsl:value-of select="substring-after('HelloStrasse test string', 'Straße ', 'http://www.w3.org/2013/collation/UCA?lang=de;strength=primary')"/></a>
+	      <b><xsl:value-of select="substring-after('HelloStraße test string', 'Strasse ', 'http://www.w3.org/2013/collation/UCA?lang=de;strength=primary')"/></b>
 		</two>
 	 </result>
   </xsl:template>

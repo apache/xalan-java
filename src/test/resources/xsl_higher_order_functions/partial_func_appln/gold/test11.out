@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <x>t</x>
+    <y/>
+  </one>
+  <two>
+    <x>t</x>
+    <y/>
+  </two>
+  <three>
+    <x>t</x>
+    <y/>
+  </three>
+  <four>
+    <x>t</x>
+    <y/>
+  </four>
+  <five>
+    <x>test string</x>
+    <y>test string</y>
+  </five>
+</result>
