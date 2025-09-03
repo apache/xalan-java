@@ -375,6 +375,13 @@ public class XPathParser
     }
 
     lexer.tokenize(expression);
+    
+    if (lexer.isNsBindingRequired() && !lexer.isNsBound()) {
+       String nsUnboundPrefix = lexer.getNsUnboundPrefix();
+       if (nsUnboundPrefix != null) {
+          error(XPATHErrorResources.ER_NS_BINDING, new Object[]{ nsUnboundPrefix });
+       }
+    }
 
     m_ops.setOp(0,OpCodes.OP_XPATH);
     m_ops.setOp(OpMap.MAPINDEX_LENGTH,2);

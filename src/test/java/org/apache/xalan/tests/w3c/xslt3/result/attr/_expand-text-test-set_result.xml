@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-08-30T16:45:15Z" fail="29" name="expand-text" pass="33" skipped="0" statusUnknown="0" totalRun="62">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-03T11:30:12Z" fail="28" name="expand-text" pass="34" skipped="0" statusUnknown="0" totalRun="62">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
@@ -42,11 +42,7 @@
       </outResult>
    </testResult>
    <testResult status="pass" testName="cvt-026"/>
-   <testResult status="fail" testName="cvt-027">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of $</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="cvt-027"/>
    <testResult status="fail" testName="cvt-028">
       <outResult>
          <errTrace>java.lang.NullPointerException</errTrace>

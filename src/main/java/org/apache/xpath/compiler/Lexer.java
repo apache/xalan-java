@@ -78,6 +78,12 @@ class Lexer
   private boolean isAttrName = false;
   
   private boolean isNum = false;
+  
+  private String m_ns_unbound_prefix = null;
+  
+  private boolean m_nsBindingRequired = false;
+  
+  private boolean m_nsBound = false;
 
   /**
    * Create a Lexer object.
@@ -380,6 +386,7 @@ class Lexer
           else
           {
             posOfNSSep = i;
+            m_nsBindingRequired = true;
           }
         }
 
@@ -756,7 +763,15 @@ class Lexer
                addToTokenQueue(xpathLetExprBindingVarNameStr);
                addToTokenQueue(":");    
             }    
-        }		
+        }
+        else if (m_nsBindingRequired) {
+        	if (uName != null) {
+        	   m_nsBound = true;
+        	}
+        	else {
+        	   m_ns_unbound_prefix = prefix;
+        	}
+        }
     }
 
     return -1;
@@ -944,6 +959,18 @@ class Lexer
       }
  	 
  	  return false;
+  }
+  
+  boolean isNsBindingRequired() {
+	  return m_nsBindingRequired; 
+  }
+  
+  boolean isNsBound() {
+	  return m_nsBound;
+  }
+  
+  String getNsUnboundPrefix() {
+	  return m_ns_unbound_prefix; 
   }
   
 }

@@ -136,6 +136,7 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_UNKNOWN_OPCODE = "ER_UNKNOWN_OPCODE";
   public static final String ER_EXTRA_ILLEGAL_TOKENS ="ER_EXTRA_ILLEGAL_TOKENS";
   public static final String ER_UNCLOSED_XPATH_COMMENT ="ER_UNCLOSED_XPATH_COMMENT";
+  public static final String ER_NS_BINDING = "ER_NS_BINDING";
   public static final String ER_EXPECTED_CLOSING_SQUARE_BRACKET = "ER_EXPECTED_CLOSING_SQUARE_BRACKET";
   public static final String ER_IF_EXPR ="ER_IF_EXPR";
   public static final String ER_EXPECTED_DOUBLE_QUOTE = 
@@ -481,6 +482,10 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_UNCLOSED_XPATH_COMMENT,
     "XPST0003 : Unclosed XPath expression comment"},
+  
+  { ER_NS_BINDING,
+    "XPST0081 : An XML namespace prefix ''{0}'' hasn''t been declared within an "
+                + "XSL stylesheet, or hasn''t been set for XPath API invocation"},
   
   { ER_EXPECTED_CLOSING_SQUARE_BRACKET,
      "Could not find token ]"},
