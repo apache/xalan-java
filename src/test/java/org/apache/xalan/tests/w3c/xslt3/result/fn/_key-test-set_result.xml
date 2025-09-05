@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-03T11:30:07Z" fail="3" name="key" pass="21" skipped="0" statusUnknown="1" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-05T12:17:12Z" fail="29" name="key" pass="54" skipped="0" statusUnknown="0" totalRun="83">
    <testResult status="pass" testName="key-001"/>
    <testResult status="fail" testName="key-002">
       <outResult/>
@@ -27,5 +27,102 @@
    <testResult status="pass" testName="key-022"/>
    <testResult status="pass" testName="key-023"/>
    <testResult status="pass" testName="key-024"/>
-   <testResult testName="key-025"/>
+   <testResult status="fail" testName="key-025">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="key-026">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="key-027"/>
+   <testResult status="pass" testName="key-028"/>
+   <testResult status="pass" testName="key-029"/>
+   <testResult status="pass" testName="key-030"/>
+   <testResult status="pass" testName="key-031"/>
+   <testResult status="pass" testName="key-032"/>
+   <testResult status="pass" testName="key-033"/>
+   <testResult status="fail" testName="key-034"/>
+   <testResult status="pass" testName="key-035"/>
+   <testResult status="fail" testName="key-036"/>
+   <testResult status="fail" testName="key-037"/>
+   <testResult status="pass" testName="key-038"/>
+   <testResult status="pass" testName="key-039"/>
+   <testResult status="pass" testName="key-040"/>
+   <testResult status="pass" testName="key-041"/>
+   <testResult status="fail" testName="key-042">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="key-043"/>
+   <testResult status="fail" testName="key-044">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="key-045"/>
+   <testResult status="pass" testName="key-046"/>
+   <testResult status="fail" testName="key-047"/>
+   <testResult status="pass" testName="key-048"/>
+   <testResult status="pass" testName="key-049"/>
+   <testResult status="pass" testName="key-050"/>
+   <testResult status="pass" testName="key-051"/>
+   <testResult status="pass" testName="key-052"/>
+   <testResult status="pass" testName="key-053"/>
+   <testResult status="fail" testName="key-054"/>
+   <testResult status="pass" testName="key-055"/>
+   <testResult status="pass" testName="key-056"/>
+   <testResult status="fail" testName="key-058"/>
+   <testResult status="pass" testName="key-059"/>
+   <testResult status="fail" testName="key-060">
+      <outResult>
+         <errTrace>Expected ,, but found: </errTrace>
+         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
+org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="key-061"/>
+   <testResult status="pass" testName="key-062"/>
+   <testResult status="pass" testName="key-063"/>
+   <testResult status="pass" testName="key-064"/>
+   <testResult status="pass" testName="key-065"/>
+   <testResult status="fail" testName="key-066"/>
+   <testResult status="fail" testName="key-067"/>
+   <testResult status="fail" testName="key-068"/>
+   <testResult status="fail" testName="key-069"/>
+   <testResult status="fail" testName="key-070"/>
+   <testResult status="fail" testName="key-071"/>
+   <testResult status="fail" testName="key-072">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="key-073">
+      <outResult>
+         <errTrace>xsl:key requires attribute: use</errTrace>
+         <errTrace>xsl:variable is not allowed in this position in the stylesheet</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="key-074">
+      <outResult>
+         <errTrace>xsl:key requires attribute: use</errTrace>
+         <errTrace>xsl:variable is not allowed in this position in the stylesheet</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="key-075"/>
+   <testResult status="pass" testName="key-076"/>
+   <testResult status="pass" testName="key-077"/>
+   <testResult status="fail" testName="key-078"/>
+   <testResult status="fail" testName="key-079">
+      <outResult>
+         <errTrace>There is no xsl:key declaration for k!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="key-080">
+      <outResult>
+         <errTrace>There is no xsl:key declaration for k!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="key-081"/>
+   <testResult status="fail" testName="key-082">
+      <outResult>
+         <errTrace>xsl:key requires attribute: use</errTrace>
+         <errTrace>xsl:apply-templates is not allowed in this position in the stylesheet</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="key-083"/>
+   <testResult status="pass" testName="key-084"/>
 </testrun>

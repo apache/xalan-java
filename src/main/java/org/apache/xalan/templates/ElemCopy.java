@@ -25,8 +25,8 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.ClonerToResultTree;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
@@ -39,7 +39,9 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
@@ -118,6 +120,33 @@ public class ElemCopy extends ElemUse
    */
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
+  }
+  
+  /**
+   * The optional select attribute contains an expression.
+   */
+  public XPath m_selectExpression = null;
+  
+  /**
+   * Set the "select" attribute.
+   * The optional select attribute contains an expression.
+   *
+   * @param expr Expression for select attribute 
+   */
+  public void setSelect(XPath expr)
+  {      
+    m_selectExpression = expr;
+  }
+
+  /**
+   * Get the "select" attribute.
+   * The optional select attribute contains an expression.
+   *
+   * @return Expression for select attribute 
+   */
+  public XPath getSelect()
+  {
+    return m_selectExpression;
   }
 
   /**
@@ -204,11 +233,65 @@ public class ElemCopy extends ElemUse
 			  throw new TransformerException("XTTE1540 : An xsl:copy instruction cannot have both the attributes "
 					  																	   + "'type' and 'validation'.", srcLocator); 
 		  }
+		  
+		  SerializationHandler rthandler = transformer.getSerializationHandler();
+		  
+		  if (m_selectExpression != null) {
+			 Expression selectExpr = m_selectExpression.getExpression();
+			 if (selectExpr instanceof LocPathIterator) {
+				LocPathIterator locPathIter = (LocPathIterator)selectExpr;
+				try {
+				   DTMCursorIterator dtmCursorIter = locPathIter.asIterator(xctxt, sourceNode);
+				   int nextNode = dtmCursorIter.nextNode();
+				   if ((nextNode != DTM.NULL) && (dtmCursorIter.nextNode() != DTM.NULL)) {
+					   throw new TransformerException("XTTE3180 : An xsl:copy instruction's 'select' attribute evaluation "
+					   		                                                             + "resulted in a node set with length greater than one.", srcLocator);  
+				   }
+				   
+				   dtmCursorIter = locPathIter.asIterator(xctxt, sourceNode);
+				   nextNode = dtmCursorIter.nextNode();				   
+				   if (nextNode != DTM.NULL) {
+					   sourceNode = nextNode;
+					   xctxt.pushCurrentNode(sourceNode);
+					   dtm = xctxt.getDTM(sourceNode);
+					   nodeType = dtm.getNodeType(sourceNode);
+				   }
+				}
+				catch (Exception ex) {
+					String errMesg = ex.getMessage();
+					if (errMesg.contains("XTTE3180")) {
+					   throw ex;
+					}
+				}
+			 }
+			 else {
+				XObject xObj = selectExpr.execute(xctxt);
+				if (xObj instanceof ResultSequence) {
+				   ResultSequence rSeq = (ResultSequence)xObj;
+				   if (rSeq.size() > 1) {
+					  throw new TransformerException("XTTE3180 : An xsl:copy instruction's 'select' attribute evaluation resulted "
+					  		                                                           + "in a sequence of length greater than one.", srcLocator); 
+				   }
+				   else if (rSeq.size() == 1) {
+					  ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, rthandler, xctxt, false);
+					  
+					  return;
+				   }
+				   
+				   return;
+				}
+				else {
+				   ResultSequence rSeq = new ResultSequence();
+				   rSeq.add(xObj);
+				   ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, rthandler, xctxt, false);
+				   
+				   return;
+				}
+			 }
+		  }
 
 		  if ((DTM.DOCUMENT_NODE != nodeType) && (DTM.DOCUMENT_FRAGMENT_NODE != nodeType))
 		  {
-			  SerializationHandler rthandler = transformer.getSerializationHandler();
-
 			  if (transformer.getDebug())
 				  transformer.getTraceManager().emitTraceEvent(this);
 			  

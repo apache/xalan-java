@@ -298,7 +298,7 @@ public class XSLTSchema extends XSLTElementDef
     // Optional
     // xsl:sort
     XSLTAttributeDef stableAttrOpt = new XSLTAttributeDef(null, "stable",
-                                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
+                                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);    
     
     // Optional
     // xsl:value-of
@@ -355,7 +355,7 @@ public class XSLTSchema extends XSLTElementDef
 
     // Optional                                          
     // xsl:variable, xsl:value-of, xsl:param, xsl:with-param, xsl:attribute, xsl:break, 
-    // xsl:on-completion, xsl:sequence, xsl:try, xsl:catch                                       
+    // xsl:on-completion, xsl:sequence, xsl:try, xsl:catch, xsl:copy                                       
     XSLTAttributeDef selectAttrOpt = new XSLTAttributeDef(null, "select",
                                        XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
@@ -927,10 +927,11 @@ public class XSLTSchema extends XSLTElementDef
                          null /*alias */, templateElements /* elements */,  // %template;>
                           new XSLTAttributeDef[]{
                                                   spaceAttr,
+                                                  selectAttrOpt,
                                                   useAttributeSetsAttr,
                                                   typeAttrOpt,
                          		                  validationAttrOpt, 
-                         		                  xpathDefaultNamespaceAttrOpt, expandTextAttrOpt }, 
+                         		                  xpathDefaultNamespaceAttrOpt, expandTextAttrOpt },
                                         new ProcessorTemplateElem(),
                           ElemCopy.class /* class object */, 20, true);
     XSLTElementDef xslMessage = new XSLTElementDef(this,

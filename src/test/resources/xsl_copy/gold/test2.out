@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><info>
+  <one>
+    <number>1</number>
+    <number>2</number>
+    <number>3</number>
+  </one>
+  <two>
+    <a>1</a>
+    <b>2</b>
+    <c>3</c>
+  </two>
+</info>

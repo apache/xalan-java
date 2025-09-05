@@ -257,6 +257,15 @@ class Lexer
           isNum = false;
         }
         
+      case '|' :  
+        if ((pat.length() > (i + 1)) && (pat.charAt(i + 1) == '|')) {
+           // To recognize the character sequence "||", as an XPath 
+           // token.
+           addToTokenQueue(pat.substring(i, i + 2));
+           i += 1;
+           break;
+        }        
+        
         // fall-through on purpose
       case '(' :
       case '[' :
@@ -264,15 +273,7 @@ class Lexer
       case ']' :
       case '{' :
       case '}' :
-      case '?' :    
-      case '|' :
-        if ((pat.length() > (i + 1)) && (pat.charAt(i + 1) == '|')) {
-          // To recognize the character sequence "||", as an XPath 
-          // token.
-          addToTokenQueue(pat.substring(i, i + 2));
-          i += 1;
-          break;
-        }        
+      case '?' :
       case '/' :
       case '*' :
       case '+' :

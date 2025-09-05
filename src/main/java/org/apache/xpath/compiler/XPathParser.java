@@ -5570,7 +5570,6 @@ public class XPathParser
    */
   protected void NodeTest(int axesType) throws javax.xml.transform.TransformerException
   {
-
     if (lookahead('(', 1))
     {
       Object nodeTestOp = Keywords.getNodeType(m_token);
