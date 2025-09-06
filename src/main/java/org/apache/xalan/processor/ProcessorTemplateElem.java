@@ -97,7 +97,7 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
    */
   private void verifyXSLAllowedAttributes(String localName, Attributes attributes) 
 		                                                                      throws org.apache.xml.utils.WrappedRuntimeException {
-	  if (Constants.ELEMNAME_FOREACHGROUP_STRING.equals(localName)) {
+	  if ((Constants.ELEMNAME_FOREACHGROUP_STRING).equals(localName) || (Constants.ELEMNAME_COPY_OF_STRING).equals(localName)) {
 		  int noOfAttributes = attributes.getLength();
 		  if (noOfAttributes > 0) {
 			  XSLTElementDef elemDef = getElemDef();
@@ -106,8 +106,7 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
 				  XSLTAttributeDef attrDef = elemDef.getAttributeDef(null, attrLocalName);
 				  if (attrDef == null) {
 					  TransformerException te = new TransformerException("XTSE0090 : Attribute '" + attrLocalName + "' is not allowed "
-							  															          + "to appear on element " + Constants.
-							  															          ELEMNAME_FOREACHGROUP_STRING + ".", this);
+							  															          + "to appear on element " + localName + ".", this);
 					  throw new org.apache.xml.utils.WrappedRuntimeException(te);
 				  }
 			  }

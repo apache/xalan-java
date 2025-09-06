@@ -16,6 +16,7 @@
  */
 package org.apache.xalan.xslt.util;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,9 +24,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.StylesheetRoot;
@@ -61,11 +66,17 @@ import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.patterns.NodeTest;
+import org.w3c.dom.Attr;
 import org.w3c.dom.DOMConfiguration;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyType;
@@ -542,13 +553,13 @@ public class XslTransformEvaluationHelper {
     	String resultStr = null;
 
     	DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.
-    																				 newInstance()).getDOMImplementation("LS"));
+    																				 newInstance()).getDOMImplementation("LS"));    	
     	LSSerializer lsSerializer = domImplLS.createLSSerializer();
     	DOMConfiguration domConfig = lsSerializer.getDomConfig();
     	domConfig.setParameter(XSL3FunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
     	resultStr = lsSerializer.writeToString(node);
     	resultStr = resultStr.replaceFirst(XSL3FunctionService.UTF_16, XSL3FunctionService.UTF_8);
-
+        		
     	return resultStr;
     }
     
@@ -689,6 +700,47 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
+     * Method definition, to strip XML namespace nodes recursively
+     * from the supplied XMLNodeCursorImpl node set object.
+     * 
+     * @param nodeSet					The supplied XMLNodeCursorImpl node set object
+     * @param xctxt					    An XPath context object
+     */
+    public static XMLNodeCursorImpl stripNamespacesNodeSet(XMLNodeCursorImpl nodeSet, XPathContext xctxt) throws TransformerException {
+ 	   
+ 	   XMLNodeCursorImpl result = null;
+ 	   
+ 	   int nodeHandle = nodeSet.asNode(xctxt);
+ 	   DTM dtm = xctxt.getDTM(nodeHandle);
+ 	   Node node = dtm.getNode(nodeHandle);
+ 	   String xmlStr = null;
+ 	   
+ 	   SourceLocator srcLocator = xctxt.getSAXLocator();
+ 	   
+ 	   try {
+ 		   xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+ 		   DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+ 		   dbFactory.setNamespaceAware(true);
+ 		   DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
+ 		   StringReader strReader = new StringReader(xmlStr);
+ 		   InputSource inpSource = new InputSource(strReader);
+ 		   Document document = docBuilder.parse(inpSource);
+ 		   nodeNamespacesStrip(document.getDocumentElement());
+
+ 		   DTMManager dtmManager = xctxt.getDTMManager();
+ 		   DTM resultDtm = dtmManager.getDTM(new DOMSource(document), true, null, false, false);
+ 		   int resultNodeHandle = resultDtm.getDocument();
+
+ 		   result = new XMLNodeCursorImpl(resultNodeHandle, dtmManager);
+ 	   }
+ 	   catch (Exception ex) {
+ 		   throw new TransformerException(ex.getMessage(), srcLocator); 
+ 	   }
+ 	   
+ 	   return result;
+    }
+    
+    /**
      * This method produces, numerical sum of xdm sequence items.
      *  
      * @param resultSeq  An xdm sequence object instance, whose items
@@ -715,6 +767,34 @@ public class XslTransformEvaluationHelper {
        }
        
        return sum;
+    }
+    
+    /**
+     * Method definition, to strip XML namespace nodes recursively
+     * from the supplied XML dom element node.
+     * 
+     * @param elemNode					The supplied XML dom element node
+     */
+    private static void nodeNamespacesStrip(Element elemNode) {
+
+ 	   NamedNodeMap namedNodeMap = elemNode.getAttributes();
+
+ 	   int attrCount = namedNodeMap.getLength();
+ 	   for (int idx = 0; idx < attrCount; idx++) {
+ 		   Node node = namedNodeMap.item(idx);
+ 		   String nodeName = node.getNodeName();
+ 		   if (nodeName.startsWith(Constants.ATTRNAME_XMLNS) || (Constants.ATTRNAME_XMLNSDEF).equals(nodeName)) {
+ 			   elemNode.removeAttributeNode((Attr)node);
+ 			   NodeList nodeList = elemNode.getChildNodes();
+ 			   int nodeListLength = nodeList.getLength();
+ 			   for (int idx2 = 0; idx2 < nodeListLength; idx2++) {
+ 				   Node node2 = nodeList.item(idx2);
+ 				   if (node2.getNodeType() == Node.ELEMENT_NODE) {
+ 					   nodeNamespacesStrip((Element)node2); 
+ 				   }
+ 			   }
+ 		   }
+ 	   }
     }
 
 }

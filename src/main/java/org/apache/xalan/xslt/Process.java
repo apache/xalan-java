@@ -936,8 +936,12 @@ public class Process
 						  if (encoding != null) {
 							 inpSrc.setEncoding(encoding); 
 						  }
+						  
+						  // Using an XMLReader to construct SAXSource for an XML input
+						  // document, enables correct XML namespace processing. 
+						  XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 
-						  transformer.transform(new SAXSource(inpSrc), new DOMResult(outNode));
+						  transformer.transform(new SAXSource(xmlReader, inpSrc), new DOMResult(outNode));
 
 						  // Now serialize output to disk with identity transformer
 						  Transformer identityTransformer = stf.newTransformer();

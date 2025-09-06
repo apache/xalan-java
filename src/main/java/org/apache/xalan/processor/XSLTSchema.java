@@ -136,6 +136,9 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslExpandTextAttrOpt = new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "expand-text",
                                            XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     
+    XSLTAttributeDef xslCopyNamespacesOpt = new XSLTAttributeDef(null, "copy-namespaces",
+                                           XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
+    
     // Required.
     // xsl:output-character                                     
     XSLTAttributeDef characterAttrRequired = new XSLTAttributeDef(null, "character",
@@ -596,6 +599,7 @@ public class XSLTSchema extends XSLTElementDef
                                  Constants.S_XSLNAMESPACEURL, "copy-of",
                                  null /*alias */, null /* elements */,
                                  new XSLTAttributeDef[]{ selectAttrRequired,
+                                		                 xslCopyNamespacesOpt,
                                 		                 typeAttrOpt,
                                 		                 validationAttrOpt, xpathDefaultNamespaceAttrOpt,
                                 		                 expandTextAttrOpt },

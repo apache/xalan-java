@@ -30,8 +30,8 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.TreeWalker2Result;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
@@ -198,6 +198,31 @@ public class ElemCopyOf extends ElemTemplateElement
   }
   
   /**
+   * This class field represents, xsl:copy-of instruction's attribute 
+   * copy-namespaces's value, with default value true.
+   */
+  private boolean m_copy_namespaces = true;
+  
+  /**
+   * Set the value of "copy-namespaces" attribute.
+   *
+   * @param v   Value of the "copy-namespaces" attribute
+   */
+  public void setCopyNamespaces(boolean v)
+  {
+	  m_copy_namespaces = v;
+  }
+
+  /**
+   * Get the value of "copy-namespaces" attribute.
+   *  
+   * @return		  The value of "copy-namespaces" attribute 
+   */
+  public boolean getCopyNamespaces() {
+	  return m_copy_namespaces;
+  }
+  
+  /**
    * This function is called after everything else has been
    * recomposed, and allows the template to set remaining
    * values that may be based on some other property that
@@ -297,6 +322,9 @@ public class ElemCopyOf extends ElemTemplateElement
             switch (xObjectType) {           
                 case XObject.CLASS_NODESET :
                   XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)value;
+                  if (!m_copy_namespaces) {					  					 					  
+                	 xNodeSet = XslTransformEvaluationHelper.stripNamespacesNodeSet(xNodeSet, xctxt);
+                  }
                   xNodeSet.setTypeAttrForValidation(type);
                   if (validationStr != null) {
                 	  if (!isValidationStrOk(validationStr)) {
@@ -312,13 +340,33 @@ public class ElemCopyOf extends ElemTemplateElement
                                                         rhandler, value, transformer.getXPathContext());
                   break;
                 case XObject.CLASS_RESULT_SEQUENCE :         
-                  ResultSequence resultSequence = (ResultSequence)value;          
+                  ResultSequence resultSequence = (ResultSequence)value;
+                  if (!m_copy_namespaces) {
+                	 int rSeqLength = resultSequence.size();
+                	 for (int idx = 0; idx < rSeqLength; idx++) {
+                		XObject xObj = resultSequence.item(idx);
+                		if (xObj instanceof XMLNodeCursorImpl) {
+                		   XMLNodeCursorImpl nodeSet1 = XslTransformEvaluationHelper.stripNamespacesNodeSet((XMLNodeCursorImpl)xObj, xctxt);
+                		   resultSequence.set(idx, nodeSet1);
+                		}
+                	 }
+                  }
                   copyOfActionOnResultSequence(resultSequence, transformer, rhandler, xctxt, false);          
                   break;
                 case XObject.CLASS_ARRAY : 
                   XPathArray xpathArray = (XPathArray)value;
                   List<XObject> nativeArr = xpathArray.getNativeArray();
                   ResultSequence resultSequenceArr = getResultSequenceFromXPathArray(nativeArr);
+                  if (!m_copy_namespaces) {
+                	  int rSeqLength = resultSequenceArr.size();
+                	  for (int idx = 0; idx < rSeqLength; idx++) {
+                		  XObject xObj = resultSequenceArr.item(idx);
+                		  if (xObj instanceof XMLNodeCursorImpl) {
+                			  XMLNodeCursorImpl nodeSet1 = XslTransformEvaluationHelper.stripNamespacesNodeSet((XMLNodeCursorImpl)xObj, xctxt);
+                			  resultSequenceArr.set(idx, nodeSet1);
+                		  }
+                	  }
+                  }
                   copyOfActionOnResultSequence(resultSequenceArr, transformer, rhandler, xctxt, false);
                   break;
                 case XObject.CLASS_UNKNOWN :
@@ -410,11 +458,19 @@ public class ElemCopyOf extends ElemTemplateElement
   }
   
   /**
-   *  Given an an XNodeSet node object, this method does XSL copy-of action on the node.
+   * Given an XMLNodeCursorImpl node object, this method does XSL copy-of action on the node.
+   * 
+   * @param nodeSet											The supplied XMLNodeCursorImpl object
+   * @param transformer										The supplied TransformerImpl object
+   * @param serializationHandler                            The supplied SerializationHandler object
+   * @param xctxt                                           The supplied XPathContext object
+   * @throws TransformerException
+   * @throws SAXException
    */
   public static void copyOfActionOnNodeSet(XMLNodeCursorImpl nodeSet, TransformerImpl transformer, 
                                                                       SerializationHandler serializationHandler, XPathContext xctxt) 
-                                                                               throws TransformerException, SAXException {
+                                                                               throws TransformerException, SAXException {	  	  	  	  
+	  	  
 	  DTMCursorIterator dtmIter = nodeSet.iter();
 
       DTMTreeWalker tw = new TreeWalker2Result(transformer, serializationHandler);

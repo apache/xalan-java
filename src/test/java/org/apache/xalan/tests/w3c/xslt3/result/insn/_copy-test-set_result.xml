@@ -1,52 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-05T12:16:44Z" fail="38" name="copy" pass="21" skipped="0" statusUnknown="1" totalRun="60">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-06T11:55:54Z" fail="32" name="copy" pass="27" skipped="0" statusUnknown="1" totalRun="60">
    <testResult status="pass" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="pass" testName="copy-0103"/>
-   <testResult status="fail" testName="copy-0104">
-      <outResult>
-         <errTrace>in is not allowed in this position in the stylesheet</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0105">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;OL&gt;&#13;
-  &lt;LI&gt;item1&lt;/LI&gt;&#13;
-  &lt;LI&gt;item2&lt;/LI&gt;&#13;
-  &lt;LI&gt;item3&lt;/LI&gt;&#13;
-  &lt;OL&gt;&#13;
-    &lt;LI&gt;subitem1&lt;/LI&gt;&#13;
-    &lt;LI&gt;subitem2&lt;/LI&gt;&#13;
-    &lt;OL&gt;&#13;
-      &lt;LI&gt;subitem3&lt;/LI&gt;&#13;
-    &lt;/OL&gt;&#13;
-  &lt;/OL&gt;&#13;
-&lt;/OL&gt;&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="copy-0104"/>
+   <testResult status="pass" testName="copy-0105"/>
    <testResult status="pass" testName="copy-0201"/>
    <testResult status="pass" testName="copy-0202"/>
    <testResult status="pass" testName="copy-0203"/>
    <testResult status="pass" testName="copy-0401"/>
    <testResult status="pass" testName="copy-0501"/>
-   <testResult status="fail" testName="copy-0601"/>
+   <testResult status="pass" testName="copy-0601"/>
    <testResult status="fail" testName="copy-0602"/>
-   <testResult status="fail" testName="copy-0603"/>
+   <testResult status="pass" testName="copy-0603"/>
    <testResult status="fail" testName="copy-0604"/>
-   <testResult status="fail" testName="copy-0605"/>
+   <testResult status="pass" testName="copy-0605"/>
    <testResult status="fail" testName="copy-0606"/>
-   <testResult status="fail" testName="element-0607">
-      <outResult>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;output&gt;&lt;with-namespaces&gt;&lt;pink xmlns:rose="http://www.rose.com"&gt;&#13;
- &lt;green xmlns:grass="http://www.grass.com"&gt;&#13;
-  &lt;red xmlns:blood="http://www.blood.com"&gt;&#13;
-   &lt;blue xmlns:sky="http://www.sky.com"/&gt;&#13;
-  &lt;/red&gt;&#13;
- &lt;/green&gt;&#13;
-&lt;/pink&gt;&lt;/with-namespaces&gt;&lt;without-namespaces&gt;&lt;pink xmlns:rose="http://www.rose.com"&gt;&#13;
- &lt;green xmlns:grass="http://www.grass.com"&gt;&#13;
-  &lt;red xmlns:blood="http://www.blood.com"&gt;&#13;
-   &lt;blue xmlns:sky="http://www.sky.com"/&gt;&#13;
-  &lt;/red&gt;&#13;
- &lt;/green&gt;&#13;
-&lt;/pink&gt;&lt;/without-namespaces&gt;&lt;/output&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="element-0607"/>
    <testResult status="fail" testName="element-0608">
       <outResult>
          <errTrace>Illegal value: #current used for QNAME attribute: mode</errTrace>
@@ -56,22 +25,54 @@
    <testResult status="fail" testName="copy-0609"/>
    <testResult status="fail" testName="copy-0610"/>
    <testResult status="fail" testName="copy-0611"/>
-   <testResult status="fail" testName="copy-0612"/>
-   <testResult status="fail" testName="copy-0613"/>
-   <testResult status="fail" testName="copy-0614"/>
-   <testResult status="fail" testName="copy-0615"/>
-   <testResult status="fail" testName="copy-0616"/>
-   <testResult status="fail" testName="copy-0617"/>
-   <testResult status="fail" testName="copy-0618"/>
-   <testResult status="fail" testName="copy-0619"/>
-   <testResult status="fail" testName="copy-0620"/>
-   <testResult status="fail" testName="copy-0621"/>
-   <testResult status="fail" testName="copy-0622"/>
-   <testResult status="fail" testName="copy-0623"/>
-   <testResult status="fail" testName="copy-0624"/>
-   <testResult status="fail" testName="copy-0625"/>
-   <testResult status="fail" testName="copy-0626"/>
-   <testResult status="fail" testName="copy-0627"/>
+   <testResult status="fail" testName="copy-0612">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0613">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0614">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0615">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0616">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0617">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0618">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0619">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0620">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0621">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0622">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0623">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0624">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0625">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0626">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="copy-0627">
+      <outResult/>
+   </testResult>
    <testResult status="pass" testName="copy-0701"/>
    <testResult status="pass" testName="copy-0801"/>
    <testResult status="pass" testName="copy-0901"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-05T12:16:43Z" fail="14" name="call-template" pass="27" skipped="1" statusUnknown="0" totalRun="41">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-06T11:55:53Z" fail="14" name="call-template" pass="27" skipped="1" statusUnknown="0" totalRun="41">
    <testResult status="fail" testName="call-template-0001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
    </testResult>

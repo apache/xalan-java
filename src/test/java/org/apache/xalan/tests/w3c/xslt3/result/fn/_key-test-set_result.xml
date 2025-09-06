@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-05T12:17:12Z" fail="29" name="key" pass="54" skipped="0" statusUnknown="0" totalRun="83">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-06T11:56:20Z" fail="29" name="key" pass="54" skipped="0" statusUnknown="0" totalRun="83">
    <testResult status="pass" testName="key-001"/>
    <testResult status="fail" testName="key-002">
       <outResult/>
@@ -93,13 +93,13 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="fail" testName="key-073">
       <outResult>
          <errTrace>xsl:key requires attribute: use</errTrace>
-         <errTrace>xsl:variable is not allowed in this position in the stylesheet</errTrace>
+         <errTrace>XTSE0260 : xsl:variable is not allowed in this position in the stylesheet</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="key-074">
       <outResult>
          <errTrace>xsl:key requires attribute: use</errTrace>
-         <errTrace>xsl:variable is not allowed in this position in the stylesheet</errTrace>
+         <errTrace>XTSE0260 : xsl:variable is not allowed in this position in the stylesheet</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="key-075"/>
@@ -120,7 +120,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="fail" testName="key-082">
       <outResult>
          <errTrace>xsl:key requires attribute: use</errTrace>
-         <errTrace>xsl:apply-templates is not allowed in this position in the stylesheet</errTrace>
+         <errTrace>XTSE0260 : xsl:apply-templates is not allowed in this position in the stylesheet</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="key-083"/>

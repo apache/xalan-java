@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-05T12:17:06Z" fail="8" name="attribute-set" pass="41" skipped="1" statusUnknown="0" totalRun="49">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-06T11:56:15Z" fail="8" name="attribute-set" pass="41" skipped="1" statusUnknown="0" totalRun="49">
    <testResult status="pass" testName="attribute-set-0101"/>
    <testResult status="fail" testName="attribute-set-0102">
       <outResult/>
@@ -14,7 +14,7 @@
    <testResult status="pass" testName="attribute-set-0107"/>
    <testResult status="fail" testName="attribute-set-0108">
       <outResult>
-         <errTrace>xsl:next-match is not allowed in this position in the stylesheet</errTrace>
+         <errTrace>XTSE0260 : xsl:next-match is not allowed in this position in the stylesheet</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="attribute-set-0201"/>
