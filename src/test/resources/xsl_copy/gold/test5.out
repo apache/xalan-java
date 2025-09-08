@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <c xmlns="http://a1" a="1" b="2">
+       <d/>
+    </c>
+  </one>
+  <two>
+    <c xmlns="http://a1" a="1" b="2">
+       <d/>
+    </c>
+  </two>
+</result>

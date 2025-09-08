@@ -932,6 +932,7 @@ public class XSLTSchema extends XSLTElementDef
                           new XSLTAttributeDef[]{
                                                   spaceAttr,
                                                   selectAttrOpt,
+                                                  xslCopyNamespacesOpt,
                                                   useAttributeSetsAttr,
                                                   typeAttrOpt,
                          		                  validationAttrOpt, 

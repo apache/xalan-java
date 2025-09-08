@@ -38,6 +38,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttribute;
+import org.apache.xalan.templates.ElemCallTemplate;
 import org.apache.xalan.templates.ElemChoose;
 import org.apache.xalan.templates.ElemComment;
 import org.apache.xalan.templates.ElemCopy;
@@ -7768,6 +7769,12 @@ public class XPathParser
     			result = getXPathDefaultNamespace(((ElemApplyTemplates)xpathExprXslParentNode).getParentElem()); 
     		}
     	}
+    	else if (xpathExprXslParentNode instanceof ElemCallTemplate) {
+    		result = ((ElemCallTemplate)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemCallTemplate)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}    	
     	else if (xpathExprXslParentNode instanceof ElemForEach) {
     		result = ((ElemForEach)xpathExprXslParentNode).getXpathDefaultNamespace();
     		if (result == null) {

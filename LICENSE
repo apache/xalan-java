@@ -212,8 +212,6 @@ Source:   https://commons.apache.org/proper/commons-logging/
 Used by:  Xalan-Java 2's non Java extensions
 
 
-
-
 The following license applies to the included files:
   tools/ant.jar
   tools/antRun
@@ -271,12 +269,6 @@ Used By: Xalan's build process: java/build.xml and test/build.xml
  *
  */
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
-
-
-
 
 
 The following license, Apache Software License, Version 1.1,
@@ -345,12 +337,6 @@ Used By: BCEL.jar which is used by XSLTC component of xml-xalan/java
  * <http://www.apache.org/>.
  */
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
-
-
-
 
 
 The following license applies to the DOM documentation
@@ -425,13 +411,6 @@ Last revised by Reagle $Date: 2005-07-19 12:33:09 -0400 (Tue, 19 Jul 2005) $
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-
-
-
-
-
-
-
 The following license applies to the DOM software,
 for the org.w3c.dom.* packages in jar file xml-apis.jar:
 
@@ -495,12 +474,6 @@ Last revised by Reagle $Date: 2005-07-19 12:33:09 -0400 (Tue, 19 Jul 2005) $
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-
-
-
-
-
-
 The following license applies to the SAX software,
 for the org.xml.sax.* packages in jar file xml-apis.jar:
 
@@ -508,12 +481,6 @@ for the org.xml.sax.* packages in jar file xml-apis.jar:
 This module, both source code and documentation, is in the Public Domain,
 and comes with NO WARRANTY. See http://www.saxproject.org for further information. 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
-
-
-
 
 
 The following license applies to the jar file 
@@ -544,12 +511,6 @@ in connection with the use or performance of this software.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-
-
-
-
-
-
 The following license applies to the jar file runtime.jar - Component
 of JavaCup: LALR Parser Generator for Java(TM).
 Source:  http://www.cs.princeton.edu/~appel/modern/java/CUP
@@ -577,12 +538,6 @@ whatsoever resulting from loss of use, data or profits, whether in an action
 of contract, negligence or other tortious action, arising out of or 
 in connection with the use or performance of this software. 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
-
-
-
 
 
 The following license applies to the JLEX jar file 
@@ -616,12 +571,6 @@ Java is a trademark of Sun Microsystems, Inc. References to the Java
 programming language in relation to JLex are not meant to imply that 
 Sun endorses this product. 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
-
-
-
 
 
 The following license applies to the jar file 

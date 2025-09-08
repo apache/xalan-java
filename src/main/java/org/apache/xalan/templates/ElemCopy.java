@@ -182,6 +182,31 @@ public class ElemCopy extends ElemUse
    */
   private int m_globals_size;
   
+  /**
+   * This class field represents, xsl:copy instruction's attribute 
+   * copy-namespaces's value, with default value true.
+   */
+  private boolean m_copy_namespaces = true;
+  
+  /**
+   * Set the value of "copy-namespaces" attribute.
+   *
+   * @param v   Value of the "copy-namespaces" attribute
+   */
+  public void setCopyNamespaces(boolean v)
+  {
+	  m_copy_namespaces = v;
+  }
+
+  /**
+   * Get the value of "copy-namespaces" attribute.
+   *  
+   * @return		  The value of "copy-namespaces" attribute 
+   */
+  public boolean getCopyNamespaces() {
+	  return m_copy_namespaces;
+  }
+  
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
 	  super.compose(sroot);
@@ -293,11 +318,11 @@ public class ElemCopy extends ElemUse
 		  if ((DTM.DOCUMENT_NODE != nodeType) && (DTM.DOCUMENT_FRAGMENT_NODE != nodeType))
 		  {
 			  if (transformer.getDebug())
-				  transformer.getTraceManager().emitTraceEvent(this);
+				  transformer.getTraceManager().emitTraceEvent(this);			  
 			  
 			  if (nodeType == DTM.TEXT_NODE) {				  				  
-				  XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(sourceNode, xctxt);
-				  String nodeStrValue = xdmNode.str();				  
+				  XMLNodeCursorImpl nodeSet = new XMLNodeCursorImpl(sourceNode, xctxt);
+				  String nodeStrValue = nodeSet.str();				  
 				  if (rthandler instanceof SerializerBase) {					  					  
 			    	  SerializerBase serializerBase = (SerializerBase)rthandler;
 			    	  CharacterMapConfig charMapConfig = serializerBase.getCharMapConfig();
@@ -311,7 +336,7 @@ public class ElemCopy extends ElemUse
 				  else {
 					  ClonerToResultTree.cloneToResultTree(sourceNode, nodeType, dtm, rthandler, false); 
 				  }				  
-			  }
+			  }			  
 			  else {
 			      ClonerToResultTree.cloneToResultTree(sourceNode, nodeType, dtm, rthandler, false);
 			  }
@@ -319,8 +344,11 @@ public class ElemCopy extends ElemUse
 			  if (DTM.ELEMENT_NODE == nodeType)
 			  {
 				  super.execute(transformer);
-				  SerializerUtils.processNSDecls(rthandler, sourceNode, nodeType, dtm);
-
+				  
+				  if (m_copy_namespaces) {
+				     SerializerUtils.processNSDecls(rthandler, sourceNode, nodeType, dtm);
+				  }
+				  
 				  if (type != null) {
 					  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 					  XSModel xsModel = stylesheetRoot.getXsModel();        			          			          			  
@@ -401,6 +429,7 @@ public class ElemCopy extends ElemUse
 				  String localName = dtm.getLocalName(sourceNode);
 				  transformer.getResultTreeHandler().endElement(ns, localName, dtm.getNodeName(sourceNode));
 			  }
+			  
 			  if (transformer.getDebug())
 				  transformer.getTraceManager().emitTraceEndEvent(this);         
 		  }

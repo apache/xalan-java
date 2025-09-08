@@ -2257,6 +2257,9 @@ public class ElemTemplateElement extends UnImplNode
   	else if (elemTemplateElem instanceof ElemApplyTemplates) {
   		result = ((ElemApplyTemplates)elemTemplateElem).getExpandText();  		
   	}
+  	else if (elemTemplateElem instanceof ElemCallTemplate) {
+  		result = ((ElemCallTemplate)elemTemplateElem).getExpandText();  		
+  	}
   	else if (elemTemplateElem instanceof ElemForEach) {
   		result = ((ElemForEach)elemTemplateElem).getExpandText();  		
   	}

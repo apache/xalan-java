@@ -40,7 +40,8 @@ import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.patterns.UnionPattern;
 
 /**
- * Encapsulates a template list, and helps locate individual templates.
+ * Encapsulates a template list, and helps locate individual 
+ * templates and functions.
  * 
  * @xsl.usage advanced
  */
@@ -119,11 +120,11 @@ public class TemplateList implements java.io.Serializable
     		}
     		else if (matchExpr instanceof StepPattern)
     		{
-    			insertPatternInTable((StepPattern) matchExpr, template);
+    			insertPatternInTable((StepPattern)matchExpr, template);
     		}
     		else if (matchExpr instanceof UnionPattern)
     		{
-    			UnionPattern upat = (UnionPattern) matchExpr;
+    			UnionPattern upat = (UnionPattern)matchExpr;
     			StepPattern[] pats = upat.getPatterns();
     			int n = pats.length;
 
@@ -731,7 +732,7 @@ public class TemplateList implements java.io.Serializable
       xctxt.pushNamespaceContextNull();
       xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
       try
-      {
+      {    	
         do
         {
           ElemTemplate template = head.getTemplate();        
@@ -756,7 +757,7 @@ public class TemplateList implements java.io.Serializable
     }
 
     return null;
-  }  // end findTemplate
+  }  // end getTemplate
   
   /**
    * Given a target element, find the template that best
