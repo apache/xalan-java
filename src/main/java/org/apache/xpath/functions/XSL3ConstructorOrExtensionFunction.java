@@ -32,9 +32,15 @@ import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XNull;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.res.XPATHMessages;
+
+import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * An object of this class represents an XPath constructor function, 
@@ -217,19 +223,41 @@ public class XSL3ConstructorOrExtensionFunction extends Function
     		Expression arg = (Expression) m_argVec.elementAt(i);
 
     		XObject xobj = arg.execute(xctxt);
+    		
+    		if (xobj instanceof XSString) {
+    			xobj = new XString(((XSString)xobj).stringValue());
+    		}
+    		else if (xobj instanceof XSNumericType) {
+    			Double dbl = Double.valueOf(((XSNumericType)xobj).stringValue());
+    			xobj = new XNumber(dbl);
+    		}
     		/*
     		 * Should cache the arguments for func:function
     		 */
     		xobj.allowDetachToRelease(false); 
     		argVec.addElement(xobj);
     	}
-    	//dml
+
     	ExtensionsProvider extProvider = (ExtensionsProvider)xctxt.getOwnerObject();
     	Object val = extProvider.extFunction(this, argVec);
 
     	if (null != val)
     	{
-    		result = XObject.create(val, xctxt);
+    		if (val instanceof org.mozilla.javascript.NativeArray) {
+    		   XPathArray xpathArr = new XPathArray();	
+    		   org.mozilla.javascript.NativeArray nativeArr = (org.mozilla.javascript.NativeArray)val;
+    		   int arrSize = nativeArr.size();
+    		   for (int idx = 0; idx < arrSize; idx++) {
+    			  Object arrItem = nativeArr.get(idx);
+    			  XObject xObj = XObject.create(arrItem, xctxt);
+    			  xpathArr.add(xObj);
+    		   }
+    		   
+    		   result = xpathArr; 
+    		}
+    		else {
+    		   result = XObject.create(val, xctxt);
+    		}
     	}
     	else
     	{

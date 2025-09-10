@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><strings>
+  <str codePointArr="104 101 108 108 111" value="hello"/>
+  <str codePointArr="116 104 101 114 101" value="there"/>
+  <str codePointArr="104 111 119 32 97 114 101 32 121 111 117 63" value="how are you?"/>
+  <str codePointArr="73 39 109 32 102 105 110 101" value="I'm fine"/>
+  <str codePointArr="116 104 97 110 107 115" value="thanks"/>
+</strings>
