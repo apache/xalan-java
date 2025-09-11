@@ -112,7 +112,7 @@ public class TransformerImpl extends Transformer
   // or reentry while the transform is going on.
 
   /** NEEDSDOC Field m_reentryGuard          */
-  private Boolean m_reentryGuard = new Boolean(true);
+  private final Object m_reentryGuard = new Object();
 
   /**
    * This is null unless we own the stream.
