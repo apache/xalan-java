@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <sortResult order="ascending">
+    <word>am</word>
+    <word>are</word>
+    <word>doing</word>
+    <word>fine</word>
+    <word>great</word>
+    <word>how</word>
+    <word>i</word>
+    <word>thank</word>
+    <word>you</word>
+    <word>you</word>
+  </sortResult>
+  <sortResult order="descending">
+    <word>you</word>
+    <word>you</word>
+    <word>thank</word>
+    <word>i</word>
+    <word>how</word>
+    <word>great</word>
+    <word>fine</word>
+    <word>doing</word>
+    <word>are</word>
+    <word>am</word>
+  </sortResult>
+</result>

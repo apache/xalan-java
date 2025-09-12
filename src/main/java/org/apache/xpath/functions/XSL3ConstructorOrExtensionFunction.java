@@ -25,12 +25,16 @@ import java.util.Vector;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNull;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -39,6 +43,7 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.res.XPATHMessages;
 
+import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
@@ -226,16 +231,61 @@ public class XSL3ConstructorOrExtensionFunction extends Function
     		
     		if (xobj instanceof XSString) {
     			xobj = new XString(((XSString)xobj).stringValue());
+    			xobj.allowDetachToRelease(false);
+    			argVec.addElement(xobj);    			
+    		}
+    		else if (xobj instanceof XSBoolean) {
+    			xobj = new XBoolean(((XSBoolean)xobj).bool());
+    			xobj.allowDetachToRelease(false);
+    			argVec.addElement(xobj);    			
     		}
     		else if (xobj instanceof XSNumericType) {
     			Double dbl = Double.valueOf(((XSNumericType)xobj).stringValue());
     			xobj = new XNumber(dbl);
+    			xobj.allowDetachToRelease(false);
+    			argVec.addElement(xobj);
+    		}    		
+    		else if (xobj instanceof ResultSequence) {    			
+    			ResultSequence rSeq = (ResultSequence)xobj;
+    			int seqLength = rSeq.size();
+    			XObject[] xObjArr = new XObject[seqLength];
+    			for (int idx = 0; idx < seqLength; idx++) {
+    				XObject seqitem = rSeq.item(idx);
+    				if (seqitem instanceof XSString) {
+    					seqitem = new XString(((XSString)xobj).stringValue());   				   
+    				}
+    				else if (seqitem instanceof XSBoolean) {
+    					seqitem = new XBoolean(((XSBoolean)xobj).bool());   				   
+    				}
+    				else if (seqitem instanceof XSNumericType) {
+    					Double dbl = Double.valueOf(((XSNumericType)seqitem).stringValue());
+    					XNumber xNum = new XNumber(dbl.doubleValue());
+    					seqitem = xNum;
+    				}
+
+    				seqitem.allowDetachToRelease(false);    			   
+    				xObjArr[idx] = seqitem;
+    			}
+    			
+    			argVec.add(xObjArr);
     		}
-    		/*
-    		 * Should cache the arguments for func:function
-    		 */
-    		xobj.allowDetachToRelease(false); 
-    		argVec.addElement(xobj);
+    		else if (xobj instanceof XMLNodeCursorImpl) {    			
+    			ResultSequence rSeq = XslTransformEvaluationHelper.getResultSequenceFromXObject(xobj, xctxt);
+    			int seqLength = rSeq.size();
+    			XObject[] xObjArr = new XObject[seqLength];
+    			for (int idx = 0; idx < seqLength; idx++) {
+    				XObject seqitem = rSeq.item(idx);
+    				seqitem = new XString(seqitem.str()); 
+    				seqitem.allowDetachToRelease(false);    			   
+    				xObjArr[idx] = seqitem;
+    			}
+    			
+    			argVec.add(xObjArr);
+    		}
+    		else {
+    			xobj.allowDetachToRelease(false);
+    			argVec.addElement(xobj);
+    		}
     	}
 
     	ExtensionsProvider extProvider = (ExtensionsProvider)xctxt.getOwnerObject();
