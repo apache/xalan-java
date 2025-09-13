@@ -15,11 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
+import java.util.Map;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
@@ -39,6 +37,7 @@ import org.apache.xpath.objects.XNull;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.res.XPATHMessages;
@@ -251,6 +250,36 @@ public class XSL3ConstructorOrExtensionFunction extends Function
     			XObject[] xObjArr = new XObject[seqLength];
     			for (int idx = 0; idx < seqLength; idx++) {
     				XObject seqitem = rSeq.item(idx);
+    				if (seqitem instanceof XSString) {
+    					seqitem = new XString(((XSString)xobj).stringValue());   				   
+    				}
+    				else if (seqitem instanceof XSBoolean) {
+    					seqitem = new XBoolean(((XSBoolean)xobj).bool());   				   
+    				}
+    				else if (seqitem instanceof XSNumericType) {
+    					Double dbl = Double.valueOf(((XSNumericType)seqitem).stringValue());
+    					XNumber xNum = new XNumber(dbl.doubleValue());
+    					seqitem = xNum;
+    				}
+
+    				seqitem.allowDetachToRelease(false);    			   
+    				xObjArr[idx] = seqitem;
+    			}
+    			
+    			argVec.add(xObjArr);
+    		}
+    		else if (xobj instanceof XPathMap) { 
+    			XPathMap xpathMap = (XPathMap)xobj;
+    			Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
+    			xobj.allowDetachToRelease(false);
+    			argVec.add(nativeMap);
+    		}
+    		else if (xobj instanceof XPathArray) {    			
+    			XPathArray xpathArr = (XPathArray)xobj;
+    			int arrLength = xpathArr.size();
+    			XObject[] xObjArr = new XObject[arrLength];
+    			for (int idx = 0; idx < arrLength; idx++) {
+    				XObject seqitem = xpathArr.get(idx);
     				if (seqitem instanceof XSString) {
     					seqitem = new XString(((XSString)xobj).stringValue());   				   
     				}

@@ -485,7 +485,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_NS_BINDING,
     "XPST0081 : An XML namespace prefix ''{0}'' hasn''t been declared within an "
-                + "XSL stylesheet, or hasn''t been set for XPath API invocation"},
+                + "XSL stylesheet, or hasn''t been set for XPath API invocation."},
   
   { ER_EXPECTED_CLOSING_SQUARE_BRACKET,
      "Could not find token ]"},
