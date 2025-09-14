@@ -16,17 +16,19 @@
     <xalan:component prefix="js0">
         <xalan:script lang="javascript">
             <![CDATA[
-               // Function definition, to sort an array of string 
+               // Function definition, to sort a list of string 
 			   // values in a specified sort order.				
-			   function sort(words, sortOrder) {
-                  var result = new Array();
-
-                  var seqLength = words.length;
-                  for (var idx = 0; idx < seqLength; idx++) {
-				     result.push((words[idx]).toString());
-				  }
+			   function sort(xmlDoc, sortOrder) {
+                  var result = new Array();                                                      
 				  
-				  if (sortOrder === 'ascending') {
+				  const nodeList = xmlDoc.getElementsByTagName("word");
+				  const nodeListSize = nodeList.getLength();
+				  for (var idx = 0; idx < nodeListSize; idx++) {
+                     var word = (nodeList.item(idx)).textContent;
+                     result.push(word);
+                  }
+                  
+                  if (sortOrder === 'ascending') {
 				     result.sort();
 				  }
 				  else {
@@ -42,14 +44,14 @@
     <xsl:template match="/">
        <result>
           <sortResult order="ascending">	   
-			  <xsl:for-each select="js0:sort(/document/words/word, 'ascending')">
+			  <xsl:for-each select="js0:sort(/document/words, 'ascending')">
 				 <word>
 					<xsl:value-of select="."/>
 				 </word>
 			  </xsl:for-each>
 		  </sortResult>
 		  <sortResult order="descending">	   
-			  <xsl:for-each select="js0:sort(/document/words/word, 'descending')">
+			  <xsl:for-each select="js0:sort(/document/words, 'descending')">
 				 <word>
 					<xsl:value-of select="."/>
 				 </word>

@@ -17,13 +17,18 @@
  */
 package org.apache.xpath.functions;
 
+import java.io.ByteArrayInputStream;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
@@ -41,6 +46,9 @@ import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.res.XPATHMessages;
+import org.mozilla.javascript.NativeArray;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSNumericType;
@@ -243,7 +251,29 @@ public class XSL3ConstructorOrExtensionFunction extends Function
     			xobj = new XNumber(dbl);
     			xobj.allowDetachToRelease(false);
     			argVec.addElement(xobj);
-    		}    		
+    		}
+    		else if (xobj instanceof XMLNodeCursorImpl) {    			    			
+    			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xobj;
+    			int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+    			DTMManager dtmManager = xctxt.getDTMManager();
+    			DTM dtm = dtmManager.getDTM(nodeHandle);
+    			Node node = dtm.getNode(nodeHandle);    			
+    			try {
+    				String xmlStr1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+
+    				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    				dbf.setNamespaceAware(true);
+
+    				DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+
+    				Document document = dBuilder.parse(new ByteArrayInputStream(xmlStr1.getBytes()));
+    				xobj.allowDetachToRelease(false);
+    				argVec.addElement((Node)document);
+				} 
+    			catch (Exception ex) {
+					throw new TransformerException(ex.getMessage());
+				}    			    			
+    		}
     		else if (xobj instanceof ResultSequence) {    			
     			ResultSequence rSeq = (ResultSequence)xobj;
     			int seqLength = rSeq.size();
@@ -297,20 +327,7 @@ public class XSL3ConstructorOrExtensionFunction extends Function
     			}
     			
     			argVec.add(xObjArr);
-    		}
-    		else if (xobj instanceof XMLNodeCursorImpl) {    			
-    			ResultSequence rSeq = XslTransformEvaluationHelper.getResultSequenceFromXObject(xobj, xctxt);
-    			int seqLength = rSeq.size();
-    			XObject[] xObjArr = new XObject[seqLength];
-    			for (int idx = 0; idx < seqLength; idx++) {
-    				XObject seqitem = rSeq.item(idx);
-    				seqitem = new XString(seqitem.str()); 
-    				seqitem.allowDetachToRelease(false);    			   
-    				xObjArr[idx] = seqitem;
-    			}
-    			
-    			argVec.add(xObjArr);
-    		}
+    		}    		
     		else {
     			xobj.allowDetachToRelease(false);
     			argVec.addElement(xobj);
@@ -322,9 +339,9 @@ public class XSL3ConstructorOrExtensionFunction extends Function
 
     	if (null != val)
     	{
-    		if (val instanceof org.mozilla.javascript.NativeArray) {
+    		if (val instanceof NativeArray) {
     		   XPathArray xpathArr = new XPathArray();	
-    		   org.mozilla.javascript.NativeArray nativeArr = (org.mozilla.javascript.NativeArray)val;
+    		   NativeArray nativeArr = (NativeArray)val;
     		   int arrSize = nativeArr.size();
     		   for (int idx = 0; idx < arrSize; idx++) {
     			  Object arrItem = nativeArr.get(idx);

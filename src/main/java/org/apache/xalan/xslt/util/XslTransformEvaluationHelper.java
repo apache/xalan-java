@@ -741,6 +741,29 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
+     * Method definition, to construct a string value of required 
+     * length, comprising a sequence of character '0'.
+     * 
+     * @param strLength				The length of the desired string 
+     *                              value.
+     * @return                      The string value constructed
+     */
+    public static String getStrWithZeros(int strLength) {
+       
+       String result = null;
+       
+       StringBuffer strBuff = new StringBuffer();
+       
+       for (int idx = 0; idx < strLength; idx++) {
+          strBuff.append("0");
+       }
+       
+       result = strBuff.toString(); 
+       
+       return result;
+    }
+    
+    /**
      * This method produces, numerical sum of xdm sequence items.
      *  
      * @param resultSeq  An xdm sequence object instance, whose items

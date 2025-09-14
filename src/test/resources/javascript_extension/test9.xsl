@@ -17,41 +17,35 @@
         <xalan:script lang="javascript">
             <![CDATA[
                // Function definition, to get the maximum value from 
-			   // an array of numeric values.			
-			   function getMaxValue(nums) {
+			   // a list of numeric values.			
+			   function getMaxValue(xmlDoc) {
                   var result;
-
-                  if (nums.length === 0) {
-                     return "Empty input";
-                  }
 				  
-				  result = Number(nums[0]);
- 				  
-				  for (var i = 1; i < nums.length; i++) {
-				     if (Number(nums[i]) > result) {
-				        result = Number(nums[i]);
-				     }
-				  }				  
+				  const nodeList = xmlDoc.getElementsByTagName("n");
+				  const nodeListSize = nodeList.getLength();
+				  for (var idx = 0; idx < nodeListSize; idx++) {
+                     var number = Number((nodeList.item(idx)).textContent);
+                     if ((idx === 0) || (number > result)) {
+                        result = number;
+                     }
+                  }				  
 				  
 				  return result;
                }
 			   
 			   // Function definition, to get the minimum value from 
-			   // an array of numeric values.
-			   function getMinValue(nums) {
+			   // a list of numeric values.
+			   function getMinValue(xmlDoc) {
                   var result;
-
-                  if (nums.length === 0) {
-                     return "Empty input";
-                  }
 				  
-				  result = Number(nums[0]);
- 				  
-				  for (var i = 1; i < nums.length; i++) {
-				     if (Number(nums[i]) < result) {
-				        result = Number(nums[i]);
-				     }
-				  }				  
+				  const nodeList = xmlDoc.getElementsByTagName("n");
+				  const nodeListSize = nodeList.getLength();
+				  for (var idx = 0; idx < nodeListSize; idx++) {
+                     var number = Number((nodeList.item(idx)).textContent);
+                     if ((idx === 0) || (number < result)) {
+                        result = number;
+                     }
+                  }				  
 				  
 				  return result;
                }
@@ -62,10 +56,10 @@
     <xsl:template match="/">
        <result>   
 		  <max>
-		     <xsl:value-of select="js0:getMaxValue(/document/nums/n)"/>
+		     <xsl:value-of select="js0:getMaxValue(/document/nums)"/>
 		  </max>
 		  <min>
-		     <xsl:value-of select="js0:getMinValue(/document/nums/n)"/>
+		     <xsl:value-of select="js0:getMinValue(/document/nums)"/>
 		  </min>
        </result>
     </xsl:template>

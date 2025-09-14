@@ -29,37 +29,43 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * A class definition, specifying few Xalan-J XSL 3 Java extension 
  * functions for Xalan-J test cases. The user shall typically write 
- * their own logic for XSL Java extension functions.
+ * their own logic for Xalan-J Java extension functions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
 public class XalanJavaExtension1 {
 	
 	/**
-	 * Method definition to, filter supplied array of XObject 
-	 * instance values that meet a specific criteria.
+	 * Method definition to, filter information from the supplied 
+	 * Document object, that meet a specific criteria.
 	 * 
-	 * @param xObjArr			    The supplied array of XObject instance values
+	 * @param xObjArr			    The supplied Document object instance
 	 * @param srch1                 The filtering criteria string value 
 	 * @return                      The filtered result as ResultSequence object 
 	 */
-	public static ResultSequence filterArray(XObject[] xObjArr, String srch1) {
+	public static ResultSequence filterNodes(Document document, String srch1) {
 		
 		ResultSequence result = new ResultSequence();
 		
-		for (int idx = 0; idx < xObjArr.length; idx++) {
-		   XObject xObj = xObjArr[idx];
-		   String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+		NodeList nodeList = document.getElementsByTagName("name");
+		int nodeListSize = nodeList.getLength();
+		for (int idx = 0; idx < nodeListSize; idx++) {
+		   Element elemNode = (Element)(nodeList.item(idx));
+		   String str1 = elemNode.getTextContent();
 		   if (str1.startsWith(srch1)) {
-			  result.add(xObj);  
+			  result.add(new XSString(str1)); 
 		   }
-		}				
+		}
 		
 		return result;
     }
@@ -143,7 +149,7 @@ public class XalanJavaExtension1 {
     	   sum += value;
     	}
     	
-    	DecimalFormat decimalFormat = new DecimalFormat("#." + getStrForZeros(round));
+    	DecimalFormat decimalFormat = new DecimalFormat("#." + XslTransformEvaluationHelper.getStrWithZeros(round));
     	double valAfterRounding = Double.valueOf(decimalFormat.format(Double.valueOf(sum / count)));
     	
     	result = new XSDouble(valAfterRounding); 
@@ -172,21 +178,6 @@ public class XalanJavaExtension1 {
 		}				
 		
 		return result;
-    }
-    
-    /**
-     * Given a non-negative integer value, return a string comprising those many 
-     * characters '0'. We use the string value returned by this method, to construct 
-     * a java.text.DecimalFormat object instance.
-     */
-    private static String getStrForZeros(int strSize) {
-       String strVal = "";
-       
-       for (int idx = 0; idx < strSize; idx++) {
-          strVal = strVal + "0";  
-       }
-       
-       return strVal;
     }
 
 }

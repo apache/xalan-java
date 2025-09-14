@@ -16,15 +16,17 @@
     <xalan:component prefix="js0">
         <xalan:script lang="javascript">
             <![CDATA[
-               // Function definition, to sort an array of numeric 
+               // Function definition, to sort a list of numeric 
 			   // values in a specified sort order.			
-			   function sort(nums, sortOrder) {
+			   function sort(xmlDoc, sortOrder) {
                   var result = new Array();
 
-                  var seqLength = nums.length;
-                  for (var idx = 0; idx < seqLength; idx++) {
-				     result.push((nums[idx]).toString());
-				  }
+                  const nodeList = xmlDoc.getElementsByTagName("n");
+				  const nodeListSize = nodeList.getLength();
+				  for (var idx = 0; idx < nodeListSize; idx++) {
+                     var number = Number((nodeList.item(idx)).textContent);
+                     result.push(number);
+                  }
 				  
 				  if (sortOrder === 'ascending') {
 				     result.sort((a, b) => (Number(a) > Number(b)));
@@ -42,14 +44,14 @@
     <xsl:template match="/">
        <result>
           <sortResult order="ascending">	   
-			  <xsl:for-each select="js0:sort(/document/nums/n, 'ascending')">
+			  <xsl:for-each select="js0:sort(/document/nums, 'ascending')">
 				 <number>
 					<xsl:value-of select="."/>
 				 </number>
 			  </xsl:for-each>
 		  </sortResult>
 		  <sortResult order="descending">	   
-			  <xsl:for-each select="js0:sort(/document/nums/n, 'descending')">
+			  <xsl:for-each select="js0:sort(/document/nums, 'descending')">
 				 <number>
 					<xsl:value-of select="."/>
 				 </number>

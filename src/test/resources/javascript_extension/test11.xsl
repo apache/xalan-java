@@ -1,20 +1,48 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	            xmlns:xalan="xalan://org.apache.xalan.tests.util.XalanJavaExtension1"
-	            exclude-result-prefixes="xalan"
+	            xmlns:xalan="http://xml.apache.org/xalan"
+                xmlns:js0="http://js0"
+	            exclude-result-prefixes="#all"
 				version="3.0">
-				
+ 				
     <!-- Author: mukulg@apache.org -->				
 
-    <!-- use with test1.xml -->
+    <!-- use with test5.xml -->
     
     <!-- An XSL stylesheet test case, to test Xalan-J's interface 
-         with Java extension function. -->				
+         with JavaScript extension functions. -->				
 				
     <xsl:output method="xml" indent="yes"/>				
 
+    <xalan:component prefix="js0">
+        <xalan:script lang="javascript">
+            <![CDATA[				
+			   function processXmlDocument(xmlDoc) {
+                  var result = "";
+
+                  const nodeList = xmlDoc.getElementsByTagName("word");
+                  const wordCount = nodeList.getLength();
+                  for (var idx = 0; idx < wordCount; idx++) {
+				     var elem1 = nodeList.item(idx);                     
+					 var id = elem1.getAttribute("id");
+					 var word = elem1.textContent;
+					 if (idx < (wordCount - 1)) {
+					    result = result + "[" + id + " : " + word + "], ";
+					 }
+					 else {
+					    result = result + "[" + id + " : " + word + "]";
+					 }
+                  }				  
+				  
+                  return result;                  
+               }
+            ]]>
+        </xalan:script>
+    </xalan:component>
+
     <xsl:template match="/">
        <result>
-		  <xsl:value-of select="xalan:filterNodes(names, 'A')"/>
+		  <xsl:variable name="result1" select="js0:processXmlDocument(/document)"/>
+		  <xsl:value-of select="$result1"/>
        </result>
     </xsl:template>
     

@@ -93,7 +93,7 @@ public class FuncRound extends Function2Args
                   int arg1AsInt = (Integer.valueOf(strValueOfArg1)).intValue();
                      
                   if (arg1AsInt >= 0) {
-                     DecimalFormat decimalFormat = new DecimalFormat("#." + getStrForZeros(arg1AsInt));
+                     DecimalFormat decimalFormat = new DecimalFormat("#." + XslTransformEvaluationHelper.getStrWithZeros(arg1AsInt));
                      double valAfterRounding = Double.valueOf(decimalFormat.format(Double.valueOf(strValueOfArg0)));                     
                      result = new XNumber(valAfterRounding);
                   }
@@ -185,19 +185,5 @@ public class FuncRound extends Function2Args
             
           return resultVal;
       }
-      
-      /**
-       * Given a non-negative integer value, return a string comprising those many 
-       * characters '0'. We use the string value returned by this method, to construct 
-       * a java.text.DecimalFormat object instance.
-       */
-      private String getStrForZeros(int strSize) {
-         String strVal = "";
-         
-         for (int idx = 0; idx < strSize; idx++) {
-            strVal = strVal + "0";  
-         }
-         
-         return strVal;
-      }
+
 }
