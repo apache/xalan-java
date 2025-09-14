@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <map>
+    <entry>
+      <key>age</key>
+      <value>30</value>
+    </entry>
+    <entry>
+      <key>city</key>
+      <value>New York</value>
+    </entry>
+    <entry>
+      <key>name</key>
+      <value>John</value>
+    </entry>
+  </map>
+</result>

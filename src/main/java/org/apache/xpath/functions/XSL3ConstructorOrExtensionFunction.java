@@ -18,7 +18,9 @@
 package org.apache.xpath.functions;
 
 import java.io.ByteArrayInputStream;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -47,6 +49,7 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.res.XPATHMessages;
 import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.NativeObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -334,22 +337,13 @@ public class XSL3ConstructorOrExtensionFunction extends Function
     		}
     	}
 
-    	ExtensionsProvider extProvider = (ExtensionsProvider)xctxt.getOwnerObject();
+    	ExtensionsProvider extProvider = (ExtensionsProvider)xctxt.getOwnerObject();    	
     	Object val = extProvider.extFunction(this, argVec);
 
     	if (null != val)
     	{
-    		if (val instanceof NativeArray) {
-    		   XPathArray xpathArr = new XPathArray();	
-    		   NativeArray nativeArr = (NativeArray)val;
-    		   int arrSize = nativeArr.size();
-    		   for (int idx = 0; idx < arrSize; idx++) {
-    			  Object arrItem = nativeArr.get(idx);
-    			  XObject xObj = XObject.create(arrItem, xctxt);
-    			  xpathArr.add(xObj);
-    		   }
-    		   
-    		   result = xpathArr; 
+    		if ((val instanceof NativeObject) || (val instanceof NativeArray)) {    		   	    		   
+    		   result = getXPathObjectFromJsObject(val, xctxt); 
     		}
     		else {
     		   result = XObject.create(val, xctxt);
@@ -484,5 +478,65 @@ public class XSL3ConstructorOrExtensionFunction extends Function
   public Vector getArgVector() {
 	 return m_argVec;  
   }
+  
+  /**
+   * Method definition, to get an XPath typed object from an object typed 
+   * according to JavaScript implementation.
+   * 
+   * @param obj1						An object that needs to be converted 
+   *                                    to an XPath typed object.
+   * @param xctxt                       An XPath context object
+   * @return                            The result XPath typed object
+   */
+  private XObject getXPathObjectFromJsObject(Object obj1, XPathContext xctxt) {
+		 
+	  XObject result = null;
+
+	  if (obj1 instanceof NativeObject) {
+		  XPathMap xpathMap = new XPathMap();
+		  NativeObject nativeObj = (NativeObject)obj1;
+		  Set<Object> keySet = nativeObj.keySet();
+		  Iterator<Object> iter1 = keySet.iterator();
+		  while (iter1.hasNext()) {
+			  Object key = iter1.next();
+			  XObject x1 = XObject.create(key, xctxt);
+			  Object value = nativeObj.get(key);
+			  if ((value instanceof NativeObject) || (value instanceof NativeArray)) {			   
+				  XObject xObjValue = getXPathObjectFromJsObject(value, xctxt);
+				  xpathMap.put(x1, xObjValue); 
+			  }
+			  else {			  
+				  XObject y1 = XObject.create(value, xctxt);
+				  xpathMap.put(x1, y1); 
+			  }
+		  }
+
+		  result = xpathMap;
+	  }
+	  else if (obj1 instanceof NativeArray) { 
+		  XPathArray xpathArr = new XPathArray();
+		  NativeArray nativeArr = (NativeArray)obj1;
+		  int arrSize = nativeArr.size();
+		  for (int idx = 0; idx < arrSize; idx++) {
+			  Object obj2 = nativeArr.get(idx);
+			  XObject xObj = null;
+			  if ((obj2 instanceof NativeObject) || (obj2 instanceof NativeArray)) {	
+				  xObj = getXPathObjectFromJsObject(obj2, xctxt); 
+			  }
+			  else {
+				  xObj = XObject.create(obj2, xctxt);  
+			  }
+
+			  xpathArr.add(xObj);
+		  }
+
+		  result = xpathArr;
+	  }
+	  else {
+		  result = XObject.create(obj1, xctxt); 
+	  }
+
+	  return result;
+   }
 
 }

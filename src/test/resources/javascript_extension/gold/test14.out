@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <array>
+    <item>a</item>
+    <item>b</item>
+    <item>
+      <map>
+        <entry>
+          <key>one</key>
+          <value>1.1</value>
+        </entry>
+        <entry>
+          <key>two</key>
+          <value>2.1</value>
+        </entry>
+        <entry>
+          <key>three</key>
+          <value>3.1</value>
+        </entry>
+      </map>
+    </item>
+  </array>
+</result>

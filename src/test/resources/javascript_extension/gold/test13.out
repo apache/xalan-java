@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <map>
+    <entry>
+      <key>city</key>
+      <value>New Delhi</value>
+    </entry>
+    <entry>
+      <key>hobbies</key>
+      <value>
+        <array>
+          <item>cooking</item>
+          <item>gardening</item>
+          <item>reading</item>
+        </array>
+      </value>
+    </entry>
+    <entry>
+      <key>person</key>
+      <value>
+        <map>
+          <entry>
+            <key>fName</key>
+            <value>Mukul</value>
+          </entry>
+          <entry>
+            <key>lName</key>
+            <value>Gandhi</value>
+          </entry>
+        </map>
+      </value>
+    </entry>
+  </map>
+</result>
