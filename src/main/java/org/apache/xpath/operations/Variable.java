@@ -22,11 +22,13 @@ package org.apache.xpath.operations;
 
 import java.util.Map;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemCatch;
+import org.apache.xalan.templates.ElemIterateOnCompletion;
+import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -163,7 +165,8 @@ public class Variable extends Expression implements PathComponent
 		  java.lang.String nsUri = m_qname.getNamespaceURI();
 		  if ((Constants.XSL_ERROR_NAMESACE).equals(nsUri)) {
 			 if (Constants.XSL_ERROR_CODE.equals(varLocalName) || Constants.XSL_ERROR_DESCRIPTION.equals(varLocalName) || 
-					 Constants.XSL_ERROR_LINE_NUMBER.equals(varLocalName) || Constants.XSL_ERROR_COLUMN_NUMBER.equals(varLocalName)) {
+					                                              Constants.XSL_ERROR_LINE_NUMBER.equals(varLocalName) || 
+					                                              Constants.XSL_ERROR_COLUMN_NUMBER.equals(varLocalName)) {
 				 return; 
 			 }
 		  }
@@ -173,15 +176,6 @@ public class Variable extends Expression implements PathComponent
 		  // This takes care of variable references within, XPath 3.1 expressions
 		  // like function item, "for", "let", "quantified" expressions.
 		  return;    
-	  }
-	  
-	  if (XslTransformData.m_xpathNodeCombiningExprRhsStrBuff == null) {
-		  java.lang.String msg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_COULD_NOT_FIND_VAR, 
-				  																				   new Object[]{m_qname.toString()});
-
-		  TransformerException te = new TransformerException(msg, this);
-
-		  throw new org.apache.xml.utils.WrappedRuntimeException(te);
 	  }
     
   }
@@ -242,6 +236,8 @@ public class Variable extends Expression implements PathComponent
       
         XObject result = null;
         
+        SourceLocator srcLocator = xctxt.getSAXLocator();
+        
         Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
         XObject varValue = xpathVarMap.get(m_qname);
         
@@ -257,7 +253,7 @@ public class Variable extends Expression implements PathComponent
         }
         
         try {
-           if (m_fixUpWasCalled) {    
+           if (m_fixUpWasCalled) {        	  
               if (m_isGlobal) {
                  result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
               }
@@ -268,11 +264,19 @@ public class Variable extends Expression implements PathComponent
            else {  
               result = xctxt.getVarStack().getVariableOrParam(xctxt, m_qname);
            }
+           
+           ElemVariable elemVariable = this.getElemVariable();
+           ExpressionNode exprNode = getExpressionOwner();
+           if ((elemVariable == null) && (exprNode instanceof ElemIterateOnCompletion)) {
+        	   throw new javax.xml.transform.TransformerException("XPST0008 : Variable $" + m_qname.toString() + " "
+             			                                                                  + "accessed before it is bound!", srcLocator); 
+           }
         }
         catch (javax.xml.transform.TransformerException ex) {
            java.lang.String exceptionMesg = ex.getMessage();
            if ((m_qname == null) || ((exceptionMesg != null) && (exceptionMesg.startsWith("XTDE0050") || exceptionMesg.startsWith("XPTY") 
-        		                                                                                      || exceptionMesg.startsWith("FOUT")))) {
+        		                                                                                      || exceptionMesg.startsWith("FOUT")
+        		                                                                                      || exceptionMesg.startsWith("XPST0008")))) {
               throw ex;   
            }
            else if (XslTransformData.m_xpathNodeCombiningExprRhsStrBuff != null) {
@@ -294,7 +298,7 @@ public class Variable extends Expression implements PathComponent
         	  }
         	  catch (TransformerException ex1) {
                   throw new javax.xml.transform.TransformerException("Variable $" + m_qname.toString() + " "
-                                                                                                  			+ "accessed before it is bound!.");
+                                                                                                  			+ "accessed before it is bound!", srcLocator);
         	  }
            }
         }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-10T10:59:02Z" fail="25" name="iterate" pass="19" skipped="0" statusUnknown="0" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-16T13:24:44Z" fail="22" name="iterate" pass="22" skipped="0" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -9,80 +9,10 @@
          <errTrace>XTSE3120 : An xsl:break instruction doesn't have xsl:iterate instruction as ancestor.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="iterate-008">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of basketCost</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="iterate-009">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Pride and Prejudice&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Wuthering Heights&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Tess of the d'Urbervilles&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Jude the Obscure&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;The Big Over Easy&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;The Eyre Affair&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;/out&gt;&#13;
-</outResult>
-   </testResult>
-   <testResult status="fail" testName="iterate-010">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Pride and Prejudice&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Wuthering Heights&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Tess of the d'Urbervilles&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Jude the Obscure&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;The Big Over Easy&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;The Eyre Affair&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;/out&gt;&#13;
-</outResult>
-   </testResult>
-   <testResult status="fail" testName="iterate-011">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Pride and Prejudice&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Wuthering Heights&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Tess of the d'Urbervilles&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;Jude the Obscure&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;The Big Over Easy&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;item cost="0"&gt;&#13;
-&lt;TITLE&gt;The Eyre Affair&lt;/TITLE&gt;&#13;
-&lt;/item&gt;&#13;
-&lt;/out&gt;&#13;
-</outResult>
-   </testResult>
+   <testResult status="pass" testName="iterate-008"/>
+   <testResult status="pass" testName="iterate-009"/>
+   <testResult status="pass" testName="iterate-010"/>
+   <testResult status="pass" testName="iterate-011"/>
    <testResult status="pass" testName="iterate-012"/>
    <testResult status="pass" testName="iterate-013"/>
    <testResult status="pass" testName="iterate-014"/>
@@ -94,10 +24,14 @@
    <testResult status="fail" testName="iterate-020"/>
    <testResult status="fail" testName="iterate-021"/>
    <testResult status="pass" testName="iterate-022"/>
-   <testResult status="pass" testName="iterate-023"/>
+   <testResult status="fail" testName="iterate-023">
+      <outResult>
+         <errTrace>XTSE3120 : An next-iteration instruction is not in a tail position of xsl:iterate's sequence constructor.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="iterate-024">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of count</errTrace>
+         <errTrace>XTSE3120 : An next-iteration instruction is not in a tail position of xsl:iterate's sequence constructor.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="iterate-025">
@@ -108,20 +42,20 @@
    <testResult status="fail" testName="iterate-028">
       <outResult>
          <errTrace>XPST0003 : An XPath expression /out/text()[. = "exit at 12 of 76"] has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="iterate-029"/>
    <testResult status="fail" testName="iterate-030">
       <outResult>
-         <errTrace>XTSE0010 : An xsl:next-iteration instruction is not in a tail position within the sequence constructor of an xsl:iterate instruction.</errTrace>
+         <errTrace>XTSE3120 : An next-iteration instruction is not in a tail position of xsl:iterate's sequence constructor.</errTrace>
          <errTrace>XPST0003 : An XPath expression /out/text()["count 2"] has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="iterate-031">
       <outResult>
-         <errTrace>XTSE0010 : An xsl:next-iteration instruction is not in a tail position within the sequence constructor of an xsl:iterate instruction.</errTrace>
+         <errTrace>XTSE3120 : An next-iteration instruction is not in a tail position of xsl:iterate's sequence constructor.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="iterate-032"/>
@@ -129,7 +63,7 @@
    <testResult status="fail" testName="iterate-034">
       <outResult/>
    </testResult>
-   <testResult status="pass" testName="iterate-035"/>
+   <testResult status="fail" testName="iterate-035"/>
    <testResult status="fail" testName="iterate-036">
       <outResult>
          <errTrace>FOAR0001 : An integer division by zero error.</errTrace>
@@ -157,11 +91,7 @@
    <testResult status="fail" testName="iterate-043">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="iterate-901">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of basketCost</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="iterate-901"/>
    <testResult status="fail" testName="iterate-902">
       <outResult>
          <errTrace>XTTE0590 : The value to parameter 'basketCost' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>

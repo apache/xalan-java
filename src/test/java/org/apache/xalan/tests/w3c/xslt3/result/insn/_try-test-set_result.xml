@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-10T10:58:55Z" fail="22" name="try" pass="15" skipped="5" statusUnknown="0" totalRun="37">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-16T13:24:41Z" fail="21" name="try" pass="16" skipped="5" statusUnknown="0" totalRun="37">
    <testResult status="pass" testName="try-001"/>
-   <testResult status="fail" testName="try-002">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="try-002"/>
    <testResult status="fail" testName="try-003">
       <outResult>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}error()</errTrace>
@@ -10,14 +8,8 @@
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="try-004">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="try-005">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Could not find variable with the name of {http://www.w3.org/2005/xqt-errors}module</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="try-004"/>
+   <testResult status="pass" testName="try-005"/>
    <testResult status="pass" testName="try-006"/>
    <testResult status="pass" testName="try-007"/>
    <testResult status="pass" testName="try-008"/>
@@ -34,22 +26,28 @@
    <testResult status="skipped" testName="try-015" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="try-016"/>
    <testResult status="skipped" testName="try-017" xsltVersion="xslt 2.0 only"/>
-   <testResult status="fail" testName="try-018">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="try-018"/>
    <testResult status="fail" testName="try-019"/>
    <testResult status="pass" testName="try-020"/>
    <testResult status="fail" testName="try-021">
       <outResult/>
    </testResult>
    <testResult status="fail" testName="try-022">
-      <outResult/>
+      <outResult>
+         <errTrace>XPTY0004 : An exception occured while evaluating an xsl:result-document instruction. Following run-time error occured : d:\xslt30-test-master\tests\insn\try (Access is denied).</errTrace>
+         <errTrace>XPST0081 : An XML namespace prefix '' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
+         <errTrace>XPST0081 : An XML namespace prefix '' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="try-023">
       <outResult/>
    </testResult>
    <testResult status="fail" testName="try-024">
-      <outResult/>
+      <outResult>
+         <errTrace>XPST0081 : An XML namespace prefix '' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
+         <errTrace>XPST0003 : An XPath expression                                    /output/output/note = "secondary document written"                   /output/output/*:error/@code[contains(.,"FOAR0001")]                   contains(/output/output/*:error/message, "zero")                                 has syntax error. Unknown op code : 21.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="skipped" testName="try-025" xsltVersion="xslt 2.0 only"/>
    <testResult status="skipped" testName="try-026" xsltVersion="xslt 2.0 only"/>

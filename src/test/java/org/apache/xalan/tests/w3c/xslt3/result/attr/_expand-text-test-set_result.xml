@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-10T11:00:00Z" fail="28" name="expand-text" pass="34" skipped="0" statusUnknown="0" totalRun="62">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-16T13:25:25Z" fail="28" name="expand-text" pass="34" skipped="0" statusUnknown="0" totalRun="62">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
@@ -37,7 +37,7 @@
    <testResult status="pass" testName="cvt-024"/>
    <testResult status="fail" testName="cvt-025">
       <outResult>
-         <errTrace>Variable $d accessed before it is bound!.</errTrace>
+         <errTrace>Variable $d accessed before it is bound!</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
@@ -53,7 +53,7 @@
    <testResult status="pass" testName="cvt-031"/>
    <testResult status="fail" testName="cvt-032">
       <outResult>
-         <errTrace>Variable $stylesheet.attributes accessed before it is bound!.</errTrace>
+         <errTrace>Variable $stylesheet.attributes accessed before it is bound!</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="cvt-033">

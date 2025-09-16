@@ -161,14 +161,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
                                                                                       xpathContext.getSAXLocator()); 
             }
             
-            if (isXslInstructionInTailPositionOfSequenceConstructor(this)) {
-                elemIterateNextIterationProcessing(transformer);
-            }
-            else {
-                throw new TransformerException("XTSE0010 : An xsl:next-iteration instruction is not in a "
-                                                                                           + "tail position within the sequence constructor of "
-                                                                                           + "an xsl:iterate instruction.", xpathContext.getSAXLocator());   
-            }
+            elemIterateNextIterationProcessing(transformer);            
        }
        
        /**

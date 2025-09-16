@@ -155,7 +155,7 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
                 throw new TransformerException("XTSE3120 : An xsl:break instruction doesn't have xsl:iterate instruction as ancestor.", xctxt.getSAXLocator());   
             }
                       
-            if (isXslBreakDescendantOfXslIterate && isXslInstructionInTailPositionOfSequenceConstructor(this)) {              
+            if (isXslBreakDescendantOfXslIterate) {              
                 transformXslBreakInstruction(transformer);
                 transformer.setXslIterateBreakEvaluated(true);
             }

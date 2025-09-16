@@ -32,8 +32,6 @@ import com.sun.org.apache.xml.internal.dtm.DTM;
 /*
  * Implementation of the XSLT 3.0 xsl:on-completion instruction.
  * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-iterate
- * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
@@ -163,33 +161,41 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
                                                                   
            if (transformer.isXslIterateOnCompletionActive()) {               
                XPathContext xctxt = transformer.getXPathContext();
+                                                            
+               final int prevCurrentNode = xctxt.getCurrentNode();
+               final int prevCurrExprNode = xctxt.getCurrentExpressionNode();
                
-               // During evaluation of xsl:on-completion instruction, the XPath context item
-               // is absent. We make following two changes to an active XPath context to
-               // ensure this.
-               xctxt.pushCurrentNode(DTM.NULL);
-               xctxt.pushCurrentExpressionNode(DTM.NULL);
-               
-               if (xpathSelectPatternStr != null) {
-                   SerializationHandler rth = transformer.getResultTreeHandler();
+               try {
+            	   // During evaluation of xsl:on-completion instruction, an
+                   // XPath context item is absent.
+            	   xctxt.pushCurrentNode(DTM.NULL);
+                   xctxt.pushCurrentExpressionNode(DTM.NULL);
                    
-                   try {
-                       m_selectExpression.executeCharsToContentHandler(xctxt, rth);
-                   } 
-                   catch (TransformerException ex) {
-                       throw ex;
-                   } 
-                   catch (SAXException ex) {
-                       throw new TransformerException(ex);
-                   }
+            	   if (xpathSelectPatternStr != null) {
+            		   SerializationHandler rth = transformer.getResultTreeHandler();
+
+            		   try {
+            			   m_selectExpression.executeCharsToContentHandler(xctxt, rth);
+            		   } 
+            		   catch (TransformerException ex) {
+            			   throw ex;
+            		   } 
+            		   catch (SAXException ex) {
+            			   throw new TransformerException(ex);
+            		   }
+            	   }
+            	   else {
+            		   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
+            				                                                      elemTemplate = elemTemplate.m_nextSibling) {
+            			   xctxt.setSAXLocator(elemTemplate);
+            			   transformer.setCurrentElement(elemTemplate);
+            			   elemTemplate.execute(transformer);
+            		   } 
+            	   }
                }
-               else {
-                   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-                                                                        elemTemplate = elemTemplate.m_nextSibling) {
-                      xctxt.setSAXLocator(elemTemplate);
-                      transformer.setCurrentElement(elemTemplate);
-                      elemTemplate.execute(transformer);
-                   } 
+               finally {
+            	   xctxt.pushCurrentNode(prevCurrentNode);
+                   xctxt.pushCurrentExpressionNode(prevCurrExprNode);
                }
            }                      
        }
