@@ -20,46 +20,48 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 
 /**
- * A class to support evaluation of xsl:iterate instruction.
-         
-   @author Mukul Gandhi <mukulg@apache.org>
+ * A class definition, that represents xsl:iterate instruction's 
+ * xsl:param definition, an xsl:next-iteration instruction's 
+ * xsl:with-param definition.
+ *        
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
 public class XslIterateParamWithparamData {
     
-    public QName nameVal;
+    private QName m_name;
     
-    public XPath selectVal;
-
-    public QName getNameVal() {
-        return nameVal;
+    private XPath m_select;
+    
+    public QName getName() {
+        return this.m_name;
     }
 
-    public void setNameVal(QName nameVal) {
-        this.nameVal = nameVal;
+    public void setName(QName name) {
+        this.m_name = name;
     }
 
-    public XPath getSelectVal() {
-        return selectVal;
+    public XPath getSelect() {
+        return this.m_select;
     }
 
-    public void setSelectVal(XPath selectVal) {
-        this.selectVal = selectVal;
+    public void setSelect(XPath select) {
+        this.m_select = select;
     }
     
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object obj2) {
+        if (this == obj2) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        else if ((obj2 == null) || (getClass() != obj2.getClass())) {
             return false;
         }
         
         XslIterateParamWithparamData paramWithparamData = 
-                                                (XslIterateParamWithparamData)obj;
-        return nameVal.equals(paramWithparamData.getNameVal());
+                                                (XslIterateParamWithparamData)obj2;
+        return m_name.equals(paramWithparamData.getName());
     }
 
 }

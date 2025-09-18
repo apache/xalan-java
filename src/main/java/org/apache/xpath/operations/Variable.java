@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import java.util.Map;
@@ -221,13 +218,13 @@ public class Variable extends Expression implements PathComponent
 
 
   /**
-   * Dereference the variable, and return the reference value. Note that lazy 
-   * evaluation will occur. If a variable within scope is not found, a warning 
-   * will be sent to the error listener, and an empty nodeset will be returned.
+   * Method definition, to dereference a variable and return variable's value. 
+   * Note that lazy evaluation will occur. If a variable within scope is 
+   * not found, a warning shall be sent to Xalan-J's error listener.
    *
-   * @param xctxt The runtime execution context.
+   * @param xctxt 								An XPath context object
    *
-   * @return The evaluated variable, or an empty nodeset if not found.
+   * @return 									The evaluated variable
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -304,7 +301,6 @@ public class Variable extends Expression implements PathComponent
         }
       
         if (result == null) {
-           // This should now never happen...
            warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE, 
                                                                        new Object[]{ m_qname.getLocalPart() });            
            result = new XMLNodeCursorImpl(xctxt.getDTMManager());

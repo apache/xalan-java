@@ -224,7 +224,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
        }
 
        /**
-        * Execute the xsl:iterate transformation.
+        * Execute an xsl:iterate transformation.
         *
         * @param transformer non-null reference to the the current transform-time state.
         *
@@ -234,14 +234,14 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
        {
            transformSelectedNodes(transformer);
        }
-
+       
        /**
-       * @param transformer              non-null reference to the the current transform-time state.
-       *
-       * @throws TransformerException    Thrown in a variety of circumstances.
-       * 
-       * @xsl.usage advanced
-       */
+        * Method definition, to process an xdm input sequence/array, or an XML node set
+        * with xsl:iterate instruction.
+        * 
+        * @param transformer									Xalan-J's XSL transformation object
+        * @throws TransformerException
+        */
        private void transformSelectedNodes(TransformerImpl transformer) throws TransformerException {
         
            XPathContext xctxt = transformer.getXPathContext();                       
@@ -345,7 +345,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             		    * are no input items to be processed.
             		    */
             		   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-            				   elemTemplate = elemTemplate.m_nextSibling) {
+            				                                                      elemTemplate = elemTemplate.m_nextSibling) {
             			   if (elemTemplate instanceof ElemIterateOnCompletion) {            			                                                       
             				   xctxt.setXPath3ContextSize(-1);
             				   xctxt.setXPath3ContextItem(null);
@@ -440,18 +440,17 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                
                    while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
                       currentNodes.setTop(nextNode);
-                      currentExpressionNodes.setTop(nextNode);
-                                                                        
+                      currentExpressionNodes.setTop(nextNode);                  	  
+                      
                       for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-                                                                          elemTemplate = elemTemplate.m_nextSibling) {
-                          if ((elemTemplate instanceof ElemIterateOnCompletion) && 
-                                                                        (xslOnCompletionTemplate == null)) {
+                                                                                 elemTemplate = elemTemplate.m_nextSibling) {                          
+                          if ((elemTemplate instanceof ElemIterateOnCompletion) && (xslOnCompletionTemplate == null)) {
                               xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
                           }
                           else if (!transformer.isXslIterateBreakEvaluated()) {
-                              xctxt.setSAXLocator(elemTemplate);
-                              transformer.setCurrentElement(elemTemplate);
-                              elemTemplate.execute(transformer);
+                        	  xctxt.setSAXLocator(elemTemplate);
+                        	  transformer.setCurrentElement(elemTemplate);                        		  
+                        	  elemTemplate.execute(transformer);
                           }
                           else {
                               break;    
@@ -488,14 +487,14 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
           // Clear xsl:iterate xsl:param variable storage
           for (int idx = 0; idx < fXslIterateParamWithparamDataList.size(); idx++) {
         	 XslIterateParamWithparamData xslIterateParamWithparamData = fXslIterateParamWithparamDataList.get(idx);
-        	 QName varQName = xslIterateParamWithparamData.getNameVal();
+        	 QName varQName = xslIterateParamWithparamData.getName();
         	 varMap.remove(varQName);
           }
       }
       
        /**
-        * Method definition to, check XSL 3 spec static constraints for various
-        * XSL elements within xsl:iterate instruction.
+        * Method definition, to check XSLT 3.0 static constraints for various XSL elements 
+        * within xsl:iterate instruction.
         * 
         * @param xctxt								    An XPath context object
         * @throws TransformerException
@@ -553,8 +552,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
     				  QName paramNameVal = paramElem.getName();
     				  XPath paramSelectXPath = paramElem.getSelect();
     				  XslIterateParamWithparamData paramWithparamDataObj = new XslIterateParamWithparamData();
-    				  paramWithparamDataObj.setNameVal(paramNameVal);
-    				  paramWithparamDataObj.setSelectVal(paramSelectXPath);
+    				  paramWithparamDataObj.setName(paramNameVal);
+    				  paramWithparamDataObj.setSelect(paramSelectXPath);
     				  if (fXslIterateParamWithparamDataList.contains(paramWithparamDataObj)) {
     					  throw new TransformerException("XTSE0580 : The name of an xsl:param '" + paramNameVal + "' is not unique within xsl:iterate.", srcLocator);    
     				  }
@@ -567,12 +566,13 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
     }
 
     /**
-     * Verify within an xsl:iterate instruction, that xsl:next-iteration and xsl:break
-     * instructions are in tail position of xsl:iterate's sequence constructor, and few
-     * other XSL stylesheet constraints as well.
+     * Method definition, to verify within an xsl:iterate instruction, that xsl:next-iteration 
+     * and xsl:break instructions are in tail position of xsl:iterate's sequence constructor, 
+     * and few other XSL stylesheet xsl:iterate constraints as well.
      * 
-     * @param elemTemplateElem						An xsl:iterate instruction, or an XSL 
-     *                                              instruction within xsl:iterate.
+     * @param elemTemplateElem						      An object representing an xsl:iterate 
+     *                                                    instruction, or another XSL instruction 
+     *                                                    within xsl:iterate.
      * @throws TransformerException
      */
 	private void verifyXslNextIterAndBreakConstraints(ElemTemplateElement elemTemplateElem) throws TransformerException {
