@@ -40,6 +40,7 @@ import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
+import org.apache.xpath.Expression;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -74,6 +75,17 @@ public class ElemApplyTemplates extends ElemCallTemplate
 {
   
   static final long serialVersionUID = 2903125371542621004L;
+  
+  /**
+   * Class field to store, XPath expression for subsequent 
+   * processing.
+   */
+  private XPath m_xpath2 = null;
+  
+  /**
+   * The "select" expression.
+   */
+  private Expression m_selectExpression2 = null;
 
   /**
    * xsl:template's mode value.
@@ -99,6 +111,27 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * attribute.
    */
   private boolean m_expand_text;
+  
+  /**
+   * Set the "select" attribute.
+   *
+   * @param xpath The XPath expression for the "select" attribute.
+   */
+  public void setSelect(XPath xpath)
+  {
+    m_selectExpression2 = xpath.getExpression();
+    m_xpath2 = xpath;    
+  }
+
+  /**
+   * Get the "select" attribute.
+   *
+   * @return The XPath expression for the "select" attribute.
+   */
+  public Expression getSelect()
+  {
+    return m_selectExpression2;
+  }
 
   /**
    * Set the mode attribute for this element.
@@ -184,6 +217,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }
+  
+  private Vector m_vars;
+  
+  private int m_globals_size;
 
   /**
    * Get an int constant identifying the type of element.
@@ -205,6 +242,27 @@ public class ElemApplyTemplates extends ElemCallTemplate
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
 	  super.compose(sroot);
+	  
+	  java.util.Vector vnames = sroot.getComposeState().getVariableNames();
+	  
+	  if (m_selectExpression2 != null) {
+		  m_selectExpression2.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+	  }
+	  else
+	  {
+		  m_selectExpression2 = getStylesheetRoot().m_selectDefault.getExpression();
+	  }
+
+	  m_vars = vnames;
+	  m_globals_size = sroot.getComposeState().getGlobalsSize(); 
+  }
+  
+  /**
+   * This after the template's children have been composed.
+   */
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {    
+     super.endCompose(sroot);
   }
 
   /**
@@ -285,13 +343,13 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  ResultSequence resultSeq = null;
 	  QName xslTemplateInvokeMode = getMode();
 	  
-	  if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
-		  m_xpath = new XPath(m_xpath.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-    	  m_selectExpression = m_xpath.getExpression(); 
+	  if ((m_selectExpression2 != null) && (m_xpath_default_namespace != null)) {    		
+		  m_xpath2 = new XPath(m_xpath2.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	  m_selectExpression2 = m_xpath2.getExpression(); 
       }
 
-	  if (m_selectExpression instanceof XPathSequenceConstructor) {
-		  resultSeq = (ResultSequence)(((XPathSequenceConstructor)m_selectExpression).execute(xctxt));
+	  if (m_selectExpression2 instanceof XPathSequenceConstructor) {
+		  resultSeq = (ResultSequence)(((XPathSequenceConstructor)m_selectExpression2).execute(xctxt));
 
 		  if (isAllSeqItemsXdmAtomicValues(resultSeq)) {    		
 			  executeXslTransformAtomicValueSeq(transformer, xctxt, resultSeq, xslTemplateInvokeMode);
@@ -308,8 +366,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  }
 		  }
 	  }    
-	  else if (m_selectExpression instanceof Variable) {
-		  varEvalResult = ((Variable)m_selectExpression).execute(xctxt);
+	  else if (m_selectExpression2 instanceof Variable) {
+		  varEvalResult = ((Variable)m_selectExpression2).execute(xctxt);
 
 		  if (varEvalResult instanceof ResultSequence) {
 			  resultSeq = (ResultSequence)varEvalResult;
@@ -346,7 +404,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  }
 	  }
 	  else {
-		  varEvalResult = m_selectExpression.execute(xctxt);
+		  varEvalResult = m_selectExpression2.execute(xctxt);
 
 		  if (varEvalResult instanceof ResultSequence) {
 			  resultSeq = (ResultSequence)varEvalResult;
@@ -406,7 +464,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  if (transformer.getDebug())
 		  {
 			  transformer.getTraceManager().emitSelectedEvent(sourceNode, this,
-																	  "select", new XPath(m_selectExpression),
+																	  "select", new XPath(m_selectExpression2),
 																	  new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
 		  }
 
@@ -508,10 +566,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  final int nodeType = dtm.getNodeType(child);
 
 			  final QName mode = transformer.getMode();
+			  
+			  ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, -1, quiet, dtm);			 
 
-			  ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, -1, quiet, dtm);
-
-			  // If that didn't locate a node, fall back to a default template rule.
+			  // If that didn't locate a node, fall back to a default template rule
 			  if (template == null)
 			  {
 				  switch (nodeType)
@@ -724,7 +782,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  {
 		  if (transformer.getDebug())
 			  transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
-					  "select", new XPath(m_selectExpression),
+					  "select", new XPath(m_selectExpression2),
 					  new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
 
 		  // Unlink to the original stack frame  
@@ -848,7 +906,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  Hashtable templateListHashTable = tl.getPatternTable();
 	  Set hashTableEntrySet = templateListHashTable.entrySet();
 	  
-	  for (int idx = 0; idx < resultSeq.size(); idx++) {
+	  int rSeqSize = resultSeq.size();
+	  for (int idx = 0; idx < rSeqSize; idx++) {
 		  XObject xObj = resultSeq.item(idx);
 		  
 		  executeXslTransformXdmAtomicValue(transformer, xctxt, xObj, hashTableEntrySet, xslTemplateInvokeMode);	  

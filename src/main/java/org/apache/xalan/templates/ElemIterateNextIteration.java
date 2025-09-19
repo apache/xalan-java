@@ -283,55 +283,60 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 				}
 			}
 		}
-		else {
+		else {			
 			for (int idx = 0; idx < paramCount; idx ++) {
 				XslIterateParamWithparamData paramData = (ElemIterate.fXslIterateParamWithparamDataList).get(idx);
-				XslIterateParamWithparamData withParamData = fWithparamList.get(idx);
-				if (!(paramData.getName()).equals(withParamData.getName())) {
-					throw new TransformerException("XTSE3130 : Within xsl:iterate, xsl:param and xsl:with-param names at position " + 
-							                                                                                         (idx + 1) + " are not same.", srcLocator);        
-				}
-			}
+				QName paramQname = paramData.getName();
+				boolean xslMatchingWithParamDeclared = false;
+				for (int idx2 = 0; idx2 < withParamCount; idx2++) {
+					XslIterateParamWithparamData withParamData = fWithparamList.get(idx2);                                                
+					QName xslWithParamQName = withParamData.getName();
+					if (xslWithParamQName.equals(paramQname)) {
+						xslMatchingWithParamDeclared = true;
+						XObject withParamVal = null;
+						
+						ElemWithParam elemWithParam = getElemWithParam(xslWithParamQName);
 
-			for (int idx = 0; idx < withParamCount; idx++) {
-				XObject withParamVal = null;
-
-				XslIterateParamWithparamData withParamData = fWithparamList.get(idx);                                                
-				QName xslParamQName = withParamData.getName();
-
-				ElemWithParam elemWithParam = getElemWithParam(xslParamQName);
-
-				XPath withParamSelectVal = withParamData.getSelect();                
-				if (withParamSelectVal != null) {
-					// Evaluate xsl:with-param's value, from its "select" attribute
-					withParamVal = withParamSelectVal.execute(xctxt, contextNode, this);
-				}
-				else {
-					// Evaluate xsl:with-param's value, from the sequence constructor
-					// provided as content within xsl:with-param element.                   
-					int rootNodeHandleOfRtf = transformer.transformToRTF(elemWithParam);
-					NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, 
-							elemWithParam)).convertToNodeset();                
-					withParamVal = new XNodeSetForDOM(nodeList, xctxt);
-				}
-
-				String withParamAsAttr = elemWithParam.getAs();
-				if (withParamAsAttr != null) {
-					try {
-						withParamVal = SequenceTypeSupport.castXdmValueToAnotherType(withParamVal, withParamAsAttr, null, xctxt);
-					}
-					catch (TransformerException ex) {
+						XPath withParamSelectVal = withParamData.getSelect();                
 						if (withParamSelectVal != null) {
-							throw ex;  
+							// Evaluate xsl:with-param's value, from its "select" attribute
+							withParamVal = withParamSelectVal.execute(xctxt, contextNode, this);
 						}
 						else {
-							throw new TransformerException("XTTE0570 : The value of sequence constructor, supplied within xsl:with-param element cannot "
-									                                                                                    + "be cast to the type " + withParamAsAttr, srcLocator);  
+							// Evaluate xsl:with-param's value, from the sequence constructor
+							// provided as content within xsl:with-param element.                   
+							int rootNodeHandleOfRtf = transformer.transformToRTF(elemWithParam);
+							NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, 
+									elemWithParam)).convertToNodeset();                
+							withParamVal = new XNodeSetForDOM(nodeList, xctxt);
 						}
+
+						String withParamAsAttr = elemWithParam.getAs();
+						if (withParamAsAttr != null) {
+							try {
+								withParamVal = SequenceTypeSupport.castXdmValueToAnotherType(withParamVal, withParamAsAttr, null, xctxt);
+							}
+							catch (TransformerException ex) {
+								if (withParamSelectVal != null) {
+									throw ex;  
+								}
+								else {
+									throw new TransformerException("XTTE0570 : The value of sequence constructor, supplied within xsl:with-param element cannot "
+											                                                                                    + "be cast to the type " + withParamAsAttr, srcLocator);  
+								}
+							}
+						}
+
+						xpathVarMap.put(xslWithParamQName, withParamVal);
+						
+						break;
 					}
 				}
-
-				xpathVarMap.put(xslParamQName, withParamVal);
+				
+				if (!xslMatchingWithParamDeclared) {
+					throw new TransformerException("XTSE3130 : xsl:iterate parameter " + paramQname.toString() + " is not declared "
+							                                                           + "within the containing xsl:iterate instruction.", srcLocator);
+				}
 			}
 		}
 	}

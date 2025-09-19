@@ -25,6 +25,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
 
 /**
@@ -176,30 +177,37 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
                                                                  TransformerException {
            XPathContext xctxt = transformer.getXPathContext();
            
-           if ((xpathSelectPatternStr != null) && (this.m_firstChild != null)) {
-              throw new TransformerException("XTSE3125 : An xsl:break instruction with a 'select' attribute must have an empty "
-              		                                                                         + "sequence constructor.", xctxt.getSAXLocator());          
+           XObject prevContextItem = xctxt.getXPath3ContextItem();
+           
+           try {
+        	   if ((xpathSelectPatternStr != null) && (this.m_firstChild != null)) {
+        		   throw new TransformerException("XTSE3125 : An xsl:break instruction with a 'select' attribute must have an empty "
+        				   																						+ "sequence constructor.", xctxt.getSAXLocator());          
+        	   }
+        	   else {               
+        		   if (xpathSelectPatternStr != null) {
+        			   SerializationHandler rth = transformer.getResultTreeHandler();
+
+        			   try {
+        				   m_selectExpression.executeCharsToContentHandler(xctxt, rth);
+        			   } catch (TransformerException ex) {
+        				   throw ex;
+        			   } catch (SAXException ex) {
+        				   throw new TransformerException(ex);
+        			   }
+        		   }
+        		   else {
+        			   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
+        					   													  elemTemplate = elemTemplate.m_nextSibling) {
+        				   xctxt.setSAXLocator(elemTemplate);
+        				   transformer.setCurrentElement(elemTemplate);
+        				   elemTemplate.execute(transformer);
+        			   } 
+        		   }
+        	   }
            }
-           else {               
-              if (xpathSelectPatternStr != null) {
-                  SerializationHandler rth = transformer.getResultTreeHandler();
-                  
-                  try {
-                      m_selectExpression.executeCharsToContentHandler(xctxt, rth);
-                  } catch (TransformerException ex) {
-                      throw ex;
-                  } catch (SAXException ex) {
-                      throw new TransformerException(ex);
-                  }
-              }
-              else {
-                  for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-                                                                      elemTemplate = elemTemplate.m_nextSibling) {
-                     xctxt.setSAXLocator(elemTemplate);
-                     transformer.setCurrentElement(elemTemplate);
-                     elemTemplate.execute(transformer);
-                  } 
-              }
+           finally {
+        	   
            }
        }
        

@@ -255,7 +255,7 @@ public class XPath implements Serializable, ExpressionOwner
     
     this.setExpression(expr);
     
-    if ((locator != null) && locator instanceof ExpressionNode)
+    if ((locator != null) && (locator instanceof ExpressionNode))
     {
     	expr.exprSetParent((ExpressionNode)locator);
     }

@@ -27,7 +27,6 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
-import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -425,32 +424,35 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                // to a node set. 
                DTMCursorIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
         
-               try {               
-                   xctxt.pushCurrentNode(DTM.NULL);
-                   IntStack currentNodes = xctxt.getCurrentNodeStack();
-                   xctxt.pushCurrentExpressionNode(DTM.NULL);
-                   IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
-                   xctxt.pushSAXLocatorNull();
-                   xctxt.pushContextNodeList(sourceNodes);
-                   transformer.pushElemTemplateElement(null);                              
-                          
+               XObject prevContextItem = xctxt.getXPath3ContextItem();
+               int prevContextPos = xctxt.getXPath3ContextPosition();
+               int prevContextSize = xctxt.getXPath3ContextSize();
+               
+               try {                          	               	                             
                    int nextNode;
                
                    ElemIterateOnCompletion xslOnCompletionTemplate = null;
-               
+                   int nodeSetLength = sourceNodes.getLength();
+
+                   int nodeCount = 0;
                    while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
-                      currentNodes.setTop(nextNode);
-                      currentExpressionNodes.setTop(nextNode);                  	  
+                	  nodeCount++;
                       
-                      for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-                                                                                 elemTemplate = elemTemplate.m_nextSibling) {                          
-                          if ((elemTemplate instanceof ElemIterateOnCompletion) && (xslOnCompletionTemplate == null)) {
-                              xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
+                      for (ElemTemplateElement t = this.m_firstChild; t != null; t = t.m_nextSibling) {                          
+                    	  if (!(t instanceof ElemParam)) {
+                    		 xctxt.setXPath3ContextItem(null);
+                    		 xctxt.setXPath3ContextPosition(nodeCount);
+                    		 xctxt.setXPath3ContextSize(nodeSetLength);
+                    	     xctxt.pushCurrentNode(nextNode);
+                    	  }
+                    	  
+                    	  if ((t instanceof ElemIterateOnCompletion) && (xslOnCompletionTemplate == null)) {
+                              xslOnCompletionTemplate = (ElemIterateOnCompletion)t;     
                           }
                           else if (!transformer.isXslIterateBreakEvaluated()) {
-                        	  xctxt.setSAXLocator(elemTemplate);
-                        	  transformer.setCurrentElement(elemTemplate);                        		  
-                        	  elemTemplate.execute(transformer);
+                        	  xctxt.setSAXLocator(t);
+                        	  transformer.setCurrentElement(t);                        		  
+                        	  t.execute(transformer);
                           }
                           else {
                               break;    
@@ -460,9 +462,13 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                       if (transformer.isXslIterateBreakEvaluated()) {
                           break;   
                       }
-                   }
+                  }
                
                   if ((xslOnCompletionTemplate != null) && !transformer.isXslIterateBreakEvaluated()) {
+                	   xctxt.setXPath3ContextItem(prevContextItem);
+                 	   xctxt.setXPath3ContextPosition(prevContextPos);
+             		   xctxt.setXPath3ContextSize(prevContextSize);
+                       xctxt.pushCurrentNode(sourceNode);
                        transformer.setXslIterateOnCompletionActive(true);
                        xctxt.setSAXLocator(xslOnCompletionTemplate);
                        transformer.setCurrentElement(xslOnCompletionTemplate);
@@ -473,11 +479,10 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                   transformer.setXslIterateBreakEvaluated(false);
              }
              finally {
-                 xctxt.popSAXLocator();
-                 xctxt.popContextNodeList();
-                 transformer.popElemTemplateElement();
-                 xctxt.popCurrentExpressionNode();
-                 xctxt.popCurrentNode();
+            	 xctxt.setXPath3ContextItem(prevContextItem);
+            	 xctxt.setXPath3ContextPosition(prevContextPos);
+        		 xctxt.setXPath3ContextSize(prevContextSize);
+                 xctxt.pushCurrentNode(sourceNode);
                  sourceNodes.detach();
              }
           }
@@ -522,8 +527,25 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
     			  xslElemNamesList.add(OTHER_ELEM);
     		  }
     	  }
-
-    	  verifyXslNextIterAndBreakConstraints(this);
+    	  
+    	  List<String> errMesgList = new ArrayList<String>();
+    	  verifyXslNextIterAndBreakConstraints(this, errMesgList);
+    	  int errMesgListCount = errMesgList.size();
+    	  if (errMesgListCount > 0) {
+    		  StringBuffer strBuff = new StringBuffer();
+    		  for (int idx = 0; idx < errMesgListCount; idx++) {
+    			  String errMesg = errMesgList.get(idx);
+    			  if (idx < (errMesgListCount - 1)) {
+    				  strBuff.append(errMesg + "\n");
+    			  }
+    			  else {
+    				  strBuff.append(errMesg);
+    			  }
+    		  }
+    		  
+    		  String errMesgStr = strBuff.toString();
+    		  throw new TransformerException(errMesgStr, srcLocator);
+    	  }
 
     	  /**
     	   * Get index of XSLT stylesheet specific element(s)'s, first occurrence within the list object
@@ -573,30 +595,51 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
      * @param elemTemplateElem						      An object representing an xsl:iterate 
      *                                                    instruction, or another XSL instruction 
      *                                                    within xsl:iterate.
+     * @param errMesgList                                 A list of error message strings, populated
+     *                                                    by this method.                                                     
      * @throws TransformerException
      */
-	private void verifyXslNextIterAndBreakConstraints(ElemTemplateElement elemTemplateElem) throws TransformerException {
+	private void verifyXslNextIterAndBreakConstraints(ElemTemplateElement elemTemplateElem, List<String> errMesgList) throws TransformerException {				
 		
-		while (elemTemplateElem != null) {
-			SourceLocator srcLocator = (SourceLocator)elemTemplateElem;
+		while (elemTemplateElem != null) {			
 		    if (elemTemplateElem instanceof ElemIterateBreak) {
 		    	if (!isXslInstructionInTailPositionOfSequenceConstructor(elemTemplateElem)) {
-		           throw new TransformerException("XTSE3120 : An xsl:break instruction is not in a tail position of xsl:iterate's sequence constructor.", srcLocator);
+		    	   String errMesg = "XTSE3120 : An xsl:break instruction is not in a tail position of xsl:iterate's sequence constructor.";
+		    	   if (!errMesgList.contains(errMesg)) {
+		    	      errMesgList.add(errMesg);
+		    	   }
 		    	}
 		    	else if ((elemTemplateElem.getParentElem() instanceof ElemLiteralResult) || (elemTemplateElem.getParentElem() instanceof ElemElement)) {
-		    	   throw new TransformerException("XTSE3120 : An xsl:break instruction cannot occur as child of XSL element constructor.", srcLocator);
+		    	   String errMesg = "XTSE3120 : An xsl:break instruction cannot occur as child of XSL element constructor.";
+		    	   if (!errMesgList.contains(errMesg)) {
+		    	      errMesgList.add(errMesg);
+		    	   }
 		    	}
 		    	else if (elemTemplateElem.getParentElem() instanceof ElemForEach) {
-			       throw new TransformerException("XTSE3120 : An xsl:break instruction cannot occur as child of xsl:for-each instruction.", srcLocator);
+			       String errMesg = "XTSE3120 : An xsl:break instruction cannot occur as child of xsl:for-each instruction.";
+		    	   if (!errMesgList.contains(errMesg)) {
+		    	      errMesgList.add(errMesg);
+		    	   }
 			    }
 		    }
 		    else if ((elemTemplateElem instanceof ElemIterateNextIteration) && !isXslInstructionInTailPositionOfSequenceConstructor(elemTemplateElem)) {
-		    	throw new TransformerException("XTSE3120 : An next-iteration instruction is not in a tail position of xsl:iterate's sequence constructor.", srcLocator);
+		    	String errMesg = "XTSE3120 : An xsl:next-iteration instruction is not in a tail position of xsl:iterate's sequence constructor.";
+		    	if (!errMesgList.contains(errMesg)) {
+		    	   errMesgList.add(errMesg);
+		    	}
+		    }
+		    else if (elemTemplateElem instanceof ElemIterateOnCompletion) {
+		    	if (!(elemTemplateElem.getParentElem() instanceof ElemIterate)) {
+		    		String errMesg = "XTSE0010 : An xsl:on-completion element can only occur as child of xsl:iterate instruction, after zero or more xsl:param elements.";
+		    		if (!errMesgList.contains(errMesg)) {
+		    			errMesgList.add(errMesg);
+		    		}
+		    	}
 		    }
 		    
 		    ElemTemplateElement elem = elemTemplateElem.getFirstChildElem();
 		    while (elem != null) {
-		       verifyXslNextIterAndBreakConstraints(elem);
+		       verifyXslNextIterAndBreakConstraints(elem, errMesgList);
 		       elem = elem.getNextSiblingElem();
 		    }
 		    

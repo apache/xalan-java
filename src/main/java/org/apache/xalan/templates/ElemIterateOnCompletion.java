@@ -17,6 +17,7 @@
  */
 package org.apache.xalan.templates;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
@@ -159,9 +160,13 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
        private void transformXslOncompletionInstruction(TransformerImpl transformer) 
                                                                                   throws TransformerException {
                                                                   
-           if (transformer.isXslIterateOnCompletionActive()) {               
-               XPathContext xctxt = transformer.getXPathContext();
-                                                            
+           if (transformer.isXslIterateOnCompletionActive()) {
+        	   XPathContext xctxt = transformer.getXPathContext();        	   
+        	   SourceLocator srcLocator = xctxt.getSAXLocator();        	   
+        	   if ((xpathSelectPatternStr != null) && (this.m_firstChild != null)) {
+        		  throw new TransformerException("XTSE3125 : An xsl:on-completion element has both 'select' attribute and a non empty sequence constructor.", srcLocator); 
+        	   }        	   
+                                                                           
                final int prevCurrentNode = xctxt.getCurrentNode();
                final int prevCurrExprNode = xctxt.getCurrentExpressionNode();
                
