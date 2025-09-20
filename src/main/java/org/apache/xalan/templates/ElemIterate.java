@@ -374,15 +374,23 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             		   }
 
             		   setXPathContextForXslSequenceProcessing(inpSeqLength, idx, resultSeqItem, xctxt);                                                                     
-            		   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-            				                                                      elemTemplate = elemTemplate.m_nextSibling) {                	  
-            			   if ((elemTemplate instanceof ElemIterateOnCompletion) && (xslOnCompletionTemplate == null)) {
-            				   xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
+            		   for (ElemTemplateElement t = this.m_firstChild; t != null; t = t.m_nextSibling) {
+            			   if ((idx == 0) && (t instanceof ElemParam)) {
+            				   ElemParam elemParam = (ElemParam)t;
+            				   QName paramQname = elemParam.getName();
+            				   Map<QName, XObject> varMap = xctxt.getXPathVarMap();
+            				   if (varMap.get(paramQname) != null) {
+            					  varMap.put(paramQname, null); 
+            				   }
+            			   }
+            			   
+            			   if ((t instanceof ElemIterateOnCompletion) && (xslOnCompletionTemplate == null)) {
+            				   xslOnCompletionTemplate = (ElemIterateOnCompletion)t;     
             			   }
             			   else if (!transformer.isXslIterateBreakEvaluated()) {
-            				   xctxt.setSAXLocator(elemTemplate);
-            				   transformer.setCurrentElement(elemTemplate);
-            				   elemTemplate.execute(transformer); 
+            				   xctxt.setSAXLocator(t);
+            				   transformer.setCurrentElement(t);
+            				   t.execute(transformer); 
             			   }
             			   else {                              
             				   resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);                               
@@ -421,7 +429,10 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            }
            else {
                // Evaluate xsl:iterate instruction, when value of its "select" attribute evaluates 
-               // to a node set. 
+               // to a node set.
+        	   
+        	   Map<QName, XObject> varMap = xctxt.getXPathVarMap();
+        	   
                DTMCursorIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
         
                XObject prevContextItem = xctxt.getXPath3ContextItem();
@@ -434,14 +445,22 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                    ElemIterateOnCompletion xslOnCompletionTemplate = null;
                    int nodeSetLength = sourceNodes.getLength();
 
-                   int nodeCount = 0;
+                   int iterCount = 0;
                    while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
-                	  nodeCount++;
+                	  iterCount++;
                       
-                      for (ElemTemplateElement t = this.m_firstChild; t != null; t = t.m_nextSibling) {                          
+                      for (ElemTemplateElement t = this.m_firstChild; t != null; t = t.m_nextSibling) {                    	  
+                    	  if ((iterCount == 1) && (t instanceof ElemParam)) {
+                    		  ElemParam elemParam = (ElemParam)t;
+                    		  QName paramQname = elemParam.getName();
+                    		  varMap = xctxt.getXPathVarMap();
+                    		  if (varMap.get(paramQname) != null) {
+                    			  varMap.put(paramQname, null); 
+                    		  }
+                    	  }
                     	  if (!(t instanceof ElemParam)) {
                     		 xctxt.setXPath3ContextItem(null);
-                    		 xctxt.setXPath3ContextPosition(nodeCount);
+                    		 xctxt.setXPath3ContextPosition(iterCount);
                     		 xctxt.setXPath3ContextSize(nodeSetLength);
                     	     xctxt.pushCurrentNode(nextNode);
                     	  }
@@ -450,9 +469,17 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                               xslOnCompletionTemplate = (ElemIterateOnCompletion)t;     
                           }
                           else if (!transformer.isXslIterateBreakEvaluated()) {
-                        	  xctxt.setSAXLocator(t);
-                        	  transformer.setCurrentElement(t);                        		  
-                        	  t.execute(transformer);
+                        	  if ((iterCount == 1) && (t instanceof ElemParam)) {
+                        		 ElemParam elemParam = (ElemParam)t;
+                        		 QName qName = elemParam.getName();
+                        		 XObject paramValue = elemParam.getValue(transformer, sourceNode);
+                        		 varMap.put(qName, paramValue);
+                        	  }
+                        	  else {
+                        	     xctxt.setSAXLocator(t);
+                        	     transformer.setCurrentElement(t);                        		  
+                        	     t.execute(transformer);
+                        	  }
                           }
                           else {
                               break;    
@@ -484,17 +511,16 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
         		 xctxt.setXPath3ContextSize(prevContextSize);
                  xctxt.pushCurrentNode(sourceNode);
                  sourceNodes.detach();
+                 
+                 // Clear xsl:iterate xsl:param variable storage
+                 for (int idx = 0; idx < fXslIterateParamWithparamDataList.size(); idx++) {
+                	 XslIterateParamWithparamData xslIterateParamWithparamData = fXslIterateParamWithparamDataList.get(idx);
+                	 QName varQName = xslIterateParamWithparamData.getName();
+                	 varMap.remove(varQName);
+                 }
              }
-          }
-           
-          Map<QName, XObject> varMap = xctxt.getXPathVarMap();
+          }          
           
-          // Clear xsl:iterate xsl:param variable storage
-          for (int idx = 0; idx < fXslIterateParamWithparamDataList.size(); idx++) {
-        	 XslIterateParamWithparamData xslIterateParamWithparamData = fXslIterateParamWithparamDataList.get(idx);
-        	 QName varQName = xslIterateParamWithparamData.getName();
-        	 varMap.remove(varQName);
-          }
       }
       
        /**

@@ -18,8 +18,11 @@
 package org.apache.xalan.templates;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -178,7 +181,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-		int contextNode = xctxt.getContextNode();
+		final int contextNode = xctxt.getContextNode();
 
 		// Clear the, xsl:next-iteration->xsl:with-param* list storage before
 		// evaluating this xsl:next-iteration element.
@@ -208,7 +211,9 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 
 		int paramCount = (ElemIterate.fXslIterateParamWithparamDataList).size();
 		int withParamCount = fWithparamList.size();
-	      
+		
+		Map<QName, XObject> paramNewValueMap = new HashMap<QName, XObject>();
+		
 		if (paramCount != withParamCount) {			
 			for (int idx2 = 0; idx2 < withParamCount; idx2++) {
 				XslIterateParamWithparamData withParamData = fWithparamList.get(idx2);
@@ -258,8 +263,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 						// Evaluate xsl:with-param's value, from the sequence constructor
 						// provided as content within xsl:with-param element.                   
 						int rootNodeHandleOfRtf = transformer.transformToRTF(elemWithParam);
-						NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, 
-								elemWithParam)).convertToNodeset();                
+						NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, elemWithParam)).convertToNodeset();                
 						withParamVal = new XNodeSetForDOM(nodeList, xctxt);
 					}
 
@@ -279,14 +283,17 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 						}
 					}
 
-					xpathVarMap.put(xslParamQName, withParamVal);
+					paramNewValueMap.put(xslParamQName, withParamVal);
 				}
 			}
+			
+			mutateXPathVarMap(xpathVarMap, paramNewValueMap);
 		}
-		else {			
+		else {						
 			for (int idx = 0; idx < paramCount; idx ++) {
 				XslIterateParamWithparamData paramData = (ElemIterate.fXslIterateParamWithparamDataList).get(idx);
 				QName paramQname = paramData.getName();
+				
 				boolean xslMatchingWithParamDeclared = false;
 				for (int idx2 = 0; idx2 < withParamCount; idx2++) {
 					XslIterateParamWithparamData withParamData = fWithparamList.get(idx2);                                                
@@ -297,7 +304,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 						
 						ElemWithParam elemWithParam = getElemWithParam(xslWithParamQName);
 
-						XPath withParamSelectVal = withParamData.getSelect();                
+						XPath withParamSelectVal = withParamData.getSelect();						
 						if (withParamSelectVal != null) {
 							// Evaluate xsl:with-param's value, from its "select" attribute
 							withParamVal = withParamSelectVal.execute(xctxt, contextNode, this);
@@ -306,8 +313,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 							// Evaluate xsl:with-param's value, from the sequence constructor
 							// provided as content within xsl:with-param element.                   
 							int rootNodeHandleOfRtf = transformer.transformToRTF(elemWithParam);
-							NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, 
-									elemWithParam)).convertToNodeset();                
+							NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, elemWithParam)).convertToNodeset();                
 							withParamVal = new XNodeSetForDOM(nodeList, xctxt);
 						}
 
@@ -327,7 +333,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 							}
 						}
 
-						xpathVarMap.put(xslWithParamQName, withParamVal);
+						paramNewValueMap.put(xslWithParamQName, withParamVal);
 						
 						break;
 					}
@@ -338,6 +344,8 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 							                                                           + "within the containing xsl:iterate instruction.", srcLocator);
 				}
 			}
+			
+			mutateXPathVarMap(xpathVarMap, paramNewValueMap);
 		}
 	}
 
@@ -395,6 +403,26 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 		}
 
 		return  result;   
+	}
+	
+	/**
+	 * Method definition, to mutate XPath context's variable values 
+	 * map, with the new computed values of variables for xsl:iterate 
+	 * instruction parameters.
+	 * 
+	 * @param xpathVarMap							java.util.Map object reference for 
+	 *                                              XPath variables map object. 
+	 * @param paramNewValueMap                      java.util.Map object reference for
+	 *                                              new computed values of variables. 
+	 */
+	private void mutateXPathVarMap(Map<QName, XObject> xpathVarMap, Map<QName, XObject> paramNewValueMap) {
+		Set<QName> qNameSet = paramNewValueMap.keySet();
+		Iterator<QName> qNameIter = qNameSet.iterator();
+		while (qNameIter.hasNext()) {
+		   QName qName = qNameIter.next();
+		   XObject xObj = paramNewValueMap.get(qName);
+		   xpathVarMap.put(qName, xObj);
+		}
 	}
       
 }

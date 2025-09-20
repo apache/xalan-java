@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-19T12:10:48Z" fail="17" name="iterate" pass="27" skipped="0" statusUnknown="0" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-20T16:34:54Z" fail="15" name="iterate" pass="29" skipped="0" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -19,10 +19,10 @@
    <testResult status="pass" testName="iterate-015"/>
    <testResult status="pass" testName="iterate-016"/>
    <testResult status="pass" testName="iterate-017"/>
-   <testResult status="fail" testName="iterate-018"/>
+   <testResult status="pass" testName="iterate-018"/>
    <testResult status="pass" testName="iterate-019"/>
    <testResult status="pass" testName="iterate-020"/>
-   <testResult status="fail" testName="iterate-021"/>
+   <testResult status="pass" testName="iterate-021"/>
    <testResult status="pass" testName="iterate-022"/>
    <testResult status="pass" testName="iterate-023"/>
    <testResult status="pass" testName="iterate-024"/>
@@ -85,7 +85,7 @@
    <testResult status="pass" testName="iterate-901"/>
    <testResult status="fail" testName="iterate-902">
       <outResult>
-         <errTrace>XTTE0590 : The value to parameter 'basketCost' cannot be assigned. Either the parameter's input is not available or parameter's value cannot be cast to an expected type.</errTrace>
+         <errTrace>XTTE0570 : The supplied xdm item doesn't match an XPath sequence type xs:decimal.</errTrace>
       </outResult>
    </testResult>
 </testrun>
