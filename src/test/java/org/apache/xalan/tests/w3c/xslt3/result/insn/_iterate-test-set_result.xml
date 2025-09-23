@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-20T16:34:54Z" fail="15" name="iterate" pass="29" skipped="0" statusUnknown="0" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-23T15:21:23Z" fail="10" name="iterate" pass="34" skipped="0" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -26,9 +26,7 @@
    <testResult status="pass" testName="iterate-022"/>
    <testResult status="pass" testName="iterate-023"/>
    <testResult status="pass" testName="iterate-024"/>
-   <testResult status="fail" testName="iterate-025">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;12345678910&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="iterate-025"/>
    <testResult status="pass" testName="iterate-026"/>
    <testResult status="fail" testName="iterate-027">
       <outResult>
@@ -51,9 +49,7 @@
    <testResult status="pass" testName="iterate-031"/>
    <testResult status="pass" testName="iterate-032"/>
    <testResult status="pass" testName="iterate-033"/>
-   <testResult status="fail" testName="iterate-034">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="iterate-034"/>
    <testResult status="fail" testName="iterate-035"/>
    <testResult status="fail" testName="iterate-036">
       <outResult>
@@ -62,26 +58,20 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="iterate-037">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;book&gt;Genesis&lt;/book&gt;&lt;book&gt;Exodus&lt;/book&gt;&lt;book&gt;Leviticus&lt;/book&gt;&lt;book&gt;Numbers&lt;/book&gt;&lt;book&gt;Deuteronomy&lt;/book&gt;&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="iterate-038">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="iterate-039">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="iterate-038"/>
+   <testResult status="pass" testName="iterate-039"/>
    <testResult status="fail" testName="iterate-040">
-      <outResult/>
+      <outResult>
+         <errTrace>Can not convert #NUMBER to a NodeList!</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="iterate-041">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="iterate-042">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="iterate-043">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="iterate-042"/>
+   <testResult status="pass" testName="iterate-043"/>
    <testResult status="pass" testName="iterate-901"/>
    <testResult status="fail" testName="iterate-902">
       <outResult>

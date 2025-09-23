@@ -44,6 +44,7 @@ import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.ref.DTMTreeWalker;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
@@ -277,13 +278,14 @@ public class ElemCopyOf extends ElemTemplateElement
     if (transformer.getDebug())
     	transformer.getTraceManager().emitTraceEvent(this);
 
-    try {      
-      XPathContext xctxt = transformer.getXPathContext();
-        
-      setXPathContext(xctxt);
-        
-      SourceLocator srcLocator = xctxt.getSAXLocator();
-      
+    boolean isXPathExprStrCheck = false;
+    
+    XPathContext xctxt = transformer.getXPathContext();
+    setXPathContext(xctxt);
+    
+    SourceLocator srcLocator = xctxt.getSAXLocator();
+    
+    try {                                
       QName type = getType();
       String validationStr = getValidation();
         
@@ -305,7 +307,37 @@ public class ElemCopyOf extends ElemTemplateElement
           value = xpath3ContextItem;  
       }
       else {
-          value = m_selectExpression.execute(xctxt, sourceNode, this);
+    	  String xpathPatternStr = m_selectExpression.getPatternString();
+    	  if ((sourceNode == DTM.NULL) && xpathPatternStr.startsWith("$")) {    		 
+    		  String varRef = null;
+    		  int idx = xpathPatternStr.indexOf('/');
+    		  if (idx == -1) {
+    			  idx = xpathPatternStr.indexOf('['); 	
+    		  }
+    		  if (idx != -1) {
+    			  varRef = xpathPatternStr.substring(0, idx);
+    		  }
+    		  else {
+    			  varRef = xpathPatternStr; 
+    		  }    			
+
+    		  XPath xpath2 = new XPath(varRef, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    		  xpath2.fixupVariables(m_vars, m_globals_size);
+    		  Expression expr2 = xpath2.getExpression();
+    		  XObject xObj2 = expr2.execute(xctxt);
+    		  if (xObj2 instanceof XMLNodeCursorImpl) {
+    			  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj2;
+    			  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+    			  DTM dtm = xctxt.getDTM(nodeHandle);    			   
+    			  sourceNode = dtm.getParent(nodeHandle);
+    			  isXPathExprStrCheck = true;
+    			  xctxt.pushCurrentNode(sourceNode);    			   
+    			  value = m_selectExpression.execute(xctxt, sourceNode, this);
+    		  }
+    	  }
+    	  else {
+             value = m_selectExpression.execute(xctxt, sourceNode, this);
+    	  }
       }
 
       if (transformer.getDebug()) {
@@ -423,6 +455,10 @@ public class ElemCopyOf extends ElemTemplateElement
     finally {
       if (transformer.getDebug()) {
          transformer.getTraceManager().emitTraceEndEvent(this);
+      }
+      
+      if (isXPathExprStrCheck) {
+    	 xctxt.popCurrentNode(); 
       }
     }
 

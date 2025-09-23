@@ -21,16 +21,19 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Operation;
+import org.apache.xpath.operations.UnaryOperation;
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xml.internal.dtm.DTM;
-
-/*
+/**
  * Implementation of the XSLT 3.0 xsl:on-completion instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -159,10 +162,11 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
        */
        private void transformXslOncompletionInstruction(TransformerImpl transformer) 
                                                                                   throws TransformerException {
+    	   
+    	   XPathContext xctxt = transformer.getXPathContext();        	   
+    	   SourceLocator srcLocator = xctxt.getSAXLocator();     	   
                                                                   
-           if (transformer.isXslIterateOnCompletionActive()) {
-        	   XPathContext xctxt = transformer.getXPathContext();        	   
-        	   SourceLocator srcLocator = xctxt.getSAXLocator();        	   
+           if (transformer.isXslIterateOnCompletionActive()) {        	          	   
         	   if ((xpathSelectPatternStr != null) && (this.m_firstChild != null)) {
         		  throw new TransformerException("XTSE3125 : An xsl:on-completion element has both 'select' attribute and a non empty sequence constructor.", srcLocator); 
         	   }        	   
@@ -177,6 +181,11 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
                    xctxt.pushCurrentExpressionNode(DTM.NULL);
                    
             	   if (xpathSelectPatternStr != null) {
+            		   if (isXslIterOnCompletionExprAccXPathCtxt(m_selectExpression)) {
+        				  throw new TransformerException("XPDY0002 : An xsl:on-completion instruction's 'select' attribute "
+        				  		                                                                         + "cannot access XPath context item.", srcLocator);   
+        			   }
+            		   
             		   SerializationHandler rth = transformer.getResultTreeHandler();
 
             		   try {
@@ -191,7 +200,11 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
             	   }
             	   else {
             		   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-            				                                                      elemTemplate = elemTemplate.m_nextSibling) {
+            				                                                      elemTemplate = elemTemplate.m_nextSibling) {            			   
+            			   if (isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate)) {
+            				  throw new TransformerException("XPDY0002 : An xsl:on-completion instruction's sequence constructor "
+            				  		                                                                    + "cannot access XPath context item.", elemTemplate); 
+            			   }
             			   xctxt.setSAXLocator(elemTemplate);
             			   transformer.setCurrentElement(elemTemplate);
             			   elemTemplate.execute(transformer);
@@ -203,6 +216,89 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
                    xctxt.pushCurrentExpressionNode(prevCurrExprNode);
                }
            }                      
+       }
+       
+       /**
+        * Method definition, to check whether an XPath expression accesses
+        * context item.
+        * 
+        * @param expr							An XPath compiled expression reference
+        * @return								Boolean value true if an XPath expression 
+        *                                       accesses context item, otherwise false.
+        */
+       private boolean isXslIterOnCompletionExprAccXPathCtxt(Expression expr) {
+    	   
+    	   boolean result = false;
+    	   
+    	   if (expr != null) {
+    		   if (expr instanceof SelfIteratorNoPredicate) {
+    			   result = true; 
+    		   }
+    		   else if (expr instanceof Operation) {
+    			   Operation opn1 = (Operation)expr;
+    			   Expression lOp = opn1.getLeftOperand();
+    			   Expression rOp = opn1.getRightOperand();
+    			   result = isXslIterOnCompletionExprAccXPathCtxt(lOp);
+    			   if (!result) {
+    				  result = isXslIterOnCompletionExprAccXPathCtxt(rOp); 
+    			   }
+    		   }
+    		   else if (expr instanceof UnaryOperation) {
+    			   UnaryOperation opn1 = (UnaryOperation)expr;
+    			   Expression rOp = opn1.getExpression();
+    			   result = isXslIterOnCompletionExprAccXPathCtxt(rOp);
+    		   }
+    	   }
+    	   
+    	   return result;
+       }
+       
+       /**
+        * Method definition, to check whether an XSL stylesheet element and 
+        * any of its descendant elements below xsl:on-completion element, access 
+        * XPath context item via stylesheet element's 'select' attribute.
+        * 
+        * @param elemTemplate							An XSL stylesheet element reference
+        * @return                                       Boolean value true if an XPath expression 
+        *                                               accesses context item, otherwise false.
+        */
+       private boolean isXslIterOnCompletionDescInstrAccXPathCtxt(ElemTemplateElement elemTemplate) {
+    	   
+    	   boolean result = false;    	       	   
+    	   
+    	   if (elemTemplate != null) {
+    		   Object obj1 = elemTemplate.getSelect();
+    		   Expression expr1 = null;
+    		   if (obj1 instanceof XPath) {
+    			   expr1 = ((XPath)obj1).getExpression();  
+    		   }
+    		   else if (obj1 instanceof Expression) {
+    			   expr1 = (Expression)obj1; 
+    		   }
+  		   
+    		   if ((expr1 != null) && !(expr1 instanceof XObject)) {
+    			   result = isXslIterOnCompletionExprAccXPathCtxt(expr1);
+    			   if (!result) {
+    				   ElemTemplateElement elemTemplate2 = elemTemplate;  
+    				   for (elemTemplate2 = elemTemplate2.m_firstChild; elemTemplate2 != null;
+    						                                                            elemTemplate2 = elemTemplate2.m_nextSibling) {
+    					   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2);
+    					   if (result) {
+    						   break;
+    					   }
+    					   else {
+    						   elemTemplate2 = elemTemplate2.m_firstChild;
+    						   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2);
+    						   if (result) {
+    							   break;	 
+    						   } 
+    					   }
+    				   }
+    			   }
+    		   }    		       		   
+    	   }
+    	   
+    	   return result;
        }
       
 }

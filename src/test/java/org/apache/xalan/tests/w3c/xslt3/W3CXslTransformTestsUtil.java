@@ -590,9 +590,28 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		if (m_initTemplateName != null) {
     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);
-    		}    		    		
+    		}
+    		else {
+    		   DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+    		   docBuilderFactory.setNamespaceAware(true);
+    		   DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+    		   Document xslDocument = docBuilder.parse(xslStreamSrc.getSystemId());
+    		   NodeList nodeList = xslDocument.getElementsByTagNameNS(Constants.S_XSLNAMESPACEURL, "template");
+    		   int nodeListLength = nodeList.getLength();
+    		   for (int idx = 0; idx < nodeListLength; idx++) {
+    			  Element elem = (Element)(nodeList.item(idx));
+    			  String attrValue = elem.getAttribute("name");
+    			  if (attrValue.endsWith("initial-template")) {
+    				 m_initTemplateName = attrValue; 
+    				 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);
+    				 
+    				 break;
+    			  }
+    		   }
+    		}
     		
-    		Transformer transformer = m_xslTransformerFactory.newTransformer(xslStreamSrc);    		
+    		Transformer transformer = m_xslTransformerFactory.newTransformer(xslStreamSrc);
+    		    		
     		if (xslParamMap.size() > 0) {
     			Set<String> keySet = xslParamMap.keySet();
     			Iterator<String> keyIter = keySet.iterator();

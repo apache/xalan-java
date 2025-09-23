@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-19T12:11:17Z" fail="14" name="analyze-string" pass="39" skipped="5" statusUnknown="0" totalRun="53">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-23T15:22:04Z" fail="14" name="analyze-string" pass="39" skipped="5" statusUnknown="0" totalRun="53">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -76,8 +76,6 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="analyze-string-098"/>
-   <testResult status="fail" testName="analyze-string-099">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="analyze-string-099"/>
    <testResult status="fail" testName="analyze-string-100"/>
 </testrun>

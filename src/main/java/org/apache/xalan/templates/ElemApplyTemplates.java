@@ -306,7 +306,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  if (transformer.getDebug())
 			  transformer.getTraceManager().emitTraceEvent(this);
 
-		  transformSelectedNodes(transformer);
+		  transformSelectedXdmItems(transformer);
 	  }
 	  finally
 	  {
@@ -329,11 +329,11 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * @throws TransformerException Thrown in a variety of circumstances.
    * @xsl.usage advanced
    */
-  public void transformSelectedNodes(TransformerImpl transformer) throws TransformerException
+  public void transformSelectedXdmItems(TransformerImpl transformer) throws TransformerException
   {
 
 	  final XPathContext xctxt = transformer.getXPathContext();
-	  final int sourceNode = xctxt.getCurrentNode();
+	  final int sourceNode = xctxt.getCurrentNode();	  	  
 
 	  DTMCursorIterator sourceNodes = null;
 
@@ -425,7 +425,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  } 
 		  }
 		  else if (varEvalResult instanceof XMLNodeCursorImpl) {
-			  sourceNodes = ((XMLNodeCursorImpl)varEvalResult).asIterator(xctxt, sourceNode);
+			  sourceNodes = ((XMLNodeCursorImpl)varEvalResult).asIterator(xctxt, sourceNode);			  
 		  }
 		  else if (isXdmItemAtomicValue(varEvalResult)) {    	   
 			  executeXslTransformAtomicValue(transformer, xctxt, varEvalResult, xslTemplateInvokeMode);

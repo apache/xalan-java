@@ -69,6 +69,8 @@ import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.NodeList;
 
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSInt;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
@@ -623,7 +625,7 @@ public class ElemVariable extends ElemTemplateElement
             	   var = resultSeq; 
                }
                else {
-                  var = new XMLNodeCursorImpl(dtmIter);
+            	   var = new XMLNodeCursorImpl(dtmIter);
                }
                
                if (m_asAttr != null) {
@@ -780,7 +782,8 @@ public class ElemVariable extends ElemTemplateElement
         }
   
         if (var == null) {        	        	
-           var = m_selectPattern.execute(xctxt, sourceNode, this);           
+           var = m_selectPattern.execute(xctxt, sourceNode, this);
+           
            if (this instanceof ElemParam) {
         	   if (var instanceof XSString) {
         		   var = new XSString((((XSString)var).stringValue()).trim());  
@@ -1171,6 +1174,15 @@ public class ElemVariable extends ElemTemplateElement
     		catch (TransformerException ex) {
     			throw ex; 
     		}
+    	}
+    	
+    	if (var == null) {
+    		if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INTEGER) {
+               var = new XSInteger("0");
+    		}
+    		else if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INT) {
+               var = new XSInt("0");
+     		}
     	}
     }
         

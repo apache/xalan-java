@@ -1935,6 +1935,10 @@ public class ElemTemplateElement extends UnImplNode
 	 this.m_xpathContext = xpathContext;
   }
   
+  public Object getSelect() {
+	  return null;
+  }
+  
   /**
    * Validate a simple type value produced by xsl:element instruction, literal result element or an 
    * xsl:attribute instruction, by the specified schema built-in simple type.  

@@ -16,13 +16,14 @@
   
   <xsl:output method="xml" indent="yes"/>
   
-  <xsl:template match="/info">   
+  <xsl:template match="/info">
+     <xsl:variable name="info1" select="."/>   
      <xsl:variable name="decisionMap" select="fn0:constructXdmDecisionMap(decision)" as="map(*)"/>
 	 <result>
 		<xsl:for-each select="sort(map:keys($decisionMap))">
 		   <xsl:variable name="id" select="." as="xs:integer"/>
 		   <decision id="{$id}" value="{map:get($decisionMap, $id)}">
-			  <xsl:copy-of select="/info/details/person[xs:integer(decision) eq $id]/name"/>
+			  <xsl:copy-of select="$info1/details/person[xs:integer(decision) eq $id]/name"/>
 		   </decision>
 		</xsl:for-each>
 	 </result>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-19T12:10:49Z" fail="31" name="sort" pass="50" skipped="0" statusUnknown="0" totalRun="81">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-23T15:21:26Z" fail="30" name="sort" pass="51" skipped="0" statusUnknown="0" totalRun="81">
    <testResult status="pass" testName="sort-003"/>
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
@@ -90,9 +90,9 @@
    <testResult status="pass" testName="sort-077"/>
    <testResult status="pass" testName="sort-078"/>
    <testResult status="fail" testName="sort-079">
-      <outResult/>
+      <outResult>
+         <errTrace>XTDE0040 : An XSL template named 't:initial-template' doesn't exist.</errTrace>
+      </outResult>
    </testResult>
-   <testResult status="fail" testName="sort-080">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="sort-080"/>
 </testrun>

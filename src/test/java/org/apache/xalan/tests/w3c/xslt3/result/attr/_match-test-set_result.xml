@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-19T12:10:43Z" fail="59" name="match" pass="69" skipped="8" statusUnknown="1" totalRun="129">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-23T15:21:15Z" fail="59" name="match" pass="69" skipped="8" statusUnknown="1" totalRun="129">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -321,13 +321,6 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
       <outResult/>
    </testResult>
    <testResult status="fail" testName="match-131"/>
-   <testResult status="fail" testName="match-132">
-      <outResult>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: 'also', 'with', ')', '.', '(', '(', 'comments', ')', ')', '[', '(', 'the', ')', '.', 'instance', '(', ')', 'of', '(', ')', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']', '[', '(', 'of', ''1'', 'always', ')', '1', ']', '(', '?', ')'</errTrace>
-         <errTrace>Unknown nodetype: (</errTrace>
-         <errTrace>Extra illegal tokens: '(', '(', ')', ')', '.', '(', ')', '[', '.', 'instance', '(', ')', 'of', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']', '(', ')', '[', '2', ']', '(', ')'</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="match-132"/>
    <testResult testName="match-133"/>
 </testrun>

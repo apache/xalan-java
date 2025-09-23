@@ -330,7 +330,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
     try
     {
-        transformSelectedNodes(transformer);
+        transformSelectedXdmItems(transformer);
     }
     finally
     {
@@ -394,7 +394,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    * 
    * @xsl.usage advanced
    */
-  public void transformSelectedNodes(TransformerImpl transformer) throws 
+  public void transformSelectedXdmItems(TransformerImpl transformer) throws 
                                                              TransformerException {
     
     final XPathContext xctxt = transformer.getXPathContext();    

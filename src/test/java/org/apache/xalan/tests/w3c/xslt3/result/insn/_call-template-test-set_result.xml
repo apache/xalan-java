@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-19T12:10:45Z" fail="14" name="call-template" pass="27" skipped="1" statusUnknown="0" totalRun="41">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-23T15:21:19Z" fail="13" name="call-template" pass="27" skipped="2" statusUnknown="0" totalRun="40">
    <testResult status="fail" testName="call-template-0001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
    </testResult>
@@ -45,9 +45,7 @@
    <testResult status="fail" testName="call-template-0901"/>
    <testResult status="pass" testName="call-template-1001"/>
    <testResult status="fail" testName="call-template-1002"/>
-   <testResult status="fail" testName="call-template-1003">
-      <outResult/>
-   </testResult>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="call-template-1003"/>
    <testResult status="pass" testName="call-template-1101"/>
    <testResult status="pass" testName="call-template-1102"/>
    <testResult status="pass" testName="call-template-1201"/>

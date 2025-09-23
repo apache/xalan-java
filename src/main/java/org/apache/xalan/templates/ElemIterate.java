@@ -231,7 +231,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
        */
        public void execute(TransformerImpl transformer) throws TransformerException
        {
-           transformSelectedNodes(transformer);
+           transformSelectedXdmItems(transformer);
        }
        
        /**
@@ -241,7 +241,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
         * @param transformer									Xalan-J's XSL transformation object
         * @throws TransformerException
         */
-       private void transformSelectedNodes(TransformerImpl transformer) throws TransformerException {
+       private void transformSelectedXdmItems(TransformerImpl transformer) throws TransformerException {
         
            XPathContext xctxt = transformer.getXPathContext();                       
          
@@ -433,20 +433,19 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
         	   
         	   Map<QName, XObject> varMap = xctxt.getXPathVarMap();
         	   
-               DTMCursorIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+               DTMCursorIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode); 
         
                XObject prevContextItem = xctxt.getXPath3ContextItem();
                int prevContextPos = xctxt.getXPath3ContextPosition();
                int prevContextSize = xctxt.getXPath3ContextSize();
                
-               try {                          	               	                             
-                   int nextNode;
-               
+               try {                          	               	                                            
                    ElemIterateOnCompletion xslOnCompletionTemplate = null;
                    int nodeSetLength = sourceNodes.getLength();
 
                    int iterCount = 0;
-                   while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
+                   int nextNode;
+                   while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) { 
                 	  iterCount++;
                       
                       for (ElemTemplateElement t = this.m_firstChild; t != null; t = t.m_nextSibling) {                    	  
@@ -458,10 +457,11 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                     			  varMap.put(paramQname, null); 
                     		  }
                     	  }
+                    	  
                     	  if (!(t instanceof ElemParam)) {
                     		 xctxt.setXPath3ContextItem(null);
                     		 xctxt.setXPath3ContextPosition(iterCount);
-                    		 xctxt.setXPath3ContextSize(nodeSetLength);
+                    		 xctxt.setXPath3ContextSize(nodeSetLength);                    		 
                     	     xctxt.pushCurrentNode(nextNode);
                     	  }
                     	  
@@ -481,14 +481,14 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                         	     t.execute(transformer);
                         	  }
                           }
-                          else {
+                          else {                        	  
                               break;    
                           }
                       }                                      
                    
                       if (transformer.isXslIterateBreakEvaluated()) {
                           break;   
-                      }
+                      }                                            
                   }
                
                   if ((xslOnCompletionTemplate != null) && !transformer.isXslIterateBreakEvaluated()) {
@@ -508,16 +508,17 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
              finally {
             	 xctxt.setXPath3ContextItem(prevContextItem);
             	 xctxt.setXPath3ContextPosition(prevContextPos);
-        		 xctxt.setXPath3ContextSize(prevContextSize);
-                 xctxt.pushCurrentNode(sourceNode);
-                 sourceNodes.detach();
-                 
-                 // Clear xsl:iterate xsl:param variable storage
-                 for (int idx = 0; idx < fXslIterateParamWithparamDataList.size(); idx++) {
-                	 XslIterateParamWithparamData xslIterateParamWithparamData = fXslIterateParamWithparamDataList.get(idx);
-                	 QName varQName = xslIterateParamWithparamData.getName();
-                	 varMap.remove(varQName);
-                 }
+            	 xctxt.setXPath3ContextSize(prevContextSize);
+            	 xctxt.popCurrentNode();
+            	 xctxt.pushCurrentNode(sourceNode);            	 
+            	 sourceNodes.detach();
+
+            	 // Clear xsl:iterate xsl:param variable storage
+            	 for (int idx = 0; idx < fXslIterateParamWithparamDataList.size(); idx++) {
+            		 XslIterateParamWithparamData xslIterateParamWithparamData = fXslIterateParamWithparamDataList.get(idx);
+            		 QName varQName = xslIterateParamWithparamData.getName();
+            		 varMap.remove(varQName);
+            	 }
              }
           }          
           

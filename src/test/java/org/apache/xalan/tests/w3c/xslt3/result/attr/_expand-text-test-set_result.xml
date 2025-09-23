@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-19T12:11:17Z" fail="28" name="expand-text" pass="34" skipped="0" statusUnknown="0" totalRun="62">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-23T15:22:05Z" fail="9" name="expand-text" pass="53" skipped="0" statusUnknown="0" totalRun="62">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
@@ -62,60 +62,24 @@
       </outResult>
    </testResult>
    <testResult status="pass" testName="cvt-034"/>
-   <testResult status="fail" testName="cvt-035a">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-035b">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-035c">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-036a">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-036b">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-036c">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-037a">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-037b">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-037c">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-038a">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-038b">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-038c">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-039a">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-039b">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-039c">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-040a">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-040b">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-040c">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="cvt-035a"/>
+   <testResult status="pass" testName="cvt-035b"/>
+   <testResult status="pass" testName="cvt-035c"/>
+   <testResult status="pass" testName="cvt-036a"/>
+   <testResult status="pass" testName="cvt-036b"/>
+   <testResult status="pass" testName="cvt-036c"/>
+   <testResult status="pass" testName="cvt-037a"/>
+   <testResult status="pass" testName="cvt-037b"/>
+   <testResult status="pass" testName="cvt-037c"/>
+   <testResult status="pass" testName="cvt-038a"/>
+   <testResult status="pass" testName="cvt-038b"/>
+   <testResult status="pass" testName="cvt-038c"/>
+   <testResult status="pass" testName="cvt-039a"/>
+   <testResult status="pass" testName="cvt-039b"/>
+   <testResult status="pass" testName="cvt-039c"/>
+   <testResult status="pass" testName="cvt-040a"/>
+   <testResult status="pass" testName="cvt-040b"/>
+   <testResult status="fail" testName="cvt-040c"/>
    <testResult status="pass" testName="cvt-041"/>
    <testResult status="pass" testName="cvt-042"/>
    <testResult status="pass" testName="cvt-043"/>
@@ -123,11 +87,7 @@
    <testResult status="pass" testName="cvt-045"/>
    <testResult status="pass" testName="cvt-046"/>
    <testResult status="pass" testName="cvt-047"/>
-   <testResult status="fail" testName="cvt-048">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="cvt-048"/>
    <testResult status="pass" testName="cvt-049"/>
-   <testResult status="fail" testName="cvt-050">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="cvt-050"/>
 </testrun>
