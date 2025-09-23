@@ -83,7 +83,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Gary L Peskin <garyp@apache.org>
- * @author Joseph Kesselman <jkesselm@apache.org>, Morris Kwan <mkwan@apache.org>,
+ * @author Joseph Kesselman <keshlam@alum.mit.edu>, Morris Kwan <mkwan@apache.org>,
  *         Brian James Minchau <minchau@apache.org>, Henry Zongaro <zongaro@ca.ibm.com>, 
  *         Christine Li <jycli@apache.org>
  *         

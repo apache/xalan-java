@@ -77,7 +77,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Myriam Midy <mmidy@apache.org>
- * @author Joseph Kesselman <jkesselm@apache.org>
+ * @author Joseph Kesselman <keshlam@alum.mit.edu>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XSLT 3.0 specific changes, to this class)

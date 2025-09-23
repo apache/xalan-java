@@ -38,7 +38,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * 
- * @author Joseph Kesselman <jkesselm@apache.org>
+ * @author Joseph Kesselman <keshlam@alum.mit.edu>
  * @author Gary Gregory <ggregory@apache.org>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>

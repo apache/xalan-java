@@ -66,7 +66,7 @@ import xml.xpath31.processor.types.XSString;
  * Implementation of the XSLT 3.0 xsl:for-each instruction.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
- * @author Joseph Kesselman <jkesselm@apache.org>, Myriam Midy <mmidy@apache.org>,
+ * @author Joseph Kesselman <keshlam@alum.mit.edu>, Myriam Midy <mmidy@apache.org>,
  *         Ilene Seelemann <ilene@apache.org>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>

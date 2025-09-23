@@ -129,7 +129,7 @@ import xml.xpath31.processor.types.XSInteger;
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Myriam Midy <mmidy@apache.org>
- * @author Joseph Kesselman <jkesselm@apache.org>, Ilene Seelemann, Yash Talwar, 
+ * @author Joseph Kesselman <keshlam@alum.mit.edu>, Ilene Seelemann, Yash Talwar, 
  *         Henry Zongaro <zongaro@ca.ibm.com>, Christine Li <jycli@apache.org>
  *         
  * @author Mukul Gandhi <mukulg@apache.org>

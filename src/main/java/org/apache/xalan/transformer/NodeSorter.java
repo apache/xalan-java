@@ -35,7 +35,7 @@ import org.apache.xpath.objects.XObject;
  * to an XPath select pattern.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
- * @author Joseph Kesselman <jkesselm@apache.org>
+ * @author Joseph Kesselman <keshlam@alum.mit.edu>
  * 
  * @xsl.usage internal
  */
