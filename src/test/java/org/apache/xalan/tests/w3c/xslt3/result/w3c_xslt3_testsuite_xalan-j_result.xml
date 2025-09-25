@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-09-23T15:22:19Z" desc="W3C XSLT 3.0 test suite results" fail="734" pass="1681" skipped="67" success="69.15%" totalRun="2431" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-09-25T17:40:32Z" desc="W3C XSLT 3.0 test suite results" fail="729" pass="1686" skipped="67" success="69.35%" totalRun="2431" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="31" pass="73" skipped="4" success="69.52%" totalRun="105"/>
     <avt fail="15" pass="20" skipped="0" success="57.14%" totalRun="35"/>
-    <expand-text fail="9" pass="53" skipped="0" success="85.48%" totalRun="62"/>
+    <expand-text fail="8" pass="54" skipped="0" success="87.1%" totalRun="62"/>
     <match fail="59" pass="69" skipped="8" success="53.49%" totalRun="129"/>
     <select fail="5" pass="19" skipped="0" success="76.0%" totalRun="25"/>
     <xpath-default-namespace fail="15" pass="11" skipped="0" success="42.31%" totalRun="26"/>
@@ -12,7 +12,7 @@
     <attribute-set fail="8" pass="41" skipped="1" success="83.67%" totalRun="49"/>
     <character-map fail="12" pass="15" skipped="1" success="53.57%" totalRun="28"/>
     <function fail="31" pass="57" skipped="22" success="64.77%" totalRun="88"/>
-    <variable fail="3" pass="16" skipped="0" success="80.0%" totalRun="20"/>
+    <variable fail="4" pass="15" skipped="0" success="75.0%" totalRun="20"/>
   </decl>
   <expr>
     <axes fail="18" pass="183" skipped="0" success="91.04%" totalRun="201"/>
@@ -35,17 +35,17 @@
   </fn>
   <insn>
     <analyze-string fail="14" pass="39" skipped="5" success="73.58%" totalRun="53"/>
-    <apply-templates fail="25" pass="21" skipped="4" success="45.65%" totalRun="46"/>
+    <apply-templates fail="24" pass="22" skipped="4" success="47.83%" totalRun="46"/>
     <attribute fail="21" pass="8" skipped="0" success="26.67%" totalRun="30"/>
     <call-template fail="13" pass="27" skipped="2" success="67.5%" totalRun="40"/>
     <choose fail="2" pass="21" skipped="0" success="87.5%" totalRun="24"/>
     <copy fail="31" pass="28" skipped="0" success="46.67%" totalRun="60"/>
     <element fail="18" pass="11" skipped="0" success="37.93%" totalRun="29"/>
     <for-each-group fail="24" pass="49" skipped="4" success="66.22%" totalRun="74"/>
-    <iterate fail="10" pass="34" skipped="0" success="77.27%" totalRun="44"/>
+    <iterate fail="7" pass="37" skipped="0" success="84.09%" totalRun="44"/>
     <sequence fail="17" pass="8" skipped="1" success="30.77%" totalRun="26"/>
     <sort fail="30" pass="51" skipped="0" success="62.96%" totalRun="81"/>
-    <try fail="21" pass="16" skipped="5" success="43.24%" totalRun="37"/>
+    <try fail="20" pass="17" skipped="5" success="45.95%" totalRun="37"/>
     <xsl-document fail="13" pass="12" skipped="0" success="48.0%" totalRun="25"/>
   </insn>
   <misc>

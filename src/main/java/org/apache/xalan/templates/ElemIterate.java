@@ -600,9 +600,11 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
     				  ElemParam paramElem = (ElemParam)elemTemplate;
     				  QName paramNameVal = paramElem.getName();
     				  XPath paramSelectXPath = paramElem.getSelect();
+    				  String asAttr = paramElem.getAs();
     				  XslIterateParamWithparamData paramWithparamDataObj = new XslIterateParamWithparamData();
     				  paramWithparamDataObj.setName(paramNameVal);
     				  paramWithparamDataObj.setSelect(paramSelectXPath);
+    				  paramWithparamDataObj.setAsAttrValue(asAttr);
     				  if (fXslIterateParamWithparamDataList.contains(paramWithparamDataObj)) {
     					  throw new TransformerException("XTSE0580 : The name of an xsl:param '" + paramNameVal + "' is not unique within xsl:iterate.", srcLocator);    
     				  }
@@ -615,8 +617,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
     }
 
     /**
-     * Method definition, to verify within an xsl:iterate instruction, that xsl:next-iteration 
-     * and xsl:break instructions are in tail position of xsl:iterate's sequence constructor, 
+     * Method definition, to check within an xsl:iterate instruction, that xsl:next-iteration 
+     * or/and xsl:break instructions are in tail position of xsl:iterate's sequence constructor, 
      * and few other XSL stylesheet xsl:iterate constraints as well.
      * 
      * @param elemTemplateElem						      An object representing an xsl:iterate 
@@ -630,8 +632,9 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 		
 		while (elemTemplateElem != null) {			
 		    if (elemTemplateElem instanceof ElemIterateBreak) {
-		    	if (!isXslInstructionInTailPositionOfSequenceConstructor(elemTemplateElem)) {
-		    	   String errMesg = "XTSE3120 : An xsl:break instruction is not in a tail position of xsl:iterate's sequence constructor.";
+		    	if (!isXslInstIterateRelnInTailPositionOfSeqCons(elemTemplateElem)) {
+		    	   String errMesg = "XTSE3120 : An xsl:break instruction is not in a tail position of xsl:iterate's "
+		    	   		                                                                         + "sequence constructor.";
 		    	   if (!errMesgList.contains(errMesg)) {
 		    	      errMesgList.add(errMesg);
 		    	   }
@@ -649,15 +652,17 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 		    	   }
 			    }
 		    }
-		    else if ((elemTemplateElem instanceof ElemIterateNextIteration) && !isXslInstructionInTailPositionOfSequenceConstructor(elemTemplateElem)) {
-		    	String errMesg = "XTSE3120 : An xsl:next-iteration instruction is not in a tail position of xsl:iterate's sequence constructor.";
+		    else if ((elemTemplateElem instanceof ElemIterateNextIteration) && !isXslInstIterateRelnInTailPositionOfSeqCons(elemTemplateElem)) {
+		    	String errMesg = "XTSE3120 : An xsl:next-iteration instruction is not in a tail position of xsl:iterate's "
+		    			                                                                               + "sequence constructor.";
 		    	if (!errMesgList.contains(errMesg)) {
 		    	   errMesgList.add(errMesg);
 		    	}
 		    }
 		    else if (elemTemplateElem instanceof ElemIterateOnCompletion) {
 		    	if (!(elemTemplateElem.getParentElem() instanceof ElemIterate)) {
-		    		String errMesg = "XTSE0010 : An xsl:on-completion element can only occur as child of xsl:iterate instruction, after zero or more xsl:param elements.";
+		    		String errMesg = "XTSE0010 : An xsl:on-completion element can only occur as child of xsl:iterate instruction, "
+		    				                                                                                      + "after zero or more xsl:param elements.";
 		    		if (!errMesgList.contains(errMesg)) {
 		    			errMesgList.add(errMesg);
 		    		}
@@ -673,5 +678,72 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 		    elemTemplateElem = elemTemplateElem.getNextSiblingElem();
 		}  
 	}
+	
+	/**
+	 * Method definition, to check whether an XSLT 3.0 instruction is within its contained 
+	 * instruction's sequence constructor's tail position, in relation to xsl:iterate 
+	 * instruction's processing.
+	 * 
+	 * The XSLT 3.0 spec, provides following definitions to determine, whether an XSLT 
+	 * instruction is in the tail position within an XSLT sequence constructor:
+	 * 
+	 * An instruction J is in a tail position within a sequence constructor SC if it 
+	 * satisfies one of the following conditions:
+	     1) J is the last instruction in SC, ignoring any xsl:fallback instructions.
+	     2) J is in a tail position within the sequence constructor that forms the body 
+	        of an xsl:if instruction that is itself in a tail position within SC.
+	     3) J is in a tail position within the sequence constructor that forms the body 
+	        of an xsl:when or xsl:otherwise branch of an xsl:choose instruction that is 
+	        itself in a tail position within SC.
+	     4) J is in a tail position within the sequence constructor that forms the body 
+	        of an xsl:try instruction that is itself in a tail position within SC (that 
+	        is, it is immediately followed by an xsl:catch element, ignoring 
+	        any xsl:fallback elements).
+	     5) J is in a tail position within the sequence constructor that forms the body 
+	        of an xsl:catch element within an xsl:try instruction that is itself in a 
+	        tail position within SC.
+
+	     @param  xslInstr    An XSLT stylesheet instruction, that needs to be checked whether
+	                         its in the tail position of it's parent/ancestor XSL instruction's 
+	                         sequence constructor.
+	                         When this method is first called, an XSL instruction xslInstr is
+	                         either xsl:break or an xsl:next-iteration instruction.                        
+	 */
+	  private boolean isXslInstIterateRelnInTailPositionOfSeqCons(ElemTemplateElement xslInstr) {
+	      
+		  boolean result = true;
+
+		  ElemTemplateElement elemTemplateElementNextSubling = xslInstr.getNextSiblingElem();
+		  // Ignore sequence of one or more xsl:fallback instructions 
+		  while (elemTemplateElementNextSubling instanceof ElemFallback) {
+			  elemTemplateElementNextSubling = elemTemplateElementNextSubling.getNextSiblingElem(); 
+		  }
+		  
+		  if (elemTemplateElementNextSubling == null) {
+			  ElemTemplateElement parentElem = xslInstr.getParentElem();
+			  if (parentElem instanceof ElemIf) {
+				 result = isXslInstIterateRelnInTailPositionOfSeqCons((ElemIf)parentElem);
+			  }
+			  else if ((parentElem instanceof ElemWhen) || (parentElem instanceof ElemOtherwise)) {
+			     result = isXslInstIterateRelnInTailPositionOfSeqCons((ElemChoose)(parentElem.getParentElem())); 
+			  }
+			  else if (parentElem instanceof ElemTry) {
+				 result = isXslInstIterateRelnInTailPositionOfSeqCons((ElemTry)parentElem);  
+			  }
+			  else if (parentElem instanceof ElemCatch) {
+				 result = isXslInstIterateRelnInTailPositionOfSeqCons((ElemTry)(parentElem.getParentElem()));  
+			  }			  
+		  }
+		  else {
+			  if (elemTemplateElementNextSubling instanceof ElemCatch) {
+				 result = isXslInstIterateRelnInTailPositionOfSeqCons((ElemTry)(elemTemplateElementNextSubling.getParentElem())); 
+			  }
+			  else {
+			     result = false;
+			  }
+		  }
+	      
+	      return result;
+	  }
       
 }

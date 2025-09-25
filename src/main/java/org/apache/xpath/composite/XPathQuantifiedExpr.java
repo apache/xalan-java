@@ -122,7 +122,7 @@ public class XPathQuantifiedExpr extends Expression {
         
         XPath quantifiedExprXPath = new XPath(m_xpathQuantifierTestStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                         XPath.SELECT, null);
-        quantifiedExprXPath.setIsQuantifiedExpr(true);
+        quantifiedExprXPath.setIsConcreteExceptionProcessing(true);
         
         ResultSequence resultSequence = getQuantifiedExpressionEvalResult(m_QuantifiedExprVarBindingList.listIterator(), 
         		                                                                                     quantifiedExprXPath, xctxt);

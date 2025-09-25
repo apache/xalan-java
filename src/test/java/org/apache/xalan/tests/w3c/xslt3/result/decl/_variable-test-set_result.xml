@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-23T15:21:09Z" fail="3" name="variable" pass="16" skipped="0" statusUnknown="1" totalRun="20">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-25T17:39:10Z" fail="4" name="variable" pass="15" skipped="0" statusUnknown="1" totalRun="20">
    <testResult status="pass" testName="variable-0101"/>
    <testResult status="pass" testName="variable-0102"/>
    <testResult status="pass" testName="variable-0103"/>
@@ -10,7 +10,9 @@
    <testResult status="pass" testName="variable-0109"/>
    <testResult status="pass" testName="variable-0110"/>
    <testResult status="pass" testName="variable-0111"/>
-   <testResult status="pass" testName="variable-0112"/>
+   <testResult status="fail" testName="variable-0112">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out result=""/&gt;</outResult>
+   </testResult>
    <testResult status="pass" testName="variable-0113"/>
    <testResult status="pass" testName="variable-0114"/>
    <testResult status="pass" testName="variable-0115"/>

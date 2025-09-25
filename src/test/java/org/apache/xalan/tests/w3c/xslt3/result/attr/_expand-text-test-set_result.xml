@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-23T15:22:05Z" fail="9" name="expand-text" pass="53" skipped="0" statusUnknown="0" totalRun="62">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-25T17:40:08Z" fail="8" name="expand-text" pass="54" skipped="0" statusUnknown="0" totalRun="62">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
@@ -35,12 +35,7 @@
    <testResult status="pass" testName="cvt-022"/>
    <testResult status="pass" testName="cvt-023"/>
    <testResult status="pass" testName="cvt-024"/>
-   <testResult status="fail" testName="cvt-025">
-      <outResult>
-         <errTrace>Variable $d accessed before it is bound!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="cvt-025"/>
    <testResult status="pass" testName="cvt-026"/>
    <testResult status="pass" testName="cvt-027"/>
    <testResult status="fail" testName="cvt-028">

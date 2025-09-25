@@ -269,20 +269,21 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
     	   if (elemTemplate != null) {
     		   Object obj1 = elemTemplate.getSelect();
     		   Expression expr1 = null;
-    		   if (obj1 instanceof XPath) {
-    			   expr1 = ((XPath)obj1).getExpression();  
+    		   if (obj1 != null) {    		   
+    			   if (obj1 instanceof XPath) {
+    				   expr1 = ((XPath)obj1).getExpression();  
+    			   }
+    			   else if (obj1 instanceof Expression) {
+    				   expr1 = (Expression)obj1; 
+    			   }
     		   }
-    		   else if (obj1 instanceof Expression) {
-    			   expr1 = (Expression)obj1; 
-    		   }
-  		   
+
     		   if ((expr1 != null) && !(expr1 instanceof XObject)) {
-    			   result = isXslIterOnCompletionExprAccXPathCtxt(expr1);
+    			   result = isXslIterOnCompletionExprAccXPathCtxt(expr1);    			   
     			   if (!result) {
     				   ElemTemplateElement elemTemplate2 = elemTemplate;  
-    				   for (elemTemplate2 = elemTemplate2.m_firstChild; elemTemplate2 != null;
-    						                                                            elemTemplate2 = elemTemplate2.m_nextSibling) {
-    					   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2);
+    				   for (elemTemplate2 = elemTemplate2.m_firstChild; elemTemplate2 != null; elemTemplate2 = elemTemplate2.m_nextSibling) {
+    					   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2);    						   
     					   if (result) {
     						   break;
     					   }
@@ -295,7 +296,23 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
     					   }
     				   }
     			   }
-    		   }    		       		   
+    		   }
+    		   else {
+    			   ElemTemplateElement elemTemplate2 = elemTemplate;  
+    			   for (elemTemplate2 = elemTemplate2.m_firstChild; elemTemplate2 != null; elemTemplate2 = elemTemplate2.m_nextSibling) {
+    				   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2);    						   
+    				   if (result) {
+    					   break;
+    				   }
+    				   else {
+    					   elemTemplate2 = elemTemplate2.m_firstChild;
+    					   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2);
+    					   if (result || (elemTemplate2 == null)) {
+    						   break;	 
+    					   } 
+    				   }
+    			   } 
+    		   }
     	   }
     	   
     	   return result;

@@ -73,6 +73,8 @@ public class ElemParam extends ElemVariable
      return m_tunnelAttr;
   }
   
+  private boolean m_required_declared = false;
+  
   /**
    * An optional "required" attribute.
    */
@@ -84,16 +86,27 @@ public class ElemParam extends ElemVariable
    * @param required
    */
   public void setRequired(boolean required) {
-	  m_required = required; 
+	  m_required = required;
+	  m_required_declared = true;
   }
   
   /**
    * Get the "required" attribute.
    * 
-   * @return
+   * @return				  Boolean value true or false
    */
   public boolean getRequired() {
 	  return m_required;
+  }
+  
+  /**
+   * Check whether, xsl:param instruction's 'required' 
+   * attribute is declared.
+   * 
+   * @return				 Boolean value true or false
+   */
+  public boolean getRequiredDeclared() {
+	  return m_required_declared;
   }
 
   /**

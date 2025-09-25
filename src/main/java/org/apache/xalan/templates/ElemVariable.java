@@ -247,13 +247,11 @@ public class ElemVariable extends ElemTemplateElement
 
   /**
    * Tells if this is a top-level variable or param, or not.
-   * @serial
    */
   private boolean m_isTopLevel = false;
 
   /**
    * Set if this is a top-level variable or param, or not.
-   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
    * @param v Boolean indicating whether this is a top-level variable
    * or param, or not.
@@ -265,7 +263,6 @@ public class ElemVariable extends ElemTemplateElement
 
   /**
    * Get if this is a top-level variable or param, or not.
-   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
    * @return Boolean indicating whether this is a top-level variable
    * or param, or not.
@@ -435,16 +432,6 @@ public class ElemVariable extends ElemTemplateElement
     if ((m_selectPattern != null) && (m_xpath_default_namespace != null)) {    		
        m_selectPattern = new XPath(m_selectPattern.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
  	}
-    
-    if ((this instanceof ElemParam) && m_isTopLevel) {
-       ElemParam elemParam = (ElemParam)this;
-       boolean isRequired = elemParam.getRequired();
-       if (isRequired && (m_selectPattern == null) && (getFirstChildElem() == null)) {
-    	  QName qName = elemParam.getName();
-    	  throw new TransformerException("XTDE0050 : No value supplied for XSL stylesheet's top level "
-    	  		                                            + "required parameter '" + qName.toString() + "'.", srcLocator);  
-       }
-    }
  
     try {        
       if (m_selectPattern != null) {          
@@ -473,7 +460,7 @@ public class ElemVariable extends ElemTemplateElement
                    if (evalResult == null) {
                 	  String xpathPatternStr = m_selectPattern.getPatternString();
                 	  throw new TransformerException("XTTE0570 : The supplied value " + xpathPatternStr + ", doesn't "
-                	  		                                               + "match an expected XPath sequence type " + m_asAttr + ".", srcLocator); 
+                	  		                                                          + "match an expected XPath sequence type " + m_asAttr + ".", srcLocator); 
                    }
                 }
             	else if (m_asAttr != null && (XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {

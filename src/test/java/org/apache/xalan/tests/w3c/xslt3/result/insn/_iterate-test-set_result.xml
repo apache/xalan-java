@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-23T15:21:23Z" fail="10" name="iterate" pass="34" skipped="0" statusUnknown="0" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-25T17:39:24Z" fail="7" name="iterate" pass="37" skipped="0" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -28,35 +28,26 @@
    <testResult status="pass" testName="iterate-024"/>
    <testResult status="pass" testName="iterate-025"/>
    <testResult status="pass" testName="iterate-026"/>
-   <testResult status="fail" testName="iterate-027">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="iterate-027"/>
    <testResult status="fail" testName="iterate-028">
       <outResult>
          <errTrace>XPST0003 : An XPath expression /out/text()[. = "exit at 12 of 76"] has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="iterate-029"/>
    <testResult status="fail" testName="iterate-030">
       <outResult>
          <errTrace>XPST0003 : An XPath expression /out/text()["count 2"] has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="iterate-031"/>
    <testResult status="pass" testName="iterate-032"/>
    <testResult status="pass" testName="iterate-033"/>
    <testResult status="pass" testName="iterate-034"/>
-   <testResult status="fail" testName="iterate-035"/>
-   <testResult status="fail" testName="iterate-036">
-      <outResult>
-         <errTrace>FOAR0001 : An integer division by zero error.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="iterate-035"/>
+   <testResult status="pass" testName="iterate-036"/>
    <testResult status="fail" testName="iterate-037">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;book&gt;Genesis&lt;/book&gt;&lt;book&gt;Exodus&lt;/book&gt;&lt;book&gt;Leviticus&lt;/book&gt;&lt;book&gt;Numbers&lt;/book&gt;&lt;book&gt;Deuteronomy&lt;/book&gt;&lt;/out&gt;</outResult>
    </testResult>

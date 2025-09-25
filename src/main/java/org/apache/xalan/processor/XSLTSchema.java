@@ -1223,7 +1223,7 @@ public class XSLTSchema extends XSLTElementDef
                                            templateElements /* elements */,
                                            new XSLTAttributeDef[]{
                                                    nameAttrRequired,
-                                                   selectAttrOpt, asAttrOpt }, 
+                                                   selectAttrOpt, asAttrOpt, requiredAttrOpt }, 
                                            new ProcessorGlobalParamDecl(),
                                            ElemParam.class /* class object */, 20, true),
                                   new XSLTElementDef(

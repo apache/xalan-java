@@ -332,6 +332,11 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 								}
 							}
 						}
+						
+						String paramAsAttr = paramData.getAsAttrValue();
+						if (paramAsAttr != null) {
+							withParamVal = SequenceTypeSupport.castXdmValueToAnotherType(withParamVal, paramAsAttr, null, xctxt);
+						}
 
 						paramNewValueMap.put(xslWithParamQName, withParamVal);
 						

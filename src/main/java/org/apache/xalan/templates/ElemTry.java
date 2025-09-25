@@ -226,20 +226,16 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    			m_selectExpression.fixupVariables(m_vars, m_globals_size);
 	    		}
 
-	    		m_selectExpression.setIsXslTryProcessing(true);
+	    		m_selectExpression.setIsConcreteExceptionProcessing(true);
 	    		XObject xpathEvalResult = m_selectExpression.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-	    		
 	    		ResultSequence rSeq = new ResultSequence();
-    			rSeq.add(xpathEvalResult);
-    			SerializationHandler handler = transformer.getSerializationHandler(); 
-    			ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false);
+	    		rSeq.add(xpathEvalResult);
+	    		SerializationHandler handler = transformer.getSerializationHandler(); 
+	    		ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false);
 	    	}
 	    	catch (TransformerException ex) {
-				// This XSL run-time exception may have a suitable xsl:catch element 
-	    		// handler. If such a xsl:catch element is available, we'll evaluate 
-	    		// that xsl:catch element, otherwise XSL transformation processing 
-	    		// shall terminate with this exception.
-	    		
+	    		// Process XSL transformation exception with any suitable 
+	    		// available xsl:catch instruction.	    		
 	    		handleExceptionWithXslCatch(transformer, xctxt, ex);
 			}
 	    	catch (SAXException ex) {
@@ -250,26 +246,24 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    	// An XSL processing specified by xsl:try element is
 	    	// been done by xsl:try element's contained sequence
 	    	// constructor.
-	    	
-	    	try {	    		
-	    		for (ElemTemplateElement t = this.m_firstChild; t != null;
-	    																t = t.m_nextSibling) 
-	    		{
-	    			if (!(t instanceof ElemCatch)) {
-	    				xctxt.setSAXLocator(t);
-	    				transformer.setCurrentElement(t);
+    		
+	    	for (ElemTemplateElement t = this.m_firstChild; t != null; t = t.m_nextSibling) {
+	    		if (!(t instanceof ElemCatch)) {
+	    			xctxt.setSAXLocator(t);
+	    			transformer.setCurrentElement(t);
+	    			try {
+	    				int nodeHandle = transformer.transformToRTF(t);	    				
 	    				t.execute(transformer);
+	    			}
+	    			catch (TransformerException ex) {
+	    				// Process XSL transformation exception with any suitable 
+	    				// available xsl:catch instruction.	    		
+	    				handleExceptionWithXslCatch(transformer, xctxt, ex);
+	    				
+	    				break;
 	    			}
 	    		}
 	    	}
-	    	catch (TransformerException ex) {
-	    		// This XSL run-time exception may have a suitable xsl:catch element 
-	    		// handler. If such a xsl:catch element is available, we'll evaluate 
-	    		// that xsl:catch element, otherwise XSL transformation processing 
-	    		// shall terminate with this exception.
-	    		
-				handleExceptionWithXslCatch(transformer, xctxt, ex);
-			}
 	    }
 	}
 	

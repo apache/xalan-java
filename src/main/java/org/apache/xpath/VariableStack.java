@@ -417,7 +417,6 @@ public class VariableStack implements Cloneable
   /**
    * Set a global variable or parameter in the global stack frame.
    *
-   *
    * @param index Local variable index relative to the global stack frame
    * bottom.
    *
@@ -430,7 +429,6 @@ public class VariableStack implements Cloneable
 
   /**
    * Get a global variable or parameter from the global stack frame.
-   *
    *
    * @param xctxt The XPath context, which must be passed in order to
    * lazy evaluate variables.
@@ -457,7 +455,6 @@ public class VariableStack implements Cloneable
   
   /**
    * Get a global variable or parameter from the global stack frame.
-   *
    *
    * @param xctxt The XPath context, which must be passed in order to
    * lazy evaluate variables.

@@ -1702,10 +1702,10 @@ public class TransformerImpl extends Transformer
    * 
    * @param name The name of the parameter.
    * @param namespace The namespace of the parameter.
-   * @param value The value object.  This can be any valid Java object
-   * -- it's up to the processor to provide the proper
-   * coersion to the object, or simply pass it on for use
-   * in extensions.
+   * @param value The value object. This can be any valid Java object,
+   *              and it's up to XSL processor to provide the proper
+   *              coercion (i.e, type conversion) to the object, or 
+   *              simply pass it on for use in extensions.
    */
   public void setParameter(String name, String namespace, Object value)
   {
@@ -1720,9 +1720,9 @@ public class TransformerImpl extends Transformer
     while (--i >= 0)
     {
       ElemVariable variable = (ElemVariable)vars.elementAt(i);
-      if(variable.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE && 
+      if (variable.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE && 
          variable.getName().equals(qname))
-      {
+      {    	  
           varstack.setGlobalVariable(i, xobject);
       }
     }

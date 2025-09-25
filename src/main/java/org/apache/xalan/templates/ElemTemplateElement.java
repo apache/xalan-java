@@ -49,6 +49,7 @@ import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.WhitespaceStrippingElementMatcher;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.functions.Function;
@@ -1808,56 +1809,6 @@ public class ElemTemplateElement extends UnImplNode
   }
   
   /**
-   * Method definition, to check whether an XSL 3 transformation instruction is 
-   * within its containing instruction's sequence constructor's tail position.
-   * 
-   * The XSLT 3.0 spec, provides following definition to determine, whether an XSLT instruction
-   * is in the tail position within an XSLT sequence constructor:
-   * 
-   * An instruction J is in a tail position within a sequence constructor SC if it satisfies 
-   * one of the following conditions:
-     1) J is the last instruction in SC, ignoring any xsl:fallback instructions.
-     2) J is in a tail position within the sequence constructor that forms the body of an xsl:if instruction that 
-        is itself in a tail position within SC.
-     3) J is in a tail position within the sequence constructor that forms the body of an xsl:when or xsl:otherwise 
-        branch of an xsl:choose instruction that is itself in a tail position within SC.
-     4) J is in a tail position within the sequence constructor that forms the body of an xsl:try instruction that 
-        is itself in a tail position within SC (that is, it is immediately followed by an xsl:catch element, ignoring 
-        any xsl:fallback elements).
-     5) J is in a tail position within the sequence constructor that forms the body of an xsl:catch element within 
-        an xsl:try instruction that is itself in a tail position within SC.
-             
-     @param  xslInstr    An XSL 3 stylesheet instruction, that needs to be checked whether
-                         its in a tail position of it's containing XSL instruction's sequence
-                         constructor.                      
-   */
-  protected boolean isXslInstructionInTailPositionOfSequenceConstructor(ElemTemplateElement xslInstr) {
-      
-	  boolean result = true;
-
-	  ElemTemplateElement elemTemplateElementNextSubling = xslInstr.getNextSiblingElem();
-	  // Ignore sequence of one or more xsl:fallback instructions 
-	  while (elemTemplateElementNextSubling instanceof ElemFallback) {
-		  elemTemplateElementNextSubling = elemTemplateElementNextSubling.getNextSiblingElem(); 
-	  }
-
-	  if (elemTemplateElementNextSubling == null) {
-		  ElemTemplateElement parentElem = xslInstr.getParentElem();
-		  if ((parentElem instanceof ElemIf) || (parentElem instanceof ElemTry) || (parentElem instanceof ElemCatch)) {
-			 result = isXslInstructionInTailPositionOfSequenceConstructor(parentElem);
-		  }
-		  else if ((parentElem instanceof ElemWhen) || (parentElem instanceof ElemOtherwise)) {
-			 result = isXslInstructionInTailPositionOfSequenceConstructor(parentElem.getParentElem()); 
-		  }
-	  }
-	  else {
-		  result = false;
-	  }
-      
-      return result;
-  }
-  
-  /**
    * During processing of, xsl:for-each or xsl:iterate instruction, when the input data to be
    * processed by these instructions is a 'ResultSequence' object, we use this method to set
    * the XPath context information before each sequence item is processed by these 
@@ -2386,13 +2337,32 @@ public class ElemTemplateElement extends UnImplNode
 				  if (prefixTable != null) {
 					  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
 				  }
+				  String str2 = null;
 				  XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, xpathDefaultNamespace);
-				  if (vars != null) {
-					  xpathObj.fixupVariables(vars, varsGlobalsSize);
-				  }				 
+				  xpathObj.setIsConcreteExceptionProcessing(true);
+				  Expression expr1 = xpathObj.getExpression();
+				  if (expr1 instanceof SelfIteratorNoPredicate) {
+					 XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
+					 if (xpath3CtxtItem != null) {
+						 str2 = XslTransformEvaluationHelper.getStrVal(xpath3CtxtItem);
+					 }
+					 else {
+						 if (vars != null) {
+							 xpathObj.fixupVariables(vars, varsGlobalsSize);
+						 }				 
 
-				  XObject xObj = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-				  String str2 = XslTransformEvaluationHelper.getStrVal(xObj);
+						 XObject xObj = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+						 str2 = XslTransformEvaluationHelper.getStrVal(xObj); 
+					 }
+				  }
+				  else {
+					  if (vars != null) {
+						  xpathObj.fixupVariables(vars, varsGlobalsSize);
+					  }				 
+
+					  XObject xObj = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+					  str2 = XslTransformEvaluationHelper.getStrVal(xObj);
+				  }
 
 				  strBuff.append(str2);
 			  }

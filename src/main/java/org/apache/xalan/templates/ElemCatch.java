@@ -198,7 +198,7 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
     			m_selectExpression.fixupVariables(m_vars, m_globals_size);
     		}
 
-    		m_selectExpression.setIsXslTryProcessing(true);
+    		m_selectExpression.setIsConcreteExceptionProcessing(true);
     		XObject xpathEvalResult = m_selectExpression.execute(xctxt, contextNode, xctxt.getNamespaceContext());
     		
     		ResultSequence rSeq = new ResultSequence();

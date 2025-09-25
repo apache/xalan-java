@@ -306,7 +306,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  if (transformer.getDebug())
 			  transformer.getTraceManager().emitTraceEvent(this);
 
-		  transformSelectedXdmItems(transformer);
+		  transformXdmItems(transformer);
 	  }
 	  finally
 	  {
@@ -322,14 +322,18 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
   
   /**
-   * Perform a query if needed, and call transformNode for each child.
+   * Method definition, to do an XSL transformation of each xdm node or/and
+   * other kinds of xdm items, that are selected by xsl:apply-templates
+   * instruction. An xsl:apply-templates instruction, finds a suitable XSL 
+   * template (user-defined, or an XSL built-in template rule) than can do 
+   * XSL transformation of the selected xdm item.
    *
-   * @param transformer non-null reference to the the current transform-time state.
+   * @param transformer non-null reference to the the current transform-time state
    *
-   * @throws TransformerException Thrown in a variety of circumstances.
+   * @throws TransformerException Thrown in a variety of circumstances
    * @xsl.usage advanced
    */
-  public void transformSelectedXdmItems(TransformerImpl transformer) throws TransformerException
+  public void transformXdmItems(TransformerImpl transformer) throws TransformerException
   {
 
 	  final XPathContext xctxt = transformer.getXPathContext();
@@ -341,7 +345,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  
 	  XObject varEvalResult = null;    
 	  ResultSequence resultSeq = null;
-	  QName xslTemplateInvokeMode = getMode();
+	  QName xslTemplateInvokeMode = getMode();	  
 	  
 	  if ((m_selectExpression2 != null) && (m_xpath_default_namespace != null)) {    		
 		  m_xpath2 = new XPath(m_xpath2.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -425,7 +429,13 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  } 
 		  }
 		  else if (varEvalResult instanceof XMLNodeCursorImpl) {
-			  sourceNodes = ((XMLNodeCursorImpl)varEvalResult).asIterator(xctxt, sourceNode);			  
+			  XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)varEvalResult;
+			  if (".".equals(m_xpath2.getPatternString())) {
+				 sourceNodes = nodeSet.asIterator(xctxt, DTM.NULL);
+		      }
+		      else {
+			     sourceNodes = nodeSet.asIterator(xctxt, sourceNode);
+		      }
 		  }
 		  else if (isXdmItemAtomicValue(varEvalResult)) {    	   
 			  executeXslTransformAtomicValue(transformer, xctxt, varEvalResult, xslTemplateInvokeMode);
@@ -550,7 +560,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 		  IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
 
-		  int child;
+		  int child;		  
 		  while (DTM.NULL != (child = sourceNodes.nextNode()))
 		  {
 			  currentNodes.setTop(child);
@@ -771,7 +781,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  }
 
 			  transformer.popCurrentMatched();
-
+			  
 		  } // end while (DTM.NULL != (child = sourceNodes.nextNode()))
 	  }
 	  catch (SAXException se)

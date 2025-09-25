@@ -37,8 +37,8 @@ import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
@@ -114,18 +114,11 @@ public class XPath implements Serializable, ExpressionOwner
   private String m_arrowop_remaining_xpath_expr_str = null;
   
   /**
-   * This class field with boolean value 'true' denotes, that 
-   * this XPath expression corresponds to quantified expression's 
-   * satisfies clause. 
+   * This class field with boolean value 'true' signifies that, 
+   * this XPath expression's processing requires concrete exception 
+   * handling.
    */
-  private boolean m_is_quantified_expr;
-  
-  /**
-   * This class field with boolean value 'true' denotes, that 
-   * this XPath expression corresponds to xsl:try element 
-   * processing. 
-   */
-  private boolean m_is_xsltry_processing;
+  private static boolean m_is_concreteException_processing;
 
   /**
    * initial the function table
@@ -829,10 +822,6 @@ public class XPath implements Serializable, ExpressionOwner
   public void setArrowOpRemainingXPathExprStr(String arrowOpRemainingXPathExprStr) {
 	 this.m_arrowop_remaining_xpath_expr_str = arrowOpRemainingXPathExprStr;
   }
-
-  public void setIsQuantifiedExpr(boolean isQuantifiedExpr) {	
-	 this.m_is_quantified_expr = isQuantifiedExpr;
-  }
   
   /**
    * Evaluate an XPath expression, to produce an xdm result item.
@@ -901,11 +890,12 @@ public class XPath implements Serializable, ExpressionOwner
 		  if (instanceOfCheck) {
 			  throw te; 
 		  }
+		  
 		  te.setLocator(this.getLocator());
-		  ErrorListener el = xctxt.getErrorListener();
-		  if(null != el && !m_is_quantified_expr && !m_is_xsltry_processing)
+		  ErrorListener errListener = xctxt.getErrorListener();
+		  if ((errListener != null) && !m_is_concreteException_processing)
 		  {
-			  el.error(te);
+			  errListener.error(te);
 		  }
 		  else
 			  throw te;
@@ -948,12 +938,22 @@ public class XPath implements Serializable, ExpressionOwner
 	  return result;
   }
 
-  public void setIsXslTryProcessing(boolean bool) {
-	  m_is_xsltry_processing = bool;
+  /**
+   * Set value of this class's field m_is_concreteException_processing.
+   *  
+   * @param bool						   A boolean value true or false
+   */
+  public void setIsConcreteExceptionProcessing(boolean bool) {
+	  m_is_concreteException_processing = bool;
   }
   
-  public boolean getIsXslTryProcessing() {
-	  return m_is_xsltry_processing; 
+  /**
+   * Get value of this class's field m_is_concreteException_processing.
+   * 
+   * @return							  A boolean value true or false
+   */
+  public boolean isConcreteExceptionProcessing() {
+	  return m_is_concreteException_processing; 
   }
   
   /**

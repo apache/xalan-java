@@ -47,7 +47,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * The variable reference expression executer.
+ * The variable reference expression, evaluator.
  */
 public class Variable extends Expression implements PathComponent
 {
@@ -296,6 +296,17 @@ public class Variable extends Expression implements PathComponent
            if (m_fixUpWasCalled) {        	  
               if (m_isGlobal) {
                  result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
+                 /*
+                  // REVISIT
+                 ElemVariable elemVar = stylesheetRoot.getVariableOrParamComposed(m_qname);
+                 if (elemVar instanceof ElemParam) {
+                	ElemParam elemParam = (ElemParam)elemVar;
+                	boolean isRequired = elemParam.getRequired();
+                	if (isRequired && ((result == null) || ("".equals(((XString)result).str())))) {
+                		throw new javax.xml.transform.TransformerException("XTDE0050 : The required XSL stylesheet global parameter '" + 
+                	                                                                             m_qname.toString() + "', hasn't been provided value.", srcLocator);
+                	}
+                 }*/
               }
               else {
                  result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOK);

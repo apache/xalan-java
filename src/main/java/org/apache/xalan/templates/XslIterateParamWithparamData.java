@@ -34,6 +34,8 @@ public class XslIterateParamWithparamData {
     
     private XPath m_select;
     
+    private String m_asAttrValue;
+    
     public QName getName() {
         return this.m_name;
     }
@@ -50,7 +52,15 @@ public class XslIterateParamWithparamData {
         this.m_select = select;
     }
     
-    @Override
+    public String getAsAttrValue() {
+		return this.m_asAttrValue;
+	}
+
+	public void setAsAttrValue(String asAttrValue) {
+		this.m_asAttrValue = asAttrValue;
+	}
+
+	@Override
     public boolean equals(Object obj2) {
         if (this == obj2) {
             return true;
