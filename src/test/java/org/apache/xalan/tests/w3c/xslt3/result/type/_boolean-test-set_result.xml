@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-25T17:40:02Z" fail="25" name="boolean" pass="87" skipped="0" statusUnknown="0" totalRun="112">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-26T16:22:07Z" fail="13" name="boolean" pass="99" skipped="0" statusUnknown="0" totalRun="112">
    <testResult status="pass" testName="boolean-001"/>
    <testResult status="pass" testName="boolean-002"/>
    <testResult status="pass" testName="boolean-003"/>
@@ -16,7 +16,7 @@
    <testResult status="pass" testName="boolean-015"/>
    <testResult status="pass" testName="boolean-016"/>
    <testResult status="pass" testName="boolean-017"/>
-   <testResult status="fail" testName="boolean-018"/>
+   <testResult status="pass" testName="boolean-018"/>
    <testResult status="pass" testName="boolean-019"/>
    <testResult status="pass" testName="boolean-020"/>
    <testResult status="pass" testName="boolean-021"/>
@@ -38,15 +38,15 @@
    <testResult status="pass" testName="boolean-037"/>
    <testResult status="pass" testName="boolean-038"/>
    <testResult status="pass" testName="boolean-039"/>
-   <testResult status="fail" testName="boolean-040"/>
-   <testResult status="fail" testName="boolean-041"/>
-   <testResult status="fail" testName="boolean-042"/>
-   <testResult status="fail" testName="boolean-043"/>
-   <testResult status="fail" testName="boolean-044"/>
+   <testResult status="pass" testName="boolean-040"/>
+   <testResult status="pass" testName="boolean-041"/>
+   <testResult status="pass" testName="boolean-042"/>
+   <testResult status="pass" testName="boolean-043"/>
+   <testResult status="pass" testName="boolean-044"/>
    <testResult status="pass" testName="boolean-045"/>
    <testResult status="pass" testName="boolean-046"/>
    <testResult status="pass" testName="boolean-047"/>
-   <testResult status="fail" testName="boolean-048"/>
+   <testResult status="pass" testName="boolean-048"/>
    <testResult status="pass" testName="boolean-049"/>
    <testResult status="pass" testName="boolean-050"/>
    <testResult status="pass" testName="boolean-051"/>
@@ -64,14 +64,14 @@
    <testResult status="pass" testName="boolean-063"/>
    <testResult status="pass" testName="boolean-064"/>
    <testResult status="pass" testName="boolean-065"/>
-   <testResult status="fail" testName="boolean-066"/>
-   <testResult status="fail" testName="boolean-067"/>
+   <testResult status="pass" testName="boolean-066"/>
+   <testResult status="pass" testName="boolean-067"/>
    <testResult status="fail" testName="boolean-068"/>
-   <testResult status="fail" testName="boolean-069"/>
+   <testResult status="pass" testName="boolean-069"/>
    <testResult status="pass" testName="boolean-070"/>
    <testResult status="fail" testName="boolean-071"/>
    <testResult status="fail" testName="boolean-072"/>
-   <testResult status="fail" testName="boolean-073"/>
+   <testResult status="pass" testName="boolean-073"/>
    <testResult status="fail" testName="boolean-074"/>
    <testResult status="pass" testName="boolean-075"/>
    <testResult status="fail" testName="boolean-076"/>
@@ -107,7 +107,7 @@
    <testResult status="fail" testName="boolean-098">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;true&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="boolean-099"/>
+   <testResult status="pass" testName="boolean-099"/>
    <testResult status="fail" testName="boolean-100"/>
    <testResult status="pass" testName="boolean-101"/>
    <testResult status="pass" testName="boolean-102"/>

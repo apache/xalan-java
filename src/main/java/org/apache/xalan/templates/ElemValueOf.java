@@ -50,6 +50,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Div;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
 import org.w3c.dom.DOMException;
@@ -64,6 +65,7 @@ import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSQName;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of XSLT 3.0 xsl:value-of instruction.
@@ -591,8 +593,12 @@ public class ElemValueOf extends ElemTemplateElement {
                       
                       (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
-                  else if (expr instanceof Operation) {                     
-                     XObject evalResult = expr.execute(xctxt);
+                  else if (expr instanceof Operation) {
+                	 XObject evalResult = expr.execute(xctxt);
+                	 
+                	 if ((expr instanceof Div) && (evalResult == null)) {
+                		 evalResult = new XSString("NaN"); 
+                	 }
                      
                      String strValue = null;
                      

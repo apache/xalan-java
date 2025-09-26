@@ -23,6 +23,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
@@ -199,9 +200,10 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
             		   }
             	   }
             	   else {
+            		   StylesheetRoot stylesheetRoot = transformer.getStylesheet();            		   
             		   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
             				                                                      elemTemplate = elemTemplate.m_nextSibling) {            			   
-            			   if (isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate)) {
+            			   if (isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate, stylesheetRoot)) {
             				  throw new TransformerException("XPDY0002 : An xsl:on-completion instruction's sequence constructor "
             				  		                                                                    + "cannot access XPath context item.", elemTemplate); 
             			   }
@@ -259,12 +261,19 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
         * XPath context item via stylesheet element's 'select' attribute.
         * 
         * @param elemTemplate							An XSL stylesheet element reference
+        * @stylesheetRoot                               An XSL Xalan-J StylesheetRoot object
         * @return                                       Boolean value true if an XPath expression 
         *                                               accesses context item, otherwise false.
         */
-       private boolean isXslIterOnCompletionDescInstrAccXPathCtxt(ElemTemplateElement elemTemplate) {
+       private boolean isXslIterOnCompletionDescInstrAccXPathCtxt(ElemTemplateElement elemTemplate, StylesheetRoot stylesheetRoot) {
     	   
-    	   boolean result = false;    	       	   
+    	   boolean result = false;
+    	   
+    	   if (elemTemplate instanceof ElemCallTemplate) {
+			   ElemCallTemplate elemCallTemplate = (ElemCallTemplate)elemTemplate;
+			   QName xslTemplateName = elemCallTemplate.getName();    				   
+			   elemTemplate = stylesheetRoot.getTemplateComposed(xslTemplateName);
+		   }
     	   
     	   if (elemTemplate != null) {
     		   Object obj1 = elemTemplate.getSelect();
@@ -283,13 +292,13 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
     			   if (!result) {
     				   ElemTemplateElement elemTemplate2 = elemTemplate;  
     				   for (elemTemplate2 = elemTemplate2.m_firstChild; elemTemplate2 != null; elemTemplate2 = elemTemplate2.m_nextSibling) {
-    					   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2);    						   
+    					   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2, stylesheetRoot);    						   
     					   if (result) {
     						   break;
     					   }
     					   else {
     						   elemTemplate2 = elemTemplate2.m_firstChild;
-    						   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2);
+    						   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2, stylesheetRoot);
     						   if (result) {
     							   break;	 
     						   } 
@@ -298,20 +307,20 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
     			   }
     		   }
     		   else {
-    			   ElemTemplateElement elemTemplate2 = elemTemplate;  
+    			   ElemTemplateElement elemTemplate2 = elemTemplate;    			   
     			   for (elemTemplate2 = elemTemplate2.m_firstChild; elemTemplate2 != null; elemTemplate2 = elemTemplate2.m_nextSibling) {
-    				   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2);    						   
+    				   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2, stylesheetRoot);    						   
     				   if (result) {
     					   break;
     				   }
     				   else {
     					   elemTemplate2 = elemTemplate2.m_firstChild;
-    					   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2);
+    					   result = isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate2, stylesheetRoot);
     					   if (result || (elemTemplate2 == null)) {
     						   break;	 
     					   } 
     				   }
-    			   } 
+    			   }
     		   }
     	   }
     	   

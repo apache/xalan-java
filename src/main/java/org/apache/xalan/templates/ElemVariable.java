@@ -767,6 +767,12 @@ public class ElemVariable extends ElemTemplateElement
         else if (selectExpression instanceof XPathArrayConstructor) {
         	var = ((XPathArrayConstructor)selectExpression).execute(xctxt);
         }
+        else if (selectExpression instanceof XRTreeFragSelectWrapper) {
+        	var = m_selectPattern.execute(xctxt, sourceNode, this);
+        	if ((var instanceof XString) && ("".equals(((XString)var).str()))) {
+        	   ((XString)var).setXrTreeFragSelectWrapperResult(true);
+        	}
+        }
   
         if (var == null) {        	        	
            var = m_selectPattern.execute(xctxt, sourceNode, this);

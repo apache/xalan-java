@@ -43,6 +43,8 @@ public class XString extends XObject implements XMLString
 
   /** Empty string XString object */
   public static final XString EMPTYSTRING = new XString("");
+  
+  private boolean m_xrTreeFragSelectWrapper_result = false;
 
   /**
    * Construct a XString object.  This constructor exists for derived classes.
@@ -1130,6 +1132,14 @@ public class XString extends XObject implements XMLString
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {
   	visitor.visitStringLiteral(owner, this);
+  }
+
+  public boolean isXrTreeFragSelectWrapperResult() {
+	return m_xrTreeFragSelectWrapper_result;
+  }
+
+  public void setXrTreeFragSelectWrapperResult(boolean xrTreeFragSelectWrapper_result) {
+	this.m_xrTreeFragSelectWrapper_result = xrTreeFragSelectWrapper_result;
   }
 
 }

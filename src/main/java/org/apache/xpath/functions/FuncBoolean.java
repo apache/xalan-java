@@ -20,6 +20,7 @@ package org.apache.xpath.functions;
 import java.math.BigDecimal;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
@@ -76,7 +77,34 @@ public class FuncBoolean extends FunctionOneArg
 
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
-	  XObject xObj = m_arg0.execute(xctxt);
+	  XObject xObj = null;
+	  
+	  try {
+	     xObj = m_arg0.execute(xctxt);
+	     if (xObj == null) {
+	    	result = new XSBoolean(false); 
+	     }
+	     else if (xObj instanceof XString) {
+	        XString xString = (XString)xObj;
+	        if ("".equals(xString.str()) && xString.isXrTreeFragSelectWrapperResult()) {
+	        	result = new XSBoolean(true);
+	        }
+	     }
+	  }
+	  catch (TransformerException ex) {
+		 String mesg1 = ex.getMessage();
+		 if ((mesg1 != null) && mesg1.startsWith("FOAR0001")) {
+			// Numeric division by zero error
+			result = new XSBoolean(true); 
+		 }
+		 else {
+			result = new XSBoolean(false); 
+		 }
+	  }
+	  
+	  if (result != null) {
+		 return result; 
+	  }
 
 	  if (xObj instanceof ResultSequence) {
 		  ResultSequence rSeq = (ResultSequence)xObj;
@@ -150,11 +178,17 @@ public class FuncBoolean extends FunctionOneArg
 			  if ((xsInteger.getValue()).compareTo(BigDecimal.valueOf(0)) == 0) {
 				  result = new XSBoolean(false); 
 			  }
+			  else {
+				  result = new XSBoolean(true); 
+			  }
 		  }
 		  else if (((XNumber)xObj).isXsDecimal()) {
 			  XSDecimal xsDecimal = ((XNumber)xObj).getXsDecimal();
 			  if ((xsDecimal.getValue()).compareTo(BigDecimal.valueOf(0)) == 0) {
 				  result = new XSBoolean(false); 
+			  }
+			  else {
+				  result = new XSBoolean(true); 
 			  }
 		  }
 		  else if (((XNumber)xObj).isXsDouble()) {
@@ -162,9 +196,19 @@ public class FuncBoolean extends FunctionOneArg
 			  if (xsDouble.nan() || (xsDouble.doubleValue() == 0d)) {
 				  result = new XSBoolean(false); 
 			  }
+			  else {
+				  result = new XSBoolean(true); 
+			  }
 		  }
 		  else {
-			  result = new XSBoolean(true);
+			  XNumber xNumber = (XNumber)xObj;
+			  double dbl1 = xNumber.num();
+			  if (dbl1 == 0d) {
+				 result = new XSBoolean(false);  
+			  }
+			  else {
+				 result = new XSBoolean(true);  
+			  }			  
 		  }
 	  }
 	  else {

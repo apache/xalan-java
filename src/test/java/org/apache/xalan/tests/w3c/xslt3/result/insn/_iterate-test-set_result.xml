@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-25T17:39:24Z" fail="7" name="iterate" pass="37" skipped="0" statusUnknown="0" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-26T16:22:10Z" fail="2" name="iterate" pass="42" skipped="0" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -32,14 +32,14 @@
    <testResult status="fail" testName="iterate-028">
       <outResult>
          <errTrace>XPST0003 : An XPath expression /out/text()[. = "exit at 12 of 76"] has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="iterate-029"/>
    <testResult status="fail" testName="iterate-030">
       <outResult>
          <errTrace>XPST0003 : An XPath expression /out/text()["count 2"] has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="iterate-031"/>
@@ -48,25 +48,13 @@
    <testResult status="pass" testName="iterate-034"/>
    <testResult status="pass" testName="iterate-035"/>
    <testResult status="pass" testName="iterate-036"/>
-   <testResult status="fail" testName="iterate-037">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;book&gt;Genesis&lt;/book&gt;&lt;book&gt;Exodus&lt;/book&gt;&lt;book&gt;Leviticus&lt;/book&gt;&lt;book&gt;Numbers&lt;/book&gt;&lt;book&gt;Deuteronomy&lt;/book&gt;&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="iterate-037"/>
    <testResult status="pass" testName="iterate-038"/>
    <testResult status="pass" testName="iterate-039"/>
-   <testResult status="fail" testName="iterate-040">
-      <outResult>
-         <errTrace>Can not convert #NUMBER to a NodeList!</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="iterate-041">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="iterate-042"/>
+   <testResult status="pass" testName="iterate-040"/>
+   <testResult status="pass" testName="iterate-041"/>
+   <testResult status="pass" testName="iterate-042"/>
    <testResult status="pass" testName="iterate-043"/>
    <testResult status="pass" testName="iterate-901"/>
-   <testResult status="fail" testName="iterate-902">
-      <outResult>
-         <errTrace>XTTE0570 : The supplied xdm item doesn't match an XPath sequence type xs:decimal.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="iterate-902"/>
 </testrun>

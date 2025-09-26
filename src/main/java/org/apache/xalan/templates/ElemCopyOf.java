@@ -334,6 +334,9 @@ public class ElemCopyOf extends ElemTemplateElement
     			  xctxt.pushCurrentNode(sourceNode);    			   
     			  value = m_selectExpression.execute(xctxt, sourceNode, this);
     		  }
+    		  else {
+    			  value = xObj2; 
+    		  }
     	  }
     	  else {
              value = m_selectExpression.execute(xctxt, sourceNode, this);

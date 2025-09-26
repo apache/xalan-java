@@ -30,15 +30,22 @@ import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XString;
+
+import xml.xpath31.processor.types.XSAnyAtomicType;
 
 /**
  * Implementation of the XSLT 3.0 xsl:iterate instruction.
@@ -316,6 +323,17 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
               inpXObject = m_selectExpression.execute(xctxt);
            }
            
+           if ((inpXObject instanceof XSAnyAtomicType) || (inpXObject instanceof XNumber) || 
+        		                                          (inpXObject instanceof XString) || 
+        		                                          (inpXObject instanceof XBoolean) || (inpXObject instanceof XBooleanStatic)) {
+        	  // Convert suitable, singleton xdm items to sequence
+        	  ResultSequence rSeq = new ResultSequence();
+        	  XObject xObj1 = inpXObject; 
+        	  rSeq.add(xObj1);
+        	  
+        	  inpXObject = rSeq; 
+           }
+           
            List<XObject> itemsToBeProcessed = null;
                
            if ((inpXObject instanceof ResultSequence) || (inpXObject instanceof XPathArray)) {
@@ -335,16 +353,34 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                final XObject prevCtxtItem = xctxt.getXPath3ContextItem();
                final int prevCtxtPosition = xctxt.getXPath3ContextPosition();
                
-               try {
+               int xslParamCount = 0;
+               VariableStack varStack = xctxt.getVarStack();
+               try {            	               	   
             	   int inpSeqLength = itemsToBeProcessed.size();
-            	   if (inpSeqLength == 0) {
-            		   /**
-            		    * We do little static type checking (like, variable references which
-            		    * are not in scope) on xsl:on-completion instruction, even if there
-            		    * are no input items to be processed.
-            		    */
+            	   if (inpSeqLength == 0) {            		               		   
             		   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-            				                                                      elemTemplate = elemTemplate.m_nextSibling) {
+                                                                                  elemTemplate = elemTemplate.m_nextSibling) {
+            			  if (elemTemplate instanceof ElemParam) {
+            				  xslParamCount++; 
+            			  }
+            		   }
+            		   
+            		   if (xslParamCount > 0) {
+            			   int xslParamStackFrame = varStack.link(xslParamCount);
+            			   int pCount = 0;
+            			   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
+                                                                                      elemTemplate = elemTemplate.m_nextSibling) {
+            				   if (elemTemplate instanceof ElemParam) {
+            					  XObject pValue = ((ElemParam)elemTemplate).getValue(transformer, sourceNode);
+            					  varStack.setLocalVariable(pCount, pValue, xslParamStackFrame);
+            				   }
+            				   
+            				   pCount++;
+            			   }
+            		   }
+            		   
+            		   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
+            				                                                      elemTemplate = elemTemplate.m_nextSibling) {            			   
             			   if (elemTemplate instanceof ElemIterateOnCompletion) {            			                                                       
             				   xctxt.setXPath3ContextSize(-1);
             				   xctxt.setXPath3ContextItem(null);
@@ -353,12 +389,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             				   xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate; 
             				   transformer.setXslIterateOnCompletionActive(true);
             				   xctxt.setSAXLocator(xslOnCompletionTemplate);
-            				   transformer.setCurrentElement(xslOnCompletionTemplate);
-
-            				   // This evaluates xsl:on-completion instruction, but doesn't emit 
-            				   // the result to an XSL transformation output.
-            				   int nodeHandle = transformer.transformToRTF(this);                          
-
+            				   transformer.setCurrentElement(xslOnCompletionTemplate);            				   
+            				   elemTemplate.execute(transformer);
             				   transformer.setXslIterateOnCompletionActive(false);
 
             				   return;
@@ -425,6 +457,9 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             	   xctxt.setXPath3ContextSize(prevContextSize);
             	   xctxt.setXPath3ContextItem(prevCtxtItem);
             	   xctxt.setXPath3ContextPosition(prevCtxtPosition);
+            	   if (xslParamCount > 0) {
+            		  varStack.unlink(); 
+            	   }
                }
            }
            else {
@@ -472,7 +507,21 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                         	  if ((iterCount == 1) && (t instanceof ElemParam)) {
                         		 ElemParam elemParam = (ElemParam)t;
                         		 QName qName = elemParam.getName();
-                        		 XObject paramValue = elemParam.getValue(transformer, sourceNode);
+                        		 XObject paramValue = null;
+                        		 try {
+                        		     paramValue = elemParam.getValue(transformer, sourceNode);
+                        		 }
+                        		 catch (TransformerException ex) {
+                        			 String errMesg1 = ex.getMessage();
+                        			 int colonIdx = errMesg1.indexOf(':');
+                        			 if (colonIdx != -1) {
+                        				errMesg1 = errMesg1.substring(colonIdx + 1);
+                        				errMesg1 = "XTSE3520 : " + errMesg1;
+                        			 }
+                        			 
+                        			 throw new TransformerException(errMesg1, srcLocator); 
+                        		 }
+                        		 
                         		 varMap.put(qName, paramValue);
                         	  }
                         	  else {
@@ -679,35 +728,19 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 		}  
 	}
 	
-	/**
-	 * Method definition, to check whether an XSLT 3.0 instruction is within its contained 
-	 * instruction's sequence constructor's tail position, in relation to xsl:iterate 
-	 * instruction's processing.
+	 /**
+	 * Method definition, to check whether an XSLT instruction is within its contained
+	 * XSL sequence constructor's tail position, with respect to xsl:iterate instruction's 
+	 * processing. This method definition, implements an algorithm for this XSL transformation
+	 * requirement, as specified within XSLT 3.0 spec.
 	 * 
-	 * The XSLT 3.0 spec, provides following definitions to determine, whether an XSLT 
-	 * instruction is in the tail position within an XSLT sequence constructor:
-	 * 
-	 * An instruction J is in a tail position within a sequence constructor SC if it 
-	 * satisfies one of the following conditions:
-	     1) J is the last instruction in SC, ignoring any xsl:fallback instructions.
-	     2) J is in a tail position within the sequence constructor that forms the body 
-	        of an xsl:if instruction that is itself in a tail position within SC.
-	     3) J is in a tail position within the sequence constructor that forms the body 
-	        of an xsl:when or xsl:otherwise branch of an xsl:choose instruction that is 
-	        itself in a tail position within SC.
-	     4) J is in a tail position within the sequence constructor that forms the body 
-	        of an xsl:try instruction that is itself in a tail position within SC (that 
-	        is, it is immediately followed by an xsl:catch element, ignoring 
-	        any xsl:fallback elements).
-	     5) J is in a tail position within the sequence constructor that forms the body 
-	        of an xsl:catch element within an xsl:try instruction that is itself in a 
-	        tail position within SC.
-
-	     @param  xslInstr    An XSLT stylesheet instruction, that needs to be checked whether
-	                         its in the tail position of it's parent/ancestor XSL instruction's 
-	                         sequence constructor.
-	                         When this method is first called, an XSL instruction xslInstr is
-	                         either xsl:break or an xsl:next-iteration instruction.                        
+	 * @param xslInstr      An XSLT stylesheet instruction, that needs to be checked whether
+	 *                      its in the tail position of an XSL sequence constructor. When this 
+	 *                      method is first called, an XSL instruction xslInstr is either 
+	 *                      xsl:break or an xsl:next-iteration instruction.
+	 *                      
+	 * @return				Boolean value true or false, indicating whether an XSLT instruction 
+	 *                      is within its contained XSL sequence constructor's tail position. 
 	 */
 	  private boolean isXslInstIterateRelnInTailPositionOfSeqCons(ElemTemplateElement xslInstr) {
 	      

@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -72,7 +73,7 @@ public class Gt extends Operation
 	  XObject lObj = null;
 	  XObject rObj = null;
 	  
-	  List<java.lang.String> strList = new ArrayList<java.lang.String>();
+	  List<java.lang.String> strList = new ArrayList<java.lang.String>();	  	  
 	  
 	  if ((left instanceof XMLNodeCursorImpl) && ((right instanceof XString) || (right instanceof XSString))) {
 		  lObj = left;
@@ -108,11 +109,91 @@ public class Gt extends Operation
 		  lObj = lObj.getFresh();
 		  right = right.getFresh();
 	  }
+	  else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {
+		  // Ref : W3C XSLT 3.0 test case boolean-066. 3 is greater than 22 when 
+		  // compared as strings, 3 is greater than 2 when compared as strings.
+		  left = left.getFresh();
+		  right = right.getFresh();
+		  
+		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)left;		  
+		  List<java.lang.String> strList1 = new ArrayList<java.lang.String>();
+		  DTMManager dtmManager = nodeRef.getDTMManager();
+		  DTMCursorIterator iter = nodeRef.iterRaw();
+		  int nextNode = DTM.NULL;		  
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl node1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String str1 = node1.str();
+			  strList1.add(str1);
+		  }
+		  
+		  nodeRef = (XMLNodeCursorImpl)right;		  
+		  List<java.lang.String> strList2 = new ArrayList<java.lang.String>();
+		  dtmManager = nodeRef.getDTMManager();
+		  iter = nodeRef.iterRaw();
+		  nextNode = DTM.NULL;		  
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl node1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String str1 = node1.str();
+			  strList2.add(str1);
+		  }		  		  
+		  
+		  int size1 = strList1.size();
+		  int size2 = strList2.size();
+		  for (int idx1 = 0; idx1 < size1; idx1++) {
+			  java.lang.String str1 = strList1.get(idx1);			  
+			  Integer int1 = null;
+			  try {
+				 int1 = Integer.valueOf(str1);
+			  }
+			  catch (NumberFormatException ex) {
+				 // no op 
+			  }			  
+			  for (int idx2 = 0; idx2 < size2; idx2++) {
+				  java.lang.String str2 = strList2.get(idx2);				  
+				  Integer int2 = null;
+				  try {
+					  int2 = Integer.valueOf(str2);
+				  }
+				  catch (NumberFormatException ex) {
+					  // no op 
+				  }				  
+				  if ((int1 != null) && (int2 != null)) {
+					  Integer i1 = Integer.valueOf(str1.substring(0, 1));
+					  Integer i2 = Integer.valueOf(str2.substring(0, 1));
+					  if (i1.intValue() > i2.intValue()) {
+						 return XBoolean.S_TRUE;  
+					  }
+				  }				  
+				  else if (str1.compareTo(str2) > 0) {
+					  return XBoolean.S_TRUE; 
+				  }
+			  }			  			  
+		  }
+		  
+		  return XBoolean.S_FALSE;
+	  }
+	  else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
+		  ResultSequence rSeq1 = (ResultSequence)left;
+		  ResultSequence rSeq2 = (ResultSequence)right;
+		  for (int idx1 = 0; idx1 < rSeq1.size(); idx1++) {
+			 XObject xObj1 = rSeq1.item(idx1);
+			 for (int idx2 = 0; idx2 < rSeq2.size(); idx2++) {
+				XObject xObj2 = rSeq2.item(idx2);
+				if (xObj1.vcGreaterThan(xObj2, null, XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI, true)) {
+				   return XBoolean.S_TRUE;
+				}
+			 }
+		  }
+		  
+		  return XBoolean.S_FALSE;
+	  }
 	  
-	  if (strList.size() > 0) {		  
+	  int listSize = strList.size();
+	  
+	  if (listSize > 0) {		  
 		  if (rObj instanceof XString) {
 			  java.lang.String strR = rObj.str();			
-			  for (int i = 0; i < strList.size(); i++) {
+			  for (int i = 0; i < listSize; i++) {
 				 java.lang.String str2 = strList.get(i);
 				 if (str2.compareTo(strR) > 0) {
 					return XBoolean.S_TRUE; 
@@ -123,7 +204,7 @@ public class Gt extends Operation
 		  }
 		  else if (rObj instanceof XSString) {
 			  java.lang.String strR = ((XSString)rObj).stringValue();
-			  for (int i = 0; i < strList.size(); i++) {
+			  for (int i = 0; i < listSize; i++) {
 				  java.lang.String str2 = strList.get(i);
 				  if (str2.compareTo(strR) > 0) {
 					  return XBoolean.S_TRUE; 
@@ -133,7 +214,7 @@ public class Gt extends Operation
 			  return XBoolean.S_FALSE;
 		  }
       }
-	  else if ((lObj != null) && (strList.size() == 0)) {
+	  else if ((lObj != null) && (listSize == 0)) {
 		  result = XBoolean.S_FALSE;
 		  
 		  return result;
