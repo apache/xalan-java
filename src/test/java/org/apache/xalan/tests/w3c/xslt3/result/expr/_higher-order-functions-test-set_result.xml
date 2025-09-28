@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T10:23:57Z" fail="43" name="higher-order-functions" pass="28" skipped="5" statusUnknown="0" totalRun="71">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:12:39Z" fail="44" name="higher-order-functions" pass="27" skipped="5" statusUnknown="0" totalRun="71">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -119,7 +119,7 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
       <outResult/>
    </testResult>
    <testResult status="pass" testName="higher-order-functions-068"/>
-   <testResult status="pass" testName="higher-order-functions-069"/>
+   <testResult status="fail" testName="higher-order-functions-069"/>
    <testResult status="fail" testName="higher-order-functions-070">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;2&lt;/out&gt;</outResult>
    </testResult>

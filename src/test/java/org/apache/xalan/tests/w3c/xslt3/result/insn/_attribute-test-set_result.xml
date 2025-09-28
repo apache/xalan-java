@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T10:23:17Z" fail="20" name="attribute" pass="9" skipped="0" statusUnknown="1" totalRun="30">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:45Z" fail="21" name="attribute" pass="8" skipped="0" statusUnknown="1" totalRun="30">
    <testResult status="fail" testName="attribute-0001"/>
    <testResult status="fail" testName="attribute-0002"/>
    <testResult status="fail" testName="attribute-0003"/>
@@ -39,7 +39,7 @@
    <testResult status="fail" testName="attribute-1301"/>
    <testResult status="fail" testName="attribute-1302"/>
    <testResult status="pass" testName="attribute-1401"/>
-   <testResult status="pass" testName="attribute-1501"/>
+   <testResult status="fail" testName="attribute-1501"/>
    <testResult status="fail" testName="attribute-1502">
       <outResult>
          <errTrace>Failed calling setNamespace method</errTrace>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T10:23:24Z" fail="29" name="sort" pass="52" skipped="0" statusUnknown="0" totalRun="81">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:59Z" fail="30" name="sort" pass="51" skipped="0" statusUnknown="0" totalRun="81">
    <testResult status="pass" testName="sort-003"/>
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
@@ -77,7 +77,7 @@
    <testResult status="fail" testName="sort-064"/>
    <testResult status="fail" testName="sort-065"/>
    <testResult status="fail" testName="sort-066"/>
-   <testResult status="pass" testName="sort-067"/>
+   <testResult status="fail" testName="sort-067"/>
    <testResult status="fail" testName="sort-068"/>
    <testResult status="fail" testName="sort-069"/>
    <testResult status="fail" testName="sort-070"/>

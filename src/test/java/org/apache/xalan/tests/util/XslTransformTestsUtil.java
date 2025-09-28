@@ -648,7 +648,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         				  String abc1 = strTrim1.substring(i1 + 1);
         				  if (!"</xpath>".equals(abc1)) {
         					 abc1 = abc1.substring(0, abc1.indexOf('<'));
-        					 if (!"true".equals(abc1) && (abc1.length() > 0)) {
+        					 if (!("true".equals(abc1) || "false".equals(abc1)) && (abc1.length() > 0)) {
         						 strTrim1 = "<xpath>true</xpath>"; 
         					 }
         				  }
