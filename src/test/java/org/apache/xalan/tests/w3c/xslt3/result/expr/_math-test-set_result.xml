@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-26T16:22:33Z" fail="25" name="math" pass="124" skipped="0" statusUnknown="1" totalRun="150">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T10:23:56Z" fail="12" name="math" pass="137" skipped="0" statusUnknown="1" totalRun="150">
    <testResult status="pass" testName="math-0101"/>
    <testResult status="pass" testName="math-3315"/>
    <testResult status="pass" testName="math-0101"/>
@@ -126,27 +126,27 @@
    <testResult status="pass" testName="math-3201"/>
    <testResult status="pass" testName="math-3301"/>
    <testResult status="pass" testName="math-3301a"/>
-   <testResult status="fail" testName="math-3302"/>
-   <testResult status="fail" testName="math-3302a"/>
-   <testResult status="fail" testName="math-3303"/>
-   <testResult status="fail" testName="math-3303a"/>
-   <testResult status="fail" testName="math-3304"/>
-   <testResult status="fail" testName="math-3304a"/>
-   <testResult status="fail" testName="math-3305"/>
-   <testResult status="fail" testName="math-3305a"/>
-   <testResult status="fail" testName="math-3306"/>
-   <testResult status="fail" testName="math-3306a"/>
+   <testResult status="pass" testName="math-3302"/>
+   <testResult status="pass" testName="math-3302a"/>
+   <testResult status="pass" testName="math-3303"/>
+   <testResult status="pass" testName="math-3303a"/>
+   <testResult status="pass" testName="math-3304"/>
+   <testResult status="pass" testName="math-3304a"/>
+   <testResult status="pass" testName="math-3305"/>
+   <testResult status="pass" testName="math-3305a"/>
+   <testResult status="pass" testName="math-3306"/>
+   <testResult status="pass" testName="math-3306a"/>
    <testResult status="pass" testName="math-3307"/>
    <testResult status="pass" testName="math-3307a"/>
    <testResult status="pass" testName="math-3308"/>
    <testResult status="pass" testName="math-3308a"/>
    <testResult status="pass" testName="math-3309"/>
    <testResult status="pass" testName="math-3309a"/>
-   <testResult status="fail" testName="math-3310"/>
-   <testResult status="fail" testName="math-3310a"/>
+   <testResult status="pass" testName="math-3310"/>
+   <testResult status="pass" testName="math-3310a"/>
    <testResult status="pass" testName="math-3311"/>
    <testResult status="pass" testName="math-3312"/>
-   <testResult status="fail" testName="math-3313"/>
+   <testResult status="pass" testName="math-3313"/>
    <testResult status="pass" testName="math-3314"/>
    <testResult status="pass" testName="math-3315"/>
    <testResult status="pass" testName="math-3316"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-26T16:22:07Z" fail="20" name="try" pass="17" skipped="5" statusUnknown="0" totalRun="37">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T10:23:17Z" fail="18" name="try" pass="19" skipped="5" statusUnknown="0" totalRun="37">
    <testResult status="pass" testName="try-001"/>
    <testResult status="fail" testName="try-002"/>
    <testResult status="fail" testName="try-003">
@@ -26,8 +26,8 @@
    <testResult status="skipped" testName="try-015" xsltVersion="xslt 2.0 only"/>
    <testResult status="fail" testName="try-016"/>
    <testResult status="skipped" testName="try-017" xsltVersion="xslt 2.0 only"/>
-   <testResult status="fail" testName="try-018"/>
-   <testResult status="fail" testName="try-019"/>
+   <testResult status="pass" testName="try-018"/>
+   <testResult status="pass" testName="try-019"/>
    <testResult status="pass" testName="try-020"/>
    <testResult status="fail" testName="try-021">
       <outResult/>
@@ -46,7 +46,7 @@
       <outResult>
          <errTrace>XPST0081 : An XML namespace prefix '' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
          <errTrace>XPST0003 : An XPath expression                                    /output/output/note = "secondary document written"                   /output/output/*:error/@code[contains(.,"FOAR0001")]                   contains(/output/output/*:error/message, "zero")                                 has syntax error. Unknown op code : 21.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="skipped" testName="try-025" xsltVersion="xslt 2.0 only"/>

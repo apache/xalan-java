@@ -294,10 +294,12 @@ public class Compiler extends OpMap
     case OpCodes.OP_EXPR_SINGLE_COMPARISON_XPATH3 :
       expr = xpath3ExpressionSingleComparison(opPos); break;
     case OpCodes.OP_FUNC_ARG_PLACEHOLDER :
-      expr = funcArgumentPlaceholder(opPos); break; 
+      expr = funcArgumentPlaceholder(opPos); break;
+    case OpCodes.OP_TEXT_AND_NODE_EXPR:
+      expr = xpathTextAndNodeExpr(opPos); break;	
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });
-      break;
+      break;        	
     default :
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE,
             new Object[]{ m_currentPattern, Integer.toString(getOp(opPos)) });
@@ -1714,6 +1716,13 @@ private static final boolean DEBUG = false;
   Expression mapConstructorExpr(int opPos) throws TransformerException
   {
 	  return XPathParser.m_xpathMapConstructor; 
+  }
+  
+  /**
+   * Compile XPath text and node, expression.
+   */
+  Expression xpathTextAndNodeExpr(int opPos) throws TransformerException {
+	  return XPathParser.m_xpathTextAndNodeExpr;
   }
 
   // The current id for extension functions.

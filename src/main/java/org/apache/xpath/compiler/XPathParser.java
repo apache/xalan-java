@@ -96,6 +96,7 @@ import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathQuantifiedExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathSequenceTypeExpr;
+import org.apache.xpath.composite.XPathTextAndNodeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
@@ -292,13 +293,15 @@ public class XPathParser
   
   static XPathArrayComparison m_xpathArrayComparison = null;
   
-  static XPath3ExprSingleComparison m_xpath3ExprSingleComparison = null;
+  static XPath3ExprSingleComparison m_xpath3ExprSingleComparison = null;    
   
   static List<FuncArgPlaceholder> m_funcArgPlaceHolderList = new ArrayList<FuncArgPlaceholder>();
   
+  static XPathTextAndNodeExpr m_xpathTextAndNodeExpr = null;
+  
   private String m_arrowOpRemainingXPathExprStr = null;
   
-  private XPathExprFunctionSuffix m_xpathExprFunctionSuffix = null;
+  private XPathExprFunctionSuffix m_xpathExprFunctionSuffix = null;    
   
   private boolean m_isFunctionArgumentParse;
   
@@ -4537,6 +4540,68 @@ public class XPathParser
       matchFound = true;
          
     }
+    else if ((tokenIs("text") || tokenIs("node")) && lookahead('(', 1) && 
+    		                                                       lookahead(')', 2) && lookahead('[', 3)) {
+    	// XPath parse of expression string like text()[..],
+    	// text()[..]/abc, or node() pattern equivalents.
+    	
+    	appendOp(2, OpCodes.OP_TEXT_AND_NODE_EXPR);
+        
+        m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();
+        
+        String nodeStr = null;
+        if (tokenIs("text")) {
+           nodeStr = "text()";
+           consumeExpected("text");
+        }
+        else if (tokenIs("node")) {
+           nodeStr = "node()";
+           consumeExpected("node");
+        }
+        
+        m_xpathTextAndNodeExpr.setNodeStr(nodeStr);
+    	
+    	consumeExpected('(');
+    	consumeExpected(')');
+    	consumeExpected('[');
+    	StringBuffer strBuff = new StringBuffer();
+    	while (m_token != null) {
+    	   if (!tokenIs(']')) {
+    		  strBuff.append(m_token + " ");
+    		  nextToken();
+    	   }
+    	   else {
+    		  break; 
+    	   }    	       	   
+    	}
+    	
+    	String xpathPredicateValStr = (strBuff.toString()).trim();
+    	if (xpathPredicateValStr.length() > 0) {
+    	   m_xpathTextAndNodeExpr.setXpathPredicateValStr(xpathPredicateValStr);
+    	}
+    	
+    	strBuff = new StringBuffer();    	
+    	if (m_token != null) {
+    	   consumeExpected(']');
+    	   if (tokenIs('/')) {
+    		   consumeExpected('/');
+    		   while (m_token != null) {
+    			   strBuff.append(m_token + " ");
+    			   nextToken();  
+    		   }
+    	   }
+    	}
+    	
+    	String xpathSuffixValStr = (strBuff.toString()).trim();
+    	if (xpathSuffixValStr.length() > 0) {
+    	   m_xpathTextAndNodeExpr.setXpathSuffixValStr(xpathSuffixValStr);
+    	}
+        
+        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+        
+        matchFound = true;
+    }
     else if (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3)))
     {
       matchFound = FunctionCall();
@@ -4798,6 +4863,81 @@ public class XPathParser
     else if (tokenIs("for")) {
        ExprSingle();
     }
+    else if (isTextAndNodeExpr(m_queueMark)) {
+    	// XPath parse of expression string like text()[..],
+    	// text()[..]/abc, or node() pattern equivalents.
+
+    	appendOp(2, OpCodes.OP_TEXT_AND_NODE_EXPR);
+
+    	m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();
+
+    	ObjectVector tokenQueue = m_ops.m_tokenQueue;		  		  
+    	String str1 = (String)(tokenQueue.elementAt(m_queueMark-1));
+    	String str2 = null;
+    	if ((m_queueMark - 2) >= 0) {
+    		str2 = (String)(tokenQueue.elementAt(m_queueMark-2));
+    	}
+
+    	String xpathPrefixStr = (str2 != null) ? (str2 + str1) : str1;
+    	m_xpathTextAndNodeExpr.setXpathPrefixStr(xpathPrefixStr);
+
+    	nextToken();
+    	consumeExpected('/');
+
+    	String nodeStr = null;
+    	if (tokenIs("text")) {
+    		nodeStr = "text()";
+    		consumeExpected("text");
+    	}
+    	else if (tokenIs("node")) {
+    		nodeStr = "node()";
+    		consumeExpected("node");
+    	}
+
+    	m_xpathTextAndNodeExpr.setNodeStr(nodeStr);
+
+    	consumeExpected('(');
+    	consumeExpected(')');
+    	consumeExpected('[');
+    	StringBuffer strBuff = new StringBuffer();
+    	while (m_token != null) {
+    		if (!tokenIs(']')) {
+    			strBuff.append(m_token + " ");
+    			nextToken();
+    		}
+    		else {
+    			break; 
+    		}    	       	   
+    	}
+
+    	String xpathPredicateValStr = (strBuff.toString()).trim();
+    	if (xpathPredicateValStr.length() > 0) {
+    		m_xpathTextAndNodeExpr.setXpathPredicateValStr(xpathPredicateValStr);
+    	}
+
+    	strBuff = new StringBuffer();    	
+    	if (m_token != null) {
+    		consumeExpected(']');
+    		if (tokenIs('/')) {
+    			consumeExpected('/');
+    			int tokenQueueSize = m_ops.m_tokenQueue.size();
+    			while (m_token != null) {
+    				if (m_queueMark < tokenQueueSize) {
+    					strBuff.append(m_token + " ");
+    					nextToken();
+    				}
+    				else {						 
+    					break; 
+    				}
+    			}
+    		}
+    	}
+
+    	String xpathSuffixValStr = (strBuff.toString()).trim();
+    	if (xpathSuffixValStr.length() > 0) {
+    		m_xpathTextAndNodeExpr.setXpathSuffixValStr(xpathSuffixValStr);
+    	}
+    }
     else if (tokenIs("function")) {
        appendOp(2, OpCodes.OP_INLINE_FUNCTION);
         
@@ -4859,7 +4999,7 @@ public class XPathParser
   }
 
   /**
-   *
+   * 
    * FunctionCall    ::=    FunctionName '(' ( Argument ( ',' Argument)*)? ')'
    *
    * @return true if, and only if, a FunctionCall was matched
@@ -5134,7 +5274,84 @@ public class XPathParser
   protected void LocationPath() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+
+	  boolean textAndNodeExpr = isTextAndNodeExpr(m_queueMark);
+	  
+	  if (textAndNodeExpr) {		  		  
+		  // XPath parse of expression string like text()[..],
+		  // text()[..]/abc, or node() pattern equivalents.
+		  
+		  appendOp(2, OpCodes.OP_TEXT_AND_NODE_EXPR);
+		  
+		  m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();
+		  
+		  ObjectVector tokenQueue = m_ops.m_tokenQueue;		  		  
+		  String str1 = (String)(tokenQueue.elementAt(m_queueMark-1));
+		  String str2 = null;
+		  if ((m_queueMark - 2) >= 0) {
+		     str2 = (String)(tokenQueue.elementAt(m_queueMark-2));
+		  }
+		  
+		  String xpathPrefixStr = (str2 != null) ? (str2 + str1) : str1;
+		  m_xpathTextAndNodeExpr.setXpathPrefixStr(xpathPrefixStr);
+		  
+		  nextToken();
+		  consumeExpected('/');
+		  
+		  String nodeStr = null;
+		  if (tokenIs("text")) {
+			  nodeStr = "text()";
+			  consumeExpected("text");
+		  }
+		  else if (tokenIs("node")) {
+			  nodeStr = "node()";
+			  consumeExpected("node");
+		  }
+
+		  m_xpathTextAndNodeExpr.setNodeStr(nodeStr);
+
+		  consumeExpected('(');
+		  consumeExpected(')');
+		  consumeExpected('[');
+		  StringBuffer strBuff = new StringBuffer();
+		  while (m_token != null) {
+			  if (!tokenIs(']')) {
+				  strBuff.append(m_token + " ");
+				  nextToken();
+			  }
+			  else {
+				  break; 
+			  }    	       	   
+		  }
+
+		  String xpathPredicateValStr = (strBuff.toString()).trim();
+		  if (xpathPredicateValStr.length() > 0) {
+		     m_xpathTextAndNodeExpr.setXpathPredicateValStr(xpathPredicateValStr);
+		  }
+
+		  strBuff = new StringBuffer();    	
+		  if (m_token != null) {
+			  consumeExpected(']');
+			  if (tokenIs('/')) {
+				  consumeExpected('/');
+				  while (m_token != null) {
+					  strBuff.append(m_token + " ");
+					  nextToken();  
+				  }
+			  }
+		  }
+
+		  String xpathSuffixValStr = (strBuff.toString()).trim();
+		  if (xpathSuffixValStr.length() > 0) {
+		     m_xpathTextAndNodeExpr.setXpathSuffixValStr(xpathSuffixValStr);
+		  }
+
+		  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+				  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+		  
+		  return;
+	}
 
     // int locationPathOpPos = opPos;
     appendOp(2, OpCodes.OP_LOCATIONPATH);
@@ -5183,8 +5400,9 @@ public class XPathParser
    */
   protected boolean RelativeLocationPath()
                throws javax.xml.transform.TransformerException
-  {
-    if (!Step())
+  {    	   
+	  
+	if (!Step())
     {
       return false;
     }
@@ -8039,6 +8257,32 @@ public class XPathParser
     		m_token = m_xpathDefaultNamespace;
     		m_tokenChar = m_xpathDefaultNamespace.charAt(0);		  
     	}
+    }
+    
+    /**
+     * Method definition, to check whether an XPath expression is of 
+     * the form prefix/text()[..]/abc, prefix/node()[..]/abc etc.
+     * 
+     * @param queueMark					An XPath parse current queue mark value
+     * @return							Boolean value true or false
+     */
+    private boolean isTextAndNodeExpr(int queueMark) {
+  	  
+  	  boolean result = false;
+  	  
+  	  if ((queueMark == 1) || (queueMark == 3)) {
+  		  if (tokenIs('/') && lookahead('/', 2) && (lookahead("text", 3) || lookahead("node", 3)) && lookahead('(', 4) && 
+  				  																		lookahead(')', 5) && lookahead('[', 6)) {		  
+  			  result = true;
+  			  nextToken();		  		  
+  		  }
+  		  else if (!tokenIs('/') && lookahead('/', 1) && (lookahead("text", 2) || lookahead("node", 2)) && lookahead('(', 3) && 
+  				  																		lookahead(')', 4) && lookahead('[', 5)) {		  
+  			  result = true;		  		  
+  		  }
+  	  }
+  	  
+  	  return result;
     }
   
 }

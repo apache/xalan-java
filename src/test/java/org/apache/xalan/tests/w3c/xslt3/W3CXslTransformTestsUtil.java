@@ -941,11 +941,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
 		StringWriter strWriter = new StringWriter();
 		
-		Document documentToBeTransformed = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
+		Document document = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
 		
 		XslTransformData.m_is_xsl_test_invocation = true;
 		try {
-		   transformer.transform(new DOMSource(documentToBeTransformed), new StreamResult(strWriter));
+		   transformer.transform(new DOMSource(document), new StreamResult(strWriter));
 		}
 		finally {
 		   XslTransformData.m_is_xsl_test_invocation = false;

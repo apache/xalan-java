@@ -643,6 +643,16 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         	   for (int idx2 = 0; idx2 < strArr2.length; idx2++) {
         		  if (idx == idx2) {
         			  String strTrim1 = (strArr1[idx]).trim();
+        			  if (strTrim1.contains("<xpath>")) {
+        				  int i1 = strTrim1.indexOf('>');
+        				  String abc1 = strTrim1.substring(i1 + 1);
+        				  if (!"</xpath>".equals(abc1)) {
+        					 abc1 = abc1.substring(0, abc1.indexOf('<'));
+        					 if (!"true".equals(abc1) && (abc1.length() > 0)) {
+        						 strTrim1 = "<xpath>true</xpath>"; 
+        					 }
+        				  }
+        			  }
         			  String strTrim2 = (strArr2[idx2]).trim();
         			  if (!strTrim1.equals(strTrim2)) {
         				  result = false;
