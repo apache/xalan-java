@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <a>4,8</a>
+  <b>4,8</b>
+  <nodeSet1>
+    <c/>
+    <d/>
+  </nodeSet1>
+  <text nodeCount="2">this is an examplexml document</text>
+</result>

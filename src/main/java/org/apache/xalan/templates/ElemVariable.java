@@ -44,6 +44,7 @@ import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.composite.XPathTextAndNodeExpr;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
@@ -436,7 +437,7 @@ public class ElemVariable extends ElemTemplateElement
     try {        
       if (m_selectPattern != null) {          
         selectExpression = m_selectPattern.getExpression();
-        
+                
         if (selectExpression instanceof XSL3ConstructorOrExtensionFunction) {        	
         	XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)selectExpression;
         	XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
@@ -772,6 +773,9 @@ public class ElemVariable extends ElemTemplateElement
         	if ((var instanceof XString) && ("".equals(((XString)var).str()))) {
         	   ((XString)var).setXrTreeFragSelectWrapperResult(true);
         	}
+        }
+        else if (selectExpression instanceof XPathTextAndNodeExpr) {
+        	var = ((XPathTextAndNodeExpr)selectExpression).execute(xctxt);
         }
   
         if (var == null) {        	        	

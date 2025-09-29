@@ -99,6 +99,18 @@ public class XPathTextAndNodeExpr extends Expression {
 		XPath xpathObj = null;
 		XObject xObjResult = null;
 		
+		if ((m_xpathPrefixStr == null) && (m_xpathPredicateValStr == null) 
+				                                                 && (m_xpathSuffixValStr == null)) {
+			xpathObj = new XPath(m_nodeStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		    if (m_vars != null) {
+				xpathObj.fixupVariables(m_vars, m_globals_size);
+			}
+		    
+		    result = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+		    
+		    return result;
+		}
+		
 		List<Integer> nodeHandleSeq = new ArrayList<Integer>();
 		if (m_xpathPrefixStr != null) {
 		    xpathObj = new XPath(m_xpathPrefixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -109,10 +121,15 @@ public class XPathTextAndNodeExpr extends Expression {
 		    xObjResult = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 		    
 		    XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObjResult;
-		    DTMCursorIterator nodeIter1 = xmlNodeCursorImpl.iterRaw();
-		    int nextNode;	    
-		    while ((nextNode = nodeIter1.nextNode()) != DTM.NULL) {
-		    	nodeHandleSeq.add(Integer.valueOf(nextNode));
+		    if (xmlNodeCursorImpl.getLength() == 1) {		    	
+		    	nodeHandleSeq.add(Integer.valueOf(xmlNodeCursorImpl.asNode(xctxt)));
+		    }
+		    else {
+		    	DTMCursorIterator nodeIter1 = xmlNodeCursorImpl.iterRaw();
+		    	int nextNode;	    
+		    	while ((nextNode = nodeIter1.nextNode()) != DTM.NULL) {
+		    		nodeHandleSeq.add(Integer.valueOf(nextNode));
+		    	}
 		    }
 		}
 		else {
@@ -189,13 +206,25 @@ public class XPathTextAndNodeExpr extends Expression {
 				   if (m_vars != null) {
 					   xpathObj.fixupVariables(m_vars, m_globals_size);
 				   }
-				   
+
 				   xObjResult = xpathObj.execute(xctxt, contextNode1, xctxt.getNamespaceContext());
 				   if (xObjResult instanceof XMLNodeCursorImpl) {
-					  int length1 = ((XMLNodeCursorImpl)xObjResult).getLength();
-					  if (length1 > 0) {
-						  rSeq3.add(xObjResult); 
-					  }
+					   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObjResult;					   
+					   int length1 = xmlNodeCursorImpl.getLength();
+					   DTMCursorIterator nodeIter1 = null;
+					   if (length1 > 0) {
+						   nodeIter1 = xmlNodeCursorImpl.iter();						  
+					   }
+					   else {
+						   nodeIter1 = xmlNodeCursorImpl.iterRaw();
+					   }
+					   
+					   int nextNode;
+					   DTMManager dtmManager = xctxt.getDTMManager();			 
+					   while ((nextNode = nodeIter1.nextNode()) != DTM.NULL) {
+						   XMLNodeCursorImpl nodeRef2 = new XMLNodeCursorImpl(nextNode, dtmManager);
+						   rSeq3.add(nodeRef2);
+					   }
 				   }
 			   }
 			   

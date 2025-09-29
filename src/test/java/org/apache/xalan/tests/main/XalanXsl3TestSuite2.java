@@ -72,6 +72,7 @@ import org.apache.xalan.tests.xpath3.XPathSequenceFunctionTests;
 import org.apache.xalan.tests.xpath3.XPathSequenceTraversalTests;
 import org.apache.xalan.tests.xpath3.XPathSimpleMapOperatorTests;
 import org.apache.xalan.tests.xpath3.XPathStringConcatExprTests;
+import org.apache.xalan.tests.xpath3.XPathTextAndNodePattern;
 import org.apache.xalan.tests.xpath3.XPathUriQualifiedNameTests;
 import org.apache.xalan.tests.xpath3.XsDurationComponentExtractionFunctionTests;
 import org.apache.xalan.tests.xpath3.XsGregorianTypeTests;
@@ -144,7 +145,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathDefaultNamespaceMiscTests.class, XslFunctionMiscTests.class, XslIncludeTests.class, 
                 XslIncludeMiscTests.class, FnNormalizeUnicodeTests.class, XslExpandTextTests.class,
                 XslJsonValidationTests.class, XPathUriQualifiedNameTests.class, FnRoundHalfToEvenTests.class,
-                XPathPartialFuncApplnTests.class, XslCopyTests.class, XalanJavascriptExtensionTests.class, XalanJavaExtensionTests.class })
+                XPathPartialFuncApplnTests.class, XslCopyTests.class, XalanJavascriptExtensionTests.class, XalanJavaExtensionTests.class,
+                XPathTextAndNodePattern.class })
 public class XalanXsl3TestSuite2 {
 
 }

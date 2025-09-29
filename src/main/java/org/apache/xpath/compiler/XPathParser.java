@@ -4860,7 +4860,7 @@ public class XPathParser
     	// XPath parse of named function reference, for XPath built-in functions    	
     	handleXPathParseNamedFuncRefWithoutNSQual(opPos);
     }
-    else if (tokenIs("for")) {
+    else if (tokenIs("for") || tokenIs("let") || tokenIs("some") || tokenIs("every")) {
        ExprSingle();
     }
     else if (isTextAndNodeExpr(m_queueMark)) {
@@ -4947,7 +4947,7 @@ public class XPathParser
        TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
        StringBuffer strBuff = new StringBuffer();
        while (!tokenIs(',') && !(tokenIs(')') && lookahead(null, 1)) && (m_token != null)) {
-    	  strBuff.append(m_token);
+    	  strBuff.append(m_token);    	  
     	  nextToken();
        }
        
@@ -4960,9 +4960,19 @@ public class XPathParser
 								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
 								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) ||
 								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
-              restoreTokenQueueScanPosition(prevTokQueueScanPosition);    		  
+              restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+              
     		  Expr();  
-    	  }    	  
+    	  }
+    	  else if ("text()".equals(xpathRhsStr) || "node()".equals(xpathRhsStr)) {
+    		  appendOp(2, OpCodes.OP_TEXT_AND_NODE_EXPR);
+
+    		  m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();    		      		  
+    		  m_xpathTextAndNodeExpr.setNodeStr(xpathRhsStr);    		  
+    		  if (xpathLhsStr.length() > 0) {
+    			  m_xpathTextAndNodeExpr.setXpathPrefixStr(xpathLhsStr);
+    		  } 
+    	  }
     	  else {    		  
     		  if (!isStrHasXPathAxisNamePrefix(xpathRhsStr) && (xpathRhsStr.endsWith("()") || xpathRhsStr.endsWith("(.)"))) {    		  
     			  insertOp(opPos, 2, OpCodes.OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX);    		  
@@ -4971,24 +4981,29 @@ public class XPathParser
     			  m_xpathExprWithFuncCallSuffix.setXPathExprStr(xpathExprStr);
     		  }
     		  else {
-    			  restoreTokenQueueScanPosition(prevTokQueueScanPosition);    		  
+    			  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    			  
     			  Expr(); 
     		  }
     	  }
        }
        else {
     	   restoreTokenQueueScanPosition(prevTokQueueScanPosition);
-    	  
-    	   // An XPath function argument is text(). Modify contents of XPath 
-    	   // parse token queue by replacing token string text() with ".".
-    	   if (tokenIs("text") && lookahead('(', 1) && lookahead(')', 2)) {    		   
-    		   mutateTokenQueue(new String[] { "." }, 0, m_queueMark + 2, 1);
+    	   
+    	   if ((tokenIs("text") || tokenIs("node")) && lookahead('(', 1) && 
+    			                                                      lookahead(')', 2) && lookahead(')', 3)) {
+    		   appendOp(2, OpCodes.OP_TEXT_AND_NODE_EXPR);    		       		   
     		   
-    		   m_token = ".";
-    		   m_tokenChar = '.';
+    		   m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();    		      		  
+    		   m_xpathTextAndNodeExpr.setNodeStr(m_token + "(" + ")");
+    		   
+    		   nextToken();
+    		   consumeExpected('(');
+    		   consumeExpected(')');
     	   }
-
-    	   Expr();
+    	   else {
+    	      Expr();
+    	   }
         }                     
     }
     

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <textNodes count="4"/>
+  <info1>
+    <text1>hello</text1>
+    <text2>there</text2>
+    <text3>this is an example</text3>
+    <text4>xml document</text4>
+  </info1>
+  <info2>
+    <x>
+      <a/>
+      <b/>
+      <c/>
+      <d/>
+    </x>
+    <y>
+      <c/>
+      <d/>
+    </y>
+  </info2>
+  <info3>this is an example</info3>
+</result>

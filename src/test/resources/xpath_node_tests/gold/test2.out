@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <node count="8"/>
+  <info1>
+    <text1>hello</text1>
+    <text2>there</text2>
+    <text3>this is an example</text3>
+    <text4>xml document</text4>
+    <a/>
+    <b/>
+    <c/>
+    <d/>
+  </info1>
+  <info2>
+    <c/>
+    <d/>
+  </info2>
+</result>

@@ -28,6 +28,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
@@ -261,7 +262,15 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
       
       XObject xObj = execute(xctxt);
       
-      DTMCursorIterator dtmIter = xObj.iter(); 
+      DTMCursorIterator dtmIter = null;
+      if (xObj instanceof ResultSequence) {
+    	  XMLNodeCursorImpl xmlNodeCursorImpl = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(
+    			                                                                                       (ResultSequence)xObj, xctxt);    	  
+    	  dtmIter = xmlNodeCursorImpl.iter();
+      }
+      else {
+          dtmIter = xObj.iter();
+      }
 
       return dtmIter;
     }

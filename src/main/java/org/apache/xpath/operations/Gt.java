@@ -23,6 +23,7 @@ package org.apache.xpath.operations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -168,6 +169,127 @@ public class Gt extends Operation
 					  return XBoolean.S_TRUE; 
 				  }
 			  }			  			  
+		  }
+		  
+		  return XBoolean.S_FALSE;
+	  }
+	  else if ((left instanceof ResultSequence) && (right instanceof XMLNodeCursorImpl)) {
+		  right = right.getFresh();		  		  
+			  
+		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)right;		  
+		  List<java.lang.String> strListR = new ArrayList<java.lang.String>();
+		  DTMManager dtmManager = nodeRef.getDTMManager();
+		  DTMCursorIterator iter = nodeRef.iterRaw();
+		  int nextNode = DTM.NULL;		  
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl node1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String str1 = node1.str();
+			  strListR.add(str1);
+		  }
+		  
+		  ResultSequence rSeqL = (ResultSequence)left;
+		  int lSize = rSeqL.size();
+		  int rSize = strListR.size();		   
+		  for (int idx = 0; idx < lSize; idx++) {
+			 // Loop the LHS ResultSequence object			  
+			 XObject xObj1 = rSeqL.item(idx);
+			 Double lDbl = null;
+			 java.lang.String lStr = null;
+			 if (xObj1 instanceof XNumber) {
+				lDbl = ((XNumber)xObj1).num();  
+			 }
+			 else if (xObj1 instanceof XSNumericType) {
+				XSNumericType xsNumericType = (XSNumericType)xObj1;
+				lDbl = Double.valueOf(xsNumericType.stringValue());
+			 }
+			 else {
+				lStr = XslTransformEvaluationHelper.getStrVal(xObj1);  
+			 }
+			 
+			 // Loop the RHS node list string values
+			 for (int idx2 = 0; idx2 < rSize; idx2++) {
+				 java.lang.String strRhs = strListR.get(idx2);
+				 if ((lStr != null) && (lStr.compareTo(strRhs) > 0)) {
+					 return XBoolean.S_TRUE;
+				 }
+				 else if (lDbl != null) {
+					 try {	
+						 Double rDbl = Double.valueOf(strRhs);
+						 if (lDbl.doubleValue() > rDbl.doubleValue()) {
+							 return XBoolean.S_TRUE;	 
+						 }
+					 }
+					 catch (NumberFormatException ex) {
+                         // Compare lDbl's string value with string value strRhs
+						 lStr = lDbl.toString();
+						 if (lStr.compareTo(strRhs) > 0) {
+							return XBoolean.S_TRUE; 
+						 }
+					 }
+				 }
+			 }
+		  }
+		  
+		  return XBoolean.S_FALSE;
+	  }
+	  else if ((left instanceof XMLNodeCursorImpl) && (right instanceof ResultSequence)) {
+		  left = left.getFresh();
+		  Object swapObj = left;
+		  right = left;
+		  left = (XMLNodeCursorImpl)swapObj; 
+			  
+		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)right;		  
+		  List<java.lang.String> strListR = new ArrayList<java.lang.String>();
+		  DTMManager dtmManager = nodeRef.getDTMManager();
+		  DTMCursorIterator iter = nodeRef.iterRaw();
+		  int nextNode = DTM.NULL;		  
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl node1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String str1 = node1.str();
+			  strListR.add(str1);
+		  }
+		  
+		  ResultSequence rSeqL = (ResultSequence)left;
+		  int lSize = rSeqL.size();
+		  int rSize = strListR.size();		   
+		  for (int idx = 0; idx < lSize; idx++) {
+			 // Loop the LHS ResultSequence object			  
+			 XObject xObj1 = rSeqL.item(idx);
+			 Double lDbl = null;
+			 java.lang.String lStr = null;
+			 if (xObj1 instanceof XNumber) {
+				lDbl = ((XNumber)xObj1).num();  
+			 }
+			 else if (xObj1 instanceof XSNumericType) {
+				XSNumericType xsNumericType = (XSNumericType)xObj1;
+				lDbl = Double.valueOf(xsNumericType.stringValue());
+			 }
+			 else {
+				lStr = XslTransformEvaluationHelper.getStrVal(xObj1);  
+			 }
+			 
+			 // Loop the RHS node list string values
+			 for (int idx2 = 0; idx2 < rSize; idx2++) {
+				 java.lang.String strRhs = strListR.get(idx2);
+				 if ((lStr != null) && (lStr.compareTo(strRhs) > 0)) {
+					 return XBoolean.S_TRUE;
+				 }
+				 else if (lDbl != null) {
+					 try {	
+						 Double rDbl = Double.valueOf(strRhs);
+						 if (lDbl.doubleValue() > rDbl.doubleValue()) {
+							 return XBoolean.S_TRUE;	 
+						 }
+					 }
+					 catch (NumberFormatException ex) {
+                         // Compare lDbl's string value with string value strRhs
+						 lStr = lDbl.toString();
+						 if (lStr.compareTo(strRhs) > 0) {
+							return XBoolean.S_TRUE; 
+						 }
+					 }
+				 }
+			 }
 		  }
 		  
 		  return XBoolean.S_FALSE;
