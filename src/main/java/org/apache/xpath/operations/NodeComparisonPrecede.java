@@ -24,9 +24,8 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * The XPath 3.1 node comparison "<<" operation.
- * 
- * Ref : https://www.w3.org/TR/xpath-31/#id-node-comparisons
+ * A class definition, to implement XPath 3.1 node comparison 
+ * operator '<<'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -40,7 +39,6 @@ public class NodeComparisonPrecede extends Operation
     /**
     * Apply the operation to two operands, and return the result.
     *
-    *
     * @param left non-null reference to the evaluated left operand.
     * @param right non-null reference to the evaluated right operand.
     *
@@ -50,48 +48,58 @@ public class NodeComparisonPrecede extends Operation
     */
    public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException
    {
-       XObject result = null;
-       
-       XMLNodeCursorImpl lNodeSet = null;
-       XMLNodeCursorImpl rNodeSet = null;
-       
-       if (left instanceof XMLNodeCursorImpl) {
-          lNodeSet = (XMLNodeCursorImpl)left;
-          if (lNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not "
-                                                                                  + "allowed as the first operand of an operator '<<'.");   
-          }
-       }
-       else {
-          throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of first "
-                                                                                  + "operand of an operator '<<' is not node().");    
-       }
-       
-       if (right instanceof XMLNodeCursorImpl) {
-          rNodeSet = (XMLNodeCursorImpl)right;
-          if (rNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not "
-                                                                                  + "allowed as the second operand of an operator '<<'.");   
-          }  
-       }
-       else {
-          throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of second "
-                                                                                   + "operand of an operator '<<' is not node()."); 
-       }
-       
-       int lNodeHandle = lNodeSet.nextNode();
-       int rNodeHandle = rNodeSet.nextNode();
-       
-       if ((lNodeHandle != DTM.NULL) && (rNodeHandle != DTM.NULL)) {
-          result = (lNodeHandle < rNodeHandle) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-       }
-       else {
-          // as per XPath 3.1 spec for the node comparison "<<" operator, if either operand 
-          // is an empty sequence the result of the comparison is an empty sequence.
-          result = new ResultSequence(); 
-       }
-              
-       return result; 
+	   XObject result = null;
+
+	   XMLNodeCursorImpl lNodeSet = null;
+	   XMLNodeCursorImpl rNodeSet = null;
+
+	   if (left instanceof XMLNodeCursorImpl) {
+		   lNodeSet = (XMLNodeCursorImpl)left;
+	   }
+	   else if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 1) && 
+			                                                             (((ResultSequence)left).item(0) instanceof XMLNodeCursorImpl)) {
+		   lNodeSet = (XMLNodeCursorImpl)(((ResultSequence)left).item(0));  
+	   }
+
+	   if (lNodeSet != null) {
+		   lNodeSet = (XMLNodeCursorImpl)(lNodeSet.getFresh());
+	   }
+
+	   if (right instanceof XMLNodeCursorImpl) {
+		   rNodeSet = (XMLNodeCursorImpl)right; 
+	   }
+	   else if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 1) && 
+			                                                               (((ResultSequence)right).item(0) instanceof XMLNodeCursorImpl)) {
+		   rNodeSet = (XMLNodeCursorImpl)(((ResultSequence)right).item(0));  
+	   }
+
+	   if (rNodeSet != null) {
+		   rNodeSet = (XMLNodeCursorImpl)(rNodeSet.getFresh());
+	   }
+
+	   if ((lNodeSet != null) && (rNodeSet != null)) {
+		   int lNodeHandle = lNodeSet.asNode(m_xctxt);
+		   int rNodeHandle = rNodeSet.asNode(m_xctxt);                               
+		   if ((lNodeHandle == DTM.NULL) || (rNodeHandle == DTM.NULL)) {
+			   result = new ResultSequence();  
+		   }
+		   else if (lNodeHandle < rNodeHandle) {
+			   result = XBoolean.S_TRUE;
+		   }
+		   else {
+			   result = XBoolean.S_FALSE;  
+		   }
+	   }
+	   else if (lNodeSet == null) {
+		   throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of LHS operand of XPath "
+				                                                                                               + "operator '<<' is not a singleton node."); 
+	   }
+	   else if (rNodeSet == null) {
+		   throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of RHS operand of XPath "
+				                                                                                               + "operator '<<' is not a singleton node.");
+	   }
+
+	   return result; 
    }
 
 }

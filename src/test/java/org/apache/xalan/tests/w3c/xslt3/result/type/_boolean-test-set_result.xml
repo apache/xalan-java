@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-29T11:57:27Z" fail="12" name="boolean" pass="100" skipped="0" statusUnknown="0" totalRun="112">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-01T11:55:56Z" fail="7" name="boolean" pass="105" skipped="0" statusUnknown="0" totalRun="112">
    <testResult status="pass" testName="boolean-001"/>
    <testResult status="pass" testName="boolean-002"/>
    <testResult status="pass" testName="boolean-003"/>
@@ -69,13 +69,13 @@
    <testResult status="pass" testName="boolean-068"/>
    <testResult status="pass" testName="boolean-069"/>
    <testResult status="pass" testName="boolean-070"/>
-   <testResult status="fail" testName="boolean-071"/>
-   <testResult status="fail" testName="boolean-072"/>
+   <testResult status="pass" testName="boolean-071"/>
+   <testResult status="pass" testName="boolean-072"/>
    <testResult status="pass" testName="boolean-073"/>
-   <testResult status="fail" testName="boolean-074"/>
+   <testResult status="pass" testName="boolean-074"/>
    <testResult status="pass" testName="boolean-075"/>
-   <testResult status="fail" testName="boolean-076"/>
-   <testResult status="fail" testName="boolean-077"/>
+   <testResult status="pass" testName="boolean-076"/>
+   <testResult status="pass" testName="boolean-077"/>
    <testResult status="fail" testName="boolean-078">
       <outResult/>
    </testResult>

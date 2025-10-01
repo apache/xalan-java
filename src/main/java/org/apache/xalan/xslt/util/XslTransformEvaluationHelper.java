@@ -62,6 +62,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
@@ -436,6 +437,56 @@ public class XslTransformEvaluationHelper {
             else if (expr instanceof XPathForExpr) {
                 ResultSequence resultSeq = (ResultSequence)(((XPathForExpr)expr).execute(xctxt));
                 xdmSequenceSize = resultSeq.size();   
+            }
+            else if (expr instanceof Operation) {
+            	Operation opn1 = (Operation)expr;
+            	Expression lOpn = opn1.getLeftOperand();
+            	Expression rOpn = opn1.getRightOperand();            	
+            	XObject lObj1 = lOpn.execute(xctxt);
+            	boolean isLEmpty = false;
+            	if (lObj1 instanceof ResultSequence) {
+            		if (((ResultSequence)lObj1).size() == 0) {
+            			isLEmpty = true;
+            		}
+            	}
+            	else if (lObj1 instanceof XMLNodeCursorImpl) {
+            		XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)lObj1;
+            		if (nodeRef1.getLength() == 0) {
+            			isLEmpty = true;
+            		}
+            	}
+
+            	XObject rObj1 = rOpn.execute(xctxt);
+            	boolean isREmpty = false;
+            	if (rObj1 instanceof ResultSequence) {
+            		if (((ResultSequence)rObj1).size() == 0) {
+            			isREmpty = true;
+            		}
+            	}
+            	else if (rObj1 instanceof XMLNodeCursorImpl) {
+            		XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)rObj1;
+            		if (nodeRef1.getLength() == 0) {
+            			isREmpty = true;
+            		}
+            	}
+
+            	if (isLEmpty || isREmpty) {
+            		// If one or both of the LHS and RHS of an XPath binary 
+            		// operation is empty, then count of result sequence is zero.            		
+            		xdmSequenceSize = 0;
+            	}
+            	else {
+            		XObject xObj1 = opn1.execute(xctxt);
+            		if (xObj1 instanceof ResultSequence) {
+            		   xdmSequenceSize = ((ResultSequence)xObj1).size(); 
+            		}
+            		else if (xObj1 instanceof XMLNodeCursorImpl) {
+            		   xdmSequenceSize = ((XMLNodeCursorImpl)xObj1).getLength(); 
+            		}
+            		else {
+            		   xdmSequenceSize = 1;	
+            		}
+            	}
             }
             else {
                 DTMCursorIterator nl = expr.asIterator(xctxt, xctxt.getCurrentNode());

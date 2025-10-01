@@ -17,7 +17,9 @@
  */
 package org.apache.xpath.operations;
 
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -30,9 +32,9 @@ import org.apache.xpath.objects.XObject;
 public class VcEquals extends Operation
 {
 
-   private static final long serialVersionUID = 4786065470189699263L;
+  private static final long serialVersionUID = 4786065470189699263L;
 
-   /**
+  /**
    * Apply the operation to two operands, and return the result.
    *
    *
@@ -45,8 +47,45 @@ public class VcEquals extends Operation
    */
   public XObject operate(XObject left, XObject right) throws 
                                                   javax.xml.transform.TransformerException
-  {    
-      return left.vcEquals(right, getExpressionOwner(), null, true) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+  {  
+	  XObject result = null;
+	  
+	  boolean isLEmpty = false;
+	  if (left instanceof ResultSequence) {
+		  if (((ResultSequence)left).size() == 0) {
+			  isLEmpty = true;
+		  }
+	  }
+	  else if (left instanceof XMLNodeCursorImpl) {
+		  XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)left;
+		  if (nodeRef1.getLength() == 0) {
+			  isLEmpty = true;
+		  }
+	  }
+
+	  boolean isREmpty = false;
+	  if (right instanceof ResultSequence) {
+		  if (((ResultSequence)right).size() == 0) {
+			  isREmpty = true;
+		  }
+	  }
+	  else if (right instanceof XMLNodeCursorImpl) {
+		  XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)right;
+		  if (nodeRef1.getLength() == 0) {
+			  isREmpty = true;
+		  }
+	  }
+	  
+	  if (isLEmpty || isREmpty) {
+		 // If one or both the operands of XPath operator eq 
+		 // are empty, result is empty sequence.
+		 result = new ResultSequence(); 
+	  }
+	  else {
+		 result = left.vcEquals(right, getExpressionOwner(), null, true) ? XBoolean.S_TRUE : XBoolean.S_FALSE;  
+	  }
+	  
+      return result;
   }
 
 }
