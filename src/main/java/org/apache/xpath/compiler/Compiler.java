@@ -20,6 +20,7 @@
  */
 package org.apache.xpath.compiler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.ErrorListener;
@@ -1598,24 +1599,42 @@ private static final boolean DEBUG = false;
   {	  
       Expression xpathSequenceCons = null;
 	  
-	  if (XPathParser.m_xpathSequenceConstructor != null) {
-		 xpathSequenceCons = XPathParser.m_xpathSequenceConstructor;
-		 XPathParser.m_xpathSequenceConstructor = null;
-	  }
+      if (XPathParser.m_xpathSequenceConstructor != null) {
+    	  xpathSequenceCons = XPathParser.m_xpathSequenceConstructor;
+    	  XPathParser.m_xpathSequenceConstructor = null;
+      }
 	  else {
 		 // We use an implementation here, when XPath built-in function call 
 		 // arguments are literal sequence expressions.
 		 XPathSequenceConsFuncArgs xpathSeqConsFuncArgs = XPathParser.m_xpathSequenceConsFuncArgs;
 		 
 		 List<XPathSequenceConstructor> seqConsList = xpathSeqConsFuncArgs.getSeqFuncArgList();		 
-		 List<Boolean> funcArgUsedList = xpathSeqConsFuncArgs.getIsFuncArgUsedList();		 
-		 for (int idx = 0; idx < funcArgUsedList.size(); idx++) {
-			Boolean boolVal = funcArgUsedList.get(idx);
-			if (!boolVal.booleanValue()) {
-			   xpathSequenceCons = seqConsList.get(idx);
-			   funcArgUsedList.set(idx, Boolean.valueOf(true));
-			   break;
-			}
+		 List<Boolean> funcArgUsedList = xpathSeqConsFuncArgs.getIsFuncArgUsedList();
+		 int count = funcArgUsedList.size();
+		 if (count > 0) {
+			 for (int idx = 0; idx < count; idx++) {
+				 Boolean boolVal = funcArgUsedList.get(idx);
+				 if (!boolVal.booleanValue()) {
+					 xpathSequenceCons = seqConsList.get(idx);
+					 funcArgUsedList.set(idx, Boolean.valueOf(true));
+					 break;
+				 }
+			 }
+		 }
+		 else {
+			 /**
+			  * This code fragment compiles XPath expression like '() opCode ()',
+			  * where an XPath parser needs to store two compiled sequence 
+			  * literals within the produced XPath expression tree for this expression.
+			  * 
+			  * Examples for these XPath expression are '() and ()', '() or ()'.
+			  */
+			 List<String> seqOrArrayXPathItems = new ArrayList<String>();			 
+			 seqOrArrayXPathItems.add(XPathParser.XPATH_EXPR_STR_EMPTY_SEQUENCE);			 
+			 XPathSequenceConstructor xpathSequenceCons2 = new XPathSequenceConstructor();              
+			 xpathSequenceCons2.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
+			 
+			 xpathSequenceCons = xpathSequenceCons2; 
 		 }
 	  }
 	  

@@ -21,6 +21,7 @@
 package org.apache.xpath.operations;
 
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
@@ -45,16 +46,28 @@ public class Or extends Operation
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    XObject expr1 = m_left.execute(xctxt);
+	  XObject expr1 = m_left.execute(xctxt);
 
-    if (!expr1.bool())
-    {
-      XObject expr2 = m_right.execute(xctxt);
+	  boolean lhs = true;
 
-      return expr2.bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-    }
-    else
-      return XBoolean.S_TRUE;
+	  if (expr1 instanceof ResultSequence) {
+		  ResultSequence rSeq = (ResultSequence)expr1;
+		  if (rSeq.size() == 0) {
+			  lhs = false; 
+		  }
+	  }
+	  else {
+		  lhs = expr1.bool(); 
+	  }
+
+	  if (!lhs)
+	  {
+		  XObject expr2 = m_right.execute(xctxt);
+
+		  return expr2.bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+	  }
+	  else
+		  return XBoolean.S_TRUE;
   }
   
   /**

@@ -3187,17 +3187,54 @@ public class XPathParser
   {
 
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
-
-    AndExpr();
-
+    
+    if (tokenIs('(') && lookahead(')', 1)) {
+    	consumeExpected('(');    	
+    	xpathParseLiteralEmptySequence();
+    }
+    
     if ((null != m_token) && tokenIs("or"))
     {
-      nextToken();
-      insertOp(opPos, 2, OpCodes.OP_OR);
-      OrExpr();
+    	nextToken();
+    	insertOp(opPos, 2, OpCodes.OP_OR);
+    	if (tokenIs('(') && lookahead(')', 1)) {
+    		consumeExpected('(');    	
+    		xpathParseLiteralEmptySequence();
+    	}
+    	else {
+    		OrExpr();
 
-      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    		m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+    				m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    	}
+    }
+    else if ((null != m_token) && tokenIs("and"))
+    {
+      nextToken();
+      insertOp(opPos, 2, OpCodes.OP_AND);
+      if (tokenIs('(') && lookahead(')', 1)) {    	 
+    	  consumeExpected('(');    	
+  		  xpathParseLiteralEmptySequence();
+      }
+      else {
+    	  AndExpr();
+
+    	  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+    			  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+      }
+    }
+    else {
+    	AndExpr();
+
+    	if ((null != m_token) && tokenIs("or"))
+    	{
+    		nextToken();
+    		insertOp(opPos, 2, OpCodes.OP_OR);
+    		OrExpr();
+
+    		m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+    				m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    	}
     }
   }
 
@@ -3213,19 +3250,25 @@ public class XPathParser
   protected void AndExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
-    EqualityExpr(-1);
+	  if (tokenIs('(') && lookahead(')', 1)) {
+		  consumeExpected('(');
+		  xpathParseLiteralEmptySequence();
+	  }
+	  else {
+		  EqualityExpr(-1);
+	  }
 
-    if ((null != m_token) && tokenIs("and"))
-    {
-      nextToken();
-      insertOp(opPos, 2, OpCodes.OP_AND);
-      AndExpr();
+	  if ((null != m_token) && tokenIs("and"))
+	  {
+		  nextToken();
+		  insertOp(opPos, 2, OpCodes.OP_AND);      
+		  AndExpr();
 
-      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-    }
+		  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+				  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+	  }
   }
 
   /**

@@ -78,7 +78,7 @@ public class Equals extends Operation
 	  List<java.lang.String> strList = new ArrayList<java.lang.String>();
 	  
 	  if ((left instanceof XMLNodeCursorImpl) && ((right instanceof XString) || (right instanceof XSString))) {
-		  lObj = left;
+		  lObj = left.getFresh();
 		  rObj = right;
 		  
 		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
@@ -90,12 +90,9 @@ public class Equals extends Operation
 			  java.lang.String nodeStrValue = nodeRef1.str();
 			  strList.add(nodeStrValue);
 		  }
-		  
-		  lObj = lObj.getFresh();
-		  left = left.getFresh();
 	  }
 	  else if ((right instanceof XMLNodeCursorImpl) && ((left instanceof XString) || (left instanceof XSString))) {
-		  lObj = right;
+		  lObj = right.getFresh();
 		  rObj = left;
 		  
 		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
@@ -107,36 +104,27 @@ public class Equals extends Operation
 			  java.lang.String nodeStrValue = nodeRef1.str();
 			  strList.add(nodeStrValue);
 		  }
-		  
-		  lObj = lObj.getFresh();
-		  right = right.getFresh();
 	  }
 	  
-	  if (strList.size() > 0) {			  
-		  if (rObj instanceof XString) {
-			  java.lang.String strR = rObj.str();			
-			  if (strList.contains(strR)) {
-				  result = XBoolean.S_TRUE; 
+	  if ((lObj instanceof XMLNodeCursorImpl) && ((rObj instanceof XString) || (rObj instanceof XSString))) {
+		  if (strList.size() > 0) {			  
+			  java.lang.String strR = ((rObj instanceof XString) ? rObj.str() : ((XSString)rObj).stringValue());
+			  int strListSize = strList.size();
+			  for (int idx = 0; idx < strListSize; idx++) {
+				  java.lang.String str1 = strList.get(idx);
+				  if (str1.equals(strR)) {
+					  return XBoolean.S_TRUE;
+				  }
 			  }
-			  else {
-				  result = XBoolean.S_FALSE;
-			  }
-
-			  return result;
+			  
+			  return XBoolean.S_FALSE;
 		  }
-		  else if (rObj instanceof XSString) {
-			  java.lang.String strR = ((XSString)rObj).stringValue();
-			  if (strList.contains(strR)) {
-				  result = XBoolean.S_TRUE; 
-			  }
-			  else {
-				  result = XBoolean.S_FALSE;
-			  }
-
-			  return result;
-		  }
-      }
-	  else if ((lObj != null) && (strList.size() == 0)) {
+		  
+		  // An lObj object instance represents an empty sequence
+		  return XBoolean.S_FALSE;	
+	  }
+	  
+	  if ((lObj != null) && (strList.size() == 0)) {
 		  result = XBoolean.S_FALSE;
 		  
 		  return result;
@@ -194,9 +182,47 @@ public class Equals extends Operation
 		 }
 	  }
 	  else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {
-		 result = (left.equals(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE);  
+		  lObj = left.getFresh();
+		  rObj = right.getFresh();
+		  
+		  List<java.lang.String> strList1 = new ArrayList<java.lang.String>();
+		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)lObj;		  
+		  DTMManager dtmManager = nodeRef.getDTMManager();
+		  DTMCursorIterator iter = nodeRef.iterRaw();
+		  int nextNode = DTM.NULL;		  
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl nodeRef1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String nodeStrValue = nodeRef1.str();
+			  strList1.add(nodeStrValue);
+		  }
+		  
+		  List<java.lang.String> strList2 = new ArrayList<java.lang.String>();
+		  nodeRef = (XMLNodeCursorImpl)rObj;		  
+		  dtmManager = nodeRef.getDTMManager();
+		  iter = nodeRef.iterRaw();
+		  nextNode = DTM.NULL;		  
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl nodeRef2 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String nodeStrValue = nodeRef2.str();
+			  strList2.add(nodeStrValue);
+		  }
+		  
+		  int size1 = strList1.size();
+		  int size2 = strList2.size();		  
+		  for (int idx = 0; idx < size1; idx++) {
+			  java.lang.String str1 = strList1.get(idx);
+			  for (int idx2 = 0; idx2 < size2; idx2++) {
+				 java.lang.String str2 = strList2.get(idx2);
+				 if (str1.equals(str2)) {
+					return XBoolean.S_TRUE; 
+				 }
+			  }  
+		  }
+		  
+		  return XBoolean.S_FALSE; 
 	  }
 	  else if (left instanceof XMLNodeCursorImpl) {
+		 left = left.getFresh();
 		 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
 		 DTMCursorIterator iter1 = xmlNodeCursorImpl.iterRaw();
 		 int nextNode;
@@ -253,6 +279,67 @@ public class Equals extends Operation
 		 }
 		 
 		 result = XBoolean.S_FALSE;
+	  }
+	  else if ((left instanceof XString) && ((right instanceof XSNumericType) || (right instanceof XNumber))) {
+		  XString lStr = (XString)left;
+		  if (lStr.isXrTreeFragSelectWrapperResult()) {
+			  java.lang.String strVal1 = lStr.str();
+			  double dbl1 = 0;
+			  try {
+				  dbl1 = (Double.valueOf(strVal1)).doubleValue();
+			  }
+			  catch (NumberFormatException ex) {
+				  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath numeric comparison with = operator, has LHS operand value as non-numeric.");
+			  }
+			  
+			  java.lang.String strVal2 = XslTransformEvaluationHelper.getStrVal(right);
+			  double dbl2 = (Double.valueOf(strVal2)).doubleValue();
+			  
+			  result = ((dbl1 == dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);  
+		  }
+		  else {
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be "
+					  																							+ "compared to a string value.");  
+		  }
+	  }
+	  else if (((left instanceof XSNumericType) || (left instanceof XNumber)) && (right instanceof XString)) {
+		  XString rStr = (XString)right;
+		  if (rStr.isXrTreeFragSelectWrapperResult()) {			  			  			  
+			  java.lang.String strVal1 = rStr.str();
+			  double dbl1 = 0;
+			  try {
+				  dbl1 = (Double.valueOf(strVal1)).doubleValue();
+			  }
+			  catch (NumberFormatException ex) {
+				  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath numeric comparison with = operator, has RHS operand value as non-numeric.");
+			  }
+			  
+			  java.lang.String strVal2 = XslTransformEvaluationHelper.getStrVal(left);
+			  double dbl2 = (Double.valueOf(strVal2)).doubleValue();
+			  
+			  result = ((dbl1 == dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  }
+		  else {
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be "
+					  																							+ "compared to a string value.");  
+		  }
+	  }
+      else if ((left instanceof XSString) && ((right instanceof XSNumericType) || (right instanceof XNumber))) {
+		 throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be "
+		 		                                                                                                + "compared to a string value."); 
+	  }
+	  else if (((left instanceof XSNumericType) || (left instanceof XNumber)) && ((right instanceof XString) || (right instanceof XSString))) {
+		  throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be "
+		  		                                                                                                 + "compared to a string value."); 
+	  }
+	  else if (((left instanceof XBooleanStatic) || (left instanceof XBoolean) || (left instanceof XSBoolean)) && ((right instanceof XSNumericType) 
+			                                                                                                                       || (right instanceof XNumber))) {
+		  throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be "
+				  																								 + "compared to a boolean value."); 
+	  }
+	  else if (((left instanceof XSNumericType) || (left instanceof XNumber)) && ((right instanceof XBooleanStatic) || (right instanceof XBoolean) || 
+			                                                                                                                           (right instanceof XSBoolean))) {
+		  throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be compared to a boolean value."); 
 	  }
 	  else {
 		 result = (left.equals(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE);

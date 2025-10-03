@@ -1642,7 +1642,7 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  catch (TransformerException ex) {
 			  return false;
 		  }    
-	  }	        
+	  }	  
 	  else if (obj2.getType() == XObject.CLASS_NODESET) {
 		  result = obj2.equals(this);
 	  }	
@@ -1825,6 +1825,7 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }		  
 		  else if (strVal1.equals(strVal2)) {			  
 			  result = true;
+			  result = (isEqTest) ? result : !result;
 		  }
 		  
 		  return result;
@@ -1835,7 +1836,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  String rStr = ((XSNumericType)obj2).stringValue();
 		  BigDecimal rBigDecimal = new BigDecimal(rStr);
 
-		  result = (lBigDecimal.compareTo(rBigDecimal) == 0); 
+		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
 		  String lStr = ((XSNumericType)this).stringValue();
@@ -1843,44 +1845,56 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)obj2).num());
 
 		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XNumber) && (obj2 instanceof XSNumericType)) {
 		  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)this).num());		  
 		  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)obj2).stringValue());
 
 		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XNumber) && (obj2 instanceof XNumber)) {
 		  double lDouble = ((XNumber)this).num();
 		  double rDouble = ((XNumber)obj2).num();
 
 		  result = (lDouble == rDouble);
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XSNumericType || this instanceof XNumber) && 
 			                                         !(obj2 instanceof XSNumericType || obj2 instanceof XNumber)) {
 		  result = false;
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (!(this instanceof XSNumericType || this instanceof XNumber) && 
                                                       (obj2 instanceof XSNumericType || obj2 instanceof XNumber)) {
           result = false;
+          result = (isEqTest) ? result : !result;
       }
 	  else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
-		  result = ((XSBoolean)this).equals((XSBoolean)obj2);    
+		  result = ((XSBoolean)this).equals((XSBoolean)obj2);
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XBoolean) && (obj2 instanceof XBoolean)) {
 		  boolean lBool = ((XBoolean)this).bool();
 		  boolean rBool = ((XBoolean)obj2).bool();
 		  result = (lBool == rBool);
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XSBoolean) && (obj2 instanceof XBoolean)) {
 		  boolean lBool = ((XSBoolean)this).bool();
 		  boolean rBool = ((XBoolean)obj2).bool();
-		  result = (lBool == rBool);    
+		  result = (lBool == rBool);
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XBoolean) && (obj2 instanceof XSBoolean)) {
 		  boolean lBool = ((XBoolean)this).bool();
 		  boolean rBool = ((XSBoolean)obj2).bool();
-		  result = (lBool == rBool);    
+		  result = (lBool == rBool);
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (this instanceof XSAnyURI) {
 		  boolean isEqual = false;
@@ -1893,78 +1907,92 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }   
 
 		  result = isEqual;
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
 		  String lStr = ((XSString)this).stringValue();
 		  String rStr = ((XSString)obj2).stringValue();
 		  
 		  if (collationUri == null) {
-			  return lStr.equals(rStr);  
+			  result = lStr.equals(rStr);  
 		  }
 		  else {
 			  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
 			  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
 			  
-			  return (comparisonResult == 0) ? true : false;  
+			  result = (comparisonResult == 0);  
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XString) && (obj2 instanceof XString)) {
 		  String lStr = ((XString)this).str();
 		  String rStr = ((XString)obj2).str();
 		  
 		  if (collationUri == null) {
-			  return lStr.equals(rStr);  
+			  result = lStr.equals(rStr);  
 		  }
 		  else {
 			  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
 			  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
 			  
-			  return (comparisonResult == 0) ? true : false;  
+			  result = (comparisonResult == 0);   
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XSString) && (obj2 instanceof XString)) {
 		  String lStr = ((XSString)this).stringValue();
 		  String rStr = ((XString)obj2).str();
 		  
 		  if (collationUri == null) {
-			  return lStr.equals(rStr);  
+			  result = lStr.equals(rStr);  
 		  }
 		  else {
 			  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
 			  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
 			  
-			  return (comparisonResult == 0) ? true : false;  
+			  result = (comparisonResult == 0);  
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XString) && (obj2 instanceof XSString)) {
 		  String lStr = ((XString)this).str();
 		  String rStr = ((XSString)obj2).stringValue();
 		  
 		  if (collationUri == null) {
-			  return lStr.equals(rStr);  
+			  result = lStr.equals(rStr);  
 		  }
 		  else {
 			  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
 			  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
 			  
-			  return (comparisonResult == 0) ? true : false;  
+			  result = (comparisonResult == 0);  
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (this instanceof XSDate) {
 		  if (obj2 instanceof XSDate) {
-			 result = DateTimeUtil.isEqual((XSDate)this, (XSDate)obj2);
+			  result = DateTimeUtil.isEqual((XSDate)this, (XSDate)obj2);
 		  }
 		  else {
 			  result = false; 
-		  }    
+		  }
+
+		  result = (isEqTest) ? result : !result;
 	  }    
 	  else if (this instanceof XSDateTime) {
 		  if (obj2 instanceof XSDateTime) {
-			 result = DateTimeUtil.isEqual((XSDateTime)this, (XSDateTime)obj2);
+			  result = DateTimeUtil.isEqual((XSDateTime)this, (XSDateTime)obj2);
 		  }
 		  else {
 			  result = false; 
-		  }   
+		  }
+
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (this instanceof XSTime) {
 		  if (obj2 instanceof XSTime) {
@@ -1972,15 +2000,19 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  else {
 			  result = false; 
-		  }   
+		  }
+
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (this instanceof XSDuration) {
 		  if (obj2 instanceof XSDuration) {
-		     result = ((XSDuration)this).equals((XSDuration)obj2);
+			  result = ((XSDuration)this).equals((XSDuration)obj2);
 		  }
 		  else {
-			 result = false; 
+			  result = false; 
 		  }
+
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (this instanceof XSGYearMonth) {
 		  if (obj2 instanceof XSGYearMonth) {
@@ -1989,6 +2021,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  else {
 			 result = false; 
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (this instanceof XSGYear) {
 		  if (obj2 instanceof XSGYear) {
@@ -1997,6 +2031,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  else {
 			 result = false; 
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (this instanceof XSGMonthDay) {
 		  if (obj2 instanceof XSGMonthDay) {
@@ -2005,6 +2041,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  else {
 			 result = false; 
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (this instanceof XSGDay) {
 		  if (obj2 instanceof XSGDay) {
@@ -2013,6 +2051,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  else {
 			 result = false; 
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (this instanceof XSGMonth) {
 		  if (obj2 instanceof XSGMonth) {
@@ -2021,6 +2061,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  else {
 			 result = false; 
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
    	      emitXsAnyAtomicTypeError(obj2, expressionOwner);   
@@ -2042,6 +2084,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  else {
 			  result = this.equals(obj2);
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }    
 	  else if (obj2.getType() == XObject.CLASS_NODESET) { 
 		  if ((((XMLNodeCursorImpl)obj2).getLength() > 1)) {
@@ -2060,12 +2104,18 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  else {
 			  result = obj2.equals(this);
 		  }
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else if (m_obj != null) {
 		  result = m_obj.equals(obj2.m_obj);
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 	  else {
 		  result = (obj2.m_obj == null);
+		  
+		  result = (isEqTest) ? result : !result;
 	  }
 
 	  return result;

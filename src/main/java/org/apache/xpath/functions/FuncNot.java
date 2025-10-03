@@ -58,6 +58,7 @@ public class FuncNot extends FunctionOneArg
 
 	  try {
 		  FuncBoolean fnBoolean = new FuncBoolean(m_arg0);
+		  
 		  result = fnBoolean.execute(xctxt);
 	  }
 	  catch (javax.xml.transform.TransformerException ex) {

@@ -770,7 +770,7 @@ public class ElemVariable extends ElemTemplateElement
         }
         else if (selectExpression instanceof XRTreeFragSelectWrapper) {
         	var = m_selectPattern.execute(xctxt, sourceNode, this);
-        	if ((var instanceof XString) && ("".equals(((XString)var).str()))) {
+        	if (var instanceof XString) {
         	   ((XString)var).setXrTreeFragSelectWrapperResult(true);
         	}
         }

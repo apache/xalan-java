@@ -79,8 +79,8 @@ public class FuncBoolean extends FunctionOneArg
 
 	  XObject xObj = null;
 	  
-	  try {
-	     xObj = m_arg0.execute(xctxt);
+	  try {	     	     
+	     xObj = m_arg0.execute(xctxt);	     
 	     if (xObj == null) {
 	    	result = new XSBoolean(false); 
 	     }
@@ -115,8 +115,7 @@ public class FuncBoolean extends FunctionOneArg
 			  result = new XSBoolean(true); 
 		  }
 		  else {
-			  throw new javax.xml.transform.TransformerException("FORG0006 : Invalid argument provided "
-					                                                            + "to function fn:boolean.", srcLocator);  
+			  throw new javax.xml.transform.TransformerException("FORG0006 : An invalid argument provided to function fn:boolean.", srcLocator);  
 		  }
 	  }
 	  else if (xObj instanceof XMLNodeCursorImpl) {
@@ -212,8 +211,7 @@ public class FuncBoolean extends FunctionOneArg
 		  }
 	  }
 	  else {
-		  throw new javax.xml.transform.TransformerException("FORG0006 : Invalid argument provided "
-				                                                            + "to function fn:boolean.", srcLocator); 
+		  throw new javax.xml.transform.TransformerException("FORG0006 : An invalid argument provided to function fn:boolean.", srcLocator); 
 	  } 
 
 	  return result;
