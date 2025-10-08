@@ -530,9 +530,19 @@ public class ElemValueOf extends ElemTemplateElement {
                   else if (expr instanceof Variable) {          	  
                       XObject evalResult = ((Variable)expr).execute(xctxt);
                       
-                      String strValue = null;
-                      
-                      if (evalResult instanceof XSAnyType) {
+                      String strValue = null;                      
+                      if (evalResult instanceof XSQName) {
+                    	  XSQName xsQName = (XSQName)evalResult;
+                    	  String prfxStr = xsQName.getPrefix();
+                    	  String localStr = xsQName.getLocalPart();
+                    	  if ((prfxStr != null) && !"".equals(prfxStr)) {
+                    		 strValue = prfxStr + ":" + localStr;   
+                    	  }
+                    	  else {
+                    		 strValue = localStr;  
+                    	  }
+                      }
+                      else if (evalResult instanceof XSAnyType) {
                           strValue = ((XSAnyType)evalResult).stringValue();    
                       }
                       else if (evalResult instanceof XPathArray) {
@@ -595,6 +605,16 @@ public class ElemValueOf extends ElemTemplateElement {
                   }
                   else if (expr instanceof Operation) {
                 	 XObject evalResult = expr.execute(xctxt);
+                	 if (evalResult instanceof XString) {
+                		XString xString = (XString)evalResult;
+                		String str1 = xString.str();
+                		if (str1.contains("{" + Constants.XSL_ERROR_NAMESACE + "}")) {
+                			String prefix = XslTransformEvaluationHelper.getPrefixFromNsUri(Constants.XSL_ERROR_NAMESACE, 
+                					                                                                            (List<XMLNSDecl>)(this.getPrefixTable()));
+                			str1 = str1.replace("{" + Constants.XSL_ERROR_NAMESACE + "}", prefix + ":");
+                			evalResult = new XString(str1);
+                		}
+                	 }
                 	 
                 	 if ((expr instanceof Div) && (evalResult == null)) {
                 		 evalResult = new XSString("NaN"); 

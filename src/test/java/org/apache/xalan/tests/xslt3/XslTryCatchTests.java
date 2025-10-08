@@ -17,6 +17,7 @@
 package org.apache.xalan.tests.xslt3;
 
 import org.apache.xalan.tests.util.XSLTestConstants;
+import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -121,18 +122,8 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
     
     @Test
     public void xslTryCatchTest8() {
-    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl"; 
-         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
-         
-         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test8.out";
-         
-         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslTryCatchTest9() {
     	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
-         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8_1.xsl";
          
          String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";
          
@@ -140,9 +131,9 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslTryCatchTest10() {
+    public void xslTryCatchTest9() {
     	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
-         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9_1.xsl";
          
          String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";
          
@@ -152,9 +143,9 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslTryCatchTest11() {
+    public void xslTryCatchTest10() {
     	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
-         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10_1.xsl";
          
          String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
          
@@ -164,29 +155,29 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslTryCatchTest12() {
-    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl"; 
-         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
+    public void xslTryCatchTest11() {
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11_1.xsl"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11_1.xsl";
          
          String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
+         
+         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslTryCatchTest12() {
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12_1.xsl"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12_1.xsl";
+         
+         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
          
          runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
     public void xslTryCatchTest13() {
-    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl"; 
-         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
-         
-         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
-         
-         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslTryCatchTest14() {
-    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl"; 
-         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13_1.xsl"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13_1.xsl";
          
          String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
          
@@ -194,13 +185,69 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslTryCatchTest15() {
-    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl"; 
-         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
+    public void xslTryCatchTest14() {
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14_1.xsl"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14_1.xsl";
          
          String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
          
          runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslTryCatchTest15() {
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15_1.xsl"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15_1.xsl";
+         
+         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test16.out";
+         
+         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslTryCatchTest16() {
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16_1.xsl"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16_1.xsl";
+         
+         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test17.out";
+         
+         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslTryCatchTest17() {
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17_1.xsl"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17_1.xsl";
+         
+         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test18.out";
+         
+         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslTryCatchTest18() {
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18_1.xsl"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18_1.xsl";
+         
+         String goldFilePath = null;
+         
+         // This XSL stylesheet test case, uses an XSL error handler, to
+         // verify an XPath run-time dynamic error.
+         
+         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, new XslTestsErrorHandler());
+    }
+    
+    @Test
+    public void xslTryCatchTest19() {
+    	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19_1.xsl"; 
+         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19_1.xsl";
+         
+         String goldFilePath = null;
+         
+         // This XSL stylesheet test case, uses an XSL error handler, to
+         // verify an XPath run-time dynamic error.
+         
+         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, new XslTestsErrorHandler());
     }
 
 }

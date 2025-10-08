@@ -766,6 +766,9 @@ public class Keywords
   /** normalize-unicode function string. */
   public static final String FUNC_NORMALIZE_UNICODE = "normalize-unicode";
   
+  /** error function string. */
+  public static final String FUNC_ERROR = "error";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

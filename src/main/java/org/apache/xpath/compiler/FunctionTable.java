@@ -559,6 +559,9 @@ public class FunctionTable
   
   /** The 'round-half-to-even()' id. */
   public static final int FUNC_ROUND_HALF_TO_EVEN = 178;
+  
+  /** The 'error()' id. */
+  public static final int FUNC_ERROR = 179;
 
   // Proprietary
 
@@ -652,7 +655,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 179;
+  private static final int NUM_BUILT_IN_FUNCS = 180;
 
   /**
    * Number of built-in functions that may be added.
@@ -878,6 +881,8 @@ public class FunctionTable
 	   
 	   m_functions[FUNC_FUNCTION_ARITY] = org.apache.xpath.functions.FuncFunctionArity.class;
 	   m_functions[FUNC_FUNCTION_NAME] = org.apache.xpath.functions.FuncFunctionName.class;
+	   
+	   m_functions[FUNC_ERROR] = org.apache.xpath.functions.FuncError.class;
   }
 
   static {
@@ -1088,6 +1093,8 @@ public class FunctionTable
 	  
 	  m_functionId.put(Keywords.FUNC_FUNCTION_ARITY, new Integer(FunctionTable.FUNC_FUNCTION_ARITY));
 	  m_functionId.put(Keywords.FUNC_FUNCTION_NAME, new Integer(FunctionTable.FUNC_FUNCTION_NAME));
+	  
+	  m_functionId.put(Keywords.FUNC_ERROR, new Integer(FunctionTable.FUNC_ERROR));
   }
   
   /**

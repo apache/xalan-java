@@ -42,6 +42,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.PathComponent;
 import org.apache.xpath.axes.WalkerFactory;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -296,17 +297,6 @@ public class Variable extends Expression implements PathComponent
            if (m_fixUpWasCalled) {        	  
               if (m_isGlobal) {
                  result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
-                 /*
-                  // REVISIT
-                 ElemVariable elemVar = stylesheetRoot.getVariableOrParamComposed(m_qname);
-                 if (elemVar instanceof ElemParam) {
-                	ElemParam elemParam = (ElemParam)elemVar;
-                	boolean isRequired = elemParam.getRequired();
-                	if (isRequired && ((result == null) || ("".equals(((XString)result).str())))) {
-                		throw new javax.xml.transform.TransformerException("XTDE0050 : The required XSL stylesheet global parameter '" + 
-                	                                                                             m_qname.toString() + "', hasn't been provided value.", srcLocator);
-                	}
-                 }*/
               }
               else {
                  result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOK);
@@ -316,16 +306,45 @@ public class Variable extends Expression implements PathComponent
               result = xctxt.getVarStack().getVariableOrParam(xctxt, m_qname);
            }
            
-           ElemVariable elemVariable = this.getElemVariable();
-           ExpressionNode exprNode = getExpressionOwner();
-           if ((elemVariable == null) && (exprNode instanceof ElemIterateOnCompletion)) {
+           ElemVariable elemVariable = this.getElemVariable();           
+           ElemTemplateElement elemTemplateElement = (ElemTemplateElement)(getExpressionOwner());                      
+           if ((elemVariable == null) && (elemTemplateElement instanceof ElemIterateOnCompletion)) {
         	   throw new javax.xml.transform.TransformerException("XPST0008 : Variable $" + m_qname.toString() + " "
              			                                                                  + "accessed before it is bound!", srcLocator); 
+           }
+           else {
+               /**
+                * If this XPath variable reference, is within xsl:catch instruction,
+                * check whether there's an appropriate xsl:variable declaration 
+                * available.           	   
+                */
+        	   ElemCatch elemCatch = null;
+        	   while (elemTemplateElement != null) {
+        		   if (elemTemplateElement instanceof ElemCatch) {
+        			   elemCatch = (ElemCatch)elemTemplateElement;
+        			   
+        			   break;
+        		   }
+        		   else {
+        			   elemTemplateElement = elemTemplateElement.getParentElem(); 
+        		   }
+        	   }
+        	   
+        	   if (elemCatch != null) {
+        		  if ((elemVariable != null) && !isXslVariableDeclAvailableXslCatch((ElemTemplateElement)elemCatch)) {        			  
+        			  throw new javax.xml.transform.TransformerException("XPST0008 : Variable $" + m_qname.toString() + "accessed before "
+        			  		                                                                                                   + "it is bound!", srcLocator); 
+        		  }
+        	   }
            }
         }
         catch (javax.xml.transform.TransformerException ex) {
            java.lang.String exceptionMesg = ex.getMessage();
-           if ((m_qname == null) || ((exceptionMesg != null) && (exceptionMesg.startsWith("XTDE0050") || exceptionMesg.startsWith("XPTY") 
+           QName errValueQname = new QName(Constants.XSL_ERROR_NAMESACE, Constants.XSL_ERROR_VALUE);
+           if (m_qname.equals(errValueQname)) {
+        	  result = new ResultSequence();  
+           }
+           else if ((m_qname == null) || ((exceptionMesg != null) && (exceptionMesg.startsWith("XTDE0050") || exceptionMesg.startsWith("XPTY") 
         		                                                                                      || exceptionMesg.startsWith("FOUT")
         		                                                                                      || exceptionMesg.startsWith("XPST0008")))) {
               throw ex;   
@@ -557,7 +576,7 @@ public class Variable extends Expression implements PathComponent
 	  while (elemTemplateElem != null) {
 		  if (elemTemplateElem instanceof ElemIterate) {
 			  result = true;
-
+			  
 			  break;
 		  }
 		  else {
@@ -568,5 +587,79 @@ public class Variable extends Expression implements PathComponent
 	  return result;
   }
   
+ /**
+  * Method definition to check whether, this XSL variable reference object
+  * has an appropriate xsl:variable declaration available.
+  * 
+  * @param elemTemplateElement           An xsl:catch instruction reference provided 
+  *                                      as an initial argument to this method. This
+  *                                      ElemTemplateElement object reference changes
+  *                                      with recursive calls to this method.
+  * @return								 Boolean value true or false
+  */
+ private boolean isXslVariableDeclAvailableXslCatch(ElemTemplateElement elemTemplateElement) {	  			
+	  
+	  boolean result = false;
+	  
+	  ElemTemplateElement xslCatchElem = elemTemplateElement;
+	  ElemTemplateElement xslExprOwnerElem = (ElemTemplateElement)(getExpressionOwner());
+	  
+	  if (!(xslExprOwnerElem instanceof ElemCatch)) {		  
+		  elemTemplateElement = xslExprOwnerElem.getPreviousSiblingElem();
+		  while (elemTemplateElement != null) {
+			  if (elemTemplateElement instanceof ElemVariable) {
+				  ElemVariable elemVariable = (ElemVariable)elemTemplateElement;
+				  QName varName1 = elemVariable.getName();
+				  if (varName1.equals(this.m_qname)) {
+					  return true; 
+				  }
+			  }
+
+			  elemTemplateElement = elemTemplateElement.getPreviousSiblingElem();
+		  }
+     }
+
+	  ElemTemplateElement elemTry = xslCatchElem.getParentElem();
+
+	  result = isXslVariableDeclAvailableXslTry(elemTry);      	    	  
+
+	  return result;
+ }
+ 
+ /**
+  * Method definition to check whether, this XSL variable reference object
+  * has an appropriate xsl:variable declaration available.
+  * 
+  * @param elemTemplateElement           An xsl:try instruction reference provided 
+  *                                      as an initial argument to this method. This
+  *                                      ElemTemplateElement object reference changes
+  *                                      with recursive calls to this method.
+  * @return								 Boolean value true or false
+  */
+ private boolean isXslVariableDeclAvailableXslTry(ElemTemplateElement elemTemplateElement) {
+	  
+	  boolean result = false;
+
+	  ElemTemplateElement xslTryElem = elemTemplateElement;
+	  elemTemplateElement = elemTemplateElement.getPreviousSiblingElem();
+	  while (elemTemplateElement != null) {
+		  if (elemTemplateElement instanceof ElemVariable) {
+			  ElemVariable elemVariable = (ElemVariable)elemTemplateElement;
+			  QName varName1 = elemVariable.getName();
+			  if (varName1.equals(this.m_qname)) {
+				  return true; 
+			  }
+		  }
+		  
+		  elemTemplateElement = elemTemplateElement.getPreviousSiblingElem();
+	  }
+	  
+	  ElemTemplateElement xslParentElem = xslTryElem.getParentElem();
+	  if (xslParentElem != null) {
+	     result = isXslVariableDeclAvailableXslTry(xslParentElem);
+	  }
+
+	  return result;
+ }
 
 }

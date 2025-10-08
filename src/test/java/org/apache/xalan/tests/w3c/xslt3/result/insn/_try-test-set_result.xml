@@ -1,32 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:43Z" fail="20" name="try" pass="17" skipped="5" statusUnknown="0" totalRun="37">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-08T11:07:17Z" fail="9" name="try" pass="27" skipped="6" statusUnknown="0" totalRun="36">
    <testResult status="pass" testName="try-001"/>
-   <testResult status="fail" testName="try-002"/>
-   <testResult status="fail" testName="try-003">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}error()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="try-004"/>
+   <testResult status="pass" testName="try-002"/>
+   <testResult status="pass" testName="try-003"/>
+   <testResult status="pass" testName="try-004"/>
    <testResult status="pass" testName="try-005"/>
    <testResult status="pass" testName="try-006"/>
    <testResult status="pass" testName="try-007"/>
    <testResult status="pass" testName="try-008"/>
    <testResult status="pass" testName="try-009"/>
-   <testResult status="fail" testName="try-010"/>
-   <testResult status="fail" testName="try-011">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="try-010"/>
+   <testResult status="pass" testName="try-011"/>
    <testResult status="pass" testName="try-012"/>
    <testResult status="skipped" testName="try-013" xsltVersion="xslt 2.0 only"/>
-   <testResult status="fail" testName="try-014"/>
+   <testResult status="pass" testName="try-014"/>
    <testResult status="skipped" testName="try-015" xsltVersion="xslt 2.0 only"/>
-   <testResult status="fail" testName="try-016"/>
+   <testResult status="pass" testName="try-016"/>
    <testResult status="skipped" testName="try-017" xsltVersion="xslt 2.0 only"/>
-   <testResult status="fail" testName="try-018"/>
+   <testResult status="pass" testName="try-018"/>
    <testResult status="fail" testName="try-019"/>
    <testResult status="pass" testName="try-020"/>
    <testResult status="fail" testName="try-021">
@@ -46,7 +36,7 @@
       <outResult>
          <errTrace>XPST0081 : An XML namespace prefix '' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
          <errTrace>XPST0003 : An XPath expression                                    /output/output/note = "secondary document written"                   /output/output/*:error/@code[contains(.,"FOAR0001")]                   contains(/output/output/*:error/message, "zero")                                 has syntax error. Unknown op code : 21.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="skipped" testName="try-025" xsltVersion="xslt 2.0 only"/>
@@ -64,24 +54,16 @@
          <errTrace>java.lang.RuntimeException: XPTY0004 : One or both of the operands of operator - are not numeric.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="try-032">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="try-032"/>
    <testResult status="pass" testName="try-033"/>
    <testResult status="fail" testName="try-034">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;&lt;in/&gt;Error {$err:code} was caught!&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="try-035"/>
-   <testResult status="pass" testName="try-036"/>
-   <testResult status="fail" testName="try-037"/>
-   <testResult status="fail" testName="try-038">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="try-039">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="try-036"/>
+   <testResult status="pass" testName="try-037"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="try-038"/>
+   <testResult status="pass" testName="try-039"/>
    <testResult status="pass" testName="try-040"/>
    <testResult status="pass" testName="try-041"/>
    <testResult status="pass" testName="try-042"/>

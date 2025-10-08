@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-10-03T11:12:41Z" desc="W3C XSLT 3.0 test suite results" fail="690" pass="1722" skipped="70" success="70.92%" totalRun="2428" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-10-08T11:08:54Z" desc="W3C XSLT 3.0 test suite results" fail="673" pass="1738" skipped="71" success="71.61%" totalRun="2427" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="31" pass="73" skipped="4" success="69.52%" totalRun="105"/>
     <avt fail="15" pass="20" skipped="0" success="57.14%" totalRun="35"/>
@@ -36,16 +36,16 @@
   <insn>
     <analyze-string fail="14" pass="39" skipped="5" success="73.58%" totalRun="53"/>
     <apply-templates fail="24" pass="22" skipped="4" success="47.83%" totalRun="46"/>
-    <attribute fail="21" pass="8" skipped="0" success="26.67%" totalRun="30"/>
+    <attribute fail="18" pass="11" skipped="0" success="36.67%" totalRun="30"/>
     <call-template fail="13" pass="27" skipped="2" success="67.5%" totalRun="40"/>
     <choose fail="2" pass="21" skipped="0" success="87.5%" totalRun="24"/>
     <copy fail="31" pass="28" skipped="0" success="46.67%" totalRun="60"/>
-    <element fail="18" pass="11" skipped="0" success="37.93%" totalRun="29"/>
+    <element fail="15" pass="14" skipped="0" success="48.28%" totalRun="29"/>
     <for-each-group fail="24" pass="49" skipped="4" success="66.22%" totalRun="74"/>
     <iterate fail="0" pass="44" skipped="0" success="100.0%" totalRun="44"/>
     <sequence fail="17" pass="8" skipped="1" success="30.77%" totalRun="26"/>
     <sort fail="30" pass="51" skipped="0" success="62.96%" totalRun="81"/>
-    <try fail="20" pass="17" skipped="5" success="45.95%" totalRun="37"/>
+    <try fail="9" pass="27" skipped="6" success="75.0%" totalRun="36"/>
     <xsl-document fail="13" pass="12" skipped="0" success="48.0%" totalRun="25"/>
   </insn>
   <misc>

@@ -18,7 +18,7 @@
          <xsl:variable name="x" select="5"/>
          <xsl:variable name="y" select="0"/>		 
 		 <xsl:try select="$x div $y">
-		   <xsl:catch errors="*" select="fn0:xslCatchProcessing(string($err:code), $err:description, $err:line-number, $err:column-number)"/>
+		   <xsl:catch errors="*" select="fn0:xslCatchProcessing($err:code, $err:description, $err:line-number, $err:column-number)"/>
 		 </xsl:try>
 	 </result>
   </xsl:template>
@@ -26,7 +26,7 @@
   <!-- An XSL stylesheet function definition, to do processing for xsl:catch 
        element. -->
   <xsl:function name="fn0:xslCatchProcessing" as="element(error)">    
-	<xsl:param name="errCode" as="xs:string"/>
+	<xsl:param name="errCode" as="xs:QName"/>
 	<xsl:param name="errDesc" as="xs:string"/>
 	<xsl:param name="lineNum" as="xs:integer"/>
 	<xsl:param name="columnNum" as="xs:integer"/>

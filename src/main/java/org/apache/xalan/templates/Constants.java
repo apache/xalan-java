@@ -492,9 +492,11 @@ public class Constants extends org.apache.xml.utils.Constants
   
   public static final String XSL_ERROR_NAMESACE = "http://www.w3.org/2005/xqt-errors";
   public static final String XSL_ERROR_CODE = "code";
+  public static final String XSL_ERROR_MODULE = "module";
   public static final String XSL_ERROR_DESCRIPTION = "description";
   public static final String XSL_ERROR_LINE_NUMBER = "line-number";
   public static final String XSL_ERROR_COLUMN_NUMBER = "column-number";
+  public static final String XSL_ERROR_VALUE = "value";
   
   
 }

@@ -1469,7 +1469,7 @@ public class ElemLiteralResult extends ElemUse
             
             if (type != null) {
           	  // A literal result element has an attribute "xsl:type".
-          	  // An element node constructed needs to be validated
+          	  // An XML element node constructed needs to be validated
           	  // by this type.    	      	  
           	  
           	  int rootNodeHandleOfRtf = transformer.transformToRTF(this);    	      	  

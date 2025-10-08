@@ -27,7 +27,7 @@ import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSQName;
 
 /**
- * Implementation of XPath 3.1 fn:namespace-uri-from-QName function.
+ * An implementation of, XPath 3.1 function fn:namespace-uri-from-QName.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 

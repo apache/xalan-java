@@ -30,6 +30,7 @@ import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSQName;
 
 /**
  * Simple string part of a complex AVT.
@@ -147,10 +148,17 @@ public class AVTPartXPath extends AVTPart
     XObject xobj = m_xpath.execute(xctxt, context, nsNode);
 
     if (xobj != null) {
-    	if (xobj instanceof XSAnyType) {           
-           String str1 = XslTransformEvaluationHelper.getStrVal(xobj);           
+    	if (xobj instanceof XSQName) {
+    	   XSQName xsQName = (XSQName)xobj;
+    	   String prfxStr = xsQName.getPrefix();
+    	   String localPart = xsQName.getLocalPart();
+           String str1 = prfxStr + ":" + localPart;           
            buf.append(str1);
         }
+    	else if (xobj instanceof XSAnyType) {
+    	   String str1 = XslTransformEvaluationHelper.getStrVal(xobj);
+    	   buf.append(str1);
+    	}
         else {
            xobj.appendToFsb(buf);
         }

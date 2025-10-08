@@ -34,7 +34,7 @@ import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
 
 /**
- * Implementation of the XSLT 3.0 xsl:catch instruction.
+ * An implementation of, XSLT 3.0 xsl:catch instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  
@@ -219,16 +219,15 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 			}
 	    }
 	    else {
-	    	// An XSL processing specified by xsl:catch element is
-	    	// been done by xsl:catch element's contained sequence
-	    	// constructor.
+	    	// An XSL processing specified by xsl:catch element is been 
+	    	// done by xsl:catch element's contained sequence constructor.
 	    	
-	    	for (ElemTemplateElement t = this.m_firstChild; t != null;
-	    															t = t.m_nextSibling) 
+	    	for (ElemTemplateElement t1 = this.m_firstChild; t1 != null;
+	    															t1 = t1.m_nextSibling) 
 	    	{
-	    		xctxt.setSAXLocator(t);
-	    		transformer.setCurrentElement(t);
-	    		t.execute(transformer);
+	    		xctxt.setSAXLocator(t1);
+	    		transformer.setCurrentElement(t1);
+	    		t1.execute(transformer);
 	    	}
 	    }
 	}
