@@ -58,10 +58,12 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.types.XMLAttribute;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
@@ -386,7 +388,7 @@ public class ElemCopyOf extends ElemTemplateElement
                 		}
                 	 }
                   }
-                  copyOfActionOnResultSequence(resultSequence, transformer, rhandler, xctxt, false);          
+                  copyOfActionOnResultSequence(resultSequence, transformer, rhandler, xctxt, false, this);          
                   break;
                 case XObject.CLASS_ARRAY : 
                   XPathArray xpathArray = (XPathArray)value;
@@ -402,7 +404,7 @@ public class ElemCopyOf extends ElemTemplateElement
                 		  }
                 	  }
                   }
-                  copyOfActionOnResultSequence(resultSequenceArr, transformer, rhandler, xctxt, false);
+                  copyOfActionOnResultSequence(resultSequenceArr, transformer, rhandler, xctxt, false, this);
                   break;
                 case XObject.CLASS_UNKNOWN :
                   if (value instanceof XMLAttribute) {
@@ -560,14 +562,54 @@ public class ElemCopyOf extends ElemTemplateElement
    */
   public static void copyOfActionOnResultSequence(ResultSequence resultSequence, TransformerImpl transformer, 
                                                   SerializationHandler serializationHandler, 
-                                                  XPathContext xctxt, boolean xslSeqProc) throws TransformerException, SAXException {
+                                                  XPathContext xctxt, boolean xslSeqProc, ElemTemplateElement elemTemplateElem) 
+                                                		                                                                   throws TransformerException, SAXException {
       char[] spaceCharArr = new char[1];      
       spaceCharArr[0] = SPACE_CHAR;
       
       String strVal = null;
       
-      for (int idx = 0; idx < resultSequence.size(); idx++) {             
+      int rSeqLength = resultSequence.size();      
+      for (int idx = 0; idx < rSeqLength; idx++) {             
          XObject xdmItem = resultSequence.item(idx);
+         if (xdmItem instanceof XMLNodeCursorImpl) {
+        	 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xdmItem;
+        	 int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+        	 DTM dtm = xctxt.getDTM(nodeHandle);
+        	 boolean flg1 = false;
+        	 if (dtm.getNodeType(nodeHandle) == DTM.ELEMENT_NODE) {
+        		 Node node = dtm.getNode(nodeHandle);
+        		 String nodeName = node.getNodeName();
+        		 try {
+        			 if (nodeName.startsWith("b_")) {
+        				 Integer int1 = Integer.valueOf(nodeName.substring(2));
+        				 Element elemNode = (Element)node;
+          				 xdmItem = new XString(elemNode.getTextContent());
+        			 }
+        			 else {
+        				 flg1 = true;
+        			 }
+        		 }
+        		 catch (Exception ex) {
+        			 flg1 = true;
+        		 }        		         		 
+        	 }
+        	 
+        	 if (flg1) {
+        		 xdmItem = resultSequence.item(idx);
+        		 xdmItem = xdmItem.getFresh();
+    		 }
+         }
+         else if (xdmItem instanceof XSQName) {
+        	 XSQName xsQName = (XSQName)xdmItem;
+        	 String localPart = xsQName.getLocalPart();
+        	 String nsUri = xsQName.getNamespaceUri();        	 
+        	 if (Constants.XSL_ERROR_NAMESACE.equals(nsUri)) {
+        	     List<XMLNSDecl> prefixTable = (List<XMLNSDecl>)elemTemplateElem.getPrefixTable();
+        	     String nsPrefix = XslTransformEvaluationHelper.getPrefixFromNsUri(nsUri, prefixTable);
+        	     xdmItem = new XString(nsPrefix + ":" + localPart);
+        	 }
+         }
          
          if ((xdmItem instanceof XBoolean) || (xdmItem instanceof XNumber) || (xdmItem instanceof XString)) {
              strVal = xdmItem.str();
@@ -625,7 +667,8 @@ public class ElemCopyOf extends ElemTemplateElement
              copyOfActionOnNodeSet((XMLNodeCursorImpl)xdmItem, transformer, serializationHandler, xctxt);
          }
          else if (xdmItem.getType() == XObject.CLASS_RESULT_SEQUENCE) {                 
-             copyOfActionOnResultSequence((ResultSequence)xdmItem, transformer, serializationHandler, xctxt, xslSeqProc);
+             copyOfActionOnResultSequence((ResultSequence)xdmItem, transformer, serializationHandler, xctxt, 
+            		                                                                                      xslSeqProc, elemTemplateElem);
          }
       } 
    }

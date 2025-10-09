@@ -229,7 +229,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    		ResultSequence rSeq = new ResultSequence();
 	    		rSeq.add(xpathEvalResult);
 	    		SerializationHandler handler = transformer.getSerializationHandler(); 
-	    		ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false);
+	    		ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false, this);
 	    	}
 	    	catch (TransformerException ex) {
 	    		// Process XSL transformation exception with any suitable 

@@ -568,7 +568,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 				break;
 			case XObject.CLASS_RESULT_SEQUENCE :         
 				ResultSequence resultSequence = (ResultSequence)xdmItem;          
-				ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, true);          
+				ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, true, this);          
 				break;
 			case XObject.CLASS_ARRAY :
 				XslTransformData.m_xpathArray = (XPathArray)xdmItem;				          

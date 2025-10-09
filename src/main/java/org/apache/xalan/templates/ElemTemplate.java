@@ -600,7 +600,7 @@ public class ElemTemplate extends ElemTemplateElement
 								  rSeq.add(xslTemplateEvalResult); 
 							  }
 
-							  ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false); 
+							  ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false, this); 
 						  }
 					  } 
 					  catch (TransformerException ex) {

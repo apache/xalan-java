@@ -44,7 +44,10 @@ import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.patterns.NodeTest;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSNumericType;
@@ -124,8 +127,8 @@ public class XPathSequenceConstructor extends Expression {
         
         ResultSequence resultSeq = new ResultSequence();
         
-        int seqConstructorPartsSize = m_sequenceConstructorXPathParts.size();
-        for (int idx = 0; idx < seqConstructorPartsSize; idx++) {
+        int seqCstrPartsSize = m_sequenceConstructorXPathParts.size();
+        for (int idx = 0; idx < seqCstrPartsSize; idx++) {
            String xpathExprStr = m_sequenceConstructorXPathParts.get(idx);
            
            if (prefixTable != null) {
@@ -277,8 +280,9 @@ public class XPathSequenceConstructor extends Expression {
                   }               
                }
                else if (xPathExprPartResult instanceof ResultSequence) {
-                  ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult; 
-                  for (int idx1 = 0; idx1 < inpResultSeq.size(); idx1++) {
+                  ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult;
+                  int rSeqLength = inpResultSeq.size();
+                  for (int idx1 = 0; idx1 < rSeqLength; idx1++) {
                      XObject xObj = inpResultSeq.item(idx1);
                      resultSeq.add(xObj);                 
                   }
@@ -351,7 +355,8 @@ public class XPathSequenceConstructor extends Expression {
         	
         	ResultSequence newResultSeq = new ResultSequence();
         	
-        	for (int idx = 0; idx < resultSeq.size(); idx++) {
+        	int rSeqLength = resultSeq.size();
+        	for (int idx = 0; idx < rSeqLength; idx++) {
         	   XObject xObj = resultSeq.item(idx);
         	   if (xObj instanceof XMLNodeCursorImpl) {
         		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
@@ -372,6 +377,46 @@ public class XPathSequenceConstructor extends Expression {
         }
         else {
         	result = resultSeq;
+        }
+        
+        if (result instanceof ResultSequence) {
+        	ResultSequence rSeq = (ResultSequence)result;
+        	int rSeqLength = rSeq.size();
+        	for (int idx = 0; idx < rSeqLength; idx++) {
+        		XObject xdmItem = rSeq.item(idx);
+        		if (xdmItem instanceof XMLNodeCursorImpl) {
+        			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xdmItem;
+        			int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+        			DTM dtm = xctxt.getDTM(nodeHandle);
+        			boolean flg1 = false;
+        			if (dtm.getNodeType(nodeHandle) == DTM.ELEMENT_NODE) {
+        				Node node = dtm.getNode(nodeHandle);
+        				String nodeName = node.getNodeName();
+        				try {
+        					if (nodeName.startsWith("b_")) {
+        						Integer int1 = Integer.valueOf(nodeName.substring(2));
+        						Element elemNode = (Element)node;
+        						xdmItem = new XString(elemNode.getTextContent());
+        					}
+        					else {
+        						flg1 = true;
+        					}
+        				}
+        				catch (Exception ex) {
+        					flg1 = true;
+        				}        		         		 
+        			}
+
+        			if (flg1) {
+        				xdmItem = rSeq.item(idx);
+        				xdmItem = xdmItem.getFresh();
+        			}
+        		}
+
+        		rSeq.set(idx, xdmItem);
+        	}
+        	
+        	result = rSeq; 
         }
         
         return result;

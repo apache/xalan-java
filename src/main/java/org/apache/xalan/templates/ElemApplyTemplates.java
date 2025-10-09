@@ -717,7 +717,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 							  }
 							  else {
 								  ElemCopyOf.copyOfActionOnResultSequence((ResultSequence)templateEvalResultForAsAttr, 
-										  transformer, handler, xctxt, false); 
+										  transformer, handler, xctxt, false, this); 
 							  }
 						  } 
 						  catch (TransformerException ex) {

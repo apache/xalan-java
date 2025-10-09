@@ -271,9 +271,10 @@ public abstract class DTMManager
           DocumentBuilder dBuilder = dbf.newDocumentBuilder();
           Document document = dBuilder.newDocument();          
           
-          // Generate arbitrary random XML element names
-          String docElemName = "a_" + System.currentTimeMillis();
-          String childElemName = "b_" + System.currentTimeMillis();
+          // Produce, random XML element name values
+          String str1 = String.valueOf(System.currentTimeMillis());
+          String docElemName = "a_" + str1.substring(0, 5);
+          String childElemName = "b_" + str1.substring(0, 5);
           
           Element docElem = document.createElement(docElemName);          
           for (int idx = 0; idx < resultSeq.size(); idx++) {

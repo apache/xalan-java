@@ -205,7 +205,7 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 			rSeq.add(xpathEvalResult);
 			SerializationHandler handler = transformer.getSerializationHandler(); 
 			try {
-				ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false);
+				ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false, this);
 			} 
 			catch (TransformerException ex) {
 				throw new javax.xml.transform.TransformerException("XPTY0004 : An exception occured while serializing xsl:catch's evaluation "

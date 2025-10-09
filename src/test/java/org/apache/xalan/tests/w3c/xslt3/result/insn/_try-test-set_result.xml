@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-08T11:07:17Z" fail="9" name="try" pass="27" skipped="6" statusUnknown="0" totalRun="36">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-09T12:05:32Z" fail="8" name="try" pass="28" skipped="6" statusUnknown="0" totalRun="36">
    <testResult status="pass" testName="try-001"/>
    <testResult status="pass" testName="try-002"/>
    <testResult status="pass" testName="try-003"/>
@@ -17,7 +17,7 @@
    <testResult status="pass" testName="try-016"/>
    <testResult status="skipped" testName="try-017" xsltVersion="xslt 2.0 only"/>
    <testResult status="pass" testName="try-018"/>
-   <testResult status="fail" testName="try-019"/>
+   <testResult status="pass" testName="try-019"/>
    <testResult status="pass" testName="try-020"/>
    <testResult status="fail" testName="try-021">
       <outResult/>

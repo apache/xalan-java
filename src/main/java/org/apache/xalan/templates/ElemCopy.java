@@ -298,7 +298,7 @@ public class ElemCopy extends ElemUse
 					  		                                                           + "in a sequence of length greater than one.", srcLocator); 
 				   }
 				   else if (rSeq.size() == 1) {
-					  ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, rthandler, xctxt, false);
+					  ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, rthandler, xctxt, false, this);
 					  
 					  return;
 				   }
@@ -308,7 +308,7 @@ public class ElemCopy extends ElemUse
 				else {
 				   ResultSequence rSeq = new ResultSequence();
 				   rSeq.add(xObj);
-				   ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, rthandler, xctxt, false);
+				   ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, rthandler, xctxt, false, this);
 				   
 				   return;
 				}

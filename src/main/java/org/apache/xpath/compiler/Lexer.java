@@ -143,9 +143,13 @@ class Lexer
 
     // Nesting of '[' so we can know if the given element should be
     // counted inside the m_patternMap.
-    int nesting = 0;            
+    int nesting = 0;
+    
+    if (pat.contains("||")) {
+    	pat = getTransformedPatternStr(pat, "||");
+    	nChars = pat.length();
+    }
 
-    // char[] chars = pat.toCharArray();
     for (int i = 0; i < nChars; i++)
     {
       char c = pat.charAt(i);
@@ -972,6 +976,63 @@ class Lexer
   
   String getNsUnboundPrefix() {
 	  return m_ns_unbound_prefix; 
+  }
+  
+  /**
+   * Method definition, to do string transformation of the 
+   * supplied string value, around the supplied delimiter string.
+   * 
+   * This method is defined, primarily to perform few types of 
+   * XPath 3.1 string concatenation "||" operator evaluations 
+   * correctly.
+   * 
+   * The following types of string value transformations,
+   * are performed by this method definition:
+   * a||b||c -> a || b || c 
+   * a||b -> a || b
+   * a|| b -> a || b
+   * a ||b -> a || b etc
+   * 
+   * @param pat							The supplied pattern string
+   * @param delim						The supplied delimiter, string
+   * @return							The transformed string value
+   */
+  String getTransformedPatternStr(String pat, String delim) {
+	  
+	  String result = null;
+	  
+	  int nChars = pat.length(); 
+	  
+	  int pIdx = pat.indexOf(delim, 0);
+	  int srchStart = 0;
+	  while ((pIdx - 1 >= 0) && pat.charAt(pIdx - 1) != ' ') {
+		  String prefxStr = pat.substring(0, pIdx);
+		  String pat1 = prefxStr + ' ' + delim ;
+		  String pat2 = "";
+		  if (pIdx + 2 < nChars) {
+			  pat2 = pat.substring(pIdx + 2); 
+		  }
+		  pat = pat1 + pat2;       
+		  nChars = pat.length();
+
+		  pIdx = pat.indexOf(delim, srchStart);
+		  if ((pIdx + 2 < nChars) && (pat.charAt(pIdx + 2) != ' ')) {
+			  pat1 = pat.substring(0, pIdx + 2) + ' ';
+			  pat2 = pat.substring(pIdx + 2);
+			  pat = pat1 + pat2;       
+			  nChars = pat.length();
+		  }
+		  
+		  int idx2 = pat.indexOf(delim);
+		  if (idx2 + 2 < nChars) {
+			 srchStart = idx2 + 2;
+			 pIdx = pat.indexOf(delim, srchStart); 
+		  }		  
+	   }
+	  
+	   result = pat;
+
+	   return result;
   }
   
 }

@@ -26,8 +26,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
@@ -617,8 +617,10 @@ public class ElemSequence extends ElemTemplateElement
 			  SerializerUtils.outputResultTreeFragment(handler, xslSequenceVal, xctxt);
 			  break;
 		  case XObject.CLASS_RESULT_SEQUENCE :         
-			  ResultSequence resultSequence = (ResultSequence)xslSequenceVal;          
-			  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, true);          
+			  ResultSequence resultSequence = (ResultSequence)xslSequenceVal;
+			  boolean isXslSeqXslCatchChild = (getParentElem() instanceof ElemCatch) ? true : false;
+			  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, 
+					                                                                            !isXslSeqXslCatchChild ? true: false, this);          
 			  break;
 		  default :
 			  // NO OP
