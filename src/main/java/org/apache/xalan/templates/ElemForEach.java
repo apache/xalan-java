@@ -60,6 +60,8 @@ import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSString;
 
 /**
@@ -932,16 +934,30 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 		   
 		   if (xslSortElemCount > 0) {			   
 			   xObj0 = xdmItemList.get(0);
-			   
+			   String clazz0NameStr = (xObj0.getClass()).getName();
+
+			   boolean compatibleDateTypes1 = true;
 			   List<SortableItem> sortableItemList = new ArrayList<SortableItem>();					   
 			   int inpSeqSize = xdmItemList.size();
+			   // Check whether, all xdm input items are of same type
+			   for (int idx = 1; idx < inpSeqSize; idx++) {
+				   XObject resultSeqItem = xdmItemList.get(idx);
+				   Class clazz = resultSeqItem.getClass();
+				   String clazzNameStr = clazz.getName();
+				   if (!clazzNameStr.equals(clazz0NameStr)) {
+					   compatibleDateTypes1 = false;
+					   
+					   break;
+				   }
+			   }
+
 			   for (int idx = 0; idx < inpSeqSize; idx++) {
 				   XObject resultSeqItem = xdmItemList.get(idx);
+				   XObject resultSeqItemCopy = resultSeqItem;
 				   SortableItem sortableItem = null;
 				   List<SortKey> sortKeyList = new ArrayList<SortKey>();
 				   for (int idx1 = 0; idx1 < xslSortElemCount; idx1++) {				   
 					   ElemSort elemSort = getSortElem(idx1);
-
 					   XPath selectXPath = elemSort.getSelect();
 
 					   // This can be absent (which will be default "ascending"), or 
@@ -972,9 +988,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   AVT langAvt = elemSort.getLang();
 					   if (langAvt != null) {
 						   langStr = langAvt.evaluate(xctxt, DTM.NULL, xctxt.getNamespaceContext());  
-					   }
-
-					   Class clazz0 = xObj0.getClass();
+					   }					   
 
 					   if ((dataTypeStr != null) && !("text".equals(dataTypeStr) || "number".equals(dataTypeStr))) {							  
 						   XPath seqTypeXPath = new XPath(dataTypeStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
@@ -984,9 +998,9 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 						   XObject xObj = instanceOf.operate(resultSeqItem, seqExpectedTypeData);
 						   if (!xObj.bool()) {
 							   throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm input sequence processed by xsl:for-each's "
-																														   + "xsl:sort instruction has an item that is not of "
-																														   + "the type '" + dataTypeStr + "', specified by xsl:sort's "
-																														   + "data-type attribute.", srcLocator);  
+																													   + "xsl:sort instruction has an item that is not of "
+																													   + "the type '" + dataTypeStr + "', specified by xsl:sort's "
+																													   + "data-type attribute.", srcLocator);  
 						   }
 
 						   if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) {
@@ -994,15 +1008,64 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 						   }
 					   }						  
 
-					   if (idx > 1) {
-						   Class clazz1 = resultSeqItem.getClass();
-						   if (!clazz1.equals(clazz0)) {
-							   // All the sequence items are not of the same type								 
-							   throw new javax.xml.transform.TransformerException("XTDE1030 : An xdm input sequence processed by xsl:for-each's "
-																														   + "xsl:sort instruction, dosn't have items of "
-																														   + "the same type.", srcLocator); 
+					   boolean compatibleDateTypes = false;
+					   if (!compatibleDateTypes1) {
+						   /**
+						    * xs:date and xs:dateTime values are relatively sortable. When an 
+						    * xdm input sequence contains, a combination of xs:date and xs:dateTime 
+						    * values, we convert xs:dateTime values to xs:date values retaining time 
+						    * zone component, for the purpose of sorting the values. W3C XSLT 3.0 
+						    * test case date-032 has an example for this use case.
+						    */
+						   if (idx == 0) {
+							   XObject xObj1 = xdmItemList.get(1);
+							   if ((xObj0 instanceof XSDateTime) && ((xObj1 instanceof XSDate) || 
+									                                                       (xObj1 instanceof XSDateTime))) {
+								   compatibleDateTypes = true;
+								   XSDateTime xsDateTime = (XSDateTime)xObj0;								   
+								   String dateStr1 = getXsDateStrFromDateTime(xsDateTime);
+								   resultSeqItem = XSDate.parseDate(dateStr1);
+							   }
+						   }
+						   else if ((((xObj0 instanceof XSDate) || (xObj0 instanceof XSDateTime)) && 
+								                                                           (resultSeqItem instanceof XSDateTime))) {
+							   compatibleDateTypes = true;
+							   XSDateTime xsDateTime = (XSDateTime)resultSeqItem;								   
+							   String dateStr1 = getXsDateStrFromDateTime(xsDateTime);
+							   resultSeqItem = XSDate.parseDate(dateStr1);
 						   }
 					   }
+
+					   if (!compatibleDateTypes) {
+						   if (idx == 0) {
+							   XObject xObj1 = xdmItemList.get(1); 
+							   if ((xObj0 instanceof XSDate || xObj0 instanceof XSDateTime) && 
+									                                                       (xObj1 instanceof XSDate || xObj1 instanceof XSDateTime)) {
+								   compatibleDateTypes = true; 
+							   }
+						   }
+						   else if ((resultSeqItem instanceof XSDate || resultSeqItem instanceof XSDateTime) && 
+								                                                           (xObj0 instanceof XSDate || xObj0 instanceof XSDateTime)) {
+							   compatibleDateTypes = true;
+						   }
+
+						   if (!compatibleDateTypes) {
+							   String clazz1NameStr = null;
+							   if (idx == 0) {									   
+								   clazz1NameStr = ((xdmItemList.get(1)).getClass()).getName(); 
+							   }
+							   else {
+								   clazz1NameStr = (resultSeqItem.getClass()).getName(); 
+							   }
+
+							   if (!clazz1NameStr.equals(clazz0NameStr)) {
+								   // The sequence items are not of compatible types								 
+								   throw new javax.xml.transform.TransformerException("XTDE1030 : An xdm input sequence processed by xsl:for-each's "
+																															   + "xsl:sort instruction, dosn't have items with "
+																															   + "compatible types.", srcLocator); 
+							   }
+						   }
+					   }						   
 
 					   XObject sorkKeyObj = null;
 					   if (selectXPath != null) {
@@ -1046,9 +1109,11 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 						   sorkKeyObj = resultSeqItem; 
 					   }
 
-					   // If variable dataTypeStr's value is other than "text" or "number",
-					   // the SortableItem class's method 'compareTo' takes care of the 
-					   // right comparison between sort keys.
+					   /**
+					    * When variable dataTypeStr's value is other than "text" or "number",
+					    * the SortableItem class's method 'compareTo' takes care of the
+					    * right comparison between sort keys.
+					    */
 
 					   if ("text".equals(dataTypeStr)) {
 						   if ((sorkKeyObj instanceof XString) || (sorkKeyObj instanceof XSString) || (sorkKeyObj instanceof XMLNodeCursorImpl)) { 
@@ -1078,14 +1143,15 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   sortKeyList.add(sortKey);
 				   }
 
-				   sortableItem = new SortableItem(resultSeqItem, sortKeyList);
+				   sortableItem = new SortableItem(resultSeqItemCopy, sortKeyList);
 
 				   sortableItemList.add(sortableItem);
 			   }
 
 			   sortableItemList.sort(null);
 
-			   for (int idx = 0; idx < sortableItemList.size(); idx++) {
+			   int sortableItemCount = sortableItemList.size();
+			   for (int idx = 0; idx < sortableItemCount; idx++) {
 				   SortableItem sortableItem = sortableItemList.get(idx);				   
 				   XObject resultSeqItem = sortableItem.getInputItem(); 
 				   if (resultSeqItem instanceof XMLNodeCursorImpl) {
@@ -1095,7 +1161,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 				   setXPathContextForXslSequenceProcessing(sortableItemList.size(), idx, resultSeqItem, xctxt);
 
 				   for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
-						                                                                         elemTemplateElem = elemTemplateElem.m_nextSibling) {
+						   elemTemplateElem = elemTemplateElem.m_nextSibling) {
 					   xctxt.setSAXLocator(elemTemplateElem);
 					   transformer.setCurrentElement(elemTemplateElem);
 					   elemTemplateElem.execute(transformer);              
@@ -1566,6 +1632,43 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 	   public void setSortKeyList(List<SortKey> sortKeyList) {
 		   this.m_sortKeyList = sortKeyList;  
 	   }
+   }
+   
+   /**
+    * Method definition, to get xs:date value string, from
+    * supplied xs:dateTime value.
+    * 
+    * @param xsDateTime					  Supplied xs:dateTime value
+    * @return							  xs:date value string
+    */
+   private String getXsDateStrFromDateTime(XSDateTime xsDateTime) {
+	   
+	   String result = null;
+	   
+	   String xsDateTimeStr = xsDateTime.stringValue();
+	   int idx2 = xsDateTimeStr.indexOf('T');
+	   String prfxStr = xsDateTimeStr.substring(0, idx2);
+	   String sffxStr = xsDateTimeStr.substring(idx2 + 1);
+	   int zi = sffxStr.indexOf('Z');
+	   int pi = sffxStr.indexOf('+');
+	   int mi = sffxStr.indexOf('-');
+	   String dateStr1 = null; 
+	   if (zi != -1) {
+		   dateStr1 = prfxStr + "Z";   
+	   }
+	   else if (pi != -1) {
+		   dateStr1 = prfxStr + sffxStr.substring(pi); 
+	   }
+	   else if (mi != -1) {
+		   dateStr1 = prfxStr + sffxStr.substring(pi); 
+	   }
+	   else {
+		   dateStr1 = prfxStr;  
+	   }
+	   
+	   result = dateStr1;
+	   
+	   return result;
    }
    
 }

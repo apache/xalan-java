@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:12:47Z" fail="28" name="date" pass="56" skipped="0" statusUnknown="1" totalRun="85">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-10T15:44:52Z" fail="27" name="date" pass="57" skipped="0" statusUnknown="1" totalRun="85">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -31,7 +31,7 @@
    <testResult status="pass" testName="date-029"/>
    <testResult status="pass" testName="date-030"/>
    <testResult status="pass" testName="date-031"/>
-   <testResult status="fail" testName="date-032"/>
+   <testResult status="pass" testName="date-032"/>
    <testResult status="pass" testName="date-033"/>
    <testResult status="pass" testName="date-034"/>
    <testResult status="pass" testName="date-035"/>
@@ -54,7 +54,7 @@
    <testResult status="fail" testName="date-052"/>
    <testResult status="fail" testName="date-053">
       <outResult>
-         <errTrace>FODC0005 : A XPath dynamic error has occured, evaluating constructor function call for xs:duration. XTTE0570 : The supplied string value 'P28DT11H65M' cannot be parsed to a xs:duration value.</errTrace>
+         <errTrace>FODC0005 : An XPath dynamic error has occured, evaluating constructor function call for xs:duration. XTTE0570 : The supplied string value 'P28DT11H65M' cannot be parsed to a xs:duration value.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="date-054"/>

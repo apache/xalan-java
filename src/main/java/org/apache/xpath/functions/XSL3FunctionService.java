@@ -50,6 +50,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
+import org.apache.xerces.impl.dv.xs.DateDV;
+import org.apache.xerces.impl.dv.xs.DateTimeDV;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
 import org.apache.xerces.xs.XSModel;
@@ -448,7 +450,11 @@ public class XSL3FunctionService {
     					case Keywords.XS_DATE :
     						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
     							Expression funcArg = funcObj.getArg(idx);    						
-    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);    						    						
+    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    							
+    							// Validate an xs:date input string, using Xerces-J's data type api
+    							Object dtObj1 = (new DateDV()).getActualValue(argStr, null);
+    							
     							argSequence.add(XSDate.parseDate(argStr));
     						}
     						evalResultSequence = (new XSDate()).constructor(argSequence); 
@@ -459,6 +465,10 @@ public class XSL3FunctionService {
     						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
     							Expression funcArg = funcObj.getArg(idx);    						
     							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    							
+    							// Validate an xs:dateTime input string, using Xerces-J's data type api
+    							Object dtTimeObj1 = (new DateTimeDV()).getActualValue(argStr, null);
+    							
     							argSequence.add(XSDateTime.parseDateTime(argStr));
     						}
     						evalResultSequence = (new XSDateTime()).constructor(argSequence); 
@@ -631,7 +641,7 @@ public class XSL3FunctionService {
 
     					String errMesgStrTrailingSuffix = ((exceptionMesgStr != null) && (exceptionMesgStr.length() > 0)) ? " "+ exceptionMesgStr : ""; 
 
-    					throw new TransformerException("FODC0005 : A XPath dynamic error has occured, evaluating "
+    					throw new TransformerException("FODC0005 : An XPath dynamic error has occured, evaluating "
 																	    							+ "constructor function call for xs:" + funcName + "." + 
 																	    							errMesgStrTrailingSuffix, srcLocator);
     				}
