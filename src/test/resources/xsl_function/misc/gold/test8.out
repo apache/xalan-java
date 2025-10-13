@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <fib inp="1">0</fib>
+  <fib inp="2">1</fib>
+  <fib inp="3">1</fib>
+  <fib inp="4">2</fib>
+  <fib inp="5">3</fib>
+  <fib inp="6">5</fib>
+  <fib inp="7">8</fib>
+  <fib inp="8">13</fib>
+  <fib inp="9">21</fib>
+  <fib inp="10">34</fib>
+</result>

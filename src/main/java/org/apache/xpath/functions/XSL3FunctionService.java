@@ -42,7 +42,6 @@ import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XMLNSDecl;
@@ -50,8 +49,6 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.xerces.impl.dv.xs.DateDV;
-import org.apache.xerces.impl.dv.xs.DateTimeDV;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
 import org.apache.xerces.xs.XSModel;
@@ -168,8 +165,6 @@ public class XSL3FunctionService {
 
     	SourceLocator srcLocator = xctxt.getSAXLocator();
 
-    	StylesheetRoot stylesheetRoot = null;
-
     	try {        
     		XSL3ConstructorOrExtensionFunction funcObj = xpathExpr;
     		
@@ -183,25 +178,10 @@ public class XSL3FunctionService {
     			 * extension function calls (prefix:functionName). The implementation
     			 * here need not run when an XSL stylesheet specifies Xalan-J XPath
     			 * extension function call.
-    			 */
-
-    			ExpressionNode expressionNode = xpathExpr.getExpressionOwner();
-    			ExpressionNode stylesheetRootNode = null;
-    			while (expressionNode != null) {
-    				stylesheetRootNode = expressionNode;
-    				expressionNode = expressionNode.exprGetParent();                     
-    			}
-
-    			ElemFunction elemFunction = null;
-
-    			if (stylesheetRootNode instanceof Stylesheet) {
-    				Stylesheet stylesheet = (Stylesheet)stylesheetRootNode;
-
-    				stylesheetRoot = stylesheet.getStylesheetRoot();    				
-    			}    			
-    			else {
-    				stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
-    			}
+    			 */    			
+    			
+    			StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(
+    					                                                                                   (ElemTemplateElement)xpathExpr.getExpressionOwner());
 
     			if (stylesheetRoot != null) {
     				if (transformerImpl == null) {
@@ -240,7 +220,7 @@ public class XSL3FunctionService {
 
     				if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
     					// Evaluate XSL stylesheet function call    					
-    					elemFunction = (ElemFunction)elemTemplate;
+    					ElemFunction elemFunction = (ElemFunction)elemTemplate;
 
     					evalResult = elemFunction.evaluateXslFunction(transformerImpl, xslFuncArgSequence);
 
@@ -452,9 +432,6 @@ public class XSL3FunctionService {
     							Expression funcArg = funcObj.getArg(idx);    						
     							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
     							
-    							// Validate an xs:date input string, using Xerces-J's data type api
-    							Object dtObj1 = (new DateDV()).getActualValue(argStr, null);
-    							
     							argSequence.add(XSDate.parseDate(argStr));
     						}
     						evalResultSequence = (new XSDate()).constructor(argSequence); 
@@ -465,9 +442,6 @@ public class XSL3FunctionService {
     						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
     							Expression funcArg = funcObj.getArg(idx);    						
     							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-    							
-    							// Validate an xs:dateTime input string, using Xerces-J's data type api
-    							Object dtTimeObj1 = (new DateTimeDV()).getActualValue(argStr, null);
     							
     							argSequence.add(XSDateTime.parseDateTime(argStr));
     						}

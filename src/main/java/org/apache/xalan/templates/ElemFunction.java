@@ -48,6 +48,7 @@ import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XslFunctionMemoization;
 import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -245,10 +246,16 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * Variable to indicate whether, an attribute 'expand-text'
+   * Variable, to indicate whether, an attribute 'expand-text'
    * is declared on xsl:function instruction.
    */
   private boolean m_expand_text_declared;
+  
+  /**
+   * Variable, to indicate whether, XSL transformation
+   * should retain the results of previous function calls. 
+   */
+  private boolean m_cache;
   
   /**
    * This class field, represents the value of "expand-text" 
@@ -282,6 +289,25 @@ public class ElemFunction extends ElemTemplate
    */
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
+  }
+  
+  /**
+   * Set the value of "cache" attribute.
+   *
+   * @param v   Value of the "cache" attribute
+   */
+  public void setCache(boolean cache)
+  {
+	  m_cache = cache;
+  }
+
+  /**
+   * Get the value of "cache" attribute.
+   *  
+   * @return		  The value of "cache" attribute 
+   */
+  public boolean getCache() {
+	  return m_cache;
   }
 
   /**
@@ -429,6 +455,29 @@ public class ElemFunction extends ElemTemplate
     	 }    	 
       }
       
+      int paramIdx = 0;
+      List<XObject> argList = new ArrayList<XObject>();      
+      for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
+    		  													elem = elem.getNextSiblingElem()) {
+    	  if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
+    		  XObject argValue = argSequence.item(paramIdx);
+    		  argList.add(argValue);
+    	  }
+      }
+      
+      if (m_cache) {
+    	  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList);
+    	  int funcResultCacheSize = (funcMemoization.func_result_cache).size();
+    	  for (int idx2 = 0; idx2 < funcResultCacheSize; idx2++) {
+    		  XslFunctionMemoization obj2 = (funcMemoization.func_result_cache).get(idx2);
+    		  if (obj2.equals(funcMemoization)) {
+    			  result = obj2.getResult();
+
+    			  return result;
+    		  }
+    	  }
+      }
+      
       VariableStack varStack = xctxt.getVarStack();            
       int argsFrame = 0;
       
@@ -441,11 +490,11 @@ public class ElemFunction extends ElemTemplate
     		   */
     		  argsFrame = varStack.link(xslParamMap.size());
 
-    		  int paramIdx = 0;
+    		  paramIdx = 0;
     		  for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
-    				                                                  elem = elem.getNextSiblingElem()) {
+    				                                                   elem = elem.getNextSiblingElem()) {
     			  if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
-    				  XObject argValue = argSequence.item(paramIdx);                 
+    				  XObject argValue = argSequence.item(paramIdx);    				  
     				  XObject argConvertedVal = null;
     				  String paramAsAttrStrVal = ((ElemParam)elem).getAs();
 
@@ -494,11 +543,16 @@ public class ElemFunction extends ElemTemplate
     	  try {
     		SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
     		
-    	    if (isOnlyElemTextLiteral) {
+    	    if (isOnlyElemTextLiteral) {    	    	
     		    funcResultConvertedVal = new XSString((XslTransformEvaluationHelper.getStrVal(funcResultConvertedVal)).trim());
     		    
     		    CastAs castAs = new CastAs();
     		    funcResultConvertedVal = castAs.operate(funcResultConvertedVal, seqExpectedTypeData);
+    		    
+    		    if (m_cache) {
+    		       XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+    		       (funcMemoization.func_result_cache).add(funcMemoization);
+    		    }
     		    
     		    return funcResultConvertedVal;
     	    }    	          	         	 
@@ -506,11 +560,21 @@ public class ElemFunction extends ElemTemplate
              if (funcResultConvertedVal instanceof XPathInlineFunction) {
             	SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
             	if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+            		if (m_cache) {
+         		       XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+         		       (funcMemoization.func_result_cache).add(funcMemoization);
+         		    }
+            		
             	    return funcResultConvertedVal;
             	}
             	
             	if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {
-            	   return funcResultConvertedVal;
+            		if (m_cache) {
+            			XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+            			(funcMemoization.func_result_cache).add(funcMemoization);
+            		}
+
+            		return funcResultConvertedVal;
             	}
             	else {
             	   throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
@@ -521,11 +585,21 @@ public class ElemFunction extends ElemTemplate
              else if ((funcResultConvertedVal instanceof XPathMap) || (funcResultConvertedVal instanceof XPathArray)) {
             	 SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
             	 if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+            		 if (m_cache) {
+            			 XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+            			 (funcMemoization.func_result_cache).add(funcMemoization);
+            		 }
+
             		 return funcResultConvertedVal;
             	 }
             	 
             	 try {
             		 funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(funcResultConvertedVal, funcAsAttrStrVal, null, xctxt);
+            		 
+            		 if (m_cache) {
+            			 XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+            			 (funcMemoization.func_result_cache).add(funcMemoization);
+            		 }
 
             		 return funcResultConvertedVal;
             	 }
@@ -575,6 +649,11 @@ public class ElemFunction extends ElemTemplate
         				else {
         					funcResultConvertedVal = XslTransformData.m_xpathNamedFunctionRefSequence;
         				}
+        				
+        				if (m_cache) {
+        					XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+        					(funcMemoization.func_result_cache).add(funcMemoization);
+        				}
 
         				return funcResultConvertedVal;
         			}
@@ -599,6 +678,11 @@ public class ElemFunction extends ElemTemplate
         				else {
         					funcResultConvertedVal = XslTransformData.m_xpathNamedFunctionRefSequence;
         					(XslTransformData.m_xpathNamedFunctionRefSequence).clear();
+        				}
+        				
+        				if (m_cache) {
+        					XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+        					(funcMemoization.func_result_cache).add(funcMemoization);
         				}
 
         				return funcResultConvertedVal;
@@ -637,6 +721,11 @@ public class ElemFunction extends ElemTemplate
          if (resultSeq.size() == 1) {
             funcResultConvertedVal = resultSeq.item(0);   
          }
+      }
+      
+      if (m_cache) {
+    	  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+    	  (funcMemoization.func_result_cache).add(funcMemoization);
       }
       
       return funcResultConvertedVal;

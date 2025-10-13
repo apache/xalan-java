@@ -22,9 +22,10 @@ package org.apache.xpath.operations;
 
 import java.math.BigDecimal;
 
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.ArithmeticOperation;
+import org.apache.xpath.XPathArithmeticOperation;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -51,7 +52,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XSLT 3 specific changes, to this class)
  */
-public class Mod extends ArithmeticOperation
+public class Mod extends XPathArithmeticOperation
 {
    static final long serialVersionUID = 5009471154238918201L;
 
@@ -72,7 +73,9 @@ public class Mod extends ArithmeticOperation
 	  Object lObj = left.object();
 	  Object rObj = right.object();
 
-	  XPathContext xctxt = new XPathContext(true); 
+	  XPathContext xctxt = new XPathContext(true);
+	  
+	  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
 
 	  if ((lObj instanceof FuncArgPlaceholder) && (rObj instanceof FuncArgPlaceholder)) {
 		  java.lang.String xpathInlineFuncExprStr = "function($arg0, $arg1) { $arg0 mod $arg1 }";
@@ -146,28 +149,28 @@ public class Mod extends ArithmeticOperation
       }
 	  else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
 		  XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
-    	  result = arithmeticOpOnXNumberValues((XNumber)left, rightXNumber, OP_SYMBOL_MOD);
+    	  result = arithmeticOpOnXNumberValues((XNumber)left, rightXNumber, OP_SYMBOL_MOD, elemTemplateElement);
 	  }
 	  else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
 		  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
-    	  result = arithmeticOpOnXNumberValues(leftXNumber, (XNumber)right, OP_SYMBOL_MOD);
+    	  result = arithmeticOpOnXNumberValues(leftXNumber, (XNumber)right, OP_SYMBOL_MOD, elemTemplateElement);
 	  }     
 	  else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
 		  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
     	  XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
-    	  result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_MOD);
+    	  result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_MOD, elemTemplateElement);
 	  }
 	  else if ((left instanceof XNumber) && (right instanceof XNumber)) {
 		  XNumber lNumber = (XNumber)left;
 	   	  XNumber rNumber = (XNumber)right;
-	   	  result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_MOD);
+	   	  result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_MOD, elemTemplateElement);
 	  }
 	  else if ((left instanceof XNumber) && (right instanceof XMLNodeCursorImpl)) {
 		  double lDouble = ((XNumber)left).num();
 
 		  XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
 		  if (rNodeSet.getLength() > 1) {			  
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);
 		  }
 		  else {
 			  java.lang.String rStrVal = rNodeSet.str();
@@ -181,7 +184,7 @@ public class Mod extends ArithmeticOperation
 
 		  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
 		  if (lNodeSet.getLength() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});  
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 		  else {
 			  java.lang.String lStrVal = lNodeSet.str();
@@ -196,7 +199,7 @@ public class Mod extends ArithmeticOperation
 
 		  XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
 		  if (rNodeSet.getLength() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});  
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 		  else {
 			  java.lang.String rStrVal = rNodeSet.str();
@@ -211,7 +214,7 @@ public class Mod extends ArithmeticOperation
 
 		  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
 		  if (lNodeSet.getLength() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}); 
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement); 
 		  }
 		  else {
 			  java.lang.String lStrVal = lNodeSet.str();
@@ -226,7 +229,7 @@ public class Mod extends ArithmeticOperation
 
 		  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
 		  if (lNodeSet.getLength() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});  
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 		  else {
 			  java.lang.String lStrVal = lNodeSet.str();
@@ -235,7 +238,7 @@ public class Mod extends ArithmeticOperation
 
 		  XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
 		  if (rNodeSet.getLength() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}); 
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement); 
 		  }
 		  else {
 			  java.lang.String rStrVal = rNodeSet.str();
@@ -247,7 +250,7 @@ public class Mod extends ArithmeticOperation
 	  else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
 		  ResultSequence rsLeft = (ResultSequence)left;          
 		  if (rsLeft.size() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});  
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 		  else {
 			  java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
@@ -261,7 +264,7 @@ public class Mod extends ArithmeticOperation
 	  else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
 		  ResultSequence rsRight = (ResultSequence)right;          
 		  if (rsRight.size() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});  
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 		  else {             
 			  double lDouble = ((XNumber)left).num();
@@ -275,7 +278,7 @@ public class Mod extends ArithmeticOperation
 	  else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
 		  ResultSequence rsLeft = (ResultSequence)left;          
 		  if (rsLeft.size() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});  
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 		  else {
 			  java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
@@ -290,7 +293,7 @@ public class Mod extends ArithmeticOperation
 	  else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
 		  ResultSequence rsRight = (ResultSequence)right;          
 		  if (rsRight.size() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});  
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 		  else {                          
 			  java.lang.String lStrVal = ((XSNumericType)left).stringValue();
@@ -305,12 +308,12 @@ public class Mod extends ArithmeticOperation
 	  else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
 		  ResultSequence rsLeft = (ResultSequence)left;          
 		  if (rsLeft.size() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});  
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 
 		  ResultSequence rsRight = (ResultSequence)right;          
 		  if (rsRight.size() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});  
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 
 		  java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
@@ -324,7 +327,7 @@ public class Mod extends ArithmeticOperation
 	  else if (left instanceof ResultSequence) {
 		  ResultSequence rSeq = (ResultSequence)left;
 		  if (rSeq.size() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}); 
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement); 
 		  }                  
 
 		  BigDecimal lBigDecimal = null;
@@ -338,16 +341,16 @@ public class Mod extends ArithmeticOperation
 			  result = new XSDecimal(lBigDecimal.remainder(rBigDecimal));
 		  }
 		  catch (NumberFormatException ex) {
-			  error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});
+			  error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);
 		  }
 		  catch (ArithmeticException ex) {
-			  error(DIV_BY_ZERO_ERR_MESG, new java.lang.String[] {"FOAR0001"});
+			  error(DIV_BY_ZERO_ERR_MESG, new java.lang.String[] {"FOAR0001"}, elemTemplateElement);
 		  }
 	  }
 	  else if (left instanceof XMLNodeCursorImpl) {
 		  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
 		  if (lNodeSet.getLength() > 1) {
-			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}); 
+			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement); 
 		  }                  
 
 		  BigDecimal lBigDecimal = null;
@@ -361,10 +364,10 @@ public class Mod extends ArithmeticOperation
 			  result = new XSDecimal(lBigDecimal.remainder(rBigDecimal));
 		  }
 		  catch (NumberFormatException ex) {
-			  error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD});
+			  error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);
 		  }
 		  catch (ArithmeticException ex) {
-			  error(DIV_BY_ZERO_ERR_MESG, new java.lang.String[] {"FOAR0001"});
+			  error(DIV_BY_ZERO_ERR_MESG, new java.lang.String[] {"FOAR0001"}, elemTemplateElement);
 		  }         
 	  }
 	  else if (left instanceof XSYearMonthDuration) {
@@ -383,7 +386,7 @@ public class Mod extends ArithmeticOperation
 			  result = new XSDecimal(BigDecimal.valueOf(Double.valueOf(lStrVal) % Double.valueOf(rStrVal)));
 		  }
 		  catch (NumberFormatException ex) {
-			  error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}); 
+			  error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement); 
 		  }
 	  }
 

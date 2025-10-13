@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:12:02Z" fail="31" name="function" pass="57" skipped="22" statusUnknown="0" totalRun="88">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-13T12:55:41Z" fail="32" name="function" pass="56" skipped="22" statusUnknown="0" totalRun="88">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -109,7 +109,7 @@
    <testResult status="pass" testName="function-1032"/>
    <testResult status="pass" testName="function-1033"/>
    <testResult status="fail" testName="function-1034"/>
-   <testResult status="pass" testName="function-1035"/>
+   <testResult status="fail" testName="function-1035"/>
    <testResult status="fail" testName="function-1101"/>
    <testResult status="fail" testName="function-1201">
       <outResult>

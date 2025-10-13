@@ -1,4 +1,21 @@
-package org.apache.xml.utils;
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.xpath.types;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -769,5 +786,44 @@ public class DateTimeUtil {
     	
     	return result;
     }
+    
+    /**
+	 * Method definition, to get xs:date's string value, from supplied xs:dateTime 
+	 * value. This method, strips the supplied xs:dateTime value's time component 
+	 * and retains xs:dateTime value's time zone component to construct an xs:date 
+	 * string value.
+	 * 
+	 * @param xsDateTime					  Supplied xs:dateTime value
+	 * @return							      xs:date value string
+	 */
+	public static String getXsDateStrFromXsDateTime(XSDateTime xsDateTime) {
+
+		String result = null;
+
+		String xsDateTimeStr = xsDateTime.stringValue();
+		int idx2 = xsDateTimeStr.indexOf('T');
+		String prfxStr = xsDateTimeStr.substring(0, idx2);
+		String sffxStr = xsDateTimeStr.substring(idx2 + 1);
+		int zi = sffxStr.indexOf('Z');
+		int pi = sffxStr.indexOf('+');
+		int mi = sffxStr.indexOf('-');
+		String dateStr1 = null; 
+		if (zi != -1) {
+			dateStr1 = prfxStr + "Z";   
+		}
+		else if (pi != -1) {
+			dateStr1 = prfxStr + sffxStr.substring(pi); 
+		}
+		else if (mi != -1) {
+			dateStr1 = prfxStr + sffxStr.substring(pi); 
+		}
+		else {
+			dateStr1 = prfxStr;  
+		}
+
+		result = dateStr1;
+
+		return result;
+	}
 
 }

@@ -22,6 +22,7 @@ import java.math.RoundingMode;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
@@ -33,20 +34,20 @@ import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * A class providing utility methods for arithmetic operations 
- * +, -, div & mod, to support Xalan-J's XSLT 3.0 implementation.
+ * A class definition, providing utility methods to help implement 
+ * XPath arithmetic operations +, -, div & mod.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
-public class ArithmeticOperation extends Operation {
+public class XPathArithmeticOperation extends Operation {
 	
 	private static final long serialVersionUID = 7567257906066639674L;
 
-	protected static final String CARDINALITY_ERR_MESG = "{0} : A sequence of more than one item is not allowed as an operand of operator {1}.";
+	protected static final String CARDINALITY_ERR_MESG = "{0} : A sequence of more than one item, is not allowed as an operand of XPath operator {1}.";
 
 	protected static final String DIV_BY_ZERO_ERR_MESG = "{0} : An integer division by zero error.";
 
-	protected static final String OPERAND_NOT_NUMERIC_ERR_MESG = "{0} : One or both of the operands of operator {1} are not numeric.";
+	protected static final String OPERAND_NOT_NUMERIC_ERR_MESG = "{0} : One or both of the operands of XPath operator {1}, are not numeric values.";
 	
 	protected static final String OP_SYMBOL_PLUS = "+";
 	
@@ -54,9 +55,9 @@ public class ArithmeticOperation extends Operation {
 	
 	protected static final String OP_SYMBOL_MULT = "*";
 	
-	protected static final String OP_SYMBOL_DIV = "div";  // produces quotient from arithmetic division
+	protected static final String OP_SYMBOL_DIV = "div";  // produces quotient from an XPath numeric division
 	
-	protected static final String OP_SYMBOL_MOD = "mod";  // produces remainder from arithmetic division 
+	protected static final String OP_SYMBOL_MOD = "mod";  // produces remainder from an XPath numeric division 
 	
     private static final String NON_TERMINATING_DECIMAL_EXPANSION = "Non-terminating decimal expansion";
     
@@ -73,7 +74,7 @@ public class ArithmeticOperation extends Operation {
 	 * @throws TransformerException 
 	 */
 	protected XObject arithmeticOpOnXNumberValues(XNumber lNumber, XNumber rNumber, 
-			                                      String opSymbol) throws TransformerException {
+			                                      String opSymbol, ElemTemplateElement elemTemplateElement) throws TransformerException {
 
 		XObject result = null;
 
@@ -99,7 +100,7 @@ public class ArithmeticOperation extends Operation {
 			   }
 			   catch (ArithmeticException ex) {
 				   java.lang.String exceptionMesg = ex.getMessage();
-	     		   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
+	     		   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg, elemTemplateElement);
 			   }
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MOD)) {
@@ -109,14 +110,14 @@ public class ArithmeticOperation extends Operation {
 				  result = new XSDecimal(lBigDecimal.remainder(rBigDecimal));
 			   }
 			   catch (ArithmeticException ex) {				  
-				  error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"});
+				  error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}, elemTemplateElement);
 			   }
 			}
 		}
 		else if (lNumber.isXsDecimal() && rNumber.isXsDecimal()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDecimal()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());
-			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsDouble() && rNumber.isXsDouble()) {
 			Double lDbl = Double.valueOf((lNumber.getXsDouble()).stringValue());
@@ -143,32 +144,32 @@ public class ArithmeticOperation extends Operation {
 		else if (lNumber.isXsInteger() && rNumber.isXsDecimal()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsInteger()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());
-			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsInteger() && rNumber.isXsDouble()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsInteger()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDouble()).stringValue());
-			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsDecimal() && rNumber.isXsInteger()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDecimal()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsInteger()).stringValue()); 		 
-			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsDecimal() && rNumber.isXsDouble()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDecimal()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDouble()).stringValue());
-			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsDouble() && rNumber.isXsInteger()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDouble()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsInteger()).stringValue());
-			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}      
 		else if (lNumber.isXsDouble() && rNumber.isXsDecimal()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDouble()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());			
-			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}      
 		else {
 			double lDouble = lNumber.num();
@@ -243,7 +244,7 @@ public class ArithmeticOperation extends Operation {
 	 * on 'div' operator's evaluation.  
 	 */
 	protected XObject divOpArithmeticExceptionAction(BigDecimal lBigDecimal, BigDecimal rBigDecimal,
-			                                         java.lang.String exceptionMesg) throws TransformerException {
+			                                         java.lang.String exceptionMesg, ElemTemplateElement elemTemplateElement) throws TransformerException {
 		XObject result = null;
 
 		if (exceptionMesg.startsWith(NON_TERMINATING_DECIMAL_EXPANSION)) {
@@ -251,23 +252,24 @@ public class ArithmeticOperation extends Operation {
 			result = new XSDecimal(resultBigDecimal);
 		}
 		else if (exceptionMesg.startsWith(DIVISION_BY_ZERO)) {
-			error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}); 
+			error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}, elemTemplateElement); 
 		}
 
 		return result;
 	}
 	
 	/**
-	 * Method to construct a concrete error message string using information 
-	 * supplied as arguments, to be emitted as an javax.xml.transform.TransformerException 
-	 * object. 
+	 * Method definition, to construct an concrete error message string 
+	 * value using information supplied as arguments, to be emitted as an 
+	 * javax.xml.transform.TransformerException object. 
 	 */
-	protected void error(String errMesg, String[] args) throws javax.xml.transform.TransformerException {
+	protected void error(String errMesg, String[] args, ElemTemplateElement elemTemplateElement) 
+			                                                                                 throws javax.xml.transform.TransformerException {
 		for (int idx = 0; idx < args.length; idx++) {		 
 			errMesg = errMesg.replace("{"+idx+"}", args[idx]);
 		}
 
-		throw new javax.xml.transform.TransformerException(errMesg); 
+		throw new javax.xml.transform.TransformerException(errMesg, elemTemplateElement); 
 	}
 	
 	/**
@@ -304,7 +306,7 @@ public class ArithmeticOperation extends Operation {
 	 * This method does an arithmetic operation on two java.math.BigDecimal values. 
 	 */
 	private XObject arithmeticOpOnBigDecimalValues(BigDecimal lBigDecimal, BigDecimal rBigDecimal, 
-			                                       String opSymbol) throws TransformerException {
+			                                       String opSymbol, ElemTemplateElement elemTemplateElement) throws TransformerException {
 		XObject result = null;
 
 		if (opSymbol.equals(OP_SYMBOL_PLUS)) {
@@ -322,7 +324,7 @@ public class ArithmeticOperation extends Operation {
 			}
 			catch (ArithmeticException ex) {
 			   java.lang.String exceptionMesg = ex.getMessage();
-			   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
+			   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg, elemTemplateElement);
 			}
 		}
 		else if (opSymbol.equals(OP_SYMBOL_MOD)) {
@@ -330,7 +332,7 @@ public class ArithmeticOperation extends Operation {
 				result = new XSDecimal(lBigDecimal.remainder(rBigDecimal));
 			}
 			catch (ArithmeticException ex) {				  
-				error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"});
+				error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}, elemTemplateElement);
 			}
 		}
 

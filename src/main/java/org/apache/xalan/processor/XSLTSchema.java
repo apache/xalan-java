@@ -371,6 +371,11 @@ public class XSLTSchema extends XSLTElementDef
     // xsl:param, xsl:with-param 
     XSLTAttributeDef tunnelAttrOpt = new XSLTAttributeDef(null, "tunnel",
                                            XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
+    // xsl:function
+    XSLTAttributeDef cacheAttrOpt = new XSLTAttributeDef(null, "cache",
+                                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
 
     // Optional
     // Default: "node()"
@@ -1251,7 +1256,8 @@ public class XSLTSchema extends XSLTElementDef
                                           new XSLTAttributeDef[] {
                                                   nameAttrRequired,
                                                   asAttrOpt, xpathDefaultNamespaceAttrOpt, expandTextAttrOpt, 
-                                                  overrideAttrOpt, overrideExtFunctionAttrOpt, newEachTimeAttrOpt }, 
+                                                  overrideAttrOpt, overrideExtFunctionAttrOpt, newEachTimeAttrOpt, 
+                                                  cacheAttrOpt }, 
                                           new ProcessorTemplate(), ElemFunction.class /* class object */, true, 20, true),
                                   new XSLTElementDef(
                                            this,

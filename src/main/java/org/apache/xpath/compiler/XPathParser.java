@@ -3658,7 +3658,8 @@ public class XPathParser
           
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
           
-          addPos = AdditiveExpr(addPos);
+          ExprSingle();
+          
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
             m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2; 
@@ -3673,7 +3674,8 @@ public class XPathParser
           
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
-          addPos = RelationalExpr(addPos);
+          ExprSingle();
+          
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
             m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2; 

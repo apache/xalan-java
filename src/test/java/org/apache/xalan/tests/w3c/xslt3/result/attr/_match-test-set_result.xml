@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:33Z" fail="59" name="match" pass="69" skipped="8" statusUnknown="1" totalRun="129">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-13T12:55:17Z" fail="60" name="match" pass="68" skipped="8" statusUnknown="1" totalRun="129">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -43,7 +43,7 @@
          <errTrace>XPST0017 : An XSL stylesheet function call {http://f.com/}special referred within an XPath expression, doesn't have a corresponding xsl:function definition in the stylesheet.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="pass" testName="match-041"/>
+   <testResult status="fail" testName="match-041"/>
    <testResult status="pass" testName="match-042"/>
    <testResult status="pass" testName="match-043"/>
    <testResult status="pass" testName="match-044"/>

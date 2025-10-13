@@ -19,9 +19,12 @@ package org.apache.xpath.operations;
 
 import java.math.BigDecimal;
 
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.ArithmeticOperation;
+import org.apache.xpath.XPathArithmeticOperation;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -48,7 +51,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XPath 3.1 specific changes, to this class)
  */
-public class Div extends ArithmeticOperation
+public class Div extends XPathArithmeticOperation
 {
    
   static final long serialVersionUID = 6220756595959798135L;
@@ -70,7 +73,11 @@ public class Div extends ArithmeticOperation
      Object lObj = left.object();
      Object rObj = right.object();
 
-     XPathContext xctxt = new XPathContext(true); 
+     ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();	  
+	 StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(
+			                                                                                      elemTemplateElement);
+	 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+	 XPathContext xctxt = transformerImpl.getXPathContext(); 
 
      if ((lObj instanceof FuncArgPlaceholder) && (rObj instanceof FuncArgPlaceholder)) {
     	 java.lang.String xpathInlineFuncExprStr = "function($arg0, $arg1) { $arg0 div $arg1 }";
@@ -144,28 +151,28 @@ public class Div extends ArithmeticOperation
      }
      else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
     	XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
-   	    result = arithmeticOpOnXNumberValues((XNumber)left, rightXNumber, OP_SYMBOL_DIV);
+   	    result = arithmeticOpOnXNumberValues((XNumber)left, rightXNumber, OP_SYMBOL_DIV, elemTemplateElement);
      }
      else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
     	XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
-   	    result = arithmeticOpOnXNumberValues(leftXNumber, (XNumber)right, OP_SYMBOL_DIV);
+   	    result = arithmeticOpOnXNumberValues(leftXNumber, (XNumber)right, OP_SYMBOL_DIV, elemTemplateElement);
      }     
      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
     	XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
    	    XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
-   	    result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_DIV);
+   	    result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_DIV, elemTemplateElement);
      }
      else if ((left instanceof XNumber) && (right instanceof XNumber)) {         
     	XNumber lNumber = (XNumber)left;
    	    XNumber rNumber = (XNumber)right;
-   	    result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_DIV);    	 
+   	    result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_DIV, elemTemplateElement);    	 
      }
      else if ((left instanceof XNumber) && (right instanceof XMLNodeCursorImpl)) {
          double lDouble = ((XNumber)left).num();
          
          XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
          if (rNodeSet.getLength() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {
             java.lang.String rStrVal = rNodeSet.str();
@@ -179,7 +186,7 @@ public class Div extends ArithmeticOperation
          
          XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
          if (lNodeSet.getLength() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {
             java.lang.String lStrVal = lNodeSet.str();
@@ -194,7 +201,7 @@ public class Div extends ArithmeticOperation
          
          XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
          if (rNodeSet.getLength() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {
             java.lang.String rStrVal = rNodeSet.str();
@@ -209,7 +216,7 @@ public class Div extends ArithmeticOperation
          
          XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
          if (lNodeSet.getLength() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {
             java.lang.String lStrVal = lNodeSet.str();
@@ -224,7 +231,7 @@ public class Div extends ArithmeticOperation
          
          XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
          if (lNodeSet.getLength() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {
             java.lang.String lStrVal = lNodeSet.str();
@@ -233,7 +240,7 @@ public class Div extends ArithmeticOperation
          
          XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
          if (rNodeSet.getLength() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {
             java.lang.String rStrVal = rNodeSet.str();
@@ -245,7 +252,7 @@ public class Div extends ArithmeticOperation
      else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
          ResultSequence rsLeft = (ResultSequence)left;          
          if (rsLeft.size() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {
             java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
@@ -259,7 +266,7 @@ public class Div extends ArithmeticOperation
      else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
          ResultSequence rsRight = (ResultSequence)right;          
          if (rsRight.size() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {             
             double lDouble = ((XNumber)left).num();
@@ -273,7 +280,7 @@ public class Div extends ArithmeticOperation
      else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
          ResultSequence rsLeft = (ResultSequence)left;          
          if (rsLeft.size() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {
             java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
@@ -288,7 +295,7 @@ public class Div extends ArithmeticOperation
      else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
          ResultSequence rsRight = (ResultSequence)right;          
          if (rsRight.size() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {                          
             java.lang.String lStrVal = ((XSNumericType)left).stringValue();
@@ -303,12 +310,12 @@ public class Div extends ArithmeticOperation
      else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
          ResultSequence rsLeft = (ResultSequence)left;          
          if (rsLeft.size() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          
          ResultSequence rsRight = (ResultSequence)right;          
          if (rsRight.size() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          
          java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
@@ -322,7 +329,7 @@ public class Div extends ArithmeticOperation
      else if (left instanceof ResultSequence) {
     	 ResultSequence rSeq = (ResultSequence)left;
          if (rSeq.size() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});  
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }                  
     	 
          BigDecimal lBigDecimal = null;
@@ -336,17 +343,17 @@ public class Div extends ArithmeticOperation
     		 result = new XSDecimal(lBigDecimal.divide(rBigDecimal));
     	 }
     	 catch (NumberFormatException ex) {
-    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});
+    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);
     	 }
     	 catch (ArithmeticException ex) {
     		 java.lang.String exceptionMesg = ex.getMessage();
-    		 result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
+    		 result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg, elemTemplateElement);
     	 }
      }
      else if (left instanceof XMLNodeCursorImpl) {
     	 XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
          if (lNodeSet.getLength() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}); 
+        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement); 
          }                  
     	 
          BigDecimal lBigDecimal = null;
@@ -360,11 +367,11 @@ public class Div extends ArithmeticOperation
     		 result = new XSDecimal(lBigDecimal.divide(rBigDecimal));
     	 }
     	 catch (NumberFormatException ex) {
-    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV});
+    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);
     	 }
     	 catch (ArithmeticException ex) {
     		 java.lang.String exceptionMesg = ex.getMessage();
-    		 result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
+    		 result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg, elemTemplateElement);
     	 }         
      }
      else if (left instanceof XSYearMonthDuration) {
@@ -387,7 +394,7 @@ public class Div extends ArithmeticOperation
     		 result = doubleDiv(lDouble, rDouble);
          }
          catch (NumberFormatException ex) {
-        	 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}); 
+        	 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement); 
          }
      }
       

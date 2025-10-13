@@ -34,7 +34,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.PrefixResolver;
-import org.apache.xpath.ArithmeticOperation;
+import org.apache.xpath.XPathArithmeticOperation;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
@@ -56,7 +56,7 @@ import xml.xpath31.processor.types.XSInteger;
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
-public class IDiv extends ArithmeticOperation
+public class IDiv extends XPathArithmeticOperation
 {
 
   private static final long serialVersionUID = 5138215729063791579L;

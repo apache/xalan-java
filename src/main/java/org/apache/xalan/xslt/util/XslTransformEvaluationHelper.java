@@ -33,6 +33,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XMLNSDecl;
@@ -41,7 +42,6 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.serializer.CharacterMapConfig;
-import org.apache.xml.utils.DateTimeUtil;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
@@ -67,6 +67,7 @@ import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.types.DateTimeUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
@@ -815,11 +816,38 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * This method produces, numerical sum of xdm sequence items.
+     * Method definition, to get XSL stylesheet root object, from
+     * the supplied XSL stylesheet non-expression node.
+     * 
+     * @param expressionNode						An XSL stylesheet not-expression node
+     * @return										An XSL stylesheet root object
+     */
+    public static StylesheetRoot getXslStylesheetRootFromXslElementRef(ExpressionNode expressionNode) {
+       
+    	StylesheetRoot result = null;
+
+    	ExpressionNode stylesheetRootExprNode = null;
+    	while (expressionNode != null) {
+    		stylesheetRootExprNode = expressionNode;
+    		expressionNode = expressionNode.exprGetParent();                     
+    	}
+
+    	if (stylesheetRootExprNode instanceof Stylesheet) {
+    		Stylesheet stylesheet = (Stylesheet)stylesheetRootExprNode;
+    		result = stylesheet.getStylesheetRoot();    				
+    	}    			
+    	else {
+    		result = (StylesheetRoot)stylesheetRootExprNode;
+    	}
+
+    	return result;
+    }
+    
+    /**
+     * Method definition, to get numerical sum from xdm sequence items.
      *  
-     * @param resultSeq  An xdm sequence object instance, whose items
-     *                   need to be numerically added to produce a sum. 
-     * @return           The summation value.
+     * @param resultSeq  				An xdm sequence object instance
+     * @return           				The summation value
      */
     private static double sumResultSequence(ResultSequence resultSeq) {
        

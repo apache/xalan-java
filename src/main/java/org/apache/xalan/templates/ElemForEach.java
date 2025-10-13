@@ -57,6 +57,7 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.InstanceOf;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.types.DateTimeUtil;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
@@ -1011,28 +1012,23 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   boolean compatibleDateTypes = false;
 					   if (!compatibleDateTypes1) {
 						   /**
-						    * xs:date and xs:dateTime values are relatively sortable. When an 
-						    * xdm input sequence contains, a combination of xs:date and xs:dateTime 
-						    * values, we convert xs:dateTime values to xs:date values retaining time 
-						    * zone component, for the purpose of sorting the values. W3C XSLT 3.0 
+						    * xs:date and xs:dateTime values are relatively sortable. W3C XSLT 3.0 
 						    * test case date-032 has an example for this use case.
 						    */
 						   if (idx == 0) {
 							   XObject xObj1 = xdmItemList.get(1);
 							   if ((xObj0 instanceof XSDateTime) && ((xObj1 instanceof XSDate) || 
 									                                                       (xObj1 instanceof XSDateTime))) {
-								   compatibleDateTypes = true;
-								   XSDateTime xsDateTime = (XSDateTime)xObj0;								   
-								   String dateStr1 = getXsDateStrFromDateTime(xsDateTime);
-								   resultSeqItem = XSDate.parseDate(dateStr1);
+								   compatibleDateTypes = true;								   
+								   String xsDateStr1 = DateTimeUtil.getXsDateStrFromXsDateTime((XSDateTime)xObj0);
+								   resultSeqItem = XSDate.parseDate(xsDateStr1);
 							   }
 						   }
 						   else if ((((xObj0 instanceof XSDate) || (xObj0 instanceof XSDateTime)) && 
 								                                                           (resultSeqItem instanceof XSDateTime))) {
-							   compatibleDateTypes = true;
-							   XSDateTime xsDateTime = (XSDateTime)resultSeqItem;								   
-							   String dateStr1 = getXsDateStrFromDateTime(xsDateTime);
-							   resultSeqItem = XSDate.parseDate(dateStr1);
+							   compatibleDateTypes = true;								   
+							   String xsDateStr1 = DateTimeUtil.getXsDateStrFromXsDateTime((XSDateTime)resultSeqItem);
+							   resultSeqItem = XSDate.parseDate(xsDateStr1);
 						   }
 					   }
 
@@ -1632,43 +1628,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 	   public void setSortKeyList(List<SortKey> sortKeyList) {
 		   this.m_sortKeyList = sortKeyList;  
 	   }
-   }
-   
-   /**
-    * Method definition, to get xs:date value string, from
-    * supplied xs:dateTime value.
-    * 
-    * @param xsDateTime					  Supplied xs:dateTime value
-    * @return							  xs:date value string
-    */
-   private String getXsDateStrFromDateTime(XSDateTime xsDateTime) {
-	   
-	   String result = null;
-	   
-	   String xsDateTimeStr = xsDateTime.stringValue();
-	   int idx2 = xsDateTimeStr.indexOf('T');
-	   String prfxStr = xsDateTimeStr.substring(0, idx2);
-	   String sffxStr = xsDateTimeStr.substring(idx2 + 1);
-	   int zi = sffxStr.indexOf('Z');
-	   int pi = sffxStr.indexOf('+');
-	   int mi = sffxStr.indexOf('-');
-	   String dateStr1 = null; 
-	   if (zi != -1) {
-		   dateStr1 = prfxStr + "Z";   
-	   }
-	   else if (pi != -1) {
-		   dateStr1 = prfxStr + sffxStr.substring(pi); 
-	   }
-	   else if (mi != -1) {
-		   dateStr1 = prfxStr + sffxStr.substring(pi); 
-	   }
-	   else {
-		   dateStr1 = prfxStr;  
-	   }
-	   
-	   result = dateStr1;
-	   
-	   return result;
    }
    
 }
