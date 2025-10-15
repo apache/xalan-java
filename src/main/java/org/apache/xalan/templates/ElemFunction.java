@@ -663,7 +663,16 @@ public class ElemFunction extends ElemTemplate
         					if (funcResultConvertedVal instanceof XPathNamedFunctionReference) {
         					   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)funcResultConvertedVal;
         					   if (xpathNamedFunctionReference.getXslStylesheetFunction() == null) {
-        						   int actualFuncArity = xpathNamedFunctionReference.getArity();
+        						   String funcNamespace = xpathNamedFunctionReference.getFuncNamespace();
+        						   int actualFuncArity = 0;           
+        						   if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+        								   																(Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+        							   actualFuncArity = xpathNamedFunctionReference.getConcatArity();
+        						   }
+        						   else {
+        							   actualFuncArity = xpathNamedFunctionReference.getArity(); 
+        						   }
+        						   
         						   List<String> expectedParamList = sequenceTypeFunctionTest.getTypedFunctionTestParamSpecList();
         						   if (actualFuncArity != expectedParamList.size()) {
         							   throw new TransformerException("XPTY0004 : An xsl:function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
@@ -799,13 +808,8 @@ public class ElemFunction extends ElemTemplate
 
     			 return resultSequence;
     		 }
-    		 else {
-    			 // REVISIT        		     		 
-    			 List<String> funcParamSpecList = seqTypeFunctionTest.getTypedFunctionTestParamSpecList();
-    			 String funcReturnSeqType = seqTypeFunctionTest.getTypedFunctionTestReturnType();
-    			 
+    		 else {    			 
     			 String funcName = xpathNamedFunctionReference.getFuncName();
-    			 int funcArity = xpathNamedFunctionReference.getArity();
     			 FunctionTable funcTable = xctxt.getFunctionTable();
     			 Object funcIdInFuncTable = funcTable.getFunctionId(funcName);
     			 Function function = funcTable.getFunction((int)funcIdInFuncTable);

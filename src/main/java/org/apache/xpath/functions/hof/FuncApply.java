@@ -36,6 +36,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
@@ -111,12 +112,12 @@ public class FuncApply extends Function2Args {
             	result = getFnApplyResult(xpathInlineFunction, m_arg1, xctxt);
             }
             else {
-                throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument provided to function call fn:apply, "
+                throw new javax.xml.transform.TransformerException("FORG0006 : The first argument provided to function call fn:apply, "
                                                                                                + "is not a function reference.", srcLocator);    
             }
         }
         else {
-            throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument provided to function call fn:apply, "
+            throw new javax.xml.transform.TransformerException("FORG0006 : The first argument provided to function call fn:apply, "
                                                                                                + "is not a function reference.", srcLocator);               
         }
         
@@ -150,7 +151,7 @@ public class FuncApply extends Function2Args {
   
   /**
    * Get the result of fn:apply function call, where function call fn:apply's
-   * 1st argument is an XPath named function reference.
+   * first argument is an XPath named function reference.
    */
   private XObject getFnApplyResult(XPathNamedFunctionReference namedFuncRef, 
 		                           Expression arg1XpathExpr, XPathContext xctxt) throws TransformerException {
@@ -161,13 +162,20 @@ public class FuncApply extends Function2Args {
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
 	  if (!(arg1XObj instanceof XPathArray)) {
-		 throw new TransformerException("XPTY0004 : The 2nd argument provided to function call fn:apply, "
+		 throw new TransformerException("XPTY0004 : The second argument provided to function call fn:apply, "
 		 		                                                            							+ "is not an array reference.", srcLocator);   
 	  }
 	  
 	  String funcNamespace = namedFuncRef.getFuncNamespace();
 	  String funcLocalName = namedFuncRef.getFuncName();
-	  int funcArity = namedFuncRef.getArity(); 
+	  int funcArity = 0;           
+	  if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+			  															(Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+		  funcArity = namedFuncRef.getConcatArity();
+	  }
+	  else {
+		  funcArity = namedFuncRef.getArity(); 
+	  } 
 
 	  FunctionTable funcTable = xctxt.getFunctionTable();
 
@@ -233,7 +241,7 @@ public class FuncApply extends Function2Args {
 	  inlineFunctionVarMap.put(new QName(funcRefVarName), xpathInlineFunction);
 
 	  if (!(arrXPathExpr instanceof XPathArrayConstructor)) {
-		  throw new TransformerException("XPTY0004 : The 2nd argument provided to function call fn:apply, "
+		  throw new TransformerException("XPTY0004 : The second argument provided to function call fn:apply, "
 				                                                             + "is not an array reference.", srcLocator);   
 	  }
 	  else {
@@ -241,7 +249,7 @@ public class FuncApply extends Function2Args {
 		  List<String> arrConsXPathParts = xpathArrConstructor.getArrayConstructorXPathParts();
 		  List<InlineFunctionParameter> inlineFuncParamList = xpathInlineFunction.getFuncParamList();
 		  if (arrConsXPathParts.size() != inlineFuncParamList.size()) {
-			  throw new TransformerException("XPTY0004 : The number of arguments provided with function call fn:apply() "
+			  throw new TransformerException("XPTY0004 : The number of arguments provided with function call fn:apply "
 																                                     + "within its arguments array is " + arrConsXPathParts.size() + 
 																                                       ". Required " + inlineFuncParamList.size() + "."); 
 		  }
@@ -272,7 +280,7 @@ public class FuncApply extends Function2Args {
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
 	  if (!(arrXPathExpr instanceof XPathArrayConstructor)) {
-		  throw new TransformerException("XPTY0004 : The 2nd argument provided to function call fn:apply, "
+		  throw new TransformerException("XPTY0004 : The second argument provided to function call fn:apply, "
 				                                                             							+ "is not an array reference.", srcLocator);   
 	  }
 	  else {
@@ -280,7 +288,7 @@ public class FuncApply extends Function2Args {
 		  List<String> arrConsXPathParts = xpathArrConstructor.getArrayConstructorXPathParts();
 		  int xslFunctionParamCount = elemFunction.getArity();
 		  if (arrConsXPathParts.size() != xslFunctionParamCount) {
-			  throw new TransformerException("XPTY0004 : The number of arguments provided with function call fn:apply() "
+			  throw new TransformerException("XPTY0004 : The number of arguments provided with function call fn:apply "
 																                                     				+ "within its arguments array is " + arrConsXPathParts.size() + 
 																                                     				". Required " + xslFunctionParamCount + "."); 
 		  }

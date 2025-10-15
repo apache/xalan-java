@@ -474,6 +474,15 @@ public class ElemValueOf extends ElemTemplateElement {
                   }
                   else if (expr instanceof Function) {
                       XObject evalResult = ((Function)expr).execute(xctxt);
+                      
+                      if (evalResult instanceof XSQName) {
+                    	 XSQName xsQName = (XSQName)evalResult;
+                    	 String localPart = xsQName.getLocalPart();
+                    	 if ((Constants.ANONYMOUS_FUNCTION).equals(localPart)) {
+                    		 evalResult = new ResultSequence(); 
+                    	 }
+                      }
+                      
                       String strValue = null;                      
                       if (evalResult instanceof XSAnyType) {
                     	  if (evalResult instanceof XSQName) {

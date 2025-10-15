@@ -32,6 +32,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.WrongNumberArgsException;
@@ -133,7 +134,14 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
            XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)xpathNamedFunctionReference;
            String funcNamespace = namedFuncRef.getFuncNamespace();
            String funcLocalName = namedFuncRef.getFuncName();
-           int funcArity = namedFuncRef.getArity();
+           int funcArity = 0;           
+           if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+        		                                                              (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+        	   funcArity = namedFuncRef.getConcatArity();
+           }
+           else {
+        	   funcArity = namedFuncRef.getArity(); 
+           }
            
            FunctionTable funcTable = xctxt.getFunctionTable();
            

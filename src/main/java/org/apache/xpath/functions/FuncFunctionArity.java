@@ -36,6 +36,7 @@ import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -96,10 +97,14 @@ public class FuncFunctionArity extends FunctionDef1Arg
 			   if (varValue != null) {
 				   Object obj1 = varValue.object();
 				   if (obj1 instanceof Function) {
-					   Function func1 = (Function)obj1;
-					   // REVISIT   function arity may have more than one value
-					   short arity = (func1.getDefinedArity())[0];					   
-					   result = new XSInteger("" + arity);
+					   Function func1 = (Function)obj1;					   
+					   if (func1 instanceof FuncConcat) {
+						  result = new XSInteger("" + ((FuncConcat)func1).getActualArity()); 
+					   }
+					   else {
+						  short arity = (func1.getDefinedArity())[0];
+					      result = new XSInteger("" + arity);
+					   }
 					   
 					   return result;
 				   }

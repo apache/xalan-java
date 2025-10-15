@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:12:39Z" fail="44" name="higher-order-functions" pass="27" skipped="5" statusUnknown="0" totalRun="71">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-15T11:54:45Z" fail="38" name="higher-order-functions" pass="33" skipped="5" statusUnknown="0" totalRun="71">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -21,13 +21,13 @@
    <testResult status="pass" testName="higher-order-functions-020"/>
    <testResult status="pass" testName="higher-order-functions-021"/>
    <testResult status="pass" testName="higher-order-functions-022"/>
-   <testResult status="fail" testName="higher-order-functions-023"/>
-   <testResult status="fail" testName="higher-order-functions-024"/>
+   <testResult status="pass" testName="higher-order-functions-023"/>
+   <testResult status="pass" testName="higher-order-functions-024"/>
    <testResult status="fail" testName="higher-order-functions-025"/>
-   <testResult status="fail" testName="higher-order-functions-026"/>
-   <testResult status="fail" testName="higher-order-functions-027"/>
-   <testResult status="fail" testName="higher-order-functions-028"/>
-   <testResult status="fail" testName="higher-order-functions-029"/>
+   <testResult status="pass" testName="higher-order-functions-026"/>
+   <testResult status="pass" testName="higher-order-functions-027"/>
+   <testResult status="pass" testName="higher-order-functions-028"/>
+   <testResult status="pass" testName="higher-order-functions-029"/>
    <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-030"/>
    <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-031"/>
    <testResult status="fail" testName="higher-order-functions-032">
@@ -81,7 +81,7 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;true&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-055">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;false&lt;/out&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"/&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-056">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;NaN&lt;/out&gt;</outResult>
@@ -113,7 +113,9 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
       </outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-066">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"/&gt;</outResult>
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: Expected ), but found: </errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-067">
       <outResult/>
@@ -133,6 +135,8 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
    </testResult>
    <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-075"/>
    <testResult status="fail" testName="higher-order-functions-076">
-      <outResult/>
+      <outResult>
+         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://example.com/mf}wrap, doesn't match the declared parameter type node()*.</errTrace>
+      </outResult>
    </testResult>
 </testrun>

@@ -25,6 +25,7 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.StylesheetRoot;
@@ -127,7 +128,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 			   result = getFunctionNameFromNodeTestExpr(nodeTest, srcLocator);
 			}
 			else if (xObj instanceof XPathInlineFunction) {
-			   result = new ResultSequence();
+			   result = new XSQName(null, Constants.ANONYMOUS_FUNCTION, null); 
 			}
 			else {
 			   throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for the supplied function "
@@ -157,7 +158,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 			}
 		}
 		else if (arg0 instanceof XPathInlineFunction) {
-			result = new ResultSequence();
+			result = new XSQName(null, Constants.ANONYMOUS_FUNCTION, null);
 		}
 		else {
 			throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for the supplied function "

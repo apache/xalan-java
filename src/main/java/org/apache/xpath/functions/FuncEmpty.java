@@ -16,6 +16,7 @@
  */
 package org.apache.xpath.functions;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
@@ -88,7 +89,13 @@ public class FuncEmpty extends FunctionOneArg {
            }
         }
         else {
-           result = XBoolean.S_FALSE; 
+           String strVal1 = XslTransformEvaluationHelper.getStrVal(arg0Obj);
+           if (strVal1 == null) {
+        	  result = XBoolean.S_TRUE; 
+           }
+           else {
+              result = XBoolean.S_FALSE;
+           }
         }
         
         return result;

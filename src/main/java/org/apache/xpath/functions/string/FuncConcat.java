@@ -44,108 +44,132 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
  */
 public class FuncConcat extends FunctionMultiArgs
 {
-    static final long serialVersionUID = 1737228885202314413L;
-    
-    /**
+	static final long serialVersionUID = 1737228885202314413L;
+
+	private int m_min_arity = 2;
+
+	private int m_max_arity = Integer.MAX_VALUE - 1;
+	
+	private int m_defined_arity = 0;
+	
+	/**
 	 * Class constructor.
 	 */
-    public FuncConcat() {
-       short maxArgSupported = (Short.MAX_VALUE - 1); 
-	   m_defined_arity = new Short[maxArgSupported];
-	   for (short idx = 2; idx <= maxArgSupported; idx++) {
-		  m_defined_arity[idx - 2] = idx;  
-	   }
-    }
+	public FuncConcat() {
+		// no op
+	}
 
-  /**
-   * Execute the function. The function must return
-   * a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
+	/**
+	 * Execute the function. The function must return
+	 * a valid object.
+	 * 
+	 * @param xctxt The current execution context.
+	 * @return A valid XObject.
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
 
-    StringBuffer sb = new StringBuffer();        
+		StringBuffer sb = new StringBuffer();        
 
-    // Compiler says we must have at least two arguments
-    sb.append(inspectXPathSelfAxesExpression(m_arg0, xctxt));
-    sb.append(inspectXPathSelfAxesExpression(m_arg1, xctxt));
+		// Compiler says we must have at least two arguments
+		sb.append(inspectXPathSelfAxesExpression(m_arg0, xctxt));
+		sb.append(inspectXPathSelfAxesExpression(m_arg1, xctxt));
 
-    if (m_arg2 != null) {
-       sb.append(inspectXPathSelfAxesExpression(m_arg2, xctxt));
-    }
+		if (m_arg2 != null) {
+			sb.append(inspectXPathSelfAxesExpression(m_arg2, xctxt));
+		}
 
-    if (m_args != null) {
-       for (int i = 0; i < m_args.length; i++) {
-         sb.append(inspectXPathSelfAxesExpression(m_args[i], xctxt));
-       }
-    }
+		if (m_args != null) {
+			for (int i = 0; i < m_args.length; i++) {
+				sb.append(inspectXPathSelfAxesExpression(m_args[i], xctxt));
+			}
+		}
 
-    return new XString(sb.toString());
-  }
+		return new XString(sb.toString());
+	}
 
-  /**
-   * Check that the number of arguments passed to this function is correct.
-   *
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-    if (argNum < 2)
-      reportWrongNumberArgs();
-  }
+	/**
+	 * Check that the number of arguments passed to this function is correct.
+	 *
+	 * @param argNum The number of arguments that is being passed to the function.
+	 *
+	 * @throws WrongNumberArgsException
+	 */
+	public void checkNumberArgs(int argNum) throws WrongNumberArgsException
+	{
+		if (argNum < 2)
+			reportWrongNumberArgs();
+	}
 
-  /**
-   * Constructs and throws a WrongNumberArgException with the appropriate
-   * message for this function object.
-   *
-   * @throws WrongNumberArgsException
-   */
-  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("gtone", null));
-  }
-  
-  /*
-   * If the XPath expression's pattern string is ".", the evaluation result of 
-   * XPath expression, is the string value of XPath context item.
-   * 
-   * Other than, handling an XPath expression that has a pattern string as ".", 
-   * this method does few of other things as well. 
-   */
-  private String inspectXPathSelfAxesExpression(Expression expr, XPathContext xctxt) 
-                                                                   throws TransformerException {
-      String resultStr = null;
-            
-      if (expr instanceof SelfIteratorNoPredicate) {
-    	  XObject xpath3ContextItem = xctxt.getXPath3ContextItem();    	  
-          if (xpath3ContextItem != null) {
-        	  resultStr = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);
-          }
-          else {
-        	  XObject xObj = expr.execute(xctxt);
-        	  resultStr = XslTransformEvaluationHelper.getStrVal(xObj);   
-          }
-      }
-      else if (expr instanceof Function) {
-          XObject evalResult = ((Function)expr).execute(xctxt);
-          resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);
-      }
-      else if (expr instanceof XSUntyped || expr instanceof XSUntypedAtomic) {
-          resultStr = ((XSAnyType)expr).stringValue();
-      }
-      else {
-    	  XObject xObj = expr.execute(xctxt);
-    	  resultStr = XslTransformEvaluationHelper.getStrVal(xObj);
-      }
-      
-      return resultStr;      
-  }
-  
+	/**
+	 * Constructs and throws a WrongNumberArgException with the appropriate
+	 * message for this function object.
+	 *
+	 * @throws WrongNumberArgsException
+	 */
+	protected void reportWrongNumberArgs() throws WrongNumberArgsException {
+		throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("gtone", null));
+	}
+
+	/**
+	 * When, an XPath expression's pattern string is ".", the evaluation result of 
+	 * XPath expression, is the string value of XPath context item.
+	 * 
+	 * Other than, handling an XPath expression that has a pattern string as ".", 
+	 * this method does few of other things as well. 
+	 */
+	private String inspectXPathSelfAxesExpression(Expression expr, XPathContext xctxt) 
+																					throws TransformerException {
+		String resultStr = null;
+
+		if (expr instanceof SelfIteratorNoPredicate) {
+			XObject xpath3ContextItem = xctxt.getXPath3ContextItem();    	  
+			if (xpath3ContextItem != null) {
+				resultStr = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);
+			}
+			else {
+				XObject xObj = expr.execute(xctxt);
+				resultStr = XslTransformEvaluationHelper.getStrVal(xObj);   
+			}
+		}
+		else if (expr instanceof Function) {
+			XObject evalResult = ((Function)expr).execute(xctxt);
+			resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);
+		}
+		else if (expr instanceof XSUntyped || expr instanceof XSUntypedAtomic) {
+			resultStr = ((XSAnyType)expr).stringValue();
+		}
+		else {
+			XObject xObj = expr.execute(xctxt);
+			resultStr = XslTransformEvaluationHelper.getStrVal(xObj);
+		}
+
+		return resultStr;      
+	}
+
+	public int getMinArity() {
+		return m_min_arity;
+	}
+
+	public void setMinArity(int minArity) {
+		this.m_min_arity = minArity;
+	}
+
+	public int getMaxArity() {
+		return m_max_arity;
+	}
+
+	public void setMaxArity(int maxArity) {
+		this.m_max_arity = maxArity;
+	}
+	
+	public int getActualArity() {
+	    return m_defined_arity; 
+	}
+	  
+	public void setActualArity(int definedArity) {
+	    this.m_defined_arity = definedArity; 
+	}  
 }

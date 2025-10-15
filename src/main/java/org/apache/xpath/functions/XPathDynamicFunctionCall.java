@@ -43,6 +43,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -397,19 +398,50 @@ public class XPathDynamicFunctionCall extends Expression {
     	    else {
     	       Object obj1 = functionRef.object();
     	       if (obj1 instanceof Function) {
-    	    	  Function function = (Function)obj1;    	    	  
+    	    	  Function function = (Function)obj1;
     	    	  
     	    	  String funcNamespace = function.getNamespace();
  	    		  String funcLocalName = function.getLocalName();
  	    		  
- 	    		  Short[] funcDefinedArity = function.getDefinedArity();
- 	    		  List<Short> arityList = Arrays.asList(funcDefinedArity);
+ 	    		  String requiredArityStr = "";
+ 	    		  String expandedFuncName = null;
+ 	    		  boolean isRuntimeArityOk = false;
+ 	    		  if (function instanceof FuncConcat) {
+ 	    			 FuncConcat funcConcat = (FuncConcat)function;
+ 	    			 int concatRunTimeArityValue = m_argList.size();
+ 	    			 expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + concatRunTimeArityValue;
+ 	    			 int minArity = funcConcat.getMinArity();
+ 	    			 int maxArity = funcConcat.getMaxArity();
+ 	    			 requiredArityStr = (minArity + " .. " + maxArity); 
+ 	    			 if ((concatRunTimeArityValue >= minArity) && (concatRunTimeArityValue <= maxArity)) {
+ 	    				isRuntimeArityOk = true; 
+ 	    			 }
+ 	    		  }
+ 	    		  else { 	    			 
+ 	    			 short runTimeArityValue = (short)(m_argList.size());
+ 	    			 expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + runTimeArityValue;
+ 	    			 Short[] funcDefinedArity = function.getDefinedArity();
+ 	 	    		 List<Short> arityList = Arrays.asList(funcDefinedArity);
+ 	 	    		 int listSize1 = arityList.size();
+ 	 	    		 StringBuffer strBuff = new StringBuffer();
+ 	 	    		 for (int idx = 0; idx < listSize1; idx++) {
+ 	 	    			String str1 = String.valueOf(arityList.get(idx));
+ 	 	    			if (idx < (listSize1 - 1)) {
+ 	 	    			   strBuff.append(str1 + ",");
+ 	 	    			}
+ 	 	    			else {
+ 	 	    			   strBuff.append(str1);
+ 	 	    			}
+ 	 	    		 }
+ 	 	    		 
+ 	 	    		 requiredArityStr = strBuff.toString(); 
+ 	 	    		 
+ 	 	    		 if (arityList.contains(runTimeArityValue)) {
+ 	 	    			isRuntimeArityOk = true; 
+ 	 	    		 }
+ 	    		  }
  	    		  
- 	    		  final short runTimeArityValue = (short)(m_argList.size());
- 	    		  
- 	    		  String expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + runTimeArityValue;
- 	    		  
-    	    	  if (arityList.contains(runTimeArityValue)) {    	    		 
+    	    	  if (isRuntimeArityOk) {    	    		 
     	    		 try {
     	    			 for (int idx = 0; idx < m_argList.size(); idx++) {
     	    				 String argXPathStr = m_argList.get(idx);
@@ -436,7 +468,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	  else {
     	    		 throw new javax.xml.transform.TransformerException("XPTY0004 : The number of arguments provided for "
     	    		 		                                                                        + "function call " + expandedFuncName + " is "
-    	    		 		                                                                        + "incorrect. Required " + runTimeArityValue + ", supplied " 
+    	    		 		                                                                        + "incorrect. Required " + requiredArityStr + ", supplied " 
     	    		 		                                                                        + m_argList.size() + ".", srcLocator); 
     	    	  }
     	       }

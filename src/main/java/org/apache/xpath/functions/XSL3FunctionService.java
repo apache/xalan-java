@@ -65,6 +65,7 @@ import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathExprFuncCallExtendedArg;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -826,7 +827,14 @@ public class XSL3FunctionService {
 
     	String funcNamespace = xpathNamedFuncRef.getFuncNamespace();
     	String funcLocalName = xpathNamedFuncRef.getFuncName();
-    	short funcArity = xpathNamedFuncRef.getArity();
+    	int funcArity = 0;           
+    	if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+    																		(Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+    		funcArity = xpathNamedFuncRef.getConcatArity();
+    	}
+    	else {
+    		funcArity = xpathNamedFuncRef.getArity(); 
+    	}
 
     	String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName; 
 
@@ -853,7 +861,12 @@ public class XSL3FunctionService {
     		Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
     		function.setLocalName(funcLocalName);
     		function.setNamespace(funcNamespace);
-    		function.setDefinedArity(new Short[] { funcArity });
+    		if (function instanceof FuncConcat) {
+    		    ((FuncConcat)function).setActualArity(funcArity);
+    		}
+    		else {
+    			function.setDefinedArity(new Short[] { (short)funcArity });
+    		}
 
     		for (int idx = 0; idx < argList.size(); idx++) {
     			String argXPathStr = argList.get(idx);
@@ -925,7 +938,7 @@ public class XSL3FunctionService {
     		// Evaluate an XPath schema type constructor function call reference
     		
     		XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
-    		funcObj.setDefinedArity(new Short[] { funcArity });
+    		funcObj.setDefinedArity(new Short[] { (short)funcArity });
 
     		for (int idx = 0; idx < argList.size(); idx++) {
     			String argXPathStr = argList.get(idx);

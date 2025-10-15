@@ -73,11 +73,11 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ XslVariableTests.class, XslAsAttrTests.class, XslAvtAttrTests.class, XslMatchAttrTests.class, XslSelectAttrTests.class,
-	            XslApplyTemplatesTests.class, XslForEachGroupTests.class, XslTryTests.class, XslAttributeTests.class, XslCallTemplateTests.class, 
+	            XslApplyTemplatesTests.class, XslForEachGroupTests.class, XslHigherOrderFunctionTests.class, XslTryTests.class, 
 	            XslBooleanTests.class, XslChooseTests.class, XslCopyTests.class, XslIterateTests.class, XslSequenceTests.class, XslElementTests.class, 
 	            XslSortTests.class, XslFunctionTests.class, XslCharacterMapTests.class, XslAttributeSetTests.class, 
 	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class, XslMathTests.class, 
-	            XslNodeTestTests.class, XslPathTests.class, XslHigherOrderFunctionTests.class, XslPredicateTests.class, 
+	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, XslAttributeTests.class, XslCallTemplateTests.class, 
 	            XslNodeTests.class, XslStringTests.class, XslDateTests.class, XslFnDeepEqualTests.class, XslFnPositionTests.class, 
 	            XslAnalyzeStringTests.class, XslFnRootTests.class, XslFnKeyTests.class, XslFnFormatNumberTests.class, XslMiscRegexTests.class,
 	            XslDocumentTests.class, XslXPathDefaultNamespaceAttrTests.class, XslExpandTextAttrTests.class, XslFnJsonToXmlTests.class })

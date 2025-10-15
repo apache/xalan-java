@@ -19,8 +19,10 @@ package org.apache.xpath.functions;
 
 import javax.xml.transform.SourceLocator;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.types.XSNCName;
 
@@ -64,9 +66,13 @@ public class FuncLocalNameFromQName extends FunctionDef1Arg {
 	  
 	  if (arg0Value instanceof XSQName) {		  
 		  XSQName xsQname = (XSQName)arg0Value;
-	      String prefix = xsQname.getLocalPart();
-		  XSNCName xsNCName = new XSNCName(prefix);
-		  result = xsNCName;  
+	      String localPart = xsQname.getLocalPart();	      
+	      if (!(Constants.ANONYMOUS_FUNCTION).equals(localPart)) {
+	    	 result = new XSNCName(localPart);
+	      }
+	      else {
+	    	 result = new ResultSequence(); 
+	      }
 	  }
 	  else {
 		 throw new javax.xml.transform.TransformerException("FOAP0001: The first argument within fn:local-name-from-QName "

@@ -27,6 +27,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
@@ -137,6 +138,13 @@ public class InstanceOf extends Operation
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
       int builtInSeqType = seqTypedData.getBuiltInSequenceType();
+      
+      if (left instanceof XSQName) {
+    	 java.lang.String localPart = ((XSQName)left).getLocalPart();
+    	 if ((Constants.ANONYMOUS_FUNCTION).equals(localPart)) {
+    		 left = new ResultSequence(); 
+    	 }
+      }
       
       if ((left instanceof ResultSequence) && ((ResultSequence)left).size() == 0) {
     	 if ((seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
@@ -515,6 +523,7 @@ public class InstanceOf extends Operation
 				  }
 				  else {
 					  isInstanceOf = false;
+					  
 					  break;
 				  }
 			  }
@@ -544,6 +553,7 @@ public class InstanceOf extends Operation
 							  }
 							  else {
 								  isInstanceOf = false;
+								  
 								  break;
 							  }
 						  }
@@ -565,6 +575,7 @@ public class InstanceOf extends Operation
 								  Node childNode = childNodes.item(idx);
 								  if (childNode.getNodeType() == Node.ELEMENT_NODE) {
 									  isComplexContent = true;
+									  
 									  break;
 								  }
 							  }
@@ -576,6 +587,7 @@ public class InstanceOf extends Operation
 									  java.lang.String nodeNameStr = attrNode.getNodeName();									
 									  if (!"xmlns".equals(nodeNameStr)) {
 										  isComplexContent = true;
+										  
 										  break;
 									  }
 								  }
@@ -583,6 +595,7 @@ public class InstanceOf extends Operation
 							  
 							  if (isComplexContent) {
 								  isInstanceOf = false;
+								  
 								  break;
 							  }
 							  else {
@@ -618,6 +631,7 @@ public class InstanceOf extends Operation
 							  }
 							  catch (TransformerException ex) {
 								  isInstanceOf = false;
+								  
 								  break;
 							  }
 							  if (isInstanceOf) {
@@ -647,6 +661,7 @@ public class InstanceOf extends Operation
 								 // produce 'instance of' result as false, instead of emitting an XPath 
 								 // dynamic error. 
 								 isInstanceOf = false;
+								 
 								 break; 
 							  }
 						  }
@@ -654,6 +669,7 @@ public class InstanceOf extends Operation
 							  // When an XML input document has not been validated with a schema, we produce 
 							  // 'instance of' result as false, instead of emitting an XPath dynamic error.
 							  isInstanceOf = false;
+							  
 							  break; 
 						  }
 					  }
@@ -664,6 +680,7 @@ public class InstanceOf extends Operation
 				  }
 				  else {
 					  isInstanceOf = false;
+					  
 					  break;
 				  }
 			  }
@@ -690,11 +707,13 @@ public class InstanceOf extends Operation
 								  }
 								  catch (InvalidDatatypeValueException ex) {
 									  isInstanceOf = false;
+									  
 									  break;
 								  }
 							  }
 							  else {
 								  isInstanceOf = false;
+								  
 								  break; 
 							  }
 						  }
@@ -712,10 +731,11 @@ public class InstanceOf extends Operation
 							  }
 							  catch (TransformerException ex) {
 								  isInstanceOf = false;
+								  
 								  break;
 							  }
 							  if (isInstanceOf) {
-								 nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
+								  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
 							  }
 							  else {
 								 break; 
@@ -736,11 +756,14 @@ public class InstanceOf extends Operation
 								 nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
 							  }
 							  else {
-								 // When an XML input document has been validated with a schema but the schema 
-								 // doesn't have a global attribute declaration for this attribute node, we 
-								 // produce 'instance of' result as false, instead of emitting an XPath 
-								 // dynamic error. 
+                                 /**
+                                  * When an XML input document has been validated with a schema but the schema
+                                  * doesn't have a global attribute declaration for this attribute node, we
+                                  * produce 'instance of' result as false, instead of emitting an XPath
+                                  * dynamic error.
+                                  */
 								 isInstanceOf = false;
+								 
 								 break; 
 							  }
 						  }
@@ -748,6 +771,7 @@ public class InstanceOf extends Operation
 							  // When an XML input document has not been validated with a schema, we produce 
 							  // 'instance of' result as false, instead of emitting an XPath dynamic error.   
 							  isInstanceOf = false;
+							  
 							  break; 
 						  }
 					  }
@@ -758,6 +782,7 @@ public class InstanceOf extends Operation
 				  }
 				  else {
 					  isInstanceOf = false;
+					  
 					  break;
 				  } 
 			  }
@@ -819,6 +844,7 @@ public class InstanceOf extends Operation
 		  XObject seqItem = (XObject)(srcResultSeq.item(idx));
 		  if (!isInstanceOf(seqItem, sequenceTypeDataNew)) {
 			  isInstanceOfOnSeqItem = false;
+			  
 			  break;
 		  }
 	  }
@@ -871,11 +897,13 @@ public class InstanceOf extends Operation
 					  XObject arrayItemTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(arrItem, null, arrayItemTypeInfo, null);
 					  if (arrayItemTypeCheckResult == null) {             				
 						  isInstanceOf = false;
+						  
 						  break;
 					  }
 				  }
 				  catch (TransformerException ex) {
 					  isInstanceOf = false;
+					  
 					  break; 
 				  }
 			  } 	

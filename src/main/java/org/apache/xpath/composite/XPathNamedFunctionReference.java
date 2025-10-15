@@ -53,6 +53,11 @@ public class XPathNamedFunctionReference extends XObject {
 	private Short m_arity;
 	
 	/**
+	 * XPath function fn:concat's arity value.
+	 */
+	private int m_concat_arity;
+	
+	/**
 	 * An XSL stylesheet function object reference.
 	 */
 	private ElemFunction m_elemFunction = null;
@@ -93,6 +98,14 @@ public class XPathNamedFunctionReference extends XObject {
 		this.m_arity = arity;
 	}
 	
+	public int getConcatArity() {
+		return m_concat_arity;
+	}
+
+	public void setConcatArity(int concatArity) {
+		this.m_concat_arity = concatArity;
+	}
+
 	public ElemFunction getXslStylesheetFunction() {
 		return m_elemFunction; 
 	}

@@ -881,8 +881,17 @@ public class StylesheetRoot extends StylesheetComposed
    * @return
    */
   public ElemFunction getXslFunction(QName qname, int arity)
-  {	  
-	  return (ElemFunction)(m_templateList.getXslFunction(qname, arity));
+  {		 
+	  ElemFunction result = null;
+	  
+	  if (m_templateList != null) {
+		 ElemTemplate elemTemplate = m_templateList.getXslFunction(qname, arity);
+		 if (elemTemplate != null) {
+			result = (ElemFunction)elemTemplate;  
+		 }
+	  }
+	  
+	  return result;
   }
   
   /**

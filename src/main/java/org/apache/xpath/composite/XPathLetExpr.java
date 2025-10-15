@@ -36,8 +36,10 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
@@ -57,9 +59,6 @@ public class XPathLetExpr extends Expression {
     
     private String m_returnExprXPathStr = null;
     
-    // The following two fields of this class, are used during 
-    // XPath.fixupVariables(..) action as performed within object of 
-    // this class.    
     private Vector m_vars;
     
     private int m_globals_size;
@@ -130,7 +129,21 @@ public class XPathLetExpr extends Expression {
           if (xpathNamedFuncRef != null) {
         	  String funcNamespace = xpathNamedFuncRef.getFuncNamespace();
         	  String funcLocalName = xpathNamedFuncRef.getFuncName();
-        	  short funcArity = xpathNamedFuncRef.getArity();
+        	  int concatArity = 0;
+        	  short funcArity = 0;
+        	  if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+        			                                              (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+        		 concatArity = xpathNamedFuncRef.getConcatArity();
+        		 FuncConcat funcConcat = new FuncConcat();
+        		 if ((concatArity < funcConcat.getMinArity()) || (concatArity > funcConcat.getMaxArity())) {
+        			 throw new TransformerException("XPTY0004 : XPath function fn:concat's arity can be between " + 
+        		                                                                              funcConcat.getMinArity() + " and " 
+        					                                                                  + funcConcat.getMaxArity() + ".", srcLocator); 
+        		 }
+        	  }
+        	  else {
+        	     funcArity = xpathNamedFuncRef.getArity();
+        	  }
         	  
         	  String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName; 
 
@@ -154,8 +167,15 @@ public class XPathLetExpr extends Expression {
         		  String funcIdStr = funcIdObj.toString();
         		  Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
         		  function.setLocalName(funcLocalName);
-        		  function.setNamespace(funcNamespace);
-        		  function.setDefinedArity(new Short[] { funcArity });
+        		  function.setNamespace(funcNamespace);        		  
+        		  if (function instanceof FuncConcat) {        		     
+        		     FuncConcat funcConcat = (FuncConcat)function;
+        			 funcConcat.setActualArity(concatArity);
+        		  }
+        		  else {
+        			 function.setDefinedArity(new Short[] { funcArity });
+        		  }
+        		  
         		  varBindingEvalResult = new XObject(function);
         	  }
         	  else if (xpathNamedFuncRef.getXslStylesheetFunction() != null) {
