@@ -374,8 +374,13 @@ public class SequenceTypeSupport {
                                                     XPathContext xctxt, List prefixTable) throws TransformerException {
     	XObject result = null;
     	
-    	m_PrefixTable = prefixTable;    	
-    	result = castXdmValueToAnotherType(srcValue, sequenceTypeXPathExprStr, null, xctxt);
+    	m_PrefixTable = prefixTable;
+    	if (sequenceTypeXPathExprStr != null) {
+    	   result = castXdmValueToAnotherType(srcValue, sequenceTypeXPathExprStr, null, xctxt);
+    	}
+    	else {
+    	   result = castXdmValueToAnotherType(srcValue, null, seqExpectedTypeDataInp, xctxt);
+    	}
     	
     	return result;
     }
@@ -540,9 +545,11 @@ public class SequenceTypeSupport {
 	               result = srcValue;
 	               
 	               if (!srcValue.isTreatAs()) {
-	            	  // This is done for XPath "cast as" expression. Modifying the
-	            	  // static type of xdm value this way, is currently supported only
-	            	  // for user-defined schema types.
+	            	  /**
+	            	   * This is done for XPath "cast as" expression. Modifying the
+	            	   * static type of xdm value this way, is currently supported only
+	            	   * for user-defined schema types.    
+	            	   */
 	                  result.setXsTypeDefinition(xsTypeDefinition);
 	               }
 	               else {
@@ -629,9 +636,11 @@ public class SequenceTypeSupport {
 	            			   String dataTypeExpectedNsUri = sequenceTypeKindTest.getDataTypeUri();
 	            			   if ((dataTypeExpectedLocalName == null) || (Keywords.XS_UNTYPED.equals(dataTypeExpectedLocalName) && 
 	            					                                       XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(dataTypeExpectedNsUri))) {
-	            				   // An XPath sequence type expression, hasn't specified an XML Schema 
-	            				   // data type or sequence type expression has specified the data type 
-	            				   // as xs:untyped.	            				   
+	            				   /**
+	            				    * An XPath sequence type expression, hasn't specified an XML Schema
+	            				    * data type or sequence type expression has specified the data type
+	            				    * as xs:untyped.
+	            				    */
 	            				   DTMNodeList dtmNodeList = (DTMNodeList)obj1;
 		            			   DTMCursorIterator dtmCursorIter = dtmNodeList.getDTMIterator();
 		            			   int nodeHandle = dtmCursorIter.nextNode();
@@ -683,10 +692,6 @@ public class SequenceTypeSupport {
 		            					   return result;
 		            				   }
 		            			   } 
-	            			   }
-	            			   else {
-	            				   // REVISIT
-	            				   // We need to validate an XML element instance node 
 	            			   }
 	            		   }
 	            	   }
@@ -1170,16 +1175,17 @@ public class SequenceTypeSupport {
             else if (srcValue instanceof XPathInlineFunction) {
                SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
                if (sequenceTypeFunctionTest != null) {
-            	  XPathInlineFunction inlineFunctionExpr = (XPathInlineFunction)srcValue;
+            	  XPathInlineFunction xpathInlineFuncExpr = (XPathInlineFunction)srcValue;
             	  if (sequenceTypeFunctionTest.isAnyFunctionTest()) {
             		 result = srcValue; 
             	  }
             	  else {
-            		 List<InlineFunctionParameter> inlineFuncParameterList = inlineFunctionExpr.getFuncParamList();            		 
+            		 List<InlineFunctionParameter> inlineFuncParameterList = xpathInlineFuncExpr.getFuncParamList();            		 
             		 
             		 List<String> functionExpectedParamTypes = sequenceTypeFunctionTest.getTypedFunctionTestParamSpecList();
-            		 if (functionExpectedParamTypes.size() == inlineFuncParameterList.size()) {
-            		    for (int idx = 0; idx < functionExpectedParamTypes.size(); idx++) {
+            		 int funcExpectedParamCount = functionExpectedParamTypes.size();
+            		 if (funcExpectedParamCount == inlineFuncParameterList.size()) {
+            		    for (int idx = 0; idx < funcExpectedParamCount; idx++) {
             		       String expectedParamTypeStr = functionExpectedParamTypes.get(idx);
             		       if (m_PrefixTable != null) {
             		    	  expectedParamTypeStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
@@ -1193,7 +1199,7 @@ public class SequenceTypeSupport {
             		       SequenceTypeData sequenceTypeData1 = (SequenceTypeData)evalResult;
             		       SequenceTypeData sequenceTypeData2 = (inlineFuncParameterList.get(idx)).getParamType();
             		       if (!sequenceTypeData1.equal(sequenceTypeData2)) {
-            		    	  throw new TransformerException("XPTY0004 : Sequence type information for function test doesn't match.");  
+            		    	  throw new TransformerException("XPTY0004 : An xdm value doesn't match with the provided XPath sequence type.");  
             		       }
             		    }
             		 }
@@ -1201,7 +1207,7 @@ public class SequenceTypeSupport {
             			throw new TransformerException(INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR); 
             		 }
             		 
-            		 SequenceTypeData funcReturnType = inlineFunctionExpr.getReturnType();
+            		 SequenceTypeData funcReturnType = xpathInlineFuncExpr.getReturnType();
             		 String functionReturnTypeStr = sequenceTypeFunctionTest.getTypedFunctionTestReturnType();
             		 
             		 if (m_PrefixTable != null) {
@@ -1214,7 +1220,7 @@ public class SequenceTypeSupport {
                                                                                 null, true);
                      XObject evalResult = functionReturnTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
                      if (!funcReturnType.equal((SequenceTypeData)evalResult)) {
-       		    	    throw new TransformerException("XPTY0004 : Sequence type information for function test doesn't match.");  
+       		    	    throw new TransformerException("XPTY0004 : An xdm value doesn't match with the provided XPath sequence type.");  
        		         }
                      
             		 result = srcValue;

@@ -22,8 +22,14 @@ package org.apache.xpath.operations;
 
 import javax.xml.XMLConstants;
 
+import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
@@ -32,10 +38,13 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.functions.XSLFunctionBuilder;
+import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.patterns.NodeTest;
 
 /**
- * The base class for an XPath binary operation.
+ * A class definition, implementing XPath binary operators. 
  */
 public class Operation extends Expression implements ExpressionOwner
 {
@@ -94,7 +103,6 @@ public class Operation extends Expression implements ExpressionOwner
   /**
    * Set the left and right operand expressions for this operation.
    *
-   *
    * @param l The left expression operand.
    * @param r The right expression operand.
    */
@@ -109,7 +117,6 @@ public class Operation extends Expression implements ExpressionOwner
   /**
    * Execute a binary operation by calling execute on each of the operands,
    * and then calling the operate method on the derived class.
-   *
    *
    * @param xctxt The runtime execution context.
    *
@@ -146,6 +153,49 @@ public class Operation extends Expression implements ExpressionOwner
     	else {
     		left = m_left.execute(xctxt, true);   
     	}
+    }
+    else if (m_left instanceof NodeTest) {       	        	    	
+    	try {            	
+			StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(
+                                                                                                           (ElemTemplateElement)m_left.getExpressionOwner());
+			NodeTest nodeTest = (NodeTest)m_left; 
+			java.lang.String funcLocalNameRef = nodeTest.getLocalName();
+			java.lang.String funcNamespace = nodeTest.getNamespace();			    			  
+			TemplateList templateList = stylesheetRoot.getTemplateListComposed();
+			XSL3FunctionService m_xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
+
+			if (!"".equals(funcLocalNameRef) && m_xslFunctionService.isFuncArityWellFormed(funcLocalNameRef)) {        	   
+				int hashCharIdx = funcLocalNameRef.indexOf('#');
+				java.lang.String funcNameRef2 = funcLocalNameRef.substring(0, hashCharIdx);
+				int funcArity = Integer.valueOf(funcLocalNameRef.substring(hashCharIdx + 1));        		   
+				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);
+				ElemFunction elemFunction = null;
+				if (elemTemplate != null) {
+					elemFunction = (ElemFunction)elemTemplate;
+					int xslFuncDefnParamCount = elemFunction.getArity();                      
+					java.lang.String str = funcLocalNameRef.substring(hashCharIdx + 1);
+					int funcRefParamCount = (Integer.valueOf(str)).intValue();
+					if (funcRefParamCount != xslFuncDefnParamCount) {
+						throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcLocalNameRef + 
+																																		" cannot resolve to a function "
+																																		+ "definition.", this); 
+					}
+
+					if (elemFunction != null) {
+						ElemFunctionItem elemFunctionObject = new ElemFunctionItem(elemFunction);
+						
+						left = elemFunctionObject; 
+					}
+				}
+			}
+			
+			if (left == null) {
+			   left = m_left.execute(xctxt, true);
+			}
+		}
+		catch (Exception ex) {
+			left = m_left.execute(xctxt, true);
+		}
     }
     else {
     	left = m_left.execute(xctxt, true); 
@@ -184,7 +234,6 @@ public class Operation extends Expression implements ExpressionOwner
   /**
    * Apply the operation to two operands, and return the result.
    *
-   *
    * @param left non-null reference to the evaluated left operand.
    * @param right non-null reference to the evaluated right operand.
    *
@@ -198,13 +247,15 @@ public class Operation extends Expression implements ExpressionOwner
     return null;  // no-op
   }
 
-  /** @return the left operand of binary operation, as an Expression.
+  /** 
+   * @return the left operand of binary operation, as an Expression.
    */
   public Expression getLeftOperand(){
     return m_left;
   }
 
-  /** @return the right operand of binary operation, as an Expression.
+  /** 
+   * @return the right operand of binary operation, as an Expression.
    */
   public Expression getRightOperand(){
     return m_right;
@@ -277,7 +328,7 @@ public class Operation extends Expression implements ExpressionOwner
   }
   
   /**
-   * Method definition to get a modified XPath expression operand value,
+   * Method definition, to get a modified XPath expression operand value,
    * if an XPath operand expression is a SelfIteratorNoPredicate iterator. 
    * 
    * @param opValue						        The supplied XPath expression operand value.
@@ -301,7 +352,7 @@ public class Operation extends Expression implements ExpressionOwner
   }
   
   /**
-   * Method definition to get an XPath context item, given 
+   * Method definition, to get an XPath context item, given 
    * a supplied non-expression XSL stylesheet node.
    * 
    * Usually, XPath context has reference to context node's
@@ -329,4 +380,5 @@ public class Operation extends Expression implements ExpressionOwner
 
 	  return result;
   }
+  
 }

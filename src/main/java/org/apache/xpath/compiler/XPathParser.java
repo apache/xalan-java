@@ -1142,7 +1142,7 @@ public class XPathParser
    * XPath parse of sequence type expressions.
    */
   private void setSequenceTypeOccurenceIndicator(XPathSequenceTypeExpr xpathSequenceTypeExpr, 
-                                                 boolean isXPathInlineFunctionParse) throws TransformerException {
+                                                                                     boolean isXPathInlineFunctionParse) throws TransformerException {
       if (tokenIs(SequenceTypeSupport.Q_MARK)) {
          xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
                                                                                  OccurrenceIndicator.ZERO_OR_ONE);
@@ -1158,8 +1158,9 @@ public class XPathParser
                                                                                  OccurrenceIndicator.ONE_OR_MANY);
          nextToken();
       }
-      else if ((m_token != null) && !isXPathInlineFunctionParse && !m_isFunctionArgumentParse) {
-         throw new javax.xml.transform.TransformerException("XPST0051 A sequence type occurence indicator '" + m_token + "', is not recognized."); 
+      else if ((m_token != null) && !isXPathInlineFunctionParse && !m_isFunctionArgumentParse) {    	 
+         throw new javax.xml.transform.TransformerException("XPST0051 : A sequence type occurence indicator '" + 
+                                                                                                           m_token + "', is not recognized.", m_sourceLocator);
       }
   }
   
@@ -1225,14 +1226,13 @@ public class XPathParser
                }
                else {
                    throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is "
-                                                                                                          + "not well-formed."); 
+                                                                                                          + "not well-formed.", m_sourceLocator); 
                }
            }
        }
        else {
-           throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is "
-                                                                                                  + "not well-formed. An expected token ')' within "
-                                                                                                  + "a sequence type expression is not present.");  
+           throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is not well-formed. An expected token ')' within "
+                                                                                                          + "a sequence type expression is not present.", m_sourceLocator);  
        }
 
        String[] seqTypeSubParts = nodeKindTestStr.split(",");
@@ -1255,7 +1255,7 @@ public class XPathParser
        }
        else if (seqTypeSubParts.length > 2) {
            throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is "
-                                                                                                    + "not well-formed."); 
+                                                                                                    + "not well-formed.", m_sourceLocator); 
        }
 
        return sequenceTypeKindTest;
@@ -1620,8 +1620,8 @@ public class XPathParser
                  }
                  else {
                 	if ((lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3))) || isDfcBegin(m_token)) {
-                		// The literal sequence constructor item is an XPath conventional 
-                		// function call, or an XPath dynamic function call.
+                		// An XPath literal sequence constructor item, is an XPath
+                		// built-in  function call, or an XPath dynamic function call.
                 		while (!(isStrListHasBalancedParentheses(xpathExprTokens, '(', ')') && 
                 				                                                          tokenIs(",")) && (m_token != null)) {
                 		   if (!lookahead(null, 1)) {
@@ -1691,11 +1691,6 @@ public class XPathParser
           }
           
           boolean isXPathParseOkToProceed = true;
-          
-          /*if (isSquareArrayConstructor) {
-        	 // Compact the array items
-             compactArrayItems(seqOrArrayXPathItems);
-	      }*/
 	  
           // We verify here that, each XPath string within the list 
           // 'xpathExprParts' has balanced parentheses pairs.
@@ -2003,7 +1998,6 @@ public class XPathParser
 		 }
 		 		 		 
 		 String xpathPredicateSuffixStr = (xpathPredicateSuffixStrBuff.toString()).trim();
-		 // TO DO : To handle other appropriate XML namespace uri's as well
 		 int idx = xpathPredicateSuffixStr.indexOf(XMLConstants.W3C_XML_SCHEMA_NS_URI + " :");
          if (idx > -1) {
         	 String prefixStr = xpathPredicateSuffixStr.substring(0, idx);
@@ -2439,52 +2433,6 @@ public class XPathParser
 	  }
 	  
 	  return result;
-  }
-  
-  /**
-   * Method definition to compact the supplied string valued list,
-   * which contains a list of XPath array items. The supplied string
-   * valued list is mutated by this method which is the result of 
-   * compaction, and is accessible to the caller of this method.
-   */
-  private void compactArrayItems(List<String> xpathArrayItems) {
-	  
-	  List<String> strListCopy = new ArrayList<String>();
-	  
-	  for (int idx = 0; idx < xpathArrayItems.size(); idx++) {
-		  strListCopy.add(xpathArrayItems.get(idx)); 
-	  }
-
-	  xpathArrayItems.clear();
-
-	  for (int idx = 0; idx < strListCopy.size(); idx++) {
-		  String strValue = strListCopy.get(idx);
-		  if (!(strValue.charAt(0) == '[')) {
-			  xpathArrayItems.add(strValue); 
-		  } 
-		  else {
-			  StringBuffer strBuff = new StringBuffer();
-			  strBuff.append(strValue + ",");
-			  xpathArrayItems.add(strValue + ",");
-			  
-			  for (int idx1 = idx + 1; idx1 < strListCopy.size(); idx1++) {
-				  String strVal2 = strListCopy.get(idx1);
-				  strBuff.append(strVal2);
-				  idx = idx1; 
-				  if ((strVal2.endsWith("]")) && (getCharCount(strBuff.toString(), '[') == 
-						                                                     getCharCount(strBuff.toString(), ']'))) {
-					  xpathArrayItems.remove(xpathArrayItems.size() - 1);
-					  
-					  break;
-				  }
-				  else {
-					  strBuff.append(",");
-				  }
-			  }
-			  
-			  xpathArrayItems.add(strBuff.toString());        		 ; 
-		  }
-	  }
   }
 
   /**
@@ -4733,10 +4681,12 @@ public class XPathParser
       
       consumeExpected('{');
       
-      // While parsing the XPath expression string that forms body of inline
-      // function expression, we only get this XPath expression's string value,
-      // as determined below and store that within an object of class 
-      // 'InlineFunction'.
+      /**
+       * While parsing the XPath expression string that forms body of inline
+       * function expression, we only get this XPath expression's string value,
+       * as determined below and store that within an object of class
+       * 'XPathInlineFunction'.
+       */
       
       List<String> funcBodyXPathExprStrPartsList = new ArrayList<String>();
       
@@ -6890,11 +6840,11 @@ public class XPathParser
 			   }
 			   else {
 				   throw new javax.xml.transform.TransformerException("FODC0005 : A valid XML schema could not be built, from child "
-						   																	   + "contents of xs:import-schema instruction.");
+						   																	   + "contents of xs:import-schema instruction.", m_sourceLocator);
 			   }
 		   }
 		   catch (Exception ex) {
-			   throw new TransformerException(ex.getMessage());
+			   throw new TransformerException(ex.getMessage(), m_sourceLocator);
 		   }
        }
    }
@@ -6957,16 +6907,18 @@ public class XPathParser
 				   else {
 					   throw new javax.xml.transform.TransformerException("FODC0005 : A valid XML schema could not be built, "
 																						   + "from document available at uri " + url.toString() + " referenced "
-																						   + "from xs:import-schema instruction.");
+																						   + "from xs:import-schema instruction.", m_sourceLocator);
 				   }
 			   }
 			   catch (URISyntaxException ex) {
 				   throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
-						   																  + "is not a valid absolute uri, or cannot be resolved to an absolute uri.");   
+						   																  + "is not a valid absolute uri, or cannot be resolved to an absolute uri.",
+						   																    m_sourceLocator);   
 			   }
 			   catch (MalformedURLException ex) {
 				   throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
-						   																  + "is not a valid absolute uri, or cannot be resolved to an absolute uri."); 
+						   																  + "is not a valid absolute uri, or cannot be resolved to an absolute uri.",
+						   																    m_sourceLocator); 
 			   }						
 		   }
 	   }
@@ -6992,7 +6944,7 @@ public class XPathParser
 		   String typeExpandedName = (typeNamespace == null) ? typeName : "{" + typeNamespace + "}:" + typeName;   
 		   throw new javax.xml.transform.TransformerException("FODC0005 : The schema built via xs:import-schema instruction doesn't "
 		   		                                                             + "contain a type definition with expanded name " + 
-				                                                                 typeExpandedName + ".");							
+				                                                                 typeExpandedName + ".", m_sourceLocator);							
 	   }
    }
    
@@ -7140,7 +7092,8 @@ public class XPathParser
 	        break;	        
  	     default :
  	        throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
- 	                                                                                                + "recognized, within the provided sequence type expression.");        
+ 	                                                                                                + "recognized, within the provided sequence "
+ 	                                                                                                + "type expression.", m_sourceLocator);        
  	  }
  	  
  	  nextToken();
@@ -7553,7 +7506,8 @@ public class XPathParser
 	        break;	        
  	   default :
  	        throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
- 	                                                                                                + "recognized, within the provided sequence type expression.");        
+ 	                                                                                                + "recognized, within the provided sequence "
+ 	                                                                                                + "type expression.", m_sourceLocator);        
        }
    }
    
@@ -7871,10 +7825,11 @@ public class XPathParser
 			try {
 				int hashIdx = m_token.indexOf('#');
 				String funcName = m_token.substring(0, hashIdx);
-				int arity = Integer.valueOf(m_token.substring(hashIdx + 1));
-
-				ElemFunction elemFunction = stylesheetRoot.getXslFunction(new org.apache.xml.utils.QName(funcNamespaceUri, 
-																														funcName), arity);
+				int arity = Integer.valueOf(m_token.substring(hashIdx + 1));								
+				
+				org.apache.xml.utils.QName funcNameToken = new org.apache.xml.utils.QName(funcNamespaceUri, funcName); 
+				ElemFunction elemFunction = stylesheetRoot.getXslFunction(funcNameToken, arity);
+				
 				if (elemFunction != null) {
 					String namedFuncRef = m_token;										
 					nextToken();					
@@ -7891,7 +7846,7 @@ public class XPathParser
 						m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
 					}
 
-					m_xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, stylesheetRoot);
+					m_xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, stylesheetRoot);										 
 
 					m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
 															m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);

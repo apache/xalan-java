@@ -17,10 +17,9 @@
 package org.apache.xpath.composite;
 
 /**
- * An object of this class stores, an XPath run-time
- * information for a sequence type kind test (for e.g, 
- * element(), element(elemName), attribute(), 
- * element(elemName, typeName)* etc. 
+ * A class definition, that stores, an XPath run-time information for 
+ * a sequence type kind test expression (for e.g, element(), element(elemName), 
+ * attribute(), element(elemName, typeName)* etc. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -95,12 +94,17 @@ public class SequenceTypeKindTest {
     }
     
     /**
-     * Method definition to check whether, two SequenceTypeKindTest objects
-     * are functionally equal.   
+     * Method definition, to check whether, one SequenceTypeKindTest object 
+     * is functionally equal to another SequenceTypeKindTest object.
+     * 
+     * @param sequenceTypeKindTest2					   An SequenceTypeKindTest object instance,
+     *                                                 that needs to be compared with this
+     *                                                 SequenceTypeKindTest object instance.
+     * @return										   Boolean value true or false
      */
     public boolean equal(SequenceTypeKindTest sequenceTypeKindTest2) {
     	
-    	boolean isEqual = true;
+    	boolean result = true;
     	
     	int kindVal2 = sequenceTypeKindTest2.getKindVal();
     	
@@ -110,52 +114,52 @@ public class SequenceTypeKindTest {
         String dataTypeUri2 = sequenceTypeKindTest2.getDataTypeUri();
         
         if (this.kindVal != kindVal2) {
-           isEqual = false;
+           result = false;
         }
         else if ((this.nodeLocalName == null) && (nodeLocalName2 == null)) {
-           isEqual = true;
+           result = true;
         }
         else if ((this.nodeLocalName == null) && (nodeLocalName2 != null)) {
-           isEqual = false;
+           result = false;
         }
         else if ((this.nodeLocalName != null) && (nodeLocalName2 == null)) {
-           isEqual = false;
+           result = false;
         }
         else if (!(this.nodeLocalName).equals(nodeLocalName2)) {
-           isEqual = false;
+           result = false;
         }
         else if ((this.nodeNsUri == null) && (nodeNsUri2 != null)) {
-           isEqual = false;
+           result = false;
         }
         else if ((this.nodeNsUri != null) && (nodeNsUri2 == null)) {
-           isEqual = false;
+           result = false;
         }
         else if ((nodeNsUri != null) && !(this.nodeNsUri).equals(nodeNsUri2)) {
-           isEqual = false;
+           result = false;
         }
         else if ((this.dataTypeLocalName == null) && (dataTypeLocalName2 == null)) {
-           isEqual = true;
+           result = true;
         }
         else if ((this.dataTypeLocalName == null) && (dataTypeLocalName2 != null)) {
-           isEqual = false;
+           result = false;
         }
         else if ((this.dataTypeLocalName != null) && (dataTypeLocalName2 == null)) {
-           isEqual = false;
+           result = false;
         }
         else if ((dataTypeLocalName != null) && !(this.dataTypeLocalName).equals(dataTypeLocalName2)) {
-           isEqual = false;
+           result = false;
         }
         else if ((this.dataTypeUri == null) && (dataTypeUri2 != null)) {
-           isEqual = false;
+           result = false;
         }
         else if ((this.dataTypeUri != null) && (dataTypeUri2 == null)) {
-           isEqual = false;
+           result = false;
         }
         else if ((dataTypeUri != null) && !(this.dataTypeUri).equals(dataTypeUri2)) {
-           isEqual = false;
+           result = false;
         }
     	
-    	return isEqual;
+    	return result;
     }
 
 }

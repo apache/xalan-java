@@ -20,7 +20,7 @@ import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An object of this class, stores information about use of one
+ * A class definition, that stores information about use of one
  * sequence type XPath expression, while doing an XSLT stylesheet 
  * transformation.
  * 
@@ -106,30 +106,238 @@ public class SequenceTypeData extends XObject {
 		this.sequenceTypeArrayTest = sequenceTypeArrayTest;
 	}
 	
-    /**
-     * Check whether, one SequenceTypeData object is functionally
-     * equal to another SequenceTypeData object.  
+	/**
+     * Method definition, to check whether, one SequenceTypeData object 
+     * is functionally equal to another SequenceTypeData object.
+     * 
+     * @param sequenceTypeData2					    An SequenceTypeData object instance,
+     *                                              that needs to be compared with this
+     *                                              SequenceTypeData object instance.
+     * @return									    Boolean value true or false
      */
-	public boolean equal(SequenceTypeData sequenceTypeData) {
+	public boolean equal(SequenceTypeData sequenceTypeData2) {
+		
+		boolean result = false;
 	    
-		boolean result = true;
+	    int builtInseqType2 = sequenceTypeData2.getBuiltInSequenceType();	    
+	    SequenceTypeKindTest sequenceTypeKindTest2 = sequenceTypeData2.getSequenceTypeKindTest();
 	    
-	    int seqType2 = sequenceTypeData.getBuiltInSequenceType();
-	    int occrInd2 = sequenceTypeData.getItemTypeOccurrenceIndicator();
-	    SequenceTypeKindTest sequenceTypeKindTest2 = sequenceTypeData.getSequenceTypeKindTest();
+	    int occrInd2 = sequenceTypeData2.getItemTypeOccurrenceIndicator();
 	    
-	    if ((this.builtInSequenceType != 0) && (this.builtInSequenceType == seqType2) 
-	    		                           && (this.itemTypeOccurrenceIndicator == occrInd2)) {
-	       result = true;
+	    boolean dataTypeCompatible = false;
+	    
+	    if ((this.builtInSequenceType != 0) && (builtInseqType2 != 0)) {
+	       if ((this.builtInSequenceType == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE) || 
+	    		                                                                (builtInseqType2 == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE)) {
+	    	   dataTypeCompatible = true; 
+	       }
+	       
+	       if (!dataTypeCompatible) {
+	    	  if (this.builtInSequenceType == SequenceTypeSupport.STRING) {
+	    		 if ((builtInseqType2 == SequenceTypeSupport.STRING) || (builtInseqType2 == SequenceTypeSupport.XS_NORMALIZED_STRING) ||
+												    		     (builtInseqType2 == SequenceTypeSupport.XS_TOKEN) || 
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NMTOKEN) || 
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_LANGUAGE) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NAME) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NCNAME) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_ID) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_IDREF)) {
+	    			 dataTypeCompatible = true; 
+	    		 }
+	    	  }
+	    	  else if (this.builtInSequenceType == SequenceTypeSupport.XS_NORMALIZED_STRING) {
+	    		  if ((builtInseqType2 == SequenceTypeSupport.XS_NORMALIZED_STRING) ||
+												    		     (builtInseqType2 == SequenceTypeSupport.XS_TOKEN) || 
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NMTOKEN) || 
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_LANGUAGE) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NAME) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NCNAME) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_ID) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_IDREF)) {
+                     dataTypeCompatible = true; 
+                  } 
+	    	  }
+              else if (this.builtInSequenceType == SequenceTypeSupport.XS_TOKEN) {
+            	  if ((builtInseqType2 == SequenceTypeSupport.XS_TOKEN) || 
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NMTOKEN) || 
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_LANGUAGE) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NAME) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NCNAME) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_ID) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_IDREF)) {
+                     dataTypeCompatible = true; 
+                  }
+	    	  }
+              else if (this.builtInSequenceType == SequenceTypeSupport.XS_NAME) {
+            	  if ((builtInseqType2 == SequenceTypeSupport.XS_NAME) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NCNAME) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_ID) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_IDREF)) {
+                     dataTypeCompatible = true; 
+                 }
+	    	  }
+              else if (this.builtInSequenceType == SequenceTypeSupport.XS_NCNAME) {
+            	  if ((builtInseqType2 == SequenceTypeSupport.XS_NCNAME) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_ID) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_IDREF)) {
+                     dataTypeCompatible = true; 
+                  } 
+	    	  }
+	       }
+	       
+	       if (!dataTypeCompatible) {
+	    	   if (this.builtInSequenceType == SequenceTypeSupport.XS_DECIMAL) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_DECIMAL) || (builtInseqType2 == SequenceTypeSupport.XS_INTEGER) ||
+												    		     (builtInseqType2 == SequenceTypeSupport.XS_LONG) || 
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER) || 
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NON_POSITIVE_INTEGER) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_INT) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_SHORT) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_BYTE) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_POSITIVE_INTEGER) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_LONG) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_INT) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_SHORT) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_BYTE)) {	    			   
+                       dataTypeCompatible = true; 
+                   } 
+	    	   }
+	    	   else if (this.builtInSequenceType == SequenceTypeSupport.XS_INTEGER) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_INTEGER) ||
+												    		     (builtInseqType2 == SequenceTypeSupport.XS_LONG) || 
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER) || 
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_NON_POSITIVE_INTEGER) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_INT) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_SHORT) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_BYTE) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_POSITIVE_INTEGER) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_LONG) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_INT) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_SHORT) ||
+												    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_BYTE)) {	    			   
+                       dataTypeCompatible = true; 
+                   } 
+	    	   }
+	    	   else if (this.builtInSequenceType == SequenceTypeSupport.XS_LONG) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_LONG) || (builtInseqType2 == SequenceTypeSupport.XS_INT) ||
+														    			   (builtInseqType2 == SequenceTypeSupport.XS_SHORT) ||
+														    			   (builtInseqType2 == SequenceTypeSupport.XS_BYTE)) {	    			   
+                       dataTypeCompatible = true; 
+                   } 
+	    	   }
+	    	   else if (this.builtInSequenceType == SequenceTypeSupport.XS_INT) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_INT) || (builtInseqType2 == SequenceTypeSupport.XS_SHORT) ||
+												    			          (builtInseqType2 == SequenceTypeSupport.XS_BYTE)) {	    			   
+                       dataTypeCompatible = true; 
+                   } 
+	    	   }
+	    	   else if (this.builtInSequenceType == SequenceTypeSupport.XS_SHORT) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_SHORT) || (builtInseqType2 == SequenceTypeSupport.XS_BYTE)) {	    			   
+                       dataTypeCompatible = true; 
+                   } 
+	    	   }
+	    	   else if (this.builtInSequenceType == SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER) ||												    		     
+														    			 (builtInseqType2 == SequenceTypeSupport.XS_POSITIVE_INTEGER) ||
+														    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_LONG) ||
+														    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_INT) ||
+														    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_SHORT) ||
+														    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_BYTE)) {	    			   
+                       dataTypeCompatible = true; 
+                   } 
+	    	   }
+	    	   else if (this.builtInSequenceType == SequenceTypeSupport.XS_UNSIGNED_LONG) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_LONG) ||												    		     												    			 
+														    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_INT) ||
+														    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_SHORT) ||
+														    			 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_BYTE)) {	    			   
+                       dataTypeCompatible = true; 
+                   } 
+	    	   }
+	    	   else if (this.builtInSequenceType == SequenceTypeSupport.XS_UNSIGNED_INT) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_INT) ||
+												    			         (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_SHORT) ||
+												    			         (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_BYTE)) {	    			   
+                       dataTypeCompatible = true; 
+                   } 
+	    	   }
+	    	   else if (this.builtInSequenceType == SequenceTypeSupport.XS_UNSIGNED_SHORT) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_SHORT) || 
+	    				                                                 (builtInseqType2 == SequenceTypeSupport.XS_UNSIGNED_BYTE)) {	    			   
+                       dataTypeCompatible = true; 
+                   } 
+	    	   }
+	    	   else if (this.builtInSequenceType == SequenceTypeSupport.XS_NON_POSITIVE_INTEGER) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_NON_POSITIVE_INTEGER) ||												    		     
+												    			         (builtInseqType2 == SequenceTypeSupport.XS_NEGATIVE_INTEGER)) {	    			   
+                       dataTypeCompatible = true; 
+                   } 
+	    	   }
+	       }
+	       
+	       if (!dataTypeCompatible) {
+	    	   if (this.builtInSequenceType == SequenceTypeSupport.XS_DURATION) {
+	    		   if ((builtInseqType2 == SequenceTypeSupport.XS_DAYTIME_DURATION) || (builtInseqType2 == SequenceTypeSupport.XS_YEARMONTH_DURATION)) {	    			   
+                       dataTypeCompatible = true; 
+                   }  
+	           }
+	       }
+	       
+	       if (!dataTypeCompatible && (this.builtInSequenceType == builtInseqType2)) {
+	    	   dataTypeCompatible = true; 
+	       }
+	       
+	       if (dataTypeCompatible && isOccurenceIndicatorCompatible(occrInd2)) {    	  
+	    	   result = true; 
+	       }
+	    }	    
+	    else if ((this.sequenceTypeKindTest != null) && (sequenceTypeKindTest2 != null)) {
+	    	dataTypeCompatible = (this.sequenceTypeKindTest).equal(sequenceTypeKindTest2);
+	    	if (dataTypeCompatible && isOccurenceIndicatorCompatible(occrInd2)) {
+	    	   result = true; 
+	    	}
 	    }
-	    else if (this.itemTypeOccurrenceIndicator != occrInd2) {
-	       result = false;
-	    }
-	    else if (!(this.sequenceTypeKindTest).equal(sequenceTypeKindTest2)) {
-	       result = false;
+        else if (this.sequenceTypeKindTest != null) {
+	    	if ((this.sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) && isOccurenceIndicatorCompatible(occrInd2)) {	    		
+	    	   result = true; 
+	    	}
 	    }
 	    
 	    return result;
+	}
+
+	/**
+	 * Method definition, to check whether, one XPath sequence type 
+	 * occurrence indicator value, is compatible with another XPath 
+	 * sequence type occurrence indicator value. 
+	 * 
+	 * @param occrInd									The second XPath sequence type occurrence 
+	 *                                                  indicator value. 
+	 * @return											Boolean value true or false
+	 */
+	private boolean isOccurenceIndicatorCompatible(int occrInd) {
+		
+		boolean result = false;
+		
+		if ((this.itemTypeOccurrenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) && 
+				                                                                     (occrInd == SequenceTypeSupport.OccurrenceIndicator.ABSENT)) {
+			result = true; 
+		}
+		else if ((this.itemTypeOccurrenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) && 
+				                                                                     ((occrInd == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+						                                                              (occrInd == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+			result = true;
+		}
+		else if ((occrInd == SequenceTypeSupport.OccurrenceIndicator.ABSENT) && 
+				                                                           ((this.itemTypeOccurrenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+						                                                   (this.itemTypeOccurrenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+			result = true;
+		}
+		else if (this.itemTypeOccurrenceIndicator == occrInd) {
+			result = true;
+		}
+		
+		return result;
 	}
 
 }
