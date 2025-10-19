@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:50Z" fail="2" name="choose" pass="21" skipped="0" statusUnknown="1" totalRun="24">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-19T16:16:24Z" fail="17" name="choose" pass="38" skipped="0" statusUnknown="0" totalRun="55">
    <testResult status="pass" testName="choose-0101"/>
    <testResult status="pass" testName="choose-0102"/>
    <testResult status="fail" testName="choose-0103"/>
@@ -22,5 +22,56 @@
    <testResult status="pass" testName="choose-0605"/>
    <testResult status="fail" testName="choose-0606"/>
    <testResult status="pass" testName="choose-0607"/>
-   <testResult testName="choose-0608"/>
+   <testResult status="pass" testName="choose-0608"/>
+   <testResult status="fail" testName="choose-0609">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="choose-0701"/>
+   <testResult status="pass" testName="choose-0702"/>
+   <testResult status="pass" testName="choose-0801"/>
+   <testResult status="pass" testName="choose-0901"/>
+   <testResult status="pass" testName="choose-1001"/>
+   <testResult status="pass" testName="choose-1101"/>
+   <testResult status="pass" testName="choose-1201"/>
+   <testResult status="pass" testName="choose-1202"/>
+   <testResult status="pass" testName="choose-1203"/>
+   <testResult status="pass" testName="choose-1204"/>
+   <testResult status="pass" testName="choose-1301"/>
+   <testResult status="pass" testName="choose-1401"/>
+   <testResult status="pass" testName="choose-1501"/>
+   <testResult status="fail" testName="choose-1502"/>
+   <testResult status="fail" testName="choose-1601"/>
+   <testResult status="pass" testName="choose-1701"/>
+   <testResult status="fail" testName="choose-1702"/>
+   <testResult status="fail" testName="choose-1703"/>
+   <testResult status="pass" testName="choose-1704"/>
+   <testResult status="pass" testName="choose-1705"/>
+   <testResult status="fail" testName="choose-1706"/>
+   <testResult status="fail" testName="choose-1801">
+      <outResult>
+         <errTrace>t:if requires attribute: test</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="choose-1802">
+      <outResult>
+         <errTrace>t:when requires attribute: test</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="choose-1803">
+      <outResult>
+         <errTrace>XTSE0260 : xslt:when is not allowed in this position in the stylesheet</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="choose-1804">
+      <outResult>
+         <errTrace>XTSE0260 : xslt:otherwise is not allowed in this position in the stylesheet</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="choose-1901"/>
+   <testResult status="fail" testName="choose-1902"/>
+   <testResult status="fail" testName="choose-1903"/>
+   <testResult status="fail" testName="choose-1904"/>
+   <testResult status="fail" testName="choose-1905"/>
 </testrun>

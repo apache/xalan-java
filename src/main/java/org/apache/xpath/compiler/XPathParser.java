@@ -189,9 +189,8 @@ public class XPathParser
    * When an XPath expression is () (i.e, representing an xdm empty sequence),
    * we translate that within this XPath parser implementation, to an XPath
    * range "to" expression using this class field (this equivalently produces
-   * an xdm empty sequence). There may be other direct ways of implementing this.
+   * an xdm empty sequence).
    */
-  // REVISIT
   public static final String XPATH_EXPR_STR_EMPTY_SEQUENCE = "1 to 0";
   
   private static final List<String> XPATH_OP_ARR_TOKENS_LIST = Arrays.asList(XPATH_OP_ARR);
@@ -1626,7 +1625,8 @@ public class XPathParser
                 				                                                          tokenIs(",")) && (m_token != null)) {
                 		   if (!lookahead(null, 1)) {
                 			  xpathExprTokens.add(m_token);
-                		   }
+                		   }                			
+                		   
                 		   nextToken();
                 		}
                 	}
@@ -1694,7 +1694,8 @@ public class XPathParser
 	  
           // We verify here that, each XPath string within the list 
           // 'xpathExprParts' has balanced parentheses pairs.
-          for (int idx = 0; idx < seqOrArrayXPathItems.size(); idx++) {
+          int size2 = seqOrArrayXPathItems.size();
+          for (int idx = 0; idx < size2; idx++) {
              String seqOrArrayMemberXPathExprStr = seqOrArrayXPathItems.get(idx);
              char lParenChar = '(';
              char rParenChar = ')';
@@ -2422,8 +2423,9 @@ public class XPathParser
 	  boolean result = false;
 	  
 	  StringBuffer strBuff = new StringBuffer();
-	  if (strList.size() > 0) {
-		 for (int idx = 0; idx < strList.size(); idx++) {
+	  int strListSize = strList.size();
+	  if (strListSize > 0) {
+		 for (int idx = 0; idx < strListSize; idx++) {
 			strBuff.append(strList.get(idx)); 
 		 }
 		 
@@ -2458,34 +2460,22 @@ public class XPathParser
       m_isXPathExprBeginParse = false;
       
       if (tokenIs("for")) {
-         // To check, whether XPath 'for' expression is a sub expression of another 
-         // XPath expression (for e.g, a 'for' expression could be a function 
-         // argument).
          String prevTokenStr = getTokenRelative(-2);
          
          XPathForExpr forExpr = ForExpr(prevTokenStr);
          m_forExprList.add(forExpr);
       }
       else if (tokenIs("let")) {
-         // To check, whether XPath 'let' expression is a sub expression of another 
-         // XPath expression (for e.g, a 'let' expression could be a function 
-         // argument).
          String prevTokenStr = getTokenRelative(-2);
           
          m_letExpr = LetExpr(prevTokenStr);
       }
       else if (tokenIs("some")) {
-         // To check, whether XPath quantified 'some' expression is a sub expression 
-         // of another XPath expression (for e.g, the 'some' expression could be a 
-         // function argument, or may be written within an XPath predicate).
          String prevTokenStr = getTokenRelative(-2);
          
          m_quantifiedExpr = QuantifiedExpr(prevTokenStr, XPathQuantifiedExpr.SOME);
       }
       else if (tokenIs("every")) {
-         // To check, whether XPath quantified 'every' expression is a sub expression 
-         // of another XPath expression (for e.g, an 'every' expression could be a 
-         // function argument, or may be written within an XPath predicate).
          String prevTokenStr = getTokenRelative(-2);
          
          m_quantifiedExpr = QuantifiedExpr(prevTokenStr, XPathQuantifiedExpr.EVERY);
@@ -3012,34 +3002,45 @@ public class XPathParser
       }
       
       String probableElseExprStr = probableElseExprStrBuff.toString();
-      int elseTokenComputedRevisedIdx = 0;
-      while (!StringUtil.isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {
-    	  boolean isBreak = false;
-    	  for (int idx = (elseTokenEffectiveComputedIdx - 1); idx >= 0; idx--) {
-    		  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
-        	  String tokenStrValue = tokenObj.toString();
-        	  if ("else".equals(tokenStrValue)) {
-        		 probableElseExprStr = "";
-        		 for (int idx1 = (idx + 1); idx1 < tokenQueueSize; idx1++) {
-        			tokenObj = (m_ops.m_tokenQueue).elementAt(idx1);
-        			probableElseExprStr += (tokenObj.toString() + " "); 
-        		 }
-        		 probableElseExprStr = probableElseExprStr.trim();
-        		 if (StringUtil.isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {
-        			elseTokenComputedRevisedIdx = idx; 
-        			isBreak = true;
-        			break; 
-        		 }
-        	  }
-    	  }
-    	  
-    	  if (isBreak) {
-    		 break; 
-    	  }
+      String probableFuncArgumentSffx = null;
+      if (!StringUtil.isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {    	  
+    	 if (probableElseExprStr.contains(")(")) {
+    		int idx = probableElseExprStr.indexOf(')');
+    		String str2 = probableElseExprStr.substring(0, idx);
+    		probableFuncArgumentSffx = probableElseExprStr.substring(idx + 1);
+    		probableElseExprStr = str2; 
+    	 }
       }
       
-      elseTokenEffectiveComputedIdx = ((elseTokenComputedRevisedIdx != 0) ? 
-    		                                                     elseTokenComputedRevisedIdx : elseTokenEffectiveComputedIdx); 
+      if (probableFuncArgumentSffx == null) {
+    	  int elseTokenComputedRevisedIdx = 0;
+    	  while (!StringUtil.isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {
+    		  boolean isBreak = false;
+    		  for (int idx = (elseTokenEffectiveComputedIdx - 1); idx >= 0; idx--) {
+    			  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
+    			  String tokenStrValue = tokenObj.toString();
+    			  if ("else".equals(tokenStrValue)) {
+    				  probableElseExprStr = "";
+    				  for (int idx1 = (idx + 1); idx1 < tokenQueueSize; idx1++) {
+    					  tokenObj = (m_ops.m_tokenQueue).elementAt(idx1);
+    					  probableElseExprStr += (tokenObj.toString() + " "); 
+    				  }
+    				  probableElseExprStr = probableElseExprStr.trim();
+    				  if (StringUtil.isStrHasBalancedParentheses(probableElseExprStr, '(', ')')) {
+    					  elseTokenComputedRevisedIdx = idx; 
+    					  isBreak = true;
+    					  break; 
+    				  }
+    			  }
+    		  }
+
+    		  if (isBreak) {
+    			  break; 
+    		  }
+    	  }
+
+    	  elseTokenEffectiveComputedIdx = ((elseTokenComputedRevisedIdx != 0) ? elseTokenComputedRevisedIdx : elseTokenEffectiveComputedIdx);
+      }
       
       List<String> branchConditionXPathStrPartsList = new ArrayList<String>();
       
@@ -3087,34 +3088,41 @@ public class XPathParser
     	 thenXPathExprStr = thenXPathExprStr.substring(1, thenXPathExprStr.length() - 1);    	 
       }
       
-      List<String> elseExprXPathStrPartsList = new ArrayList<String>();
-      
-      while (m_token != null)
-      {
-          if (m_isXPathPredicateParsingActive && lookahead(']', 1)) {
-             elseExprXPathStrPartsList.add(m_token);
-             elseExprXPathStrPartsList.subList(0, elseExprXPathStrPartsList.size() - 1);
-             nextToken();
-             break;
-          }
-          else {
-             elseExprXPathStrPartsList.add(m_token);
-             nextToken();
-          }          
+      String elseXPathStr = null;
+      if (probableFuncArgumentSffx == null) {
+    	  List<String> elseExprXPathStrPartsList = new ArrayList<String>();
+    	  while (m_token != null)
+    	  {
+    		  if (m_isXPathPredicateParsingActive && lookahead(']', 1)) {
+    			  elseExprXPathStrPartsList.add(m_token);
+    			  elseExprXPathStrPartsList.subList(0, elseExprXPathStrPartsList.size() - 1);
+    			  nextToken();
+    			  break;
+    		  }
+    		  else {
+    			  elseExprXPathStrPartsList.add(m_token);
+    			  nextToken();
+    		  }          
+    	  }
+
+    	  elseXPathStr = getXPathStrFromComponentParts(elseExprXPathStrPartsList);
+    	  elseXPathStr = elseXPathStr.trim();
+    	  if (!elseXPathStr.equals("()") && elseXPathStr.startsWith("(") && elseXPathStr.endsWith(")")) {
+    		  String probableElseXPathStr = (elseXPathStr.substring(1, elseXPathStr.length() - 1)).trim();
+    		  if (probableElseXPathStr.startsWith("if")) {
+    			  elseXPathStr = probableElseXPathStr;	 
+    		  }
+    	  }
       }
-      
-      String elseXPathStr = getXPathStrFromComponentParts(elseExprXPathStrPartsList);
-      elseXPathStr = elseXPathStr.trim();
-      if (!elseXPathStr.equals("()") && elseXPathStr.startsWith("(") && elseXPathStr.endsWith(")")) {
-    	 String probableElseXPathStr = (elseXPathStr.substring(1, elseXPathStr.length() - 1)).trim();
-    	 if (probableElseXPathStr.startsWith("if")) {
-    		elseXPathStr = probableElseXPathStr;	 
-    	 }
+      else {
+    	  elseXPathStr = probableElseExprStr;    	  
       }
       
       ifExpr.setIfConditionXPathStr(branchConditionXPathExprStr);
       ifExpr.setThenExprXPathStr(thenXPathExprStr);
       ifExpr.setElseExprXPathStr(elseXPathStr);
+      
+      ifExpr.setSuffixXPathStr(probableFuncArgumentSffx);
       
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                     m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -4502,7 +4510,14 @@ public class XPathParser
       m_op_group_parse = true;
       Expr();
       m_op_group_parse = false;
-      consumeExpected(')');      
+      if (tokenIs(')')) {
+    	 consumeExpected(')');
+      }
+      else {
+    	 // This is required for various types of XPath 
+    	 // expressions. REVISIT
+         nextToken();
+      }
       
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
         m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);

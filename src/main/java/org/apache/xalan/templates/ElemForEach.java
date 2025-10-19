@@ -32,6 +32,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -58,6 +59,7 @@ import org.apache.xpath.operations.InstanceOf;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.types.DateTimeUtil;
+import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
@@ -1176,11 +1178,35 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 				   
 				   setXPathContextForXslSequenceProcessing(xdmItemList.size(), idx, resultSeqItem, xctxt);
 
+				   int count = 0;
 				   for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
 						                                                                        elemTemplateElem = elemTemplateElem.m_nextSibling) {
+					   count++;					   
 					   xctxt.setSAXLocator(elemTemplateElem);
 					   transformer.setCurrentElement(elemTemplateElem);
 					   elemTemplateElem.execute(transformer);              
+				   }
+				   
+				   boolean isSpaceToEmit = false;
+				   ElemTemplateElement parentElem = getParentElem();
+				   if (((count == 1) && (this.m_firstChild instanceof ElemSequence)) && 
+						                                            !((parentElem instanceof ElemFunction) || 
+						                                              (parentElem instanceof ElemVariable))) {
+					   isSpaceToEmit = true; 
+				   }
+				   
+				   if (isSpaceToEmit && (idx < (inpSeqSize - 1)) && !(resultSeqItem instanceof XMLNodeCursorImpl)) {
+					  // Emit " " separator character, after processing an xdm non-node item
+					  SerializationHandler handler = transformer.getSerializationHandler();
+					  String strVal = " ";
+					  try {
+					     handler.characters(strVal.toCharArray(), 0, strVal.length());
+					  }
+					  catch (SAXException ex) {
+						  throw new javax.xml.transform.TransformerException("XTDE1030 : An XSL tranformation error has occured, while "
+						  		                                                                           + "processing xsl:for-each's "
+						  		                                                                           + "contained sequence constructor.", srcLocator); 
+					  }
 				   }
 
 				   resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);

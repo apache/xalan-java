@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+				xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+				exclude-result-prefixes="#all"
+				version="3.0">
+				
+    <!-- Author: mukulg@apache.org -->				
+    
+    <!-- An XSL stylesheet test case, to test XPath 3.1 higher 
+         order functions. XPath expression use cases, for this 
+         stylesheet test case, are borrowed from W3C XSLT 3.0 test 
+         suite. -->				
+				
+    <xsl:output method="xml" indent="yes"/>				
+            
+    <xsl:template match="/">
+	   <result>    
+		  <a><xsl:value-of select="(if (2 gt 1) then math:pow#2 else math:pi#0)(2, 3)"/></a>
+		  <b><xsl:value-of select="(if (2 gt 5) then math:pow#2 else math:pi#0)()"/></b>
+		  <xsl:variable name="x" select="2" as="xs:integer"/>
+		  <xsl:variable name="y" select="5" as="xs:integer"/>
+		  <c><xsl:value-of select="(if (2 gt 1) then math:pow#2 else math:pi#0)($x, $y)"/></c>
+	   </result>
+    </xsl:template>
+    
+    <!--
+      * Licensed to the Apache Software Foundation (ASF) under one
+      * or more contributor license agreements. See the NOTICE file
+      * distributed with this work for additional information
+      * regarding copyright ownership. The ASF licenses this file
+      * to you under the Apache License, Version 2.0 (the "License");
+      * you may not use this file except in compliance with the License.
+      * You may obtain a copy of the License at
+      *
+      *     http://www.apache.org/licenses/LICENSE-2.0
+      *
+      * Unless required by applicable law or agreed to in writing, software
+      * distributed under the License is distributed on an "AS IS" BASIS,
+      * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      * See the License for the specific language governing permissions and
+      * limitations under the License.
+    -->
+    
+</xsl:stylesheet>

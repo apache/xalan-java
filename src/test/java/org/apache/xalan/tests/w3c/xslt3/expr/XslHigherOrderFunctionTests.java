@@ -37,14 +37,20 @@ public class XslHigherOrderFunctionTests extends W3CXslTransformTestsUtil {
     	m_resultSubFolderName = "expr";
     	m_testResultFileName = "_higher-order-functions-test-set_result.xml";
     	
-    	// Xalan-J xslt 3.0 implementation has functional issues,
-    	// with following tests that stops many test cases within this 
-    	// test set from running. Commenting these for future analysis.
-    	m_skipped_tests_list.add("higher-order-functions-030");
+    	/**
+    	 * Xalan's xslt 3.0 implementation has functional issues,
+    	 * with following tests that stops many test cases within this
+    	 * test set from running. Skipping these for future analysis.
+    	 */
     	m_skipped_tests_list.add("higher-order-functions-031");
     	m_skipped_tests_list.add("higher-order-functions-071");
     	m_skipped_tests_list.add("higher-order-functions-072");
     	m_skipped_tests_list.add("higher-order-functions-075");
+    	
+    	// Xalan's xslt 3.0 implementation, produces different
+    	// result for these test cases.
+    	m_skipped_tests_list.add("higher-order-functions-032");
+    	m_skipped_tests_list.add("higher-order-functions-033");
     }
 
     @AfterClass

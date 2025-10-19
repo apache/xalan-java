@@ -27,6 +27,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -44,6 +45,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
+import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 
@@ -405,8 +407,11 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             			   resultSeqItem = ((XMLNodeCursorImpl)resultSeqItem).getFresh(); 
             		   }
 
-            		   setXPathContextForXslSequenceProcessing(inpSeqLength, idx, resultSeqItem, xctxt);                                                                     
+            		   setXPathContextForXslSequenceProcessing(inpSeqLength, idx, resultSeqItem, xctxt);
+            		   
+            		   int count = 0;
             		   for (ElemTemplateElement t = this.m_firstChild; t != null; t = t.m_nextSibling) {
+            			   count++;
             			   if ((idx == 0) && (t instanceof ElemParam)) {
             				   ElemParam elemParam = (ElemParam)t;
             				   QName paramQname = elemParam.getName();
@@ -426,7 +431,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             			   }
             			   else {                              
             				   resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);                               
-            				   isBreakFromXslContentLoop = true;                               
+            				   isBreakFromXslContentLoop = true;
+            				   
             				   break;    
             			   }
             		   }
@@ -437,6 +443,28 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             		   else {                          
             			   break;
             		   }
+            		   
+            		   boolean isSpaceToEmit = false;
+    				   ElemTemplateElement parentElem = getParentElem();
+    				   if (((count == 1) && (this.m_firstChild instanceof ElemSequence)) && 
+    						                                            !((parentElem instanceof ElemFunction) || 
+    						                                              (parentElem instanceof ElemVariable))) {
+    					   isSpaceToEmit = true; 
+    				   }
+    				   
+    				   if (isSpaceToEmit && (idx < (inpSeqLength - 1)) && !(resultSeqItem instanceof XMLNodeCursorImpl)) {
+    					   // Emit " " separator character, after processing an xdm non-node item
+    					   SerializationHandler handler = transformer.getSerializationHandler();
+    					   String strVal = " ";
+    					   try {
+    						   handler.characters(strVal.toCharArray(), 0, strVal.length());
+    					   }
+    					   catch (SAXException ex) {
+    						   throw new javax.xml.transform.TransformerException("XTDE1030 : An XSL tranformation error has occured, while "
+																		    								   + "processing xsl:iterate's "
+																		    								   + "contained sequence constructor.", srcLocator); 
+    					   }
+    				   }
             	   }                                    
 
             	   if ((xslOnCompletionTemplate != null) && !transformer.isXslIterateBreakEvaluated()) {

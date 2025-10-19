@@ -484,8 +484,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
     "XPST0003 : Unclosed XPath expression comment"},
   
   { ER_NS_BINDING,
-    "XPST0081 : An XML namespace prefix ''{0}'' hasn''t been declared within an "
-                + "XSL stylesheet, or hasn''t been set for XPath API invocation."},
+    "XPST0081 : An XML namespace binding for prefix ''{0}'' is not available."},
   
   { ER_EXPECTED_CLOSING_SQUARE_BRACKET,
      "Could not find token ]"},

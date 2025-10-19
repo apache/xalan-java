@@ -39,7 +39,8 @@ import org.w3c.dom.traversal.NodeIterator;
 import xml.xpath31.processor.types.XSUntyped;
 
 /**
- * A class definition, that represents an xdm sequence of nodes.
+ * A class definition, that represents an 'XPath data model' 
+ * (xdm) sequence of nodes.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * 

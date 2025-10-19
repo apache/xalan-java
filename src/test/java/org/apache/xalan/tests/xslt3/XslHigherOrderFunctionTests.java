@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT 3.0 and XPath 3.1 higher order function tests.
+ * XSL 3 stylesheet higher order function tests.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -139,6 +139,36 @@ public class XslHigherOrderFunctionTests extends XslTransformTestsUtil {
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";
         
         m_initTemplateName = "main";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslHigherOrderFunctionTest10() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslHigherOrderFunctionTest11() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslHigherOrderFunctionTest12() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

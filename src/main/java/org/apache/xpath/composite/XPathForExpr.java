@@ -56,91 +56,72 @@ public class XPathForExpr extends Expression {
     
     private static final long serialVersionUID = -7289739978026057248L;
 
-    private List<ForQuantifiedExprVarBinding> m_ForExprVarBindingList = new 
+    private List<ForQuantifiedExprVarBinding> m_forExprVarBindingList = new 
                                                     ArrayList<ForQuantifiedExprVarBinding>();
     
-    private String m_ReturnExprXPathStr = null;
+    private String m_returnExprXPathStr = null;
     
-    // The following two fields of this class, are used during 
-    // XPath.fixupVariables(..) action as performed within object of 
-    // this class.    
-    private Vector m_vars;    
+    /**
+     * The following two fields of this class, are used during
+     * XPath.fixupVariables(..) action as performed within object of
+     * this class.
+     */
+    
+    private Vector m_vars;
+    
     private int m_globals_size;
-
-    @Override
-    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-       // no op
-    }
     
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
        
-    	ResultSequence finalResultSeq = new ResultSequence();
-       
-       SourceLocator srcLocator = xctxt.getSAXLocator();
-       
-       ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-       List<XMLNSDecl> prefixTable = null;
-       if (elemTemplateElement != null) {
-          prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-       }
-       
-       if (prefixTable != null) {
-          m_ReturnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                       m_ReturnExprXPathStr, prefixTable);
-       }
-       
-       XPath returnExprXPath = new XPath(m_ReturnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                               XPath.SELECT, null);
-       
-       ResultSequence resultSeq = getForExpressionEvalResult(m_ForExprVarBindingList.listIterator(), 
-                                                                            returnExprXPath, xctxt);       
-       
-       // An xdm sequence object 'resultSeq', may have items that are themselves sequence 
-       // objects. We need to expand such nested sequence objects, to get a final sequence
-       // none of whose items are sequence with cardinality greater than one.   
-       XslTransformEvaluationHelper.expandResultSequence(resultSeq, finalResultSeq);
-               
-       m_xpathVarList.clear();
-       
-       return finalResultSeq; 
-    }
+    	ResultSequence result = new ResultSequence();
 
-    @Override
-    public void fixupVariables(Vector vars, int globalsSize) {
-       m_vars = (Vector)(vars.clone());
-       m_globals_size = globalsSize; 
-    }
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
 
-    @Override
-    public boolean deepEquals(Expression expr) {        
-       return false;
-    }
+    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+    	List<XMLNSDecl> prefixTable = null;
+    	if (elemTemplateElement != null) {
+    		prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+    	}
 
-    public List<ForQuantifiedExprVarBinding> getForExprVarBindingList() {
-        return m_ForExprVarBindingList;
-    }
+    	if (prefixTable != null) {
+    		m_returnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_returnExprXPathStr, 
+    				                                                                                                  prefixTable);
+    	}
 
-    public void setForExprVarBindingList(List<ForQuantifiedExprVarBinding> forExprVarBindingList) {
-        this.m_ForExprVarBindingList = forExprVarBindingList;
-    }
+    	XPath returnExprXPath = new XPath(m_returnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
-    public String getReturnExprXPathStr() {
-        return m_ReturnExprXPathStr;
-    }
+    	ResultSequence resultSeq = getForExpressionEvalResult(m_forExprVarBindingList.listIterator(), 
+    			                                                                                  returnExprXPath, xctxt);       
+    	
+    	/**
+    	 * An xdm sequence object 'resultSeq', may have items that are themselves sequence
+    	 * objects. We need to expand such nested sequence objects, to get a final sequence
+    	 * none of whose items are sequence with cardinality greater than one.
+    	 */
+    	XslTransformEvaluationHelper.expandResultSequence(resultSeq, result);
 
-    public void setReturnExprXPathStr(String returnExprXPathStr) {
-        this.m_ReturnExprXPathStr = returnExprXPathStr;
+    	m_xpathVarList.clear();
+
+    	return result; 
     }
     
-    /*
-     * This method, does all the evaluations needed to determine the final evaluation result 
-     * of the XPath 'for' expression, returned as a 'ResultSequence' object.
+    /**
+     * Method definition, to do XPath 'for' expression evaluation.
+     * 
+     * @param listIter							         List iterator object for the, XPath 'for' 
+     *                                                   expression's variable bindings.
+     * @param returnExprXPath                            An XPath object, for XPath 'for' expression's
+     *                                                   return expression.
+     * @param xctxt                                      An XPathContext object
+     * @return                                           ResultSequence object, representing XPath 'for' 
+     *                                                   expression's result.
+     * @throws TransformerException
      */
     private ResultSequence getForExpressionEvalResult(ListIterator listIter, 
                                                                      XPath returnExprXPath, 
                                                                      XPathContext xctxt) throws TransformerException {
-        ResultSequence resultSeq = new ResultSequence();
+        ResultSequence result = new ResultSequence();
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
@@ -149,7 +130,8 @@ public class XPathForExpr extends Expression {
         if (listIter.hasNext()) {           
            ForQuantifiedExprVarBinding forExprVarBinding = (ForQuantifiedExprVarBinding)listIter.next();            
             
-           // Evaluate the XPath 'for' expression's, one of the variable binding xpath expression
+           // Evaluate the XPath 'for' expression's, variable binding 
+           // XPath expression.
            
            String varName = forExprVarBinding.getVarName();
            String varBindingXPathStr = forExprVarBinding.getXPathExprStr();
@@ -199,11 +181,8 @@ public class XPathForExpr extends Expression {
                try {
                   dtmIter = locPathIterator.asIterator(xctxt, contextNode);
                }
-               catch (ClassCastException ex) {
-                  // no op
-               }
                catch (Exception ex) {
-            	  // no op 
+                  // no op
                }
                
                if (dtmIter != null) {
@@ -256,7 +235,8 @@ public class XPathForExpr extends Expression {
                    }
             	   else if (xsObj instanceof ResultSequence) {
                        ResultSequence rSeq = (ResultSequence)xsObj;
-                       for (int idx = 0; idx < rSeq.size(); idx++) {
+                       int rSeqSize = rSeq.size();
+                       for (int idx = 0; idx < rSeqSize; idx++) {
                            resultSeq2.add(rSeq.item(idx)); 
                        }
                    }
@@ -280,7 +260,8 @@ public class XPathForExpr extends Expression {
                }
         	   else if (xsObj instanceof ResultSequence) {
                    ResultSequence rSeq = (ResultSequence)xsObj;
-                   for (int idx = 0; idx < rSeq.size(); idx++) {
+                   int rSeqSize = rSeq.size();
+                   for (int idx = 0; idx < rSeqSize; idx++) {
                        resultSeq2.add(rSeq.item(idx)); 
                    }
                }
@@ -292,36 +273,44 @@ public class XPathForExpr extends Expression {
            if (resultSeq2.size() == 0) {
                listIter.previous();
                
-               return resultSeq;    
+               return result;    
            }
            
            Map<QName, XObject> forExprVarBindingMap = xctxt.getXPathVarMap();
            
-           // For each xdm item within sequence object 'xsObjResultSeq' (which is the 
-           // result of variable binding xpath expression's evaluation), bind the 'for' 
-           // expression's binding variable in turn to that item.
-           for (int idx = 0; idx < resultSeq2.size(); idx++) {
+           /**
+            * For each xdm item within sequence object 'xsObjResultSeq' (which is the
+            * result of variable binding xpath expression's evaluation), bind the 'for'
+            * expression's binding variable in turn to that item.
+            */
+           
+           int rSeqSize = resultSeq2.size();           
+           for (int idx = 0; idx < rSeqSize; idx++) {
                XObject xdmItem = resultSeq2.item(idx);
                              
                forExprVarBindingMap.put(new QName(varName), xdmItem);
                
                ResultSequence rSeq = getForExpressionEvalResult(listIter, returnExprXPath, xctxt);
                
-               // Append xdm items of sequence 'rSeq', to the final sequence object 'resultSeq'   
-               for (int idx1 = 0; idx1 < rSeq.size(); idx1++) {
+               // Append xdm items of sequence 'rSeq', to the final 
+               // sequence object 'resultSeq'.
+               int rSeqSize2 = rSeq.size();
+               for (int idx1 = 0; idx1 < rSeqSize2; idx1++) {
                   XObject xObj = rSeq.item(idx1);
-                  resultSeq.add(xObj);    
+                  result.add(xObj);    
                }
            }
            
            listIter.previous();
            
-           return resultSeq;
+           return result;
         }
         else {
-            // Evaluate the XPath 'for' expression's 'return' clause. The XPath 'for' 
-        	// expression's 'return' clause may be evaluated multiple times depending 
-        	// upon, how may 'for' expression iterations are there.
+        	/**
+        	 * Evaluate the XPath 'for' expression's 'return' clause. The XPath 'for'
+        	 * expression's 'return' clause may be evaluated multiple times depending
+        	 * upon, how may 'for' expression iterations are there.
+        	 */
             
             if (m_vars != null) {              
                returnExprXPath.fixupVariables(m_vars, m_globals_size);
@@ -353,7 +342,8 @@ public class XPathForExpr extends Expression {
             }
             else if (retExprResultVal instanceof ResultSequence) {
                 ResultSequence rSeq = (ResultSequence)retExprResultVal;
-                for (int idx = 0; idx < rSeq.size(); idx++) {
+                int rSeqSize = rSeq.size();
+                for (int idx = 0; idx < rSeqSize; idx++) {
                     returnExprResultSet.add(rSeq.item(idx)); 
                 } 
             }
@@ -363,6 +353,38 @@ public class XPathForExpr extends Expression {
             
             return returnExprResultSet; 
         }
+    }
+    
+    @Override
+    public void fixupVariables(Vector vars, int globalsSize) {
+    	m_vars = (Vector)(vars.clone());
+    	m_globals_size = globalsSize; 
+    }
+    
+    @Override
+    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
+       // no op
+    }
+    
+    @Override
+    public boolean deepEquals(Expression expr) {        
+    	return false;
+    }
+
+    public List<ForQuantifiedExprVarBinding> getForExprVarBindingList() {
+    	return m_forExprVarBindingList;
+    }
+
+    public void setForExprVarBindingList(List<ForQuantifiedExprVarBinding> forExprVarBindingList) {
+    	this.m_forExprVarBindingList = forExprVarBindingList;
+    }
+
+    public String getReturnExprXPathStr() {
+    	return m_returnExprXPathStr;
+    }
+
+    public void setReturnExprXPathStr(String returnExprXPathStr) {
+    	this.m_returnExprXPathStr = returnExprXPathStr;
     }
 
 }

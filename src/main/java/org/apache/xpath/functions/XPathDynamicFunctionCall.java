@@ -162,7 +162,7 @@ public class XPathDynamicFunctionCall extends Expression {
                
 	           if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
 	        	  evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)evalResult, m_trailingArgList, 
-	        			                                                                  prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
+	        			                                                                  null, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
 	        			                                                                  xctxt); 
 	           }
 	        }
@@ -391,7 +391,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	}
     	    	else {
     	    	   evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)functionRef, m_argList, 
-																						   prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
+																						   null, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
 																						   xctxt);
     	    	}
     	    }

@@ -1239,8 +1239,53 @@ public class ElemFunction extends ElemTemplate
 				  }
 			  }
 		  }
-		  else if ((seqExpectedTypeData.getSequenceTypeFunctionTest() != null) && (srcValue instanceof XPathInlineFunction)) {
-			  // REVISIT : To check for argValue's conformance with details in 
+		  		  		  		  
+		  if (argConvertedVal == null) {
+			  boolean isSrcValueTypeOk = true;			  
+			  if (srcValue instanceof ResultSequence) {
+				  ResultSequence rSeq = (ResultSequence)srcValue;
+				  int rSeqLength = rSeq.size();
+				  int seqTypeOccrIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+				  boolean isOccrIndicatorOk = false;
+				  if ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) && (rSeqLength == 1)) {
+					  isOccrIndicatorOk = true;  
+				  }
+				  else if ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) && (rSeqLength >= 1)) {
+					  isOccrIndicatorOk = true; 
+				  }
+				  else if ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) && (rSeqLength >= 0)) {
+					  isOccrIndicatorOk = true;
+				  }
+				  else if ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) && 
+						                                                                                   ((rSeqLength == 0) || (rSeqLength == 1))) {
+					  isOccrIndicatorOk = true;
+				  }
+
+				  if (isOccrIndicatorOk) {
+					  for (int idx = 0; idx < rSeqLength; idx++) {
+						  XObject xObj = rSeq.item(idx);
+						  if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {
+							  if (!((xObj instanceof XPathNamedFunctionReference) || (xObj instanceof XPathInlineFunction))) {
+								  isSrcValueTypeOk = false;
+								  // REVISIT : To check for xObj value's conformance with details in 
+								  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()
+							  }
+						  }
+					  }
+				  }
+				  else {
+					  isSrcValueTypeOk = false;
+				  }
+
+				  if (isSrcValueTypeOk) {
+					  argConvertedVal = srcValue;  
+				  }
+			  }
+	      }
+		  
+		  if ((argConvertedVal == null) && (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) 
+				                                                                            && (srcValue instanceof XPathInlineFunction)) {
+			  // REVISIT : To check for argValue value's conformance with details in 
 			  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()
 			  argConvertedVal = srcValue; 
 		  }

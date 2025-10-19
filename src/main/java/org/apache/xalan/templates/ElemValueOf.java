@@ -458,6 +458,24 @@ public class ElemValueOf extends ElemTemplateElement {
                     		  
                     		  (new XString(strValue)).dispatchCharactersEvents(rth);
                     	  }
+                    	  else if (evalResult instanceof ResultSequence) {
+                    		  ResultSequence rSeq = (ResultSequence)evalResult;
+                    		  int rSeqLength = rSeq.size();
+                    		  StringBuffer strBuff = new StringBuffer(); 
+                    		  for (int idx = 0; idx < rSeqLength; idx++) {
+                    			 XObject xObj1 = rSeq.item(idx);
+                    			 String strValue = XslTransformEvaluationHelper.getStrVal(xObj1);
+                    			 String seprtr = ((m_separator != null) ? m_separator : " ");
+                    			 if (idx < (rSeqLength - 1)) {
+                    				strBuff.append(strValue + seprtr); 
+                    			 }
+                    			 else {
+                    				strBuff.append(strValue); 
+                    			 }
+                    		  }
+                    		  
+                    		  (new XString(strBuff.toString())).dispatchCharactersEvents(rth);
+                    	  }
                     	  else {
                     		  String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);                                                       
                     		  strValue = preProcessStrBeforeXslSerialization(strValue);                    		  

@@ -31,6 +31,10 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.functions.XSLFunctionBuilder;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyType;
@@ -53,43 +57,24 @@ public class XPathIfExpr extends Expression {
     
     private String m_thenExprXPathStr;
     
-    private String m_elseExprXPathStr;
+    private String m_elseExprXPathStr;        
     
-    // The following two fields of this class, are used during 
-    // XPath.fixupVariables(..) action as performed within object of 
-    // this class.    
+    /**
+     * The following two fields of this class, are used during
+     * XPath.fixupVariables(..) action as performed within object of
+     * this class.
+     */
+    
     private Vector m_vars;
     
     private int m_globals_size;
-
-    public String getIfConditionXPathStr() {
-        return m_ifConditionXPathStr;
-    }
-
-    public void setIfConditionXPathStr(String ifConditionXPathStr) {
-        this.m_ifConditionXPathStr = ifConditionXPathStr;
-    }
-
-    public String getThenExprXPathStr() {
-        return m_thenExprXPathStr;
-    }
-
-    public void setThenExprXPathStr(String thenExprXPathStr) {
-        this.m_thenExprXPathStr = thenExprXPathStr;
-    }
-
-    public String getElseExprXPathStr() {
-        return m_elseExprXPathStr;
-    }
-
-    public void setElseExprXPathStr(String elseExprXPathStr) {
-        this.m_elseExprXPathStr = elseExprXPathStr;
-    }
-
-    @Override
-    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-       // no op       
-    }
+    
+    /**
+     * An optional XPath expression suffix. This could be for example, 
+     * function argument information, when XPath 'if' expression before 
+     * suffix, evaluates to a function item.
+     */
+    private String m_xpathSuffixStr;
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
@@ -186,18 +171,89 @@ public class XPathIfExpr extends Expression {
            }
        }
        
+       if ((evalResult instanceof XPathNamedFunctionReference) && (m_xpathSuffixStr != null)) {
+    	   XPathNamedFunctionReference xPathNamedFunctionReference = (XPathNamedFunctionReference)evalResult;
+    	   String funcNamespace = xPathNamedFunctionReference.getFuncNamespace();
+    	   if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) || 
+    		   (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace) ||
+    		   (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace) ||
+    		   (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace)) {
+    		   XSL3FunctionService xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
+    		   ResultSequence argSeq = new ResultSequence();
+    		   if (!m_xpathSuffixStr.equals("()")) {
+    			   int strLength = m_xpathSuffixStr.length();
+    			   String normalizedArgStr = m_xpathSuffixStr.substring(1, strLength - 1);    			   
+    			   XPath argXPath = new XPath(normalizedArgStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    			   if (m_vars != null) {
+    				   argXPath.fixupVariables(m_vars, m_globals_size);
+    			   }
+    			   
+    			   XObject xObj = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    			   if (xObj instanceof ResultSequence) {
+    				  argSeq = (ResultSequence)xObj; 
+    			   }
+    			   else {
+    				  argSeq.add(xObj);  
+    			   }
+    		   }
+
+    		   evalResult = xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)evalResult, null, argSeq, 
+																									    				   prefixTable, m_vars, m_globals_size, 
+																									    				   getExpressionOwner(), xctxt); 
+    		  
+    	   }
+       }
+       
        return evalResult;
-    }
+    }        
 
     @Override
     public void fixupVariables(Vector vars, int globalsSize) {
         m_vars = (Vector)(vars.clone());
         m_globals_size = globalsSize; 
     }
+    
+    public String getIfConditionXPathStr() {
+        return m_ifConditionXPathStr;
+    }
+
+    public void setIfConditionXPathStr(String ifConditionXPathStr) {
+    	this.m_ifConditionXPathStr = ifConditionXPathStr;
+    }
+
+    public String getThenExprXPathStr() {
+    	return m_thenExprXPathStr;
+    }
+
+    public void setThenExprXPathStr(String thenExprXPathStr) {
+    	this.m_thenExprXPathStr = thenExprXPathStr;
+    }
+
+    public String getElseExprXPathStr() {
+    	return m_elseExprXPathStr;
+    }
+
+    public void setElseExprXPathStr(String elseExprXPathStr) {
+    	this.m_elseExprXPathStr = elseExprXPathStr;
+    }
+
+    public String getSuffixXPathStr() {
+    	return m_xpathSuffixStr;
+    }
+
+    public void setSuffixXPathStr(String suffixXPathStr) {
+    	this.m_xpathSuffixStr = suffixXPathStr;
+    }
+
+    @Override
+    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
+    	// no op       
+    }
 
     @Override
     public boolean deepEquals(Expression expr) {
-       return false;
+    	// no op    	
+    	return false;
     }
 
 }

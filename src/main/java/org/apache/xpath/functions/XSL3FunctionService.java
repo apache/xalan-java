@@ -195,7 +195,8 @@ public class XSL3FunctionService {
     				int xslFuncArgCount = 0;
     				ResultSequence xslFuncArgSequence = new ResultSequence();
     				List<String> funcExtArgStrList = null;
-    				for (int idx = 0; idx < argVector.size(); idx++) {
+    				int argCount = argVector.size();
+    				for (int idx = 0; idx < argCount; idx++) {
     					Expression argExpr = (Expression)(argVector.elementAt(idx));
     					if (argExpr instanceof XPathExprFuncCallExtendedArg) {    						    						
     						XPathExprFuncCallExtendedArg xpathExprFuncCallExtendedArg = (XPathExprFuncCallExtendedArg)argExpr;
@@ -240,7 +241,8 @@ public class XSL3FunctionService {
     									Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
     									List<Short> funcDefinedArity = Arrays.asList(function.getDefinedArity());
     									if (funcDefinedArity.contains(arity)) {
-    										for (int idx = 0; idx < funcExtArgStrList.size(); idx++) {
+    										int argCount2 = funcExtArgStrList.size();
+    										for (int idx = 0; idx < argCount2; idx++) {
     											String xpathExprStr = funcExtArgStrList.get(idx);
     											XPath argXPath = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);    									   
     											try {
@@ -291,7 +293,8 @@ public class XSL3FunctionService {
     						XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)evalResult;
 
     						List<String> xpathInlineFuncArgList = new ArrayList<String>(); 
-    						for (int idx = 0; idx < funcExtArgStrList.size(); idx++) {
+    						int argCount2 = funcExtArgStrList.size();
+    						for (int idx = 0; idx < argCount2; idx++) {
     							String xpathExprStr = funcExtArgStrList.get(idx);								
     							xpathInlineFuncArgList.add(xpathExprStr);    							
     						}
@@ -547,7 +550,8 @@ public class XSL3FunctionService {
     								}
 
     								if (prefixTable != null) {
-    									for (int idx = 0; idx < prefixTable.size(); idx++) {
+    									int prefixTableSize = prefixTable.size();
+    									for (int idx = 0; idx < prefixTableSize; idx++) {
     										XMLNSDecl xmlNSDecl = prefixTable.get(idx);
     										String prefix1 = xmlNSDecl.getPrefix();
     										String uri1 = xmlNSDecl.getURI();
@@ -574,7 +578,8 @@ public class XSL3FunctionService {
 
     							String namespaceUri = null;
     							if (prefixTable != null) {
-    								for (int idx = 0; idx < prefixTable.size(); idx++) {
+    								int prefixTableSize = prefixTable.size();
+    								for (int idx = 0; idx < prefixTableSize; idx++) {
     									XMLNSDecl xmlNSDecl = prefixTable.get(idx);
     									String prefix1 = xmlNSDecl.getPrefix();
     									String uri1 = xmlNSDecl.getURI();
@@ -805,6 +810,7 @@ public class XSL3FunctionService {
      * 
      * @param xpathNamedFuncRef                 An XPath compiled named function reference object
      * @param argList                           List of argument XPath expressions for the function call
+     * @param argSeq                            List of compiled function argument object instances
      * @param prefixTable                       An XML prefix table list object reference containing
      *                                          an XSL context namespace binding information.
      * @param varVecor                          Variable name declaration vector
@@ -815,7 +821,7 @@ public class XSL3FunctionService {
      * @throws TransformerException
      */
     public XObject evaluateXPathNamedFunctionReference(XPathNamedFunctionReference xpathNamedFuncRef, 
-    		                                           List<String> argList, List<XMLNSDecl> prefixTable, 
+    		                                           List<String> argList, ResultSequence argSeq, List<XMLNSDecl> prefixTable, 
     		                                           Vector varVecor, int varGlobalsSize, ExpressionNode expressionNode, 
     		                                           XPathContext xctxt) throws TransformerException {
     	
@@ -868,23 +874,37 @@ public class XSL3FunctionService {
     			function.setDefinedArity(new Short[] { (short)funcArity });
     		}
 
-    		for (int idx = 0; idx < argList.size(); idx++) {
-    			String argXPathStr = argList.get(idx);
-    			if (prefixTable != null) {
-    				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
-    			}
-
-    			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-    			if (varVecor != null) {
-    				argXPath.fixupVariables(varVecor, varGlobalsSize);
-    			}
-
+    		int argCount = 0;
+    		if (argList != null) {
+    		   argCount = argList.size();
+    		}
+    		else {
+    		   argCount = argSeq.size();	
+    		}
+    		
+    		for (int idx = 0; idx < argCount; idx++) {
     			try {
-    				function.setArg(argXPath.getExpression(), idx);
-    			} 
+    				if (argList != null) {
+    					String argXPathStr = argList.get(idx);
+    					if (prefixTable != null) {
+    						argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    					}
+
+    					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    					if (varVecor != null) {
+    						argXPath.fixupVariables(varVecor, varGlobalsSize);
+    					}
+
+    					function.setArg(argXPath.getExpression(), idx);
+    				}
+    				else {
+    					XObject arg1 = argSeq.item(idx);
+    					function.setArg(arg1, idx);
+    				}
+    			}
     			catch (WrongNumberArgsException ex) {
-    				// Return an empty sequence in case of this exception
-    				evalResult = new ResultSequence();
+    				String funcName = "{" + funcNamespace + "}" + funcLocalName; 
+    				throw new TransformerException("FODC0005 : Wrong number of arguments, provided during function call for " + funcName + ".", srcLocator);
     			}
     		}
 
@@ -896,7 +916,8 @@ public class XSL3FunctionService {
     		ElemFunction elemFunction = xpathNamedFuncRef.getXslStylesheetFunction();
 
     		ResultSequence argSequence = new ResultSequence();
-    		for (int idx = 0; idx < argList.size(); idx++) {
+    		int argCount = argList.size();
+    		for (int idx = 0; idx < argCount; idx++) {
     			String argXPathStr = argList.get(idx);
     			if (prefixTable != null) {
     				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
@@ -912,8 +933,7 @@ public class XSL3FunctionService {
     				argSequence.add(argValue);
     			} 
     			catch (TransformerException ex) {							
-    				// Return an empty sequence in case of this exception
-    				evalResult = new ResultSequence();
+    				throw new TransformerException(ex.getMessage(), srcLocator);
     			}
     		}
 
@@ -940,7 +960,8 @@ public class XSL3FunctionService {
     		XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
     		funcObj.setDefinedArity(new Short[] { (short)funcArity });
 
-    		for (int idx = 0; idx < argList.size(); idx++) {
+    		int argCount = argList.size();
+    		for (int idx = 0; idx < argCount; idx++) {
     			String argXPathStr = argList.get(idx);
     			if (prefixTable != null) {
     				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
@@ -955,8 +976,8 @@ public class XSL3FunctionService {
     				funcObj.setArg(argXPath.getExpression(), idx);
     			} 
     			catch (WrongNumberArgsException ex) {							
-    				// Return an empty sequence in case of this exception
-    				evalResult = new ResultSequence();
+    				String funcName = "{" + funcNamespace + "}" + funcLocalName; 
+    				throw new TransformerException("FODC0005 : Wrong number of arguments, provided during function call for " + funcName + ".", srcLocator);
     			}
     		}
 
@@ -1195,7 +1216,8 @@ public class XSL3FunctionService {
 
     	Map<QName, XObject> functionParamAndArgMap = new HashMap<QName, XObject>();
 
-    	for (int idx = 0; idx < funcParamList.size(); idx++) {
+    	int argCount = funcParamList.size();
+    	for (int idx = 0; idx < argCount; idx++) {
     		InlineFunctionParameter funcParam = funcParamList.get(idx);                                                         
 
     		String argXPathStr = argList.get(idx);

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-15T11:54:45Z" fail="38" name="higher-order-functions" pass="33" skipped="5" statusUnknown="0" totalRun="71">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-19T16:16:24Z" fail="36" name="higher-order-functions" pass="34" skipped="6" statusUnknown="0" totalRun="70">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -23,22 +23,17 @@
    <testResult status="pass" testName="higher-order-functions-022"/>
    <testResult status="pass" testName="higher-order-functions-023"/>
    <testResult status="pass" testName="higher-order-functions-024"/>
-   <testResult status="fail" testName="higher-order-functions-025"/>
+   <testResult status="pass" testName="higher-order-functions-025"/>
    <testResult status="pass" testName="higher-order-functions-026"/>
    <testResult status="pass" testName="higher-order-functions-027"/>
    <testResult status="pass" testName="higher-order-functions-028"/>
    <testResult status="pass" testName="higher-order-functions-029"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-030"/>
+   <testResult status="pass" testName="higher-order-functions-030"/>
    <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-031"/>
-   <testResult status="fail" testName="higher-order-functions-032">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 A sequence type occurence indicator ',', is not recognized.
-javax.xml.transform.TransformerException: XPST0051 A sequence type occurence indicator ',', is not recognized.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="higher-order-functions-033"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-032"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="higher-order-functions-033"/>
    <testResult status="fail" testName="higher-order-functions-034"/>
-   <testResult status="fail" testName="higher-order-functions-035"/>
+   <testResult status="pass" testName="higher-order-functions-035"/>
    <testResult status="fail" testName="higher-order-functions-036"/>
    <testResult status="fail" testName="higher-order-functions-037">
       <outResult/>
@@ -81,7 +76,7 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;true&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-055">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"/&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;false&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-056">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;NaN&lt;/out&gt;</outResult>
@@ -95,8 +90,14 @@ javax.xml.transform.TransformerException: XPST0051 A sequence type occurence ind
       </outResult>
    </testResult>
    <testResult status="pass" testName="higher-order-functions-059"/>
-   <testResult status="pass" testName="higher-order-functions-060"/>
-   <testResult status="pass" testName="higher-order-functions-061"/>
+   <testResult status="fail" testName="higher-order-functions-060">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;MICHAEL~KAY~michael~kay~Michail~Kay~11&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="higher-order-functions-061">
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: javax.xml.transform.TransformerException: XTTE0505 : An item type of argument at position 1 of XPath dynamic function call $f, doesn't match an expected type.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="higher-order-functions-062">
       <outResult>
          <errTrace>org.apache.xpath.functions.string.FuncSubstringBefore only allows 2 or 3 arguments</errTrace>
