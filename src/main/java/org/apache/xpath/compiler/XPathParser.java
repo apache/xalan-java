@@ -3115,7 +3115,10 @@ public class XPathParser
     	  }
       }
       else {
-    	  elseXPathStr = probableElseExprStr;    	  
+    	  elseXPathStr = probableElseExprStr;
+    	  while (m_token != null) {
+    		 nextToken();  
+    	  }
       }
       
       ifExpr.setIfConditionXPathStr(branchConditionXPathExprStr);
@@ -4508,16 +4511,12 @@ public class XPathParser
       nextToken();
       appendOp(2, OpCodes.OP_GROUP);
       m_op_group_parse = true;
-      Expr();
+      Expr();      
+      if (m_token != null) {
+    	 consumeExpected(')');    	 
+      }
+      
       m_op_group_parse = false;
-      if (tokenIs(')')) {
-    	 consumeExpected(')');
-      }
-      else {
-    	 // This is required for various types of XPath 
-    	 // expressions. REVISIT
-         nextToken();
-      }
       
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
         m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-10-19T16:16:53Z" desc="W3C XSLT 3.0 test suite results" fail="678" pass="1764" skipped="72" success="71.79%" totalRun="2457" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-10-20T10:08:48Z" desc="W3C XSLT 3.0 test suite results" fail="665" pass="1745" skipped="72" success="71.93%" totalRun="2426" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
-    <as fail="30" pass="74" skipped="4" success="70.48%" totalRun="105"/>
+    <as fail="31" pass="73" skipped="4" success="69.52%" totalRun="105"/>
     <avt fail="15" pass="20" skipped="0" success="57.14%" totalRun="35"/>
     <expand-text fail="8" pass="54" skipped="0" success="87.1%" totalRun="62"/>
     <match fail="60" pass="68" skipped="8" success="52.71%" totalRun="129"/>
@@ -23,7 +23,7 @@
     <math fail="25" pass="124" skipped="0" success="82.67%" totalRun="150"/>
     <nodetest fail="36" pass="2" skipped="0" success="5.26%" totalRun="38"/>
     <path fail="3" pass="7" skipped="0" success="70.0%" totalRun="10"/>
-    <predicate fail="6" pass="51" skipped="0" success="89.47%" totalRun="57"/>
+    <predicate fail="7" pass="50" skipped="0" success="87.72%" totalRun="57"/>
   </expr>
   <fn>
     <deep-equal fail="0" pass="2" skipped="0" success="100.0%" totalRun="2"/>
@@ -38,7 +38,7 @@
     <apply-templates fail="24" pass="22" skipped="4" success="47.83%" totalRun="46"/>
     <attribute fail="18" pass="11" skipped="0" success="36.67%" totalRun="30"/>
     <call-template fail="13" pass="27" skipped="2" success="67.5%" totalRun="40"/>
-    <choose fail="17" pass="38" skipped="0" success="69.09%" totalRun="55"/>
+    <choose fail="2" pass="21" skipped="0" success="87.5%" totalRun="24"/>
     <copy fail="31" pass="28" skipped="0" success="46.67%" totalRun="60"/>
     <element fail="15" pass="14" skipped="0" success="48.28%" totalRun="29"/>
     <for-each-group fail="24" pass="49" skipped="4" success="66.22%" totalRun="74"/>

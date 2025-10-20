@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-19T16:16:35Z" fail="6" name="predicate" pass="51" skipped="0" statusUnknown="0" totalRun="57">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-20T10:08:09Z" fail="7" name="predicate" pass="50" skipped="0" statusUnknown="0" totalRun="57">
    <testResult status="fail" testName="predicate-001"/>
    <testResult status="fail" testName="predicate-002"/>
    <testResult status="fail" testName="predicate-003"/>
@@ -57,5 +57,7 @@
    <testResult status="fail" testName="predicate-056">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
    </testResult>
-   <testResult status="pass" testName="predicate-057"/>
+   <testResult status="fail" testName="predicate-057">
+      <outResult/>
+   </testResult>
 </testrun>
