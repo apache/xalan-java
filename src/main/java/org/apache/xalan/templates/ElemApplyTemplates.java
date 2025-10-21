@@ -731,8 +731,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  QName m_name = template.getName();
 						  String m_matchPatternStr = (template.getMatch()).getPatternString();
 						  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPatternStr; 
-						  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-																						  + " is " + templateAsAttrVal + ". But the template "
+						  throw new TransformerException("XTTE0505 : The required result type of XSL template '" + errTemplateStr 
+																						  + "' is " + templateAsAttrVal + ". But XSL template's "
 																						  + "result doesn't conform to this required type.", srcLocator);  
 					  }
 				  }
@@ -745,8 +745,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  QName m_name = template.getName();
 						  String m_matchPatternStr = (template.getMatch()).getPatternString();
 						  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPatternStr; 
-						  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-																						  + " is " + templateAsAttrVal + ". But the template "
+						  throw new TransformerException("XTTE0505 : The required result type of XSL template '" + errTemplateStr 
+																						  + "' is " + templateAsAttrVal + ". But XSL template's "
 																						  + "result doesn't conform to this required type.", srcLocator);
 					  }
 				  }  

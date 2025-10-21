@@ -513,7 +513,7 @@ public class XSLTErrorResources extends ListResourceBundle
       "Could not resolve name AVT in xsl:call-template."},
 
     {ER_REQUIRES_ATTRIB,
-     "{0} requires attribute: {1}"},
+     "XTSE0010 : {0} requires attribute: {1}"},
 
     { ER_MUST_HAVE_TEST_ATTRIB, 
       "{0} must have a ''test'' attribute."},
@@ -1082,7 +1082,7 @@ public class XSLTErrorResources extends ListResourceBundle
      "Programmer''s assertion in RedundentExprEliminator: {0}"},
 
     { ER_NOT_ALLOWED_IN_POSITION,
-     "XTSE0260 : {0} is not allowed in this position in the stylesheet"},
+     "XTSE0010 : {0} is not allowed in this position in the stylesheet"},
 
     { ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION,
      "Non-whitespace text is not allowed in this position in the stylesheet!"},

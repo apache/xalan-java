@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-20T10:07:39Z" fail="2" name="choose" pass="21" skipped="0" statusUnknown="1" totalRun="24">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-21T11:43:54Z" fail="6" name="choose" pass="48" skipped="1" statusUnknown="0" totalRun="54">
    <testResult status="pass" testName="choose-0101"/>
    <testResult status="pass" testName="choose-0102"/>
-   <testResult status="fail" testName="choose-0103"/>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="choose-0103"/>
    <testResult status="pass" testName="choose-0104"/>
    <testResult status="pass" testName="choose-0105"/>
    <testResult status="pass" testName="choose-0106"/>
@@ -20,7 +20,38 @@
    <testResult status="pass" testName="choose-0603"/>
    <testResult status="pass" testName="choose-0604"/>
    <testResult status="pass" testName="choose-0605"/>
-   <testResult status="fail" testName="choose-0606"/>
+   <testResult status="pass" testName="choose-0606"/>
    <testResult status="pass" testName="choose-0607"/>
-   <testResult testName="choose-0608"/>
+   <testResult status="pass" testName="choose-0608"/>
+   <testResult status="pass" testName="choose-0609"/>
+   <testResult status="pass" testName="choose-0701"/>
+   <testResult status="pass" testName="choose-0702"/>
+   <testResult status="pass" testName="choose-0801"/>
+   <testResult status="pass" testName="choose-0901"/>
+   <testResult status="pass" testName="choose-1001"/>
+   <testResult status="pass" testName="choose-1101"/>
+   <testResult status="pass" testName="choose-1201"/>
+   <testResult status="pass" testName="choose-1202"/>
+   <testResult status="pass" testName="choose-1203"/>
+   <testResult status="pass" testName="choose-1204"/>
+   <testResult status="pass" testName="choose-1301"/>
+   <testResult status="pass" testName="choose-1401"/>
+   <testResult status="pass" testName="choose-1501"/>
+   <testResult status="pass" testName="choose-1502"/>
+   <testResult status="pass" testName="choose-1601"/>
+   <testResult status="pass" testName="choose-1701"/>
+   <testResult status="fail" testName="choose-1702"/>
+   <testResult status="pass" testName="choose-1703"/>
+   <testResult status="pass" testName="choose-1704"/>
+   <testResult status="pass" testName="choose-1705"/>
+   <testResult status="pass" testName="choose-1706"/>
+   <testResult status="pass" testName="choose-1801"/>
+   <testResult status="pass" testName="choose-1802"/>
+   <testResult status="pass" testName="choose-1803"/>
+   <testResult status="pass" testName="choose-1804"/>
+   <testResult status="fail" testName="choose-1901"/>
+   <testResult status="fail" testName="choose-1902"/>
+   <testResult status="fail" testName="choose-1903"/>
+   <testResult status="fail" testName="choose-1904"/>
+   <testResult status="fail" testName="choose-1905"/>
 </testrun>

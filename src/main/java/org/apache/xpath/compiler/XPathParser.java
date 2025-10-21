@@ -1630,6 +1630,20 @@ public class XPathParser
                 		   nextToken();
                 		}
                 	}
+                	else if (tokenIs('(')) {
+                		// An XPath literal sequence constructor item, is itself 
+                		// an XPath literal sequence constructor item.
+                		xpathExprTokens.add(m_token);
+                		consumeExpected('(');
+                		while (!(isStrListHasBalancedParentheses(xpathExprTokens, '(', ')') && 
+                                                                                          tokenIs(",")) && (m_token != null)) {
+                			if (!lookahead(null, 1)) {
+                				xpathExprTokens.add(m_token);
+                			}                			
+
+                			nextToken();
+                		}                		
+                	}
                 	else {
                 		while (!tokenIs(",") && (m_token != null)) {
                 			if (!lookahead(null, 1)) {
@@ -3257,16 +3271,23 @@ public class XPathParser
     
     if (tokenIs('(')) {
       if ("=".equals(getTokenRelative(-2))) {
-    	  // Previous token is, '='.
+    	  // Previous token is, '='.    	  
     	  
-    	  // XPath parse for RHS of general comparison operators, =, !=. 
-    	  // RHS of these operators that're handled here, have syntax of 
-    	  // type (a,b,c ...), i.e a literal sequence.
+    	  /**
+    	   * XPath parse for RHS of general comparison operators, =, !=.
+    	   * RHS of these operators that're handled here, have syntax of
+    	   * type (a,b,c ...), i.e a literal sequence.
+    	   */
     	  
     	  TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
                                                                                    m_queueMark, m_tokenChar, m_token);
     	  nextToken();
-    	  if (!tokenIs(')') && !lookahead(null, 1)) {
+    	  if (tokenIs(')') && lookahead(null, 1)) {
+    		  xpathParseLiteralEmptySequence();
+    		  
+    		  return addPos;
+    	  }
+    	  else if (!tokenIs(')') && !lookahead(null, 1)) {
     		  List<String> seqXPathItems = new ArrayList<String>();
     		      		  
     		  while (m_token != null) {
@@ -3317,10 +3338,12 @@ public class XPathParser
               }
               
               if (isXPathParseOkToProceed) {
-            	  if (m_isXPathPredicateParsingActive) {
-            		 // An XPath parse above has gone one token ahead, than 
-            		 // what should be. We set these variables, to their expected 
-            		 // values.
+            	  if (m_isXPathPredicateParsingActive) {            		  
+            		 /**
+            		  * An XPath parse above has gone one token ahead, than
+            		  * what should be. We set these variables, to their expected
+            		  * values.    
+            		  */
             		 m_tokenChar = ']';
             		 m_token = "]";
             	  }
@@ -4368,10 +4391,12 @@ public class XPathParser
     		   nextToken();
     	   }
     	   
-    	   // XPath parse of chained access of consecutive specification 
-    	   // (with chaining of two or more XPath expressions) of XPath 
-    	   // dynamic function call, map and array information lookup 
-    	   // syntax.
+    	   /**
+    	    * XPath parse of chained access of consecutive specification
+    	    * (with chaining of two or more XPath expressions) of XPath
+    	    * dynamic function call, map and array information lookup
+    	    * syntax.
+    	    */
     	   
     	   boolean isDynamicFuncCallChainedAccess = false;
     	   

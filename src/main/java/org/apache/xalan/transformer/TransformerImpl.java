@@ -4403,6 +4403,10 @@ public class TransformerImpl extends Transformer
 	private void updateXPathDefaultNamespace(ElemTemplateElement elemTemplateElem, String xpathDefaultNamespace) 
 			                                                                    throws javax.xml.transform.TransformerException {
 		
+		  if ("".equals(xpathDefaultNamespace)) {
+			 xpathDefaultNamespace = null;  
+		  }
+		  
 		  if (elemTemplateElem != null) {		  
 			  ElemTemplateElement xslElem = elemTemplateElem; 
 			  while (xslElem != null) {

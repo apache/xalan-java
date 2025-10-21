@@ -292,7 +292,7 @@ public class XPathArithmeticOperation extends Operation {
 		else if (resultDbl == Double.NEGATIVE_INFINITY) {
 			result = new XSDouble(Double.NEGATIVE_INFINITY); 
 		}
-		else if (resultDbl == Double.NaN) {
+		else if (Double.isNaN(resultDbl)) {
 			result = new XSDouble(Double.NaN); 
 		}
 		else {

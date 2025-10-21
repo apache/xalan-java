@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-08T11:07:18Z" fail="18" name="attribute" pass="11" skipped="0" statusUnknown="1" totalRun="30">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-21T11:44:02Z" fail="17" name="attribute" pass="12" skipped="0" statusUnknown="1" totalRun="30">
    <testResult status="pass" testName="attribute-0001"/>
    <testResult status="pass" testName="attribute-0002"/>
    <testResult status="pass" testName="attribute-0003"/>
@@ -28,11 +28,7 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;Out&gt;&lt;Element1 Att1="OK"&gt;&lt;?my-pi type="text/css"?&gt;&lt;Element2/&gt;&lt;/Element1&gt;&lt;/Out&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="attribute-0806"/>
-   <testResult status="fail" testName="attribute-0807">
-      <outResult>
-         <errTrace>t:attribute requires attribute: name</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="attribute-0807"/>
    <testResult status="pass" testName="attribute-0901"/>
    <testResult status="pass" testName="attribute-0902"/>
    <testResult status="fail" testName="attribute-1101"/>

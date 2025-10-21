@@ -340,7 +340,10 @@ public class XSL3FunctionService {
     						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSFloat.class, xctxt);
     						break;
     					case Keywords.XS_DOUBLE :    					
-    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSDouble.class, xctxt);    					
+    						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSDouble.class, xctxt);    						
+    						Expression argExpr = funcObj.getArg(0);    						
+    						String argStr1 = getXPathBuiltInConstructorFunctionArgStr(argExpr, xctxt);
+    						evalResult.setConsFuncArgStr(argStr1);
     						break;
     					case Keywords.XS_INTEGER :    					
     						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSInteger.class, xctxt);    					
@@ -1343,7 +1346,8 @@ public class XSL3FunctionService {
     	ResultSequence evalResultSequence = null;
     	ResultSequence argSequence = new ResultSequence();
     	
-    	for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    	int funcArgCount = funcObj.getArgCount();    	
+    	for (int idx = 0; idx < funcArgCount; idx++) {
 			Expression funcArg = funcObj.getArg(idx);    						
 			String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
 			Constructor cons = dataType.getConstructor(new Class[] {String.class});

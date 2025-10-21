@@ -102,6 +102,13 @@ public class XObject extends Expression implements Serializable, Cloneable
    * doesn't represent tunnel parameter's value.
    */
   private QName m_QName;
+  
+  /**
+   * Class field, to store string value of an XPath constructor 
+   * function argument. At present, XPath constructor function 
+   * for type xs:double, uses this field.
+   */
+  private String m_cons_funcArgStr;
 
   /**
    * Create an XObject.
@@ -2301,6 +2308,14 @@ public class XObject extends Expression implements Serializable, Cloneable
 		   
 	 error(XPATHErrorResources.ER_TYPE_COMPARISON_ERROR, new Object[] {"xs:" + typeName1, 
 			                                                                         "xs:" + typeName2}, expressionOwner);
+  }
+
+  public String getConsFuncArgStr() {
+	  return m_cons_funcArgStr;
+  }
+
+  public void setConsFuncArgStr(String consFuncArgStr) {
+	  this.m_cons_funcArgStr = consFuncArgStr;
   }
 
 }
