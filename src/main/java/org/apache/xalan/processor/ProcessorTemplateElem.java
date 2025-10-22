@@ -24,7 +24,9 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemMode;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.Stylesheet;
 import org.xml.sax.Attributes;
 
 /**
@@ -135,6 +137,11 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
     {
       parent.appendChild(elem);
       handler.pushElemTemplateElement(elem);
+      
+      if (elem instanceof ElemMode) {
+    	 Stylesheet stylesheet = (Stylesheet)parent;
+    	 stylesheet.setElemMode((ElemMode)elem);
+      }
     }
   }
 

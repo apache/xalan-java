@@ -127,7 +127,9 @@ public class StylesheetRoot extends StylesheetComposed
     /**
      * An XSL transformation initial template name.
      */
-    private String m_init_template_name = null; 
+    private String m_init_template_name = null;
+    
+    private ErrorListener m_errorListener;
     
   /**
    * Uses an XSL stylesheet document.
@@ -142,6 +144,7 @@ public class StylesheetRoot extends StylesheetComposed
 
     try
     {
+      m_errorListener = errorListener; 
       m_selectDefault = new XPath("node()", this, this, XPath.SELECT, errorListener);
 
       initDefaultRule(errorListener);
@@ -1096,6 +1099,90 @@ public class StylesheetRoot extends StylesheetComposed
   {
     return m_defaultRule;
   }
+  
+  /**
+   * Method definition, to get an XSL deep copy rule for xdm element nodes.
+   * 
+   * @param mode								An XSL template mode value
+   * @return                                    An xsl:template declaration
+   *                                            object for an XSL stylesheet rule.
+   * @throws TransformerException
+   */
+  public ElemTemplate getDeepCopyRule(QName mode) throws TransformerException
+  {		  
+	  ElemTemplate elemTemplate = new ElemTemplate();
+	  
+	  elemTemplate.setMode(mode);
+	  
+	  XPath xpathMatch = new XPath("*", this, this, XPath.MATCH, m_errorListener);
+	  elemTemplate.setMatch(xpathMatch);	  	  
+	  elemTemplate.setStylesheet(this);
+	  
+	  ElemCopyOf elemCopyOf = new ElemCopyOf();
+	  XPath xpathSelect = new XPath(".", this, this, XPath.SELECT, m_errorListener);
+	  elemCopyOf.setSelect(xpathSelect);
+	  
+	  elemTemplate.appendChild(elemCopyOf);
+	  
+	  return elemTemplate;
+  }
+  
+  /**
+   * Method definition, to get an XSL shallow copy rule for xdm nodes.
+   * 
+   * @param mode								An XSL template mode value
+   * @return                                    An xsl:template declaration
+   *                                            object for an XSL stylesheet rule.
+   * @throws TransformerException
+   */
+  public ElemTemplate getShallowCopyRule(QName mode) throws TransformerException
+  {	  
+	  ElemTemplate elemTemplate = new ElemTemplate();
+	  
+	  elemTemplate.setMode(mode);
+	  
+	  XPath xpathMatch = new XPath("@* | node()", this, this, XPath.MATCH, m_errorListener);
+	  elemTemplate.setMatch(xpathMatch);	  
+	  
+	  ElemCopy elemCopy = new ElemCopy();
+	  
+	  ElemApplyTemplates elemApplyTemplates = new ElemApplyTemplates();
+	  elemApplyTemplates.setMode(mode);
+	  XPath xpathSelect = new XPath("@*", this, this, XPath.SELECT, m_errorListener);
+	  elemApplyTemplates.setSelect(xpathSelect);
+	  elemCopy.appendChild(elemApplyTemplates);
+
+	  elemApplyTemplates = new ElemApplyTemplates();
+	  elemApplyTemplates.setMode(mode);
+	  xpathSelect = new XPath("node()", this, this, XPath.SELECT, m_errorListener);
+	  elemApplyTemplates.setSelect(xpathSelect);
+	  elemCopy.appendChild(elemApplyTemplates);
+	  
+	  elemTemplate.appendChild(elemCopy);
+
+	  return elemTemplate;
+  }
+  
+  /**
+   * Method definition, to get an XSL deep skip rule for xdm element nodes.
+   * 
+   * @param mode								An XSL template mode value
+   * @return                                    An xsl:template declaration
+   *                                            object for an XSL stylesheet rule.
+   * @throws TransformerException
+   */
+  public ElemTemplate getDeepSkipRule(QName mode) throws TransformerException
+  {	  
+	  ElemTemplate elemTemplate = new ElemTemplate();
+	  
+	  elemTemplate.setMode(mode);
+	  
+	  XPath xpathMatch = new XPath("*", this, this, XPath.MATCH, m_errorListener);
+	  elemTemplate.setStylesheet(this);	    
+	  elemTemplate.setMatch(xpathMatch);
+
+	  return elemTemplate;
+  }
 
   /**
    * The default template to use for the root if we don't find
@@ -1168,8 +1255,8 @@ public class StylesheetRoot extends StylesheetComposed
     childrenElement.setSelect(m_selectDefault);
     m_defaultRule.appendChild(childrenElement);
     
-    m_startRule = m_defaultRule;
-
+    m_startRule = m_defaultRule;               
+    
     // -----------------------------
     m_defaultTextRule = new ElemTemplate();
 

@@ -57,6 +57,7 @@ import org.apache.xalan.templates.ElemMergeAction;
 import org.apache.xalan.templates.ElemMergeKey;
 import org.apache.xalan.templates.ElemMergeSource;
 import org.apache.xalan.templates.ElemMessage;
+import org.apache.xalan.templates.ElemMode;
 import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
@@ -203,7 +204,7 @@ public class XSLTSchema extends XSLTElementDef
                                         
     // Optional
     // Static error if invalid
-    // xsl:template, xsl:decimal-format                                      
+    // xsl:template, xsl:decimal-format, xsl:mode                                      
     XSLTAttributeDef nameAttrOpt_ERROR = new XSLTAttributeDef(null, "name",
                                      XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
     
@@ -216,6 +217,21 @@ public class XSLTSchema extends XSLTElementDef
     // xsl:merge-source
     XSLTAttributeDef sortBeforeMergeAttrOpt = new XSLTAttributeDef(null, "sort-before-merge",
                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
+    
+    // Optional
+    // xsl:mode
+    XSLTAttributeDef onNoMatchOpt = new XSLTAttributeDef(null, "on-no-match",
+                                     XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
+    // xsl:mode
+    XSLTAttributeDef onMultipleMatchOpt = new XSLTAttributeDef(null, "on-multiple-match",
+                                     XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
+    // xsl:mode
+    XSLTAttributeDef warningOnMultipleMatchOpt = new XSLTAttributeDef(null, "warning-on-multiple-match",
+                                     XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
     // Optional
     // xsl:param                                      
@@ -1230,7 +1246,20 @@ public class XSLTSchema extends XSLTElementDef
                                                    nameAttrRequired,
                                                    selectAttrOpt, asAttrOpt, requiredAttrOpt }, 
                                            new ProcessorGlobalParamDecl(),
-                                           ElemParam.class /* class object */, 20, true),
+                                           ElemParam.class /* class object */, 20, true),                                  
+                                  new XSLTElementDef(
+                                          this,
+                                          Constants.S_XSLNAMESPACEURL,
+                                          "mode",
+                                          null /*alias */,
+                                          null /* elements */,
+                                          new XSLTAttributeDef[]{
+                                                  nameAttrOpt_ERROR,
+                                                  onNoMatchOpt,
+                                                  onMultipleMatchOpt,
+                                                  warningOnMultipleMatchOpt,
+                                                  spaceAttr }, 
+                                          new ProcessorTemplateElem(), ElemMode.class /* class object */, true, 20, true),
                                   new XSLTElementDef(
                                            this,
                                            Constants.S_XSLNAMESPACEURL,

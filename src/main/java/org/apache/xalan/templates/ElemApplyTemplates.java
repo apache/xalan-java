@@ -582,11 +582,32 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  // If that didn't locate a node, fall back to a default template rule
 			  if (template == null)
 			  {
+				  ElemMode elemMode = sroot.getElemMode(mode);
+				  
 				  switch (nodeType)
 				  {
 				  case DTM.DOCUMENT_FRAGMENT_NODE :
 				  case DTM.ELEMENT_NODE :
-					  template = sroot.getDefaultRule();
+					  if (elemMode != null) {
+						  String onNoMatchStr = elemMode.getOnNoMatch();
+						  if ((Constants.ELEMNAME_DEEP_COPY_STRING).equals(onNoMatchStr)) {
+							 template = sroot.getDeepCopyRule(elemMode.getName());
+						  }
+						  else if ((Constants.ELEMNAME_SHALLOW_COPY_STRING).equals(onNoMatchStr)) {
+							 template = sroot.getShallowCopyRule(elemMode.getName());
+						  }
+                          else if ((Constants.ELEMNAME_DEEP_SKIP_STRING).equals(onNoMatchStr)) {
+                        	 template = sroot.getDeepSkipRule(elemMode.getName());
+						  }
+						  
+						  if (template == null) {
+							 // REVISIT
+							 template = sroot.getDefaultRule(); 
+						  }
+					  }
+					  else {
+					     template = sroot.getDefaultRule();
+					  }
 					  break;
 				  case DTM.ATTRIBUTE_NODE :
 				  case DTM.CDATA_SECTION_NODE :
@@ -696,9 +717,11 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 			  if (templateAsAttrVal != null) {         
 				  try {
-					  // Check whether an xsl:template element's result contents conform to the 
-					  // SequenceType expression specified as value of xsl:template element's 
-					  // 'as' attribute.
+					  /**
+					   * Check whether an xsl:template element's result contents conform to the
+					   * SequenceType expression specified as value of xsl:template element's
+					   * 'as' attribute.
+					   */
 
 					  int dtmNodeHandle = transformer.transformToGlobalRTF(template);
 

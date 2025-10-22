@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <a>
+     <one>
+	    <x>1</x>
+	 </one>
+	 <two>
+	    <y>2</y>
+	 </two>
+	 <three>
+	    <z>3</z>
+	 </three>
+   </a>
+  <b>
+     <one>
+	    <x>4</x>
+	 </one>
+	 <two>
+	    <y>5</y>
+	 </two>
+	 <three>
+	    <z>6</z>
+	 </three>
+   </b>
+  <c>
+     <one>
+	    <x>7</x>
+	 </one>
+	 <two>
+	    <y>8</y>
+	 </two>
+	 <three>
+	    <z>9</z>
+	 </three>
+   </c>
+</result>

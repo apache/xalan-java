@@ -1081,6 +1081,45 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	{
 		return (m_character_maps != null) ? m_character_maps.size() : 0;
 	}
+	
+	/**
+	 * A class object instance, supporting an implementation
+	 * of xsl:mode instruction. 
+	 */
+	private ModeList m_modeList;
+	
+	/**
+	 * Set an "xsl:mode" property.
+	 *
+	 * @param elemMode ElemMode to add to list of modes
+	 */
+	public void setElemMode(ElemMode elemMode)
+	{
+		if (m_modeList == null)
+			m_modeList = new ModeList();
+
+		m_modeList.setElemMode(elemMode);
+		elemMode.setStylesheet(this);
+	}
+	
+	/**
+	 * Get an "xsl:mode" property.
+	 *
+	 * @param modeName         name of the mode
+	 *
+	 * @return                 ElemMode object instance
+	 *
+	 * @throws TransformerException
+	 */
+	public ElemMode getElemMode(QName modeName) {
+		ElemMode result = null;
+		
+		if (m_modeList != null) {
+		   result = m_modeList.getElemMode(modeName);
+		}
+		
+		return result;
+	}
 
 	/**
 	 * The "xsl:namespace-alias" properties.
