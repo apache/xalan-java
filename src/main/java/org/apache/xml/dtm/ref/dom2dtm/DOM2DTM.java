@@ -604,9 +604,14 @@ public class DOM2DTM extends DTMDefaultBaseIterators
   public Node getNode(int nodeHandle)
   {
 
-    int identity = makeNodeIdentity(nodeHandle);
+    Node result = null;
+    
+    int identity = makeNodeIdentity(nodeHandle);    
+    if (identity >= 0) {
+       result = (Node) m_nodes.elementAt(identity); 
+    }
 
-    return (Node) m_nodes.elementAt(identity);
+    return result;
   }
 
   /**
@@ -957,11 +962,14 @@ public class DOM2DTM extends DTMDefaultBaseIterators
    */
   public String getNodeName(int nodeHandle)
   {
+     String result = null;
+     
+     Node node = getNode(nodeHandle);
+     if (node != null) {
+        result = node.getNodeName();  
+     }
 
-    Node node = getNode(nodeHandle);
-
-    // Assume non-null.
-    return node.getNodeName();
+     return result;
   }
 
   /**

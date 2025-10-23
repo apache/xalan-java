@@ -230,8 +230,13 @@ public class XSLTSchema extends XSLTElementDef
     
     // Optional
     // xsl:mode
+    XSLTAttributeDef warningOnNoMatchOpt = new XSLTAttributeDef(null, "warning-on-no-match",
+                                     XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
+    // xsl:mode
     XSLTAttributeDef warningOnMultipleMatchOpt = new XSLTAttributeDef(null, "warning-on-multiple-match",
-                                     XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+                                     XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     
     // Optional
     // xsl:param                                      
@@ -1257,9 +1262,10 @@ public class XSLTSchema extends XSLTElementDef
                                                   nameAttrOpt_ERROR,
                                                   onNoMatchOpt,
                                                   onMultipleMatchOpt,
+                                                  warningOnNoMatchOpt,
                                                   warningOnMultipleMatchOpt,
                                                   spaceAttr }, 
-                                          new ProcessorTemplateElem(), ElemMode.class /* class object */, true, 20, true),
+                                          new ProcessorElemMode(), ElemMode.class /* class object */, true, 20, true),
                                   new XSLTElementDef(
                                            this,
                                            Constants.S_XSLNAMESPACEURL,

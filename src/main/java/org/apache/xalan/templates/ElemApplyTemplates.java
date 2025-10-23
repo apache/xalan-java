@@ -38,6 +38,7 @@ import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -341,7 +342,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 	  DTMCursorIterator sourceNodes = null;
 
-	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  SourceLocator srcLocator = xctxt.getSAXLocator();	  	  
 	  
 	  XObject varEvalResult = null;    
 	  ResultSequence resultSeq = null;
@@ -482,7 +483,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  final StylesheetRoot sroot = transformer.getStylesheet();
 		  final TemplateList tl = sroot.getTemplateListComposed();
 
-		  final boolean quiet = transformer.getQuietConflictWarnings();
+		  // final boolean quiet = transformer.getQuietConflictWarnings();
 
 		  // Should be able to get this from the iterator 
 		  // but there might be a codebase issue.
@@ -564,8 +565,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  while (DTM.NULL != (child = sourceNodes.nextNode()))
 		  {
 			  currentNodes.setTop(child);
-			  currentExpressionNodes.setTop(child);
-
+			  currentExpressionNodes.setTop(child);			  
+			  
 			  if (xctxt.getDTM(child) != dtm)
 			  {
 				  dtm = xctxt.getDTM(child);
@@ -577,37 +578,90 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 			  final QName mode = transformer.getMode();
 			  
-			  ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, -1, quiet, dtm);			 
+			  ElemMode elemMode = sroot.getElemMode(mode);
+			  
+			  String xslOnMultipleMatchStr = null;
+			  boolean xslWarningOnMultipleMatch = false;
+			  if (elemMode != null) {
+				  xslOnMultipleMatchStr = elemMode.getOnMultipleMatch();				  
+				  if (xslOnMultipleMatchStr != null) {
+					  if (!((Constants.ATTRVAL_USE_LAST).equals(xslOnMultipleMatchStr) || (Constants.ATTRVAL_FAIL).equals(xslOnMultipleMatchStr))) {
+						  throw new TransformerException("XTTE0505 : An xsl:mode instruction's \"on-multiple-match\" attribute has in-correct "
+								                                                                                + "value '" + xslOnMultipleMatchStr + "'.", srcLocator); 
+					  }
+				  }
+				  
+				  xslWarningOnMultipleMatch = elemMode.isWarningOnMultipleMatch();
+			  }
+			  
+			  ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, -1, true, dtm, 
+					                                                                                   xslOnMultipleMatchStr, xslWarningOnMultipleMatch);			 
 
 			  // If that didn't locate a node, fall back to a default template rule
 			  if (template == null)
-			  {
-				  ElemMode elemMode = sroot.getElemMode(mode);
-				  
+			  {				  				  
 				  switch (nodeType)
 				  {
 				  case DTM.DOCUMENT_FRAGMENT_NODE :
 				  case DTM.ELEMENT_NODE :
-					  if (elemMode != null) {
-						  String onNoMatchStr = elemMode.getOnNoMatch();
-						  if ((Constants.ELEMNAME_DEEP_COPY_STRING).equals(onNoMatchStr)) {
-							 template = sroot.getDeepCopyRule(elemMode.getName());
+					  if (elemMode != null) {						  						  
+						  String elemName = dtm.getNodeName(child);
+						  String onNoMatchStr = elemMode.getOnNoMatch();						  
+						  if (onNoMatchStr != null) {							  							  
+							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
+								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType);
+							  }
+							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
+								  template = sroot.getDeepCopyRule(elemMode.getName());
+							  }
+							  else if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
+								  template = sroot.getShallowCopyRule(elemMode.getName());
+							  }
+							  else if ((Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)) {
+								  template = sroot.getDeepSkipRule(elemMode.getName());
+							  }
+							  else if ((Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr)) {
+								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType);
+							  }							  
+							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
+								  String errMesg = "XTDE0555 : An xsl:template declaration could not be found to process an XML element node";
+								  if (elemName != null) {
+									 errMesg = (errMesg + " '" + elemName + "'."); 
+								  }
+								  else {
+									 errMesg = (errMesg + "."); 
+								  }
+								  
+								  throw new TransformerException(errMesg, srcLocator);
+							  }
+							  else {
+								  throw new TransformerException("XTTE0505 : An xsl:mode instruction's \"on-no-match\" attribute has in-correct "
+								  		                                                                          + "value '" + onNoMatchStr + "'.", srcLocator);
+							  }
 						  }
-						  else if ((Constants.ELEMNAME_SHALLOW_COPY_STRING).equals(onNoMatchStr)) {
-							 template = sroot.getShallowCopyRule(elemMode.getName());
-						  }
-                          else if ((Constants.ELEMNAME_DEEP_SKIP_STRING).equals(onNoMatchStr)) {
-                        	 template = sroot.getDeepSkipRule(elemMode.getName());
-						  }
-						  
-						  if (template == null) {
-							 // REVISIT
-							 template = sroot.getDefaultRule(); 
+						  else {
+							  if (elemMode.isWarningOnNoMatch()) {
+								  int errLineNo = srcLocator.getLineNumber();
+								  if (errLineNo != 0) {
+									 DefaultErrorHandler errorListener = new DefaultErrorHandler();
+									 String errMesg = "Warning : An xsl:template declaration could not be found to process an XML element node";
+									 if (elemName != null) {
+										 errMesg = (errMesg + " '" + elemName + "'."); 
+									 }
+									 else {
+										 errMesg = (errMesg + "."); 
+									 }
+								     errorListener.warning(new TransformerException(errMesg, srcLocator));
+								  }
+							  }
+							  
+							  template = sroot.getDefaultRule();
 						  }
 					  }
 					  else {
 					     template = sroot.getDefaultRule();
 					  }
+					  
 					  break;
 				  case DTM.ATTRIBUTE_NODE :
 				  case DTM.CDATA_SECTION_NODE :

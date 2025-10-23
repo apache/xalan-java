@@ -138,8 +138,24 @@ public class TemplateSubPatternAssociation implements Serializable, Cloneable
    */
   private boolean matchModes(QName m1, QName m2)
   {
-    return (((null == m1) && (null == m2))
-            || ((null != m1) && (null != m2) && m1.equals(m2)));
+	 boolean result = false;
+	 
+	 QName defaultMode = new QName("http://xml.apache.org/xalan", "default", true); 
+	 
+     if ((m1 == null) && (m2 == null)) {
+    	result = true; 
+     }
+     else if ((m1 == null) && defaultMode.equals(m2)) {
+    	result = true; 
+     }
+     else if ((m2 == null) && defaultMode.equals(m1)) {
+     	result = true; 
+     }
+     else if (m1 != null) {
+    	result = m1.equals(m2);  
+     }
+	 
+     return result;
   }
 
   /**

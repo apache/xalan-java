@@ -225,12 +225,6 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_TARGETTEXT_STRING = "target-text",
       ELEMNAME_TEMPLATE_STRING = "template",
       
-      ELEMNAME_MODE_STRING = "mode",
-      
-      ELEMNAME_DEEP_COPY_STRING = "deep-copy",
-      ELEMNAME_SHALLOW_COPY_STRING = "shallow-copy",
-      ELEMNAME_DEEP_SKIP_STRING = "deep-skip",
-      
       ELEMNAME_TEXT_STRING = "text",
       ELEMNAME_TRANSFORM_STRING = "transform",
       ELEMNAME_URL_STRING = "uri",  // pattern-by-example support
@@ -316,7 +310,7 @@ public class Constants extends org.apache.xml.utils.Constants
       ATTRNAME_MATCH = "match",
       ATTRNAME_METHOD = "calls",
       ATTRNAME_MINUSSIGN = "minus-sign",
-      ATTRNAME_MODE = "mode",
+      ATTRNAME_MODE = "mode",    	          	      
       ATTRNAME_NAME = "name",
       ATTRNAME_NAMESPACE = "namespace",
       ATTRNAME_NAN = "NaN",
@@ -508,5 +502,13 @@ public class Constants extends org.apache.xml.utils.Constants
   public static final String XSL_ERROR_VALUE = "value";
   
   public static final String ANONYMOUS_FUNCTION = "anonymous_func";
+  
+  public static final String ATTRVAL_DEEP_COPY = "deep-copy",
+	                         ATTRVAL_SHALLOW_COPY = "shallow-copy",
+	                         ATTRVAL_DEEP_SKIP = "deep-skip",
+	                         ATTRVAL_SHALLOW_SKIP = "shallow-skip",
+	                         ATTRVAL_TEXT_ONLY_COPY = "text-only-copy",
+	                         ATTRVAL_USE_LAST = "use-last",
+	                         ATTRVAL_FAIL = "fail";
   
 }

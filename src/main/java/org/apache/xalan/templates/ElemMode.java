@@ -90,6 +90,21 @@ public class ElemMode extends ElemTemplateElement
    * An xsl:mode element's 'on-no-match' attribute.
    */
   private String m_onNoMatch = null;
+  
+  /**
+   * An xsl:mode element's 'on-multiple-match' attribute.
+   */
+  private String m_onMultipleMatch = null;
+  
+  /**
+   * An xsl:mode element's 'warning-on-no-match' attribute.
+   */
+  private boolean m_warningOnNoMatch = false;
+  
+  /**
+   * An xsl:mode element's 'warning-on-multiple-match' attribute.
+   */
+  private boolean m_warningOnMultipleMatch = false;
 
   /**
    * Set the "name" attribute.
@@ -112,16 +127,6 @@ public class ElemMode extends ElemTemplateElement
   }
   
   /**
-   * Set the "on-no-match" attribute.
-   *
-   * @param onNoMatch Value to set the "on-no-match" attribute
-   */
-  public void setOnNoMatch(String onNoMatch)
-  {
-	  m_onNoMatch = onNoMatch;
-  }
-  
-  /**
    * Get the "on-no-match" attribute.
    *
    * @return Value of the "on-no-match" attribute
@@ -132,6 +137,70 @@ public class ElemMode extends ElemTemplateElement
   }
   
   /**
+   * Set the "on-no-match" attribute.
+   *
+   * @param onNoMatch Value to set the "on-no-match" attribute
+   */
+  public void setOnNoMatch(String onNoMatch)
+  {
+	  m_onNoMatch = onNoMatch;
+  }
+  
+  /**
+   * Get the "on-multiple-match" attribute.
+   *
+   * @return Value of the "on-multiple-match" attribute
+   */
+  public String getOnMultipleMatch() {
+	  return m_onMultipleMatch;
+  }
+
+  /**
+   * Set the "on-multiple-match" attribute.
+   *
+   * @param onNoMatch Value to set the "on-multiple-match" attribute
+   */
+  public void setOnMultipleMatch(String onMultipleMatch) {
+	  this.m_onMultipleMatch = onMultipleMatch;
+  }
+
+  /**
+   * Get the "warning-on-no-match" attribute.
+   *
+   * @return Value of the "warning-on-no-match" attribute
+   */
+  public boolean isWarningOnNoMatch() {
+	  return m_warningOnNoMatch;
+  }
+
+  /**
+   * Set the "warning-on-no-match" attribute.
+   *
+   * @param onNoMatch Value to set the "warning-on-no-match" attribute
+   */
+  public void setWarningOnNoMatch(boolean warningOnNoMatch) {
+	  this.m_warningOnNoMatch = warningOnNoMatch;
+  }
+
+  /**
+   * Get the "warning-on-multiple-match" attribute.
+   *
+   * @return Value of the "warning-on-multiple-match" attribute
+   */
+  public boolean isWarningOnMultipleMatch() {
+	  return m_warningOnMultipleMatch;
+  }
+
+  /**
+   * Set the "warning-on-multiple-match" attribute.
+   *
+   * @param onNoMatch Value to set the "warning-on-multiple-match" attribute
+   */
+  public void setWarningOnMultipleMatch(boolean warningOnMultipleMatch) {
+	  this.m_warningOnMultipleMatch = warningOnMultipleMatch;
+  }
+
+/**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
@@ -149,7 +218,7 @@ public class ElemMode extends ElemTemplateElement
    */
   public String getNodeName()
   {
-	  return Constants.ELEMNAME_MODE_STRING;
+	  return Constants.ATTRNAME_MODE;
   }
   
   /**

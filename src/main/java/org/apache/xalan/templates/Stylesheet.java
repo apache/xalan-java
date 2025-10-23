@@ -1089,16 +1089,46 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	private ModeList m_modeList;
 	
 	/**
+	 * An ElemMode object instance, referring to the default 
+	 * mode, that doesn't have an attribute 'name'.
+	 */
+	private ElemMode m_defaultMode;
+	
+	/**
 	 * Set an "xsl:mode" property.
 	 *
 	 * @param elemMode ElemMode to add to list of modes
+	 * @throws TransformerException 
 	 */
-	public void setElemMode(ElemMode elemMode)
+	public void setElemMode(ElemMode elemMode) throws TransformerException
 	{
-		if (m_modeList == null)
-			m_modeList = new ModeList();
-
-		m_modeList.setElemMode(elemMode);
+		QName modeName = elemMode.getName();
+		
+		if (modeName != null) {
+			if (m_modeList == null) {
+			   m_modeList = new ModeList();
+			}
+			
+			ElemMode elemModePrev = m_modeList.getElemMode(modeName);
+            if (elemModePrev == null) {
+			    m_modeList.setElemMode(elemMode);
+            }
+            else {
+            	throw new TransformerException("XTTE0505 : An XSL stylesheet has more than one xsl:mode declaration "
+            			                                                    + "with name '" + modeName.toString() + "'.", elemMode);
+            }
+		}
+		else {
+			if (m_defaultMode == null) {
+				m_defaultMode = elemMode; 
+			}
+			else {
+				throw new TransformerException("XTTE0505 : An XSL stylesheet cannot have more than one "
+						                                                   + "xsl:mode declaration for default mode (i.e, xsl:mode "
+						                                                   + "declaration without 'name' attribute).", elemMode);
+			}
+		}
+		
 		elemMode.setStylesheet(this);
 	}
 	
@@ -1112,10 +1142,21 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	 * @throws TransformerException
 	 */
 	public ElemMode getElemMode(QName modeName) {
+		
 		ElemMode result = null;
 		
-		if (m_modeList != null) {
-		   result = m_modeList.getElemMode(modeName);
+		QName defaultMode = new QName("http://xml.apache.org/xalan", "default", true);
+		
+		if (modeName != null) {
+			if (defaultMode.equals(modeName) && (m_defaultMode != null)) {
+			   result = m_defaultMode;
+			}
+			else if (m_modeList != null) {
+			   result = m_modeList.getElemMode(modeName);
+			}
+		}
+		else if (m_defaultMode != null) {
+			result = m_defaultMode;
 		}
 		
 		return result;

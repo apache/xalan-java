@@ -26,10 +26,12 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -619,7 +621,8 @@ public class TemplateList implements java.io.Serializable
                                 QName mode,
                                 int maxImportLevel,
                                 boolean quietConflictWarnings,
-                                DTM dtm)
+                                DTM dtm,
+                                String xslOnMultipleMatchStr, boolean xslWarningOnMultipleMatch)
             throws TransformerException
   {
     
@@ -665,9 +668,6 @@ public class TemplateList implements java.io.Serializable
         return null;
     }                                              
 
-    // XSLT functions, such as xsl:key, need to be able to get to 
-    // current ElemTemplateElement via a cast to the prefix resolver.
-    // Setting this fixes bug idkey03.
     xctxt.pushNamespaceContextNull();
     try
     {
@@ -681,10 +681,12 @@ public class TemplateList implements java.io.Serializable
         xctxt.setNamespaceContext(template);
         
         if ((head.m_stepPattern.execute(xctxt, targetNode, dtm, expTypeID) != NodeTest.SCORE_NONE)
-                && head.matchMode(mode))
+                													                             && head.matchMode(mode))
         {
-          if (quietConflictWarnings)
-            checkConflicts(head, xctxt, targetNode, mode);
+          if (quietConflictWarnings) {
+             checkConflicts(head, xctxt, targetNode, mode, dtm, expTypeID, 
+            		                                                      xslOnMultipleMatchStr, xslWarningOnMultipleMatch);
+          }
 
           return template;
         }
@@ -697,7 +699,8 @@ public class TemplateList implements java.io.Serializable
     }
 
     return null;
-  }  // end findTemplate
+    
+  }  // end getTemplateFast
 
   /**
    * Given a target element, find the template that best
@@ -726,9 +729,6 @@ public class TemplateList implements java.io.Serializable
 
     if (null != head)
     {
-      // XSLT functions, such as xsl:key, need to be able to get to 
-      // current ElemTemplateElement via a cast to the prefix resolver.
-      // Setting this fixes bug idkey03.
       xctxt.pushNamespaceContextNull();
       xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
       try
@@ -739,10 +739,12 @@ public class TemplateList implements java.io.Serializable
           xctxt.setNamespaceContext(template);
           
           if ((head.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE)
-                  && head.matchMode(mode))
+                  																	&& head.matchMode(mode))
           {
-            if (quietConflictWarnings)
-              checkConflicts(head, xctxt, targetNode, mode);
+            if (quietConflictWarnings) {
+                int expTypeID = dtm.getExpandedTypeID(targetNode);
+                checkConflicts(head, xctxt, targetNode, mode, dtm, expTypeID, null, false);
+            }
 
             return template;
           }
@@ -791,9 +793,6 @@ public class TemplateList implements java.io.Serializable
 
     if (null != head)
     {
-      // XSLT functions, such as xsl:key, need to be able to get to 
-      // current ElemTemplateElement via a cast to the prefix resolver.
-      // Setting this fixes bug idkey03.
       xctxt.pushNamespaceContextNull();
       xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
       try
@@ -810,10 +809,12 @@ public class TemplateList implements java.io.Serializable
           xctxt.setNamespaceContext(template);
           
           if ((head.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE)
-                  && head.matchMode(mode))
+                  																	&& head.matchMode(mode))
           {
-            if (quietConflictWarnings)
-              checkConflicts(head, xctxt, targetNode, mode);
+            if (quietConflictWarnings) {
+               int exNodeType = dtm.getExpandedTypeID(targetNode);
+               checkConflicts(head, xctxt, targetNode, mode, dtm, exNodeType, null, false);
+            }
 
             return template;
           }
@@ -851,12 +852,58 @@ public class TemplateList implements java.io.Serializable
    * @param xctxt Current XPath context
    * @param targetNode Node matching the pattern
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
+   * @param expTypeID 
+   * @param dtm 
+   * @param xslOnMultipleMatchStr 
+   * @param xslWarningOnMultipleMatch 
+   * @throws TransformerException 
    */
   private void checkConflicts(TemplateSubPatternAssociation head,
-                              XPathContext xctxt, int targetNode, QName mode)
-  {
+                              XPathContext xctxt, int targetNode, QName mode, DTM dtm, int expTypeID, 
+                              String xslOnMultipleMatchStr, boolean xslWarningOnMultipleMatch) throws TransformerException
+  {	  
+	   
+	   if (xslOnMultipleMatchStr != null) {
+		   if ((Constants.ATTRVAL_FAIL).equals(xslOnMultipleMatchStr)) {
+			   TemplateSubPatternAssociation next = head;
+			   while ((next = next.getNext()) != null) {
+				   if ((next.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE) 
+						   																	&& next.matchMode(mode)) {
+					   String elemName = dtm.getNodeName(targetNode);
 
-    // TODO: Check for conflicts.
+					   SourceLocator srcLocator1 = (SourceLocator)(head.getTemplate());
+					   int lineNo1 = srcLocator1.getLineNumber(); 
+					   SourceLocator srcLocator2 = (SourceLocator)(next.getTemplate());
+					   int lineNo2 = srcLocator2.getLineNumber();
+
+					   throw new TransformerException("XTDE0540 : More than one xsl:template rule matched "
+																							   + "an XML element node '" + elemName + "'. "
+																							   + "Conflicting xsl:template rule locations are "
+																							   + "line " + lineNo1 + " and line " + lineNo2 +"."); 
+				   }
+			   }
+		   }
+	   }
+	   else if (xslWarningOnMultipleMatch) {
+		   TemplateSubPatternAssociation next = head;
+		   while ((next = next.getNext()) != null) {
+			   if ((next.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE) 
+					   																	&& next.matchMode(mode)) {
+				   String elemName = dtm.getNodeName(targetNode);
+
+				   SourceLocator srcLocator1 = (SourceLocator)(head.getTemplate());
+				   int lineNo1 = srcLocator1.getLineNumber(); 
+				   SourceLocator srcLocator2 = (SourceLocator)(next.getTemplate());
+				   int lineNo2 = srcLocator2.getLineNumber();
+
+				   DefaultErrorHandler errorListener = new DefaultErrorHandler();				   
+				   errorListener.warning(new TransformerException("Warning : More than one xsl:template rule matched "
+																						   + "an XML element node '" + elemName + "'. "
+																						   + "Conflicting xsl:template rule locations are "
+																						   + "line " + lineNo1 + " and line " + lineNo2 +".", srcLocator1)); 
+			   }
+		   }
+	   }
   }
 
   /**

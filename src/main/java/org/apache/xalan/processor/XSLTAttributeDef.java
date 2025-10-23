@@ -1027,10 +1027,10 @@ public class XSLTAttributeDef
     	  QName qname = null;    	  
     	  if (value.startsWith("Q{")) {
     		 // Support for XPath 3.1 URI qualified names    
-    		 int i = value.indexOf('}');
-    		 if (i > 2) {
-    		    String nsUri = value.substring(2, i);
-    		    String localName = value.substring(i + 1);
+    		 int idx = value.indexOf('}');
+    		 if (idx > 2) {
+    		    String nsUri = value.substring(2, idx);
+    		    String localName = value.substring(idx + 1);
     		    qname = new QName(nsUri, localName, true);
     		 }
     		 
@@ -1041,19 +1041,22 @@ public class XSLTAttributeDef
         	 }
     	  }
     	  else {
-   	         qname = new QName(value, handler, true);
+    		 if ((Constants.ATTRNAME_MODE).equals(name) && (Constants.ATTRVAL_DEFAULT_PREFIX).equals(value)) {
+    			qname = new QName("http://xml.apache.org/xalan", "default", true); 
+    		 }
+    		 else {
+   	            qname = new QName(value, handler, true);
+    		 }
     	  }    	      	  
    	      
           return qname;
         }
         catch (IllegalArgumentException ie)
         {
-            // thrown by QName constructor
             handleError(handler,XSLTErrorResources.INVALID_QNAME, new Object[] {name, value},ie);
             return null;
         }
         catch (RuntimeException re) {
-            // thrown by QName constructor
             handleError(handler,XSLTErrorResources.INVALID_QNAME, new Object[] {name, value},re);
             return null;
         }

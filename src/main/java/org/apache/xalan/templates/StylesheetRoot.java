@@ -1101,9 +1101,71 @@ public class StylesheetRoot extends StylesheetComposed
   }
   
   /**
-   * Method definition, to get an XSL deep copy rule for xdm element nodes.
+   * Method definition, to get an XSL stylesheet text only copy rule.
    * 
-   * @param mode								An XSL template mode value
+   * @param mode								An XSL template mode value. This
+   *                                            may have possibly null value as well.
+   * @param nodeType                            Node type value
+   * @return                                    An xsl:template declaration
+   *                                            object for an XSL stylesheet rule.
+   * @throws TransformerException
+   */
+  public ElemTemplate getTextOnlyCopyRule(QName mode, int nodeType) throws TransformerException
+  {	  
+	  ElemTemplate elemTemplate = new ElemTemplate();
+	  
+	  elemTemplate.setStylesheet(this);	
+	  elemTemplate.setMode(mode);	  	  
+	  
+	  if (nodeType == DTM.DOCUMENT_NODE) {
+		  XPath xpathMatch = new XPath("document-node()", this, this, XPath.MATCH, m_errorListener);
+		  elemTemplate.setMatch(xpathMatch);		  
+		  
+		  ElemApplyTemplates elemApplyTemplates = new ElemApplyTemplates();
+		  elemApplyTemplates.setMode(mode);
+		  elemTemplate.appendChild(elemApplyTemplates);		  
+	  }
+	  else if (nodeType == DTM.ELEMENT_NODE) {
+		  XPath xpathMatch = new XPath("element()", this, this, XPath.MATCH, m_errorListener);
+		  elemTemplate.setMatch(xpathMatch);
+		  
+		  ElemApplyTemplates elemApplyTemplates = new ElemApplyTemplates();
+		  elemApplyTemplates.setMode(mode);
+		  elemTemplate.appendChild(elemApplyTemplates);	
+	  }
+	  else if (nodeType == DTM.TEXT_NODE) {
+		  XPath xpathMatch = new XPath("text()", this, this, XPath.MATCH, m_errorListener);
+		  elemTemplate.setMatch(xpathMatch);
+		  
+		  ElemValueOf elemValueOf = new ElemValueOf();
+		  XPath xpathSelect = new XPath("string(.)", this, this, XPath.SELECT, m_errorListener);
+		  elemValueOf.setSelect(xpathSelect);
+		  elemTemplate.appendChild(elemValueOf);
+	  }
+	  else if (nodeType == DTM.ATTRIBUTE_NODE) {
+		  XPath xpathMatch = new XPath("@*", this, this, XPath.MATCH, m_errorListener);
+		  elemTemplate.setMatch(xpathMatch);
+		  
+		  ElemValueOf elemValueOf = new ElemValueOf();
+		  XPath xpathSelect = new XPath("string(.)", this, this, XPath.SELECT, m_errorListener);
+		  elemValueOf.setSelect(xpathSelect);
+		  elemTemplate.appendChild(elemValueOf);
+	  }
+	  else if ((nodeType == DTM.PROCESSING_INSTRUCTION_NODE) || (nodeType == DTM.COMMENT_NODE) 
+			                                                 || (nodeType == DTM.NAMESPACE_NODE)) {
+		  // An XSL template rule, for these type of nodes does nothing 
+		  // (i.e, returns an empty sequence).
+	  }
+	  
+	  return elemTemplate;	  
+  }
+  
+  /**
+   * Method definition, to get an XSL stylesheet deep copy rule for 
+   * xdm element nodes.
+   * 
+   * @param mode								An XSL template mode value. This
+   *                                            may have possibly null value as well.
    * @return                                    An xsl:template declaration
    *                                            object for an XSL stylesheet rule.
    * @throws TransformerException
@@ -1128,9 +1190,11 @@ public class StylesheetRoot extends StylesheetComposed
   }
   
   /**
-   * Method definition, to get an XSL shallow copy rule for xdm nodes.
+   * Method definition, to get an XSL stylesheet shallow copy rule for 
+   * xdm nodes.
    * 
-   * @param mode								An XSL template mode value
+   * @param mode								An XSL template mode value. This
+   *                                            may have possibly null value as well.
    * @return                                    An xsl:template declaration
    *                                            object for an XSL stylesheet rule.
    * @throws TransformerException
@@ -1164,9 +1228,11 @@ public class StylesheetRoot extends StylesheetComposed
   }
   
   /**
-   * Method definition, to get an XSL deep skip rule for xdm element nodes.
+   * Method definition, to get an XSL stylesheet deep skip rule for 
+   * xdm element nodes.
    * 
-   * @param mode								An XSL template mode value
+   * @param mode								An XSL template mode value. This
+   *                                            may have possibly null value as well.
    * @return                                    An xsl:template declaration
    *                                            object for an XSL stylesheet rule.
    * @throws TransformerException
@@ -1180,6 +1246,59 @@ public class StylesheetRoot extends StylesheetComposed
 	  XPath xpathMatch = new XPath("*", this, this, XPath.MATCH, m_errorListener);
 	  elemTemplate.setStylesheet(this);	    
 	  elemTemplate.setMatch(xpathMatch);
+
+	  return elemTemplate;
+  }
+  
+  /**
+   * Method definition, to get an XSL stylesheet shallow skip rule.
+   * 
+   * @param mode								An XSL template mode value. This
+   *                                            may have possibly null value as well.
+   * @param nodeType                            Node type value
+   * @return                                    An xsl:template declaration
+   *                                            object for an XSL stylesheet rule.
+   * @throws TransformerException
+   */
+  public ElemTemplate getShallowSkipRule(QName mode, int nodeType) throws TransformerException
+  {	  
+	  ElemTemplate elemTemplate = new ElemTemplate();
+	  
+	  elemTemplate.setStylesheet(this);	
+	  elemTemplate.setMode(mode);	  	  
+	  
+	  if (nodeType == DTM.DOCUMENT_NODE) {
+		  XPath xpathMatch = new XPath("document-node()", this, this, XPath.MATCH, m_errorListener);
+		  elemTemplate.setMatch(xpathMatch);
+		  
+		  ElemApplyTemplates elemApplyTemplates1 = new ElemApplyTemplates();
+		  elemApplyTemplates1.setMode(mode);
+		  XPath xpathSelect = new XPath("@*", this, this, XPath.SELECT, m_errorListener);
+		  elemApplyTemplates1.setSelect(xpathSelect);
+		  elemTemplate.appendChild(elemApplyTemplates1);
+		  
+		  ElemApplyTemplates elemApplyTemplates2 = new ElemApplyTemplates();
+		  elemApplyTemplates2.setMode(mode);
+		  elemTemplate.appendChild(elemApplyTemplates2);		  
+	  }
+	  else if (nodeType == DTM.ELEMENT_NODE) {
+		  XPath xpathMatch = new XPath("element()", this, this, XPath.MATCH, m_errorListener);
+		  elemTemplate.setMatch(xpathMatch);
+		  
+		  ElemApplyTemplates elemApplyTemplates1 = new ElemApplyTemplates();
+		  elemApplyTemplates1.setMode(mode);
+		  XPath xpathSelect = new XPath("@*", this, this, XPath.SELECT, m_errorListener);
+		  elemApplyTemplates1.setSelect(xpathSelect);
+		  elemTemplate.appendChild(elemApplyTemplates1);
+		  
+		  ElemApplyTemplates elemApplyTemplates2 = new ElemApplyTemplates();
+		  elemApplyTemplates2.setMode(mode);
+		  elemTemplate.appendChild(elemApplyTemplates2);
+	  }
+	  else {
+		  XPath xpathMatch = new XPath(".", this, this, XPath.MATCH, m_errorListener);
+		  elemTemplate.setMatch(xpathMatch);
+	  }
 
 	  return elemTemplate;
   }
