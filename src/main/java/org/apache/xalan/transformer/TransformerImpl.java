@@ -3675,42 +3675,55 @@ public class TransformerImpl extends Transformer
 
     throw new SAXNotRecognizedException(name);
   }
-
-  // %TODO% Doc
-
+  
   /**
-   * NEEDSDOC Method getMode 
-   *
-   *
-   * NEEDSDOC (getMode) @return
+   * Get an XSL transformation's present mode value.
+   *  
+   * @return						QName object reference of the mode 
    */
   public QName getMode()
   {
     return m_modes.isEmpty() ? null : (QName) m_modes.peek();
   }
-
-  // %TODO% Doc
-
+  
   /**
-   * NEEDSDOC Method pushMode 
-   *
-   *
-   * NEEDSDOC @param mode
+   * Push an XSL mode reference, to mode stack.
+   * 
+   * @param mode					QName object value of the mode
    */
   public void pushMode(QName mode)
   {
     m_modes.push(mode);
   }
 
-  // %TODO% Doc
-
   /**
-   * NEEDSDOC Method popMode 
-   *
+   * Pop an XSL mode reference, from mode stack.
    */
   public void popMode()
   {
     m_modes.pop();
+  }
+  
+  /**
+   * Method definition, to get XSL transformation's current mode 
+   * reference, for the given XSL evaluation context.
+   * 
+   * @return				QName object reference of the mode
+   */
+  public QName getCurrentMode() {
+	  
+	  QName result = null;
+	  
+	  if (!m_modes.isEmpty()) {
+		 Object stackTop = m_modes.pop();
+		 if ((stackTop != null) && !m_modes.isEmpty()) {
+			result = (QName)m_modes.peek();
+			
+			m_modes.push(stackTop);
+		 }
+	  }
+	  
+	  return null;
   }
 
   /**

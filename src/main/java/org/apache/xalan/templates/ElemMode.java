@@ -88,23 +88,45 @@ public class ElemMode extends ElemTemplateElement
   
   /**
    * An xsl:mode element's 'on-no-match' attribute.
+   * 
+   * This has default value "text-only-copy", which may be 
+   * overridden by XSL stylesheet's xsl:mode declaration. 
    */
-  private String m_onNoMatch = null;
+  private String m_onNoMatch = Constants.ATTRVAL_TEXT_ONLY_COPY;
   
   /**
    * An xsl:mode element's 'on-multiple-match' attribute.
+   * 
+   * This has default value "use-last", which may be overridden 
+   * by XSL stylesheet's xsl:mode declaration.
    */
-  private String m_onMultipleMatch = null;
+  private String m_onMultipleMatch = Constants.ATTRVAL_USE_LAST;
   
   /**
    * An xsl:mode element's 'warning-on-no-match' attribute.
+   * 
+   * Xalan's default value for this attribute is false.
    */
   private boolean m_warningOnNoMatch = false;
   
   /**
+   * This has boolean value true, if xsl:mode instruction's attribute 
+   * 'warning-on-no-match' is declared within an XSL stylesheet. 
+   */
+  private boolean m_warningOnNoMatchDeclared = false;
+  
+  /**
    * An xsl:mode element's 'warning-on-multiple-match' attribute.
+   * 
+   * Xalan's default value for this attribute is false.
    */
   private boolean m_warningOnMultipleMatch = false;
+  
+  /**
+   * This has boolean value true, if xsl:mode instruction's attribute 
+   * 'warning-on-multiple-match' is declared within an XSL stylesheet. 
+   */
+  private boolean m_warningOnMultipleMatchDeclared = false;
 
   /**
    * Set the "name" attribute.
@@ -180,6 +202,12 @@ public class ElemMode extends ElemTemplateElement
    */
   public void setWarningOnNoMatch(boolean warningOnNoMatch) {
 	  this.m_warningOnNoMatch = warningOnNoMatch;
+	  
+	  m_warningOnNoMatchDeclared = true;
+  }
+  
+  public boolean isWarningOnNoMatchDeclared() {
+	  return m_warningOnNoMatchDeclared;
   }
 
   /**
@@ -198,6 +226,12 @@ public class ElemMode extends ElemTemplateElement
    */
   public void setWarningOnMultipleMatch(boolean warningOnMultipleMatch) {
 	  this.m_warningOnMultipleMatch = warningOnMultipleMatch;
+	  
+	  m_warningOnMultipleMatchDeclared = true;
+  }
+  
+  public boolean isWarningOnMultipleMatchDeclared() {
+	  return m_warningOnMultipleMatchDeclared;
   }
 
 /**

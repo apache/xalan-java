@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -38,7 +39,6 @@ import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
-import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
@@ -559,9 +559,40 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 		  IntStack currentNodes = xctxt.getCurrentNodeStack();
 
-		  IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
-
-		  int child;		  
+		  IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();		  
+		  
+		  QName mode = transformer.getMode();
+			  
+		  QName qnameCurrent = new QName("http://xml.apache.org/xalan", "current", true);
+		  QName qnameUnnamed = new QName("http://xml.apache.org/xalan", "unnamed", true);
+		  if (qnameCurrent.equals(mode)) {
+			 mode = transformer.getCurrentMode();  
+		  }
+		  else if (qnameUnnamed.equals(mode)) {
+			 mode = null; 
+		  }
+		  
+		  ElemMode elemMode = sroot.getElemMode(mode);
+		  
+		  String onNoMatchStr = null;
+		  String xslOnMultipleMatchStr = null;
+		  boolean xslWarningOnMultipleMatch = false;
+		  
+		  if (elemMode != null) {
+			  xslOnMultipleMatchStr = elemMode.getOnMultipleMatch();				  
+			  if (xslOnMultipleMatchStr != null) {
+				  if (!((Constants.ATTRVAL_USE_LAST).equals(xslOnMultipleMatchStr) || (Constants.ATTRVAL_FAIL).equals(xslOnMultipleMatchStr))) {
+					  throw new TransformerException("XTTE0505 : An xsl:mode instruction's \"on-multiple-match\" attribute has in-correct "
+							                                                                                + "value '" + xslOnMultipleMatchStr + "'.", srcLocator); 
+				  }
+			  }
+			  
+			  xslWarningOnMultipleMatch = elemMode.isWarningOnMultipleMatch();
+			  
+			  onNoMatchStr = elemMode.getOnNoMatch();
+		  }
+		  
+		  int child;
 		  while (DTM.NULL != (child = sourceNodes.nextNode()))
 		  {
 			  currentNodes.setTop(child);
@@ -575,24 +606,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  final int exNodeType = dtm.getExpandedTypeID(child);
 
 			  final int nodeType = dtm.getNodeType(child);
-
-			  final QName mode = transformer.getMode();
-			  
-			  ElemMode elemMode = sroot.getElemMode(mode);
-			  
-			  String xslOnMultipleMatchStr = null;
-			  boolean xslWarningOnMultipleMatch = false;
-			  if (elemMode != null) {
-				  xslOnMultipleMatchStr = elemMode.getOnMultipleMatch();				  
-				  if (xslOnMultipleMatchStr != null) {
-					  if (!((Constants.ATTRVAL_USE_LAST).equals(xslOnMultipleMatchStr) || (Constants.ATTRVAL_FAIL).equals(xslOnMultipleMatchStr))) {
-						  throw new TransformerException("XTTE0505 : An xsl:mode instruction's \"on-multiple-match\" attribute has in-correct "
-								                                                                                + "value '" + xslOnMultipleMatchStr + "'.", srcLocator); 
-					  }
-				  }
-				  
-				  xslWarningOnMultipleMatch = elemMode.isWarningOnMultipleMatch();
-			  }
 			  
 			  ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, -1, true, dtm, 
 					                                                                                   xslOnMultipleMatchStr, xslWarningOnMultipleMatch);			 
@@ -605,9 +618,14 @@ public class ElemApplyTemplates extends ElemCallTemplate
 				  case DTM.DOCUMENT_FRAGMENT_NODE :
 				  case DTM.ELEMENT_NODE :
 					  if (elemMode != null) {						  						  
-						  String elemName = dtm.getNodeName(child);
-						  String onNoMatchStr = elemMode.getOnNoMatch();						  
-						  if (onNoMatchStr != null) {							  							  
+						  String elemName = dtm.getNodeName(child);						  						  
+						  if (onNoMatchStr != null) {
+							  /**
+							   * Finding an XSL stylesheet built-in template rule, when 
+							   * xsl:mode instruction specifies an attribute 'on-no-match',
+							   * with an allowed non-null value.
+							   */
+							  
 							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType);
 							  }
@@ -624,7 +642,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType);
 							  }							  
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
-								  String errMesg = "XTDE0555 : An xsl:template declaration could not be found to process an XML element node";
+								  String errMesg = "XTDE0555 : An xsl:template declaration could not be located to process an XML element node";
 								  if (elemName != null) {
 									 errMesg = (errMesg + " '" + elemName + "'."); 
 								  }
@@ -639,23 +657,35 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  		                                                                          + "value '" + onNoMatchStr + "'.", srcLocator);
 							  }
 						  }
-						  else {
-							  if (elemMode.isWarningOnNoMatch()) {
-								  int errLineNo = srcLocator.getLineNumber();
-								  if (errLineNo != 0) {
-									 DefaultErrorHandler errorListener = new DefaultErrorHandler();
-									 String errMesg = "Warning : An xsl:template declaration could not be found to process an XML element node";
-									 if (elemName != null) {
-										 errMesg = (errMesg + " '" + elemName + "'."); 
-									 }
-									 else {
-										 errMesg = (errMesg + "."); 
-									 }
-								     errorListener.warning(new TransformerException(errMesg, srcLocator));
-								  }
-							  }
+
+						  if (elemMode.isWarningOnNoMatch()) {
+							  /**
+							   * Emitting an XSL stylesheet processing warning, when xsl:mode
+							   * instruction specifies an attribute 'warning-on-no-match' with
+							   * value true.
+							   */
 							  
-							  template = sroot.getDefaultRule();
+							  int errLineNo = srcLocator.getLineNumber();
+							  if (errLineNo != 0) {
+								  ErrorListener errorListener = xctxt.getErrorListener();									 
+								  String errMesg = "Warning : An xsl:template declaration could not be located to process an XML element node";
+								  if (elemName != null) {
+									  errMesg = (errMesg + " '" + elemName + "'."); 
+								  }
+								  else {
+									  errMesg = (errMesg + "."); 
+								  }
+
+								  errorListener.warning(new TransformerException(errMesg, srcLocator));
+							  }
+						  }
+						  
+						  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
+							 transformer.pushPairCurrentMatched(template, child); 
+							 transformer.setCurrentElement(template);
+							 dtm.dispatchCharactersEvents(child, rth, false);
+							 transformer.popCurrentMatched();							 
+							 continue;
 						  }
 					  }
 					  else {
@@ -669,7 +699,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 					  transformer.pushPairCurrentMatched(sroot.getDefaultTextRule(), child);
 					  transformer.setCurrentElement(sroot.getDefaultTextRule());
 					  dtm.dispatchCharactersEvents(child, rth, false);
-					  transformer.popCurrentMatched();
+					  transformer.popCurrentMatched();					  
 					  continue;
 				  case DTM.DOCUMENT_NODE :
 					  template = sroot.getDefaultRootRule();

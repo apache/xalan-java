@@ -407,6 +407,30 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	public boolean getExpandText() {
 		return m_expand_text;
 	}
+	
+	/**
+	  * An xsl:stylesheet element's 'default-mode' attribute.
+	  */
+	private QName m_xsl_default_mode = null;
+	
+	/**
+	 * Set the value of "default-mode" attribute.
+	 *
+	 * @param v   Value of the "default-mode" attribute
+	 */
+	public void setDefaultMode(QName modeName)
+	{
+		m_xsl_default_mode = modeName; 
+	}
+
+	/**
+	 * Get the value of "default-mode" attribute.
+	 *  
+	 * @return		  The value of "default-mode" attribute 
+	 */
+	public QName getDefaultMode() {
+		return m_xsl_default_mode;
+	}
 
 	/**
 	 * The "version" property.
@@ -1090,9 +1114,10 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	
 	/**
 	 * An ElemMode object instance, referring to the default 
-	 * mode, that doesn't have an attribute 'name'.
+	 * mode, for xsl:mode instruction that doesn't have an 
+	 * attribute 'name'.
 	 */
-	private ElemMode m_defaultMode;
+	private ElemMode m_defaultElemMode;
 	
 	/**
 	 * Set an "xsl:mode" property.
@@ -1111,25 +1136,130 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 			
 			ElemMode elemModePrev = m_modeList.getElemMode(modeName);
             if (elemModePrev == null) {
+            	elemMode.setStylesheet(this);
 			    m_modeList.setElemMode(elemMode);
             }
             else {
-            	throw new TransformerException("XTTE0505 : An XSL stylesheet has more than one xsl:mode declaration "
-            			                                                    + "with name '" + modeName.toString() + "'.", elemMode);
+            	String modeNameStr = modeName.toString();
+            	
+            	String prevOnNoMatchDeclStr = elemModePrev.getOnNoMatch();
+            	String prevOnMultipleMatchStr = elemModePrev.getOnMultipleMatch();
+            	boolean prevWarningOnNoMatch = elemModePrev.isWarningOnNoMatch();
+            	boolean prevWarningOnMultipleMatch = elemModePrev.isWarningOnMultipleMatch();
+            	
+            	boolean prevWarningOnNoMatchDeclared = elemModePrev.isWarningOnNoMatchDeclared();
+            	boolean prevWarningOnMultipleMatchDeclared = elemModePrev.isWarningOnMultipleMatchDeclared();
+            	
+            	String onNoMatchDeclStr = elemMode.getOnNoMatch();
+            	String onMultipleMatchStr = elemMode.getOnMultipleMatch();
+            	boolean warningOnNoMatch = elemMode.isWarningOnNoMatch();
+            	boolean warningOnMultipleMatch = elemMode.isWarningOnMultipleMatch();
+            	
+            	boolean warningOnNoMatchDeclared = elemMode.isWarningOnNoMatchDeclared();
+            	boolean warningOnMultipleMatchDeclared = elemMode.isWarningOnMultipleMatchDeclared();
+            	
+            	if ((prevOnNoMatchDeclStr != null) && (onNoMatchDeclStr != null) 
+            			                                               && !onNoMatchDeclStr.equals(prevOnNoMatchDeclStr)) {
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration with "
+            				                                                            + "name '" + modeNameStr + "', that have conflicting "
+            				                                                            + "values for \"xsl:mode\" attribute 'on-no-match'.");
+            	}
+            	else if ((prevOnNoMatchDeclStr != null) && (onNoMatchDeclStr == null)) {
+            		elemMode.setOnNoMatch(prevOnNoMatchDeclStr);
+            	}
+            	
+            	if ((prevOnMultipleMatchStr != null) && (onMultipleMatchStr != null) 
+                                                                      && onMultipleMatchStr.equals(prevOnMultipleMatchStr)) {
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration with "
+															                            + "name '" + modeNameStr + "', that have conflicting "
+															                            + "values for \"xsl:mode\" attribute 'on-multiple-match'.");
+                }
+            	else if ((prevOnMultipleMatchStr != null) && (onMultipleMatchStr == null)) {
+            		elemMode.setOnMultipleMatch(prevOnMultipleMatchStr);
+            	}
+            	
+            	if (prevWarningOnNoMatchDeclared && warningOnNoMatchDeclared && (prevWarningOnNoMatch != warningOnNoMatch)) {
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration with "
+															                            + "name '" + modeNameStr + "', that have conflicting "
+															                            + "values for \"xsl:mode\" attribute 'warning-on-no-match'.");
+            	}
+            	else if (prevWarningOnNoMatchDeclared) {
+            		elemMode.setWarningOnNoMatch(prevWarningOnNoMatch);
+            	}
+            	
+            	if (prevWarningOnMultipleMatchDeclared && warningOnMultipleMatchDeclared && (prevWarningOnMultipleMatch != warningOnMultipleMatch)) {
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration with "
+															                            + "name '" + modeNameStr + "', that have conflicting "
+															                            + "values for \"xsl:mode\" attribute 'warning-on-multiple-match'.");
+            	}
+            	else if (prevWarningOnMultipleMatchDeclared) {
+            		elemMode.setWarningOnMultipleMatch(prevWarningOnMultipleMatch);
+            	}
+            	
+            	elemMode.setStylesheet(this);
+            	m_modeList.setElemMode(elemMode);
             }
 		}
 		else {
-			if (m_defaultMode == null) {
-				m_defaultMode = elemMode; 
+			if (m_defaultElemMode == null) {
+				elemMode.setStylesheet(this);
+				m_defaultElemMode = elemMode; 
 			}
 			else {
-				throw new TransformerException("XTTE0505 : An XSL stylesheet cannot have more than one "
-						                                                   + "xsl:mode declaration for default mode (i.e, xsl:mode "
-						                                                   + "declaration without 'name' attribute).", elemMode);
+				ElemMode elemModePrev = m_defaultElemMode;
+				
+				String prevOnNoMatchDeclStr = elemModePrev.getOnNoMatch();
+            	String prevOnMultipleMatchStr = elemModePrev.getOnMultipleMatch();
+            	boolean prevWarningOnNoMatch = elemModePrev.isWarningOnNoMatch();
+            	boolean prevWarningOnMultipleMatch = elemModePrev.isWarningOnMultipleMatch();
+            	
+            	boolean prevWarningOnNoMatchDeclared = elemModePrev.isWarningOnNoMatchDeclared();
+            	boolean prevWarningOnMultipleMatchDeclared = elemModePrev.isWarningOnMultipleMatchDeclared();
+            	
+            	String onNoMatchDeclStr = elemMode.getOnNoMatch();
+            	String onMultipleMatchStr = elemMode.getOnMultipleMatch();
+            	boolean warningOnNoMatch = elemMode.isWarningOnNoMatch();
+            	boolean warningOnMultipleMatch = elemMode.isWarningOnMultipleMatch();
+            	
+            	boolean warningOnNoMatchDeclared = elemMode.isWarningOnNoMatchDeclared();
+            	boolean warningOnMultipleMatchDeclared = elemMode.isWarningOnMultipleMatchDeclared();
+            	
+            	if ((prevOnNoMatchDeclStr != null) && (onNoMatchDeclStr != null) 
+            			                                               && !onNoMatchDeclStr.equals(prevOnNoMatchDeclStr)) {
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration for an unnamed mode, that "
+							            				                                                   + "have conflicting values for \"xsl:mode\" "
+							            				                                                   + "attribute 'on-no-match'.");
+            	}
+            	else if ((prevOnNoMatchDeclStr != null) && (onNoMatchDeclStr == null)) {
+            		elemMode.setOnNoMatch(prevOnNoMatchDeclStr);
+            	}
+
+            	if ((prevOnMultipleMatchStr != null) && (onMultipleMatchStr != null) 
+            			                                                   && onMultipleMatchStr.equals(prevOnMultipleMatchStr)) {
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration for an unnamed mode, that "
+																				                            + "have conflicting values for \"xsl:mode\" "
+																				                            + "attribute 'on-multiple-match'.");
+            	}
+            	else if ((prevOnMultipleMatchStr != null) && (onMultipleMatchStr == null)) {
+            		elemMode.setOnMultipleMatch(prevOnMultipleMatchStr);
+            	}
+
+            	if (prevWarningOnNoMatchDeclared && warningOnNoMatchDeclared && (prevWarningOnNoMatch != warningOnNoMatch)) {
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration for an unnamed mode, that "
+																				                            + "have conflicting values for \"xsl:mode\" "
+																				                            + "attribute 'warning-on-no-match'.");
+            	}
+
+            	if (prevWarningOnMultipleMatchDeclared && warningOnMultipleMatchDeclared && (prevWarningOnMultipleMatch != warningOnMultipleMatch)) {
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration for an unnamed mode, that "
+																				                            + "have conflicting values for \"xsl:mode\" "
+																				                            + "attribute 'warning-on-multiple-match'.");
+            	}
+
+            	elemMode.setStylesheet(this);
+            	m_defaultElemMode = elemMode; 
 			}
-		}
-		
-		elemMode.setStylesheet(this);
+		}				
 	}
 	
 	/**
@@ -1143,20 +1273,24 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	 */
 	public ElemMode getElemMode(QName modeName) {
 		
-		ElemMode result = null;
+		ElemMode result = null;		
 		
-		QName defaultMode = new QName("http://xml.apache.org/xalan", "default", true);
-		
-		if (modeName != null) {
-			if (defaultMode.equals(modeName) && (m_defaultMode != null)) {
-			   result = m_defaultMode;
+		if (modeName != null) {			
+			if ((m_xsl_default_mode != null) && (m_modeList != null)) {
+				result = m_modeList.getElemMode(m_xsl_default_mode);  
+			}
+			else if (m_defaultElemMode != null) {
+				result = m_defaultElemMode;
 			}
 			else if (m_modeList != null) {
-			   result = m_modeList.getElemMode(modeName);
+				result = m_modeList.getElemMode(modeName);
 			}
 		}
-		else if (m_defaultMode != null) {
-			result = m_defaultMode;
+		else if ((m_xsl_default_mode != null) && (m_modeList != null)) {
+			result = m_modeList.getElemMode(m_xsl_default_mode);
+		}
+		else if (m_defaultElemMode != null) {
+			result = m_defaultElemMode;
 		}
 		
 		return result;

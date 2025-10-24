@@ -180,6 +180,10 @@ public class XSLTSchema extends XSLTElementDef
                                     XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     XSLTAttributeDef mediaTypeAttr = new XSLTAttributeDef(null, "media-type",
                                        XSLTAttributeDef.T_CDATA, false, false, XSLTAttributeDef.ERROR);
+    
+    // xsl:stylesheet, xsl:transform
+    XSLTAttributeDef defaultModeAttr = new XSLTAttributeDef(null, "default-mode",
+                                                       XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
                                        
                   
     // Required.
@@ -1366,6 +1370,7 @@ public class XSLTSchema extends XSLTElementDef
                                            versionAttrRequired,
                                            xpathDefaultNamespaceAttrOpt,
                                            expandTextAttrOpt,
+                                           defaultModeAttr,
                                            spaceAttr }, new ProcessorStylesheetElement(),  /* ContentHandler */
                                          null  /* class object */,
                                          true, -1, false);

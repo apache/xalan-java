@@ -26,12 +26,12 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -869,6 +869,12 @@ public class TemplateList implements java.io.Serializable
 			   while ((next = next.getNext()) != null) {
 				   if ((next.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE) 
 						   																	&& next.matchMode(mode)) {
+					   /**
+					    * Emitting an XSL stylesheet dynamic error, when xsl:mode 
+					    * instruction specifies an attribute "on-multiple-match" with
+					    * value 'fail'.   
+					    */
+					   
 					   String elemName = dtm.getNodeName(targetNode);
 
 					   SourceLocator srcLocator1 = (SourceLocator)(head.getTemplate());
@@ -877,9 +883,9 @@ public class TemplateList implements java.io.Serializable
 					   int lineNo2 = srcLocator2.getLineNumber();
 
 					   throw new TransformerException("XTDE0540 : More than one xsl:template rule matched "
-																							   + "an XML element node '" + elemName + "'. "
-																							   + "Conflicting xsl:template rule locations are "
-																							   + "line " + lineNo1 + " and line " + lineNo2 +"."); 
+																							+ "an XML element node '" + elemName + "'. "
+																							+ "Conflicting xsl:template rule locations are "
+																							+ "line " + lineNo1 + " and line " + lineNo2 +".", srcLocator1); 
 				   }
 			   }
 		   }
@@ -889,6 +895,12 @@ public class TemplateList implements java.io.Serializable
 		   while ((next = next.getNext()) != null) {
 			   if ((next.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE) 
 					   																	&& next.matchMode(mode)) {
+				   /**
+					* Emitting an XSL stylesheet processing warning, when xsl:mode
+					* instruction specifies an attribute "warning-on-multiple-match" with
+					* value true.
+				   */
+				   
 				   String elemName = dtm.getNodeName(targetNode);
 
 				   SourceLocator srcLocator1 = (SourceLocator)(head.getTemplate());
@@ -896,7 +908,8 @@ public class TemplateList implements java.io.Serializable
 				   SourceLocator srcLocator2 = (SourceLocator)(next.getTemplate());
 				   int lineNo2 = srcLocator2.getLineNumber();
 
-				   DefaultErrorHandler errorListener = new DefaultErrorHandler();				   
+				   ErrorListener errorListener = xctxt.getErrorListener();
+				   
 				   errorListener.warning(new TransformerException("Warning : More than one xsl:template rule matched "
 																						   + "an XML element node '" + elemName + "'. "
 																						   + "Conflicting xsl:template rule locations are "

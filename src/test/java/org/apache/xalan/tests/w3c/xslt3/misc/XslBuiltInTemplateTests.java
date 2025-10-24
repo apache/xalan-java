@@ -30,14 +30,6 @@ import org.junit.Test;
  * @xsl.usage advanced
  */
 public class XslBuiltInTemplateTests extends W3CXslTransformTestsUtil {
-	
-	/**
-	 * Xalan may probably have bugs for this W3C XSLT 3.0 test set.
-	 * Adding this XSLT 3.0 test set to Xalan's XSLT 3.0 test suite 
-	 * driver, for tracking.
-	 * 
-	 * REVISIT
-	 */
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

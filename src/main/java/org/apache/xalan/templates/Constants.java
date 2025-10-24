@@ -450,6 +450,10 @@ public class Constants extends org.apache.xml.utils.Constants
   /** For Stylesheet-prefix and result-prefix in xsl:namespace-alias          */
   public static final String ATTRVAL_DEFAULT_PREFIX = "#default";
   
+  public static final String ATTRVAL_UNNAMED_PREFIX = "#unnamed";
+  
+  public static final String ATTRVAL_CURRENT_PREFIX = "#current";
+  
   public static final String ATTRVAL_ALL_PREFIX = "#all";
 
  /** Integer equivalents for above        */

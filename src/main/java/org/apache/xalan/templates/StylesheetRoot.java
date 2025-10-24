@@ -1126,7 +1126,7 @@ public class StylesheetRoot extends StylesheetComposed
 		  elemTemplate.appendChild(elemApplyTemplates);		  
 	  }
 	  else if (nodeType == DTM.ELEMENT_NODE) {
-		  XPath xpathMatch = new XPath("element()", this, this, XPath.MATCH, m_errorListener);
+		  XPath xpathMatch = new XPath("*", this, this, XPath.MATCH, m_errorListener);
 		  elemTemplate.setMatch(xpathMatch);
 		  
 		  ElemApplyTemplates elemApplyTemplates = new ElemApplyTemplates();
@@ -1282,7 +1282,7 @@ public class StylesheetRoot extends StylesheetComposed
 		  elemTemplate.appendChild(elemApplyTemplates2);		  
 	  }
 	  else if (nodeType == DTM.ELEMENT_NODE) {
-		  XPath xpathMatch = new XPath("element()", this, this, XPath.MATCH, m_errorListener);
+		  XPath xpathMatch = new XPath("*", this, this, XPath.MATCH, m_errorListener);
 		  elemTemplate.setMatch(xpathMatch);
 		  
 		  ElemApplyTemplates elemApplyTemplates1 = new ElemApplyTemplates();

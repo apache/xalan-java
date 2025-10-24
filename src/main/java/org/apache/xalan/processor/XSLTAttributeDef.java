@@ -33,6 +33,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.xslt.util.StringUtil;
@@ -1040,14 +1041,27 @@ public class XSLTAttributeDef
     			return null; 
         	 }
     	  }
+    	  else if ((owner instanceof ElemApplyTemplates) && (Constants.ATTRNAME_MODE).equals(name) && 
+    			                                                                                 (Constants.ATTRVAL_DEFAULT_PREFIX).equals(value)) {
+    		  // We use, non-standard namespace for this QName object, because 
+    		  // string #default is not a valid QName string.
+    		  qname = new QName("http://xml.apache.org/xalan", "default", true); 
+    	  }
+    	  else if ((owner instanceof ElemApplyTemplates) && (Constants.ATTRNAME_MODE).equals(name) && 
+    			                                                                                 (Constants.ATTRVAL_UNNAMED_PREFIX).equals(value)) {
+    		  // We use, non-standard namespace for this QName object, because 
+    		  // string #unnamed is not a valid QName string.
+    		  qname = new QName("http://xml.apache.org/xalan", "unnamed", true); 
+    	  }
+    	  else if ((owner instanceof ElemApplyTemplates) && (Constants.ATTRNAME_MODE).equals(name) && 
+    			                                                                                 (Constants.ATTRVAL_CURRENT_PREFIX).equals(value)) {
+    		  // We use, non-standard namespace for this QName object, because 
+    		  // string #current is not a valid QName string.
+    		  qname = new QName("http://xml.apache.org/xalan", "current", true); 
+    	  }
     	  else {
-    		 if ((Constants.ATTRNAME_MODE).equals(name) && (Constants.ATTRVAL_DEFAULT_PREFIX).equals(value)) {
-    			qname = new QName("http://xml.apache.org/xalan", "default", true); 
-    		 }
-    		 else {
-   	            qname = new QName(value, handler, true);
-    		 }
-    	  }    	      	  
+    		  qname = new QName(value, handler, true);
+    	  }   	      	  
    	      
           return qname;
         }
