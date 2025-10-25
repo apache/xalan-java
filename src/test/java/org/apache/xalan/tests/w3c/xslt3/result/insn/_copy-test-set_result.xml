@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-21T11:43:54Z" fail="32" name="copy" pass="27" skipped="0" statusUnknown="1" totalRun="60">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-25T18:00:09Z" fail="26" name="copy" pass="33" skipped="0" statusUnknown="1" totalRun="60">
    <testResult status="pass" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="pass" testName="copy-0103"/>
@@ -14,16 +14,16 @@
    <testResult status="pass" testName="copy-0401"/>
    <testResult status="pass" testName="copy-0501"/>
    <testResult status="pass" testName="copy-0601"/>
-   <testResult status="fail" testName="copy-0602"/>
+   <testResult status="pass" testName="copy-0602"/>
    <testResult status="pass" testName="copy-0603"/>
-   <testResult status="fail" testName="copy-0604"/>
+   <testResult status="pass" testName="copy-0604"/>
    <testResult status="pass" testName="copy-0605"/>
-   <testResult status="fail" testName="copy-0606"/>
+   <testResult status="pass" testName="copy-0606"/>
    <testResult status="pass" testName="element-0607"/>
    <testResult status="pass" testName="element-0608"/>
-   <testResult status="fail" testName="copy-0609"/>
-   <testResult status="fail" testName="copy-0610"/>
-   <testResult status="fail" testName="copy-0611"/>
+   <testResult status="pass" testName="copy-0609"/>
+   <testResult status="pass" testName="copy-0610"/>
+   <testResult status="pass" testName="copy-0611"/>
    <testResult status="fail" testName="copy-0612">
       <outResult/>
    </testResult>

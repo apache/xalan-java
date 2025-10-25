@@ -283,11 +283,11 @@ public class XSL3ConstructorOrExtensionFunction extends Function
     			XObject[] xObjArr = new XObject[seqLength];
     			for (int idx = 0; idx < seqLength; idx++) {
     				XObject seqitem = rSeq.item(idx);
-    				if (seqitem instanceof XSString) {
-    					seqitem = new XString(((XSString)xobj).stringValue());   				   
+    				if (seqitem instanceof XSString) {    					
+    					seqitem = new XString(((XSString)seqitem).stringValue());    					
     				}
-    				else if (seqitem instanceof XSBoolean) {
-    					seqitem = new XBoolean(((XSBoolean)xobj).bool());   				   
+    				else if (seqitem instanceof XSBoolean) {    					
+    					seqitem = new XBoolean(((XSBoolean)seqitem).bool());
     				}
     				else if (seqitem instanceof XSNumericType) {
     					Double dbl = Double.valueOf(((XSNumericType)seqitem).stringValue());
@@ -314,10 +314,10 @@ public class XSL3ConstructorOrExtensionFunction extends Function
     			for (int idx = 0; idx < arrLength; idx++) {
     				XObject seqitem = xpathArr.get(idx);
     				if (seqitem instanceof XSString) {
-    					seqitem = new XString(((XSString)xobj).stringValue());   				   
+    					seqitem = new XString(((XSString)seqitem).stringValue());   				   
     				}
     				else if (seqitem instanceof XSBoolean) {
-    					seqitem = new XBoolean(((XSBoolean)xobj).bool());   				   
+    					seqitem = new XBoolean(((XSBoolean)seqitem).bool());   				   
     				}
     				else if (seqitem instanceof XSNumericType) {
     					Double dbl = Double.valueOf(((XSNumericType)seqitem).stringValue());

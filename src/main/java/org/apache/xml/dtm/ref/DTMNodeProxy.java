@@ -141,18 +141,25 @@ public class DTMNodeProxy
   public final boolean equals(Object node)
   {
 
+	boolean result = false;
+	
     try
     {
 
       // DTMNodeProxy dtmp = (DTMNodeProxy)node;
       // return (dtmp.node == this.node);
       // Patch attributed to Gary L Peskin <garyp@firstech.com>
-      return equals((Node) node);
+    	
+      if (node != null) {	
+         result = equals((Node)node);
+      }
     }
     catch (ClassCastException cce)
     {
-      return false;
+       result = false;
     }
+    
+    return result;
   }
 
   /**

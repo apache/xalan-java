@@ -384,10 +384,11 @@ final class DOM3TreeWalker {
         throws org.xml.sax.SAXException {
         if (fSerializer != null) {
             this.fSerializer.characters(node);
-        } else {
+        } 
+        /*else {
             String data = ((Text) node).getData();
             this.fSerializer.characters(data.toCharArray(), 0, data.length());
-        }
+        }*/
     }
 
     /**

@@ -230,10 +230,9 @@ public class Lt extends Operation
 		  return XBoolean.S_FALSE;
 	  }
 	  else if ((left instanceof XMLNodeCursorImpl) && (right instanceof ResultSequence)) {
-		  left = left.getFresh();
-		  Object swapObj = left;
-		  right = left;
-		  left = (XMLNodeCursorImpl)swapObj; 
+		  ResultSequence swapSeq = (ResultSequence)right;
+		  right = left.getFresh();
+		  left = swapSeq; 
 			  
 		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)right;		  
 		  List<java.lang.String> strListR = new ArrayList<java.lang.String>();

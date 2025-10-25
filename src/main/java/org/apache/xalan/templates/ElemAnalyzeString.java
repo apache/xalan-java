@@ -561,27 +561,31 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   }
   
   /**
-   * This method, checks whether string 'non match' information can be appended at 
-   * certain places within the result of xsl:analyze-string instruction. 
+   * Method definition, to check whether string 'non match' information can be 
+   * appended at certain places within the result of xsl:analyze-string 
+   * instruction. 
    * 
-   * @param strToBeAnalyzed    this is an original string that is analyzed by 
+   * @param strToBeAnalyzed    An original string value, that is analyzed by 
    *                           xsl:analyze-string instruction. 
-   * @param idx                an end index of a particular regex match
-   * @return                   true, or false result, indicating whether
-   *                           string 'non match' information can be appended
-   *                           to the result of instruction xsl:analyze-string. 
+   * @param idx                An end index of a particular regex match
+   * @return                   Boolean value, indicating whether string 'non match' 
+   *                           information can be appended to the result of instruction 
+   *                           xsl:analyze-string. 
    */
   private boolean isNonMatchingStringAvailable(String strToBeAnalyzed, int idx) {
-	  boolean isNonMatchAvailable;
 	  
-	  try {
-		  isNonMatchAvailable = (strToBeAnalyzed.charAt(idx) != -1);
+	  boolean result = false;
+	  
+	  try {		  
+		  if ((idx >= 0) && (idx < strToBeAnalyzed.length())) {
+			 result = true; 
+		  }
 	  }
 	  catch (IndexOutOfBoundsException ex) {
-		  isNonMatchAvailable = false;
+		  // no op
 	  }
 	  
-	  return isNonMatchAvailable;
+	  return result;
   }
   
 }

@@ -26,6 +26,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.serializer.NamespaceMappings;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
@@ -221,13 +222,13 @@ public class SerializerUtils
 
         if (DTM.NAMESPACE_NODE == dtm.getNodeType(attr))
         {
-
-            // String prefix = dtm.getPrefix(attr);
             String prefix = dtm.getNodeNameX(attr);
             String uri = serializer.getNamespaceURIFromPrefix(prefix);
-            //      String uri = getURI(prefix);
 
-            if ((null != uri) && uri.equals(dtm.getStringValue(attr)))
+            XMLString xmlString = dtm.getStringValue(attr);
+            String str1 = ((xmlString != null) ? xmlString.toString() : null); 
+            
+            if ((null != uri) && uri.equals(str1))
                 return true;
         }
 

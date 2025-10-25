@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?><result>
   <a>
-     <one>
-	    <x>1</x>
-	 </one>
-	 <two>
-	    <y>2</y>
-	 </two>
-	 <three>
-	    <z>3</z>
-	 </three>
-   </a>
+    <one>
+      <x/>
+    </one>
+    <two>
+      <y/>
+    </two>
+    <three>
+      <z/>
+    </three>
+  </a>
 </result>

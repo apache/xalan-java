@@ -507,12 +507,12 @@ public class Constants extends org.apache.xml.utils.Constants
   
   public static final String ANONYMOUS_FUNCTION = "anonymous_func";
   
-  public static final String ATTRVAL_DEEP_COPY = "deep-copy",
-	                         ATTRVAL_SHALLOW_COPY = "shallow-copy",
-	                         ATTRVAL_DEEP_SKIP = "deep-skip",
-	                         ATTRVAL_SHALLOW_SKIP = "shallow-skip",
-	                         ATTRVAL_TEXT_ONLY_COPY = "text-only-copy",
-	                         ATTRVAL_USE_LAST = "use-last",
-	                         ATTRVAL_FAIL = "fail";
+  public static final String ATTRVAL_TEXT_ONLY_COPY = "text-only-copy".intern(); 
+  public static final String ATTRVAL_DEEP_COPY = "deep-copy".intern();
+  public static final String ATTRVAL_SHALLOW_COPY = "shallow-copy".intern();
+  public static final String ATTRVAL_DEEP_SKIP = "deep-skip".intern();
+  public static final String ATTRVAL_SHALLOW_SKIP = "shallow-skip".intern();
+  public static final String ATTRVAL_FAIL = "fail".intern();
+  public static final String ATTRVAL_USE_LAST = "use-last".intern();
   
 }

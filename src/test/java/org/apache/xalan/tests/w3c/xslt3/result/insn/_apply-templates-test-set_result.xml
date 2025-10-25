@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:39Z" fail="24" name="apply-templates" pass="22" skipped="4" statusUnknown="0" totalRun="46">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-25T17:59:59Z" fail="25" name="apply-templates" pass="21" skipped="4" statusUnknown="0" totalRun="46">
    <testResult status="fail" testName="apply-templates-001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
 &#13;
@@ -126,7 +126,7 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;Match-of-node-type&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="conflict-resolution-0104c"/>
-   <testResult status="pass" testName="conflict-resolution-0106"/>
+   <testResult status="fail" testName="conflict-resolution-0106"/>
    <testResult status="pass" testName="conflict-resolution-0107"/>
    <testResult status="pass" testName="conflict-resolution-0108a"/>
    <testResult status="fail" testName="conflict-resolution-0108b">
@@ -161,7 +161,7 @@
    <testResult status="fail" testName="conflict-resolution-1101"/>
    <testResult status="fail" testName="conflict-resolution-1102">
       <outResult>
-         <errTrace>XTSE0260 : xsl:with-param is not allowed in this position in the stylesheet</errTrace>
+         <errTrace>XTSE0010 : xsl:with-param is not allowed in this position in the stylesheet</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="conflict-resolution-1201"/>

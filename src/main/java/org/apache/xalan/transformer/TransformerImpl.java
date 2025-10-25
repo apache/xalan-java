@@ -3701,7 +3701,9 @@ public class TransformerImpl extends Transformer
    */
   public void popMode()
   {
-    m_modes.pop();
+	if (!m_modes.empty()) {
+       m_modes.pop();
+	}
   }
   
   /**
@@ -3723,7 +3725,7 @@ public class TransformerImpl extends Transformer
 		 }
 	  }
 	  
-	  return null;
+	  return result;
   }
 
   /**

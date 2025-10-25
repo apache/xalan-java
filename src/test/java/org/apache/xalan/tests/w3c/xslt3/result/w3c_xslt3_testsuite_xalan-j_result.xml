@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-10-22T12:42:34Z" desc="W3C XSLT 3.0 test suite results" fail="671" pass="1776" skipped="73" success="72.14%" totalRun="2462" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-10-25T18:01:17Z" desc="W3C XSLT 3.0 test suite results" fail="668" pass="1779" skipped="73" success="72.26%" totalRun="2462" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="31" pass="73" skipped="4" success="69.52%" totalRun="105"/>
     <avt fail="15" pass="20" skipped="0" success="57.14%" totalRun="35"/>
     <expand-text fail="8" pass="54" skipped="0" success="87.1%" totalRun="62"/>
     <match fail="60" pass="68" skipped="8" success="52.71%" totalRun="129"/>
     <select fail="3" pass="21" skipped="0" success="84.0%" totalRun="25"/>
-    <xpath-default-namespace fail="15" pass="11" skipped="0" success="42.31%" totalRun="26"/>
+    <xpath-default-namespace fail="16" pass="10" skipped="0" success="38.46%" totalRun="26"/>
   </attr>
   <decl>
     <attribute-set fail="8" pass="41" skipped="1" success="83.67%" totalRun="49"/>
@@ -15,7 +15,7 @@
     <variable fail="4" pass="15" skipped="0" success="75.0%" totalRun="20"/>
   </decl>
   <expr>
-    <axes fail="17" pass="184" skipped="0" success="91.54%" totalRun="201"/>
+    <axes fail="18" pass="183" skipped="0" success="91.04%" totalRun="201"/>
     <castable fail="3" pass="6" skipped="0" success="66.67%" totalRun="9"/>
     <expression fail="0" pass="9" skipped="0" success="90.0%" totalRun="10"/>
     <for fail="2" pass="1" skipped="0" success="25.0%" totalRun="4"/>
@@ -35,11 +35,11 @@
   </fn>
   <insn>
     <analyze-string fail="14" pass="39" skipped="5" success="73.58%" totalRun="53"/>
-    <apply-templates fail="24" pass="22" skipped="4" success="47.83%" totalRun="46"/>
+    <apply-templates fail="25" pass="21" skipped="4" success="45.65%" totalRun="46"/>
     <attribute fail="17" pass="12" skipped="0" success="40.0%" totalRun="30"/>
     <call-template fail="13" pass="27" skipped="2" success="67.5%" totalRun="40"/>
     <choose fail="6" pass="48" skipped="1" success="88.89%" totalRun="54"/>
-    <copy fail="32" pass="27" skipped="0" success="45.0%" totalRun="60"/>
+    <copy fail="26" pass="33" skipped="0" success="55.0%" totalRun="60"/>
     <element fail="15" pass="14" skipped="0" success="48.28%" totalRun="29"/>
     <for-each-group fail="24" pass="49" skipped="4" success="66.22%" totalRun="74"/>
     <iterate fail="0" pass="44" skipped="0" success="100.0%" totalRun="44"/>
