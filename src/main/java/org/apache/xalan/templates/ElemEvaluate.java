@@ -324,7 +324,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	    
 	    if (!transformer.getProperty(TransformerImpl.XSL_EVALUATE_PROPERTY)) {
-	       throw new TransformerException("XTTE0505 : An xsl:evaluate instruction's evaluation is disabled for "
+	       throw new TransformerException("XTTE0505 : An XSL 'evaluate' instruction's evaluation is disabled for "
 	       		                                                                                        + "this XSL transformation.", srcLocator);
 	    }
 	    
@@ -376,8 +376,8 @@ public class ElemEvaluate extends ElemTemplateElement {
 	    						ElemWithParam prevWithParam = m_withParamElems[j];
 	    						QName prevWithParamQname = prevWithParam.getName();
 	    						if (withParamQname.equals(prevWithParamQname.getNamespace(), prevWithParamQname.getLocalPart())) {
-	    							throw new TransformerException("XTTE0505 : An xsl:evaluate instruction has xsl:with-param '" + 
-	    						                                                                       prevWithParamQname.getLocalName() + "' more than once.", srcLocator);
+	    							throw new TransformerException("XTTE0505 : An XSL 'evaluate' instruction has with-param '" + 
+	    						                                                                       prevWithParamQname.getLocalName() + "' declaration more than once.", srcLocator);
 	    						}
 	    					}
 	    				}
@@ -515,7 +515,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 				}
 				catch (SAXException ex) {
 					String errMesg = ex.getMessage();
-					throw new TransformerException("XPDY0002 : An XPath dynamic error occured during evaluation of xsl:evaluate "
+					throw new TransformerException("XPDY0002 : An XPath dynamic error has occured during evaluation of XSL 'evaluate' "
 							                                                                        + "instruction." + ((errMesg != null) ? errMesg : ""), srcLocator);
 				}
 			}
@@ -545,7 +545,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 		}
 		catch (SAXException ex) {
 			String errMesg = ex.getMessage();
-			throw new TransformerException("XPDY0002 : An XPath dynamic error occured during evaluation of xsl:evaluate "
+			throw new TransformerException("XPDY0002 : An XPath dynamic error occured during evaluation of XSL 'evaluate' "
 					                                                                        + "instruction." + ((errMesg != null) ? errMesg : ""), srcLocator);
 		}
 	}
@@ -609,7 +609,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 				XslTransformData.m_xpathInlineFunction = null;
 			}
 			else {
-				throw new TransformerException("XTTE0505 : An xsl:evaluate instruction's evaluation result doesn't conform "
+				throw new TransformerException("XTTE0505 : An XSL 'evaluate' instruction's result doesn't conform "
 																					+ "to specified expected type " + m_asAttrVal + ".", srcLocator); 
 			}
 		}
@@ -675,7 +675,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 		}
 		
 		if (resultWithAsAttribute == null) {
-			throw new TransformerException("XTTE0505 : An xsl:evaluate instruction's evaluation result doesn't conform "
+			throw new TransformerException("XTTE0505 : An XSL 'evaluate' instruction's result doesn't conform "
 																								+ "to specified expected type " + m_asAttrVal + ".", srcLocator);
 		}
 	}
@@ -698,7 +698,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 				XslTransformData.m_xpathInlineFunction = null;
 			}
 			else {
-				throw new TransformerException("XTTE0505 : An xsl:evaluate parameter " + withParamQName.getLocalName() + "'s value doesn't conform "
+				throw new TransformerException("XTTE0505 : An XSL 'evaluate' parameter " + withParamQName.getLocalName() + "'s value doesn't conform "
 																									+ "to parameter's expected type " + withParamAsAttrVal + ".", srcLocator); 
 			}
 		}

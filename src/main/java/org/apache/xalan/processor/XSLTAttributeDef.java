@@ -1857,7 +1857,7 @@ public class XSLTAttributeDef
 	  }
 	  
 	  if (!StringUtil.isStrHasBalancedParentheses(result, '(', ')')) {
-		  throw new TransformerException("An xsl:for-each-group instruction's group-by value \"" + 
+		  throw new TransformerException("An XSL for-each-group instruction's group-by value \"" + 
 										                                  groupByStrValue + "\" doesn't have or evaluates to a string "
 										                                  + "having balanced parenthesis pairs '(' and ')'."); 
 	  }

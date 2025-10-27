@@ -53,6 +53,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemAnalyzeString;
 import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.ElemAttributeSet;
@@ -69,6 +70,8 @@ import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemMatchingSubstring;
+import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemOutputCharacter;
@@ -4276,8 +4279,8 @@ public class TransformerImpl extends Transformer
 				}
 				
 				if (xslCharacterMapDefnAbsent) {
-					throw new javax.xml.transform.TransformerException("XTSE1590 : An xsl:character-map with name '" + 
-				                                                                                  charMapNameStr + "' has not been defined in the stylesheet.");					
+					throw new javax.xml.transform.TransformerException("XTSE1590 : An XSL 'character-map' instruction with name '" + 
+				                                                                                  charMapNameStr + "' has not been declared within the stylesheet.");					
 				}
 			}
 			
@@ -4389,7 +4392,7 @@ public class TransformerImpl extends Transformer
 				if (elemTemplate == null) {
 					throw new TransformerException("XPST0017 : An XSL stylesheet function call " + qName.toString() + " referred within "
 							                                                                     + "an XPath expression, doesn't have a corresponding "
-							                                                                     + "xsl:function definition in the stylesheet.", 
+							                                                                     + "XSL function definition within the stylesheet.", 
 							                                                                     xpathExpr.getExpressionOwner()); 
 				}
 			}
@@ -4700,6 +4703,30 @@ public class TransformerImpl extends Transformer
 						  xpathDefaultNamespace = ((ElemPI)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
+				  else if (xslElem instanceof ElemAnalyzeString) {
+					  if (((ElemAnalyzeString)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemAnalyzeString)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemAnalyzeString)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemMatchingSubstring) {
+					  if (((ElemMatchingSubstring)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemMatchingSubstring)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemMatchingSubstring)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemNonMatchingSubstring) {
+					  if (((ElemNonMatchingSubstring)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemNonMatchingSubstring)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemNonMatchingSubstring)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
 				  
 				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
 				  updateXPathDefaultNamespace(elemTemplateChild, xpathDefaultNamespace);
@@ -4898,14 +4925,37 @@ public class TransformerImpl extends Transformer
 					  else {
 						  expandText = ((ElemComment)xslElem).getExpandText();  
 					  }
-				  }
-				  
+				  }				  
 				  else if (xslElem instanceof ElemPI) {
 					  if (!(((ElemPI)xslElem).getExpandTextDeclared())) {
 						  ((ElemPI)xslElem).setExpandText(expandText);
 					  }
 					  else {
 						  expandText = ((ElemPI)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemAnalyzeString) {
+					  if (!(((ElemAnalyzeString)xslElem).getExpandTextDeclared())) {
+						  ((ElemAnalyzeString)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemAnalyzeString)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemMatchingSubstring) {
+					  if (!(((ElemMatchingSubstring)xslElem).getExpandTextDeclared())) {
+						  ((ElemMatchingSubstring)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemMatchingSubstring)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemNonMatchingSubstring) {
+					  if (!(((ElemNonMatchingSubstring)xslElem).getExpandTextDeclared())) {
+						  ((ElemNonMatchingSubstring)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemNonMatchingSubstring)xslElem).getExpandText();  
 					  }
 				  }
 

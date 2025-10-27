@@ -160,7 +160,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 		SourceLocator srcLocator = xpathContext.getSAXLocator(); 
 
 		if (!isXslNextIterationDescendantOfXslIterate(this)) {
-			throw new TransformerException("XTSE0010 : An xsl:next-iteration instruction doesn't have xsl:iterate instruction as an ancestor.", srcLocator); 
+			throw new TransformerException("XTSE0010 : An XSL next-iteration instruction doesn't have XSL 'iterate' instruction as an ancestor.", srcLocator); 
 		}
 
 		elemIterateNextIterationProcessing(transformer);            
@@ -199,7 +199,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 				paramWithparamDataObj.setName(withParamNameVal);
 				paramWithparamDataObj.setSelect(withParamSelectXPath);
 				if (fWithparamList.contains(paramWithparamDataObj)) {
-					throw new TransformerException("XTSE0670 : Duplicate xsl:with-param parameter name '" + withParamNameVal + "'", srcLocator);   
+					throw new TransformerException("XTSE0670 : Duplicate XSL with-param parameter name '" + withParamNameVal + "'", srcLocator);   
 				}
 				else {
 					fWithparamList.add(paramWithparamDataObj);  
@@ -228,8 +228,8 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 				}
 
 				if (!paramExists) {
-					throw new TransformerException("XTSE3130 : An xsl:iterate's parameter '" + withParamQName.toString() + "' doesn't exist "
-							                                                                 + "corresponding to xsl:next-iteration's xsl:with-param element.", srcLocator); 
+					throw new TransformerException("XTSE3130 : An XSL iterate's parameter '" + withParamQName.toString() + "' is not present "
+							                                                                 + "corresponding to XSL next-iteration's with-param element.", srcLocator); 
 				}
 			}
 
@@ -277,7 +277,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 								throw ex;  
 							}
 							else {
-								throw new TransformerException("XTTE0570 : The value of sequence constructor, supplied within xsl:with-param element cannot "
+								throw new TransformerException("XTTE0570 : The value of sequence constructor, supplied within XSL with-param element cannot "
 										                                                                                    + "be cast to the type " + withParamAsAttr, srcLocator);  
 							}
 						}
@@ -327,7 +327,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 									throw ex;  
 								}
 								else {
-									throw new TransformerException("XTTE0570 : The value of sequence constructor, supplied within xsl:with-param element cannot "
+									throw new TransformerException("XTTE0570 : The value of sequence constructor, supplied within XSL with-param element cannot "
 											                                                                                    + "be cast to the type " + withParamAsAttr, srcLocator);  
 								}
 							}
@@ -345,8 +345,8 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 				}
 				
 				if (!xslMatchingWithParamDeclared) {
-					throw new TransformerException("XTSE3130 : xsl:iterate parameter " + paramQname.toString() + " is not declared "
-							                                                           + "within the containing xsl:iterate instruction.", srcLocator);
+					throw new TransformerException("XTSE3130 : An XSL 'iterate' parameter " + paramQname.toString() + " is not declared "
+							                                                           + "within the containing XSL 'iterate' instruction.", srcLocator);
 				}
 			}
 			

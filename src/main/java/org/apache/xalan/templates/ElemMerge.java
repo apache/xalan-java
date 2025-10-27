@@ -318,8 +318,8 @@ public class ElemMerge extends ElemTemplateElement
 	  
 	  long noOfDistinctValues = intList.stream().distinct().count();
 	  if (noOfDistinctValues != 1) {
-		  throw new TransformerException("XTSE1505 : Within xsl:merge element, all xsl:merge-source elements "
-		  		                                                    + "should have same number of xsl:merge-key elements.", srcLocator);  
+		  throw new TransformerException("XTSE1505 : Within an XSL 'merge' element, all 'merge-source' elements "
+		  		                                                    + "should have same number of 'merge-key' elements.", srcLocator);  
 	  }
 	  
 	  for (int idx = 0; idx < mergeSourceCount; idx++) {
@@ -327,8 +327,8 @@ public class ElemMerge extends ElemTemplateElement
 		  
 		  String mergeSrcName = mergeSourceElem.getName();
 		  if (mergeSrcNameList.contains(mergeSrcName)) {
-			  throw new TransformerException("XTSE1505 : Within an xsl:merge element, there are more than "
-			  		                                							+ "one xsl:merge-source elements with name '" + mergeSrcName + "'.", srcLocator);  
+			  throw new TransformerException("XTSE1505 : Within an XSL 'merge' element, there are more than "
+			  		                                							+ "one 'merge-source' elements with name '" + mergeSrcName + "'.", srcLocator);  
 		  }
 		  else {
 			  mergeSrcNameList.add(mergeSrcName); 
@@ -337,7 +337,7 @@ public class ElemMerge extends ElemTemplateElement
 		  isSortBeforeMergeRequired = mergeSourceElem.getSortBeforeMerge();
 		  
 		  if ((sortBeforeMergeList.size() > 0) && !sortBeforeMergeList.contains(isSortBeforeMergeRequired)) {
-			  throw new TransformerException("XTSE1505 : Within an xsl:merge element, all xsl:merge-source elements must "
+			  throw new TransformerException("XTSE1505 : Within an XSL 'merge' element, all 'merge-source' elements must "
 			  		                                						    + "have same boolean value (yes/no) for attribute 'sort-before-merge'.", srcLocator); 
 		  }
 		  else {			   

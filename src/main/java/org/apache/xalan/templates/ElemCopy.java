@@ -255,7 +255,7 @@ public class ElemCopy extends ElemUse
 		  String validation = getValidation();
 
 		  if ((type != null) && (validation != null)) {
-			  throw new TransformerException("XTTE1540 : An xsl:copy instruction cannot have both the attributes "
+			  throw new TransformerException("XTTE1540 : An XSL copy instruction cannot have both the attributes "
 					  																	   + "'type' and 'validation'.", srcLocator); 
 		  }
 		  
@@ -269,7 +269,7 @@ public class ElemCopy extends ElemUse
 				   DTMCursorIterator dtmCursorIter = locPathIter.asIterator(xctxt, sourceNode);
 				   int nextNode = dtmCursorIter.nextNode();
 				   if ((nextNode != DTM.NULL) && (dtmCursorIter.nextNode() != DTM.NULL)) {
-					   throw new TransformerException("XTTE3180 : An xsl:copy instruction's 'select' attribute evaluation "
+					   throw new TransformerException("XTTE3180 : An XSL copy instruction's 'select' attribute evaluation "
 					   		                                                             + "resulted in a node set with length greater than one.", srcLocator);  
 				   }
 				   
@@ -294,7 +294,7 @@ public class ElemCopy extends ElemUse
 				if (xObj instanceof ResultSequence) {
 				   ResultSequence rSeq = (ResultSequence)xObj;
 				   if (rSeq.size() > 1) {
-					  throw new TransformerException("XTTE3180 : An xsl:copy instruction's 'select' attribute evaluation resulted "
+					  throw new TransformerException("XTTE3180 : An XSL copy instruction's 'select' attribute evaluation resulted "
 					  		                                                           + "in a sequence of length greater than one.", srcLocator); 
 				   }
 				   else if (rSeq.size() == 1) {
@@ -358,23 +358,23 @@ public class ElemCopy extends ElemUse
 							  validateWithSchemaTypeAndEmitElement(sourceNode, dtm, xsTypeDefn, transformer, xctxt);
 						  }
 						  else {
-							  throw new TransformerException("FODC0005 : An xsl:copy instruction has 'type' attribute with "
+							  throw new TransformerException("FODC0005 : An XSL copy instruction has 'type' attribute with "
 																				   + "value '" + type.getLocalName() + "' to request "
-																				   + "validation of xsl:copy's result, but the schema referred via "
-																				   + "xsl:import-schema instruction does'nt have a global type definition "
+																				   + "validation of XSL copy's result, but the schema referred via "
+																				   + "XSL import-schema instruction does'nt have a global type definition "
 																				   + "with name '" + type.getLocalName() + "'.", srcLocator); 
 						  }
 					  }
 					  else {
-						  throw new TransformerException("FODC0005 : An xsl:copy instruction has 'type' attribute to request "
-																				   + "validation of xsl:copy's result, but an XML input document has not "
-																				   + "been validated using schema supplied via xsl:import-schema instruction.", 
+						  throw new TransformerException("FODC0005 : An XSL copy instruction has 'type' attribute to request "
+																				   + "validation of XSL copy's result, but an XML input document has not "
+																				   + "been validated using schema supplied via XSL import-schema instruction.", 
 																				   srcLocator); 
 					  }
 				  }
 				  else if (validation != null) {
 					  if (!isValidationStrOk(validation)) {
-						  throw new TransformerException("XTTE1540 : An xsl:copy instruction's attribute 'validation' can only have one of following "
+						  throw new TransformerException("XTTE1540 : An XSL copy instruction's attribute 'validation' can only have one of following "
 								  												   + "values : strict, lax, preserve, strip.", srcLocator);  
 					  }
 					  else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
@@ -389,18 +389,18 @@ public class ElemCopy extends ElemUse
 								  validateWithElemDeclAndEmitElement(sourceNode, nodeLocalName, schemaElemDecl, transformer, xctxt);								  
 							  }
 							  else {
-								  throw new TransformerException("FODC0005 : An xsl:copy instruction has 'validation' attribute with value '" + 
+								  throw new TransformerException("FODC0005 : An XSL copy instruction has 'validation' attribute with value '" + 
 																				 			    Constants.XS_VALIDATION_STRICT_STRING + "' to request validation of "
-																							    + "xsl:copy's result, but the schema used to validate "
+																							    + "XSL copy's result, but the schema used to validate "
 																							    + "an XML input document doesn't have global element declaration for "
-																							    + "an element node produced by xsl:copy instruction.", srcLocator);
+																							    + "an element node produced by XSL copy instruction.", srcLocator);
 							  }
 						  }
 						  else {
-							  throw new TransformerException("FODC0005 : An xsl:copy instruction has 'validation' attribute to request "
-																						       + "validation of xsl:copy's result, but an XML input "
+							  throw new TransformerException("FODC0005 : An XSL copy instruction has 'validation' attribute to request "
+																						       + "validation of XSL copy's result, but an XML input "
 																						       + "document has not been validated using schema supplied "
-																						       + "via xsl:import-schema instruction.", srcLocator); 
+																						       + "via XSL import-schema instruction.", srcLocator); 
 						  }
 					  }
 					  else if ((Constants.XS_VALIDATION_LAX_STRING).equals(validation)) {
@@ -453,8 +453,8 @@ public class ElemCopy extends ElemUse
 	  }
 	  catch (Exception ex) {
 		  String errMesg = ex.getMessage();
-		  throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
-																				  + "xsl:copy instruction." 
+		  throw new TransformerException("XTTE1540 : An error occured while evaluating stylesheet's "
+																				  + "XSL copy instruction." 
 																				  + ((errMesg != null) ? " " + errMesg : ""), srcLocator);
 	  }
 	  finally
@@ -497,8 +497,8 @@ public class ElemCopy extends ElemUse
 		  } 
 		  catch (Exception ex) {
 			  String errMesg = ex.getMessage();
-			  throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
-																					  + "xsl:copy instruction." 
+			  throw new TransformerException("XTTE1540 : An error occured while evaluating stylesheet's "
+																					  + "XSL copy instruction." 
 																					  + ((errMesg != null) ? " " + errMesg : ""), srcLocator);
 		  }
 	  }
@@ -535,8 +535,8 @@ public class ElemCopy extends ElemUse
 		  } 
 		  catch (Exception ex) {			  
 			  String errMesg = ex.getMessage();			  
-			  throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
-																						  + "xsl:copy instruction." 
+			  throw new TransformerException("XTTE1540 : An error occured while evaluating stylesheet's "
+																						  + "XSL copy instruction." 
 																						  + ((errMesg != null) ? " " + errMesg : ""), srcLocator);
 		  }
 	  }

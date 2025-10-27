@@ -2265,6 +2265,15 @@ public class ElemTemplateElement extends UnImplNode
   	}
   	else if (elemTemplateElem instanceof ElemPI) {
   		result = ((ElemPI)elemTemplateElem).getExpandText();  		
+  	}
+  	else if (elemTemplateElem instanceof ElemAnalyzeString) {
+  		result = ((ElemAnalyzeString)elemTemplateElem).getExpandText();  		
+  	} 
+  	else if (elemTemplateElem instanceof ElemMatchingSubstring) {
+  		result = ((ElemMatchingSubstring)elemTemplateElem).getExpandText();  		
+  	} 
+  	else if (elemTemplateElem instanceof ElemNonMatchingSubstring) {
+  		result = ((ElemNonMatchingSubstring)elemTemplateElem).getExpandText();  		
   	} 
 
   	return result;

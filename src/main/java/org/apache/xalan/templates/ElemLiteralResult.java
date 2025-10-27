@@ -1522,7 +1522,7 @@ public class ElemLiteralResult extends ElemUse
             	// by an element declaration available in the schema.
 
             	if (!isValidationStrOk(validation)) {
-            		throw new TransformerException("XTTE1540 : A literal result element's attribute 'xsl:validation' can only have one of following "
+            		throw new TransformerException("XTTE1540 : A literal result element's attribute 'validation' can only have one of following "
             																									+ "values : strict, lax, preserve, strip.", srcLocator);
             	}
             	else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {

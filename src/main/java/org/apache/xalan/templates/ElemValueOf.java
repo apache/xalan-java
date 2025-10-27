@@ -382,7 +382,7 @@ public class ElemValueOf extends ElemTemplateElement {
           if (m_selectExpression != null) {        	  
         	 Node childNode = getFirstChild();
         	 if (childNode != null) {
-                throw new TransformerException("XTSE0870 : An xsl:value-of instruction cannot have both a "
+                throw new TransformerException("XTSE0870 : An XSL 'value-of' instruction cannot have both a "
                 		                                    + "'select' attribute and non-empty content.", srcLocator);
         	 }
         	 else {

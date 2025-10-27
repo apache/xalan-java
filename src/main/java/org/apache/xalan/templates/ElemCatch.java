@@ -182,11 +182,11 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	    
 	    ElemTemplateElement parentElem = getParentElem();
 	    if (!(parentElem instanceof ElemTry)) {
-	    	throw new TransformerException("XTSE3150 : An xsl:catch element can only occur as child of xsl:try element.", srcLocator);
+	    	throw new TransformerException("XTSE3150 : An XSL catch element can only occur as child of try element.", srcLocator);
 	    }
 	    
 	    if ((m_selectExpression != null) && (this.m_firstChild != null)) {
-	    	throw new TransformerException("XTSE3150 : An xsl:catch element can only have either 'select' attribute, or a contained "
+	    	throw new TransformerException("XTSE3150 : An XSL catch element can have only either 'select' attribute, or a contained "
 	    			                                                                                              + "sequence constructor.", srcLocator);
 		}
 	    
@@ -208,12 +208,12 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 				ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false, this);
 			} 
 			catch (TransformerException ex) {
-				throw new javax.xml.transform.TransformerException("XPTY0004 : An exception occured while serializing xsl:catch's evaluation "
-						                                                        + "to an XSL result tree, with following exception trace : " + 
+				throw new javax.xml.transform.TransformerException("XPTY0004 : An exception occured while serializing XSL catch's evaluation "
+						                                                        + "to an XSL result tree, with following run-time exception trace : " + 
 						                                                        ex.getMessage() + ".", srcLocator);	
 			} 
 			catch (SAXException ex) {
-				throw new javax.xml.transform.TransformerException("XPTY0004 : An exception occured while serializing xsl:catch's evaluation "
+				throw new javax.xml.transform.TransformerException("XPTY0004 : An exception occured while serializing XSL catch's evaluation "
                                                                                + "to an XSL result tree, with following exception trace : " + 
                                                                                ex.getMessage() + ".", srcLocator);		
 			}

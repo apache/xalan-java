@@ -421,8 +421,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	    ElemSort elemSort = (ElemSort)m_sortElems.get(idx);
     	    if (idx > 0) {
     	       if (elemSort.isStableDeclared()) {
-    	    	  throw new javax.xml.transform.TransformerException("XTSE1017 : Only the first xsl:sort element in a sequence of "
-    	    	  		                                                                       + "xsl:sort elements can have an attribute named "
+    	    	  throw new javax.xml.transform.TransformerException("XTSE1017 : Only the first XSL 'sort' element within a sequence of "
+    	    	  		                                                                       + "'sort' elements can have an attribute named "
     	    	  		                                                                       + "'stable'.", srcLocator);	
     	       }
     	    }    	    
@@ -1000,9 +1000,9 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 						   InstanceOf instanceOf = new InstanceOf();
 						   XObject xObj = instanceOf.operate(resultSeqItem, seqExpectedTypeData);
 						   if (!xObj.bool()) {
-							   throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm input sequence processed by xsl:for-each's "
-																													   + "xsl:sort instruction has an item that is not of "
-																													   + "the type '" + dataTypeStr + "', specified by xsl:sort's "
+							   throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm input sequence processed by XSL for-each's "
+																													   + "'sort' instruction has an item that is not of "
+																													   + "the type '" + dataTypeStr + "', specified by XSL sort's "
 																													   + "data-type attribute.", srcLocator);  
 						   }
 
@@ -1058,8 +1058,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
 							   if (!clazz1NameStr.equals(clazz0NameStr)) {
 								   // The sequence items are not of compatible types								 
-								   throw new javax.xml.transform.TransformerException("XTDE1030 : An xdm input sequence processed by xsl:for-each's "
-																															   + "xsl:sort instruction, dosn't have items with "
+								   throw new javax.xml.transform.TransformerException("XTDE1030 : An xdm input sequence processed by XSL for-each's "
+																															   + "'sort' instruction, dosn't have items with "
 																															   + "compatible types.", srcLocator); 
 							   }
 						   }
@@ -1124,9 +1124,9 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 							   sorkKeyObj = new XNumber(dbl);
 						   }
 						   catch (NumberFormatException ex) {
-							   throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm input sequence processed by xsl:for-each's "
-																														   + "xsl:sort instruction has an item that is not of "
-																														   + "the type '" + dataTypeStr + "', specified by xsl:sort's "
+							   throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm input sequence processed by XSL for-each's "
+																														   + "'sort' instruction has an item that is not of "
+																														   + "the type '" + dataTypeStr + "', specified by XSL sort's "
 																														   + "data-type attribute.", srcLocator); 
 						   }
 					   }						  
@@ -1204,7 +1204,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					  }
 					  catch (SAXException ex) {
 						  throw new javax.xml.transform.TransformerException("XTDE1030 : An XSL tranformation error has occured, while "
-						  		                                                                           + "processing xsl:for-each's "
+						  		                                                                           + "processing XSL for-each's "
 						  		                                                                           + "contained sequence constructor.", srcLocator); 
 					  }
 				   }
@@ -1409,7 +1409,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 	   }
 
 	   /**
-	    * A method definition, to check whether one sort key value precedes another 
+	    * Method definition, to check whether one sort key value precedes another 
 	    * sort key value. If a xsl:sort instruction specifies a collation URI, xsl:sort 
 	    * instruction's 'lang' attribute is ignored. When xsl:sort instruction doesn't 
 	    * specify both collation URI and 'lang' attributes, the sort keys are compared 

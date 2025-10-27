@@ -273,9 +273,9 @@ public class ElemSequence extends ElemTemplateElement
 			  ElemTemplateElement xslSeqChildElem = getFirstChildElem();
 			  while (xslSeqChildElem != null) {
 				  if (!(xslSeqChildElem instanceof ElemFallback)) {
-					  throw new javax.xml.transform.TransformerException("XTSE3185 : An xsl:sequence element cannot "
+					  throw new javax.xml.transform.TransformerException("XTSE3185 : An XSL 'sequence' element cannot "
 																								                + "have both \"select\" attribute, and child content "
-																								                + "other than xsl:fallback element(s).", srcLocator); 
+																								                + "other than XSL 'fallback' element(s).", srcLocator); 
 				  }
 				  else {
 					  xslSeqChildElem = xslSeqChildElem.getNextSiblingElem(); 

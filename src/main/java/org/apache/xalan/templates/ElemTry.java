@@ -197,8 +197,8 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    	for (ElemTemplateElement t1 = this.m_firstChild; t1 != null;
 																	t1 = t1.m_nextSibling) {
 	    		if (!(t1 instanceof ElemCatch)) {
-	    		   throw new TransformerException("XTSE3140 : An xsl:try element has 'select' attribute, but xsl:try "
-	    		   		                                                                 + "has a child element other than xsl:catch.", srcLocator);
+	    		   throw new TransformerException("XTSE3140 : An XSL 'try' element has 'select' attribute, but XSL 'try' "
+	    		   		                                                                 + "has a child element other than XSL 'catch'.", srcLocator);
 	    		}
 	    	}
 		}
@@ -212,8 +212,8 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    }
 	    
 	    if ((node == null) || !(node instanceof ElemCatch)) {
-	    	throw new TransformerException("XTSE3140 : An xsl:try element's last child element can only be a "
-	    			                                                                           + "xsl:catch element, or an xsl:fallback instruction.", srcLocator);
+	    	throw new TransformerException("XTSE3140 : An XSL 'try' element's last child element can only be a "
+	    			                                                                           + "XSL 'catch' element, or an XSL 'fallback' instruction.", srcLocator);
 	    }	    
 	    
 	    if (m_selectExpression != null) {

@@ -683,7 +683,7 @@ public class XSL3FunctionService {
     								}	    							    						
     							}
     							else {
-    								throw new javax.xml.transform.TransformerException("FODC0005 : While processing xsl:import-schema instruction, a compiled "
+    								throw new javax.xml.transform.TransformerException("FODC0005 : While processing XSL import-schema instruction, a compiled "
     										                                                                            + "representation of an XML Schema document "
     										                                                                            + "could not be built.", srcLocator);
     							}
@@ -753,18 +753,18 @@ public class XSL3FunctionService {
     									}
     								}
     								else {
-    									throw new javax.xml.transform.TransformerException("FODC0005 : While processing xsl:import-schema instruction, a compiled "
+    									throw new javax.xml.transform.TransformerException("FODC0005 : While processing XSL import-schema instruction, a compiled "
     											                                                                            + "representation of an XML Schema document "
     											                                                                            + "could not be built.", srcLocator);
     								}
     							}
     							catch (URISyntaxException ex) {
-    								throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
+    								throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with XSL import-schema instruction "
     										                                                                                + "is not a valid absolute uri, or cannot "
     										                                                                                + "be resolved to an absolute uri.", srcLocator);   
     							}
     							catch (MalformedURLException ex) {
-    								throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
+    								throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with XSL import-schema instruction "
     										                                                                                + "is not a valid absolute uri, or cannot be "
     										                                                                                + "resolved to an absolute uri.", srcLocator); 
     							}

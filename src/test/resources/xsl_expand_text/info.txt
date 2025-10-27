@@ -1,0 +1,9 @@
+hello this is a file
+
+used to test xsl:analyze-string instruction
+
+thanks
+
+happy learning XML
+
+greetings

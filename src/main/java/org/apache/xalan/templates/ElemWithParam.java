@@ -251,7 +251,7 @@ public class ElemWithParam extends ElemTemplateElement
     SourceLocator srcLocator = xctxt.getSAXLocator();
     
     if (m_tunnelAttr != null && !isValidTunnelParamValue(m_tunnelAttr)) {
-       throw new TransformerException("XTTE0590 : Allowed values for xsl:with-param's tunnel "
+       throw new TransformerException("XTTE0590 : Allowed values for XSL with-param's tunnel "
        		                                           + "attribute are : yes, true, 1, no, false, 0. The "
        		                                           + "supplied value is " + m_tunnelAttr + ".", srcLocator); 
     }
@@ -302,7 +302,7 @@ public class ElemWithParam extends ElemTemplateElement
        var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, 
                                                                           transformer.getXPathContext());
        if (var == null) {
-          throw new TransformerException("XTTE0590 : The required item type of the value of argument used for xsl:with-param " + 
+          throw new TransformerException("XTTE0590 : The required item type of the value of argument used for XSL with-param " + 
                                                                      m_qname.toString() + " is " + m_asAttr + ". The supplied value "
                                                                      + "doesn't match the expected item type.", srcLocator);  
        }

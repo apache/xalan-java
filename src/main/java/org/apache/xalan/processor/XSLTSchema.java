@@ -792,21 +792,23 @@ public class XSLTSchema extends XSLTElementDef
                                                 Constants.S_XSLNAMESPACEURL, "analyze-string",
                                                 null /*alias */, templateElements,
                                                 new XSLTAttributeDef[]{ regexAVTRequired, selectAttrRequired, 
-                                                                        flagsAttrOpt, spaceAttr }, 
+                                                                        flagsAttrOpt, spaceAttr, 
+                                                                        xpathDefaultNamespaceAttrOpt, 
+                                                                        expandTextAttrOpt }, 
                                                 new ProcessorTemplateElem(),
                                                 ElemAnalyzeString.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslMatchingSubstring = new XSLTElementDef(this,
                                                 Constants.S_XSLNAMESPACEURL, "matching-substring",
                                                 null /*alias */, templateElements,
-                                                new XSLTAttributeDef[] { }, 
+                                                new XSLTAttributeDef[] { xpathDefaultNamespaceAttrOpt, expandTextAttrOpt }, 
                                                 new ProcessorTemplateElem(),
                                                 ElemMatchingSubstring.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslNonMatchingSubstring = new XSLTElementDef(this,
                                                 Constants.S_XSLNAMESPACEURL, "non-matching-substring",
                                                 null /*alias */, templateElements,
-                                                new XSLTAttributeDef[] { }, 
+                                                new XSLTAttributeDef[] { xpathDefaultNamespaceAttrOpt, expandTextAttrOpt }, 
                                                 new ProcessorTemplateElem(),
                                                 ElemNonMatchingSubstring.class /* class object */, true, false, true, 20, true);
     

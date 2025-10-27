@@ -882,9 +882,9 @@ public class TemplateList implements java.io.Serializable
 					   SourceLocator srcLocator2 = (SourceLocator)(next.getTemplate());
 					   int lineNo2 = srcLocator2.getLineNumber();
 
-					   throw new TransformerException("XTDE0540 : More than one xsl:template rule matched "
+					   throw new TransformerException("XTDE0540 : More than one XSL template rule matched "
 																							+ "an XML element node '" + elemName + "'. "
-																							+ "Conflicting xsl:template rule locations are "
+																							+ "Conflicting template rule locations are "
 																							+ "line " + lineNo1 + " and line " + lineNo2 +".", srcLocator1); 
 				   }
 			   }
@@ -910,9 +910,9 @@ public class TemplateList implements java.io.Serializable
 
 				   ErrorListener errorListener = xctxt.getErrorListener();
 				   
-				   errorListener.warning(new TransformerException("Warning : More than one xsl:template rule matched "
+				   errorListener.warning(new TransformerException("Warning : More than one XSL template rule matched "
 																						   + "an XML element node '" + elemName + "'. "
-																						   + "Conflicting xsl:template rule locations are "
+																						   + "Conflicting template rule locations are "
 																						   + "line " + lineNo1 + " and line " + lineNo2 +".", srcLocator1)); 
 			   }
 		   }

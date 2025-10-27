@@ -145,14 +145,14 @@ public class ElemContextItem extends ElemTemplateElement {
         }
         else if (prevSiblingNode != null) {
         	String prevSiblingNodeName = prevSiblingNode.getNodeName();
-        	throw new TransformerException("XTSE0010 : An xsl:context-item instruction can only occur as first "
-		                                                                             + "child element of xsl:template instruction. An element '" + 
-		        			                                                         prevSiblingNodeName + "' occured as previous sibling to xsl:context-item "
+        	throw new TransformerException("XTSE0010 : An XSL context-item instruction can only occur as first "
+		                                                                             + "child element of XSL template instruction. An element '" + 
+		        			                                                         prevSiblingNodeName + "' occured as previous sibling to XSL context-item "
 		        			                                                         + "instruction.", srcLocator);
         }
         else {
-        	throw new TransformerException("XTSE0010 : An xsl:context-item instruction can only occur as first "
-        			                                                                 + "child element of xsl:template instruction.", srcLocator);
+        	throw new TransformerException("XTSE0010 : An XSL context-item instruction can only occur as first "
+        			                                                                 + "child element of XSL template instruction.", srcLocator);
         }
         
         if (m_useAttr == null) {
@@ -168,21 +168,21 @@ public class ElemContextItem extends ElemTemplateElement {
         if (!(m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_REQUIRED_STRING) || 
         	  m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_OPTIONAL_STRING) || 
         	  m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_ABSENT_STRING))) {
-        	throw new TransformerException("XTSE0010 : An xsl:context-item instruction's attribute \"use\" can have possible values "
+        	throw new TransformerException("XTSE0010 : An XSL context-item instruction's attribute \"use\" can have possible values "
         			                                                              + "'required', 'optional', 'absent'. Value occured in "
         			                                                              + "stylesheet: '" + m_useAttr + "'.", srcLocator);
         }        
         else if ((enclosingXslTemplateName == null) && (m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_OPTIONAL_STRING) || 
         	                                         m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_ABSENT_STRING))) {
-        	throw new TransformerException("XTSE0020 : An xsl:context-item instruction appearing in an xsl:template declaration "
+        	throw new TransformerException("XTSE0020 : An XSL context-item instruction appearing within an XSL template declaration "
         			                                    + "with no \"name\" attribute must specify value of \"use\" attribute as 'required'.", srcLocator);
         }        
         else if (m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_ABSENT_STRING) && (contextNode != DTM.NULL)) {
-            throw new TransformerException("XTSE0020 : An xsl:context-item instruction has its attribute \"use\" value as 'absent', but "
+            throw new TransformerException("XTSE0020 : An XSL context-item instruction has its attribute \"use\" value as 'absent', but "
             		                                                                                                 + "the context item exists.", srcLocator);
         }
         else if (m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_REQUIRED_STRING) && (contextNode == DTM.NULL)) {
-            throw new TransformerException("XTSE0020 : An xsl:context-item instruction has its attribute \"use\" value as 'required', but "
+            throw new TransformerException("XTSE0020 : An XSL context-item instruction has its attribute \"use\" value as 'required', but "
             		                                                                                                 + "the context item is absent.", srcLocator);
         }
         

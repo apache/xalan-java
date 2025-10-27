@@ -71,7 +71,7 @@ public class FuncCurrentGroupingKey extends Function
         	groupingKeyObj = ((StringWithCollation)groupingKeyObj).getStrValue();	
         }
         else if (XSL_GROUPING_KEY_ABSENT.equals(groupingKeyObj.toString())) {
-        	throw new javax.xml.transform.TransformerException("XTDE1071 : xsl:for-each-group instruction's current-grouping-key() "
+        	throw new javax.xml.transform.TransformerException("XTDE1071 : An XSL 'for-each-group' instruction's current-grouping-key() "
         			                                                                      + "value is not available.", xctxt.getSAXLocator());
         }
         

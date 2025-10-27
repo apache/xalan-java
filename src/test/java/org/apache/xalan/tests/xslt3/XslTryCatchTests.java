@@ -231,8 +231,8 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
          
          String goldFilePath = null;
          
-         // This XSL stylesheet test case, uses an XSL error handler, to
-         // verify an XPath run-time dynamic error.
+         // This XSL stylesheet test case, uses an XSL non-null error handler,
+         // to verify an XPath run-time dynamic error.
          
          runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, new XslTestsErrorHandler());
     }
@@ -244,8 +244,8 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
          
          String goldFilePath = null;
          
-         // This XSL stylesheet test case, uses an XSL error handler, to
-         // verify an XPath run-time dynamic error.
+         // This XSL stylesheet test case, uses an XSL non-null error handler,
+         // to verify an XPath run-time dynamic error.
          
          runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, new XslTestsErrorHandler());
     }

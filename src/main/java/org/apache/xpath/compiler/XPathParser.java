@@ -36,6 +36,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemAnalyzeString;
 import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.ElemCallTemplate;
@@ -50,6 +51,8 @@ import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemMatchingSubstring;
+import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemPI;
@@ -5997,7 +6000,6 @@ public class XPathParser
 
       m_ops.m_tokenQueue.setElementAt(obj,tokenQueuePos);
 
-      // lit = m_token.substring(1, last);
       m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), tokenQueuePos);
       m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
@@ -6875,12 +6877,12 @@ public class XPathParser
 				   }
 			   }
 			   catch (URISyntaxException ex) {
-				   throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
+				   throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with XSL import-schema instruction "
 						   																  + "is not a valid absolute uri, or cannot be resolved to an absolute uri.",
 						   																    m_sourceLocator);   
 			   }
 			   catch (MalformedURLException ex) {
-				   throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
+				   throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with XSL import-schema instruction "
 						   																  + "is not a valid absolute uri, or cannot be resolved to an absolute uri.",
 						   																    m_sourceLocator); 
 			   }						
@@ -6900,9 +6902,11 @@ public class XPathParser
 		   if (!m_isFunctionArgumentParse && tokenIs(')')) {
 			   consumeExpected(')');
 		   }
+		   
 		   xpathSequenceTypeExpr.setXsSequenceTypeDefinition(xsTypeDefinition);
 
-		   // TO handle occurrence indicator
+		   // TO DO
+		   // handle XPath sequence type occurrence indicator
 	   }
 	   else {
 		   String typeExpandedName = (typeNamespace == null) ? typeName : "{" + typeNamespace + "}:" + typeName;   
@@ -8103,6 +8107,24 @@ public class XPathParser
     		result = ((ElemPI)xpathExprXslParentNode).getXpathDefaultNamespace();
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemPI)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemAnalyzeString) {
+    		result = ((ElemAnalyzeString)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemAnalyzeString)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemMatchingSubstring) {
+    		result = ((ElemMatchingSubstring)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemMatchingSubstring)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemNonMatchingSubstring) {
+    		result = ((ElemNonMatchingSubstring)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemNonMatchingSubstring)xpathExprXslParentNode).getParentElem()); 
     		}
     	}
 

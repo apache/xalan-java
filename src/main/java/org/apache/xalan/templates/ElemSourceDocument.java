@@ -167,7 +167,7 @@ public class ElemSourceDocument extends ElemTemplateElement
 	       Source source = transformer.getSource();	       	       
 	       if (!(source instanceof SAXSource)) {
 	    	   String srcClassName = (source.getClass()).getName();
-	    	   throw new TransformerException("XTTE0505 : xsl:source-document instruction has attribute "
+	    	   throw new TransformerException("XTTE0505 : An XSL 'source-document' instruction has attribute "
 	    	   		                                            + "\"streamable\" with value 'yes', but XSL transformation "
 	    	   		                                            + "has not been invoked with a SAXSource document input. "
 	    	   		                                            + "This XSL transformation has been invoked with " + 
@@ -200,12 +200,12 @@ public class ElemSourceDocument extends ElemTemplateElement
 				}
 			}
 			catch (URISyntaxException ex) {
-				throw new javax.xml.transform.TransformerException("FODC0005 : An xsl:source-document instruction's href uri '" + hrefStrVal + "' "
+				throw new javax.xml.transform.TransformerException("FODC0005 : An XSL 'source-document' instruction's href uri '" + hrefStrVal + "' "
 																					+ "is not a valid absolute uri, "
 																					+ "or cannot be resolved to an absolute uri.", srcLocator);  
 			}
 			catch (MalformedURLException ex) {
-				throw new javax.xml.transform.TransformerException("FODC0005 : An xsl:source-document instruction's href uri '" + hrefStrVal + "' "
+				throw new javax.xml.transform.TransformerException("FODC0005 : An XSL 'source-document' instruction's href uri '" + hrefStrVal + "' "
 																					+ "is not a valid absolute uri, or cannot be resolved to "
 																					+ "an absolute uri.", srcLocator);
 			}

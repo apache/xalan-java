@@ -169,7 +169,7 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
                                                                   
            if (transformer.isXslIterateOnCompletionActive()) {        	          	   
         	   if ((xpathSelectPatternStr != null) && (this.m_firstChild != null)) {
-        		  throw new TransformerException("XTSE3125 : An xsl:on-completion element has both 'select' attribute and a non empty sequence constructor.", srcLocator); 
+        		  throw new TransformerException("XTSE3125 : An XSL on-completion element has both 'select' attribute and a non empty sequence constructor.", srcLocator); 
         	   }        	   
                                                                            
                final int prevCurrentNode = xctxt.getCurrentNode();
@@ -183,7 +183,7 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
                    
             	   if (xpathSelectPatternStr != null) {
             		   if (isXslIterOnCompletionExprAccXPathCtxt(m_selectExpression)) {
-        				  throw new TransformerException("XPDY0002 : An xsl:on-completion instruction's 'select' attribute "
+        				  throw new TransformerException("XPDY0002 : An XSL on-completion instruction's 'select' attribute "
         				  		                                                                         + "cannot access XPath context item.", srcLocator);   
         			   }
             		   
@@ -204,7 +204,7 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
             		   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
             				                                                      elemTemplate = elemTemplate.m_nextSibling) {            			   
             			   if (isXslIterOnCompletionDescInstrAccXPathCtxt(elemTemplate, stylesheetRoot)) {
-            				  throw new TransformerException("XPDY0002 : An xsl:on-completion instruction's sequence constructor "
+            				  throw new TransformerException("XPDY0002 : An XSL on-completion instruction's sequence constructor "
             				  		                                                                    + "cannot access XPath context item.", elemTemplate); 
             			   }
             			   xctxt.setSAXLocator(elemTemplate);

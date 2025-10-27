@@ -131,13 +131,13 @@ public class ElemFork extends ElemTemplateElement
 																	t = t.m_nextSibling) {
 	    		if (t.m_nextSibling != null) {
 	    		   if (!(t instanceof ElemSequence)) {
-	    			  throw new TransformerException("XPTY0004 : All xsl:fork child elements other than last one, "
-	    			  																				 + "should be xsl:sequence elements.", srcLocator); 
+	    			  throw new TransformerException("XPTY0004 : All XSL fork child elements other than last one, "
+	    			  																				 + "should be XSL 'sequence' elements.", srcLocator); 
 	    		   }
 	    		}
 	    		else if (!((t instanceof ElemSequence) || (t instanceof ElemForEachGroup))) {
-	    		   throw new TransformerException("XPTY0004 : An xsl:fork's last child element can either be "
-	    		   		                                                                                + "xsl:sequence or xsl:for-each-group.", srcLocator);
+	    		   throw new TransformerException("XPTY0004 : An XSL fork's last child element can either be "
+	    		   		                                                                                + "XSL 'sequence' or 'for-each-group'.", srcLocator);
 	    		}
 	    		else {
 	    		   xslForkLastChildElem = t;	

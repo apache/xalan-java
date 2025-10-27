@@ -403,7 +403,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  sourceNodes = ((XMLNodeCursorImpl)varEvalResult).asIterator(xctxt, sourceNode);
 		  }       
 		  else {
-			  throw new TransformerException("XTTE0505 : xsl:apply-templates 'select' expression evaluation "
+			  throw new TransformerException("XTTE0505 : An XSL apply-templates 'select' expression evaluation "
 					  														               + "resulted in a value that is not "
 					  														               + "supported to be processed.", srcLocator);
 		  }
@@ -444,7 +444,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  return;
 		  }
 		  else {
-			  throw new TransformerException("XTTE0505 : xsl:apply-templates 'select' expression evaluation "
+			  throw new TransformerException("XTTE0505 : An XSL apply-templates 'select' expression evaluation "
 																						  + "resulted in a value that is not "
 																						  + "supported to be processed.", srcLocator);
 		  }
@@ -582,7 +582,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  xslOnMultipleMatchStr = elemMode.getOnMultipleMatch();				  
 			  if (xslOnMultipleMatchStr != null) {
 				  if (!((Constants.ATTRVAL_USE_LAST).equals(xslOnMultipleMatchStr) || (Constants.ATTRVAL_FAIL).equals(xslOnMultipleMatchStr))) {
-					  throw new TransformerException("XTTE0505 : An xsl:mode instruction's \"on-multiple-match\" attribute has in-correct "
+					  throw new TransformerException("XTTE0505 : An XSL mode instruction's \"on-multiple-match\" attribute has in-correct "
 							                                                                                + "value '" + xslOnMultipleMatchStr + "'.", srcLocator); 
 				  }
 			  }
@@ -613,16 +613,21 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  // If that didn't locate an XSL stylesheet user written template rule, 
 			  // fall back to a default template rule.
 			  if (template == null)
-			  {				  				  
+			  {					  
 				  switch (nodeType)
 				  {
 				  case DTM.DOCUMENT_FRAGMENT_NODE :
 				  case DTM.ELEMENT_NODE :					  
 					  if (elemMode != null) {						  						  
-						  String xmlElemName = dtm.getNodeName(child);						  						  
+						  String xmlElemName = dtm.getNodeName(child);
 						  if (onNoMatchStr != null) {							  
 							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  
+								  transformer.pushPairCurrentMatched(template, child); 
+								  transformer.setCurrentElement(template);
+								  dtm.dispatchCharactersEvents(child, rth, false);
+								  transformer.popCurrentMatched();								  								  
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getDeepCopyRule(elemMode.getName());
@@ -637,7 +642,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
 							  }							  
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
-								  String errMesg = "XTDE0555 : An xsl:template declaration could not be located to process an XML element node";
+								  String errMesg = "XTDE0555 : An XSL template declaration could not be located to process an XML element node";
 								  if (xmlElemName != null) {
 									 errMesg = (errMesg + " '" + xmlElemName + "'."); 
 								  }
@@ -648,7 +653,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  throw new TransformerException(errMesg, srcLocator);
 							  }
 							  else {
-								  throw new TransformerException("XTTE0505 : An xsl:mode instruction's \"on-no-match\" attribute has in-correct "
+								  throw new TransformerException("XTTE0505 : An XSL mode instruction's \"on-no-match\" attribute has in-correct "
 								  		                                                                          + "value '" + onNoMatchStr + "'.", srcLocator);
 							  }
 						  }
@@ -663,7 +668,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 							  int errLineNo = srcLocator.getLineNumber();
 							  if (errLineNo != 0) {
 								  ErrorListener errorListener = xctxt.getErrorListener();									 
-								  String errMesg = "Warning : An xsl:template declaration could not be located to process an XML element node";
+								  String errMesg = "Warning : An XSL template declaration could not be located to process an XML element node";
 								  if (xmlElemName != null) {
 									  errMesg = (errMesg + " '" + xmlElemName + "'."); 
 								  }
@@ -673,15 +678,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 								  errorListener.warning(new TransformerException(errMesg, srcLocator));
 							  }
-						  }
-						  
-						  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
-							 transformer.pushPairCurrentMatched(template, child); 
-							 transformer.setCurrentElement(template);
-							 dtm.dispatchCharactersEvents(child, rth, false);
-							 transformer.popCurrentMatched();
-							 
-							 continue;
 						  }
 					  }
 					  else {
@@ -694,7 +690,12 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  String xmlElemName = dtm.getNodeName(child);
 						  if (onNoMatchStr != null) {
 							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+                                  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  
+								  transformer.pushPairCurrentMatched(template, child); 
+								  transformer.setCurrentElement(template);
+								  dtm.dispatchCharactersEvents(child, rth, false);
+								  transformer.popCurrentMatched();
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getDeepCopyRule(elemMode.getName());
@@ -709,7 +710,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
 							  }
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
-								  String errMesg = "XTDE0555 : An xsl:template declaration could not be located to process an XML attribute node";
+								  String errMesg = "XTDE0555 : An XSL template declaration could not be located to process an XML attribute node";
 								  if (xmlElemName != null) {
 									 errMesg = (errMesg + " '" + xmlElemName + "'."); 
 								  }
@@ -720,7 +721,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  throw new TransformerException(errMesg, srcLocator);
 							  }
 							  else {
-								  throw new TransformerException("XTTE0505 : An xsl:mode instruction's \"on-no-match\" attribute has in-correct "
+								  throw new TransformerException("XTTE0505 : An XSL mode instruction's \"on-no-match\" attribute has in-correct "
 								  		                                                                          + "value '" + onNoMatchStr + "'.", srcLocator);
 							  }
 						  }
@@ -735,7 +736,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 							  int errLineNo = srcLocator.getLineNumber();
 							  if (errLineNo != 0) {
 								  ErrorListener errorListener = xctxt.getErrorListener();									 
-								  String errMesg = "Warning : An xsl:template declaration could not be located to process an XML attribute node";
+								  String errMesg = "Warning : An XSL template declaration could not be located to process an XML attribute node";
 								  if (xmlElemName != null) {
 									  errMesg = (errMesg + " '" + xmlElemName + "'."); 
 								  }
@@ -756,12 +757,20 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  if (onNoMatchStr != null) {
 							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  
+								  transformer.pushPairCurrentMatched(template, child);
+								  transformer.setCurrentElement(template);
+								  dtm.dispatchCharactersEvents(child, rth, false);
+								  transformer.popCurrentMatched();
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getDeepCopyRule(elemMode.getName());
 							  }
 							  else if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getShallowCopyRule(elemMode.getName());
+								  transformer.pushPairCurrentMatched(sroot.getDefaultTextRule(), child);
+								  transformer.setCurrentElement(sroot.getDefaultTextRule());
+								  dtm.dispatchCharactersEvents(child, rth, false);
+								  transformer.popCurrentMatched();								  								  
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)) {
 								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
@@ -770,7 +779,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
 							  }
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
-								  String errMesg = "XTDE0555 : An xsl:template declaration could not be located to process an XML text node";
+								  String errMesg = "XTDE0555 : An XSL template declaration could not be located to process an XML text node";
 								  if (xmlElemName != null) {
 									 errMesg = (errMesg + " '" + xmlElemName + "'."); 
 								  }
@@ -781,7 +790,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  throw new TransformerException(errMesg, srcLocator);
 							  }
 							  else {
-								  throw new TransformerException("XTTE0505 : An xsl:mode instruction's \"on-no-match\" attribute has in-correct "
+								  throw new TransformerException("XTTE0505 : An XSL mode instruction's \"on-no-match\" attribute has in-correct "
 								  		                                                                          + "value '" + onNoMatchStr + "'.", srcLocator);
 							  }
 						  }
@@ -796,7 +805,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 							  int errLineNo = srcLocator.getLineNumber();
 							  if (errLineNo != 0) {
 								  ErrorListener errorListener = xctxt.getErrorListener();									 
-								  String errMesg = "Warning : An xsl:template declaration could not be located to process an XML text node";
+								  String errMesg = "Warning : An XSL template declaration could not be located to process an XML text node";
 								  if (xmlElemName != null) {
 									  errMesg = (errMesg + " '" + xmlElemName + "'."); 
 								  }

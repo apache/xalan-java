@@ -1183,13 +1183,13 @@ public class StylesheetRoot extends StylesheetComposed
 	  ElemTemplate result = new ElemTemplate();
 	  
 	  result.setMode(mode);
-	  result.setStylesheet(this);
-	  
+	  result.setStylesheet(this);	  
+
 	  XPath xpathMatch = new XPath("node()|@*", this, this, XPath.MATCH, m_errorListener);
-	  result.setMatch(xpathMatch);	  
-	  
+	  result.setMatch(xpathMatch);
+
 	  ElemCopy elemCopy = new ElemCopy();
-	  
+
 	  ElemApplyTemplates elemApplyTemplates = new ElemApplyTemplates();
 	  elemApplyTemplates.setMode(mode);
 	  XPath xpathSelect = new XPath("@*", this, this, XPath.SELECT, m_errorListener);
@@ -1200,10 +1200,11 @@ public class StylesheetRoot extends StylesheetComposed
 	  elemApplyTemplates = new ElemApplyTemplates();
 	  elemApplyTemplates.setMode(mode);
 	  xpathSelect = new XPath("node()", this, this, XPath.SELECT, m_errorListener);
+
 	  elemApplyTemplates.setSelect(xpathSelect);
 	  elemApplyTemplates.setIsDefaultTemplate(true);
 	  elemCopy.appendChild(elemApplyTemplates);
-	  
+
 	  result.appendChild(elemCopy);
 
 	  return result;
@@ -1859,12 +1860,12 @@ public class StylesheetRoot extends StylesheetComposed
 						}
 					}
 					catch (URISyntaxException ex) {
-						throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
+						throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with XSL import-schema instruction "
 																										+ "is not a valid absolute uri, or cannot be "
 																										+ "resolved to an absolute uri.");   
 					}
 					catch (MalformedURLException ex) {
-						throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
+						throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with XSL import-schema instruction "
 																										+ "is not a valid absolute uri, or cannot be "
 																										+ "resolved to an absolute uri."); 
 					}										
@@ -1873,7 +1874,7 @@ public class StylesheetRoot extends StylesheetComposed
 		}
 		else {
 			throw new javax.xml.transform.TransformerException("FODC0005 : An XML Schema validation of input document was requested, but no schema "
-																										+ "document found via xsl:import-schema "
+																										+ "document found via XSL import-schema "
 																										+ "instruction.");
 		}
 	}

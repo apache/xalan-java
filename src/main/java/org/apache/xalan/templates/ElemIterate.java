@@ -661,13 +661,13 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
     	  int otherElemIdx = xslElemNamesList.indexOf(OTHER_ELEM);
 
     	  if ((paramIdx != -1) && (onCompletionIdx != -1) && (paramIdx > onCompletionIdx)) {
-    		  throw new TransformerException("XTSE0010 : An xsl:param element must occur before xsl:on-completion element.", srcLocator);    
+    		  throw new TransformerException("XTSE0010 : An XSL param element must occur before on-completion element.", srcLocator);    
     	  }                    
     	  else if ((paramIdx != -1) && (otherElemIdx != -1) && (paramIdx > otherElemIdx)) {
-    		  throw new TransformerException("XTSE0010 : An xsl:param element must occur before any other element within xsl:iterate element.", srcLocator);
+    		  throw new TransformerException("XTSE0010 : An XSL param element must occur before any other element within XSL iterate element.", srcLocator);
     	  }
     	  else if ((paramIdx != -1) && (otherElemIdx != -1) && (onCompletionIdx != -1) && (paramIdx < otherElemIdx) && (otherElemIdx < onCompletionIdx)) {
-    		  throw new TransformerException("XTSE0010 : An xsl:on-completion element must be the first child element of xsl:iterate after the xsl:param elements.", srcLocator);
+    		  throw new TransformerException("XTSE0010 : An XSL on-completion element must be the first child element of XSL 'iterate' instruction after the param elements.", srcLocator);
     	  }          
 
     	  if (paramIdx != -1) {
@@ -683,7 +683,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
     				  paramWithparamDataObj.setSelect(paramSelectXPath);
     				  paramWithparamDataObj.setAsAttrValue(asAttr);
     				  if (fXslIterateParamWithparamDataList.contains(paramWithparamDataObj)) {
-    					  throw new TransformerException("XTSE0580 : The name of an xsl:param '" + paramNameVal + "' is not unique within xsl:iterate.", srcLocator);    
+    					  throw new TransformerException("XTSE0580 : The name of an XSL param '" + paramNameVal + "' is not unique within XSL 'iterate' instruction.", srcLocator);    
     				  }
     				  else {
     					  fXslIterateParamWithparamDataList.add(paramWithparamDataObj);    
@@ -710,27 +710,27 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 		while (elemTemplateElem != null) {			
 		    if (elemTemplateElem instanceof ElemIterateBreak) {
 		    	if (!isXslInstIterateRelnInTailPositionOfSeqCons(elemTemplateElem)) {
-		    	   String errMesg = "XTSE3120 : An xsl:break instruction is not in a tail position of xsl:iterate's "
+		    	   String errMesg = "XTSE3120 : An XSL 'break' instruction is not in a tail position of XSL iterate's "
 		    	   		                                                                         + "sequence constructor.";
 		    	   if (!errMesgList.contains(errMesg)) {
 		    	      errMesgList.add(errMesg);
 		    	   }
 		    	}
 		    	else if ((elemTemplateElem.getParentElem() instanceof ElemLiteralResult) || (elemTemplateElem.getParentElem() instanceof ElemElement)) {
-		    	   String errMesg = "XTSE3120 : An xsl:break instruction cannot occur as child of XSL element constructor.";
+		    	   String errMesg = "XTSE3120 : An XSL 'break' instruction cannot occur as child of XSL element constructor.";
 		    	   if (!errMesgList.contains(errMesg)) {
 		    	      errMesgList.add(errMesg);
 		    	   }
 		    	}
 		    	else if (elemTemplateElem.getParentElem() instanceof ElemForEach) {
-			       String errMesg = "XTSE3120 : An xsl:break instruction cannot occur as child of xsl:for-each instruction.";
+			       String errMesg = "XTSE3120 : An XSL 'break' instruction cannot occur as child of XSL for-each instruction.";
 		    	   if (!errMesgList.contains(errMesg)) {
 		    	      errMesgList.add(errMesg);
 		    	   }
 			    }
 		    }
 		    else if ((elemTemplateElem instanceof ElemIterateNextIteration) && !isXslInstIterateRelnInTailPositionOfSeqCons(elemTemplateElem)) {
-		    	String errMesg = "XTSE3120 : An xsl:next-iteration instruction is not in a tail position of xsl:iterate's "
+		    	String errMesg = "XTSE3120 : An XSL 'next-iteration' instruction is not in a tail position of XSL iterate's "
 		    			                                                                               + "sequence constructor.";
 		    	if (!errMesgList.contains(errMesg)) {
 		    	   errMesgList.add(errMesg);
@@ -738,8 +738,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 		    }
 		    else if (elemTemplateElem instanceof ElemIterateOnCompletion) {
 		    	if (!(elemTemplateElem.getParentElem() instanceof ElemIterate)) {
-		    		String errMesg = "XTSE0010 : An xsl:on-completion element can only occur as child of xsl:iterate instruction, "
-		    				                                                                                      + "after zero or more xsl:param elements.";
+		    		String errMesg = "XTSE0010 : An XSL on-completion element can only occur as child of XSL iterate instruction, "
+		    				                                                                                      + "after zero or more XSL param elements.";
 		    		if (!errMesgList.contains(errMesg)) {
 		    			errMesgList.add(errMesg);
 		    		}

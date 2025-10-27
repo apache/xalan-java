@@ -372,7 +372,7 @@ public class ElemSort extends ElemTemplateElement
 	  
 	  ElemTemplateElement elemTemplateElem = this.getFirstChildElem();
 	  if ((m_selectExpression != null) && (elemTemplateElem != null)) {
-		 throw new javax.xml.transform.TransformerException("XTSE1015 : An xsl:sort instruction with an attribute "
+		 throw new javax.xml.transform.TransformerException("XTSE1015 : An XSL 'sort' instruction with an attribute "
 		 		                                                                              + "'select' should have an empty contained sequence constructor.", srcLocator); 
 	  }
   }

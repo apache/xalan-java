@@ -116,7 +116,7 @@ public class ElemDocument extends ElemTemplateElement
 	  String validationStr = getValidation();
 
 	  if ((type != null) && (validationStr != null)) {
-		  throw new TransformerException("XTTE1540 : An xsl:document instruction cannot have both the attributes "
+		  throw new TransformerException("XTTE1540 : An XSL 'document' instruction cannot have both the attributes "
 				  																							 + "'type' and 'validation'.", srcLocator); 
 	  }
 	  
@@ -141,7 +141,7 @@ public class ElemDocument extends ElemTemplateElement
 		  }
 	  }
 	  else {
-		  throw new TransformerException("XTTE1540 : An XSL sequence constructor within xsl:document instruction "
+		  throw new TransformerException("XTTE1540 : An XSL sequence constructor within XSL 'document' instruction "
 				  																					    + "produced a node that is not a document node.", srcLocator); 
 	  }  	  
   }

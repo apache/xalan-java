@@ -501,7 +501,7 @@ public class ElemVariable extends ElemTemplateElement
                 if (m_asAttr != null) {
                 	evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                 	if (evalResult == null) {
-                	   throw new javax.xml.transform.TransformerException("XTTE0570 : An xsl:variable's value is not of an expected "
+                	   throw new javax.xml.transform.TransformerException("XTTE0570 : An XSL variable's value is not of an expected "
                 	   		                                                                           + "XPath sequence type " + m_asAttr +".", srcLocator); 
                 	}                	                      
                 }
@@ -515,7 +515,7 @@ public class ElemVariable extends ElemTemplateElement
             if (m_asAttr != null) {
                evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                if (evalResult == null) {
-            	   throw new javax.xml.transform.TransformerException("XTTE0570 : An xsl:variable's value is not of an expected "
+            	   throw new javax.xml.transform.TransformerException("XTTE0570 : An XSL variable's value is not of an expected "
             	   		                                                                           + "XPath sequence type " + m_asAttr +".", srcLocator); 
                }
             }
@@ -528,7 +528,7 @@ public class ElemVariable extends ElemTemplateElement
             if (m_asAttr != null) {
                evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                if (evalResult == null) {
-            	   throw new javax.xml.transform.TransformerException("XTTE0570 : An xsl:variable's value is not of an expected "
+            	   throw new javax.xml.transform.TransformerException("XTTE0570 : An XSL variable's value is not of an expected "
             	   		                                                                           + "XPath sequence type " + m_asAttr +".", srcLocator); 
                }
             }
@@ -551,7 +551,7 @@ public class ElemVariable extends ElemTemplateElement
             if (m_asAttr != null) {
                evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                if (evalResult == null) {
-            	  throw new javax.xml.transform.TransformerException("XTTE0570 : An xsl:variable's value is not of an expected XPath sequence type " + m_asAttr +".", srcLocator); 
+            	  throw new javax.xml.transform.TransformerException("XTTE0570 : An XSL variable's value is not of an expected XPath sequence type " + m_asAttr +".", srcLocator); 
                }
             }
              
@@ -952,7 +952,7 @@ public class ElemVariable extends ElemTemplateElement
     		}
     		
     		if (!isSeqCardinalityOk) {
-    			throw new TransformerException("XTTE0505 : An xsl:variable " + m_qname.getLocalName() + "'s value doesn't conform to XPath sequence "
+    			throw new TransformerException("XTTE0505 : An XSL variable " + m_qname.getLocalName() + "'s value doesn't conform to XPath sequence "
     					                                                                              + "type's occurence indicator, implying that an xdm value's "
     					                                                                              + "cardinality found as " + funcItemSeqSize + " is incorrect. "
     					                                                                              + "The sequence type has been specified as " + m_asAttr + ".", srcLocator);
@@ -1018,8 +1018,8 @@ public class ElemVariable extends ElemTemplateElement
                                      	  SequenceTypeData seqExpectedTypeData2 = (SequenceTypeData)seqTypeExpressionEvalResult2;
                                      	  
                                      	  if (!seqExpectedTypeData1.equal(seqExpectedTypeData2)) {
-                                     		 throw new TransformerException("XPTY0004 : An xsl:variable " + m_qname.getLocalName() + "'s value doesn't conform to "
-                                     		 		                                                                               + "xsl:variable's type specification " + m_asAttr + ". The "
+                                     		 throw new TransformerException("XPTY0004 : An XSL variable " + m_qname.getLocalName() + "'s value doesn't conform to "
+                                     		 		                                                                               + "XSL variable's type specification " + m_asAttr + ". The "
                                      		 		                                                                               + "function parameter specifications doesn't match.", srcLocator);
                                      	  }
                                        }
@@ -1032,8 +1032,8 @@ public class ElemVariable extends ElemTemplateElement
     						 }
     					  }
     					  else {
-    						  throw new TransformerException("XPTY0004 : An xsl:variable " + m_qname.getLocalName() + "'s value doesn't conform to "
-                                                                                                                    + "xsl:variable's type specification " + m_asAttr + ". The "
+    						  throw new TransformerException("XPTY0004 : An XSL variable " + m_qname.getLocalName() + "'s value doesn't conform to "
+                                                                                                                    + "XSL variable's type specification " + m_asAttr + ". The "
                                                                                                                     + "function arities doesn't match.", srcLocator); 
     					  }
     					  
@@ -1050,8 +1050,8 @@ public class ElemVariable extends ElemTemplateElement
     						  SequenceTypeData seqExpectedTypeData2 = (SequenceTypeData)seqTypeExpressionEvalResult2;
 
     						  if (!seqExpectedTypeData1.equal(seqExpectedTypeData2)) {
-    							  throw new TransformerException("XPTY0004 : An xsl:variable " + m_qname.getLocalName() + "'s value doesn't conform to "
-    									                                                                                + "xsl:variable's type specification " + m_asAttr + ". The "
+    							  throw new TransformerException("XPTY0004 : An XSL variable " + m_qname.getLocalName() + "'s value doesn't conform to "
+    									                                                                                + "XSL variable's type specification " + m_asAttr + ". The "
     									                                                                                + "function return types doesn't match.", srcLocator);
     						  }
     					  }

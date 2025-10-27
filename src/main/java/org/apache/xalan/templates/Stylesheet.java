@@ -1160,9 +1160,9 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
             	
             	if ((prevOnNoMatchDeclStr != null) && (onNoMatchDeclStr != null) 
             			                                               && !onNoMatchDeclStr.equals(prevOnNoMatchDeclStr)) {
-            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration with "
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one XSL 'mode' declaration with "
             				                                                            + "name '" + modeNameStr + "', that have conflicting "
-            				                                                            + "values for \"xsl:mode\" attribute 'on-no-match'.");
+            				                                                            + "values for XSL mode attribute 'on-no-match'.");
             	}
             	else if ((prevOnNoMatchDeclStr != null) && (onNoMatchDeclStr == null)) {
             		elemMode.setOnNoMatch(prevOnNoMatchDeclStr);
@@ -1170,27 +1170,27 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
             	
             	if ((prevOnMultipleMatchStr != null) && (onMultipleMatchStr != null) 
                                                                       && onMultipleMatchStr.equals(prevOnMultipleMatchStr)) {
-            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration with "
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one XSL 'mode' declaration with "
 															                            + "name '" + modeNameStr + "', that have conflicting "
-															                            + "values for \"xsl:mode\" attribute 'on-multiple-match'.");
+															                            + "values for XSL mode attribute 'on-multiple-match'.");
                 }
             	else if ((prevOnMultipleMatchStr != null) && (onMultipleMatchStr == null)) {
             		elemMode.setOnMultipleMatch(prevOnMultipleMatchStr);
             	}
             	
             	if (prevWarningOnNoMatchDeclared && warningOnNoMatchDeclared && (prevWarningOnNoMatch != warningOnNoMatch)) {
-            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration with "
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one XSL 'mode' declaration with "
 															                            + "name '" + modeNameStr + "', that have conflicting "
-															                            + "values for \"xsl:mode\" attribute 'warning-on-no-match'.");
+															                            + "values for XSL mode attribute 'warning-on-no-match'.");
             	}
             	else if (prevWarningOnNoMatchDeclared) {
             		elemMode.setWarningOnNoMatch(prevWarningOnNoMatch);
             	}
             	
             	if (prevWarningOnMultipleMatchDeclared && warningOnMultipleMatchDeclared && (prevWarningOnMultipleMatch != warningOnMultipleMatch)) {
-            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration with "
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one XSL 'mode' declaration with "
 															                            + "name '" + modeNameStr + "', that have conflicting "
-															                            + "values for \"xsl:mode\" attribute 'warning-on-multiple-match'.");
+															                            + "values for XSL mode attribute 'warning-on-multiple-match'.");
             	}
             	else if (prevWarningOnMultipleMatchDeclared) {
             		elemMode.setWarningOnMultipleMatch(prevWarningOnMultipleMatch);
@@ -1226,8 +1226,8 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
             	
             	if ((prevOnNoMatchDeclStr != null) && (onNoMatchDeclStr != null) 
             			                                               && !onNoMatchDeclStr.equals(prevOnNoMatchDeclStr)) {
-            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration for an unnamed mode, that "
-							            				                                                   + "have conflicting values for \"xsl:mode\" "
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one XSL 'mode' declaration for an unnamed mode, that "
+							            				                                                   + "have conflicting values for XSL mode "
 							            				                                                   + "attribute 'on-no-match'.");
             	}
             	else if ((prevOnNoMatchDeclStr != null) && (onNoMatchDeclStr == null)) {
@@ -1236,8 +1236,8 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 
             	if ((prevOnMultipleMatchStr != null) && (onMultipleMatchStr != null) 
             			                                                   && onMultipleMatchStr.equals(prevOnMultipleMatchStr)) {
-            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration for an unnamed mode, that "
-																				                            + "have conflicting values for \"xsl:mode\" "
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one XSL 'mode' declaration for an unnamed mode, that "
+																				                            + "have conflicting values for XSL mode "
 																				                            + "attribute 'on-multiple-match'.");
             	}
             	else if ((prevOnMultipleMatchStr != null) && (onMultipleMatchStr == null)) {
@@ -1245,14 +1245,14 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
             	}
 
             	if (prevWarningOnNoMatchDeclared && warningOnNoMatchDeclared && (prevWarningOnNoMatch != warningOnNoMatch)) {
-            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration for an unnamed mode, that "
-																				                            + "have conflicting values for \"xsl:mode\" "
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one XSL 'mode' declaration for an unnamed mode, that "
+																				                            + "have conflicting values for XSL mode "
 																				                            + "attribute 'warning-on-no-match'.");
             	}
 
             	if (prevWarningOnMultipleMatchDeclared && warningOnMultipleMatchDeclared && (prevWarningOnMultipleMatch != warningOnMultipleMatch)) {
-            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one xsl:mode declaration for an unnamed mode, that "
-																				                            + "have conflicting values for \"xsl:mode\" "
+            		throw new TransformerException("XTSE0545 : An XSL stylesheet has more than one XSL 'mode' declaration for an unnamed mode, that "
+																				                            + "have conflicting values for XSL mode "
 																				                            + "attribute 'warning-on-multiple-match'.");
             	}
 

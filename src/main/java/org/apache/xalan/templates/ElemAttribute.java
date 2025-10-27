@@ -292,7 +292,7 @@ public class ElemAttribute extends ElemElement
                * Cannot have both, xsl:attribute 'select' attribute and child content.
                */
               if (m_selectExpression != null && this.m_firstChild != null) {
-                  throw new TransformerException("XTSE0840 : An xsl:attribute element with a select attribute must "
+                  throw new TransformerException("XTSE0840 : An XSL attribute element with a select attribute must "
                                                                   + "have an empty child sequence constructor.", srcLocator);   
               }
         
@@ -335,7 +335,7 @@ public class ElemAttribute extends ElemElement
               String validation = getValidation();
               
               if ((type != null) && (validation != null)) {
-            	  throw new TransformerException("XTTE1540 : An xsl:attribute instruction cannot have both the attributes "
+            	  throw new TransformerException("XTTE1540 : An XSL attribute instruction cannot have both the attributes "
             	  																						+ "'type' and 'validation'.", srcLocator); 
               }
               
@@ -369,14 +369,14 @@ public class ElemAttribute extends ElemElement
 							}
          				}
          				else {
-         				    throw new TransformerException("XTTE1540 : Validation was requested of an XML attribute produced by instruction "
-                                                                              + "xsl:attribute, but the schema available doesn't have a simple type "
-                                                                              + "definition referred by xsl:attribute's 'type' attribute.", srcLocator);
+         				    throw new TransformerException("XTTE1540 : Validation of an XML attribute has been requested, produced by XSL attribute instruction, "
+                                                                              + "but the schema available doesn't have a simple type "
+                                                                              + "definition referred by XSL attribute instruction's 'type' attribute.", srcLocator);
          				}
          			 }
          			 else {
-         				 throw new TransformerException("XTTE1540 : Validation was requested of an XML attribute produced by instruction "
-     		    				 		                                            + "xsl:attribute, but XML input document was not validated with a "
+         				 throw new TransformerException("XTTE1540 : Validation of an XML attribute has been requested, produced by XSL attribute instruction, "
+     		    				 		                                            + "but XML input document was not validated with a "
      		    				 		                                            + "schema.", srcLocator);
          			 } 
             	  }
@@ -388,7 +388,7 @@ public class ElemAttribute extends ElemElement
              	 // by an attribute declaration available in the schema.
              	  
              	 if (!isValidationStrOk(validation)) {
-             		 throw new TransformerException("XTTE1540 : An xsl:attribute instruction's attribute 'validation' can only have one of following "
+             		 throw new TransformerException("XTTE1540 : An XSL attribute instruction's attribute 'validation' can have only one of following "
              		 		                                                                        + "values : strict, lax, preserve, strip.", srcLocator);
              	 }
              	 else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
@@ -403,19 +403,19 @@ public class ElemAttribute extends ElemElement
 								xsSimpleTypeDecl.validate(attrVal, null, null);
 							 } 
          					 catch (InvalidDatatypeValueException ex) {
-								throw new TransformerException("XTTE1540 : An attribute value produced by the stylesheet, is not "
+								throw new TransformerException("XTTE1540 : An XML attribute value produced by the stylesheet, is not "
 										                                                             + "valid with attribute's declaration available "
 										                                                             + "in the schema. " + ex.getMessage(), srcLocator);								
 							 }
              			 }
              			 else {
-             				 throw new TransformerException("XTTE1540 : An xsl:attribute instruction's attribute \"validation\" has value 'strict', but "
+             				 throw new TransformerException("XTTE1540 : An XSL attribute instruction's attribute \"validation\" has value 'strict', but "
 																             						 + "the schema available doesn't have a corresponding attribute "
 																             						 + "declaration.", srcLocator); 
              			 }
              		 }
              		 else {
-             			 throw new TransformerException("XTTE1540 : An xsl:attribute instruction's attribute \"validation\" has value 'strict', but "
+             			 throw new TransformerException("XTTE1540 : An XSL attribute instruction's attribute \"validation\" has value 'strict', but "
 																	             					 + "an XML input document has not been validated with "
 																	             					 + "a schema.", srcLocator);
              		 }
@@ -436,7 +436,7 @@ public class ElemAttribute extends ElemElement
              					 xsSimpleTypeDecl.validate(attrVal, null, null);
              				 } 
              				 catch (InvalidDatatypeValueException ex) {
-             					 throw new TransformerException("XTTE1540 : An attribute value produced by the stylesheet, is not "
+             					 throw new TransformerException("XTTE1540 : An XML attribute value produced by the stylesheet, is not "
 															             							 + "valid with attribute's declaration available "
 															             							 + "in the schema. " + ex.getMessage(), srcLocator);								
              				 }
@@ -462,7 +462,7 @@ public class ElemAttribute extends ElemElement
             		  }
             	  }
             	  catch (SAXException ex) {
-            		  throw new TransformerException("XTSE0840 : An error occured while processing XSL instruction xsl:attribute.", srcLocator);
+            		  throw new TransformerException("XTSE0840 : An error occured while processing XSL attribute instruction.", srcLocator);
             	  }
               }
               else {

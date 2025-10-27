@@ -411,7 +411,7 @@ public class ElemElement extends ElemUse
       String validation = getValidation();
       
       if ((type != null) && (validation != null)) {
-    	  throw new TransformerException("XTTE1540 : An xsl:element instruction cannot have both the attributes "
+    	  throw new TransformerException("XTTE1540 : An XSL 'element' instruction cannot have both the attributes "
     	  																						+ "'type' and 'validation'.", srcLocator); 
       }
 
@@ -433,7 +433,7 @@ public class ElemElement extends ElemUse
     			 xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
 			 } catch (Exception ex) {
 				 throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
-				 		                                          							+ "xsl:element instruction.", srcLocator);
+				 		                                          							+ "'element' instruction.", srcLocator);
 			 }
     		 
     		 if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(type.getNamespace())) {
@@ -451,8 +451,8 @@ public class ElemElement extends ElemUse
     				 validateXslElementResultWithUserDefinedSchemaType(nodeName, transformer, xctxt, xmlStr, xsModel, XSL_ELEMENT);
     			 }
     			 else {
-    				 throw new TransformerException("XTTE1540 : Validation was requested of an XML node produced by instruction "
-		    				 		                                            + "xsl:element, but XML input document was not validated with a "
+    				 throw new TransformerException("XTTE1540 : Validation of an XML node has been requested, produced by XSL instruction "
+		    				 		                                            + "'element', but XML input document has not been validated with a "
 		    				 		                                            + "schema.", srcLocator);
     			 }
     	     }
@@ -465,7 +465,7 @@ public class ElemElement extends ElemUse
     	 // by an element declaration available in the schema.
     	  
     	 if (!isValidationStrOk(validation)) {
-    		 throw new TransformerException("XTTE1540 : An xsl:element instruction's attribute 'validation' can only have one of following "
+    		 throw new TransformerException("XTTE1540 : An XSL 'element' instruction's attribute 'validation' can have only one of following "
     		 		                                                                        + "values : strict, lax, preserve, strip.", srcLocator);
     	 }
     	 else if ((Constants.XS_VALIDATION_STRICT_STRING).equals(validation)) {
@@ -477,13 +477,13 @@ public class ElemElement extends ElemUse
     				 validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl, XSL_ELEMENT);    				     				 
     			 }
     			 else {
-    				 throw new TransformerException("XTTE1540 : An xsl:element instruction's attribute \"validation\" has value 'strict', but "
+    				 throw new TransformerException("XTTE1540 : An XSL 'element' instruction's attribute \"validation\" has value 'strict', but "
     				 		                                                    + "the schema available doesn't have a corresponding element "
     				 		                                                    + "declaration.", srcLocator); 
     			 }
     		 }
     		 else {
-    			 throw new TransformerException("XTTE1540 : An xsl:element instruction's attribute \"validation\" has value 'strict', but "
+    			 throw new TransformerException("XTTE1540 : An XSL 'element' instruction's attribute \"validation\" has value 'strict', but "
 																	                          + "an XML input document has not been validated with "
 																	                          + "a schema.", srcLocator);
     		 }

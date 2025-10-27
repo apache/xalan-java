@@ -254,12 +254,12 @@ public class ElemResultDocument extends ElemTemplateElement
 				}
 			}
 			catch (URISyntaxException ex) {
-				throw new javax.xml.transform.TransformerException("FODC0005 : An xsl:result-document instruction's href uri '" + hrefStrVal + "' "
+				throw new javax.xml.transform.TransformerException("FODC0005 : An XSL 'result-document' instruction's href uri '" + hrefStrVal + "' "
 																					+ "is not a valid absolute uri, "
 																					+ "or cannot be resolved to an absolute uri.", srcLocator);  
 			}
 			catch (MalformedURLException ex) {
-				throw new javax.xml.transform.TransformerException("FODC0005 : An xsl:result-document instruction's href uri '" + hrefStrVal + "' "
+				throw new javax.xml.transform.TransformerException("FODC0005 : An XSL 'result-document' instruction's href uri '" + hrefStrVal + "' "
 																					+ "is not a valid absolute uri, or cannot be resolved to "
 																					+ "an absolute uri.", srcLocator);
 			}
@@ -334,7 +334,7 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		   JSONObject jsonObject = new JSONObject(jsonStrValue);
 	    		}
 	    		catch (JSONException ex) {
-	    		   throw new TransformerException("XPTY0004 : An xsl:result-document instruction within a stylesheet has attribute "
+	    		   throw new TransformerException("XPTY0004 : An XSL 'result-document' instruction within a stylesheet has attribute "
 	    		   		                                										+ "\"method\" with value 'json'. There's a JSON syntax error within "
 	    		   		                                										+ "an input string provided to the JSON parser, or there was a duplicate "
 	    		   		                                										+ "JSON object key. Following run-time error occured : " + 
@@ -356,8 +356,8 @@ public class ElemResultDocument extends ElemTemplateElement
 	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_HTML).equals(methodQname.toString())) {	    		
 	    		ElemTemplateElement t = this.m_firstChild;
 	    		if (!(t instanceof ElemLiteralResult)) {
-	    		   throw new TransformerException("XPTY0004 : An xsl:result-document instruction's serialization method is 'html', but "
-	    		   		                                           + "xsl:result-document's immmediate child content doesn't starts "
+	    		   throw new TransformerException("XPTY0004 : An XSL 'result-document' instruction's serialization method is 'html', but "
+	    		   		                                           + "result-document's immmediate child content doesn't starts "
 	    		   		                                           + "constructing a legible HTML document.", srcLocator);	
 	    		}
 	    		else {
@@ -427,7 +427,7 @@ public class ElemResultDocument extends ElemTemplateElement
 	    }	    
 	    catch (Exception ex) {
 	    	throw new TransformerException("XPTY0004 : An exception occured while evaluating an "
-	    			                                    								+ "xsl:result-document instruction. Following "
+	    			                                    								+ "XSL 'result-document' instruction. Following "
 	    			                                    								+ "run-time error occured : " + ex.getMessage() + ".", srcLocator);
 	    }
         finally {
