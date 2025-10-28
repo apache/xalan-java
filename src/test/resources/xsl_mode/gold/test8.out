@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><info>
+   <a x="1" y="2">
+     <p>
+      <text>hello</text>
+      <text>1</text>
+    </p>
+	 <q>
+      <text>hello</text>
+      <text>2</text>
+    </q>
+   </a>
+   <b x="3" y="4">
+     <p>
+      <text>hello</text>
+      <text>3</text>
+    </p>
+	 <q>
+      <text>hello</text>
+      <text>4</text>
+    </q>
+   </b>
+   <c x="5" y="6">
+     <p>
+      <text>hello</text>
+      <text>5</text>
+    </p>
+	 <q>
+      <text>hello</text>
+      <text>6</text>
+    </q>
+   </c>   
+</info>

@@ -1189,18 +1189,15 @@ public class StylesheetRoot extends StylesheetComposed
 	  result.setMatch(xpathMatch);
 
 	  ElemCopy elemCopy = new ElemCopy();
+	  
+	  ElemCopyOf elemCopyOf = new ElemCopyOf();
+	  XPath xpathSelect = new XPath("@*", this, this, XPath.SELECT, m_errorListener);
+	  elemCopyOf.setSelect(xpathSelect);
+	  elemCopy.appendChild(elemCopyOf);
 
 	  ElemApplyTemplates elemApplyTemplates = new ElemApplyTemplates();
 	  elemApplyTemplates.setMode(mode);
-	  XPath xpathSelect = new XPath("@*", this, this, XPath.SELECT, m_errorListener);
-	  elemApplyTemplates.setSelect(xpathSelect);
-	  elemApplyTemplates.setIsDefaultTemplate(true);
-	  elemCopy.appendChild(elemApplyTemplates);
-
-	  elemApplyTemplates = new ElemApplyTemplates();
-	  elemApplyTemplates.setMode(mode);
 	  xpathSelect = new XPath("node()", this, this, XPath.SELECT, m_errorListener);
-
 	  elemApplyTemplates.setSelect(xpathSelect);
 	  elemApplyTemplates.setIsDefaultTemplate(true);
 	  elemCopy.appendChild(elemApplyTemplates);

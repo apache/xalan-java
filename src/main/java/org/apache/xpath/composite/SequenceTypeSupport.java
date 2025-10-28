@@ -38,8 +38,8 @@ import javax.xml.validation.Validator;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.xs.SchemaGrammar;
 import org.apache.xerces.impl.xs.XSDDescription;
 import org.apache.xerces.impl.xs.XSElementDecl;
@@ -697,18 +697,49 @@ public class SequenceTypeSupport {
 	            	   }
 	            	}
 	            	else if (sequenceTypeKindTest.getKindVal() == DOCUMENT_KIND) {
-	            	   if (srcValue instanceof XMLNodeCursorImpl) {
-	            		  XMLNodeCursorImpl nodeSet1 = (XMLNodeCursorImpl)srcValue;
-	            		  DTMManager dtmMgr = nodeSet1.getDTMManager();
-	            		  int nodeHandle = nodeSet1.getCurrentNode();
-	            		  if (nodeHandle != DTM.NULL) {
-	            			  DTM dtm = dtmMgr.getDTM(nodeHandle);
-	            			  if (dtm.getNodeType(nodeHandle) == DTM.DOCUMENT_NODE) {  
-	            				  result = srcValue;
+	            	   if (srcValue instanceof XMLNodeCursorImpl) {	            		   
+	            		   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)srcValue;	            		  
+	            		   XMLNodeCursorImpl nodeSetClone = (XMLNodeCursorImpl)(xmlNodeCursorImpl.clone());
+	            		   
+	            		   DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iterRaw();
+	            		   int nextNode;
+	            		   boolean isSrcValueTypeOk = true;
+	            		   int nodeSetLength = 0;
+	            		   while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+	            			   nodeSetLength++;
+	            			   DTM dtm = xctxt.getDTM(nextNode);	            				 
+	            			   if (!(dtm.getNodeType(nextNode) == DTM.DOCUMENT_NODE)) {           					 
+	            				   isSrcValueTypeOk = false;
 
-	            				  return result;
-	            			  }
-	            		  }
+	            				   break; 
+	            			   }
+	            		   }
+
+	            		   if (isSrcValueTypeOk) {
+	            			   boolean isSeqTypeOccrIndicatorOk = false;
+	            			   if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+	            				   isSeqTypeOccrIndicatorOk = true;
+	            			   }
+	            			   else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY) && (nodeSetLength > 0)) {
+	            				   isSeqTypeOccrIndicatorOk = true;
+	            			   }
+	            			   else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (nodeSetLength <= 1)) {
+	            				   isSeqTypeOccrIndicatorOk = true;
+	            			   }
+	            			   else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) && (nodeSetLength == 1)) {
+	            				   isSeqTypeOccrIndicatorOk = true;
+	            			   }
+
+	            			   if (isSeqTypeOccrIndicatorOk) {		            				  
+	            				   return nodeSetClone; 
+	            			   }
+	            			   else {
+	            				   throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
+	            			   }
+	            		   }
+	            		   else {
+	            			   throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
+	            		   }
 	            	   }
 	            	}	            	
             	}

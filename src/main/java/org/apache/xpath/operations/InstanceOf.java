@@ -59,6 +59,7 @@ import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
@@ -144,7 +145,7 @@ public class InstanceOf extends Operation
       
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
-      XPathContext xctxt = null;
+      XPathContext xctxt = null;      
       
       int builtInSeqType = seqTypedData.getBuiltInSequenceType();
       
@@ -204,9 +205,9 @@ public class InstanceOf extends Operation
     	 }
       }
       
-      if ((left instanceof ResultSequence) && ((ResultSequence)left).size() == 0) {
+      if ((left instanceof ResultSequence) && ((ResultSequence)left).size() == 0) {    	 
     	 if ((seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
-    		 (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
+    		                                          (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
     		 return XBoolean.S_TRUE; 
     	 }
     	 else if (builtInSeqType == SequenceTypeSupport.EMPTY_SEQUENCE) {
@@ -226,9 +227,45 @@ public class InstanceOf extends Operation
                result = true;	
             }
          }
-         else {
-        	 result = isInstanceOf(left, seqTypedData); 
-         }
+    	 else if (left instanceof XNodeSetForDOM) {
+    		XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)left;
+    		StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
+      	    TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+      	    xctxt = transformerImpl.getXPathContext();
+    		int nodeHandle = xNodeSetForDOM.asNode(xctxt);
+    		DTM dtm = xctxt.getDTM(nodeHandle);
+    		Node node = dtm.getNode(nodeHandle);
+    		java.lang.String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+    		xmlStr = xmlStr.trim();
+    		if ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".equals(xmlStr)) {
+    			// XPath 'instance of' operator's LHS is an empty sequence    			
+    			boolean isSequenceCardinalityOk = false;    			
+    			if ((seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
+    				                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
+    				isSequenceCardinalityOk = true; 
+    			}
+    			else if (builtInSeqType == SequenceTypeSupport.EMPTY_SEQUENCE) {
+    				isSequenceCardinalityOk = true;
+    			}
+    			else if (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ABSENT) {
+    				isSequenceCardinalityOk = false;
+    			}    			
+
+    			if (isSequenceCardinalityOk) {
+    				return XBoolean.S_TRUE;
+    			}
+    			else {
+    				return XBoolean.S_FALSE;
+    			}    			    			
+    		}
+    		
+    		left = left.getFresh();
+    	 }
+         
+    	 if (!result) {
+            result = isInstanceOf(left, seqTypedData);
+    	 }
+
       }
       catch (Exception ex) {    	 
     	 result = false; 

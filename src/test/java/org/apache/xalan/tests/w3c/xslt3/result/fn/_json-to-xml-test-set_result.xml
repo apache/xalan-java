@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:13:06Z" fail="8" name="json-to-xml" pass="24" skipped="0" statusUnknown="1" totalRun="33">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-28T12:26:12Z" fail="7" name="json-to-xml" pass="25" skipped="0" statusUnknown="1" totalRun="33">
    <testResult status="pass" testName="json-to-xml-001"/>
    <testResult status="pass" testName="json-to-xml-002"/>
    <testResult status="pass" testName="json-to-xml-003"/>
@@ -11,7 +11,7 @@
    <testResult status="pass" testName="json-to-xml-010"/>
    <testResult status="pass" testName="json-to-xml-011"/>
    <testResult status="pass" testName="json-to-xml-012"/>
-   <testResult status="fail" testName="json-to-xml-101"/>
+   <testResult status="pass" testName="json-to-xml-101"/>
    <testResult status="fail" testName="json-to-xml-escape-001"/>
    <testResult status="fail" testName="json-to-xml-escape-002"/>
    <testResult status="fail" testName="json-to-xml-escape-003">

@@ -448,10 +448,7 @@ public class ElemFunction extends ElemTemplate
     		 
     	 }
     	 else {
-    		// REVISIT
-    		 
-    		// We may try to provide functional implementation of xsl:function instruction's 
-    		// attribute 'new-each-time'.
+    		// TO DO
     	 }    	 
       }
       
@@ -497,9 +494,9 @@ public class ElemFunction extends ElemTemplate
     				  XObject argValue = argSequence.item(paramIdx);    				  
     				  XObject argConvertedVal = null;
     				  String paramAsAttrStrVal = ((ElemParam)elem).getAs();
-
+    				  
     				  if (paramAsAttrStrVal != null) {
-    					  List prefixTable = elem.getPrefixTable();
+    					  List prefixTable = elem.getPrefixTable();    		
     					  argConvertedVal = getParamValueAsAttributeProcessing(argValue, funcLocalName, funcNameSpaceUri, paramIdx, 
     							                                               prefixTable, paramAsAttrStrVal, transformer, xctxt);
     				  }
@@ -629,7 +626,7 @@ public class ElemFunction extends ElemTemplate
         		}
         		else if ((seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
         				 (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
-        		   // funcItemSeqSize > 1
+        		   // here, funcItemSeqSize > 1
         		   isSeqCardinalityOk = true;
         		}
         		
@@ -702,8 +699,7 @@ public class ElemFunction extends ElemTemplate
              funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
             
              if (funcResultConvertedVal == null) {
-                funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
-                
+                funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);                                
                 if (funcResultConvertedVal == null) {
                    if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
                 	   (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
@@ -1291,7 +1287,7 @@ public class ElemFunction extends ElemTemplate
 		  }
 
 		  if (argConvertedVal == null) {
-			  argConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(srcValue, paramAsAttrStrVal, null, xctxt, prefixTable);
+			  argConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(srcValue, paramAsAttrStrVal, null, xctxt, prefixTable); 
 		  }
 
 		  if (argConvertedVal == null) {
