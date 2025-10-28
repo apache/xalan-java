@@ -24,7 +24,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
@@ -875,17 +874,26 @@ public class TemplateList implements java.io.Serializable
 					    * value 'fail'.   
 					    */
 					   
-					   String elemName = dtm.getNodeName(targetNode);
+					   int nodeType = dtm.getNodeType(targetNode);
+					   String nodeTypeStr = getNodeTypeString(nodeType);
+					   
+					   String nodeNameStr = dtm.getNodeName(targetNode);
 
 					   SourceLocator srcLocator1 = (SourceLocator)(head.getTemplate());
 					   int lineNo1 = srcLocator1.getLineNumber(); 
 					   SourceLocator srcLocator2 = (SourceLocator)(next.getTemplate());
 					   int lineNo2 = srcLocator2.getLineNumber();
+					   
+					   String errMesg = "XTDE0540 : More than one XSL template rule matched an XML " + nodeTypeStr + " node";
+					   if (nodeNameStr != null) {
+						   errMesg = (errMesg + " '" + nodeNameStr + "'."); 
+					   }
+					   else {
+						   errMesg = (errMesg + "."); 
+					   }
 
-					   throw new TransformerException("XTDE0540 : More than one XSL template rule matched "
-																							+ "an XML element node '" + elemName + "'. "
-																							+ "Conflicting template rule locations are "
-																							+ "line " + lineNo1 + " and line " + lineNo2 +".", srcLocator1); 
+					   throw new TransformerException(errMesg + " Conflicting template rule locations are line " + lineNo1 
+							                                  + " and line " + lineNo2 +".", srcLocator1); 
 				   }
 			   }
 		   }
@@ -901,50 +909,60 @@ public class TemplateList implements java.io.Serializable
 					* value true.
 				   */
 				   
-				   String elemName = dtm.getNodeName(targetNode);
+				   int nodeType = dtm.getNodeType(targetNode);
+				   String nodeTypeStr = getNodeTypeString(nodeType);
+				   
+				   String nodeNameStr = dtm.getNodeName(targetNode);
 
 				   SourceLocator srcLocator1 = (SourceLocator)(head.getTemplate());
 				   int lineNo1 = srcLocator1.getLineNumber(); 
 				   SourceLocator srcLocator2 = (SourceLocator)(next.getTemplate());
 				   int lineNo2 = srcLocator2.getLineNumber();
-
-				   ErrorListener errorListener = xctxt.getErrorListener();
 				   
-				   errorListener.warning(new TransformerException("Warning : More than one XSL template rule matched "
-																						   + "an XML element node '" + elemName + "'. "
-																						   + "Conflicting template rule locations are "
-																						   + "line " + lineNo1 + " and line " + lineNo2 +".", srcLocator1)); 
+				   String errMesg = "Warning : More than one XSL template rule matched an XML " + nodeTypeStr + " node";
+				   if (nodeNameStr != null) {
+					   errMesg = (errMesg + " '" + nodeNameStr + "'."); 
+				   }
+				   else {
+					   errMesg = (errMesg + "."); 
+				   }
+
+				   ErrorListener errorListener = xctxt.getErrorListener();				   
+				   errorListener.warning(new TransformerException(errMesg + " Conflicting template rule locations are line " + lineNo1 
+						                                                  + " and line " + lineNo2 +".", srcLocator1)); 
 			   }
 		   }
 	   }
   }
 
   /**
-   * Add object to vector if not already there.
-   *
-   * @param obj
-   * @param v
+   * Method definition, to get xdm node type string 
+   * value, for the supplied node type integer value.
+   * 
+   * @param nodeType				Node type integer value
+   * @return						Node type string value
    */
-  private void addObjectIfNotFound(Object obj, Vector v)
-  {
+  private String getNodeTypeString(int nodeType) {
+	  
+	  String result = null;
 
-    int n = v.size();
-    boolean addIt = true;
-
-    for (int i = 0; i < n; i++)
-    {
-      if (v.elementAt(i) == obj)
-      {
-        addIt = false;
-
-        break;
-      }
-    }
-
-    if (addIt)
-    {
-      v.addElement(obj);
-    }
+	  if (nodeType == DTM.ELEMENT_NODE) {
+		  result = Constants.ELEMNAME_ELEMENT_STRING;  
+	  }
+	  else if (nodeType == DTM.ATTRIBUTE_NODE) {
+		  result = Constants.ELEMNAME_ATTRIBUTE_STRING;  
+	  }
+	  else if (nodeType == DTM.TEXT_NODE) {
+		  result = Constants.ELEMNAME_TEXT_STRING; 
+	  }
+	  else if (nodeType == DTM.COMMENT_NODE) {
+		  result = Constants.ELEMNAME_COMMENT_STRING;	
+	  }
+	  else if (nodeType == DTM.PROCESSING_INSTRUCTION_NODE) {
+		  result = Constants.ELEMNAME_PI_STRING; 
+	  }
+	  
+	  return result;
   }
 
   /**
@@ -988,34 +1006,6 @@ public class TemplateList implements java.io.Serializable
    * Comment Patterns.
    */
   private TemplateSubPatternAssociation m_commentPatterns = null;
-
-  /**
-   * Get table of named Templates.
-   * These are keyed on template names, and holding values
-   * that are template elements.
-   *
-   * @return A Hashtable dictionary that contains {@link java.lang.String}s 
-   * as the keys, and {@link org.apache.xalan.templates.ElemTemplate}s as the 
-   * values. 
-   */
-  private Hashtable getNamedTemplates()
-  {
-    return m_namedTemplates;
-  }
-
-  /**
-   * Set table of named Templates.
-   * These are keyed on string macro names, and holding values
-   * that are template elements in the XSL DOM tree.
-   *
-   * @param v Hashtable dictionary that contains {@link java.lang.String}s 
-   * as the keys, and {@link org.apache.xalan.templates.ElemTemplate}s as the 
-   * values.
-   */
-  private void setNamedTemplates(Hashtable v)
-  {
-    m_namedTemplates = v;
-  }
 
   /**
    * Get the head of the assocation list that is keyed by target.

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<root>
+   <item>a</item>
+   <item>b</item>
+   <!-- need to add more items -->
+   <?pi test?>
+</root>

@@ -96,8 +96,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
   /**
    * Tells if this belongs to a default template,
    * in which case it will act different with
-   * regard to processing modes.
-   * 
+   * regard to processing XSL template modes.
    */
   private boolean m_isDefaultTemplate = false;
   
@@ -641,7 +640,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
 							  }							  
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
-								  String errMesg = "XTDE0555 : An XSL template declaration could not be located to process an XML " + nodeTypeStr + " node";
+								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
 								  if (nodeNameStr != null) {
 									 errMesg = (errMesg + " '" + nodeNameStr + "'."); 
 								  }
@@ -693,7 +692,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
 							  }
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
-								  String errMesg = "XTDE0555 : An XSL template declaration could not be located to process an XML " + nodeTypeStr + " node";
+								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
 								  if (nodeNameStr != null) {
 									 errMesg = (errMesg + " '" + nodeNameStr + "'."); 
 								  }
@@ -744,7 +743,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
 							  }
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
-								  String errMesg = "XTDE0555 : An XSL template declaration could not be located to process an XML " + nodeTypeStr + " node";
+								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
 								  if (nodeNameStr != null) {
 									 errMesg = (errMesg + " '" + nodeNameStr + "'."); 
 								  }
@@ -772,6 +771,94 @@ public class ElemApplyTemplates extends ElemCallTemplate
 					  else {
 						  template = sroot.getDefaultTextRule(); 
 						  serializeXdmStringValueWithDefaultXslTextRule(transformer, rth, sroot, dtm, child, template);	  
+					  }
+					  
+					  continue;
+				  case DTM.COMMENT_NODE :
+					  nodeTypeStr = Constants.ELEMNAME_COMMENT_STRING;					  
+					  if (elemMode != null) {						  						  
+						  String nodeNameStr = dtm.getNodeName(child);
+						  if (onNoMatchStr != null) {
+							  if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
+								  template = new ElemTemplate();
+								  template.setMode(elemMode.getName());
+								  template.setStylesheet(sroot);
+								  
+								  XPath defMatch = new XPath("comment()", sroot, sroot, XPath.MATCH, xctxt.getErrorListener());
+								  template.setMatch(defMatch);
+								  
+								  ElemCopyOf elemCopyOf = new ElemCopyOf();
+								  XPath xpathSelect = new XPath(".", sroot, sroot, XPath.SELECT, xctxt.getErrorListener());
+								  elemCopyOf.setSelect(xpathSelect);
+								  template.appendChild(elemCopyOf);
+							  }
+							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
+								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
+								  if (nodeNameStr != null) {
+									 errMesg = (errMesg + " '" + nodeNameStr + "'."); 
+								  }
+								  else {
+									 errMesg = (errMesg + "."); 
+								  }
+								  
+								  throw new TransformerException(errMesg, srcLocator);
+							  }
+						  }
+						  
+						  if (elemMode.isWarningOnNoMatch()) {
+							  /**
+							   * Produce an, XSL stylesheet processing warning, when xsl:mode
+							   * instruction specifies an attribute 'warning-on-no-match' with
+							   * boolean value true.
+							   */							  
+							  emitXslTransformNoRuleMatchWarning(nodeNameStr, nodeTypeStr, xctxt, srcLocator);
+						  }
+						  
+						  break;
+					  }
+					  
+					  continue;
+				  case DTM.PROCESSING_INSTRUCTION_NODE :
+					  nodeTypeStr = Constants.ELEMNAME_PI_STRING;					  
+					  if (elemMode != null) {						  						  
+						  String nodeNameStr = dtm.getNodeName(child);
+						  if (onNoMatchStr != null) {
+							  if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
+								  template = new ElemTemplate();
+								  template.setMode(elemMode.getName());
+								  template.setStylesheet(sroot);
+								  
+								  XPath defMatch = new XPath("processing-instruction()", sroot, sroot, XPath.MATCH, xctxt.getErrorListener());
+								  template.setMatch(defMatch);
+								  
+								  ElemCopyOf elemCopyOf = new ElemCopyOf();
+								  XPath xpathSelect = new XPath(".", sroot, sroot, XPath.SELECT, xctxt.getErrorListener());
+								  elemCopyOf.setSelect(xpathSelect);
+								  template.appendChild(elemCopyOf);
+							  }
+							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
+								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
+								  if (nodeNameStr != null) {
+									 errMesg = (errMesg + " '" + nodeNameStr + "'."); 
+								  }
+								  else {
+									 errMesg = (errMesg + "."); 
+								  }
+								  
+								  throw new TransformerException(errMesg, srcLocator);
+							  }
+						  }
+						  
+						  if (elemMode.isWarningOnNoMatch()) {
+							  /**
+							   * Produce an, XSL stylesheet processing warning, when xsl:mode
+							   * instruction specifies an attribute 'warning-on-no-match' with
+							   * boolean value true.
+							   */							  
+							  emitXslTransformNoRuleMatchWarning(nodeNameStr, nodeTypeStr, xctxt, srcLocator);
+						  }
+						  
+						  break;
 					  }
 					  
 					  continue;
@@ -1439,20 +1526,17 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * @throws TransformerException
    */
   private void emitXslTransformNoRuleMatchWarning(String nodeNameStr, String nodeTypeStr, 
-		                                          XPathContext xctxt, SourceLocator srcLocator) throws TransformerException {	  
-	  int errLineNo = srcLocator.getLineNumber();	  
-	  if (errLineNo != 0) {
-		  ErrorListener errorListener = xctxt.getErrorListener();									 
-		  String errMesg = "Warning : An XSL template declaration could not be located to process an XML " + nodeTypeStr + " node";
-		  if (nodeNameStr != null) {
-			  errMesg = (errMesg + " '" + nodeNameStr + "'."); 
-		  }
-		  else {
-			  errMesg = (errMesg + "."); 
-		  }
-
-		  errorListener.warning(new TransformerException(errMesg, srcLocator));
+		                                          XPathContext xctxt, SourceLocator srcLocator) throws TransformerException {	  	  	  
+	  ErrorListener errorListener = xctxt.getErrorListener();									 
+	  String errMesg = "Warning : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
+	  if (nodeNameStr != null) {
+		  errMesg = (errMesg + " '" + nodeNameStr + "'."); 
 	  }
+	  else {
+		  errMesg = (errMesg + "."); 
+	  }
+
+	  errorListener.warning(new TransformerException(errMesg, srcLocator));
   }
 
 }
