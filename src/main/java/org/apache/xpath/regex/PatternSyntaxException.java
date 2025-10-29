@@ -25,9 +25,6 @@
 
 package org.apache.xpath.regex;
 
-import sun.security.action.GetPropertyAction;
-
-
 /**
  * Unchecked exception thrown to indicate a syntax error in a
  * regular-expression pattern.
@@ -92,10 +89,10 @@ public class PatternSyntaxException
     public String getPattern() {
         return pattern;
     }
-
-    private static final String nl =
-        java.security.AccessController
-            .doPrivileged(new GetPropertyAction("line.separator"));
+    
+    // Fix suggested by, Alan Bateman <alan.bateman@oracle.com>,
+    // to be able to compile the code with JDK versions > 1.8
+    private static final String nl = System.getProperty("line.separator");
 
     /**
      * Returns a multi-line string containing the description of the syntax

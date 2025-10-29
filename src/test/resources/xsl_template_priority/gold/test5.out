@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?><root>
+  <error column-number="26" line-number="34" description="More than one XSL template rule matched an XML element node 'a'. Conflicting template rule locations are line 34 and line 30" code="err:XTDE0540"/>
+</root>

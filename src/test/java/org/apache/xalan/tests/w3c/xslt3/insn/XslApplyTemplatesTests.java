@@ -37,10 +37,8 @@ public class XslApplyTemplatesTests extends W3CXslTransformTestsUtil {
     	m_resultSubFolderName = "insn";
     	m_testResultFileName = "_apply-templates-test-set_result.xml";
     	
-    	// XSLT20+ test using mode = '#current'. Not yet implemented with Xalan-J.
-    	m_skipped_tests_list.add("conflict-resolution-0801");
-    	// XSLT20+ test using mode = '#default'. Not yet implemented with Xalan-J.
-    	m_skipped_tests_list.add("conflict-resolution-0802");
+    	m_skipped_tests_list.add("conflict-resolution-0102b");
+    	m_skipped_tests_list.add("conflict-resolution-0104b");
     }
 
     @AfterClass

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:38Z" fail="3" name="select" pass="21" skipped="0" statusUnknown="1" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-29T17:13:18Z" fail="4" name="select" pass="21" skipped="0" statusUnknown="1" totalRun="26">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -27,5 +27,14 @@
    <testResult status="fail" testName="select-1502">
       <outResult/>
    </testResult>
-   <testResult testName="select-1503"/>
+   <testResult status="fail" testName="select-1503">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>A location step was expected following the '/' or '//' token.</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="select-1504"/>
 </testrun>

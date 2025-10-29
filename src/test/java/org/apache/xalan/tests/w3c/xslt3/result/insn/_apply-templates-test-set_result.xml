@@ -1,132 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-25T17:59:59Z" fail="25" name="apply-templates" pass="21" skipped="4" statusUnknown="0" totalRun="46">
-   <testResult status="fail" testName="apply-templates-001">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-&#13;
-&#13;
-    &#13;
-        &#13;
-    &#13;
-&#13;
-&#13;
-&#13;
-&#13;
-&#13;
-    &#13;
-        &#13;
-    &#13;
-&#13;
-&#13;
-&#13;
-&#13;
-&#13;
-    &#13;
-        &#13;
-    &#13;
-&#13;
-&#13;
-&#13;
-&#13;
-&#13;
-    &#13;
-        &#13;
-    &#13;
-&#13;
-&#13;
-&#13;
-&#13;
-&#13;
-    &#13;
-        &#13;
-    &#13;
-&#13;
-&#13;
-</outResult>
-   </testResult>
-   <testResult status="fail" testName="apply-templates-002">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-&#13;
-    &#13;
-        &#13;
-            &#13;
-        &#13;
-    &#13;
-    &#13;
-    &#13;
-        &#13;
-            &#13;
-        &#13;
-    &#13;
-&#13;
-&#13;
-&#13;
-    &#13;
-        &#13;
-            &#13;
-        &#13;
-    &#13;
-    &#13;
-    &#13;
-        &#13;
-            &#13;
-        &#13;
-    &#13;
-&#13;
-&#13;
-&#13;
-    &#13;
-        &#13;
-            &#13;
-        &#13;
-    &#13;
-    &#13;
-    &#13;
-        &#13;
-            &#13;
-        &#13;
-    &#13;
-&#13;
-&#13;
-&#13;
-    &#13;
-        &#13;
-            &#13;
-        &#13;
-    &#13;
-    &#13;
-    &#13;
-        &#13;
-            &#13;
-        &#13;
-    &#13;
-&#13;
-&#13;
-&#13;
-    &#13;
-        &#13;
-            &#13;
-        &#13;
-    &#13;
-    &#13;
-    &#13;
-        &#13;
-            &#13;
-        &#13;
-    &#13;
-&#13;
-</outResult>
-   </testResult>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-29T17:13:21Z" fail="21" name="apply-templates" pass="25" skipped="4" statusUnknown="0" totalRun="46">
+   <testResult status="pass" testName="apply-templates-001"/>
+   <testResult status="pass" testName="apply-templates-002"/>
    <testResult status="pass" testName="conflict-resolution-0101"/>
    <testResult status="pass" testName="conflict-resolution-0102a"/>
-   <testResult status="fail" testName="conflict-resolution-0102b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;Match-of-wildcard&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0102b"/>
    <testResult status="pass" testName="conflict-resolution-0102c"/>
    <testResult status="pass" testName="conflict-resolution-0104a"/>
-   <testResult status="fail" testName="conflict-resolution-0104b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;Match-of-node-type&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0104b"/>
    <testResult status="pass" testName="conflict-resolution-0104c"/>
-   <testResult status="fail" testName="conflict-resolution-0106"/>
+   <testResult status="pass" testName="conflict-resolution-0106"/>
    <testResult status="pass" testName="conflict-resolution-0107"/>
    <testResult status="pass" testName="conflict-resolution-0108a"/>
    <testResult status="fail" testName="conflict-resolution-0108b">
@@ -154,8 +36,8 @@
    <testResult status="fail" testName="conflict-resolution-0703">
       <outResult/>
    </testResult>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0801"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0802"/>
+   <testResult status="pass" testName="conflict-resolution-0801"/>
+   <testResult status="fail" testName="conflict-resolution-0802"/>
    <testResult status="pass" testName="conflict-resolution-0901"/>
    <testResult status="pass" testName="conflict-resolution-1001"/>
    <testResult status="fail" testName="conflict-resolution-1101"/>

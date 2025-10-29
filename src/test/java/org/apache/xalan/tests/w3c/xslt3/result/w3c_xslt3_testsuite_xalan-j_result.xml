@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-10-28T12:26:31Z" desc="W3C XSLT 3.0 test suite results" fail="666" pass="1781" skipped="73" success="72.34%" totalRun="2462" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-10-29T17:14:33Z" desc="W3C XSLT 3.0 test suite results" fail="661" pass="1787" skipped="73" success="72.55%" totalRun="2463" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="30" pass="74" skipped="4" success="70.48%" totalRun="105"/>
     <avt fail="15" pass="20" skipped="0" success="57.14%" totalRun="35"/>
     <expand-text fail="8" pass="54" skipped="0" success="87.1%" totalRun="62"/>
     <match fail="60" pass="68" skipped="8" success="52.71%" totalRun="129"/>
-    <select fail="3" pass="21" skipped="0" success="84.0%" totalRun="25"/>
-    <xpath-default-namespace fail="16" pass="10" skipped="0" success="38.46%" totalRun="26"/>
+    <select fail="4" pass="21" skipped="0" success="80.77%" totalRun="26"/>
+    <xpath-default-namespace fail="15" pass="11" skipped="0" success="42.31%" totalRun="26"/>
   </attr>
   <decl>
     <attribute-set fail="8" pass="41" skipped="1" success="83.67%" totalRun="49"/>
@@ -15,7 +15,7 @@
     <variable fail="4" pass="15" skipped="0" success="75.0%" totalRun="20"/>
   </decl>
   <expr>
-    <axes fail="18" pass="183" skipped="0" success="91.04%" totalRun="201"/>
+    <axes fail="17" pass="184" skipped="0" success="91.54%" totalRun="201"/>
     <castable fail="3" pass="6" skipped="0" success="66.67%" totalRun="9"/>
     <expression fail="0" pass="9" skipped="0" success="90.0%" totalRun="10"/>
     <for fail="2" pass="1" skipped="0" success="25.0%" totalRun="4"/>
@@ -35,7 +35,7 @@
   </fn>
   <insn>
     <analyze-string fail="14" pass="39" skipped="5" success="73.58%" totalRun="53"/>
-    <apply-templates fail="25" pass="21" skipped="4" success="45.65%" totalRun="46"/>
+    <apply-templates fail="21" pass="25" skipped="4" success="54.35%" totalRun="46"/>
     <attribute fail="17" pass="12" skipped="0" success="40.0%" totalRun="30"/>
     <call-template fail="13" pass="27" skipped="2" success="67.5%" totalRun="40"/>
     <choose fail="6" pass="48" skipped="1" success="88.89%" totalRun="54"/>

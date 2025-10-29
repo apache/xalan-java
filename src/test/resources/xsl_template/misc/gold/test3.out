@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <b>hello 2, 3</b>
+  <number value="7">2.6457513110645907</number>
+  <number value="3">1.7320508075688772</number>
+  <number value="4">2</number>
+  <c>hello 3, 4</c>
+  <a>hello 1, 2</a>
+</result>
