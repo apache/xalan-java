@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-10-29T17:14:33Z" desc="W3C XSLT 3.0 test suite results" fail="661" pass="1787" skipped="73" success="72.55%" totalRun="2463" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-10-30T13:02:44Z" desc="W3C XSLT 3.0 test suite results" fail="658" pass="1788" skipped="75" success="72.65%" totalRun="2461" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="30" pass="74" skipped="4" success="70.48%" totalRun="105"/>
     <avt fail="15" pass="20" skipped="0" success="57.14%" totalRun="35"/>
@@ -35,7 +35,7 @@
   </fn>
   <insn>
     <analyze-string fail="14" pass="39" skipped="5" success="73.58%" totalRun="53"/>
-    <apply-templates fail="21" pass="25" skipped="4" success="54.35%" totalRun="46"/>
+    <apply-templates fail="18" pass="26" skipped="6" success="59.09%" totalRun="44"/>
     <attribute fail="17" pass="12" skipped="0" success="40.0%" totalRun="30"/>
     <call-template fail="13" pass="27" skipped="2" success="67.5%" totalRun="40"/>
     <choose fail="6" pass="48" skipped="1" success="88.89%" totalRun="54"/>

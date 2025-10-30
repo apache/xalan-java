@@ -228,8 +228,10 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   {
 
     XMLNodeCursorImpl iter = new XMLNodeCursorImpl((LocPathIterator)m_clones.getInstance());
+    
+    int contextNode = xctxt.getCurrentNode();
 
-    iter.setRoot(xctxt.getCurrentNode(), xctxt);
+    iter.setRoot(contextNode, xctxt);
 
     return iter;
   }

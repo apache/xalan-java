@@ -318,7 +318,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   /**
    * Execute this pattern step, including predicates.
    *
-   *
    * @param xctxt XPath runtime context.
    * @param currentNode The current node context.
    *
@@ -334,16 +333,16 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
           throws javax.xml.transform.TransformerException
   {
 
-    DTM dtm = xctxt.getDTM(currentNode);
+	  DTM dtm = xctxt.getDTM(currentNode);
 
-    if (dtm != null)
-    {
-      int expType = dtm.getExpandedTypeID(currentNode);
+	  if (dtm != null)
+	  {
+		  int expType = dtm.getExpandedTypeID(currentNode);
 
-      return execute(xctxt, currentNode, dtm, expType);
-    }
+		  return execute(xctxt, currentNode, dtm, expType);
+	  }
 
-    return NodeTest.SCORE_NONE;
+	  return NodeTest.SCORE_NONE;
   }
 
   /**
@@ -370,7 +369,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
    * Execute an expression in the XPath runtime context, and return the
    * result of the expression.
    *
-   *
    * @param xctxt The XPath runtime context.
    * @param currentNode The currentNode.
    * @param dtm The DTM of the current node.
@@ -386,34 +384,34 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
             throws javax.xml.transform.TransformerException
   {
 
-    if (m_whatToShow == NodeTest.SHOW_BYFUNCTION)
-    {
-      if (null != m_relativePathPattern)
-      {
-        return m_relativePathPattern.execute(xctxt);
-      }
-      else
-        return NodeTest.SCORE_NONE;
-    }
+	  if (m_whatToShow == NodeTest.SHOW_BYFUNCTION)
+	  {
+		  if (null != m_relativePathPattern)
+		  {
+			  return m_relativePathPattern.execute(xctxt);
+		  }
+		  else
+			  return NodeTest.SCORE_NONE;
+	  }
 
-    XObject score;
+	  XObject score;
 
-    score = super.execute(xctxt, currentNode, dtm, expType);
+	  score = super.execute(xctxt, currentNode, dtm, expType);
 
-    if (score == NodeTest.SCORE_NONE)
-      return NodeTest.SCORE_NONE;
+	  if (score == NodeTest.SCORE_NONE)
+		  return NodeTest.SCORE_NONE;
 
-    if (getPredicateCount() != 0)
-    {
-      if (!executePredicates(xctxt, dtm, currentNode))
-        return NodeTest.SCORE_NONE;
-    }
+	  if (getPredicateCount() != 0)
+	  {
+		  if (!executePredicates(xctxt, dtm, currentNode))
+			  return NodeTest.SCORE_NONE;
+	  }
 
-    if (null != m_relativePathPattern)
-      return m_relativePathPattern.executeRelativePathPattern(xctxt, dtm,
-              currentNode);
+	  if (null != m_relativePathPattern)
+		  return m_relativePathPattern.executeRelativePathPattern(xctxt, dtm,
+				  currentNode);
 
-    return score;
+	  return score;
   }
 
   /**
@@ -727,7 +725,8 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
 
         try
         {
-          XObject pred = m_predicates[i].execute(xctxt);
+          Expression predExpression = m_predicates[i];
+          XObject pred = predExpression.execute(xctxt);
           
           if (pred instanceof XSNumericType) {
         	 String strValue = ((XSNumericType)pred).stringValue();

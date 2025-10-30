@@ -15,15 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xml.dtm.DTM;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.PredicatedNodeTest;
@@ -32,9 +30,9 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.patterns.StepPattern;
 
-
 /**
- * Execute the current() function.
+ * Implementation of XSLT 3.0 fn:current function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncCurrent extends Function
@@ -49,8 +47,9 @@ public class FuncCurrent extends Function
     }
 
   /**
-   * Execute the function. The function must return
+   * Implementation of the function. The function must return
    * a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
@@ -60,7 +59,7 @@ public class FuncCurrent extends Function
   {
    
 	  SubContextList subContextList = xctxt.getCurrentNodeList();
-	  int currentNode = DTM.NULL;
+	  int currentNode = DTM.NULL;	  
 
 	  if (null != subContextList) {
 		  if (subContextList instanceof PredicatedNodeTest) {
@@ -68,13 +67,35 @@ public class FuncCurrent extends Function
 			  currentNode = iter.getCurrentContextNode();
 		  }
 		  else if (getExpressionOwner() instanceof ElemTemplate) {
-			  // This indicates that, an XPath fn:current function call 
-			  // occurs within xsl:template instruction 'match' attribute's 
-			  // value.
+			  /**
+			   * An XPath fn:current function call, occurs within
+			   * xsl:template instruction 'match' attribute's value.
+			   */
+			  
 			  currentNode = xctxt.getCurrentNode();
+			  
+			  ExpressionNode parentNode = exprGetParent();
+			  while (parentNode != null) {
+				 if ((parentNode instanceof PredicatedNodeTest) 
+						                                     || (parentNode instanceof StepPattern)) {					
+					break; 
+				 }
+				 
+				 parentNode = parentNode.exprGetParent();
+			  }
+			  
+			  if (parentNode instanceof PredicatedNodeTest) {				  
+				  ExpressionNode exprNode = parentNode.exprGetParent();
+				  if ((exprNode instanceof StepPattern) && (((StepPattern)exprNode).getPredicateCount() > 0)) {
+					  // XPath fn:current function call, is there within 
+					  // nested predicate.					  
+					  DTM dtm = xctxt.getDTM(currentNode);
+					  currentNode = dtm.getParent(currentNode); 
+				  }
+			  }
 		  }
 		  else if(subContextList instanceof StepPattern) {        	         	 
-			  throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSOR_ERROR,null));
+			  throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSOR_ERROR, null));
 
 		  }
 	  } 

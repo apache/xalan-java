@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-29T17:13:21Z" fail="21" name="apply-templates" pass="25" skipped="4" statusUnknown="0" totalRun="46">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-30T13:07:00Z" fail="18" name="apply-templates" pass="26" skipped="6" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="apply-templates-001"/>
    <testResult status="pass" testName="apply-templates-002"/>
    <testResult status="pass" testName="conflict-resolution-0101"/>
@@ -11,21 +11,17 @@
    <testResult status="pass" testName="conflict-resolution-0106"/>
    <testResult status="pass" testName="conflict-resolution-0107"/>
    <testResult status="pass" testName="conflict-resolution-0108a"/>
-   <testResult status="fail" testName="conflict-resolution-0108b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;Match-of-non-simple '/'&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0108b"/>
    <testResult status="pass" testName="conflict-resolution-0108c"/>
    <testResult status="pass" testName="conflict-resolution-0110a"/>
-   <testResult status="fail" testName="conflict-resolution-0110b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;Match-of-non-simple '[...]'&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0110b"/>
    <testResult status="pass" testName="conflict-resolution-0110c"/>
    <testResult status="pass" testName="conflict-resolution-0112"/>
    <testResult status="pass" testName="conflict-resolution-0201"/>
    <testResult status="skipped" testName="conflict-resolution-0401a" xsltVersion="xslt 2.0 only"/>
    <testResult status="skipped" testName="conflict-resolution-0401b" xsltVersion="xslt 2.0 only"/>
    <testResult status="pass" testName="conflict-resolution-0401c"/>
-   <testResult status="fail" testName="conflict-resolution-0501"/>
+   <testResult status="pass" testName="conflict-resolution-0501"/>
    <testResult status="pass" testName="conflict-resolution-0502"/>
    <testResult status="fail" testName="conflict-resolution-0503"/>
    <testResult status="pass" testName="conflict-resolution-0601"/>

@@ -1,10 +1,10 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -14,33 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xslt3.insn;
+package org.apache.xalan.tests.xslt3;
 
-import org.apache.xalan.tests.w3c.xslt3.W3CXslTransformTestsUtil;
+import org.apache.xalan.tests.util.XSLTestConstants;
+import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Xalan-J XSL 3 test driver, to run W3C XSL 3.0 transformation 
- * tests for xsl:apply-templates instruction.
+ * XSL 3 stylesheet test cases, for xsl:apply-templates instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslApplyTemplatesTests extends W3CXslTransformTestsUtil {     
+public class XslApplyTemplatesTests extends XslTransformTestsUtil {
+    
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_apply_templates/";
+    
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xsl_apply_templates/gold/";      
+
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/apply-templates/_apply-templates-test-set.xml";
-    	m_resultSubFolderName = "insn";
-    	m_testResultFileName = "_apply-templates-test-set_result.xml";
-    	
-    	m_skipped_tests_list.add("conflict-resolution-0102b");
-    	m_skipped_tests_list.add("conflict-resolution-0104b");
-    	m_skipped_tests_list.add("conflict-resolution-0108b");
-    	m_skipped_tests_list.add("conflict-resolution-0110b");
+        // no op
     }
 
     @AfterClass
@@ -49,10 +47,15 @@ public class XslApplyTemplatesTests extends W3CXslTransformTestsUtil {
         m_xmlDocumentBuilder = null;
         m_xslTransformerFactory = null;
     }
-    
+
     @Test
-    public void runXslApplyTemplateTests() {    	
-       runXslTestSet();
+    public void xslApplyTemplatesTest1() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
 
 }

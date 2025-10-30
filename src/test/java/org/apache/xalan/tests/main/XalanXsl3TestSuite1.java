@@ -16,6 +16,7 @@
  */
 package org.apache.xalan.tests.main;
 
+import org.apache.xalan.tests.w3c.xslt3.insn.XslApplyTemplatesTests;
 import org.apache.xalan.tests.xpath3.FnAbsTests;
 import org.apache.xalan.tests.xpath3.FnAnalyzeStringTests;
 import org.apache.xalan.tests.xpath3.FnApplyTests;
@@ -109,7 +110,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathExprFunctionCallSuffixTests.class, XslEvaluateTests.class, XslValueofTests.class,
                 XslCopyofValidationTests.class, XslCopyValidationTests.class, FnPositionTests.class,
                 XslForEachGroupWithCollationTests.class, XslMiscTests.class, FnSortMiscTests.class,
-                XslTemplateMiscTests.class, XPathGeneralComparisonOpMiscTests.class, XslSortSeqConstructorTests.class })
+                XslTemplateMiscTests.class, XPathGeneralComparisonOpMiscTests.class, XslSortSeqConstructorTests.class,
+                XslApplyTemplatesTests.class })
 public class XalanXsl3TestSuite1 {
 
 }

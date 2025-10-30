@@ -650,7 +650,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  final int nodeType = dtm.getNodeType(child);
 
 			  ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, -1, true, dtm, 
-					  xslOnMultipleMatchStr, xslWarningOnMultipleMatch);			 
+					  																		xslOnMultipleMatchStr, xslWarningOnMultipleMatch);			 
 
 			  // If that didn't locate an XSL stylesheet user written template rule, 
 			  // fall back to a default template rule.

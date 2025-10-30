@@ -672,7 +672,7 @@ public class TemplateList implements java.io.Serializable
     	  }
     	  ElemTemplate template = head.getTemplate();        
     	  xctxt.setNamespaceContext(template);
-
+    	  
     	  if ((head.m_stepPattern.execute(xctxt, targetNode, dtm, expTypeID) != NodeTest.SCORE_NONE)
     			  																					&& head.matchMode(mode))
     	  {
