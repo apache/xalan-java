@@ -35,6 +35,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
+import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
@@ -70,6 +71,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSGDay;
@@ -1893,8 +1895,60 @@ public class SequenceTypeSupport {
         List<Integer> xdmNodesDtmList = new ArrayList<Integer>();
 
         Node localRootNode = dtmNodeList.item(0);
+        
         NodeList nodeList = localRootNode.getChildNodes();
-        int nodeSetLen = nodeList.getLength();
+        int nodeSetLen = nodeList.getLength();        
+        
+        final int contextNode = xctxt.getCurrentNode();         
+                
+        int attrCount = SerializerUtils.m_xdmAttrList.size();
+        if ((nodeSetLen == 0) && (attrCount > 0)) {        	        	
+        	XPath seqTypeXPath = null;
+            XObject seqTypeExpressionEvalResult = null;
+            SequenceTypeData seqExpectedTypeData = null;
+            
+            if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (seqExpectedTypeDataInp == null)) {
+            	seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
+            			                                                                          XPath.SELECT, null, true);            
+            	seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
+            	seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;            	
+            	SequenceTypeKindTest sequenceTypeKindTest2 = seqExpectedTypeData.getSequenceTypeKindTest();
+            	boolean isXdmValueMatchesType = false;
+            	if ((sequenceTypeKindTest2 != null) && (sequenceTypeKindTest2.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) ||
+            			                               (sequenceTypeKindTest2.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+            		int seqTypeOccrIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+            		if ((attrCount == 1) && (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT)) {
+            			isXdmValueMatchesType = true;
+            		}
+            		else if ((attrCount >= 1) && (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
+            			isXdmValueMatchesType = true;
+            		}
+                    else if ((attrCount >= 0) && (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
+                    	isXdmValueMatchesType = true;
+            		}
+                    else if (((attrCount == 0) || (attrCount == 1)) && (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
+                    	isXdmValueMatchesType = true;
+            		}
+            	}
+            	
+            	if (isXdmValueMatchesType) {
+            	   ResultSequence rSeq = new ResultSequence();
+            	   List<XdmAttributeItem> xdmAttrList = SerializerUtils.m_xdmAttrList;
+            	   for (int idx = 0; idx < attrCount; idx++) {
+            		  XdmAttributeItem xdmAttributeItem = xdmAttrList.get(idx);
+            		  rSeq.add(xdmAttributeItem);
+            	   }
+            	   
+            	   result = rSeq;
+            	   
+            	   return result; 
+            	}
+            	else {
+            	   throw new TransformerException("XPTY0004 : A sequence of xdm attribute items, doesn't match XPath "
+                                                                                                       + "sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
+            	}
+            }
+        }
 
         ResultSequence convertedResultSeq = new ResultSequence();
         

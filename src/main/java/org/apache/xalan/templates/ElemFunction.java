@@ -28,6 +28,7 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -540,6 +541,9 @@ public class ElemFunction extends ElemTemplate
     	  try {
     		SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
     		
+    		SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+    		int seqTypeItemOccrIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+    		
     	    if (isOnlyElemTextLiteral) {    	    	
     		    funcResultConvertedVal = new XSString((XslTransformEvaluationHelper.getStrVal(funcResultConvertedVal)).trim());
     		    
@@ -551,15 +555,22 @@ public class ElemFunction extends ElemTemplate
     		       (funcMemoization.func_result_cache).add(funcMemoization);
     		    }
     		    
+    		    if (SerializerUtils.m_xdmAttrList.size() > 0) {
+    		       SerializerUtils.m_xdmAttrList.clear();
+    		    }
+    		    
     		    return funcResultConvertedVal;
     	    }    	          	         	 
         	 
              if (funcResultConvertedVal instanceof XPathInlineFunction) {
-            	SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
             	if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
             		if (m_cache) {
          		       XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
          		       (funcMemoization.func_result_cache).add(funcMemoization);
+         		    }
+            		
+            		if (SerializerUtils.m_xdmAttrList.size() > 0) {
+         		       SerializerUtils.m_xdmAttrList.clear();
          		    }
             		
             	    return funcResultConvertedVal;
@@ -570,6 +581,10 @@ public class ElemFunction extends ElemTemplate
             			XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
             			(funcMemoization.func_result_cache).add(funcMemoization);
             		}
+            		
+            		if (SerializerUtils.m_xdmAttrList.size() > 0) {
+         		       SerializerUtils.m_xdmAttrList.clear();
+         		    }
 
             		return funcResultConvertedVal;
             	}
@@ -580,12 +595,15 @@ public class ElemFunction extends ElemTemplate
             	}
              }
              else if ((funcResultConvertedVal instanceof XPathMap) || (funcResultConvertedVal instanceof XPathArray)) {
-            	 SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
             	 if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
             		 if (m_cache) {
             			 XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
             			 (funcMemoization.func_result_cache).add(funcMemoization);
             		 }
+            		 
+            		 if (SerializerUtils.m_xdmAttrList.size() > 0) {
+          		        SerializerUtils.m_xdmAttrList.clear();
+          		     }
 
             		 return funcResultConvertedVal;
             	 }
@@ -597,6 +615,10 @@ public class ElemFunction extends ElemTemplate
             			 XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
             			 (funcMemoization.func_result_cache).add(funcMemoization);
             		 }
+            		 
+            		 if (SerializerUtils.m_xdmAttrList.size() > 0) {
+          		        SerializerUtils.m_xdmAttrList.clear();
+          		     }
 
             		 return funcResultConvertedVal;
             	 }
@@ -609,23 +631,22 @@ public class ElemFunction extends ElemTemplate
              else if (((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) && !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {            
             	int funcItemSeqSize = (XslTransformData.m_xpathNamedFunctionRefSequence).size();
         		
-        		SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
-        		int seqTypeItemOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+        		SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();        		
         		boolean isSeqCardinalityOk = false;
-        		if ((funcItemSeqSize == 0) && ((seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-        				                       (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+        		if ((funcItemSeqSize == 0) && ((seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+        				                       (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
         		   isSeqCardinalityOk = true;
         		}
-        		else if ((funcItemSeqSize == 1) && ((seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) || 
-        				                            (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-        				                            (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) ||
-        				                            (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+        		else if ((funcItemSeqSize == 1) && ((seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) || 
+        				                            (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+        				                            (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) ||
+        				                            (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
         		   // An XPath sequence type occurrence indicator with value absent, or any 
         		   // other occurrence indicator is ok.
         		   isSeqCardinalityOk = true;
         		}
-        		else if ((seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
-        				 (seqTypeItemOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
+        		else if ((seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
+        				 (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
         		   // here, funcItemSeqSize > 1
         		   isSeqCardinalityOk = true;
         		}
@@ -651,6 +672,10 @@ public class ElemFunction extends ElemTemplate
         					XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
         					(funcMemoization.func_result_cache).add(funcMemoization);
         				}
+        				
+        				if (SerializerUtils.m_xdmAttrList.size() > 0) {
+        	    		   SerializerUtils.m_xdmAttrList.clear();
+        	    		}
 
         				return funcResultConvertedVal;
         			}
@@ -690,6 +715,10 @@ public class ElemFunction extends ElemTemplate
         					XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
         					(funcMemoization.func_result_cache).add(funcMemoization);
         				}
+        				
+        				if (SerializerUtils.m_xdmAttrList.size() > 0) {
+        	    		   SerializerUtils.m_xdmAttrList.clear();
+        	    		}
 
         				return funcResultConvertedVal;
         			}
@@ -701,8 +730,8 @@ public class ElemFunction extends ElemTemplate
              if (funcResultConvertedVal == null) {
                 funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);                                
                 if (funcResultConvertedVal == null) {
-                   if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-                	   (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
+                   if ((seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+                	   (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
                 	   funcResultConvertedVal = new ResultSequence();
                    }
                    else {
@@ -732,6 +761,10 @@ public class ElemFunction extends ElemTemplate
     	  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
     	  (funcMemoization.func_result_cache).add(funcMemoization);
       }
+      
+      if (SerializerUtils.m_xdmAttrList.size() > 0) {
+	     SerializerUtils.m_xdmAttrList.clear();
+	  }
       
       return funcResultConvertedVal;
   }

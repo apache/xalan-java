@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-10-30T13:02:44Z" desc="W3C XSLT 3.0 test suite results" fail="658" pass="1788" skipped="75" success="72.65%" totalRun="2461" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-10-31T12:12:05Z" desc="W3C XSLT 3.0 test suite results" fail="656" pass="1790" skipped="75" success="72.73%" totalRun="2461" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
-    <as fail="30" pass="74" skipped="4" success="70.48%" totalRun="105"/>
+    <as fail="28" pass="76" skipped="4" success="72.38%" totalRun="105"/>
     <avt fail="15" pass="20" skipped="0" success="57.14%" totalRun="35"/>
     <expand-text fail="8" pass="54" skipped="0" success="87.1%" totalRun="62"/>
     <match fail="60" pass="68" skipped="8" success="52.71%" totalRun="129"/>

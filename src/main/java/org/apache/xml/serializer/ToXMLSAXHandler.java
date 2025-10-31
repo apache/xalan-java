@@ -27,7 +27,9 @@ import java.util.Properties;
 
 import javax.xml.transform.Result;
 
+import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xml.utils.DOMBuilder;
+import org.apache.xpath.objects.XdmAttributeItem;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -750,7 +752,10 @@ public final class ToXMLSAXHandler extends ToSAXHandler
             ensurePrefixIsDeclared(uri, rawName);
             addAttributeAlways(uri, localName, rawName, type, value, false);
         }
-
+        else {        	
+        	XdmAttributeItem xdmAttributeItem = new XdmAttributeItem(localName, uri, value);
+        	SerializerUtils.m_xdmAttrList.add(xdmAttributeItem);
+        }
     } 
        
     /**

@@ -116,6 +116,8 @@ public class ElemSequence extends ElemTemplateElement
    */
   private XPath m_selectPattern;
   
+  public static String SER_SUFFIX_ID = "XSL_SEQ";
+  
   /**
    * We use this string value constant to add as a suffix to, a string value that
    * is being serialized by Xalan-J serializer, when XSL serialization is
@@ -126,7 +128,7 @@ public class ElemSequence extends ElemTemplateElement
    * We're assuming that, this string value is significantly random, and is unlikely
    * to be present within an input document that is getting transformed.
    */
-  public static String STRING_VAL_SERIALIZATION_SUFFIX = "XSL_SEQ" + ElemCopyOf.SPACE_CHAR + "XSL_SEQ";
+  public static String STRING_VAL_SERIALIZATION_SUFFIX = SER_SUFFIX_ID + ElemCopyOf.SPACE_CHAR + SER_SUFFIX_ID;
 
   /**
    * Set the value of "select" attribute.

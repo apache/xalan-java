@@ -15,10 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.serialize;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
@@ -29,6 +29,7 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XdmAttributeItem;
 import org.xml.sax.SAXException;
 
 /**
@@ -41,6 +42,15 @@ import org.xml.sax.SAXException;
  */
 public class SerializerUtils
 {
+	
+	/**
+	 * Class field, representing a list of xdm attribute items.
+	 * 
+	 * This list stores xdm attribute items, that're not serialized
+	 * but are emitted during an XSL transformation and may need to
+	 * be checked with an XPath sequence type.
+	 */
+	public static List<XdmAttributeItem> m_xdmAttrList = new ArrayList<XdmAttributeItem>();
 
     /**
      * Copy an DOM attribute to the created output element, executing
