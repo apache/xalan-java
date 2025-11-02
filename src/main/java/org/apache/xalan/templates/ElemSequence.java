@@ -120,9 +120,9 @@ public class ElemSequence extends ElemTemplateElement
   
   /**
    * We use this string value constant to add as a suffix to, a string value that
-   * is being serialized by Xalan-J serializer, when XSL serialization is
+   * is being serialized by Xalan serializer, when XSL serialization is
    * being done during evaluation of xsl:sequence instruction. This makes it possible 
-   * to construct later during XSL transformation process, a sequence of XDM atomic
+   * to construct later during XSL transformation process, a sequence of xdm atomic
    * values.
    * 
    * We're assuming that, this string value is significantly random, and is unlikely
@@ -133,10 +133,10 @@ public class ElemSequence extends ElemTemplateElement
   /**
    * Set the value of "select" attribute.
    *
-   * @param v  Value to set for the "select" attribute.
+   * @param xpathSelectPattern  Value to set for the "select" attribute.
    */
-  public void setSelect(XPath v) {
-      m_selectPattern = v;
+  public void setSelect(XPath xpathSelectPattern) {
+      m_selectPattern = xpathSelectPattern;
   }
 
   /**
@@ -157,11 +157,11 @@ public class ElemSequence extends ElemTemplateElement
   /**
    * Set the value of "xpath-default-namespace" attribute.
    *
-   * @param v   Value of the "xpath-default-namespace" attribute
+   * @param xpathDefaultNamespace   Value of the "xpath-default-namespace" attribute
    */
-  public void setXpathDefaultNamespace(String v)
+  public void setXpathDefaultNamespace(String xpathDefaultNamespace)
   {
-	  m_xpath_default_namespace = v; 
+	  m_xpath_default_namespace = xpathDefaultNamespace; 
   }
 
   /**
@@ -188,11 +188,11 @@ public class ElemSequence extends ElemTemplateElement
   /**
    * Set the value of "expand-text" attribute.
    *
-   * @param v   Value of the "expand-text" attribute
+   * @param isExpandText   Value of the "expand-text" attribute
    */
-  public void setExpandText(boolean v)
+  public void setExpandText(boolean isExpandText)
   {
-	  m_expand_text = v;
+	  m_expand_text = isExpandText;
 	  m_expand_text_declared = true;
   }
 
@@ -256,7 +256,7 @@ public class ElemSequence extends ElemTemplateElement
                                                                            throws TransformerException
   {
 
-	  XObject xslSequenceVal = null;
+	  XObject result = null;
 
 	  XPathContext xctxt = transformer.getXPathContext();
 
@@ -295,7 +295,7 @@ public class ElemSequence extends ElemTemplateElement
 						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(nodeTest, transformer, srcLocator);
 						  if (elemFunction != null) {
 							  // Evaluation of xsl:sequence instruction resulted in a single 
-							  // xsl:function XDM function item. 
+							  // xsl:function xdm function item. 
 							  XPathNamedFunctionReference xpathNamedFunctionReference = new XPathNamedFunctionReference();
 							  xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, getStylesheetRoot());
 							  xpathNamedFunctionReference.setArity(elemFunction.getArity());
@@ -388,18 +388,18 @@ public class ElemSequence extends ElemTemplateElement
 				  XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
 				  XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
 				  if (evalResult != null) {
-					  xslSequenceVal = evalResult;    
+					  result = evalResult;    
 				  }
 				  else {
-					  xslSequenceVal = m_selectPattern.execute(xctxt, sourceNode, this);    
+					  result = m_selectPattern.execute(xctxt, sourceNode, this);    
 				  }            
 			  }
 			  else if ((selectExpression instanceof Function) || (selectExpression instanceof SimpleMapOperator) || 
 					                                             (selectExpression instanceof Range) ||
 					                                             (selectExpression instanceof XPathDynamicFunctionCall)) {
-				  xslSequenceVal = m_selectPattern.execute(xctxt, sourceNode, this);
-				  if (xslSequenceVal instanceof XPathArray) {
-					 XslTransformData.m_xpathArray = (XPathArray)xslSequenceVal;
+				  result = m_selectPattern.execute(xctxt, sourceNode, this);
+				  if (result instanceof XPathArray) {
+					 XslTransformData.m_xpathArray = (XPathArray)result;
 					 
 					 return;
 				  }
@@ -408,10 +408,10 @@ public class ElemSequence extends ElemTemplateElement
 				  Operation xpathOperation = (Operation)selectExpression;            
 				  XObject leftOperand = (xpathOperation.getLeftOperand()).execute(xctxt);
 				  XObject rightOperand = (xpathOperation.getRightOperand()).execute(xctxt);
-				  xslSequenceVal = xpathOperation.operate(leftOperand, rightOperand);
+				  result = xpathOperation.operate(leftOperand, rightOperand);
 			  }
 			  else if (selectExpression instanceof SelfIteratorNoPredicate) {
-				  xslSequenceVal = xctxt.getXPath3ContextItem();
+				  result = xctxt.getXPath3ContextItem();
 			  }
 			  else if (selectExpression instanceof LocPathIterator) {                        
 				  int contextNode = xctxt.getContextNode();
@@ -427,7 +427,7 @@ public class ElemSequence extends ElemTemplateElement
 				  }
 
 				  if (dtmIter != null) {               
-					  xslSequenceVal = new XMLNodeCursorImpl(dtmIter);
+					  result = new XMLNodeCursorImpl(dtmIter);
 				  }
 				  else {
 					  ResultSequence resultSeq = new ResultSequence();
@@ -457,7 +457,7 @@ public class ElemSequence extends ElemTemplateElement
 
 						  XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
 
-						  // Evaluate the, XDM sequence index XPath expression
+						  // Evaluate the, xdm sequence index XPath expression
 						  if (prefixTable != null) {
 							  xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathIndexExprStr, prefixTable);
 						  }
@@ -480,7 +480,7 @@ public class ElemSequence extends ElemTemplateElement
 									  resultSeq.add(evalResult);
 								  }
 								  else {
-									  throw new javax.xml.transform.TransformerException("XPTY0004 : An index reference used with an XDM "
+									  throw new javax.xml.transform.TransformerException("XPTY0004 : An index reference used with an xdm "
 									  		                                                                          + "sequence, is not an integer.", srcLocator); 
 								  }
 							  }
@@ -492,35 +492,35 @@ public class ElemSequence extends ElemTemplateElement
 									  resultSeq.add(evalResult);
 								  }
 								  else {
-									  throw new javax.xml.transform.TransformerException("XPTY0004 : An index reference used with an XDM "
+									  throw new javax.xml.transform.TransformerException("XPTY0004 : An index reference used with an xdm "
                                                                                                                      + "sequence, is not an integer.", srcLocator);  
 								  }
 							  }
 							  else {
-								  throw new javax.xml.transform.TransformerException("XPTY0004 : An index reference used with an XDM "
+								  throw new javax.xml.transform.TransformerException("XPTY0004 : An index reference used with an xdm "
                                                                                                                     + "sequence, is not an integer.", srcLocator);   
 							  }
 						  }
 					  }
 
-					  xslSequenceVal = resultSeq;
+					  result = resultSeq;
 				  }
 			  }
 
-			  if (xslSequenceVal == null) {
+			  if (result == null) {
 				  if (selectExpression instanceof XPathNamedFunctionReference) {
 					 (XslTransformData.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)selectExpression); 
 				  }
 				  else {
-					  xslSequenceVal = m_selectPattern.execute(xctxt, sourceNode, this);
-					  if (xslSequenceVal instanceof XPathNamedFunctionReference) {
-						  (XslTransformData.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)xslSequenceVal);  
+					  result = m_selectPattern.execute(xctxt, sourceNode, this);
+					  if (result instanceof XPathNamedFunctionReference) {
+						  (XslTransformData.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)result);  
 					  }
 				  }				  				  
 			  }        
 		  }
 		  else if (getFirstChildElem() == null) {
-			  xslSequenceVal = XString.EMPTYSTRING;
+			  result = XString.EMPTYSTRING;
 		  }
 		  else {			  			    	 			  			  
 			  boolean isOnlyElemTextLiteral = false;
@@ -550,31 +550,31 @@ public class ElemSequence extends ElemTemplateElement
 				  
 				  if (isExpandText) {					  
 					  str1 = getStrValueAfterExpandTextProcessing(str1.trim(), transformer, m_vars, m_globals_size);
-					  xslSequenceVal = new XSString(str1);
+					  result = new XSString(str1);
 				  }
 				  else {
-					  xslSequenceVal = new XSString(str1); 
+					  result = new XSString(str1); 
 				  }
 	    	  }
 			  else {
 				 int sequenceConstructDtmHandle = transformer.transformToRTF(this);
 				 NodeList nodeList = (new XRTreeFrag(sequenceConstructDtmHandle, xctxt, this)).convertToNodeset();		
-				 xslSequenceVal = new XNodeSetForDOM(nodeList, xctxt); 
+				 result = new XNodeSetForDOM(nodeList, xctxt); 
 			  }
 		  }
 
-		  if (xslSequenceVal == null) {
+		  if (result == null) {
 			  // An xsl:sequence instruction's evaluation result here 
 			  // will be an empty sequence.
 			  XPath xpathObj = new XPath(XPathParser.XPATH_EXPR_STR_EMPTY_SEQUENCE, srcLocator, null, XPath.SELECT, null);
-			  xslSequenceVal = xpathObj.execute(xctxt, DTM.NULL, null);
+			  result = xpathObj.execute(xctxt, DTM.NULL, null);
 		  }
 
 		  if (m_isCalledFromXslFork) {
-			  m_xslSequenceEvalResult = xslSequenceVal;
+			  m_xslSequenceEvalResult = result;
 		  }            		  
 		  else {
-			  emitXslSequenceResultToSerializer(xctxt, transformer, xslSequenceVal);          
+			  emitXdmObjectToResultTree(xctxt, transformer, result);          
 		  }
 	  }
 	  catch (SAXException se) {
@@ -586,43 +586,74 @@ public class ElemSequence extends ElemTemplateElement
   }
   
   /**
-   * A method definition to emit contents of xsl:sequence instruction's 
-   * evaluation result, to XSL transformation serializer.
+   * Method definition, to emit contents of xsl:sequence instruction's 
+   * evaluation result, to XSL transformation result tree.
    * 
-   * @param xctxt							an XPathContext object 
-   * @param transformer						an TransformerImpl object instance
-   * @param xslSequenceVal					an XObject object instance, representing 
-   *                                        result of evaluation of the xsl:sequence instruction
+   * @param xctxt							An XPathContext object instance 
+   * @param transformer						TransformerImpl object instance
+   * @param xdmObject					    An XObject object instance, representing 
+   *                                        result of evaluation of the xsl:sequence 
+   *                                        instruction.
    * @throws TransformerException
    * @throws SAXException
    */
-  public void emitXslSequenceResultToSerializer(XPathContext xctxt, TransformerImpl transformer, 
-		                                                                                  XObject xslSequenceVal)
-		                                                                         throws TransformerException, SAXException {
-	  if (xslSequenceVal instanceof XPathInlineFunction) {
-		  XslTransformData.m_xpathInlineFunction = (XPathInlineFunction)xslSequenceVal;   
+  public void emitXdmObjectToResultTree(XPathContext xctxt, TransformerImpl transformer, 
+		                                                    XObject xdmObject) throws TransformerException, SAXException {
+	  
+	  if (xdmObject instanceof XPathInlineFunction) {
+		  XslTransformData.m_xpathInlineFunction = (XPathInlineFunction)xdmObject;   
 	  }
-	  else if (xslSequenceVal instanceof XPathMap) {
-		  XslTransformData.m_xpathMap = (XPathMap)xslSequenceVal;
+	  else if (xdmObject instanceof XPathMap) {
+		  XslTransformData.m_xpathMap = (XPathMap)xdmObject;
 	  }
 	  else {
 		  SerializationHandler handler = transformer.getSerializationHandler();
 
-		  int xObjectType = xslSequenceVal.getType();
+		  int xObjectType = xdmObject.getType();
 		  String strVal = null;
 
 		  switch (xObjectType) {           
 		  case XObject.CLASS_NODESET :          
-			  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xslSequenceVal, transformer, handler, xctxt);          
+			  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xdmObject, transformer, handler, xctxt);          
 			  break;
 		  case XObject.CLASS_RTREEFRAG :
-			  SerializerUtils.outputResultTreeFragment(handler, xslSequenceVal, xctxt);
+			  SerializerUtils.outputResultTreeFragment(handler, xdmObject, xctxt);
 			  break;
 		  case XObject.CLASS_RESULT_SEQUENCE :         
-			  ResultSequence resultSequence = (ResultSequence)xslSequenceVal;
-			  boolean isXslSeqXslCatchChild = (getParentElem() instanceof ElemCatch) ? true : false;
-			  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, 
-					                                                                            !isXslSeqXslCatchChild ? true: false, this);          
+			  ResultSequence resultSequence = (ResultSequence)xdmObject;			  
+			  
+			  ElemTemplateElement elemTemplateParentElem = getParentElem();			  
+			  boolean isXslSeqDelimEmit = false;
+			  while (elemTemplateParentElem != null) {
+				  if (elemTemplateParentElem instanceof ElemCatch) {
+					  isXslSeqDelimEmit = true;
+					  
+					  break;
+				  }
+				  else {
+					  elemTemplateParentElem = elemTemplateParentElem.getParentElem(); 
+				  }
+			  }
+			  
+			  if (isXslSeqDelimEmit) {
+				  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, !isXslSeqDelimEmit, this);
+			  }
+			  else {
+				  elemTemplateParentElem = getParentElem();				  
+				  while (elemTemplateParentElem != null) {
+					  if ((elemTemplateParentElem instanceof ElemValueOf) || (elemTemplateParentElem instanceof ElemVariable)
+							                                              || (elemTemplateParentElem instanceof ElemFunction)) {
+						  isXslSeqDelimEmit = true;
+
+						  break;
+					  }
+
+					  elemTemplateParentElem = elemTemplateParentElem.getParentElem();
+				  }
+
+				  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, isXslSeqDelimEmit, this);
+			  }
+			  
 			  break;
 		  default :
 			  // NO OP
@@ -630,23 +661,23 @@ public class ElemSequence extends ElemTemplateElement
 
 		  boolean isToAddStrValSerializationSuffix = isToAddXslSequenceSerializationSuffix(xctxt); 
 
-		  if ((xslSequenceVal instanceof XBoolean) || (xslSequenceVal instanceof XNumber) || 
-				  (xslSequenceVal instanceof XString)) {
+		  if ((xdmObject instanceof XBoolean) || (xdmObject instanceof XNumber) || 
+				                                      (xdmObject instanceof XString)) {
 			  if (isToAddStrValSerializationSuffix) {
-				  strVal = xslSequenceVal.str() + STRING_VAL_SERIALIZATION_SUFFIX;
+				  strVal = xdmObject.str() + STRING_VAL_SERIALIZATION_SUFFIX;
 			  }
 			  else {
-				  strVal = xslSequenceVal.str();  
+				  strVal = xdmObject.str();  
 			  }
 
 			  handler.characters(strVal.toCharArray(), 0, strVal.length());
 		  }
-		  else if (xslSequenceVal instanceof XSAnyAtomicType) {
+		  else if (xdmObject instanceof XSAnyAtomicType) {
 			  if (isToAddStrValSerializationSuffix) {
-				  strVal = ((XSAnyAtomicType)xslSequenceVal).stringValue() + STRING_VAL_SERIALIZATION_SUFFIX;
+				  strVal = ((XSAnyAtomicType)xdmObject).stringValue() + STRING_VAL_SERIALIZATION_SUFFIX;
 			  }
 			  else {
-				  strVal = ((XSAnyAtomicType)xslSequenceVal).stringValue();
+				  strVal = ((XSAnyAtomicType)xdmObject).stringValue();
 			  }
 
 			  handler.characters(strVal.toCharArray(), 0, strVal.length());
@@ -709,13 +740,13 @@ public class ElemSequence extends ElemTemplateElement
   }
   
   /**
-   * Method definition to check, whether a Xalan-J serialization suffix is 
-   * to be added when emitting XDM atomic values during evaluation of 
+   * Method definition, to check whether Xalan serialization suffix is 
+   * to be added when emitting xdm atomic values during evaluation of 
    * xsl:sequence instruction.
    */
   public boolean isToAddXslSequenceSerializationSuffix(XPathContext xctxt) throws TransformerException {
      
-     boolean isToAddStrValSerializationSuffix = true;
+     boolean result = true;
      
      ElemTemplateElement elemTemplateElem = getParentElem();
      
@@ -724,10 +755,12 @@ public class ElemSequence extends ElemTemplateElement
      while (elemTemplateElem != null) {
         if (elemTemplateElem instanceof ElemFunction) {
            asAttrStrVal = ((ElemFunction)elemTemplateElem).getAs();
+           
            break;
         }
         else if (elemTemplateElem instanceof ElemVariable) {
            asAttrStrVal = ((ElemVariable)elemTemplateElem).getAs();
+           
            break;
         }
         else {
@@ -736,21 +769,20 @@ public class ElemSequence extends ElemTemplateElement
      }
      
      if (asAttrStrVal != null) {
-         XPath seqTypeXPath = new XPath(asAttrStrVal, xctxt.getSAXLocator(), 
-                                                                        xctxt.getNamespaceContext(), 
-                                                                        XPath.SELECT, null, true);
+         XPath seqTypeXPath = new XPath(asAttrStrVal, xctxt.getSAXLocator(), xctxt.getNamespaceContext(), 
+        		                                                             XPath.SELECT, null, true);
          XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), 
                                                                              xctxt.getNamespaceContext());
          SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
          if (seqExpectedTypeData.getSequenceTypeKindTest() != null) {
-            isToAddStrValSerializationSuffix = false; 
+            result = false; 
          }
      }
      else {
-         isToAddStrValSerializationSuffix = false;
+         result = false;
      }
      
-     return isToAddStrValSerializationSuffix; 
+     return result; 
   }
 
   public boolean getIsCalledFromXslFork() {

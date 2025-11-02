@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:56Z" fail="17" name="sequence" pass="8" skipped="1" statusUnknown="1" totalRun="26">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-02T17:01:46Z" fail="15" name="sequence" pass="10" skipped="1" statusUnknown="1" totalRun="26">
    <testResult status="fail" testName="sequence-0101"/>
    <testResult status="fail" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -6,27 +6,27 @@
    <testResult status="fail" testName="sequence-0105"/>
    <testResult status="fail" testName="sequence-0106">
       <outResult>
-         <errTrace>XPST0081 : An XML namespace prefix 'xs' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
+         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="sequence-0107">
       <outResult>
-         <errTrace>XPST0081 : An XML namespace prefix 'xs' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
+         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="sequence-0108">
       <outResult>
-         <errTrace>XPST0081 : An XML namespace prefix 'xs' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
+         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="sequence-0109"/>
-   <testResult status="fail" testName="sequence-0110"/>
+   <testResult status="pass" testName="sequence-0110"/>
    <testResult status="fail" testName="sequence-0111"/>
    <testResult status="pass" testName="sequence-0112"/>
    <testResult status="fail" testName="sequence-0113"/>
    <testResult status="fail" testName="sequence-0114">
       <outResult>
-         <errTrace>XPST0081 : An XML namespace prefix 'xs' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
+         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="sequence-0115">
@@ -41,7 +41,7 @@
    <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="sequence-0120"/>
    <testResult status="pass" testName="sequence-0121"/>
    <testResult status="fail" testName="sequence-0122"/>
-   <testResult status="fail" testName="sequence-0123"/>
+   <testResult status="pass" testName="sequence-0123"/>
    <testResult status="fail" testName="sequence-0124"/>
    <testResult status="fail" testName="sequence-0125"/>
    <testResult status="fail" testName="sequence-0126"/>

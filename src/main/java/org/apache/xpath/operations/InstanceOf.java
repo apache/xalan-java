@@ -141,10 +141,11 @@ public class InstanceOf extends Operation
    */
   public XObject operate(XObject left, XObject right) 
                                                  throws javax.xml.transform.TransformerException
-  {
-      boolean result = false;      
+  {            
             
-      XPathContext xctxt = null;      
+      XObject result = null;
+      
+	  XPathContext xctxt = null;      
       
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
@@ -154,9 +155,9 @@ public class InstanceOf extends Operation
       
       if (left instanceof ElemFunctionItem) {
     	  /**
-    	   * Converting, xsl:function declaration signature, to an equivalent
-    	   * XPath inline function declaration without meaningful function
-    	   * body.
+    	   * Converting, xsl:function declaration signature, to an 
+    	   * equivalent XPath inline function declaration whose
+    	   * function body is not specified.
     	   */
     	  
     	  java.lang.String xpathInlineFuncDefnStr = "function(";
@@ -203,11 +204,13 @@ public class InstanceOf extends Operation
       else if (left instanceof XdmAttributeItem) {
     	  if ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) ||
     			                                (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
-    		  return XBoolean.S_TRUE;
+    		  result = XBoolean.S_TRUE;
     	  }
     	  else {
-    		  return XBoolean.S_FALSE;
+    		  result = XBoolean.S_FALSE;
     	  }
+    	  
+    	  return result;
       }
       
       if (left instanceof XSQName) {
@@ -222,37 +225,43 @@ public class InstanceOf extends Operation
     	 if (rSeqLength == 0) {
     		 if ((seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
     				                                                                 (seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
-    			 return XBoolean.S_TRUE; 
+    			 result = XBoolean.S_TRUE; 
     		 }
     		 else if (builtInSeqType == SequenceTypeSupport.EMPTY_SEQUENCE) {
-    			 return XBoolean.S_TRUE;
+    			 result = XBoolean.S_TRUE;
     		 }
     		 else if (seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) {
-    			 return XBoolean.S_FALSE;
+    			 result = XBoolean.S_FALSE;
     		 }
+    		 
+    		 return result;
          }
     	 else if ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
     		 if (rSeqLength == 1) {
-    			 return XBoolean.S_TRUE;
+    			 result = XBoolean.S_TRUE;
     		 }
     		 else if ((seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
     				  (seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
     			 // here, rSeqLength > 1
-    			 return XBoolean.S_TRUE; 
+    			 result = XBoolean.S_TRUE; 
     		 }
     		 else {
-    			 return XBoolean.S_FALSE;  
+    			 result = XBoolean.S_FALSE;  
     		 }
+    		 
+    		 return result;
     	 }
       }
       
-      try {
+      boolean isInstanceOfResult = false;
+      
+      try {    	 
     	 if (left instanceof XPathInlineFunction) {
     		ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();    		
             XObject xObj = SequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, 
             		                                                                           xctxt, elemTemplateElement.getPrefixTable());
             if (xObj != null) {
-               result = true;	
+               isInstanceOfResult = true;	
             }
          }
     	 else if (left instanceof XNodeSetForDOM) {
@@ -280,34 +289,48 @@ public class InstanceOf extends Operation
     			}    			
 
     			if (isSequenceCardinalityOk) {
-    				return XBoolean.S_TRUE;
+    				result = XBoolean.S_TRUE;
     			}
     			else {
-    				return XBoolean.S_FALSE;
-    			}    			    			
+    				result = XBoolean.S_FALSE;
+    			}
+    			
+    			return result;
     		}
     		
     		left = left.getFresh();
     	 }
          
-    	 if (!result) {
-            result = isInstanceOf(left, seqTypedData);
+    	 if (!isInstanceOfResult) {
+            isInstanceOfResult = isInstanceOf(left, seqTypedData);
     	 }
-
       }
       catch (Exception ex) {    	 
-    	 result = false; 
+    	 isInstanceOfResult = false; 
       }
       
-      return ((result == true) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+      result = (isInstanceOfResult ? XBoolean.S_TRUE : XBoolean.S_FALSE);  
+      
+      return result;
   }
-
+  
   /**
-   * This method checks whether, an xdm value is an instance of 
-   * a specific type.
+   * Method definition, to check whether, an xdm value is an instance
+   * of a specified xdm sequence type.
+   * 
+   * @param xdmValue				                The supplied xdm value
+   * @param seqTypeData                             The supplied xdm sequence 
+   *                                                type information.
+   * @return                                        Boolean value true or false
+   * @throws ParserConfigurationException
+   * @throws SAXException
+   * @throws IOException
+   * @throws TransformerException
+   * @throws Exception
    */
-  private boolean isInstanceOf(XObject xdmValue, SequenceTypeData seqTypeData) throws ParserConfigurationException, SAXException, 
-                                                                                                             IOException, TransformerException, Exception {
+  private boolean isInstanceOf(XObject xdmValue, SequenceTypeData seqTypeData) 
+		                                                                    throws ParserConfigurationException, SAXException, 
+                                                                                   IOException, TransformerException, Exception {
     
       boolean isInstanceOf = false;
       
@@ -645,9 +668,20 @@ public class InstanceOf extends Operation
       return isInstanceOf;
   }
 
+  
   /**
-   * This method checks whether, an xdm nodeset is an instance of 
-   * a specific type.
+   * Method definition, to check whether, an xdm nodeset is an
+   * instance of a specified xdm sequence type. 
+   * 
+   * @param nodeSet										The specified xdm nodeset
+   * @param seqTypeData                                 The specified xdm sequence 
+   *                                                    type information.
+   * @return                                            Boolean value true or false
+   * @throws ParserConfigurationException
+   * @throws SAXException
+   * @throws IOException
+   * @throws TransformerException
+   * @throws Exception
    */
   private boolean isNodesetInstanceOfType(XMLNodeCursorImpl nodeSet, SequenceTypeData seqTypeData) throws 
                                                                          ParserConfigurationException, SAXException, 
@@ -974,27 +1008,38 @@ public class InstanceOf extends Operation
 	  
 	  return isInstanceOf;
   }
-
+  
   /**
-   * This method checks whether, an xdm sequence is an instance of 
-   * a specific type.
+   * Method definition, to check whether, an xdm sequence object is
+   * an instance of the specified xdm sequence type.
+   * 
+   * @param resultSeq								The supplied xdm sequence
+   * @param seqTypeData                             The supplied xdm sequence 
+   *                                                type information.
+   * @return                                        Boolean value true or false
+   * @throws ParserConfigurationException
+   * @throws SAXException
+   * @throws IOException
+   * @throws TransformerException
+   * @throws Exception
    */
-  private boolean isSequenceInstanceOfType(ResultSequence srcResultSeq, SequenceTypeData seqTypeData) throws ParserConfigurationException, 
-                                                                                                 SAXException, IOException, 
-                                                                                                 TransformerException, Exception {
+  private boolean isSequenceInstanceOfType(ResultSequence resultSeq, SequenceTypeData seqTypeData) 
+		                                                                            throws ParserConfigurationException, 
+                                                                                           SAXException, IOException, 
+                                                                                           TransformerException, Exception {
 	  
-	  boolean isInstanceOf = false;
+	  boolean result = false;
 
-	  int seqLen = srcResultSeq.size();
+	  int seqLen = resultSeq.size();
 
 	  if ((seqLen == 0) && (seqTypeData.getItemTypeOccurrenceIndicator() == OccurrenceIndicator.ONE_OR_MANY)) {
-		  isInstanceOf = false;  
+		  result = false;  
 	  }
 	  else if ((seqLen > 0) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.EMPTY_SEQUENCE)) {
-		  isInstanceOf = false;  
+		  result = false;  
 	  }
 	  else if ((seqLen > 1) && (seqTypeData.getItemTypeOccurrenceIndicator() == OccurrenceIndicator.ZERO_OR_ONE)) {
-		  isInstanceOf = false;
+		  result = false;
 	  }
 
 	  SequenceTypeData sequenceTypeDataNew = new SequenceTypeData();          
@@ -1007,8 +1052,8 @@ public class InstanceOf extends Operation
 
 	  boolean isInstanceOfOnSeqItem = true;
 
-	  for (int idx = 0; idx < srcResultSeq.size(); idx++) {
-		  XObject seqItem = (XObject)(srcResultSeq.item(idx));
+	  for (int idx = 0; idx < resultSeq.size(); idx++) {
+		  XObject seqItem = (XObject)(resultSeq.item(idx));
 		  if (!isInstanceOf(seqItem, sequenceTypeDataNew)) {
 			  isInstanceOfOnSeqItem = false;
 			  
@@ -1016,13 +1061,18 @@ public class InstanceOf extends Operation
 		  }
 	  }
 
-	  isInstanceOf = isInstanceOfOnSeqItem;
+	  result = isInstanceOfOnSeqItem;
 	  
-	  return isInstanceOf;
+	  return result;
   }
   
   /**
-   * This method checks whether, an xdm map conforms with the specified sequence type.
+   * Method definition, to checks whether, an xdm map conforms with 
+   * the supplied sequence type.
+   * 
+   * @param map								The supplied xdm map object
+   * @param seqTypeData						An xdm sequence type information
+   * @return                                Boolean value true or false
    */
   private boolean isXdmMapConformsWithSeqType(XPathMap map, SequenceTypeData seqTypeData) {
 	  boolean isInstanceOf = false;
@@ -1036,9 +1086,14 @@ public class InstanceOf extends Operation
 	  
 	  return isInstanceOf; 
   }
-
+  
   /**
-   * This method checks whether, an xdm array conforms with the specified sequence type.
+   * Method definition, to checks whether, an xdm array conforms with 
+   * the supplied sequence type.
+   * 
+   * @param xpathArr						The supplied xdm array object
+   * @param seqTypeData						An xdm sequence type information
+   * @return                                Boolean value true or false
    */
   private boolean isXdmArrayConformsWithSeqType(XPathArray xpathArr, SequenceTypeData seqTypeData) {
 	  
@@ -1061,7 +1116,8 @@ public class InstanceOf extends Operation
 				  }
 				  SequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
 				  try {
-					  XObject arrayItemTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(arrItem, null, arrayItemTypeInfo, null);
+					  XObject arrayItemTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(
+							                                                                          arrItem, null, arrayItemTypeInfo, null);
 					  if (arrayItemTypeCheckResult == null) {             				
 						  isInstanceOf = false;
 						  

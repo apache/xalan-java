@@ -503,18 +503,18 @@ public class ElemCopyOf extends ElemTemplateElement
    * 
    * @param nodeSet											The supplied XMLNodeCursorImpl object
    * @param transformer										The supplied TransformerImpl object
-   * @param serializationHandler                            The supplied SerializationHandler object
+   * @param handler                                         The supplied SerializationHandler object
    * @param xctxt                                           The supplied XPathContext object
    * @throws TransformerException
    * @throws SAXException
    */
   public static void copyOfActionOnNodeSet(XMLNodeCursorImpl nodeSet, TransformerImpl transformer, 
-                                                                      SerializationHandler serializationHandler, XPathContext xctxt) 
+                                                                      SerializationHandler handler, XPathContext xctxt) 
                                                                                throws TransformerException, SAXException {	  	  	  	  
-	  	  
+	  
 	  DTMCursorIterator dtmIter = nodeSet.iter();
 
-      DTMTreeWalker tw = new TreeWalker2Result(transformer, serializationHandler);
+      DTMTreeWalker tw = new TreeWalker2Result(transformer, handler);
       int pos;
       
       DTM dtm1 = nodeSet.getDtm();
@@ -549,10 +549,39 @@ public class ElemCopyOf extends ElemTemplateElement
           else if (nodeType == DTM.ATTRIBUTE_NODE) {
         	  // Validate an XML attribute node if required by XSL stylesheet, and emit 
         	  // the node to XSL transform's output if validation succeeds.
-        	  validateAndEmitAttributeNode(nodeSet, serializationHandler, xctxt, pos, dtm);
+        	  validateAndEmitAttributeNode(nodeSet, handler, xctxt, pos, dtm);
           }
+          /*else if (nodeType == DTM.TEXT_NODE) {
+        	  Node node = dtm.getNode(pos);
+        	  String nodeStrValue = node.getNodeValue();        		 
+        	  // 1:org.apache.xpath.objects.XNumber 2:org.apache.xpath.objects.XNumber 3:org
+        	  if (nodeStrValue.contains(":org.apache.")) {
+        		  String[] strArray = nodeStrValue.split(" ");
+        		  int arrLength = strArray.length;
+        		  StringBuffer strBuff = new StringBuffer();
+        		  // Stripping any type information, available from text 
+        		  // node's string value.
+        		  for (int idx = 0; idx < arrLength; idx++) {
+        			  String str = strArray[idx];
+        			  int idx2 = str.indexOf(":org.apache."); 
+        			  if (idx2 > -1) {
+        				  str = str.substring(0, idx2);        				
+        			  }
+        			  strBuff.append(str);
+        			  if (idx < (arrLength - 1)) {
+        				  strBuff.append(" "); 
+        			  }
+        		  }
+
+        		  String strVal = strBuff.toString();         	  
+        		  handler.characters(strVal.toCharArray(), 0, strVal.length());
+        	  }
+        	  else {
+        		  tw.traverse(pos); 
+        	  }
+          }*/
           else {
-              tw.traverse(pos);
+        	  tw.traverse(pos);
           }
       } 
   }
@@ -562,8 +591,8 @@ public class ElemCopyOf extends ElemTemplateElement
    */
   public static void copyOfActionOnResultSequence(ResultSequence resultSequence, TransformerImpl transformer, 
                                                   SerializationHandler serializationHandler, 
-                                                  XPathContext xctxt, boolean xslSeqProc, ElemTemplateElement elemTemplateElem) 
-                                                		                                                                   throws TransformerException, SAXException {
+                                                  XPathContext xctxt, boolean isXslSeqDelimEmit, 
+                                                  ElemTemplateElement elemTemplateElem) throws TransformerException, SAXException {
       char[] spaceCharArr = new char[1];      
       spaceCharArr[0] = SPACE_CHAR;
       
@@ -613,7 +642,7 @@ public class ElemCopyOf extends ElemTemplateElement
          
          if ((xdmItem instanceof XBoolean) || (xdmItem instanceof XNumber) || (xdmItem instanceof XString)) {
              strVal = xdmItem.str();
-             if (xslSeqProc) {
+             if (isXslSeqDelimEmit) {
                  strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
                  serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
              }
@@ -626,7 +655,7 @@ public class ElemCopyOf extends ElemTemplateElement
          }
          else if (xdmItem instanceof XSAnyAtomicType) {
             strVal = ((XSAnyAtomicType)xdmItem).stringValue();
-            if (xslSeqProc) {
+            if (isXslSeqDelimEmit) {
                 strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
             }
@@ -639,7 +668,7 @@ public class ElemCopyOf extends ElemTemplateElement
          }
          else if (xdmItem instanceof XSUntypedAtomic) {
              strVal = ((XSUntypedAtomic)xdmItem).stringValue();
-             if (xslSeqProc) {
+             if (isXslSeqDelimEmit) {
                  strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
                  serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
              }
@@ -652,7 +681,7 @@ public class ElemCopyOf extends ElemTemplateElement
           }
          else if (xdmItem instanceof XSUntyped) {
              strVal = ((XSUntyped)xdmItem).stringValue();
-             if (xslSeqProc) {
+             if (isXslSeqDelimEmit) {
                  strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
                  serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
              }
@@ -668,7 +697,7 @@ public class ElemCopyOf extends ElemTemplateElement
          }
          else if (xdmItem.getType() == XObject.CLASS_RESULT_SEQUENCE) {                 
              copyOfActionOnResultSequence((ResultSequence)xdmItem, transformer, serializationHandler, xctxt, 
-            		                                                                                      xslSeqProc, elemTemplateElem);
+            		                                                                                      isXslSeqDelimEmit, elemTemplateElem);
          }
       } 
    }
