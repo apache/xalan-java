@@ -545,6 +545,10 @@ public class ElemFunction extends ElemTemplate
       
       String funcAsAttrStrVal = getAs();
       
+      if (funcAsAttrStrVal == null) {
+    	 funcAsAttrStrVal = "item()*"; 
+      }
+      
       if (funcAsAttrStrVal != null) {
     	  // Process xsl:function's evaluation result with "as" attribute
     	  
@@ -749,6 +753,9 @@ public class ElemFunction extends ElemTemplate
                                                                                                                           ", doesn't match the declared function result type " + 
                 		                                                                                                  funcAsAttrStrVal + ".", srcLocator);
                    }
+                }
+                else if (funcResultConvertedVal instanceof XMLNodeCursorImpl) {
+                   funcResultConvertedVal = xslSequenceTransformTextnode(xctxt, (XMLNodeCursorImpl)funcResultConvertedVal);
                 }
              }
          }

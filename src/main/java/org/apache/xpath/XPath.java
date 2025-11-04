@@ -196,10 +196,10 @@ public class XPath implements Serializable, ExpressionOwner
     return m_patternString;
   }
 
-  /** Represents a select type expression. */
+  /** Represents an XPath select type expression */
   public static final int SELECT = 0;
 
-  /** Represents a match type expression.  */
+  /** Represents an XPath match type expression  */
   public static final int MATCH = 1;
 
   /**
@@ -222,36 +222,40 @@ public class XPath implements Serializable, ExpressionOwner
             throws javax.xml.transform.TransformerException
   { 
     
-	initFunctionTable();
-    
-    if (errorListener == null)
-      errorListener = new org.apache.xml.utils.DefaultErrorHandler();
-    
-    m_patternString = exprString;
+	  initFunctionTable();
 
-    XPathParser parser = new XPathParser(errorListener, locator);
-    Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
-    
-    if (SELECT == type) {
-      parser.initXPath(compiler, exprString, prefixResolver, false);
-      m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
-    }
-    else if (MATCH == type)
-      parser.initMatchPattern(compiler, exprString, prefixResolver);
-    else
-      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
+	  if (errorListener == null)
+		  errorListener = new org.apache.xml.utils.DefaultErrorHandler();
 
-    Expression expr = compiler.compile(0);
-    if (expr instanceof ArrowOp) {
-       ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
-    }
-    
-    this.setExpression(expr);
-    
-    if ((locator != null) && (locator instanceof ExpressionNode))
-    {
-    	expr.exprSetParent((ExpressionNode)locator);
-    }
+	  if (exprString.contains("||") || exprString.contains("//element(")) {
+		  exprString = getXPathTransformedExprStr(exprString);
+	  }
+
+	  m_patternString = exprString;
+
+	  XPathParser parser = new XPathParser(errorListener, locator);
+	  Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
+
+	  if (SELECT == type) {
+		  parser.initXPath(compiler, exprString, prefixResolver, false);
+		  m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
+	  }
+	  else if (MATCH == type)
+		  parser.initMatchPattern(compiler, exprString, prefixResolver);
+	  else
+		  throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
+
+	  Expression expr = compiler.compile(0);
+	  if (expr instanceof ArrowOp) {
+		  ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
+	  }
+
+	  this.setExpression(expr);
+
+	  if ((locator != null) && (locator instanceof ExpressionNode))
+	  {
+		  expr.exprSetParent((ExpressionNode)locator);
+	  }
 
   }
   
@@ -279,36 +283,40 @@ public class XPath implements Serializable, ExpressionOwner
                                                                                   throws javax.xml.transform.TransformerException
   { 
     
-	initFunctionTable();
-    
-    if (errorListener == null)
-      errorListener = new org.apache.xml.utils.DefaultErrorHandler();
-    
-    m_patternString = exprString;
+	  initFunctionTable();
 
-    XPathParser parser = new XPathParser(errorListener, locator);
-    Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
-    
-    if (SELECT == type) {
-      parser.initXPath(compiler, exprString, prefixResolver, false);
-      m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
-    }
-    else if (MATCH == type)
-      parser.initMatchPattern(compiler, exprString, prefixResolver, xpathDefaultNamespace);
-    else
-      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
+	  if (errorListener == null)
+		  errorListener = new org.apache.xml.utils.DefaultErrorHandler();
 
-    Expression expr = compiler.compile(0);
-    if (expr instanceof ArrowOp) {
-       ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
-    }
-    
-    this.setExpression(expr);
-    
-    if ((locator != null) && locator instanceof ExpressionNode)
-    {
-    	expr.exprSetParent((ExpressionNode)locator);
-    }
+	  if (exprString.contains("||") || exprString.contains("//element(")) {
+		  exprString = getXPathTransformedExprStr(exprString);
+	  }
+
+	  m_patternString = exprString;
+
+	  XPathParser parser = new XPathParser(errorListener, locator);
+	  Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
+
+	  if (SELECT == type) {
+		  parser.initXPath(compiler, exprString, prefixResolver, false);
+		  m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
+	  }
+	  else if (MATCH == type)
+		  parser.initMatchPattern(compiler, exprString, prefixResolver, xpathDefaultNamespace);
+	  else
+		  throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
+
+	  Expression expr = compiler.compile(0);
+	  if (expr instanceof ArrowOp) {
+		  ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
+	  }
+
+	  this.setExpression(expr);
+
+	  if ((locator != null) && locator instanceof ExpressionNode)
+	  {
+		  expr.exprSetParent((ExpressionNode)locator);
+	  }
 
   }
 
@@ -332,83 +340,87 @@ public class XPath implements Serializable, ExpressionOwner
           ErrorListener errorListener, FunctionTable funcTable)
             throws javax.xml.transform.TransformerException
   { 
-    m_funcTable = funcTable;
-    
-    if(errorListener == null)
-      errorListener = new org.apache.xml.utils.DefaultErrorHandler();
-    
-    m_patternString = exprString;
+	  m_funcTable = funcTable;
 
-    XPathParser parser = new XPathParser(errorListener, locator);
-    Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
-    
-    Expression expr = null;
-    
-    if (SELECT == type) {
-      parser.initXPath(compiler, exprString, prefixResolver, false);
-      m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
-      
-      XPathExprFunctionSuffix xpathExprFunctionSuffix = parser.getXPathExprFunctionSuffix();
-      if (xpathExprFunctionSuffix != null) {
-    	 parser = new XPathParser(errorListener, locator);
-    	 compiler = new Compiler(errorListener, locator, m_funcTable);
-    	 String xpathOneExprStr = xpathExprFunctionSuffix.getXPathOneStr();    	     	 
-    	 parser.initXPath(compiler, xpathOneExprStr, prefixResolver, false);
-    	 Expression expr1 = compiler.compile(0);
-    	 
-    	 parser = new XPathParser(errorListener, locator);
-    	 compiler = new Compiler(errorListener, locator, m_funcTable);
-    	 String xpathTwoExprStr = xpathExprFunctionSuffix.getXPathTwoStr();    	 
-    	 if (xpathTwoExprStr.contains(":")) {  		 
-    		 StylesheetHandler stylesheetHandler = (StylesheetHandler)prefixResolver;    		 
-    		 Hashtable nsUriTable = stylesheetHandler.getNamespaceUriTable();
-    		 Enumeration nsUriTableKeys = nsUriTable.keys();
-    		 while (nsUriTableKeys.hasMoreElements()) {
-    			String key = (nsUriTableKeys.nextElement()).toString();
-    			String value = (nsUriTable.get(key)).toString();
-    			xpathTwoExprStr = xpathTwoExprStr.replace(key, value);
-    		 }
-    	 }
-    	 parser.initXPath(compiler, xpathTwoExprStr, prefixResolver, false);
-    	 Expression expr2 = compiler.compile(0);
-    	 
-    	 parser.setXPathExprFunctionSuffix(null);
-    	 
-    	 expr = expr1;
-    	 
-    	 if ((expr instanceof LocPathIterator) && (expr2 instanceof Function)) {
-    		LocPathIterator locPathIter = (LocPathIterator)expr;
-    		expr2.exprSetParent((ExpressionNode)locator);
-    		locPathIter.setFuncExpr((Function)expr2);
-    	 }
-    	 else if ((expr instanceof LocPathIterator) && (expr2 instanceof XPathDynamicFunctionCall)) {
-     		LocPathIterator locPathIter = (LocPathIterator)expr;
-     		expr2.exprSetParent((ExpressionNode)locator);
-     		locPathIter.setDynamicFuncCallExpr((XPathDynamicFunctionCall)expr2);
-     	 }
-      }
-    }
-    else if (MATCH == type)
-      parser.initMatchPattern(compiler, exprString, prefixResolver);    
-    else
-      throw new RuntimeException(XSLMessages.createXPATHMessage(
-            XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, 
-            new Object[]{Integer.toString(type)}));
-    
-    if (expr == null) {
-       expr = compiler.compile(0);
-    }
-    
-    if (expr instanceof ArrowOp) {
-       ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
-    }
+	  if(errorListener == null)
+		  errorListener = new org.apache.xml.utils.DefaultErrorHandler();
 
-    this.setExpression(expr);
-    
-    if ((locator != null) && locator instanceof ExpressionNode)
-    {
-    	expr.exprSetParent((ExpressionNode)locator);
-    }
+	  if (exprString.contains("||") || exprString.contains("//element(")) {
+		  exprString = getXPathTransformedExprStr(exprString);
+	  }
+
+	  m_patternString = exprString;
+
+	  XPathParser parser = new XPathParser(errorListener, locator);
+	  Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
+
+	  Expression expr = null;
+
+	  if (SELECT == type) {
+		  parser.initXPath(compiler, exprString, prefixResolver, false);
+		  m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
+
+		  XPathExprFunctionSuffix xpathExprFunctionSuffix = parser.getXPathExprFunctionSuffix();
+		  if (xpathExprFunctionSuffix != null) {
+			  parser = new XPathParser(errorListener, locator);
+			  compiler = new Compiler(errorListener, locator, m_funcTable);
+			  String xpathOneExprStr = xpathExprFunctionSuffix.getXPathOneStr();    	     	 
+			  parser.initXPath(compiler, xpathOneExprStr, prefixResolver, false);
+			  Expression expr1 = compiler.compile(0);
+
+			  parser = new XPathParser(errorListener, locator);
+			  compiler = new Compiler(errorListener, locator, m_funcTable);
+			  String xpathTwoExprStr = xpathExprFunctionSuffix.getXPathTwoStr();    	 
+			  if (xpathTwoExprStr.contains(":")) {  		 
+				  StylesheetHandler stylesheetHandler = (StylesheetHandler)prefixResolver;    		 
+				  Hashtable nsUriTable = stylesheetHandler.getNamespaceUriTable();
+				  Enumeration nsUriTableKeys = nsUriTable.keys();
+				  while (nsUriTableKeys.hasMoreElements()) {
+					  String key = (nsUriTableKeys.nextElement()).toString();
+					  String value = (nsUriTable.get(key)).toString();
+					  xpathTwoExprStr = xpathTwoExprStr.replace(key, value);
+				  }
+			  }
+			  parser.initXPath(compiler, xpathTwoExprStr, prefixResolver, false);
+			  Expression expr2 = compiler.compile(0);
+
+			  parser.setXPathExprFunctionSuffix(null);
+
+			  expr = expr1;
+
+			  if ((expr instanceof LocPathIterator) && (expr2 instanceof Function)) {
+				  LocPathIterator locPathIter = (LocPathIterator)expr;
+				  expr2.exprSetParent((ExpressionNode)locator);
+				  locPathIter.setFuncExpr((Function)expr2);
+			  }
+			  else if ((expr instanceof LocPathIterator) && (expr2 instanceof XPathDynamicFunctionCall)) {
+				  LocPathIterator locPathIter = (LocPathIterator)expr;
+				  expr2.exprSetParent((ExpressionNode)locator);
+				  locPathIter.setDynamicFuncCallExpr((XPathDynamicFunctionCall)expr2);
+			  }
+		  }
+	  }
+	  else if (MATCH == type)
+		  parser.initMatchPattern(compiler, exprString, prefixResolver);    
+	  else
+		  throw new RuntimeException(XSLMessages.createXPATHMessage(
+				  XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, 
+				  new Object[]{Integer.toString(type)}));
+
+	  if (expr == null) {
+		  expr = compiler.compile(0);
+	  }
+
+	  if (expr instanceof ArrowOp) {
+		  ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
+	  }
+
+	  this.setExpression(expr);
+
+	  if ((locator != null) && locator instanceof ExpressionNode)
+	  {
+		  expr.exprSetParent((ExpressionNode)locator);
+	  }
 
   }
   
@@ -429,7 +441,7 @@ public class XPath implements Serializable, ExpressionOwner
           String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type)
             throws javax.xml.transform.TransformerException
   {  
-    this(exprString, locator, prefixResolver, type, null);    
+	  this(exprString, locator, prefixResolver, type, null);    
   }
   
   /**
@@ -445,31 +457,35 @@ public class XPath implements Serializable, ExpressionOwner
             throws javax.xml.transform.TransformerException {
       
 	  initFunctionTable();
-      
-      if (errorListener == null)
-        errorListener = new org.apache.xml.utils.DefaultErrorHandler();
-      
-      m_patternString = exprString;
 
-      XPathParser parser = new XPathParser(errorListener, locator);
-      Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
+	  if (errorListener == null)
+		  errorListener = new org.apache.xml.utils.DefaultErrorHandler();
 
-      if (SELECT == type) {
-        parser.initXPath(compiler, exprString, prefixResolver, isSequenceTypeXPathExpr);
-      }
-      else if (MATCH == type)
-        parser.initMatchPattern(compiler, exprString, prefixResolver);
-      else
-        throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)}));
+	  if (exprString.contains("||") || exprString.contains("//element(")) {
+		  exprString = getXPathTransformedExprStr(exprString);
+	  }
 
-      Expression expr = compiler.compile(0);
+	  m_patternString = exprString;
 
-      this.setExpression(expr);
-      
-      if ((locator != null) && locator instanceof ExpressionNode)
-      {
-          expr.exprSetParent((ExpressionNode)locator);
-      } 
+	  XPathParser parser = new XPathParser(errorListener, locator);
+	  Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
+
+	  if (SELECT == type) {
+		  parser.initXPath(compiler, exprString, prefixResolver, isSequenceTypeXPathExpr);
+	  }
+	  else if (MATCH == type)
+		  parser.initMatchPattern(compiler, exprString, prefixResolver);
+	  else
+		  throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)}));
+
+	  Expression expr = compiler.compile(0);
+
+	  this.setExpression(expr);
+
+	  if ((locator != null) && locator instanceof ExpressionNode)
+	  {
+		  expr.exprSetParent((ExpressionNode)locator);
+	  } 
   }
 
   /**
@@ -1156,5 +1172,98 @@ public class XPath implements Serializable, ExpressionOwner
 
     	return result;
   }
+    
+    /**
+     * Method definition, to do string transformation of the supplied 
+     * XPath string value. The substrings with form "||", "//element()", 
+     * "//element(abc)" within the supplied string value are replaced 
+     * in specific ways. 
+     * 
+     * The following types of string value transformations,
+     * are performed by this method definition:
+     * 1) 
+     *   a||b||c -> a || b || c 
+     *   a||b -> a || b
+     *   a|| b -> a || b
+     *   a ||b -> a || b etc
+     * 
+     * 2) 
+     *   //element() -> //*
+     *   //element(abc) -> //abc
+     * 
+     * @param exprString				The supplied XPath expression 
+     *                                  string value.
+     * @return							The string value produced by 
+     *                                  this method.
+     */
+    private String getXPathTransformedExprStr(String exprString) {
+  	  
+    	String result = exprString;
+
+    	int strLength = result.length();    	
+    	if (result.contains("||")) {
+    		int pIdx = result.indexOf("||", 0);
+    		int srchStart = 0;
+    		while ((pIdx - 1 >= 0) && result.charAt(pIdx - 1) != ' ') {
+    			String prefxStr = result.substring(0, pIdx);
+    			String pat1 = prefxStr + ' ' + "||" ;
+    			String pat2 = "";
+    			
+    			if (pIdx + 2 < strLength) {
+    				pat2 = result.substring(pIdx + 2); 
+    			}
+    			
+    			result = pat1 + pat2;       
+    			strLength = result.length();
+
+    			pIdx = result.indexOf("||", srchStart);
+    			if ((pIdx + 2 < strLength) && (result.charAt(pIdx + 2) != ' ')) {
+    				pat1 = result.substring(0, pIdx + 2) + ' ';
+    				pat2 = result.substring(pIdx + 2);
+    				result = pat1 + pat2;       
+    				strLength = result.length();
+    			}
+
+    			int idx2 = result.indexOf("||");
+    			if (idx2 + 2 < strLength) {
+    				srchStart = idx2 + 2;
+    				pIdx = result.indexOf("||", srchStart); 
+    			}		  
+    		}
+    	}
+    	   	
+    	if (result.contains("//element(")) {
+    		String regexStr = "//element\\(.*?\\)";
+    		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regexStr);
+    		java.util.regex.Matcher matcher = pattern.matcher(result);
+    		int count = 0; 
+    		while (matcher.find()) {
+    			count++;
+    			int startIdx = matcher.start();
+    			int endIdx = matcher.end();
+    			if (count == 1) {
+    				String prefixStr = result.substring(0, startIdx);
+    				String infixStr = result.substring(startIdx, endIdx);    				
+    				String suffixStr = result.substring(endIdx);
+    				int idx1 = infixStr.indexOf('(');
+    				int idx2 = infixStr.indexOf(')');
+    				if ((idx1 + 1) == idx2) {
+    					result = (prefixStr + "//*" + suffixStr);
+    				}
+    				else {
+    					result = (prefixStr + "//" + infixStr.substring(idx1 + 1, idx2) + suffixStr);
+    				}
+
+    				matcher = pattern.matcher(result);
+    				count = 0;
+
+    				continue;
+
+    			}
+    		}
+        }
+
+    	return result;
+    }
 
 }
