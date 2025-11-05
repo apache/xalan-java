@@ -69,6 +69,7 @@ public class XPathExprFunctionCallSuffix extends Expression {
 	
 	@Override
 	public XObject execute(XPathContext xctxt) throws TransformerException {
+		
 		XObject result = null;
 		
         final int contextNode = xctxt.getCurrentNode();
@@ -99,6 +100,12 @@ public class XPathExprFunctionCallSuffix extends Expression {
         
         int idx = m_xpathExprStr.lastIndexOf('/');
         String xpathLhsStr = m_xpathExprStr.substring(0, idx);
+        boolean isXPathLhsExprMutated = false;
+        if (m_xpathExprStr.charAt(idx - 1) == '/') {
+        	isXPathLhsExprMutated = true;
+        	xpathLhsStr += "/node()";	
+        }
+        
         String xpathRhsStr = m_xpathExprStr.substring(idx + 1);
     	
     	XPath xpathLhsObj = new XPath(xpathLhsStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -107,21 +114,60 @@ public class XPathExprFunctionCallSuffix extends Expression {
     		xpathLhsObj.fixupVariables(m_vars, m_globals_size);
         }
     	
-    	XObject xObj = xpathLhsObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    	XObject lhsResult = xpathLhsObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
     	
-    	XPath xpathRhsObj = new XPath(xpathRhsStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-    	
-    	if (xObj instanceof XMLNodeCursorImpl) {
-    	   ResultSequence resultSeq = new ResultSequence();
-    	   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
-    	   DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iter();
-    	   int nextNode;
-    	   while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {
-    		   XObject xObj2 = xpathRhsObj.execute(xctxt, nextNode, xctxt.getNamespaceContext());
-    		   resultSeq.add(xObj2);
-    	   }
-    	   
-    	   result = resultSeq; 
+    	if (lhsResult instanceof XMLNodeCursorImpl) {
+    		ResultSequence resultSeq = new ResultSequence();
+    		XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)lhsResult;
+    		DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iter();
+    		int nextNode;
+    		while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {
+    			XObject xObj2 = null;    		      		  
+    			if (isXPathLhsExprMutated && "node()".equals(xpathRhsStr)) {
+    				xObj2 = new XMLNodeCursorImpl(nextNode, xctxt);
+    				resultSeq.add(xObj2);
+    			}
+    			else if (isXPathLhsExprMutated && "text()".equals(xpathRhsStr)) {
+    				DTM dtm = xctxt.getDTM(nextNode);
+    				if (dtm.getNodeType(nextNode) == DTM.TEXT_NODE) {
+    					xObj2 = new XMLNodeCursorImpl(nextNode, xctxt);
+    					resultSeq.add(xObj2);
+    				}
+    			}
+    			else if (isXPathLhsExprMutated && "comment()".equals(xpathRhsStr)) {
+    				DTM dtm = xctxt.getDTM(nextNode);
+    				if (dtm.getNodeType(nextNode) == DTM.COMMENT_NODE) {
+    					xObj2 = new XMLNodeCursorImpl(nextNode, xctxt);
+    					resultSeq.add(xObj2);
+    				}
+    			}
+    			else if (!isXPathLhsExprMutated && ("text()".equals(xpathRhsStr) || "node()".equals(xpathRhsStr))) {    				
+    				XPathTextAndNodeExpr xpathTextAndNodeExpr = new XPathTextAndNodeExpr();    		      		  
+    				xpathTextAndNodeExpr.setNodeStr(xpathRhsStr);    		  
+    				if (xpathLhsStr.length() > 0) {
+    					xpathTextAndNodeExpr.setXpathPrefixStr(xpathLhsStr);
+    				}
+    				
+    				XObject xObj = xpathTextAndNodeExpr.execute(xctxt);
+    				if (xObj instanceof ResultSequence) {
+    				   ResultSequence rSeqTemp1 = (ResultSequence)xObj;
+    				   int rSeqLength = rSeqTemp1.size();
+    				   for (int idx2 = 0; idx2 < rSeqLength; idx2++) {
+    					  resultSeq.add(rSeqTemp1.item(idx2));  
+    				   }
+    				}
+    				else {
+    				   resultSeq.add(xObj);
+    				}
+    			}
+    			else {
+    				XPath xpathRhsObj = new XPath(xpathRhsStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    				xObj2 = xpathRhsObj.execute(xctxt, nextNode, xctxt.getNamespaceContext());
+    				resultSeq.add(xObj2);
+    			}
+    		}
+
+    		result = resultSeq; 
     	}
 		
 		return result;

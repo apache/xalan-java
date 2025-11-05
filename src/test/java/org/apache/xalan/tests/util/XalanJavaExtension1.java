@@ -37,16 +37,16 @@ import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * A class definition, specifying few Xalan-J XSL 3 Java extension 
- * functions for Xalan-J test cases. The user shall typically write 
- * their own logic for Xalan-J Java extension functions.
+ * A class definition, specifying few Xalan XSL 3 Java extension 
+ * functions for Xalan test cases. The user shall typically write 
+ * their own logic for Xalan Java extension functions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
 public class XalanJavaExtension1 {
 	
 	/**
-	 * Method definition to, filter information from the supplied 
+	 * Method definition, to filter information from the supplied 
 	 * Document object, that meet a specific criteria.
 	 * 
 	 * @param xObjArr			    The supplied Document object instance
@@ -71,7 +71,7 @@ public class XalanJavaExtension1 {
     }
 	
 	/**
-	 * Method definition to, process the supplied array of XObject 
+	 * Method definition, to process the supplied array of XObject 
 	 * values, by transforming to a sequence of square of each array 
 	 * item. 
 	 * 
@@ -87,7 +87,7 @@ public class XalanJavaExtension1 {
     }
 	
 	/**
-	 * Method definition to, process the supplied array of XObject 
+	 * Method definition, to process the supplied array of XObject 
 	 * values, by transforming to a sequence of square of each array 
 	 * item. 
 	 * 
@@ -103,7 +103,7 @@ public class XalanJavaExtension1 {
     }
     
     /**
-	 * Method definition to, process the supplied java.util.Map object, 
+	 * Method definition, to process the supplied java.util.Map object, 
 	 * by transforming to an xdm map whose entry values are square of 
 	 * that of the supplied java.util.Map object.
 	 * 
@@ -158,7 +158,7 @@ public class XalanJavaExtension1 {
     }
     
     /**
-	 * Method definition to, process the supplied array of XObject 
+	 * Method definition, to process the supplied array of XObject 
 	 * values, by transforming to a sequence of square of each array 
 	 * item. 
 	 * 

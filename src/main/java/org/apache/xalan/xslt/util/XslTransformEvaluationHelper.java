@@ -49,6 +49,7 @@ import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.composite.XPathExprFunctionCallSuffix;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
@@ -487,6 +488,13 @@ public class XslTransformEvaluationHelper {
             		else {
             		   xdmSequenceSize = 1;	
             		}
+            	}
+            }
+            else if (expr instanceof XPathExprFunctionCallSuffix) {
+            	XPathExprFunctionCallSuffix xpathExprFunctionCallSuffix = (XPathExprFunctionCallSuffix)expr;
+            	XObject xObject = xpathExprFunctionCallSuffix.execute(xctxt);            	
+            	if (xObject instanceof ResultSequence) {
+            	   xdmSequenceSize = ((ResultSequence)xObject).size(); 	
             	}
             }
             else {

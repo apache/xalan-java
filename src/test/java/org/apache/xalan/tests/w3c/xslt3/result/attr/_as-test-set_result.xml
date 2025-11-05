@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-02T17:01:17Z" fail="27" name="as" pass="77" skipped="4" statusUnknown="1" totalRun="105">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T11:58:09Z" fail="25" name="as" pass="79" skipped="4" statusUnknown="1" totalRun="105">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
@@ -95,9 +95,7 @@
    <testResult status="pass" testName="as-0901"/>
    <testResult status="pass" testName="as-1001"/>
    <testResult status="fail" testName="as-1101"/>
-   <testResult status="fail" testName="as-1201">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="as-1201"/>
    <testResult status="pass" testName="as-1202"/>
    <testResult status="pass" testName="as-1203"/>
    <testResult status="pass" testName="as-1204"/>
@@ -105,11 +103,13 @@
    <testResult status="pass" testName="as-1206"/>
    <testResult status="pass" testName="as-1207"/>
    <testResult status="pass" testName="as-1208"/>
-   <testResult status="fail" testName="as-1209">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="as-1209"/>
    <testResult status="fail" testName="as-1210">
-      <outResult/>
+      <outResult>
+         <errTrace>XTTE0505 : The required result type of XSL template 'a3' is node(). But XSL template's result doesn't conform to this required type.</errTrace>
+         <errTrace>XPST0003 : An XPath expression /out/e2/item[@attrib="red"][comment()="I am a comment"]="hello" has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="as-1211"/>
    <testResult status="pass" testName="as-1212"/>
@@ -118,9 +118,7 @@
          <errTrace>XTDE0700 : No value supplied for the required parameter $par2. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="as-1214">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="as-1214"/>
    <testResult status="fail" testName="as-1215"/>
    <testResult status="fail" testName="as-1216"/>
    <testResult status="fail" testName="as-1217"/>

@@ -1666,7 +1666,7 @@ public class XPathParser
 	      if (isXPathParseOkToProceed && isSequenceConstructor) { 
 	    	 if (seqOrArrayXPathItems.size() > 1) {
 	    		 // An XPath literal sequence constructor expression can 
-	    		 // create an XDM sequence having at-least two values.
+	    		 // create an xdm sequence having at-least two values.
 	    		 isXPathParseOkToProceed = true; 
 	    	 }
 	    	 else {
@@ -4916,7 +4916,7 @@ public class XPathParser
        String xpathExprStr = strBuff.toString();
        int idx = xpathExprStr.lastIndexOf('/');
        if (idx != -1) {
-    	  String xpathLhsStr = xpathExprStr.substring(0, idx);
+    	  String xpathLhsStr = xpathExprStr.substring(0, idx);    	  
     	  String xpathRhsStr = xpathExprStr.substring(idx + 1);
     	  if (xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI) || 
 								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
@@ -4924,9 +4924,9 @@ public class XPathParser
 								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
               restoreTokenQueueScanPosition(prevTokQueueScanPosition);
               
-    		  Expr();  
+    		  Expr(); 
     	  }
-    	  else if ("text()".equals(xpathRhsStr) || "node()".equals(xpathRhsStr)) {
+    	  else if (isXPathBuiltInFunctionCall(xpathLhsStr) && ("text()".equals(xpathRhsStr) || "node()".equals(xpathRhsStr))) {
     		  appendOp(2, OpCodes.OP_TEXT_AND_NODE_EXPR);
 
     		  m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();    		      		  
@@ -4935,18 +4935,16 @@ public class XPathParser
     			  m_xpathTextAndNodeExpr.setXpathPrefixStr(xpathLhsStr);
     		  } 
     	  }
-    	  else {    		  
-    		  if (!isStrHasXPathAxisNamePrefix(xpathRhsStr) && (xpathRhsStr.endsWith("()") || xpathRhsStr.endsWith("(.)"))) {    		  
-    			  insertOp(opPos, 2, OpCodes.OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX);    		  
+    	  else if (!isStrHasXPathAxisNamePrefix(xpathRhsStr) && (xpathRhsStr.endsWith("()") || xpathRhsStr.endsWith("(.)"))) {
+    		  insertOp(opPos, 2, OpCodes.OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX);    		  
 
-    			  m_xpathExprWithFuncCallSuffix = new XPathExprFunctionCallSuffix();
-    			  m_xpathExprWithFuncCallSuffix.setXPathExprStr(xpathExprStr);
-    		  }
-    		  else {
-    			  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
-    			  
-    			  Expr(); 
-    		  }
+			  m_xpathExprWithFuncCallSuffix = new XPathExprFunctionCallSuffix();
+			  m_xpathExprWithFuncCallSuffix.setXPathExprStr(xpathExprStr);
+    	  }
+    	  else {
+    		  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+			  
+			  Expr();
     	  }
        }
        else {
@@ -4976,7 +4974,6 @@ public class XPathParser
   }
 
   /**
-   * 
    * FunctionCall    ::=    FunctionName '(' ( Argument ( ',' Argument)*)? ')'
    *
    * @return true if, and only if, a FunctionCall was matched
@@ -4986,256 +4983,256 @@ public class XPathParser
   protected boolean FunctionCall() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
-    if (lookahead(':', 1))
-    {
-      if (tokenIs(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI)) 
-      {
-         nextToken();
-         consumeExpected(':');
-         
-         int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
+	  if (lookahead(':', 1))
+	  {
+		  if (tokenIs(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI)) 
+		  {
+			  nextToken();
+			  consumeExpected(':');
 
-         if (-1 == funcTok)
-         {
-           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
-         }         
+			  int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
 
-         switch (funcTok)
-         {
-            case OpCodes.NODETYPE_PI :
-            case OpCodes.NODETYPE_COMMENT :
-            case OpCodes.NODETYPE_TEXT :
-            case OpCodes.NODETYPE_NODE :
-              // Node type tests look like function calls, but they're not
-              return false;
-            default :
-              appendOp(3, OpCodes.OP_FUNCTION);
+			  if (-1 == funcTok)
+			  {
+				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+						  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
+			  }         
 
-            m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
-         }
+			  switch (funcTok)
+			  {
+			  case OpCodes.NODETYPE_PI :
+			  case OpCodes.NODETYPE_COMMENT :
+			  case OpCodes.NODETYPE_TEXT :
+			  case OpCodes.NODETYPE_NODE :
+				  // Node type tests look like function calls, but they're not
+				  return false;
+			  default :
+				  appendOp(3, OpCodes.OP_FUNCTION);
 
-         nextToken();
-      }
-      else if (tokenIs(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI)) 
-      {
-         nextToken();
-         consumeExpected(':');
-         
-         int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
+				  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
+			  }
 
-         if (-1 == funcTok)
-         {
-           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI + "}" + m_token + "()"});
-         }         
+			  nextToken();
+		  }
+		  else if (tokenIs(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI)) 
+		  {
+			  nextToken();
+			  consumeExpected(':');
 
-         switch (funcTok)
-         {
-            case OpCodes.NODETYPE_PI :
-            case OpCodes.NODETYPE_COMMENT :
-            case OpCodes.NODETYPE_TEXT :
-            case OpCodes.NODETYPE_NODE :
-              // Node type tests look like function calls, but they're not
-              return false;
-            default :
-              appendOp(3, OpCodes.OP_FUNCTION);
+			  int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
 
-            m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
-         }
+			  if (-1 == funcTok)
+			  {
+				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+						  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI + "}" + m_token + "()"});
+			  }         
 
-         nextToken();
-      }
-      else if (tokenIs(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI)) 
-      {
-         nextToken();
-         consumeExpected(':');
-         
-         int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
+			  switch (funcTok)
+			  {
+			  case OpCodes.NODETYPE_PI :
+			  case OpCodes.NODETYPE_COMMENT :
+			  case OpCodes.NODETYPE_TEXT :
+			  case OpCodes.NODETYPE_NODE :
+				  // Node type tests look like function calls, but they're not
+				  return false;
+			  default :
+				  appendOp(3, OpCodes.OP_FUNCTION);
 
-         if (-1 == funcTok)
-         {
-             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI + "}" + m_token + "()"});
-         }         
+				  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
+			  }
 
-         switch (funcTok)
-         {
-            case OpCodes.NODETYPE_PI :
-            case OpCodes.NODETYPE_COMMENT :
-            case OpCodes.NODETYPE_TEXT :
-            case OpCodes.NODETYPE_NODE :
-              // Node type tests look like function calls, but they're not
-              return false;
-            default :
-              appendOp(3, OpCodes.OP_FUNCTION);
+			  nextToken();
+		  }
+		  else if (tokenIs(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI)) 
+		  {
+			  nextToken();
+			  consumeExpected(':');
 
-            m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
-         }
+			  int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
 
-         nextToken();
-      }
-      else if (tokenIs(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) 
-      {
-         nextToken();
-         consumeExpected(':');
-         
-         int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
+			  if (-1 == funcTok)
+			  {
+				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+						  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI + "}" + m_token + "()"});
+			  }         
 
-         if (-1 == funcTok)
-         {
-           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});
-         }         
+			  switch (funcTok)
+			  {
+			  case OpCodes.NODETYPE_PI :
+			  case OpCodes.NODETYPE_COMMENT :
+			  case OpCodes.NODETYPE_TEXT :
+			  case OpCodes.NODETYPE_NODE :
+				  // Node type tests look like function calls, but they're not
+				  return false;
+			  default :
+				  appendOp(3, OpCodes.OP_FUNCTION);
 
-         switch (funcTok)
-         {
-            case OpCodes.NODETYPE_PI :
-            case OpCodes.NODETYPE_COMMENT :
-            case OpCodes.NODETYPE_TEXT :
-            case OpCodes.NODETYPE_NODE :
-              // Node type tests look like function calls, but they're not
-              return false;
-            default :
-              appendOp(3, OpCodes.OP_FUNCTION);
+				  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
+			  }
 
-            m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
-         }
+			  nextToken();
+		  }
+		  else if (tokenIs(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) 
+		  {
+			  nextToken();
+			  consumeExpected(':');
 
-         nextToken();
-      }
-      else {  
-        appendOp(4, OpCodes.OP_CONSTRUCTOR_STYLESHEET_EXT_FUNCTION);
+			  int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
 
-        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, m_queueMark - 1);
+			  if (-1 == funcTok)
+			  {
+				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+						  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});
+			  }         
 
-        nextToken();
-        consumeExpected(':');
+			  switch (funcTok)
+			  {
+			  case OpCodes.NODETYPE_PI :
+			  case OpCodes.NODETYPE_COMMENT :
+			  case OpCodes.NODETYPE_TEXT :
+			  case OpCodes.NODETYPE_NODE :
+				  // Node type tests look like function calls, but they're not
+				  return false;
+			  default :
+				  appendOp(3, OpCodes.OP_FUNCTION);
 
-        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 2, m_queueMark - 1);
+				  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
+			  }
 
-        nextToken();
-      }
-    }
-    else
-    {
-      int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
+			  nextToken();
+		  }
+		  else {  
+			  appendOp(4, OpCodes.OP_CONSTRUCTOR_STYLESHEET_EXT_FUNCTION);
 
-      if (-1 == funcTok)
-      {
-          error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-              new Object[]{"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
-      }      
+			  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, m_queueMark - 1);
 
-      switch (funcTok)
-      {
-         case OpCodes.NODETYPE_PI :
-         case OpCodes.NODETYPE_COMMENT :
-         case OpCodes.NODETYPE_TEXT :
-         case OpCodes.NODETYPE_NODE :
-           // Node type tests look like function calls, but they're not
-           return false;
-         default :
-           appendOp(3, OpCodes.OP_FUNCTION);
+			  nextToken();
+			  consumeExpected(':');
 
-         m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
-      }
+			  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 2, m_queueMark - 1);
 
-      nextToken();
-    }
+			  nextToken();
+		  }
+	  }
+	  else
+	  {
+		  int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
 
-    consumeExpected('(');
+		  if (-1 == funcTok)
+		  {
+			  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+					  new Object[]{"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
+		  }      
 
-    while (!tokenIs(')') && m_token != null)
-    {
-      if (tokenIs(','))
-      {
-        error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG, null);  //"Found ',' but no preceding argument!");
-      }
+		  switch (funcTok)
+		  {
+		  case OpCodes.NODETYPE_PI :
+		  case OpCodes.NODETYPE_COMMENT :
+		  case OpCodes.NODETYPE_TEXT :
+		  case OpCodes.NODETYPE_NODE :
+			  // Node type tests look like function calls, but they're not
+			  return false;
+		  default :
+			  appendOp(3, OpCodes.OP_FUNCTION);
 
-      Argument();
-      	  
-      if (!m_isParseSequenceTypeExprWithUserDefinedType && !tokenIs(')'))
-      {
-        consumeExpected(',');
+			  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
+		  }
 
-        if (tokenIs(')'))
-        {
-          error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG,
-                null);  //"Found ',' but no following argument!");
-        }
-      }
-    }
+		  nextToken();
+	  }
 
-    if (!m_isParseSequenceTypeExprWithUserDefinedType) {
-        consumeExpected(')');
-    }
-    else {
-    	m_isParseSequenceTypeExprWithUserDefinedType = false;	
-    }
-    
-    if (tokenIs('(')) {
-    	/**
-    	 * XPath parse of a possible function argument literal list suffix. 
-    	 * This can handle an XPath function call syntax like prefix:func1(args1)(args2), 
-    	 * where an XPath expression syntax prefix:func1(args1) returns a function item 
-    	 * that can be called with it's required arguments (i.e, args2).
-    	 */
-    	
-    	appendOp(2, OpCodes.OP_XPATH_FUNC_CALL_EXTENDED_ARG);
-    	
-    	consumeExpected('(');
-    	
-    	List<String> funcArgrgXPathExprStrList = new ArrayList<String>();
-    	
-    	while (!tokenIs(')') && m_token != null)
-        {
-    		if (tokenIs(','))
-    		{
-    			error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG, null);
-    		}
+	  consumeExpected('(');
 
-    		StringBuffer strBuff = new StringBuffer();
-    		while (!(tokenIs(',') || tokenIs(')')) && m_token != null) {
-    			strBuff.append(m_token);
-    			nextToken();
-    		}
+	  while (!tokenIs(')') && m_token != null)
+	  {
+		  if (tokenIs(','))
+		  {
+			  error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG, null);  //"Found ',' but no preceding argument!");
+		  }
 
-    		String strValue = strBuff.toString();
-    		if (strValue.length() > 0) {
-    			funcArgrgXPathExprStrList.add(strValue);
-    		}
+		  Argument();
 
-    		if (!tokenIs(')'))
-    		{
-    			consumeExpected(',');
+		  if (!m_isParseSequenceTypeExprWithUserDefinedType && !tokenIs(')'))
+		  {
+			  consumeExpected(',');
 
-    			if (tokenIs(')'))
-    			{
-    				error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG, null);
-    			}
-    		}
-        }
-    	
-    	m_xpathExprFuncCallExtendedArg = new XPathExprFuncCallExtendedArg();    	
-    	if (funcArgrgXPathExprStrList.size() > 0) {    		
-    		m_xpathExprFuncCallExtendedArg.setFunctionArgXPathExprStrList(funcArgrgXPathExprStrList);
-    	}
-    	
-    	consumeExpected(')');
-    	
-    	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-                       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-    }
+			  if (tokenIs(')'))
+			  {
+				  error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG,
+						  null);  //"Found ',' but no following argument!");
+			  }
+		  }
+	  }
 
-    m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
-    m_ops.setOp(OpMap.MAPINDEX_LENGTH,m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
-    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+	  if (!m_isParseSequenceTypeExprWithUserDefinedType) {
+		  consumeExpected(')');
+	  }
+	  else {
+		  m_isParseSequenceTypeExprWithUserDefinedType = false;	
+	  }
 
-    return true;
+	  if (tokenIs('(')) {
+		  /**
+		   * XPath parse of a possible function argument literal list suffix. 
+		   * This can handle an XPath function call syntax like prefix:func1(args1)(args2), 
+		   * where an XPath expression syntax prefix:func1(args1) returns a function item 
+		   * that can be called with it's required arguments (i.e, args2).
+		   */
+
+		  appendOp(2, OpCodes.OP_XPATH_FUNC_CALL_EXTENDED_ARG);
+
+		  consumeExpected('(');
+
+		  List<String> funcArgrgXPathExprStrList = new ArrayList<String>();
+
+		  while (!tokenIs(')') && m_token != null)
+		  {
+			  if (tokenIs(','))
+			  {
+				  error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG, null);
+			  }
+
+			  StringBuffer strBuff = new StringBuffer();
+			  while (!(tokenIs(',') || tokenIs(')')) && m_token != null) {
+				  strBuff.append(m_token);
+				  nextToken();
+			  }
+
+			  String strValue = strBuff.toString();
+			  if (strValue.length() > 0) {
+				  funcArgrgXPathExprStrList.add(strValue);
+			  }
+
+			  if (!tokenIs(')'))
+			  {
+				  consumeExpected(',');
+
+				  if (tokenIs(')'))
+				  {
+					  error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG, null);
+				  }
+			  }
+		  }
+
+		  m_xpathExprFuncCallExtendedArg = new XPathExprFuncCallExtendedArg();    	
+		  if (funcArgrgXPathExprStrList.size() > 0) {    		
+			  m_xpathExprFuncCallExtendedArg.setFunctionArgXPathExprStrList(funcArgrgXPathExprStrList);
+		  }
+
+		  consumeExpected(')');
+
+		  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+				  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+	  }
+
+	  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
+	  m_ops.setOp(OpMap.MAPINDEX_LENGTH,m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+	  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+			  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+
+	  return true;
   }
 
   // ============= GRAMMAR FUNCTIONS =================
@@ -5400,7 +5397,7 @@ public class XPathParser
     		   xpathOneStr += (String)(m_ops.m_tokenQueue.elementAt(idx)); 
     		}
     		
-    		// XPath dynamic function call string accumulation
+    		// XPath dynamic function call expression, string accumulation
     		xpathTwoStr += m_token;
     		nextToken();
     		xpathTwoStr += m_token;
@@ -5422,7 +5419,8 @@ public class XPathParser
      	    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                              m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
     	}
-    	else {
+    	else if (!(m_ops.m_currentPattern.equals("./") || m_ops.m_currentPattern.endsWith("comment()") 
+    			                                                                          || m_ops.m_currentPattern.endsWith("text()"))) {
            // RelativeLocationPath can't end with a trailing '/'
            // "Location step expected following '/' or '//'"
            error(XPATHErrorResources.ER_EXPECTED_LOC_STEP, null);
@@ -5755,7 +5753,6 @@ public class XPathParser
   }
 
   /**
-   *
    * NodeTest    ::=    WildcardName
    * | NodeType '(' ')'
    * | 'processing-instruction' '(' Literal ')'
@@ -5766,164 +5763,160 @@ public class XPathParser
    */
   protected void NodeTest(int axesType) throws javax.xml.transform.TransformerException
   {
-    if (lookahead('(', 1))
-    {
-      Object nodeTestOp = Keywords.getNodeType(m_token);
+	  if (lookahead('(', 1))
+	  {
+		  Object nodeTestOp = Keywords.getNodeType(m_token);
 
-      if (null == nodeTestOp)
-      {
-        error(XPATHErrorResources.ER_UNKNOWN_NODETYPE, new Object[]{ m_token });
-      }
-      else
-      {
-        nextToken();
+		  if (null == nodeTestOp)
+		  {
+			  error(XPATHErrorResources.ER_UNKNOWN_NODETYPE, new Object[]{ m_token });
+		  }
+		  else
+		  {
+			  nextToken();
 
-        int nt = ((Integer) nodeTestOp).intValue();                
-        
-        if (nt == OpCodes.NODETYPE_DOCUMENT) {
-           nt = OpCodes.NODETYPE_ROOT;
-        }
+			  int nt = ((Integer) nodeTestOp).intValue();                
 
-        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), nt);
-        m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+			  if (nt == OpCodes.NODETYPE_DOCUMENT) {
+				  nt = OpCodes.NODETYPE_ROOT;
+			  }
 
-        consumeExpected('(');
+			  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), nt);
+			  m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
-        if (OpCodes.NODETYPE_PI == nt)
-        {
-          if (!tokenIs(')'))
-          {
-            Literal();
-          }
-        }
+			  consumeExpected('(');
 
-        consumeExpected(')');
-      }
-    }
-    else if (tokenIs('.')) 
-    {
-    	// Added for XSLT 3.0
-    	
-    	// This has been implemented to handle XSL match pattern 
-    	// strings, that represent XDM atomic values.
-    	Object nodeTestOp = Keywords.getNodeType(m_token);
-    	
-    	int nt = ((Integer)nodeTestOp).intValue();
+			  if (OpCodes.NODETYPE_PI == nt)
+			  {
+				  if (!tokenIs(')'))
+				  {
+					  Literal();
+				  }
+			  }
 
-        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), nt);
-        m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
-        
-        consumeExpected('.');
-        
-        if (tokenIs('[')) {
-           StringBuffer strBuff = new StringBuffer();
-           consumeExpected('[');
-           while (m_token != null) {
-        	  if (tokenIs(']')) {
-        		 consumeExpected(']');  
-        	  }
-        	  else {
-        		 strBuff.append(m_token);
-        		 nextToken();
-        	  }
-           }
-        }
-    }
-    else
-    {
-      // Assume name of attribute or element.
-      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.NODENAME);
-      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+			  consumeExpected(')');
+		  }
+	  }
+	  else if (tokenIs('.')) 
+	  {
+		  // Added for XPath 3.1
 
-      if (lookahead(':', 1))
-      {
-        if (tokenIs('*'))
-        {
-          m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ELEMWILDCARD);
-        }
-        else
-        {
-          m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
+		  // This has been implemented to handle XSL match pattern 
+		  // strings, that represent xdm atomic values.
+		  Object nodeTestOp = Keywords.getNodeType(m_token);
 
-          // Minimalist check for an NCName - just check first character
-          // to distinguish from other possible tokens
-          if (!Character.isLetter(m_tokenChar) && !tokenIs('_'))
-          {
-            // "Node test that matches either NCName:* or QName was expected."
-            error(XPATHErrorResources.ER_EXPECTED_NODE_TEST, null);
-          }
-        }
+		  int nt = ((Integer)nodeTestOp).intValue();
 
-        nextToken();
-        consumeExpected(':');
-      }
-      else
-      {
-        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.EMPTY);
-      }
+		  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), nt);
+		  m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
-      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+		  consumeExpected('.');
 
-      if (tokenIs('*'))
-      {
-        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ELEMWILDCARD);
-      }
-      else
-      {
-        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
+		  if (tokenIs('[')) {
+			  StringBuffer strBuff = new StringBuffer();
+			  consumeExpected('[');
+			  while (m_token != null) {
+				  if (tokenIs(']')) {
+					  consumeExpected(']');  
+				  }
+				  else {
+					  strBuff.append(m_token);
+					  nextToken();
+				  }
+			  }
+		  }
+	  }
+	  else
+	  {
+		  // Assume name of attribute or element.
+		  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.NODENAME);
+		  m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
-        // Minimalist check for an NCName - just check first character
-        // to distinguish from other possible tokens
-        if (!Character.isLetter(m_tokenChar) && !tokenIs('_'))
-        {
-          // "Node test that matches either NCName:* or QName was expected."
-          error(XPATHErrorResources.ER_EXPECTED_NODE_TEST, null);
-        }
-      }
+		  if (lookahead(':', 1))
+		  {
+			  if (tokenIs('*'))
+			  {
+				  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ELEMWILDCARD);
+			  }
+			  else
+			  {
+				  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
 
-      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+				  // Minimalist check for an NCName - just check first character
+				  // to distinguish from other possible tokens
+				  if (!Character.isLetter(m_tokenChar) && !tokenIs('_'))
+				  {
+					  // "Node test that matches either NCName:* or QName was expected."
+					  error(XPATHErrorResources.ER_EXPECTED_NODE_TEST, null);
+				  }
+			  }
 
-      nextToken();
-    }
+			  nextToken();
+			  consumeExpected(':');
+		  }
+		  else
+		  {
+			  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.EMPTY);
+		  }
+
+		  m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+
+		  if (tokenIs('*'))
+		  {
+			  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ELEMWILDCARD);
+		  }
+		  else
+		  {
+			  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
+
+			  // Minimalist check for an NCName - just check first character
+			  // to distinguish from other possible tokens
+			  if (!Character.isLetter(m_tokenChar) && !tokenIs('_'))
+			  {
+				  // "Node test that matches either NCName:* or QName was expected."
+				  error(XPATHErrorResources.ER_EXPECTED_NODE_TEST, null);
+			  }
+		  }
+
+		  m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+
+		  nextToken();
+	  }
   }
 
   /**
-   * 
    * Predicate ::= '[' PredicateExpr ']'
    *
    * @throws javax.xml.transform.TransformerException
    */
   protected void Predicate() throws javax.xml.transform.TransformerException
   {
-
-    if (tokenIs('['))
-    {
-    	m_isXPathPredicateParsingActive = true;      
-    	nextToken();
-    	PredicateExpr();
-    	consumeExpected(']');      
-    	m_isXPathPredicateParsingActive = false;
-    }
+	  if (tokenIs('['))
+	  {
+		  m_isXPathPredicateParsingActive = true;      
+		  nextToken();
+		  PredicateExpr();
+		  consumeExpected(']');      
+		  m_isXPathPredicateParsingActive = false;
+	  }
   }
 
-  /**
-   * 
+  /** 
    * PredicateExpr ::= Expr
    *
    * @throws javax.xml.transform.TransformerException
    */
   protected void PredicateExpr() throws javax.xml.transform.TransformerException
   {
+	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
-    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+	  appendOp(2, OpCodes.OP_PREDICATE);
+	  Expr();
 
-    appendOp(2, OpCodes.OP_PREDICATE);
-    Expr();
-
-    m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
-    m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
-    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+	  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
+	  m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+	  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+			  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**
@@ -7613,35 +7606,41 @@ public class XPathParser
    }
    
    /**
-    * Method definition to check, whether there's an XPath built-in 
-    * node pattern like node(), doument-node(), text(), comment() as 
-    * a suffix of XPath expression string. XPath node checks for these 
-    * patterns with predicate as suffix are also done.
+    * Method definition, to check whether there's an XPath built-in 
+    * node pattern like node(), doument-node(), text(), comment(), 
+    * processing-instruction(..) as a suffix of XPath expression string. 
+    * XPath node checks for these patterns with predicate as suffix 
+    * are also done.
     */
    private boolean isXPathPatternExcludeTrailingNodeFunctions() {
 	   
-	  boolean isExclude = false;
+	  boolean result = false;
 	  
 	  String currXPathPattern = m_ops.m_currentPattern;
+	  
+	  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(".*processing\\-instruction\\(.*\\)");
+	  boolean isXPathPiPattern = (pattern.matcher(currXPathPattern)).matches();
+	  
 	  if (currXPathPattern.endsWith("node()") || currXPathPattern.endsWith("document-node()") || 
 			                                     currXPathPattern.endsWith("text()") || 
-			                                     currXPathPattern.endsWith("comment()")) {
-		  isExclude = true; 
+			                                     currXPathPattern.endsWith("comment()") || isXPathPiPattern) {
+		  result = true; 
 	  }
 	  else {
 		  String[] spltResult = currXPathPattern.split("node\\(\\)[\\s]*[\\|][\\s]*");
 		  if (spltResult.length > 1) {
-			 isExclude = true; 
+			 result = true; 
 		  }
-		  if (!isExclude) {
+		  
+		  if (!result) {
 			 spltResult = currXPathPattern.split("comment\\(\\)\\[.*\\],");
 			 if (spltResult.length > 1) {
-				isExclude = true; 
+				result = true; 
 			 }
 		  }
 	  }
 	  
-	  return isExclude;
+	  return result;
    }
    
    /**
@@ -8306,6 +8305,36 @@ public class XPathParser
   				  																		lookahead(')', 4) && lookahead('[', 5)) {		  
   			  result = true;		  		  
   		  }
+  	  }
+  	  
+  	  return result;
+    }
+    
+    /**
+     * Method definition, to check whether the supplied
+     * string value represents XPath built-in function call.
+     * 
+     * @param str							The supplied string value
+     * @return                              Boolean value true or false
+     */
+    private boolean isXPathBuiltInFunctionCall(String str) {	  
+  	  
+  	  boolean result = false;
+  	  
+  	  int strLength = str.length();	  
+  	  int idx1 = str.indexOf('(');
+  	  if (idx1 > -1) {
+  	     char chr2 = str.charAt(strLength - 1);
+  	     if (chr2 == ')') {
+  	    	String str2 = str.substring(0, idx1); 
+  	    	int funcTok1 = getFunctionToken(str2, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
+  	    	int funcTok2 = getFunctionToken(str2, FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
+  	    	int funcTok3 = getFunctionToken(str2, FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
+  	    	int funcTok4 = getFunctionToken(str2, FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
+  	    	if ((funcTok1 > -1) || (funcTok2 > -1) || (funcTok3 > -1) || (funcTok4 > -1)) {
+  	    		result = true;
+  	    	}
+  	     }
   	  }
   	  
   	  return result;
