@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-09T12:05:32Z" fail="8" name="try" pass="28" skipped="6" statusUnknown="0" totalRun="36">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:46Z" fail="8" name="try" pass="26" skipped="8" statusUnknown="0" totalRun="34">
    <testResult status="pass" testName="try-001"/>
    <testResult status="pass" testName="try-002"/>
    <testResult status="pass" testName="try-003"/>
-   <testResult status="pass" testName="try-004"/>
-   <testResult status="pass" testName="try-005"/>
+   <testResult feature="schema_aware" status="skipped" testName="try-004"/>
+   <testResult feature="schema_aware" status="skipped" testName="try-005"/>
    <testResult status="pass" testName="try-006"/>
    <testResult status="pass" testName="try-007"/>
    <testResult status="pass" testName="try-008"/>
@@ -11,11 +11,11 @@
    <testResult status="pass" testName="try-010"/>
    <testResult status="pass" testName="try-011"/>
    <testResult status="pass" testName="try-012"/>
-   <testResult status="skipped" testName="try-013" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="try-013" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="try-014"/>
-   <testResult status="skipped" testName="try-015" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="try-015" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="try-016"/>
-   <testResult status="skipped" testName="try-017" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="try-017" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="try-018"/>
    <testResult status="pass" testName="try-019"/>
    <testResult status="pass" testName="try-020"/>
@@ -24,9 +24,9 @@
    </testResult>
    <testResult status="fail" testName="try-022">
       <outResult>
-         <errTrace>XPTY0004 : An exception occured while evaluating an xsl:result-document instruction. Following run-time error occured : d:\xslt30-test-master\tests\insn\try (Access is denied).</errTrace>
-         <errTrace>XPST0081 : An XML namespace prefix '' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
-         <errTrace>XPST0081 : An XML namespace prefix '' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
+         <errTrace>XPTY0004 : An exception occured while evaluating an XSL 'result-document' instruction. Following run-time error occured : d:\xslt30-test-master\tests\insn\try (Access is denied).</errTrace>
+         <errTrace>XPST0081 : An XML namespace binding for prefix '' is not available.</errTrace>
+         <errTrace>XPST0081 : An XML namespace binding for prefix '' is not available.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="try-023">
@@ -34,13 +34,13 @@
    </testResult>
    <testResult status="fail" testName="try-024">
       <outResult>
-         <errTrace>XPST0081 : An XML namespace prefix '' hasn't been declared within an XSL stylesheet, or hasn't been set for XPath API invocation.</errTrace>
+         <errTrace>XPST0081 : An XML namespace binding for prefix '' is not available.</errTrace>
          <errTrace>XPST0003 : An XPath expression                                    /output/output/note = "secondary document written"                   /output/output/*:error/@code[contains(.,"FOAR0001")]                   contains(/output/output/*:error/message, "zero")                                 has syntax error. Unknown op code : 21.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="skipped" testName="try-025" xsltVersion="xslt 2.0 only"/>
-   <testResult status="skipped" testName="try-026" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="try-025" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="try-026" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="try-027"/>
    <testResult status="fail" testName="try-028">
       <outResult>
@@ -51,7 +51,7 @@
    <testResult status="pass" testName="try-030"/>
    <testResult status="fail" testName="try-031">
       <outResult>
-         <errTrace>java.lang.RuntimeException: XPTY0004 : One or both of the operands of operator - are not numeric.</errTrace>
+         <errTrace>java.lang.RuntimeException: XPTY0004 : One or both of the operands of XPath operator -, are not numeric values.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="try-032"/>
@@ -62,7 +62,7 @@
    <testResult status="pass" testName="try-035"/>
    <testResult status="fail" testName="try-036"/>
    <testResult status="pass" testName="try-037"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="try-038"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="try-038"/>
    <testResult status="pass" testName="try-039"/>
    <testResult status="pass" testName="try-040"/>
    <testResult status="pass" testName="try-041"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-13T12:55:17Z" fail="60" name="match" pass="68" skipped="8" statusUnknown="1" totalRun="129">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:42Z" fail="57" name="match" pass="68" skipped="11" statusUnknown="1" totalRun="126">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -37,10 +37,10 @@
    <testResult status="fail" testName="match-036"/>
    <testResult status="pass" testName="match-037"/>
    <testResult status="pass" testName="match-038"/>
-   <testResult status="skipped" testName="match-039" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="match-039" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="match-040">
       <outResult>
-         <errTrace>XPST0017 : An XSL stylesheet function call {http://f.com/}special referred within an XPath expression, doesn't have a corresponding xsl:function definition in the stylesheet.</errTrace>
+         <errTrace>XPST0017 : An XSL stylesheet function call {http://f.com/}special referred within an XPath expression, doesn't have a corresponding XSL function definition within the stylesheet.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="match-041"/>
@@ -65,9 +65,9 @@
    </testResult>
    <testResult status="fail" testName="match-052"/>
    <testResult status="pass" testName="match-053"/>
-   <testResult status="fail" testName="match-054"/>
-   <testResult status="fail" testName="match-055"/>
-   <testResult status="fail" testName="match-056"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-054"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-055"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-056"/>
    <testResult status="pass" testName="match-057"/>
    <testResult status="pass" testName="match-058"/>
    <testResult status="pass" testName="match-059"/>
@@ -132,14 +132,14 @@
          <errTrace>Extra illegal tokens: 'key', '(', ''k'', ',', '42', ')', '/', '/', 'a'</errTrace>
       </outResult>
    </testResult>
-   <testResult status="skipped" testName="match-081" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="match-081" xsltVersion="XSLT 2.0 only"/>
    <testResult status="fail" testName="match-081a">
       <outResult>
          <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
          <errTrace>Extra illegal tokens: 'bar', '|', 'baz', ')'</errTrace>
       </outResult>
    </testResult>
-   <testResult status="skipped" testName="match-082" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="match-082" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="match-082a"/>
    <testResult status="fail" testName="match-082b"/>
    <testResult status="fail" testName="match-082c">
@@ -148,11 +148,11 @@
          <errTrace>Extra illegal tokens: 'doc', '|', 'cod', ')'</errTrace>
       </outResult>
    </testResult>
-   <testResult status="skipped" testName="match-083" xsltVersion="xslt 2.0 only"/>
-   <testResult status="skipped" testName="match-084" xsltVersion="xslt 2.0 only"/>
-   <testResult status="skipped" testName="match-085" xsltVersion="xslt 2.0 only"/>
-   <testResult status="skipped" testName="match-086" xsltVersion="xslt 2.0 only"/>
-   <testResult status="skipped" testName="match-087" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="match-083" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="match-084" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="match-085" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="match-086" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="match-087" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="match-088"/>
    <testResult status="pass" testName="match-089"/>
    <testResult status="fail" testName="match-090"/>
@@ -224,9 +224,6 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult status="fail" testName="match-119">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'for', '$', 't', 'in', '*', 'return', '$', 't', '/', '*', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
@@ -235,20 +232,14 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult status="fail" testName="match-120">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'some', '$', 'v', 'in', '.', '/', '/', 'element', '(', ')', 'satisfies', '(', 'string', '(', '$', 'v', ')', 'ne', '''', ')', ']'</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'some', '$', 'v', 'in', '.', '/', '/', '*', 'satisfies', '(', 'string', '(', '$', 'v', ')', 'ne', '''', ')', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="match-121">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'if', '(', 'count', '(', '/', '*', ')', 'le', '1', ')', 'then', 'last', '(', ')', 'else', '1', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
@@ -257,9 +248,6 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult status="fail" testName="match-122">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '/', 'inner2', 'is', '/', 'doc', '/', '/', 'inner2', '[', '1', ']', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
@@ -268,9 +256,6 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult status="fail" testName="match-123">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '/', '*', '=', '(', '1', 'to', '40', ')', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
@@ -279,9 +264,6 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult status="fail" testName="match-124">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'data', '(', '.', ')', 'castable', 'as', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
@@ -290,9 +272,6 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult status="fail" testName="match-125">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '*', 'intersect', '/', 'doc', '/', 'child', '::', '*', '/', 'child', '::', '*', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
@@ -301,9 +280,6 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult status="fail" testName="match-126">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'current', '(', ')', '/', '*', ']'</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
@@ -314,7 +290,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="pass" testName="match-128"/>
    <testResult status="fail" testName="match-129">
       <outResult>
-         <errTrace>XPST0051 A sequence type occurence indicator ']', is not recognized.</errTrace>
+         <errTrace>XPST0051 : A sequence type occurence indicator ']', is not recognized.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="match-130">

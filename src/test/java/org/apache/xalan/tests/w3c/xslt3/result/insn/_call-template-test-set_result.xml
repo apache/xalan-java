@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:46Z" fail="13" name="call-template" pass="27" skipped="2" statusUnknown="0" totalRun="40">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:54Z" fail="13" name="call-template" pass="27" skipped="2" statusUnknown="0" totalRun="40">
    <testResult status="fail" testName="call-template-0001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
    </testResult>
@@ -23,10 +23,10 @@
       <outResult/>
    </testResult>
    <testResult status="fail" testName="call-template-0111">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;xXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQxXSL_SEQ XSL_SEQ&lt;/out&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;x x x x x&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="call-template-0201"/>
-   <testResult status="skipped" testName="call-template-0401" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="call-template-0401" xsltVersion="XSLT 2.0 only"/>
    <testResult status="fail" testName="call-template-0401a">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
   top-level-a&#13;
@@ -45,7 +45,7 @@
    <testResult status="fail" testName="call-template-0901"/>
    <testResult status="pass" testName="call-template-1001"/>
    <testResult status="fail" testName="call-template-1002"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="call-template-1003"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="call-template-1003"/>
    <testResult status="pass" testName="call-template-1101"/>
    <testResult status="pass" testName="call-template-1102"/>
    <testResult status="pass" testName="call-template-1201"/>

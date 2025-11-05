@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:12:51Z" fail="11" name="position" pass="126" skipped="0" statusUnknown="1" totalRun="138">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:57Z" fail="11" name="position" pass="126" skipped="0" statusUnknown="1" totalRun="138">
    <testResult status="pass" testName="position-0101"/>
    <testResult status="fail" testName="position-0102"/>
    <testResult status="fail" testName="position-0103"/>
@@ -112,8 +112,8 @@
    <testResult status="fail" testName="position-2201">
       <outResult>
          <errTrace>"input-type-annotations" attribute is not allowed on the xsl:transform element!</errTrace>
-         <errTrace>xsl:result-document requires attribute: href</errTrace>
-         <errTrace>XPTY0004 : An exception occured while evaluating an xsl:result-document instruction. Following run-time error occured : null.</errTrace>
+         <errTrace>XTSE0010 : xsl:result-document requires attribute: href</errTrace>
+         <errTrace>XPTY0004 : An exception occured while evaluating an XSL 'result-document' instruction. Following run-time error occured : null.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="position-2301"/>

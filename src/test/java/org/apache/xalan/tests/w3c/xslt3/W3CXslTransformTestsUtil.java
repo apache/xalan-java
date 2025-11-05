@@ -171,11 +171,21 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			  Element elemTestResult = testResultDoc.createElement("testResult");
     			  elemTestResult.setAttribute("testName", testCaseName);
     			  elemTestResult.setAttribute("status", "skipped");
-    			  elemTestResult.setAttribute("xsltVersion", "xslt 2.0 only");
+    			  elemTestResult.setAttribute("xsltVersion", "XSLT 2.0 only");
     			  elemTestRun.appendChild(elemTestResult);
     			  
     			  continue; 
     		   }
+    		   else if (isSchemaAwareFeatureTestCase(node)) {
+    			   // We skip running XSLT 3.0 schema aware feature test cases
+    			   Element elemTestResult = testResultDoc.createElement("testResult");
+    			   elemTestResult.setAttribute("testName", testCaseName);
+    			   elemTestResult.setAttribute("status", "skipped");
+    			   elemTestResult.setAttribute("feature", "schema_aware");
+    			   elemTestRun.appendChild(elemTestResult);
+
+    			   continue; 
+      		   }
     		   else if (isStreamingFeatureTestCase(node)) {
      			  // We skip running XSLT 3.0 streaming feature test cases
        			  Element elemTestResult = testResultDoc.createElement("testResult");
@@ -188,14 +198,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      		   }
     		   else if (m_skipped_tests_list.contains(testCaseName)) {
     			   /**
-    			    * We skip running W3C XSLT 3.0 test cases available within this
+    			    * We skip running XSLT 3.0 test cases available within this
     			    * test suite, that're configured to be skipped within this XSLT test
-    			    * suite driver and approved by XSLT WG and Xalan-J's analysis.
+    			    * suite driver and permitted by respective W3C XSLT 3.0 test case. 
     			    */
     			   Element elemTestResult = testResultDoc.createElement("testResult");
     			   elemTestResult.setAttribute("testName", testCaseName);
     			   elemTestResult.setAttribute("status", "skipped");
-    			   elemTestResult.setAttribute("reason", "allowed by xslt 3.0 test suite");
+    			   elemTestResult.setAttribute("reason", "Xalan configured, and allowed by W3C XSLT 3.0 test suite");
     			   elemTestRun.appendChild(elemTestResult);
 
     			   continue;  

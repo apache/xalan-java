@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:09Z" fail="4" name="variable" pass="15" skipped="0" statusUnknown="1" totalRun="20">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:38Z" fail="4" name="variable" pass="14" skipped="1" statusUnknown="1" totalRun="19">
    <testResult status="pass" testName="variable-0101"/>
    <testResult status="pass" testName="variable-0102"/>
    <testResult status="pass" testName="variable-0103"/>
    <testResult status="pass" testName="variable-0104"/>
    <testResult status="pass" testName="variable-0105"/>
    <testResult status="pass" testName="variable-0106"/>
-   <testResult status="pass" testName="variable-0107"/>
+   <testResult feature="schema_aware" status="skipped" testName="variable-0107"/>
    <testResult status="fail" testName="variable-0108"/>
    <testResult status="pass" testName="variable-0109"/>
    <testResult status="pass" testName="variable-0110"/>

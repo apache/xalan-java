@@ -15,19 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import java.util.Vector;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.XML11Char;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 
 /**
@@ -51,13 +52,11 @@ public class ElemPI extends ElemTemplateElement
    * attribute that specifies the name of the processing instruction node.
    * The value of the name attribute is interpreted as an
    * attribute value template.
-   * @serial
    */
   private AVT m_name_atv = null;
 
   /**
-   * Set the "name" attribute.
-   * DJD
+   * Set the value of "name" attribute.
    *
    * @param v Value for the name attribute
    */
@@ -67,8 +66,7 @@ public class ElemPI extends ElemTemplateElement
   }
 
   /**
-   * Get the "name" attribute.
-   * DJD
+   * Get the value of "name" attribute.
    *
    * @return The value of the "name" attribute 
    */
@@ -142,6 +140,31 @@ public class ElemPI extends ElemTemplateElement
 	  return m_expand_text_declared;
   }
   
+  /**
+   * The optional select attribute contains an expression.
+   */
+  public XPath m_selectExpression = null;
+
+  /**
+   * Set the "select" attribute.
+   *
+   * @param expr Expression for select attribute 
+   */
+  public void setSelect(XPath expr)
+  {      
+	  m_selectExpression = expr;
+  }
+
+  /**
+   * Get the "select" attribute.
+   *
+   * @return Expression for select attribute 
+   */
+  public XPath getSelect()
+  {
+	  return m_selectExpression;
+  }
+  
   private Vector m_vars;
   
   private int m_globals_size;
@@ -154,15 +177,16 @@ public class ElemPI extends ElemTemplateElement
    */
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
-    super.compose(sroot);
-    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
-    if (m_name_atv != null)
-       m_name_atv.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
-    
-    StylesheetRoot.ComposeState cstate = sroot.getComposeState();
-    
-    m_vars = (Vector)vnames.clone();
-	m_globals_size = cstate.getGlobalsSize();
+	  super.compose(sroot);
+	  
+	  java.util.Vector vnames = sroot.getComposeState().getVariableNames();
+	  if (m_name_atv != null)
+		  m_name_atv.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+
+	  StylesheetRoot.ComposeState cstate = sroot.getComposeState();
+
+	  m_vars = (Vector)vnames.clone();
+	  m_globals_size = cstate.getGlobalsSize();
   }
 
   /**
@@ -201,69 +225,76 @@ public class ElemPI extends ElemTemplateElement
             throws TransformerException
   {
 
-    if (transformer.getDebug())
-      transformer.getTraceManager().emitTraceEvent(this);
+	  if (transformer.getDebug())
+		  transformer.getTraceManager().emitTraceEvent(this);
 
-    XPathContext xctxt = transformer.getXPathContext();
-    int sourceNode = xctxt.getCurrentNode();
-    
-    String piName = m_name_atv == null ? null : m_name_atv.evaluate(xctxt, sourceNode, this);
-    
-    // Ignore processing instruction if name is null
-    if (piName == null) return;
+	  XPathContext xctxt = transformer.getXPathContext();
+	  
+	  final int contextNode = xctxt.getCurrentNode();
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+	  if ((m_selectExpression != null) && (getFirstChildElem() != null)) {
+		 throw new TransformerException("XTSE0940 : An XSL processing instruction cannot have, "
+		 		                                                          + "both 'select' attribute and non-empty content.", srcLocator); 
+	  }
 
-    if (piName.equalsIgnoreCase("xml"))
-    {
-     	transformer.getMsgMgr().warn(
-        this, XSLTErrorResources.WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML,
-              new Object[]{ Constants.ATTRNAME_NAME, piName });
-		return;
-    }
-    
-    // Only check if an avt was used (ie. this wasn't checked at compose time.)
-    // Ignore processing instruction, if invalid
-    else if ((!m_name_atv.isSimple()) && (!XML11Char.isXML11ValidNCName(piName)))
-    {
-     	transformer.getMsgMgr().warn(
-        this, XSLTErrorResources.WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME,
-              new Object[]{ Constants.ATTRNAME_NAME, piName });
-		return;    	
-    }
+	  String piName = m_name_atv == null ? null : m_name_atv.evaluate(xctxt, contextNode, this);
 
-    // Note the content model is:
-    // <!ENTITY % instructions "
-    // %char-instructions;
-    // | xsl:processing-instruction
-    // | xsl:comment
-    // | xsl:element
-    // | xsl:attribute
-    // ">
-    String data = transformer.transformToString(this);
-    
-    boolean isExpandText = false;
-    if (m_expand_text_declared) {
-  	   isExpandText = m_expand_text;  
-    }
-    else {
-       ElemTemplateElement elemTemplateElem = getParentElem();      
-       isExpandText = getExpandTextValue(elemTemplateElem);
-    }
-    
-    if (isExpandText) {
-  	   data = getStrValueAfterExpandTextProcessing(data, transformer, m_vars, m_globals_size);
-    }
+	  // Ignore processing instruction if name is null
+	  if (piName == null) return;
 
-    try
-    {
-      transformer.getResultTreeHandler().processingInstruction(piName, data);
-    }
-    catch(org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se);
-    }
-    
-    if (transformer.getDebug())
-      transformer.getTraceManager().emitTraceEndEvent(this);
+	  if (piName.equalsIgnoreCase("xml"))
+	  {
+		  transformer.getMsgMgr().warn(
+				  this, XSLTErrorResources.WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML,
+				  new Object[]{ Constants.ATTRNAME_NAME, piName });
+		  return;
+	  }
+
+	  // Only check if an avt was used (ie. this wasn't checked at compose time.)
+	  // Ignore processing instruction, if invalid
+	  else if ((!m_name_atv.isSimple()) && (!XML11Char.isXML11ValidNCName(piName)))
+	  {
+		  transformer.getMsgMgr().warn(
+				  this, XSLTErrorResources.WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME,
+				  new Object[]{ Constants.ATTRNAME_NAME, piName });
+		  return;    	
+	  }
+
+	  String data = null;		  
+	  if (m_selectExpression != null) {
+		  XObject xObj = m_selectExpression.execute(xctxt, contextNode, xctxt.getNamespaceContext());			  
+		  data = XslTransformEvaluationHelper.getStrVal(xObj);
+	  }
+	  else {
+		  data = transformer.transformToString(this);
+	  }
+
+	  boolean isExpandText = false;
+	  if (m_expand_text_declared) {
+		  isExpandText = m_expand_text;  
+	  }
+	  else {
+		  ElemTemplateElement elemTemplateElem = getParentElem();      
+		  isExpandText = getExpandTextValue(elemTemplateElem);
+	  }
+
+	  if (isExpandText) {
+		  data = getStrValueAfterExpandTextProcessing(data, transformer, m_vars, m_globals_size);
+	  }
+
+	  try
+	  {
+		  transformer.getResultTreeHandler().processingInstruction(piName, data);
+	  }
+	  catch(org.xml.sax.SAXException se)
+	  {
+		  throw new TransformerException(se);
+	  }
+
+	  if (transformer.getDebug())
+		  transformer.getTraceManager().emitTraceEndEvent(this);
   }
 
   /**

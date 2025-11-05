@@ -15,17 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import java.util.Vector;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 
 /**
@@ -54,11 +56,12 @@ public class ElemComment extends ElemTemplateElement
   /**
    * Set the value of "xpath-default-namespace" attribute.
    *
-   * @param v   Value of the "xpath-default-namespace" attribute
+   * @param xpathDefaultNamespace          Value of the "xpath-default-namespace" 
+   *                                       attribute.
    */
-  public void setXpathDefaultNamespace(String v)
+  public void setXpathDefaultNamespace(String xpathDefaultNamespace)
   {
-	  m_xpath_default_namespace = v; 
+	  m_xpath_default_namespace = xpathDefaultNamespace; 
   }
 
   /**
@@ -85,11 +88,12 @@ public class ElemComment extends ElemTemplateElement
   /**
    * Set the value of "expand-text" attribute.
    *
-   * @param v   Value of the "expand-text" attribute
+   * @param isExpandText           Value of the "expand-text" 
+   *                               attribute.
    */
-  public void setExpandText(boolean v)
+  public void setExpandText(boolean isExpandText)
   {
-	  m_expand_text = v;
+	  m_expand_text = isExpandText;
 	  m_expand_text_declared = true;
   }
 
@@ -108,6 +112,31 @@ public class ElemComment extends ElemTemplateElement
    */
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
+  }
+  
+  /**
+   * The optional select attribute contains an expression.
+   */
+  public XPath m_selectExpression = null;
+
+  /**
+   * Set the "select" attribute.
+   *
+   * @param expr Expression for select attribute 
+   */
+  public void setSelect(XPath expr)
+  {      
+	  m_selectExpression = expr;
+  }
+
+  /**
+   * Get the "select" attribute.
+   *
+   * @return Expression for select attribute 
+   */
+  public XPath getSelect()
+  {
+	  return m_selectExpression;
   }
   
   /**
@@ -160,44 +189,54 @@ public class ElemComment extends ElemTemplateElement
           TransformerImpl transformer)
             throws TransformerException
   {
-    if (transformer.getDebug())
-      transformer.getTraceManager().emitTraceEvent(this);
-    try
-    {
-      // Note the content model is:
-      // <!ENTITY % instructions "
-      // %char-instructions;
-      // | xsl:processing-instruction
-      // | xsl:comment
-      // | xsl:element
-      // | xsl:attribute
-      // ">
-      String data = transformer.transformToString(this);
-      
-      boolean isExpandText = false;
-      if (m_expand_text_declared) {
-    	 isExpandText = m_expand_text;  
-      }
-      else {
-         ElemTemplateElement elemTemplateElem = getParentElem();      
-         isExpandText = getExpandTextValue(elemTemplateElem);
-      }
-      
-      if (isExpandText) {
-    	 data = getStrValueAfterExpandTextProcessing(data, transformer, m_vars, m_globals_size);
-      }
+	  if (transformer.getDebug())
+		  transformer.getTraceManager().emitTraceEvent(this);
+	  try
+	  {
+		  XPathContext xctxt = transformer.getXPathContext();
+		  
+		  final int contextNode = xctxt.getCurrentNode();
+		  
+		  SourceLocator srcLocator = xctxt.getSAXLocator();
+		  
+		  if ((m_selectExpression != null) && (getFirstChildElem() != null)) {
+			 throw new TransformerException("XTSE0940 : An XSL comment instruction cannot have, "
+			 		                                                          + "both 'select' attribute and non-empty content.", srcLocator); 
+		  }
+		  
+		  String data = null;		  
+		  if (m_selectExpression != null) {
+			  XObject xObj = m_selectExpression.execute(xctxt, contextNode, xctxt.getNamespaceContext());			  
+			  data = XslTransformEvaluationHelper.getStrVal(xObj);
+		  }
+		  else {
+			  data = transformer.transformToString(this);
+		  }
 
-      transformer.getResultTreeHandler().comment(data);
-    }
-    catch(org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se);
-    }
-    finally
-    {
-      if (transformer.getDebug())
-        transformer.getTraceManager().emitTraceEndEvent(this);
-    }
+		  boolean isExpandText = false;
+		  if (m_expand_text_declared) {
+			  isExpandText = m_expand_text;  
+		  }
+		  else {
+			  ElemTemplateElement elemTemplateElem = getParentElem();      
+			  isExpandText = getExpandTextValue(elemTemplateElem);
+		  }
+
+		  if (isExpandText) {
+			  data = getStrValueAfterExpandTextProcessing(data, transformer, m_vars, m_globals_size);
+		  }
+
+		  transformer.getResultTreeHandler().comment(data);
+	  }
+	  catch(org.xml.sax.SAXException se)
+	  {
+		  throw new TransformerException(se);
+	  }
+	  finally
+	  {
+		  if (transformer.getDebug())
+			  transformer.getTraceManager().emitTraceEndEvent(this);
+	  }
   }
 
   /**
@@ -212,42 +251,42 @@ public class ElemComment extends ElemTemplateElement
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
-    int type = ((ElemTemplateElement) newChild).getXSLToken();
+	  int type = ((ElemTemplateElement) newChild).getXSLToken();
 
-    switch (type)
-    {
+	  switch (type)
+	  {
 
-    // char-instructions 
-    case Constants.ELEMNAME_TEXTLITERALRESULT :
-    case Constants.ELEMNAME_APPLY_TEMPLATES :
-    case Constants.ELEMNAME_APPLY_IMPORTS :
-    case Constants.ELEMNAME_CALLTEMPLATE :
-    case Constants.ELEMNAME_FOREACH :
-    case Constants.ELEMNAME_VALUEOF :
-    case Constants.ELEMNAME_COPY_OF :
-    case Constants.ELEMNAME_NUMBER :
-    case Constants.ELEMNAME_CHOOSE :
-    case Constants.ELEMNAME_IF :
-    case Constants.ELEMNAME_TEXT :
-    case Constants.ELEMNAME_COPY :
-    case Constants.ELEMNAME_VARIABLE :
-    case Constants.ELEMNAME_MESSAGE :
+	  // char-instructions 
+	  case Constants.ELEMNAME_TEXTLITERALRESULT :
+	  case Constants.ELEMNAME_APPLY_TEMPLATES :
+	  case Constants.ELEMNAME_APPLY_IMPORTS :
+	  case Constants.ELEMNAME_CALLTEMPLATE :
+	  case Constants.ELEMNAME_FOREACH :
+	  case Constants.ELEMNAME_VALUEOF :
+	  case Constants.ELEMNAME_COPY_OF :
+	  case Constants.ELEMNAME_NUMBER :
+	  case Constants.ELEMNAME_CHOOSE :
+	  case Constants.ELEMNAME_IF :
+	  case Constants.ELEMNAME_TEXT :
+	  case Constants.ELEMNAME_COPY :
+	  case Constants.ELEMNAME_VARIABLE :
+	  case Constants.ELEMNAME_MESSAGE :
 
-      // instructions 
-      // case Constants.ELEMNAME_PI:
-      // case Constants.ELEMNAME_COMMENT:
-      // case Constants.ELEMNAME_ELEMENT:
-      // case Constants.ELEMNAME_ATTRIBUTE:
-      break;
-    default :
-      error(XSLTErrorResources.ER_CANNOT_ADD,
-            new Object[]{ newChild.getNodeName(),
-                          this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+		  // instructions 
+		  // case Constants.ELEMNAME_PI:
+		  // case Constants.ELEMNAME_COMMENT:
+		  // case Constants.ELEMNAME_ELEMENT:
+		  // case Constants.ELEMNAME_ATTRIBUTE:
+		  break;
+	  default :
+		  error(XSLTErrorResources.ER_CANNOT_ADD,
+				  new Object[]{ newChild.getNodeName(),
+						  this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
 
-    //" to " + this.m_elemName);
-    }
+		  //" to " + this.m_elemName);
+	  }
 
-    return super.appendChild(newChild);
+	  return super.appendChild(newChild);
   }
   
   /**

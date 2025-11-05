@@ -1,23 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T11:58:09Z" fail="25" name="as" pass="79" skipped="4" statusUnknown="1" totalRun="105">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:40Z" fail="24" name="as" pass="79" skipped="5" statusUnknown="1" totalRun="104">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
    <testResult status="pass" testName="as-0104"/>
    <testResult status="pass" testName="as-0105"/>
    <testResult status="pass" testName="as-0106"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="as-0106a"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="as-0106a"/>
    <testResult status="pass" testName="as-0106b"/>
    <testResult status="pass" testName="as-0107"/>
    <testResult status="pass" testName="as-0108"/>
    <testResult status="pass" testName="as-0109"/>
    <testResult status="pass" testName="as-0110"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="as-0110a"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="as-0110a"/>
    <testResult status="pass" testName="as-0110b"/>
    <testResult status="pass" testName="as-0111"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="as-0111a"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="as-0111a"/>
    <testResult status="pass" testName="as-0111b"/>
    <testResult status="pass" testName="as-0112"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="as-0112a"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="as-0112a"/>
    <testResult status="pass" testName="as-0112b"/>
    <testResult status="pass" testName="as-0113"/>
    <testResult status="pass" testName="as-0114"/>
@@ -58,7 +58,7 @@
    <testResult status="fail" testName="as-0148"/>
    <testResult status="fail" testName="as-0149"/>
    <testResult status="pass" testName="as-0150"/>
-   <testResult status="fail" testName="as-0151"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-0151"/>
    <testResult status="fail" testName="as-0152">
       <outResult/>
    </testResult>

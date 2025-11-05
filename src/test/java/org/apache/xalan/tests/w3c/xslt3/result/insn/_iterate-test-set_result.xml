@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:55Z" fail="0" name="iterate" pass="44" skipped="0" statusUnknown="0" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:47Z" fail="0" name="iterate" pass="44" skipped="0" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="iterate-001"/>
    <testResult status="pass" testName="iterate-002"/>
    <testResult status="pass" testName="iterate-003"/>
@@ -6,7 +6,7 @@
    <testResult status="pass" testName="iterate-006"/>
    <testResult status="pass" testName="iterate-007">
       <outResult>
-         <errTrace>XTSE3120 : An xsl:break instruction doesn't have xsl:iterate instruction as ancestor.</errTrace>
+         <errTrace>XTSE3120 : An XSL 'break' instruction doesn't have XSL 'iterate' instruction as ancestor.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="iterate-008"/>

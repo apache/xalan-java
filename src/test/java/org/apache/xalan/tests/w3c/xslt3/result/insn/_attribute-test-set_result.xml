@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-21T11:44:02Z" fail="17" name="attribute" pass="12" skipped="0" statusUnknown="1" totalRun="30">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:54Z" fail="10" name="attribute" pass="12" skipped="7" statusUnknown="1" totalRun="23">
    <testResult status="pass" testName="attribute-0001"/>
    <testResult status="pass" testName="attribute-0002"/>
    <testResult status="pass" testName="attribute-0003"/>
@@ -35,38 +35,11 @@
    <testResult status="fail" testName="attribute-1301"/>
    <testResult status="fail" testName="attribute-1302"/>
    <testResult status="pass" testName="attribute-1401"/>
-   <testResult status="fail" testName="attribute-1501"/>
-   <testResult status="fail" testName="attribute-1502">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>org.apache.xpath.functions.FuncId only allows 1 arguments</errTrace>
-         <errTrace>XTTE1540 : An xsl:attribute instruction's attribute "validation" has value 'strict', but an XML input document has not been validated with a schema.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="attribute-1503">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>org.apache.xpath.functions.FuncId only allows 1 arguments</errTrace>
-         <errTrace>XTTE1540 : An xsl:attribute instruction's attribute "validation" has value 'strict', but an XML input document has not been validated with a schema.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="attribute-1504">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>XTTE1540 : An xsl:attribute instruction's attribute "validation" has value 'strict', but an XML input document has not been validated with a schema.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="attribute-1505"/>
-   <testResult status="fail" testName="attribute-1506">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>XTTE1540 : An xsl:attribute instruction's attribute "validation" has value 'strict', but an XML input document has not been validated with a schema.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="attribute-1507">
-      <outResult>
-         <errTrace>Failed calling setNamespace method</errTrace>
-         <errTrace>XTTE1540 : An xsl:attribute instruction's attribute "validation" has value 'strict', but an XML input document has not been validated with a schema.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult feature="schema_aware" status="skipped" testName="attribute-1501"/>
+   <testResult feature="schema_aware" status="skipped" testName="attribute-1502"/>
+   <testResult feature="schema_aware" status="skipped" testName="attribute-1503"/>
+   <testResult feature="schema_aware" status="skipped" testName="attribute-1504"/>
+   <testResult feature="schema_aware" status="skipped" testName="attribute-1505"/>
+   <testResult feature="schema_aware" status="skipped" testName="attribute-1506"/>
+   <testResult feature="schema_aware" status="skipped" testName="attribute-1507"/>
 </testrun>

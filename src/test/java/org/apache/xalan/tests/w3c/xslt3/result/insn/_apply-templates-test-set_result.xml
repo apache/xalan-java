@@ -1,25 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-30T13:07:00Z" fail="18" name="apply-templates" pass="26" skipped="6" statusUnknown="0" totalRun="44">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:44Z" fail="17" name="apply-templates" pass="26" skipped="7" statusUnknown="0" totalRun="43">
    <testResult status="pass" testName="apply-templates-001"/>
    <testResult status="pass" testName="apply-templates-002"/>
    <testResult status="pass" testName="conflict-resolution-0101"/>
    <testResult status="pass" testName="conflict-resolution-0102a"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0102b"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="conflict-resolution-0102b"/>
    <testResult status="pass" testName="conflict-resolution-0102c"/>
    <testResult status="pass" testName="conflict-resolution-0104a"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0104b"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="conflict-resolution-0104b"/>
    <testResult status="pass" testName="conflict-resolution-0104c"/>
    <testResult status="pass" testName="conflict-resolution-0106"/>
    <testResult status="pass" testName="conflict-resolution-0107"/>
    <testResult status="pass" testName="conflict-resolution-0108a"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0108b"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="conflict-resolution-0108b"/>
    <testResult status="pass" testName="conflict-resolution-0108c"/>
    <testResult status="pass" testName="conflict-resolution-0110a"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="conflict-resolution-0110b"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="conflict-resolution-0110b"/>
    <testResult status="pass" testName="conflict-resolution-0110c"/>
    <testResult status="pass" testName="conflict-resolution-0112"/>
    <testResult status="pass" testName="conflict-resolution-0201"/>
-   <testResult status="skipped" testName="conflict-resolution-0401a" xsltVersion="xslt 2.0 only"/>
-   <testResult status="skipped" testName="conflict-resolution-0401b" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="conflict-resolution-0401a" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="conflict-resolution-0401b" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="conflict-resolution-0401c"/>
    <testResult status="pass" testName="conflict-resolution-0501"/>
    <testResult status="pass" testName="conflict-resolution-0502"/>
@@ -54,14 +54,7 @@
    <testResult status="fail" testName="conflict-resolution-1205"/>
    <testResult status="pass" testName="conflict-resolution-1301"/>
    <testResult status="fail" testName="conflict-resolution-1401"/>
-   <testResult status="fail" testName="conflict-resolution-1402">
-      <outResult>
-         <errTrace>"default-validation" attribute is not allowed on the xslt:transform element!</errTrace>
-         <errTrace>Unknown nodetype: attribute</errTrace>
-         <errTrace>Extra illegal tokens: 'attribute', '(', 'x', ',', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ')'</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult feature="schema_aware" status="skipped" testName="conflict-resolution-1402"/>
    <testResult status="pass" testName="conflict-resolution-1501"/>
    <testResult status="pass" testName="conflict-resolution-1601"/>
    <testResult status="fail" testName="conflict-resolution-1602">

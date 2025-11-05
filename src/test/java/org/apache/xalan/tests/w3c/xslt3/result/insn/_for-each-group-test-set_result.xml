@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:11:40Z" fail="24" name="for-each-group" pass="49" skipped="4" statusUnknown="1" totalRun="74">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:44Z" fail="24" name="for-each-group" pass="49" skipped="4" statusUnknown="1" totalRun="74">
    <testResult status="pass" testName="for-each-group-001"/>
-   <testResult status="skipped" testName="for-each-group-002a" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="for-each-group-002a" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="for-each-group-002"/>
    <testResult status="pass" testName="for-each-group-003"/>
    <testResult status="pass" testName="for-each-group-005"/>
@@ -10,7 +10,7 @@
    <testResult status="pass" testName="for-each-group-012"/>
    <testResult status="pass" testName="for-each-group-013"/>
    <testResult status="pass" testName="for-each-group-014"/>
-   <testResult status="skipped" testName="for-each-group-015a" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="for-each-group-015a" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="for-each-group-015b"/>
    <testResult status="pass" testName="for-each-group-016"/>
    <testResult status="pass" testName="for-each-group-018"/>
@@ -37,7 +37,7 @@
    <testResult status="pass" testName="for-each-group-043"/>
    <testResult status="pass" testName="for-each-group-044"/>
    <testResult status="fail" testName="for-each-group-045"/>
-   <testResult status="skipped" testName="for-each-group-046" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="for-each-group-046" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="for-each-group-046a"/>
    <testResult status="pass" testName="for-each-group-047"/>
    <testResult status="pass" testName="for-each-group-048"/>
@@ -101,7 +101,7 @@
       </outResult>
    </testResult>
    <testResult status="pass" testName="for-each-group-080"/>
-   <testResult status="skipped" testName="for-each-group-081a" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="for-each-group-081a" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="for-each-group-081b"/>
    <testResult status="fail" testName="for-each-group-082"/>
    <testResult status="pass" testName="for-each-group-083"/>

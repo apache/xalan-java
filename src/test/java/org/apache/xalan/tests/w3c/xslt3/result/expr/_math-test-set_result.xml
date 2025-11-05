@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-09-28T11:12:33Z" fail="25" name="math" pass="124" skipped="0" statusUnknown="1" totalRun="150">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:54Z" fail="25" name="math" pass="123" skipped="1" statusUnknown="1" totalRun="149">
    <testResult status="pass" testName="math-0101"/>
    <testResult status="pass" testName="math-3315"/>
    <testResult status="pass" testName="math-0101"/>
@@ -145,7 +145,7 @@
    <testResult status="fail" testName="math-3310"/>
    <testResult status="fail" testName="math-3310a"/>
    <testResult status="pass" testName="math-3311"/>
-   <testResult status="pass" testName="math-3312"/>
+   <testResult feature="schema_aware" status="skipped" testName="math-3312"/>
    <testResult status="fail" testName="math-3313"/>
    <testResult status="pass" testName="math-3314"/>
    <testResult status="pass" testName="math-3315"/>

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-21T11:43:54Z" fail="6" name="choose" pass="48" skipped="1" statusUnknown="0" totalRun="54">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:46Z" fail="6" name="choose" pass="48" skipped="1" statusUnknown="0" totalRun="54">
    <testResult status="pass" testName="choose-0101"/>
    <testResult status="pass" testName="choose-0102"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="choose-0103"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="choose-0103"/>
    <testResult status="pass" testName="choose-0104"/>
    <testResult status="pass" testName="choose-0105"/>
    <testResult status="pass" testName="choose-0106"/>

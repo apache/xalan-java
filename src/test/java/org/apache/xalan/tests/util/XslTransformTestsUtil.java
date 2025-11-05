@@ -515,7 +515,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         boolean result = false;
         
         NodeList nodeList = testCaseNode.getChildNodes();
-        for (int idx = 0; idx < nodeList.getLength(); idx++) {
+        int nodeListLength = nodeList.getLength();
+        for (int idx = 0; idx < nodeListLength; idx++) {
      	  Node node = nodeList.item(idx);
      	  if (node.getNodeType() == Node.ELEMENT_NODE) {
      		 Element elemNode = (Element)node;
@@ -524,8 +525,46 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      			 NodeList nodeList1 = elemNode.getElementsByTagName("spec");
      			 if (nodeList1.getLength() == 1) {
      				 Element elem1 = (Element)(nodeList1.item(0));
-     				 String xsltSpecVersion = elem1.getAttribute("value");
-     				 if ("XSLT20".equals(xsltSpecVersion)) {
+     				 String value = elem1.getAttribute("value");
+     				 if ("XSLT20".equals(value)) {
+     					result = true;
+     					
+     					break; 
+     				 }
+     			 }
+     		 }
+     	  }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * When running W3C XSLT 3.0 test suite, check whether the test case 
+     * is written for schema aware feature.
+     *  
+     * @param testCaseNode
+     * @return						Boolean value true or false						
+     */
+    protected boolean isSchemaAwareFeatureTestCase(Node testCaseNode) {
+    	
+        boolean result = false;
+        
+        NodeList nodeList = testCaseNode.getChildNodes();
+        int nodeListLength = nodeList.getLength();
+        for (int idx = 0; idx < nodeListLength; idx++) {
+     	  Node node = nodeList.item(idx);
+     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
+     		 Element elemNode = (Element)node;
+     		 String elemName = elemNode.getLocalName();
+     		 if ("dependencies".equals(elemName)) {
+     			 NodeList nodeList1 = elemNode.getElementsByTagName("feature");
+     			 if (nodeList1.getLength() == 1) {
+     				 Element elem1 = (Element)(nodeList1.item(0));
+     				 String value = elem1.getAttribute("value");
+     				 String satisfied = elem1.getAttribute("satisfied");
+     				 if ("schema_aware".equals(value) && ("".equals(satisfied) 
+     						                                                || "true".equals(satisfied))) {
      					result = true;
      					
      					break; 
@@ -550,7 +589,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         boolean result = false;
         
         NodeList nodeList = testCaseNode.getChildNodes();
-        for (int idx = 0; idx < nodeList.getLength(); idx++) {
+        int nodeListLength = nodeList.getLength();
+        for (int idx = 0; idx < nodeListLength; idx++) {
      	  Node node = nodeList.item(idx);
      	  if (node.getNodeType() == Node.ELEMENT_NODE) {
      		 Element elemNode = (Element)node;
@@ -559,9 +599,10 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      			 NodeList nodeList1 = elemNode.getElementsByTagName("feature");
      			 if (nodeList1.getLength() == 1) {
      				 Element elem1 = (Element)(nodeList1.item(0));
-     				 String streaming = elem1.getAttribute("value");
-     				 if ("streaming".equals(streaming)) {
+     				 String value = elem1.getAttribute("value");
+     				 if ("streaming".equals(value)) {
      					result = true;
+     					
      					break; 
      				 }
      			 }

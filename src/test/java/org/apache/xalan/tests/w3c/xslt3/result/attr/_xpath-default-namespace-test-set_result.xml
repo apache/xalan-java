@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-29T17:14:17Z" fail="15" name="xpath-default-namespace" pass="11" skipped="0" statusUnknown="0" totalRun="26">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:59Z" fail="11" name="xpath-default-namespace" pass="11" skipped="4" statusUnknown="0" totalRun="22">
    <testResult status="pass" testName="xpath-default-namespace-0101"/>
    <testResult status="pass" testName="xpath-default-namespace-0102"/>
    <testResult status="pass" testName="xpath-default-namespace-0103"/>
@@ -17,13 +17,11 @@
    <testResult status="fail" testName="xpath-default-namespace-0401"/>
    <testResult status="pass" testName="xpath-default-namespace-0501"/>
    <testResult status="fail" testName="xpath-default-namespace-0502"/>
-   <testResult status="fail" testName="xpath-default-namespace-0503"/>
+   <testResult feature="schema_aware" status="skipped" testName="xpath-default-namespace-0503"/>
    <testResult status="pass" testName="xpath-default-namespace-0601"/>
-   <testResult status="fail" testName="xpath-default-namespace-0701"/>
-   <testResult status="fail" testName="xpath-default-namespace-0702">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="xpath-default-namespace-0703"/>
+   <testResult feature="schema_aware" status="skipped" testName="xpath-default-namespace-0701"/>
+   <testResult feature="schema_aware" status="skipped" testName="xpath-default-namespace-0702"/>
+   <testResult feature="schema_aware" status="skipped" testName="xpath-default-namespace-0703"/>
    <testResult status="fail" testName="xpath-default-namespace-0801">
       <outResult>
          <errTrace>java.lang.NullPointerException</errTrace>

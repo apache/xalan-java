@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-10-13T12:55:41Z" fail="32" name="function" pass="56" skipped="22" statusUnknown="0" totalRun="88">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:50Z" fail="32" name="function" pass="56" skipped="22" statusUnknown="0" totalRun="88">
    <testResult status="fail" testName="function-0001">
       <outResult/>
    </testResult>
@@ -23,9 +23,9 @@
    <testResult status="pass" testName="function-0116"/>
    <testResult status="pass" testName="function-0117"/>
    <testResult status="pass" testName="function-0118"/>
-   <testResult status="skipped" testName="function-0119a" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="function-0119a" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="function-0119b"/>
-   <testResult status="skipped" testName="function-0120a" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="function-0120a" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="function-0120b"/>
    <testResult status="pass" testName="function-0121"/>
    <testResult status="pass" testName="function-0122"/>
@@ -34,7 +34,7 @@
    <testResult status="pass" testName="function-0203"/>
    <testResult status="pass" testName="function-0205"/>
    <testResult status="pass" testName="function-0301"/>
-   <testResult status="skipped" testName="function-0302" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="function-0302" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="function-0302b"/>
    <testResult status="pass" testName="function-0303"/>
    <testResult status="pass" testName="function-0401"/>
@@ -77,7 +77,7 @@
    </testResult>
    <testResult status="fail" testName="function-1019">
       <outResult>
-         <errTrace>XPTY0004 : An xsl:function call argument at position 1 for function {http://xxx.com/}test, doesn't match the declared parameter type xs:integer.</errTrace>
+         <errTrace>XPTY0004 : An XSL function call argument at position 1 for function {http://xxx.com/}test, doesn't match the declared parameter type xs:integer.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="function-1020"/>
@@ -85,7 +85,7 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:x="http://xxx.com/"/&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="function-1022"/>
-   <testResult status="skipped" testName="function-1023" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="function-1023" xsltVersion="XSLT 2.0 only"/>
    <testResult status="fail" testName="function-1024">
       <outResult>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>
@@ -113,7 +113,7 @@
    <testResult status="fail" testName="function-1101"/>
    <testResult status="fail" testName="function-1201">
       <outResult>
-         <errTrace>XTTE0570 : An empty sequence is not allowed, as result of evaluation for sequence type's occurence indicator +.</errTrace>
+         <errTrace>XPTY0004 : A sequence of xdm attribute items, doesn't match XPath sequence type node()*.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-1301"/>
@@ -126,9 +126,9 @@
       <outResult/>
    </testResult>
    <testResult status="pass" testName="function-1901"/>
-   <testResult status="skipped" testName="function-1902" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="function-1902" xsltVersion="XSLT 2.0 only"/>
    <testResult status="pass" testName="function-2001"/>
-   <testResult status="skipped" testName="function-2002" xsltVersion="xslt 2.0 only"/>
+   <testResult status="skipped" testName="function-2002" xsltVersion="XSLT 2.0 only"/>
    <testResult status="fail" testName="function-2101">
       <outResult/>
    </testResult>
@@ -145,7 +145,7 @@
    <testResult status="pass" testName="function-2105"/>
    <testResult status="fail" testName="function-2106">
       <outResult>
-         <errTrace>javax.xml.transform.TransformerException: XPST0017 : An xsl:function {http://example.com/namespace}pi call's argument count is not equal to number of xsl:function's xsl:param declarations.</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: XPST0017 : An XSL function {http://example.com/namespace}pi call's argument count is not equal to number of function's param declarations.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-2107">

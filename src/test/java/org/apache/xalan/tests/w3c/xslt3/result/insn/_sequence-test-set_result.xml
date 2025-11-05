@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-02T17:01:46Z" fail="15" name="sequence" pass="10" skipped="1" statusUnknown="1" totalRun="26">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:48Z" fail="15" name="sequence" pass="10" skipped="1" statusUnknown="1" totalRun="26">
    <testResult status="fail" testName="sequence-0101"/>
    <testResult status="fail" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -38,7 +38,7 @@
    <testResult status="pass" testName="sequence-0117"/>
    <testResult status="pass" testName="sequence-0118"/>
    <testResult status="fail" testName="sequence-0119"/>
-   <testResult reason="allowed by xslt 3.0 test suite" status="skipped" testName="sequence-0120"/>
+   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="sequence-0120"/>
    <testResult status="pass" testName="sequence-0121"/>
    <testResult status="fail" testName="sequence-0122"/>
    <testResult status="pass" testName="sequence-0123"/>
