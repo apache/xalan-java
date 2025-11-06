@@ -58,6 +58,7 @@ import org.apache.xalan.templates.ElemMergeKey;
 import org.apache.xalan.templates.ElemMergeSource;
 import org.apache.xalan.templates.ElemMessage;
 import org.apache.xalan.templates.ElemMode;
+import org.apache.xalan.templates.ElemNamespace;
 import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
@@ -579,11 +580,11 @@ public class XSLTSchema extends XSLTElementDef
                                                           XSLTAttributeDef.T_CDATA, false, false, 
                                                           XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[45];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[46];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[46];
+    XSLTElementDef[] templateElements = new XSLTElementDef[46];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[47];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[47];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[46];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[47];
     
     XSLTElementDef[] charTemplateElements = new XSLTElementDef[27];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
@@ -938,6 +939,18 @@ public class XSLTSchema extends XSLTElementDef
                                                   xpathDefaultNamespaceAttrOpt, expandTextAttrOpt }, 
                                         new ProcessorTemplateElem(),
                           ElemPI.class /* class object */, 20, true);
+    
+    XSLTElementDef xslNamespace =
+    	      new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL,
+    	                         "namespace", null /*alias */,
+    	                         templateElements /* elements */,  // %char-template;>
+    	                         new XSLTAttributeDef[]{
+    	                                                  nameAVT_NCNAMERequired,
+    	                                                  spaceAttr, selectAttrOpt,
+    	                                                  xpathDefaultNamespaceAttrOpt, expandTextAttrOpt }, 
+    	                                        new ProcessorTemplateElem(),
+    	                          ElemNamespace.class /* class object */, 20, true);
+    
     XSLTElementDef xslElement = new XSLTElementDef(this,
                                   Constants.S_XSLNAMESPACEURL, "element",
                                   null /*alias */,
@@ -1064,6 +1077,7 @@ public class XSLTSchema extends XSLTElementDef
     // instructions
     templateElements[i++] = xslProcessingInstruction;
     templateElements[i++] = xslComment;
+    templateElements[i++] = xslNamespace;
     templateElements[i++] = xslElement;
     templateElements[i++] = xslAttribute;
     templateElements[i++] = resultElement;

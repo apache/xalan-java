@@ -257,6 +257,10 @@ public class SequenceTypeSupport {
     
     public static int DOCUMENT_KIND = 109;
     
+    public static int PROCESSING_INSTRUCTION_KIND = 110;
+    
+    public static int COMMENT_KIND = 111;        
+    
     /**
      * Sequence type occurrence indicator values, for Xalan-J 
      * implementation.
@@ -698,6 +702,142 @@ public class SequenceTypeSupport {
 	            		   }
 	            	   }
 	            	}
+	            	else if (sequenceTypeKindTest.getKindVal() == PROCESSING_INSTRUCTION_KIND) {
+	            		if (srcValue instanceof XMLNodeCursorImpl) {	            		   
+	            			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)srcValue;	            		  
+	            			XMLNodeCursorImpl nodeSetClone = (XMLNodeCursorImpl)(xmlNodeCursorImpl.clone());
+
+	            			DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iterRaw();
+	            			int nextNode;
+	            			boolean isSrcValueTypeOk = true;
+	            			int nodeSetLength = 0;
+	            			while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {	            				
+	            				DTM dtm = xctxt.getDTM(nextNode);
+	            				if (dtm.getNodeType(nextNode) == DTM.DOCUMENT_NODE) {
+	            					int child = dtm.getFirstChild(nextNode);
+	            					while (child != DTM.NULL) {	            					   
+	            						DTM dtm2 = xctxt.getDTM(child);
+	            						if (dtm2.getNodeType(child) == DTM.PROCESSING_INSTRUCTION_NODE) {
+	            							nodeSetLength++;   
+	            						}
+	            						else {
+	            							isSrcValueTypeOk = false;
+
+	            							break;
+	            						}	            					   	            					   
+
+	            						child = dtm2.getNextSibling(child); 
+	            					}
+
+	            					if (!isSrcValueTypeOk) {
+	            						break;	
+	            					}
+	            				}	            				
+	            				else if (dtm.getNodeType(nextNode) == DTM.PROCESSING_INSTRUCTION_NODE) {           					 
+	            					nodeSetLength++; 
+	            				}
+	            				else {
+	            					isSrcValueTypeOk = false;
+
+	            					break;
+	            				}
+	            			}
+
+	            			if (isSrcValueTypeOk) {
+	            				boolean isSeqTypeOccrIndicatorOk = false;
+	            				if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+	            					isSeqTypeOccrIndicatorOk = true;
+	            				}
+	            				else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY) && (nodeSetLength > 0)) {
+	            					isSeqTypeOccrIndicatorOk = true;
+	            				}
+	            				else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (nodeSetLength <= 1)) {
+	            					isSeqTypeOccrIndicatorOk = true;
+	            				}
+	            				else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) && (nodeSetLength == 1)) {
+	            					isSeqTypeOccrIndicatorOk = true;
+	            				}
+
+	            				if (isSeqTypeOccrIndicatorOk) {		            				  
+	            					return nodeSetClone; 
+	            				}
+	            				else {
+	            					throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
+	            				}
+	            			}
+	            			else {
+	            				throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
+	            			}
+	            		}
+	            	}
+	            	else if (sequenceTypeKindTest.getKindVal() == COMMENT_KIND) {
+	            		if (srcValue instanceof XMLNodeCursorImpl) {	            		   
+	            			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)srcValue;	            		  
+	            			XMLNodeCursorImpl nodeSetClone = (XMLNodeCursorImpl)(xmlNodeCursorImpl.clone());
+
+	            			DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iterRaw();
+	            			int nextNode;
+	            			boolean isSrcValueTypeOk = true;
+	            			int nodeSetLength = 0;
+	            			while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {	            				
+	            				DTM dtm = xctxt.getDTM(nextNode);
+	            				if (dtm.getNodeType(nextNode) == DTM.DOCUMENT_NODE) {
+	            					int child = dtm.getFirstChild(nextNode);
+	            					while (child != DTM.NULL) {	            					   
+	            						DTM dtm2 = xctxt.getDTM(child);
+	            						if (dtm2.getNodeType(child) == DTM.COMMENT_NODE) {
+	            							nodeSetLength++;   
+	            						}
+	            						else {
+	            							isSrcValueTypeOk = false;
+
+	            							break;
+	            						}	            					   	            					   
+
+	            						child = dtm2.getNextSibling(child); 
+	            					}
+
+	            					if (!isSrcValueTypeOk) {
+	            						break;	
+	            					}
+	            				}	            				
+	            				else if (dtm.getNodeType(nextNode) == DTM.COMMENT_NODE) {           					 
+	            					nodeSetLength++; 
+	            				}
+	            				else {
+	            					isSrcValueTypeOk = false;
+
+	            					break;
+	            				}
+	            			}
+
+	            			if (isSrcValueTypeOk) {
+	            				boolean isSeqTypeOccrIndicatorOk = false;
+	            				if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+	            					isSeqTypeOccrIndicatorOk = true;
+	            				}
+	            				else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY) && (nodeSetLength > 0)) {
+	            					isSeqTypeOccrIndicatorOk = true;
+	            				}
+	            				else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (nodeSetLength <= 1)) {
+	            					isSeqTypeOccrIndicatorOk = true;
+	            				}
+	            				else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) && (nodeSetLength == 1)) {
+	            					isSeqTypeOccrIndicatorOk = true;
+	            				}
+
+	            				if (isSeqTypeOccrIndicatorOk) {		            				  
+	            					return nodeSetClone; 
+	            				}
+	            				else {
+	            					throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
+	            				}
+	            			}
+	            			else {
+	            				throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
+	            			}
+	            		}
+	            	}
 	            	else if (sequenceTypeKindTest.getKindVal() == DOCUMENT_KIND) {
 	            	   if (srcValue instanceof XMLNodeCursorImpl) {	            		   
 	            		   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)srcValue;	            		  
@@ -710,7 +850,7 @@ public class SequenceTypeSupport {
 	            		   while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
 	            			   nodeSetLength++;
 	            			   DTM dtm = xctxt.getDTM(nextNode);	            				 
-	            			   if (!(dtm.getNodeType(nextNode) == DTM.DOCUMENT_NODE)) {           					 
+	            			   if (dtm.getNodeType(nextNode) != DTM.DOCUMENT_NODE) {           					 
 	            				   isSrcValueTypeOk = false;
 
 	            				   break; 

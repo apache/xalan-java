@@ -2259,12 +2259,14 @@ public class ElemTemplateElement extends UnImplNode
   	else if (elemTemplateElem instanceof ElemElement) {
   		result = ((ElemElement)elemTemplateElem).getExpandText();  		
   	}
-  	
-  	else if (elemTemplateElem instanceof ElemComment) {
-  		result = ((ElemComment)elemTemplateElem).getExpandText();  		
-  	}
   	else if (elemTemplateElem instanceof ElemPI) {
   		result = ((ElemPI)elemTemplateElem).getExpandText();  		
+  	}
+  	else if (elemTemplateElem instanceof ElemComment) {
+  		result = ((ElemComment)elemTemplateElem).getExpandText();  		
+  	}  	
+  	else if (elemTemplateElem instanceof ElemNamespace) {
+  		result = ((ElemNamespace)elemTemplateElem).getExpandText();  		
   	}
   	else if (elemTemplateElem instanceof ElemAnalyzeString) {
   		result = ((ElemAnalyzeString)elemTemplateElem).getExpandText();  		
@@ -2274,7 +2276,7 @@ public class ElemTemplateElement extends UnImplNode
   	} 
   	else if (elemTemplateElem instanceof ElemNonMatchingSubstring) {
   		result = ((ElemNonMatchingSubstring)elemTemplateElem).getExpandText();  		
-  	} 
+  	}  	
 
   	return result;
   }

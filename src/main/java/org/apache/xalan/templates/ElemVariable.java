@@ -25,6 +25,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -815,6 +816,18 @@ public class ElemVariable extends ElemTemplateElement
     	  if (m_parentNode instanceof Stylesheet) {
     		  // Global variable
     		  rootNodeHandleOfRtf = transformer.transformToGlobalRTF(this);
+    		  
+    		  int attrCount = SerializerUtils.m_xdmAttrList.size();
+    		  if (attrCount > 0) {
+    			 ResultSequence rSeq = new ResultSequence();
+    			 for (int idx = 0; idx < attrCount; idx++) {
+    				rSeq.add((SerializerUtils.m_xdmAttrList).get(idx)); 
+    			 }
+    			 
+    			 (SerializerUtils.m_xdmAttrList).clear();
+    			 
+    			 var = rSeq;    			     			 
+    		  }
     	  }
     	  else {
     		  rootNodeHandleOfRtf = transformer.transformToRTF(this);
@@ -860,7 +873,7 @@ public class ElemVariable extends ElemTemplateElement
     			  }
     		  }
     	  }
-    	  else {
+    	  else if (var == null) {
     	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
     	     var = new XNodeSetForDOM(nodeList, xctxt);    	         	         	         	     
     	  }
@@ -1173,6 +1186,31 @@ public class ElemVariable extends ElemTemplateElement
     			throw new TransformerException("XTTE0570 : The supplied xdm item doesn't match an XPath sequence type " + m_asAttr + ".", srcLocator); 
   		    }
     	}
+    	
+    	/*boolean isXdmValueConformType = false;
+    	
+    	if (seqTypeKindVal == SequenceTypeSupport.ATTRIBUTE_KIND) {
+    		if (var instanceof ResultSequence) {
+    			ResultSequence rSeq = (ResultSequence)var;
+    			int rSeqLength = rSeq.size();
+    			for (int idx = 0; idx < rSeqLength; idx++) {
+    				XObject xObj = rSeq.item(idx);
+    				if (xObj instanceof XdmAttributeItem) {
+    					isXdmValueConformType = true;
+    				}
+    				else {
+    					isXdmValueConformType = false;
+    					
+    					break;
+    				}
+    			}
+    			
+    			if (!isXdmValueConformType) {
+    				throw new TransformerException("XTTE0570 : The supplied xdm item doesn't match an XPath sequence type " + m_asAttr + ".", srcLocator);
+    			}
+    		}
+    	}*/
+    	    	
     	else {
     		try {
     			var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);

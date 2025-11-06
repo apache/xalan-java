@@ -63,6 +63,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
@@ -307,12 +308,21 @@ public class XslTransformEvaluationHelper {
         
         List<Integer> dtmNodeHandleList = new ArrayList<Integer>();
         
-        for (int idx = 0; idx < resultSeq.size(); idx++) {
+        int rSeqLength = resultSeq.size();        
+        for (int idx = 0; idx < rSeqLength; idx++) {
            XObject nodeSetItem = resultSeq.item(idx);
            if (nodeSetItem instanceof XMLNodeCursorImpl) {
               int nodeDtmHandle = (((XMLNodeCursorImpl)nodeSetItem).iter()).nextNode();
               dtmNodeHandleList.add(nodeDtmHandle);
            }
+           /*else if (nodeSetItem instanceof XdmAttributeItem) {
+        	   XdmAttributeItem xdmAttributeItem = (XdmAttributeItem)nodeSetItem;
+        	   String localName = xdmAttributeItem.getAttrLocalName();
+        	   String namespace = xdmAttributeItem.getAttrNodeNs();
+        	   String attrValue = xdmAttributeItem.getAttrStrValue();
+        	   
+        	   // TO DO
+           }*/
            else {
               break; 
            }

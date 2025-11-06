@@ -199,6 +199,10 @@ public class ElemComment extends ElemTemplateElement
 		  
 		  SourceLocator srcLocator = xctxt.getSAXLocator();
 		  
+		  if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
+	    	  m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	      }	
+		  
 		  if ((m_selectExpression != null) && (getFirstChildElem() != null)) {
 			 throw new TransformerException("XTSE0940 : An XSL comment instruction cannot have, "
 			 		                                                          + "both 'select' attribute and non-empty content.", srcLocator); 

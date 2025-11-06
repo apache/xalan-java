@@ -25,6 +25,8 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
+import org.apache.xerces.impl.dv.xs.AnyURIDV;
 import org.apache.xml.utils.XML11Char;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -32,26 +34,22 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 
 /**
- * Implement xsl:processing-instruction.
- * <pre>
- * <!ELEMENT xsl:processing-instruction %char-template;>
- * <!ATTLIST xsl:processing-instruction
- *   name %avt; #REQUIRED
- *   %space-att;
- * >
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Processing-Instructions">section-Creating-Processing-Instructions in XSLT Specification</a>
+ * Implementation of XSLT 3.0 xsl:namespace instruction.
+ *
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
  * @xsl.usage advanced
  */
-public class ElemPI extends ElemTemplateElement
+public class ElemNamespace extends ElemTemplateElement
 {
-  static final long serialVersionUID = 5621976448020889825L;
 
-  /**
-   * The xsl:processing-instruction element has a required name
-   * attribute that specifies the name of the processing instruction node.
-   * The value of the name attribute is interpreted as an
-   * attribute value template.
+  private static final long serialVersionUID = -4462559949130957853L;
+
+ /**
+   * The xsl:namespace element has a required name attribute 
+   * that specifies the name of an XML namespace node. The 
+   * value of the name attribute is interpreted as an attribute 
+   * value template.
    */
   private AVT m_name_atv = null;
 
@@ -62,7 +60,7 @@ public class ElemPI extends ElemTemplateElement
    */
   public void setName(AVT v)
   {
-    m_name_atv = v;
+	  m_name_atv = v;
   }
 
   /**
@@ -72,7 +70,7 @@ public class ElemPI extends ElemTemplateElement
    */
   public AVT getName()
   {
-    return m_name_atv;
+	  return m_name_atv;
   }
   
   /**
@@ -102,7 +100,7 @@ public class ElemPI extends ElemTemplateElement
   
   /**
    * Variable to indicate whether, an attribute 'expand-text'
-   * is declared on xsl:processing-instruction instruction.
+   * is declared on xsl:namespace instruction.
    */
   private boolean m_expand_text_declared;
   
@@ -197,7 +195,7 @@ public class ElemPI extends ElemTemplateElement
    */
   public int getXSLToken()
   {
-    return Constants.ELEMNAME_PI;
+	  return Constants.ELEMNAME_NAMESPACE;
   }
 
   /**
@@ -207,65 +205,34 @@ public class ElemPI extends ElemTemplateElement
    */
   public String getNodeName()
   {
-    return Constants.ELEMNAME_PI_STRING;
+	  return Constants.ELEMNAME_NAMESPACE_STRING;
   }
 
   /**
-   * Create a processing instruction in the result tree.
-   * The content of the xsl:processing-instruction element is a
-   * template for the string-value of the processing instruction node.
-   * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Processing-Instructions">section-Creating-Processing-Instructions in XSLT Specification</a>
+   * Create an XML namespace node within an XSL transformation 
+   * result tree. The content of the xsl:namespace element is a
+   * template for the string value of the namespace instruction node.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer)
-            throws TransformerException
+  public void execute(TransformerImpl transformer) throws TransformerException
   {
 
 	  if (transformer.getDebug())
 		  transformer.getTraceManager().emitTraceEvent(this);
 
 	  XPathContext xctxt = transformer.getXPathContext();
-	  
+
 	  final int contextNode = xctxt.getCurrentNode();
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
 	  if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
     	  m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-      }	
+      }	  
 	  
-	  if ((m_selectExpression != null) && (getFirstChildElem() != null)) {
-		 throw new TransformerException("XTSE0940 : An XSL processing instruction cannot have, "
-		 		                                                          + "both 'select' attribute and non-empty content.", srcLocator); 
-	  }
-
-	  String piName = m_name_atv == null ? null : m_name_atv.evaluate(xctxt, contextNode, this);
-
-	  // Ignore processing instruction if name is null
-	  if (piName == null) return;
-
-	  if (piName.equalsIgnoreCase("xml"))
-	  {
-		  transformer.getMsgMgr().warn(
-				  this, XSLTErrorResources.WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML,
-				  new Object[]{ Constants.ATTRNAME_NAME, piName });
-		  return;
-	  }
-
-	  // Only check if an avt was used (ie. this wasn't checked at compose time.)
-	  // Ignore processing instruction, if invalid
-	  else if ((!m_name_atv.isSimple()) && (!XML11Char.isXML11ValidNCName(piName)))
-	  {
-		  transformer.getMsgMgr().warn(
-				  this, XSLTErrorResources.WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME,
-				  new Object[]{ Constants.ATTRNAME_NAME, piName });
-		  return;    	
-	  }
-
 	  String data = null;		  
 	  if (m_selectExpression != null) {
 		  XObject xObj = m_selectExpression.execute(xctxt, contextNode, xctxt.getNamespaceContext());			  
@@ -273,6 +240,56 @@ public class ElemPI extends ElemTemplateElement
 	  }
 	  else {
 		  data = transformer.transformToString(this);
+	  }
+	  
+	  if ((data == null) || (data.length() == 0)) {
+		  throw new TransformerException("XTDE0930 : An XSL namespace instruction, produced a zero-length string value for "
+		  		                                                                           + "an XML namespace.", srcLocator); 
+	  }
+	  else if ("http://www.w3.org/2000/xmlns/".equals(data)) {
+		  throw new TransformerException("XTDE0905 : An XSL namespace instruction, produced a disallowed URI value "
+		  		                                                                           + "http://www.w3.org/2000/xmlns/.", srcLocator); 
+	  }
+	  
+	  AnyURIDV xsAnyUriDv = new AnyURIDV();
+	  try {		  		  		  		  
+		  Object xsAnyUriObj1 = xsAnyUriDv.getActualValue(data, null);
+	  } 
+	  catch (InvalidDatatypeValueException ex) {
+		  throw new TransformerException("XTDE0905 : An XSL namespace instruction, produced an URI value "
+								  		                                                   + "that is not valid in the lexical space of "
+								  		                                                   + "the datatype xs:anyURI.", srcLocator); 
+	  }
+	  
+	  if (m_selectExpression != null) {
+		  ElemTemplateElement elemTemplateElement = getFirstChildElem();
+		  while (elemTemplateElement != null) {
+			 if (!(elemTemplateElement instanceof ElemFallback)) {
+				 throw new TransformerException("XTSE0910 : An XSL namespace instruction cannot have, "
+												                                          + "both 'select' attribute and non-empty content "
+												                                          + "with XSL instructions other than XSL fallback.", srcLocator); 
+			 }
+			 
+			 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+		  }
+	  }
+
+	  String xslNamespaceName = (m_name_atv == null) ? null : m_name_atv.evaluate(xctxt, contextNode, this);
+	  if ((xslNamespaceName == null) || (xslNamespaceName.length() == 0) || !XML11Char.isXML11ValidNCName(xslNamespaceName) 
+					                                                                                     || xslNamespaceName.equals("xmlns")) {
+		   throw new TransformerException("XTDE0920 : An XSL namespace instruction cannot produce a name, that is "
+		   		                                                                          + "zero-length string, not an XML NCName, or "
+		   		                                                                          + "has a string value \"xmlns\".", srcLocator);   
+	  }
+	  
+	  if (xslNamespaceName.equalsIgnoreCase("xml") && !xslNamespaceName.equals("http://www.w3.org/XML/1998/namespace")) {
+		  throw new TransformerException("XTDE0925 : An XSL namespace instruction produced a name 'xml' and a value not equal "
+		  		                                                                          + "to 'http://www.w3.org/XML/1998/namespace'", srcLocator); 
+	  }
+	  
+      if (!xslNamespaceName.equalsIgnoreCase("xml") && xslNamespaceName.equals("http://www.w3.org/XML/1998/namespace")) {
+    	  throw new TransformerException("XTDE0925 : An XSL namespace instruction produced a name other than 'xml' and a value "
+    	  		                                                                          + "equal to 'http://www.w3.org/XML/1998/namespace'", srcLocator); 
 	  }
 
 	  boolean isExpandText = false;
@@ -289,8 +306,8 @@ public class ElemPI extends ElemTemplateElement
 	  }
 
 	  try
-	  {
-		  transformer.getResultTreeHandler().processingInstruction(piName, data);
+	  {		  
+		  transformer.getResultTreeHandler().namespaceAfterStartElement(xslNamespaceName, data);
 	  }
 	  catch(org.xml.sax.SAXException se)
 	  {
@@ -313,42 +330,41 @@ public class ElemPI extends ElemTemplateElement
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
-    int type = ((ElemTemplateElement) newChild).getXSLToken();
+	  int type = ((ElemTemplateElement) newChild).getXSLToken();
 
-    switch (type)
-    {
+	  switch (type)
+	  {
+	  // char-instructions 
+	  case Constants.ELEMNAME_TEXTLITERALRESULT :
+	  case Constants.ELEMNAME_APPLY_TEMPLATES :
+	  case Constants.ELEMNAME_APPLY_IMPORTS :
+	  case Constants.ELEMNAME_CALLTEMPLATE :
+	  case Constants.ELEMNAME_FOREACH :
+	  case Constants.ELEMNAME_VALUEOF :
+	  case Constants.ELEMNAME_COPY_OF :
+	  case Constants.ELEMNAME_NUMBER :
+	  case Constants.ELEMNAME_CHOOSE :
+	  case Constants.ELEMNAME_IF :
+	  case Constants.ELEMNAME_TEXT :
+	  case Constants.ELEMNAME_COPY :
+	  case Constants.ELEMNAME_VARIABLE :
+	  case Constants.ELEMNAME_MESSAGE :
 
-    // char-instructions 
-    case Constants.ELEMNAME_TEXTLITERALRESULT :
-    case Constants.ELEMNAME_APPLY_TEMPLATES :
-    case Constants.ELEMNAME_APPLY_IMPORTS :
-    case Constants.ELEMNAME_CALLTEMPLATE :
-    case Constants.ELEMNAME_FOREACH :
-    case Constants.ELEMNAME_VALUEOF :
-    case Constants.ELEMNAME_COPY_OF :
-    case Constants.ELEMNAME_NUMBER :
-    case Constants.ELEMNAME_CHOOSE :
-    case Constants.ELEMNAME_IF :
-    case Constants.ELEMNAME_TEXT :
-    case Constants.ELEMNAME_COPY :
-    case Constants.ELEMNAME_VARIABLE :
-    case Constants.ELEMNAME_MESSAGE :
+		  // instructions 
+		  // case Constants.ELEMNAME_PI:
+		  // case Constants.ELEMNAME_COMMENT:
+		  // case Constants.ELEMNAME_ELEMENT:
+		  // case Constants.ELEMNAME_ATTRIBUTE:
+		  break;
+	  default :
+		  error(XSLTErrorResources.ER_CANNOT_ADD,
+				  new Object[]{ newChild.getNodeName(),
+						  this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
 
-      // instructions 
-      // case Constants.ELEMNAME_PI:
-      // case Constants.ELEMNAME_COMMENT:
-      // case Constants.ELEMNAME_ELEMENT:
-      // case Constants.ELEMNAME_ATTRIBUTE:
-      break;
-    default :
-      error(XSLTErrorResources.ER_CANNOT_ADD,
-            new Object[]{ newChild.getNodeName(),
-                          this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+		  //" to " + this.m_elemName);
+	  }
 
-    //" to " + this.m_elemName);
-    }
-
-    return super.appendChild(newChild);
+	  return super.appendChild(newChild);
   }
   
   /**
@@ -356,6 +372,6 @@ public class ElemPI extends ElemTemplateElement
    */
   public void endCompose(StylesheetRoot sroot) throws TransformerException
   {
-     super.endCompose(sroot);
+	  super.endCompose(sroot);
   }
 }

@@ -52,6 +52,7 @@ import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemMatchingSubstring;
+import org.apache.xalan.templates.ElemNamespace;
 import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
@@ -6574,6 +6575,28 @@ public class XPathParser
                                                                                          SequenceTypeSupport.ATTRIBUTE_KIND, isXPathInlineFunctionParse);          
            xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
        }
+       else if (tokenIs("processing-instruction")) {
+           sequenceTypeKindTest = new SequenceTypeKindTest();
+           sequenceTypeKindTest.setKindVal(SequenceTypeSupport.PROCESSING_INSTRUCTION_KIND);          
+           nextToken();
+           consumeExpected('(');
+           consumeExpected(')');
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+           if (m_token != null) {
+              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse); 
+           }          
+       }
+       else if (tokenIs("comment")) {
+           sequenceTypeKindTest = new SequenceTypeKindTest();
+           sequenceTypeKindTest.setKindVal(SequenceTypeSupport.COMMENT_KIND);          
+           nextToken();
+           consumeExpected('(');
+           consumeExpected(')');
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+           if (m_token != null) {
+              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse); 
+           }          
+       }
        else if (tokenIs("text")) {
            sequenceTypeKindTest = new SequenceTypeKindTest();
            sequenceTypeKindTest.setKindVal(SequenceTypeSupport.TEXT_KIND);          
@@ -8096,16 +8119,22 @@ public class XPathParser
     			result = getXPathDefaultNamespace(((ElemElement)xpathExprXslParentNode).getParentElem()); 
     		}
     	}
+    	else if (xpathExprXslParentNode instanceof ElemPI) {
+    		result = ((ElemPI)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemPI)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
     	else if (xpathExprXslParentNode instanceof ElemComment) {
     		result = ((ElemComment)xpathExprXslParentNode).getXpathDefaultNamespace();
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemComment)xpathExprXslParentNode).getParentElem()); 
     		}
-    	}
-    	else if (xpathExprXslParentNode instanceof ElemPI) {
-    		result = ((ElemPI)xpathExprXslParentNode).getXpathDefaultNamespace();
+    	}    	
+    	else if (xpathExprXslParentNode instanceof ElemNamespace) {
+    		result = ((ElemNamespace)xpathExprXslParentNode).getXpathDefaultNamespace();
     		if (result == null) {
-    			result = getXPathDefaultNamespace(((ElemPI)xpathExprXslParentNode).getParentElem()); 
+    			result = getXPathDefaultNamespace(((ElemNamespace)xpathExprXslParentNode).getParentElem()); 
     		}
     	}
     	else if (xpathExprXslParentNode instanceof ElemAnalyzeString) {
@@ -8125,7 +8154,7 @@ public class XPathParser
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemNonMatchingSubstring)xpathExprXslParentNode).getParentElem()); 
     		}
-    	}
+    	}    	
 
     	return result;
     }

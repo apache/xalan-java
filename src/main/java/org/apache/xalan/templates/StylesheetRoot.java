@@ -1130,7 +1130,7 @@ public class StylesheetRoot extends StylesheetComposed
 		  elemApplyTemplates.setIsDefaultTemplate(true);
 		  result.appendChild(elemApplyTemplates);
 	  }
-	  else if ((nodeType == DTM.TEXT_NODE) | (nodeType == DTM.ATTRIBUTE_NODE)) {
+	  else if ((nodeType == DTM.TEXT_NODE) || (nodeType == DTM.ATTRIBUTE_NODE)) {
 		  XPath xpathMatch = new XPath("text()|@*", this, this, XPath.MATCH, m_errorListener);
 		  result.setMatch(xpathMatch);
 		  
@@ -1138,6 +1138,18 @@ public class StylesheetRoot extends StylesheetComposed
 		  XPath xpathSelect = new XPath("string(.)", this, this, XPath.SELECT, m_errorListener);
 		  elemValueOf.setSelect(xpathSelect);
 		  result.appendChild(elemValueOf);
+	  }
+	  else if (nodeType == DTM.PROCESSING_INSTRUCTION_NODE) {
+		  XPath xpathMatch = new XPath("processing-instruction()", this, this, XPath.MATCH, m_errorListener);
+		  result.setMatch(xpathMatch);
+	  }
+	  else if (nodeType == DTM.COMMENT_NODE) {
+		  XPath xpathMatch = new XPath("comment()", this, this, XPath.MATCH, m_errorListener);
+		  result.setMatch(xpathMatch);
+	  }
+	  else if (nodeType == DTM.NAMESPACE_NODE) {
+		  XPath xpathMatch = new XPath("namespace-node()", this, this, XPath.MATCH, m_errorListener);
+		  result.setMatch(xpathMatch);
 	  }
 	  
 	  return result;	  
