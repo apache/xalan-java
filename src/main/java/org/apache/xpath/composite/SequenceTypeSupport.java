@@ -36,6 +36,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
 import org.apache.xalan.serialize.SerializerUtils;
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
@@ -1529,9 +1530,12 @@ public class SequenceTypeSupport {
 			                                                         throws ParserConfigurationException, SAXException, IOException {
 		boolean isNodeValidWithSchemaType = false;
 		
+		System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
 		DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+		
 		Document document = dBuilder.parse(new ByteArrayInputStream(xmlDocumentStr.getBytes()));
 					
 		String xsTargetNamespace = null;

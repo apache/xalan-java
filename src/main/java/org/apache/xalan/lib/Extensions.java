@@ -29,6 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xalan.xslt.EnvironmentCheck;
+import org.apache.xml.utils.Constants;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
@@ -111,6 +112,8 @@ public class Extensions
       // Document myDoc = myProcessor.getContextNode().getOwnerDocument();
       try
       {
+    	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    	
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document myDoc = db.newDocument();
@@ -306,6 +309,8 @@ public class Extensions
     Document factoryDocument;
     try
     {
+      System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    	
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
       factoryDocument = db.newDocument();
@@ -403,6 +408,8 @@ public class Extensions
         {
             try
             {
+            	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+            	
                 m_doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             }
 

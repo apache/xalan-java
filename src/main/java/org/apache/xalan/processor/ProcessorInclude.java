@@ -416,11 +416,11 @@ public class ProcessorInclude extends XSLTElementProcessor
     private void saveNsBindingsXSLIncludedStylesheet(StylesheetHandler handler) throws SAXException {
     	try {
     		 String xslIncludedStylesheetAbsUri = SystemIDResolver.getAbsoluteURI(getHref(), handler.getBaseIdentifier());
+    		 
     		 System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
     		 
     		 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    		 dbf.setNamespaceAware(true);
-    		 
+    		 dbf.setNamespaceAware(true);    		 
     		 DocumentBuilder dBuilder = dbf.newDocumentBuilder();
     		 
     		 Document xslDocument = dBuilder.parse(xslIncludedStylesheetAbsUri);

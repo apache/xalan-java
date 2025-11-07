@@ -52,6 +52,7 @@ import org.apache.xalan.templates.OutputProperties;
 import org.apache.xml.serializer.Method;
 import org.apache.xml.serializer.Serializer;
 import org.apache.xml.serializer.SerializerFactory;
+import org.apache.xml.utils.Constants;
 import org.apache.xml.utils.DOMBuilder;
 import org.apache.xml.utils.XMLReaderManager;
 import org.w3c.dom.Document;
@@ -215,8 +216,9 @@ public class TransformerIdentityImpl extends Transformer
       {
         try
         {
+          System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+          
           DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
           dbf.setNamespaceAware(true);
 
           if (m_isSecureProcessing)
@@ -348,8 +350,11 @@ public class TransformerIdentityImpl extends Transformer
        ((SAXSource)source).getXMLReader()==null )||
        (source instanceof DOMSource && ((DOMSource)source).getNode()==null)){
       try {
+    	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    	
         DocumentBuilderFactory builderF = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = builderF.newDocumentBuilder();
+        
         String systemID = source.getSystemId();
         source = new DOMSource(builder.newDocument());
 

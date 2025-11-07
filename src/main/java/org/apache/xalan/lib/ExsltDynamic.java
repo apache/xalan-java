@@ -27,6 +27,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.utils.Constants;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPath;
@@ -393,37 +394,40 @@ public class ExsltDynamic extends ExsltBase
         
         if (object instanceof XMLNodeCursorImpl)
         {
-          NodeList nodelist = null;
-          nodelist = ((XMLNodeCursorImpl)object).nodelist();
-        
-          for (int k = 0; k < nodelist.getLength(); k++)
-          {
-            Node n = nodelist.item(k);
-            if (!resultSet.contains(n))
-              resultSet.addNode(n);
-          }
+        	NodeList nodelist = null;
+        	nodelist = ((XMLNodeCursorImpl)object).nodelist();
+
+        	for (int k = 0; k < nodelist.getLength(); k++)
+        	{
+        		Node n = nodelist.item(k);
+        		if (!resultSet.contains(n))
+        			resultSet.addNode(n);
+        	}
         }
         else
         {
-	  if (lDoc == null)
-	  {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            lDoc = db.newDocument();
-          }
-        
-          Element element = null;
-          if (object instanceof XNumber)
-            element = lDoc.createElementNS(EXSL_URI, "exsl:number");
-          else if (object instanceof XBoolean)
-            element = lDoc.createElementNS(EXSL_URI, "exsl:boolean");
-          else
-            element = lDoc.createElementNS(EXSL_URI, "exsl:string");
-          
-          Text textNode = lDoc.createTextNode(object.str());
-          element.appendChild(textNode);
-          resultSet.addNode(element);
+        	if (lDoc == null)
+        	{
+        		System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+        		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        		dbf.setNamespaceAware(true);
+        		DocumentBuilder db = dbf.newDocumentBuilder();
+
+        		lDoc = db.newDocument();
+        	}
+
+        	Element element = null;
+        	if (object instanceof XNumber)
+        		element = lDoc.createElementNS(EXSL_URI, "exsl:number");
+        	else if (object instanceof XBoolean)
+        		element = lDoc.createElementNS(EXSL_URI, "exsl:boolean");
+        	else
+        		element = lDoc.createElementNS(EXSL_URI, "exsl:string");
+
+        	Text textNode = lDoc.createTextNode(object.str());
+        	element.appendChild(textNode);
+        	resultSet.addNode(element);
         }
       }
       catch (Exception e)

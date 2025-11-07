@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.dom.DOMSource;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathContext;
@@ -88,12 +89,10 @@ public class FuncParseXmlFragment extends FunctionOneArg {
         XMLNodeCursorImpl nodeSet = null;
         
         try {
+        	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+        	
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            
-            // Enable the XML namespace processing, on an XML parse 
-            // of the string value.
-            dbf.setNamespaceAware(true);         
-            
+            dbf.setNamespaceAware(true);                     
             DocumentBuilder dBuilder = dbf.newDocumentBuilder();
             
             // Wrap the originally provided string value (that is supposed to be an XML fragment 

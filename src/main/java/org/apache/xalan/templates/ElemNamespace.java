@@ -23,6 +23,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
@@ -31,6 +32,7 @@ import org.apache.xml.utils.XML11Char;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XdmNamespaceItem;
 import org.w3c.dom.DOMException;
 
 /**
@@ -252,13 +254,15 @@ public class ElemNamespace extends ElemTemplateElement
 	  }
 	  
 	  AnyURIDV xsAnyUriDv = new AnyURIDV();
-	  try {		  		  		  		  
-		  Object xsAnyUriObj1 = xsAnyUriDv.getActualValue(data, null);
+	  try {
+		  // Validate string value with lexical space of XML 
+		  // Schema data type xs:anyURI. 
+		  xsAnyUriDv.getActualValue(data, null);
 	  } 
 	  catch (InvalidDatatypeValueException ex) {
 		  throw new TransformerException("XTDE0905 : An XSL namespace instruction, produced an URI value "
-								  		                                                   + "that is not valid in the lexical space of "
-								  		                                                   + "the datatype xs:anyURI.", srcLocator); 
+								  		                                                   + "that is not valid with lexical space of "
+								  		                                                   + "XML Schema data type xs:anyURI.", srcLocator); 
 	  }
 	  
 	  if (m_selectExpression != null) {
@@ -306,8 +310,17 @@ public class ElemNamespace extends ElemTemplateElement
 	  }
 
 	  try
-	  {		  
-		  transformer.getResultTreeHandler().namespaceAfterStartElement(xslNamespaceName, data);
+	  {	
+		  ElemTemplateElement xslParentElem = getParentElem();
+		  if (!((xslParentElem instanceof ElemVariable) || (xslParentElem instanceof ElemFunction))) {
+			 // An xsl:namespace instruction, is not xsl:variable or xsl:function 
+			 // instruction's XSL child node.
+		     transformer.getResultTreeHandler().namespaceAfterStartElement(xslNamespaceName, data);
+		  }
+		  else {
+			 XdmNamespaceItem xdmNamespaceItem = new XdmNamespaceItem(xslNamespaceName, data);
+			 (SerializerUtils.m_xdmNamespaceList).add(xdmNamespaceItem);
+		  }
 	  }
 	  catch(org.xml.sax.SAXException se)
 	  {

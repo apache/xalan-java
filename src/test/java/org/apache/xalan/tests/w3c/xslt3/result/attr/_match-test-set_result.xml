@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:42Z" fail="57" name="match" pass="68" skipped="11" statusUnknown="1" totalRun="126">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-07T11:24:11Z" fail="51" name="match" pass="74" skipped="11" statusUnknown="1" totalRun="126">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -178,8 +178,8 @@
 org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="match-102"/>
-   <testResult status="fail" testName="match-103"/>
+   <testResult status="pass" testName="match-102"/>
+   <testResult status="pass" testName="match-103"/>
    <testResult status="pass" testName="match-104"/>
    <testResult status="fail" testName="match-105">
       <outResult/>
@@ -197,10 +197,10 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
 org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="match-108"/>
-   <testResult status="fail" testName="match-109"/>
-   <testResult status="fail" testName="match-110"/>
-   <testResult status="fail" testName="match-111"/>
+   <testResult status="pass" testName="match-108"/>
+   <testResult status="pass" testName="match-109"/>
+   <testResult status="pass" testName="match-110"/>
+   <testResult status="pass" testName="match-111"/>
    <testResult status="fail" testName="match-112">
       <outResult/>
    </testResult>

@@ -1147,10 +1147,6 @@ public class StylesheetRoot extends StylesheetComposed
 		  XPath xpathMatch = new XPath("comment()", this, this, XPath.MATCH, m_errorListener);
 		  result.setMatch(xpathMatch);
 	  }
-	  else if (nodeType == DTM.NAMESPACE_NODE) {
-		  XPath xpathMatch = new XPath("namespace-node()", this, this, XPath.MATCH, m_errorListener);
-		  result.setMatch(xpathMatch);
-	  }
 	  
 	  return result;	  
   }

@@ -34,6 +34,7 @@ import javax.xml.xpath.XPathFunctionResolver;
 import javax.xml.xpath.XPathVariableResolver;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.Constants;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathFactory;
@@ -169,9 +170,13 @@ public class XPathImpl implements javax.xml.xpath.XPath {
             //
             // so we really have to create a fresh DocumentBuilder every time we need one
             // - KK
+        	
+        	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+        	
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware( true );
-            dbf.setValidating( false );
+            dbf.setNamespaceAware(true);
+            dbf.setValidating(false);
+            
             return dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             // this should never happen with a well-behaving JAXP implementation. 

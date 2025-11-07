@@ -27,10 +27,14 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
+import org.apache.xml.utils.Constants;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XdmAttributeItem;
+import org.apache.xpath.objects.XdmNamespaceItem;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -217,35 +221,80 @@ public abstract class DTMManager
    */
   public abstract DTM createDocumentFragment();
   
-  /*
-   * This method constructs a DTM object representing an XML document. 
-   * The DTM object instance that is constructed by this method, contains 
-   * only 'one xml element having a text node child'.
+  /**
+   * Method definition, to construct DTM object instance representing 
+   * an XML shallow document, containing one XML document element
+   * with a child text node or/and atrribute, namespace node.
    * 
-   * @param strVal   string value of the text node, that shall be available
-   *                 within this constructed DTM object.
+   * @param textNodeStrValue             The supplied, string value of an 
+   *                                     XML text node to be constructed.
+   *                                     
+   * @param xdmAttributeItem             An XdmAttributeItem object instance,
+   *                                     derived from XObject, containing an
+   *                                     XML attribute's name and value for an
+   *                                     attribute node to be constructed.
+   *                                     
+   * @param xdmNamespaceItem             An XdmNamespaceItem object instance,
+   *                                     derived from XObject, containing an
+   *                                     XML namespace's name and value for
+   *                                     namespace node to be constructed.                                                                    
    *                 
-   * @return         the DTM object, that is constructed by this method         
+   * @return                             The constructed DTM object instance        
    *    
    */
-  public DTM createDTMForSimpleXMLDocument(String strVal) {    
-      try {
-         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    
+  public DTM constructShallowXmlDTMTree(String textNodeStrValue, XdmAttributeItem xdmAttributeItem, 
+		                                                         XdmNamespaceItem xdmNamespaceItem) {
+	  
+	  try {
+		 System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+		 
+         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();    
          dbf.setNamespaceAware(true);
-    
          DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+         
          Document document = dBuilder.newDocument();
-         // we create a, temporary xml element name here. this xml 
-         // element name, is unlikely to be present within the xml 
-         // input document that is been transformed by an xslt 
-         // stylesheet.
+         
+         /**
+          * We form, an XML element temporary name, here. This
+          * XML element name, is unlikely to be present within 
+          * one or more XML document's that're transformed by 
+          * an XSL stylesheet.
+          */
          long currentTimeMills = System.currentTimeMillis();
          String elemNameSuffix = (Long.valueOf(currentTimeMills)).toString();
-         Element documentElem = document.createElement("t0_" + elemNameSuffix);
-         Text textNode = document.createTextNode(strVal);
-         documentElem.appendChild(textNode);
-         document.appendChild(documentElem);
+         elemNameSuffix = elemNameSuffix.substring(0, 5);   // Represents string value with length 5
+         
+         Element elem1 = document.createElement("elem_" + elemNameSuffix);         
+         
+         if (xdmAttributeItem != null) {
+        	// Add an XML attribute to element, if this method's caller 
+        	// provided the needed argument.
+        	String localName = xdmAttributeItem.getAttrLocalName();
+        	String namespace = xdmAttributeItem.getAttrNodeNs();
+        	String attrValue = xdmAttributeItem.getAttrStrValue();        	
+        	Attr attr = document.createAttributeNS(namespace, localName);
+        	attr.setValue(attrValue);        	
+        	elem1.setAttributeNode(attr);
+         }
+         
+         if (xdmNamespaceItem != null) {
+        	// Add an XML namespace node to element, if this method's caller 
+         	// provided the needed argument.        	
+        	String nsNodeName = xdmNamespaceItem.getNamespaceNodeName();
+        	String nsNodeValue = xdmNamespaceItem.getNsNodeValue();
+        	Attr attr = document.createAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + nsNodeName);        	
+        	attr.setValue(nsNodeValue);
+        	elem1.setAttributeNode(attr);
+         }
+         
+         if (textNodeStrValue != null) {
+        	// Add an XML text node child to this element, if this 
+        	// method's caller provided the needed argument.
+            Text textNode = document.createTextNode(textNodeStrValue);
+            elem1.appendChild(textNode);
+         }
+         
+         document.appendChild(elem1);
     
          return getDTM(new DOMSource(document), true, null, false, false);
       }
@@ -255,31 +304,33 @@ public abstract class DTMManager
   }
   
   /**
-   * Given a supplied sequence of XDM atomic values, construct a DTM 
-   * wrapper object over the values available within the supplied 
-   * sequence.
+   * Method definition, to construct DTM object instance, representing
+   * an XML document using the supplied xdm sequence object instance.
    * 
-   * @param resultSeq        Sequence of XDM atomic values
-   * @return                 DTM object instance
+   * @param rSeq				     The supplied xdm sequence object
+   * @return                         The constructed DTM object instance     
    */
-  public DTM getDTMFromResultSequence(ResultSequence resultSeq) {
-      try {
-          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+  public DTM constructXmlDTMTreeFromResultSequence(ResultSequence rSeq) {
+      
+	  try {
+		  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+		  
+		  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();    
+	      dbf.setNamespaceAware(true);
+	      DocumentBuilder dBuilder = dbf.newDocumentBuilder();
           
-          dbf.setNamespaceAware(true);
-     
-          DocumentBuilder dBuilder = dbf.newDocumentBuilder();
           Document document = dBuilder.newDocument();          
           
-          // Produce, random XML element name values
+          // We form, XML element temporary names, here
           String str1 = String.valueOf(System.currentTimeMillis());
-          String docElemName = "a_" + str1.substring(0, 5);
-          String childElemName = "b_" + str1.substring(0, 5);
+          String docElemName = "a_" + str1.substring(0, 5);         // Represents string value with length 5
+          String childElemName = "b_" + str1.substring(0, 5);       // Represents string value with length 5
           
-          Element docElem = document.createElement(docElemName);          
-          for (int idx = 0; idx < resultSeq.size(); idx++) {
-              XObject seqItem = resultSeq.item(idx);
-              String strVal = XslTransformEvaluationHelper.getStrVal(seqItem);
+          Element docElem = document.createElement(docElemName);
+          int rSeqLength = rSeq.size();
+          for (int idx = 0; idx < rSeqLength; idx++) {
+              XObject xObj = rSeq.item(idx);
+              String strVal = XslTransformEvaluationHelper.getStrVal(xObj);
               Element elemNode = document.createElement(childElemName);
               Text textNode = document.createTextNode(strVal);
               elemNode.appendChild(textNode);                                          

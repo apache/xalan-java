@@ -208,7 +208,7 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
       xctxtNew.setLast(xctxt.getLast());
 
       DTMManager dtmMgr = xctxtNew.getDTMManager();      
-      DTM docFragDtm = dtmMgr.createDTMForSimpleXMLDocument(strValueTobeEvaluated);
+      DTM docFragDtm = dtmMgr.constructShallowXmlDTMTree(strValueTobeEvaluated, null, null);
       
       int contextNode = docFragDtm.getFirstChild(docFragDtm.getDocument());
        

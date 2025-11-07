@@ -727,6 +727,8 @@ public class Process
 				  if (flavor.equals("d2d"))
 				  {
 					  // Parse in the xml data into a DOM
+					  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+					  
 					  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 					  dfactory.setNamespaceAware(true);
 
@@ -874,8 +876,9 @@ public class Process
 					  if (flavor.equals("d2d"))
 					  {
 						  // Parse in the xml data into a DOM
+						  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+						  
 						  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-
 						  dfactory.setCoalescing(true);
 						  dfactory.setNamespaceAware(true);
 
@@ -923,10 +926,11 @@ public class Process
 							  identityTransformer.transform(new DOMSource(outNode), strResult);
 					  }
 					  else if (flavor.equals("s2s"))
-					  {            	
+					  {
+						  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+						  
 						  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 						  dfactory.setNamespaceAware(true);
-
 						  DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
 
 						  Document doc = docBuilder.newDocument();
@@ -1119,6 +1123,8 @@ public class Process
 						  
 						  if (null != xslFileName)
 						  {
+							  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+							  
 							  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 							  dfactory.setNamespaceAware(true);
 

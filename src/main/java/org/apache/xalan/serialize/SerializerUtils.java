@@ -30,6 +30,7 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XdmAttributeItem;
+import org.apache.xpath.objects.XdmNamespaceItem;
 import org.xml.sax.SAXException;
 
 /**
@@ -48,9 +49,18 @@ public class SerializerUtils
 	 * 
 	 * This list stores xdm attribute items, that're not serialized
 	 * but are emitted during an XSL transformation and may need to
-	 * be checked with an XPath sequence type.
+	 * be checked with an xdm sequence type.
 	 */
 	public static List<XdmAttributeItem> m_xdmAttrList = new ArrayList<XdmAttributeItem>();
+	
+	/**
+	 * Class field, representing a list of xdm namespace node items.
+	 * 
+	 * This list stores xdm namespace node items, that're not serialized
+	 * but are emitted during an XSL transformation and may need to
+	 * be checked with an xdm sequence type.
+	 */
+	public static List<XdmNamespaceItem> m_xdmNamespaceList = new ArrayList<XdmNamespaceItem>();
 
     /**
      * Copy an DOM attribute to the created output element, executing

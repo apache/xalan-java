@@ -416,8 +416,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  }
 		  }
 		  else if ((varEvalResult instanceof XSAnyAtomicType) || (varEvalResult instanceof XString) || 
-				  (varEvalResult instanceof XBoolean) || 
-				  (varEvalResult instanceof XNumber)) {   	       	       	   
+				                                                 (varEvalResult instanceof XBoolean) || 
+				                                                 (varEvalResult instanceof XNumber)) {   	       	       	   
 			  xslApplyTemplatesAtomicValue(transformer, xctxt, varEvalResult, xslTemplateInvokeMode);
 
 			  return; 
@@ -880,8 +880,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 								  throw new TransformerException(errMesg, srcLocator);
 							  }
-							  else if (!((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr) || (Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr) || 
-									  (Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr) || (Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr))) {
+							  else {
 								  throw new TransformerException("XTTE0505 : An XSL mode instruction's attribute \"on-no-match\" has disallowed "
 										  																					+ "value '" + onNoMatchStr + "'.", elemMode);
 							  }
@@ -941,8 +940,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 								  throw new TransformerException(errMesg, srcLocator);
 							  }							  
-							  else if (!((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr) || (Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr) || 
-									  (Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr) || (Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr))) {
+							  else {
 								  throw new TransformerException("XTTE0505 : An XSL mode instruction's attribute \"on-no-match\" has disallowed "
 										  																					+ "value '" + onNoMatchStr + "'.", elemMode);
 							  }
@@ -960,7 +958,58 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  break;
 					  }
 
-					  continue;				  
+					  continue;
+				  case DTM.NAMESPACE_NODE :
+					  nodeTypeStr = Constants.ELEMNAME_NAMESPACE_STRING;					  
+					  if (elemMode != null) {						  						  
+						  String nodeNameStr = dtm.getNodeName(child);
+						  if (onNoMatchStr != null) {
+							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr) || (Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)
+									                                                      || (Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)
+									                                                      || (Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)
+									                                                      || (Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr)) {
+								  // Not processing an XML namespace node, for now.
+								  // Handling this, further down this method.
+							  }
+							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
+								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
+								  if (nodeNameStr != null) {
+									  errMesg = (errMesg + " '" + nodeNameStr + "'."); 
+								  }
+								  else {
+									  errMesg = (errMesg + "."); 
+								  }
+
+								  throw new TransformerException(errMesg, srcLocator);
+							  }
+							  else {
+								  throw new TransformerException("XTTE0505 : An XSL mode instruction's attribute \"on-no-match\" has disallowed "
+										  																					+ "value '" + onNoMatchStr + "'.", elemMode);
+							  }
+						  }
+
+						  if (elemMode.isWarningOnNoMatch()) {
+							  /**
+							   * Emit an, XSL stylesheet processing warning, when xsl:mode
+							   * instruction specifies an attribute 'warning-on-no-match' with
+							   * boolean value true.
+							   */							  
+							  emitXslTransformNoRuleMatchWarning(nodeNameStr, nodeTypeStr, xctxt, srcLocator);
+						  }
+						  
+						  if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr) || (Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
+							  String xslNamespaceName = dtm.getNodeName(child);
+							  String data = dtm.getNodeValue(child);
+							  int idx = xslNamespaceName.indexOf(':');
+							  if (idx > -1) {
+								 xslNamespaceName = xslNamespaceName.substring(idx + 1); 
+							  }
+							  
+							  transformer.getResultTreeHandler().namespaceAfterStartElement(xslNamespaceName, data);
+						  }
+					  }
+
+					  continue;					  
 				  case DTM.DOCUMENT_NODE :
 					  template = sroot.getDefaultRootRule();					  
 					  break;

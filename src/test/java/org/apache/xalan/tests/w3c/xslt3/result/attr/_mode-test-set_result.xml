@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-06T12:30:10Z" fail="73" name="mode" pass="45" skipped="25" statusUnknown="0" totalRun="118">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-07T11:25:18Z" fail="70" name="mode" pass="48" skipped="25" statusUnknown="0" totalRun="118">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
    <testResult feature="streaming" status="skipped" testName="mode-0004"/>
    <testResult status="pass" testName="mode-0005"/>
    <testResult feature="streaming" status="skipped" testName="mode-0006"/>
-   <testResult status="fail" testName="mode-0007"/>
+   <testResult status="pass" testName="mode-0007"/>
    <testResult feature="streaming" status="skipped" testName="mode-0008"/>
-   <testResult status="fail" testName="mode-0009"/>
+   <testResult status="pass" testName="mode-0009"/>
    <testResult feature="streaming" status="skipped" testName="mode-0010"/>
    <testResult status="fail" testName="mode-0011"/>
    <testResult feature="streaming" status="skipped" testName="mode-0012"/>
-   <testResult status="fail" testName="mode-0013"/>
+   <testResult status="pass" testName="mode-0013"/>
    <testResult feature="streaming" status="skipped" testName="mode-0014"/>
    <testResult status="fail" testName="mode-0015"/>
    <testResult status="fail" testName="mode-0016"/>

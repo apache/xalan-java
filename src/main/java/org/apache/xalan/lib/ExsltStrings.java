@@ -25,6 +25,7 @@ import java.util.StringTokenizer;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.xml.utils.Constants;
 import org.apache.xpath.NodeSet;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -339,6 +340,8 @@ public class ExsltStrings extends ExsltBase
         static {
             try
             {
+            	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+            	
                 m_doc =DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             }
            

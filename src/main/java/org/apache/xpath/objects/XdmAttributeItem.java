@@ -18,7 +18,8 @@
 package org.apache.xpath.objects;
 
 /**
- * Class definition, to represent an xdm attribute item.
+ * Class definition, to represent an xdm attribute 
+ * node item.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

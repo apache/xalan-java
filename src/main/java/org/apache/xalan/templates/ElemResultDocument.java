@@ -509,6 +509,7 @@ public class ElemResultDocument extends ElemTemplateElement
 		  
 	      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		  DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+		  
 		  StringReader strReader = new StringReader(resultStrValue);
 		  Document document = docBuilder.parse(new InputSource(strReader));
 		  

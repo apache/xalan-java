@@ -28,6 +28,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
@@ -264,9 +265,10 @@ public class XSL3ConstructorOrExtensionFunction extends Function
     			try {
     				String xmlStr1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
 
+    				System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    				
     				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     				dbf.setNamespaceAware(true);
-
     				DocumentBuilder dBuilder = dbf.newDocumentBuilder();
 
     				Document document = dBuilder.parse(new ByteArrayInputStream(xmlStr1.getBytes()));

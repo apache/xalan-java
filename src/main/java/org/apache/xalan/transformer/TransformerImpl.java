@@ -839,9 +839,11 @@ public class TransformerImpl extends Transformer
          ((SAXSource)source).getXMLReader()==null )||
          (source instanceof DOMSource && ((DOMSource)source).getNode()==null)){
         try {
-          DocumentBuilderFactory builderF = 
-                   DocumentBuilderFactory.newInstance();
-          DocumentBuilder builder = builderF.newDocumentBuilder();
+          System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+        	
+          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+          DocumentBuilder builder = dbf.newDocumentBuilder();
+          
           String systemID = source.getSystemId();
           source = new DOMSource(builder.newDocument());
 

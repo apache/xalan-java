@@ -212,9 +212,10 @@ public class FuncTransform extends FunctionDef1Arg
 			    	String xmlInpDocStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(xmlInpDocNode);			    
 			    	String xslStylesheetUrlStr = xslSecondaryStylesheetAbsUrl.toString();			    	                
 
+			    	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+			    	
 			    	DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
 			    	xmlDocumentBuilderFactory.setNamespaceAware(true);
-
 			    	DocumentBuilder xmlDocumentBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();
 
 			    	Document document = xmlDocumentBuilder.parse(new InputSource(new StringReader(xmlInpDocStr)));
@@ -333,10 +334,12 @@ public class FuncTransform extends FunctionDef1Arg
         		   DTM dtm = xctxt.getDTM(xmlInpNodeHandle);			    
         		   Node xmlInpDocNode = dtm.getNode(xmlInpNodeHandle);               
 
-        		   DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
-        		   xmlDocumentBuilderFactory.setNamespaceAware(true);
+        		   System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
         		   
+        		   DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+        		   xmlDocumentBuilderFactory.setNamespaceAware(true);        		   
         		   DocumentBuilder xmlDocumentBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();
+        		   
         		   Document document = xmlDocumentBuilder.parse(new InputSource(new StringReader(xslStylesheetStrValue)));
 
         		   TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();

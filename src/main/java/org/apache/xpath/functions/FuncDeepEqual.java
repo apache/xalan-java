@@ -300,8 +300,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	 System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
 	 
 	 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	 dbf.setNamespaceAware(true);
-	 
+	 dbf.setNamespaceAware(true);	 
 	 DocumentBuilder dBuilder = dbf.newDocumentBuilder();
 	 
 	 Document document1 = dBuilder.parse(new ByteArrayInputStream(xmlStr1.getBytes()));

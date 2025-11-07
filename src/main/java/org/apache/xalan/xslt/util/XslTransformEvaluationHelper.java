@@ -64,6 +64,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XdmAttributeItem;
+import org.apache.xpath.objects.XdmNamespaceItem;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
@@ -300,39 +301,50 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Method definition to convert an XDM sequence to a node set.
+     * Method definition, to convert an xdm sequence to a node set.
      */
     public static XMLNodeCursorImpl getXNodeSetFromResultSequence(ResultSequence resultSeq, DTMManager dtmMgr) {
         
-        XMLNodeCursorImpl nodeSet = null;
+        XMLNodeCursorImpl result = null;
         
         List<Integer> dtmNodeHandleList = new ArrayList<Integer>();
         
         int rSeqLength = resultSeq.size();        
         for (int idx = 0; idx < rSeqLength; idx++) {
-           XObject nodeSetItem = resultSeq.item(idx);
-           if (nodeSetItem instanceof XMLNodeCursorImpl) {
-              int nodeDtmHandle = (((XMLNodeCursorImpl)nodeSetItem).iter()).nextNode();
+           XObject xObj = resultSeq.item(idx);
+           if (xObj instanceof XMLNodeCursorImpl) {
+              int nodeDtmHandle = (((XMLNodeCursorImpl)xObj).iter()).nextNode();
               dtmNodeHandleList.add(nodeDtmHandle);
            }
-           /*else if (nodeSetItem instanceof XdmAttributeItem) {
-        	   XdmAttributeItem xdmAttributeItem = (XdmAttributeItem)nodeSetItem;
+           else if (xObj instanceof XdmAttributeItem) {
+        	   XdmAttributeItem xdmAttributeItem = (XdmAttributeItem)xObj;        	           	   
+        	   DTM dtm = dtmMgr.constructShallowXmlDTMTree(null, xdmAttributeItem, null);
+        	   int docNodeHandle = dtm.getDocument();
+        	   int docElemHandle = dtm.getFirstChild(docNodeHandle);
+        	   String attrNamespace = xdmAttributeItem.getAttrNodeNs();
         	   String localName = xdmAttributeItem.getAttrLocalName();
-        	   String namespace = xdmAttributeItem.getAttrNodeNs();
-        	   String attrValue = xdmAttributeItem.getAttrStrValue();
-        	   
-        	   // TO DO
-           }*/
+        	   int attNodeHandle = dtm.getAttributeNode(docElemHandle, attrNamespace, localName);
+        	   dtmNodeHandleList.add(attNodeHandle);
+           }
+           else if (xObj instanceof XdmNamespaceItem) {
+        	   XdmNamespaceItem xdmNamespaceItem = (XdmNamespaceItem)xObj;
+        	   DTM dtm = dtmMgr.constructShallowXmlDTMTree(null, null, xdmNamespaceItem);
+        	   int docNodeHandle = dtm.getDocument();
+        	   int docElemHandle = dtm.getFirstChild(docNodeHandle);
+        	   String localName = xdmNamespaceItem.getNamespaceNodeName();
+        	   int nsNodeHandle = dtm.getAttributeNode(docElemHandle, "http://www.w3.org/2000/xmlns/", localName);
+        	   dtmNodeHandleList.add(nsNodeHandle);
+           }
            else {
               break; 
            }
         }
         
         if (dtmNodeHandleList.size() == resultSeq.size()) {
-           nodeSet = new XMLNodeCursorImpl(dtmNodeHandleList, dtmMgr);
+           result = new XMLNodeCursorImpl(dtmNodeHandleList, dtmMgr);
         }
         
-        return nodeSet; 
+        return result; 
     }
     
     /**
@@ -789,9 +801,13 @@ public class XslTransformEvaluationHelper {
  	   
  	   try {
  		   xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+ 		   
+ 		   System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+ 		  
  		   DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
  		   dbFactory.setNamespaceAware(true);
  		   DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
+ 		   
  		   StringReader strReader = new StringReader(xmlStr);
  		   InputSource inpSource = new InputSource(strReader);
  		   Document document = docBuilder.parse(inpSource);

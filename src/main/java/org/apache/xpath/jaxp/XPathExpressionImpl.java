@@ -28,6 +28,7 @@ import javax.xml.xpath.XPathFunctionResolver;
 import javax.xml.xpath.XPathVariableResolver;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.Constants;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.DOMImplementation;
@@ -279,6 +280,8 @@ public class XPathExpressionImpl  implements javax.xml.xpath.XPathExpression{
         }
         try {
             if ( dbf == null ) {
+            	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+            	
                 dbf = DocumentBuilderFactory.newInstance();
                 dbf.setNamespaceAware( true );
                 dbf.setValidating( false );
@@ -366,9 +369,11 @@ public class XPathExpressionImpl  implements javax.xml.xpath.XPathExpression{
     private static Document getDummyDocument( ) {
         try {
             if ( dbf == null ) {
+            	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+            	
                 dbf = DocumentBuilderFactory.newInstance();
-                dbf.setNamespaceAware( true );
-                dbf.setValidating( false );
+                dbf.setNamespaceAware(true);
+                dbf.setValidating(false);
             }
             db = dbf.newDocumentBuilder();
 

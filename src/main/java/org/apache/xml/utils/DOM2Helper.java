@@ -27,6 +27,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.Constants;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -138,9 +139,10 @@ public class DOM2Helper extends DOMHelper
       // I guess I should use JAXP factory here... when it's legal.
       // org.apache.xerces.parsers.DOMParser parser 
       //  = new org.apache.xerces.parsers.DOMParser();
-      DocumentBuilderFactory builderFactory =
-        DocumentBuilderFactory.newInstance();
-
+    	
+      System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    	
+      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
       builderFactory.setNamespaceAware(true);
       builderFactory.setValidating(true);
 

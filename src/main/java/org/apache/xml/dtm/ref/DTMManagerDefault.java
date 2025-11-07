@@ -27,6 +27,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMException;
 import org.apache.xml.dtm.DTMFilter;
@@ -759,22 +760,23 @@ public class DTMManagerDefault extends DTMManager
   synchronized public DTM createDocumentFragment()
   {
 
-    try
-    {
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	  try
+	  {
+		  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
 
-      dbf.setNamespaceAware(true);
+		  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		  dbf.setNamespaceAware(true);
+		  DocumentBuilder db = dbf.newDocumentBuilder();
 
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc = db.newDocument();
-      Node df = doc.createDocumentFragment();
+		  Document doc = db.newDocument();
+		  Node df = doc.createDocumentFragment();
 
-      return getDTM(new DOMSource(df), true, null, false, false);
-    }
-    catch (Exception e)
-    {
-      throw new DTMException(e);
-    }
+		  return getDTM(new DOMSource(df), true, null, false, false);
+	  }
+	  catch (Exception e)
+	  {
+		  throw new DTMException(e);
+	  }
   }
 
   /**

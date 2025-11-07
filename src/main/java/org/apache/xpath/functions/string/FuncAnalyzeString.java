@@ -26,6 +26,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.Constants;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
@@ -354,13 +355,16 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 	private Document createEmptyXmlDom(SourceLocator srcLocator) throws TransformerException {
 		Document document = null;
 		
+		System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         
         DocumentBuilder dBuilder = null;		
         try {
 		   dBuilder = dbf.newDocumentBuilder();
-		} catch (ParserConfigurationException ex) {
+		} 
+        catch (ParserConfigurationException ex) {
 		   throw new javax.xml.transform.TransformerException("FOJS0001 : An error occured, within an XML parser "
 		   		                                                      + "library.", srcLocator);
 		}

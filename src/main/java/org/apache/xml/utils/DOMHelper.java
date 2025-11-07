@@ -28,6 +28,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xml.dtm.ref.DTMNodeProxy;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
@@ -81,8 +82,10 @@ public class DOMHelper
 
       // Use an implementation of the JAVA API for XML Parsing 1.0 to
       // create a DOM Document node to contain the result.
+    
+      System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+      
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-
       dfactory.setNamespaceAware(true);
       dfactory.setValidating(true);
       

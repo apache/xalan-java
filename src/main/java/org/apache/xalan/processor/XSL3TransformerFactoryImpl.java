@@ -878,6 +878,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     else if (source instanceof StreamSource) {
     	if (xslStylesheetSystemId != null) {
     		System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    		
     		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     		dbf.setNamespaceAware(true);    	
     		Document document = null;
@@ -906,6 +907,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 
       if (source instanceof SAXSource) {    	  
     	  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    	  
     	  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     	  dbf.setNamespaceAware(true);    	
     	  Document document = null;
