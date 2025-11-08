@@ -1182,35 +1182,51 @@ public class StylesheetRoot extends StylesheetComposed
    * Method definition, to get an XSL stylesheet shallow copy template rule.
    * 
    * @param mode								An XSL template mode value
+   * @param nodeType                            Node type value
+   * @param currentMode                         Current mode value
    * @return                                    An xsl:template declaration
    *                                            object for an XSL stylesheet rule.
    * @throws TransformerException
    */
-  public ElemTemplate getShallowCopyRule(QName mode) throws TransformerException
+  public ElemTemplate getShallowCopyRule(QName mode, int nodeType, QName currentMode) throws TransformerException
   {	  
 	  ElemTemplate result = new ElemTemplate();
 	  
 	  result.setMode(mode);
-	  result.setStylesheet(this);	  
-
-	  XPath xpathMatch = new XPath("node()|@*", this, this, XPath.MATCH, m_errorListener);
-	  result.setMatch(xpathMatch);
-
-	  ElemCopy elemCopy = new ElemCopy();
+	  result.setStylesheet(this);	  	  
 	  
-	  ElemCopyOf elemCopyOf = new ElemCopyOf();
-	  XPath xpathSelect = new XPath("@*", this, this, XPath.SELECT, m_errorListener);
-	  elemCopyOf.setSelect(xpathSelect);
-	  elemCopy.appendChild(elemCopyOf);
+	  if (nodeType == DTM.ATTRIBUTE_NODE) {		  
+		  XPath xpathMatch = new XPath("@*", this, this, XPath.MATCH, m_errorListener);
+		  result.setMatch(xpathMatch);	  	  
+		  
+		  ElemCopyOf elemCopyOf = new ElemCopyOf();
+		  XPath xpathSelect = new XPath(".", this, this, XPath.SELECT, m_errorListener);
+		  elemCopyOf.setSelect(xpathSelect);
+		  
+		  result.appendChild(elemCopyOf);
+	  }
+	  else {
+		  ElemCopy elemCopy = new ElemCopy();
+		  
+		  XPath xpathMatch = new XPath("node()", this, this, XPath.MATCH, m_errorListener);
+		  result.setMatch(xpathMatch);
 
-	  ElemApplyTemplates elemApplyTemplates = new ElemApplyTemplates();
-	  elemApplyTemplates.setMode(mode);
-	  xpathSelect = new XPath("node()", this, this, XPath.SELECT, m_errorListener);
-	  elemApplyTemplates.setSelect(xpathSelect);
-	  elemApplyTemplates.setIsDefaultTemplate(true);
-	  elemCopy.appendChild(elemApplyTemplates);
-
-	  result.appendChild(elemCopy);
+		  ElemApplyTemplates elemApplyTemplates = new ElemApplyTemplates();
+		  elemApplyTemplates.setMode(mode);
+		  XPath xpathSelect = new XPath("@*", this, this, XPath.SELECT, m_errorListener);
+		  elemApplyTemplates.setSelect(xpathSelect);
+		  elemApplyTemplates.setIsDefaultTemplate(true);
+		  elemCopy.appendChild(elemApplyTemplates);
+		  
+		  elemApplyTemplates = new ElemApplyTemplates();
+		  elemApplyTemplates.setMode(mode);
+		  xpathSelect = new XPath("node()", this, this, XPath.SELECT, m_errorListener);
+		  elemApplyTemplates.setSelect(xpathSelect);
+		  elemApplyTemplates.setIsDefaultTemplate(true);		  
+		  elemCopy.appendChild(elemApplyTemplates);
+		  
+		  result.appendChild(elemCopy);
+	  }	  
 
 	  return result;
   }

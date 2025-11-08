@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-11-07T11:25:36Z" desc="W3C XSLT 3.0 test suite results" fail="643" pass="1864" skipped="160" success="73.91%" totalRun="2522" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-11-08T12:13:00Z" desc="W3C XSLT 3.0 test suite results" fail="638" pass="1869" skipped="160" success="74.11%" totalRun="2522" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="24" pass="79" skipped="5" success="75.96%" totalRun="104"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
     <expand-text fail="8" pass="51" skipped="3" success="86.44%" totalRun="59"/>
     <match fail="51" pass="74" skipped="11" success="58.73%" totalRun="126"/>
-    <mode fail="70" pass="48" skipped="25" success="40.68%" totalRun="118"/>
+    <mode fail="65" pass="53" skipped="25" success="44.92%" totalRun="118"/>
     <select fail="3" pass="25" skipped="0" success="86.21%" totalRun="29"/>
     <xpath-default-namespace fail="11" pass="11" skipped="4" success="50.0%" totalRun="22"/>
   </attr>

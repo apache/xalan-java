@@ -242,8 +242,8 @@ public abstract class DTMManager
    * @return                             The constructed DTM object instance        
    *    
    */
-  public DTM constructShallowXmlDTMTree(String textNodeStrValue, XdmAttributeItem xdmAttributeItem, 
-		                                                         XdmNamespaceItem xdmNamespaceItem) {
+  public DTM getXmlShallowDTMTree(String textNodeStrValue, XdmAttributeItem xdmAttributeItem, 
+		                                                                                   XdmNamespaceItem xdmNamespaceItem) {
 	  
 	  try {
 		 System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
@@ -262,7 +262,7 @@ public abstract class DTMManager
           */
          long currentTimeMills = System.currentTimeMillis();
          String elemNameSuffix = (Long.valueOf(currentTimeMills)).toString();
-         elemNameSuffix = elemNameSuffix.substring(0, 5);   // Represents string value with length 5
+         elemNameSuffix = elemNameSuffix.substring(0, 5);
          
          Element elem1 = document.createElement("elem_" + elemNameSuffix);         
          
@@ -310,7 +310,7 @@ public abstract class DTMManager
    * @param rSeq				     The supplied xdm sequence object
    * @return                         The constructed DTM object instance     
    */
-  public DTM constructXmlDTMTreeFromResultSequence(ResultSequence rSeq) {
+  public DTM getXmlDTMTreeFromResultSequence(ResultSequence rSeq) {
       
 	  try {
 		  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
@@ -323,8 +323,8 @@ public abstract class DTMManager
           
           // We form, XML element temporary names, here
           String str1 = String.valueOf(System.currentTimeMillis());
-          String docElemName = "a_" + str1.substring(0, 5);         // Represents string value with length 5
-          String childElemName = "b_" + str1.substring(0, 5);       // Represents string value with length 5
+          String docElemName = "a_" + str1.substring(0, 5);
+          String childElemName = "b_" + str1.substring(0, 5);
           
           Element docElem = document.createElement(docElemName);
           int rSeqLength = rSeq.size();

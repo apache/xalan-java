@@ -207,7 +207,7 @@ public class ElemChoose extends ElemTemplateElement
                 else {
                     strVal = xpath3ContextItem.str(); 
                 }
-                DTM docFragDtm = dtmMgr.constructShallowXmlDTMTree(strVal, null, null);
+                DTM docFragDtm = dtmMgr.getXmlShallowDTMTree(strVal, null, null);
           
                 int contextNode = docFragDtm.getFirstChild(docFragDtm.getDocument());            
                 xctxtNew.pushCurrentNode(contextNode);

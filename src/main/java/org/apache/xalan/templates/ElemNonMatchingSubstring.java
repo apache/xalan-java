@@ -191,7 +191,7 @@ public class ElemNonMatchingSubstring extends ElemTemplateElement implements Exp
       xctxtNew.setLast(xctxt.getLast());
 
       DTMManager dtmMgr = xctxtNew.getDTMManager();      
-      DTM docFragDtm = dtmMgr.constructShallowXmlDTMTree(strValueTobeEvaluated, null, null);
+      DTM docFragDtm = dtmMgr.getXmlShallowDTMTree(strValueTobeEvaluated, null, null);
       
       int contextNode = docFragDtm.getFirstChild(docFragDtm.getDocument());
       

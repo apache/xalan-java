@@ -318,7 +318,7 @@ public class XslTransformEvaluationHelper {
            }
            else if (xObj instanceof XdmAttributeItem) {
         	   XdmAttributeItem xdmAttributeItem = (XdmAttributeItem)xObj;        	           	   
-        	   DTM dtm = dtmMgr.constructShallowXmlDTMTree(null, xdmAttributeItem, null);
+        	   DTM dtm = dtmMgr.getXmlShallowDTMTree(null, xdmAttributeItem, null);
         	   int docNodeHandle = dtm.getDocument();
         	   int docElemHandle = dtm.getFirstChild(docNodeHandle);
         	   String attrNamespace = xdmAttributeItem.getAttrNodeNs();
@@ -328,7 +328,7 @@ public class XslTransformEvaluationHelper {
            }
            else if (xObj instanceof XdmNamespaceItem) {
         	   XdmNamespaceItem xdmNamespaceItem = (XdmNamespaceItem)xObj;
-        	   DTM dtm = dtmMgr.constructShallowXmlDTMTree(null, null, xdmNamespaceItem);
+        	   DTM dtm = dtmMgr.getXmlShallowDTMTree(null, null, xdmNamespaceItem);
         	   int docNodeHandle = dtm.getDocument();
         	   int docElemHandle = dtm.getFirstChild(docNodeHandle);
         	   String localName = xdmNamespaceItem.getNamespaceNodeName();

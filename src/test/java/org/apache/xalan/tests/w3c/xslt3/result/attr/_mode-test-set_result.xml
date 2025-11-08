@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-07T11:25:18Z" fail="70" name="mode" pass="48" skipped="25" statusUnknown="0" totalRun="118">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-08T12:12:43Z" fail="65" name="mode" pass="53" skipped="25" statusUnknown="0" totalRun="118">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
@@ -9,11 +9,11 @@
    <testResult feature="streaming" status="skipped" testName="mode-0008"/>
    <testResult status="pass" testName="mode-0009"/>
    <testResult feature="streaming" status="skipped" testName="mode-0010"/>
-   <testResult status="fail" testName="mode-0011"/>
+   <testResult status="pass" testName="mode-0011"/>
    <testResult feature="streaming" status="skipped" testName="mode-0012"/>
    <testResult status="pass" testName="mode-0013"/>
    <testResult feature="streaming" status="skipped" testName="mode-0014"/>
-   <testResult status="fail" testName="mode-0015"/>
+   <testResult status="pass" testName="mode-0015"/>
    <testResult status="fail" testName="mode-0016"/>
    <testResult status="pass" testName="mode-0101"/>
    <testResult status="pass" testName="mode-0102"/>
@@ -76,9 +76,7 @@
    </testResult>
    <testResult status="fail" testName="mode-1103"/>
    <testResult status="fail" testName="mode-1104">
-      <outResult>
-         <errTrace>Illegal value: #all used for QNAME attribute: mode</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1105">
       <outResult/>
@@ -130,11 +128,11 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
          <errTrace>XTSE0010 : xsl:apply-templates is not allowed in this position in the stylesheet</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="mode-1201"/>
+   <testResult status="pass" testName="mode-1201"/>
    <testResult status="pass" testName="mode-1202"/>
-   <testResult status="fail" testName="mode-1203"/>
+   <testResult status="pass" testName="mode-1203"/>
    <testResult status="fail" testName="mode-1204"/>
-   <testResult status="fail" testName="mode-1301"/>
+   <testResult status="pass" testName="mode-1301"/>
    <testResult status="fail" testName="mode-1401"/>
    <testResult status="pass" testName="mode-1402"/>
    <testResult status="fail" testName="mode-1403"/>

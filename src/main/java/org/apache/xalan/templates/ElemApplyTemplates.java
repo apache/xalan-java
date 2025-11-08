@@ -667,19 +667,19 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  String nodeNameStr = dtm.getNodeName(child);						  
 						  if (onNoMatchStr != null) {							  
 							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, transformer.getCurrentMode());								  								  								  
+								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, mode);								  								  								  
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getDeepCopyRule(elemMode.getName());
 							  }
 							  else if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getShallowCopyRule(elemMode.getName());
+								  template = sroot.getShallowCopyRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, mode);
 							  }							  
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
 								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
@@ -724,19 +724,19 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  String nodeNameStr = dtm.getNodeName(child);
 						  if (onNoMatchStr != null) {
 							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, transformer.getCurrentMode());								  
+								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, mode);								  
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getDeepCopyRule(elemMode.getName());
 							  }
 							  else if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getShallowCopyRule(elemMode.getName());
+								  template = sroot.getShallowCopyRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
 								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
@@ -771,7 +771,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  }
 					  }
 					  else {
-						  template = sroot.getTextOnlyCopyRule(null, nodeType, transformer.getCurrentMode());								  
+						  template = sroot.getTextOnlyCopyRule(null, nodeType, mode);								  
 						  serializeXdmStringValueWithDefaultXslTextRule(transformer, rth, sroot, dtm, child, template);
 
 						  continue;
@@ -785,7 +785,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  String nodeNameStr = dtm.getNodeName(child);
 						  if (onNoMatchStr != null) {
 							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, transformer.getCurrentMode());								  
+								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, mode);								  
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getDeepCopyRule(elemMode.getName());
@@ -794,10 +794,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  template = sroot.getDefaultTextRule();								  								  
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
 								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
@@ -845,7 +845,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  String nodeNameStr = dtm.getNodeName(child);
 						  if (onNoMatchStr != null) {
 							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, transformer.getCurrentMode());								  
+								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, mode);								  
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getDeepCopyRule(elemMode.getName());
@@ -864,10 +864,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  template.appendChild(elemCopyOf);
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
 								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
@@ -905,7 +905,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  String nodeNameStr = dtm.getNodeName(child);
 						  if (onNoMatchStr != null) {
 							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, transformer.getCurrentMode());								  
+								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, mode);								  
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
 								  template = sroot.getDeepCopyRule(elemMode.getName());
@@ -924,10 +924,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  template.appendChild(elemCopyOf);
 							  }
 							  else if ((Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, transformer.getCurrentMode());
+								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, mode);
 							  }
 							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
 								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";

@@ -674,7 +674,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 
         		// Construct an XML DOM wrapper over a sequence of input 
         		// atomic values, for the purpose of grouping
-        		DTM dtm = dtmManager.constructXmlDTMTreeFromResultSequence(resultSeq);
+        		DTM dtm = dtmManager.getXmlDTMTreeFromResultSequence(resultSeq);
 
         		int docNodeHandle = dtm.getDocument();
         		int topMostElemNodeHandle = dtm.getFirstChild(docNodeHandle);

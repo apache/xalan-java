@@ -68,12 +68,12 @@ public class TemplateSubPatternAssociation implements Serializable, Cloneable
 	  m_stepPattern = pattern;	  
 	  if (m_stepPattern != null) {
 		  m_targetString = m_stepPattern.getTargetString();
-		  m_wild = m_targetString.equals("*");
 	  }
 	  else {
-		  m_targetString = m_pattern;
-		  m_wild = m_targetString.equals("*");
+		  m_targetString = m_pattern;		  
 	  }
+	  
+	  m_wild = m_targetString.equals("*");
   }
 
   /**
@@ -140,9 +140,13 @@ public class TemplateSubPatternAssociation implements Serializable, Cloneable
   {
 	 boolean result = false;
 	 
-	 QName defaultMode = new QName("http://xml.apache.org/xalan/java", "default", true); 
+	 QName defaultMode = new QName("http://xml.apache.org/xalan/java", "default", true);
+	 QName modeAll = new QName("http://xml.apache.org/xalan/java", "all", true);
 	 
-     if ((m1 == null) && (m2 == null)) {
+	 if (modeAll.equals(m2)) {
+	    result = true; 
+	 }
+	 else if ((m1 == null) && (m2 == null)) {
     	result = true; 
      }
      else if ((m1 == null) && defaultMode.equals(m2)) {
