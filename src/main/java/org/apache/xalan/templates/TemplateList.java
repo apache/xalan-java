@@ -839,100 +839,101 @@ public class TemplateList implements java.io.Serializable
   }
 
   /**
-   * Check for match conflicts, and warn the stylesheet author.
+   * Method definition, to check for XSL template rule match conflicts.
    *
-   * @param head Template pattern
-   * @param xctxt Current XPath context
-   * @param targetNode Node matching the pattern
-   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
-   * @param expTypeID 
-   * @param dtm 
-   * @param xslOnMultipleMatchStr 
-   * @param xslWarningOnMultipleMatch 
+   * @param head                                    The first, TemplateSubPatternAssociation object
+   *                                                instance within template pattern association
+   *                                                linked list.
+   * @param xctxt                                   The current, XPath context object instance
+   * @param targetNode                              Node matching XSL template pattern
+   * @param mode                                    QName object reference, to the current mode
+   * @param dtm										An XML document model instance
+   * @param expTypeID  
+   * @param xslOnMultipleMatchStr                   xsl:mode instruction "on-multiple-match"
+   *                                                attribute's value.
+   * @param xslWarningOnMultipleMatch               xsl:mode instruction "warning-on-multiple-match"
+   *                                                attribute's value.
    * @throws TransformerException 
    */
-  private void checkConflicts(TemplateSubPatternAssociation head,
-                              XPathContext xctxt, int targetNode, QName mode, DTM dtm, int expTypeID, 
-                              String xslOnMultipleMatchStr, boolean xslWarningOnMultipleMatch) throws TransformerException
+  private void checkConflicts(TemplateSubPatternAssociation head, XPathContext xctxt, int targetNode, 
+		                                                          QName mode, DTM dtm, int expTypeID, String xslOnMultipleMatchStr, 
+		                                                          boolean xslWarningOnMultipleMatch) throws TransformerException
   {	  
 	   
-	   if (xslOnMultipleMatchStr != null) {
-		   if ((Constants.ATTRVAL_FAIL).equals(xslOnMultipleMatchStr)) {
-			   TemplateSubPatternAssociation next = head;
-			   double headNodePriority = (head.getTemplate()).getPriority();
-			   while ((next = next.getNext()) != null) {
-				   double nextNodePriority = (next.getTemplate()).getPriority();
-				   if ((next.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE) 
-						   																	&& next.matchMode(mode) 
-						   																	&& (nextNodePriority == headNodePriority)) {
-					   /**
-					    * Emitting an XSL stylesheet dynamic error, when xsl:mode 
-					    * instruction specifies an attribute "on-multiple-match" with
-					    * value 'fail'.   
-					    */
-					   
-					   int nodeType = dtm.getNodeType(targetNode);
-					   String nodeTypeStr = getNodeTypeString(nodeType);
-					   
-					   String nodeNameStr = dtm.getNodeName(targetNode);
-
-					   SourceLocator srcLocator1 = (SourceLocator)(head.getTemplate());
-					   int lineNo1 = srcLocator1.getLineNumber(); 
-					   SourceLocator srcLocator2 = (SourceLocator)(next.getTemplate());
-					   int lineNo2 = srcLocator2.getLineNumber();
-					   
-					   String errMesg = "XTDE0540 : More than one XSL template rule matched an XML " + nodeTypeStr + " node";
-					   if (nodeNameStr != null) {
-						   errMesg = (errMesg + " '" + nodeNameStr + "'."); 
-					   }
-					   else {
-						   errMesg = (errMesg + "."); 
-					   }
-
-					   throw new TransformerException(errMesg + " Conflicting template rule locations are line " + lineNo1 
-							                                  + " and line " + lineNo2 +".", srcLocator1); 
-				   }
-			   }
-		   }
-	   }
-	   else if (xslWarningOnMultipleMatch) {
-		   TemplateSubPatternAssociation next = head;
-		   double headNodePriority = (head.getTemplate()).getPriority();
-		   while ((next = next.getNext()) != null) {
-			   double nextNodePriority = (next.getTemplate()).getPriority();
-			   if ((next.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE) 
-							                                                            && next.matchMode(mode) 
-							                                                            && (nextNodePriority == headNodePriority)) {
-				   /**
-					* Emitting an XSL stylesheet processing warning, when xsl:mode
-					* instruction specifies an attribute "warning-on-multiple-match" with
-					* value true.
+	  if ((Constants.ATTRVAL_FAIL).equals(xslOnMultipleMatchStr)) {
+		  TemplateSubPatternAssociation next = head;
+		  double headNodePriority = (head.getTemplate()).getPriority();
+		  while ((next = next.getNext()) != null) {
+			  double nextNodePriority = (next.getTemplate()).getPriority();
+			  if ((next.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE) 
+																					  && next.matchMode(mode) 
+																					  && (nextNodePriority == headNodePriority)) {
+				  /**
+				   * Emit an XSL stylesheet dynamic error, when xsl:mode instruction 
+				   * specifies an attribute "on-multiple-match" with value 'fail'.   
 				   */
-				   
-				   int nodeType = dtm.getNodeType(targetNode);
-				   String nodeTypeStr = getNodeTypeString(nodeType);
-				   
-				   String nodeNameStr = dtm.getNodeName(targetNode);
 
-				   SourceLocator srcLocator1 = (SourceLocator)(head.getTemplate());
-				   int lineNo1 = srcLocator1.getLineNumber(); 
-				   SourceLocator srcLocator2 = (SourceLocator)(next.getTemplate());
-				   int lineNo2 = srcLocator2.getLineNumber();
-				   
-				   String errMesg = "Warning : More than one XSL template rule matched an XML " + nodeTypeStr + " node";
-				   if (nodeNameStr != null) {
-					   errMesg = (errMesg + " '" + nodeNameStr + "'."); 
-				   }
-				   else {
-					   errMesg = (errMesg + "."); 
-				   }
+				  int nodeType = dtm.getNodeType(targetNode);
+				  String nodeTypeStr = getNodeTypeString(nodeType);
 
-				   ErrorListener errorListener = xctxt.getErrorListener();				   
-				   errorListener.warning(new TransformerException(errMesg + " Conflicting template rule locations are line " + lineNo1 
-						                                                  + " and line " + lineNo2 +".", srcLocator1)); 
-			   }
-		   }
-	   }
+				  String nodeNameStr = dtm.getNodeName(targetNode);
+
+				  SourceLocator srcLocator1 = (SourceLocator)(head.getTemplate());
+				  int lineNo1 = srcLocator1.getLineNumber(); 
+				  SourceLocator srcLocator2 = (SourceLocator)(next.getTemplate());
+				  int lineNo2 = srcLocator2.getLineNumber();
+
+				  String errMesg = "XTDE0540 : More than one XSL template rule matched an XML " + nodeTypeStr + " node";
+				  if (nodeNameStr != null) {
+					  errMesg = (errMesg + " '" + nodeNameStr + "'."); 
+				  }
+				  else {
+					  errMesg = (errMesg + "."); 
+				  }
+
+				  throw new TransformerException(errMesg + " Conflicting template rule locations are line " + lineNo1 
+						  																				+ " and line " + lineNo2 +".", srcLocator1); 
+			  }
+		  }
+	  }
+	   
+	  if (xslWarningOnMultipleMatch) {
+		  TemplateSubPatternAssociation next = head;
+		  double headNodePriority = (head.getTemplate()).getPriority();
+		  while ((next = next.getNext()) != null) {
+			  double nextNodePriority = (next.getTemplate()).getPriority();
+			  if ((next.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE) 
+																					  && next.matchMode(mode) 
+																					  && (nextNodePriority == headNodePriority)) {
+				  /**
+				   * Emit an XSL stylesheet processing warning, when xsl:mode instruction 
+				   * specifies an attribute "warning-on-multiple-match" with value true.
+				   */
+
+				  int nodeType = dtm.getNodeType(targetNode);
+				  String nodeTypeStr = getNodeTypeString(nodeType);
+
+				  String nodeNameStr = dtm.getNodeName(targetNode);
+
+				  SourceLocator srcLocator1 = (SourceLocator)(head.getTemplate());
+				  int lineNo1 = srcLocator1.getLineNumber(); 
+				  SourceLocator srcLocator2 = (SourceLocator)(next.getTemplate());
+				  int lineNo2 = srcLocator2.getLineNumber();
+
+				  String errMesg = "Warning : More than one XSL template rule matched an XML " + nodeTypeStr + " node";
+				  if (nodeNameStr != null) {
+					  errMesg = (errMesg + " '" + nodeNameStr + "'."); 
+				  }
+				  else {
+					  errMesg = (errMesg + "."); 
+				  }
+
+				  ErrorListener errorListener = xctxt.getErrorListener();				   
+				  errorListener.warning(new TransformerException(errMesg + " Conflicting template rule locations are line " + lineNo1 
+						  																								+ " and line " + lineNo2 +".", srcLocator1)); 
+			  }
+		  }
+	  }
   }
 
   /**

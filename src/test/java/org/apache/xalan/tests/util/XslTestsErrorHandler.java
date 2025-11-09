@@ -28,7 +28,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * XSLT transformation error handler class, that may be bound to
- * an object of type javax.xml.transform.Transformer.
+ * javax.xml.transform.Transformer object instance.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -36,70 +36,79 @@ import org.xml.sax.SAXParseException;
  */
 public class XslTestsErrorHandler implements ErrorHandler, ErrorListener {
     
-    private List<String> trfErrorList = null;
+    private List<String> m_trfErrorList = null;
     
-    private List<String> trfFatalErrorList = null;
+    private List<String> m_trfFatalErrorList = null;
     
-    private String xmlDocumentStr = null;
+    private List<String> m_trfWarningList = null;
     
-    private String xslTestCaseName = null;
+    private String m_xmlDocumentStr = null;
+    
+    private String m_xslTestCaseName = null;
     
     /**
      * Class constructor.
      */
     public XslTestsErrorHandler() {
-    	trfErrorList = new ArrayList<String>();
-    	trfFatalErrorList = new ArrayList<String>();
+    	m_trfErrorList = new ArrayList<String>();
+    	m_trfFatalErrorList = new ArrayList<String>();
+    	m_trfWarningList = new ArrayList<String>();
     }
 
     @Override
     public void error(TransformerException ex) throws TransformerException {        
         String errMesg = ex.getMessage();
-        trfErrorList.add(errMesg);
+        m_trfErrorList.add(errMesg);
     }
 
     @Override
     public void fatalError(TransformerException ex) throws TransformerException {        
         String errMesg = ex.getMessage();
-        trfFatalErrorList.add(errMesg);
+        m_trfFatalErrorList.add(errMesg);
     }
 
     @Override
     public void warning(TransformerException ex) throws TransformerException {
-        // NO OP
+    	String errMesg = ex.getMessage();
+    	m_trfWarningList.add(errMesg);
     }
 
     @Override
     public void error(SAXParseException ex) throws SAXException {        
     	String errMesg = ex.getMessage();
-    	trfErrorList.add(errMesg);
+    	m_trfErrorList.add(errMesg);
     }
 
     @Override
     public void fatalError(SAXParseException ex) throws SAXException {        
     	String errMesg = ex.getMessage();
-    	trfFatalErrorList.add(errMesg);
+    	m_trfFatalErrorList.add(errMesg);
     }
 
     @Override
     public void warning(SAXParseException ex) throws SAXException {
-        // NO OP
+    	String errMesg = ex.getMessage();
+    	m_trfWarningList.add(errMesg);
     }
     
     public List<String> getTrfErrorList() {
-        return trfErrorList;  
+        return m_trfErrorList;  
     }
     
     public List<String> getTrfFatalErrorList() {
-        return trfFatalErrorList;  
+        return m_trfFatalErrorList;  
+    }
+    
+    public List<String> getTrfWarningList() {
+        return m_trfWarningList;  
     }
 
 	public void setXMLDocumentStr(String xmlDocumentStr) {
-		this.xmlDocumentStr = xmlDocumentStr;		
+		this.m_xmlDocumentStr = xmlDocumentStr;		
 	}
 
 	public void setTestCaseName(String xslTestCaseName) {
-		this.xslTestCaseName = xslTestCaseName;		
+		this.m_xslTestCaseName = xslTestCaseName;		
 	}
 
 }

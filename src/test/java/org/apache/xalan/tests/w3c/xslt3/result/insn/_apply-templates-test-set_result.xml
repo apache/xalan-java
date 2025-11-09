@@ -1,25 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:44Z" fail="17" name="apply-templates" pass="26" skipped="7" statusUnknown="0" totalRun="43">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-09T11:58:16Z" fail="15" name="apply-templates" pass="22" skipped="13" statusUnknown="0" totalRun="37">
    <testResult status="pass" testName="apply-templates-001"/>
    <testResult status="pass" testName="apply-templates-002"/>
    <testResult status="pass" testName="conflict-resolution-0101"/>
-   <testResult status="pass" testName="conflict-resolution-0102a"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="conflict-resolution-0102b"/>
+   <testResult status="skipped" testName="conflict-resolution-0102a" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="conflict-resolution-0102b" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="conflict-resolution-0102c"/>
-   <testResult status="pass" testName="conflict-resolution-0104a"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="conflict-resolution-0104b"/>
+   <testResult status="skipped" testName="conflict-resolution-0104a" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="conflict-resolution-0104b" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="conflict-resolution-0104c"/>
    <testResult status="pass" testName="conflict-resolution-0106"/>
    <testResult status="pass" testName="conflict-resolution-0107"/>
-   <testResult status="pass" testName="conflict-resolution-0108a"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="conflict-resolution-0108b"/>
+   <testResult status="skipped" testName="conflict-resolution-0108a" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="conflict-resolution-0108b" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="conflict-resolution-0108c"/>
-   <testResult status="pass" testName="conflict-resolution-0110a"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="conflict-resolution-0110b"/>
+   <testResult status="skipped" testName="conflict-resolution-0110a" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="conflict-resolution-0110b" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="conflict-resolution-0110c"/>
    <testResult status="pass" testName="conflict-resolution-0112"/>
    <testResult status="pass" testName="conflict-resolution-0201"/>
-   <testResult status="skipped" testName="conflict-resolution-0401a" xsltVersion="XSLT 2.0 only"/>
-   <testResult status="skipped" testName="conflict-resolution-0401b" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="conflict-resolution-0401a" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="conflict-resolution-0401b" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="conflict-resolution-0401c"/>
    <testResult status="pass" testName="conflict-resolution-0501"/>
    <testResult status="pass" testName="conflict-resolution-0502"/>
@@ -43,12 +43,8 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="conflict-resolution-1201"/>
-   <testResult status="fail" testName="conflict-resolution-1202a"/>
-   <testResult status="fail" testName="conflict-resolution-1202b">
-      <outResult>
-         <errTrace>XTSE0010 : an instruction xsl:next-match is not known to the XSLT processor.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="skipped" testName="conflict-resolution-1202a" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="conflict-resolution-1202b" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="fail" testName="conflict-resolution-1202c"/>
    <testResult status="fail" testName="conflict-resolution-1204"/>
    <testResult status="fail" testName="conflict-resolution-1205"/>

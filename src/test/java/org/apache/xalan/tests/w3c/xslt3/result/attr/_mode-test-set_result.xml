@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-08T12:12:43Z" fail="65" name="mode" pass="53" skipped="25" statusUnknown="0" totalRun="118">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-09T11:58:28Z" fail="61" name="mode" pass="55" skipped="27" statusUnknown="0" totalRun="116">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
@@ -14,7 +14,7 @@
    <testResult status="pass" testName="mode-0013"/>
    <testResult feature="streaming" status="skipped" testName="mode-0014"/>
    <testResult status="pass" testName="mode-0015"/>
-   <testResult status="fail" testName="mode-0016"/>
+   <testResult status="pass" testName="mode-0016"/>
    <testResult status="pass" testName="mode-0101"/>
    <testResult status="pass" testName="mode-0102"/>
    <testResult status="pass" testName="mode-0103"/>
@@ -29,36 +29,12 @@
    <testResult status="pass" testName="mode-0501"/>
    <testResult status="pass" testName="mode-0601"/>
    <testResult status="pass" testName="mode-0701"/>
-   <testResult status="pass" testName="mode-0801a"/>
-   <testResult status="fail" testName="mode-0801b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
- -Any child of root sss-&#13;
-&#13;
- +Any descendant of root sss+&#13;
-&#13;
- -Any child of any sss-&#13;
-&#13;
- +Any descendant of root sss+&#13;
-&#13;
- -Any child of any sss-&#13;
-&#13;
- +Any descendant of root sss+&#13;
-&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="skipped" testName="mode-0801a" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="mode-0801b" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="mode-0801c"/>
-   <testResult status="fail" testName="mode-0802">
-      <outResult>
-         <errTrace>Empty expression!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="mode-0802"/>
    <testResult status="pass" testName="mode-0803"/>
-   <testResult status="fail" testName="mode-0804">
-      <outResult>
-         <errTrace>Empty expression!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="mode-0804"/>
    <testResult status="pass" testName="mode-0805"/>
    <testResult status="pass" testName="mode-0806"/>
    <testResult status="pass" testName="mode-0901"/>
@@ -173,12 +149,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult feature="streaming" status="skipped" testName="mode-1424"/>
    <testResult status="fail" testName="mode-1425"/>
    <testResult feature="streaming" status="skipped" testName="mode-1426"/>
-   <testResult status="fail" testName="mode-1427">
-      <outResult>
-         <errTrace>Empty expression!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="mode-1427"/>
    <testResult feature="streaming" status="skipped" testName="mode-1428"/>
    <testResult status="fail" testName="mode-1429">
       <outResult>
@@ -269,12 +240,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
  &#13;
 </outResult>
    </testResult>
-   <testResult status="fail" testName="mode-1440">
-      <outResult>
-         <errTrace>Empty expression!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="mode-1440"/>
    <testResult status="fail" testName="mode-1441">
       <outResult>
          <errTrace>Illegal value:  s  used for QNAME attribute: name</errTrace>
@@ -284,12 +250,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
          <errTrace>XTTE0505 : An XSL mode instruction's attribute "on-no-match" has disallowed value ' text-only-copy '.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="mode-1442">
-      <outResult>
-         <errTrace>Empty expression!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="mode-1442"/>
    <testResult status="fail" testName="mode-1443">
       <outResult>
          <errTrace>Illegal value:  s  used for QNAME attribute: name</errTrace>

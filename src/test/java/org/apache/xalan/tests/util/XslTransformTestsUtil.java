@@ -505,12 +505,12 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     
     /**
      * When running W3C XSLT 3.0 test suite, check whether the test case 
-     * is specified for XSLT 2.0 version only.
+     * is specified for XSLT 2.0/1.0 versions only.
      *  
      * @param testCaseNode
      * @return						Boolean value true or false						
      */
-    protected boolean isXslt2OnlyTestCase(Node testCaseNode) {
+    protected boolean isXslt1And2OnlyTestCase(Node testCaseNode) {
     	
         boolean result = false;
         
@@ -526,7 +526,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      			 if (nodeList1.getLength() == 1) {
      				 Element elem1 = (Element)(nodeList1.item(0));
      				 String value = elem1.getAttribute("value");
-     				 if ("XSLT20".equals(value)) {
+     				 if ("XSLT20".equals(value) || "XSLT10 XSLT20".equals(value)) {
      					result = true;
      					
      					break; 

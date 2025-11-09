@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-11-08T12:13:00Z" desc="W3C XSLT 3.0 test suite results" fail="638" pass="1869" skipped="160" success="74.11%" totalRun="2522" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-11-09T11:58:40Z" desc="W3C XSLT 3.0 test suite results" fail="632" pass="1867" skipped="168" success="74.26%" totalRun="2514" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="24" pass="79" skipped="5" success="75.96%" totalRun="104"/>
     <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
     <expand-text fail="8" pass="51" skipped="3" success="86.44%" totalRun="59"/>
     <match fail="51" pass="74" skipped="11" success="58.73%" totalRun="126"/>
-    <mode fail="65" pass="53" skipped="25" success="44.92%" totalRun="118"/>
+    <mode fail="61" pass="55" skipped="27" success="47.41%" totalRun="116"/>
     <select fail="3" pass="25" skipped="0" success="86.21%" totalRun="29"/>
     <xpath-default-namespace fail="11" pass="11" skipped="4" success="50.0%" totalRun="22"/>
   </attr>
@@ -36,7 +36,7 @@
   </fn>
   <insn>
     <analyze-string fail="14" pass="39" skipped="5" success="73.58%" totalRun="53"/>
-    <apply-templates fail="17" pass="26" skipped="7" success="60.47%" totalRun="43"/>
+    <apply-templates fail="15" pass="22" skipped="13" success="59.46%" totalRun="37"/>
     <attribute fail="10" pass="12" skipped="7" success="52.17%" totalRun="23"/>
     <call-template fail="13" pass="27" skipped="2" success="67.5%" totalRun="40"/>
     <choose fail="6" pass="48" skipped="1" success="88.89%" totalRun="54"/>
