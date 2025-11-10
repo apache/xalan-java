@@ -2857,8 +2857,8 @@ public class XPathParser
       String[] strArr = strValue.split(",if");
       if (strArr.length > 1) {
     	 // There are sequence of, at-least two XPath 'if' expressions
-    	 for (int i = 1; i < strArr.length; i++) {
-    		strArr[i] = "if" + strArr[i]; 
+    	 for (int idx = 1; idx < strArr.length; idx++) {
+    		strArr[idx] = "if" + strArr[idx]; 
     	 }
     	 
     	 List<String> strList = Arrays.asList(strArr);
@@ -2883,15 +2883,20 @@ public class XPathParser
       
       int tokenQueueSize = (m_ops.m_tokenQueue).size();
       
-      int thenTokenEffectiveComputedIdx = 0;
+      int thenTokenEffectiveComputedIdx = -1;
       
       for (int idx = 0; idx < tokenQueueSize; idx++) {
     	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
     	  String tokenStrValue = tokenObj.toString();
     	  if ("then".equals(tokenStrValue)) {
-    		 thenTokenEffectiveComputedIdx = idx;
+    		 thenTokenEffectiveComputedIdx = idx;    		 
     		 break;
     	  }
+      }
+      
+      if (thenTokenEffectiveComputedIdx == -1) {
+    	 throw new javax.xml.transform.TransformerException("XPST0003 : An XPath 'if' expression doesn't contain "
+    	 		                                                                                     + "expected token 'then'.", m_sourceLocator); 
       }
       
       StringBuffer probableBranchConditionXPathStrBuff = new StringBuffer();
@@ -2926,7 +2931,7 @@ public class XPathParser
       thenTokenEffectiveComputedIdx = (thenTokenComputedRevisedIdx != 0) ? 
     		                                                    thenTokenComputedRevisedIdx : thenTokenEffectiveComputedIdx;
       
-      int elseTokenEffectiveComputedIdx = 0;
+      int elseTokenEffectiveComputedIdx = -1;
       
       for (int idx = (tokenQueueSize - 1); idx >= 0; idx--) {
     	  Object tokenObj = (m_ops.m_tokenQueue).elementAt(idx);
@@ -2935,6 +2940,11 @@ public class XPathParser
     		 elseTokenEffectiveComputedIdx = idx;
     		 break;
     	  }
+      }
+      
+      if (elseTokenEffectiveComputedIdx == -1) {
+    	  throw new javax.xml.transform.TransformerException("XPST0003 : An XPath 'if' expression doesn't contain "
+                                                                                                      + "expected token 'else'.", m_sourceLocator); 
       }
       
       StringBuffer probableElseExprStrBuff = new StringBuffer();
