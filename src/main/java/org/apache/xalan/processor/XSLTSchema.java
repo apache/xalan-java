@@ -107,11 +107,15 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef hrefAttr = new XSLTAttributeDef(null, "href",
                                   XSLTAttributeDef.T_URL, true, false, XSLTAttributeDef.ERROR);
     
-    // Required.
+    // Required
     // Support AVT
-    // xsl:result-document, xsl:source-document                  
+    // xsl:source-document                  
     XSLTAttributeDef hrefAVTRequired = new XSLTAttributeDef(null, "href",
-                                         XSLTAttributeDef.T_AVT, true, true, XSLTAttributeDef.WARNING);
+                                         XSLTAttributeDef.T_AVT, true, true, XSLTAttributeDef.ERROR);
+    
+    // xsl:result-document
+    XSLTAttributeDef hrefAVTOpt = new XSLTAttributeDef(null, "href",
+                                         XSLTAttributeDef.T_AVT, false, true, XSLTAttributeDef.ERROR);
     
     // xsl:import-schema
     XSLTAttributeDef namespaceAttr = new XSLTAttributeDef(null, "namespace",
@@ -141,12 +145,12 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslCopyNamespacesOpt = new XSLTAttributeDef(null, "copy-namespaces",
                                            XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     
-    // Required.
+    // Required
     // xsl:output-character                                     
     XSLTAttributeDef characterAttrRequired = new XSLTAttributeDef(null, "character",
     										   XSLTAttributeDef.T_UNICODE_CHAR, true, false, XSLTAttributeDef.ERROR);
     
-    // Required.
+    // Required
     // xsl:output-character                                     
     XSLTAttributeDef stringAttrRequired = new XSLTAttributeDef(null, "string",
     							            XSLTAttributeDef.T_STRING, true, false, XSLTAttributeDef.ERROR);
@@ -187,21 +191,21 @@ public class XSLTSchema extends XSLTElementDef
                                                        XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
                                        
                   
-    // Required.
+    // Required
     // It is an error if the name attribute is not present on any of these elements
     // xsl:key, xsl:attribute-set, xsl:call-template, xsl:with-param, xsl:variable, xsl:param, 
     // xsl:function, xsl:character-map
     XSLTAttributeDef nameAttrRequired = new XSLTAttributeDef(null, "name",
                                           XSLTAttributeDef.T_QNAME, true, false, XSLTAttributeDef.ERROR);
     
-	// Required.
+	// Required
     // Support AVT
     // xsl:element, xsl:attribute                                    
     XSLTAttributeDef nameAVTRequired = new XSLTAttributeDef(null, "name",
                                          XSLTAttributeDef.T_AVT_QNAME, true, true, XSLTAttributeDef.WARNING);
             
 
-    // Required.
+    // Required
     // Support AVT
     // xsl:processing-instruction                                     
     XSLTAttributeDef nameAVT_NCNAMERequired = new XSLTAttributeDef(null, "name",
@@ -309,7 +313,7 @@ public class XSLTSchema extends XSLTElementDef
                                           XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
       
       
-    // Required.                                       
+    // Required                                       
     // xsl:for-each, xsl:copy-of, xsl:for-each-group, xsl:analyze-string, xsl:iterate, xsl:merge-source                            
     XSLTAttributeDef selectAttrRequired = new XSLTAttributeDef(null,
                                             "select",
@@ -335,7 +339,7 @@ public class XSLTSchema extends XSLTElementDef
 									                   "separator",
 									                   XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
-    // Required.
+    // Required
     // xsl:evaluate
     XSLTAttributeDef xpathAttrRequired = new XSLTAttributeDef(null,
 								            "xpath",
@@ -347,7 +351,7 @@ public class XSLTSchema extends XSLTElementDef
 									                   "context-item",
 									                   XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
-    // Required.                                       
+    // Required                                       
     // xsl:analyze-string
     XSLTAttributeDef regexAVTRequired = new XSLTAttributeDef(null, "regex",
                                               XSLTAttributeDef.T_AVT, true, true, XSLTAttributeDef.ERROR);
@@ -734,7 +738,7 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef xslResultDocument = new XSLTElementDef(this,
 								             Constants.S_XSLNAMESPACEURL, "result-document",
 								             null /*alias */, templateElements,
-								             new XSLTAttributeDef[]{ hrefAVTRequired, methodAttr, 
+								             new XSLTAttributeDef[]{ hrefAVTOpt, methodAttr, 
 								            		                 omitXmlDeclarationAttr, spaceAttr }, 
 								             new ProcessorTemplateElem(),
 								             ElemResultDocument.class /* class object */, true, false, true, 20, true);

@@ -36,10 +36,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -50,6 +52,7 @@ import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.objects.XString;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -230,45 +233,65 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		transformer.getTraceManager().emitTraceEvent(this);
 	    	}
 	    	
-	    	String hrefStrVal = m_href.evaluate(xctxt, xctxt.getContextNode(), this);		// Mandatory
+	    	String hrefStrVal = null;	    	
+	    	if (m_href != null) {
+	    	   hrefStrVal = m_href.evaluate(xctxt, xctxt.getContextNode(), this);
+	    	}
+	    	else {
+	    	   hrefStrVal = "";
+	    	}
+	    	
+	    	if (!XslTransformData.m_xslResultDocumentUriStrList.contains(hrefStrVal)) {
+	    		XslTransformData.m_xslResultDocumentUriStrList.add(hrefStrVal);
+	    	}
+	    	else {	    			    		
+	    		throw new javax.xml.transform.TransformerException("XTDE1490 : An XSL 'result-document' instruction attempted "
+	    				                                                                             + "to produce result contents twice with the URI '" 
+	    				                                                                             + hrefStrVal + "'.", srcLocator);
+	    	}
 	    	
 	    	URL resolvedHrefUrl = null;
 
-			try {
-				URI url = new URI(hrefStrVal);
-				String stylesheetSystemId = srcLocator.getSystemId();      // base uri of stylesheet, if available
+	    	if (!"".equals(hrefStrVal)) {
+	    		try {
+	    			URI url = new URI(hrefStrVal);
+	    			String stylesheetSystemId = srcLocator.getSystemId();             // base uri of stylesheet, if available
 
-				if (!url.isAbsolute()) {
-					if (m_BaseOutputUriStrAbsValue != null) {
-						URI resolvedUriArg = (new URI(m_BaseOutputUriStrAbsValue)).resolve(hrefStrVal);
-						resolvedHrefUrl = resolvedUriArg.toURL();
-					}				
-					else if (stylesheetSystemId != null) {
-						URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
-						resolvedHrefUrl = resolvedUriArg.toURL(); 
-					}
-				}
+	    			if (!url.isAbsolute()) {
+	    				if (m_BaseOutputUriStrAbsValue != null) {
+	    					URI resolvedUriArg = (new URI(m_BaseOutputUriStrAbsValue)).resolve(hrefStrVal);
+	    					resolvedHrefUrl = resolvedUriArg.toURL();
+	    				}				
+	    				else if (stylesheetSystemId != null) {
+	    					URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
+	    					resolvedHrefUrl = resolvedUriArg.toURL(); 
+	    				}
+	    			}
 
-				if (resolvedHrefUrl == null) {
-					resolvedHrefUrl = new URL(hrefStrVal);   
-				}
-			}
-			catch (URISyntaxException ex) {
-				throw new javax.xml.transform.TransformerException("FODC0005 : An XSL 'result-document' instruction's href uri '" + hrefStrVal + "' "
-																					+ "is not a valid absolute uri, "
-																					+ "or cannot be resolved to an absolute uri.", srcLocator);  
-			}
-			catch (MalformedURLException ex) {
-				throw new javax.xml.transform.TransformerException("FODC0005 : An XSL 'result-document' instruction's href uri '" + hrefStrVal + "' "
-																					+ "is not a valid absolute uri, or cannot be resolved to "
-																					+ "an absolute uri.", srcLocator);
-			}
+	    			if (resolvedHrefUrl == null) {
+	    				resolvedHrefUrl = new URL(hrefStrVal);   
+	    			}
+	    		}
+	    		catch (URISyntaxException ex) {
+	    			throw new javax.xml.transform.TransformerException("FODC0005 : An XSL 'result-document' instruction's href uri '" + hrefStrVal + "' "
+																							    					+ "is not a valid absolute uri, "
+																							    					+ "or cannot be resolved to an absolute uri.", srcLocator);  
+	    		}
+	    		catch (MalformedURLException ex) {
+	    			throw new javax.xml.transform.TransformerException("FODC0005 : An XSL 'result-document' instruction's href uri '" + hrefStrVal + "' "
+																							    					+ "is not a valid absolute uri, or cannot be resolved to "
+																							    					+ "an absolute uri.", srcLocator);
+	    		}
+	    	}
 	    	
-	    	QName methodQname = m_method;												// Optional, with default value "xml"
+	    	QName methodQname = m_method;											// Optional, with default value "xml"
 	    	
-	    	boolean omitXmlDeclarationAttr = m_omitXmlDeclaration;   					// Optional, with default value "false"
+	    	boolean omitXmlDeclaration = m_omitXmlDeclaration;   					// Optional, with default value "false"
 	    	
-	    	String resolvedHrefStrVal = resolvedHrefUrl.toString();
+	    	String resolvedHrefStrVal = null;
+	    	if (resolvedHrefUrl != null) {
+	    	   resolvedHrefStrVal = resolvedHrefUrl.toString();
+	    	}
 	    	
 	    	if ((methodQname == null) || ((Constants.ATTRVAL_OUTPUT_METHOD_XML).equals(methodQname.toString()))) {
 	    		int xdmNodeHandle = transformer.transformToRTF(this);
@@ -281,7 +304,7 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		DTM dtm1 = xctxt.getDTM(nodeHandle);
 	    		Node node = dtm1.getNode(nodeHandle);
 	    		String xmlStrValue = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
-	    		if (omitXmlDeclarationAttr) {
+	    		if (omitXmlDeclaration) {
 	    			int xmlPrologEndStrIndex = xmlStrValue.indexOf("?>");
 	    			xmlStrValue = xmlStrValue.substring(xmlPrologEndStrIndex + 2); 
 	    		}
@@ -305,8 +328,26 @@ public class ElemResultDocument extends ElemTemplateElement
 	    				m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, xmlStrValue));	
 	    			}
 	    		}
-	    		else {
+	    		else if (resolvedHrefStrVal != null) {
 	    			writeStringContentsToFile(resolvedHrefStrVal, xmlStrValue);
+	    		}
+	    		else {	    			
+	    			/**
+	    			 * xsl:result-document instruction 'href' attribute's value is a zero length string.
+	    			 * Therefore, xsl:result-document instruction's evaluation result is XSL transformation's 
+	    			 * principal result, which is XSL transformation's result produced by template rule or
+	    			 * function nominated as XSL transformation's entry point.  
+	    			 */
+	    			
+	    			DTMManager dtmManager = xctxt.getDTMManager();	    			
+	    			DTM dtm = dtmManager.getXmlDTMTreeFromString(xmlStrValue);	    			
+	    			int docNodeHandle = dtm.getDocument();
+	    			
+	    			XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(docNodeHandle, xctxt);
+	    			
+	    			SerializationHandler rhandler = transformer.getSerializationHandler();
+	    			
+	    			ElemCopyOf.copyOfActionOnNodeSet(xmlNodeCursorImpl, transformer, rhandler, xctxt);
 	    		}
 	    	}
 	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_TEXT).equals(methodQname.toString())) {
@@ -320,8 +361,20 @@ public class ElemResultDocument extends ElemTemplateElement
 	    				m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, textStrValue));	
 	    			}
 	    		}
-	    		else {
+	    		else if (resolvedHrefStrVal != null) {
 	    			writeStringContentsToFile(resolvedHrefStrVal, textStrValue);
+	    		}
+	    		else {
+	    			/**
+	    			 * xsl:result-document instruction 'href' attribute's value is a zero length string.
+	    			 * Therefore, xsl:result-document instruction's evaluation result is XSL transformation's 
+	    			 * principal result, which is XSL transformation's result produced by template rule or
+	    			 * function nominated as XSL transformation's entry point.  
+	    			 */
+	    			
+	    			SerializationHandler rhandler = transformer.getSerializationHandler();
+	    			
+	    			(new XString(textStrValue)).dispatchCharactersEvents(rhandler);
 	    		}
 	    	}
 	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_JSON).equals(methodQname.toString())) {
@@ -332,6 +385,8 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		    * Verify that, the string value represents a legible JSON document.
 	    		    */
 	    		   JSONObject jsonObject = new JSONObject(jsonStrValue);
+	    		   
+	    		   jsonStrValue = jsonStrValue.trim();
 	    		}
 	    		catch (JSONException ex) {
 	    		   throw new TransformerException("XPTY0004 : An XSL 'result-document' instruction within a stylesheet has attribute "
@@ -343,25 +398,37 @@ public class ElemResultDocument extends ElemTemplateElement
 	    		
 	    		if (m_fnTransformResult != null) {
 	    			if (m_BaseOutputUriStrAbsValue != null) {
-	    				m_fnTransformResult.put(new XSString(m_BaseOutputUriStrAbsValue), getFnTransformResultComponent(xctxt, jsonStrValue.trim()));
+	    				m_fnTransformResult.put(new XSString(m_BaseOutputUriStrAbsValue), getFnTransformResultComponent(xctxt, jsonStrValue));
 	    			}
 	    			else {
-	    				m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, jsonStrValue.trim()));	
+	    				m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, jsonStrValue));	
 	    			}
 	    		}
+	    		else if (resolvedHrefStrVal != null) {
+	    			writeStringContentsToFile(resolvedHrefStrVal, jsonStrValue);
+	    		}
 	    		else {
-	    			writeStringContentsToFile(resolvedHrefStrVal, jsonStrValue.trim());
+	    			/**
+	    			 * xsl:result-document instruction 'href' attribute's value is a zero length string.
+	    			 * Therefore, xsl:result-document instruction's evaluation result is XSL transformation's 
+	    			 * principal result, which is XSL transformation's result produced by template rule or
+	    			 * function nominated as XSL transformation's entry point.  
+	    			 */
+	    			
+	    			SerializationHandler rhandler = transformer.getSerializationHandler();
+	    			
+	    			(new XString(jsonStrValue)).dispatchCharactersEvents(rhandler);
 	    		}
 	    	}
 	    	else if ((Constants.ATTRVAL_OUTPUT_METHOD_HTML).equals(methodQname.toString())) {	    		
-	    		ElemTemplateElement t = this.m_firstChild;
-	    		if (!(t instanceof ElemLiteralResult)) {
+	    		ElemTemplateElement xslChildElem = this.m_firstChild;
+	    		if (!(xslChildElem instanceof ElemLiteralResult)) {
 	    		   throw new TransformerException("XPTY0004 : An XSL 'result-document' instruction's serialization method is 'html', but "
-	    		   		                                           + "result-document's immmediate child content doesn't starts "
-	    		   		                                           + "constructing a legible HTML document.", srcLocator);	
+												    		   		                                           + "result-document's immmediate child content doesn't starts "
+												    		   		                                           + "constructing a legible HTML document.", srcLocator);	
 	    		}
 	    		else {
-	    		   StylesheetRoot stylesheetRoot = t.getStylesheetRoot();
+	    		   StylesheetRoot stylesheetRoot = xslChildElem.getStylesheetRoot();
 	    		   
 	    		   /**
 	    		    * This object instance is a clone of related internal 
@@ -407,8 +474,20 @@ public class ElemResultDocument extends ElemTemplateElement
 	    				   m_fnTransformResult.put(new XSString(resolvedHrefStrVal), getFnTransformResultComponent(xctxt, htmlStrValue));	
 	    			   }
 	    		   }
-	    		   else {
+	    		   else if (resolvedHrefStrVal != null) {
 	    			   writeStringContentsToFile(resolvedHrefStrVal, htmlStrValue);
+	    		   }
+	    		   else {
+	    			   /**
+		    			 * xsl:result-document instruction 'href' attribute's value is a zero length string.
+		    			 * Therefore, xsl:result-document instruction's evaluation result is XSL transformation's 
+		    			 * principal result, which is XSL transformation's result produced by template rule or
+		    			 * function nominated as XSL transformation's entry point.  
+		    			 */
+	    			   
+	    			   SerializationHandler rhandler = transformer.getSerializationHandler();
+		    			
+		    		   (new XString(htmlStrValue)).dispatchCharactersEvents(rhandler); 
 	    		   }
 
 	    		   /**

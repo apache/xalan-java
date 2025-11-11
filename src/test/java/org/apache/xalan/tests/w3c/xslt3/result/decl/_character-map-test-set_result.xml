@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:50Z" fail="12" name="character-map" pass="15" skipped="1" statusUnknown="1" totalRun="28">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-11T16:48:44Z" fail="13" name="character-map" pass="14" skipped="1" statusUnknown="1" totalRun="28">
    <testResult status="pass" testName="character-map-001"/>
    <testResult status="pass" testName="character-map-002"/>
    <testResult status="pass" testName="character-map-003"/>
@@ -15,25 +15,10 @@
       <outResult/>
    </testResult>
    <testResult status="pass" testName="character-map-014"/>
-   <testResult status="fail" testName="character-map-015">
-      <outResult>
-         <errTrace>XTSE0010 : xsl:result-document requires attribute: href</errTrace>
-         <errTrace>XPTY0004 : An exception occured while evaluating an XSL 'result-document' instruction. Following run-time error occured : null.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="character-map-016">
-      <outResult>
-         <errTrace>XTSE0010 : xsl:result-document requires attribute: href</errTrace>
-         <errTrace>XPTY0004 : An exception occured while evaluating an XSL 'result-document' instruction. Following run-time error occured : null.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="character-map-015"/>
+   <testResult status="fail" testName="character-map-016"/>
    <testResult status="fail" testName="character-map-017"/>
-   <testResult status="fail" testName="character-map-018">
-      <outResult>
-         <errTrace>XTSE0010 : xsl:result-document requires attribute: href</errTrace>
-         <errTrace>XPTY0004 : An exception occured while evaluating an XSL 'result-document' instruction. Following run-time error occured : null.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="character-map-018"/>
    <testResult status="pass" testName="character-map-019"/>
    <testResult status="fail" testName="character-map-020">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;doc&gt;&lt;a value="ab{C}de"&gt;vwx{Y}z&lt;/a&gt;&lt;/doc&gt;</outResult>
@@ -41,7 +26,11 @@
    <testResult status="fail" testName="character-map-021">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;doc&gt;&lt;a value="ab{C}de"&gt;vwx{Y}z&lt;/a&gt;&lt;/doc&gt;</outResult>
    </testResult>
-   <testResult status="pass" testName="character-map-022"/>
+   <testResult status="fail" testName="character-map-022">
+      <outResult>
+         <errTrace>XTSE1580 : An XSL stylesheet contains more than one xsl:character-map instruction with name 'map02'.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="character-map-023"/>
    <testResult status="fail" testName="character-map-024"/>
    <testResult testName="character-map-025"/>

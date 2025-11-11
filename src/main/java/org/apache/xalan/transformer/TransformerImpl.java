@@ -171,6 +171,9 @@ public class TransformerImpl extends Transformer
 
   /** The base URL of the source tree. */
   private String m_urlOfSource = null;
+  
+  /** The absolute URI string value of an XSL stylesheet. */
+  private String m_uriStrOfXslStylesheet = null;
 
   /** The Result object at the start of the transform, if any. */
   private Result m_outputTarget = null;
@@ -356,13 +359,6 @@ public class TransformerImpl extends Transformer
    * An XSL stylesheet initial template name.
    */
   private String m_init_template_name = null;
-  
-  /**
-   * This variable having boolean value true means that, an 
-   * XSL transformation's initial template name has been provided 
-   * and an XML input source is absent.
-   */
-  private boolean m_xmlSourceAbsent = false;
     
   /**
    * This is a compile-time flag to turn off calling
@@ -2712,7 +2708,6 @@ public class TransformerImpl extends Transformer
 
         xctxt.setSAXLocator(t);
         m_currentTemplateElements.setElementAt(t,currentTemplateElementsTop);
-        t.setXMLSourceAbsent(m_xmlSourceAbsent);
         t.execute(this);        
       }
     }
@@ -4220,14 +4215,6 @@ public class TransformerImpl extends Transformer
 	public void setSource(Source source) {
 		this.m_source = source;
 	}
-
-	public void setXMLSourceAbsent(boolean xmlSourceAbsent) {
-		m_xmlSourceAbsent = xmlSourceAbsent; 		
-	}
-	
-	public boolean getXMLSourceAbsent() {
-	    return m_xmlSourceAbsent;	
-	}
 	
 	/**
 	 * Method definition to populate CharacterMapConfig run-time 
@@ -4968,6 +4955,14 @@ public class TransformerImpl extends Transformer
 			  }		 
 		 }
    }
+
+	  public String getUriStrOfXslStylesheet() {
+		  return m_uriStrOfXslStylesheet;
+	  }
+
+	  public void setUriStrOfXslStylesheet(String uriStrOfXslStylesheet) {
+		  this.m_uriStrOfXslStylesheet = uriStrOfXslStylesheet;
+	  }
 
 }  // end TransformerImpl class
 

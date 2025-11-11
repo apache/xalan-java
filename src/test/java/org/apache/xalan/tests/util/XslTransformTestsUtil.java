@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.nio.file.Files;
@@ -146,9 +147,9 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            }
            
            Source xmlInpSrc = null;
-           if ((m_initTemplateName != null) && (xmlFilePath == null)) {
-        	   xmlInpSrc = xsltStreamSrc;
-        	   ((TransformerImpl)transformer).setXMLSourceAbsent(true);
+           if ((m_initTemplateName != null) && (xmlFilePath == null)) {        	   
+        	   StringReader strReader = new StringReader("<?xml version=\"1.0\"?><unlikely_xml_element/>");
+        	   xmlInpSrc = new StreamSource(strReader);
            }
            else {
         	   xmlInpSrc = xmlDomSrc; 

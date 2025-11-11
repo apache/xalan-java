@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.net.URI;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -826,6 +827,12 @@ public class Process
 				  }
 
 				  Transformer transformer = flavor.equals("th") ? null : stylesheet.newTransformer();
+				  
+				  if (null != xslFileName) {
+					  File file = new File(xslFileName);
+					  URI uri = file.toURI();
+					  ((TransformerImpl)transformer).setUriStrOfXslStylesheet(uri.toString());
+				  }
 
 				  if (isXslEvaluate) {
 					  ((TransformerImpl)transformer).setProperty(TransformerImpl.XSL_EVALUATE_PROPERTY, Boolean.TRUE);
@@ -943,7 +950,7 @@ public class Process
 						  
 						  // Using an XMLReader to construct SAXSource for an XML input
 						  // document, enables correct XML namespace processing. 
-						  XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+						  XMLReader xmlReader = XMLReaderFactory.createXMLReader();						  						  
 
 						  transformer.transform(new SAXSource(xmlReader, inpSrc), new DOMResult(outNode));
 
@@ -1113,44 +1120,9 @@ public class Process
 					  }
 				  }
 				  else
-				  {					  
-					  if (initialTemplateName == null) {
-						  StringReader reader = new StringReader("<?xml version=\"1.0\"?><doc/>");
-						  transformer.transform(new StreamSource(reader), strResult); 
-					  }
-					  else {
-						  DOMSource xslDomSource = null;
-						  
-						  if (null != xslFileName)
-						  {
-							  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-							  
-							  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-							  dfactory.setNamespaceAware(true);
-
-							  if (isSecureProcessing)
-							  {
-								  try
-								  {
-									  dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-								  }
-								  catch (ParserConfigurationException pce) {}
-							  }
-
-							  DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-							  Document xslDOM = docBuilder.parse(new InputSource(xslFileName));
-
-							  xslDomSource = new DOMSource(xslDOM, xslFileName);
-						  }
-						  
-						  if (xslDomSource != null) {
-                             ((TransformerImpl)transformer).setXMLSourceAbsent(true);
-						     transformer.transform(xslDomSource, strResult);
-						  }
-						  else {
-							 transformer.transform(null, strResult); 
-						  }
-					  }
+				  {					  					  					  
+					  StringReader strReader = new StringReader("<?xml version=\"1.0\"?><unlikely_xml_element/>");
+					  transformer.transform(new StreamSource(strReader), strResult); 
 				  }
 			  }
 			  else

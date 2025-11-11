@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:50Z" fail="32" name="function" pass="56" skipped="22" statusUnknown="0" totalRun="88">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-11T16:48:43Z" fail="35" name="function" pass="53" skipped="22" statusUnknown="0" totalRun="88">
    <testResult status="fail" testName="function-0001">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -21,20 +25,29 @@
    <testResult status="pass" testName="function-0114"/>
    <testResult status="pass" testName="function-0115"/>
    <testResult status="pass" testName="function-0116"/>
-   <testResult status="pass" testName="function-0117"/>
+   <testResult status="fail" testName="function-0117">
+      <outResult>
+         <errTrace>java.util.MissingResourceException: Can't find resource for bundle org.apache.xalan.res.XSLTErrorResources, key XTSE0020 : An xsl:function instruction app:count-elements has both the attributes 'override' and 'override-extension-function', but they don't have the same value.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="function-0118"/>
-   <testResult status="skipped" testName="function-0119a" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="function-0119a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="function-0119b"/>
-   <testResult status="skipped" testName="function-0120a" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="function-0120a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="function-0120b"/>
    <testResult status="pass" testName="function-0121"/>
-   <testResult status="pass" testName="function-0122"/>
+   <testResult status="fail" testName="function-0122">
+      <outResult>
+         <errTrace>XTSE0740 : An XSL function's name attribute doesn't have a URI reference</errTrace>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: xsl:function must have a name attribute.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="function-0201"/>
    <testResult status="pass" testName="function-0202"/>
    <testResult status="pass" testName="function-0203"/>
    <testResult status="pass" testName="function-0205"/>
    <testResult status="pass" testName="function-0301"/>
-   <testResult status="skipped" testName="function-0302" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="function-0302" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="function-0302b"/>
    <testResult status="pass" testName="function-0303"/>
    <testResult status="pass" testName="function-0401"/>
@@ -48,7 +61,7 @@
    <testResult status="pass" testName="function-0602"/>
    <testResult status="fail" testName="function-0701">
       <outResult>
-         <errTrace>java.lang.NumberFormatException</errTrace>
+         <errTrace>XPST0003 : An XPath 'if' expression doesn't contain expected token 'else'.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-0901"/>
@@ -66,7 +79,11 @@
    <testResult status="fail" testName="function-1013"/>
    <testResult status="fail" testName="function-1014"/>
    <testResult status="pass" testName="function-1015"/>
-   <testResult status="pass" testName="function-1016"/>
+   <testResult status="fail" testName="function-1016">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: XTSE0770 : Found more than one XSL stylesheet function named: x:test with arity 1</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="function-1017">
       <outResult>
          <errTrace>Unknown error in XPath.</errTrace>
@@ -85,7 +102,7 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:x="http://xxx.com/"/&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="function-1022"/>
-   <testResult status="skipped" testName="function-1023" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="function-1023" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="fail" testName="function-1024">
       <outResult>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>
@@ -94,15 +111,24 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-1025">
-      <outResult/>
+      <outResult>
+         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
+         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="function-1026"/>
    <testResult status="fail" testName="function-1027">
-      <outResult/>
+      <outResult>
+         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
+         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="function-1028"/>
    <testResult status="fail" testName="function-1029">
-      <outResult/>
+      <outResult>
+         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
+         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="function-1030"/>
    <testResult status="pass" testName="function-1031"/>
@@ -120,17 +146,28 @@
    <testResult status="pass" testName="function-1401"/>
    <testResult status="pass" testName="function-1501"/>
    <testResult status="fail" testName="function-1601">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}environment-variable()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="function-1701">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="function-1901"/>
-   <testResult status="skipped" testName="function-1902" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="function-1902" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="function-2001"/>
-   <testResult status="skipped" testName="function-2002" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="function-2002" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="fail" testName="function-2101">
-      <outResult/>
+      <outResult>
+         <errTrace>XTSE0010 : t:function requires attribute: name</errTrace>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: xsl:function must have a name attribute.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="function-2102">
       <outResult>
@@ -155,7 +192,10 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;abc&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="function-2109">
-      <outResult/>
+      <outResult>
+         <errTrace>Expected ), but found: ,</errTrace>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XNumber cannot be cast to java.lang.String</errTrace>
+      </outResult>
    </testResult>
    <testResult feature="streaming" status="skipped" testName="function-5001"/>
    <testResult feature="streaming" status="skipped" testName="function-5002"/>

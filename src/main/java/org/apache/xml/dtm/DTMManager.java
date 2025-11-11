@@ -20,6 +20,8 @@
  */
 package org.apache.xml.dtm;
 
+import java.io.StringReader;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -38,6 +40,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
 
 /**
  * A DTMManager instance can be used to create DTM and
@@ -344,6 +347,34 @@ public abstract class DTMManager
       catch (Exception ex) {
           throw new DTMException(ex);   
       }
+  }
+  
+  /**
+   * Method definition, to construct DTM object instance, corresponding
+   * to the supplied XML document string.
+   * 
+   * @param xmlStr							The supplied XML document string
+   * @return                                The constructed DTM object instance
+   */
+  public DTM getXmlDTMTreeFromString(String xmlStr) {
+	  
+	  try {
+		  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+		  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();    
+		  dbf.setNamespaceAware(true);
+		  DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+
+		  StringReader strReader = new StringReader(xmlStr);
+		  InputSource inpSource = new InputSource(strReader);
+
+		  Document document = dBuilder.parse(inpSource);
+
+		  return getDTM(new DOMSource(document), true, null, false, false);
+	  }
+	  catch (Exception ex) {
+		  throw new DTMException(ex);
+	  }
   }
 
   /**

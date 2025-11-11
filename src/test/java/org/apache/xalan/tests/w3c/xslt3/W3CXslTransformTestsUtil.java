@@ -288,6 +288,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   }
     		   
     		   StreamSource xslStreamSrc = new StreamSource(xslStylesheetUriStr);
+    		   xslStreamSrc.setSystemId(xslStylesheetUriStr);
     		   
     		   try {
     			  Map<String, XObject> xslParamMap = new HashMap<String, XObject>();
@@ -624,13 +625,16 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		Transformer transformer = m_xslTransformerFactory.newTransformer(xslStreamSrc);
     		    		
+    		TransformerImpl transformerImpl = (TransformerImpl)transformer;
+    		transformerImpl.setUriStrOfXslStylesheet(xslStreamSrc.getSystemId());
+    		
     		if (xslParamMap.size() > 0) {
     			Set<String> keySet = xslParamMap.keySet();
     			Iterator<String> keyIter = keySet.iterator();
     			while (keyIter.hasNext()) {
     			   String key = keyIter.next();
     			   XObject value = xslParamMap.get(key);
-    			   ((TransformerImpl)transformer).setParameter(key, value);
+    			   transformerImpl.setParameter(key, value);
     			}
     		}
     		
@@ -666,9 +670,9 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		}
     		
     		Source xmlInpSrc = null;
-    		if ((m_initTemplateName != null) && (xmlInpDomSource == null)) {
-    			xmlInpSrc = xslStreamSrc;
-    			((TransformerImpl)transformer).setXMLSourceAbsent(true);
+    		if ((m_initTemplateName != null) && (xmlInpDomSource == null)) {    			
+    			StringReader strReader = new StringReader("<?xml version=\"1.0\"?><unlikely_xml_element/>");
+         	    xmlInpSrc = new StreamSource(strReader);
     		}
     		else {
     			xmlInpSrc = xmlInpDomSource; 

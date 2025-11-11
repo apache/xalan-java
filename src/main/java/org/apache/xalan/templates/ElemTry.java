@@ -17,14 +17,10 @@
  */
 package org.apache.xalan.templates;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -351,19 +347,17 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 
 			ElemCatch elemCatch = getXslCatchElemToHandleException(transformer, xctxt, errCodeLocalStr, this);						
 
-			if (elemCatch != null) {				
-				Source trfSource = transformer.getSource();
-				String xslTrfSystemId = trfSource.getSystemId();
-				String xslTrfModuleStr = null;
-				if (xslTrfSystemId != null) {
-					try {					
-						URI xslStylesheetUri = new URI(xslTrfSystemId);
-						xslTrfModuleStr = xslStylesheetUri.toString(); 
+			if (elemCatch != null) {												
+				String xslTrfModuleStr = transformer.getUriStrOfXslStylesheet();
+				if (xslTrfModuleStr != null) {				   
+					int idx = xslTrfModuleStr.lastIndexOf('/');
+					if (idx > -1) {
+					   int strLength = xslTrfModuleStr.length();
+					   xslTrfModuleStr = "/" + xslTrfModuleStr.substring(idx + 1, strLength);
 					}
-					catch (URISyntaxException ex2) {
-						File file = new File(xslTrfSystemId);
-						xslTrfModuleStr = (file.toURI()).toString();
-					}
+				}
+				else {
+					xslTrfModuleStr = "";
 				}
 				
 				String errMesg2 = null;				

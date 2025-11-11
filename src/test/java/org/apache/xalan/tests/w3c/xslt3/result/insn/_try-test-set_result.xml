@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:46Z" fail="8" name="try" pass="26" skipped="8" statusUnknown="0" totalRun="34">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-11T16:48:38Z" fail="7" name="try" pass="27" skipped="8" statusUnknown="0" totalRun="34">
    <testResult status="pass" testName="try-001"/>
    <testResult status="pass" testName="try-002"/>
    <testResult status="pass" testName="try-003"/>
@@ -11,24 +11,16 @@
    <testResult status="pass" testName="try-010"/>
    <testResult status="pass" testName="try-011"/>
    <testResult status="pass" testName="try-012"/>
-   <testResult status="skipped" testName="try-013" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="try-013" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="try-014"/>
-   <testResult status="skipped" testName="try-015" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="try-015" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="try-016"/>
-   <testResult status="skipped" testName="try-017" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="try-017" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="try-018"/>
    <testResult status="pass" testName="try-019"/>
    <testResult status="pass" testName="try-020"/>
-   <testResult status="fail" testName="try-021">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="try-022">
-      <outResult>
-         <errTrace>XPTY0004 : An exception occured while evaluating an XSL 'result-document' instruction. Following run-time error occured : d:\xslt30-test-master\tests\insn\try (Access is denied).</errTrace>
-         <errTrace>XPST0081 : An XML namespace binding for prefix '' is not available.</errTrace>
-         <errTrace>XPST0081 : An XML namespace binding for prefix '' is not available.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="try-021"/>
+   <testResult status="fail" testName="try-022"/>
    <testResult status="fail" testName="try-023">
       <outResult/>
    </testResult>
@@ -39,8 +31,8 @@
          <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="skipped" testName="try-025" xsltVersion="XSLT 2.0 only"/>
-   <testResult status="skipped" testName="try-026" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="try-025" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="try-026" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="try-027"/>
    <testResult status="fail" testName="try-028">
       <outResult>
