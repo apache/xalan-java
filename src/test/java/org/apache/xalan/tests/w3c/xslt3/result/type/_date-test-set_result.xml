@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:55Z" fail="27" name="date" pass="57" skipped="0" statusUnknown="1" totalRun="85">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:41:01Z" fail="73" name="date" pass="61" skipped="4" statusUnknown="0" totalRun="134">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -60,16 +60,20 @@
    <testResult status="fail" testName="date-054"/>
    <testResult status="fail" testName="date-055"/>
    <testResult status="fail" testName="date-056"/>
-   <testResult status="fail" testName="date-057"/>
+   <testResult status="pass" testName="date-057"/>
    <testResult status="fail" testName="date-058"/>
-   <testResult status="fail" testName="date-059"/>
+   <testResult status="pass" testName="date-059"/>
    <testResult status="fail" testName="date-060"/>
    <testResult status="fail" testName="date-061"/>
-   <testResult status="fail" testName="date-062"/>
+   <testResult status="pass" testName="date-062"/>
    <testResult status="fail" testName="date-063"/>
    <testResult status="fail" testName="date-063a"/>
    <testResult status="fail" testName="date-064">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-time()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="date-065"/>
    <testResult status="fail" testName="date-066"/>
@@ -89,5 +93,133 @@
    <testResult status="fail" testName="date-077"/>
    <testResult status="fail" testName="date-078"/>
    <testResult status="fail" testName="date-079"/>
-   <testResult testName="date-080"/>
+   <testResult reason="Xalan configured" status="skipped" testName="date-080"/>
+   <testResult reason="Xalan configured" status="skipped" testName="date-081"/>
+   <testResult reason="Xalan configured" status="skipped" testName="date-082"/>
+   <testResult reason="Xalan configured" status="skipped" testName="date-083"/>
+   <testResult status="fail" testName="date-084"/>
+   <testResult status="fail" testName="date-085"/>
+   <testResult status="fail" testName="date-086"/>
+   <testResult status="fail" testName="date-087"/>
+   <testResult status="fail" testName="date-088"/>
+   <testResult status="fail" testName="date-089"/>
+   <testResult status="fail" testName="date-090">
+      <outResult>
+         <errTrace>Expected ), but found: ,</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="date-091"/>
+   <testResult status="fail" testName="date-092">
+      <outResult>
+         <errTrace>org.apache.xpath.operations.Variable cannot be cast to org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="date-093"/>
+   <testResult status="fail" testName="date-094a">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094c">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094d">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094e">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094f">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094g">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094h">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094i">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094j">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094k">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094l">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-094m"/>
+   <testResult status="fail" testName="date-094n"/>
+   <testResult status="fail" testName="date-094o"/>
+   <testResult status="fail" testName="date-094p"/>
+   <testResult status="fail" testName="date-094q">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095a">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095c">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095d">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095e">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095f">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095g">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095h">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095i">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095j">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095k">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095l">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095m"/>
+   <testResult status="fail" testName="date-095n"/>
+   <testResult status="fail" testName="date-095o"/>
+   <testResult status="fail" testName="date-095p"/>
+   <testResult status="fail" testName="date-095q">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095r">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095s">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095t">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095u">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095v">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="date-095w">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
 </testrun>

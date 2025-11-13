@@ -35,7 +35,13 @@ public class XslMatchAttrTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "attr/match/_match-test-set.xml";
     	m_resultSubFolderName = "attr";    	
-    	m_testResultFileName = "_match-test-set_result.xml";    	   
+    	
+    	m_testResultFileName = "_match-test-set_result.xml";
+    	
+    	// Xalan-J has bug with following, W3C XSLT 3.0 test case.
+    	// Skipping this XSL test cases for now.
+    	
+    	m_skipped_tests_list.add("match-133");
     }
 
     @AfterClass

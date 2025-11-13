@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:54Z" fail="13" name="call-template" pass="27" skipped="2" statusUnknown="0" totalRun="40">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:56Z" fail="13" name="call-template" pass="27" skipped="2" statusUnknown="0" totalRun="40">
    <testResult status="fail" testName="call-template-0001">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
    </testResult>
@@ -17,16 +17,22 @@
    <testResult status="pass" testName="call-template-0107"/>
    <testResult status="pass" testName="call-template-0108"/>
    <testResult status="fail" testName="call-template-0109">
-      <outResult/>
+      <outResult>
+         <errTrace>Illegal value:  Q{}temp  used for QNAME attribute: name</errTrace>
+         <errTrace>Illegal value:  Q{http://another/}temp  used for QNAME attribute: name</errTrace>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: xsl:template requires either a name or a match attribute.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="call-template-0110">
-      <outResult/>
+      <outResult>
+         <errTrace>java.lang.RuntimeException: Prefix must resolve to a namespace: *</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="call-template-0111">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;x x x x x&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="call-template-0201"/>
-   <testResult status="skipped" testName="call-template-0401" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="call-template-0401" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="fail" testName="call-template-0401a">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
   top-level-a&#13;
@@ -38,14 +44,17 @@
    <testResult status="pass" testName="call-template-0701"/>
    <testResult status="fail" testName="call-template-0702"/>
    <testResult status="fail" testName="call-template-0703">
-      <outResult/>
+      <outResult>
+         <errTrace>XTSE0740 : An XSL param's name attribute doesn't have a URI reference</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="call-template-0801"/>
    <testResult status="pass" testName="call-template-0802"/>
    <testResult status="fail" testName="call-template-0901"/>
    <testResult status="pass" testName="call-template-1001"/>
    <testResult status="fail" testName="call-template-1002"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="call-template-1003"/>
+   <testResult reason="Xalan configured" status="skipped" testName="call-template-1003"/>
    <testResult status="pass" testName="call-template-1101"/>
    <testResult status="pass" testName="call-template-1102"/>
    <testResult status="pass" testName="call-template-1201"/>

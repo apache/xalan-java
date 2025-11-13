@@ -34,8 +34,9 @@ public class XslModeTests extends W3CXslTransformTestsUtil {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "attr/mode/_mode-test-set.xml";
-    	m_resultSubFolderName = "attr";    	
-    	m_testResultFileName = "_mode-test-set_result.xml";    	   
+    	m_resultSubFolderName = "attr";
+    	
+    	m_testResultFileName = "_mode-test-set_result.xml"; 
     }
 
     @AfterClass

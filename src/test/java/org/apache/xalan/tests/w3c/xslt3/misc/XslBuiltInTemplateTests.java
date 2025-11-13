@@ -35,6 +35,7 @@ public class XslBuiltInTemplateTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "misc/built-in-templates/_built-in-templates-test-set.xml";
     	m_resultSubFolderName = "misc";
+    	
     	m_testResultFileName = "_built-in-templates-test-set_result.xml";
     }
 

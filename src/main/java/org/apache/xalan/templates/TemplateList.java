@@ -66,8 +66,9 @@ public class TemplateList implements java.io.Serializable
    *
    * @param template				This can be for an xsl:template definition or
    *                                xsl:function definition.
+   * @throws TransformerException 
    */
-  public void setTemplate(ElemTemplate template)
+  public void setTemplate(ElemTemplate template) throws TransformerException
   {    
 	  
     if (!(template instanceof ElemFunction)) {    	
@@ -146,9 +147,9 @@ public class TemplateList implements java.io.Serializable
     		boolean isOverrideExtDecl = newFunc.isOverrideExtensionFunctionAttrDeclared();
     		if (isOverrideDecl && isOverrideExtDecl && (newFunc.getOverride() != newFunc.getOverrideExtensionFunction())) {
     			  QName funcName = newFunc.getName();
-    	    	  template.error("XTSE0020 : An xsl:function instruction " + funcName.toString() + " has both "
+    			  throw new TransformerException("XTSE0020 : An XSL function '" + funcName.toString() + "' has both "
 															                            + "the attributes 'override' and 'override-extension-function', "
-															                            + "but they don't have the same value.");
+															                            + "but they don't have the same value.", newFunc);
     	    }
     		
     		if (!isOverrideDecl) {
@@ -159,6 +160,12 @@ public class TemplateList implements java.io.Serializable
     		if (!isOverrideExtDecl) {
     			// An attribute 'override-extension-function' is not declared. We set its value to default "yes".
     			newFunc.setOverrideExtensionFunction(true);
+    		}
+    		
+    		QName funcQName = newFunc.getName();
+    		if ((Constants.XSL_ERROR_NAMESACE).equals(funcQName.getNamespace())) {
+    		   throw new TransformerException("XTSE0740 : An XSL function declaration that has local name '" + funcQName.getLocalName() 
+    		                                                                                            + "', doesn't have function name's namespace.", newFunc);
     		}
     		
     		XslFunctionDefinitionKey funcDefnKey = new XslFunctionDefinitionKey(newFunc.getName(), funcArity, newFunc.getOverride());

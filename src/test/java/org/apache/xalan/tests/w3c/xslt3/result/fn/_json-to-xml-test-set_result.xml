@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:59Z" fail="7" name="json-to-xml" pass="25" skipped="0" statusUnknown="1" totalRun="33">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:41:23Z" fail="7" name="json-to-xml" pass="18" skipped="35" statusUnknown="0" totalRun="25">
    <testResult status="pass" testName="json-to-xml-001"/>
    <testResult status="pass" testName="json-to-xml-002"/>
    <testResult status="pass" testName="json-to-xml-003"/>
@@ -36,17 +36,44 @@
    <testResult status="pass" testName="json-to-xml-duplicates-003"/>
    <testResult status="pass" testName="json-to-xml-duplicates-004"/>
    <testResult status="pass" testName="json-to-xml-duplicates-005"/>
-   <testResult status="pass" testName="json-to-xml-typed-001"/>
-   <testResult status="pass" testName="json-to-xml-typed-002"/>
-   <testResult status="pass" testName="json-to-xml-typed-003"/>
-   <testResult status="pass" testName="json-to-xml-typed-004"/>
-   <testResult status="pass" testName="json-to-xml-typed-005"/>
-   <testResult status="pass" testName="json-to-xml-typed-006"/>
-   <testResult status="pass" testName="json-to-xml-typed-007"/>
+   <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-001"/>
+   <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-002"/>
+   <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-003"/>
+   <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-004"/>
+   <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-005"/>
+   <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-006"/>
+   <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-007"/>
    <testResult status="fail" testName="json-to-xml-typed-010">
       <outResult>
          <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are not compatible.</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="json-to-xml-error-001"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-001"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-002"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-003"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-004"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-005"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-006"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-007"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-008"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-009"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-010"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-011"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-012"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-013"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-014"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-015"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-016"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-017"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-018"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-019"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-020"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-021"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-022"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-023"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-024"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-025"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-026"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-027"/>
+   <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-028"/>
 </testrun>

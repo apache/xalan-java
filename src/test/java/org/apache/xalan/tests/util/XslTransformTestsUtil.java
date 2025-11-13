@@ -547,7 +547,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      * @param testCaseNode
      * @return						Boolean value true or false						
      */
-    protected boolean isSchemaAwareFeatureTestCase(Node testCaseNode) {
+    protected boolean isXslSchemaAwareFeatureTestCase(Node testCaseNode) {
     	
         boolean result = false;
         
@@ -585,7 +585,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      * @param testCaseNode
      * @return						Boolean value true or false						
      */
-    protected boolean isStreamingFeatureTestCase(Node testCaseNode) {
+    protected boolean isXslStreamingFeatureTestCase(Node testCaseNode) {
     	
         boolean result = false;
         
@@ -606,6 +606,70 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      					
      					break; 
      				 }
+     			 }
+     		 }
+     	  }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * When running W3C XSLT 3.0 test suite, check whether the test case 
+     * is written for xsl:package feature.
+     *  
+     * @param testCaseNode
+     * @return						Boolean value true or false						
+     */
+    protected boolean isXslt3PackageFeatureTestCase(Node testCaseNode) {
+    	
+        boolean result = false;
+        
+        NodeList nodeList = testCaseNode.getChildNodes();
+        int nodeListLength = nodeList.getLength();
+        for (int idx = 0; idx < nodeListLength; idx++) {
+     	  Node node = nodeList.item(idx);
+     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
+     		 Element elemNode = (Element)node;
+     		 String elemName = elemNode.getLocalName();
+     		 if ("test".equals(elemName)) {
+     			 NodeList nodeList1 = elemNode.getElementsByTagName("package");
+     			 if (nodeList1.getLength() > 0) {
+     				 result = true;
+
+     				 break; 
+     			 }
+     		 }
+     	  }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * When running W3C XSLT 3.0 test suite, check whether the test case 
+     * is written for XSLT 'initial mode' feature.
+     *  
+     * @param testCaseNode
+     * @return						Boolean value true or false						
+     */
+    protected boolean isXslt3InitialModeTestCase(Node testCaseNode) {
+    	
+        boolean result = false;
+        
+        NodeList nodeList = testCaseNode.getChildNodes();
+        int nodeListLength = nodeList.getLength();
+        for (int idx = 0; idx < nodeListLength; idx++) {
+     	  Node node = nodeList.item(idx);
+     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
+     		 Element elemNode = (Element)node;
+     		 String elemName = elemNode.getLocalName();
+     		 if ("test".equals(elemName)) {
+     			 NodeList nodeList1 = elemNode.getElementsByTagName("initial-mode");
+     			 if (nodeList1.getLength() > 0) {
+     				 result = true;
+
+     				 break; 
      			 }
      		 }
      	  }

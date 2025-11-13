@@ -716,7 +716,7 @@ public class ElemTemplate extends ElemTemplateElement
    * control how this element is composed.
    * @param root The root stylesheet for this transformation.
    */
-  public void recompose(StylesheetRoot root)
+  public void recompose(StylesheetRoot root) throws TransformerException
   {
 	  root.recomposeTemplates(this);
   }

@@ -1,13 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:58Z" fail="29" name="key" pass="54" skipped="0" statusUnknown="0" totalRun="83">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:41:14Z" fail="37" name="key" pass="59" skipped="3" statusUnknown="0" totalRun="96">
    <testResult status="pass" testName="key-001"/>
    <testResult status="fail" testName="key-002">
-      <outResult/>
+      <outResult>
+         <errTrace>org.apache.xalan.templates.FuncKey only allows 2 arguments</errTrace>
+         <errTrace>A location path was expected, but the following token was encountered:  =</errTrace>
+         <errTrace>A location path was expected, but the following token was encountered:  ]</errTrace>
+         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="key-003"/>
    <testResult status="fail" testName="key-004"/>
    <testResult status="pass" testName="key-005"/>
    <testResult status="fail" testName="key-006">
-      <outResult/>
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression generate-id() = generate-id(./text()[1]) has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="key-007"/>
    <testResult status="pass" testName="key-008"/>
@@ -28,10 +36,16 @@
    <testResult status="pass" testName="key-023"/>
    <testResult status="pass" testName="key-024"/>
    <testResult status="fail" testName="key-025">
-      <outResult/>
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression contains($accumulated,concat('+',generate-id(./text()),'+')) has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="key-026">
-      <outResult/>
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression contains($accumulated,concat('+',generate-id(./text()),'+')) has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="key-027"/>
    <testResult status="pass" testName="key-028"/>
@@ -49,11 +63,19 @@
    <testResult status="pass" testName="key-040"/>
    <testResult status="pass" testName="key-041"/>
    <testResult status="fail" testName="key-042">
-      <outResult/>
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression contains($accumulated,concat('+',generate-id(./text()),'+')) has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="key-043"/>
    <testResult status="fail" testName="key-044">
-      <outResult/>
+      <outResult>
+         <errTrace>A location step was expected following the '/' or '//' token.</errTrace>
+         <errTrace>A relative location path was expected following the '/' or '//' token.</errTrace>
+         <errTrace>XPST0003 : An XPath expression generate-id((document('key151a.xml')//text())[1]) != generate-id((document(a)//text())[1]) has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="key-045"/>
    <testResult status="pass" testName="key-046"/>
@@ -88,7 +110,10 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="fail" testName="key-070"/>
    <testResult status="fail" testName="key-071"/>
    <testResult status="fail" testName="key-072">
-      <outResult/>
+      <outResult>
+         <errTrace>Expected ,, but found: key</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="key-073">
       <outResult>
@@ -125,4 +150,36 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult status="pass" testName="key-083"/>
    <testResult status="pass" testName="key-084"/>
+   <testResult reason="Xalan configured" status="skipped" testName="key-085a"/>
+   <testResult reason="Xalan configured" status="skipped" testName="key-085b"/>
+   <testResult status="pass" testName="key-086"/>
+   <testResult status="fail" testName="key-087"/>
+   <testResult reason="Xalan configured" status="skipped" testName="key-088"/>
+   <testResult status="fail" testName="key-089"/>
+   <testResult status="fail" testName="key-090"/>
+   <testResult status="pass" testName="key-091"/>
+   <testResult status="pass" testName="key-092"/>
+   <testResult status="fail" testName="key-093">
+      <outResult>
+         <errTrace>compositeattribute is not allowed on the xsl:key element!</errTrace>
+         <errTrace>Expected ), but found: ,</errTrace>
+         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
+org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="key-094">
+      <outResult>
+         <errTrace>compositeattribute is not allowed on the xsl:key element!</errTrace>
+         <errTrace>compositeattribute is not allowed on the xsl:key element!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="key-095">
+      <outResult>
+         <errTrace>compositeattribute is not allowed on the xsl:key element!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="key-096"/>
+   <testResult status="pass" testName="key-097"/>
+   <testResult status="fail" testName="key-098"/>
+   <testResult status="fail" testName="key-099"/>
 </testrun>

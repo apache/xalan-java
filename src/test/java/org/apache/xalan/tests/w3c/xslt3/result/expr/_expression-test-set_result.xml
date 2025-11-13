@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:51Z" fail="0" name="expression" pass="9" skipped="0" statusUnknown="1" totalRun="10">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:47Z" fail="11" name="expression" pass="37" skipped="2" statusUnknown="1" totalRun="49">
    <testResult status="pass" testName="expression-0101"/>
    <testResult status="pass" testName="expression-0301"/>
    <testResult status="pass" testName="expression-0302"/>
@@ -8,5 +8,60 @@
    <testResult status="pass" testName="expression-0403"/>
    <testResult status="pass" testName="expression-0404"/>
    <testResult status="pass" testName="expression-0501"/>
-   <testResult testName="expression-0601"/>
+   <testResult reason="Xalan configured" status="skipped" testName="expression-0601"/>
+   <testResult status="pass" testName="expression-0701"/>
+   <testResult status="pass" testName="expression-0702"/>
+   <testResult status="pass" testName="expression-0801"/>
+   <testResult status="fail" testName="expression-0802"/>
+   <testResult status="pass" testName="expression-0803"/>
+   <testResult status="fail" testName="expression-0804"/>
+   <testResult status="pass" testName="expression-0901"/>
+   <testResult reason="Xalan configured" status="skipped" testName="expression-0902"/>
+   <testResult status="pass" testName="expression-0903"/>
+   <testResult status="pass" testName="expression-0904"/>
+   <testResult status="pass" testName="expression-0905"/>
+   <testResult status="pass" testName="expression-0906"/>
+   <testResult status="fail" testName="expression-0907"/>
+   <testResult status="pass" testName="expression-0908"/>
+   <testResult status="fail" testName="expression-0909"/>
+   <testResult status="pass" testName="expression-0910"/>
+   <testResult status="pass" testName="expression-0911"/>
+   <testResult status="pass" testName="expression-0912"/>
+   <testResult status="pass" testName="expression-0913"/>
+   <testResult status="fail" testName="expression-0914"/>
+   <testResult status="pass" testName="expression-0915"/>
+   <testResult status="pass" testName="expression-0916"/>
+   <testResult status="pass" testName="expression-0917"/>
+   <testResult status="pass" testName="expression-0918"/>
+   <testResult status="pass" testName="expression-0919"/>
+   <testResult status="pass" testName="expression-0920"/>
+   <testResult status="pass" testName="expression-0921"/>
+   <testResult status="pass" testName="expression-0922"/>
+   <testResult status="pass" testName="expression-0923"/>
+   <testResult status="fail" testName="expression-0924"/>
+   <testResult status="fail" testName="expression-0925"/>
+   <testResult status="fail" testName="expression-0926"/>
+   <testResult status="pass" testName="expression-0927"/>
+   <testResult status="pass" testName="expression-0928"/>
+   <testResult status="pass" testName="expression-0929"/>
+   <testResult status="pass" testName="expression-0930"/>
+   <testResult status="fail" testName="expression-0931">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}nilled()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="expression-0932">
+      <outResult>
+         <errTrace>A location step was expected following the '/' or '//' token.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="expression-0933">
+      <outResult>
+         <errTrace>A location step was expected following the '/' or '//' token.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="expression-1001"/>
+   <testResult testName="expression-1101"/>
 </testrun>

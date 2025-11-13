@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:42Z" fail="3" name="select" pass="25" skipped="0" statusUnknown="1" totalRun="29">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:12Z" fail="31" name="select" pass="103" skipped="23" statusUnknown="1" totalRun="135">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -19,17 +19,178 @@
    <testResult status="pass" testName="select-1202"/>
    <testResult status="pass" testName="select-1301"/>
    <testResult status="fail" testName="select-1302">
-      <outResult/>
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression comment () has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="select-1401"/>
    <testResult status="pass" testName="select-1402"/>
    <testResult status="pass" testName="select-1501"/>
    <testResult status="fail" testName="select-1502">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="select-1503"/>
    <testResult status="pass" testName="select-1504"/>
    <testResult status="pass" testName="select-1601"/>
    <testResult status="pass" testName="select-1602"/>
-   <testResult testName="select-1701"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-1701"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-1702"/>
+   <testResult status="fail" testName="select-1703"/>
+   <testResult status="fail" testName="select-1704"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-1705"/>
+   <testResult status="fail" testName="select-1801"/>
+   <testResult status="pass" testName="select-1802"/>
+   <testResult status="fail" testName="select-1803">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: XPST0051 : A sequence type occurence indicator ']', is not recognized.
+javax.xml.transform.TransformerException: XPST0051 : A sequence type occurence indicator ']', is not recognized.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="select-1804"/>
+   <testResult status="pass" testName="select-1901"/>
+   <testResult status="pass" testName="select-2001"/>
+   <testResult status="pass" testName="select-2002"/>
+   <testResult status="fail" testName="select-2003"/>
+   <testResult status="fail" testName="select-2004">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2005"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2006"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2007"/>
+   <testResult status="fail" testName="select-2008"/>
+   <testResult status="fail" testName="select-2009"/>
+   <testResult status="fail" testName="select-2010"/>
+   <testResult status="pass" testName="select-2011"/>
+   <testResult status="pass" testName="select-2012"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2013"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2014"/>
+   <testResult status="fail" testName="select-2015">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="select-2016"/>
+   <testResult status="pass" testName="select-2017"/>
+   <testResult status="fail" testName="select-2018"/>
+   <testResult status="pass" testName="select-2019"/>
+   <testResult status="pass" testName="select-2020"/>
+   <testResult status="fail" testName="select-2021"/>
+   <testResult testName="select-2022"/>
+   <testResult status="fail" testName="select-2023"/>
+   <testResult status="fail" testName="select-2024"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2025"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2026"/>
+   <testResult status="fail" testName="select-2027"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2028"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2029"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2030"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2031"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2032"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2033"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2034"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2035"/>
+   <testResult status="fail" testName="select-2036">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="select-2037"/>
+   <testResult status="fail" testName="select-2038"/>
+   <testResult status="fail" testName="select-2039"/>
+   <testResult status="fail" testName="select-2101"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2102"/>
+   <testResult status="pass" testName="select-2103"/>
+   <testResult status="pass" testName="select-2104"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2201"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2202"/>
+   <testResult reason="Xalan configured" status="skipped" testName="select-2203"/>
+   <testResult status="fail" testName="select-2301"/>
+   <testResult status="fail" testName="select-2302"/>
+   <testResult status="fail" testName="select-2303"/>
+   <testResult status="pass" testName="select-2304"/>
+   <testResult status="fail" testName="select-2305"/>
+   <testResult status="pass" testName="select-2401"/>
+   <testResult status="fail" testName="select-2402"/>
+   <testResult status="pass" testName="select-2501"/>
+   <testResult status="pass" testName="select-2502"/>
+   <testResult status="pass" testName="select-2503"/>
+   <testResult status="pass" testName="select-2504"/>
+   <testResult status="pass" testName="select-2505"/>
+   <testResult status="pass" testName="select-2506"/>
+   <testResult status="pass" testName="select-2601"/>
+   <testResult status="pass" testName="select-2602"/>
+   <testResult status="pass" testName="select-2603"/>
+   <testResult status="pass" testName="select-2701"/>
+   <testResult status="pass" testName="select-2801"/>
+   <testResult status="pass" testName="select-2802"/>
+   <testResult status="pass" testName="select-2901"/>
+   <testResult status="pass" testName="select-3001"/>
+   <testResult status="pass" testName="select-3101"/>
+   <testResult status="pass" testName="select-3201"/>
+   <testResult status="pass" testName="select-3301"/>
+   <testResult status="pass" testName="select-3401"/>
+   <testResult status="pass" testName="select-3501"/>
+   <testResult status="pass" testName="select-3502"/>
+   <testResult status="pass" testName="select-3601"/>
+   <testResult status="pass" testName="select-3602"/>
+   <testResult status="pass" testName="select-3603"/>
+   <testResult status="pass" testName="select-3701"/>
+   <testResult status="pass" testName="select-3801"/>
+   <testResult status="pass" testName="select-3901"/>
+   <testResult status="pass" testName="select-3902"/>
+   <testResult status="pass" testName="select-4001"/>
+   <testResult status="pass" testName="select-4101"/>
+   <testResult status="pass" testName="select-4102"/>
+   <testResult status="pass" testName="select-4201"/>
+   <testResult status="pass" testName="select-4301"/>
+   <testResult status="pass" testName="select-4302"/>
+   <testResult status="pass" testName="select-4401"/>
+   <testResult status="pass" testName="select-4501"/>
+   <testResult status="pass" testName="select-4601"/>
+   <testResult status="pass" testName="select-4701"/>
+   <testResult status="pass" testName="select-4801"/>
+   <testResult status="pass" testName="select-4901"/>
+   <testResult status="pass" testName="select-5001"/>
+   <testResult status="pass" testName="select-5101"/>
+   <testResult status="pass" testName="select-5201"/>
+   <testResult status="pass" testName="select-5301"/>
+   <testResult status="pass" testName="select-5401"/>
+   <testResult status="pass" testName="select-5501"/>
+   <testResult status="pass" testName="select-5601"/>
+   <testResult status="pass" testName="select-5701"/>
+   <testResult status="pass" testName="select-5801"/>
+   <testResult status="pass" testName="select-5901"/>
+   <testResult status="pass" testName="select-6001"/>
+   <testResult status="fail" testName="select-6101"/>
+   <testResult status="fail" testName="select-6201">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="select-6301"/>
+   <testResult status="pass" testName="select-6401"/>
+   <testResult status="pass" testName="select-6501"/>
+   <testResult status="pass" testName="select-6601"/>
+   <testResult status="pass" testName="select-6701"/>
+   <testResult status="pass" testName="select-6801"/>
+   <testResult status="pass" testName="select-6901"/>
+   <testResult status="pass" testName="select-7001"/>
+   <testResult status="pass" testName="select-7101"/>
+   <testResult status="pass" testName="select-7201"/>
+   <testResult status="fail" testName="select-7301"/>
+   <testResult status="pass" testName="select-7401"/>
+   <testResult status="pass" testName="select-7501"/>
+   <testResult status="skipped" testName="select-7502a" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="pass" testName="select-7502b"/>
 </testrun>

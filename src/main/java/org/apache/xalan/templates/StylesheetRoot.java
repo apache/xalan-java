@@ -774,7 +774,7 @@ public class StylesheetRoot extends StylesheetComposed
    *
    * @param template An ElemTemplate object to add to the template list.
    */
-  void recomposeTemplates(ElemTemplate template)
+  void recomposeTemplates(ElemTemplate template) throws TransformerException
   {
     m_templateList.setTemplate(template);
   }
@@ -975,7 +975,7 @@ public class StylesheetRoot extends StylesheetComposed
    *
    * @param wsi A WhiteSpaceInfo element to add to the list of WhiteSpaceInfo elements.
    */
-  void recomposeWhiteSpaceInfo(WhiteSpaceInfo wsi)
+  void recomposeWhiteSpaceInfo(WhiteSpaceInfo wsi) throws TransformerException
   {
     if (null == m_whiteSpaceInfoList)
       m_whiteSpaceInfoList = new TemplateList();

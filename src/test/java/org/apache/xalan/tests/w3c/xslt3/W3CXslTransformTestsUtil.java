@@ -168,7 +168,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   Node node = nodeList.item(idx);
     		   String testCaseName = ((Element)node).getAttribute(NAME_ATTR);     		   
     		   if (isXslt1And2OnlyTestCase(node)) {
-    			  // We skip running XSLT 2.0 only test cases
+    			  // We skip running XSLT 2.0/1.0 only test cases
     			  Element elemTestResult = testResultDoc.createElement("testResult");
     			  elemTestResult.setAttribute("testName", testCaseName);
     			  elemTestResult.setAttribute("status", "skipped");
@@ -177,7 +177,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			  
     			  continue; 
     		   }
-    		   else if (isSchemaAwareFeatureTestCase(node)) {
+    		   else if (isXslSchemaAwareFeatureTestCase(node)) {
     			   // We skip running XSLT 3.0 schema aware feature test cases
     			   Element elemTestResult = testResultDoc.createElement("testResult");
     			   elemTestResult.setAttribute("testName", testCaseName);
@@ -187,7 +187,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
     			   continue; 
       		   }
-    		   else if (isStreamingFeatureTestCase(node)) {
+    		   else if (isXslStreamingFeatureTestCase(node)) {
      			  // We skip running XSLT 3.0 streaming feature test cases
        			  Element elemTestResult = testResultDoc.createElement("testResult");
        			  elemTestResult.setAttribute("testName", testCaseName);
@@ -197,6 +197,26 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
        			  
        			  continue; 
      		   }
+    		   else if (isXslt3PackageFeatureTestCase(node)) {
+    			   // We skip running XSLT 3.0 package feature test cases
+    			   Element elemTestResult = testResultDoc.createElement("testResult");
+    			   elemTestResult.setAttribute("testName", testCaseName);
+    			   elemTestResult.setAttribute("status", "skipped");
+    			   elemTestResult.setAttribute("feature", "xsl:package test case");
+    			   elemTestRun.appendChild(elemTestResult);
+
+    			   continue; 
+      		   }
+    		   else if (isXslt3InitialModeTestCase(node)) {
+    			   // We skip running XSLT 3.0 'initial mode' feature test cases
+    			   Element elemTestResult = testResultDoc.createElement("testResult");
+    			   elemTestResult.setAttribute("testName", testCaseName);
+    			   elemTestResult.setAttribute("status", "skipped");
+    			   elemTestResult.setAttribute("feature", "XSLT 3.0 'initial mode' test case");
+    			   elemTestRun.appendChild(elemTestResult);
+
+    			   continue; 
+      		   }
     		   else if (m_skipped_tests_list.contains(testCaseName)) {
     			   /**
     			    * We skip running XSLT 3.0 test cases available within this
@@ -206,7 +226,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   Element elemTestResult = testResultDoc.createElement("testResult");
     			   elemTestResult.setAttribute("testName", testCaseName);
     			   elemTestResult.setAttribute("status", "skipped");
-    			   elemTestResult.setAttribute("reason", "Xalan configured, and allowed by W3C XSLT 3.0 test suite");
+    			   elemTestResult.setAttribute("reason", "Xalan configured");
     			   elemTestRun.appendChild(elemTestResult);
 
     			   continue;  
@@ -383,39 +403,59 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   Node node = nodeList.item(idx);
     		   String testCaseName = ((Element)node).getAttribute(NAME_ATTR);     		   
     		   if (isXslt1And2OnlyTestCase(node)) {
-    			  // We skip running XSLT 2.0 only test cases
-    			  Element elemTestResult = testResultDoc.createElement("testResult");
-    			  elemTestResult.setAttribute("testName", testCaseName);
-    			  elemTestResult.setAttribute("status", "skipped");
-    			  elemTestResult.setAttribute("xsltVersion", "xslt 2.0 only");
-    			  elemTestRun.appendChild(elemTestResult);
-    			  
-    			  continue; 
-    		   }
-    		   else if (isStreamingFeatureTestCase(node)) {
-     			  // We skip running XSLT 3.0 streaming feature test cases
-       			  Element elemTestResult = testResultDoc.createElement("testResult");
-       			  elemTestResult.setAttribute("testName", testCaseName);
-       			  elemTestResult.setAttribute("status", "skipped");
-       			  elemTestResult.setAttribute("feature", "streaming");
-       			  elemTestRun.appendChild(elemTestResult);
-       			  
-       			  continue; 
+     			  // We skip running XSLT 2.0/1.0 only test cases
+     			  Element elemTestResult = testResultDoc.createElement("testResult");
+     			  elemTestResult.setAttribute("testName", testCaseName);
+     			  elemTestResult.setAttribute("status", "skipped");
+     			  elemTestResult.setAttribute("xsltVersion", "XSLT 2.0/1.0 only test case");
+     			  elemTestRun.appendChild(elemTestResult);
+     			  
+     			  continue; 
      		   }
-    		   else if (m_skipped_tests_list.contains(testCaseName)) {
-    			   /**
-    			    * We skip running W3C XSLT 3.0 test cases available within this
-    			    * test suite, that're configured to be skipped within this XSLT test
-    			    * suite driver and approved by XSLT WG and Xalan-J's analysis.
-    			    */
-    			   Element elemTestResult = testResultDoc.createElement("testResult");
-    			   elemTestResult.setAttribute("testName", testCaseName);
-    			   elemTestResult.setAttribute("status", "skipped");
-    			   elemTestResult.setAttribute("reason", "allowed by xslt 3.0 test suite");
-    			   elemTestRun.appendChild(elemTestResult);
+     		   else if (isXslSchemaAwareFeatureTestCase(node)) {
+     			   // We skip running XSLT 3.0 schema aware feature test cases
+     			   Element elemTestResult = testResultDoc.createElement("testResult");
+     			   elemTestResult.setAttribute("testName", testCaseName);
+     			   elemTestResult.setAttribute("status", "skipped");
+     			   elemTestResult.setAttribute("feature", "schema_aware");
+     			   elemTestRun.appendChild(elemTestResult);
 
-    			   continue;  
-    		   }    		   
+     			   continue; 
+       		   }
+     		   else if (isXslStreamingFeatureTestCase(node)) {
+     			   // We skip running XSLT 3.0 streaming feature test cases
+     			   Element elemTestResult = testResultDoc.createElement("testResult");
+     			   elemTestResult.setAttribute("testName", testCaseName);
+     			   elemTestResult.setAttribute("status", "skipped");
+     			   elemTestResult.setAttribute("feature", "streaming");
+     			   elemTestRun.appendChild(elemTestResult);
+
+     			   continue; 
+      		   }
+     		   else if (isXslt3PackageFeatureTestCase(node)) {
+     			   // We skip running XSLT 3.0 package feature test cases
+     			   Element elemTestResult = testResultDoc.createElement("testResult");
+     			   elemTestResult.setAttribute("testName", testCaseName);
+     			   elemTestResult.setAttribute("status", "skipped");
+     			   elemTestResult.setAttribute("feature", "xsl:package test case");
+     			   elemTestRun.appendChild(elemTestResult);
+
+     			   continue; 
+       		   }
+     		   else if (m_skipped_tests_list.contains(testCaseName)) {
+     			   /**
+     			    * We skip running XSLT 3.0 test cases available within this
+     			    * test suite, that're configured to be skipped within this XSLT test
+     			    * suite driver and permitted by respective W3C XSLT 3.0 test case. 
+     			    */
+     			   Element elemTestResult = testResultDoc.createElement("testResult");
+     			   elemTestResult.setAttribute("testName", testCaseName);
+     			   elemTestResult.setAttribute("status", "skipped");
+     			   elemTestResult.setAttribute("reason", "Xalan configured");
+     			   elemTestRun.appendChild(elemTestResult);
+
+     			   continue;  
+     		   }    		   
     		       		   
     		   Object envRef = getTestCaseEnvironment(node);    		   
     		   String xslStylesheetEnvInpStr = null;

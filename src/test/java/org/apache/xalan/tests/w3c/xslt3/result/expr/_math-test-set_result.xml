@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:54Z" fail="25" name="math" pass="123" skipped="1" statusUnknown="1" totalRun="149">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:49Z" fail="25" name="math" pass="128" skipped="8" statusUnknown="0" totalRun="153">
    <testResult status="pass" testName="math-0101"/>
    <testResult status="pass" testName="math-3315"/>
    <testResult status="pass" testName="math-0101"/>
@@ -150,5 +150,16 @@
    <testResult status="pass" testName="math-3314"/>
    <testResult status="pass" testName="math-3315"/>
    <testResult status="pass" testName="math-3316"/>
-   <testResult testName="math-3317"/>
+   <testResult reason="Xalan configured" status="skipped" testName="math-3317"/>
+   <testResult status="pass" testName="math-3318"/>
+   <testResult status="pass" testName="math-3319"/>
+   <testResult status="skipped" testName="math-3320" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="pass" testName="math-3401"/>
+   <testResult status="pass" testName="math-3402"/>
+   <testResult status="pass" testName="math-3501"/>
+   <testResult reason="Xalan configured" status="skipped" testName="math-3601"/>
+   <testResult reason="Xalan configured" status="skipped" testName="math-3701"/>
+   <testResult reason="Xalan configured" status="skipped" testName="math-3702"/>
+   <testResult reason="Xalan configured" status="skipped" testName="math-3801"/>
+   <testResult reason="Xalan configured" status="skipped" testName="math-3901"/>
 </testrun>

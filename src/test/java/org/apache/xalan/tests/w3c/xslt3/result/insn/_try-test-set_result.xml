@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-11T16:48:38Z" fail="7" name="try" pass="27" skipped="8" statusUnknown="0" totalRun="34">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:21Z" fail="7" name="try" pass="27" skipped="8" statusUnknown="0" totalRun="34">
    <testResult status="pass" testName="try-001"/>
    <testResult status="pass" testName="try-002"/>
    <testResult status="pass" testName="try-003"/>
@@ -54,7 +54,7 @@
    <testResult status="pass" testName="try-035"/>
    <testResult status="fail" testName="try-036"/>
    <testResult status="pass" testName="try-037"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="try-038"/>
+   <testResult reason="Xalan configured" status="skipped" testName="try-038"/>
    <testResult status="pass" testName="try-039"/>
    <testResult status="pass" testName="try-040"/>
    <testResult status="pass" testName="try-041"/>

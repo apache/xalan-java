@@ -35,6 +35,7 @@ public class XslIterateTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/iterate/_iterate-test-set.xml";
     	m_resultSubFolderName = "insn";
+    	
     	m_testResultFileName = "_iterate-test-set_result.xml";    	   
     }
 

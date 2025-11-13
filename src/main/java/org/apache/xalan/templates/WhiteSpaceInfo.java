@@ -20,6 +20,8 @@
  */
 package org.apache.xalan.templates;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.XPath;
 
 /**
@@ -79,7 +81,7 @@ public class WhiteSpaceInfo extends ElemTemplate
   /**
    * This function is called to recompose() all of the WhiteSpaceInfo elements.
    */
-  public void recompose(StylesheetRoot root)
+  public void recompose(StylesheetRoot root) throws TransformerException
   {
     root.recomposeWhiteSpaceInfo(this);
   }

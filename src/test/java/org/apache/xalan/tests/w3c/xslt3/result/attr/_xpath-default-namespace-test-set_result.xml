@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:59Z" fail="11" name="xpath-default-namespace" pass="11" skipped="4" statusUnknown="0" totalRun="22">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:41:21Z" fail="11" name="xpath-default-namespace" pass="11" skipped="4" statusUnknown="0" totalRun="22">
    <testResult status="pass" testName="xpath-default-namespace-0101"/>
    <testResult status="pass" testName="xpath-default-namespace-0102"/>
    <testResult status="pass" testName="xpath-default-namespace-0103"/>
@@ -8,10 +8,14 @@
    <testResult status="fail" testName="xpath-default-namespace-0107"/>
    <testResult status="pass" testName="xpath-default-namespace-0108"/>
    <testResult status="fail" testName="xpath-default-namespace-0201">
-      <outResult/>
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="xpath-default-namespace-0202">
-      <outResult/>
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="xpath-default-namespace-0301"/>
    <testResult status="fail" testName="xpath-default-namespace-0401"/>

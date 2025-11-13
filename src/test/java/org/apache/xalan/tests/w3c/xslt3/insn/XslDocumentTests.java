@@ -35,6 +35,7 @@ public class XslDocumentTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/xsl-document/_xsl-document-test-set.xml";
     	m_resultSubFolderName = "insn";
+    	
     	m_testResultFileName = "_xsl-document-test-set_result.xml";    	   
     }
 

@@ -35,7 +35,8 @@ public class XslAvtAttrTests extends W3CXslTransformTestsUtil {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "attr/avt/_avt-test-set.xml";
-    	m_resultSubFolderName = "attr";    	
+    	m_resultSubFolderName = "attr";
+    	
     	m_testResultFileName = "_avt-test-set_result.xml";    	   
     }
 

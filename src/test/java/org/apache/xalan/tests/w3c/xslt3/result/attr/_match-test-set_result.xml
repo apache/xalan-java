@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-07T11:24:11Z" fail="51" name="match" pass="74" skipped="11" statusUnknown="1" totalRun="126">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:06Z" fail="85" name="match" pass="96" skipped="112" statusUnknown="1" totalRun="182">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -37,7 +37,7 @@
    <testResult status="fail" testName="match-036"/>
    <testResult status="pass" testName="match-037"/>
    <testResult status="pass" testName="match-038"/>
-   <testResult status="skipped" testName="match-039" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="match-039" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="match-040">
       <outResult>
          <errTrace>XPST0017 : An XSL stylesheet function call {http://f.com/}special referred within an XPath expression, doesn't have a corresponding XSL function definition within the stylesheet.</errTrace>
@@ -98,7 +98,11 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="match-069">
-      <outResult/>
+      <outResult>
+         <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = namespace</errTrace>
+         <errTrace>unknown match operation!</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="match-070"/>
    <testResult status="fail" testName="match-071"/>
@@ -132,14 +136,14 @@
          <errTrace>Extra illegal tokens: 'key', '(', ''k'', ',', '42', ')', '/', '/', 'a'</errTrace>
       </outResult>
    </testResult>
-   <testResult status="skipped" testName="match-081" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="match-081" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="fail" testName="match-081a">
       <outResult>
          <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
          <errTrace>Extra illegal tokens: 'bar', '|', 'baz', ')'</errTrace>
       </outResult>
    </testResult>
-   <testResult status="skipped" testName="match-082" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="match-082" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="match-082a"/>
    <testResult status="fail" testName="match-082b"/>
    <testResult status="fail" testName="match-082c">
@@ -148,11 +152,11 @@
          <errTrace>Extra illegal tokens: 'doc', '|', 'cod', ')'</errTrace>
       </outResult>
    </testResult>
-   <testResult status="skipped" testName="match-083" xsltVersion="XSLT 2.0 only"/>
-   <testResult status="skipped" testName="match-084" xsltVersion="XSLT 2.0 only"/>
-   <testResult status="skipped" testName="match-085" xsltVersion="XSLT 2.0 only"/>
-   <testResult status="skipped" testName="match-086" xsltVersion="XSLT 2.0 only"/>
-   <testResult status="skipped" testName="match-087" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="match-083" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="match-084" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="match-085" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="match-086" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="match-087" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="match-088"/>
    <testResult status="pass" testName="match-089"/>
    <testResult status="fail" testName="match-090"/>
@@ -164,7 +168,12 @@
    <testResult status="pass" testName="match-096"/>
    <testResult status="pass" testName="match-097"/>
    <testResult status="fail" testName="match-098">
-      <outResult/>
+      <outResult>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+         <errTrace>Unknown nodetype: attribute</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="match-099"/>
    <testResult status="pass" testName="match-100"/>
@@ -185,7 +194,11 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
       <outResult/>
    </testResult>
    <testResult status="fail" testName="match-106">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="match-107">
       <outResult>
@@ -202,25 +215,53 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="pass" testName="match-110"/>
    <testResult status="pass" testName="match-111"/>
    <testResult status="fail" testName="match-112">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="match-113">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="match-114">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="match-115">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="match-116">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="match-117">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="match-118">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="match-119">
       <outResult>
@@ -294,9 +335,258 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="match-130">
-      <outResult/>
+      <outResult>
+         <errTrace>A location path was expected, but the following token was encountered:  +</errTrace>
+         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="match-131"/>
    <testResult status="fail" testName="match-132"/>
-   <testResult testName="match-133"/>
+   <testResult reason="Xalan configured" status="skipped" testName="match-133"/>
+   <testResult status="fail" testName="match-134"/>
+   <testResult status="fail" testName="match-135"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-136"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-137"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-138"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-139"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-140"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-141"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-142"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-143"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-144"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-145"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-146"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-147"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-148"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-149"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-150"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-151"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-152"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-153"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-154"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-155"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-156"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-157"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-158"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-159"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-160"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-161"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-162"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-163"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-164"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-165"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-166"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-167"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-168"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-169"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-170"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-171"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-172"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-173"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-174"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-175"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-176"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-177"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-178"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-179"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-180"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-181"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-182"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-183"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-184"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-185"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-186"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-187"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-188"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-189"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-190"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-191"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-192"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-193"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-194"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-195"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-196"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-197"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-198"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-199"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-200"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-201"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-202"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-203"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-204"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-205"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-206"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-207"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-208"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-209"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-210"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-211"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-212"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-213"/>
+   <testResult status="fail" testName="match-214">
+      <outResult>
+         <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = self</errTrace>
+         <errTrace>unknown match operation!</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-215"/>
+   <testResult status="pass" testName="match-216"/>
+   <testResult status="fail" testName="match-217"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-218"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-219"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-220"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-221"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-222"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-223"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-224"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-225"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-226"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-227"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-228"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-229"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-230"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-231"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-232"/>
+   <testResult status="pass" testName="match-233"/>
+   <testResult status="fail" testName="match-234"/>
+   <testResult status="fail" testName="match-235"/>
+   <testResult status="fail" testName="match-236">
+      <outResult>
+         <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = descendant</errTrace>
+         <errTrace>unknown match operation!</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-237"/>
+   <testResult status="fail" testName="match-238"/>
+   <testResult status="fail" testName="match-239">
+      <outResult>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: '.', '[', '.', 'instance', 'of', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']', ')'</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-240a"/>
+   <testResult status="fail" testName="match-240b"/>
+   <testResult status="fail" testName="match-240c"/>
+   <testResult status="pass" testName="match-241"/>
+   <testResult status="pass" testName="match-242"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-243"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-244"/>
+   <testResult status="pass" testName="match-245"/>
+   <testResult status="fail" testName="match-246a">
+      <outResult>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: ')', '/', '(', ')'</errTrace>
+         <errTrace>Unknown nodetype: letters</errTrace>
+         <errTrace>Extra illegal tokens: 'letters', '(', ')'</errTrace>
+         <errTrace>Unknown nodetype: letters</errTrace>
+         <errTrace>Extra illegal tokens: 'letters', '(', ')', '(', ')'</errTrace>
+         <errTrace>Unknown nodetype: letters</errTrace>
+         <errTrace>Extra illegal tokens: 'letters', '(', ')', '[', 'true', '(', ')', ']', '(', ')'</errTrace>
+         <errTrace>Unknown nodetype: letters</errTrace>
+         <errTrace>Extra illegal tokens: 'letters', '(', ')', '[', 'true', '(', ')', '(', ')', ']'</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: ')', 'letters'</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: ')', 'letters'</errTrace>
+         <errTrace>Unknown nodetype: (</errTrace>
+         <errTrace>Extra illegal tokens: '(', '(', ')', ')', 'letters'</errTrace>
+         <errTrace>Expected ), but found: ::</errTrace>
+         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
+org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-246b">
+      <outResult>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: ')', '/', '(', ')'</errTrace>
+         <errTrace>Unknown nodetype: letters</errTrace>
+         <errTrace>Extra illegal tokens: 'letters', '(', ')'</errTrace>
+         <errTrace>Unknown nodetype: letters</errTrace>
+         <errTrace>Extra illegal tokens: 'letters', '(', ')', '(', ')'</errTrace>
+         <errTrace>Unknown nodetype: letters</errTrace>
+         <errTrace>Extra illegal tokens: 'letters', '(', ')', '[', 'true', '(', ')', ']', '(', ')'</errTrace>
+         <errTrace>Unknown nodetype: letters</errTrace>
+         <errTrace>Extra illegal tokens: 'letters', '(', ')', '[', 'true', '(', ')', '(', ')', ']'</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: ')', 'letters'</errTrace>
+         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Extra illegal tokens: ')', 'letters'</errTrace>
+         <errTrace>Unknown nodetype: (</errTrace>
+         <errTrace>Extra illegal tokens: '(', '(', ')', ')', 'letters'</errTrace>
+         <errTrace>XTSE0010 : an instruction xsl:next-match is not known to the XSLT processor.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-247">
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression @* | node()  has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="match-248"/>
+   <testResult status="pass" testName="match-249"/>
+   <testResult status="pass" testName="match-250"/>
+   <testResult status="pass" testName="match-251"/>
+   <testResult status="pass" testName="match-252"/>
+   <testResult status="pass" testName="match-253"/>
+   <testResult status="pass" testName="match-254"/>
+   <testResult status="pass" testName="match-255"/>
+   <testResult status="pass" testName="match-256"/>
+   <testResult status="fail" testName="match-257">
+      <outResult>
+         <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = self</errTrace>
+         <errTrace>unknown match operation!</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-258">
+      <outResult>
+         <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = self</errTrace>
+         <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = self</errTrace>
+         <errTrace>unknown match operation!</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-259"/>
+   <testResult status="fail" testName="match-260">
+      <outResult>
+         <errTrace>XTTE0505 : An XSL apply-templates 'select' expression evaluation resulted in a value that is not supported to be processed.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult testName="match-261"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-262"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-263"/>
+   <testResult status="pass" testName="match-264"/>
+   <testResult status="fail" testName="match-265"/>
+   <testResult status="fail" testName="match-266"/>
+   <testResult status="fail" testName="match-267"/>
+   <testResult status="fail" testName="match-268"/>
+   <testResult status="fail" testName="match-269"/>
+   <testResult status="pass" testName="match-270"/>
+   <testResult status="pass" testName="match-271"/>
+   <testResult status="pass" testName="match-272"/>
+   <testResult status="fail" testName="match-273"/>
+   <testResult status="pass" testName="match-274"/>
+   <testResult status="fail" testName="match-275">
+      <outResult>
+         <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = descendant</errTrace>
+         <errTrace>Extra illegal tokens: 'except', 'child', '::', 'a'</errTrace>
+         <errTrace>unknown match operation!</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-276"/>
+   <testResult status="fail" testName="match-277"/>
+   <testResult status="pass" testName="match-278"/>
+   <testResult status="pass" testName="match-279"/>
+   <testResult status="fail" testName="match-280"/>
+   <testResult status="fail" testName="match-281"/>
+   <testResult status="fail" testName="match-282"/>
+   <testResult status="pass" testName="match-283"/>
+   <testResult status="fail" testName="match-284"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-285"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-286"/>
+   <testResult feature="schema_aware" status="skipped" testName="match-287"/>
 </testrun>

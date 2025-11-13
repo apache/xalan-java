@@ -35,7 +35,14 @@ public class XslVariableTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "decl/variable/_variable-test-set.xml";
     	m_resultSubFolderName = "decl";
-    	m_testResultFileName = "_variable-test-set_result.xml";    	   
+    	
+    	m_testResultFileName = "_variable-test-set_result.xml";
+    	
+    	// Xalan-J has bugs with following, W3C XSLT 3.0 test cases.
+    	// Skipping these XSL test cases for now.
+    	
+    	m_skipped_tests_list.add("variable-0120");
+    	m_skipped_tests_list.add("variable-4801");
     }
 
     @AfterClass

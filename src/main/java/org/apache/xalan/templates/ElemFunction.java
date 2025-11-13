@@ -816,8 +816,9 @@ public class ElemFunction extends ElemTemplate
    * control how this element is composed.
    * 
    * @param root The root stylesheet for this transformation.
+   * @throws TransformerException 
    */
-  public void recompose(StylesheetRoot root)
+  public void recompose(StylesheetRoot root) throws TransformerException
   {
       super.recompose(root);
   }

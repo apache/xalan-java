@@ -35,6 +35,7 @@ public class XslAnalyzeStringTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/analyze-string/_analyze-string-test-set.xml";
     	m_resultSubFolderName = "insn";
+    	
     	m_testResultFileName = "_analyze-string-test-set_result.xml";    	   
     }
 

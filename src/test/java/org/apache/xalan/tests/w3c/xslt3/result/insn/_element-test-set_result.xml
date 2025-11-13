@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-06T12:30:00Z" fail="14" name="element" pass="15" skipped="0" statusUnknown="0" totalRun="29">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:32Z" fail="14" name="element" pass="15" skipped="0" statusUnknown="0" totalRun="29">
    <testResult status="pass" testName="element-0001"/>
    <testResult status="pass" testName="element-0002"/>
    <testResult status="pass" testName="element-0003"/>
@@ -20,7 +20,11 @@
    <testResult status="pass" testName="element-0201"/>
    <testResult status="fail" testName="element-0301"/>
    <testResult status="fail" testName="element-0302">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}resolve-uri()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="element-0303">
       <outResult>

@@ -1,23 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:40Z" fail="24" name="as" pass="79" skipped="5" statusUnknown="1" totalRun="104">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:01Z" fail="31" name="as" pass="80" skipped="93" statusUnknown="0" totalRun="111">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
    <testResult status="pass" testName="as-0104"/>
    <testResult status="pass" testName="as-0105"/>
    <testResult status="pass" testName="as-0106"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="as-0106a"/>
+   <testResult reason="Xalan configured" status="skipped" testName="as-0106a"/>
    <testResult status="pass" testName="as-0106b"/>
    <testResult status="pass" testName="as-0107"/>
    <testResult status="pass" testName="as-0108"/>
    <testResult status="pass" testName="as-0109"/>
    <testResult status="pass" testName="as-0110"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="as-0110a"/>
+   <testResult reason="Xalan configured" status="skipped" testName="as-0110a"/>
    <testResult status="pass" testName="as-0110b"/>
    <testResult status="pass" testName="as-0111"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="as-0111a"/>
+   <testResult reason="Xalan configured" status="skipped" testName="as-0111a"/>
    <testResult status="pass" testName="as-0111b"/>
    <testResult status="pass" testName="as-0112"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="as-0112a"/>
+   <testResult reason="Xalan configured" status="skipped" testName="as-0112a"/>
    <testResult status="pass" testName="as-0112b"/>
    <testResult status="pass" testName="as-0113"/>
    <testResult status="pass" testName="as-0114"/>
@@ -60,7 +60,10 @@
    <testResult status="pass" testName="as-0150"/>
    <testResult feature="schema_aware" status="skipped" testName="as-0151"/>
    <testResult status="fail" testName="as-0152">
-      <outResult/>
+      <outResult>
+         <errTrace>Expected ), but found: ,</errTrace>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XNumber cannot be cast to java.lang.String</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="as-0201"/>
    <testResult status="pass" testName="as-0301"/>
@@ -135,5 +138,106 @@
    </testResult>
    <testResult status="fail" testName="as-1301"/>
    <testResult status="pass" testName="as-1302"/>
-   <testResult testName="as-1303"/>
+   <testResult reason="Xalan configured" status="skipped" testName="as-1303"/>
+   <testResult reason="Xalan configured" status="skipped" testName="as-1304"/>
+   <testResult status="fail" testName="as-1401"/>
+   <testResult status="fail" testName="as-1402"/>
+   <testResult status="pass" testName="as-1403"/>
+   <testResult status="fail" testName="as-1404"/>
+   <testResult status="fail" testName="as-1405"/>
+   <testResult status="fail" testName="as-1501"/>
+   <testResult status="fail" testName="as-1601">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;5</outResult>
+   </testResult>
+   <testResult status="fail" testName="as-1602">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult feature="schema_aware" status="skipped" testName="as-1701"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1702"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1703"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1704"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1705"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1706"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1707"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1708"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1709"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1710"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1711"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1712"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1713"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1801"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1802"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1803"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1804"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1805"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1806"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1807"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1808"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1809"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1810"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1811"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1812"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1813"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1814"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1901"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1902"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1903"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1904"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1905"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1906"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1907"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-1908"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2001"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2002"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2101"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2201"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2301"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2401"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2501"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2601"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2602"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2701"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2801"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2802"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2803"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2804"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2901"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2902"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2903"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2904"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2905"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-2906"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3001"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3002"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3003"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3101"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102a"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102b"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102c"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102d"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102e"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102f"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102g"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102h"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102i"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102j"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102k"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3102l"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3201"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3202"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3301"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3401"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3501"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3502"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3503"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3504"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3505"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3601"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3602"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3603"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3604"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3605"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-3701"/>
 </testrun>

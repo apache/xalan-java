@@ -35,6 +35,7 @@ public class XslSortTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/sort/_sort-test-set.xml";
     	m_resultSubFolderName = "insn";
+    	
     	m_testResultFileName = "_sort-test-set_result.xml";    	   
     }
 

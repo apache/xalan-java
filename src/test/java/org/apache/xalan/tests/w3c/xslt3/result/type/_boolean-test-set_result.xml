@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:46Z" fail="1" name="boolean" pass="108" skipped="3" statusUnknown="0" totalRun="109">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:22Z" fail="1" name="boolean" pass="108" skipped="3" statusUnknown="0" totalRun="109">
    <testResult status="pass" testName="boolean-001"/>
    <testResult status="pass" testName="boolean-002"/>
    <testResult status="pass" testName="boolean-003"/>
@@ -67,7 +67,7 @@
    <testResult status="pass" testName="boolean-066"/>
    <testResult status="pass" testName="boolean-067"/>
    <testResult status="pass" testName="boolean-068"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="boolean-069"/>
+   <testResult reason="Xalan configured" status="skipped" testName="boolean-069"/>
    <testResult status="pass" testName="boolean-070"/>
    <testResult status="pass" testName="boolean-071"/>
    <testResult status="pass" testName="boolean-072"/>
@@ -81,7 +81,10 @@
    <testResult status="pass" testName="boolean-080"/>
    <testResult status="pass" testName="boolean-081"/>
    <testResult status="fail" testName="boolean-082">
-      <outResult/>
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression compare($non_blank_jcodes/dd:hcfa-jcode[position() &lt; $this_pos]/text(), ./text()) = 0 has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="boolean-083"/>
    <testResult status="pass" testName="boolean-084"/>
@@ -95,8 +98,8 @@
    <testResult status="pass" testName="boolean-092"/>
    <testResult status="pass" testName="boolean-093"/>
    <testResult status="pass" testName="boolean-094"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="boolean-095"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="boolean-096"/>
+   <testResult reason="Xalan configured" status="skipped" testName="boolean-095"/>
+   <testResult reason="Xalan configured" status="skipped" testName="boolean-096"/>
    <testResult status="pass" testName="boolean-097"/>
    <testResult status="pass" testName="boolean-098"/>
    <testResult status="pass" testName="boolean-099"/>

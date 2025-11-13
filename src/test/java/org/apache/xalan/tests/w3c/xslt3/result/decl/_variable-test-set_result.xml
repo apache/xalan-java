@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:38Z" fail="4" name="variable" pass="14" skipped="1" statusUnknown="1" totalRun="19">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:39:56Z" fail="19" name="variable" pass="86" skipped="3" statusUnknown="0" totalRun="105">
    <testResult status="pass" testName="variable-0101"/>
    <testResult status="pass" testName="variable-0102"/>
    <testResult status="pass" testName="variable-0103"/>
@@ -22,7 +22,109 @@
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" att="2"/&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="variable-0119">
-      <outResult/>
+      <outResult>
+         <errTrace>XTSE0740 : An XSL with-param's name attribute doesn't have a URI reference</errTrace>
+         <errTrace>XTSE0740 : An XSL param's name attribute doesn't have a URI reference</errTrace>
+         <errTrace>XTSE0740 : An XSL with-param's name attribute doesn't have a URI reference</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
-   <testResult testName="variable-0120"/>
+   <testResult reason="Xalan configured" status="skipped" testName="variable-0120"/>
+   <testResult status="pass" testName="variable-0121"/>
+   <testResult status="pass" testName="variable-0122"/>
+   <testResult status="pass" testName="variable-0123"/>
+   <testResult status="pass" testName="variable-0201"/>
+   <testResult status="fail" testName="variable-0202"/>
+   <testResult status="fail" testName="variable-0203"/>
+   <testResult status="fail" testName="variable-0204"/>
+   <testResult status="fail" testName="variable-0205">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;b&gt;&lt;d t3="38" t2="28" t4="17"/&gt;&lt;/b&gt;&lt;old&gt;17&lt;/old&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="variable-0206"/>
+   <testResult status="pass" testName="variable-0301"/>
+   <testResult status="fail" testName="variable-0302"/>
+   <testResult status="fail" testName="variable-0303"/>
+   <testResult status="fail" testName="variable-0401"/>
+   <testResult status="fail" testName="variable-0501"/>
+   <testResult status="pass" testName="variable-0601"/>
+   <testResult status="pass" testName="variable-0701"/>
+   <testResult status="pass" testName="variable-0801"/>
+   <testResult status="pass" testName="variable-0802"/>
+   <testResult status="pass" testName="variable-0901"/>
+   <testResult status="pass" testName="variable-1001"/>
+   <testResult status="pass" testName="variable-1002"/>
+   <testResult status="pass" testName="variable-1003"/>
+   <testResult status="pass" testName="variable-1004"/>
+   <testResult status="pass" testName="variable-1005"/>
+   <testResult status="pass" testName="variable-1006"/>
+   <testResult status="pass" testName="variable-1007"/>
+   <testResult status="pass" testName="variable-1008"/>
+   <testResult status="pass" testName="variable-1009"/>
+   <testResult status="pass" testName="variable-1010"/>
+   <testResult status="pass" testName="variable-1011"/>
+   <testResult status="pass" testName="variable-1012"/>
+   <testResult status="pass" testName="variable-1101"/>
+   <testResult status="pass" testName="variable-1102"/>
+   <testResult status="pass" testName="variable-1103"/>
+   <testResult status="pass" testName="variable-1201"/>
+   <testResult status="pass" testName="variable-1301"/>
+   <testResult status="pass" testName="variable-1401"/>
+   <testResult status="pass" testName="variable-1402"/>
+   <testResult status="pass" testName="variable-1501"/>
+   <testResult status="pass" testName="variable-1601"/>
+   <testResult status="pass" testName="variable-1701"/>
+   <testResult status="pass" testName="variable-1702"/>
+   <testResult status="pass" testName="variable-1801"/>
+   <testResult status="pass" testName="variable-1901"/>
+   <testResult status="pass" testName="variable-1902"/>
+   <testResult status="pass" testName="variable-1903"/>
+   <testResult status="pass" testName="variable-1904"/>
+   <testResult status="pass" testName="variable-1905"/>
+   <testResult status="pass" testName="variable-2001"/>
+   <testResult status="pass" testName="variable-2101"/>
+   <testResult status="pass" testName="variable-2201"/>
+   <testResult status="fail" testName="variable-2202">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;It is global!&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="variable-2301"/>
+   <testResult status="pass" testName="variable-2302"/>
+   <testResult status="pass" testName="variable-2303"/>
+   <testResult status="pass" testName="variable-2304"/>
+   <testResult status="pass" testName="variable-2305"/>
+   <testResult status="pass" testName="variable-2401"/>
+   <testResult status="pass" testName="variable-2501"/>
+   <testResult status="pass" testName="variable-2601"/>
+   <testResult status="pass" testName="variable-2701"/>
+   <testResult status="pass" testName="variable-2801"/>
+   <testResult status="pass" testName="variable-2901"/>
+   <testResult status="pass" testName="variable-3001"/>
+   <testResult status="pass" testName="variable-3101"/>
+   <testResult status="pass" testName="variable-3201"/>
+   <testResult status="fail" testName="variable-3301"/>
+   <testResult status="pass" testName="variable-3401"/>
+   <testResult status="pass" testName="variable-3501"/>
+   <testResult status="fail" testName="variable-3601"/>
+   <testResult status="pass" testName="variable-3701"/>
+   <testResult status="pass" testName="variable-3801"/>
+   <testResult status="fail" testName="variable-3802"/>
+   <testResult status="fail" testName="variable-3901"/>
+   <testResult status="pass" testName="variable-4001"/>
+   <testResult status="pass" testName="variable-4101"/>
+   <testResult status="fail" testName="variable-4201">
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression concat(sum(./a/text()),'/',$total) has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="variable-4301"/>
+   <testResult status="pass" testName="variable-4401"/>
+   <testResult status="pass" testName="variable-4402"/>
+   <testResult status="pass" testName="variable-4403"/>
+   <testResult status="pass" testName="variable-4501"/>
+   <testResult status="pass" testName="variable-4601"/>
+   <testResult status="pass" testName="variable-4602"/>
+   <testResult status="pass" testName="variable-4701"/>
+   <testResult status="fail" testName="variable-4702"/>
+   <testResult reason="Xalan configured" status="skipped" testName="variable-4801"/>
+   <testResult status="pass" testName="variable-4802"/>
 </testrun>

@@ -36,11 +36,18 @@ public class XslAsAttrTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "attr/as/_as-test-set.xml";
     	m_resultSubFolderName = "attr";    	
+    	
     	m_testResultFileName = "_as-test-set_result.xml";
+    	
+    	// Xalan-J has bugs with following, W3C XSLT 3.0 test cases.
+    	// Skipping these XSL test cases for now.
+    	
     	m_skipped_tests_list.add("as-0106a");
     	m_skipped_tests_list.add("as-0110a");
     	m_skipped_tests_list.add("as-0111a");
     	m_skipped_tests_list.add("as-0112a");
+    	m_skipped_tests_list.add("as-1303");
+    	m_skipped_tests_list.add("as-1304");
     }
 
     @AfterClass

@@ -35,8 +35,13 @@ public class XslTryTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "insn/try/_try-test-set.xml";
     	m_resultSubFolderName = "insn";
+    	
     	m_testResultFileName = "_try-test-set_result.xml";
-    	m_skipped_tests_list.add("try-038");       // Skipping, solving this bug for now  
+    	
+    	// Xalan-J has bug with following, W3C XSLT 3.0 test case.
+    	// Skipping this XSL test cases for now.
+    	
+    	m_skipped_tests_list.add("try-038"); 
     }
 
     @AfterClass

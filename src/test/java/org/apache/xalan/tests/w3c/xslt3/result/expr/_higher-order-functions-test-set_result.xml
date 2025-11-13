@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:45Z" fail="36" name="higher-order-functions" pass="33" skipped="7" statusUnknown="0" totalRun="69">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:18Z" fail="36" name="higher-order-functions" pass="33" skipped="7" statusUnknown="0" totalRun="69">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -29,23 +29,34 @@
    <testResult status="pass" testName="higher-order-functions-028"/>
    <testResult status="pass" testName="higher-order-functions-029"/>
    <testResult status="pass" testName="higher-order-functions-030"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="higher-order-functions-031"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="higher-order-functions-032"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="higher-order-functions-033"/>
+   <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-031"/>
+   <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-032"/>
+   <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-033"/>
    <testResult status="fail" testName="higher-order-functions-034"/>
    <testResult status="pass" testName="higher-order-functions-035"/>
    <testResult status="fail" testName="higher-order-functions-036"/>
    <testResult status="fail" testName="higher-order-functions-037">
-      <outResult/>
+      <outResult>
+         <errTrace>Expected ,, but found: ''</errTrace>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to java.lang.String</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-038"/>
    <testResult status="fail" testName="higher-order-functions-039"/>
    <testResult status="fail" testName="higher-order-functions-040"/>
    <testResult status="fail" testName="higher-order-functions-041">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}.()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-042">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}.()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-043"/>
    <testResult status="fail" testName="higher-order-functions-044"/>
@@ -124,15 +135,23 @@
    <testResult status="fail" testName="higher-order-functions-070">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;2&lt;/out&gt;</outResult>
    </testResult>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="higher-order-functions-071"/>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="higher-order-functions-072"/>
+   <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-071"/>
+   <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-072"/>
    <testResult status="fail" testName="higher-order-functions-073">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-date()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-074">
-      <outResult/>
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-date()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
-   <testResult reason="Xalan configured, and allowed by W3C XSLT 3.0 test suite" status="skipped" testName="higher-order-functions-075"/>
+   <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-075"/>
    <testResult status="fail" testName="higher-order-functions-076">
       <outResult>
          <errTrace>XPTY0004 : An XSL function call argument at position 1 for function {http://example.com/mf}wrap, doesn't match the declared parameter type node()*.</errTrace>

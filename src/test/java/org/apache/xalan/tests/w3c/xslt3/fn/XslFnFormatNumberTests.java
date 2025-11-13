@@ -35,6 +35,7 @@ public class XslFnFormatNumberTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "fn/format-number/_format-number-test-set.xml";
     	m_resultSubFolderName = "fn";
+    	
     	m_testResultFileName = "_format-number-test-set_result.xml";    	   
     }
 

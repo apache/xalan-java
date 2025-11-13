@@ -35,9 +35,18 @@ public class XslMiscRegexTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "misc/regex/_regex-test-set.xml";
     	m_resultSubFolderName = "misc";
+    	
     	m_testResultFileName = "_regex-test-set_result.xml";
-    	// REVISIT
-    	m_skipped_tests_list.add("regex-056");
+    	
+    	// Xalan-J has bugs with following, W3C XSLT 3.0 test cases.
+    	// Skipping these XSL test cases for now.
+    	
+    	m_skipped_tests_list.add("regex-056");        // This W3C XSLT 3.0 test case, causes inf loop within Xalan-J
+    	m_skipped_tests_list.add("regex-070a");
+    	m_skipped_tests_list.add("regex-070b");
+    	m_skipped_tests_list.add("regex-070c");
+    	m_skipped_tests_list.add("regex-070d");
+    	m_skipped_tests_list.add("regex-070e");
     }
 
     @AfterClass

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-11T16:48:51Z" fail="10" name="position" pass="127" skipped="0" statusUnknown="1" totalRun="138">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:41:05Z" fail="19" name="position" pass="191" skipped="1" statusUnknown="0" totalRun="210">
    <testResult status="pass" testName="position-0101"/>
    <testResult status="fail" testName="position-0102"/>
    <testResult status="fail" testName="position-0103"/>
@@ -159,7 +159,7 @@
          <errTrace>java.lang.ClassCastException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="position-3004"/>
+   <testResult status="pass" testName="position-3004"/>
    <testResult status="pass" testName="position-3101"/>
    <testResult status="pass" testName="position-3102"/>
    <testResult status="pass" testName="position-3103"/>
@@ -167,5 +167,98 @@
    <testResult status="pass" testName="position-3201"/>
    <testResult status="pass" testName="position-3301"/>
    <testResult status="pass" testName="position-3302"/>
-   <testResult testName="position-3303"/>
+   <testResult reason="Xalan configured" status="skipped" testName="position-3303"/>
+   <testResult status="pass" testName="position-3304"/>
+   <testResult status="fail" testName="position-3305"/>
+   <testResult status="pass" testName="position-3306"/>
+   <testResult status="pass" testName="position-3307"/>
+   <testResult status="pass" testName="position-3308"/>
+   <testResult status="pass" testName="position-3309"/>
+   <testResult status="pass" testName="position-3401"/>
+   <testResult status="pass" testName="position-3402"/>
+   <testResult status="pass" testName="position-3501"/>
+   <testResult status="pass" testName="position-3601"/>
+   <testResult status="pass" testName="position-3701"/>
+   <testResult status="pass" testName="position-3801"/>
+   <testResult status="fail" testName="position-3901">
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression //center/text()[1] has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="position-4001">
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression //center/comment()[1] has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="position-4101"/>
+   <testResult status="pass" testName="position-4102"/>
+   <testResult status="pass" testName="position-4103"/>
+   <testResult status="fail" testName="position-4104"/>
+   <testResult status="pass" testName="position-4105"/>
+   <testResult status="fail" testName="position-4201"/>
+   <testResult status="pass" testName="position-4301"/>
+   <testResult status="fail" testName="position-4401"/>
+   <testResult status="pass" testName="position-4501"/>
+   <testResult status="pass" testName="position-4601"/>
+   <testResult status="pass" testName="position-4602"/>
+   <testResult status="pass" testName="position-4701"/>
+   <testResult status="pass" testName="position-4702"/>
+   <testResult status="pass" testName="position-4801"/>
+   <testResult status="fail" testName="position-4901"/>
+   <testResult status="pass" testName="position-5001"/>
+   <testResult status="pass" testName="position-5002"/>
+   <testResult status="fail" testName="position-5101"/>
+   <testResult status="pass" testName="position-5201"/>
+   <testResult status="pass" testName="position-5301"/>
+   <testResult status="pass" testName="position-5302"/>
+   <testResult status="pass" testName="position-5401"/>
+   <testResult status="pass" testName="position-5501"/>
+   <testResult status="pass" testName="position-5601"/>
+   <testResult status="pass" testName="position-5701"/>
+   <testResult status="pass" testName="position-5801"/>
+   <testResult status="pass" testName="position-5901"/>
+   <testResult status="pass" testName="position-5902"/>
+   <testResult status="pass" testName="position-5903"/>
+   <testResult status="pass" testName="position-6001"/>
+   <testResult status="pass" testName="position-6002"/>
+   <testResult status="pass" testName="position-6101"/>
+   <testResult status="fail" testName="position-6201">
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression ./processing-instruction()[2] has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="position-6301">
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression ancestor-or-self::*[1]/text()[1] has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="position-6302"/>
+   <testResult status="pass" testName="position-6401"/>
+   <testResult status="pass" testName="position-6501"/>
+   <testResult status="pass" testName="position-6601"/>
+   <testResult status="pass" testName="position-6701"/>
+   <testResult status="pass" testName="position-6801"/>
+   <testResult status="pass" testName="position-6802"/>
+   <testResult status="pass" testName="position-6901"/>
+   <testResult status="pass" testName="position-7001"/>
+   <testResult status="pass" testName="position-7002"/>
+   <testResult status="pass" testName="position-7101"/>
+   <testResult status="pass" testName="position-7201"/>
+   <testResult status="pass" testName="position-7301"/>
+   <testResult status="pass" testName="position-7302"/>
+   <testResult status="pass" testName="position-7401"/>
+   <testResult status="pass" testName="position-7501"/>
+   <testResult status="pass" testName="position-7601"/>
+   <testResult status="pass" testName="position-7701"/>
+   <testResult status="pass" testName="position-7801"/>
+   <testResult status="pass" testName="position-7901"/>
+   <testResult status="pass" testName="position-8001"/>
+   <testResult status="pass" testName="position-8101"/>
+   <testResult status="pass" testName="position-8201"/>
+   <testResult status="pass" testName="position-8202"/>
+   <testResult status="pass" testName="position-8301"/>
 </testrun>

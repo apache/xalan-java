@@ -35,6 +35,7 @@ public class XslAttributeSetTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "decl/attribute-set/_attribute-set-test-set.xml";
     	m_resultSubFolderName = "decl";
+    	
     	m_testResultFileName = "_attribute-set-test-set_result.xml";    	   
     }
 

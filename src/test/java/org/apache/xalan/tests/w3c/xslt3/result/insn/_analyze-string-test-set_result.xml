@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-05T17:18:58Z" fail="14" name="analyze-string" pass="39" skipped="5" statusUnknown="0" totalRun="53">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:41:12Z" fail="14" name="analyze-string" pass="39" skipped="5" statusUnknown="0" totalRun="53">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -13,9 +13,9 @@
    <testResult status="pass" testName="analyze-string-036"/>
    <testResult status="pass" testName="analyze-string-037"/>
    <testResult status="pass" testName="analyze-string-042"/>
-   <testResult status="skipped" testName="analyze-string-045" xsltVersion="XSLT 2.0 only"/>
-   <testResult status="skipped" testName="analyze-string-046" xsltVersion="XSLT 2.0 only"/>
-   <testResult status="skipped" testName="analyze-string-047" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="analyze-string-045" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="analyze-string-046" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="skipped" testName="analyze-string-047" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="analyze-string-048"/>
    <testResult status="pass" testName="analyze-string-049"/>
    <testResult status="pass" testName="analyze-string-050"/>
@@ -51,14 +51,14 @@
         &lt;no-match&gt;presencial&lt;/no-match&gt; &#13;
 &lt;/ales&gt;</outResult>
    </testResult>
-   <testResult status="skipped" testName="analyze-string-090a" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="analyze-string-090a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="fail" testName="analyze-string-090b"/>
-   <testResult status="skipped" testName="analyze-string-091a" xsltVersion="XSLT 2.0 only"/>
+   <testResult status="skipped" testName="analyze-string-091a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="analyze-string-091b"/>
    <testResult status="fail" testName="analyze-string-092">
       <outResult>
          <errTrace>Expected ), but found: "s "</errTrace>
-         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XNumber cannot be cast to java.lang.String</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="analyze-string-093"/>

@@ -35,6 +35,7 @@ import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemForEachGroup;
+import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.xslt.util.StringUtil;
@@ -1035,8 +1036,12 @@ public class XSLTAttributeDef
     		    String localName = value.substring(idx + 1);
     		    qname = new QName(nsUri, localName, true);
     		 }
+    		 else if ((idx == 2) && (owner instanceof ElemFunction)) {
+    			String localName = value.substring(idx + 1);
+    			qname = new QName(Constants.XSL_ERROR_NAMESACE, localName, true); 
+    		 }
     		 
-    		 if (qname == null) {
+    		 if ((qname == null) && !(owner instanceof ElemFunction)) {
     			handleError(handler,XSLTErrorResources.ER_ABSENT_NAMESPACE_URI, new Object[] {owner.getNodeName()}, null);
     			
     			return null; 

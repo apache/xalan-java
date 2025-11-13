@@ -35,9 +35,12 @@ public class XslCharacterMapTests extends W3CXslTransformTestsUtil {
     public static void setUpBeforeClass() throws Exception {
     	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "decl/character-map/_character-map-test-set.xml";
     	m_resultSubFolderName = "decl";    	
+    	
     	m_testResultFileName = "_character-map-test-set_result.xml";
     	
-    	// Allowed by W3C XSLT 3.0 test suite xsl:character-map test set
+    	// Xalan-J has bug with following, W3C XSLT 3.0 test case.
+    	// Skipping this XSL test cases for now.
+    	
     	m_skipped_tests_list.add("character-map-010");
     }
 
