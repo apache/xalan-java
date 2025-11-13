@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:26Z" fail="26" name="copy" pass="33" skipped="0" statusUnknown="1" totalRun="60">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:34Z" fail="49" name="copy" pass="76" skipped="23" statusUnknown="0" totalRun="125">
    <testResult status="pass" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="pass" testName="copy-0103"/>
@@ -154,5 +154,154 @@
          <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="copy-1216"/>
+   <testResult reason="Xalan configured" status="skipped" testName="copy-1216"/>
+   <testResult status="fail" testName="copy-1217">
+      <outResult>
+         <errTrace>XTSE0010 : an instruction xsl:where-populated is not known to the XSLT processor.</errTrace>
+         <errTrace>XPST0003 : An XPath expression /out/processing-instruction() = "Boo!" has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="copy-1218"/>
+   <testResult status="pass" testName="copy-1219"/>
+   <testResult status="fail" testName="copy-1220">
+      <outResult>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="copy-1221">
+      <outResult>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
+      </outResult>
+   </testResult>
+   <testResult reason="Xalan configured" status="skipped" testName="copy-1301"/>
+   <testResult reason="Xalan configured" status="skipped" testName="copy-1401"/>
+   <testResult status="pass" testName="copy-1501"/>
+   <testResult status="pass" testName="copy-1601"/>
+   <testResult reason="Xalan configured" status="skipped" testName="copy-1602"/>
+   <testResult status="pass" testName="copy-1701"/>
+   <testResult status="pass" testName="copy-1801"/>
+   <testResult status="pass" testName="copy-2001"/>
+   <testResult status="pass" testName="copy-2101"/>
+   <testResult status="pass" testName="copy-2201"/>
+   <testResult status="pass" testName="copy-2202"/>
+   <testResult status="fail" testName="copy-2203">
+      <outResult>
+         <errTrace>Variable after-phase-4 is directly or indirectly referencing itself!</errTrace>
+         <errTrace>Variable $after-phase-4 accessed before it is bound!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="copy-2301"/>
+   <testResult status="pass" testName="copy-2401"/>
+   <testResult status="pass" testName="copy-2402"/>
+   <testResult status="pass" testName="copy-2501"/>
+   <testResult status="pass" testName="copy-2502"/>
+   <testResult status="pass" testName="copy-2601"/>
+   <testResult status="pass" testName="copy-2701"/>
+   <testResult status="fail" testName="copy-2801">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="copy-2901"/>
+   <testResult status="pass" testName="copy-3001"/>
+   <testResult status="fail" testName="copy-3002">
+      <outResult>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute 'copy-accumulators' is not allowed to appear on XSL element "copy-of".</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="copy-3003">
+      <outResult>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute 'copy-accumulators' is not allowed to appear on XSL element "copy-of".</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="copy-3101"/>
+   <testResult status="pass" testName="copy-3102"/>
+   <testResult status="pass" testName="copy-3301"/>
+   <testResult status="pass" testName="copy-3302"/>
+   <testResult status="pass" testName="copy-3401"/>
+   <testResult status="pass" testName="copy-3501"/>
+   <testResult status="pass" testName="copy-3601"/>
+   <testResult status="pass" testName="copy-3602"/>
+   <testResult status="pass" testName="copy-3603"/>
+   <testResult status="pass" testName="copy-3701"/>
+   <testResult reason="Xalan configured" status="skipped" testName="copy-3702"/>
+   <testResult status="pass" testName="copy-3801"/>
+   <testResult status="pass" testName="copy-3802"/>
+   <testResult reason="Xalan configured" status="skipped" testName="copy-3803"/>
+   <testResult status="fail" testName="copy-3804">
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression contains($temp//z2/node()[last()], 'Success') has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="copy-3901"/>
+   <testResult status="pass" testName="copy-4001"/>
+   <testResult status="fail" testName="copy-4101"/>
+   <testResult status="fail" testName="copy-4102"/>
+   <testResult status="pass" testName="copy-4201"/>
+   <testResult status="pass" testName="copy-4301"/>
+   <testResult status="fail" testName="copy-4302">
+      <outResult>
+         <errTrace>Can not convert #STRING to a NodeList!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="copy-4303"/>
+   <testResult status="fail" testName="copy-4304"/>
+   <testResult status="pass" testName="copy-4305"/>
+   <testResult status="pass" testName="copy-4306"/>
+   <testResult status="fail" testName="copy-4307">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;23</outResult>
+   </testResult>
+   <testResult status="fail" testName="copy-4308">
+      <outResult>
+         <errTrace>Variable var is directly or indirectly referencing itself!</errTrace>
+         <errTrace>Variable $var accessed before it is bound!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="copy-4309">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;23</outResult>
+   </testResult>
+   <testResult status="pass" testName="copy-4401"/>
+   <testResult status="fail" testName="copy-4501"/>
+   <testResult status="pass" testName="copy-4502"/>
+   <testResult status="fail" testName="copy-4601">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;test2 test2="test2"&gt;&#13;
+    &lt;test3 test3="test3"/&gt;&#13;
+  &lt;/test2&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="copy-4701">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;child/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="copy-4702">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;child/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="copy-4801"/>
+   <testResult status="fail" testName="copy-4802"/>
+   <testResult status="fail" testName="copy-4803"/>
+   <testResult status="pass" testName="copy-4804"/>
+   <testResult status="pass" testName="copy-4805"/>
+   <testResult reason="Xalan configured" status="skipped" testName="copy-4901"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5001"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5002"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5003"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5004"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5011"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5012"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5013"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5014"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5021"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5022"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5023"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5024"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5031"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5032"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5033"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-5034"/>
+   <testResult status="fail" testName="copy-5101">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}serialize()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="copy-5201"/>
 </testrun>

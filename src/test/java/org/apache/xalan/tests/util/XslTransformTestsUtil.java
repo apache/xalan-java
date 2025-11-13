@@ -587,31 +587,36 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     protected boolean isXslStreamingFeatureTestCase(Node testCaseNode) {
     	
-        boolean result = false;
-        
-        NodeList nodeList = testCaseNode.getChildNodes();
-        int nodeListLength = nodeList.getLength();
-        for (int idx = 0; idx < nodeListLength; idx++) {
-     	  Node node = nodeList.item(idx);
-     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
-     		 Element elemNode = (Element)node;
-     		 String elemName = elemNode.getLocalName();
-     		 if ("dependencies".equals(elemName)) {
-     			 NodeList nodeList1 = elemNode.getElementsByTagName("feature");
-     			 if (nodeList1.getLength() == 1) {
-     				 Element elem1 = (Element)(nodeList1.item(0));
-     				 String value = elem1.getAttribute("value");
-     				 if ("streaming".equals(value)) {
-     					result = true;
-     					
-     					break; 
-     				 }
-     			 }
-     		 }
-     	  }
-        }
-        
-        return result;
+    	boolean result = false;
+
+    	NodeList nodeList = testCaseNode.getChildNodes();
+    	int nodeListLength = nodeList.getLength();
+    	for (int idx = 0; idx < nodeListLength; idx++) {
+    		Node node = nodeList.item(idx);
+    		if (node.getNodeType() == Node.ELEMENT_NODE) {
+    			Element elemNode = (Element)node;
+    			String elemName = elemNode.getLocalName();
+    			if ("dependencies".equals(elemName)) {
+    				NodeList nodeList1 = elemNode.getElementsByTagName("feature");
+    				int nodeListLength2 = nodeList1.getLength();     			 
+    				for (int idx2 = 0; idx2 < nodeListLength2; idx2++) {
+    					Element elem1 = (Element)(nodeList1.item(idx2));
+    					String value = elem1.getAttribute("value");
+    					if ("streaming".equals(value)) {
+    						result = true;
+
+    						break; 
+    					}
+    				}
+
+    				if (result) {
+    					break; 
+    				}
+    			}
+    		}
+    	}
+
+    	return result;
     }
     
     /**
@@ -655,27 +660,27 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     protected boolean isXslt3InitialModeTestCase(Node testCaseNode) {
     	
-        boolean result = false;
-        
-        NodeList nodeList = testCaseNode.getChildNodes();
-        int nodeListLength = nodeList.getLength();
-        for (int idx = 0; idx < nodeListLength; idx++) {
-     	  Node node = nodeList.item(idx);
-     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
-     		 Element elemNode = (Element)node;
-     		 String elemName = elemNode.getLocalName();
-     		 if ("test".equals(elemName)) {
-     			 NodeList nodeList1 = elemNode.getElementsByTagName("initial-mode");
-     			 if (nodeList1.getLength() > 0) {
-     				 result = true;
+    	boolean result = false;
 
-     				 break; 
-     			 }
-     		 }
-     	  }
-        }
-        
-        return result;
+    	NodeList nodeList = testCaseNode.getChildNodes();
+    	int nodeListLength = nodeList.getLength();
+    	for (int idx = 0; idx < nodeListLength; idx++) {
+    		Node node = nodeList.item(idx);
+    		if (node.getNodeType() == Node.ELEMENT_NODE) {
+    			Element elemNode = (Element)node;
+    			String elemName = elemNode.getLocalName();
+    			if ("test".equals(elemName)) {
+    				NodeList nodeList1 = elemNode.getElementsByTagName("initial-mode");
+    				if (nodeList1.getLength() > 0) {
+    					result = true;
+
+    					break; 
+    				}
+    			}
+    		}
+    	}
+
+    	return result;
     }
     
     /**

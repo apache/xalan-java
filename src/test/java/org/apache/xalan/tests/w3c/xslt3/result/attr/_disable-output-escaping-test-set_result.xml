@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:44Z" fail="22" name="disable-output-escaping" pass="5" skipped="4" statusUnknown="1" totalRun="28">
+   <testResult status="fail" testName="doe-0176">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0176a">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0176b">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0176c">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0176d">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0176e">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="doe-0176f"/>
+   <testResult status="skipped" testName="doe-0177" xsltVersion="XSLT 2.0/1.0 only test case"/>
+   <testResult status="fail" testName="doe-0177a">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0180">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0181">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0182">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0183">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0184">
+      <outResult>
+         <errTrace>XTTE0570 : A sequence of size 3, cannot be cast to a type text().</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="doe-0185">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0186">
+      <outResult>
+         <errTrace>XTTE0570 : A sequence of size 3, cannot be cast to a type text().</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="doe-0190">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0191">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="doe-0201"/>
+   <testResult status="pass" testName="doe-0401"/>
+   <testResult status="fail" testName="doe-0402">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns="http://www.w3.org/1999/xhtml"&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult testName="doe-0402a"/>
+   <testResult status="pass" testName="doe-0403"/>
+   <testResult status="pass" testName="doe-0404"/>
+   <testResult status="fail" testName="doe-0405"/>
+   <testResult status="fail" testName="doe-0406"/>
+   <testResult status="fail" testName="doe-0407"/>
+   <testResult status="pass" testName="doe-0408"/>
+   <testResult status="fail" testName="doe-0409"/>
+   <testResult feature="streaming" status="skipped" testName="doe-0801"/>
+   <testResult feature="streaming" status="skipped" testName="doe-0802"/>
+   <testResult feature="streaming" status="skipped" testName="doe-0803"/>
+</testrun>

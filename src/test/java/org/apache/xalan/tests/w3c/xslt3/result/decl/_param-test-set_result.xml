@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:45Z" fail="18" name="param" pass="12" skipped="1" statusUnknown="0" totalRun="30">
+   <testResult status="pass" testName="param-0101"/>
+   <testResult status="pass" testName="param-0102"/>
+   <testResult status="pass" testName="param-0103"/>
+   <testResult status="pass" testName="param-0104"/>
+   <testResult status="fail" testName="param-0105"/>
+   <testResult status="fail" testName="param-0106"/>
+   <testResult status="fail" testName="param-0107"/>
+   <testResult status="pass" testName="param-0108"/>
+   <testResult status="pass" testName="param-0109"/>
+   <testResult status="fail" testName="param-0110">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;xyz&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="param-0111">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt; par1= defaultValue&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="param-0112">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
+	par1= &lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="param-0113">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt; Parameter Value: test param&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="param-0114">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;year/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="param-0115">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;year/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="param-0116">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="param-0117"/>
+   <testResult status="pass" testName="param-0118"/>
+   <testResult status="pass" testName="param-0119"/>
+   <testResult status="pass" testName="param-0120"/>
+   <testResult status="pass" testName="param-0201"/>
+   <testResult reason="Xalan configured" status="skipped" testName="param-0301"/>
+   <testResult status="fail" testName="param-0401"/>
+   <testResult status="fail" testName="param-0402"/>
+   <testResult status="fail" testName="param-0403"/>
+   <testResult status="fail" testName="param-0501"/>
+   <testResult status="fail" testName="param-0601"/>
+   <testResult status="fail" testName="param-0602"/>
+   <testResult status="fail" testName="param-0701">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="param-0702"/>
+   <testResult status="fail" testName="param-0703">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+</testrun>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:45Z" fail="35" name="xml-to-json" pass="52" skipped="65" statusUnknown="1" totalRun="88">
+   <testResult status="pass" testName="xml-to-json-A001"/>
+   <testResult status="pass" testName="xml-to-json-A002"/>
+   <testResult status="pass" testName="xml-to-json-A003"/>
+   <testResult status="pass" testName="xml-to-json-A004"/>
+   <testResult status="pass" testName="xml-to-json-A005"/>
+   <testResult status="pass" testName="xml-to-json-A006"/>
+   <testResult status="pass" testName="xml-to-json-A007"/>
+   <testResult status="pass" testName="xml-to-json-A008"/>
+   <testResult status="pass" testName="xml-to-json-A009"/>
+   <testResult status="fail" testName="xml-to-json-A010"/>
+   <testResult status="pass" testName="xml-to-json-A011"/>
+   <testResult status="fail" testName="xml-to-json-A012"/>
+   <testResult status="fail" testName="xml-to-json-A013"/>
+   <testResult status="fail" testName="xml-to-json-A014"/>
+   <testResult status="pass" testName="xml-to-json-A015"/>
+   <testResult status="pass" testName="xml-to-json-A016"/>
+   <testResult status="fail" testName="xml-to-json-A017"/>
+   <testResult status="fail" testName="xml-to-json-A018"/>
+   <testResult status="pass" testName="xml-to-json-A019"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-001"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-002"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-003"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-004"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-005"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-006"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-007"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-008"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-009"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-010"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-011"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-012"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-013"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-014"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-015"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-016"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-017"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-018"/>
+   <testResult status="pass" testName="xml-to-json-A2-019"/>
+   <testResult status="pass" testName="xml-to-json-B001"/>
+   <testResult status="pass" testName="xml-to-json-B002"/>
+   <testResult status="pass" testName="xml-to-json-B003"/>
+   <testResult status="pass" testName="xml-to-json-B004"/>
+   <testResult status="pass" testName="xml-to-json-B005"/>
+   <testResult status="pass" testName="xml-to-json-B006"/>
+   <testResult status="pass" testName="xml-to-json-B007"/>
+   <testResult status="pass" testName="xml-to-json-B008"/>
+   <testResult status="pass" testName="xml-to-json-B009"/>
+   <testResult status="fail" testName="xml-to-json-B010"/>
+   <testResult status="pass" testName="xml-to-json-B011"/>
+   <testResult status="fail" testName="xml-to-json-B012"/>
+   <testResult status="fail" testName="xml-to-json-B013"/>
+   <testResult status="fail" testName="xml-to-json-B014"/>
+   <testResult status="pass" testName="xml-to-json-B015"/>
+   <testResult status="pass" testName="xml-to-json-B016"/>
+   <testResult status="fail" testName="xml-to-json-B017"/>
+   <testResult status="fail" testName="xml-to-json-B018"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-001"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-002"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-003"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-004"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-005"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-006"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-007"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-008"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-009"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-010"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-011"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-012"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-013"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-014"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-015"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-016"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-017"/>
+   <testResult feature="streaming" status="skipped" testName="xml-to-json-B2-018"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C001"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C002"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C003"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C004"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C005"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C006"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C007"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C008"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C009"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C010"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C011"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C012"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C013"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C014"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C015"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C016"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C017"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C018"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C019"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C020"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C021"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C022"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C023"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C024"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C100"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C101"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C102"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C103"/>
+   <testResult reason="Xalan configured" status="skipped" testName="xml-to-json-C104"/>
+   <testResult status="pass" testName="xml-to-json-D001"/>
+   <testResult status="pass" testName="xml-to-json-D002"/>
+   <testResult status="fail" testName="xml-to-json-D003">
+      <outResult>
+         <errTrace>FOAP0001 : There was an issue, processing an xdm input node provided as an argument to function call fn:xml-to-json.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="xml-to-json-D004"/>
+   <testResult status="pass" testName="xml-to-json-D005"/>
+   <testResult status="fail" testName="xml-to-json-D006">
+      <outResult>
+         <errTrace>FOAP0001 : There was an issue, processing an xdm input node provided as an argument to function call fn:xml-to-json.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="xml-to-json-D007"/>
+   <testResult status="pass" testName="xml-to-json-D008"/>
+   <testResult status="pass" testName="xml-to-json-D009"/>
+   <testResult status="fail" testName="xml-to-json-D010">
+      <outResult>
+         <errTrace>FOAP0001 : There was an issue, processing an xdm input node provided as an argument to function call fn:xml-to-json.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="xml-to-json-D011"/>
+   <testResult status="fail" testName="xml-to-json-D012"/>
+   <testResult status="fail" testName="xml-to-json-D013"/>
+   <testResult status="fail" testName="xml-to-json-D014"/>
+   <testResult status="fail" testName="xml-to-json-D015"/>
+   <testResult status="fail" testName="xml-to-json-D016"/>
+   <testResult status="fail" testName="xml-to-json-D017"/>
+   <testResult status="fail" testName="xml-to-json-D018"/>
+   <testResult status="fail" testName="xml-to-json-D019"/>
+   <testResult status="pass" testName="xml-to-json-D101"/>
+   <testResult status="pass" testName="xml-to-json-D102"/>
+   <testResult status="pass" testName="xml-to-json-D103"/>
+   <testResult status="pass" testName="xml-to-json-D104"/>
+   <testResult status="pass" testName="xml-to-json-D201"/>
+   <testResult status="pass" testName="xml-to-json-D202"/>
+   <testResult status="pass" testName="xml-to-json-D203"/>
+   <testResult status="pass" testName="xml-to-json-D204"/>
+   <testResult status="pass" testName="xml-to-json-D205"/>
+   <testResult status="pass" testName="xml-to-json-D206"/>
+   <testResult status="pass" testName="xml-to-json-D301"/>
+   <testResult status="pass" testName="xml-to-json-D302"/>
+   <testResult status="pass" testName="xml-to-json-D303"/>
+   <testResult status="pass" testName="xml-to-json-D401"/>
+   <testResult status="pass" testName="xml-to-json-D402"/>
+   <testResult status="pass" testName="xml-to-json-D403"/>
+   <testResult status="pass" testName="xml-to-json-D404"/>
+   <testResult status="fail" testName="xml-to-json-D405"/>
+   <testResult status="fail" testName="xml-to-json-D406"/>
+   <testResult status="pass" testName="xml-to-json-D407"/>
+   <testResult status="fail" testName="xml-to-json-D501">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;t&gt;{"1":"1","\\u0031":"1"}&lt;/t&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="xml-to-json-D502">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;t&gt;{"\\n":"1","\\u000a":"2"}&lt;/t&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="xml-to-json-D503">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;t&gt;{"\\u000A":"1","\\u000a":"2"}&lt;/t&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="xml-to-json-D504">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="xml-to-json-D505"/>
+   <testResult status="fail" testName="xml-to-json-D506"/>
+   <testResult status="pass" testName="xml-to-json-D507"/>
+   <testResult testName="xml-to-json-D508"/>
+   <testResult status="fail" testName="xml-to-json-D509"/>
+   <testResult status="fail" testName="xml-to-json-D510"/>
+   <testResult status="fail" testName="xml-to-json-D511"/>
+</testrun>

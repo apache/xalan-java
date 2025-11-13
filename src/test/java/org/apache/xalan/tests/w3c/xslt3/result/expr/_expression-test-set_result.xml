@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T12:40:47Z" fail="11" name="expression" pass="37" skipped="2" statusUnknown="1" totalRun="49">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:38Z" fail="16" name="expression" pass="84" skipped="4" statusUnknown="1" totalRun="101">
    <testResult status="pass" testName="expression-0101"/>
    <testResult status="pass" testName="expression-0301"/>
    <testResult status="pass" testName="expression-0302"/>
@@ -63,5 +63,67 @@
       </outResult>
    </testResult>
    <testResult status="pass" testName="expression-1001"/>
-   <testResult testName="expression-1101"/>
+   <testResult reason="Xalan configured" status="skipped" testName="expression-1101"/>
+   <testResult status="pass" testName="expression-1102"/>
+   <testResult status="pass" testName="expression-1103"/>
+   <testResult status="fail" testName="expression-1104"/>
+   <testResult status="pass" testName="expression-1201"/>
+   <testResult status="pass" testName="expression-1301"/>
+   <testResult status="pass" testName="expression-1401"/>
+   <testResult status="pass" testName="expression-1501"/>
+   <testResult status="fail" testName="expression-1601">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}escape-html-uri()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="expression-1701"/>
+   <testResult status="pass" testName="expression-1702"/>
+   <testResult status="pass" testName="expression-1801"/>
+   <testResult reason="Xalan configured" status="skipped" testName="expression-2001"/>
+   <testResult status="pass" testName="expression-2101"/>
+   <testResult status="pass" testName="expression-2201"/>
+   <testResult status="pass" testName="expression-2202"/>
+   <testResult status="pass" testName="expression-2203"/>
+   <testResult status="pass" testName="expression-2301"/>
+   <testResult status="pass" testName="expression-2302"/>
+   <testResult status="pass" testName="expression-2401"/>
+   <testResult status="pass" testName="expression-2402"/>
+   <testResult testName="expression-2501"/>
+   <testResult status="pass" testName="expression-2601"/>
+   <testResult status="pass" testName="expression-2701"/>
+   <testResult status="pass" testName="expression-2702"/>
+   <testResult status="pass" testName="expression-2801"/>
+   <testResult status="pass" testName="expression-2901"/>
+   <testResult status="pass" testName="expression-3001"/>
+   <testResult status="pass" testName="expression-3101"/>
+   <testResult status="pass" testName="expression-3201"/>
+   <testResult status="pass" testName="expression-3301"/>
+   <testResult status="pass" testName="expression-3302"/>
+   <testResult status="pass" testName="expression-3401"/>
+   <testResult status="pass" testName="expression-3501"/>
+   <testResult status="pass" testName="expression-3601"/>
+   <testResult status="pass" testName="expression-3701"/>
+   <testResult status="pass" testName="expression-3801"/>
+   <testResult status="pass" testName="expression-3901"/>
+   <testResult status="pass" testName="expression-4001"/>
+   <testResult status="pass" testName="expression-4101"/>
+   <testResult status="pass" testName="expression-4201"/>
+   <testResult status="pass" testName="expression-4202"/>
+   <testResult status="pass" testName="expression-4203"/>
+   <testResult status="pass" testName="expression-4204"/>
+   <testResult status="pass" testName="expression-4205"/>
+   <testResult status="pass" testName="expression-4206"/>
+   <testResult status="pass" testName="expression-4207"/>
+   <testResult status="pass" testName="expression-4208"/>
+   <testResult status="pass" testName="expression-4209"/>
+   <testResult status="pass" testName="expression-4210"/>
+   <testResult status="fail" testName="expression-4301"/>
+   <testResult status="pass" testName="expression-4302"/>
+   <testResult status="fail" testName="expression-4303">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;span&gt;false&lt;/span&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="expression-4401"/>
+   <testResult status="fail" testName="expression-4402"/>
 </testrun>

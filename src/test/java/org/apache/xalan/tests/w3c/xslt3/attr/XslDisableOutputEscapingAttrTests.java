@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xslt3.expr;
+package org.apache.xalan.tests.w3c.xslt3.attr;
 
 import org.apache.xalan.tests.w3c.xslt3.W3CXslTransformTestsUtil;
 import org.junit.AfterClass;
@@ -23,28 +23,20 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XSL 3.0 transformation 
- * tests for XPath expressions.
+ * tests for XSLT 'disable-output-escaping' attribute.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslExpressionTests extends W3CXslTransformTestsUtil {     
+public class XslDisableOutputEscapingAttrTests extends W3CXslTransformTestsUtil {     
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "expr/expression/_expression-test-set.xml";
-    	m_resultSubFolderName = "expr";
+    	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "attr/disable-output-escaping/_disable-output-escaping-test-set.xml";
+    	m_resultSubFolderName = "attr";    	
     	
-    	m_testResultFileName = "_expression-test-set_result.xml";
-    	
-    	// Xalan-J has bugs with following, W3C XSLT 3.0 test cases.
-    	// Skipping these XSL test cases for now.
-    	
-    	m_skipped_tests_list.add("expression-0601");
-    	m_skipped_tests_list.add("expression-0902");
-    	m_skipped_tests_list.add("expression-2001");
-    	m_skipped_tests_list.add("expression-1101");
+    	m_testResultFileName = "_disable-output-escaping-test-set_result.xml";
     }
 
     @AfterClass
@@ -55,7 +47,7 @@ public class XslExpressionTests extends W3CXslTransformTestsUtil {
     }
 
     @Test
-    public void runXslExpressionTests() {    	
+    public void runXslDisableOutputEscapingAttrTests() {    	
        runXslTestSet();
     }
 

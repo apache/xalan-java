@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:44Z" fail="40" name="tunnel" pass="18" skipped="0" statusUnknown="0" totalRun="58">
+   <testResult status="pass" testName="tunnel-0101"/>
+   <testResult status="pass" testName="tunnel-0102"/>
+   <testResult status="fail" testName="tunnel-0103"/>
+   <testResult status="pass" testName="tunnel-0104"/>
+   <testResult status="pass" testName="tunnel-0105"/>
+   <testResult status="fail" testName="tunnel-0106"/>
+   <testResult status="pass" testName="tunnel-0107"/>
+   <testResult status="fail" testName="tunnel-0108"/>
+   <testResult status="fail" testName="tunnel-0109">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;foo and bar&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="tunnel-0110">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;foo1, foo2, foo3, xyz4&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="tunnel-0111"/>
+   <testResult status="pass" testName="tunnel-0112"/>
+   <testResult status="fail" testName="tunnel-0113"/>
+   <testResult status="pass" testName="tunnel-0114"/>
+   <testResult status="fail" testName="tunnel-0115">
+      <outResult>
+         <errTrace>XTTE0590 : Allowed values for XSL with-param's tunnel attribute are : yes, true, 1, no, false, 0. The supplied value is .</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="tunnel-0116">
+      <outResult>
+         <errTrace>XTTE0590 : The allowed values for XSL param's tunnel attribute are : yes, true, 1, no, false, 0. The supplied value is .</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="tunnel-0117"/>
+   <testResult status="fail" testName="tunnel-0118"/>
+   <testResult status="fail" testName="tunnel-0119"/>
+   <testResult status="fail" testName="tunnel-0120"/>
+   <testResult status="pass" testName="tunnel-0201"/>
+   <testResult status="pass" testName="tunnel-0202"/>
+   <testResult status="fail" testName="tunnel-0203"/>
+   <testResult status="fail" testName="tunnel-0204"/>
+   <testResult status="pass" testName="tunnel-0205"/>
+   <testResult status="pass" testName="tunnel-0206"/>
+   <testResult status="fail" testName="tunnel-0207"/>
+   <testResult status="fail" testName="tunnel-0208"/>
+   <testResult status="fail" testName="tunnel-0209"/>
+   <testResult status="fail" testName="tunnel-0210"/>
+   <testResult status="fail" testName="tunnel-0211"/>
+   <testResult status="fail" testName="tunnel-0212"/>
+   <testResult status="fail" testName="tunnel-0213"/>
+   <testResult status="fail" testName="tunnel-0214"/>
+   <testResult status="pass" testName="tunnel-0215"/>
+   <testResult status="fail" testName="tunnel-0216"/>
+   <testResult status="fail" testName="tunnel-0217"/>
+   <testResult status="fail" testName="tunnel-0218"/>
+   <testResult status="fail" testName="tunnel-0219"/>
+   <testResult status="fail" testName="tunnel-0220"/>
+   <testResult status="fail" testName="tunnel-0221"/>
+   <testResult status="fail" testName="tunnel-0222"/>
+   <testResult status="fail" testName="tunnel-0223"/>
+   <testResult status="fail" testName="tunnel-0224"/>
+   <testResult status="fail" testName="tunnel-0225"/>
+   <testResult status="fail" testName="tunnel-0226"/>
+   <testResult status="fail" testName="tunnel-0227"/>
+   <testResult status="pass" testName="tunnel-0301"/>
+   <testResult status="pass" testName="tunnel-0302"/>
+   <testResult status="fail" testName="tunnel-0303"/>
+   <testResult status="fail" testName="tunnel-0304"/>
+   <testResult status="fail" testName="tunnel-0401"/>
+   <testResult status="fail" testName="tunnel-0402"/>
+   <testResult status="pass" testName="tunnel-0403"/>
+   <testResult status="pass" testName="tunnel-0404"/>
+   <testResult status="pass" testName="tunnel-0405"/>
+   <testResult status="pass" testName="tunnel-0406"/>
+   <testResult status="fail" testName="tunnel-0501"/>
+</testrun>
