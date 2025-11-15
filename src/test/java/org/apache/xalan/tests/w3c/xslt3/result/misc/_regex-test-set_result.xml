@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:43Z" fail="13" name="regex" pass="35" skipped="17" statusUnknown="0" totalRun="48">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-15T17:37:03Z" fail="12" name="regex" pass="32" skipped="6" statusUnknown="0" totalRun="44">
    <testResult status="pass" testName="regex-001"/>
    <testResult status="fail" testName="regex-002"/>
    <testResult status="pass" testName="regex-003"/>
@@ -58,24 +58,9 @@
    <testResult status="pass" testName="regex-062"/>
    <testResult status="pass" testName="regex-066"/>
    <testResult status="pass" testName="regex-068"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070a"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070b"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070c"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070d"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070e"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070f"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070g"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070h"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070i"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070j"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070k"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-070l"/>
-   <testResult status="pass" testName="regex-071"/>
-   <testResult status="pass" testName="regex-072"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-086a"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-086b"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-086c"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="regex-086d"/>
-   <testResult status="fail" testName="regex-090"/>
-   <testResult status="pass" testName="regex-091"/>
+   <testResult reason="Xalan configured" status="skipped" testName="regex-070a"/>
+   <testResult reason="Xalan configured" status="skipped" testName="regex-070b"/>
+   <testResult reason="Xalan configured" status="skipped" testName="regex-070c"/>
+   <testResult reason="Xalan configured" status="skipped" testName="regex-070d"/>
+   <testResult reason="Xalan configured" status="skipped" testName="regex-070e"/>
 </testrun>

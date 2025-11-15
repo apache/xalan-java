@@ -93,6 +93,7 @@ public class Process
     System.out.println(resbundle.getString("optionXSVAL"));  //"   [-XSVAL (Request XML Schema validation of XML input document)]");
     System.out.println(resbundle.getString("optionXSLEVALUATE"));  //"   [-XSLEVALUATE (Request xsl:evaluate instruction to be enabled)]");
     System.out.println(resbundle.getString("optionINIT_TEMPLATE"));  //" [-INIT_TEMPLATE (Specify an XSL template's name to select an initial template for transformation)]");
+    System.out.println(resbundle.getString("optionINIT_MODE"));  //" [-INIT_MODE (Specify an XSL transformation's initial mode name)]");
     System.out.println(resbundle.getString("optionENCODING"));  //" [-ENCODING (Specify value of encoding to be used for XML input and stylesheet documents. Use format utf_8 (default), iso_8859_1 etc.)]");
     System.out.println(resbundle.getString("optionOUT"));  //"   [-OUT outputFileName]");
 
@@ -165,7 +166,8 @@ public class Process
 	  boolean isSecureProcessing = false;    
 	  boolean isSchemaValidation = false;    
 	  boolean isXslEvaluate = false;
-	  String initialTemplateName = null;	  
+	  String initialTemplateName = null;
+	  String initialModeName = null;
 
 	  /**
 	   * The default java.io.PrintWriter diagnostic writer.
@@ -695,6 +697,13 @@ public class Process
 				  }
 				  
 				  tfactory.setAttribute(XalanProperties.INIT_TEMPLATE, initialTemplateName);
+			  }
+			  else if ("-INIT_MODE".equalsIgnoreCase(argv[i])) {
+				  if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-') {
+					  initialModeName = argv[++i]; 					  
+				  }
+				  
+				  tfactory.setAttribute(XalanProperties.INIT_MODE, initialModeName);
 			  }
 			  else
 				  System.err.println(

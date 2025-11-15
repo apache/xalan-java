@@ -125,9 +125,14 @@ public class StylesheetRoot extends StylesheetComposed
     private XSModel m_xsModel;
     
     /**
-     * An XSL transformation initial template name.
+     * An XSL transformation's initial template name.
      */
     private String m_init_template_name = null;
+    
+    /**
+     * An XSL transformation's initial mode name.
+     */
+    private String m_init_mode_name = null;
     
     private ErrorListener m_errorListener;
     
@@ -2019,6 +2024,14 @@ public class StylesheetRoot extends StylesheetComposed
 	 */
 	public void setInitTemplateName(String initTemplateName) {
 		this.m_init_template_name = initTemplateName;
+	}
+	
+	public String getInitModeName() {
+		return m_init_mode_name;
+	}
+
+	public void setInitModeName(String initModeName) {
+		this.m_init_mode_name = initModeName;
 	}
 
 }

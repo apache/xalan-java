@@ -1380,6 +1380,7 @@ public class XSLTErrorResources extends ListResourceBundle
   { "optionXSVAL", "   [-XSVAL (Request XML Schema validation of XML input document)]"},
   { "optionXSLEVALUATE", "   [-XSLEVALUATE (Request xsl:evaluate instruction to be enabled)]"},
   { "optionINIT_TEMPLATE", "   [-INIT_TEMPLATE (Specify an XSL template's name to select an initial template for transformation)]"},
+  { "optionINIT_MODE", "   [-INIT_MODE (Specify an XSL transformation's initial mode name)]"},
   { "optionENCODING", "   [-ENCODING (Specify value of encoding to be used for XML input and stylesheet documents. Use format utf_8 (default), iso_8859_1 etc.)]"},
   { "optionOUT",  "   [-OUT outputFileName]"},
   { "optionLXCIN", "   [-LXCIN compiledStylesheetFileNameIn]"},

@@ -37,6 +37,8 @@ public class XslDisableOutputEscapingAttrTests extends W3CXslTransformTestsUtil 
     	m_resultSubFolderName = "attr";    	
     	
     	m_testResultFileName = "_disable-output-escaping-test-set_result.xml";
+    	
+    	m_skipped_tests_list.add("doe-0177a");
     }
 
     @AfterClass

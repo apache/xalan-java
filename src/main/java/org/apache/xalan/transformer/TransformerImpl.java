@@ -356,9 +356,14 @@ public class TransformerImpl extends Transformer
   private boolean m_source_location = false;
   
   /**
-   * An XSL stylesheet initial template name.
+   * An XSL transformation's initial template name.
    */
   private String m_init_template_name = null;
+  
+  /**
+   * An XSL transformation's initial mode name.
+   */
+  private String m_init_mode_name = null;
     
   /**
    * This is a compile-time flag to turn off calling
@@ -484,6 +489,7 @@ public class TransformerImpl extends Transformer
     m_incremental = stylesheet.getIncremental();
     m_source_location = stylesheet.getSource_location();
     m_init_template_name = stylesheet.getInitTemplateName();
+    m_init_mode_name = stylesheet.getInitModeName();
     setStylesheet(stylesheet);
     XPathContext xPath = new XPathContext(this);
     xPath.setIncremental(m_incremental);
@@ -887,9 +893,11 @@ public class TransformerImpl extends Transformer
       }
       finally
       {
+    	m_init_mode_name = null;
+    	  
         if (shouldRelease && (dtm != null)) {
           mgr.release(dtm, hardDelete);
-        }
+        }                
       }
 
       // Kick off the parse.  When the ContentHandler gets 
@@ -2460,7 +2468,13 @@ public class TransformerImpl extends Transformer
              }                          
           }          
           else {
-        	  QName mode = this.getMode();
+        	  QName mode = null;        	  
+        	  if (m_init_mode_name != null) {
+        		 mode = new QName(m_init_mode_name);        		         		 
+        	  }
+        	  else {
+        	     mode = this.getMode();
+        	  }
 
         	  if (isApplyImports)
         		  template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode,
@@ -2521,7 +2535,6 @@ public class TransformerImpl extends Transformer
       m_xcontext.pushCurrentNode(child);
       pushPairCurrentMatched(template, child);
       
-      // Fix copy copy29 test.
       if (!isApplyImports) {
           DTMCursorIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
           m_xcontext.pushContextNodeList(cnl);
@@ -2580,6 +2593,10 @@ public class TransformerImpl extends Transformer
       
       popElemTemplateElement();
     }
+    
+    if (m_init_mode_name != null) {
+       m_init_mode_name = null;
+    }
 
     return true;
   }
@@ -2608,8 +2625,9 @@ public class TransformerImpl extends Transformer
 
     try
     {
-      if(null != mode)
+      if((null != mode) && (m_init_mode_name == null)) {
         pushMode(mode);
+      }
       xctxt.pushCurrentNode(xctxt.getDTMHandleFromNode(context));
       executeChildTemplates(elem, handler);
     }
@@ -2619,8 +2637,9 @@ public class TransformerImpl extends Transformer
       
       // I'm not sure where or why this was here.  It is clearly in 
       // error though, without a corresponding pushMode().
-      if (null != mode)
+      if((null != mode) && (m_init_mode_name == null)) {
         popMode();
+      }
     }
   }
 
@@ -3683,7 +3702,16 @@ public class TransformerImpl extends Transformer
    */
   public QName getMode()
   {
-    return m_modes.isEmpty() ? null : (QName) m_modes.peek();
+	  QName result = null;
+	  
+	  if (m_init_mode_name != null) {
+		 result = new QName(m_init_mode_name); 
+	  }
+	  else {
+		 result = m_modes.isEmpty() ? null : (QName) m_modes.peek();
+	  }
+	  
+	  return result;
   }
   
   /**

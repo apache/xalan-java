@@ -108,6 +108,10 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   /** Static string to be used for initial template feature */
   public static final String FEATURE_INIT_TEMPLATE =
                              XalanProperties.INIT_TEMPLATE;
+  
+  /** Static string to be used for initial mode feature */
+  public static final String FEATURE_INIT_MODE =
+                             XalanProperties.INIT_MODE;
 
   public javax.xml.transform.Templates processFromNode(Node node)
           throws TransformerConfigurationException
@@ -485,9 +489,14 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   private boolean m_source_location = false;
   
   /**
-   * An XSL stylesheet initial template name.
+   * An XSL transformation's initial template name.
    */
   private String m_init_template_name = null;
+  
+  /**
+   * An XSL transformation's initial mode name.
+   */
+  private String m_init_mode_name = null;
   
   /**
    * Flag set by FEATURE_INCREMENTAL.
@@ -574,6 +583,10 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     {
     	m_init_template_name = (String)value; 
     }
+    else if(name.equals(FEATURE_INIT_MODE))
+    {
+    	m_init_mode_name = (String)value; 
+    }
     else
     {
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUPPORTED, new Object[]{name})); //name + "not supported");
@@ -607,6 +620,10 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     else if (name.equals(FEATURE_INIT_TEMPLATE))
     {
       return m_init_template_name;
+    }
+    else if (name.equals(FEATURE_INIT_MODE))
+    {
+      return m_init_mode_name;
     }
     else
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_RECOGNIZED, new Object[]{name})); //name + " attribute not recognized");

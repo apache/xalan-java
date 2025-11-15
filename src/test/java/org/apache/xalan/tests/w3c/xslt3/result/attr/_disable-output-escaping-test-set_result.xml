@@ -1,58 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:44Z" fail="22" name="disable-output-escaping" pass="5" skipped="4" statusUnknown="1" totalRun="28">
-   <testResult status="fail" testName="doe-0176">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0176a">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0176b">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0176c">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0176d">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0176e">
-      <outResult/>
-   </testResult>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-15T17:37:05Z" fail="10" name="disable-output-escaping" pass="16" skipped="5" statusUnknown="1" totalRun="27">
+   <testResult status="pass" testName="doe-0176"/>
+   <testResult status="pass" testName="doe-0176a"/>
+   <testResult status="pass" testName="doe-0176b"/>
+   <testResult status="pass" testName="doe-0176c"/>
+   <testResult status="pass" testName="doe-0176d"/>
+   <testResult status="pass" testName="doe-0176e"/>
    <testResult status="pass" testName="doe-0176f"/>
    <testResult status="skipped" testName="doe-0177" xsltVersion="XSLT 2.0/1.0 only test case"/>
-   <testResult status="fail" testName="doe-0177a">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0180">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0181">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0182">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0183">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0184">
-      <outResult>
-         <errTrace>XTTE0570 : A sequence of size 3, cannot be cast to a type text().</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="doe-0185">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0186">
-      <outResult>
-         <errTrace>XTTE0570 : A sequence of size 3, cannot be cast to a type text().</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="doe-0190">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="doe-0191">
-      <outResult/>
-   </testResult>
+   <testResult reason="Xalan configured" status="skipped" testName="doe-0177a"/>
+   <testResult status="pass" testName="doe-0180"/>
+   <testResult status="pass" testName="doe-0181"/>
+   <testResult status="pass" testName="doe-0182"/>
+   <testResult status="fail" testName="doe-0183"/>
+   <testResult status="fail" testName="doe-0184"/>
+   <testResult status="fail" testName="doe-0185"/>
+   <testResult status="fail" testName="doe-0186"/>
+   <testResult status="pass" testName="doe-0190"/>
+   <testResult status="pass" testName="doe-0191"/>
    <testResult status="fail" testName="doe-0201"/>
    <testResult status="pass" testName="doe-0401"/>
    <testResult status="fail" testName="doe-0402">

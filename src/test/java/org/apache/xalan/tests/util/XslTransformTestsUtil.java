@@ -74,6 +74,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     
     protected static String m_initTemplateName = null;
     
+    protected static String m_initModeName = null;
+    
     /**
      * Class field representing file path prefix, that is used for test cases
      * related to XSL instructions like xsl:result-document that have 'href' 
@@ -120,6 +122,10 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            
            if (m_initTemplateName != null) {
         	  m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName); 
+           }
+           
+           if (m_initModeName != null) {
+        	   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_MODE, m_initModeName); 
            }
            
            StreamSource xsltStreamSrc = new StreamSource(xslDocumentUriStr);
@@ -191,10 +197,16 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
             Assert.fail();    
         }
         finally {
-        	m_fileComparisonType = XSLTestConstants.XML;         	
+        	m_fileComparisonType = XSLTestConstants.XML;
+        	
         	if (m_initTemplateName != null) {
         		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, null);
         		m_initTemplateName = null;
+        	}
+        	
+        	if (m_initModeName != null) {
+        		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_MODE, null);
+        		m_initModeName = null;
         	}
         }
      }
@@ -649,38 +661,6 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         }
         
         return result;
-    }
-    
-    /**
-     * When running W3C XSLT 3.0 test suite, check whether the test case 
-     * is written for XSLT 'initial mode' feature.
-     *  
-     * @param testCaseNode
-     * @return						Boolean value true or false						
-     */
-    protected boolean isXslt3InitialModeTestCase(Node testCaseNode) {
-    	
-    	boolean result = false;
-
-    	NodeList nodeList = testCaseNode.getChildNodes();
-    	int nodeListLength = nodeList.getLength();
-    	for (int idx = 0; idx < nodeListLength; idx++) {
-    		Node node = nodeList.item(idx);
-    		if (node.getNodeType() == Node.ELEMENT_NODE) {
-    			Element elemNode = (Element)node;
-    			String elemName = elemNode.getLocalName();
-    			if ("test".equals(elemName)) {
-    				NodeList nodeList1 = elemNode.getElementsByTagName("initial-mode");
-    				if (nodeList1.getLength() > 0) {
-    					result = true;
-
-    					break; 
-    				}
-    			}
-    		}
-    	}
-
-    	return result;
     }
     
     /**

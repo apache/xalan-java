@@ -1,0 +1,16 @@
+<!-- 
+     XHTML entity definitions available within this document,
+     are copied from the locations:
+     
+     http://www.w3.org/MarkUp/DTD/xhtml-lat1.ent
+	 http://www.w3.org/MarkUp/DTD/xhtml-special.ent
+	 
+	 to provide to an XML parser's entity resolver configuration. 	 
+-->
+
+<!ENTITY lt      "&#38;#60;" ><!-- less-than sign, U+003C ISOnum -->
+<!ENTITY gt      "&#62;" ><!-- greater-than sign, U+003E ISOnum -->
+<!ENTITY amp     "&#38;#38;" ><!-- ampersand, U+0026 ISOnum -->
+<!ENTITY apos    "&#39;" ><!-- The Apostrophe (Apostrophe Quote, APL Quote), U+0027 ISOnum -->
+<!ENTITY quot    "&#34;" ><!-- quotation mark (Quote Double), U+0022 ISOnum -->
+<!ENTITY nbsp    "&#160;" ><!-- no-break space = non-breaking space, U+00A0 ISOnum -->

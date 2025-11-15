@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
-
 package org.apache.xalan.transformer;
 
 /**
@@ -34,10 +30,15 @@ public class XalanProperties
     = "http://xml.apache.org/xalan/properties/source-location";
   
   /**
-   * Constant denoting an XSL stylesheet transformation feature,
-   * where an XSL template name for a named template is specified for 
-   * selecting an initial template from where an XSL transformation
-   * processing should begin.
+   * Constant representing an XSL stylesheet transformation's
+   * initial template feature.
    */
   public final static String INIT_TEMPLATE = "init-template";
+  
+  /**
+   * Constant representing an XSL stylesheet transformation's
+   * initial mode feature.
+   */
+  public final static String INIT_MODE = "init-mode";
+  
 }

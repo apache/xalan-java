@@ -198,21 +198,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
        			  continue; 
      		   }
     		   else if (isXslt3PackageFeatureTestCase(node)) {
-    			   // We skip running XSLT 3.0 package feature test cases
+    			   // We skip running XSLT 3.0 xsl:package feature test cases, for now
     			   Element elemTestResult = testResultDoc.createElement("testResult");
     			   elemTestResult.setAttribute("testName", testCaseName);
     			   elemTestResult.setAttribute("status", "skipped");
     			   elemTestResult.setAttribute("feature", "xsl:package test case");
-    			   elemTestRun.appendChild(elemTestResult);
-
-    			   continue; 
-      		   }
-    		   else if (isXslt3InitialModeTestCase(node)) {
-    			   // We skip running XSLT 3.0 'initial mode' feature test cases
-    			   Element elemTestResult = testResultDoc.createElement("testResult");
-    			   elemTestResult.setAttribute("testName", testCaseName);
-    			   elemTestResult.setAttribute("status", "skipped");
-    			   elemTestResult.setAttribute("feature", "XSLT 3.0 'initial mode' test case");
     			   elemTestRun.appendChild(elemTestResult);
 
     			   continue; 
@@ -299,6 +289,47 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   }
     		   }
     		   
+    		   Map<String, XObject> xslParamMap = new HashMap<String, XObject>();
+    		   
+    		   for (int idx2 = 0; idx2 < nodeList2.getLength(); idx2++) {
+    			   Node node2 = nodeList2.item(idx2);
+    			   if (node2.getNodeType() == Node.ELEMENT_NODE) {
+    				   Element elemNode = (Element)node2;
+    				   if (ELEM_NODE_NAME_TEST.equals(elemNode.getLocalName())) {    					   
+    					   NodeList nodeList3 = elemNode.getElementsByTagName("stylesheet");
+    					   Element elemNode2 = (Element)(nodeList3.item(0));    					   
+    					   String fileName = elemNode2.getAttribute(FILE_ATTR);
+    					   URI uri = new URI(m_xslTransformTestSetFilePath);
+   						   uri = uri.resolve(fileName);
+   						   xslStylesheetUriStr = uri.toString();
+   						   
+   						   NodeList nodeList4 = elemNode.getElementsByTagName("initial-mode");
+   						   if (nodeList4.getLength() == 1) {
+   							   Element elemNode3 = (Element)(nodeList4.item(0));
+   							   m_initModeName = elemNode3.getAttribute(NAME_ATTR);
+   						   }
+   						   
+   						   NodeList xslParamNodeList = elemNode.getElementsByTagName("param");
+   						   int xslParamCount = xslParamNodeList.getLength();
+   						   for (int idx3 = 0; idx3 < xslParamCount; idx3++) {
+   							   Element elemParamNode = (Element)(xslParamNodeList.item(idx3));
+   							   String paramNameStr = elemParamNode.getAttribute("name");
+							   String paramXPathStr = elemParamNode.getAttribute("select");    								   
+							   XPathContext xctxt = new XPathContext(false); 
+							   org.apache.xpath.XPath paramXPathObj = new org.apache.xpath.XPath(paramXPathStr, null, xctxt.getNamespaceContext(), 
+									                                                                           org.apache.xpath.XPath.SELECT, null);
+							   XObject xObj = paramXPathObj.execute(xctxt, DTM.NULL, null);    								   
+							   xslParamMap.put(paramNameStr, xObj);
+   						   }
+   						   
+   						   Node siblingNode = elemNode.getNextSibling();
+   						   expectedResultElem = (Element)(siblingNode.getNextSibling());   						   
+   						   
+   						   break;
+    				   }
+    			   }
+    		   }
+    		   
     		   DOMSource xmlInpDomSource = null;
     		   
     		   if (xmlDocInpStr != null) {
@@ -310,8 +341,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   StreamSource xslStreamSrc = new StreamSource(xslStylesheetUriStr);
     		   xslStreamSrc.setSystemId(xslStylesheetUriStr);
     		   
-    		   try {
-    			  Map<String, XObject> xslParamMap = new HashMap<String, XObject>();
+    		   try {    			  
     		      runW3CXSLTTestSuiteXslTransformAndEmitResult(testCaseName, xmlInpDomSource, xslStreamSrc, xslParamMap, 
     		    		                                                     expectedResultElem, elemTestRun, testResultDoc);
     		   }
@@ -663,6 +693,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   }
     		}
     		
+    		if (m_initModeName != null) {
+     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_MODE, m_initModeName);
+     		}
+    		
     		Transformer transformer = m_xslTransformerFactory.newTransformer(xslStreamSrc);
     		    		
     		TransformerImpl transformerImpl = (TransformerImpl)transformer;
@@ -720,56 +754,72 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));
     		
+    		String xslTransformMethod = transformer.getOutputProperty(OutputKeys.METHOD);
+    		
     		if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName) || SERIALIZATION_MATCHES.equals(expectedNodeKindName) || 
-    				                                                             ASSERT_SERIALIZATION.equals(expectedNodeKindName)) {    			
-    			NodeList nodeList = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
-    			int nodeListLength = nodeList.getLength();
-    			
-    			String xslTransformMethod = transformer.getOutputProperty(OutputKeys.METHOD);
-    			
+    				                                                             ASSERT_SERIALIZATION.equals(expectedNodeKindName)) {    			    			    			    			    			
     			if (SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {
     				testCaseOneSerializationMatchCheck(elemTestResult, nodeExpected, resultStrWriter, xslTransformMethod);
     			}
-    			else if (ASSERT_SERIALIZATION.equals(expectedNodeKindName)) {    				
-    				String fileName = ((Element)nodeExpected).getAttribute("file");
-    				String encoding = ((Element)nodeExpected).getAttribute("encoding");
-    				int idx = m_xslTransformTestSetFilePath.lastIndexOf('/');
-    				String fileUriStr = m_xslTransformTestSetFilePath.substring(0, idx) + '/' + fileName;    				
-    				FileInputStream fileInpStr = new FileInputStream(new File(new URI(fileUriStr)));
-    				byte[] byteArr = new byte[512];
-    				int bytesRead = 0;
-    				StringBuffer strBuff = new StringBuffer();
-    				Charset charSet = null;
-    				if (!"".equals(encoding)) {
-    				   charSet = Charset.forName(encoding);
+    			else if (ASSERT_SERIALIZATION.equals(expectedNodeKindName)) {
+    				String xslTransformResultStr = resultStrWriter.toString();
+    				
+    				String expectedResultStr = null;
+    				Element nodeExpectedElem = (Element)nodeExpected;
+    				String fileName = nodeExpectedElem.getAttribute("file");
+    				String encoding = nodeExpectedElem.getAttribute("encoding");
+    				if (!"".equals(fileName)) {
+    					int idx2 = m_xslTransformTestSetFilePath.lastIndexOf('/');
+    					String fileUriStr = m_xslTransformTestSetFilePath.substring(0, idx2) + '/' + fileName;    				
+    					FileInputStream fileInpStr = new FileInputStream(new File(new URI(fileUriStr)));
+    					byte[] byteArr = new byte[512];
+    					int bytesRead = 0;
+    					StringBuffer strBuff = new StringBuffer();
+    					Charset charSet = null;
+    					if (!"".equals(encoding)) {
+    						charSet = Charset.forName(encoding);
+    					}
+    					while ((bytesRead = fileInpStr.read(byteArr)) != -1) {
+    						String str1 = null;
+    						if (charSet != null) {
+    							str1 = new String(byteArr, 0, bytesRead, charSet);
+    						}
+    						else {
+    							str1 = new String(byteArr, 0, bytesRead);  
+    						}
+    						strBuff.append(str1);
+    					}
+
+    					fileInpStr.close();
+
+    					expectedResultStr = strBuff.toString();
     				}
-    				while ((bytesRead = fileInpStr.read(byteArr)) != -1) {
-    				   String str1 = null;
-    				   if (charSet != null) {
-    				      str1 = new String(byteArr, 0, bytesRead, charSet);
-    				   }
-    				   else {
-    					  str1 = new String(byteArr, 0, bytesRead);  
-    				   }
-    				   strBuff.append(str1);
+    				else {
+    					expectedResultStr = nodeExpectedElem.getTextContent(); 
     				}
     				
-    				fileInpStr.close();
-    				
-    				String expectedResultStr = strBuff.toString();
-    				if ((resultStrWriter.toString()).equals(expectedResultStr)) {
+    				if (xslTransformResultStr.equals(expectedResultStr)) {
     					elemTestResult.setAttribute("status", "pass");
     				}
     				else {
     				    elemTestResult.setAttribute("status", "fail");
     				}    				
     			}
-    			else if (nodeListLength > 0) {
-    			    testCaseMultipleSerializationMatchChecks(elemTestResult, resultStrWriter, nodeList, xslTransformMethod);
-    			}
     			else {
-    				testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter, trfWarningList);
-    		    }
+    				/**
+    				 * expectedNodeKindName is EXPECTED_NODE_KIND_ASSERT_ALL_OF. Check for
+    				 * XSL transform result's conformance with multiple expected results below
+    				 * an XML element 'all-of'.
+    				 */
+    				NodeList nodeList = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
+        			int nodeListLength = nodeList.getLength();        			
+        			if (nodeListLength > 0) {
+        			    testCaseMultipleSerializationMatchChecks(elemTestResult, resultStrWriter, nodeList, xslTransformMethod);
+        			}
+        			else {
+        				testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter, trfWarningList);
+        		    }
+    			}
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ANY_OF.equals(expectedNodeKindName)) {
     			Node childNode = nodeExpected.getFirstChild();
@@ -949,10 +999,16 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		elemTestRun.appendChild(elemTestResult);    		
     		trfErrorList.clear();
     		trfFatalErrorList.clear();
+    		
     		if (m_initTemplateName != null) {
      		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, null);
      		   m_initTemplateName = null;
      		}
+    		
+    		if (m_initModeName != null) {
+      		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_MODE, null);
+      		   m_initModeName = null;
+      		}
     	}    	    	
     }
 
@@ -1043,10 +1099,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		
 		Object xslInitTemplateVal = m_xslTransformerFactory.getAttribute(XalanProperties.INIT_TEMPLATE);
 		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, null);
+		
+		Object xslInitModeVal = m_xslTransformerFactory.getAttribute(XalanProperties.INIT_MODE);
+		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_MODE, null);
 
 		Transformer transformer = m_xslTransformerFactory.newTransformer(new DOMSource(verificationXslDoc));
 		
 		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, xslInitTemplateVal);
+		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_MODE, xslInitModeVal);
 
 		StringWriter strWriter = new StringWriter();
 		
@@ -1250,6 +1310,21 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 			xslTransformResultStr = xslTransformResultStr.replace("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">", "");
 		}
 		
+		int idx = xslTransformResultStr.indexOf("?>");
+		if (idx > -1) {
+			String prefixStr = xslTransformResultStr.substring(0, idx + 2);
+			String suffixStr = xslTransformResultStr.substring(idx + 2);
+			xslTransformResultStr = prefixStr + "<!DOCTYPE document SYSTEM \"entities.dtd\" [ ]>" + suffixStr;		
+			if (xslTransformResultStr.contains("xmlns=\"http://www.w3.org/1999/xhtml\"")) {
+				xslTransformResultStr.replace("xmlns=\"http://www.w3.org/1999/xhtml\"", "");				
+				int i1 = xslTransformResultStr.indexOf(" xmlns=\"http://www.w3.org/1999/xhtml\"");
+				prefixStr = xslTransformResultStr.substring(0, i1);
+				suffixStr = xslTransformResultStr.substring(i1 + "xmlns=\"http://www.w3.org/1999/xhtml\"".length() + 1);
+			}
+
+			xslTransformResultStr = (prefixStr + suffixStr);
+		}
+		
 		if (!(org.apache.xml.serializer.Method.TEXT).equals(xslTransformMethod)) {
 	    	Document xmlResultDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(xslTransformResultStr.getBytes()));
 
@@ -1259,40 +1334,53 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    	// Get list of all XML element nodes within DOM object xmlResultDoc
 	    	getXmlDomElemNodes(xmlResultDoc.getDocumentElement(), elemNodeList);		
 
-	    	for (int idx = 0; idx < elemNodeList.size(); idx++) {
-	    		elemNode = elemNodeList.get(idx);
+	    	int elemNodeListSize = elemNodeList.size();	    	
+	    	for (int idx2 = 0; idx2 < elemNodeListSize; idx2++) {
+	    		elemNode = elemNodeList.get(idx2);
 	    		String elemNodeStrValue = null;
 	    		String elemNodeStrValue2 = null; 
 	    		if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
 	    			Node node = elemNode.getFirstChild();
 	    			node = node.getFirstChild();
 	    			elemNodeStrValue = serializeXmlDomElementNode(node);
-	    			int i = elemNodeStrValue.indexOf("?>");
-	    			if (i > -1) {
-	    				elemNodeStrValue = (elemNodeStrValue.substring(i + 2)).trim();
+	    			int i1 = elemNodeStrValue.indexOf("?>");
+	    			if (i1 > -1) {
+	    				elemNodeStrValue = (elemNodeStrValue.substring(i1 + 2)).trim();
 	    			}
 	    		}
 	    		else {
 	    			elemNodeStrValue = elemNode.getTextContent();
 	    			elemNodeStrValue2 = serializeXmlDomElementNode(elemNode);
-	    			int i = elemNodeStrValue2.indexOf("?>");
-	    			if (i > -1) {
-	    				elemNodeStrValue2 = (elemNodeStrValue2.substring(i + 2)).trim();
+	    			int i1 = elemNodeStrValue2.indexOf("?>");
+	    			if (i1 > -1) {
+	    				elemNodeStrValue2 = (elemNodeStrValue2.substring(i1 + 2)).trim();
 	    			}
 	    		}
 
 	    		String[] strArray = serMatchesMetaData.getStrArr();
 	    		String strValue = serMatchesMetaData.getStrValue();
+	    			    			    			    			    		
 	    		if (strValue != null) {
-	    			Pattern pattern = Pattern.compile(strValue);   							 
-	    			Matcher matcher = pattern.matcher(elemNodeStrValue);
-	    			Matcher matcher2 = pattern.matcher(elemNodeStrValue2);  
-	    			if (strValue.equals(elemNodeStrValue) || matcher.matches()) {
-	    				isTestCasePass = true;
-	    			}
-	    			else if (strValue.equals(elemNodeStrValue2) || matcher2.matches()) {
-	    				isTestCasePass = true; 
-	    			}
+	    			Document xmlResultDoc2 = null;	    			
+	    			try {
+	    				String str2 = "<!DOCTYPE document SYSTEM \"entities.dtd\" [ ]>" + strValue;
+	    				xmlResultDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(str2.getBytes()));
+	    				strValue = serializeXmlDomElementNode(xmlResultDoc2);	    				
+	    				int strLength1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE document SYSTEM \"entities.dtd\">".length();
+	    				strValue = (strValue.substring(strLength1)).trim();
+	    				Pattern pattern = Pattern.compile(strValue);   							 
+	    				Matcher matcher = pattern.matcher(elemNodeStrValue);
+	    				Matcher matcher2 = pattern.matcher(elemNodeStrValue2);  
+	    				if (strValue.equals(elemNodeStrValue) || matcher.matches()) {
+	    					isTestCasePass = true;
+	    				}
+	    				else if (strValue.equals(elemNodeStrValue2) || matcher2.matches()) {
+	    					isTestCasePass = true; 
+	    				}
+	    		    }
+	    		    catch (Exception ex) {
+	    		    	// NO OP
+	    		    }
 	    		}
 	    		else {
 	    			String attrName = strArray[0];

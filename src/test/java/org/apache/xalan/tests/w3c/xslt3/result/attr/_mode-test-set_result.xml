@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:44Z" fail="26" name="mode" pass="54" skipped="89" statusUnknown="0" totalRun="80">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-15T17:37:04Z" fail="59" name="mode" pass="64" skipped="46" statusUnknown="0" totalRun="123">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
@@ -39,14 +39,45 @@
    <testResult status="pass" testName="mode-0806"/>
    <testResult status="pass" testName="mode-0901"/>
    <testResult status="pass" testName="mode-1001"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1101"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1102"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1103"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1104"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1105"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1106a"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1106b"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1106c"/>
+   <testResult status="pass" testName="mode-1101"/>
+   <testResult status="fail" testName="mode-1102">
+      <outResult>
+         <errTrace>Illegal value: b X  c  used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value:  a used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value: a  used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value:  X  used for QNAME attribute: mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="mode-1103"/>
+   <testResult status="pass" testName="mode-1104"/>
+   <testResult status="fail" testName="mode-1105"/>
+   <testResult status="fail" testName="mode-1106a">
+      <outResult>
+         <errTrace>Illegal value: X	Y
+Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1106b">
+      <outResult>
+         <errTrace>Illegal value: X	Y
+Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1106c">
+      <outResult>
+         <errTrace>Illegal value: X	Y
+Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="mode-1106d">
       <outResult>
          <errTrace>Illegal value: X	Y
@@ -56,11 +87,47 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1106e"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1107a"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1107b"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1107c"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1108"/>
+   <testResult status="fail" testName="mode-1106e">
+      <outResult>
+         <errTrace>Illegal value: X	Y
+Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1107a">
+      <outResult>
+         <errTrace>Illegal value: X	Y
+Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1107b">
+      <outResult>
+         <errTrace>Illegal value: X	Y
+Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1107c">
+      <outResult>
+         <errTrace>Illegal value: X	Y
+Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1108">
+      <outResult>
+         <errTrace>XTSE0010 : xsl:apply-templates is not allowed in this position in the stylesheet</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="mode-1201"/>
    <testResult status="pass" testName="mode-1202"/>
    <testResult status="pass" testName="mode-1203"/>
@@ -69,54 +136,230 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="fail" testName="mode-1401"/>
    <testResult status="pass" testName="mode-1402"/>
    <testResult status="fail" testName="mode-1403"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1404"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1405"/>
+   <testResult status="fail" testName="mode-1404"/>
+   <testResult status="fail" testName="mode-1405">
+      <outResult/>
+   </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1406"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1407"/>
+   <testResult status="fail" testName="mode-1407">
+      <outResult/>
+   </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1408"/>
    <testResult status="fail" testName="mode-1409">
       <outResult/>
    </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1410"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1411"/>
+   <testResult status="pass" testName="mode-1411"/>
    <testResult feature="streaming" status="skipped" testName="mode-1412"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1413"/>
+   <testResult status="fail" testName="mode-1413"/>
    <testResult feature="streaming" status="skipped" testName="mode-1414"/>
    <testResult status="pass" testName="mode-1415"/>
    <testResult feature="streaming" status="skipped" testName="mode-1416"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1417"/>
+   <testResult status="pass" testName="mode-1417"/>
    <testResult feature="streaming" status="skipped" testName="mode-1418"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1419"/>
+   <testResult status="fail" testName="mode-1419"/>
    <testResult feature="streaming" status="skipped" testName="mode-1420"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1421"/>
+   <testResult status="fail" testName="mode-1421"/>
    <testResult feature="streaming" status="skipped" testName="mode-1422"/>
    <testResult status="pass" testName="mode-1423"/>
    <testResult feature="streaming" status="skipped" testName="mode-1424"/>
    <testResult status="fail" testName="mode-1425"/>
    <testResult feature="streaming" status="skipped" testName="mode-1426"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1427"/>
+   <testResult status="fail" testName="mode-1427">
+      <outResult/>
+   </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1428"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1429"/>
+   <testResult status="fail" testName="mode-1429">
+      <outResult>
+         <errTrace>Illegal value:  Q{}s  used for QNAME attribute: name</errTrace>
+         <errTrace>Illegal value:  s  used for QNAME attribute: mode</errTrace>
+         <errTrace>XTSE0740 : An XSL template's name attribute doesn't have a URI reference</errTrace>
+         <errTrace>Illegal value:  #current  used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value:  s  used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value:  Q{}s  used for QNAME attribute: mode</errTrace>
+         <errTrace>XTTE0505 : An XSL mode instruction's attribute "on-no-match" has disallowed value ' text-only-copy '.</errTrace>
+      </outResult>
+   </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1430"/>
    <testResult status="pass" testName="mode-1431"/>
    <testResult feature="streaming" status="skipped" testName="mode-1432"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1433"/>
+   <testResult status="fail" testName="mode-1433">
+      <outResult/>
+   </testResult>
    <testResult status="fail" testName="mode-1434"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1435"/>
+   <testResult status="fail" testName="mode-1435">
+      <outResult>
+         <errTrace>Illegal value:  a:mode  used for QNAME attribute: default-mode</errTrace>
+      </outResult>
+   </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1436"/>
    <testResult feature="streaming" status="skipped" testName="mode-1437"/>
    <testResult status="pass" testName="mode-1437a"/>
    <testResult feature="streaming" status="skipped" testName="mode-1438"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1439"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1440"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1441"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1442"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1443"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1444"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1445"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1446"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1447"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1501"/>
+   <testResult status="fail" testName="mode-1439">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;book&gt;&#13;
+ &lt;bktlong&gt;The First Book of Moses, Called GENESIS.&lt;/bktlong&gt;&#13;
+ &lt;bktshort&gt;Genesis&lt;/bktshort&gt;&#13;
+ &lt;chapter length="4097" nr="1"&gt;&#13;
+    &lt;chtitle&gt;Chapter 1&lt;/chtitle&gt;&#13;
+    &lt;v&gt;In the beginning &lt;deity&gt;God&lt;/deity&gt; created the heaven and the earth.&lt;/v&gt;&#13;
+    &lt;v&gt;And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of &lt;deity&gt;God&lt;/deity&gt; moved upon the face of the waters.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let there be light: and there was light.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; saw the light, that it was good: and &lt;deity&gt;God&lt;/deity&gt; divided the light from the darkness.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; called the light Day, and the darkness he called Night. And the evening and the morning were the first day.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let there be a firmament in the midst of the waters, and let it divide the waters from the waters.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; made the firmament, and divided the waters which were under the firmament from the waters which were above the firmament: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; called the firmament Heaven. And the evening and the morning were the second day.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let the waters under the heaven be gathered together unto one place, and let the dry land appear: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; called the dry land Earth; and the gathering together of the waters called he Seas: and &lt;deity&gt;God&lt;/deity&gt; saw that it was good.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let the earth bring forth grass, the herb yielding seed, and the fruit tree yielding fruit after his kind, whose seed is in itself, upon the earth: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And the earth brought forth grass, and herb yielding seed after his kind, and the tree yielding fruit, whose seed was in itself, after his kind: and &lt;deity&gt;God&lt;/deity&gt; saw that it was good.&lt;/v&gt;&#13;
+    &lt;v&gt;And the evening and the morning were the third day.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let there be lights in the firmament of the heaven to divide the day from the night; and let them be for signs, and for seasons, and for days, and years:&lt;/v&gt;&#13;
+    &lt;v&gt;And let them be for lights in the firmament of the heaven to give light upon the earth: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; made two great lights; the greater light to rule the day, and the lesser light to rule the night: he made the stars also.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; set them in the firmament of the heaven to give light upon the earth,&lt;/v&gt;&#13;
+    &lt;v&gt;And to rule over the day and over the night, and to divide the light from the darkness: and &lt;deity&gt;God&lt;/deity&gt; saw that it was good.&lt;/v&gt;&#13;
+    &lt;v&gt;And the evening and the morning were the fourth day.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let the waters bring forth abundantly the moving creature that hath life, and fowl that may fly above the earth in the open firmament of heaven.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; created great whales, and every living creature that moveth, which the waters brought forth abundantly, after their kind, and every winged fowl after his kind: and &lt;deity&gt;God&lt;/deity&gt; saw that it was good.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; blessed them, saying, Be fruitful, and multiply, and fill the waters in the seas, and let fowl multiply in the earth.&lt;/v&gt;&#13;
+    &lt;v&gt;And the evening and the morning were the fifth day.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let the earth bring forth the living creature after his kind, cattle, and creeping thing, and beast of the earth after his kind: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; made the beast of the earth after his kind, and cattle after their kind, and every thing that creepeth upon the earth after his kind: and &lt;deity&gt;God&lt;/deity&gt; saw that it was good.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let us make man in our image, after our likeness: and let them have dominion over the fish of the sea, and over the fowl of the air, and over the cattle, and over all the earth, and over every creeping thing that creepeth upon the earth.&lt;/v&gt;&#13;
+    &lt;v&gt;So &lt;deity&gt;God&lt;/deity&gt; created man in his own image, in the image of &lt;deity&gt;God&lt;/deity&gt; created he him; male and female created he them.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; blessed them, and &lt;deity&gt;God&lt;/deity&gt; said unto them, Be fruitful, and multiply, and replenish the earth, and subdue it: and have dominion over the fish of the sea, and over the fowl of the air, and over every living thing that moveth upon the earth.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Behold, I have given you every herb bearing seed, which is upon the face of all the earth, and every tree, in the which is the fruit of a tree yielding seed; to you it shall be for meat.&lt;/v&gt;&#13;
+    &lt;v&gt;And to every beast of the earth, and to every fowl of the air, and to every thing that creepeth upon the earth, wherein there is life, I have given every green herb for meat: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; saw every thing that he had made, and, behold, it was very good. And the evening and the morning were the sixth day.&lt;/v&gt;&#13;
+ &lt;/chapter&gt;&#13;
+ &lt;chapter length="3105" nr="2"&gt;&#13;
+    &lt;chtitle&gt;Chapter 2&lt;/chtitle&gt;&#13;
+    &lt;v&gt;Thus the heavens and the earth were finished, and all the host of them.&lt;/v&gt;&#13;
+    &lt;v&gt;And on the seventh day &lt;deity&gt;God&lt;/deity&gt; ended his work which he had made; and he rested on the seventh day from all his work which he had made.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; blessed the seventh day, and sanctified it: because that in it he had rested from all his work which &lt;deity&gt;God&lt;/deity&gt; created and made.&lt;/v&gt;&#13;
+    &lt;v&gt;These are the generations of the heavens and of the earth when they were created, in the day that the LORD &lt;deity&gt;God&lt;/deity&gt; made the earth and the heavens,&lt;/v&gt;&#13;
+    &lt;v&gt;And every plant of the field before it was in the earth, and every herb of the field before it grew: for the LORD &lt;deity&gt;God&lt;/deity&gt; had not caused it to rain upon the earth, and there was not a man to till the ground.&lt;/v&gt;&#13;
+    &lt;v&gt;But there went up a mist from the earth, and watered the whole face of the ground.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; formed man of the dust of the ground, and breathed into his nostrils the breath of life; and man became a living soul.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; planted a garden eastward in &lt;place&gt;Eden&lt;/place&gt;; and there he put the man whom he had formed.&lt;/v&gt;&#13;
+    &lt;v&gt;And out of the ground made the LORD &lt;deity&gt;God&lt;/deity&gt; to grow every tree that is pleasant to the sight, and good for food; the tree of life also in the midst of the garden, and the tree of knowledge of good and evil.&lt;/v&gt;&#13;
+    &lt;v&gt;And a river went out of &lt;place&gt;Eden&lt;/place&gt; to water the garden; and from thence it was parted, and became into four heads.&lt;/v&gt;&#13;
+    &lt;v&gt;The name of the first is &lt;place&gt;Pison&lt;/place&gt;: that is it which compasseth the whole land of &lt;place&gt;Havilah&lt;/place&gt;, where there is gold;&lt;/v&gt;&#13;
+    &lt;v&gt;And the gold of that land is good: there is bdellium and the onyx stone.&lt;/v&gt;&#13;
+    &lt;v&gt;And the name of the second river is &lt;place&gt;Gihon&lt;/place&gt;: the same is it that compasseth the whole land of &lt;place&gt;Ethiopia&lt;/place&gt;.&lt;/v&gt;&#13;
+    &lt;v&gt;And the name of the third river is &lt;place&gt;Hiddekel&lt;/place&gt;: that is it which goeth toward the east of &lt;place&gt;Assyria&lt;/place&gt;. And the fourth river is &lt;place&gt;Euphrates&lt;/place&gt;.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; took the man, and put him into the garden of &lt;place&gt;Eden&lt;/place&gt; to dress it and to keep it.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; commanded the man, saying, Of every tree of the garden thou mayest freely eat:&lt;/v&gt;&#13;
+    &lt;v&gt;But of the tree of the knowledge of good and evil, thou shalt not eat of it: for in the day that thou eatest thereof thou shalt surely die.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; said, It is not good that the man should be alone; I will make him an help meet for him.&lt;/v&gt;&#13;
+    &lt;v&gt;And out of the ground the LORD &lt;deity&gt;God&lt;/deity&gt; formed every beast of the field, and every fowl of the air; and brought them unto &lt;person&gt;Adam&lt;/person&gt; to see what he would call them: and whatsoever &lt;person&gt;Adam&lt;/person&gt; called every living creature, that was the name thereof.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;person&gt;Adam&lt;/person&gt; gave names to all cattle, and to the fowl of the air, and to every beast of the field; but for &lt;person&gt;Adam&lt;/person&gt; there was not found an help meet for him.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; caused a deep sleep to fall upon &lt;person&gt;Adam&lt;/person&gt;, and he slept: and he took one of his ribs, and closed up the flesh instead thereof;&lt;/v&gt;&#13;
+    &lt;v&gt;And the rib, which the LORD &lt;deity&gt;God&lt;/deity&gt; had taken from man, made he a woman, and brought her unto the man.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;person&gt;Adam&lt;/person&gt; said, This is now bone of my bones, and flesh of my flesh: she shall be called Woman, because she was taken out of Man.&lt;/v&gt;&#13;
+    &lt;v&gt;Therefore shall a man leave his father and his mother, and shall cleave unto his wife: and they shall be one flesh.&lt;/v&gt;&#13;
+    &lt;v&gt;And they were both naked, the man and his wife, and were not ashamed.&lt;/v&gt;&#13;
+ &lt;/chapter&gt;&#13;
+&lt;/book&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1440">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="mode-1441">
+      <outResult>
+         <errTrace>Illegal value:  s  used for QNAME attribute: name</errTrace>
+         <errTrace>Illegal value:  s  used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value: s  used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value:  #current  used for QNAME attribute: mode</errTrace>
+         <errTrace>XTTE0505 : An XSL mode instruction's attribute "on-no-match" has disallowed value ' text-only-copy '.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1442">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="mode-1443">
+      <outResult>
+         <errTrace>Illegal value:  s  used for QNAME attribute: name</errTrace>
+         <errTrace>Illegal value:  s  used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value: s  used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value:  #current  used for QNAME attribute: mode</errTrace>
+         <errTrace>XTTE0505 : An XSL mode instruction's attribute "on-no-match" has disallowed value ' text-only-copy '.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="mode-1444"/>
+   <testResult status="pass" testName="mode-1445"/>
+   <testResult status="pass" testName="mode-1446"/>
+   <testResult status="fail" testName="mode-1447">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;book&gt;&#13;
+ &lt;bktlong&gt;The First Book of Moses, Called GENESIS.&lt;/bktlong&gt;&#13;
+ &lt;bktshort&gt;Genesis&lt;/bktshort&gt;&#13;
+ &lt;chapter length="4097" nr="1"&gt;&#13;
+    &lt;chtitle&gt;Chapter 1&lt;/chtitle&gt;&#13;
+    &lt;v&gt;In the beginning &lt;deity&gt;God&lt;/deity&gt; created the heaven and the earth.&lt;/v&gt;&#13;
+    &lt;v&gt;And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of &lt;deity&gt;God&lt;/deity&gt; moved upon the face of the waters.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let there be light: and there was light.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; saw the light, that it was good: and &lt;deity&gt;God&lt;/deity&gt; divided the light from the darkness.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; called the light Day, and the darkness he called Night. And the evening and the morning were the first day.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let there be a firmament in the midst of the waters, and let it divide the waters from the waters.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; made the firmament, and divided the waters which were under the firmament from the waters which were above the firmament: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; called the firmament Heaven. And the evening and the morning were the second day.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let the waters under the heaven be gathered together unto one place, and let the dry land appear: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; called the dry land Earth; and the gathering together of the waters called he Seas: and &lt;deity&gt;God&lt;/deity&gt; saw that it was good.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let the earth bring forth grass, the herb yielding seed, and the fruit tree yielding fruit after his kind, whose seed is in itself, upon the earth: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And the earth brought forth grass, and herb yielding seed after his kind, and the tree yielding fruit, whose seed was in itself, after his kind: and &lt;deity&gt;God&lt;/deity&gt; saw that it was good.&lt;/v&gt;&#13;
+    &lt;v&gt;And the evening and the morning were the third day.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let there be lights in the firmament of the heaven to divide the day from the night; and let them be for signs, and for seasons, and for days, and years:&lt;/v&gt;&#13;
+    &lt;v&gt;And let them be for lights in the firmament of the heaven to give light upon the earth: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; made two great lights; the greater light to rule the day, and the lesser light to rule the night: he made the stars also.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; set them in the firmament of the heaven to give light upon the earth,&lt;/v&gt;&#13;
+    &lt;v&gt;And to rule over the day and over the night, and to divide the light from the darkness: and &lt;deity&gt;God&lt;/deity&gt; saw that it was good.&lt;/v&gt;&#13;
+    &lt;v&gt;And the evening and the morning were the fourth day.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let the waters bring forth abundantly the moving creature that hath life, and fowl that may fly above the earth in the open firmament of heaven.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; created great whales, and every living creature that moveth, which the waters brought forth abundantly, after their kind, and every winged fowl after his kind: and &lt;deity&gt;God&lt;/deity&gt; saw that it was good.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; blessed them, saying, Be fruitful, and multiply, and fill the waters in the seas, and let fowl multiply in the earth.&lt;/v&gt;&#13;
+    &lt;v&gt;And the evening and the morning were the fifth day.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let the earth bring forth the living creature after his kind, cattle, and creeping thing, and beast of the earth after his kind: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; made the beast of the earth after his kind, and cattle after their kind, and every thing that creepeth upon the earth after his kind: and &lt;deity&gt;God&lt;/deity&gt; saw that it was good.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Let us make man in our image, after our likeness: and let them have dominion over the fish of the sea, and over the fowl of the air, and over the cattle, and over all the earth, and over every creeping thing that creepeth upon the earth.&lt;/v&gt;&#13;
+    &lt;v&gt;So &lt;deity&gt;God&lt;/deity&gt; created man in his own image, in the image of &lt;deity&gt;God&lt;/deity&gt; created he him; male and female created he them.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; blessed them, and &lt;deity&gt;God&lt;/deity&gt; said unto them, Be fruitful, and multiply, and replenish the earth, and subdue it: and have dominion over the fish of the sea, and over the fowl of the air, and over every living thing that moveth upon the earth.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; said, Behold, I have given you every herb bearing seed, which is upon the face of all the earth, and every tree, in the which is the fruit of a tree yielding seed; to you it shall be for meat.&lt;/v&gt;&#13;
+    &lt;v&gt;And to every beast of the earth, and to every fowl of the air, and to every thing that creepeth upon the earth, wherein there is life, I have given every green herb for meat: and it was so.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; saw every thing that he had made, and, behold, it was very good. And the evening and the morning were the sixth day.&lt;/v&gt;&#13;
+ &lt;/chapter&gt;&#13;
+ &lt;chapter length="3105" nr="2"&gt;&#13;
+    &lt;chtitle&gt;Chapter 2&lt;/chtitle&gt;&#13;
+    &lt;v&gt;Thus the heavens and the earth were finished, and all the host of them.&lt;/v&gt;&#13;
+    &lt;v&gt;And on the seventh day &lt;deity&gt;God&lt;/deity&gt; ended his work which he had made; and he rested on the seventh day from all his work which he had made.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; blessed the seventh day, and sanctified it: because that in it he had rested from all his work which &lt;deity&gt;God&lt;/deity&gt; created and made.&lt;/v&gt;&#13;
+    &lt;v&gt;These are the generations of the heavens and of the earth when they were created, in the day that the LORD &lt;deity&gt;God&lt;/deity&gt; made the earth and the heavens,&lt;/v&gt;&#13;
+    &lt;v&gt;And every plant of the field before it was in the earth, and every herb of the field before it grew: for the LORD &lt;deity&gt;God&lt;/deity&gt; had not caused it to rain upon the earth, and there was not a man to till the ground.&lt;/v&gt;&#13;
+    &lt;v&gt;But there went up a mist from the earth, and watered the whole face of the ground.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; formed man of the dust of the ground, and breathed into his nostrils the breath of life; and man became a living soul.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; planted a garden eastward in &lt;place&gt;Eden&lt;/place&gt;; and there he put the man whom he had formed.&lt;/v&gt;&#13;
+    &lt;v&gt;And out of the ground made the LORD &lt;deity&gt;God&lt;/deity&gt; to grow every tree that is pleasant to the sight, and good for food; the tree of life also in the midst of the garden, and the tree of knowledge of good and evil.&lt;/v&gt;&#13;
+    &lt;v&gt;And a river went out of &lt;place&gt;Eden&lt;/place&gt; to water the garden; and from thence it was parted, and became into four heads.&lt;/v&gt;&#13;
+    &lt;v&gt;The name of the first is &lt;place&gt;Pison&lt;/place&gt;: that is it which compasseth the whole land of &lt;place&gt;Havilah&lt;/place&gt;, where there is gold;&lt;/v&gt;&#13;
+    &lt;v&gt;And the gold of that land is good: there is bdellium and the onyx stone.&lt;/v&gt;&#13;
+    &lt;v&gt;And the name of the second river is &lt;place&gt;Gihon&lt;/place&gt;: the same is it that compasseth the whole land of &lt;place&gt;Ethiopia&lt;/place&gt;.&lt;/v&gt;&#13;
+    &lt;v&gt;And the name of the third river is &lt;place&gt;Hiddekel&lt;/place&gt;: that is it which goeth toward the east of &lt;place&gt;Assyria&lt;/place&gt;. And the fourth river is &lt;place&gt;Euphrates&lt;/place&gt;.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; took the man, and put him into the garden of &lt;place&gt;Eden&lt;/place&gt; to dress it and to keep it.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; commanded the man, saying, Of every tree of the garden thou mayest freely eat:&lt;/v&gt;&#13;
+    &lt;v&gt;But of the tree of the knowledge of good and evil, thou shalt not eat of it: for in the day that thou eatest thereof thou shalt surely die.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; said, It is not good that the man should be alone; I will make him an help meet for him.&lt;/v&gt;&#13;
+    &lt;v&gt;And out of the ground the LORD &lt;deity&gt;God&lt;/deity&gt; formed every beast of the field, and every fowl of the air; and brought them unto &lt;person&gt;Adam&lt;/person&gt; to see what he would call them: and whatsoever &lt;person&gt;Adam&lt;/person&gt; called every living creature, that was the name thereof.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;person&gt;Adam&lt;/person&gt; gave names to all cattle, and to the fowl of the air, and to every beast of the field; but for &lt;person&gt;Adam&lt;/person&gt; there was not found an help meet for him.&lt;/v&gt;&#13;
+    &lt;v&gt;And the LORD &lt;deity&gt;God&lt;/deity&gt; caused a deep sleep to fall upon &lt;person&gt;Adam&lt;/person&gt;, and he slept: and he took one of his ribs, and closed up the flesh instead thereof;&lt;/v&gt;&#13;
+    &lt;v&gt;And the rib, which the LORD &lt;deity&gt;God&lt;/deity&gt; had taken from man, made he a woman, and brought her unto the man.&lt;/v&gt;&#13;
+    &lt;v&gt;And &lt;person&gt;Adam&lt;/person&gt; said, This is now bone of my bones, and flesh of my flesh: she shall be called Woman, because she was taken out of Man.&lt;/v&gt;&#13;
+    &lt;v&gt;Therefore shall a man leave his father and his mother, and shall cleave unto his wife: and they shall be one flesh.&lt;/v&gt;&#13;
+    &lt;v&gt;And they were both naked, the man and his wife, and were not ashamed.&lt;/v&gt;&#13;
+ &lt;/chapter&gt;&#13;
+&lt;/book&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="mode-1501"/>
    <testResult status="pass" testName="mode-1502"/>
    <testResult status="pass" testName="mode-1503"/>
    <testResult status="pass" testName="mode-1504"/>
@@ -161,9 +404,13 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="fail" testName="mode-1601"/>
    <testResult status="pass" testName="mode-1602"/>
    <testResult status="fail" testName="mode-1603"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1604"/>
+   <testResult status="fail" testName="mode-1604">
+      <outResult/>
+   </testResult>
    <testResult status="pass" testName="mode-1605"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1606"/>
+   <testResult status="fail" testName="mode-1606">
+      <outResult/>
+   </testResult>
    <testResult status="fail" testName="mode-1607"/>
    <testResult status="pass" testName="mode-1608"/>
    <testResult status="fail" testName="mode-1609"/>
@@ -195,12 +442,29 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult feature="xsl:package test case" status="skipped" testName="mode-1712"/>
    <testResult feature="xsl:package test case" status="skipped" testName="mode-1713"/>
    <testResult feature="xsl:package test case" status="skipped" testName="mode-1714err"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1801"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1802"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1803"/>
+   <testResult status="fail" testName="mode-1801">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="mode-1802">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="mode-1803">
+      <outResult>
+         <errTrace>XTSE0010 : xsl:package is not allowed in this position in the stylesheet</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="mode-1901"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1902"/>
+   <testResult status="fail" testName="mode-1902">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
+	 	 mode-X (doc): &#13;
+	  inside named-templates: mode-X: brown-fox&lt;/out&gt;</outResult>
+   </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1903"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1904"/>
-   <testResult feature="XSLT 3.0 'initial mode' test case" status="skipped" testName="mode-1905"/>
+   <testResult status="pass" testName="mode-1904"/>
+   <testResult status="fail" testName="mode-1905">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: XTSE0545 : An XSL stylesheet has more than one XSL 'mode' declaration with name 'X', that have conflicting values for XSL mode attribute 'on-multiple-match'.</errTrace>
+      </outResult>
+   </testResult>
 </testrun>

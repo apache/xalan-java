@@ -169,17 +169,17 @@ public class TemplateList implements java.io.Serializable
     		}
     		
     		XslFunctionDefinitionKey funcDefnKey = new XslFunctionDefinitionKey(newFunc.getName(), funcArity, newFunc.getOverride());
-    		ElemFunction xslFunctionObj = m_functionDefinitions.get(funcDefnKey);
+    		ElemFunction xslFunctionObj = m_functionDeclarations.get(funcDefnKey);
     		if (xslFunctionObj == null) {
-    			m_functionDefinitions.put(funcDefnKey, newFunc);
+    			m_functionDeclarations.put(funcDefnKey, newFunc);
     		}
     		else {
     			int existingPrecedence = xslFunctionObj.getStylesheetComposed().getImportCountComposed();
     			int newPrecedence = newFunc.getStylesheetComposed().getImportCountComposed();
     			if (newPrecedence == existingPrecedence) {    				
     				if ((isOverrideDecl && newFunc.getOverride()) || (isOverrideExtDecl && newFunc.getOverrideExtensionFunction())) {
-    					m_functionDefinitions.remove(funcDefnKey);
-    					m_functionDefinitions.put(funcDefnKey, newFunc);
+    					m_functionDeclarations.remove(funcDefnKey);
+    					m_functionDeclarations.put(funcDefnKey, newFunc);
     				}
     				else {
     				    template.error(XSLTErrorResources.ER_DUPLICATE_XSL_FUNCTION,
@@ -537,9 +537,9 @@ public class TemplateList implements java.io.Serializable
   public ElemTemplate getXslFunction(QName qname, int arity)
   {
 	  XslFunctionDefinitionKey xslFunctionDefinitionKey = new XslFunctionDefinitionKey(qname, arity, true);
-	  ElemFunction elemFunc = m_functionDefinitions.get(xslFunctionDefinitionKey);
+	  ElemFunction elemFunc = m_functionDeclarations.get(xslFunctionDefinitionKey);
 	  if (elemFunc == null) {
-		  elemFunc = m_functionDefinitions.get(new XslFunctionDefinitionKey(qname, arity, false));  
+		  elemFunc = m_functionDeclarations.get(new XslFunctionDefinitionKey(qname, arity, false));  
 	  }
 
 	  return elemFunc;
@@ -560,8 +560,9 @@ public class TemplateList implements java.io.Serializable
                                                int targetNode, DTM dtm)
   {
     TemplateSubPatternAssociation head;
-
-    switch (dtm.getNodeType(targetNode))
+    
+    short nodeType = dtm.getNodeType(targetNode);    
+    switch (nodeType)
     {
     case DTM.ELEMENT_NODE :
     case DTM.ATTRIBUTE_NODE :
@@ -982,10 +983,10 @@ public class TemplateList implements java.io.Serializable
   private Hashtable m_namedTemplates = new Hashtable(89);
   
   /**
-   * An java.util.Map object to store xsl:function definitions 
+   * An java.util.Map object to store xsl:function declarations 
    * within an XSL stylesheet. 
    */
-  private Map<XslFunctionDefinitionKey, ElemFunction> m_functionDefinitions = new HashMap<XslFunctionDefinitionKey, ElemFunction>();
+  private Map<XslFunctionDefinitionKey, ElemFunction> m_functionDeclarations = new HashMap<XslFunctionDefinitionKey, ElemFunction>();
 
   /**
    * This table is keyed on the target elements
