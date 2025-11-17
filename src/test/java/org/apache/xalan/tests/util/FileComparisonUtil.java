@@ -22,7 +22,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.xalan.tests.w3c.xslt3.XmlEntityResolver;
+import org.apache.xalan.tests.w3c.xslt3.XalanXmlEntityResolver;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.Constants;
 import org.json.JSONObject;
@@ -68,7 +68,7 @@ public class FileComparisonUtil {
         
         try {        	 
             m_xmlDocumentBuilder = m_xmlDocumentBuilderFactory.newDocumentBuilder();
-            XmlEntityResolver xmlEntityResolver = new XmlEntityResolver();
+            XalanXmlEntityResolver xmlEntityResolver = new XalanXmlEntityResolver();
             m_xmlDocumentBuilder.setEntityResolver(xmlEntityResolver);
         } catch (ParserConfigurationException ex) {            
             ex.printStackTrace();

@@ -370,10 +370,10 @@ public class ElemValueOf extends ElemTemplateElement {
         int current = xctxt.getCurrentNode();
 
         xctxt.pushCurrentNodeAndExpression(current, current);
-
+        
         if (m_disableOutputEscaping)
-          rth.processingInstruction(
-            javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+            rth.processingInstruction(
+              javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
 
         try
         {
@@ -430,7 +430,7 @@ public class ElemValueOf extends ElemTemplateElement {
           {
               XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
               if (m_isDot && xpath3ContextItem != null) {                  
-                  String strValue = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);
+                  String strValue = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);                  
                   (new XString(strValue)).dispatchCharactersEvents(rth);
               }
               else {
@@ -1008,13 +1008,13 @@ public class ElemValueOf extends ElemTemplateElement {
         }
         finally
         {
-          if (m_disableOutputEscaping)
-            rth.processingInstruction(
-              javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
-
           xctxt.popNamespaceContext();
           xctxt.popCurrentNodeAndExpression();
         }
+        
+        if (m_disableOutputEscaping)
+            rth.processingInstruction(
+              javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
     }
     catch (SAXException se)
     {
@@ -1026,7 +1026,7 @@ public class ElemValueOf extends ElemTemplateElement {
     	throw te;
     }
     finally
-    {
+    {       	
       if (transformer.getDebug())
 	    transformer.getTraceManager().emitTraceEndEvent(this); 
     }

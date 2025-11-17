@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-15T17:37:05Z" fail="10" name="disable-output-escaping" pass="16" skipped="5" statusUnknown="1" totalRun="27">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-17T13:21:01Z" fail="5" name="disable-output-escaping" pass="22" skipped="5" statusUnknown="0" totalRun="27">
    <testResult status="pass" testName="doe-0176"/>
    <testResult status="pass" testName="doe-0176a"/>
    <testResult status="pass" testName="doe-0176b"/>
@@ -17,17 +17,15 @@
    <testResult status="fail" testName="doe-0186"/>
    <testResult status="pass" testName="doe-0190"/>
    <testResult status="pass" testName="doe-0191"/>
-   <testResult status="fail" testName="doe-0201"/>
+   <testResult status="pass" testName="doe-0201"/>
    <testResult status="pass" testName="doe-0401"/>
-   <testResult status="fail" testName="doe-0402">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns="http://www.w3.org/1999/xhtml"&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;/out&gt;</outResult>
-   </testResult>
-   <testResult testName="doe-0402a"/>
+   <testResult status="pass" testName="doe-0402"/>
+   <testResult status="pass" testName="doe-0402a"/>
    <testResult status="pass" testName="doe-0403"/>
    <testResult status="pass" testName="doe-0404"/>
-   <testResult status="fail" testName="doe-0405"/>
-   <testResult status="fail" testName="doe-0406"/>
-   <testResult status="fail" testName="doe-0407"/>
+   <testResult status="pass" testName="doe-0405"/>
+   <testResult status="pass" testName="doe-0406"/>
+   <testResult status="pass" testName="doe-0407"/>
    <testResult status="pass" testName="doe-0408"/>
    <testResult status="fail" testName="doe-0409"/>
    <testResult feature="streaming" status="skipped" testName="doe-0801"/>

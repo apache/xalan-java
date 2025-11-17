@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
  * 
  * @xsl.usage advanced
  */
-public class XmlEntityResolver implements EntityResolver {
+public class XalanXmlEntityResolver implements EntityResolver {
 
 	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
