@@ -142,20 +142,20 @@ public class ElemValueOf extends ElemTemplateElement {
   /**
    * The separator attribute value.
    */
-  private String m_separator = null;
-  
+  private AVT m_separator = null;
+
   /**
    * Set the value of separator attribute. 
    */
-  public void setSeparator(String separator) {
-     m_separator = separator; 
+  public void setSeparator(AVT separator) {
+	  m_separator = separator; 
   }
-  
+
   /**
    * Get the value of separator attribute. 
    */
-  public String getSeparator() {
-	 return m_separator; 
+  public AVT getSeparator() {
+	  return m_separator; 
   }
 
   /**
@@ -371,6 +371,11 @@ public class ElemValueOf extends ElemTemplateElement {
 
         xctxt.pushCurrentNodeAndExpression(current, current);
         
+        String separatorStrValue = null;
+        if (m_separator != null) {
+           separatorStrValue = m_separator.evaluate(xctxt, current, this);
+        }
+        
         if (m_disableOutputEscaping)
             rth.processingInstruction(
               javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
@@ -390,7 +395,7 @@ public class ElemValueOf extends ElemTemplateElement {
         	 }
           }          
           else {
-        	  evaluateXslValueOfSeqConstructorAndEmitResult(transformer, xctxt, rth);
+        	  evaluateXslValueOfSeqConstructorAndEmitResult(transformer, xctxt, rth, separatorStrValue);
         	  
         	  return;
           }
@@ -452,8 +457,8 @@ public class ElemValueOf extends ElemTemplateElement {
                     		  else {
                     			 strValue = ((XSQName) evalResult).stringValue();  
                     		  }                    		  
-                    		  if (m_separator != null) {
-                     			 strValue = strValue.replace(" ", m_separator); 
+                    		  if (separatorStrValue != null) {
+                     			 strValue = strValue.replace(" ", separatorStrValue); 
                      		  }
                     		  
                     		  (new XString(strValue)).dispatchCharactersEvents(rth);
@@ -465,7 +470,7 @@ public class ElemValueOf extends ElemTemplateElement {
                     		  for (int idx = 0; idx < rSeqLength; idx++) {
                     			 XObject xObj1 = rSeq.item(idx);
                     			 String strValue = XslTransformEvaluationHelper.getStrVal(xObj1);
-                    			 String seprtr = ((m_separator != null) ? m_separator : " ");
+                    			 String seprtr = ((separatorStrValue != null) ? separatorStrValue : " ");
                     			 if (idx < (rSeqLength - 1)) {
                     				strBuff.append(strValue + seprtr); 
                     			 }
@@ -479,8 +484,8 @@ public class ElemValueOf extends ElemTemplateElement {
                     	  else {
                     		  String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);                                                       
                     		  strValue = preProcessStrBeforeXslSerialization(strValue);                    		  
-                    		  if (m_separator != null) {
-                    			 strValue = strValue.replace(" ", m_separator); 
+                    		  if (separatorStrValue != null) {
+                    			 strValue = strValue.replace(" ", separatorStrValue); 
                     		  }
                     		  
                     		  (new XString(strValue)).dispatchCharactersEvents(rth);
@@ -531,7 +536,7 @@ public class ElemValueOf extends ElemTemplateElement {
                     	  strValue = (strBuffer.toString()).trim(); 
                       }
                       else if (evalResult instanceof ResultSequence) {
-                    	  strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult);
+                    	  strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult, separatorStrValue);
                       }
                       else if (evalResult instanceof XPathArray) {
                     	  XPathArray xpathArr = (XPathArray)evalResult;
@@ -542,7 +547,7 @@ public class ElemValueOf extends ElemTemplateElement {
                     		  rSeq.add(nativeArr.get(idx));
                     	  }
 
-                    	  strValue = getEffectiveSequenceStrValue(rSeq);
+                    	  strValue = getEffectiveSequenceStrValue(rSeq, separatorStrValue);
                       }
                       else if (evalResult instanceof XPathMap) {
                     	  throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
@@ -581,7 +586,7 @@ public class ElemValueOf extends ElemTemplateElement {
                         	rSeq.add(nativeArr.get(idx));
                          }
                          
-                         strValue = getEffectiveSequenceStrValue(rSeq);
+                         strValue = getEffectiveSequenceStrValue(rSeq, separatorStrValue);
                       }
                       else if (evalResult instanceof XPathMap) {
                     	 throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
@@ -606,7 +611,7 @@ public class ElemValueOf extends ElemTemplateElement {
                     	 }
                       }
                       else if (evalResult instanceof ResultSequence) {
-                    	 strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult); 
+                    	 strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult, separatorStrValue); 
                       }
                       else if (evalResult instanceof XMLNodeCursorImpl) {                    	  
                     	  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;
@@ -650,7 +655,7 @@ public class ElemValueOf extends ElemTemplateElement {
                      String strValue = null;
                      
                      if (evalResult instanceof ResultSequence) {                         
-                         strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult);
+                         strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult, separatorStrValue);
                      }                     
                      else {
                          strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
@@ -955,7 +960,7 @@ public class ElemValueOf extends ElemTemplateElement {
                   }
                   else {
                 	  XObject evalResult = expr.execute(xctxt);                	  
-                	  if ((evalResult instanceof ResultSequence) && (m_separator != null)) {
+                	  if ((evalResult instanceof ResultSequence) && (separatorStrValue != null)) {
                 		  ResultSequence rSeq = (ResultSequence)evalResult;
                 		  int rSeqLngth = rSeq.size();
                 		  StringBuffer strBuff = new StringBuffer();
@@ -980,7 +985,7 @@ public class ElemValueOf extends ElemTemplateElement {
                 			 
                 			 if (str1 != null) {
                 				 if (idx < (rSeqLngth - 1)) {
-                					 strBuff = strBuff.append(str1 + m_separator); 
+                					 strBuff = strBuff.append(str1 + separatorStrValue); 
                 				 }
                 				 else {
                 					 strBuff = strBuff.append(str1);
@@ -994,9 +999,9 @@ public class ElemValueOf extends ElemTemplateElement {
                 	  }
                 	  else {
                 		  String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
-                		  if (m_separator != null) {
-                			  strValue = strValue.replace(" ", m_separator);  
-                		  }
+                		  /*if (separatorStrValue != null) {
+                			  strValue = strValue.replace(" ", separatorStrValue);  
+                		  }*/
 
                 		  XString xStr = new XString(strValue);
 
@@ -1079,11 +1084,11 @@ public class ElemValueOf extends ElemTemplateElement {
    * considering xsl:value-of element's separator attribute if 
    * available.
    */
-  private String getEffectiveSequenceStrValue(ResultSequence seq) {	
+  private String getEffectiveSequenceStrValue(ResultSequence seq, String separatorStrValue) {	
 	String strValue = seq.str();
 	
-	if (m_separator != null) {
-	   strValue = strValue.replace(" ", m_separator);
+	if (separatorStrValue != null) {
+	   strValue = strValue.replace(" ", separatorStrValue);
 	}
 	
 	return strValue;
@@ -1094,7 +1099,7 @@ public class ElemValueOf extends ElemTemplateElement {
    * and emits the result of evaluation to XSL transform's output.
    */
   private void evaluateXslValueOfSeqConstructorAndEmitResult(TransformerImpl transformer, XPathContext xctxt, 
-		                                                     SerializationHandler rth) throws TransformerException, SAXException {
+		                                                     SerializationHandler rth, String separatorStrValue) throws TransformerException, SAXException {
 	  
 	  int rtfNodeHandle = transformer.transformToRTF(this);
 	  DTMManager dtmMgr = xctxt.getDTMManager();        	  
@@ -1111,8 +1116,8 @@ public class ElemValueOf extends ElemTemplateElement {
 				  Node node = nodeList.item(idx);
 				  String nodeStrVal = node.getTextContent();
 				  if (idx < (nodeList.getLength() - 1)) {
-					  if (m_separator != null) {
-						  nodeStrValBuff.append(nodeStrVal + m_separator);
+					  if (separatorStrValue != null) {
+						  nodeStrValBuff.append(nodeStrVal + separatorStrValue);
 					  }
 					  else {
 						  nodeStrValBuff.append(nodeStrVal); 
@@ -1127,11 +1132,11 @@ public class ElemValueOf extends ElemTemplateElement {
 		  String nodeStrVal = (nodeStrValBuff.toString()).trim();
 		  if (nodeStrVal.contains(XSL_SEQ)) {
 			  nodeStrVal = nodeStrVal.replace(XSL_SEQ, "");
-			  if (m_separator != null) {        				
-				  nodeStrVal = nodeStrVal.replace(" ", m_separator);
+			  if (separatorStrValue != null) {        				
+				  nodeStrVal = nodeStrVal.replace(" ", separatorStrValue);
 				  nodeStrVal = nodeStrVal.substring(0, (nodeStrVal.length() - 1));
-				  String rTrimmedSeparator = strRtrim(m_separator);
-				  if (!m_separator.equals(rTrimmedSeparator)) {
+				  String rTrimmedSeparator = strRtrim(separatorStrValue);
+				  if (!separatorStrValue.equals(rTrimmedSeparator)) {
 					  int lIdx = nodeStrVal.lastIndexOf(rTrimmedSeparator);
 					  if (lIdx > 0) {
 						  nodeStrVal = nodeStrVal.substring(0, lIdx);

@@ -15,22 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathFactory;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+
+import com.sun.org.apache.xml.internal.dtm.DTM;
 
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSQName;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Simple string part of a complex AVT.
@@ -145,7 +149,35 @@ public class AVTPartXPath extends AVTPart
 		}
 	}
 
-    XObject xobj = m_xpath.execute(xctxt, context, nsNode);
+    XObject xobj = null;
+    
+    Expression expression = m_xpath.getExpression();
+    if (expression instanceof LocPathIterator) {
+    	LocPathIterator locPathIterator = (LocPathIterator)expression;
+    	try {
+    		DTMCursorIterator dtmCursorIterator = locPathIterator.asIterator(xctxt, context);
+    		StringBuffer strBuff = new StringBuffer();
+    		int nextNode = DTM.NULL;
+    		while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+    			XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, xctxt);
+    			strBuff.append(xmlNodeCursorImpl.str() + " ");
+    		}
+
+    		String str1 = strBuff.toString();
+    		int strLength = str1.length();
+    		if (strLength > 0) {
+    			str1 = str1.substring(0, strLength - 1);
+    		}
+
+    		xobj = new XSString(str1);
+    	}
+    	catch (Exception ex) {
+    		xobj = m_xpath.execute(xctxt, context, nsNode);
+    	}
+    }
+    else {
+    	xobj = m_xpath.execute(xctxt, context, nsNode);
+    }
 
     if (xobj != null) {
     	if (xobj instanceof XSQName) {

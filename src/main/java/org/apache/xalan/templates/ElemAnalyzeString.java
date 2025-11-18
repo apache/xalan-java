@@ -72,7 +72,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   /**
    * The regex "flags" string value.
   */
-  protected String m_regex_flags = null;
+  protected AVT m_regex_flags = null;
 
   /**
    * Set the "select" attribute.
@@ -114,18 +114,18 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   /**
    * Set the regex "flags" attribute.
    *
-   * @param regex The string value for the "flags" attribute.
+   * @param regex The avt value for the "flags" attribute.
    */
-  public void setFlags(String flags) {
+  public void setFlags(AVT flags) {
       m_regex_flags = flags;   
   }
 
   /**
    * Get the regex "flags" attribute.
    *
-   * @return The string value for the "flags" attribute.
+   * @return The avt value for the "flags" attribute.
    */
-  public String getFlags() {
+  public AVT getFlags() {
       return m_regex_flags;
   }
   
@@ -271,9 +271,11 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
    */
   public void transformSelectedNodes(TransformerImpl transformer) throws TransformerException {
       
-       final XPathContext xctxt = transformer.getXPathContext();
+       XPathContext xctxt = transformer.getXPathContext();
        
        SourceLocator srcLocator = xctxt.getSAXLocator();
+       
+       final int contextNode = xctxt.getCurrentNode();
        
        if (m_xpath_default_namespace != null) {    		
     	   m_xpath = new XPath(m_xpath.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -306,7 +308,12 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
            throw new javax.xml.transform.TransformerException("XTSE0010 : An XSL analyze-string element must have an 'regex' attribute.", srcLocator);   
        }
        
-       if (m_regex_flags != null && !RegexEvaluationSupport.isFlagStrValid(m_regex_flags)) {
+       String regex_flags_str = null;
+       if (m_regex_flags != null) {
+    	  regex_flags_str = m_regex_flags.evaluate(xctxt, contextNode, xctxt.getNamespaceContext()); 
+       }
+       
+       if (regex_flags_str != null && !RegexEvaluationSupport.isFlagStrValid(regex_flags_str)) {
            throw new javax.xml.transform.TransformerException("XTDE1145 : Incorrect regex flag value(s) are present as value of 'flags' "
            		                                                                  									 + "attribute of an XSL analyze-string element.", srcLocator);    
        }
@@ -342,7 +349,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
        if (strToBeAnalyzed.length() > 0) {
     	   String regexStr = m_regex.evaluate(xctxt, xctxt.getContextNode(), this);
     	   Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr), 
-    			   										                                                                                  m_regex_flags, strToBeAnalyzed);
+    			   																															regex_flags_str, strToBeAnalyzed);
 
     	   List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();
 
@@ -469,7 +476,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 						   if (matchingXslElem != null) { 
 							   matchingXslElem.setStrValue(matchStr);
 							   matchingXslElem.setRegex(regexStr);
-							   matchingXslElem.setFlags(m_regex_flags);
+							   matchingXslElem.setFlags(regex_flags_str);
 							   xctxt.setPos(++posValue);
 							   xctxt.setLast(xslAnalyzeStrContextSize);
 							   xctxt.setSAXLocator(matchingXslElem);
@@ -521,7 +528,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 						   if (matchingXslElem != null) {
 							   matchingXslElem.setStrValue(matchStr);
 							   matchingXslElem.setRegex(regexStr);
-							   matchingXslElem.setFlags(m_regex_flags);
+							   matchingXslElem.setFlags(regex_flags_str);
 							   xctxt.setPos(++posValue);
 							   xctxt.setLast(xslAnalyzeStrContextSize);
 							   xctxt.setSAXLocator(matchingXslElem);

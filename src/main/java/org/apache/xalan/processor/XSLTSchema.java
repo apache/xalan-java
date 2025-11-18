@@ -335,9 +335,9 @@ public class XSLTSchema extends XSLTElementDef
     
     // Optional
     // xsl:value-of
-    XSLTAttributeDef separatorAttrOpt = new XSLTAttributeDef(null,
+    XSLTAttributeDef separatorAVTOpt = new XSLTAttributeDef(null,
 									                   "separator",
-									                   XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+									                   XSLTAttributeDef.T_AVT, false, true, XSLTAttributeDef.ERROR);
     
     // Required
     // xsl:evaluate
@@ -360,7 +360,7 @@ public class XSLTSchema extends XSLTElementDef
     // xsl:analyze-string                              
     XSLTAttributeDef flagsAttrOpt = new XSLTAttributeDef(null,
                                              "flags",
-                                             XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+                                             XSLTAttributeDef.T_AVT, false, true, XSLTAttributeDef.ERROR);
     
     // Optional                                       
     // xsl:for-each-group                             
@@ -623,7 +623,7 @@ public class XSLTSchema extends XSLTElementDef
                                   Constants.S_XSLNAMESPACEURL, "value-of",
                                   null /*alias */, templateElements /* elements */,
                                   new XSLTAttributeDef[]{ selectAttrOpt,
-                                		                  separatorAttrOpt,
+                                		                  separatorAVTOpt,
                                                           disableOutputEscapingAttr,
                                                           xpathDefaultNamespaceAttrOpt,
                                                           expandTextAttrOpt }, 
@@ -886,7 +886,7 @@ public class XSLTSchema extends XSLTElementDef
                                     charTemplateElements /* elements */,  // %char-template;>
                                     new XSLTAttributeDef[]{ nameAVTRequired,
                                                             namespaceAVTOpt,
-                                                            spaceAttr, selectAttrOpt, typeAttrOpt, 
+                                                            spaceAttr, selectAttrOpt, typeAttrOpt, separatorAVTOpt, 
                                                             validationAttrOpt, xpathDefaultNamespaceAttrOpt, 
                                                             expandTextAttrOpt }, 
                                     new ProcessorTemplateElem(),

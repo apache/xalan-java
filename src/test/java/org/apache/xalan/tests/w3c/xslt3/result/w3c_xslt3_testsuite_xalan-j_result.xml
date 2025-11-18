@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-11-17T13:21:18Z" desc="W3C XSLT 3.0 test suite results" fail="958" pass="2397" skipped="567" success="71.32%" totalRun="3361" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-11-18T15:09:45Z" desc="W3C XSLT 3.0 test suite results" fail="954" pass="2401" skipped="567" success="71.44%" totalRun="3361" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="31" pass="80" skipped="93" success="72.07%" totalRun="111"/>
-    <avt fail="14" pass="21" skipped="0" success="60.0%" totalRun="35"/>
+    <avt fail="10" pass="25" skipped="0" success="71.43%" totalRun="35"/>
     <disable-output-escaping fail="5" pass="22" skipped="5" success="81.48%" totalRun="27"/>
     <expand-text fail="8" pass="51" skipped="3" success="86.44%" totalRun="59"/>
     <match fail="85" pass="96" skipped="112" success="52.75%" totalRun="182"/>

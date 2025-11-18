@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import java.util.Vector;
@@ -28,14 +25,15 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.xs.XSAttributeDeclaration;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.NamespaceMappings;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
@@ -43,9 +41,13 @@ import org.apache.xml.utils.XML11Char;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
+
+import com.sun.org.apache.xml.internal.dtm.DTM;
 
 /**
  * Implementation of XSL stylesheet instruction xsl:attribute.
@@ -157,6 +159,25 @@ public class ElemAttribute extends ElemElement
     public boolean getExpandTextDeclared() {
     	return m_expand_text_declared;
     }
+    
+    /**
+     * The separator attribute value.
+     */
+    private AVT m_separator = null;
+
+    /**
+     * Set the value of separator attribute. 
+     */
+    public void setSeparator(AVT separator) {
+    	m_separator = separator; 
+    }
+
+    /**
+     * Get the value of separator attribute. 
+     */
+    public AVT getSeparator() {
+    	return m_separator; 
+    }
 
   /**
    * Get an int constant identifying the type of element.
@@ -232,8 +253,7 @@ public class ElemAttribute extends ElemElement
       // Since we can't use default namespace, in this case we try and 
       // see if a prefix has already been defined or this namespace.
       prefix = rhandler.getPrefix(nodeNamespace);
-
-      // System.out.println("nsPrefix: "+nsPrefix);           
+          
       if (null == prefix || prefix.length() == 0 || prefix.equals("xmlns"))
       {
         if(nodeNamespace.length() > 0)
@@ -284,6 +304,13 @@ public class ElemAttribute extends ElemElement
      	    m_xpath = new XPath(m_xpath.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);        	   
      	    m_selectExpression = m_xpath.getExpression();
         }
+        
+        int current = xctxt.getCurrentNode();
+        
+        String separatorStrValue = null;
+        if (m_separator != null) {
+           separatorStrValue = m_separator.evaluate(xctxt, current, this);
+        }
     
         if (null != nodeName && nodeName.length() > 0) {
               SerializationHandler rhandler = transformer.getSerializationHandler();
@@ -299,21 +326,56 @@ public class ElemAttribute extends ElemElement
               String attrVal = null;
                             
               if (m_selectExpression != null) {
-                  // Evaluate an xsl:attribute 'select' attribute's XPath expression,
-            	  // to determine the value of an attribute for emitting to XSLT
-            	  // transformation's output.
+            	  /**
+            	   * Evaluate an xsl:attribute 'select' attribute's XPath expression,
+            	   * to determine the value of an attribute for emitting to XSLT
+            	   * transformation's output.
+            	   */
             	  
                   if (m_vars != null) {
                      m_selectExpression.fixupVariables(m_vars, m_globals_size);   
                   }
                   
-                  XObject xpathEvalResult = m_selectExpression.execute(xctxt);
-                  attrVal = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
+                  XObject xpathEvalResult = null;
+                  if (m_selectExpression instanceof LocPathIterator) {                	  
+                	  LocPathIterator locPathIterator = (LocPathIterator)m_selectExpression;
+                	  DTMCursorIterator dtmCursorIterator = locPathIterator.asIterator(xctxt, current);
+                	  StringBuffer strBuff = new StringBuffer();
+                	  int nextNode = DTM.NULL;
+                	  String temp1 = "unlikely_separator_value";
+                	  int tempInt = temp1.length(); 
+                	  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+                		  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, xctxt);
+                		  strBuff.append(xmlNodeCursorImpl.str() + temp1);
+                	  }
+                	  
+                	  String str1 = strBuff.toString();
+                	  int strLength = str1.length();
+                	  if (strLength > 0) {
+                		  str1 = str1.substring(0, strLength - tempInt);
+                		  if (separatorStrValue != null) {
+                			  attrVal = str1.replace(temp1, separatorStrValue);   
+                		  }
+                		  else {
+                			  attrVal = str1.replace(temp1, " ");
+                		  }
+                	  }
+                	  else {
+                		 attrVal = ""; 
+                	  }
+                  }
+                  else {
+                	 xpathEvalResult = m_selectExpression.execute(xctxt);
+                	 attrVal = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
+                  }
               }
               else {
-                  // Evaluate an xsl:attribute's child sequence constructor, to determine 
-            	  // the value of an attribute for emitting to XSLT transformation's 
-            	  // output.          
+            	  /**
+            	   * Evaluate an xsl:attribute's child sequence constructor, to determine
+            	   * the value of an attribute for emitting to XSLT transformation's
+            	   * output.
+            	   */
+            	  
                   attrVal = transformer.transformToString(this);
                   
                   boolean isExpandText = false;
