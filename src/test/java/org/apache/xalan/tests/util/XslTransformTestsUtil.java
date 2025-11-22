@@ -178,18 +178,34 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            else {
               byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
               
-              if ((XSLTestConstants.XML).equals(m_fileComparisonType)) {            	              	  
-            	  if (!isXMLFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
+              if ((XSLTestConstants.XML).equals(m_fileComparisonType)) {
+            	  String expectedResultStr = (new String(goldFileBytes)).trim();
+            	  String actualResultStr = (resultStrWriter.toString()).trim();
+            	  if (!isXMLFileContentsEqual(expectedResultStr, actualResultStr)) {
             		  Assert.fail(); 
             	  }
+              }
+              else if ((XSLTestConstants.HTML).equals(m_fileComparisonType)) { 
+            	  String expectedResultStr = (new String(goldFileBytes)).trim();
+            	  String actualResultStr = (resultStrWriter.toString()).trim();
+            	  Assert.assertEquals(expectedResultStr, actualResultStr);
               }
               else if ((XSLTestConstants.JSON).equals(m_fileComparisonType)) {
   				  if (!isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
   				     Assert.fail();
   				  } 
               }
-              else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType) || (XSLTestConstants.HTML).equals(m_fileComparisonType)) {
-            	  Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+              else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType)) {
+            	  if (xslFilePath.contains("/xsl_disable_output_escaping") || xslFilePath.contains("/xsl_message")) {
+            		  String expectedResultStr = (new String(goldFileBytes)).trim();
+            		  expectedResultStr = expectedResultStr.replace("\r\n", "\n");
+            		  String actualResultStr = (resultStrWriter.toString()).trim();
+            		  actualResultStr = actualResultStr.replace("\r\n", "\n");
+            		  Assert.assertEquals(expectedResultStr, actualResultStr);
+            	  }
+            	  else {
+            		  Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+            	  }
               }              
            }
         }

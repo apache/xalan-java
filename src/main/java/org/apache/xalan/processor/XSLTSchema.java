@@ -388,9 +388,14 @@ public class XSLTSchema extends XSLTElementDef
 
     // Optional                                          
     // xsl:variable, xsl:value-of, xsl:param, xsl:with-param, xsl:attribute, xsl:break, 
-    // xsl:on-completion, xsl:sequence, xsl:try, xsl:catch, xsl:copy                                       
+    // xsl:on-completion, xsl:sequence, xsl:try, xsl:catch, xsl:copy, xsl:message                                       
     XSLTAttributeDef selectAttrOpt = new XSLTAttributeDef(null, "select",
                                        XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
+    // xsl:message
+    XSLTAttributeDef errorCodeAttrOpt = new XSLTAttributeDef(null, "error-code",
+                                      XSLTAttributeDef.T_AVT, false, true, XSLTAttributeDef.ERROR);
     
     // Optional
     // xsl:variable, xsl:param, xsl:with-param, xsl:template, xsl:function, xsl:evaluate, xsl:context-item
@@ -519,7 +524,7 @@ public class XSLTSchema extends XSLTElementDef
 	    
     // xsl:message                                   
     XSLTAttributeDef terminateAttr = new XSLTAttributeDef(null, "terminate",
-                                       XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
+                                       XSLTAttributeDef.T_AVT, false, true, XSLTAttributeDef.ERROR);
     terminateAttr.setDefault("no");
 
 	// top level attributes
@@ -993,7 +998,7 @@ public class XSLTSchema extends XSLTElementDef
                                   Constants.S_XSLNAMESPACEURL, "message",
                                   null /*alias */,
                                   templateElements /* elements */,  // %template;>
-                                  new XSLTAttributeDef[]{ terminateAttr },
+                                  new XSLTAttributeDef[]{ selectAttrOpt, terminateAttr, errorCodeAttrOpt },
                                   new ProcessorTemplateElem(),
                                   ElemMessage.class /* class object */, 20, true);
     XSLTElementDef xslFallback = new XSLTElementDef(this,

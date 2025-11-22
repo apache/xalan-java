@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:36Z" fail="31" name="function" pass="56" skipped="23" statusUnknown="0" totalRun="87">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-22T12:03:48Z" fail="32" name="function" pass="55" skipped="23" statusUnknown="0" totalRun="87">
    <testResult status="fail" testName="function-0001">
       <outResult>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>
@@ -124,8 +124,17 @@
    <testResult status="pass" testName="function-1030"/>
    <testResult status="pass" testName="function-1031"/>
    <testResult status="pass" testName="function-1032"/>
-   <testResult status="pass" testName="function-1033"/>
-   <testResult status="fail" testName="function-1034"/>
+   <testResult status="fail" testName="function-1033">
+      <outResult>
+         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
+         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="function-1034">
+      <outResult>
+         <errTrace>XPST0081 : An XML namespace binding for prefix '' is not available.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="function-1035"/>
    <testResult status="fail" testName="function-1101"/>
    <testResult status="fail" testName="function-1201">

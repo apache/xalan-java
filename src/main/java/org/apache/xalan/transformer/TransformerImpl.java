@@ -19,6 +19,7 @@ package org.apache.xalan.transformer;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -126,7 +127,12 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.SharedLexerState;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.patterns.UnionPattern;
@@ -139,6 +145,8 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
+
+import xml.xpath31.processor.types.XSString;
 
 /**
  * This class implements the {@link javax.xml.transform.Transformer} interface, 
@@ -472,6 +480,8 @@ public class TransformerImpl extends Transformer
    * that is used for an XSL transformation.
    */
   private Source m_source;
+  
+  private XNodeSetForDOM m_xsl_transform_result = null;
 
   //==========================================================
   // SECTION: Constructor
@@ -869,10 +879,10 @@ public class TransformerImpl extends Transformer
 
       try
       {
-      	 // NOTE: This will work because this is _NOT_ a shared DTM, and thus has
-      	 // only a single Document node. If it could ever be an RTF or other
-      	 // shared DTM, look at dtm.getDocumentRoot(nodeHandle).
-    	 
+    	  // NOTE: This will work because this is _NOT_ a shared DTM, and thus has
+    	  // only a single Document node. If it could ever be an RTF or other
+    	  // shared DTM, look at dtm.getDocumentRoot(nodeHandle).
+
     	  if (source != null) {
     		  // Validate an XML input document, if validation parameter is set 
     		  // on the transformer.    	
@@ -890,14 +900,82 @@ public class TransformerImpl extends Transformer
     		   */
     		  this.transformNode(DTM.NULL);
     	  }
+
+    	  final Writer writer = m_serializationHandler.getWriter();
+
+    	  if ((XslTransformData.m_xsl_message_rSeq != null) && ((XslTransformData.m_xsl_message_rSeq).size() > 0)) {    		  
+    		  ResultSequence rSeq = XslTransformData.m_xsl_message_rSeq;
+    		  int rSeqLength = rSeq.size();
+    		  for (int idx = 0; idx < rSeqLength; idx++) {
+    			  XSString xsString = (XSString)(rSeq.item(idx));
+    			  String strValue = ((xsString.stringValue()).trim()); 
+    			  if (writer != null) {
+    				  try {    					
+    					  writer.write(strValue);
+    					  writer.write("\n");
+    				  }
+    				  catch (IOException ex) {
+    					  throw new SAXException(ex);	
+    				  }
+    			  }
+    			  else {
+    				  m_serializationHandler.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+    				  XString xString = new XString(strValue);
+    				  xString.dispatchCharactersEvents(m_serializationHandler);
+    				  xString = new XString("\n");
+    				  xString.dispatchCharactersEvents(m_serializationHandler);
+    				  m_serializationHandler.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+    			  }
+    		  }
+
+    		  Properties xslOutputProps = m_stylesheetRoot.getOutputProperties();
+    		  Object version = xslOutputProps.get("version");
+    		  Object encoding = xslOutputProps.get("encoding");
+    		  Object standalone = xslOutputProps.get("standalone");
+    		  String versionStr = (version != null) ? (String)version : "1.0";
+    		  String encodingStr = (encoding != null) ? (String)encoding : "UTF-8";    		  
+    		  String standaloneStr = null;
+    		  if (standalone != null) {
+    			  standaloneStr = " standalone=\"" + (String)standalone + "\""; 
+    		  }
+    		  else {
+    			  standaloneStr = "";
+    		  }
+
+    		  StringBuffer strBuff = new StringBuffer();
+
+    		  strBuff.append("<?xml version=\"");
+    		  strBuff.append(versionStr);
+    		  strBuff.append("\" encoding=\"");
+    		  strBuff.append(encodingStr);
+    		  strBuff.append('\"');
+    		  strBuff.append(standaloneStr);
+    		  strBuff.append("?>");
+
+    		  m_serializationHandler.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+    		  XString xString = new XString(strBuff.toString());
+    		  xString.dispatchCharactersEvents(m_serializationHandler);
+    		  xString = new XString("\n");
+    		  xString.dispatchCharactersEvents(m_serializationHandler);
+    		  m_serializationHandler.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+    	  }
+
+    	  if (m_xsl_transform_result != null) {    		      		      		  
+    		  int resultNodeHandle = m_xsl_transform_result.asNode(m_xcontext);
+    		  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(resultNodeHandle, m_xcontext); 
+
+    		  ElemCopyOf.copyOfActionOnNodeSet(xmlNodeCursorImpl, this, m_serializationHandler, m_xcontext);  
+    	  }
       }
       finally
-      {
-    	m_init_mode_name = null;
+      {   	
+    	  m_init_mode_name = null;
     	  
-        if (shouldRelease && (dtm != null)) {
-          mgr.release(dtm, hardDelete);
-        }                
+    	  XslTransformData.m_xsl_message_rSeq = null;
+
+    	  if (shouldRelease && (dtm != null)) {
+    		  mgr.release(dtm, hardDelete);
+    	  }                
       }
 
       // Kick off the parse.  When the ContentHandler gets 
@@ -955,7 +1033,6 @@ public class TransformerImpl extends Transformer
     {
       m_hasTransformThreadErrorCatcher = false;
 
-      // This looks to be redundent to the one done in TransformNode.
       reset();
     }
   }
@@ -1601,12 +1678,7 @@ public class TransformerImpl extends Transformer
         else
         {
           m_errorHandler.fatalError(new TransformerException(se));
-        }
-        
-      }
-      finally
-      {
-        this.reset();
+        }        
       }
     }
   }
@@ -2443,7 +2515,8 @@ public class TransformerImpl extends Transformer
         		 initTemplateQName = new QName(initTemplateName);  
         	 }
         	 
-             template = m_stylesheetRoot.getTemplateComposed(initTemplateQName);             
+             template = m_stylesheetRoot.getTemplateComposed(initTemplateQName);
+             
              if (template != null) {
             	 m_xcontext.pushNamespaceContext(template);
             	 pushElemTemplateElement(template);
@@ -2456,7 +2529,14 @@ public class TransformerImpl extends Transformer
                  m_xcontext.setSAXLocator(template);
            	     m_xcontext.getVarStack().link(template.m_frameSize);
            	     
-           	     executeChildTemplates(template, true);
+           	     if (XslTransformData.m_xsl_message_rSeq == null) {
+           	    	 executeChildTemplates(template, true);
+           	     }
+           	     else {  
+           	    	 int rootNodeHandleOfRtf = this.transformToRTF(template);
+           	    	 NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, template)).convertToNodeset();    	  
+           	    	 m_xsl_transform_result = new XNodeSetForDOM(nodeList, xctxt);
+           	     }
 
            	     if (m_debug)
            		    getTraceManager().emitTraceEndEvent(template);
@@ -2524,7 +2604,8 @@ public class TransformerImpl extends Transformer
           // No default rules for processing instructions and the like.
           return false;
         }
-      }
+      }      
+      
     }
 
     // If we are processing the default text rule, then just clone 
@@ -2571,7 +2652,15 @@ public class TransformerImpl extends Transformer
     	  // that entry point.)
     	  m_xcontext.setSAXLocator(template);
     	  m_xcontext.getVarStack().link(template.m_frameSize);
-    	  executeChildTemplates(template, true);
+    	  
+    	  if (XslTransformData.m_xsl_message_rSeq == null) {
+    		  executeChildTemplates(template, true);
+    	  }
+    	  else {
+    		  int rootNodeHandleOfRtf = this.transformToRTF(template);
+    		  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, m_xcontext, template)).convertToNodeset();    	  
+    		  m_xsl_transform_result = new XNodeSetForDOM(nodeList, m_xcontext);
+    	  }
 
     	  if (m_debug)
     		  getTraceManager().emitTraceEndEvent(template);

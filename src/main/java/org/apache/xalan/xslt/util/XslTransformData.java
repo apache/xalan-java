@@ -114,6 +114,12 @@ public class XslTransformData {
     public static boolean m_is_xsl_test_invocation = false;
     
     /**
+     * Class field, to store XSL stylesheet result from xsl:message 
+     * instructions. 
+     */
+    public static ResultSequence m_xsl_message_rSeq = null;        
+    
+    /**
 	 * Method definition to reset the variable values specified 
 	 * within this class.
 	 */

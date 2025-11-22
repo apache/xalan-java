@@ -24,6 +24,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.SAXException;
@@ -115,12 +116,21 @@ public class ToXMLStream extends ToStream
 
             m_needToOutputDocTypeDecl = true;
             m_startNewLine = false;
+            
             /* The call to getXMLVersion() might emit an error message
              * and we should emit this message regardless of if we are 
              * writing out an XML header or not.
              */ 
             final String version = getXMLVersion();
-            if (getOmitXMLDeclaration() == false)
+            
+            boolean omitXmlDeclaration = getOmitXMLDeclaration();
+            
+            /**
+             * Emit to XSL transformation result, XML declaration string,
+             * if an XSL stylesheet doesn't contain one or more xsl:message
+             * instructions.
+             */
+            if (!omitXmlDeclaration && (XslTransformData.m_xsl_message_rSeq == null)) 
             {
                 String encoding = Encodings.getMimeEncoding(getEncoding());
                 String standalone;
@@ -608,7 +618,7 @@ public class ToXMLStream extends ToStream
      * output document is set to XML 1.0 and processing continues.
      * @return string (XML version)
      */
-    private String getXMLVersion()
+    public String getXMLVersion()
     {
         String xmlVersion = getVersion();
         if(xmlVersion == null || xmlVersion.equals(XMLVERSION10))
@@ -639,4 +649,8 @@ public class ToXMLStream extends ToStream
         }
         return xmlVersion;
     }
+    
+    public boolean standaloneWasSpecified() {
+		return this.m_standaloneWasSpecified;
+	}
 }

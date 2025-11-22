@@ -23,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.net.URI;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -886,258 +885,242 @@ public class Process
 
 				  if (uriResolver != null)
 					  transformer.setURIResolver(uriResolver);
-
-				  if (null != inFileName)
+				  
+				  if (inFileName == null) {
+					 inFileName = xslFileName; 
+				  }
+				  
+				  if (flavor.equals("d2d"))
 				  {
-					  if (flavor.equals("d2d"))
+					  // Parse in the xml data into a DOM
+					  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+					  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+					  dfactory.setCoalescing(true);
+					  dfactory.setNamespaceAware(true);
+
+					  if (isSecureProcessing)
 					  {
-						  // Parse in the xml data into a DOM
-						  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-						  
-						  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-						  dfactory.setCoalescing(true);
-						  dfactory.setNamespaceAware(true);
-
-						  if (isSecureProcessing)
+						  try
 						  {
-							  try
-							  {
-								  dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-							  }
-							  catch (ParserConfigurationException pce) {}
+							  dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 						  }
-
-						  DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-
-						  if (entityResolver != null)
-							  docBuilder.setEntityResolver(entityResolver);
-
-						  InputSource inpSrc = new InputSource(inFileName);
-						  if (encoding != null) {
-							 inpSrc.setEncoding(encoding); 
-						  }
-						  
-						  Node xmlDoc = docBuilder.parse(inpSrc);						  
-						  
-						  Document doc = docBuilder.newDocument();
-						  org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();						  						  
-
-						  transformer.transform(new DOMSource(xmlDoc, inFileName), new DOMResult(outNode));
-
-						  // Now serialize output to disk with identity transformer
-						  Transformer identityTransformer = stf.newTransformer();
-						  identityTransformer.setErrorListener(new DefaultErrorHandler(true));
-
-						  Properties serializationProps = stylesheet.getOutputProperties();
-
-						  identityTransformer.setOutputProperties(serializationProps);
-
-						  if (contentHandler != null)
-						  {
-							  SAXResult result = new SAXResult(contentHandler);
-
-							  identityTransformer.transform(new DOMSource(outNode), result);
-						  }
-						  else
-							  identityTransformer.transform(new DOMSource(outNode), strResult);
+						  catch (ParserConfigurationException pce) {}
 					  }
-					  else if (flavor.equals("s2s"))
-					  {
-						  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-						  
-						  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-						  dfactory.setNamespaceAware(true);
-						  DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
 
-						  Document doc = docBuilder.newDocument();
-						  org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
-						  
-						  InputSource inpSrc = new InputSource(inFileName);
-						  if (encoding != null) {
-							 inpSrc.setEncoding(encoding); 
-						  }
-						  
-						  // Using an XMLReader to construct SAXSource for an XML input
-						  // document, enables correct XML namespace processing. 
-						  XMLReader xmlReader = XMLReaderFactory.createXMLReader();						  						  
+					  DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
 
-						  transformer.transform(new SAXSource(xmlReader, inpSrc), new DOMResult(outNode));
+					  if (entityResolver != null)
+						  docBuilder.setEntityResolver(entityResolver);
 
-						  // Now serialize output to disk with identity transformer
-						  Transformer identityTransformer = stf.newTransformer();
-						  identityTransformer.setErrorListener(new DefaultErrorHandler(true));
-
-						  Properties serializationProps = stylesheet.getOutputProperties();
-
-						  identityTransformer.setOutputProperties(serializationProps);
-
-						  if (contentHandler != null)
-						  {
-							  SAXResult result = new SAXResult(contentHandler);
-
-							  identityTransformer.transform(new DOMSource(outNode), result);
-						  }
-						  else
-							  identityTransformer.transform(new DOMSource(outNode), strResult);
+					  InputSource inpSrc = new InputSource(inFileName);
+					  if (encoding != null) {
+						  inpSrc.setEncoding(encoding); 
 					  }
-					  else if (flavor.equals("th"))
+
+					  Node xmlDoc = docBuilder.parse(inpSrc);						  
+
+					  Document doc = docBuilder.newDocument();
+					  org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();						  						  
+
+					  transformer.transform(new DOMSource(xmlDoc, inFileName), new DOMResult(outNode));
+
+					  // Now serialize output to disk with identity transformer
+					  Transformer identityTransformer = stf.newTransformer();
+					  identityTransformer.setErrorListener(new DefaultErrorHandler(true));
+
+					  Properties serializationProps = stylesheet.getOutputProperties();
+
+					  identityTransformer.setOutputProperties(serializationProps);
+
+					  if (contentHandler != null)
 					  {
-						  for (int i = 0; i < 1; i++) // Loop for diagnosing bugs with inconsistent behavior
+						  SAXResult result = new SAXResult(contentHandler);
+
+						  identityTransformer.transform(new DOMSource(outNode), result);
+					  }
+					  else
+						  identityTransformer.transform(new DOMSource(outNode), strResult);
+				  }
+				  else if (flavor.equals("s2s"))
+				  {
+					  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+					  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+					  dfactory.setNamespaceAware(true);
+					  DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+
+					  Document doc = docBuilder.newDocument();
+					  org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
+
+					  InputSource inpSrc = new InputSource(inFileName);
+					  if (encoding != null) {
+						  inpSrc.setEncoding(encoding); 
+					  }
+
+					  // Using an XMLReader to construct SAXSource for an XML input
+					  // document, enables correct XML namespace processing. 
+					  XMLReader xmlReader = XMLReaderFactory.createXMLReader();						  						  
+
+					  transformer.transform(new SAXSource(xmlReader, inpSrc), new DOMResult(outNode));
+
+					  // Now serialize output to disk with identity transformer
+					  Transformer identityTransformer = stf.newTransformer();
+					  identityTransformer.setErrorListener(new DefaultErrorHandler(true));
+
+					  Properties serializationProps = stylesheet.getOutputProperties();
+
+					  identityTransformer.setOutputProperties(serializationProps);
+
+					  if (contentHandler != null)
+					  {
+						  SAXResult result = new SAXResult(contentHandler);
+
+						  identityTransformer.transform(new DOMSource(outNode), result);
+					  }
+					  else
+						  identityTransformer.transform(new DOMSource(outNode), strResult);
+				  }
+				  else if (flavor.equals("th"))
+				  {
+					  for (int i = 0; i < 1; i++) // Loop for diagnosing bugs with inconsistent behavior
+					  {
+						  // ===============
+						  XMLReader reader = null;
+
+						  // Use JAXP1.1 ( if possible )      
+						  try
 						  {
-							  // ===============
-							  XMLReader reader = null;
+							  javax.xml.parsers.SAXParserFactory factory = javax.xml.parsers.SAXParserFactory.newInstance();
 
-							  // Use JAXP1.1 ( if possible )      
-							  try
+							  factory.setNamespaceAware(true);
+
+							  if (isSecureProcessing)
 							  {
-								  javax.xml.parsers.SAXParserFactory factory =
-										  javax.xml.parsers.SAXParserFactory.newInstance();
-
-								  factory.setNamespaceAware(true);
-
-								  if (isSecureProcessing)
+								  try
 								  {
-									  try
-									  {
-										  factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-									  }
-									  catch (org.xml.sax.SAXException se) {}
+									  factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 								  }
-
-								  javax.xml.parsers.SAXParser jaxpParser =
-										  factory.newSAXParser();
-
-								  reader = jaxpParser.getXMLReader();
-							  }
-							  catch (javax.xml.parsers.ParserConfigurationException ex)
-							  {
-								  throw new org.xml.sax.SAXException(ex);
-							  }
-							  catch (javax.xml.parsers.FactoryConfigurationError ex1)
-							  {
-								  throw new org.xml.sax.SAXException(ex1.toString());
-							  }
-							  catch (NoSuchMethodError ex2){}
-							  catch (AbstractMethodError ame){}
-
-							  if (null == reader)
-							  {
-								  reader = XMLReaderFactory.createXMLReader();
+								  catch (org.xml.sax.SAXException se) {}
 							  }
 
-							  if (!useXSLTC)
-								  stf.setAttribute(org.apache.xalan.processor.XSL3TransformerFactoryImpl.FEATURE_INCREMENTAL, 
-										  Boolean.TRUE);
+							  javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
 
-							  TransformerHandler th = stf.newTransformerHandler(stylesheet);
+							  reader = jaxpParser.getXMLReader();
+						  }
+						  catch (javax.xml.parsers.ParserConfigurationException ex)
+						  {
+							  throw new org.xml.sax.SAXException(ex);
+						  }
+						  catch (javax.xml.parsers.FactoryConfigurationError ex1)
+						  {
+							  throw new org.xml.sax.SAXException(ex1.toString());
+						  }
+						  catch (NoSuchMethodError ex2){}
+						  catch (AbstractMethodError ame){}
 
-							  reader.setContentHandler(th);
-							  reader.setDTDHandler(th);
+						  if (null == reader)
+						  {
+							  reader = XMLReaderFactory.createXMLReader();
+						  }
 
-							  if(th instanceof org.xml.sax.ErrorHandler)
-								  reader.setErrorHandler((org.xml.sax.ErrorHandler)th);
+						  if (!useXSLTC)
+							  stf.setAttribute(org.apache.xalan.processor.XSL3TransformerFactoryImpl.FEATURE_INCREMENTAL, Boolean.TRUE);
 
-							  try
+						  TransformerHandler th = stf.newTransformerHandler(stylesheet);
+
+						  reader.setContentHandler(th);
+						  reader.setDTDHandler(th);
+
+						  if (th instanceof org.xml.sax.ErrorHandler)
+							  reader.setErrorHandler((org.xml.sax.ErrorHandler)th);
+
+						  try
+						  {
+							  reader.setProperty("http://xml.org/sax/properties/lexical-handler", th);
+						  }
+						  catch (org.xml.sax.SAXNotRecognizedException e){}
+						  catch (org.xml.sax.SAXNotSupportedException e){}
+						  try
+						  {
+							  reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+						  } catch (org.xml.sax.SAXException se) {}
+
+						  th.setResult(strResult);
+
+						  reader.parse(new InputSource(inFileName));
+					  }                            
+				  }
+				  else
+				  {
+					  if (entityResolver != null)
+					  {
+						  XMLReader reader = null;
+
+						  // Use JAXP1.1 ( if possible )      
+						  try
+						  {
+							  javax.xml.parsers.SAXParserFactory factory = javax.xml.parsers.SAXParserFactory.newInstance();
+
+							  factory.setNamespaceAware(true);
+
+							  if (isSecureProcessing)
 							  {
-								  reader.setProperty(
-										  "http://xml.org/sax/properties/lexical-handler", th);
+								  try
+								  {
+									  factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+								  }
+								  catch (org.xml.sax.SAXException se) {}
 							  }
-							  catch (org.xml.sax.SAXNotRecognizedException e){}
-							  catch (org.xml.sax.SAXNotSupportedException e){}
-							  try
-							  {
-								  reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
-										  true);
-							  } catch (org.xml.sax.SAXException se) {}
 
-							  th.setResult(strResult);
+							  javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
 
-							  reader.parse(new InputSource(inFileName));
-						  }                            
+							  reader = jaxpParser.getXMLReader();
+						  }
+						  catch (javax.xml.parsers.ParserConfigurationException ex)
+						  {
+							  throw new org.xml.sax.SAXException(ex);
+						  }
+						  catch (javax.xml.parsers.FactoryConfigurationError ex1)
+						  {
+							  throw new org.xml.sax.SAXException(ex1.toString());
+						  }
+						  catch (NoSuchMethodError ex2){}
+						  catch (AbstractMethodError ame){}
+
+						  if (null == reader)
+						  {
+							  reader = XMLReaderFactory.createXMLReader();
+						  }
+
+						  reader.setEntityResolver(entityResolver);
+
+						  if (contentHandler != null)
+						  {
+							  SAXResult result = new SAXResult(contentHandler);
+
+							  transformer.transform(new SAXSource(reader, new InputSource(inFileName)), result);
+						  }
+						  else
+						  {
+							  transformer.transform(new SAXSource(reader, new InputSource(inFileName)), strResult);
+						  }
+					  }
+					  else if (contentHandler != null)
+					  {
+						  SAXResult result = new SAXResult(contentHandler);
+
+						  transformer.transform(new StreamSource(inFileName), result);
 					  }
 					  else
 					  {
-						  if (entityResolver != null)
-						  {
-							  XMLReader reader = null;
-
-							  // Use JAXP1.1 ( if possible )      
-							  try
-							  {
-								  javax.xml.parsers.SAXParserFactory factory =
-										  javax.xml.parsers.SAXParserFactory.newInstance();
-
-								  factory.setNamespaceAware(true);
-
-								  if (isSecureProcessing)
-								  {
-									  try
-									  {
-										  factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-									  }
-									  catch (org.xml.sax.SAXException se) {}
-								  }
-
-								  javax.xml.parsers.SAXParser jaxpParser =
-										  factory.newSAXParser();
-
-								  reader = jaxpParser.getXMLReader();
-							  }
-							  catch (javax.xml.parsers.ParserConfigurationException ex)
-							  {
-								  throw new org.xml.sax.SAXException(ex);
-							  }
-							  catch (javax.xml.parsers.FactoryConfigurationError ex1)
-							  {
-								  throw new org.xml.sax.SAXException(ex1.toString());
-							  }
-							  catch (NoSuchMethodError ex2){}
-							  catch (AbstractMethodError ame){}
-
-							  if (null == reader)
-							  {
-								  reader = XMLReaderFactory.createXMLReader();
-							  }
-
-							  reader.setEntityResolver(entityResolver);
-
-							  if (contentHandler != null)
-							  {
-								  SAXResult result = new SAXResult(contentHandler);
-
-								  transformer.transform(
-										  new SAXSource(reader, new InputSource(inFileName)),
-										  result);
-							  }
-							  else
-							  {
-								  transformer.transform(
-										  new SAXSource(reader, new InputSource(inFileName)),
-										  strResult);
-							  }
-						  }
-						  else if (contentHandler != null)
-						  {
-							  SAXResult result = new SAXResult(contentHandler);
-
-							  transformer.transform(new StreamSource(inFileName), result);
-						  }
-						  else
-						  {
-							  transformer.transform(new StreamSource(inFileName), strResult);
-						  }
+						  transformer.transform(new StreamSource(inFileName), strResult);
 					  }
-				  }
-				  else
-				  {					  					  					  
-					  StringReader strReader = new StringReader("<?xml version=\"1.0\"?><unlikely_xml_element/>");
-					  transformer.transform(new StreamSource(strReader), strResult); 
 				  }
 			  }
 			  else
 			  {
-				  msg = XSLMessages.createMessage(
-						  XSLTErrorResources.ER_NOT_SUCCESSFUL, null);
+				  msg = XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null);
 				  diagnosticsWriter.println(msg);  
 				  doExit(msg);
 			  }
