@@ -21,7 +21,7 @@
    <xsl:template name="T1">
       <hello>
 	     <there/>
-		 <xsl:message select="'abcdefghi'"/>
+		 <xsl:message select="'abcdefg'"/>
 	  </hello>
    </xsl:template>
    

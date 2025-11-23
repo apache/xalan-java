@@ -29,17 +29,24 @@ import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
+import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
@@ -138,8 +145,6 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
                transformer.setErrorListener(xslTransformErrHandler);  
            }
            
-           StringWriter resultStrWriter = new StringWriter();
-           
            DOMSource xmlDomSrc = null;
            
            if (xmlFilePath != null) {
@@ -161,7 +166,29 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         	   xmlInpSrc = xmlDomSrc; 
            }
            
-           transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));
+           System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+           DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+           dfactory.setNamespaceAware(true);
+           DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+
+           Document doc = docBuilder.newDocument();
+           org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
+
+           transformer.transform(xmlInpSrc, new DOMResult(outNode));
+           
+           // Running the following another XSL transform, normalizes an XSL 
+           // transform's result for comparison purposes.
+           
+           Transformer identityTransformer = m_xslTransformerFactory.newTransformer();
+           identityTransformer.setErrorListener(new DefaultErrorHandler(true));           
+           StylesheetRoot stylesheetRoot = ((TransformerImpl)transformer).getStylesheet();
+           Properties serializationProps = stylesheetRoot.getOutputProperties();
+           identityTransformer.setOutputProperties(serializationProps);
+           
+           StringWriter resultStrWriter = new StringWriter();
+           StreamResult streamResult = new StreamResult(resultStrWriter);
+           identityTransformer.transform(new DOMSource(outNode), streamResult);
            
            if (xslTransformErrHandler != null) {
                List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();
@@ -196,16 +223,9 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
   				  } 
               }
               else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType)) {
-            	  if (xslFilePath.contains("/xsl_disable_output_escaping") || xslFilePath.contains("/xsl_message")) {
-            		  String expectedResultStr = (new String(goldFileBytes)).trim();
-            		  expectedResultStr = expectedResultStr.replace("\r\n", "\n");
-            		  String actualResultStr = (resultStrWriter.toString()).trim();
-            		  actualResultStr = actualResultStr.replace("\r\n", "\n");
-            		  Assert.assertEquals(expectedResultStr, actualResultStr);
-            	  }
-            	  else {
-            		  Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
-            	  }
+            	  String expectedResultStr = new String(goldFileBytes);
+            	  String actualResultStr = resultStrWriter.toString();
+            	  Assert.assertEquals(expectedResultStr, actualResultStr);
               }              
            }
         }

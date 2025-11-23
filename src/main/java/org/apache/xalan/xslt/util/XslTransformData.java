@@ -115,7 +115,8 @@ public class XslTransformData {
     
     /**
      * Class field, to store XSL stylesheet result from xsl:message 
-     * instructions. 
+     * instructions. These results are emitted as prefix of XSL 
+     * transform's output. 
      */
     public static ResultSequence m_xsl_message_rSeq = null;        
     

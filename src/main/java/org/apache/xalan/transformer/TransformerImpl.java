@@ -481,7 +481,17 @@ public class TransformerImpl extends Transformer
    */
   private Source m_source;
   
-  private XNodeSetForDOM m_xsl_transform_result = null;
+  /**
+   * This object instance, contains XSL transformation's result,
+   * when an XSL stylesheet contains one or more xsl:message 
+   * instructions. This object instance, doesn't contain result
+   * of xsl:message instructions, but preserves XSL transform's 
+   * output order.
+   * 
+   * An XSL transform's xsl:message instruction results are
+   * available within an xdm sequence object XslTransformData.m_xsl_message_rSeq.
+   */
+  private XNodeSetForDOM m_xsl_transform_result_xsl_message = null;
 
   //==========================================================
   // SECTION: Constructor
@@ -882,14 +892,22 @@ public class TransformerImpl extends Transformer
     	  // NOTE: This will work because this is _NOT_ a shared DTM, and thus has
     	  // only a single Document node. If it could ever be an RTF or other
     	  // shared DTM, look at dtm.getDocumentRoot(nodeHandle).
+    	  
+    	  OutputProperties outputProperties = m_stylesheetRoot.getOutputComposed();
+    	  
+    	  if (XslTransformData.m_xsl_message_rSeq != null) {
+    		 // Do not emit XML declaration to output, if an XSL 
+    		 // stylesheet contains one or more xsl:message instructions.
+		     outputProperties.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+    	  }
 
     	  if (source != null) {
     		  // Validate an XML input document, if validation parameter is set 
     		  // on the transformer.    	
     		  if (m_enabledPropertyList.contains(XML_VALIDATION_PROPERTY)) { 
     			  m_stylesheetRoot.validateXmlInputDoc(base);
-    		  }
-
+    		  }    		      		      		  
+    		  
     		  this.transformNode(dtm.getDocument());
     	  }
     	  else if (m_init_template_name != null) {
@@ -903,6 +921,15 @@ public class TransformerImpl extends Transformer
 
     	  final Writer writer = m_serializationHandler.getWriter();
 
+    	  String osName = System.getProperty("os.name");
+    	  String newLineSeq = null;
+		  if (osName.startsWith("Windows")) {
+			  newLineSeq = "\r\n"; 
+		  }
+		  else {
+			  newLineSeq = "\n";
+		  }
+    	  
     	  if ((XslTransformData.m_xsl_message_rSeq != null) && ((XslTransformData.m_xsl_message_rSeq).size() > 0)) {    		  
     		  ResultSequence rSeq = XslTransformData.m_xsl_message_rSeq;
     		  int rSeqLength = rSeq.size();
@@ -910,58 +937,61 @@ public class TransformerImpl extends Transformer
     			  XSString xsString = (XSString)(rSeq.item(idx));
     			  String strValue = ((xsString.stringValue()).trim()); 
     			  if (writer != null) {
-    				  try {    					
-    					  writer.write(strValue);
-    					  writer.write("\n");
+    				  try {
+    					  writer.write(strValue + newLineSeq);
     				  }
     				  catch (IOException ex) {
     					  throw new SAXException(ex);	
     				  }
     			  }
     			  else {
-    				  m_serializationHandler.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
-    				  XString xString = new XString(strValue);
+    				  m_serializationHandler.processingInstruction(javax.xml.transform.Result.
+    						                                                                 PI_DISABLE_OUTPUT_ESCAPING, "");
+    				  XString xString = new XString(strValue + newLineSeq);
     				  xString.dispatchCharactersEvents(m_serializationHandler);
-    				  xString = new XString("\n");
-    				  xString.dispatchCharactersEvents(m_serializationHandler);
-    				  m_serializationHandler.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+    				  m_serializationHandler.processingInstruction(javax.xml.transform.Result.
+    						                                                                 PI_DISABLE_OUTPUT_ESCAPING, "");
     			  }
     		  }
+    		  
+    		  String xslTransformMethod = outputProperties.getProperty(OutputKeys.METHOD);
 
-    		  Properties xslOutputProps = m_stylesheetRoot.getOutputProperties();
-    		  Object version = xslOutputProps.get("version");
-    		  Object encoding = xslOutputProps.get("encoding");
-    		  Object standalone = xslOutputProps.get("standalone");
-    		  String versionStr = (version != null) ? (String)version : "1.0";
-    		  String encodingStr = (encoding != null) ? (String)encoding : "UTF-8";    		  
-    		  String standaloneStr = null;
-    		  if (standalone != null) {
-    			  standaloneStr = " standalone=\"" + (String)standalone + "\""; 
+    		  if ((org.apache.xml.serializer.Method.XML).equals(xslTransformMethod)) {
+    			  Properties xslOutputProps = m_stylesheetRoot.getOutputProperties();
+    			  Object version = xslOutputProps.get("version");
+    			  Object encoding = xslOutputProps.get("encoding");
+    			  Object standalone = xslOutputProps.get("standalone");
+    			  String versionStr = (version != null) ? (String)version : "1.0";
+    			  String encodingStr = (encoding != null) ? (String)encoding : "UTF-8";    		  
+    			  String standaloneStr = null;
+    			  if (standalone != null) {
+    				  standaloneStr = " standalone=\"" + (String)standalone + "\""; 
+    			  }
+    			  else {
+    				  standaloneStr = "";
+    			  }
+
+    			  StringBuffer strBuff = new StringBuffer();
+
+    			  strBuff.append("<?xml version=\"");
+    			  strBuff.append(versionStr);
+    			  strBuff.append("\" encoding=\"");
+    			  strBuff.append(encodingStr);
+    			  strBuff.append('\"');
+    			  strBuff.append(standaloneStr);
+    			  strBuff.append("?>");
+
+    			  m_serializationHandler.processingInstruction(javax.xml.transform.Result.
+    					                                                                 PI_DISABLE_OUTPUT_ESCAPING, "");
+    			  XString xString = new XString(strBuff.toString() + newLineSeq);
+    			  xString.dispatchCharactersEvents(m_serializationHandler);
+    			  m_serializationHandler.processingInstruction(javax.xml.transform.Result.
+    					                                                                PI_DISABLE_OUTPUT_ESCAPING, "");
     		  }
-    		  else {
-    			  standaloneStr = "";
-    		  }
-
-    		  StringBuffer strBuff = new StringBuffer();
-
-    		  strBuff.append("<?xml version=\"");
-    		  strBuff.append(versionStr);
-    		  strBuff.append("\" encoding=\"");
-    		  strBuff.append(encodingStr);
-    		  strBuff.append('\"');
-    		  strBuff.append(standaloneStr);
-    		  strBuff.append("?>");
-
-    		  m_serializationHandler.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
-    		  XString xString = new XString(strBuff.toString());
-    		  xString.dispatchCharactersEvents(m_serializationHandler);
-    		  xString = new XString("\n");
-    		  xString.dispatchCharactersEvents(m_serializationHandler);
-    		  m_serializationHandler.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
     	  }
 
-    	  if (m_xsl_transform_result != null) {    		      		      		  
-    		  int resultNodeHandle = m_xsl_transform_result.asNode(m_xcontext);
+    	  if (m_xsl_transform_result_xsl_message != null) {    		      		      		  
+    		  int resultNodeHandle = m_xsl_transform_result_xsl_message.asNode(m_xcontext);
     		  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(resultNodeHandle, m_xcontext); 
 
     		  ElemCopyOf.copyOfActionOnNodeSet(xmlNodeCursorImpl, this, m_serializationHandler, m_xcontext);  
@@ -2530,12 +2560,16 @@ public class TransformerImpl extends Transformer
            	     m_xcontext.getVarStack().link(template.m_frameSize);
            	     
            	     if (XslTransformData.m_xsl_message_rSeq == null) {
+           	         // An XSL stylesheet doesn't contain xsl:message
+           		     // instruction.
            	    	 executeChildTemplates(template, true);
            	     }
-           	     else {  
+           	     else { 
+           	         // An XSL stylesheet contains one or more xsl:message
+           		     // instructions.
            	    	 int rootNodeHandleOfRtf = this.transformToRTF(template);
            	    	 NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, template)).convertToNodeset();    	  
-           	    	 m_xsl_transform_result = new XNodeSetForDOM(nodeList, xctxt);
+           	    	 m_xsl_transform_result_xsl_message = new XNodeSetForDOM(nodeList, xctxt);
            	     }
 
            	     if (m_debug)
@@ -2654,12 +2688,16 @@ public class TransformerImpl extends Transformer
     	  m_xcontext.getVarStack().link(template.m_frameSize);
     	  
     	  if (XslTransformData.m_xsl_message_rSeq == null) {
+    		  // An XSL stylesheet doesn't contain xsl:message
+    		  // instruction.
     		  executeChildTemplates(template, true);
     	  }
     	  else {
+    		  // An XSL stylesheet contains one or more xsl:message
+    		  // instructions.
     		  int rootNodeHandleOfRtf = this.transformToRTF(template);
     		  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, m_xcontext, template)).convertToNodeset();    	  
-    		  m_xsl_transform_result = new XNodeSetForDOM(nodeList, m_xcontext);
+    		  m_xsl_transform_result_xsl_message = new XNodeSetForDOM(nodeList, m_xcontext);
     	  }
 
     	  if (m_debug)

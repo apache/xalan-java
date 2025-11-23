@@ -6,7 +6,7 @@
     <!-- An XSL 3 stylesheet test case, to test XSLT 3.0 disable 
          output escaping feature. -->				
 
-    <xsl:output method="html" indent="no"/>
+    <xsl:output method="html" indent="yes"/>
 	
 	<xsl:template match="/">
 	   <html>
