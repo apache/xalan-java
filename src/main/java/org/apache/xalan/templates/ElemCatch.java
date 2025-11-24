@@ -106,9 +106,34 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	 * evaluation as performed within object of this class.  
 	 */
 	private int m_globals_size;
+	
+	/**
+	 * This class field, represents the value of "xpath-default-namespace" 
+	 * attribute.
+	 */
+	private String m_xpath_default_namespace = null;
 
 	/**
-	 * The class constructor.
+	 * Set the value of "xpath-default-namespace" attribute.
+	 *
+	 * @param v   Value of the "xpath-default-namespace" attribute
+	 */
+	public void setXpathDefaultNamespace(String v)
+	{
+		m_xpath_default_namespace = v; 
+	}
+
+	/**
+	 * Get the value of "xpath-default-namespace" attribute.
+	 *  
+	 * @return		  The value of "xpath-default-namespace" attribute 
+	 */
+	public String getXpathDefaultNamespace() {
+		return m_xpath_default_namespace;
+	}
+
+	/**
+	 * Class constructor.
 	 */
 	public ElemCatch() {}
 	
@@ -185,6 +210,10 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	    	throw new TransformerException("XTSE3150 : An XSL catch element can only occur as child of try element.", srcLocator);
 	    }
 	    
+	    if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
+	    	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	    }
+	    
 	    if ((m_selectExpression != null) && (this.m_firstChild != null)) {
 	    	throw new TransformerException("XTSE3150 : An XSL catch element can have only either 'select' attribute, or a contained "
 	    			                                                                                              + "sequence constructor.", srcLocator);
@@ -222,12 +251,12 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	    	// An XSL processing specified by xsl:catch element is been 
 	    	// done by xsl:catch element's contained sequence constructor.
 	    	
-	    	for (ElemTemplateElement t1 = this.m_firstChild; t1 != null;
-	    															t1 = t1.m_nextSibling) 
+	    	for (ElemTemplateElement t = this.m_firstChild; t != null;
+	    															t = t.m_nextSibling) 
 	    	{
-	    		xctxt.setSAXLocator(t1);
-	    		transformer.setCurrentElement(t1);
-	    		t1.execute(transformer);
+	    		xctxt.setSAXLocator(t);
+	    		transformer.setCurrentElement(t);
+	    		t.execute(transformer);
 	    	}
 	    }
 	}

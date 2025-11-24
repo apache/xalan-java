@@ -41,4 +41,10 @@ public class XalanProperties
    */
   public final static String INIT_MODE = "init-mode";
   
+  /**
+   * Constant representing an XSL stylesheet transformation's
+   * 'assert' feature.
+   */
+  public final static String ASSERT_ENABLED = "assert-enabled";
+  
 }

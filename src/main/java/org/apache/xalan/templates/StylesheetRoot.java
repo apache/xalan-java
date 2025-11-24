@@ -134,6 +134,12 @@ public class StylesheetRoot extends StylesheetComposed
      */
     private String m_init_mode_name = null;
     
+    /**
+     * Value of this variable is true, if XSL assert 
+     * are enabled, otherwise false.
+     */
+    private boolean m_assert;
+    
     private ErrorListener m_errorListener;
     
   /**
@@ -2009,29 +2015,63 @@ public class StylesheetRoot extends StylesheetComposed
 	}
 
 	/**
-	 * Get XSL transformation's initial template name.
+	 * Get XSL transformation's 'initial template' name.
 	 * 
-	 * @return			String value of XSL transformation's initial template name
+	 * @return			                String value of XSL transformation's 
+	 *                                  'initial template' name.
 	 */
 	public String getInitTemplateName() {
 		return m_init_template_name;
 	}
 
 	/**
-	 * Set XSL transformation's initial template name.
+	 * Set XSL transformation's 'initial template' name.
 	 * 
-	 * @param initTemplateName			An XSL transformation's initial template name 
+	 * @param initTemplateName			An XSL transformation's 'initial template' 
+	 *                                  name. 
 	 */
 	public void setInitTemplateName(String initTemplateName) {
 		this.m_init_template_name = initTemplateName;
 	}
 	
+	/**
+	 * Get XSL transformation's 'initial mode' name.
+	 * 
+	 * @return			               String value of XSL transformation's 
+	 *                                 initial mode name.
+	 */
 	public String getInitModeName() {
 		return m_init_mode_name;
 	}
 
+	/**
+	 * Set XSL transformation's 'initial mode' name.
+	 * 
+	 * @param initModeName			  An XSL transformation's initial 
+	 *                                mode name. 
+	 */
 	public void setInitModeName(String initModeName) {
 		this.m_init_mode_name = initModeName;
+	}
+	
+	/**
+	 * Get XSL transformation's 'assert' enable status, value.
+	 * 
+	 * @return			              XSL transformation's 'assert' enable 
+	 *                                boolean, status value.
+	 */
+	public boolean isAssertEnabled() {
+		return m_assert;
+	}
+
+	/**
+	 * Set XSL transformation's 'assert' enable status.
+	 * 
+	 * @param xslAssert			     An XSL transformation's 'assert' 
+	 *                               enable, status. 
+	 */
+	public void setAssertEnabled(boolean xslAssert) {
+		this.m_assert = xslAssert;
 	}
 
 }

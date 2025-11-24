@@ -90,9 +90,10 @@ public class Process
     System.out.println(resbundle.getString("optionIN"));  //"    [-IN inputXMLURL]");
     System.out.println(resbundle.getString("optionXSL"));  //"   [-XSL XSLTransformationURL]");
     System.out.println(resbundle.getString("optionXSVAL"));  //"   [-XSVAL (Request XML Schema validation of XML input document)]");
-    System.out.println(resbundle.getString("optionXSLEVALUATE"));  //"   [-XSLEVALUATE (Request xsl:evaluate instruction to be enabled)]");
+    System.out.println(resbundle.getString("optionXSL_EVALUATE"));  //"   [-XSL_EVALUATE (Request xsl:evaluate instruction to be enabled)]");
     System.out.println(resbundle.getString("optionINIT_TEMPLATE"));  //" [-INIT_TEMPLATE (Specify an XSL template's name to select an initial template for transformation)]");
     System.out.println(resbundle.getString("optionINIT_MODE"));  //" [-INIT_MODE (Specify an XSL transformation's initial mode name)]");
+    System.out.println(resbundle.getString("optionENABLE_ASSERT"));  //" [-ENABLE_ASSERT (Specify whether XSL assert is enabled)]");
     System.out.println(resbundle.getString("optionENCODING"));  //" [-ENCODING (Specify value of encoding to be used for XML input and stylesheet documents. Use format utf_8 (default), iso_8859_1 etc.)]");
     System.out.println(resbundle.getString("optionOUT"));  //"   [-OUT outputFileName]");
 
@@ -241,6 +242,7 @@ public class Process
 		  ContentHandler contentHandler = null;
 		  int recursionLimit=-1;
 		  String encoding = "UTF-8";
+		  boolean enableAssert = false;
 
 		  for (int i = 0; i < argv.length; i++)
 		  {
@@ -684,7 +686,7 @@ public class Process
 			  else if ("-XSVAL".equalsIgnoreCase(argv[i])) {
 				  isSchemaValidation = true;
 			  }
-			  else if ("-XSLEVALUATE".equalsIgnoreCase(argv[i])) {
+			  else if ("-XSL_EVALUATE".equalsIgnoreCase(argv[i])) {
 				  isXslEvaluate = true;
 			  }
 			  else if ("-INIT_TEMPLATE".equalsIgnoreCase(argv[i])) {
@@ -703,6 +705,14 @@ public class Process
 				  }
 				  
 				  tfactory.setAttribute(XalanProperties.INIT_MODE, initialModeName);
+			  }
+			  else if ("-ENABLE_ASSERT".equalsIgnoreCase(argv[i])) {
+				  if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-') {
+					  String assertEnabledStr = argv[++i];
+					  if ("true".equals(assertEnabledStr) || "yes".equals(assertEnabledStr) || "1".equals(assertEnabledStr)) {
+						 tfactory.setAttribute(XalanProperties.ASSERT_ENABLED, Boolean.TRUE); 
+					  }
+				  }				  				  
 			  }
 			  else
 				  System.err.println(

@@ -701,6 +701,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		TransformerImpl transformerImpl = (TransformerImpl)transformer;
     		transformerImpl.setUriStrOfXslStylesheet(xslStreamSrc.getSystemId());
     		
+    		transformerImpl.setProperty(TransformerImpl.XSL_EVALUATE_PROPERTY, Boolean.TRUE);
+    		
     		if (xslParamMap.size() > 0) {
     			Set<String> keySet = xslParamMap.keySet();
     			Iterator<String> keyIter = keySet.iterator();
@@ -1155,7 +1157,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		Document verificationXslDoc = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(verificationXslStylesheetStr.getBytes()));
 		
 		Object xslInitTemplateVal = m_xslTransformerFactory.getAttribute(XalanProperties.INIT_TEMPLATE);
-		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, null);
+		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, null);		
 		
 		Object xslInitModeVal = m_xslTransformerFactory.getAttribute(XalanProperties.INIT_MODE);
 		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_MODE, null);

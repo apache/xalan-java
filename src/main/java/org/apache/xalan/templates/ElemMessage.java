@@ -17,8 +17,12 @@
  */
 package org.apache.xalan.templates;
 
+import java.io.StringReader;
+import java.util.List;
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -31,7 +35,10 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 import xml.xpath31.processor.types.XSString;
 
@@ -192,12 +199,7 @@ public class ElemMessage extends ElemTemplateElement
   }
 
   /**
-   * Send a message to diagnostics.
-   * The xsl:message instruction sends a message in a way that
-   * is dependent on the XSLT transformer. The content of the xsl:message
-   * instruction is a template. The xsl:message is instantiated by
-   * instantiating the content to create an XML fragment. This XML
-   * fragment is the content of the message.
+   * Evaluate an, xsl:message instruction.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -217,28 +219,31 @@ public class ElemMessage extends ElemTemplateElement
 	  	  	  
 	  StringBuffer strBuff = new StringBuffer();	  	  
 	  
+	  // The results of xsl:message instruction 'select' expression,
+	  // and xsl:message's contained sequence constructor are concatenated.
+	  
+	  StylesheetRoot stylesheetRoot = transformer.getStylesheet();
+	  
+	  List<XMLNSDecl> prefixTable = getPrefixTable();
+	  
 	  if (m_selectExpression != null) {
 		  XObject xObj = m_selectExpression.execute(xctxt, contextNode, xctxt.getNamespaceContext());		  
 		  if (xObj instanceof XMLNodeCursorImpl) {
-			 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
-			 int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
-			 DTM dtm = xctxt.getDTM(nodeHandle); 
-			 if (dtm.getNodeType(nodeHandle) == DTM.ATTRIBUTE_NODE) {
-				strBuff.append(dtm.getNodeValue(nodeHandle));
-			 }
-			 else {
-				 Node node = dtm.getNode(nodeHandle);
-				 try {
-					String xmlNodeStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
-					strBuff.append(xmlNodeStr);
-				 } 
-				 catch (Exception ex) {
-				    throw new TransformerException(ex.getMessage());
-				 } 
-			 }
+			 appendNodeStrToStrBuff(xctxt, strBuff, (XMLNodeCursorImpl)xObj, prefixTable, stylesheetRoot);
 		  }
 		  else if (xObj instanceof ResultSequence) {
-			 // TO DO 
+			  ResultSequence rSeq = (ResultSequence)xObj;
+			  int rSeqLength = rSeq.size();
+			  for (int idx = 0; idx < rSeqLength; idx++) {
+				  XObject xObj2 = rSeq.item(idx);
+				  if (xObj2 instanceof XMLNodeCursorImpl) {
+					  appendNodeStrToStrBuff(xctxt, strBuff, (XMLNodeCursorImpl)xObj2, prefixTable, stylesheetRoot);
+				  }
+				  else {
+					  String strValue = XslTransformEvaluationHelper.getStrVal(xObj);
+					  strBuff.append(strValue);
+				  }
+			  }
 		  }
 		  else {
 			 String strValue = XslTransformEvaluationHelper.getStrVal(xObj);
@@ -253,8 +258,36 @@ public class ElemMessage extends ElemTemplateElement
 		  while (childNode != DTM.NULL) {			 
 			 Node node = dtm.getNode(childNode);
 			 try {
-				String xmlNodeStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
-				strBuff.append(xmlNodeStr);
+				 String xmlNodeStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);				 
+				 int prefixTableSize = prefixTable.size();				  
+				 if ((dtm.getNodeType(childNode) == DTM.ELEMENT_NODE) && (prefixTableSize > 1)) {
+					 System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+					 DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					 dbFactory.setNamespaceAware(true);
+					 DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
+
+					 StringReader strReader = new StringReader(xmlNodeStr);
+					 InputSource inpSource = new InputSource(strReader);
+					 Document document = docBuilder.parse(inpSource);
+					 Element docElement = document.getDocumentElement();
+
+					 for (int idx = 0; idx < prefixTableSize; idx++) {
+						 XMLNSDecl xmlNSDecl = prefixTable.get(idx);
+						 String prefix = xmlNSDecl.getPrefix();
+						 String uri = xmlNSDecl.getURI();
+						 if (!((Constants.S_XSLNAMESPACEURL).equals(uri)) && !isXslPrefixToBeExcluded(stylesheetRoot, prefix)) {
+							 // Adding an XML namespace declaration to, an XML element node.
+							 docElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + prefix, uri);
+						 }
+					 }
+
+					 xmlNodeStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(docElement);							  
+				 }
+				 
+				 int idx = xmlNodeStr.indexOf("?>");
+				 xmlNodeStr = (idx > -1) ? xmlNodeStr.substring(idx + 2) : xmlNodeStr; 
+				 strBuff.append(xmlNodeStr);
 			 } 
 			 catch (Exception ex) {
 			    throw new TransformerException(ex.getMessage());
@@ -264,9 +297,7 @@ public class ElemMessage extends ElemTemplateElement
 		  }		  
 	  }
 	  
-	  if (strBuff.length() > 0) {
-		  XslTransformData.m_xsl_message_rSeq.add(new XSString(strBuff.toString())); 
-	  }
+	  XslTransformData.m_xsl_message_rSeq.add(new XSString(strBuff.toString())); 
 	  
 	  if (m_terminate != null) {
 		 String xslTerminateStr = m_terminate.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());		 
@@ -298,9 +329,37 @@ public class ElemMessage extends ElemTemplateElement
     			    DTM dtm2 = xctxt.getDTM(nodeHandle);
     			    Node node = dtm2.getNode(nodeHandle);
     			    try {
-    			       xdmItemStr1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
-					   int idx2 = xdmItemStr1.indexOf("?>");
-					   xdmItemStr1 = xdmItemStr1.substring(idx2 + 2);
+    			       xdmItemStr1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);    			       
+    			       int prefixTableSize = prefixTable.size();
+    			       if ((dtm2.getNodeType(nodeHandle) == DTM.ELEMENT_NODE) && (prefixTableSize > 1)) {
+    			    	   System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+    			    	   DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    			    	   dbFactory.setNamespaceAware(true);
+    			    	   DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
+
+    			    	   StringReader strReader = new StringReader(xdmItemStr1);
+    			    	   InputSource inpSource = new InputSource(strReader);
+    			    	   Document document = docBuilder.parse(inpSource);
+    			    	   Element docElement = document.getDocumentElement();
+
+    			    	   for (int idx2 = 0; idx2 < prefixTableSize; idx2++) {
+    			    		   XMLNSDecl xmlNSDecl = prefixTable.get(idx2);
+    			    		   String prefix = xmlNSDecl.getPrefix();
+    			    		   String uri = xmlNSDecl.getURI();
+    			    		   if (!((Constants.S_XSLNAMESPACEURL).equals(uri)) && !isXslPrefixToBeExcluded(stylesheetRoot, prefix)) {
+    			    			   // Adding an XML namespace declaration to, an XML element node.
+    			    			   docElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + prefix, uri);
+    			    		   }
+    			    	   }
+
+    			    	   xdmItemStr1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(docElement);							  
+    			       }
+    			       
+    			       xdmItemStr1 = xdmItemStr1.trim();
+    					 
+    			       int idx2 = xdmItemStr1.indexOf("?>");
+    			       xdmItemStr1 = (idx2 > -1) ? xdmItemStr1.substring(idx2 + 2) : xdmItemStr1;					   					   
 					} 
     			    catch (Exception ex) {
                        throw new TransformerException(ex.getMessage());
@@ -313,7 +372,7 @@ public class ElemMessage extends ElemTemplateElement
     			strBuff2.append(xdmItemStr1);
     		 }
 			 
-			 throw new TransformerException(errCodeStr + " : An XSL stylesheet processing has been terminated by 'message' "
+			 throw new TransformerException(errCodeStr + " : An XSL stylesheet processing has been aborted by 'message' "
 							 		                                                                      + "instruction, with following message trace : '" 
 									                                                                      + strBuff2.toString() + "'.", srcLocator);
 		 }
@@ -322,4 +381,91 @@ public class ElemMessage extends ElemTemplateElement
 	  if (transformer.getDebug())
 		  transformer.getTraceManager().emitTraceEndEvent(this); 
   }
+
+  /**
+   * Method definition, to append xdm node contents to the
+   * supplied string buffer.
+   * 
+   * @param xctxt										An XPath context object
+   * @param strBuff                                     The supplied StringBuffer
+   *                                                    object.
+   * @param xmlNodeCursorImpl                           An XMLNodeCursorImpl object instance
+   * @throws TransformerException
+   */
+  private void appendNodeStrToStrBuff(XPathContext xctxt, StringBuffer strBuff, 
+		                                                                     XMLNodeCursorImpl xmlNodeCursorImpl,
+		                                                                     List<XMLNSDecl> prefixTable,
+		                                                                     StylesheetRoot stylesheetRoot)
+		  																			throws TransformerException {
+	  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+	  DTM dtm = xctxt.getDTM(nodeHandle); 
+	  if (dtm.getNodeType(nodeHandle) == DTM.ATTRIBUTE_NODE) {
+		  strBuff.append(dtm.getNodeValue(nodeHandle));
+	  }
+	  else {
+		  Node node = dtm.getNode(nodeHandle);
+		  try {
+			  String xmlNodeStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+			  int prefixTableSize = prefixTable.size();			  
+			  if ((dtm.getNodeType(nodeHandle) == DTM.ELEMENT_NODE) && (prefixTableSize > 1)) {
+				  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+				  DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+				  dbFactory.setNamespaceAware(true);
+				  DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
+
+				  StringReader strReader = new StringReader(xmlNodeStr);
+				  InputSource inpSource = new InputSource(strReader);
+				  Document document = docBuilder.parse(inpSource);
+				  Element docElement = document.getDocumentElement();
+				  							  
+				  for (int idx = 0; idx < prefixTableSize; idx++) {
+					 XMLNSDecl xmlNSDecl = prefixTable.get(idx);
+					 String prefix = xmlNSDecl.getPrefix();
+					 String uri = xmlNSDecl.getURI();
+					 if (!((Constants.S_XSLNAMESPACEURL).equals(uri)) && !isXslPrefixToBeExcluded(stylesheetRoot, prefix)) {
+						// Adding an XML namespace declaration to, an XML element node.
+						docElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + prefix, uri);
+					 }
+				  }
+				  
+				  xmlNodeStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(docElement);							  
+			  }
+			  
+			  int idx = xmlNodeStr.indexOf("?>");
+			  xmlNodeStr = (idx > -1) ? xmlNodeStr.substring(idx + 2) : xmlNodeStr;
+			  strBuff.append(xmlNodeStr);
+		  } 
+		  catch (Exception ex) {
+			  throw new TransformerException(ex.getMessage());
+		  } 
+	  }
+  }
+  
+  /**
+   * Method definition, to check whether XSL stylesheet's 'exclude-result-prefixes'
+   * attribute contains the supplied prefix value.
+   * 
+   * @param stylesheetRoot						An XSL stylesheet's StylesheetRoot 
+   *                                            object. 
+   * @param prefix                              The supplied prefix value.
+   * @return
+   */
+  private boolean isXslPrefixToBeExcluded(StylesheetRoot stylesheetRoot, String prefix) {
+	  
+	  boolean result = false;
+	  
+	  int count = stylesheetRoot.getExcludeResultPrefixCount();
+	  for (int idx = 0; idx < count; idx++) {
+		 String prefix2 = stylesheetRoot.getExcludeResultPrefix(idx);
+		 if (prefix.equals(prefix2)) {
+			 result = true;
+			 
+			 break;
+		 }
+	  }
+	  
+	  return result;
+  }
+  
 }

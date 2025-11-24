@@ -101,6 +101,11 @@ public class StylesheetHandler extends DefaultHandler
   private String m_init_mode_name = null;
   
   /**
+   * An XSL transformation 'assert' feature.
+   */
+  private boolean m_assert;
+  
+  /**
    * Create a StylesheetHandler object, creating a root stylesheet
    * as the target.
    *
@@ -135,6 +140,8 @@ public class StylesheetHandler extends DefaultHandler
     if (initMode != null) {
        m_init_mode_name = ((String)processor.getAttribute(XSL3TransformerFactoryImpl.FEATURE_INIT_MODE)).toString();
     }
+    
+    m_assert = (Boolean)(processor.getAttribute(XSL3TransformerFactoryImpl.FEATURE_ASSERT)); 
     
     init(processor);
   }
@@ -1227,6 +1234,7 @@ public class StylesheetHandler extends DefaultHandler
 	  
 	  m_stylesheetRoot.setInitTemplateName(m_init_template_name);
 	  m_stylesheetRoot.setInitModeName(m_init_mode_name);
+	  m_stylesheetRoot.setAssertEnabled(m_assert);
 
 	  return m_stylesheetRoot;
   }

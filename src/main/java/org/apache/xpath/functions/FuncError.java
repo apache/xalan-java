@@ -80,7 +80,7 @@ public class FuncError extends FunctionMultiArgs
     	 errMesgStr = XslTransformEvaluationHelper.getStrVal(errCode) + " : " + XslTransformEvaluationHelper.getStrVal(errDesc);   
       }
       else if (errCode != null) {
-    	 errMesgStr = XslTransformEvaluationHelper.getStrVal(errCode); 
+    	 errMesgStr = XslTransformEvaluationHelper.getStrVal(errCode) + " : Raised by XPath 'error' function call."; 
       }
       else {
     	 XObject defErrCode = new XSQName("err", "FOER0000", Constants.XSL_ERROR_NAMESACE);

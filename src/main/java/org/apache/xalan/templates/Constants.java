@@ -98,9 +98,10 @@ public class Constants extends org.apache.xml.utils.Constants
   ELEMNAME_CATCH = 110, ELEMNAME_CHARACTER_MAP = 111,  
   ELEMNAME_OUTPUT_CHARACTER = 112, ELEMNAME_CONTEXT_ITEM = 113,  
   ELEMNAME_DOCUMENT = 114, ELEMNAME_MODE = 115,  
-  ELEMNAME_NAMESPACE = 116;
+  ELEMNAME_NAMESPACE = 116,
+  ELEMNAME_ASSERT = 117;
   
-  // next available number : 117
+  // next available number : 118
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -209,7 +210,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_CONTEXT_ITEM_OPTIONAL_STRING = "optional",
       ELEMNAME_CONTEXT_ITEM_ABSENT_STRING = "absent",
       ELEMNAME_DOCUMENT_STRING ="document",
-      ELEMNAME_NAMESPACE_STRING = "namespace";
+      ELEMNAME_NAMESPACE_STRING = "namespace",
+      ELEMNAME_ASSERT_STRING = "assert";
   
   /**
    * Literals for EXSLT function elements.

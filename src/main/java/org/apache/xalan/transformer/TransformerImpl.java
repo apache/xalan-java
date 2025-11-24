@@ -59,6 +59,7 @@ import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemCallTemplate;
+import org.apache.xalan.templates.ElemCatch;
 import org.apache.xalan.templates.ElemCharacterMap;
 import org.apache.xalan.templates.ElemChoose;
 import org.apache.xalan.templates.ElemComment;
@@ -83,6 +84,7 @@ import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
+import org.apache.xalan.templates.ElemTry;
 import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.ElemWhen;
@@ -4869,6 +4871,22 @@ public class TransformerImpl extends Transformer
 					  }
 					  else {
 						  xpathDefaultNamespace = ((ElemNonMatchingSubstring)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemTry) {
+					  if (((ElemTry)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemTry)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemTry)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemCatch) {
+					  if (((ElemCatch)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemCatch)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemCatch)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
 				  

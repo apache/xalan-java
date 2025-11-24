@@ -23,6 +23,7 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemAnalyzeString;
 import org.apache.xalan.templates.ElemApplyImport;
 import org.apache.xalan.templates.ElemApplyTemplates;
+import org.apache.xalan.templates.ElemAssert;
 import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.ElemCallTemplate;
 import org.apache.xalan.templates.ElemCatch;
@@ -308,7 +309,7 @@ public class XSLTSchema extends XSLTElementDef
             										XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
         
 
-    // xsl:if, xsl:when         
+    // xsl:if, xsl:when, xsl:assert         
     XSLTAttributeDef testAttrRequired = new XSLTAttributeDef(null, "test",   
                                           XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
       
@@ -589,13 +590,13 @@ public class XSLTSchema extends XSLTElementDef
                                                           XSLTAttributeDef.T_CDATA, false, false, 
                                                           XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[46];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[47];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[47];
+    XSLTElementDef[] templateElements = new XSLTElementDef[47];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[48];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[48];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[47];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[48];
     
-    XSLTElementDef[] charTemplateElements = new XSLTElementDef[27];
+    XSLTElementDef[] charTemplateElements = new XSLTElementDef[28];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
                                      templateElements /* elements */,
@@ -787,14 +788,16 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef xslTry = new XSLTElementDef(this,
 								             Constants.S_XSLNAMESPACEURL, "try",
 								             null /*alias */, templateElements,
-								             new XSLTAttributeDef[]{ selectAttrOpt, rollbackOutputAttrOpt, spaceAttr }, 
+								             new XSLTAttributeDef[]{ selectAttrOpt, rollbackOutputAttrOpt, 
+								            		                 xpathDefaultNamespaceAttrOpt, spaceAttr }, 
 								             new ProcessorTemplateElem(),
 								             ElemTry.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslCatch = new XSLTElementDef(this,
 								             Constants.S_XSLNAMESPACEURL, "catch",
 								             null /*alias */, templateElements,
-								             new XSLTAttributeDef[]{ selectAttrOpt, errorsAttrOpt, spaceAttr }, 
+								             new XSLTAttributeDef[]{ selectAttrOpt, errorsAttrOpt, 
+								            		                 xpathDefaultNamespaceAttrOpt, spaceAttr }, 
 								             new ProcessorTemplateElem(),
 								             ElemCatch.class /* class object */, true, false, true, 20, true);
     
@@ -1001,6 +1004,13 @@ public class XSLTSchema extends XSLTElementDef
                                   new XSLTAttributeDef[]{ selectAttrOpt, terminateAttr, errorCodeAttrOpt },
                                   new ProcessorTemplateElem(),
                                   ElemMessage.class /* class object */, 20, true);
+    XSLTElementDef xslAssert = new XSLTElementDef(this,
+						          Constants.S_XSLNAMESPACEURL, "assert",
+						          null /*alias */,
+						          templateElements /* elements */,  // %template;>
+						          new XSLTAttributeDef[]{ testAttrRequired, selectAttrOpt, errorCodeAttrOpt },
+						          new ProcessorTemplateElem(),
+						          ElemAssert.class /* class object */, 20, true);
     XSLTElementDef xslFallback = new XSLTElementDef(this,
                                    Constants.S_XSLNAMESPACEURL, "fallback",
                                    null /*alias */,
@@ -1081,6 +1091,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslVariable;
     templateElements[i++] = xslSequence;
     templateElements[i++] = xslMessage;
+    templateElements[i++] = xslAssert;
     templateElements[i++] = xslFallback;
 
     // instructions
@@ -1132,6 +1143,7 @@ public class XSLTSchema extends XSLTElementDef
     charTemplateElements[i++] = xslCopy;
     charTemplateElements[i++] = xslVariable;
     charTemplateElements[i++] = xslMessage;
+    charTemplateElements[i++] = xslAssert;
     charTemplateElements[i++] = xslFallback;
 
     XSLTElementDef importDef = new XSLTElementDef(this,

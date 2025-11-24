@@ -112,6 +112,10 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   /** Static string to be used for initial mode feature */
   public static final String FEATURE_INIT_MODE =
                              XalanProperties.INIT_MODE;
+  
+  /** Static string to be used for 'assert' feature */
+  public static final String FEATURE_ASSERT =
+                             XalanProperties.ASSERT_ENABLED;
 
   public javax.xml.transform.Templates processFromNode(Node node)
           throws TransformerConfigurationException
@@ -499,6 +503,12 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   private String m_init_mode_name = null;
   
   /**
+   * An XSL transformation's 'assert' enable, 
+   * status value.
+   */
+  private boolean m_assert;
+  
+  /**
    * Flag set by FEATURE_INCREMENTAL.
    * This feature specifies whether to produce output incrementally, rather than
    * waiting to finish parsing the input before generating any output. By 
@@ -587,6 +597,10 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     {
     	m_init_mode_name = (String)value; 
     }
+    else if(name.equals(FEATURE_ASSERT))
+    {
+    	m_assert = (Boolean)value; 
+    }
     else
     {
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUPPORTED, new Object[]{name})); //name + "not supported");
@@ -624,6 +638,10 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     else if (name.equals(FEATURE_INIT_MODE))
     {
       return m_init_mode_name;
+    }
+    else if (name.equals(FEATURE_ASSERT))
+    {
+      return m_assert;
     }
     else
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_RECOGNIZED, new Object[]{name})); //name + " attribute not recognized");
