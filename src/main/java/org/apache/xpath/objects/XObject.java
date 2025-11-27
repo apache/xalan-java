@@ -109,6 +109,15 @@ public class XObject extends Expression implements Serializable, Cloneable
    * for type xs:double, uses this field.
    */
   private String m_cons_funcArgStr;
+  
+  /**
+   * Stores the information, whether XSL stylesheet result 
+   * serializer, should trim leading and trailing whitespaces 
+   * from string values.
+   * 
+   * Currently used for, xsl:message instruction processing.
+   */
+  private boolean m_useStrict_value;
 
   /**
    * Create an XObject.
@@ -2316,6 +2325,14 @@ public class XObject extends Expression implements Serializable, Cloneable
 
   public void setConsFuncArgStr(String consFuncArgStr) {
 	  this.m_cons_funcArgStr = consFuncArgStr;
+  }
+
+  public boolean isUseStrictValue() {
+	  return m_useStrict_value;
+  }
+
+  public void setUseStrictValue(boolean useStrictValue) {
+	  this.m_useStrict_value = useStrictValue;
   }
 
 }

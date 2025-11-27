@@ -62,6 +62,7 @@ import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
@@ -122,6 +123,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     
     private static final String EXPECTED_NODE_KIND_ASSERT_XML = "assert-xml";
     
+    private static final String EXPECTED_NODE_KIND_ASSERT_MESG = "assert-message";
+    
+    private static final String EXPECTED_NODE_KIND_ASSERT_STRING_VALUE = "assert-string-value";
+    
     private static final String EXPECTED_NODE_KIND_ERROR = "error";
     
     private static final String SERIALIZATION_MATCHES = "serialization-matches";
@@ -139,7 +144,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     protected static List<String> m_skipped_tests_list = new ArrayList<String>();
 	
 	/**
-	 * Method definition to run, all XSL transformation tests from 
+	 * Method definition, to run all XSL transformation tests from 
 	 * a W3C XSLT 3.0 test set.
 	 */
     public void runXslTestSet() {    	
@@ -341,9 +346,9 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   StreamSource xslStreamSrc = new StreamSource(xslStylesheetUriStr);
     		   xslStreamSrc.setSystemId(xslStylesheetUriStr);
     		   
-    		   try {    			  
+    		   try {
     		      runW3CXSLTTestSuiteXslTransformAndEmitResult(testCaseName, xmlInpDomSource, xslStreamSrc, xslParamMap, 
-    		    		                                                     expectedResultElem, elemTestRun, testResultDoc);
+    		    		                                                                                  expectedResultElem, elemTestRun, testResultDoc);
     		   }
     		   catch (Exception ex) {
     			  System.out.println("Test case name : " + testCaseName + ", Exception message : " + ex.getMessage()); 
@@ -403,7 +408,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     }
     
     /**
-	 * Method definition to run, W3C XSLT 3.0 fn:json-to-xml test set.
+	 * Method definition, to run W3C XSLT 3.0 fn:json-to-xml test set.
 	 */
     public void runXslJsonToXmlTestSet() {    	
     	
@@ -650,7 +655,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     }
     
     /**
-     * Method definition to run, a particular W3C XSLT 3.0 test case within a test set.
+     * Method definition, to run an particular W3C XSLT 3.0 test 
+     * case within a test set.
      */
     private void runW3CXSLTTestSuiteXslTransformAndEmitResult(String testCaseName, DOMSource xmlInpDomSource, 
     		                                                  StreamSource xslStreamSrc, Map<String, XObject> xslParamMap, 
@@ -726,22 +732,20 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			transformer.setErrorListener(xslTransformErrHandler);
     		    setXslTransformProperties(transformer);
     		}
-    		else {    		    		        		    
-    		    if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
-        			handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
-        					                             trfFatalErrorList, expErrCodeName, resultStrWriter);
-        			
-        			return;
-        		}
-    		    else if (!SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {
-    		    	elemTestResult.setAttribute("status", "fail");
-    				
-    				Element resultOutElem = testResultDoc.createElement("outResult");
-    				resultOutElem.setTextContent(resultStrWriter.toString());
-    				elemTestResult.appendChild(resultOutElem);
-    				
-    				return;
-    		    }
+    		else if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
+    			handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
+    					                                                                    trfFatalErrorList, expErrCodeName, resultStrWriter);
+
+    			return;
+    		}
+    		else if (!SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {
+    			elemTestResult.setAttribute("status", "fail");
+
+    			Element resultOutElem = testResultDoc.createElement("outResult");
+    			resultOutElem.setTextContent(resultStrWriter.toString());
+    			elemTestResult.appendChild(resultOutElem);
+
+    			return;
     		}
     		
     		Source xmlInpSrc = null;
@@ -755,21 +759,112 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));
     		
-    		String xslTransformMethod = transformer.getOutputProperty(OutputKeys.METHOD);
+    		boolean isXslMessageTest = false;
+    		String xslMessageResultPrefixStr = null;
+    		if (m_xslTransformTestSetFilePath.contains("insn/message")) {
+    		   isXslMessageTest = true;
+               
+    		   String xslTransformResultStr = resultStrWriter.toString();
+    		   int idx = xslTransformResultStr.indexOf("<?xml");
+    		   String xslMessageResultSuffixStr = null;
+    		   if (idx > -1) {
+    			  xslMessageResultPrefixStr = xslTransformResultStr.substring(0, idx);
+    			  xslMessageResultSuffixStr = xslTransformResultStr.substring(idx);
+    			  resultStrWriter = new StringWriter();
+    			  resultStrWriter.append(xslMessageResultSuffixStr);
+    		   }    		   
+    		}    		    		
     		
-    		if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName) || SERIALIZATION_MATCHES.equals(expectedNodeKindName) || 
-    				                                                             ASSERT_SERIALIZATION.equals(expectedNodeKindName)) {    			    			    			    			    			
-    			if (SERIALIZATION_MATCHES.equals(expectedNodeKindName)) { 
+    		String xslTransformMethod = transformer.getOutputProperty(OutputKeys.METHOD);
+    		   			    			    			    			    			
+    		if (SERIALIZATION_MATCHES.equals(expectedNodeKindName)) { 
+    			String alsoCorrectResultStr = null;
+    			// This needs to have an improved test case implementation
+    			if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && 
+    					                                                            ("doe-0405".equals(testCaseName) || "doe-0406".equals(testCaseName) 
+    							                                                                                     || "doe-0407".equals(testCaseName))) {
+    				alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out xmlns=\"http://www.w3.org/1999/xhtml\">&lt;p&gt;&amp;nbsp;&lt;/p&gt;</out>";
+    			}
+
+    			if (alsoCorrectResultStr != null) {
+    				if (alsoCorrectResultStr.equals(resultStrWriter.toString())) {
+    					elemTestResult.setAttribute("status", "pass");
+    				}
+    				else {
+    					elemTestResult.setAttribute("status", "fail");
+    				}
+    			}
+    			else {
+    				testCaseOneSerializationMatchCheck(elemTestResult, nodeExpected, resultStrWriter, xslTransformMethod);
+    			}
+    		}
+    		else if (ASSERT_SERIALIZATION.equals(expectedNodeKindName)) {
+    			String xslTransformResultStr = resultStrWriter.toString();
+
+    			String expectedResultStr = null;
+    			Element nodeExpectedElem = (Element)nodeExpected;
+    			String fileName = nodeExpectedElem.getAttribute("file");
+    			String encoding = nodeExpectedElem.getAttribute("encoding");
+    			if (!"".equals(fileName)) {
+    				int idx2 = m_xslTransformTestSetFilePath.lastIndexOf('/');
+    				String fileUriStr = m_xslTransformTestSetFilePath.substring(0, idx2) + '/' + fileName;    				
+    				FileInputStream fileInpStr = new FileInputStream(new File(new URI(fileUriStr)));
+    				byte[] byteArr = new byte[512];
+    				int bytesRead = 0;
+    				StringBuffer strBuff = new StringBuffer();
+    				Charset charSet = null;
+    				if (!"".equals(encoding)) {
+    					charSet = Charset.forName(encoding);
+    				}
+    				while ((bytesRead = fileInpStr.read(byteArr)) != -1) {
+    					String str1 = null;
+    					if (charSet != null) {
+    						str1 = new String(byteArr, 0, bytesRead, charSet);
+    					}
+    					else {
+    						str1 = new String(byteArr, 0, bytesRead);  
+    					}
+    					strBuff.append(str1);
+    				}
+
+    				fileInpStr.close();
+
+    				expectedResultStr = strBuff.toString();
+    			}
+    			else {
+    				expectedResultStr = nodeExpectedElem.getTextContent(); 
+    			}
+
+    			if (xslTransformResultStr.equals(expectedResultStr)) {
+    				elemTestResult.setAttribute("status", "pass");
+    			}
+    			else {
+    				elemTestResult.setAttribute("status", "fail");
+    			}    				
+    		}
+    		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName)) {
+    			NodeList nodeList1 = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
+    			int nodeListLength1 = nodeList1.getLength();
+    			NodeList nodeList2 = ((Element)nodeExpected).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_XML);
+    			int nodeListLength2 = nodeList2.getLength();    			
+    			NodeList nodeList3 = ((Element)nodeExpected).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_MESG);
+    			int nodeListLength3 = nodeList3.getLength();
+    			if (nodeListLength1 > 0) {
     				String alsoCorrectResultStr = null;
     				// This needs to have an improved test case implementation
-    				if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && 
-    						                                                              ("doe-0405".equals(testCaseName) || "doe-0406".equals(testCaseName) 
-    						                                                		                                       || "doe-0407".equals(testCaseName))) {
-    					alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out xmlns=\"http://www.w3.org/1999/xhtml\">&lt;p&gt;&amp;nbsp;&lt;/p&gt;</out>";
+    				if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && "doe-0201".equals(testCaseName)) {
+    					alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out><expandtext><count>3</count><test1/></expandtext>\r\n"
+																				    							+ "    \r\n"
+																				    							+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
+																				    							+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
+																				    							+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
+																				    							+ "</out>";
     				}
-    				
-    				if (alsoCorrectResultStr != null) {
-    					if (alsoCorrectResultStr.equals(resultStrWriter.toString())) {
+
+    				if (alsoCorrectResultStr != null) {        					                    		
+    					alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\\s", "");
+    					String actualResultStr = resultStrWriter.toString();
+    					if (alsoCorrectResultStr.equals(actualResultStr.replaceAll("\\s", ""))) {
     						elemTestResult.setAttribute("status", "pass");
     					}
     					else {
@@ -777,90 +872,75 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					}
     				}
     				else {
-    			        testCaseOneSerializationMatchCheck(elemTestResult, nodeExpected, resultStrWriter, xslTransformMethod);
+    					testCaseMultipleSerializationMatchChecks(elemTestResult, resultStrWriter, nodeList1, xslTransformMethod);
     				}
     			}
-    			else if (ASSERT_SERIALIZATION.equals(expectedNodeKindName)) {
-    				String xslTransformResultStr = resultStrWriter.toString();
-    				
-    				String expectedResultStr = null;
-    				Element nodeExpectedElem = (Element)nodeExpected;
-    				String fileName = nodeExpectedElem.getAttribute("file");
-    				String encoding = nodeExpectedElem.getAttribute("encoding");
-    				if (!"".equals(fileName)) {
-    					int idx2 = m_xslTransformTestSetFilePath.lastIndexOf('/');
-    					String fileUriStr = m_xslTransformTestSetFilePath.substring(0, idx2) + '/' + fileName;    				
-    					FileInputStream fileInpStr = new FileInputStream(new File(new URI(fileUriStr)));
-    					byte[] byteArr = new byte[512];
-    					int bytesRead = 0;
-    					StringBuffer strBuff = new StringBuffer();
-    					Charset charSet = null;
-    					if (!"".equals(encoding)) {
-    						charSet = Charset.forName(encoding);
-    					}
-    					while ((bytesRead = fileInpStr.read(byteArr)) != -1) {
-    						String str1 = null;
-    						if (charSet != null) {
-    							str1 = new String(byteArr, 0, bytesRead, charSet);
-    						}
-    						else {
-    							str1 = new String(byteArr, 0, bytesRead);  
-    						}
-    						strBuff.append(str1);
-    					}
+    			else if (isXslMessageTest && (nodeListLength2 == 1) && (nodeListLength3 > 0)) {    				
+    				Element elemNode = (Element)nodeList2.item(0);
+                	String fileName = elemNode.getAttribute(FILE_ATTR);
+                	String expectedResultStr = null;
+                	if (!"".equals(fileName)) {
+                		URI uri = new URI(m_xslTransformTestSetFilePath);
+                		uri = uri.resolve(fileName);
+                		expectedResultStr = getStringContentFromUrl(uri.toURL());
+                	}
+                	else {
+                		expectedResultStr = elemNode.getTextContent();            		
+                	}
 
-    					fileInpStr.close();
-
-    					expectedResultStr = strBuff.toString();
-    				}
-    				else {
-    					expectedResultStr = nodeExpectedElem.getTextContent(); 
-    				}
-    				
-    				if (xslTransformResultStr.equals(expectedResultStr)) {
-    					elemTestResult.setAttribute("status", "pass");
-    				}
-    				else {
-    				    elemTestResult.setAttribute("status", "fail");
-    				}    				
+                	boolean isTestCasePass = false;
+                	org.xml.sax.InputSource inpSrc1 = new org.xml.sax.InputSource(new StringReader(resultStrWriter.toString())); 
+                	Document document1 = m_xmlDocumentBuilder.parse(inpSrc1);
+                	org.xml.sax.InputSource inpSrc2 = new org.xml.sax.InputSource(new StringReader(expectedResultStr)); 
+                	Document document2 = m_xmlDocumentBuilder.parse(inpSrc2);
+                	String string1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document1);
+                	String string2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document2);
+                	if (isTwoXmlHtmlStrEqual(string1, string2)) {																																						
+						isTestCasePass = true;								
+					}   
+                	
+                	if (isTestCasePass) {                		
+                		if (!isXslMessageTest) {
+                		   elemTestResult.setAttribute("status", "pass");
+                		}
+                		else if (xslMessageResultPrefixStr != null) {
+                		   String[] actualPrefixStrArr1 = xslMessageResultPrefixStr.split("\r?\n");
+                		   boolean passStatus1 = false;
+                		   for (int idx2 = 0; idx2 < actualPrefixStrArr1.length; idx2++) {
+                			  String str1 = actualPrefixStrArr1[idx2]; 
+                			  for (int idx3 = 0; idx3 < nodeListLength3; idx3++) {
+                			     Node node = nodeList3.item(idx3);
+                			     Element elemNode2 = (Element)((node.getFirstChild()).getNextSibling());
+                			     String str2 = elemNode2.getTextContent();
+                			     if (str2.equals(str1)) {
+                			    	 passStatus1 = true;
+                			    	 
+                			    	 break;
+                			     }
+                			  }
+                			  
+                			  if (passStatus1) {
+                				 break; 
+                			  }
+                		   }
+                		   
+                		   if (passStatus1) {
+                			  elemTestResult.setAttribute("status", "pass"); 
+                		   }
+                		   else {
+                			  elemTestResult.setAttribute("status", "fail"); 
+                		   }
+                		}
+                		else {
+                		   elemTestResult.setAttribute("status", "pass");
+                		}
+                	}
+                	else {
+                		elemTestResult.setAttribute("status", "fail");
+                	}
     			}
     			else {
-    				/**
-    				 * expectedNodeKindName is EXPECTED_NODE_KIND_ASSERT_ALL_OF. Check for
-    				 * XSL transform result's conformance with multiple expected results below
-    				 * an XML element 'all-of'.
-    				 */
-    				NodeList nodeList = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
-        			int nodeListLength = nodeList.getLength();        			
-        			if (nodeListLength > 0) {
-        				String alsoCorrectResultStr = null;
-        				// This needs to have an improved test case implementation
-        				if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && "doe-0201".equals(testCaseName)) {
-        					alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out><expandtext><count>3</count><test1/></expandtext>\r\n"
-																					                    				+ "    \r\n"
-																					                    				+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
-																					                    				+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
-																					                    				+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
-																					                    				+ "</out>";
-        				}
-        				
-        				if (alsoCorrectResultStr != null) {        					                    		
-                    		alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\\s", "");
-                    		String actualResultStr = resultStrWriter.toString();
-                    		if (alsoCorrectResultStr.equals(actualResultStr.replaceAll("\\s", ""))) {
-                    			elemTestResult.setAttribute("status", "pass");
-                    		}
-                    		else {
-                    			elemTestResult.setAttribute("status", "fail");
-                    		}
-                    	}
-        				else {
-        			        testCaseMultipleSerializationMatchChecks(elemTestResult, resultStrWriter, nodeList, xslTransformMethod);
-        				}
-        			}
-        			else {
-        				testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter, trfWarningList);
-        		    }
+    				testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter, trfWarningList);
     			}
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ANY_OF.equals(expectedNodeKindName)) {
@@ -890,13 +970,22 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 							int idx = xmlStr2.indexOf("?>");
 							if (idx != -1) {
 								xmlStr2 = xmlStr2.substring(idx + 2);
-							}
-							if (isTwoXmlHtmlStrEqual(xmlStr1, xmlStr2)) {
-								elemTestResult.setAttribute("status", "pass");
-								isTestCasePass = true;
+							}							   
+							
+							org.xml.sax.InputSource inpSrc1 = new org.xml.sax.InputSource(new StringReader(xmlStr1)); 
+		                	Document document1 = m_xmlDocumentBuilder.parse(inpSrc1);
+		                	org.xml.sax.InputSource inpSrc2 = new org.xml.sax.InputSource(new StringReader(xmlStr2)); 
+		                	Document document2 = m_xmlDocumentBuilder.parse(inpSrc2);
+		                	String string1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document1);
+		                	String string2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document2);
+							
+							if (isTwoXmlHtmlStrEqual(string1, string2)) {																								
+								elemTestResult.setAttribute("status", "pass");								
+								isTestCasePass = true;								
+								
 								break;
 							}    					
-						}
+						}						
 						else if ((childNode instanceof Element) && EXPECTED_NODE_KIND_ERROR.equals(((Element)childNode).getNodeName())) {
 							expErrCodeName = ((Element)childNode).getAttribute("code"); 
 							handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
@@ -1512,7 +1601,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	}
     
     /**
-     * Method definition to get, a list of all XML element nodes within 
+     * Method definition, to get list of all XML element nodes within 
      * the supplied XML element node, including the supplied node as well.
      * 
      * @param elemNode			   An XML supplied element node
@@ -1624,7 +1713,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     }
     
     /**
-     * Method definition to get, an ISO formatted date string for the supplied 
+     * Method definition, to get an ISO formatted date string for the supplied 
      * java.util.Date value.
      *  
      * @param date				The supplied java.util.Date object value
@@ -1642,7 +1731,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     }
     
     /**
-     * Method definition to handle, an XSL transformation expected error.
+     * Method definition, to handle an XSL transformation expected error.
      * 
      * @param testResultDoc
      * @param elemTestResult

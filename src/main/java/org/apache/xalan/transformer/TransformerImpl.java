@@ -56,6 +56,7 @@ import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemAnalyzeString;
 import org.apache.xalan.templates.ElemApplyTemplates;
+import org.apache.xalan.templates.ElemAssert;
 import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemCallTemplate;
@@ -73,6 +74,7 @@ import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemMatchingSubstring;
+import org.apache.xalan.templates.ElemMessage;
 import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
@@ -493,7 +495,7 @@ public class TransformerImpl extends Transformer
    * An XSL transform's xsl:message instruction results are
    * available within an xdm sequence object XslTransformData.m_xsl_message_rSeq.
    */
-  private XNodeSetForDOM m_xsl_transform_result_xsl_message = null;
+  private XNodeSetForDOM m_xsl_transform_result_with_message = null;
 
   //==========================================================
   // SECTION: Constructor
@@ -937,7 +939,14 @@ public class TransformerImpl extends Transformer
     		  int rSeqLength = rSeq.size();
     		  for (int idx = 0; idx < rSeqLength; idx++) {
     			  XSString xsString = (XSString)(rSeq.item(idx));
-    			  String strValue = ((xsString.stringValue()).trim()); 
+    			  String strValue = null;
+    			  if (((XObject)xsString).isUseStrictValue()) {
+    			     strValue = xsString.stringValue();
+    			  }
+    			  else {
+    				 strValue = ((xsString.stringValue()).trim());
+    			  }
+    			  
     			  if (writer != null) {
     				  try {
     					  writer.write(strValue + newLineSeq);
@@ -992,8 +1001,8 @@ public class TransformerImpl extends Transformer
     		  }
     	  }
 
-    	  if (m_xsl_transform_result_xsl_message != null) {    		      		      		  
-    		  int resultNodeHandle = m_xsl_transform_result_xsl_message.asNode(m_xcontext);
+    	  if (m_xsl_transform_result_with_message != null) {    		      		      		  
+    		  int resultNodeHandle = m_xsl_transform_result_with_message.asNode(m_xcontext);
     		  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(resultNodeHandle, m_xcontext); 
 
     		  ElemCopyOf.copyOfActionOnNodeSet(xmlNodeCursorImpl, this, m_serializationHandler, m_xcontext);  
@@ -2571,7 +2580,7 @@ public class TransformerImpl extends Transformer
            		     // instructions.
            	    	 int rootNodeHandleOfRtf = this.transformToRTF(template);
            	    	 NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, template)).convertToNodeset();    	  
-           	    	 m_xsl_transform_result_xsl_message = new XNodeSetForDOM(nodeList, xctxt);
+           	    	 m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, xctxt);
            	     }
 
            	     if (m_debug)
@@ -2699,7 +2708,7 @@ public class TransformerImpl extends Transformer
     		  // instructions.
     		  int rootNodeHandleOfRtf = this.transformToRTF(template);
     		  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, m_xcontext, template)).convertToNodeset();    	  
-    		  m_xsl_transform_result_xsl_message = new XNodeSetForDOM(nodeList, m_xcontext);
+    		  m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, m_xcontext);
     	  }
 
     	  if (m_debug)
@@ -4889,6 +4898,22 @@ public class TransformerImpl extends Transformer
 						  xpathDefaultNamespace = ((ElemCatch)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
+				  else if (xslElem instanceof ElemMessage) {
+					  if (((ElemMessage)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemMessage)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemMessage)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemAssert) {
+					  if (((ElemAssert)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemAssert)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemAssert)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
 				  
 				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
 				  updateXPathDefaultNamespace(elemTemplateChild, xpathDefaultNamespace);
@@ -5120,6 +5145,38 @@ public class TransformerImpl extends Transformer
 						  expandText = ((ElemNonMatchingSubstring)xslElem).getExpandText();  
 					  }
 				  }
+				  else if (xslElem instanceof ElemTry) {
+					  if (!(((ElemTry)xslElem).getExpandTextDeclared())) {
+						  ((ElemTry)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemTry)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemCatch) {
+					  if (!(((ElemCatch)xslElem).getExpandTextDeclared())) {
+						  ((ElemCatch)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemCatch)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemMessage) {
+					  if (!(((ElemMessage)xslElem).getExpandTextDeclared())) {
+						  ((ElemMessage)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemMessage)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemAssert) {
+					  if (!(((ElemAssert)xslElem).getExpandTextDeclared())) {
+						  ((ElemAssert)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemAssert)xslElem).getExpandText();  
+					  }
+				  }				  
 
 				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
 				  updateExpandTextAttrValue(elemTemplateChild, expandText);

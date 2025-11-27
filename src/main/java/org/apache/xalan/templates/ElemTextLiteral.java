@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import java.util.Vector;
@@ -53,7 +50,7 @@ public class ElemTextLiteral extends ElemTemplateElement
    */
   public void setPreserveSpace(boolean v)
   {
-    m_preserveSpace = v;
+	  m_preserveSpace = v;
   }
 
   /**
@@ -64,7 +61,7 @@ public class ElemTextLiteral extends ElemTemplateElement
    */
   public boolean getPreserveSpace()
   {
-    return m_preserveSpace;
+	  return m_preserveSpace;
   }
 
   /**
@@ -84,7 +81,7 @@ public class ElemTextLiteral extends ElemTemplateElement
    */
   public void setChars(char[] v)
   {
-    m_ch = v;
+	  m_ch = v;
   }
 
   /**
@@ -94,9 +91,9 @@ public class ElemTextLiteral extends ElemTemplateElement
    */
   public char[] getChars()
   {
-    return m_ch;
+	  return m_ch;
   }
-  
+
   /**
    * Get the value of the node as a string.
    *
@@ -104,13 +101,12 @@ public class ElemTextLiteral extends ElemTemplateElement
    */
   public synchronized String getNodeValue()
   {
+	  if(null == m_str)
+	  {
+		  m_str = new String(m_ch);
+	  }
 
-    if(null == m_str)
-    {
-      m_str = new String(m_ch);
-    }
-
-    return m_str;
+	  return m_str;
   }
 
 
@@ -141,7 +137,7 @@ public class ElemTextLiteral extends ElemTemplateElement
    */
   public void setDisableOutputEscaping(boolean v)
   {
-    m_disableOutputEscaping = v;
+	  m_disableOutputEscaping = v;
   }
 
   /**
@@ -166,7 +162,7 @@ public class ElemTextLiteral extends ElemTemplateElement
    */
   public boolean getDisableOutputEscaping()
   {
-    return m_disableOutputEscaping;
+	  return m_disableOutputEscaping;
   }
   
   private Vector m_vars;
@@ -175,11 +171,11 @@ public class ElemTextLiteral extends ElemTemplateElement
   
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
-    super.compose(sroot);
-    
-    Vector vars = sroot.getComposeState().getVariableNames(); 
-    m_vars = (Vector)(vars.clone());
-    m_globals_size = sroot.getComposeState().getGlobalsSize();
+	  super.compose(sroot);
+
+	  Vector vars = sroot.getComposeState().getVariableNames(); 
+	  m_vars = (Vector)(vars.clone());
+	  m_globals_size = sroot.getComposeState().getGlobalsSize();
   }
 
   /**
@@ -191,7 +187,7 @@ public class ElemTextLiteral extends ElemTemplateElement
    */
   public int getXSLToken()
   {
-    return Constants.ELEMNAME_TEXTLITERALRESULT;
+	  return Constants.ELEMNAME_TEXTLITERALRESULT;
   }
 
   /**
@@ -201,7 +197,7 @@ public class ElemTextLiteral extends ElemTemplateElement
    */
   public String getNodeName()
   {
-    return "#Text";
+	  return "#Text";
   }
 
   /**
@@ -215,78 +211,79 @@ public class ElemTextLiteral extends ElemTemplateElement
           TransformerImpl transformer)
             throws TransformerException
   {
-    try
-    {
-      SerializationHandler rth = transformer.getResultTreeHandler();
-      
-      String strValue = new String(m_ch);
-      
-      ElemTemplateElement elemTemplateElem = getParentElem();      
-      boolean isExpandText = getExpandTextValue(elemTemplateElem);
-      if (isExpandText) {
-         strValue = getStrValueAfterExpandTextProcessing(strValue, transformer, m_vars, m_globals_size);
-      }
-      
-      if (rth instanceof SerializerBase) {    	  
-    	  SerializerBase serializerBase = (SerializerBase)rth;
-    	  CharacterMapConfig charMapConfig = serializerBase.getCharMapConfig();
-    	  if (charMapConfig != null) {
-    		 // xsl:character-map transformation
-    	     strValue = XslTransformEvaluationHelper.characterMapTransformation(strValue, charMapConfig);    	  
-    	     m_ch = strValue.toCharArray();
-    	  }
-      }
-      
-      if (transformer.getDebug()) {
-        // flush any pending cached processing before the trace event.
-        rth.flushPending();
-        transformer.getTraceManager().emitTraceEvent(this);
-      }
+	  try
+	  {
+		  SerializationHandler rth = transformer.getResultTreeHandler();
 
-      if (m_disableOutputEscaping)
-      {
-        rth.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
-      }
+		  String strValue = String.valueOf(m_ch);
 
-      rth.characters(m_ch, 0, m_ch.length);
+		  ElemTemplateElement xslParentElem = getParentElem();
 
-      if (m_disableOutputEscaping)
-      {
-        rth.processingInstruction(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
-      }
-    }
-    catch(SAXException se)
-    {
-      throw new TransformerException(se);
-    }
-    finally
-    {
-      if (transformer.getDebug()) {
-        try
-        {
-            // flush any pending cached processing before sending the trace event
-            transformer.getResultTreeHandler().flushPending();
-            transformer.getTraceManager().emitTraceEndEvent(this);
-        }
-        catch (SAXException se)
-        {
-            throw new TransformerException(se);
-        } 
-      }
-    }
+		  boolean isExpandText = getExpandTextValue(xslParentElem);
+		  if (isExpandText) {
+			  strValue = getStrValueAfterExpandTextProcessing(strValue, transformer, m_vars, m_globals_size);
+		  }
+
+		  if (rth instanceof SerializerBase) {    	  
+			  SerializerBase serializerBase = (SerializerBase)rth;
+			  CharacterMapConfig charMapConfig = serializerBase.getCharMapConfig();
+			  if (charMapConfig != null) {
+				  // xsl:character-map transformation
+				  strValue = XslTransformEvaluationHelper.characterMapTransformation(strValue, charMapConfig);    	  
+				  m_ch = strValue.toCharArray();
+			  }
+		  }
+
+		  if (transformer.getDebug()) {
+			  // flush any pending cached processing before the trace event.
+			  rth.flushPending();
+			  transformer.getTraceManager().emitTraceEvent(this);
+		  }
+
+		  if (m_disableOutputEscaping)
+		  {
+			  rth.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+		  }
+
+		  rth.characters(m_ch, 0, m_ch.length);
+
+		  if (m_disableOutputEscaping)
+		  {
+			  rth.processingInstruction(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
+		  }
+	  }
+	  catch(SAXException se)
+	  {
+		  throw new TransformerException(se);
+	  }
+	  finally
+	  {
+		  if (transformer.getDebug()) {
+			  try
+			  {
+				  // flush any pending cached processing before sending the trace event
+				  transformer.getResultTreeHandler().flushPending();
+				  transformer.getTraceManager().emitTraceEndEvent(this);
+			  }
+			  catch (SAXException se)
+			  {
+				  throw new TransformerException(se);
+			  } 
+		  }
+	  }
   }
   
   public void endCompose(StylesheetRoot sroot) throws TransformerException
   {    
-     super.endCompose(sroot);
+	  super.endCompose(sroot);
   }
-  
+
   public Vector getXslVars() {
-     return m_vars;	  
+	  return m_vars;	  
   }
-  
+
   public int getXslVarsGlobalSize() {
-	 return m_globals_size; 
+	  return m_globals_size; 
   }
   
 }

@@ -58,18 +58,6 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	private XPath m_selectExpression = null;
 	
 	/**
-	 * This class field is used during, XPath.fixupVariables(..) 
-	 * evaluation as performed within object of this class.  
-	 */    
-	private Vector m_vars;
-
-	/**
-	 * This class field is used during, XPath.fixupVariables(..) 
-	 * evaluation as performed within object of this class.  
-	 */
-	private int m_globals_size;
-	
-	/**
 	 * Set the "select" attribute.
 	 *
 	 * @param xpath The XPath expression for the "select" attribute.
@@ -140,6 +128,58 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	public String getXpathDefaultNamespace() {
 		return m_xpath_default_namespace;
 	}
+	
+	/**
+	 * Variable to indicate whether, an attribute 'expand-text'
+	 * is declared on xsl:try instruction.
+	 */
+	private boolean m_expand_text_declared;
+
+	/**
+	 * This class field, represents the value of "expand-text" 
+	 * attribute.
+	 */
+	private boolean m_expand_text;
+
+	/**
+	 * Set the value of "expand-text" attribute.
+	 *
+	 * @param v   Value of the "expand-text" attribute
+	 */
+	public void setExpandText(boolean v)
+	{
+		m_expand_text = v;
+		m_expand_text_declared = true;
+	}
+
+	/**
+	 * Get the value of "expand-text" attribute.
+	 *  
+	 * @return		  The value of "expand-text" attribute 
+	 */
+	public boolean getExpandText() {
+		return m_expand_text;
+	}
+
+	/**
+	 * Get a boolean value indicating whether, an "expand-text" 
+	 * attribute has been declared. 
+	 */
+	public boolean getExpandTextDeclared() {
+		return m_expand_text_declared;
+	}
+	
+	/**
+	 * This class field is used during, XPath.fixupVariables(..) 
+	 * evaluation as performed within object of this class.  
+	 */    
+	private Vector m_vars;
+
+	/**
+	 * This class field is used during, XPath.fixupVariables(..) 
+	 * evaluation as performed within object of this class.  
+	 */
+	private int m_globals_size;
 	
 	/**
 	 * Class constructor.
@@ -222,8 +262,8 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    	for (ElemTemplateElement t = this.m_firstChild; t != null;
 																	t = t.m_nextSibling) {
 	    		if (!(t instanceof ElemCatch)) {
-	    		   throw new TransformerException("XTSE3140 : An XSL 'try' element has 'select' attribute, but XSL 'try' "
-	    		   		                                                                 + "has a child element other than XSL 'catch'.", srcLocator);
+	    		   throw new TransformerException("XTSE3140 : An XSL 'try' element has 'select' attribute, but xsl 'try' "
+	    		   		                                                                 + "has a child element other than xsl 'catch'.", srcLocator);
 	    		}
 	    	}
 		}
@@ -237,8 +277,8 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    }
 	    
 	    if ((node == null) || !(node instanceof ElemCatch)) {
-	    	throw new TransformerException("XTSE3140 : An XSL 'try' element's last child element can only be a "
-	    			                                                                           + "XSL 'catch' element, or an XSL 'fallback' instruction.", srcLocator);
+	    	throw new TransformerException("XTSE3140 : An XSL 'try' element's last child element can only be an "
+	    			                                                                           + "xsl 'catch' element, or an xsl 'fallback' instruction.", srcLocator);
 	    }	    
 	    
 	    if (m_selectExpression != null) {

@@ -96,18 +96,6 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	}
 	
 	/**
-	 * This class field is used during, XPath.fixupVariables(..) 
-	 * evaluation as performed within object of this class.  
-	 */    
-	private Vector m_vars;
-
-	/**
-	 * This class field is used during, XPath.fixupVariables(..) 
-	 * evaluation as performed within object of this class.  
-	 */
-	private int m_globals_size;
-	
-	/**
 	 * This class field, represents the value of "xpath-default-namespace" 
 	 * attribute.
 	 */
@@ -131,6 +119,58 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	public String getXpathDefaultNamespace() {
 		return m_xpath_default_namespace;
 	}
+	
+	/**
+	 * Variable to indicate whether, an attribute 'expand-text'
+	 * is declared on xsl:catch instruction.
+	 */
+	private boolean m_expand_text_declared;
+
+	/**
+	 * This class field, represents the value of "expand-text" 
+	 * attribute.
+	 */
+	private boolean m_expand_text;
+
+	/**
+	 * Set the value of "expand-text" attribute.
+	 *
+	 * @param v   Value of the "expand-text" attribute
+	 */
+	public void setExpandText(boolean v)
+	{
+		m_expand_text = v;
+		m_expand_text_declared = true;
+	}
+
+	/**
+	 * Get the value of "expand-text" attribute.
+	 *  
+	 * @return		  The value of "expand-text" attribute 
+	 */
+	public boolean getExpandText() {
+		return m_expand_text;
+	}
+
+	/**
+	 * Get a boolean value indicating whether, an "expand-text" 
+	 * attribute has been declared. 
+	 */
+	public boolean getExpandTextDeclared() {
+		return m_expand_text_declared;
+	}
+	
+	/**
+	 * This class field is used during, XPath.fixupVariables(..) 
+	 * evaluation as performed within object of this class.  
+	 */    
+	private Vector m_vars;
+
+	/**
+	 * This class field is used during, XPath.fixupVariables(..) 
+	 * evaluation as performed within object of this class.  
+	 */
+	private int m_globals_size;
 
 	/**
 	 * Class constructor.
@@ -207,7 +247,7 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	    
 	    ElemTemplateElement parentElem = getParentElem();
 	    if (!(parentElem instanceof ElemTry)) {
-	    	throw new TransformerException("XTSE3150 : An XSL catch element can only occur as child of try element.", srcLocator);
+	    	throw new TransformerException("XTSE3150 : An XSL catch element can occur, only as child of xsl try element.", srcLocator);
 	    }
 	    
 	    if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
@@ -215,7 +255,7 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	    }
 	    
 	    if ((m_selectExpression != null) && (this.m_firstChild != null)) {
-	    	throw new TransformerException("XTSE3150 : An XSL catch element can have only either 'select' attribute, or a contained "
+	    	throw new TransformerException("XTSE3150 : An XSL catch element cannot have both 'select' attribute, and a contained "
 	    			                                                                                              + "sequence constructor.", srcLocator);
 		}
 	    
@@ -237,12 +277,12 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 				ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false, this);
 			} 
 			catch (TransformerException ex) {
-				throw new javax.xml.transform.TransformerException("XPTY0004 : An exception occured while serializing XSL catch's evaluation "
+				throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while serializing XSL catch's evaluation "
 						                                                        + "to an XSL result tree, with following run-time exception trace : " + 
 						                                                        ex.getMessage() + ".", srcLocator);	
 			} 
 			catch (SAXException ex) {
-				throw new javax.xml.transform.TransformerException("XPTY0004 : An exception occured while serializing XSL catch's evaluation "
+				throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while serializing XSL catch's evaluation "
                                                                                + "to an XSL result tree, with following exception trace : " + 
                                                                                ex.getMessage() + ".", srcLocator);		
 			}

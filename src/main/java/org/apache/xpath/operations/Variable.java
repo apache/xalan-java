@@ -251,7 +251,7 @@ public class Variable extends Expression implements PathComponent
 			expressionNode = expressionNode.exprGetParent();                     
 		}
 
-		StylesheetRoot  stylesheetRoot = null;
+		StylesheetRoot stylesheetRoot = null;
 
 		if (stylesheetRootNode != null) {
 			if (stylesheetRootNode instanceof Stylesheet) {

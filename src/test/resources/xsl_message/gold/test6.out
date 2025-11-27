@@ -1,0 +1,12 @@
+Starting XSL transformation ...
+Processing product: P1 with price: 2
+Processing product: P2 with price: 3
+Processing product: P3 with price: 4
+Processing product: P4 with price: 5
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <product name="P1" price="2"/>
+  <product name="P2" price="3"/>
+  <product name="P3" price="4"/>
+  <product name="P4" price="5"/>
+</result>

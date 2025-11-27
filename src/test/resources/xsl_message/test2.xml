@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<products>
+   <product>
+	  <name>P1</name>
+	  <price>2</price>
+   </product>
+   <product>
+	  <name>P2</name>
+	  <price>3</price>
+   </product>
+   <product>
+	  <name>P3</name>
+	  <price>4</price>
+   </product>
+   <product>
+	  <name>P4</name>
+	  <price>5</price>
+   </product>
+</products>

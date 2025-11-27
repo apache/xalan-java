@@ -2276,7 +2276,19 @@ public class ElemTemplateElement extends UnImplNode
   	} 
   	else if (elemTemplateElem instanceof ElemNonMatchingSubstring) {
   		result = ((ElemNonMatchingSubstring)elemTemplateElem).getExpandText();  		
-  	}  	
+  	} 
+  	else if (elemTemplateElem instanceof ElemTry) {
+  		result = ((ElemTry)elemTemplateElem).getExpandText();  		
+  	}
+  	else if (elemTemplateElem instanceof ElemCatch) {
+  		result = ((ElemCatch)elemTemplateElem).getExpandText();  		
+  	}
+  	else if (elemTemplateElem instanceof ElemMessage) {
+  		result = ((ElemMessage)elemTemplateElem).getExpandText();  		
+  	}
+  	else if (elemTemplateElem instanceof ElemAssert) {
+  		result = ((ElemAssert)elemTemplateElem).getExpandText();  		
+  	}
 
   	return result;
   }
@@ -2337,7 +2349,7 @@ public class ElemTemplateElement extends UnImplNode
 			  strBuff.append(str1);			   
 		  }
 		  
-		  ElemTemplateElement elemTemplateElem = getParentElem();
+		  ElemTemplateElement elemTemplateElem =  getParentElem();
 		  
 		  String xpathDefaultNamespace = XPathParser.getXPathDefaultNamespace(elemTemplateElem);
 
@@ -2348,30 +2360,32 @@ public class ElemTemplateElement extends UnImplNode
 				  if (prefixTable != null) {
 					  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
 				  }
+				  
 				  String str2 = null;
-				  XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, xpathDefaultNamespace);
-				  xpathObj.setIsConcreteExceptionProcessing(true);
-				  Expression expr1 = xpathObj.getExpression();
-				  if (expr1 instanceof SelfIteratorNoPredicate) {
-					 XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
-					 if (xpath3CtxtItem != null) {
-						 str2 = XslTransformEvaluationHelper.getStrVal(xpath3CtxtItem);
-					 }
-					 else {
-						 if (vars != null) {
-							 xpathObj.fixupVariables(vars, varsGlobalsSize);
-						 }				 
+				  XPath xpath2 = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, xpathDefaultNamespace);
+				  xpath2.setIsConcreteExceptionProcessing(true);
+				  Expression expr1 = xpath2.getExpression();
 
-						 XObject xObj = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-						 str2 = XslTransformEvaluationHelper.getStrVal(xObj); 
-					 }
+				  if (expr1 instanceof SelfIteratorNoPredicate) {
+					  XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
+					  if (xpath3CtxtItem != null) {
+						  str2 = XslTransformEvaluationHelper.getStrVal(xpath3CtxtItem);
+					  }
+					  else {
+						  if (vars != null) {
+							  xpath2.fixupVariables(vars, varsGlobalsSize);
+						  }				 
+
+						  XObject xObj = xpath2.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+						  str2 = XslTransformEvaluationHelper.getStrVal(xObj); 
+					  }
 				  }
 				  else {
 					  if (vars != null) {
-						  xpathObj.fixupVariables(vars, varsGlobalsSize);
-					  }				 
+						  xpath2.fixupVariables(vars, varsGlobalsSize);
+					  }
 
-					  XObject xObj = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+					  XObject xObj = xpath2.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 					  str2 = XslTransformEvaluationHelper.getStrVal(xObj);
 				  }
 

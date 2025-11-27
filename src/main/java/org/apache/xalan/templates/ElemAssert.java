@@ -27,6 +27,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPath;
@@ -38,6 +39,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
+
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of XSLT 3.0 xsl:assert instruction.
@@ -131,6 +134,71 @@ public class ElemAssert extends ElemTemplateElement
   }
   
   /**
+   * This class field, represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
+  }
+  
+  /**
+   * Variable to indicate whether, an attribute 'expand-text'
+   * is declared on xsl:assert instruction.
+   */
+  private boolean m_expand_text_declared;
+  
+  /**
+   * This class field, represents the value of "expand-text" 
+   * attribute.
+   */
+  private boolean m_expand_text;
+
+  /**
+   * Set the value of "expand-text" attribute.
+   *
+   * @param v   Value of the "expand-text" attribute
+   */
+  public void setExpandText(boolean v)
+  {
+	  m_expand_text = v;
+	  m_expand_text_declared = true;
+  }
+
+  /**
+   * Get the value of "expand-text" attribute.
+   *  
+   * @return		  The value of "expand-text" attribute 
+   */
+  public boolean getExpandText() {
+	  return m_expand_text;
+  }
+  
+  /**
+   * Get a boolean value indicating whether, an "expand-text" 
+   * attribute has been declared. 
+   */
+  public boolean getExpandTextDeclared() {
+	  return m_expand_text_declared;
+  }
+  
+  /**
    * This class field is used during, XPath.fixupVariables(..) action 
    * as performed within object of this class.  
    */    
@@ -211,6 +279,15 @@ public class ElemAssert extends ElemTemplateElement
 	  int contextNode = xctxt.getCurrentNode();	  	  	  	  
 	  
 	  try {
+		  
+		  if (m_xpath_default_namespace != null) {    		
+			  m_testExpression = new XPath(m_testExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  
+			  if (m_selectExpression != null) {    		
+		   	      m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		   	  }
+	   	  }
+		  
 		  XObject xtestResult = m_testExpression.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
 		  if (!xtestResult.bool()) {
@@ -299,9 +376,40 @@ public class ElemAssert extends ElemTemplateElement
 				  errCodeStr = m_errorCode.evaluate(xctxt, contextNode, xctxt.getNamespaceContext()); 
 			  }
 
-			  throw new TransformerException(errCodeStr + " : An XSL stylesheet processing has been aborted by 'assert' "
-																										             + "instruction, with following message trace : '" 
-																										             + strBuff.toString() + "'.", srcLocator);
+	    	  String osName = System.getProperty("os.name");
+	    	  String newLineSeq = null;
+			  if (osName.startsWith("Windows")) {
+				  newLineSeq = "\r\n"; 
+			  }
+			  else {
+				  newLineSeq = "\n";
+			  }
+			  
+			  StringBuffer strBuff2 = new StringBuffer();			  
+			  if ((XslTransformData.m_xsl_message_rSeq != null) && ((XslTransformData.m_xsl_message_rSeq).size() > 0)) {    		  
+	    		  ResultSequence rSeq = XslTransformData.m_xsl_message_rSeq;
+	    		  int rSeqLength = rSeq.size();
+	    		  for (int idx = 0; idx < rSeqLength; idx++) {
+	    			  XSString xsString = (XSString)(rSeq.item(idx));
+	    			  String strValue = ((xsString.stringValue()).trim()); 	    			  
+	    			  strBuff2.append(strValue + newLineSeq);
+	    		  }
+			  }
+			  
+			  String accumulatedXslTransformResultStr = strBuff2.toString();
+			  if (accumulatedXslTransformResultStr.length() > 0) {
+				 accumulatedXslTransformResultStr = accumulatedXslTransformResultStr + newLineSeq;  
+			  }
+			  
+			  String strValue = strBuff.toString();	  
+			  if (m_expand_text_declared && m_expand_text) {
+				 strValue = getStrValueAfterExpandTextProcessing(strValue, transformer, m_vars, m_globals_size); 
+			  }
+
+			  throw new TransformerException((accumulatedXslTransformResultStr.length() > 0 ? accumulatedXslTransformResultStr : "") 
+					                                                                       + errCodeStr + " : An XSL stylesheet processing has been aborted by 'assert' "
+																						   + "instruction, with following message trace : '" 
+																						   + strValue + "'.", srcLocator);
 		  }
       }
 	  catch (Exception ex) {
@@ -309,9 +417,8 @@ public class ElemAssert extends ElemTemplateElement
 			 throw ex; 
 		  }
 		  else {
-		     throw new TransformerException("XTTE0505 : An XSL stylesheet processing failed with a dynamic error, "
-		     		                                                                                     + "while evaluating an xsl:assert "
-		     		                                                                                     + "instruction.", srcLocator);
+			 throw new TransformerException("XTTE0505 : An XSL stylesheet processing has failed with an error, while evaluating "
+                                                                                                                    + "an xsl:assert instruction.", srcLocator);
 		  }
 	  }
 

@@ -15,10 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
+
+import java.util.Vector;
+
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.w3c.dom.DOMException;
@@ -160,6 +161,24 @@ public class ElemText extends ElemTemplateElement
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }
+  
+  private Vector m_vars;
+  
+  private int m_globals_size;
+  
+  public void compose(StylesheetRoot sroot) throws TransformerException
+  {
+	  super.compose(sroot);
+
+	  Vector vars = sroot.getComposeState().getVariableNames(); 
+	  m_vars = (Vector)(vars.clone());
+	  m_globals_size = sroot.getComposeState().getGlobalsSize();
+  }
+
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {    
+	  super.endCompose(sroot);
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -170,7 +189,7 @@ public class ElemText extends ElemTemplateElement
    */
   public int getXSLToken()
   {
-    return Constants.ELEMNAME_TEXT;
+	  return Constants.ELEMNAME_TEXT;
   }
 
   /**
@@ -180,7 +199,7 @@ public class ElemText extends ElemTemplateElement
    */
   public String getNodeName()
   {
-    return Constants.ELEMNAME_TEXT_STRING;
+	  return Constants.ELEMNAME_TEXT_STRING;
   }
 
   /**
@@ -195,23 +214,23 @@ public class ElemText extends ElemTemplateElement
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 	  
-	super.appendChild(newChild);	  
+	  super.appendChild(newChild);	  
 
-    int type = ((ElemTemplateElement)newChild).getXSLToken();
+	  int type = ((ElemTemplateElement)newChild).getXSLToken();
 
-    switch (type)
-    {
-    case Constants.ELEMNAME_TEXTLITERALRESULT :
-      break;
-    default :
-      error(XSLTErrorResources.ER_CANNOT_ADD,
-            new Object[]{ newChild.getNodeName(),
-                          this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+	  switch (type)
+	  {
+	  case Constants.ELEMNAME_TEXTLITERALRESULT :
+		  break;
+	  default :
+		  error(XSLTErrorResources.ER_CANNOT_ADD,
+				  new Object[]{ newChild.getNodeName(),
+						  this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
 
-    //" to " + this.m_elemName);
-    }
+		  //" to " + this.m_elemName);
+	  }
 
-    return newChild;
+	  return newChild;
   }
 
 }

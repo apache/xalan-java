@@ -789,7 +789,8 @@ public class XSLTSchema extends XSLTElementDef
 								             Constants.S_XSLNAMESPACEURL, "try",
 								             null /*alias */, templateElements,
 								             new XSLTAttributeDef[]{ selectAttrOpt, rollbackOutputAttrOpt, 
-								            		                 xpathDefaultNamespaceAttrOpt, spaceAttr }, 
+								            		                 xpathDefaultNamespaceAttrOpt, 
+								            		                 expandTextAttrOpt, spaceAttr }, 
 								             new ProcessorTemplateElem(),
 								             ElemTry.class /* class object */, true, false, true, 20, true);
     
@@ -797,7 +798,8 @@ public class XSLTSchema extends XSLTElementDef
 								             Constants.S_XSLNAMESPACEURL, "catch",
 								             null /*alias */, templateElements,
 								             new XSLTAttributeDef[]{ selectAttrOpt, errorsAttrOpt, 
-								            		                 xpathDefaultNamespaceAttrOpt, spaceAttr }, 
+								            		                 xpathDefaultNamespaceAttrOpt, 
+								            		                 expandTextAttrOpt, spaceAttr }, 
 								             new ProcessorTemplateElem(),
 								             ElemCatch.class /* class object */, true, false, true, 20, true);
     
@@ -1001,7 +1003,8 @@ public class XSLTSchema extends XSLTElementDef
                                   Constants.S_XSLNAMESPACEURL, "message",
                                   null /*alias */,
                                   templateElements /* elements */,  // %template;>
-                                  new XSLTAttributeDef[]{ selectAttrOpt, terminateAttr, errorCodeAttrOpt },
+                                  new XSLTAttributeDef[]{ selectAttrOpt, terminateAttr, 
+                                		                  errorCodeAttrOpt, expandTextAttrOpt },
                                   new ProcessorTemplateElem(),
                                   ElemMessage.class /* class object */, 20, true);
     XSLTElementDef xslAssert = new XSLTElementDef(this,

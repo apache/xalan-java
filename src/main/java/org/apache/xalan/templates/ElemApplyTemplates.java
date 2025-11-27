@@ -1170,14 +1170,14 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  else {
 				  // For the XSL template that matched the context node,
 				  // evaluate this XSL stylesheet template's child elements.
-				  for (ElemTemplateElement t1 = template.m_firstChild; 
-						  											t1 != null; t1 = t1.m_nextSibling) {
-					  xctxt.setSAXLocator(t1);
+				  for (ElemTemplateElement t = template.m_firstChild; 
+						  											t != null; t = t.m_nextSibling) {
+					  xctxt.setSAXLocator(t);
 
 					  try
 					  {
-						  transformer.pushElemTemplateElement(t1);
-						  t1.execute(transformer);
+						  transformer.pushElemTemplateElement(t);
+						  t.execute(transformer);
 					  }
 					  finally
 					  {
