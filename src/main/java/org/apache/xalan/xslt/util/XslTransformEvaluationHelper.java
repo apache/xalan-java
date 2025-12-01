@@ -18,6 +18,7 @@ package org.apache.xalan.xslt.util;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -875,6 +876,31 @@ public class XslTransformEvaluationHelper {
     	}
 
     	return result;
+    }
+    
+    /**
+     * Method definition, to produce a random permutation of
+     * the supplied xdm sequence.
+     * 
+     * @param rSeq                   Supplied xdm sequence, object instance
+     * @return                       Random permutation of the supplied sequence
+     */
+    public static XObject permute(ResultSequence rSeq)
+    {
+    	ResultSequence result = new ResultSequence();
+
+    	int rSeqLength = rSeq.size();
+    	List<XObject> list1 = new ArrayList<XObject>();
+    	for (int idx = 0; idx < rSeqLength; idx++) {
+    		list1.add(rSeq.item(idx));  
+    	}
+
+    	Collections.shuffle(list1);
+    	for (int idx = 0; idx < rSeqLength; idx++) {
+    		result.add(list1.get(idx));  
+    	}
+
+    	return result; 
     }
     
     /**

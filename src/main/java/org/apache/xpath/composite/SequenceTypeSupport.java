@@ -1347,7 +1347,7 @@ public class SequenceTypeSupport {
                }
             }
             else if (srcValue instanceof XPathInlineFunction) {
-               SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
+               SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();               
                if (sequenceTypeFunctionTest != null) {
             	  XPathInlineFunction xpathInlineFuncExpr = (XPathInlineFunction)srcValue;
             	  if (sequenceTypeFunctionTest.isAnyFunctionTest()) {
@@ -1400,6 +1400,9 @@ public class SequenceTypeSupport {
             		 result = srcValue;
             	  }
                }
+               else if (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+            	  result = srcValue; 
+               }
             }
             else if (srcValue instanceof XPathMap) {
             	SequenceTypeMapTest sequenceTypeMapTest = seqExpectedTypeData.getSequenceTypeMapTest();
@@ -1439,6 +1442,9 @@ public class SequenceTypeSupport {
              		  result = srcValue; 
              	   }
                 }
+                else if (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+              	   result = srcValue; 
+                }
             }
             else if (srcValue instanceof XPathArray) {
             	SequenceTypeArrayTest sequenceTypeArrayTest = seqExpectedTypeData.getSequenceTypeArrayTest();
@@ -1462,6 +1468,9 @@ public class SequenceTypeSupport {
              		  
              		  result = srcValue;  
              	   }
+                }
+                else if (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+              	   result = srcValue; 
                 }
             }
         }

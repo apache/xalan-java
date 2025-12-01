@@ -16,6 +16,7 @@
  */
 package org.apache.xpath.functions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -155,11 +156,14 @@ public class XPathDynamicFunctionCall extends Expression {
                prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
             }
                 	    
-    	    if (functionRef instanceof XPathInlineFunction) {    	    		    	    	
-	           evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)functionRef, m_argList, 
-	        		                                                           xctxt, prefixTable, m_vars, m_globals_size, 
-	        		                                                           m_xpathVarList, m_funcRefVarName);
-               
+    	    if (functionRef instanceof XPathInlineFunction) {
+    	    	if (m_argList == null) {
+    	    		m_argList = new ArrayList<String>(); 
+    	    	}
+
+    	    	evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)functionRef, m_argList, 
+																					    	    			xctxt, prefixTable, m_vars, m_globals_size, 
+																					    	    			m_xpathVarList, m_funcRefVarName);               
 	           if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
 	        	  evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)evalResult, m_trailingArgList, 
 	        			                                                                  null, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 

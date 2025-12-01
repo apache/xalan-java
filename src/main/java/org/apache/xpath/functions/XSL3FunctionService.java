@@ -172,7 +172,7 @@ public class XSL3FunctionService {
     		String funcName = funcObj.getFunctionName();
     		String funcNamespace = funcObj.getNamespace();
     		
-    		if (!(Constants.S_EXTENSIONS_JAVA_URL).equals(funcNamespace)) {
+    		if (!((Constants.S_EXTENSIONS_JAVA_URL).equals(funcNamespace) || (Constants.S_EXTENSIONS_XALANLIB_URL).equals(funcNamespace))) {
     			/**
     			 * XPath constructor (prefix:typeName) and XSL stylesheet function
     			 * calls (xsl:function), are syntactically similar to Xalan-J XPath
@@ -1207,6 +1207,25 @@ public class XSL3FunctionService {
     	final int contextNode = xctxt.getCurrentNode(); 
 
     	String inlineFnXPathStr = xpathInlineFunction.getFuncBodyXPathExprStr();
+    	
+    	if (Constants.FN_XALAN_RNG_PERMUTE.equals(inlineFnXPathStr)) {
+    		String arg1XPathStr = argList.get(0);
+    		if (prefixTable != null) {
+    			arg1XPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(arg1XPathStr, prefixTable);
+    		}
+    		
+    		XPath argXPath = new XPath(arg1XPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    		if (varVector != null) {
+				argXPath.fixupVariables(varVector, varGlobalSize);
+			}
+    		
+    		XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    		
+    		evalResult = XslTransformEvaluationHelper.permute((ResultSequence)argValue);
+    		
+    		return evalResult; 
+    	}
+    	
     	List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();           
 
     	int argCount1 = argList.size();

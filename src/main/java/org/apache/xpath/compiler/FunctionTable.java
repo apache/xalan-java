@@ -562,6 +562,9 @@ public class FunctionTable
   
   /** The 'error()' id. */
   public static final int FUNC_ERROR = 179;
+  
+  /** The 'random-number-generator()' id. */
+  public static final int FUNC_RANDOM_NUMBER_GENERATOR = 180;
 
   // Proprietary
 
@@ -655,7 +658,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 180;
+  private static final int NUM_BUILT_IN_FUNCS = 181;
 
   /**
    * Number of built-in functions that may be added.
@@ -883,6 +886,8 @@ public class FunctionTable
 	   m_functions[FUNC_FUNCTION_NAME] = org.apache.xpath.functions.FuncFunctionName.class;
 	   
 	   m_functions[FUNC_ERROR] = org.apache.xpath.functions.FuncError.class;
+	   
+	   m_functions[FUNC_RANDOM_NUMBER_GENERATOR] = org.apache.xpath.functions.FuncRandomNumberGenerator.class;
   }
 
   static {
@@ -1095,6 +1100,8 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_FUNCTION_NAME, new Integer(FunctionTable.FUNC_FUNCTION_NAME));
 	  
 	  m_functionId.put(Keywords.FUNC_ERROR, new Integer(FunctionTable.FUNC_ERROR));
+	  
+	  m_functionId.put(Keywords.FUNC_RANDOM_NUMBER_GENERATOR, new Integer(FunctionTable.FUNC_RANDOM_NUMBER_GENERATOR));
   }
   
   /**

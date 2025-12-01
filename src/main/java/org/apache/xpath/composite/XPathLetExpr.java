@@ -85,144 +85,155 @@ public class XPathLetExpr extends Expression {
        
        Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
        
-       for (int idx = 0; idx < m_letExprVarBindingList.size(); idx++) {          
-          LetExprVarBinding letExprVarBinding = m_letExprVarBindingList.get(idx);
-          String varName = letExprVarBinding.getVarName();
-          String varResultXPathExprStr = letExprVarBinding.getXPathExprStr();
-          
-          if (prefixTable != null) {
-             varResultXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                  varResultXPathExprStr, prefixTable);
-          }
-          
-          XPath letExprVarBindingXPath = new XPath(varResultXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
-        		                                                                                             XPath.SELECT, null);
-          if (m_vars != null) {
-             letExprVarBindingXPath.fixupVariables(m_vars, m_globals_size);
-          }
-          
-          XObject varBindingEvalResult = null;
-          
-          Expression expr = letExprVarBindingXPath.getExpression();
-          
-          XPathNamedFunctionReference xpathNamedFuncRef = null;
-          if (expr instanceof XPathSequenceConstructor) {
-        	  XObject xObj = ((XPathSequenceConstructor)expr).execute(xctxt);
-        	  if ((xObj instanceof ResultSequence) && ((ResultSequence)xObj).size() == 1) {
-        		 ResultSequence rSeq = (ResultSequence)xObj;
-        		 XObject xObj2 = rSeq.item(0);
-        		 if (xObj2 instanceof XPathNamedFunctionReference) {
-        			 xpathNamedFuncRef = (XPathNamedFunctionReference)xObj2;  
-        		 }
-        	  }
-        	  else {
-        		 varBindingEvalResult = xObj; 
-        	  }
-          }
-          else if (expr instanceof XPathNamedFunctionReference) {
-        	  xpathNamedFuncRef = (XPathNamedFunctionReference)expr; 
-          }
-          else if (expr instanceof Function) {
-        	  varBindingEvalResult = expr.execute(xctxt);
-          }
-          
-          if (xpathNamedFuncRef != null) {
-        	  String funcNamespace = xpathNamedFuncRef.getFuncNamespace();
-        	  String funcLocalName = xpathNamedFuncRef.getFuncName();
-        	  int concatArity = 0;
-        	  short funcArity = 0;
-        	  if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
-        			                                              (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
-        		 concatArity = xpathNamedFuncRef.getConcatArity();
-        		 FuncConcat funcConcat = new FuncConcat();
-        		 if ((concatArity < funcConcat.getMinArity()) || (concatArity > funcConcat.getMaxArity())) {
-        			 throw new TransformerException("XPTY0004 : XPath function fn:concat's arity can be between " + 
-        		                                                                              funcConcat.getMinArity() + " and " 
-        					                                                                  + funcConcat.getMaxArity() + ".", srcLocator); 
-        		 }
-        	  }
-        	  else {
-        	     funcArity = xpathNamedFuncRef.getArity();
-        	  }
-        	  
-        	  String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName; 
+       List<QName> qNameVarList = new ArrayList<QName>();
+       
+       try {    	       	   
+    	   for (int idx = 0; idx < m_letExprVarBindingList.size(); idx++) {          
+    		   LetExprVarBinding letExprVarBinding = m_letExprVarBindingList.get(idx);
+    		   String varName = letExprVarBinding.getVarName();
+    		   String varResultXPathExprStr = letExprVarBinding.getXPathExprStr();
 
-        	  FunctionTable funcTable = xctxt.getFunctionTable();
+    		   if (prefixTable != null) {
+    			   varResultXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(varResultXPathExprStr, prefixTable);
+    		   }
 
-        	  Object funcIdObj = null;
-        	  if (FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
-        		  funcIdObj = funcTable.getFunctionId(funcLocalName);
-        	  }
-        	  else if (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
-        		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
-        	  }
-        	  else if (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
-        		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
-        	  }
-        	  else if (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
-        		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
-        	  }
-        	  
-        	  if (funcIdObj != null) {
-        		  String funcIdStr = funcIdObj.toString();
-        		  Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
-        		  function.setLocalName(funcLocalName);
-        		  function.setNamespace(funcNamespace);        		  
-        		  if (function instanceof FuncConcat) {        		     
-        		     FuncConcat funcConcat = (FuncConcat)function;
-        			 funcConcat.setActualArity(concatArity);
-        		  }
-        		  else {
-        			 function.setDefinedArity(new Short[] { funcArity });
-        		  }
-        		  
-        		  varBindingEvalResult = new XObject(function);
-        	  }
-        	  else if (xpathNamedFuncRef.getXslStylesheetFunction() != null) {
-        		  ElemFunction elemFunction = xpathNamedFuncRef.getXslStylesheetFunction();
-        		  varBindingEvalResult = new XObject(elemFunction);
-        		  varBindingEvalResult.setXslStylesheetRoot(xpathNamedFuncRef.getXslStylesheetRoot());
-        	  }
-        	  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {
-        		  XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
-        		  funcObj.setDefinedArity(new Short[] { funcArity });
-        		  varBindingEvalResult = new XObject(funcObj);        		  
-        	  }
-        	  else {
-        		  throw new TransformerException("FODC0005 : Function definition for named function reference " + 
-        				  																		  funcQualifiedName + " doesn't exist.", srcLocator);
-        	  }
-          }
-          else if (varBindingEvalResult == null) {
-             varBindingEvalResult = letExprVarBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-          }
-          
-          if (varBindingEvalResult == null) {
-        	 throw new TransformerException("FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.", srcLocator); 
-          }
-          
-          m_xpathVarList.add(new QName(varName));
-          
-          xpathVarMap.put(new QName(varName), varBindingEvalResult);
-       }              
-       
-       if (prefixTable != null) {
-          m_returnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                m_returnExprXPathStr, prefixTable);
+    		   XPath letExprVarBindingXPath = new XPath(varResultXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    		   if (m_vars != null) {
+    			   letExprVarBindingXPath.fixupVariables(m_vars, m_globals_size);
+    		   }
+
+    		   XObject varBindingEvalResult = null;
+
+    		   Expression expr = letExprVarBindingXPath.getExpression();
+
+    		   XPathNamedFunctionReference xpathNamedFuncRef = null;
+    		   if (expr instanceof XPathSequenceConstructor) {
+    			   XObject xObj = ((XPathSequenceConstructor)expr).execute(xctxt);
+    			   if ((xObj instanceof ResultSequence) && ((ResultSequence)xObj).size() == 1) {
+    				   ResultSequence rSeq = (ResultSequence)xObj;
+    				   XObject xObj2 = rSeq.item(0);
+    				   if (xObj2 instanceof XPathNamedFunctionReference) {
+    					   xpathNamedFuncRef = (XPathNamedFunctionReference)xObj2;  
+    				   }
+    			   }
+    			   else {
+    				   varBindingEvalResult = xObj; 
+    			   }
+    		   }
+    		   else if (expr instanceof XPathNamedFunctionReference) {
+    			   xpathNamedFuncRef = (XPathNamedFunctionReference)expr; 
+    		   }
+    		   else if (expr instanceof Function) {
+    			   varBindingEvalResult = expr.execute(xctxt);
+    		   }
+
+    		   if (xpathNamedFuncRef != null) {
+    			   String funcNamespace = xpathNamedFuncRef.getFuncNamespace();
+    			   String funcLocalName = xpathNamedFuncRef.getFuncName();
+    			   int concatArity = 0;
+    			   short funcArity = 0;
+    			   if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+    				   concatArity = xpathNamedFuncRef.getConcatArity();
+    				   FuncConcat funcConcat = new FuncConcat();
+    				   if ((concatArity < funcConcat.getMinArity()) || (concatArity > funcConcat.getMaxArity())) {
+    					   throw new TransformerException("XPTY0004 : XPath function fn:concat's arity can be between " + 
+																				    							    funcConcat.getMinArity() + " and " 
+																				    							    + funcConcat.getMaxArity() + ".", srcLocator); 
+    				   }
+    			   }
+    			   else {
+    				   funcArity = xpathNamedFuncRef.getArity();
+    			   }
+
+    			   String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName; 
+
+    			   FunctionTable funcTable = xctxt.getFunctionTable();
+
+    			   Object funcIdObj = null;
+    			   if (FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
+    				   funcIdObj = funcTable.getFunctionId(funcLocalName);
+    			   }
+    			   else if (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
+    				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
+    			   }
+    			   else if (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
+    				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
+    			   }
+    			   else if (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
+    				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
+    			   }
+
+    			   if (funcIdObj != null) {
+    				   String funcIdStr = funcIdObj.toString();
+    				   Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
+    				   function.setLocalName(funcLocalName);
+    				   function.setNamespace(funcNamespace);        		  
+    				   if (function instanceof FuncConcat) {        		     
+    					   FuncConcat funcConcat = (FuncConcat)function;
+    					   funcConcat.setActualArity(concatArity);
+    				   }
+    				   else {
+    					   function.setDefinedArity(new Short[] { funcArity });
+    				   }
+
+    				   varBindingEvalResult = new XObject(function);
+    			   }
+    			   else if (xpathNamedFuncRef.getXslStylesheetFunction() != null) {
+    				   ElemFunction elemFunction = xpathNamedFuncRef.getXslStylesheetFunction();
+    				   varBindingEvalResult = new XObject(elemFunction);
+    				   varBindingEvalResult.setXslStylesheetRoot(xpathNamedFuncRef.getXslStylesheetRoot());
+    			   }
+    			   else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {
+    				   XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
+    				   funcObj.setDefinedArity(new Short[] { funcArity });
+    				   varBindingEvalResult = new XObject(funcObj);        		  
+    			   }
+    			   else {
+    				   throw new TransformerException("FODC0005 : Function definition for named function reference " + 
+    						   																					     funcQualifiedName + " doesn't exist.", srcLocator);
+    			   }
+    		   }
+    		   else if (varBindingEvalResult == null) {
+    			   varBindingEvalResult = letExprVarBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    		   }
+
+    		   if (varBindingEvalResult == null) {
+    			   throw new TransformerException("FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.", srcLocator); 
+    		   }
+
+    		   QName qNameVar = new QName(varName);
+    		   
+    		   m_xpathVarList.add(qNameVar);    		   
+    		   qNameVarList.add(qNameVar);
+
+    		   xpathVarMap.put(new QName(varName), varBindingEvalResult);
+    	   }              
+
+    	   if (prefixTable != null) {
+    		   m_returnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+    				                                                                                m_returnExprXPathStr, prefixTable);
+    	   }
+
+    	   XPath returnExprXpath = new XPath(m_returnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+    	   if (m_vars != null) {
+    		   returnExprXpath.fixupVariables(m_vars, m_globals_size);
+    	   }
+
+    	   evalResult = returnExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+
+    	   if (evalResult == null) {
+    		   // Return an empty sequence
+    		   evalResult = new ResultSequence();   
+    	   }
        }
-       
-       XPath returnExprXpath = new XPath(m_returnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                             XPath.SELECT, null);
-       
-       if (m_vars != null) {
-          returnExprXpath.fixupVariables(m_vars, m_globals_size);
-       }
-       
-       evalResult = returnExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-       
-       if (evalResult == null) {
-          // Return an empty sequence
-          evalResult = new ResultSequence();   
+       finally {
+    	   int qNameListSize = qNameVarList.size();
+    	   for (int idx = 0; idx < qNameListSize; idx++) {
+    		  QName qName = qNameVarList.get(idx);
+    		  m_xpathVarList.remove(qName);
+    		  xpathVarMap.remove(qName);
+    	   }
        }
         
        return evalResult;       

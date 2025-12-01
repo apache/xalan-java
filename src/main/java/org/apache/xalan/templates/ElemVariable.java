@@ -998,7 +998,7 @@ public class ElemVariable extends ElemTemplateElement
        xctxt.popCurrentNode();
     }
     
-    if (m_asAttr != null) {
+    if (m_asAttr != null) {    	
     	XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	
     	
     	XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());    	
@@ -1230,6 +1230,25 @@ public class ElemVariable extends ElemTemplateElement
 
     					return var;
     				}
+    			}
+    		}
+    		
+    		if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.TEXT_KIND)) {
+    			XNodeSetForDOM xNodeSetForDom = (XNodeSetForDOM)var;
+    			int nodeHandle = xNodeSetForDom.asNode(xctxt);
+    			DTM dtm = xctxt.getDTM(nodeHandle);
+    			int childNode = dtm.getFirstChild(nodeHandle);
+    			if (childNode == DTM.NULL) {
+    			   return new ResultSequence();
+    			}
+    			else {
+    			   short nodeType = dtm.getNodeType(childNode);
+    			   if ((nodeType == DTM.TEXT_NODE) && (dtm.getNextSibling(childNode) == DTM.NULL)) {    				  
+    				  return var; 
+    			   }
+    			   else {
+    				  var = var.getFresh(); 
+    			   }
     			}
     		}
 

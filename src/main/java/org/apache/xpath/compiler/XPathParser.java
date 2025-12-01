@@ -1848,10 +1848,27 @@ public class XPathParser
 				  nextToken();
      			  while (!(tokenIs(',') || tokenIs('}'))) {     					  
      				  mapEntryValueXPathExprStr += m_token;
-     				  nextToken();
-     				  
-     				  
+     				  nextToken();     				       				  
      			  } 
+     		  }
+     		  else if (tokenIs("function") && lookahead('(', 1)) {
+     			  mapEntryValueXPathExprStr = "";
+     			  mapEntryValueXPathExprStr += (m_token + " ");
+				  nextToken();
+				  while (!tokenIs('}') && (m_token != null)){
+					 mapEntryValueXPathExprStr += (m_token + " ");
+					 if (mapEntryValueXPathExprStr.contains("{") && mapEntryValueXPathExprStr.contains("}") 
+							                                                              && StringUtil.isStrHasBalancedParentheses(mapEntryValueXPathExprStr, '{', '}')) {
+						break;
+					 }					 					 
+					 
+					 nextToken();
+				  }
+				  
+				  mapEntryValueXPathExprStr += m_token;
+				  mapEntryValueXPathExprStr = mapEntryValueXPathExprStr.replace(XMLConstants.W3C_XML_SCHEMA_NS_URI + " : ", 
+						                                                                                          XMLConstants.W3C_XML_SCHEMA_NS_URI + ":"); 
+				  consumeExpected('}');
      		  }
      		  else {
      			  // The map's key value here is a simple value (i.e, not an array, or 
@@ -7256,6 +7273,14 @@ public class XPathParser
  				  parseXdmArraySequenceType(xpathSequenceTypeExpr2, true);
  				  SequenceTypeArrayTest seqTypeArrayTest2 = xpathSequenceTypeExpr2.getSequenceTypeArrayTest();
  				  valueSequenceTypeData.setSequenceTypeArrayTest(seqTypeArrayTest2);
+ 			  }
+ 			  else if (tokenIs("item")) {
+ 				  nextToken();
+ 				  SequenceTypeKindTest sequenceTypeKindTest = new SequenceTypeKindTest();
+ 				  sequenceTypeKindTest.setKindVal(SequenceTypeSupport.ITEM_KIND); 				   				   				  
+ 				  valueSequenceTypeData.setSequenceTypeKindTest(sequenceTypeKindTest);
+ 				  consumeExpected('(');
+				  consumeExpected(')');
  			  }
  		  }
  		  

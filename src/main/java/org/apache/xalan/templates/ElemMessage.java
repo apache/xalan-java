@@ -301,133 +301,155 @@ public class ElemMessage extends ElemTemplateElement
    	      m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
    	  } 
 	  
-	  if (m_selectExpression != null) {
-		  XObject xObj = m_selectExpression.execute(xctxt, contextNode, xctxt.getNamespaceContext());		  
-		  if (xObj instanceof XMLNodeCursorImpl) {
-			 appendNodeStrToStrBuff(xctxt, strBuff, (XMLNodeCursorImpl)xObj, prefixTable, stylesheetRoot);
-		  }
-		  else if (xObj instanceof ResultSequence) {
-			  ResultSequence rSeq = (ResultSequence)xObj;
-			  int rSeqLength = rSeq.size();
-			  for (int idx = 0; idx < rSeqLength; idx++) {
-				  XObject xObj2 = rSeq.item(idx);
-				  if (xObj2 instanceof XMLNodeCursorImpl) {
-					  appendNodeStrToStrBuff(xctxt, strBuff, (XMLNodeCursorImpl)xObj2, prefixTable, stylesheetRoot);
+	  try {
+		  if (m_selectExpression != null) {
+			  XObject xObj = m_selectExpression.execute(xctxt, contextNode, xctxt.getNamespaceContext());		  
+			  if (xObj instanceof XMLNodeCursorImpl) {
+				  appendNodeStrToStrBuff(xctxt, strBuff, (XMLNodeCursorImpl)xObj, prefixTable, stylesheetRoot);
+			  }
+			  else if (xObj instanceof ResultSequence) {
+				  ResultSequence rSeq = (ResultSequence)xObj;
+				  int rSeqLength = rSeq.size();
+				  for (int idx = 0; idx < rSeqLength; idx++) {
+					  XObject xObj2 = rSeq.item(idx);
+					  if (xObj2 instanceof XMLNodeCursorImpl) {
+						  appendNodeStrToStrBuff(xctxt, strBuff, (XMLNodeCursorImpl)xObj2, prefixTable, stylesheetRoot);
+					  }
+
+					  else {
+						  String strValue = XslTransformEvaluationHelper.getStrVal(xObj2);
+						  strBuff.append(strValue);
+					  }
+
+					  if (idx < (rSeqLength - 1)) {
+						  strBuff.append(" "); 
+					  }
 				  }
-				  else {
-					  String strValue = XslTransformEvaluationHelper.getStrVal(xObj);
+			  }
+			  else {
+				  String strValue = XslTransformEvaluationHelper.getStrVal(xObj);
+				  strBuff.append(strValue);
+			  } 
+		  }
+
+		  boolean isXslMessagePreprocess = false;
+
+		  if (transformer.getOptimize()) {
+			  ElemTemplateElement firstChild = this.getFirstChildElem();	  
+			  if (firstChild instanceof ElemText) {
+				  ElemTemplateElement nextSibling = firstChild.getNextSiblingElem();
+				  boolean isXslMessageAllChildNodeText = true;
+				  while (nextSibling != null) {
+					  if (!((nextSibling instanceof ElemText) || (nextSibling instanceof ElemTextLiteral))) {
+						  isXslMessageAllChildNodeText = false;
+
+						  break;
+					  }
+
+					  nextSibling = nextSibling.getNextSiblingElem();
+				  }
+
+				  if (isXslMessageAllChildNodeText) {
+					  isXslMessagePreprocess = true;
+
+					  String strValue = transformer.transformToString(firstChild);
+					  if (m_expand_text) {
+						  strValue = getStrValueAfterExpandTextProcessing(strValue, transformer, m_vars, m_globals_size);
+					  }
+
 					  strBuff.append(strValue);
+					  XslTransformData.m_xsl_message_rSeq.add(new XSString(strBuff.toString()));
 				  }
 			  }
-		  }
-		  else {
-			 String strValue = XslTransformEvaluationHelper.getStrVal(xObj);
-			 strBuff.append(strValue);
-		  } 
-	  }
-	  
-	  ElemTemplateElement firstChild = this.getFirstChildElem();
-	  boolean isXslPreprocess = false;
-	  if (firstChild != null) {
-		  ElemTemplateElement elemNextSibling = firstChild.getNextSiblingElem();
-		  if ((firstChild instanceof ElemText) && ((elemNextSibling == null) || 
-				                                   ("".equals(transformer.transformToString(elemNextSibling))))) {
-			  // An xsl:message instruction, contains a single xsl:text element
-			  
-			  isXslPreprocess = true;
 
-			  ElemText elemText = (ElemText)firstChild;
-			  String strValue = transformer.transformToString(firstChild);			 
-			  if (elemText.getExpandText()) {
-				  strValue = getStrValueAfterExpandTextProcessing(strValue, transformer, m_vars, m_globals_size);
+			  if (!isXslMessagePreprocess && this.hasTextLitOnly()) {
+				  // An xsl:message instruction, contains a single literal text child
+
+				  isXslMessagePreprocess = true;
+
+				  String strValue = firstChild.getNodeValue();
+				  if (m_expand_text) {
+					  strValue = getStrValueAfterExpandTextProcessing(strValue, transformer, m_vars, m_globals_size); 
+				  }
+
+				  strBuff.append(strValue);
+
+				  XSString xsString = new XSString(strValue);
+				  ((XObject)xsString).setUseStrictValue(true);
+
+				  XslTransformData.m_xsl_message_rSeq.add(xsString);
+			  }
+		  }
+
+		  if (!isXslMessagePreprocess) {
+			  int rootNodeHandleOfRtf = transformer.transformToRTF(this);
+
+			  if (rootNodeHandleOfRtf != DTM.NULL) {
+				  DTM dtm = xctxt.getDTM(rootNodeHandleOfRtf);
+				  int childNode = dtm.getFirstChild(rootNodeHandleOfRtf);
+				  while (childNode != DTM.NULL) {			 			 
+					  try {
+						  short nodeType = dtm.getNodeType(childNode);
+						  String xmlNodeStr = null;
+						  Node node = dtm.getNode(childNode);
+						  if (nodeType == DTM.ELEMENT_NODE) {
+							  xmlNodeStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);				 
+							  int prefixTableSize = prefixTable.size();				  
+							  if (prefixTableSize > 1) {
+								  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+								  DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+								  dbFactory.setNamespaceAware(true);
+								  DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
+
+								  StringReader strReader = new StringReader(xmlNodeStr);
+								  InputSource inpSource = new InputSource(strReader);
+								  Document document = docBuilder.parse(inpSource);
+								  Element docElement = document.getDocumentElement();
+
+								  for (int idx = 0; idx < prefixTableSize; idx++) {
+									  XMLNSDecl xmlNSDecl = prefixTable.get(idx);
+									  String prefix = xmlNSDecl.getPrefix();
+									  String uri = xmlNSDecl.getURI();
+									  if (!((Constants.S_XSLNAMESPACEURL).equals(uri)) && !isXslPrefixToBeExcluded(stylesheetRoot, prefix)) {
+										  // Adding an XML namespace declaration to, an XML element node.
+										  docElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + prefix, uri);
+									  }
+								  }
+
+								  xmlNodeStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(docElement);							  
+							  }
+
+							  int idx = xmlNodeStr.indexOf("?>");
+							  xmlNodeStr = (idx > -1) ? xmlNodeStr.substring(idx + 2) : xmlNodeStr; 
+						  }
+						  else {
+							  xmlNodeStr = node.getNodeValue();
+						  }
+
+						  strBuff.append(xmlNodeStr);
+					  } 
+					  catch (Exception ex) {
+						  throw new TransformerException(ex.getMessage());
+					  }
+
+					  childNode = dtm.getNextSibling(childNode); 
+				  }		  
 			  }
 
-			  strBuff.append(strValue);
+			  String strValue = strBuff.toString();	  
+			  if (m_expand_text_declared && m_expand_text) {
+				  strValue = getStrValueAfterExpandTextProcessing(strValue, transformer, m_vars, m_globals_size); 
+			  }
 
 			  XslTransformData.m_xsl_message_rSeq.add(new XSString(strValue));
 		  }
-	  }
-	  
-	  if (!isXslPreprocess && this.hasTextLitOnly() && transformer.getOptimize()) {
-		  // An xsl:message instruction, contains a single literal text child
-		  
-		  isXslPreprocess = true;
-		  
-		  String strValue = firstChild.getNodeValue();
-		  if (m_expand_text) {
-			 strValue = getStrValueAfterExpandTextProcessing(strValue, transformer, m_vars, m_globals_size); 
-		  }
-		  
-		  strBuff.append(strValue);
-		  
-		  XSString xsString = new XSString(strValue);
-		  ((XObject)xsString).setUseStrictValue(true);
-
-		  XslTransformData.m_xsl_message_rSeq.add(xsString);
-	  }
-	  
-	  if (!isXslPreprocess) {
-		  int rootNodeHandleOfRtf = transformer.transformToRTF(this);
-
-		  if (rootNodeHandleOfRtf != DTM.NULL) {
-			  DTM dtm = xctxt.getDTM(rootNodeHandleOfRtf);
-			  int childNode = dtm.getFirstChild(rootNodeHandleOfRtf);
-			  while (childNode != DTM.NULL) {			 			 
-				  try {
-					  short nodeType = dtm.getNodeType(childNode);
-					  String xmlNodeStr = null;
-					  Node node = dtm.getNode(childNode);
-					  if (nodeType == DTM.ELEMENT_NODE) {
-						  xmlNodeStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);				 
-						  int prefixTableSize = prefixTable.size();				  
-						  if (prefixTableSize > 1) {
-							  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-
-							  DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-							  dbFactory.setNamespaceAware(true);
-							  DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
-
-							  StringReader strReader = new StringReader(xmlNodeStr);
-							  InputSource inpSource = new InputSource(strReader);
-							  Document document = docBuilder.parse(inpSource);
-							  Element docElement = document.getDocumentElement();
-
-							  for (int idx = 0; idx < prefixTableSize; idx++) {
-								  XMLNSDecl xmlNSDecl = prefixTable.get(idx);
-								  String prefix = xmlNSDecl.getPrefix();
-								  String uri = xmlNSDecl.getURI();
-								  if (!((Constants.S_XSLNAMESPACEURL).equals(uri)) && !isXslPrefixToBeExcluded(stylesheetRoot, prefix)) {
-									  // Adding an XML namespace declaration to, an XML element node.
-									  docElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + prefix, uri);
-								  }
-							  }
-
-							  xmlNodeStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(docElement);							  
-						  }
-
-						  int idx = xmlNodeStr.indexOf("?>");
-						  xmlNodeStr = (idx > -1) ? xmlNodeStr.substring(idx + 2) : xmlNodeStr; 
-					  }
-					  else {
-						  xmlNodeStr = node.getNodeValue();
-					  }
-
-					  strBuff.append(xmlNodeStr);
-				  } 
-				  catch (Exception ex) {
-					  throw new TransformerException(ex.getMessage());
-				  }
-
-				  childNode = dtm.getNextSibling(childNode); 
-			  }		  
-		  }
-
-		  String strValue = strBuff.toString();	  
-		  if (m_expand_text_declared && m_expand_text) {
-			  strValue = getStrValueAfterExpandTextProcessing(strValue, transformer, m_vars, m_globals_size); 
-		  }
-
-		  XslTransformData.m_xsl_message_rSeq.add(new XSString(strValue));
+      }
+	  catch (TransformerException ex) {
+		  int lineNumber = srcLocator.getLineNumber();
+		  int columnNumber = srcLocator.getColumnNumber();
+		  XslTransformData.m_xsl_message_rSeq.add(new XSString("line : " + lineNumber + ", "
+		  		                                                                      + "column : " + columnNumber + " :: " + ex.getMessage())); 
 	  }
 	  
 	  if (m_terminate != null) {

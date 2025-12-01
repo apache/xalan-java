@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-27T11:18:18Z" fail="1" name="message" pass="15" skipped="0" statusUnknown="0" totalRun="16">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-01T16:45:11Z" fail="7" name="message" pass="34" skipped="3" statusUnknown="1" totalRun="42">
    <testResult status="pass" testName="message-0001"/>
    <testResult status="pass" testName="message-0001a"/>
    <testResult status="pass" testName="message-0002"/>
@@ -21,4 +21,45 @@
    <testResult status="pass" testName="message-0102"/>
    <testResult status="pass" testName="message-0103"/>
    <testResult status="pass" testName="message-0201"/>
+   <testResult status="pass" testName="message-0202"/>
+   <testResult status="pass" testName="message-0301"/>
+   <testResult status="pass" testName="message-0302"/>
+   <testResult status="pass" testName="message-0303"/>
+   <testResult status="pass" testName="message-0304"/>
+   <testResult status="pass" testName="message-0305"/>
+   <testResult status="pass" testName="message-0306"/>
+   <testResult status="fail" testName="message-0307"/>
+   <testResult reason="Xalan configured" status="skipped" testName="message-0308"/>
+   <testResult reason="Xalan configured" status="skipped" testName="message-0309"/>
+   <testResult reason="Xalan configured" status="skipped" testName="message-0310"/>
+   <testResult status="pass" testName="message-0311"/>
+   <testResult status="fail" testName="message-0312">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="message-0313"/>
+   <testResult status="pass" testName="message-0314"/>
+   <testResult status="fail" testName="message-0315"/>
+   <testResult status="pass" testName="message-0316"/>
+   <testResult status="pass" testName="message-0317"/>
+   <testResult status="pass" testName="message-0401"/>
+   <testResult status="pass" testName="message-0402"/>
+   <testResult status="fail" testName="message-0403">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="message-0404"/>
+   <testResult status="fail" testName="message-0405">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="message-0406"/>
+   <testResult status="pass" testName="message-0407"/>
+   <testResult status="pass" testName="message-0408"/>
+   <testResult status="pass" testName="message-0409"/>
+   <testResult testName="message-0410"/>
+   <testResult status="fail" testName="message-0501">
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression /err/value/test/comment() = "REALLY" has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+      </outResult>
+   </testResult>
 </testrun>

@@ -845,10 +845,22 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName)) {
     			NodeList nodeList1 = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
     			int nodeListLength1 = nodeList1.getLength();
-    			NodeList nodeList2 = ((Element)nodeExpected).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_XML);
-    			int nodeListLength2 = nodeList2.getLength();    			
+    			
+    			int nodeListLength2 = 0;
+    			Node nodeA = ((Element)nodeExpected).getFirstChild();
+    			Element assertXmlElem = null;
+    			while (nodeA != null) {
+    			   if (EXPECTED_NODE_KIND_ASSERT_XML.equals(nodeA.getNodeName())) {
+    				  nodeListLength2++;    				  
+    				  assertXmlElem = (Element)nodeA; 
+    			   }
+    			   
+    			   nodeA = nodeA.getNextSibling();
+    			}
+    			
     			NodeList nodeList3 = ((Element)nodeExpected).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_MESG);
     			int nodeListLength3 = nodeList3.getLength();
+    			
     			if (nodeListLength1 > 0) {
     				String alsoCorrectResultStr = null;
     				// This needs to have an improved test case implementation
@@ -876,7 +888,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				}
     			}
     			else if (isXslMessageTest && (nodeListLength2 == 1) && (nodeListLength3 > 0)) {    				
-    				Element elemNode = (Element)nodeList2.item(0);
+    				Element elemNode = assertXmlElem;
                 	String fileName = elemNode.getAttribute(FILE_ATTR);
                 	String expectedResultStr = null;
                 	if (!"".equals(fileName)) {
@@ -889,12 +901,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
                 	}
 
                 	boolean isTestCasePass = false;
+                	
                 	org.xml.sax.InputSource inpSrc1 = new org.xml.sax.InputSource(new StringReader(resultStrWriter.toString())); 
                 	Document document1 = m_xmlDocumentBuilder.parse(inpSrc1);
                 	org.xml.sax.InputSource inpSrc2 = new org.xml.sax.InputSource(new StringReader(expectedResultStr)); 
                 	Document document2 = m_xmlDocumentBuilder.parse(inpSrc2);
                 	String string1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document1);
                 	String string2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document2);
+                	
                 	if (isTwoXmlHtmlStrEqual(string1, string2)) {																																						
 						isTestCasePass = true;								
 					}   
@@ -910,12 +924,36 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
                 			  String str1 = actualPrefixStrArr1[idx2]; 
                 			  for (int idx3 = 0; idx3 < nodeListLength3; idx3++) {
                 			     Node node = nodeList3.item(idx3);
-                			     Element elemNode2 = (Element)((node.getFirstChild()).getNextSibling());
-                			     String str2 = elemNode2.getTextContent();
-                			     if (str2.equals(str1)) {
-                			    	 passStatus1 = true;
+                			     NodeList nodeList4 = ((Element)node).getElementsByTagName(
+                			    		                                                  EXPECTED_NODE_KIND_ASSERT_STRING_VALUE);
+                			     if (nodeList4.getLength() == 0) {
+                			    	 nodeList4 = ((Element)node).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_XML);
+                			    	 String str2 = ((Element)(nodeList4.item(0))).getTextContent();
                 			    	 
-                			    	 break;
+                			    	 org.xml.sax.InputSource inpSrc3 = new org.xml.sax.InputSource(new StringReader(str2)); 
+                			    	 Document document3 = m_xmlDocumentBuilder.parse(inpSrc3);
+                			    	 
+                			    	 org.xml.sax.InputSource inpSrc4 = new org.xml.sax.InputSource(new StringReader(str1)); 
+                			    	 Document document4 = m_xmlDocumentBuilder.parse(inpSrc4);
+                			    	 
+                			    	 String string3 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document3);
+                			    	 String string4 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document4);
+                			    	 
+                			    	 if (isTwoXmlHtmlStrEqual(string3, string4)) {																																						
+                			    		 passStatus1 = true;
+
+                			    		 break;								
+                			    	 }
+                			     }
+                			     else {
+                			    	 String str2 = ((Element)(nodeList4.item(0))).getTextContent();
+                			    	 str2 = str2.trim();
+                			    	 str1 = str1.trim();
+                			    	 if (str2.equals(str1)) {
+                			    		 passStatus1 = true;
+
+                			    		 break;
+                			    	 }
                 			     }
                 			  }
                 			  

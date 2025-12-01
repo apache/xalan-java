@@ -769,6 +769,9 @@ public class Keywords
   /** error function string. */
   public static final String FUNC_ERROR = "error";
   
+  /** random-number-generator function string. */
+  public static final String FUNC_RANDOM_NUMBER_GENERATOR = "random-number-generator";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
