@@ -16,6 +16,7 @@
  */
 package org.apache.xpath.functions;
 
+import java.util.Calendar;
 import java.util.Random;
 
 import javax.xml.transform.SourceLocator;
@@ -31,10 +32,12 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Variable;
 
 import com.sun.org.apache.xml.internal.dtm.DTM;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
@@ -74,8 +77,16 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 					                                                                                            + "have arity zero or one.", srcLocator); 
 		}
 		else if (m_arg0 != null) {
-		    XObject arg0Obj = m_arg0.execute(xctxt);
+			XObject arg0Obj = null;
+			if (m_arg0 instanceof Variable) {
+			   arg0Obj = ((Variable)m_arg0).execute(xctxt);
+			}
+			else {
+		       arg0Obj = m_arg0.execute(xctxt);
+			}
+		    
 		    double rndNumberGeneratorSeed = 0.0;
+		    
 		    if (arg0Obj instanceof XNumber) {
 		       rndNumberGeneratorSeed = ((XNumber)arg0Obj).num();
 		    }
@@ -83,6 +94,16 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 		       XSNumericType xsNumericType = (XSNumericType)arg0Obj;
 		       String numericStrValue = xsNumericType.stringValue();
 		       rndNumberGeneratorSeed = (Double.valueOf(numericStrValue)).doubleValue();
+		    }
+		    else if (m_arg0 instanceof FuncCurrentDateTime) {
+		       XSDateTime xsDateTime = (XSDateTime)(((FuncCurrentDateTime)m_arg0).execute(xctxt));
+		       Calendar calendar = xsDateTime.getCalendar();
+		       rndNumberGeneratorSeed = (double)calendar.getTimeInMillis();
+		    }
+		    else if (arg0Obj instanceof XSDateTime) {
+		       XSDateTime xsDateTime = (XSDateTime)arg0Obj;
+		       Calendar calendar = xsDateTime.getCalendar();
+		       rndNumberGeneratorSeed = (double)calendar.getTimeInMillis();
 		    }
 		    else if ((arg0Obj instanceof XSAnyAtomicType) || (arg0Obj instanceof XString) 
 		    		                                         || (arg0Obj instanceof XBoolean) 

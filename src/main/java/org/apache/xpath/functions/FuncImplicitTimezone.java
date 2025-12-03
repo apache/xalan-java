@@ -15,14 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
 import java.util.Vector;
-
-import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
@@ -32,10 +27,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 import xml.xpath31.processor.types.XSDuration;
 
 /**
- * Execute the implicit-timezone() function.
- * 
- * This function returns the value of, the implicit timezone 
- * property from the XPath evaluation context.
+ * Implementation of XPath function fn:implicit-timezone.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -53,20 +45,18 @@ public class FuncImplicitTimezone extends Function {
    }
 
   /**
-   * Execute the function. The function must return a valid object.
+   * Implementation of the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
+   * @param xctxt The current execution context
    * 
-   * @return A valid XObject.
+   * @return A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
-
-      SourceLocator srcLocator = xctxt.getSAXLocator();
     
       XSDuration timezoneDurationVal = xctxt.getTimezone();
-
+      
       return timezoneDurationVal;
   }
 
@@ -92,12 +82,12 @@ public class FuncImplicitTimezone extends Function {
    */
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
-                                                XPATHErrorResources.ER_ZERO, null)); //"0"
+                                                					XPATHErrorResources.ER_ZERO, null)); //"0"
   }
 
   @Override
   public void fixupVariables(Vector vars, int globalsSize) {
-     // NO OP    
+	  // no op
   }
   
 }

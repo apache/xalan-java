@@ -1226,19 +1226,23 @@ public class XSL3FunctionService {
     		return evalResult; 
     	}
     	
-    	List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();           
+    	List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
+    	
+    	String xpathFuncBodyStr = xpathInlineFunction.getFuncBodyXPathExprStr();
 
     	int argCount1 = argList.size();
 
-    	if (argCount1 != funcParamList.size()) {
-    		throw new javax.xml.transform.TransformerException("XPTY0004 : Number of arguments required for "
-																		    				+ "XPath dynamic function call is " + funcParamList.size() + ". "
-																		    				+ "Arguments provided : " + argCount1 + ".", srcLocator);    
-    	}	           	           
+    	if (!(Keywords.FUNC_RANDOM_NUMBER_GENERATOR + "()").equals(xpathFuncBodyStr) && (argCount1 != funcParamList.size())) {
+    	   throw new javax.xml.transform.TransformerException("XPTY0004 : Number of arguments required for "
+																		    				 + "XPath dynamic function call is " + funcParamList.size() + ". "
+																		    				 + "Arguments provided : " + argCount1 + ".", srcLocator);    
+            																		    				
+    	}
 
     	Map<QName, XObject> functionParamAndArgMap = new HashMap<QName, XObject>();
 
     	int argCount = funcParamList.size();
+    	
     	for (int idx = 0; idx < argCount; idx++) {
     		InlineFunctionParameter funcParam = funcParamList.get(idx);                                                         
 

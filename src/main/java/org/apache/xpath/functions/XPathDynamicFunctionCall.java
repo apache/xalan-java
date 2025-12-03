@@ -238,6 +238,11 @@ public class XPathDynamicFunctionCall extends Expression {
      							   evalResult = new ResultSequence(); 
      						   }
      					   }
+     					   else if ((evalResult instanceof XPathInlineFunction) && (m_trailingArgList != null)) {
+     						   evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)evalResult, m_trailingArgList, 
+																									    	    			xctxt, prefixTable, m_vars, m_globals_size, 
+																									    	    			m_xpathVarList, m_funcRefVarName);
+     					   }
      				   }
      			   }
     	       }

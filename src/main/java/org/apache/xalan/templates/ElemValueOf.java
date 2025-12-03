@@ -18,6 +18,7 @@
 package org.apache.xalan.templates;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
@@ -34,6 +35,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathLetExpr;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
@@ -549,9 +551,22 @@ public class ElemValueOf extends ElemTemplateElement {
 
                     	  strValue = getEffectiveSequenceStrValue(rSeq, separatorStrValue);
                       }
-                      else if (evalResult instanceof XPathMap) {
-                    	  throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
-                    			                                                     + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
+                      else if (evalResult instanceof XPathMap) {                    	                      	  
+                    	  String xpathPatternStr = m_selectExpression.getPatternString();
+                    	  if (xpathPatternStr.startsWith(Keywords.FUNC_RANDOM_NUMBER_GENERATOR + "(") 
+                    			                                                && xpathPatternStr.endsWith("?" + 
+                    	                                                                                   Constants.ATTRVAL_DATATYPE_NUMBER)) {
+                    		  XPathMap xpathMap = (XPathMap)evalResult;
+                    		  Map<XObject,XObject> nativeMap = xpathMap.getNativeMap();
+                    		  XObject xObj = nativeMap.get(new XSString(Constants.ATTRVAL_DATATYPE_NUMBER));
+                    		  XSDouble xsDouble = (XSDouble)xObj;
+                    		  XString xsString = new XString(xsDouble.stringValue());
+                    		  xsString.dispatchCharactersEvents(rth);
+                    	  }
+                    	  else {
+                    		  throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
+                                                                                                       + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
+                    	  }
                       }
                       else {
                     	  strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
@@ -588,9 +603,21 @@ public class ElemValueOf extends ElemTemplateElement {
                          
                          strValue = getEffectiveSequenceStrValue(rSeq, separatorStrValue);
                       }
-                      else if (evalResult instanceof XPathMap) {
-                    	 throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
-                    	 		                                              + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
+                      else if (evalResult instanceof XPathMap) {                    	 
+                    	  String xpathPatternStr = m_selectExpression.getPatternString();
+                    	  if (xpathPatternStr.startsWith(Keywords.FUNC_RANDOM_NUMBER_GENERATOR + "(") 
+                    			                                                   && xpathPatternStr.endsWith("?" + Constants.ATTRVAL_DATATYPE_NUMBER)) {
+                    		  XPathMap xpathMap = (XPathMap)evalResult;
+                    		  Map<XObject,XObject> nativeMap = xpathMap.getNativeMap();
+                    		  XObject xObj = nativeMap.get(new XSString(Constants.ATTRVAL_DATATYPE_NUMBER));
+                    		  XSDouble xsDouble = (XSDouble)xObj;
+                    		  XString xsString = new XString(xsDouble.stringValue());
+                    		  xsString.dispatchCharactersEvents(rth);
+                    	  }
+                    	  else {
+                    		  throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
+                    				                                                                        + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
+                    	  }
                       }
                       else if (evalResult instanceof XNumber) {
                     	 XNumber xNumber = (XNumber)evalResult;

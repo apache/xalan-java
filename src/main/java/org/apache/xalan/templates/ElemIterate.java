@@ -427,7 +427,19 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             			   else if (!transformer.isXslIterateBreakEvaluated()) {
             				   xctxt.setSAXLocator(t);
             				   transformer.setCurrentElement(t);
-            				   t.execute(transformer); 
+            				   t.execute(transformer);
+            				   if ((t instanceof ElemSequence) && (idx < (inpSeqLength - 1))) {
+            					   XString xString = new XString(" ");
+            					   SerializationHandler handler = transformer.getSerializationHandler();
+            					   try {
+            					      xString.executeCharsToContentHandler(xctxt, handler);            				   
+            					   }
+            					   catch (SAXException ex) {
+            						  throw new javax.xml.transform.TransformerException("XTDE1030 : An XSL tranformation error has occured, while "
+        																		    								   + "processing XSL iterate's "
+        																		    								   + "contained sequence constructor.", srcLocator); 
+            					   }
+            				   }
             			   }
             			   else {                              
             				   resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);                               
@@ -461,7 +473,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
     					   }
     					   catch (SAXException ex) {
     						   throw new javax.xml.transform.TransformerException("XTDE1030 : An XSL tranformation error has occured, while "
-																		    								   + "processing xsl:iterate's "
+																		    								   + "processing XSL iterate's "
 																		    								   + "contained sequence constructor.", srcLocator); 
     					   }
     				   }
@@ -555,7 +567,26 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                         	  else {
                         	     xctxt.setSAXLocator(t);
                         	     transformer.setCurrentElement(t);                        		  
-                        	     t.execute(transformer);
+                        	     t.execute(transformer);                        	     
+                        	     
+                        	     DTM dtm = xctxt.getDTM(nextNode);
+                        	     boolean isXdmElemNode = false;
+                        	     if (dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) {
+                        	    	isXdmElemNode = true; 
+                        	     }
+                        	     
+                        	     if (!isXdmElemNode && (t instanceof ElemSequence) && (iterCount == (nodeSetLength - 1))) {
+                        	    	SerializationHandler handler = transformer.getSerializationHandler();                        	    	
+                        	    	XString xString = new XString(" "); 
+                        	    	try {
+									   xString.executeCharsToContentHandler(xctxt, handler);
+									}
+                        	    	catch (SAXException ex) {
+                        	    	   throw new javax.xml.transform.TransformerException("XTDE1030 : An XSL tranformation error has occured, while "
+																						    								   + "processing XSL iterate's "
+																						    								   + "contained sequence constructor.", srcLocator);
+									}
+                        	     }
                         	  }
                           }
                           else {                        	  
@@ -624,8 +655,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
     		  }
     		  else if (elemTemplate instanceof ElemUnknown) {
     			  throw new TransformerException("XTSE0010 : An XSL stylesheet element occurs at an incorrect "
-															    					  + "position within xsl:iterate instruction (for e.g, "
-															    					  + "xsl:variable followed by xsl:param).", srcLocator);
+															    					  + "position within XSL iterate instruction (for e.g, "
+															    					  + "an XSL variable followed by XSL param).", srcLocator);
     		  }
     		  else {
     			  xslElemNamesList.add(OTHER_ELEM);
@@ -806,5 +837,5 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 	      
 	      return result;
 	  }
-      
+	  
 }

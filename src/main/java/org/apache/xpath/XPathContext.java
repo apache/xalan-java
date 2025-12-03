@@ -1474,6 +1474,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	  this.m_currentDateTime = currentDateTime;
   }
 
+  /**
+   * Get the value of implicit timezone.
+   * 
+   * @return        Implicit timezone as xs:dayTimeDuration value. 
+   */
   public XSDuration getTimezone() {
 	  if (m_timezone == null) {
 		  ZonedDateTime zonedDateTime = ZonedDateTime.now();
