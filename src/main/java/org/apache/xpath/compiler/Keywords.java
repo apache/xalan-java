@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.compiler;
 
 import java.util.Hashtable;
@@ -771,6 +768,9 @@ public class Keywords
   
   /** random-number-generator function string. */
   public static final String FUNC_RANDOM_NUMBER_GENERATOR = "random-number-generator";
+  
+  /** adjust-dateTime-to-timezone function string. */
+  public static final String FUNC_ADJUST_DATETIME_TO_TIMEZONE = "adjust-dateTime-to-timezone";
   
   // Proprietary, built in functions
 
