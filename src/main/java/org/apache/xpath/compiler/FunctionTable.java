@@ -565,6 +565,12 @@ public class FunctionTable
   
   /** The 'adjust-dateTime-to-timezone()' id. */
   public static final int FUNC_ADJUST_DATETIME_TO_TIMEZONE = 181;
+  
+  /** The 'adjust-date-to-timezone()' id. */
+  public static final int FUNC_ADJUST_DATE_TO_TIMEZONE = 182;
+  
+  /** The 'adjust-time-to-timezone()' id. */
+  public static final int FUNC_ADJUST_TIME_TO_TIMEZONE = 183;
 
   // Proprietary
 
@@ -658,7 +664,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 182;
+  private static final int NUM_BUILT_IN_FUNCS = 184;
 
   /**
    * Number of built-in functions that may be added.
@@ -834,6 +840,8 @@ public class FunctionTable
 	   m_functions[FUNC_TIMEZONE_FROM_TIME] = org.apache.xpath.functions.datetime.FuncTimezoneFromTime.class;
 	   
 	   m_functions[FUNC_ADJUST_DATETIME_TO_TIMEZONE] = org.apache.xpath.functions.datetime.FuncAdjustDateTimeToTimezone.class;
+	   m_functions[FUNC_ADJUST_DATE_TO_TIMEZONE] = org.apache.xpath.functions.datetime.FuncAdjustDateToTimezone.class;
+	   m_functions[FUNC_ADJUST_TIME_TO_TIMEZONE] = org.apache.xpath.functions.datetime.FuncAdjustTimeToTimezone.class;
 
 	   m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.FuncDefaultCollation.class;
 	   m_functions[FUNC_BASE_URI] = org.apache.xpath.functions.FuncBaseUri.class;
@@ -1041,6 +1049,8 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_TIME, new Integer(FunctionTable.FUNC_TIMEZONE_FROM_TIME));
 	  
 	  m_functionId.put(Keywords.FUNC_ADJUST_DATETIME_TO_TIMEZONE, new Integer(FunctionTable.FUNC_ADJUST_DATETIME_TO_TIMEZONE));
+	  m_functionId.put(Keywords.FUNC_ADJUST_DATE_TO_TIMEZONE, new Integer(FunctionTable.FUNC_ADJUST_DATE_TO_TIMEZONE));
+	  m_functionId.put(Keywords.FUNC_ADJUST_TIME_TO_TIMEZONE, new Integer(FunctionTable.FUNC_ADJUST_TIME_TO_TIMEZONE));
 
 	  m_functionId.put(Keywords.FUNC_DEFAULT_COLLATION, new Integer(FunctionTable.FUNC_DEFAULT_COLLATION));
 	  m_functionId.put(Keywords.FUNC_BASE_URI, new Integer(FunctionTable.FUNC_BASE_URI));

@@ -50,9 +50,9 @@
 			<version>1.4.02</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.xsl</groupId>
-			<artifactId>xpath31_types</artifactId>
-			<version>1.0</version>
+			<groupId>xerces</groupId>
+			<artifactId>xalanj_xpath31_types</artifactId>
+			<version>0.1</version>
 		</dependency>		
 		<!-- Apache Bean Scripting framework dependency. This despatches 
 		     Xalan-J's JavaScript extension calls to Mozilla Rhino 
@@ -67,7 +67,7 @@
         <dependency>
 			<groupId>org.mozilla</groupId>
 			<artifactId>rhino</artifactId>
-			<version>1.7.14</version>
+			<version>1.7.15.1</version>
 		</dependency>
 		<!-- Apache Commons Logging framework dependency -->	
 		<dependency>

@@ -772,6 +772,12 @@ public class Keywords
   /** adjust-dateTime-to-timezone function string. */
   public static final String FUNC_ADJUST_DATETIME_TO_TIMEZONE = "adjust-dateTime-to-timezone";
   
+  /** adjust-date-to-timezone function string. */
+  public static final String FUNC_ADJUST_DATE_TO_TIMEZONE = "adjust-date-to-timezone";
+  
+  /** adjust-time-to-timezone function string. */
+  public static final String FUNC_ADJUST_TIME_TO_TIMEZONE = "adjust-time-to-timezone";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
