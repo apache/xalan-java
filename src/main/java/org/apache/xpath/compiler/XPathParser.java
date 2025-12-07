@@ -105,6 +105,7 @@ import org.apache.xpath.composite.XPathQuantifiedExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.composite.XPathTextAndNodeExpr;
+import org.apache.xpath.composite.XPathFunctionCall2;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
@@ -306,6 +307,8 @@ public class XPathParser
   
   static XPathTextAndNodeExpr m_xpathTextAndNodeExpr = null;
   
+  static XPathFunctionCall2 m_xpathFunctionCall2 = null;
+  
   private String m_arrowOpRemainingXPathExprStr = null;
   
   private XPathExprFunctionSuffix m_xpathExprFunctionSuffix = null;    
@@ -325,7 +328,6 @@ public class XPathParser
   private String m_xpathDefaultNamespace = null;
   
   private boolean m_op_group_parse = false;
-
   
   /**
    * The parser constructor.
@@ -1747,7 +1749,75 @@ public class XPathParser
                  m_xpathSequenceConstructor.setXPathSuffixStr(xpathSuffixStr);
               }             
           }
-          else {
+          else {        	  
+        	  int size1 = seqOrArrayXPathItems.size();
+        	  List<String> strListCopy = new ArrayList<String>();
+        	  boolean xpathIsArrowOp = false;
+        	  String xpathArrowOpFuncRhsStr = null;
+        	  
+        	  for (int idx = 0; idx < size1; idx++) {
+        		  String str1 = seqOrArrayXPathItems.get(idx);
+        		  if (str1.contains("=>")) {
+        			  xpathIsArrowOp = true;        			
+        			  int idx1 = str1.indexOf("=>");
+        			  String prefixStr1 = str1.substring(0, idx1);
+        			  xpathArrowOpFuncRhsStr = str1.substring(idx1 + 3);
+        			  int idx2 = prefixStr1.indexOf(')');
+        			  prefixStr1 = prefixStr1.substring(0, idx2);
+        			  strListCopy.add(prefixStr1);
+        		  }
+        		  else if (xpathArrowOpFuncRhsStr != null) {
+        			  xpathArrowOpFuncRhsStr = (xpathArrowOpFuncRhsStr + "," + str1);  
+        		  }
+        		  else {
+        			  strListCopy.add(str1); 
+        		  }
+        	  }
+        	  
+        	  if (xpathIsArrowOp) {        		  
+        		  StringBuffer strBuff = new StringBuffer();
+        		  int size3 = strListCopy.size();
+        		  for (int idx = 0; idx < size3; idx++) {
+        			  strBuff.append(strListCopy.get(idx));
+        			  if (idx < (size3 - 1)) {
+        				  strBuff.append(",");
+        			  }
+        		  }
+
+        		  String xpathArrowOpFuncLhsStr = strBuff.toString();
+        		  xpathArrowOpFuncLhsStr = "(" + xpathArrowOpFuncLhsStr + ")";
+
+        		  xpathArrowOpFuncRhsStr += ")";
+
+        		  int idx = xpathArrowOpFuncRhsStr.indexOf("(");
+        		  String strA = xpathArrowOpFuncRhsStr.substring(0, idx + 1);
+        		  String strB = xpathArrowOpFuncRhsStr.substring(idx + 1);
+
+        		  String xpathArrowOpEffectiveStr = (strA + xpathArrowOpFuncLhsStr);
+
+        		  if (strB.equals(")")) {
+        			  xpathArrowOpEffectiveStr += ")"; 
+        		  }
+        		  else {
+        			  xpathArrowOpEffectiveStr += ("," + strB);  
+        		  }        		  
+        		  
+        		  if (xpathArrowOpFuncLhsStr.startsWith("(") && xpathArrowOpFuncLhsStr.endsWith(")") 
+        				  																	&& xpathArrowOpFuncLhsStr.contains(",")) {        			  
+        			  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+        			  
+        			  appendOp(2, OpCodes.OP_FUNCTION2);
+        			  
+        			  m_xpathFunctionCall2 = new XPathFunctionCall2();        			  
+        			  m_xpathFunctionCall2.setFuncCallExpr(xpathArrowOpEffectiveStr);
+        			  
+        			  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                              								 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+
+        			  return;
+        		  }
+        	  }        	  
+        	  
         	  if (m_isSequenceOperand) {
         		  m_isSequenceOperand = false; 
         	  }
@@ -7725,7 +7795,7 @@ public class XPathParser
    
    /**
     * XPath parse of literal sequence constructor, which is an 
-    * RHS operand of XPath binary operations like +, -, *, div,
+    * RHS operand of XPath binary operators like +, -, *, div,
     * idiv, mod, quo.
     */
    private int handleXPathParseRhsSequenceOperand(int addPos, int opCode) throws TransformerException {

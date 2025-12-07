@@ -270,6 +270,8 @@ public class Compiler extends OpMap
       expr = compileConstructorStylesheetOrExtensionFunction(opPos); break;
     case OpCodes.OP_FUNCTION :
       expr = compileFunction(opPos); break;
+    case OpCodes.OP_FUNCTION2 :
+      expr = compileFunction2(opPos); break;      
     case OpCodes.OP_INLINE_FUNCTION :
       expr = compileInlineFunctionDefinition(opPos); break;
     case OpCodes.OP_DYNAMIC_FUNCTION_CALL :
@@ -355,7 +357,7 @@ public class Compiler extends OpMap
   /**
    * Compile an 'or' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Or} instance.
    *
@@ -369,7 +371,7 @@ public class Compiler extends OpMap
   /**
    * Compile an 'and' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.And} instance.
    *
@@ -383,7 +385,7 @@ public class Compiler extends OpMap
   /**
    * Compile a '!=' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.NotEquals} instance.
    *
@@ -397,7 +399,7 @@ public class Compiler extends OpMap
   /**
    * Compile a '=' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Equals} instance.
    *
@@ -411,7 +413,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 value comparison "eq" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.VcEquals} instance.
    * 
@@ -425,7 +427,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 value comparison "ne" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.VcNotEquals} instance.
    * 
@@ -439,7 +441,7 @@ public class Compiler extends OpMap
   /**
    * Compile a '<=' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Lte} instance.
    *
@@ -453,7 +455,7 @@ public class Compiler extends OpMap
   /**
    * Compile a '<' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Lt} instance.
    *
@@ -467,7 +469,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 value comparison "lt" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.VcLt} instance.
    * 
@@ -481,7 +483,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 value comparison "gt" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.VcGt} instance.
    * 
@@ -495,7 +497,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 value comparison "le" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.VcLe} instance.
    * 
@@ -509,7 +511,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 value comparison "ge" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.VcGe} instance.
    * 
@@ -523,7 +525,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 node comparison "is" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.NodeComparisonIs} instance.
    * 
@@ -537,7 +539,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 node comparison "<<" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.NodeComparisonPrecede} instance.
    * 
@@ -551,7 +553,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 node comparison ">>" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.NodeComparisonFollows} instance.
    * 
@@ -565,7 +567,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 simple map '!' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.SimpleMapOperator} instance.
    * 
@@ -579,7 +581,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 'SequenceType', expression.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return the compiled 'SequenceType' expression returned as an object of class
    *         XPathSequenceTypeExpr.       
@@ -594,7 +596,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 "instance of" expression.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.InstanceOf} instance.
    * 
@@ -608,7 +610,7 @@ public class Compiler extends OpMap
   /**
    * Compile a 'cast as' operation.
    * 
-   * @param    opPos The current position in the m_opMap array.
+   * @param    opPos The current position in the m_opMap array
    * @return   an XPath compiled representation of 'cast as' expression 
    * @throws TransformerException
    */
@@ -620,7 +622,7 @@ public class Compiler extends OpMap
   /**
    * Compile a 'castable as' operation.
    * 
-   * @param    opPos The current position in the m_opMap array.
+   * @param    opPos The current position in the m_opMap array
    * @return   an XPath compiled representation of 'castable as' expression 
    * @throws TransformerException
    */
@@ -632,7 +634,7 @@ public class Compiler extends OpMap
   /**
    * Compile a 'treat as' operation.
    * 
-   * @param    opPos The current position in the m_opMap array.
+   * @param    opPos The current position in the m_opMap array
    * @return   an XPath compiled representation of 'treat as' expression 
    * @throws TransformerException
    */
@@ -644,7 +646,7 @@ public class Compiler extends OpMap
   /**
    * Compile a '>=' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Gte} instance.
    *
@@ -658,7 +660,7 @@ public class Compiler extends OpMap
   /**
    * Compile a '>' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Gt} instance.
    *
@@ -672,7 +674,7 @@ public class Compiler extends OpMap
   /**
    * Compile a '+' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Plus} instance.
    *
@@ -686,7 +688,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 range "to" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.Range} instance.
    * 
@@ -700,7 +702,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 string concatenation "||" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @return reference to {@link org.apache.xpath.operations.StrConcat} instance.
    * 
@@ -714,7 +716,7 @@ public class Compiler extends OpMap
   /**
    * Compile an XPath 3.1 arrow "=>" operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * 
    * @throws TransformerException if a error occurs creating the Expression.
    */
@@ -726,7 +728,7 @@ public class Compiler extends OpMap
   /**
    * Compile a '-' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Minus} instance.
    *
@@ -740,7 +742,7 @@ public class Compiler extends OpMap
   /**
    * Compile a '*' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Mult} instance.
    *
@@ -754,7 +756,7 @@ public class Compiler extends OpMap
   /**
    * Compile a 'div' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Div} instance.
    *
@@ -768,7 +770,7 @@ public class Compiler extends OpMap
   /**
    * Compile a 'idiv' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.IDiv} instance.
    *
@@ -782,7 +784,7 @@ public class Compiler extends OpMap
   /**
    * Compile a 'mod' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Mod} instance.
    *
@@ -796,7 +798,7 @@ public class Compiler extends OpMap
   /*
    * Compile a 'quo' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Quo} instance.
    *
@@ -810,7 +812,7 @@ public class Compiler extends OpMap
   /**
    * Compile a unary '-' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Neg} instance.
    *
@@ -824,7 +826,7 @@ public class Compiler extends OpMap
   /**
    * Compile a 'string(...)' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.String} instance.
    *
@@ -838,7 +840,7 @@ public class Compiler extends OpMap
   /**
    * Compile a 'boolean(...)' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Bool} instance.
    *
@@ -852,7 +854,7 @@ public class Compiler extends OpMap
   /**
    * Compile a 'number(...)' operation.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Number} instance.
    *
@@ -866,7 +868,7 @@ public class Compiler extends OpMap
   /**
    * Compile a literal string value.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.objects.XString} instance.
    *
@@ -883,7 +885,7 @@ public class Compiler extends OpMap
   /**
    * Compile a literal number value.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.objects.XNumber} instance.
    *
@@ -900,7 +902,7 @@ public class Compiler extends OpMap
   /**
    * Compile a variable reference.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.operations.Variable} instance.
    *
@@ -929,7 +931,7 @@ public class Compiler extends OpMap
   /**
    * Compile an expression group.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to the contained expression.
    *
@@ -945,7 +947,7 @@ public class Compiler extends OpMap
   /**
    * Compile a function argument.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to the argument expression.
    *
@@ -962,7 +964,7 @@ public class Compiler extends OpMap
    * Compile a location path union. The UnionPathIterator itself may create
    * {@link org.apache.xpath.axes.LocPathIterator} children.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.axes.LocPathIterator} instance.
    *
@@ -1042,7 +1044,7 @@ public class Compiler extends OpMap
    * Compile a location path.  The LocPathIterator itself may create
    * {@link org.apache.xpath.axes.AxesWalker} children.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.axes.LocPathIterator} instance.
    *
@@ -1065,7 +1067,7 @@ public class Compiler extends OpMap
   /**
    * Compile a location step predicate expression.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return the contained predicate expression.
    *
@@ -1079,7 +1081,7 @@ public class Compiler extends OpMap
   /**
    * Compile an entire match pattern expression.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.patterns.UnionPattern} instance.
    *
@@ -1125,7 +1127,7 @@ public class Compiler extends OpMap
   /**
    * Compile a location match pattern unit expression.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.patterns.StepPattern} instance.
    *
@@ -1227,7 +1229,7 @@ private static final boolean DEBUG = false;
    * Compile a step pattern unit expression, used for both location paths 
    * and match patterns.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    * @param stepCount The number of steps to expect.
    * @param ancestorPattern The owning StepPattern, which may be null.
    *
@@ -1426,7 +1428,7 @@ private static final boolean DEBUG = false;
   /**
    * Compile a built-in XPath function.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.functions.Function} instance.
    *
@@ -1496,9 +1498,23 @@ private static final boolean DEBUG = false;
   }
   
   /**
+   * Compile, particular types of XPath 3.1 function call expression 
+   * strings.
+   * 
+   * @param opPos	The current position in the m_opMap array
+   * @return        The compiled XPath expression string
+   * 
+   * @throws TransformerException
+   */
+  Expression compileFunction2(int opPos) throws TransformerException
+  {
+	  return XPathParser.m_xpathFunctionCall2;
+  }
+  
+  /**
    * Compile an XPath function item inline function definition, expression.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return the compiled inline function definition expression returned
    *         as an object of class InlineFunction.
@@ -1513,7 +1529,7 @@ private static final boolean DEBUG = false;
   /**
    * Compile an XPath dynamic function call, expression.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return the compiled dynamic function call expression returned
    *         as an object of class DynamicFunctionCall.
@@ -1533,7 +1549,7 @@ private static final boolean DEBUG = false;
   /**
    * Compile an XPath "for", expression.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return the compiled "for" expression returned as an object of class
    *         XPathForExpr.
@@ -1550,7 +1566,7 @@ private static final boolean DEBUG = false;
   /**
    * Compile an XPath "let", expression.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return the compiled "let" expression returned as an object of class
    *         XPathLetExpr.
@@ -1565,7 +1581,7 @@ private static final boolean DEBUG = false;
   /**
    * Compile an XPath quantified, expression (either 'some' or 'every').
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return the compiled quantified expression returned as an object of class
    *         XPathQuantifiedExpr.
@@ -1580,7 +1596,7 @@ private static final boolean DEBUG = false;
   /**
    * Compile an XPath "if", expression.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return the compiled "if" expression returned as an object of class
    *         IfExpr.     
@@ -1761,7 +1777,7 @@ private static final boolean DEBUG = false;
   /**
    * Compile an XPath constructor, XSL stylesheet or an extension function.
    * 
-   * @param opPos The current position in the m_opMap array.
+   * @param opPos The current position in the m_opMap array
    *
    * @return reference to {@link org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction} instance.
    *

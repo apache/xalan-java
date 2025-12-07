@@ -772,8 +772,10 @@ public class OpCodes
   public static final int OP_FUNC_ARG_PLACEHOLDER = 90;
   
   public static final int OP_TEXT_AND_NODE_EXPR = 91;
+  
+  public static final int OP_FUNCTION2 = 92;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 92;
+  private static final int NEXT_FREE_ID = 93;
   
 }
