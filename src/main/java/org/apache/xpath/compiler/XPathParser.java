@@ -1659,9 +1659,8 @@ public class XPathParser
             	 rParenChar = '}'; 
              }
              
-             boolean isStrHasBalancedParentheses = StringUtil.isStrHasBalancedParentheses(
-								            		                                                    seqOrArrayMemberXPathExprStr, 
-								            		                                                    lParenChar, rParenChar);
+             boolean isStrHasBalancedParentheses = StringUtil.isStrHasBalancedParentheses(seqOrArrayMemberXPathExprStr, 
+            		                                                                                                lParenChar, rParenChar);
              if (!isStrHasBalancedParentheses) {
                 isXPathParseOkToProceed = false;
                 break;

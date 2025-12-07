@@ -50,7 +50,7 @@
 			<version>1.4.02</version>
 		</dependency>
 		<dependency>
-			<groupId>xerces</groupId>
+			<groupId>org.apache.xerces</groupId>
 			<artifactId>xalanj_xpath31_types</artifactId>
 			<version>0.1</version>
 		</dependency>		
