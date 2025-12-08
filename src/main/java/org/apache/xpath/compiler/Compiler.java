@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.compiler;
 
 import java.util.ArrayList;
@@ -162,19 +159,19 @@ public class Compiler extends OpMap
     {
     case OpCodes.OP_XPATH :
       expr = compile(opPos + 2); break;
-    case OpCodes.OP_FOR_EXPR :
+    case OpCodes.XPath3OpCodes.OP_FOR_EXPR :
       expr = forExpr(opPos); break;
-    case OpCodes.OP_LET_EXPR :
+    case OpCodes.XPath3OpCodes.OP_LET_EXPR :
       expr = letExpr(opPos); break;
-    case OpCodes.OP_QUANTIFIED_EXPR :
+    case OpCodes.XPath3OpCodes.OP_QUANTIFIED_EXPR :
       expr = quantifiedExpr(opPos); break;
-    case OpCodes.OP_IF_EXPR :
+    case OpCodes.XPath3OpCodes.OP_IF_EXPR :
       expr = ifExpr(opPos); break;
-    case OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR :
+    case OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR :
       expr = sequenceConstructorExpr(opPos); break;
-    case OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR :
+    case OpCodes.XPath3OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR :
       expr = arrayConstructorExpr(opPos); break;
-    case OpCodes.OP_MAP_CONSTRUCTOR_EXPR :
+    case OpCodes.XPath3OpCodes.OP_MAP_CONSTRUCTOR_EXPR :
       expr = mapConstructorExpr(opPos); break;
     case OpCodes.OP_OR :
       expr = or(opPos); break;
@@ -184,35 +181,35 @@ public class Compiler extends OpMap
       expr = notequals(opPos); break;
     case OpCodes.OP_EQUALS :
       expr = equals(opPos); break;
-    case OpCodes.OP_VC_EQUALS :
+    case OpCodes.XPath3OpCodes.OP_VC_EQUALS :
       expr = vcEquals(opPos); break;
-    case OpCodes.OP_VC_NOT_EQUALS :
+    case OpCodes.XPath3OpCodes.OP_VC_NOT_EQUALS :
       expr = vcNotEquals(opPos); break;
-    case OpCodes.OP_VC_LT :
+    case OpCodes.XPath3OpCodes.OP_VC_LT :
       expr = vcLt(opPos); break;
-    case OpCodes.OP_VC_GT :
+    case OpCodes.XPath3OpCodes.OP_VC_GT :
       expr = vcGt(opPos); break;
-    case OpCodes.OP_VC_LE :
+    case OpCodes.XPath3OpCodes.OP_VC_LE :
       expr = vcLe(opPos); break;
-    case OpCodes.OP_VC_GE :
+    case OpCodes.XPath3OpCodes.OP_VC_GE :
       expr = vcGe(opPos); break;
-    case OpCodes.OP_IS :
+    case OpCodes.XPath3OpCodes.OP_IS :
       expr = nodeComparisonIs(opPos); break;
-    case OpCodes.OP_NC_PRECEDE :
+    case OpCodes.XPath3OpCodes.OP_NC_PRECEDE :
       expr = nodeComparisonPrecede(opPos); break;
-    case OpCodes.OP_NC_FOLLOWS :
+    case OpCodes.XPath3OpCodes.OP_NC_FOLLOWS :
       expr = nodeComparisonFollows(opPos); break;
-    case OpCodes.OP_SIMPLE_MAP_OPERATOR :
+    case OpCodes.XPath3OpCodes.OP_SIMPLE_MAP_OPERATOR :
       expr = simpleMapOperator(opPos); break;
-    case OpCodes.OP_SEQUENCE_TYPE_EXPR :
+    case OpCodes.XPath3OpCodes.OP_SEQUENCE_TYPE_EXPR :
       expr = sequenceTypeExpr(opPos); break;
-    case OpCodes.OP_INSTANCE_OF :
+    case OpCodes.XPath3OpCodes.OP_INSTANCE_OF :
       expr = instanceOfExpr(opPos); break;
-    case OpCodes.OP_CAST_AS :
+    case OpCodes.XPath3OpCodes.OP_CAST_AS :
       expr = castAsExpr(opPos); break;
-    case OpCodes.OP_CASTABLE_AS :
+    case OpCodes.XPath3OpCodes.OP_CASTABLE_AS :
       expr = castableAsExpr(opPos); break;
-    case OpCodes.OP_TREAT_AS :
+    case OpCodes.XPath3OpCodes.OP_TREAT_AS :
       expr = treatAsExpr(opPos); break;
     case OpCodes.OP_LTE :
       expr = lte(opPos); break;
@@ -224,11 +221,11 @@ public class Compiler extends OpMap
       expr = gt(opPos); break;
     case OpCodes.OP_PLUS :
       expr = plus(opPos); break;
-    case OpCodes.OP_TO :
+    case OpCodes.XPath3OpCodes.OP_TO :
       expr = range(opPos); break;
-    case OpCodes.OP_STR_CONCAT :
+    case OpCodes.XPath3OpCodes.OP_STR_CONCAT :
       expr = strConcat(opPos); break;
-    case OpCodes.OP_ARROW :
+    case OpCodes.XPath3OpCodes.OP_ARROW :
       m_isCompileFuncPrecededByCompileArrow = true;
       expr = arrowOp(opPos);
       break;
@@ -238,7 +235,7 @@ public class Compiler extends OpMap
       expr = mult(opPos); break;
     case OpCodes.OP_DIV :
       expr = div(opPos); break;
-    case OpCodes.OP_IDIV :
+    case OpCodes.XPath3OpCodes.OP_IDIV :
       expr = idiv(opPos); break;      
     case OpCodes.OP_MOD :
       expr = mod(opPos); break;
@@ -252,9 +249,9 @@ public class Compiler extends OpMap
       expr = number(opPos); break;
     case OpCodes.OP_UNION :
       expr = union(opPos); break;
-    case OpCodes.OP_INTERSECT :
+    case OpCodes.XPath3OpCodes.OP_INTERSECT :
         expr = intersect(opPos); break;
-    case OpCodes.OP_EXCEPT :
+    case OpCodes.XPath3OpCodes.OP_EXCEPT :
         expr = except(opPos); break;
     case OpCodes.OP_LITERAL :
       expr = literal(opPos); break;
@@ -270,11 +267,11 @@ public class Compiler extends OpMap
       expr = compileConstructorStylesheetOrExtensionFunction(opPos); break;
     case OpCodes.OP_FUNCTION :
       expr = compileFunction(opPos); break;
-    case OpCodes.OP_FUNCTION2 :
+    case OpCodes.XPath3OpCodes.OP_FUNCTION2 :
       expr = compileFunction2(opPos); break;      
-    case OpCodes.OP_INLINE_FUNCTION :
+    case OpCodes.XPath3OpCodes.OP_INLINE_FUNCTION :
       expr = compileInlineFunctionDefinition(opPos); break;
-    case OpCodes.OP_DYNAMIC_FUNCTION_CALL :
+    case OpCodes.XPath3OpCodes.OP_DYNAMIC_FUNCTION_CALL :
       expr = compileDynamicFunctionCall(opPos); break;
     case OpCodes.OP_LOCATIONPATH :
       expr = locationPath(opPos); break;
@@ -284,21 +281,21 @@ public class Compiler extends OpMap
       expr = matchPattern(opPos + 2); break;
     case OpCodes.OP_LOCATIONPATHPATTERN :
       expr = locationPathPattern(opPos); break;
-    case OpCodes.OP_NAMED_FUNCTION_REFERENCE :
+    case OpCodes.XPath3OpCodes.OP_NAMED_FUNCTION_REFERENCE :
       expr = namedFunctionReference(opPos); break;
-    case OpCodes.OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX :
+    case OpCodes.XPath3OpCodes.OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX :
       expr = xpathExprWithFuncCallSuffix(opPos); break;
-    case OpCodes.OP_CONTEXT_ITEM_WITH_PREDICATE :
+    case OpCodes.XPath3OpCodes.OP_CONTEXT_ITEM_WITH_PREDICATE :
       expr = xpathContextItemWithPredicate(opPos); break;
-    case OpCodes.OP_XPATH_FUNC_CALL_EXTENDED_ARG :
+    case OpCodes.XPath3OpCodes.OP_XPATH_FUNC_CALL_EXTENDED_ARG :
       expr = xpathExpressionFuncCallExtendedArg(opPos); break;
-    case OpCodes.OP_ARRAY_COMPARISON :
+    case OpCodes.XPath3OpCodes.OP_ARRAY_COMPARISON :
       expr = xpathExpressionArrayComparison(opPos); break;
-    case OpCodes.OP_EXPR_SINGLE_COMPARISON_XPATH3 :
+    case OpCodes.XPath3OpCodes.OP_EXPR_SINGLE_COMPARISON_XPATH3 :
       expr = xpath3ExpressionSingleComparison(opPos); break;
-    case OpCodes.OP_FUNC_ARG_PLACEHOLDER :
+    case OpCodes.XPath3OpCodes.OP_FUNC_ARG_PLACEHOLDER :
       expr = funcArgumentPlaceholder(opPos); break;
-    case OpCodes.OP_TEXT_AND_NODE_EXPR:
+    case OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR:
       expr = xpathTextAndNodeExpr(opPos); break;	
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });

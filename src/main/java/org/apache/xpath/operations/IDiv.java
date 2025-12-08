@@ -168,7 +168,7 @@ public class IDiv extends XPathArithmeticOperation
 
   	    	  XPath xpath = new XPath(xpathCastAsStr, srcLocator, iDivOpPrefixResolver, XPath.SELECT, null);
 
-  	    	  XslTransformData.m_xpathCallingOpCode = OpCodes.OP_IDIV;
+  	    	  XslTransformData.m_xpathCallingOpCode = OpCodes.XPath3OpCodes.OP_IDIV;
 
   	    	  // Get the result of XPath 'idiv' operator evaluation
   	    	  result = xpath.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());

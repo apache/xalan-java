@@ -70,7 +70,7 @@ public class CastAs extends Operation
       }
       
       try {
-    	  if (XslTransformData.m_xpathCallingOpCode == OpCodes.OP_IDIV) {
+    	  if (XslTransformData.m_xpathCallingOpCode == OpCodes.XPath3OpCodes.OP_IDIV) {
     		  if (left instanceof XSDecimal) {
     			  XSDecimal xsDecimal = (XSDecimal)left;
     			  double dblValue = (xsDecimal.getValue()).doubleValue();

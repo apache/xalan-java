@@ -15,19 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.compiler;
 
 /**
- * Operations codes for XPath.
+ * 
+ * Class definition, specifying Xalan-J's XPath 3.1 op codes.
  *
- * Code for the descriptions of the operations codes:
+ * Code for the descriptions of the XPath op codes:
  * [UPPER CASE] indicates a literal value,
  * [lower case] is a description of a value,
- *      ([length] always indicates the length of the operation,
- *       including the operations code and the length integer.)
+ *      ([length] always indicates the length of XPath operation,
+ *       including the op code value and the length integer.)
  * {UPPER CASE} indicates the given production,
  * {description} is the description of a new production,
  *      (For instance, {boolean expression} means some expression
@@ -35,8 +33,15 @@ package org.apache.xpath.compiler;
  *  * means that it occurs zero or more times,
  *  + means that it occurs one or more times,
  *  ? means that it is optional.
- *
- * returns: indicates what the production should return.
+ *  
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Myriam Midy <mmidy@apache.org>
+ * @author Morris Kwan <mkwan@apache.org>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XPath 3.1 specific changes, to this class)  
+ * 
+ * @xsl.usage general         
  */
 public class OpCodes
 {
@@ -638,144 +643,153 @@ public class OpCodes
   public static final int AXES_END_TYPES = 53;
   
   /**
-   * For XPath 3.1 "to" range expressions.
-   * 
-   * @xsl.usage advanced
+   * Class definition, specifying XPath 3.1 specific op 
+   * codes.
    */
-  public static final int OP_TO = 54;
-  
-  /**
-   * For XPath 3.1 value comparison operator "eq".
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_VC_EQUALS = 55;
-  
-  /**
-   * For XPath 3.1 value comparison operator "ne".
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_VC_NOT_EQUALS = 56;
-  
-  /**
-   * For XPath 3.1 value comparison operator "lt".
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_VC_LT = 57;
-  
-  /**
-   * For XPath 3.1 value comparison operator "gt".
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_VC_GT = 58;
-  
-  /**
-   * For XPath 3.1 value comparison operator "le".
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_VC_LE = 59;
-  
-  /**
-   * For XPath 3.1 value comparison operator "ge".
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_VC_GE = 60;
-  
-  public static final int OP_INLINE_FUNCTION = 61;
-  
-  public static final int OP_DYNAMIC_FUNCTION_CALL = 62;
-  
-  public static final int OP_FOR_EXPR = 63;
-  
-  public static final int OP_LET_EXPR = 64;
-  
-  public static final int OP_QUANTIFIED_EXPR = 65;
-  
-  public static final int OP_IF_EXPR = 66;
-  
-  public static final int OP_SEQUENCE_CONSTRUCTOR_EXPR = 67;
-  
-  /**
-   * For XPath 3.1 string concatenation operator "||".
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_STR_CONCAT = 68;
-  
-  /**
-   * For XPath 3.1 node concatenation operator "is".
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_IS = 69;
-  
-  /**
-   * For XPath 3.1 node concatenation operator "<<".
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_NC_PRECEDE = 70;
-  
-  /**
-   * For XPath 3.1 node concatenation operator ">>".
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_NC_FOLLOWS = 71;
-  
-  /**
-   * For XPath 3.1 simple map operator '!'.
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_SIMPLE_MAP_OPERATOR = 72;
-  
-  public static final int OP_SEQUENCE_TYPE_EXPR = 73;
-  
-  public static final int OP_ARRAY_CONSTRUCTOR_EXPR = 74;
-  
-  public static final int OP_MAP_CONSTRUCTOR_EXPR = 75;
-  
-  public static final int OP_INSTANCE_OF = 76;
-  
-  public static final int OP_CAST_AS = 77;
-  
-  public static final int OP_CASTABLE_AS = 78;
-  
-  public static final int OP_ARROW = 79;
-  
-  public static final int OP_NAMED_FUNCTION_REFERENCE = 80;
-  
-  public static final int OP_TREAT_AS = 81;
-  
-  public static final int OP_INTERSECT = 82;
-  
-  public static final int OP_EXCEPT = 83;
-  
-  public static final int OP_IDIV = 84;
-  
-  public static final int OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX = 85;
-  
-  public static final int OP_CONTEXT_ITEM_WITH_PREDICATE = 86;
-  
-  public static final int OP_XPATH_FUNC_CALL_EXTENDED_ARG = 87;
-  
-  public static final int OP_ARRAY_COMPARISON = 88;
-  
-  public static final int OP_EXPR_SINGLE_COMPARISON_XPATH3 = 89;
-  
-  public static final int OP_FUNC_ARG_PLACEHOLDER = 90;
-  
-  public static final int OP_TEXT_AND_NODE_EXPR = 91;
-  
-  public static final int OP_FUNCTION2 = 92;
+  public class XPath3OpCodes {
+	  /**
+	   * For XPath 3.1 "to" range expressions.
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_TO = 100;
 
-  /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 93;
+	  /**
+	   * For XPath 3.1 value comparison operator "eq".
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_VC_EQUALS = 101;
+
+	  /**
+	   * For XPath 3.1 value comparison operator "ne".
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_VC_NOT_EQUALS = 102;
+
+	  /**
+	   * For XPath 3.1 value comparison operator "lt".
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_VC_LT = 103;
+
+	  /**
+	   * For XPath 3.1 value comparison operator "gt".
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_VC_GT = 104;
+
+	  /**
+	   * For XPath 3.1 value comparison operator "le".
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_VC_LE = 105;
+
+	  /**
+	   * For XPath 3.1 value comparison operator "ge".
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_VC_GE = 106;
+
+	  public static final int OP_INLINE_FUNCTION = 107;
+
+	  public static final int OP_DYNAMIC_FUNCTION_CALL = 108;
+
+	  public static final int OP_FOR_EXPR = 109;
+
+	  public static final int OP_LET_EXPR = 110;
+
+	  public static final int OP_QUANTIFIED_EXPR = 111;
+
+	  public static final int OP_IF_EXPR = 112;
+
+	  public static final int OP_SEQUENCE_CONSTRUCTOR_EXPR = 113;
+
+	  /**
+	   * For XPath 3.1 string concatenation operator "||".
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_STR_CONCAT = 114;
+
+	  /**
+	   * For XPath 3.1 node concatenation operator "is".
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_IS = 115;
+
+	  /**
+	   * For XPath 3.1 node concatenation operator "<<".
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_NC_PRECEDE = 116;
+
+	  /**
+	   * For XPath 3.1 node concatenation operator ">>".
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_NC_FOLLOWS = 117;
+
+	  /**
+	   * For XPath 3.1 simple map operator '!'.
+	   * 
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_SIMPLE_MAP_OPERATOR = 118;
+
+	  public static final int OP_SEQUENCE_TYPE_EXPR = 119;
+
+	  public static final int OP_ARRAY_CONSTRUCTOR_EXPR = 120;
+
+	  public static final int OP_MAP_CONSTRUCTOR_EXPR = 121;
+
+	  public static final int OP_INSTANCE_OF = 122;
+
+	  public static final int OP_CAST_AS = 123;
+
+	  public static final int OP_CASTABLE_AS = 124;
+
+	  public static final int OP_ARROW = 125;
+
+	  public static final int OP_NAMED_FUNCTION_REFERENCE = 126;
+
+	  public static final int OP_TREAT_AS = 127;
+
+	  public static final int OP_INTERSECT = 128;
+
+	  public static final int OP_EXCEPT = 129;
+
+	  public static final int OP_IDIV = 130;
+
+	  public static final int OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX = 131;
+
+	  public static final int OP_CONTEXT_ITEM_WITH_PREDICATE = 132;
+
+	  public static final int OP_XPATH_FUNC_CALL_EXTENDED_ARG = 133;
+
+	  public static final int OP_ARRAY_COMPARISON = 134;
+
+	  public static final int OP_EXPR_SINGLE_COMPARISON_XPATH3 = 135;
+
+	  public static final int OP_FUNC_ARG_PLACEHOLDER = 136;
+
+	  public static final int OP_TEXT_AND_NODE_EXPR = 137;
+
+	  public static final int OP_FUNCTION2 = 138;
+	  
+	  /** XPath op code's next free id. Please keep this up to date. */
+	  private static final int NEXT_FREE_ID = 139;
+  }
+
+  /** XPath op code's next free id. Please keep this up to date. */
+  private static final int NEXT_FREE_ID = 54;
   
 }
