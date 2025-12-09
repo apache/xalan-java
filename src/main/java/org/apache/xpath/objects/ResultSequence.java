@@ -121,8 +121,8 @@ public class ResultSequence extends XObject
     }
     
     /**
-     * Method definition to get string value of this ResultSequence 
-     * object.
+     * Method definition, to get string value of the supplied 
+     * ResultSequence object.
      * 
      * This method, produces a default serialization format of
      * string value, which is space character separated string 

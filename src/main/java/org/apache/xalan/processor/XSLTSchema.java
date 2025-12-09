@@ -146,6 +146,11 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslCopyNamespacesOpt = new XSLTAttributeDef(null, "copy-namespaces",
                                            XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     
+    // Optional
+    // xsl:number 
+    XSLTAttributeDef ordinalAttrOpt = new XSLTAttributeDef(null, "ordinal",
+                                           XSLTAttributeDef.T_AVT, false, true, XSLTAttributeDef.ERROR);
+    
     // Required
     // xsl:output-character                                     
     XSLTAttributeDef characterAttrRequired = new XSLTAttributeDef(null, "character",
@@ -666,6 +671,7 @@ public class XSLTSchema extends XSLTElementDef
                                                          letterValueAttr,
                                                          groupingSeparatorAVT,
                                                          groupingSizeAttr,
+                                                         ordinalAttrOpt,
                                                          xpathDefaultNamespaceAttrOpt,
                                                          expandTextAttrOpt }, 
                                         new ProcessorTemplateElem(),

@@ -1,20 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-18T15:08:01Z" fail="10" name="avt" pass="25" skipped="0" statusUnknown="0" totalRun="35">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-09T16:29:41Z" fail="7" name="avt" pass="28" skipped="0" statusUnknown="0" totalRun="35">
    <testResult status="pass" testName="avt-0101"/>
    <testResult status="pass" testName="avt-0201"/>
    <testResult status="pass" testName="avt-0202"/>
    <testResult status="pass" testName="avt-0301"/>
-   <testResult status="fail" testName="avt-0302"/>
+   <testResult status="pass" testName="avt-0302"/>
    <testResult status="pass" testName="avt-0303"/>
    <testResult status="pass" testName="avt-0401"/>
    <testResult status="pass" testName="avt-0501"/>
    <testResult status="pass" testName="avt-0601"/>
-   <testResult status="fail" testName="avt-0701">
-      <outResult>
-         <errTrace>XTSE0020 : Illegal value: {str} used for boolean attribute: terminate </errTrace>
-         <errTrace>XTSE0020 : Illegal value: {$var} used for boolean attribute: terminate </errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="avt-0801"/>
+   <testResult status="pass" testName="avt-0701"/>
+   <testResult status="pass" testName="avt-0801"/>
    <testResult status="fail" testName="avt-0901"/>
    <testResult status="fail" testName="avt-1001"/>
    <testResult status="pass" testName="avt-1101"/>

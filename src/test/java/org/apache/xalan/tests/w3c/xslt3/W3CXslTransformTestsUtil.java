@@ -761,7 +761,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		boolean isXslMessageTest = false;
     		String xslMessageResultPrefixStr = null;
-    		if (m_xslTransformTestSetFilePath.contains("insn/message")) {
+    		
+    		NodeList nodeListA = ((Element)nodeExpected).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_MESG);
+			int nodeListLengthA = nodeListA.getLength();
+    		
+    		if (m_xslTransformTestSetFilePath.contains("insn/message") || (nodeListLengthA > 0)) {
     		   isXslMessageTest = true;
                
     		   String xslTransformResultStr = resultStrWriter.toString();
@@ -773,7 +777,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			  resultStrWriter = new StringWriter();
     			  resultStrWriter.append(xslMessageResultSuffixStr);
     		   }    		   
-    		}    		    		
+    		}
     		
     		String xslTransformMethod = transformer.getOutputProperty(OutputKeys.METHOD);
     		   			    			    			    			    			
@@ -927,22 +931,38 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
                 			     NodeList nodeList4 = ((Element)node).getElementsByTagName(
                 			    		                                                  EXPECTED_NODE_KIND_ASSERT_STRING_VALUE);
                 			     if (nodeList4.getLength() == 0) {
-                			    	 nodeList4 = ((Element)node).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_XML);
-                			    	 String str2 = ((Element)(nodeList4.item(0))).getTextContent();
-                			    	 
-                			    	 org.xml.sax.InputSource inpSrc3 = new org.xml.sax.InputSource(new StringReader(str2)); 
-                			    	 Document document3 = m_xmlDocumentBuilder.parse(inpSrc3);
-                			    	 
-                			    	 org.xml.sax.InputSource inpSrc4 = new org.xml.sax.InputSource(new StringReader(str1)); 
-                			    	 Document document4 = m_xmlDocumentBuilder.parse(inpSrc4);
-                			    	 
-                			    	 String string3 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document3);
-                			    	 String string4 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document4);
-                			    	 
-                			    	 if (isTwoXmlHtmlStrEqual(string3, string4)) {																																						
-                			    		 passStatus1 = true;
+                			    	 nodeList4 = ((Element)node).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_XML);                			    	                 			    	 
+                			    	 if (nodeList4.getLength() > 0) {
+                			    		 String str2 = ((Element)(nodeList4.item(0))).getTextContent();
 
-                			    		 break;								
+                			    		 org.xml.sax.InputSource inpSrc3 = new org.xml.sax.InputSource(new StringReader(str2)); 
+                			    		 Document document3 = m_xmlDocumentBuilder.parse(inpSrc3);
+
+                			    		 org.xml.sax.InputSource inpSrc4 = new org.xml.sax.InputSource(new StringReader(str1)); 
+                			    		 Document document4 = m_xmlDocumentBuilder.parse(inpSrc4);
+
+                			    		 String string3 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document3);
+                			    		 String string4 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document4);
+
+                			    		 if (isTwoXmlHtmlStrEqual(string3, string4)) {																																						
+                			    			 passStatus1 = true;
+
+                			    			 break;								
+                			    		 }
+                			         }
+                			    	 else {                			    		 
+                			    		 nodeList4 = ((Element)node).getElementsByTagName("assert-eq");
+                			    		 if (nodeList4.getLength() > 0) {
+                			    			 String str2 = ((Element)(nodeList4.item(0))).getTextContent();
+                			    			 int strLength1 = str2.length();
+                			    			 str2 = str2.substring(1, strLength1 - 1);   // Converting string from, form "..." to ...
+                			    			 str1 = str1.trim();
+                			    			 if (str2.equals(str1)) {
+                			    				 passStatus1 = true;
+
+                			    				 break;
+                			    			 }
+                			    		 }
                 			    	 }
                 			     }
                 			     else {

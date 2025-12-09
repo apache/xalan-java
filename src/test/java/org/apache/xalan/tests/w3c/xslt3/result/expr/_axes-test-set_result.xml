@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:37Z" fail="11" name="axes" pass="189" skipped="2" statusUnknown="0" totalRun="200">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-09T16:30:24Z" fail="10" name="axes" pass="190" skipped="2" statusUnknown="0" totalRun="200">
    <testResult status="pass" testName="axes-001"/>
    <testResult status="pass" testName="axes-002"/>
    <testResult status="pass" testName="axes-003"/>
@@ -62,7 +62,7 @@
    </testResult>
    <testResult status="fail" testName="axes-058"/>
    <testResult status="fail" testName="axes-059"/>
-   <testResult status="fail" testName="axes-060"/>
+   <testResult status="pass" testName="axes-060"/>
    <testResult status="fail" testName="axes-061">
       <outResult>
          <errTrace>XPST0003 : An XPath expression                 /out/u = "2,9,3,4"                /out/u = "9,2,3,4"              has syntax error. Unknown op code : 21.</errTrace>

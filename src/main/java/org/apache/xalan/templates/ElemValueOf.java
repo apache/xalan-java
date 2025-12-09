@@ -436,15 +436,22 @@ public class ElemValueOf extends ElemTemplateElement {
           else
           {
               XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+              
               if (m_isDot && xpath3ContextItem != null) {                  
-                  String strValue = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);                  
+                  String strValue = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);
+                  if (separatorStrValue != null) {
+                	 strValue = strValue.replace(" ", separatorStrValue);
+                  }
+                  
                   (new XString(strValue)).dispatchCharactersEvents(rth);
               }
               else {
                   if (expr instanceof XSL3ConstructorOrExtensionFunction) {
                 	  XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)expr;
                 	  XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
-                      XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
+                      
+                	  XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
+                      
                       if (evalResult != null) {
                     	  if (evalResult instanceof XSDayTimeDuration) {
                     		  serializeXsDaytimeDurationValue((XSDayTimeDuration)evalResult, 3, xctxt, rth);
@@ -458,10 +465,7 @@ public class ElemValueOf extends ElemTemplateElement {
                     		  }
                     		  else {
                     			 strValue = ((XSQName) evalResult).stringValue();  
-                    		  }                    		  
-                    		  if (separatorStrValue != null) {
-                     			 strValue = strValue.replace(" ", separatorStrValue); 
-                     		  }
+                    		  }                    		                      		  
                     		  
                     		  (new XString(strValue)).dispatchCharactersEvents(rth);
                     	  }
@@ -471,17 +475,23 @@ public class ElemValueOf extends ElemTemplateElement {
                     		  StringBuffer strBuff = new StringBuffer(); 
                     		  for (int idx = 0; idx < rSeqLength; idx++) {
                     			 XObject xObj1 = rSeq.item(idx);
-                    			 String strValue = XslTransformEvaluationHelper.getStrVal(xObj1);
-                    			 String seprtr = ((separatorStrValue != null) ? separatorStrValue : " ");
+                    			 String strValue = XslTransformEvaluationHelper.getStrVal(xObj1);                    			                     			 
                     			 if (idx < (rSeqLength - 1)) {
-                    				strBuff.append(strValue + seprtr); 
+                    				if (separatorStrValue == null) {
+                    				   strBuff.append(strValue + " ");
+                    				}
+                    				else {
+                    				   strBuff.append(strValue + separatorStrValue);
+                    				}
                     			 }
                     			 else {
-                    				strBuff.append(strValue); 
+                    				 strBuff.append(strValue); 
                     			 }
                     		  }
                     		  
-                    		  (new XString(strBuff.toString())).dispatchCharactersEvents(rth);
+                    		  String strValue = strBuff.toString(); 
+                    		  
+                    		  (new XString(strValue)).dispatchCharactersEvents(rth);
                     	  }
                     	  else {
                     		  String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);                                                       
@@ -560,16 +570,20 @@ public class ElemValueOf extends ElemTemplateElement {
                     		  Map<XObject,XObject> nativeMap = xpathMap.getNativeMap();
                     		  XObject xObj = nativeMap.get(new XSString(Constants.ATTRVAL_DATATYPE_NUMBER));
                     		  XSDouble xsDouble = (XSDouble)xObj;
-                    		  XString xsString = new XString(xsDouble.stringValue());
-                    		  xsString.dispatchCharactersEvents(rth);
+                    		  XString xString = new XString(xsDouble.stringValue());
+                    		  xString.dispatchCharactersEvents(rth);
                     	  }
                     	  else {
                     		  throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
                                                                                                        + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
                     	  }
                       }
-                      else {
+                      else {                    	  
                     	  strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                    	  
+                    	  if (separatorStrValue != null) {
+                           	 strValue = strValue.replace(" ", separatorStrValue);
+                          }
                       }
                       
                       (new XString(strValue)).dispatchCharactersEvents(rth);
@@ -590,7 +604,11 @@ public class ElemValueOf extends ElemTemplateElement {
                     	  }
                       }
                       else if (evalResult instanceof XSAnyType) {
-                          strValue = ((XSAnyType)evalResult).stringValue();    
+                          strValue = ((XSAnyType)evalResult).stringValue();
+                          
+                          if (separatorStrValue != null) {
+                           	 strValue = strValue.replace(" ", separatorStrValue);
+                          }
                       }
                       else if (evalResult instanceof XPathArray) {
                     	 XPathArray xpathArr = (XPathArray)evalResult;
@@ -611,8 +629,8 @@ public class ElemValueOf extends ElemTemplateElement {
                     		  Map<XObject,XObject> nativeMap = xpathMap.getNativeMap();
                     		  XObject xObj = nativeMap.get(new XSString(Constants.ATTRVAL_DATATYPE_NUMBER));
                     		  XSDouble xsDouble = (XSDouble)xObj;
-                    		  XString xsString = new XString(xsDouble.stringValue());
-                    		  xsString.dispatchCharactersEvents(rth);
+                    		  XString xString = new XString(xsDouble.stringValue());
+                    		  xString.dispatchCharactersEvents(rth);
                     	  }
                     	  else {
                     		  throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
@@ -655,9 +673,17 @@ public class ElemValueOf extends ElemTemplateElement {
                     	  if (strValue.length() > 1) {
                     		 strValue = strValue.substring(0, strValue.length() - 1); 
                     	  }
+                    	  
+                    	  if (separatorStrValue != null) {
+                           	 strValue = strValue.replace(" ", separatorStrValue);
+                          }
                       }
                       else {
-                    	 strValue = XslTransformEvaluationHelper.getStrVal(evalResult);  
+                    	 strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                    	 
+                    	 if (separatorStrValue != null) {
+                          	strValue = strValue.replace(" ", separatorStrValue);
+                         }
                       }
                       
                       (new XString(strValue)).dispatchCharactersEvents(rth);
@@ -686,6 +712,10 @@ public class ElemValueOf extends ElemTemplateElement {
                      }                     
                      else {
                          strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                         
+                         if (separatorStrValue != null) {
+                          	strValue = strValue.replace(" ", separatorStrValue);
+                         }
                      }
                      
                      (new XString(strValue)).dispatchCharactersEvents(rth);
@@ -696,6 +726,10 @@ public class ElemValueOf extends ElemTemplateElement {
                      XObject evalResult = dfc.execute(xctxt);
                      
                      String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                     
+                     if (separatorStrValue != null) {
+                      	strValue = strValue.replace(" ", separatorStrValue);
+                     }
                      
                      (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
@@ -743,6 +777,10 @@ public class ElemValueOf extends ElemTemplateElement {
                         String nodeSetStrValue = strBuff.toString();                                                
                         if (nodeSetStrValue.length() > 1) {
                         	nodeSetStrValue = nodeSetStrValue.substring(0, nodeSetStrValue.length() - 1);
+                        	if (separatorStrValue != null) {
+                        	   nodeSetStrValue = nodeSetStrValue.replace(" ", separatorStrValue);
+                        	}
+                        	
                         	(new XString(nodeSetStrValue)).dispatchCharactersEvents(rth);
                         }                        
                      }
@@ -802,35 +840,45 @@ public class ElemValueOf extends ElemTemplateElement {
                               ResultSequence resultSeq = (ResultSequence)varEvalResult; 
                               
                               if (seqIndexEvalResult instanceof XNumber) {
-                                 double dValIndex = ((XNumber)seqIndexEvalResult).num();
-                                 if (dValIndex == (int)dValIndex) {
-                                    XObject evalResult = resultSeq.item((int)dValIndex - 1);
+                                 double indexValDbl = ((XNumber)seqIndexEvalResult).num();
+                                 int indexValInt = (int)indexValDbl;
+                                 if ((indexValDbl == indexValInt) && (indexValInt > 0)) {
+                                    XObject evalResult = resultSeq.item(indexValInt - 1);
                                     String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                                    
+                                    if ((evalResult instanceof ResultSequence) && (separatorStrValue != null)) {
+                                       strValue = strValue.replace(" ", separatorStrValue);
+                                    }
+                                    
                                     (new XString(strValue)).dispatchCharactersEvents(rth);
                                  }
                                  else {
-                                    throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
-                                                                                                        + "sequence reference, is not an integer.", 
-                                                                                                             srcLocator); 
+                                    throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm sequence index reference "
+                                    		                                                                                   + "value, is not a positive integer.", srcLocator); 
                                  }
                               }
                               else if (seqIndexEvalResult instanceof XSNumericType) {
                                  String indexStrVal = ((XSNumericType)seqIndexEvalResult).stringValue();
-                                 double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
-                                 if (dValIndex == (int)dValIndex) {
-                                    XObject evalResult = resultSeq.item((int)dValIndex - 1);
-                                    String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
-                                    (new XString(strValue)).dispatchCharactersEvents(rth);                                    
+                                 double indexValDbl = (Double.valueOf(indexStrVal)).doubleValue();
+                                 int indexValInt = (int)indexValDbl;
+                                 if ((indexValDbl == indexValInt) && (indexValInt > 0)) {
+                                	 XObject evalResult = resultSeq.item(indexValInt - 1);
+                                	 String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+
+                                	 if ((evalResult instanceof ResultSequence) && (separatorStrValue != null)) {
+                                		 strValue = strValue.replace(" ", separatorStrValue);
+                                	 }
+
+                                	 (new XString(strValue)).dispatchCharactersEvents(rth);                                    
                                  }
                                  else {
-                                     throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
-                                                                                                        + "sequence reference, is not an integer.", 
-                                                                                                             srcLocator); 
+                                	throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm sequence index reference "
+                                                                                                                              + "value, is not a positive integer.", srcLocator); 
                                  }
                               }
                               else {
-                                 throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm sequence "
-                                                                                                       + "reference, is not numeric.", srcLocator);  
+                            	 throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm sequence index reference value, "
+                                                                                                                             + "is not numeric.", srcLocator);  
                               }
                            }                           
                         }
@@ -960,6 +1008,10 @@ public class ElemValueOf extends ElemTemplateElement {
                      XObject evalResult = letExpr.execute(xctxt);                     
                      String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                      
+                     if (separatorStrValue != null) {
+                      	strValue = strValue.replace(" ", separatorStrValue);
+                     }
+                     
                      (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
                   else if (expr instanceof XPathIfExpr) {
@@ -967,6 +1019,10 @@ public class ElemValueOf extends ElemTemplateElement {
                        
                       XObject evalResult = ifExpr.execute(xctxt);                     
                       String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                      
+                      if (separatorStrValue != null) {
+                       	 strValue = strValue.replace(" ", separatorStrValue);
+                      }
                       
                       (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
@@ -986,7 +1042,8 @@ public class ElemValueOf extends ElemTemplateElement {
                 	  }
                   }
                   else {
-                	  XObject evalResult = expr.execute(xctxt);                	  
+                	  XObject evalResult = expr.execute(xctxt);
+                	  
                 	  if ((evalResult instanceof ResultSequence) && (separatorStrValue != null)) {
                 		  ResultSequence rSeq = (ResultSequence)evalResult;
                 		  int rSeqLngth = rSeq.size();
@@ -1026,10 +1083,6 @@ public class ElemValueOf extends ElemTemplateElement {
                 	  }
                 	  else {
                 		  String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
-                		  /*if (separatorStrValue != null) {
-                			  strValue = strValue.replace(" ", separatorStrValue);  
-                		  }*/
-
                 		  XString xStr = new XString(strValue);
 
                 		  xStr.executeCharsToContentHandler(xctxt, rth);

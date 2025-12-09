@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:42Z" fail="37" name="key" pass="59" skipped="3" statusUnknown="0" totalRun="96">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-09T16:31:02Z" fail="36" name="key" pass="60" skipped="3" statusUnknown="0" totalRun="96">
    <testResult status="pass" testName="key-001"/>
    <testResult status="fail" testName="key-002">
       <outResult>
@@ -86,7 +86,7 @@
    <testResult status="pass" testName="key-051"/>
    <testResult status="pass" testName="key-052"/>
    <testResult status="pass" testName="key-053"/>
-   <testResult status="fail" testName="key-054"/>
+   <testResult status="pass" testName="key-054"/>
    <testResult status="pass" testName="key-055"/>
    <testResult status="pass" testName="key-056"/>
    <testResult status="fail" testName="key-058"/>
@@ -155,7 +155,11 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="pass" testName="key-086"/>
    <testResult status="fail" testName="key-087"/>
    <testResult reason="Xalan configured" status="skipped" testName="key-088"/>
-   <testResult status="fail" testName="key-089"/>
+   <testResult status="fail" testName="key-089">
+      <outResult>
+         <errTrace>Invalid function call: recursive key() calls are not allowed</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="key-090"/>
    <testResult status="pass" testName="key-091"/>
    <testResult status="pass" testName="key-092"/>

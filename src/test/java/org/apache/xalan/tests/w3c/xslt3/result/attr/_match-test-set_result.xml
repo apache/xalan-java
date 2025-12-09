@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:30Z" fail="85" name="match" pass="96" skipped="112" statusUnknown="1" totalRun="182">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-09T16:29:41Z" fail="86" name="match" pass="96" skipped="112" statusUnknown="0" totalRun="182">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -555,7 +555,11 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>XTTE0505 : An XSL apply-templates 'select' expression evaluation resulted in a value that is not supported to be processed.</errTrace>
       </outResult>
    </testResult>
-   <testResult testName="match-261"/>
+   <testResult status="fail" testName="match-261">
+      <outResult>
+         <errTrace>XTSE0010 : an instruction xsl:next-match is not known to the XSLT processor.</errTrace>
+      </outResult>
+   </testResult>
    <testResult feature="schema_aware" status="skipped" testName="match-262"/>
    <testResult feature="schema_aware" status="skipped" testName="match-263"/>
    <testResult status="pass" testName="match-264"/>
