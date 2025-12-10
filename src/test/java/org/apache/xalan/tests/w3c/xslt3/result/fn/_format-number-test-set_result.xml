@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:43Z" fail="32" name="format-number" pass="38" skipped="4" statusUnknown="0" totalRun="70">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:34Z" fail="32" name="format-number" pass="32" skipped="10" statusUnknown="0" totalRun="64">
    <testResult status="fail" testName="format-number-001"/>
    <testResult status="fail" testName="format-number-002"/>
    <testResult status="fail" testName="format-number-003"/>
@@ -12,7 +12,7 @@
    <testResult status="pass" testName="format-number-011"/>
    <testResult status="pass" testName="format-number-012"/>
    <testResult status="fail" testName="format-number-013"/>
-   <testResult status="pass" testName="format-number-014"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="format-number-014"/>
    <testResult status="pass" testName="format-number-015"/>
    <testResult status="pass" testName="format-number-016"/>
    <testResult status="pass" testName="format-number-017"/>
@@ -33,13 +33,13 @@
    <testResult status="fail" testName="format-number-032"/>
    <testResult status="pass" testName="format-number-033"/>
    <testResult status="fail" testName="format-number-034"/>
-   <testResult status="pass" testName="format-number-035"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="format-number-035"/>
    <testResult status="fail" testName="format-number-036"/>
    <testResult status="fail" testName="format-number-037"/>
-   <testResult status="pass" testName="format-number-038"/>
-   <testResult status="pass" testName="format-number-039"/>
-   <testResult status="pass" testName="format-number-040"/>
-   <testResult status="pass" testName="format-number-041"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="format-number-038"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="format-number-039"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="format-number-040"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="format-number-041"/>
    <testResult status="pass" testName="format-number-042"/>
    <testResult status="pass" testName="format-number-043"/>
    <testResult status="fail" testName="format-number-044"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:42Z" fail="14" name="analyze-string" pass="39" skipped="5" statusUnknown="0" totalRun="53">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:33Z" fail="14" name="analyze-string" pass="39" skipped="5" statusUnknown="0" totalRun="53">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -58,7 +58,7 @@
    <testResult status="fail" testName="analyze-string-092">
       <outResult>
          <errTrace>Expected ), but found: "s "</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XNumber cannot be cast to java.lang.String</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="analyze-string-093"/>

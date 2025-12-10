@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-09T16:29:41Z" fail="7" name="avt" pass="28" skipped="0" statusUnknown="0" totalRun="35">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:20Z" fail="4" name="avt" pass="30" skipped="1" statusUnknown="0" totalRun="34">
    <testResult status="pass" testName="avt-0101"/>
    <testResult status="pass" testName="avt-0201"/>
    <testResult status="pass" testName="avt-0202"/>
@@ -14,8 +14,8 @@
    <testResult status="fail" testName="avt-1001"/>
    <testResult status="pass" testName="avt-1101"/>
    <testResult status="pass" testName="avt-1201"/>
-   <testResult status="fail" testName="avt-1202"/>
-   <testResult status="fail" testName="avt-1203"/>
+   <testResult status="pass" testName="avt-1202"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="avt-1203"/>
    <testResult status="pass" testName="avt-1204"/>
    <testResult status="pass" testName="avt-1205"/>
    <testResult status="pass" testName="avt-1206"/>
@@ -30,12 +30,7 @@
    <testResult status="pass" testName="avt-1901"/>
    <testResult status="pass" testName="avt-2001"/>
    <testResult status="pass" testName="avt-2101"/>
-   <testResult status="fail" testName="avt-2102">
-      <outResult>
-         <errTrace>Empty expression!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="avt-2102"/>
    <testResult status="fail" testName="avt-2103">
       <outResult>
          <errTrace>Empty expression!</errTrace>

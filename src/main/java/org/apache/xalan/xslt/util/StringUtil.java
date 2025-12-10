@@ -51,11 +51,11 @@ public class StringUtil {
     }
     
     /**
-     * Method definition to check, whether the supplied string value 
+     * Method definition, to check whether the supplied string value 
      * has balanced XPath comment delimiters. XPath comments have
      * lexical form (: comment text :)
      */
-    public static boolean isStrHasBalancedXPathCommentDelim(String strValue) {
+    public static boolean isStrHasXPathBalancedCommentDelim(String strValue) {
         
         boolean result = true;
         
@@ -93,6 +93,53 @@ public class StringUtil {
         }
         
         return result; 
+    }
+    
+    /**
+     * Method definition, to remove XPath comments from the
+     * supplied string value.
+     * 
+     * This method handles occurrences of XPath nested comments,
+     * as well, as required by XPath 3.1 spec.
+     * 
+     * @param strValue				  The supplied string value
+     * @return                        String value, after the XPath 
+     *                                comments have been removed.  
+     */
+    public static String removeXPathComments(String strValue) {
+    	
+    	String result = null;
+
+    	String str1 = strValue;
+
+    	str1 = str1.replaceAll("\\(:", "\u0002");
+    	str1 = str1.replaceAll(":\\)", "\u0003");
+
+    	StringBuilder strBuilder = new StringBuilder();
+    	int level = 0;
+    	int strLength = str1.length();
+    	for (int idx = 0; idx < strLength; idx++) {
+    		char chr = str1.charAt(idx);
+    		if (chr == '\u0002') {
+    			level++;  
+    		}
+    		else if (chr == '\u0003') {
+    			if (level > 0) {
+    				level--;  
+    			}
+    		}
+    		else if (level == 0) {
+    			strBuilder.append(chr); 
+    		}
+    	}
+
+    	if (level <= 0) {
+    		str1 = strBuilder.toString(); 
+    	}
+
+    	result = str1;
+
+    	return result;
     }
     
     /**

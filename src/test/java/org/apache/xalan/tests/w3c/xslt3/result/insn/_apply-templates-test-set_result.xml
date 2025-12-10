@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-28T08:22:25Z" fail="15" name="apply-templates" pass="22" skipped="13" statusUnknown="0" totalRun="37">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:22Z" fail="15" name="apply-templates" pass="22" skipped="13" statusUnknown="0" totalRun="37">
    <testResult status="pass" testName="apply-templates-001"/>
    <testResult status="pass" testName="apply-templates-002"/>
    <testResult status="pass" testName="conflict-resolution-0101"/>

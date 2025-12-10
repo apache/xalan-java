@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-09T16:29:49Z" fail="28" name="select" pass="106" skipped="23" statusUnknown="1" totalRun="135">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:21Z" fail="27" name="select" pass="104" skipped="26" statusUnknown="1" totalRun="132">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -140,8 +140,8 @@ javax.xml.transform.TransformerException: XPST0051 : A sequence type occurence i
    <testResult status="pass" testName="select-3001"/>
    <testResult status="pass" testName="select-3101"/>
    <testResult status="pass" testName="select-3201"/>
-   <testResult status="pass" testName="select-3301"/>
-   <testResult status="pass" testName="select-3401"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="select-3301"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="select-3401"/>
    <testResult status="pass" testName="select-3501"/>
    <testResult status="pass" testName="select-3502"/>
    <testResult status="pass" testName="select-3601"/>
@@ -188,7 +188,7 @@ javax.xml.transform.TransformerException: XPST0051 : A sequence type occurence i
    <testResult status="pass" testName="select-7001"/>
    <testResult status="pass" testName="select-7101"/>
    <testResult status="pass" testName="select-7201"/>
-   <testResult status="fail" testName="select-7301"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="select-7301"/>
    <testResult status="pass" testName="select-7401"/>
    <testResult status="pass" testName="select-7501"/>
    <testResult status="skipped" testName="select-7502a" xsltVersion="XSLT 2.0/1.0 only test case"/>

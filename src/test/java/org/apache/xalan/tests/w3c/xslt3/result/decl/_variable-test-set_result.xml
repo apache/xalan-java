@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:27Z" fail="19" name="variable" pass="86" skipped="3" statusUnknown="0" totalRun="105">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:17Z" fail="18" name="variable" pass="85" skipped="5" statusUnknown="0" totalRun="103">
    <testResult status="pass" testName="variable-0101"/>
    <testResult status="pass" testName="variable-0102"/>
    <testResult status="pass" testName="variable-0103"/>
@@ -19,7 +19,9 @@
    <testResult status="pass" testName="variable-0116"/>
    <testResult status="pass" testName="variable-0117"/>
    <testResult status="fail" testName="variable-0118">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" att="2"/&gt;</outResult>
+      <outResult>*** Error not detected! ***&#13;
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" att="2"/&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="variable-0119">
       <outResult>
@@ -44,7 +46,7 @@
    <testResult status="pass" testName="variable-0301"/>
    <testResult status="fail" testName="variable-0302"/>
    <testResult status="fail" testName="variable-0303"/>
-   <testResult status="fail" testName="variable-0401"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="variable-0401"/>
    <testResult status="fail" testName="variable-0501"/>
    <testResult status="pass" testName="variable-0601"/>
    <testResult status="pass" testName="variable-0701"/>
@@ -82,7 +84,7 @@
    <testResult status="pass" testName="variable-1905"/>
    <testResult status="pass" testName="variable-2001"/>
    <testResult status="pass" testName="variable-2101"/>
-   <testResult status="pass" testName="variable-2201"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="variable-2201"/>
    <testResult status="fail" testName="variable-2202">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;It is global!&lt;/out&gt;</outResult>
    </testResult>

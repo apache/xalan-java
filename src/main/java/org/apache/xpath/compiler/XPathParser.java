@@ -378,10 +378,10 @@ public class XPathParser
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
     
-    // Remove XPath expression comments from the supplied expression,
-    // before parse of an XPath expression.
-    if (StringUtil.isStrHasBalancedXPathCommentDelim(expression)) {
-       expression = expression.replaceAll("\\(:.*:\\)", "");
+    // Remove any available XPath comments, from an XPath 
+    // expression string.
+    if (StringUtil.isStrHasXPathBalancedCommentDelim(expression)) {    	
+       expression = StringUtil.removeXPathComments(expression);
     }
     else {
        error(XPATHErrorResources.ER_UNCLOSED_XPATH_COMMENT, new Object[]{});

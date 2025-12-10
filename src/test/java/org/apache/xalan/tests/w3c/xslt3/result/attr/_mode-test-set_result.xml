@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-15T17:37:04Z" fail="59" name="mode" pass="64" skipped="46" statusUnknown="0" totalRun="123">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:35Z" fail="59" name="mode" pass="64" skipped="46" statusUnknown="0" totalRun="123">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>

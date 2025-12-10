@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-15T17:36:57Z" fail="15" name="expression" pass="85" skipped="4" statusUnknown="1" totalRun="101">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:28Z" fail="15" name="expression" pass="84" skipped="5" statusUnknown="1" totalRun="100">
    <testResult status="pass" testName="expression-0101"/>
    <testResult status="pass" testName="expression-0301"/>
    <testResult status="pass" testName="expression-0302"/>
@@ -120,7 +120,7 @@
    <testResult status="pass" testName="expression-4209"/>
    <testResult status="pass" testName="expression-4210"/>
    <testResult status="pass" testName="expression-4301"/>
-   <testResult status="pass" testName="expression-4302"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="expression-4302"/>
    <testResult status="fail" testName="expression-4303">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;span&gt;false&lt;/span&gt;</outResult>
    </testResult>

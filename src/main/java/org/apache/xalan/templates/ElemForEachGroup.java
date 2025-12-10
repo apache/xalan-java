@@ -116,7 +116,7 @@ public class ElemForEachGroup extends ElemTemplateElement
   /**
    * The "collation" attribute value.
    */
-  private String m_collationUri = null;
+  private AVT m_collationUri = null;
   
   /**
    * An XPathCollationSupport object value. 
@@ -318,7 +318,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    *
    * @param collation   String value for the "collation" attribute.
    */
-  public void setCollation(String collationUri)
+  public void setCollation(AVT collationUri)
   {
 	  m_collationUri = collationUri;   
   }
@@ -328,7 +328,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    *
    * @return   String value of the "collation" attribute.
    */
-  public String getCollation()
+  public AVT getCollation()
   {
       return m_collationUri;
   }
@@ -1423,13 +1423,20 @@ public class ElemForEachGroup extends ElemTemplateElement
   private Object getNormalizedGroupingKeyValue(XPathContext xctxt, XObject groupingKeyValue) throws TransformerException {
       
 	  Object normalizedGroupingKeyValue = null;
+	  
+	  final int contextNode = xctxt.getCurrentNode();
+	  
+	  String collation = null;
+	  if (m_collationUri != null) {
+	     collation = m_collationUri.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
+	  }
       
       if (groupingKeyValue instanceof XString) {
-    	  if (m_collationUri == null) {
+    	  if (collation == null) {
     		 normalizedGroupingKeyValue = groupingKeyValue.str();   
     	  }
-    	  else {
-    	     normalizedGroupingKeyValue = new StringWithCollation(groupingKeyValue.str(), m_collationUri, m_xpathCollationSupport);
+    	  else {    		  
+    	     normalizedGroupingKeyValue = new StringWithCollation(groupingKeyValue.str(), collation, m_xpathCollationSupport);
     	  }
       }
       else if (groupingKeyValue instanceof XSQName) {
@@ -1439,11 +1446,11 @@ public class ElemForEachGroup extends ElemTemplateElement
     	  normalizedGroupingKeyValue = localPart + ((namespaceUri == null) ? "" : ":" + namespaceUri); 
       }
       else if (groupingKeyValue instanceof XSString) {
-    	  if (m_collationUri == null) {
+    	  if (collation == null) {
     		 normalizedGroupingKeyValue = ((XSString)groupingKeyValue).stringValue();   
     	  }
     	  else {
-             normalizedGroupingKeyValue = new StringWithCollation(((XSString)groupingKeyValue).stringValue(), m_collationUri, m_xpathCollationSupport);
+             normalizedGroupingKeyValue = new StringWithCollation(((XSString)groupingKeyValue).stringValue(), collation, m_xpathCollationSupport);
     	  }
       }
       else if (groupingKeyValue instanceof XNumber) {
@@ -1495,11 +1502,11 @@ public class ElemForEachGroup extends ElemTemplateElement
       }
       else if (groupingKeyValue instanceof ResultSequence) {
     	  if (m_collationUri == null) {
-    		  m_collationUri = XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI;   
+    		  collation = XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI;   
     	  }
     	  
     	  normalizedGroupingKeyValue = new ForEachGroupCompositeGroupingKey(xctxt, (ResultSequence)groupingKeyValue, 
-    			                                                									m_collationUri, m_xpathCollationSupport);
+    			                                                                                                 collation, m_xpathCollationSupport);
       }
       else {
           // Any other data type for grouping key, is treated as string

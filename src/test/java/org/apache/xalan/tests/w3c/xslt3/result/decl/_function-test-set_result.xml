@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-22T12:03:48Z" fail="32" name="function" pass="55" skipped="23" statusUnknown="0" totalRun="87">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:26Z" fail="32" name="function" pass="55" skipped="23" statusUnknown="0" totalRun="87">
    <testResult status="fail" testName="function-0001">
       <outResult>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-integer()</errTrace>
@@ -81,7 +81,7 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-1018">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:x="http://xxx.com/" one="banana"/&gt;</outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="function-1019">
       <outResult>

@@ -643,54 +643,54 @@ public class OpCodes
   public static final int AXES_END_TYPES = 53;
   
   /**
-   * Class definition, specifying XPath 3.1 specific op 
-   * codes.
+   * Class definition, specifying Xalan-J's XPath 3.1 
+   * op codes.
    */
   public class XPath3OpCodes {
 	  /**
-	   * For XPath 3.1 "to" range expressions.
+	   * Represents XPath 3.1 "to" range expressions.
 	   * 
 	   * @xsl.usage advanced
 	   */
 	  public static final int OP_TO = 100;
 
 	  /**
-	   * For XPath 3.1 value comparison operator "eq".
+	   * Represents XPath 3.1 value comparison operator "eq".
 	   * 
 	   * @xsl.usage advanced
 	   */
 	  public static final int OP_VC_EQUALS = 101;
 
 	  /**
-	   * For XPath 3.1 value comparison operator "ne".
+	   * Represents XPath 3.1 value comparison operator "ne".
 	   * 
 	   * @xsl.usage advanced
 	   */
 	  public static final int OP_VC_NOT_EQUALS = 102;
 
 	  /**
-	   * For XPath 3.1 value comparison operator "lt".
+	   * Represents XPath 3.1 value comparison operator "lt".
 	   * 
 	   * @xsl.usage advanced
 	   */
 	  public static final int OP_VC_LT = 103;
 
 	  /**
-	   * For XPath 3.1 value comparison operator "gt".
+	   * Represents XPath 3.1 value comparison operator "gt".
 	   * 
 	   * @xsl.usage advanced
 	   */
 	  public static final int OP_VC_GT = 104;
 
 	  /**
-	   * For XPath 3.1 value comparison operator "le".
+	   * Represents XPath 3.1 value comparison operator "le".
 	   * 
 	   * @xsl.usage advanced
 	   */
 	  public static final int OP_VC_LE = 105;
 
 	  /**
-	   * For XPath 3.1 value comparison operator "ge".
+	   * Represents XPath 3.1 value comparison operator "ge".
 	   * 
 	   * @xsl.usage advanced
 	   */
@@ -711,35 +711,35 @@ public class OpCodes
 	  public static final int OP_SEQUENCE_CONSTRUCTOR_EXPR = 113;
 
 	  /**
-	   * For XPath 3.1 string concatenation operator "||".
+	   * Represents XPath 3.1 string concatenation operator "||".
 	   * 
 	   * @xsl.usage advanced
 	   */
 	  public static final int OP_STR_CONCAT = 114;
 
 	  /**
-	   * For XPath 3.1 node concatenation operator "is".
+	   * Represents XPath 3.1 node concatenation operator "is".
 	   * 
 	   * @xsl.usage advanced
 	   */
 	  public static final int OP_IS = 115;
 
 	  /**
-	   * For XPath 3.1 node concatenation operator "<<".
+	   * Represents XPath 3.1 node concatenation operator "<<".
 	   * 
 	   * @xsl.usage advanced
 	   */
 	  public static final int OP_NC_PRECEDE = 116;
 
 	  /**
-	   * For XPath 3.1 node concatenation operator ">>".
+	   * Represents XPath 3.1 node concatenation operator ">>".
 	   * 
 	   * @xsl.usage advanced
 	   */
 	  public static final int OP_NC_FOLLOWS = 117;
 
 	  /**
-	   * For XPath 3.1 simple map operator '!'.
+	   * Represents XPath 3.1 simple map operator '!'.
 	   * 
 	   * @xsl.usage advanced
 	   */

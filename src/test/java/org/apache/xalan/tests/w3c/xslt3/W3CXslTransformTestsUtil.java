@@ -184,6 +184,16 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			  
     			  continue; 
     		   }
+    		   else if (isBackwardCompatibilityTestCase(node)) {
+     			  // We skip running XSLT backward compatibility test cases
+     			  Element elemTestResult = testResultDoc.createElement("testResult");
+     			  elemTestResult.setAttribute("testName", testCaseName);
+  			      elemTestResult.setAttribute("status", "skipped");
+  			      elemTestResult.setAttribute("feature", "backwards_compatibility");
+     			  elemTestRun.appendChild(elemTestResult);
+     			  
+     			  continue; 
+     		   }
     		   else if (isXslSchemaAwareFeatureTestCase(node)) {
     			   // We skip running XSLT 3.0 schema aware feature test cases
     			   Element elemTestResult = testResultDoc.createElement("testResult");

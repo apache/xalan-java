@@ -277,14 +277,14 @@ public class ElemSort extends ElemTemplateElement
    * This class field, represents an optional collation URI specified 
    * with xsl:sort instruction.
    */
-  private String m_collation = null;
+  private AVT m_collation = null;
   
   /**
    * Get the value of xsl:sort's collation URI.
    * 
    * @return				Collation URI value
    */
-  public String getCollation() {
+  public AVT getCollation() {
 	 return m_collation; 
   }
   
@@ -293,7 +293,7 @@ public class ElemSort extends ElemTemplateElement
    * 
    * @param collation				Collation URI value
    */
-  public void setCollation(String collation) {
+  public void setCollation(AVT collation) {
 	 m_collation = collation; 
   }
   

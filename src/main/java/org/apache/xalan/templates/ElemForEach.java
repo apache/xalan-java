@@ -665,7 +665,13 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	for (int idx = 0; idx < sortElemCount; idx++) {
     	    ElemSort elemSort = (ElemSort)m_sortElems.get(idx);    	    
     	    AVT langAvt = elemSort.getLang();
-    	    String collation = elemSort.getCollation();
+    	    
+    	    String collation = null;
+    	    AVT collationAvt = elemSort.getCollation();
+    	    if (collationAvt != null) {
+    	       collation = collationAvt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
+    	    }
+    	    
     	    if ((langAvt != null) || (collation != null)) {
     	    	bool1 = true;
     	    }
@@ -810,12 +816,14 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
     	int nextNode;
     	while (DTM.NULL != (nextNode = sourceNodes.nextNode()))
-    	{
+    	{    		
     		XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(nextNode, xctxt);
+    		
     		rSeq.add(xdmNode);
     	}
-
+    	
     	processSequenceOrArray(transformer, xctxt, rSeq);
+    	    
     }
     
   }
@@ -1129,9 +1137,15 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 																														   + "the type '" + dataTypeStr + "', specified by XSL sort's "
 																														   + "data-type attribute.", srcLocator); 
 						   }
-					   }						  
+					   }
+					   
+					   int contextNode = xctxt.getCurrentNode();
 
-					   String collation = elemSort.getCollation();				   
+					   String collation = null;
+					   AVT collationAvt = elemSort.getCollation();
+					   if (collationAvt != null) {
+					      collation = collationAvt.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
+					   }
 
 					   SortKey sortKey = new SortKey(sorkKeyObj, sortOrderStr, collation, caseOrderStr, langStr);
 					   if (collation != null) {
@@ -1166,7 +1180,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 				   }
 
 				   resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);
-			   }		   
+			   }
 		   }
 		   else {
 			   int inpSeqSize = xdmItemList.size();

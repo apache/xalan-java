@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:43Z" fail="11" name="xsl-document" pass="14" skipped="0" statusUnknown="0" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:34Z" fail="11" name="xsl-document" pass="14" skipped="0" statusUnknown="0" totalRun="25">
    <testResult status="pass" testName="xsl-document-0101"/>
    <testResult status="fail" testName="xsl-document-0102"/>
    <testResult status="pass" testName="xsl-document-0103"/>
@@ -28,9 +28,7 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="xsl-document-0602"/>
-   <testResult status="fail" testName="xsl-document-0603">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="xsl-document-0603"/>
    <testResult status="pass" testName="xsl-document-0604"/>
    <testResult status="pass" testName="xsl-document-0605"/>
    <testResult status="fail" testName="xsl-document-0606"/>

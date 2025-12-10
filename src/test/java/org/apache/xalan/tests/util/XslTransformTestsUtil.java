@@ -590,6 +590,42 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     
     /**
      * When running W3C XSLT 3.0 test suite, check whether the test case 
+     * is specified to test XSLT version backward compatibility.
+     *  
+     * @param testCaseNode
+     * @return						Boolean value true or false						
+     */
+    protected boolean isBackwardCompatibilityTestCase(Node testCaseNode) {
+    	
+        boolean result = false;
+        
+        NodeList nodeList = testCaseNode.getChildNodes();
+        int nodeListLength = nodeList.getLength();
+        for (int idx = 0; idx < nodeListLength; idx++) {
+     	  Node node = nodeList.item(idx);
+     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
+     		 Element elemNode = (Element)node;
+     		 String elemName = elemNode.getLocalName();
+     		 if ("dependencies".equals(elemName)) {
+     			 NodeList nodeList1 = elemNode.getElementsByTagName("feature");
+     			 if (nodeList1.getLength() == 1) {
+     				 Element elem1 = (Element)(nodeList1.item(0));
+     				 String value = elem1.getAttribute("value");
+     				 if ("backwards_compatibility".equals(value)) {
+     					result = true;
+     					
+     					break; 
+     				 }
+     			 }
+     		 }
+     	  }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * When running W3C XSLT 3.0 test suite, check whether the test case 
      * is written for schema aware feature.
      *  
      * @param testCaseNode

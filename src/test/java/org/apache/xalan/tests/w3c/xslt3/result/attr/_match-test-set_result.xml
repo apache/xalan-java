@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-09T16:29:41Z" fail="86" name="match" pass="96" skipped="112" statusUnknown="0" totalRun="182">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:20Z" fail="84" name="match" pass="98" skipped="112" statusUnknown="0" totalRun="182">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -475,50 +475,8 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult feature="schema_aware" status="skipped" testName="match-243"/>
    <testResult feature="schema_aware" status="skipped" testName="match-244"/>
    <testResult status="pass" testName="match-245"/>
-   <testResult status="fail" testName="match-246a">
-      <outResult>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: ')', '/', '(', ')'</errTrace>
-         <errTrace>Unknown nodetype: letters</errTrace>
-         <errTrace>Extra illegal tokens: 'letters', '(', ')'</errTrace>
-         <errTrace>Unknown nodetype: letters</errTrace>
-         <errTrace>Extra illegal tokens: 'letters', '(', ')', '(', ')'</errTrace>
-         <errTrace>Unknown nodetype: letters</errTrace>
-         <errTrace>Extra illegal tokens: 'letters', '(', ')', '[', 'true', '(', ')', ']', '(', ')'</errTrace>
-         <errTrace>Unknown nodetype: letters</errTrace>
-         <errTrace>Extra illegal tokens: 'letters', '(', ')', '[', 'true', '(', ')', '(', ')', ']'</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: ')', 'letters'</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: ')', 'letters'</errTrace>
-         <errTrace>Unknown nodetype: (</errTrace>
-         <errTrace>Extra illegal tokens: '(', '(', ')', ')', 'letters'</errTrace>
-         <errTrace>Expected ), but found: ::</errTrace>
-         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
-org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="match-246b">
-      <outResult>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: ')', '/', '(', ')'</errTrace>
-         <errTrace>Unknown nodetype: letters</errTrace>
-         <errTrace>Extra illegal tokens: 'letters', '(', ')'</errTrace>
-         <errTrace>Unknown nodetype: letters</errTrace>
-         <errTrace>Extra illegal tokens: 'letters', '(', ')', '(', ')'</errTrace>
-         <errTrace>Unknown nodetype: letters</errTrace>
-         <errTrace>Extra illegal tokens: 'letters', '(', ')', '[', 'true', '(', ')', ']', '(', ')'</errTrace>
-         <errTrace>Unknown nodetype: letters</errTrace>
-         <errTrace>Extra illegal tokens: 'letters', '(', ')', '[', 'true', '(', ')', '(', ')', ']'</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: ')', 'letters'</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: ')', 'letters'</errTrace>
-         <errTrace>Unknown nodetype: (</errTrace>
-         <errTrace>Extra illegal tokens: '(', '(', ')', ')', 'letters'</errTrace>
-         <errTrace>XTSE0010 : an instruction xsl:next-match is not known to the XSLT processor.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-246a"/>
+   <testResult status="pass" testName="match-246b"/>
    <testResult status="fail" testName="match-247">
       <outResult>
          <errTrace>XPST0003 : An XPath expression @* | node()  has syntax error. Unknown op code : 0.</errTrace>

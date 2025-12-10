@@ -332,7 +332,7 @@ public class XSLTSchema extends XSLTElementDef
     // Optional
     // xsl:for-each-group, xsl:sort 
     XSLTAttributeDef collationAttrOpt = new XSLTAttributeDef(null, "collation", 
-    	                                              XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+    	                                              XSLTAttributeDef.T_AVT, false, true, XSLTAttributeDef.ERROR);
     
     // Optional
     // xsl:sort

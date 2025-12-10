@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-11-13T16:37:35Z" fail="43" name="sequence" pass="43" skipped="6" statusUnknown="0" totalRun="86">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:25Z" fail="42" name="sequence" pass="43" skipped="7" statusUnknown="0" totalRun="85">
    <testResult status="fail" testName="sequence-0101"/>
    <testResult status="fail" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -37,7 +37,7 @@
    <testResult status="pass" testName="sequence-0116"/>
    <testResult status="pass" testName="sequence-0117"/>
    <testResult status="pass" testName="sequence-0118"/>
-   <testResult status="fail" testName="sequence-0119"/>
+   <testResult feature="backwards_compatibility" status="skipped" testName="sequence-0119"/>
    <testResult reason="Xalan configured" status="skipped" testName="sequence-0120"/>
    <testResult status="pass" testName="sequence-0121"/>
    <testResult status="fail" testName="sequence-0122"/>
@@ -67,10 +67,12 @@
    <testResult status="pass" testName="sequence-0134"/>
    <testResult status="fail" testName="sequence-0135">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;foo/&gt;&#13;
+&#13;
 </outResult>
    </testResult>
    <testResult status="fail" testName="sequence-0136">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+&#13;
 </outResult>
    </testResult>
    <testResult status="skipped" testName="sequence-0137" xsltVersion="XSLT 2.0/1.0 only test case"/>
