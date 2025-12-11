@@ -377,21 +377,28 @@ public class XSLTElementProcessor extends ElemTemplateElement
     			{
     				String attrName = attributes.getQName(i);
     				String attrValue = attributes.getValue(i);
-    				
+
     				// Remove any available XPath comments, from an XML 
     				// attribute value.
     				if (StringUtil.isStrHasXPathBalancedCommentDelim(attrValue)) {  
-    				   attrValue = StringUtil.removeXPathComments(attrValue);
+    					attrValue = StringUtil.removeXPathComments(attrValue);
     				}
-    				
+    				    				    				    			
     				// Remove AVT references having XPath empty expressions, from 
     				// XML attribute value.
-    				if (attrDef.getType() == XSLTAttributeDef.T_AVT) {
-    				   attrValue = attrValue.replaceAll("\\{\\s*\\}", "");
+    				if (attrDef.getSupportsAVT()) {    					
+    					attrValue = attrValue.replaceAll("\\{\\s*\\}", "");    				   
     				}
-    				
-    				boolean success = attrDef.setAttrValue(handler, attrUri, attrLocalName,
-    						                                                            attrName, attrValue, target);
+
+    				boolean success = true;
+    				if ((attrDef.getType() == XSLTAttributeDef.T_URL) && "".equals(attrValue)) {
+    					success = false;  
+    				}
+
+    				if (success) {
+    					success = attrDef.setAttrValue(handler, attrUri, attrLocalName, attrName, attrValue, target);
+    				}    				
+
     				// Now we only add the element if it passed a validation check
     				if (success)
     					processedDefs.add(attrDef);

@@ -644,7 +644,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         	}
         }
         
-        final int sourceNode = xctxt.getCurrentNode();
+        final int currentNode = xctxt.getCurrentNode();
         
         DTMCursorIterator sourceNodes = null;
         
@@ -742,10 +742,30 @@ public class ElemForEachGroup extends ElemTemplateElement
 
         	xctxt.pushSAXLocatorNull();
         	xctxt.pushContextNodeList(sourceNodes);
-        	transformer.pushElemTemplateElement(null);                        
+        	transformer.pushElemTemplateElement(null);
+        	
+        	if (m_sortElems != null) {
+        	   int sortElemCount = m_sortElems.size();
+        	   for (int idx = 0; idx < sortElemCount; idx++) {
+        		  ElemSort elemSort = (ElemSort)(m_sortElems.elementAt(idx));
+        		  AVT stableAvt = elemSort.getStable();
+        		  if (stableAvt != null) {
+        			 String stableValue = stableAvt.evaluate(xctxt, currentNode, xctxt.getNamespaceContext());
+        			 stableValue = stableValue.trim();
+        			 if (!("yes".equals(stableValue) || "1".equals(stableValue) || "true".equals(stableValue) 
+																	        					 || "no".equals(stableValue) || "0".equals(stableValue) 
+																	        					 || "false".equals(stableValue))) {
+        				 throw new javax.xml.transform.TransformerException("XTSE0020 : An XSL 'sort' instruction attribute 'stable''s value " + 
+																			        						 stableValue + " is not valid. The allowed "
+																			        						 + "values for attribute 'stable' are yes,1,true,no,0,false.", 
+																			        						 elemSort);
+        			 }
+        		  }
+        	   }
+        	}
 
         	final Vector sortKeys = (m_sortElems == null) ? null : transformer.processSortKeysForEachGroup(
-        			                                                                                    this, sourceNode);            
+        			                                                                                    this, currentNode);            
         	if (sortKeys != null) {
         		/**
         		 * There are xsl:sort elements within xsl:for-each-group. Sort the groups,
@@ -917,7 +937,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         }
         finally {
         	if (transformer.getDebug()) {
-        		transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
+        		transformer.getTraceManager().emitSelectedEndEvent(currentNode, this,
         														   "select", m_selectExpression,
         														   	new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
         	}
@@ -937,7 +957,7 @@ public class ElemForEachGroup extends ElemTemplateElement
          * context node to the node which was the context node before xsl:for-each-group evaluation 
          * was started.
          */         
-        xctxt.pushCurrentNode(sourceNode);
+        xctxt.pushCurrentNode(currentNode);
   }
   
   /**

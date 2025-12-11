@@ -506,6 +506,27 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  xctxt.pushCurrentExpressionNode(DTM.NULL);
 		  xctxt.pushSAXLocatorNull();
 		  transformer.pushElemTemplateElement(null);
+		  
+		  if (m_sortElems != null) {
+			  int sortElemCount = m_sortElems.size();
+			  for (int idx = 0; idx < sortElemCount; idx++) {
+				  ElemSort elemSort = (ElemSort)(m_sortElems.elementAt(idx));
+				  AVT stableAvt = elemSort.getStable();
+				  if (stableAvt != null) {
+					  String stableValue = stableAvt.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
+					  stableValue = stableValue.trim();
+					  if (!("yes".equals(stableValue) || "1".equals(stableValue) || "true".equals(stableValue) 
+																										  || "no".equals(stableValue) || "0".equals(stableValue) 
+																										  || "false".equals(stableValue))) {
+						  throw new javax.xml.transform.TransformerException("XTSE0020 : An XSL 'sort' instruction attribute 'stable''s value " + 
+																																  stableValue + " is not valid. The allowed "
+																																  + "values for attribute 'stable' are yes,1,true,no,0,false.", 
+																																  elemSort);
+					  }
+				  }
+			  }
+       	  }
+		  
 		  final Vector keys = (m_sortElems == null)
 											  ? null
 											  : transformer.processSortKeys(this, contextNode);

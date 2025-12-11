@@ -38,6 +38,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -403,7 +404,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                                                              TransformerException {
     
     final XPathContext xctxt = transformer.getXPathContext();    
-    final int sourceNode = xctxt.getCurrentNode();
+    
+    final int contextNode = xctxt.getCurrentNode();
     
     SourceLocator srcLocator = xctxt.getSAXLocator();
     
@@ -514,7 +516,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         boolean isProcessAsNodeset = true;
         DTMCursorIterator dtmIter = null;                     
         try {
-           dtmIter = locPathIterator.asIterator(xctxt, sourceNode);
+           dtmIter = locPathIterator.asIterator(xctxt, contextNode);
         }
         catch (ClassCastException ex) {
            isProcessAsNodeset = false;
@@ -669,11 +671,21 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	    String collation = null;
     	    AVT collationAvt = elemSort.getCollation();
     	    if (collationAvt != null) {
-    	       collation = collationAvt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
+    	       collation = collationAvt.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
     	    }
     	    
-    	    if ((langAvt != null) || (collation != null)) {
-    	    	bool1 = true;
+    	    if (langAvt != null) {    	    	    	           	       
+    	       String langStr = langAvt.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
+    	       if (!"en".equals(langStr)) {
+    	    	  bool1 = true;
+    	       }
+    	       else if ((collation != null) && XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI.equals(collation)) {
+    	    	  bool1 = true; 
+    	       }
+    	    }
+    	    
+    	    if (!bool1 && (collation != null)) {
+    	       bool1 = true;
     	    }
     	}
     }
@@ -681,9 +693,9 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     boolean bool2 = false;
     if (!bool1 && (sortElemCount > 0)) {
     	for (int i = 0; i < sortElemCount; i++) {
-    		ElemSort sort = (ElemSort) m_sortElems.get(i);
-    		if (sort.getFirstChildElem() == null) {
-    			XPath selectPatternXPath = sort.getSelect();
+    		ElemSort elemSort = (ElemSort) m_sortElems.get(i);
+    		if (elemSort.getFirstChildElem() == null) {
+    			XPath selectPatternXPath = elemSort.getSelect();
     			if (selectPatternXPath == null) {
     				selectPatternXPath = new XPath(".", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);  
     			}
@@ -693,12 +705,14 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     				String namespace = func1.getNamespace();
     				if (!Constants.S_EXTENSIONS_JAVA_URL.equals(namespace)) {
     					bool2 = true;
+    					
     					break;
     				}
     			}
     		}
     		else {
     			bool2 = true;
+    			
     			break;  
     		}
     	}
@@ -707,12 +721,12 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     if (!(bool1 || bool2)) {
     	// We use Xalan-J's XSLT 1.0 processor sort algorithm here
     	
-    	DTMCursorIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+    	DTMCursorIterator sourceNodes = m_selectExpression.asIterator(xctxt, contextNode);
 
     	try
     	{
     		final Vector sortKeys = (m_sortElems == null) ? null 
-                                                          : transformer.processSortKeys(this, sourceNode);
+                                                          : transformer.processSortKeys(this, contextNode);
     		
     		// Sort if we need to
     		if (sortKeys != null)
@@ -739,8 +753,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     		xctxt.pushContextNodeList(sourceNodes);
     		transformer.pushElemTemplateElement(null);
 
-    		DTM dtm = xctxt.getDTM(sourceNode);
-    		int docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
+    		DTM dtm = xctxt.getDTM(contextNode);
+    		int docID = contextNode & DTMManager.IDENT_DTM_DEFAULT;
     		int child;
 
     		while (DTM.NULL != (child = sourceNodes.nextNode()))
@@ -797,7 +811,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	finally
     	{
     		if (transformer.getDebug())
-    			transformer.getTraceManager().emitSelectedEndEvent(sourceNode, this,
+    			transformer.getTraceManager().emitSelectedEndEvent(contextNode, this,
 													    					"select", new XPath(m_selectExpression),
 													    					new org.apache.xpath.objects.XMLNodeCursorImpl(sourceNodes));
 
@@ -810,7 +824,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	}    
     }
     else {
-    	DTMCursorIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+    	DTMCursorIterator sourceNodes = m_selectExpression.asIterator(xctxt, contextNode);
 
     	ResultSequence rSeq = new ResultSequence();
 

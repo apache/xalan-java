@@ -337,7 +337,7 @@ public class XSLTSchema extends XSLTElementDef
     // Optional
     // xsl:sort
     XSLTAttributeDef stableAttrOpt = new XSLTAttributeDef(null, "stable",
-                                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);    
+                                                      XSLTAttributeDef.T_AVT, false, true, XSLTAttributeDef.ERROR);    
     
     // Optional
     // xsl:value-of

@@ -305,7 +305,7 @@ public class ElemSort extends ElemTemplateElement
    * XSLT 3.0 spec, section "13.1.1 The Sorting Process" defines
    * the meaning of a stable sort.
    */
-  private boolean m_stable = true;
+  private AVT m_stable = null;
   
   /**
    * A boolean value indicating, whether xsl:sort element has 
@@ -318,7 +318,7 @@ public class ElemSort extends ElemTemplateElement
    * 
    * @return				'stable' attribute's value
    */
-  public boolean getStable() {
+  public AVT getStable() {
 	 return m_stable; 
   }
   
@@ -327,7 +327,7 @@ public class ElemSort extends ElemTemplateElement
    * 
    * @param stable				'stable' attribute's value
    */
-  public void setStable(boolean stable) {
+  public void setStable(AVT stable) {
 	 m_stable = stable;
 	 m_isStableDeclared = true;
   }
@@ -366,7 +366,9 @@ public class ElemSort extends ElemTemplateElement
   
   public void execute(TransformerImpl transformer) throws TransformerException 
   {
-	  XPathContext xctxt = transformer.getXPathContext();
+	  XPathContext xctxt = transformer.getXPathContext();	  
+	  
+	  final int contextNode = xctxt.getCurrentNode();
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
@@ -374,6 +376,20 @@ public class ElemSort extends ElemTemplateElement
 	  if ((m_selectExpression != null) && (elemTemplateElem != null)) {
 		 throw new javax.xml.transform.TransformerException("XTSE1015 : An XSL 'sort' instruction with an attribute "
 		 		                                                                              + "'select' should have an empty contained sequence constructor.", srcLocator); 
+	  }
+	  
+	  String stableValue = null;
+	  
+	  if (m_stable != null) {
+		  stableValue = m_stable.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
+		  stableValue = stableValue.trim();
+		  if (!("yes".equals(stableValue) || "1".equals(stableValue) || "true".equals(stableValue) 
+				                                                  || "no".equals(stableValue) || "0".equals(stableValue) 
+				                                                                                         || "false".equals(stableValue))) {
+			  throw new javax.xml.transform.TransformerException("XTSE0020 : An XSL 'sort' instruction attribute 'stable''s value " + 
+				                                                                                        stableValue + " is not valid. The allowed "
+				                                                                                        + "values for attribute 'stable' are yes,1,true,no,0,false.", srcLocator);
+		  }
 	  }
   }
 

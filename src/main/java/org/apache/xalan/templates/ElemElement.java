@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import javax.xml.XMLConstants;
@@ -54,7 +51,6 @@ public class ElemElement extends ElemUse
    * The name attribute is interpreted as an attribute value template.
    * It is an error if the string that results from instantiating the
    * attribute value template is not a QName.
-   * @serial
    */
   protected AVT m_name_avt = null;
 
@@ -89,7 +85,6 @@ public class ElemElement extends ElemUse
    * as an attribute value template. The string that results from
    * instantiating the attribute value template should be a URI reference.
    * It is not an error if the string is not a syntactically legal URI reference.
-   * @serial
    */
   protected AVT m_namespace_avt = null;
 

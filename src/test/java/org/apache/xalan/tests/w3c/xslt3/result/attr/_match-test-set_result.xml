@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:20Z" fail="84" name="match" pass="98" skipped="112" statusUnknown="0" totalRun="182">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-11T12:34:12Z" fail="82" name="match" pass="100" skipped="112" statusUnknown="0" totalRun="182">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -55,11 +55,11 @@
    <testResult status="fail" testName="match-050"/>
    <testResult status="fail" testName="match-051">
       <outResult>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
          <errTrace>Extra illegal tokens: 'x'</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
          <errTrace>Extra illegal tokens: 'y', '/', '/', 'YYY'</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
          <errTrace>Extra illegal tokens: 'y'</errTrace>
       </outResult>
    </testResult>
@@ -87,16 +87,11 @@
    <testResult status="fail" testName="match-066"/>
    <testResult status="fail" testName="match-067">
       <outResult>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="match-068">
-      <outResult>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: 'doc', ']'</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-068"/>
    <testResult status="fail" testName="match-069">
       <outResult>
          <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = namespace</errTrace>
@@ -139,7 +134,7 @@
    <testResult status="skipped" testName="match-081" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="fail" testName="match-081a">
       <outResult>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
          <errTrace>Extra illegal tokens: 'bar', '|', 'baz', ')'</errTrace>
       </outResult>
    </testResult>
@@ -148,7 +143,7 @@
    <testResult status="fail" testName="match-082b"/>
    <testResult status="fail" testName="match-082c">
       <outResult>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
          <errTrace>Extra illegal tokens: 'doc', '|', 'cod', ')'</errTrace>
       </outResult>
    </testResult>
@@ -460,13 +455,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult status="fail" testName="match-237"/>
    <testResult status="fail" testName="match-238"/>
-   <testResult status="fail" testName="match-239">
-      <outResult>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: '.', '[', '.', 'instance', 'of', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']', ')'</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-239"/>
    <testResult status="fail" testName="match-240a"/>
    <testResult status="fail" testName="match-240b"/>
    <testResult status="fail" testName="match-240c"/>

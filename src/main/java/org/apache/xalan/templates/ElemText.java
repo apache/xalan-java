@@ -25,16 +25,8 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.w3c.dom.DOMException;
 
 /**
- * Implement xsl:template.
- * This primarily acts as a marker on the element
- * stack to signal that whitespace should be preserved.
- * <pre>
- * <!ELEMENT xsl:text (#PCDATA)>
- * <!ATTLIST xsl:text
- *   disable-output-escaping (yes|no) "no"
- * >
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Text">section-Creating-Text in XSLT Specification</a>
+ * Implementation of XSLT 3.0 xsl:text instruction.
+ * 
  * @xsl.usage advanced
  */
 public class ElemText extends ElemTemplateElement
@@ -43,7 +35,6 @@ public class ElemText extends ElemTemplateElement
 
   /**
    * Tells if this element should disable escaping.
-   * @serial
    */
   private boolean m_disableOutputEscaping = false;
 

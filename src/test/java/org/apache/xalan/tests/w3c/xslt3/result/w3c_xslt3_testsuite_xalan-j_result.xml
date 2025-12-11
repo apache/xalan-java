@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-12-10T16:53:07Z" desc="W3C XSLT 3.0 test suite results" fail="945" pass="2427" skipped="595" success="71.85%" totalRun="3378" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-12-11T12:35:34Z" desc="W3C XSLT 3.0 test suite results" fail="933" pass="2438" skipped="596" success="72.19%" totalRun="3377" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="31" pass="80" skipped="93" success="72.07%" totalRun="111"/>
-    <avt fail="4" pass="30" skipped="1" success="88.24%" totalRun="34"/>
+    <avt fail="1" pass="33" skipped="1" success="97.06%" totalRun="34"/>
     <disable-output-escaping fail="5" pass="22" skipped="5" success="81.48%" totalRun="27"/>
     <expand-text fail="8" pass="51" skipped="3" success="86.44%" totalRun="59"/>
-    <match fail="84" pass="98" skipped="112" success="53.85%" totalRun="182"/>
+    <match fail="82" pass="100" skipped="112" success="54.95%" totalRun="182"/>
     <mode fail="59" pass="64" skipped="46" success="52.03%" totalRun="123"/>
     <select fail="27" pass="104" skipped="26" success="78.79%" totalRun="132"/>
     <tunnel fail="40" pass="18" skipped="0" success="31.03%" totalRun="58"/>
@@ -46,13 +46,13 @@
     <attribute fail="11" pass="11" skipped="7" success="47.83%" totalRun="23"/>
     <call-template fail="12" pass="28" skipped="2" success="70.0%" totalRun="40"/>
     <choose fail="6" pass="48" skipped="1" success="88.89%" totalRun="54"/>
-    <copy fail="49" pass="76" skipped="23" success="60.8%" totalRun="125"/>
+    <copy fail="47" pass="78" skipped="23" success="62.4%" totalRun="125"/>
     <element fail="14" pass="15" skipped="0" success="51.72%" totalRun="29"/>
-    <for-each-group fail="30" pass="50" skipped="5" success="62.5%" totalRun="80"/>
+    <for-each-group fail="28" pass="51" skipped="6" success="64.56%" totalRun="79"/>
     <iterate fail="1" pass="43" skipped="0" success="97.73%" totalRun="44"/>
     <message fail="7" pass="34" skipped="3" success="80.95%" totalRun="42"/>
-    <sequence fail="42" pass="43" skipped="7" success="50.59%" totalRun="85"/>
-    <sort fail="30" pass="51" skipped="0" success="62.96%" totalRun="81"/>
+    <sequence fail="40" pass="45" skipped="7" success="52.94%" totalRun="85"/>
+    <sort fail="29" pass="52" skipped="0" success="64.2%" totalRun="81"/>
     <try fail="7" pass="27" skipped="8" success="79.41%" totalRun="34"/>
     <xsl-document fail="11" pass="14" skipped="0" success="56.0%" totalRun="25"/>
   </insn>

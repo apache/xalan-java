@@ -46,8 +46,6 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
-	  
-	verifyXSLAllowedAttributes(localName, attributes);
 
     super.startElement(handler, uri, localName, rawName, attributes);
     try
@@ -63,6 +61,8 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
         elem.setDOMBackPointer(handler.getOriginatingNode());
         elem.setLocaterInfo(handler.getLocator());
         elem.setPrefixes(handler.getNamespaceSupport());
+        
+        verifyXSLAllowedAttributes(localName, attributes, elem, handler);
       }
       catch (InstantiationException ie)
       {
@@ -130,9 +130,11 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
    *                                    that is present within the stylesheet.
    * @param attributes					XSLT instruction whose local name is localName, it's 
    *                                    attributes that are present within the stylesheet.	
+   * @param elem 
+   * @param handler 
    */
-  private void verifyXSLAllowedAttributes(String localName, Attributes attributes) 
-		                                                                      throws org.apache.xml.utils.WrappedRuntimeException {
+  private void verifyXSLAllowedAttributes(String localName, Attributes attributes, ElemTemplateElement elem, StylesheetHandler handler) 
+		                                                                      throws org.xml.sax.SAXException {
 	  if ((Constants.ELEMNAME_FOREACHGROUP_STRING).equals(localName) || (Constants.ELEMNAME_COPY_OF_STRING).equals(localName)) {
 		  int attrCount = attributes.getLength();
 		  if (attrCount > 0) {
@@ -141,9 +143,9 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
 				  String attrLocalName = attributes.getLocalName(idx);
 				  XSLTAttributeDef attrDef = elemDef.getAttributeDef(null, attrLocalName);
 				  if (attrDef == null) {
-					  TransformerException te = new TransformerException("XTSE0090 : An attribute '" + attrLocalName + "' is not allowed "
-							  															          + "to appear on XSL element \"" + localName + "\".", this);
-					  throw new org.apache.xml.utils.WrappedRuntimeException(te);
+					  TransformerException te = new TransformerException("XTSE0090 : An attribute '" + attrLocalName + "' is not defined "
+							  															          + "to appear on XSL element \"" + localName + "\".", elem);					  
+					  handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMTMPL, null, te);
 				  }
 			  }
 		  }

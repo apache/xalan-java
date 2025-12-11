@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:25Z" fail="42" name="sequence" pass="43" skipped="7" statusUnknown="0" totalRun="85">
-   <testResult status="fail" testName="sequence-0101"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-11T12:34:16Z" fail="40" name="sequence" pass="45" skipped="7" statusUnknown="0" totalRun="85">
+   <testResult status="pass" testName="sequence-0101"/>
    <testResult status="fail" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
    <testResult status="pass" testName="sequence-0104"/>
@@ -47,11 +47,11 @@
    <testResult status="fail" testName="sequence-0126"/>
    <testResult reason="Xalan configured" status="skipped" testName="sequence-0127"/>
    <testResult status="pass" testName="sequence-0128"/>
-   <testResult status="fail" testName="sequence-0129">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;z&gt;abc&lt;/z&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="sequence-0129"/>
    <testResult status="fail" testName="sequence-0130">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;z&gt;ab&lt;/z&gt;</outResult>
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: Variable $q accessed before it is bound!</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="sequence-0131">
       <outResult>
@@ -130,7 +130,7 @@
    <testResult status="fail" testName="sequence-1201">
       <outResult>
          <errTrace>Expected ), but found: ,</errTrace>
-         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to java.lang.String</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="sequence-1202"/>

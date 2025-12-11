@@ -818,7 +818,7 @@ public class ElemVariable extends ElemTemplateElement
           var = XString.EMPTYSTRING;
       }
       else {
-    	  int rootNodeHandleOfRtf;
+    	  int rootNodeHandleOfRtf = DTM.NULL;
     	  
     	  if (m_parentNode instanceof Stylesheet) {
     		  // Global variable
@@ -945,7 +945,37 @@ public class ElemVariable extends ElemTemplateElement
     		  }
     	  }
     	  else {
-    		  rootNodeHandleOfRtf = transformer.transformToRTF(this);
+    		  ElemTemplateElement elemTemplateElement = getFirstChildElem();
+    		  ResultSequence rSeq = new ResultSequence();
+    		  if (m_asAttr != null) {    			  
+    			  while (elemTemplateElement instanceof ElemText) {
+    				 ElemTemplateElement elem1 = elemTemplateElement.getFirstChildElem();
+    				 if ((elem1 != null) && (elem1 instanceof ElemTextLiteral)) {
+    					 ElemTextLiteral elemTextLiteral = (ElemTextLiteral)elem1;
+    					 char[] chrArray = elemTextLiteral.getChars();
+    					 String strValue = String.valueOf(chrArray);
+    					 rSeq.add(new XSString(strValue));
+
+    					 elemTemplateElement = elem1.getNextSiblingElem();
+    				 }
+    				 else {    					 
+    					 break;
+    				 }
+    			  }    			      			  
+    		  }
+    		  
+    		  if (rSeq.size() > 0) {
+    			  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	
+    			  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());    	
+    			  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+    			  
+    			  var = SequenceTypeSupport.castXdmValueToAnotherType(rSeq, seqExpectedTypeData, false);
+    			  
+    			  return var;
+			  }
+    		  else {
+    		      rootNodeHandleOfRtf = transformer.transformToRTF(this);
+    		  }
     	  }
     	  
     	  if (XslTransformData.m_xpathInlineFunction != null) {

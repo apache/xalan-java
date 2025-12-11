@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:24Z" fail="49" name="copy" pass="76" skipped="23" statusUnknown="0" totalRun="125">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-11T12:34:15Z" fail="47" name="copy" pass="78" skipped="23" statusUnknown="0" totalRun="125">
    <testResult status="pass" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="pass" testName="copy-0103"/>
@@ -7,11 +7,7 @@
          <errTrace>XTSE0010 : in is not allowed in this position in the stylesheet</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="copy-0105">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute 'match' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="copy-0105"/>
    <testResult status="pass" testName="copy-0201"/>
    <testResult status="pass" testName="copy-0202"/>
    <testResult status="pass" testName="copy-0203"/>
@@ -28,86 +24,22 @@
    <testResult status="pass" testName="copy-0609"/>
    <testResult status="pass" testName="copy-0610"/>
    <testResult status="pass" testName="copy-0611"/>
-   <testResult status="fail" testName="copy-0612">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0613">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0614">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0615">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0616">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0617">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0618">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0619">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0620">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0621">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0622">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0623">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0624">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0625">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0626">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="copy-0627">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="copy-0612"/>
+   <testResult status="fail" testName="copy-0613"/>
+   <testResult status="fail" testName="copy-0614"/>
+   <testResult status="fail" testName="copy-0615"/>
+   <testResult status="fail" testName="copy-0616"/>
+   <testResult status="fail" testName="copy-0617"/>
+   <testResult status="fail" testName="copy-0618"/>
+   <testResult status="fail" testName="copy-0619"/>
+   <testResult status="fail" testName="copy-0620"/>
+   <testResult status="fail" testName="copy-0621"/>
+   <testResult status="fail" testName="copy-0622"/>
+   <testResult status="fail" testName="copy-0623"/>
+   <testResult status="fail" testName="copy-0624"/>
+   <testResult status="fail" testName="copy-0625"/>
+   <testResult status="fail" testName="copy-0626"/>
+   <testResult status="fail" testName="copy-0627"/>
    <testResult status="pass" testName="copy-0701"/>
    <testResult status="pass" testName="copy-0801"/>
    <testResult status="pass" testName="copy-0901"/>
@@ -166,12 +98,18 @@
    <testResult status="pass" testName="copy-1219"/>
    <testResult status="fail" testName="copy-1220">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
+         <errTrace>XTSE0090 : An attribute '_copy-namespaces' is not defined to appear on XSL element "copy-of".</errTrace>
+         <errTrace>A location step was expected following the '/' or '//' token.</errTrace>
+         <errTrace>Expected ,, but found: (</errTrace>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to java.lang.String</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="copy-1221">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute '_copy-namespaces' is not allowed to appear on XSL element "copy-of".</errTrace>
+         <errTrace>XTSE0090 : An attribute '_copy-namespaces' is not defined to appear on XSL element "copy-of".</errTrace>
+         <errTrace>A location step was expected following the '/' or '//' token.</errTrace>
+         <errTrace>Expected ,, but found: (</errTrace>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to java.lang.String</errTrace>
       </outResult>
    </testResult>
    <testResult reason="Xalan configured" status="skipped" testName="copy-1301"/>
@@ -205,14 +143,12 @@
    <testResult status="pass" testName="copy-3001"/>
    <testResult status="fail" testName="copy-3002">
       <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute 'copy-accumulators' is not allowed to appear on XSL element "copy-of".</errTrace>
+         <errTrace>XTSE0090 : An attribute 'copy-accumulators' is not defined to appear on XSL element "copy-of".</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-before()</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-before()</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="copy-3003">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTSE0090 : An attribute 'copy-accumulators' is not allowed to appear on XSL element "copy-of".</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="copy-3003"/>
    <testResult status="pass" testName="copy-3101"/>
    <testResult status="pass" testName="copy-3102"/>
    <testResult status="pass" testName="copy-3301"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:20Z" fail="4" name="avt" pass="30" skipped="1" statusUnknown="0" totalRun="34">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-11T12:34:12Z" fail="1" name="avt" pass="33" skipped="1" statusUnknown="0" totalRun="34">
    <testResult status="pass" testName="avt-0101"/>
    <testResult status="pass" testName="avt-0201"/>
    <testResult status="pass" testName="avt-0202"/>
@@ -11,7 +11,7 @@
    <testResult status="pass" testName="avt-0701"/>
    <testResult status="pass" testName="avt-0801"/>
    <testResult status="fail" testName="avt-0901"/>
-   <testResult status="fail" testName="avt-1001"/>
+   <testResult status="pass" testName="avt-1001"/>
    <testResult status="pass" testName="avt-1101"/>
    <testResult status="pass" testName="avt-1201"/>
    <testResult status="pass" testName="avt-1202"/>
@@ -31,17 +31,7 @@
    <testResult status="pass" testName="avt-2001"/>
    <testResult status="pass" testName="avt-2101"/>
    <testResult status="pass" testName="avt-2102"/>
-   <testResult status="fail" testName="avt-2103">
-      <outResult>
-         <errTrace>Empty expression!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="avt-2103"/>
    <testResult status="pass" testName="avt-2201"/>
-   <testResult status="fail" testName="avt-3201">
-      <outResult>
-         <errTrace>A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: 'http://www.w3.org/2001/XMLSchema', ':', 'string', '(', ''foo'', ')', '}'</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="avt-3201"/>
 </testrun>
