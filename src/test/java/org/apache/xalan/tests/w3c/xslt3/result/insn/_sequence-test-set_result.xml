@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-11T12:34:16Z" fail="40" name="sequence" pass="45" skipped="7" statusUnknown="0" totalRun="85">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-11T17:04:46Z" fail="35" name="sequence" pass="50" skipped="7" statusUnknown="0" totalRun="85">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="fail" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -6,34 +6,18 @@
    <testResult status="fail" testName="sequence-0105"/>
    <testResult status="fail" testName="sequence-0106">
       <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
+         <errTrace>XTTE0570 : The source value '' cannot be cast to a type xs:integer *.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="sequence-0107">
-      <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="sequence-0108">
-      <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="sequence-0107"/>
+   <testResult status="pass" testName="sequence-0108"/>
    <testResult status="pass" testName="sequence-0109"/>
    <testResult status="pass" testName="sequence-0110"/>
    <testResult status="fail" testName="sequence-0111"/>
    <testResult status="pass" testName="sequence-0112"/>
    <testResult status="fail" testName="sequence-0113"/>
-   <testResult status="fail" testName="sequence-0114">
-      <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="sequence-0115">
-      <outResult>
-         <errTrace>Empty expression!</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="sequence-0114"/>
+   <testResult status="pass" testName="sequence-0115"/>
    <testResult status="pass" testName="sequence-0116"/>
    <testResult status="pass" testName="sequence-0117"/>
    <testResult status="pass" testName="sequence-0118"/>
@@ -54,15 +38,11 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="sequence-0131">
-      <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;zzz&gt;1,4,9,16,25,36,49,64,81,100&lt;/zzz&gt;&#13;
+&#13;
+</outResult>
    </testResult>
-   <testResult status="fail" testName="sequence-0132">
-      <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="sequence-0132"/>
    <testResult status="pass" testName="sequence-0133"/>
    <testResult status="pass" testName="sequence-0134"/>
    <testResult status="fail" testName="sequence-0135">
@@ -78,7 +58,7 @@
    <testResult status="skipped" testName="sequence-0137" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="fail" testName="sequence-0137a">
       <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
+         <errTrace>XTTE0570 : The supplied value cannot be cast to type xs:integer .</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="sequence-0138"/>

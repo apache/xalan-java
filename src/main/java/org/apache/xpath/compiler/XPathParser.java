@@ -376,7 +376,8 @@ public class XPathParser
     
     m_xpathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs();
 
-    Lexer lexer = new Lexer(compiler, namespaceContext, this);
+    Lexer lexer = new Lexer(compiler, namespaceContext, this);    
+    lexer.setSourceLocator(m_sourceLocator);
     
     // Remove any available XPath comments, from an XPath 
     // expression string.
@@ -441,7 +442,10 @@ public class XPathParser
   	
         if (newExpression != null) {
         	(m_ops.m_tokenQueue).removeAllElements();    	
+        	
         	lexer = new Lexer(compiler, namespaceContext, this);
+        	lexer.setSourceLocator(m_sourceLocator);
+        	
         	lexer.tokenize(newExpression);
 
         	m_ops.setOp(0,OpCodes.OP_XPATH);
@@ -539,6 +543,7 @@ public class XPathParser
     m_expression = expression;
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
+    lexer.setSourceLocator(m_sourceLocator);
 
     lexer.tokenize(expression);
 
@@ -597,6 +602,7 @@ public class XPathParser
 	  m_functionTable = compiler.getFunctionTable();
 
 	  Lexer lexer = new Lexer(compiler, namespaceContext, this);
+	  lexer.setSourceLocator(m_sourceLocator);
 
 	  lexer.tokenize(expression);
 

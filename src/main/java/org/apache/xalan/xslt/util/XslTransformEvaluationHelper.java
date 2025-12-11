@@ -152,7 +152,8 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Get prefix from namespace uri, declared within XSL transformation context. 
+     * Get prefix from XML namespace uri, declared within XSL transformation 
+     * context. 
      */
     public static String getPrefixFromNsUri(String nsUri, List<XMLNSDecl> nsPrefixTable) {    	
     	String xmlSchemaNsPrefix = null;
@@ -171,22 +172,24 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Get namespace uri from prefix, declared within XSL transformation context. 
+     * Method definition, to get XML namespace uri from prefix, declared 
+     * within XSL transformation context. 
      */
     public static String getNsUriFromPrefix(String prefix, List<XMLNSDecl> nsPrefixTable) {
-    	String nsUri = null;
     	
-    	if (prefix != null) {
+    	String result = null;
+
+    	if (prefix != null) {    		
     		for (int idx = 0; idx < nsPrefixTable.size(); idx++) {
     			XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
     			if (prefix.equals(xmlNSDecl.getPrefix())) {
-    				nsUri = xmlNSDecl.getURI();
+    				result = xmlNSDecl.getURI();
     				break;
     			}
     		}
     	}
-    	
-    	return nsUri; 
+
+    	return result; 
     }
     
     /**
