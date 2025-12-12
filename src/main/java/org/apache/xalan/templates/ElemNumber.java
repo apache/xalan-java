@@ -335,6 +335,32 @@ public class ElemNumber extends ElemTemplateElement
   {
     return m_format_avt;
   }
+  
+  /**
+   * String value used instead of using m_format_avt, for 
+   * use by XPath function fn:format-integer. 
+   */
+  private String m_formatRawString = null;
+  
+  /**
+   * Method definition, to set the value of class field 
+   * m_formatRawString used by XPath function fn:format-integer. 
+   * 
+   * @param str					     The supplied 'format' string raw value
+   */
+  public void setFormatRawValue(String str) {
+	 m_formatRawString = str;
+  }
+  
+  /**
+   * Get the value of 'format' string raw value, used by 
+   * XPath function fn:format-integer. 
+   * 
+   * @return				   The 'format' string raw value 
+   */
+  public String getFormatRawValue() {
+	 return m_formatRawString; 
+  }
 
   /**
    * When numbering with an alphabetic sequence, the lang attribute
@@ -373,6 +399,32 @@ public class ElemNumber extends ElemTemplateElement
   public AVT getLang()
   {
     return m_lang_avt;
+  }
+  
+  /**
+   * Locale value used instead of using m_lang_avt, for 
+   * use by XPath function fn:format-integer. 
+   */
+  private Locale m_locale = null;
+  
+  /**
+   * Method definition, to set the value of class field 
+   * m_locale used by XPath function fn:format-integer. 
+   * 
+   * @param locale					The supplied Locale value
+   */
+  public void setLocale(Locale locale) {
+	 m_locale = locale;  
+  }
+  
+  /**
+   * Get the value of Locale, use by XPath function 
+   * fn:format-integer. 
+   * 
+   * @return				       The Locale value 
+   */
+  public Locale getLocale() {
+	 return m_locale; 
   }
 
   /**
@@ -1176,38 +1228,34 @@ public class ElemNumber extends ElemTemplateElement
           throws TransformerException
   {
 
-    Locale locale = null;
+	  Locale locale = null;
 
-    if (null != m_lang_avt)
-    {
-      XPathContext xctxt = transformer.getXPathContext();
-      String langValue = m_lang_avt.evaluate(xctxt, contextNode, this);
+	  if (null != m_lang_avt)
+	  {
+		  XPathContext xctxt = transformer.getXPathContext();
+		  String langValue = m_lang_avt.evaluate(xctxt, contextNode, this);
 
-      if (null != langValue)
-      {
+		  if (null != langValue)
+		  {
 
-        // Not really sure what to do about the country code, so I use the
-        // default from the system.
-        // TODO: fix xml:lang handling.
-        locale = new Locale(langValue.toUpperCase(), "");
+			  // Not really sure what to do about the country code, so I use the
+			  // default from the system.
+			  // TODO: fix xml:lang handling.
+			  locale = new Locale(langValue.toUpperCase(), "");
 
-        //Locale.getDefault().getDisplayCountry());
-        if (null == locale)
-        {
-          transformer.getMsgMgr().warn(this, null, xctxt.getDTM(contextNode).getNode(contextNode),
-                                       XSLTErrorResources.WG_LOCALE_NOT_FOUND,
-                                       new Object[]{ langValue });  //"Warning: Could not find locale for xml:lang="+langValue);
+			  //Locale.getDefault().getDisplayCountry());        
+		  }
+	  }
+	  else if (m_locale != null) {
+		  // To be used by XPath function fn:format-integer		  
+		  locale = m_locale; 
+	  }
+	  else
+	  {
+		  locale = Locale.getDefault();
+	  }
 
-          locale = Locale.getDefault();
-        }
-      }
-    }
-    else
-    {
-      locale = Locale.getDefault();
-    }
-
-    return locale;
+	  return locale;
   }
 
   /**
@@ -1297,7 +1345,7 @@ public class ElemNumber extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  String formatNumberList(
+  public String formatNumberList(
           TransformerImpl transformer, long[] list, int contextNode, boolean isOrdinal)
             throws TransformerException
   {
@@ -1325,6 +1373,10 @@ public class ElemNumber extends ElemTemplateElement
         ? m_format_avt.evaluate(
         transformer.getXPathContext(), contextNode, this) : null;
 
+      if ((null == formatValue) && (m_formatRawString != null)) {
+    	 formatValue = m_formatRawString; 
+      }
+      
       if (null == formatValue)
         formatValue = "1";
 
@@ -2404,9 +2456,10 @@ public class ElemNumber extends ElemTemplateElement
 			  number /= 10;
 		  }
 		  
+
 		  if (number == 0) return soFar;
 		  
-		  return m_numNames[number] + " Hundred" + soFar;
+		  return m_numNames[number] + " Hundred and" + soFar;
 	  }
 
 
@@ -2640,6 +2693,23 @@ public class ElemNumber extends ElemTemplateElement
 		  }
 		  else if (m_formatToken.equals("W")) {
 			  result = result.toUpperCase(); 
+		  }
+		  
+		  if (result.endsWith(" and")) {
+			  int idx = result.lastIndexOf(" and");
+			  result = result.substring(0, idx);
+		  }
+		  else if (result.endsWith(" andth")) {
+			  int idx = result.lastIndexOf(" andth");
+			  result = result.substring(0, idx) + "th";
+		  }
+		  else if (result.endsWith(" AND")) {
+			  int idx = result.lastIndexOf(" AND");
+			  result = result.substring(0, idx);
+		  }
+		  else if (result.endsWith(" ANDTH")) {
+			  int idx = result.lastIndexOf(" ANDTH");
+			  result = result.substring(0, idx) + "TH";
 		  }
 		  
 		  // Remove extra spaces, from result string value

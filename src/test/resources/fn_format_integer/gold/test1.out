@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>0123</one>
+  <two>
+    <a>seven, fifty five</a>
+    <b>SEVEN, FIFTY FIVE</b>
+    <c>Seven, Fifty Five</c>
+  </two>
+  <three>
+    <a>one hundred and five, eight hundred and fifty seven</a>
+    <b>ONE HUNDRED AND FIVE, EIGHT HUNDRED AND FIFTY SEVEN</b>
+    <c>One Hundred and Five, Eight Hundred and Fifty Seven</c>
+  </three>
+  <four>
+    <a>two thousand one hundred and fifty, eight thousand seven hundred</a>
+    <b>TWO THOUSAND ONE HUNDRED AND FIFTY, EIGHT THOUSAND SEVEN HUNDRED</b>
+    <c>Two Thousand One Hundred and Fifty, Eight Thousand Seven Hundred</c>
+  </four>
+  <five>
+    <a>ten thousand five hundred and two, ten thousand five hundred</a>
+    <b>TEN THOUSAND FIVE HUNDRED AND TWO, TEN THOUSAND FIVE HUNDRED</b>
+    <c>Ten Thousand Five Hundred and Two, Ten Thousand Five Hundred</c>
+  </five>
+  <six>
+    <z>g, G</z>
+    <list1>
+      <value inp="1" result="A"/>
+      <value inp="2" result="B"/>
+      <value inp="3" result="C"/>
+      <value inp="4" result="D"/>
+      <value inp="5" result="E"/>
+      <value inp="6" result="F"/>
+      <value inp="7" result="G"/>
+      <value inp="8" result="H"/>
+      <value inp="9" result="I"/>
+      <value inp="10" result="J"/>
+      <value inp="11" result="K"/>
+      <value inp="12" result="L"/>
+      <value inp="13" result="M"/>
+      <value inp="14" result="N"/>
+      <value inp="15" result="O"/>
+    </list1>
+    <list2>
+      <value inp="50" result="AX"/>
+      <value inp="51" result="AY"/>
+      <value inp="52" result="AZ"/>
+      <value inp="53" result="BA"/>
+      <value inp="54" result="BB"/>
+      <value inp="55" result="BC"/>
+    </list2>
+  </six>
+  <seven>lvii, LVII</seven>
+</result>

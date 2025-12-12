@@ -778,6 +778,9 @@ public class Keywords
   /** adjust-time-to-timezone function string. */
   public static final String FUNC_ADJUST_TIME_TO_TIMEZONE = "adjust-time-to-timezone";
   
+  /** format-integer function string. */
+  public static final String FUNC_FORMAT_INTEGER = "format-integer";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

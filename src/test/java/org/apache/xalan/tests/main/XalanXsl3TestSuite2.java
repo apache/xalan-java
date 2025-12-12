@@ -32,6 +32,7 @@ import org.apache.xalan.tests.xpath3.FnFilterTests;
 import org.apache.xalan.tests.xpath3.FnFoldLeftTests;
 import org.apache.xalan.tests.xpath3.FnFoldRightTests;
 import org.apache.xalan.tests.xpath3.FnForEachPairTests;
+import org.apache.xalan.tests.xpath3.FnFormatIntegerTests;
 import org.apache.xalan.tests.xpath3.FnFunctionArityTests;
 import org.apache.xalan.tests.xpath3.FnFunctionNameTests;
 import org.apache.xalan.tests.xpath3.FnIndexOfTests;
@@ -156,7 +157,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathPartialFuncApplnTests.class, XslCopyTests.class, XalanJavascriptExtensionTests.class, XalanJavaExtensionTests.class,
                 XPathTextAndNodePattern.class, XPathLiteralSequenceTests.class, XslModeTests.class, XslTemplatePriorityTests.class,
                 XslDisableOutputEscapingAttrTests.class, XslMessageTests.class, FnAdjustDatetimeToTimezoneTests.class,
-                FnAdjustDateToTimezoneTests.class, FnAdjustTimeToTimezoneTests.class } )
+                FnAdjustDateToTimezoneTests.class, FnAdjustTimeToTimezoneTests.class, FnFormatIntegerTests.class } )
 public class XalanXsl3TestSuite2 {
 
 }
