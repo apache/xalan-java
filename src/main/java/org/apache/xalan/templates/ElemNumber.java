@@ -530,7 +530,7 @@ public class ElemNumber extends ElemTemplateElement
    * This class field, represents the value of "ordinal" 
    * attribute.
    */
-  private AVT m_ordinal;
+  private AVT m_ordinal_avt;
 
   /**
    * Set the value of "ordinal" attribute.
@@ -539,7 +539,7 @@ public class ElemNumber extends ElemTemplateElement
    */
   public void setOrdinal(AVT ordinalAvt)
   {
-	  m_ordinal = ordinalAvt;
+	  m_ordinal_avt = ordinalAvt;
   }
 
   /**
@@ -548,7 +548,7 @@ public class ElemNumber extends ElemTemplateElement
    * @return		  The value of "ordinal" attribute 
    */
   public AVT getOrdinal() {
-	  return m_ordinal;
+	  return m_ordinal_avt;
   }
   
   /**
@@ -703,8 +703,8 @@ public class ElemNumber extends ElemTemplateElement
 	  int sourceNode = xctxt.getCurrentNode();
 	  
 	  boolean isOrdinal = false;	  
-	  if (m_ordinal != null) {
-		  String ordinalStrValue = m_ordinal.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
+	  if (m_ordinal_avt != null) {
+		  String ordinalStrValue = m_ordinal_avt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
 		  ordinalStrValue = ordinalStrValue.trim();
 		  if ("no".equals(ordinalStrValue) || "0".equals(ordinalStrValue) || "false".equals(ordinalStrValue)) {
 			  isOrdinal = false; 
@@ -1764,18 +1764,42 @@ public class ElemNumber extends ElemTemplateElement
 
       break;
     }
-    default :  // "1"
-      DecimalFormat formatter = getNumberFormatter(transformer, contextNode);
-      String padString = formatter == null ? String.valueOf(0) : formatter.format(0);    
-      String numString = formatter == null ? String.valueOf(listElement) : formatter.format(listElement);
-      int nPadding = numberWidth - numString.length();
+    default :  // "1"                  
+      if (m_locale == null) {
+    	  DecimalFormat formatter = getNumberFormatter(transformer, contextNode);      
+          String padString = formatter == null ? String.valueOf(0) : formatter.format(0);    
+          String numString = formatter == null ? String.valueOf(listElement) : formatter.format(listElement);
+          int nPadding = numberWidth - numString.length();
 
-      for (int k = 0; k < nPadding; k++)
-      {
-        formattedNumber.append(padString);
+          for (int k = 0; k < nPadding; k++)
+          {
+            formattedNumber.append(padString);
+          }
+
+          formattedNumber.append(numString); 
       }
-
-      formattedNumber.append(numString);
+      else if (!isOrdinal) {
+    	  // Used for XPath function call fn:format-integer    	  
+    	  formattedNumber.append(String.valueOf(listElement));
+      }
+      else {
+    	  // Used for XPath function call fn:format-integer    	  
+    	  String[] suffixes = new String[] {"th", "st", "nd", "rd"};
+    	  int normalized = (int)(listElement % 100);
+    	  String str1 = null;
+    	  int num1 = ((normalized - 20) % 10);
+    	  if ((num1 >= 0) && (num1 < 4)) {
+    		 str1 = suffixes[num1];
+    	  }
+    	  else if ((normalized >= 0) && (normalized < 4)) {
+    		 str1 = suffixes[normalized]; 
+    	  }
+    	  else {
+    		 str1 = suffixes[0];  
+    	  }
+    	  
+    	  formattedNumber.append(String.valueOf(listElement) + str1);
+      }
     }
   }
   
@@ -2380,10 +2404,9 @@ public class ElemNumber extends ElemTemplateElement
    * Class definition, to do XSL transformation of integer and 
    * long values to their word representation.
    * 
-   * Ref: The code of this class, is primarily referred from,
-   *      https://stackoverflow.com/questions/3911966/how-to-convert-number-to-words-in-java
-   *      
-   *      with few changes, for XSLT 3.0 requirements.
+   * Ref: The code of this class, is primarily referred from, an answer 
+   *      available on https://stackoverflow.com forum with few changes, 
+   *      for XSLT 3.0 requirements.
    * 
    */
   class EnglishNumberToWords {

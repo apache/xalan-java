@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-12T12:10:14Z" fail="30" name="function" pass="57" skipped="23" statusUnknown="0" totalRun="87">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-13T17:49:16Z" fail="28" name="function" pass="59" skipped="23" statusUnknown="0" totalRun="87">
    <testResult status="pass" testName="function-0001"/>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -55,7 +55,7 @@
    <testResult status="pass" testName="function-1003"/>
    <testResult status="pass" testName="function-1004"/>
    <testResult status="fail" testName="function-1005"/>
-   <testResult status="fail" testName="function-1007"/>
+   <testResult status="pass" testName="function-1007"/>
    <testResult status="fail" testName="function-1009"/>
    <testResult status="fail" testName="function-1011">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out result=""/&gt;</outResult>
@@ -140,7 +140,7 @@
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="function-1701"/>
+   <testResult status="pass" testName="function-1701"/>
    <testResult status="pass" testName="function-1901"/>
    <testResult status="skipped" testName="function-1902" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="function-2001"/>

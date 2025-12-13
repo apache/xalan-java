@@ -1044,40 +1044,44 @@ public class ElemValueOf extends ElemTemplateElement {
                   else {
                 	  XObject evalResult = expr.execute(xctxt);
                 	  
-                	  if ((evalResult instanceof ResultSequence) && (separatorStrValue != null)) {
+                	  if (evalResult instanceof ResultSequence) {
+                		  if (separatorStrValue == null) {
+                			  separatorStrValue = " "; 
+                		  }
+
                 		  ResultSequence rSeq = (ResultSequence)evalResult;
                 		  int rSeqLngth = rSeq.size();
                 		  StringBuffer strBuff = new StringBuffer();
                 		  for (int idx = 0; idx < rSeqLngth; idx++) {
-                			 XObject xObj = rSeq.item(idx);
-                			 String str1 = null;
-                			 if (xObj instanceof ResultSequence) {
-                				 ResultSequence seq1 = (ResultSequence)xObj;
-                				 if (seq1.size() > 0) {
-                					str1 = seq1.str(); 
-                				 }
-                			 }
-                			 else if (xObj instanceof XMLNodeCursorImpl) {
-                				 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
-                				 if (xmlNodeCursorImpl.getLength() > 0) {
-                					 str1 = xmlNodeCursorImpl.str();  
-                				 }
-                			 }
-                			 else {
-                				 str1 = XslTransformEvaluationHelper.getStrVal(xObj);
-                			 }
-                			 
-                			 if (str1 != null) {
-                				 if (idx < (rSeqLngth - 1)) {
-                					 strBuff = strBuff.append(str1 + separatorStrValue); 
-                				 }
-                				 else {
-                					 strBuff = strBuff.append(str1);
-                				 }
-                			 }
+                			  XObject xObj = rSeq.item(idx);
+                			  String str1 = null;
+                			  if (xObj instanceof ResultSequence) {
+                				  ResultSequence seq1 = (ResultSequence)xObj;
+                				  if (seq1.size() > 0) {
+                					  str1 = seq1.str(); 
+                				  }
+                			  }
+                			  else if (xObj instanceof XMLNodeCursorImpl) {
+                				  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+                				  if (xmlNodeCursorImpl.getLength() > 0) {
+                					  str1 = xmlNodeCursorImpl.str();  
+                				  }
+                			  }
+                			  else {
+                				  str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+                			  }
+
+                			  if (str1 != null) {
+                				  if (idx < (rSeqLngth - 1)) {
+                					  strBuff = strBuff.append(str1 + separatorStrValue); 
+                				  }
+                				  else {
+                					  strBuff = strBuff.append(str1);
+                				  }
+                			  }
                 		  }
-                		  
-                		  XString xStr = new XString(strBuff.toString());
+
+                		  XString xStr = new XString(strBuff.toString());               		                  		  
 
                 		  xStr.executeCharsToContentHandler(xctxt, rth);
                 	  }

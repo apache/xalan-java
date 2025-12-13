@@ -27,6 +27,7 @@ import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.Expression;
@@ -150,7 +151,7 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 		}
 		
 		XObject arg1Obj = arg1.execute(xctxt);		
-		String str1 = XslTransformEvaluationHelper.getStrVal(arg1Obj);
+		String pictureStr1 = XslTransformEvaluationHelper.getStrVal(arg1Obj);
 		
 		String str2 = null;		
 		if (arg2 != null) {
@@ -159,7 +160,6 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 		}
 		
 		ElemNumber elemNumber = new ElemNumber();
-		elemNumber.setFormatRawValue(str1);
 
 		Locale locale = null;
 		if (str2 != null) {
@@ -171,11 +171,133 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 
 		elemNumber.setLocale(locale);
 		
-		String formattedNumberStr = null;
+		String formattedNumberResultStr = null;
+				
+		int picStrLength = pictureStr1.length();
+		if (picStrLength == 0) {
+			throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function fn:format-integer's "
+																				                    + "second argument specifies an "
+																				                    + "invalid picture string. Picture "
+																				                    + "string has length zero.", srcLocator);	
+		}
 		
-		if (str1.contains("w") || str1.contains("W") || str1.contains("a") || 
-				                                                  str1.contains("A") 
-				                                                              || str1.contains("i") || str1.contains("I")) {
+		int idx = pictureStr1.lastIndexOf(';');
+		
+		String primaryFormatToken = null;
+		String formatModifier = null;		
+		if (idx == -1) {
+		   primaryFormatToken = pictureStr1;
+		   
+		   // The format modifier is absent
+		}
+		else if (idx == 0) {
+		   // Picture string ';' is invalid
+			
+		   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function fn:format-integer's "
+																				                    + "second argument specifies an "
+																				                    + "invalid picture string '" + pictureStr1 + "'.", srcLocator);
+		}
+		else if (idx == (picStrLength - 1)) {
+		   // Picture string primary_format_token; is invalid, for e.g w;
+			
+		   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function fn:format-integer's "
+																				                    + "second argument specifies an "
+																				                    + "invalid picture string '" + pictureStr1 + "'.", srcLocator);
+		}
+		else {
+		   primaryFormatToken = pictureStr1.substring(0, idx);
+		   formatModifier = pictureStr1.substring(idx + 1);
+		}
+		
+		elemNumber.setFormatRawValue(primaryFormatToken);
+		
+		// Cardinal numbering is default
+		boolean isCardinalNumbering = true;
+		
+		if (formatModifier != null) {		   	
+		   int idx2 = formatModifier.indexOf('(');
+		   int idx3 = formatModifier.lastIndexOf(')');
+		   if ((idx2 != -1) && (idx3 != -1) && (idx2 < idx3)) {
+			   String str1 = formatModifier.substring(idx2, idx3 + 1); 
+			   if (!StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function fn:format-integer's "
+																				                       + "second argument specifies an "
+																				                       + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+			   }
+			   else {
+				   /**
+				    * Xalan-J ignores any substring like "(...)" wrt this, although
+				    * XPath 3.1 F&O spec allows this syntax and XPath function 
+				    * implementation for fn:format-integer may ascribe implementation 
+				    * specific meaning to this.
+				    */
+			   }
+		   }
+		   else if ((idx2 != -1) || (idx3 != -1)) {
+			   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function fn:format-integer's "
+																				                       + "second argument specifies an "
+																				                       + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+		   }
+		   
+		   if ((idx2 != -1) && (idx3 != -1)) {
+			   String fmPrefix = formatModifier.substring(0, idx2);
+			   String fmSuffix = formatModifier.substring(idx3 + 1);
+			   formatModifier = fmPrefix + fmSuffix;
+		   }
+			
+		   int formatModifierLength = formatModifier.length();
+		   if (formatModifierLength == 1) {
+			   char c1 = formatModifier.charAt(0);
+			   if (c1 == 'c') {
+				   // Cardinal numbering is been followed
+				   isCardinalNumbering = true; 
+			   }
+			   else if (c1 == 'o') {
+				   // Ordinal numbering is been followed
+				   isCardinalNumbering = false; 
+			   }
+			   else {
+				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function fn:format-integer's "
+																					                           + "second argument specifies an "
+																					                           + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+			   }			   
+		   }
+		   else if (formatModifierLength == 2) {
+			   char c1 = formatModifier.charAt(0);
+			   if (c1 == 'c') {
+				   // Cardinal numbering is been followed
+				   isCardinalNumbering = true; 
+			   }
+			   else if (c1 == 'o') {
+				   // Ordinal numbering is been followed
+				   isCardinalNumbering = false; 
+			   }
+			   else {
+				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function fn:format-integer's "
+																					                           + "second argument specifies an "
+																					                           + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+			   }			   
+			   
+			   char c2 = formatModifier.charAt(1);
+			   
+			   if (!((c2 == 'a') || (c2 == 't'))) {
+				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function fn:format-integer's "
+																				                             + "second argument specifies an "
+																				                             + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+			   }
+		   }
+		   else {
+			   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function fn:format-integer's "
+																				                              + "second argument specifies an "
+																				                              + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+		   }
+		}
+		
+		if ("1".equals(primaryFormatToken) || "w".equals(primaryFormatToken) || "W".equals(primaryFormatToken) || "Ww".equals(primaryFormatToken) 
+				                                                                                      || "a".equals(primaryFormatToken) || 
+				                                                                                      "A".equals(primaryFormatToken) 
+				                                                                                      || "i".equals(primaryFormatToken) 
+				                                                                                      || "I".equals(primaryFormatToken)) {
 			ExpressionNode exprOwnerNode = getExpressionOwner();
 			TransformerImpl transformerImpl = null;
 			if (exprOwnerNode instanceof ElemTemplateElement) {
@@ -184,24 +306,24 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 				transformerImpl = stylesheetRoot.getTransformerImpl();		   		   		   		   
 			}
 
-			formattedNumberStr = elemNumber.formatNumberList(transformerImpl, new long[] { arg0Long }, DTM.NULL, false);
+			formattedNumberResultStr = elemNumber.formatNumberList(transformerImpl, new long[] { arg0Long }, DTM.NULL, !isCardinalNumbering);
 		}
 		else {
 			NumberFormat nf = NumberFormat.getIntegerInstance(locale);
 			DecimalFormat df = (DecimalFormat)nf;
 			try {
-			   df.applyPattern(str1);
+			   df.applyPattern(pictureStr1);
 			}
 			catch (IllegalArgumentException ex) {
 			   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function fn:format-integer's "
-			   		                                                                                          + "second argument, specifies an "
-			   		                                                                                          + "XPath invalid picture string '" + str1 + "'.", srcLocator);
+			   		                                                                                          + "second argument specifies an "
+			   		                                                                                          + "invalid picture string '" + pictureStr1 + "'.", srcLocator);
 			}
 			
-			formattedNumberStr = df.format(arg0Long);
+			formattedNumberResultStr = df.format(arg0Long);
 		}
 		   
-		result = new XSString(formattedNumberStr);
+		result = new XSString(formattedNumberResultStr);
 		
 		return result;
 		

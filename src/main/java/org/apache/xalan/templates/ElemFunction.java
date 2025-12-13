@@ -1452,11 +1452,14 @@ public class ElemFunction extends ElemTemplate
     					// An xdm text node has been produced, by xsl:sequence instruction. 
     					// Transform text node value, to an appropriate xdm sequence.
     					ResultSequence rSeq = new ResultSequence(); 
-    					nodeStrValue = (nodeStrValue.replace(ElemSequence.SER_SUFFIX_ID, "")).trim();
-    					String[] strArray1 = nodeStrValue.split(" ");
+    					String[] strArray1 = nodeStrValue.split(ElemSequence.SER_SUFFIX_ID);
     					int arrLength = strArray1.length;
     					for (int idx2 = 0; idx2 < arrLength; idx2++) {
     						String arrItemStr1 = strArray1[idx2];
+    						if ((idx2 % 2 == 1) && " ".equals(arrItemStr1)) {
+    						   continue;	
+    						}
+    						
     						try {
     							Double dbl1 = Double.valueOf(arrItemStr1);
     							rSeq.add(new XSDouble(dbl1.doubleValue()));
