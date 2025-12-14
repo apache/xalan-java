@@ -2702,8 +2702,25 @@ public class ElemNumber extends ElemTemplateElement
 		  tradThousand = convertLessThanOneThousand(thousands);
 		  result =  result + tradThousand;
 		  
+		  String ordinalSuffix = null;
+		  String temp1 = "temp1";
+		  String temp1Caps = "TEMP1";
+		  
 		  if (m_isOrdinal) {
-			  result = result.trim() + "th"; 
+			  result = result.trim() + temp1;
+			  
+			  String[] suffixes = new String[] {"th", "st", "nd", "rd"};
+	    	  int normalized = (int)(number % 100);	    	  
+	    	  int num1 = ((normalized - 20) % 10);
+	    	  if ((num1 >= 0) && (num1 < 4)) {
+	    		 ordinalSuffix = suffixes[num1];
+	    	  }
+	    	  else if ((normalized >= 0) && (normalized < 4)) {
+	    		 ordinalSuffix = suffixes[normalized]; 
+	    	  }
+	    	  else {
+	    		 ordinalSuffix = suffixes[0];  
+	    	  }	    	  
 		  }
 
 		  if (m_prevFormatTokenChar == 'W') {
@@ -2722,17 +2739,68 @@ public class ElemNumber extends ElemTemplateElement
 			  int idx = result.lastIndexOf(" and");
 			  result = result.substring(0, idx);
 		  }
-		  else if (result.endsWith(" andth")) {
-			  int idx = result.lastIndexOf(" andth");
-			  result = result.substring(0, idx) + "th";
+		  else if (result.endsWith(" andtemp1")) {
+			  int idx = result.lastIndexOf(" andtemp1");
+			  result = result.substring(0, idx);
+			  result = result + ordinalSuffix;
 		  }
 		  else if (result.endsWith(" AND")) {
 			  int idx = result.lastIndexOf(" AND");
 			  result = result.substring(0, idx);
 		  }
-		  else if (result.endsWith(" ANDTH")) {
-			  int idx = result.lastIndexOf(" ANDTH");
-			  result = result.substring(0, idx) + "TH";
+		  else if (result.endsWith(" ANDTEMP1")) {
+			  int idx = result.lastIndexOf(" ANDTEMP1");
+			  result = result.substring(0, idx);
+			  result = result + ordinalSuffix.toUpperCase();
+		  }
+		  
+		  if (result.endsWith(temp1)) {
+			 result = result.replace(temp1, ordinalSuffix);
+			 
+			 if (result.contains(" and ")) {
+				 result = result.replace("one", "fir");
+				 result = result.replace("ONE", "FIR");			
+				 result = result.replace("One", "Fir");
+
+				 result = result.replace("two", "seco");
+				 result = result.replace("TWO", "SECO");
+				 result = result.replace("Two", "Seco");
+
+				 result = result.replace("three", "thi");
+				 result = result.replace("THREE", "THI");
+				 result = result.replace("Three", "Thi");
+
+				 result = result.replace("five", "fif");
+				 result = result.replace("FIVE", "FIF");
+				 result = result.replace("Five", "Fif");
+
+				 result = result.replace("yth", "ieth");
+				 result = result.replace("YTH", "IETH");
+			 }
+		  }
+		  else if (result.endsWith(temp1Caps)) {
+		     result = result.replace(temp1Caps, ordinalSuffix.toUpperCase());
+		     
+		     if (result.contains(" AND ")) {
+		    	 result = result.replace("one", "fir");
+		    	 result = result.replace("ONE", "FIR");			
+		    	 result = result.replace("One", "Fir");
+
+		    	 result = result.replace("two", "seco");
+		    	 result = result.replace("TWO", "SECO");
+		    	 result = result.replace("Two", "Seco");
+
+		    	 result = result.replace("three", "thi");
+		    	 result = result.replace("THREE", "THI");
+		    	 result = result.replace("Three", "Thi");
+
+		    	 result = result.replace("five", "fif");
+		    	 result = result.replace("FIVE", "FIF");
+		    	 result = result.replace("Five", "Fif");
+
+		    	 result = result.replace("yth", "ieth");
+		    	 result = result.replace("YTH", "IETH");
+		     }
 		  }
 		  
 		  // Remove extra spaces, from result string value

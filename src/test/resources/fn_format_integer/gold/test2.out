@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>fifteen, fifteenth</one>
+  <two>FIFTEEN, FIFTEENTH</two>
+  <three>
+    <a>Seven Hundred and Fifty, Seven Hundred and Fiftieth</a>
+    <b>SEVEN HUNDRED AND FIFTY ONE, SEVEN HUNDRED AND FIFTY FIRST</b>
+    <c>Seven Hundred and Fifty Two, Seven Hundred and Fifty Second</c>
+    <d>Seven Hundred and Fifty Three, Seven Hundred and Fifty Third</d>
+    <e>Seven Hundred and Fifty Four, Seven Hundred and Fifty Fourth</e>
+    <f>Seven Hundred and Fifty Five, Seven Hundred and Fifty Fifth</f>
+  </three>
+  <four>
+    <a>
+      <number cardinalForm="1" inp="1" ordinalForm="1st"/>
+      <number cardinalForm="2" inp="2" ordinalForm="2nd"/>
+      <number cardinalForm="3" inp="3" ordinalForm="3rd"/>
+      <number cardinalForm="4" inp="4" ordinalForm="4th"/>
+      <number cardinalForm="5" inp="5" ordinalForm="5th"/>
+      <number cardinalForm="6" inp="6" ordinalForm="6th"/>
+      <number cardinalForm="7" inp="7" ordinalForm="7th"/>
+      <number cardinalForm="8" inp="8" ordinalForm="8th"/>
+      <number cardinalForm="9" inp="9" ordinalForm="9th"/>
+      <number cardinalForm="10" inp="10" ordinalForm="10th"/>
+      <number cardinalForm="11" inp="11" ordinalForm="11th"/>
+      <number cardinalForm="12" inp="12" ordinalForm="12th"/>
+      <number cardinalForm="13" inp="13" ordinalForm="13th"/>
+      <number cardinalForm="14" inp="14" ordinalForm="14th"/>
+      <number cardinalForm="15" inp="15" ordinalForm="15th"/>
+    </a>
+    <b>
+      <number cardinalForm="50" inp="50" ordinalForm="50th"/>
+      <number cardinalForm="51" inp="51" ordinalForm="51st"/>
+      <number cardinalForm="52" inp="52" ordinalForm="52nd"/>
+      <number cardinalForm="53" inp="53" ordinalForm="53rd"/>
+      <number cardinalForm="54" inp="54" ordinalForm="54th"/>
+      <number cardinalForm="55" inp="55" ordinalForm="55th"/>
+    </b>
+  </four>
+</result>
