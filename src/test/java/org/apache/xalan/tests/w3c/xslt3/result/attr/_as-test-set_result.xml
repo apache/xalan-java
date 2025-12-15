@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:19Z" fail="31" name="as" pass="80" skipped="93" statusUnknown="0" totalRun="111">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-15T17:22:02Z" fail="30" name="as" pass="81" skipped="93" statusUnknown="0" totalRun="111">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
@@ -116,11 +116,7 @@
    </testResult>
    <testResult status="fail" testName="as-1211"/>
    <testResult status="pass" testName="as-1212"/>
-   <testResult status="fail" testName="as-1213">
-      <outResult>
-         <errTrace>XTDE0700 : No value supplied for the required parameter $par2. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="as-1213"/>
    <testResult status="fail" testName="as-1214"/>
    <testResult status="fail" testName="as-1215"/>
    <testResult status="fail" testName="as-1216"/>

@@ -703,6 +703,53 @@ public class SequenceTypeSupport {
 	            		   }
 	            	   }
 	            	}
+	            	else if (sequenceTypeKindTest.getKindVal() == ATTRIBUTE_KIND) {
+	            	   if (srcValue instanceof ResultSequence) {
+	            		   ResultSequence rSeq = (ResultSequence)srcValue;
+	            		   int rSeqLength = rSeq.size();
+	            		   for (int idx = 0; idx < rSeqLength; idx++) {
+	            			   XObject xObj = rSeq.item(idx);
+	            			   if (xObj instanceof XMLNodeCursorImpl) {
+	            				   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+	            				   int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+	            				   DTM dtm = xctxt.getDTM(nodeHandle);
+	            				   if (dtm.getNodeType(nodeHandle) == DTM.ATTRIBUTE_NODE) {
+	            					  continue;  
+	            				   }
+	            				   else {
+	            					  throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
+	            				   }
+	            			   }
+	            			   else if (xObj instanceof XdmAttributeItem) {
+	            				   continue; 
+	            			   }
+	            			   else {
+	            				   throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
+	            			   }
+	            		   }
+	            		   
+	            		   boolean isSeqTypeOccrIndicatorOk = false;
+	            		   if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+	            			   isSeqTypeOccrIndicatorOk = true;
+	            		   }
+	            		   else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY) && (rSeqLength > 0)) {
+	            			   isSeqTypeOccrIndicatorOk = true;
+	            		   }
+	            		   else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (rSeqLength <= 1)) {
+	            			   isSeqTypeOccrIndicatorOk = true;
+	            		   }
+	            		   else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) && (rSeqLength == 1)) {
+	            			   isSeqTypeOccrIndicatorOk = true;
+	            		   }
+
+	            		   if (isSeqTypeOccrIndicatorOk) {		            				  
+	            			   return srcValue; 
+	            		   }
+	            		   else {
+	            			   throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
+	            		   }
+	            	   }
+	            	}
 	            	else if (sequenceTypeKindTest.getKindVal() == PROCESSING_INSTRUCTION_KIND) {
 	            		if (srcValue instanceof XMLNodeCursorImpl) {	            		   
 	            			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)srcValue;	            		  

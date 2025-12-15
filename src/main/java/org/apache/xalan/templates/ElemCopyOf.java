@@ -57,6 +57,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.types.XMLAttribute;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -551,35 +552,6 @@ public class ElemCopyOf extends ElemTemplateElement
         	  // the node to XSL transform's output if validation succeeds.
         	  validateAndEmitAttributeNode(nodeSet, handler, xctxt, pos, dtm);
           }
-          /*else if (nodeType == DTM.TEXT_NODE) {
-        	  Node node = dtm.getNode(pos);
-        	  String nodeStrValue = node.getNodeValue();        		 
-        	  // 1:org.apache.xpath.objects.XNumber 2:org.apache.xpath.objects.XNumber 3:org
-        	  if (nodeStrValue.contains(":org.apache.")) {
-        		  String[] strArray = nodeStrValue.split(" ");
-        		  int arrLength = strArray.length;
-        		  StringBuffer strBuff = new StringBuffer();
-        		  // Stripping any type information, available from text 
-        		  // node's string value.
-        		  for (int idx = 0; idx < arrLength; idx++) {
-        			  String str = strArray[idx];
-        			  int idx2 = str.indexOf(":org.apache."); 
-        			  if (idx2 > -1) {
-        				  str = str.substring(0, idx2);        				
-        			  }
-        			  strBuff.append(str);
-        			  if (idx < (arrLength - 1)) {
-        				  strBuff.append(" "); 
-        			  }
-        		  }
-
-        		  String strVal = strBuff.toString();         	  
-        		  handler.characters(strVal.toCharArray(), 0, strVal.length());
-        	  }
-        	  else {
-        		  tw.traverse(pos); 
-        	  }
-          }*/
           else {
         	  tw.traverse(pos);
           }
@@ -628,6 +600,26 @@ public class ElemCopyOf extends ElemTemplateElement
         		 xdmItem = resultSequence.item(idx);
         		 xdmItem = xdmItem.getFresh();
     		 }
+         }
+         else if (xdmItem instanceof XdmAttributeItem) {
+        	 XdmAttributeItem xdmAttributeItem = (XdmAttributeItem)xdmItem;
+        	 String localName = xdmAttributeItem.getAttrLocalName();
+        	 String namespace = xdmAttributeItem.getAttrNodeNs();
+        	 String attrValueStr = xdmAttributeItem.getAttrStrValue();
+        	         	 
+        	 String rawName = localName;
+        	 List<XMLNSDecl> prefixTable = (List<XMLNSDecl>)elemTemplateElem.getPrefixTable();
+    	     String nsPrefix = XslTransformEvaluationHelper.getPrefixFromNsUri(namespace, prefixTable);
+        	 if (nsPrefix != null) {
+        		rawName = nsPrefix + ":" + rawName;  
+        	 }
+        	 
+        	 serializationHandler.addAttribute(
+						        			 namespace,
+						        			 localName,
+						        			 rawName,
+						                     "CDATA",
+						                     attrValueStr, true);
          }
          else if (xdmItem instanceof XSQName) {
         	 XSQName xsQName = (XSQName)xdmItem;

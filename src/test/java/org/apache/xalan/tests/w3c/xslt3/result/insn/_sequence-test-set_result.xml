@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-15T12:48:50Z" fail="34" name="sequence" pass="51" skipped="7" statusUnknown="0" totalRun="85">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-15T17:22:07Z" fail="32" name="sequence" pass="53" skipped="7" statusUnknown="0" totalRun="85">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="pass" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
    <testResult status="pass" testName="sequence-0104"/>
-   <testResult status="fail" testName="sequence-0105"/>
-   <testResult status="fail" testName="sequence-0106"/>
+   <testResult status="pass" testName="sequence-0105"/>
+   <testResult status="pass" testName="sequence-0106"/>
    <testResult status="pass" testName="sequence-0107"/>
    <testResult status="pass" testName="sequence-0108"/>
    <testResult status="pass" testName="sequence-0109"/>

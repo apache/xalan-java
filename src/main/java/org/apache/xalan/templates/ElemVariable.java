@@ -988,10 +988,12 @@ public class ElemVariable extends ElemTemplateElement
     					 
     					 elemAttribute.constructNode(nodeName, prefix, namespace, transformer);
     					 String attrValue = elemAttribute.getAttrVal();
-    					 
+
     					 XdmAttributeItem xdmAttributeItem = new XdmAttributeItem(localName, namespace, attrValue);
     					 rSeq.add(xdmAttributeItem);
-    					 
+
+    					 elemAttribute.setIsSerialize(true);
+
     					 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
     				 }
     				 else if (elemTemplateElement instanceof ElemComment) {
@@ -999,9 +1001,11 @@ public class ElemVariable extends ElemTemplateElement
     					 elemComment.setIsSerialize(false);
     					 elemComment.execute(transformer);
     					 String commentValue = elemComment.getCommentValue();
-    					 elemComment.setIsSerialize(true);
-    					 XdmCommentItem xdmCommentItem = new XdmCommentItem(commentValue);
+    					 
+    					 XdmCommentItem xdmCommentItem = new XdmCommentItem(commentValue);    					 
     					 rSeq.add(xdmCommentItem);
+    					 
+    					 elemComment.setIsSerialize(true);
     					 
     					 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
     				 }
@@ -1011,9 +1015,11 @@ public class ElemVariable extends ElemTemplateElement
                     	 elemPi.execute(transformer);
     					 String piName = elemPi.getPiName();
     					 String piValue = elemPi.getPiValue();
-    					 elemPi.setIsSerialize(true);
+    					 
     					 XdmProcessingInstructionItem xdmPiItem = new XdmProcessingInstructionItem(piName, piValue);
     					 rSeq.add(xdmPiItem);
+    					 
+    					 elemPi.setIsSerialize(true);
     					 
     					 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
     				 }
@@ -1030,9 +1036,63 @@ public class ElemVariable extends ElemTemplateElement
     			  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());    	
     			  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
     			  
-    			  var = SequenceTypeSupport.castXdmValueToAnotherType(rSeq, seqExpectedTypeData, false);
-    			  
-    			  return var;
+    			  if (seqExpectedTypeData.getBuiltInSequenceType() != 0) {
+    				 int rSeqLength = rSeq.size();
+    				 ResultSequence rSeq2 = new ResultSequence(); 
+    				 for (int idx = 0; idx < rSeqLength; idx++) {
+    					XObject xObj = rSeq.item(idx);
+    					if (xObj instanceof XdmAttributeItem) {
+    					   XdmAttributeItem xdmAttributeItem = (XdmAttributeItem)xObj;
+    					   String attrStrValue = xdmAttributeItem.getAttrStrValue();
+    					   rSeq2.add(new XSString(attrStrValue));
+    					}
+    				 }
+    				 
+    				 if (rSeq2.size() == rSeqLength) {
+    					var = SequenceTypeSupport.castXdmValueToAnotherType(rSeq2, seqExpectedTypeData, false);
+
+    					return var;
+    				 }
+    			  }
+    			  else {
+    				 int rSeqSize = rSeq.size();
+    				 ResultSequence rSeqCopy = new ResultSequence(); 
+ 					 for (int idx = 0; idx < rSeqSize; idx++) {
+ 						 XObject xObj = rSeq.item(idx);
+ 						 if (xObj instanceof XdmAttributeItem) {
+ 							 XdmAttributeItem xdmAttributeItem = (XdmAttributeItem)xObj;
+ 							 String localName = xdmAttributeItem.getAttrLocalName();
+ 							 String namespace = xdmAttributeItem.getAttrNodeNs();
+ 							 QName qName = new QName(namespace, localName);
+ 							 boolean isSeqItemOk = true;
+ 							 for (int idx2 = idx + 1; idx2 < rSeqSize; idx2++) {
+ 								 XObject xObj2 = rSeq.item(idx2);
+ 								 if (xObj2 instanceof XdmAttributeItem) {
+ 									 XdmAttributeItem xdmAttributeItem2 = (XdmAttributeItem)xObj2;
+ 									 String localName2 = xdmAttributeItem2.getAttrLocalName();
+ 									 String namespace2 = xdmAttributeItem2.getAttrNodeNs();
+ 									 QName qName2 = new QName(namespace2, localName2);
+ 									 if (qName2.equals(qName)) {
+ 										isSeqItemOk = false;
+ 										
+ 										break;
+ 									 }
+ 								 }
+ 							 }
+ 							 
+ 							 if (isSeqItemOk) {
+ 								rSeqCopy.add(xObj); 
+ 							 }
+ 						 }
+ 						 else {
+ 						    rSeqCopy.add(xObj);
+ 						 }
+ 					 }    				  
+    				  
+    			     var = SequenceTypeSupport.castXdmValueToAnotherType(rSeqCopy, seqExpectedTypeData, false);
+    			     
+    			     return var;
+    			  }    			      			  
 			  }
     		  else {
     		      rootNodeHandleOfRtf = transformer.transformToRTF(this);
