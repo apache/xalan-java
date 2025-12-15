@@ -24,10 +24,21 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.objects.ElemFunctionItem;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
+import org.apache.xpath.objects.XdmAttributeItem;
+import org.apache.xpath.objects.XdmCommentItem;
+import org.apache.xpath.objects.XdmProcessingInstructionItem;
 import org.w3c.dom.Node;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSString;
 
 /**
@@ -68,11 +79,54 @@ public class FuncName extends FunctionMultiArgs {
 	  
 	  int nodeHandle = DTM.NULL;
 	  
+	  String nodeNameStr = null;
+	  
 	  if (arg0 == null) {
-		 nodeHandle = xctxt.getCurrentNode();
+		 XObject contextItem = xctxt.getXPath3ContextItem();
+		 if (contextItem != null) {
+			if ((contextItem instanceof XSAnyAtomicType) || (contextItem instanceof XBoolean) 
+					                                                || (contextItem instanceof XBooleanStatic) || (contextItem instanceof XNumber) 
+					                                                || (contextItem instanceof XPathMap) || (contextItem instanceof XPathArray) 
+					                                                || (contextItem instanceof XPathInlineFunction) || (contextItem instanceof ElemFunctionItem)) {
+				result = new XSString("");
+				   
+				return result;
+			}
+			else if (contextItem instanceof XdmAttributeItem) {
+			   XdmAttributeItem xdmAttributeItem = (XdmAttributeItem)contextItem;
+			   String localName = xdmAttributeItem.getAttrLocalName();
+			   String namespace = xdmAttributeItem.getAttrNodeNs();
+			   if (namespace != null) {
+				  nodeNameStr = "Q{" + namespace + "}" + localName; 
+			   }
+			   else {
+				  nodeNameStr = localName;  
+			   }
+			   
+			   result = new XSString(nodeNameStr);
+			   
+			   return result;
+			}
+			else if (contextItem instanceof XdmCommentItem) {
+			   result = new XSString("");
+				   
+			   return result;
+			}
+            else if (contextItem instanceof XdmProcessingInstructionItem) {
+            	XdmProcessingInstructionItem xdmProcessingInstructionItem = (XdmProcessingInstructionItem)contextItem;
+            	nodeNameStr = xdmProcessingInstructionItem.getName();
+            	
+            	result = new XSString(nodeNameStr);
+				   
+ 			    return result;
+			}
+		 }
+		 
+		 nodeHandle = xctxt.getCurrentNode();		 
 	  }
 	  else if (arg0 instanceof SelfIteratorNoPredicate) {
 		  XObject contextItem = xctxt.getXPath3ContextItem();
+		  
 		  if ((contextItem != null) && (contextItem instanceof XMLNodeCursorImpl)) {
 			  contextItem = contextItem.getFresh();
 			  nodeHandle = getNodeHandle((XMLNodeCursorImpl)contextItem, xctxt);
@@ -92,9 +146,7 @@ public class FuncName extends FunctionMultiArgs {
 			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObject;			
 			nodeHandle = getNodeHandle(xmlNodeCursorImpl, xctxt);
 		 }		 
-	  }
-	  
-	  String nodeNameStr = null;
+	  }	  	  
 	  
 	  if (nodeHandle != DTM.NULL) {
 		 nodeNameStr = getNodeNameStrFromNodeHandle(nodeHandle, xctxt); 

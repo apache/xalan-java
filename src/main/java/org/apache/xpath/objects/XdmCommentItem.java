@@ -18,34 +18,21 @@
 package org.apache.xpath.objects;
 
 /**
- * Class definition, to represent an xdm attribute 
+ * Class definition, to represent an xdm comment 
  * node item.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XdmAttributeItem extends XObject {
-	
-	private static final long serialVersionUID = -1364342059577570615L;
+public class XdmCommentItem extends XObject {
 
-	/**
-	 * Class field, representing an XML attribute's 
-	 * local name. 
-	 */
-	private String m_attrLocalName = null;
+	private static final long serialVersionUID = 3267848491891237013L;
 	
 	/**
-	 * Class field, representing an XML attribute's 
-	 * namespace. 
+	 * Represents text value of comment.
 	 */
-	private String m_attrNodeNs = null;
-	
-	/**
-	 * Class field, representing an XML attribute's 
-	 * string value. 
-	 */
-	private String m_attrStrValue = null;
+	private String m_value = null;
 	
 	/**
 	 * Class field, representing value returned by
@@ -55,45 +42,23 @@ public class XdmAttributeItem extends XObject {
 	
 	/**
 	 * Class constructor.
-	 * 
-	 * @param attrLocalName				An XML attribute's local name
-	 * @param attrNs                    An XML attribute's namespace
-	 * @param attrValue                 An XML attribute's string value
 	 */
-	public XdmAttributeItem(String attrLocalName, String attrNs, String attrValue) {
-		m_attrLocalName = attrLocalName;
-		m_attrNodeNs = attrNs;
-		m_attrStrValue = attrValue;
+	public XdmCommentItem(String value) {
+		m_value = value;
 		
 		m_id = getIdValue();
 	}
 
-	public String getAttrLocalName() {
-		return m_attrLocalName;
+	public String getValue() {
+		return m_value;
 	}
 
-	public void setAttrLocalName(String attrLocalName) {
-		this.m_attrLocalName = attrLocalName;
-	}
-
-	public String getAttrNodeNs() {
-		return m_attrNodeNs;
-	}
-
-	public void setAttrNodeNs(String attrNodeNs) {
-		this.m_attrNodeNs = attrNodeNs;
-	}
-
-	public String getAttrStrValue() {
-		return m_attrStrValue;
-	}
-
-	public void setAttrStrValue(String attrStrValue) {
-		this.m_attrStrValue = attrStrValue;
+	public void setValue(String value) {
+		this.m_value = value;
 	}
 	
 	public String str() {
-		return m_attrStrValue;
+		return m_value;
 	}
 	
 	public String getIdValue() {
@@ -110,5 +75,5 @@ public class XdmAttributeItem extends XObject {
 
 		return result;
 	}
-
+	
 }

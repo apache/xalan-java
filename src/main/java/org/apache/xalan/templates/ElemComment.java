@@ -31,12 +31,8 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 
 /**
- * Implement xsl:comment.
- * <pre>
- * <!ELEMENT xsl:comment %char-template;>
- * <!ATTLIST xsl:comment %space-att;>
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Comments">section-Creating-Comments in XSLT Specification</a>
+ * Implementation of XSLT 3.0 xsl:comment element.
+ * 
  * @xsl.usage advanced
  */
 public class ElemComment extends ElemTemplateElement
@@ -139,6 +135,26 @@ public class ElemComment extends ElemTemplateElement
 	  return m_selectExpression;
   }
   
+  private String m_comment_value = null;
+  
+  public String getCommentValue() {
+	  return m_comment_value; 
+  }
+  
+  public void setCommentValue(String commentValue) {
+	  m_comment_value = commentValue; 
+  }
+  
+  private boolean m_is_serialize = true;
+  
+  public boolean getIsSerialize() {
+	  return m_is_serialize;
+  }
+  
+  public void setIsSerialize(boolean serialize) {
+	  m_is_serialize = serialize;  
+  }
+  
   /**
    * This function is called after everything else has been
    * recomposed, and allows the template to set remaining
@@ -230,7 +246,12 @@ public class ElemComment extends ElemTemplateElement
 			  data = getStrValueAfterExpandTextProcessing(data, transformer, m_vars, m_globals_size);
 		  }
 
-		  transformer.getResultTreeHandler().comment(data);
+		  if (m_is_serialize) {
+		     transformer.getResultTreeHandler().comment(data);
+		  }
+		  else {
+			 m_comment_value = data; 
+		  }
 	  }
 	  catch(org.xml.sax.SAXException se)
 	  {

@@ -165,6 +165,36 @@ public class ElemPI extends ElemTemplateElement
 	  return m_selectExpression;
   }
   
+  private String m_pi_name = null;
+  
+  public String getPiName() {
+	  return m_pi_name; 
+  }
+  
+  public void setPiName(String piName) {
+	  m_pi_name = piName; 
+  }
+  
+  private String m_pi_value = null;
+  
+  public String getPiValue() {
+	  return m_pi_value; 
+  }
+  
+  public void setPiValue(String piValue) {
+	  m_pi_value = piValue; 
+  }
+  
+  private boolean m_is_serialize = true;
+  
+  public boolean getIsSerialize() {
+	  return m_is_serialize;
+  }
+  
+  public void setIsSerialize(boolean serialize) {
+	  m_is_serialize = serialize;  
+  }
+  
   private Vector m_vars;
   
   private int m_globals_size;
@@ -288,13 +318,19 @@ public class ElemPI extends ElemTemplateElement
 		  data = getStrValueAfterExpandTextProcessing(data, transformer, m_vars, m_globals_size);
 	  }
 
-	  try
-	  {
-		  transformer.getResultTreeHandler().processingInstruction(piName, data);
+	  if (m_is_serialize) {
+		  try
+		  {
+			  transformer.getResultTreeHandler().processingInstruction(piName, data);
+		  }
+		  catch(org.xml.sax.SAXException se)
+		  {
+			  throw new TransformerException(se);
+		  }
 	  }
-	  catch(org.xml.sax.SAXException se)
-	  {
-		  throw new TransformerException(se);
+	  else {
+		  m_pi_name = piName;
+		  m_pi_value = data; 
 	  }
 
 	  if (transformer.getDebug())

@@ -67,7 +67,9 @@ import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XRTreeFragSelectWrapper;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XdmAttributeItem;
+import org.apache.xpath.objects.XdmCommentItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
+import org.apache.xpath.objects.XdmProcessingInstructionItem;
 import org.apache.xpath.operations.ArrowOp;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
@@ -947,24 +949,83 @@ public class ElemVariable extends ElemTemplateElement
     	  else {
     		  ElemTemplateElement elemTemplateElement = getFirstChildElem();
     		  ResultSequence rSeq = new ResultSequence();
+    		  
+    		  boolean isSeqConstructOk = true;
+    		  
     		  if (m_asAttr != null) {    			  
-    			  while (elemTemplateElement instanceof ElemText) {
-    				 ElemTemplateElement elem1 = elemTemplateElement.getFirstChildElem();
-    				 if ((elem1 != null) && (elem1 instanceof ElemTextLiteral)) {
-    					 ElemTextLiteral elemTextLiteral = (ElemTextLiteral)elem1;
-    					 char[] chrArray = elemTextLiteral.getChars();
-    					 String strValue = String.valueOf(chrArray);
-    					 rSeq.add(new XSString(strValue));
+    			  while (elemTemplateElement != null) {
+    				 if (elemTemplateElement instanceof ElemText) {
+    					 ElemTemplateElement elem1 = (ElemTemplateElement)elemTemplateElement; 
+    					 while (elem1 instanceof ElemText) {
+    						 elem1 = elem1.getFirstChildElem();
+    						 if (elem1 instanceof ElemTextLiteral) {
+    							 ElemTextLiteral elemTextLiteral = (ElemTextLiteral)elem1;
+    							 char[] chrArray = elemTextLiteral.getChars();
+    							 String strValue = String.valueOf(chrArray);
+    							 rSeq.add(new XSString(strValue));
 
-    					 elemTemplateElement = elem1.getNextSiblingElem();
+    							 elem1 = elem1.getNextSiblingElem();
+    						 }
+    					 }
+    					 
+    					 if (!((elem1 instanceof ElemText) || (elem1 instanceof ElemTextLiteral))) {
+    					    elemTemplateElement = elem1;
+    					 }
+    				 }    				 
+    				 else if (elemTemplateElement instanceof ElemAttribute) {
+    					 ElemAttribute elemAttribute = (ElemAttribute)elemTemplateElement;
+    					 elemAttribute.setIsSerialize(false);
+    					 AVT attrNameAvt = elemAttribute.getName();
+    					 PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+    					 String nodeName = attrNameAvt.evaluate(xctxt, sourceNode, prefixResolver);
+    					 String prefix = QName.getPrefixPart(nodeName);
+    					 String localName = QName.getLocalPart(nodeName); 
+    					 String namespace = prefixResolver.getNamespaceForPrefix(prefix);
+    					 if (namespace == null) {
+    						List<XMLNSDecl> prefixTable = getPrefixTable();
+    						namespace = XslTransformEvaluationHelper.getNsUriFromPrefix(prefix, prefixTable);
+    					 }
+    					 
+    					 elemAttribute.constructNode(nodeName, prefix, namespace, transformer);
+    					 String attrValue = elemAttribute.getAttrVal();
+    					 
+    					 XdmAttributeItem xdmAttributeItem = new XdmAttributeItem(localName, namespace, attrValue);
+    					 rSeq.add(xdmAttributeItem);
+    					 
+    					 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
     				 }
-    				 else {    					 
-    					 break;
+    				 else if (elemTemplateElement instanceof ElemComment) {
+    					 ElemComment elemComment = (ElemComment)elemTemplateElement;
+    					 elemComment.setIsSerialize(false);
+    					 elemComment.execute(transformer);
+    					 String commentValue = elemComment.getCommentValue();
+    					 elemComment.setIsSerialize(true);
+    					 XdmCommentItem xdmCommentItem = new XdmCommentItem(commentValue);
+    					 rSeq.add(xdmCommentItem);
+    					 
+    					 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
     				 }
+                     else if (elemTemplateElement instanceof ElemPI) {
+                    	 ElemPI elemPi = (ElemPI)elemTemplateElement;
+                    	 elemPi.setIsSerialize(false);
+                    	 elemPi.execute(transformer);
+    					 String piName = elemPi.getPiName();
+    					 String piValue = elemPi.getPiValue();
+    					 elemPi.setIsSerialize(true);
+    					 XdmProcessingInstructionItem xdmPiItem = new XdmProcessingInstructionItem(piName, piValue);
+    					 rSeq.add(xdmPiItem);
+    					 
+    					 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+    				 }
+                     else {
+                         isSeqConstructOk = false;
+                    	 
+                    	 break; 
+                     }
     			  }    			      			  
     		  }
     		  
-    		  if (rSeq.size() > 0) {
+    		  if ((rSeq.size() > 0) && isSeqConstructOk) {
     			  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	
     			  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());    	
     			  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;

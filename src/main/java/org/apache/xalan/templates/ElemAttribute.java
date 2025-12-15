@@ -618,8 +618,8 @@ public class ElemAttribute extends ElemElement
 		this.m_attrVal = attrVal;
 	}
 	
-	public void setIsSerialize(boolean is_serialize) {
-		m_is_serialize = is_serialize;		
+	public void setIsSerialize(boolean serialize) {
+		m_is_serialize = serialize;		
 	}
 	
 	public boolean getIsSerialize() {
