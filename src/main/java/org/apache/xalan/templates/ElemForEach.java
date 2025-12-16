@@ -264,7 +264,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   protected Vector m_sortElems = null;
 
   /**
-   * Get the count xsl:sort elements associated with this element.
+   * Get the count of xsl:sort elements associated with this element.
+   * 
    * @return The number of xsl:sort elements.
    */
   public int getSortElemCount()
@@ -302,7 +303,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * @return The token ID for this element
+   * @return The token id for this element
    */
   public int getXSLToken()
   {
@@ -329,7 +330,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   public void execute(TransformerImpl transformer) throws TransformerException
   {
 
-    transformer.pushCurrentTemplateRuleIsNull(true);    
+    transformer.pushCurrentTemplateRuleIsNull(true);
+    
     if (transformer.getDebug()) {
         transformer.getTraceManager().emitTraceEvent(this);   // invoke xsl:for-each element event
     }
@@ -844,26 +846,20 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
   /**
    * Add a child to the child list.
-   * <!ELEMENT xsl:apply-templates (xsl:sort|xsl:with-param)*>
-   * <!ATTLIST xsl:apply-templates
-   *   select %expr; "node()"
-   *   mode %qname; #IMPLIED
-   * >
-   *
+   * 
    * @param newChild Child to add to child list
    *
    * @return Child just added to child list
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
-
 	super.appendChild(newChild);
 	  
 	int type = ((ElemTemplateElement) newChild).getXSLToken();
 
     if (Constants.ELEMNAME_SORT == type)
     {
-      setSortElem((ElemSort) newChild);
+      setSortElem((ElemSort)newChild);
     }
     
     return newChild;
@@ -871,11 +867,13 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   
   /**
    * Call the children visitors.
-   * @param visitor The visitor whose appropriate method will be called.
+   * 
+   * @param visitor                The visitor whose appropriate method 
+   *                               will be called.
    */
   public void callChildVisitors(XSLTVisitor visitor, boolean callAttributes)
   {
-  	if(callAttributes && (null != m_selectExpression))
+  	if (callAttributes && (null != m_selectExpression))
   		m_selectExpression.callVisitors(this, visitor);
   		
     int length = getSortElemCount();

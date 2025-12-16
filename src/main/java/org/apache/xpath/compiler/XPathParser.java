@@ -60,6 +60,7 @@ import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemPI;
+import org.apache.xalan.templates.ElemPerformSort;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -8150,6 +8151,12 @@ public class XPathParser
     		result = ((ElemForEach)xpathExprXslParentNode).getXpathDefaultNamespace();
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemForEach)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemPerformSort) {
+    		result = ((ElemPerformSort)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemPerformSort)xpathExprXslParentNode).getParentElem()); 
     		}
     	}
     	else if (xpathExprXslParentNode instanceof ElemForEachGroup) {

@@ -152,21 +152,22 @@ public class ElemAttributeSet extends ElemUse
   public ElemTemplateElement appendChildElem(ElemTemplateElement newChild)
   {
 
-    int type = ((ElemTemplateElement) newChild).getXSLToken();
+	  int type = ((ElemTemplateElement) newChild).getXSLToken();
 
-    switch (type)
-    {
-    case Constants.ELEMNAME_ATTRIBUTE :
-      break;
-    default :
-      error(XSLTErrorResources.ER_CANNOT_ADD,
-            new Object[]{ newChild.getNodeName(),
-                          this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+	  switch (type)
+	  {
+	  case Constants.ELEMNAME_ATTRIBUTE :
+		  break;
+	  default :
+		  String lineNo = String.valueOf(newChild.getLineNumber());
+		  String columnNo = String.valueOf(newChild.getColumnNumber());
 
-    //" to " + this.m_elemName);
-    }
+		  error(XSLTErrorResources.ER_CANNOT_ADD,
+											  new Object[]{ newChild.getNodeName(),
+													  this.getNodeName(), lineNo, columnNo });
+	  }
 
-    return super.appendChild(newChild);
+	  return super.appendChild(newChild);
   }
 
   /**

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <item>
+    <id>2</id>
+    <color>blue</color>
+  </item>
+  <item>
+    <id>1</id>
+    <color>red</color>
+  </item>
+  <item>
+    <id>4</id>
+    <color>red</color>
+  </item>
+  <item>
+    <id>5</id>
+    <color>red</color>
+  </item>
+  <item>
+    <id>3</id>
+    <color>yellow</color>
+  </item>
+</result>

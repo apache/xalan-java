@@ -214,11 +214,12 @@ public class ElemText extends ElemTemplateElement
 	  case Constants.ELEMNAME_TEXTLITERALRESULT :
 		  break;
 	  default :
-		  error(XSLTErrorResources.ER_CANNOT_ADD,
-				  new Object[]{ newChild.getNodeName(),
-						  this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+		  String lineNo = String.valueOf(newChild.getLineNumber());
+	  	  String columnNo = String.valueOf(newChild.getColumnNumber());
 
-		  //" to " + this.m_elemName);
+	  	  error(XSLTErrorResources.ER_CANNOT_ADD,
+	  										   new Object[]{ newChild.getNodeName(),
+	  												    this.getNodeName(), lineNo, columnNo });
 	  }
 
 	  return newChild;

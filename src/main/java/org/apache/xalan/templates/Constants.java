@@ -99,9 +99,10 @@ public class Constants extends org.apache.xml.utils.Constants
   ELEMNAME_OUTPUT_CHARACTER = 112, ELEMNAME_CONTEXT_ITEM = 113,  
   ELEMNAME_DOCUMENT = 114, ELEMNAME_MODE = 115,  
   ELEMNAME_NAMESPACE = 116,
-  ELEMNAME_ASSERT = 117;
+  ELEMNAME_ASSERT = 117,
+  ELEMNAME_PERFORMSORT = 118;
   
-  // next available number : 118
+  // next available number : 119
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -142,6 +143,7 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_EXTENSION_STRING = "functions",
       ELEMNAME_FALLBACK_STRING = "fallback",
       ELEMNAME_FOREACH_STRING = "for-each",
+      ELEMNAME_PERFORMSORT_STRING = "perform-sort",
       ELEMNAME_FOREACHGROUP_STRING = "for-each-group",
       ELEMNAME_SOURCEDOCUMENT_STRING = "source-document",
       ELEMNAME_FORK_STRING = "fork",

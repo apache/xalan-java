@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xml.utils;
 
 import java.io.PrintStream;
@@ -33,10 +30,12 @@ import org.apache.xml.res.XMLMessages;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.LocatorImpl;
 
 
 /**
- * Implement SAX error handler for default reporting.
+ * Implementation of XML SAX error handler for default reporting.
+ * 
  * @xsl.usage general
  */
 public class DefaultErrorHandler implements ErrorHandler, ErrorListener
@@ -277,11 +276,10 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   
   public static void ensureLocationSet(TransformerException exception)
   {
-    // SourceLocator locator = exception.getLocator();
     SourceLocator locator = null;
     Throwable cause = exception;
     
-    // Try to find the locator closest to the cause.
+    // Try to find the locator closest to the cause
     do
     {
       if(cause instanceof SAXParseException)
@@ -319,49 +317,70 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   
   public static void printLocation(PrintWriter pw, Throwable exception)
   {
-    SourceLocator locator = null;
-    Throwable cause = exception;
-    
-    // Try to find the locator closest to the cause.
-    String xslSystemId = null;
-    do
-    {
-      if(cause instanceof SAXParseException)
-      {
-        locator = new SAXSourceLocator((SAXParseException)cause);
-      }
-      else if (cause instanceof TransformerException)
-      {
-        SourceLocator causeLocator = ((TransformerException)cause).getLocator();
-        if(null != causeLocator) {
-          if (causeLocator.getSystemId() == null) {
-              xslSystemId = XslTransformData.m_xslSystemId;    
-          }
-          locator = causeLocator;
-        }
-      }
-      if(cause instanceof TransformerException)
-        cause = ((TransformerException)cause).getCause();
-      else if(cause instanceof WrappedRuntimeException)
-        cause = ((WrappedRuntimeException)cause).getException();
-      else if(cause instanceof SAXException)
-        cause = ((SAXException)cause).getException();
-      else
-        cause = null;
-    }
-    while(null != cause);
-        
-    if(null != locator)
-    {
-      String id = (null != locator.getPublicId() )
-                  ? locator.getPublicId()
-                    : (null != locator.getSystemId())
-                      ? locator.getSystemId() : (null != xslSystemId) ? xslSystemId : XMLMessages.createXMLMessage(XMLErrorResources.ER_SYSTEMID_UNKNOWN, null); //"SystemId Unknown";
+	  SourceLocator locator = null;
+	  Throwable cause = exception;
 
-      pw.print(id + "; " +XMLMessages.createXMLMessage("line", null) + locator.getLineNumber()
-                         + "; " +XMLMessages.createXMLMessage("column", null) + locator.getColumnNumber()+"; ");
-    }
-    else
-      pw.print("("+XMLMessages.createXMLMessage(XMLErrorResources.ER_LOCATION_UNKNOWN, null)+")");
+	  // Try to find the locator closest to the cause
+	  String xslSystemId = null;
+	  do
+	  {
+		  if (cause instanceof SAXParseException)
+		  {
+			  locator = new SAXSourceLocator((SAXParseException)cause);
+		  }
+		  else if (cause instanceof TransformerException)
+		  {
+			  SourceLocator causeLocator = ((TransformerException)cause).getLocator();
+			  if (null != causeLocator) {
+				  if (causeLocator.getSystemId() == null) {
+					  xslSystemId = XslTransformData.m_xslSystemId;    
+				  }
+				  locator = causeLocator;
+			  }
+			  else {
+				  String mesg = cause.getMessage();
+				  if (mesg != null) {
+				     mesg = mesg.replace("java.lang.RuntimeException: ", "");
+				     String[] strArray = mesg.split(":");
+				     if (strArray.length > 2) {
+				    	String locationStr = (strArray[2]).trim();
+				    	int idx = locationStr.indexOf(',');
+				    	int lineNo = (idx != -1) ? Integer.valueOf(locationStr.substring(0, idx)) : -1;
+				    	int columnNo = (idx != -1) ? Integer.valueOf(locationStr.substring(idx + 1)) : -1;;
+				    	LocatorImpl locatorImpl = new LocatorImpl();
+				    	locatorImpl.setLineNumber(lineNo);
+				    	locatorImpl.setColumnNumber(columnNo);
+				    	locatorImpl.setSystemId(XslTransformData.m_xslSystemId);
+				    	locator = new SAXSourceLocator(locatorImpl);
+				    	
+				    	break;
+				     }
+				  }
+			  }
+		  }
+		  if (cause instanceof TransformerException)
+			  cause = ((TransformerException)cause).getCause();
+		  else if (cause instanceof WrappedRuntimeException)
+			  cause = ((WrappedRuntimeException)cause).getException();
+		  else if (cause instanceof SAXException)
+			  cause = ((SAXException)cause).getException();		  
+		  else
+			  cause = null;
+	  }
+	  while(null != cause);
+
+	  if (null != locator)
+	  {
+		  String id = (null != locator.getPublicId() )
+				  ? locator.getPublicId()
+						  : (null != locator.getSystemId())
+						  ? locator.getSystemId() : (null != xslSystemId) ? xslSystemId : XMLMessages.createXMLMessage(XMLErrorResources.ER_SYSTEMID_UNKNOWN, null); //"SystemId Unknown";
+
+		  pw.print(id + "; " +XMLMessages.createXMLMessage("line", null) + locator.getLineNumber()
+		  + "; " +XMLMessages.createXMLMessage("column", null) + locator.getColumnNumber()+"; ");
+	  }
+	  else		  
+		  pw.print("("+XMLMessages.createXMLMessage(XMLErrorResources.ER_LOCATION_UNKNOWN, null)+")");
+    
   }
 }

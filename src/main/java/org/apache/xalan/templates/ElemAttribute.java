@@ -565,6 +565,7 @@ public class ElemAttribute extends ElemElement
     case Constants.ELEMNAME_CALLTEMPLATE :
     case Constants.ELEMNAME_FOREACH :
     case Constants.ELEMNAME_VALUEOF :
+    case Constants.ELEMNAME_SEQUENCE :    	
     case Constants.ELEMNAME_COPY_OF :
     case Constants.ELEMNAME_NUMBER :
     case Constants.ELEMNAME_CHOOSE :
@@ -581,11 +582,12 @@ public class ElemAttribute extends ElemElement
       // case Constants.ELEMNAME_ATTRIBUTE:
       break;
     default :
-      error(XSLTErrorResources.ER_CANNOT_ADD,
-            new Object[]{ newChild.getNodeName(),
-                          this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+    	String lineNo = String.valueOf(newChild.getLineNumber());
+  	    String columnNo = String.valueOf(newChild.getColumnNumber());
 
-    //" to " + this.m_elemName);
+  	    error(XSLTErrorResources.ER_CANNOT_ADD,
+  										     new Object[]{ newChild.getNodeName(),
+  												  this.getNodeName(), lineNo, columnNo });
     }
 
     return super.appendChild(newChild);

@@ -748,13 +748,14 @@ public class ElemNumber extends ElemTemplateElement
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
+	  String lineNo = String.valueOf(newChild.getLineNumber());
+	  String columnNo = String.valueOf(newChild.getColumnNumber());
 
-    error(XSLTErrorResources.ER_CANNOT_ADD,
-          new Object[]{ newChild.getNodeName(),
-                        this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+	  error(XSLTErrorResources.ER_CANNOT_ADD,
+										   new Object[]{ newChild.getNodeName(),
+												    this.getNodeName(), lineNo, columnNo });
 
-    //" to " + this.m_elemName);
-    return null;
+	  return null;
   }
 
   /**

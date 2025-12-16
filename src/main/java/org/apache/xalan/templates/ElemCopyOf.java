@@ -480,10 +480,14 @@ public class ElemCopyOf extends ElemTemplateElement
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
-    error(XSLTErrorResources.ER_CANNOT_ADD,
-          new Object[]{ newChild.getNodeName(),
-                        this.getNodeName() });
-    return null;
+	  String lineNo = String.valueOf(newChild.getLineNumber());
+	  String columnNo = String.valueOf(newChild.getColumnNumber());
+
+	  error(XSLTErrorResources.ER_CANNOT_ADD,
+										  new Object[]{ newChild.getNodeName(),
+												  this.getNodeName(), lineNo, columnNo });
+	  
+	  return null;
   }
   
   /**

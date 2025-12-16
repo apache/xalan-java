@@ -2218,6 +2218,9 @@ public class ElemTemplateElement extends UnImplNode
   	else if (elemTemplateElem instanceof ElemForEach) {
   		result = ((ElemForEach)elemTemplateElem).getExpandText();  		
   	}
+  	else if (elemTemplateElem instanceof ElemPerformSort) {
+  		result = ((ElemPerformSort)elemTemplateElem).getExpandText();  		
+  	}
   	else if (elemTemplateElem instanceof ElemForEachGroup) {
   		result = ((ElemForEachGroup)elemTemplateElem).getExpandText();  		
   	}

@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import javax.xml.transform.SourceLocator;
@@ -432,4 +429,13 @@ public class ElemSort extends ElemTemplateElement
     if(null != m_selectExpression)
       m_selectExpression.fixupVariables(vnames, cstate.getGlobalsSize());
   }
+  
+  /**
+   * This after the template's children have been composed.
+   */
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {
+	  super.endCompose(sroot);
+  }
+
 }

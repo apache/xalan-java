@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-15T17:22:07Z" fail="32" name="sequence" pass="53" skipped="7" statusUnknown="0" totalRun="85">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-16T16:54:14Z" fail="30" name="sequence" pass="55" skipped="7" statusUnknown="0" totalRun="85">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="pass" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -9,7 +9,7 @@
    <testResult status="pass" testName="sequence-0108"/>
    <testResult status="pass" testName="sequence-0109"/>
    <testResult status="pass" testName="sequence-0110"/>
-   <testResult status="fail" testName="sequence-0111"/>
+   <testResult status="pass" testName="sequence-0111"/>
    <testResult status="pass" testName="sequence-0112"/>
    <testResult status="fail" testName="sequence-0113"/>
    <testResult status="pass" testName="sequence-0114"/>
@@ -20,7 +20,7 @@
    <testResult feature="backwards_compatibility" status="skipped" testName="sequence-0119"/>
    <testResult reason="Xalan configured" status="skipped" testName="sequence-0120"/>
    <testResult status="pass" testName="sequence-0121"/>
-   <testResult status="fail" testName="sequence-0122"/>
+   <testResult status="pass" testName="sequence-0122"/>
    <testResult status="pass" testName="sequence-0123"/>
    <testResult status="fail" testName="sequence-0124"/>
    <testResult status="fail" testName="sequence-0125"/>

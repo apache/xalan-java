@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
@@ -25,17 +22,13 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerImpl;
 
 /**
- * Implement xsl:fallback.
- * <pre>
- * <!ELEMENT xsl:fallback %template;>
- * <!ATTLIST xsl:fallback %space-att;>
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#fallback">fallback in XSLT Specification</a>
+ * Implementation of XSLT 3.0 xsl:fallback instruction.
+
  * @xsl.usage advanced
  */
 public class ElemFallback extends ElemTemplateElement
 {
-    static final long serialVersionUID = 1782962139867340703L;
+  static final long serialVersionUID = 1782962139867340703L;
 
   /**
    * Get an int constant identifying the type of element.
@@ -57,6 +50,29 @@ public class ElemFallback extends ElemTemplateElement
   {
     return Constants.ELEMNAME_FALLBACK_STRING;
   }
+  
+  /**
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   *
+   * @param sroot                      StylesheetRoot object
+   *
+   * @throws TransformerException
+   */
+  public void compose(StylesheetRoot sroot) throws TransformerException
+  {
+	  super.compose(sroot);
+  }
+
+  /**
+   * This after the template's children have been composed.
+   */
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {    
+	  super.endCompose(sroot);
+  }
 
   /**
    * This is the normal call when xsl:fallback is instantiated.
@@ -74,7 +90,7 @@ public class ElemFallback extends ElemTemplateElement
   }
 
   /**
-   * Execute the fallback elements.  This must be explicitly called to
+   * Evaluate an XSL xsl:fallback instruction. This must be explicitly called to
    * instantiate the content of an xsl:fallback element.
    * When an XSLT transformer performs fallback for an instruction
    * element, if the instruction element has one or more xsl:fallback
@@ -112,4 +128,30 @@ public class ElemFallback extends ElemTemplateElement
         "Error!  parent of xsl:fallback must be an extension or unknown element!");
     }
   }
+  
+  /**
+   * Add a child to the child list.
+   * 
+   * @param newChild Child to add to child list
+   *
+   * @return Child just added to child list
+   */
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
+  {
+	  super.appendChild(newChild);
+
+	  return newChild;
+  }
+
+  /**
+   * Call the children visitors.
+   * 
+   * @param visitor                The visitor whose appropriate method 
+   *                               will be called.
+   */
+  public void callChildVisitors(XSLTVisitor visitor, boolean callAttributes)
+  {
+	  super.callChildVisitors(visitor, callAttributes);
+  }
+  
 }

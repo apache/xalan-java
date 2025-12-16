@@ -498,7 +498,7 @@ public class XSLTErrorResources extends ListResourceBundle
       "sourceNode is null in xsl:apply-imports!"},
 
   {ER_CANNOT_ADD,
-      "Can not add {0} to {1}"},
+      "{2},{3} : An XSL transformation processing could not add ''{0}'' to ''{1}''."},
 
     { ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES, 
       "sourceNode is null in handleApplyTemplatesInstruction!"},

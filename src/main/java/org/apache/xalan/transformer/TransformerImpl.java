@@ -80,6 +80,7 @@ import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemOutputCharacter;
 import org.apache.xalan.templates.ElemPI;
+import org.apache.xalan.templates.ElemPerformSort;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemSort;
 import org.apache.xalan.templates.ElemTemplate;
@@ -3011,13 +3012,20 @@ public class TransformerImpl extends Transformer
    * @throws TransformerException
    * @xsl.usage advanced
    */
-  public Vector processSortKeys(ElemForEach foreach, int sourceNodeContext)
+  public Vector processSortKeys(Object foreach, int sourceNodeContext)
           throws TransformerException
   {
 
     Vector keys = null;
     XPathContext xctxt = m_xcontext;
-    int nElems = foreach.getSortElemCount();
+    
+    int nElems;
+    if (foreach instanceof ElemForEach) {
+       nElems = ((ElemForEach)foreach).getSortElemCount();
+    }
+    else {
+       nElems = ((ElemPerformSort)foreach).getSortElemCount();
+    }
 
     if (nElems > 0)
       keys = new Vector();
@@ -3025,39 +3033,86 @@ public class TransformerImpl extends Transformer
     // March backwards, collecting the sort keys
     for (int i = 0; i < nElems; i++)
     {
-      ElemSort sort = foreach.getSortElem(i);
+      ElemSort sort = null;
+      
+      if (foreach instanceof ElemForEach) {
+    	  sort = ((ElemForEach)foreach).getSortElem(i);
+      }
+      else {
+    	  sort = ((ElemPerformSort)foreach).getSortElem(i);
+      }
       
       if (m_debug)
         getTraceManager().emitTraceEvent(sort);
      
-      String langString =
-        (null != sort.getLang())
-        ? sort.getLang().evaluate(xctxt, sourceNodeContext, foreach) : null;
-      String dataTypeString = sort.getDataType().evaluate(xctxt,
-                                sourceNodeContext, foreach);
+      String langString = null;
+      if (foreach instanceof ElemForEach) {
+    	  langString =
+    			  (null != sort.getLang())
+    			  ? sort.getLang().evaluate(xctxt, sourceNodeContext, (ElemForEach)foreach) : null;
+      }
+      else {
+    	  langString =
+    			  (null != sort.getLang())
+    			  ? sort.getLang().evaluate(xctxt, sourceNodeContext, (ElemPerformSort)foreach) : null; 
+      }
+      
+      String dataTypeString = null;
+      if (foreach instanceof ElemForEach) {
+    	  dataTypeString = sort.getDataType().evaluate(xctxt,
+    			  sourceNodeContext, (ElemForEach)foreach);
+      }
+      else {
+    	  dataTypeString = sort.getDataType().evaluate(xctxt,
+    			  sourceNodeContext, (ElemPerformSort)foreach);
+      }
 
       if (dataTypeString.indexOf(":") >= 0)
         System.out.println(
           "TODO: Need to write the hooks for QNAME sort data type");
       else if (!(dataTypeString.equalsIgnoreCase(Constants.ATTRVAL_DATATYPE_TEXT))
                &&!(dataTypeString.equalsIgnoreCase(
-                 Constants.ATTRVAL_DATATYPE_NUMBER)))
-        foreach.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
-                      new Object[]{ Constants.ATTRNAME_DATATYPE,
-                                    dataTypeString });
+                 Constants.ATTRVAL_DATATYPE_NUMBER))) {
+    	  if (foreach instanceof ElemForEach) {    	  
+    		  ((ElemForEach)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+    				  new Object[]{ Constants.ATTRNAME_DATATYPE,
+    						  dataTypeString });
+    	  }
+    	  else {
+    		  ((ElemPerformSort)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+    				  new Object[]{ Constants.ATTRNAME_DATATYPE,
+    						  dataTypeString });
+    	  }
+      }
 
       boolean treatAsNumbers =
         ((null != dataTypeString) && dataTypeString.equals(
         Constants.ATTRVAL_DATATYPE_NUMBER)) ? true : false;
-      String orderString = sort.getOrder().evaluate(xctxt, sourceNodeContext,
-                             foreach);
+      
+      String orderString = null;
+      if (foreach instanceof ElemForEach) { 
+    	  orderString = sort.getOrder().evaluate(xctxt, sourceNodeContext,
+    			  (ElemForEach)foreach);
+      }
+      else {
+    	  orderString = sort.getOrder().evaluate(xctxt, sourceNodeContext,
+    			  (ElemPerformSort)foreach);
+      }
 
       if (!(orderString.equalsIgnoreCase(Constants.ATTRVAL_ORDER_ASCENDING))
               &&!(orderString.equalsIgnoreCase(
-                Constants.ATTRVAL_ORDER_DESCENDING)))
-        foreach.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+                Constants.ATTRVAL_ORDER_DESCENDING))) {
+    	  if (foreach instanceof ElemForEach) {    	  
+    		  ((ElemForEach)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
                       new Object[]{ Constants.ATTRNAME_ORDER,
                                     orderString });
+    	  }
+    	  else {
+    		  ((ElemPerformSort)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+                      new Object[]{ Constants.ATTRNAME_ORDER,
+                                    orderString });
+    	  }
+      }
 
       boolean descending =
         ((null != orderString) && orderString.equals(
@@ -3067,15 +3122,30 @@ public class TransformerImpl extends Transformer
 
       if (null != caseOrder)
       {
-        String caseOrderString = caseOrder.evaluate(xctxt, sourceNodeContext,
-                                                    foreach);
+    	  String caseOrderString = null;
+    	  if (foreach instanceof ElemForEach) {
+    		  caseOrderString = caseOrder.evaluate(xctxt, sourceNodeContext,
+    				  (ElemForEach)foreach);
+    	  }
+    	  else {
+    		  caseOrderString = caseOrder.evaluate(xctxt, sourceNodeContext,
+    				  (ElemPerformSort)foreach);  
+    	  }
 
         if (!(caseOrderString.equalsIgnoreCase(Constants.ATTRVAL_CASEORDER_UPPER))
                 &&!(caseOrderString.equalsIgnoreCase(
-                  Constants.ATTRVAL_CASEORDER_LOWER)))
-          foreach.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+                  Constants.ATTRVAL_CASEORDER_LOWER))) {
+        	if (foreach instanceof ElemForEach) {
+        		((ElemForEach)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
                         new Object[]{ Constants.ATTRNAME_CASEORDER,
                                       caseOrderString });
+        	}
+        	else {
+        		((ElemPerformSort)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+                        new Object[]{ Constants.ATTRNAME_CASEORDER,
+                                      caseOrderString });
+        	}
+        }
 
         caseOrderUpper =
           ((null != caseOrderString) && caseOrderString.equals(
@@ -3092,9 +3162,18 @@ public class TransformerImpl extends Transformer
     	 xpathSelect = new XPath(".", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
       }
       
-      NodeSortKey nodeSortKey = new NodeSortKey(this, xpathSelect, treatAsNumbers,
-                                                descending, langString, caseOrderUpper, 
-                                                foreach);      
+      NodeSortKey nodeSortKey = null;
+      if (foreach instanceof ElemForEach) {
+    	  nodeSortKey = new NodeSortKey(this, xpathSelect, treatAsNumbers,
+    			  descending, langString, caseOrderUpper, 
+    			  (ElemForEach)foreach);
+      }
+      else {
+    	  nodeSortKey = new NodeSortKey(this, xpathSelect, treatAsNumbers,
+    			  descending, langString, caseOrderUpper, 
+    			  (ElemPerformSort)foreach);
+      }
+      
       keys.addElement(nodeSortKey);    	  	  
       
       if (m_debug)
@@ -4698,6 +4777,14 @@ public class TransformerImpl extends Transformer
 						  xpathDefaultNamespace = ((ElemForEach)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
+				  else if (xslElem instanceof ElemPerformSort) {
+					  if (((ElemPerformSort)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemPerformSort)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemPerformSort)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
 				  else if (xslElem instanceof ElemForEachGroup) {
 					  ElemForEachGroup elemForEachGroup = (ElemForEachGroup)xslElem;
 					  if (elemForEachGroup.getXpathDefaultNamespace() == null) {
@@ -4983,6 +5070,14 @@ public class TransformerImpl extends Transformer
 					  }
 					  else {
 						  expandText = ((ElemForEach)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemPerformSort) {
+					  if (!(((ElemPerformSort)xslElem).getExpandTextDeclared())) {
+						  ((ElemPerformSort)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemPerformSort)xslElem).getExpandText();  
 					  }
 				  }
 				  else if (xslElem instanceof ElemForEachGroup) {

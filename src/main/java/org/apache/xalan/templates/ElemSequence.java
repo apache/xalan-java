@@ -574,6 +574,19 @@ public class ElemSequence extends ElemTemplateElement
 			  m_xslSequenceEvalResult = result;
 		  }            		  
 		  else {
+			  if ((result instanceof ResultSequence) && (getParentElem() instanceof ElemAttribute)) {
+				 ResultSequence rSeq = (ResultSequence)result;
+				 StringBuffer strBuff = new StringBuffer();
+				 int rSeqLength = rSeq.size();
+				 for (int idx = 0; idx < rSeqLength; idx++) {
+					XObject xObj = rSeq.item(idx);
+					String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+					strBuff.append(str1);
+				 }
+				 
+				 result = new XSString(strBuff.toString());
+			  }
+			  
 			  emitXdmObjectToResultTree(xctxt, transformer, result);          
 		  }
 	  }
