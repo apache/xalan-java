@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:23Z" fail="6" name="choose" pass="48" skipped="1" statusUnknown="0" totalRun="54">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-18T16:47:56Z" fail="6" name="choose" pass="48" run="54" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="choose-0101"/>
    <testResult status="pass" testName="choose-0102"/>
    <testResult reason="Xalan configured" status="skipped" testName="choose-0103"/>

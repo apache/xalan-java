@@ -39,6 +39,13 @@ public class ResultSequence extends XObject
     private List<XObject> m_list = new ArrayList<XObject>();
     
     /**
+     * Class field to represent, whether a ResultSequence object
+     * represents an xdm sequence of nodes that don't have an
+     * xdm parent item. 
+     */
+    private boolean m_xdm_parentless_sibling_nodes = false;
+    
+    /**
      * Class constructor.
      */
     public ResultSequence() {}
@@ -169,5 +176,13 @@ public class ResultSequence extends XObject
     	
     	return strVal.hashCode();
     }
+
+	public boolean isXdmParentlessSiblingNodes() {
+		return m_xdm_parentless_sibling_nodes;
+	}
+
+	public void setXdmParentlessSiblingNodes(boolean xdmParentlessSiblingNodes) {
+		this.m_xdm_parentless_sibling_nodes = xdmParentlessSiblingNodes;
+	}
 
 }

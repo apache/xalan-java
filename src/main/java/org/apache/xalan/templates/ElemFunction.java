@@ -48,6 +48,7 @@ import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.SequenceTypeSupport.OccurrenceIndicator;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XslFunctionMemoization;
@@ -739,7 +740,14 @@ public class ElemFunction extends ElemTemplate
         		}
              }
              
-             funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
+             if (ElemPerformSort.m_namespace_result_seq.size() > 0) {
+            	 result = ElemPerformSort.m_namespace_result_seq;            	 
+            	 funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);            	 
+            	 (ElemPerformSort.m_namespace_result_seq).clear();
+             }
+             else {
+                 funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
+             }
             
              if (funcResultConvertedVal == null) {
                 funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);                                
@@ -847,12 +855,12 @@ public class ElemFunction extends ElemTemplate
      SourceLocator srcLocator = xctxt.getSAXLocator();
      
      XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
-
      XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
-     SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
-     
+     SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;     
      SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+     
+     int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
      
      if (xdmValue instanceof XPathNamedFunctionReference) {
     	 SequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
@@ -902,9 +910,40 @@ public class ElemFunction extends ElemTemplate
 		 return result;
      }
      
-     XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)xdmValue;
+     if (xdmValue instanceof ResultSequence) {
+    	 ResultSequence rSeq = (ResultSequence)xdmValue;
+    	 
+    	 int rSeqLength = rSeq.size();
+    	 
+    	 if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+    		 boolean isSeqTypeOccrIndicatorOk = false;
+    		 if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY) && (rSeqLength > 0)) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (rSeqLength <= 1)) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) && (rSeqLength == 1)) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+
+    		 if (isSeqTypeOccrIndicatorOk) {
+    			 result = new ResultSequence();
+    			 for (int idx = 0; idx < rSeqLength; idx++) {
+    				 result.add(rSeq.item(idx)); 
+    			 }
+
+    			 return result;
+    		 }
+    	 }
+     }
      
-     DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDOM.object());
+     XNodeSetForDOM xNodeSetForDom = (XNodeSetForDOM)xdmValue;
+     
+     DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDom.object());
 
      Node localRootNode = dtmNodeList.item(0);
      NodeList nodeList = localRootNode.getChildNodes();
@@ -949,7 +988,7 @@ public class ElemFunction extends ElemTemplate
         	 String nodeLocalName = node.getLocalName();
         	 String nodeNsUri = node.getNamespaceURI();
         	 
-        	 XSTypeDefinition xsTypeDefn = xNodeSetForDOM.getXsTypeDefinition();
+        	 XSTypeDefinition xsTypeDefn = xNodeSetForDom.getXsTypeDefinition();
         	 if (xsTypeDefn == null) {
         		if (typeDataTypeLocalName == null) {
         			if (typeNodeLocalName == null) {        				

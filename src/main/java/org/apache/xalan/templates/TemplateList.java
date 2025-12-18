@@ -546,15 +546,17 @@ public class TemplateList implements java.io.Serializable
   }
 
   /**
-   * Get the head of the most likely list of associations to check, based on 
-   * the name and type of the targetNode argument.
+   * Get the head as an TemplateSubPatternAssociation object of the most 
+   * likely list of associations to check, based on the name and type of 
+   * the targetNode argument.
    *
    * @param xctxt The XPath runtime context.
    * @param targetNode The target node that will be checked for a match.
    * @param dtm The dtm owner for the target node.
    *
-   * @return The head of a linked list that contains all possible match pattern to 
-   * template associations.
+   * @return An TemplateSubPatternAssociation object, which is the head of a 
+   *         linked list that contains all possible match pattern to template 
+   *         associations.
    */
   public TemplateSubPatternAssociation getHead(XPathContext xctxt, 
                                                int targetNode, DTM dtm)
@@ -566,8 +568,8 @@ public class TemplateList implements java.io.Serializable
     {
     case DTM.ELEMENT_NODE :
     case DTM.ATTRIBUTE_NODE :
-      head = (TemplateSubPatternAssociation) m_patternTable.get(
-        dtm.getLocalName(targetNode));
+      head = (TemplateSubPatternAssociation)(m_patternTable.get(
+        dtm.getLocalName(targetNode)));
       break;
     case DTM.TEXT_NODE :
     case DTM.CDATA_SECTION_NODE :
@@ -575,12 +577,12 @@ public class TemplateList implements java.io.Serializable
       break;
     case DTM.ENTITY_REFERENCE_NODE :
     case DTM.ENTITY_NODE :
-      head = (TemplateSubPatternAssociation) m_patternTable.get(
-        dtm.getNodeName(targetNode)); // %REVIEW% I think this is right
+      head = (TemplateSubPatternAssociation)(m_patternTable.get(
+        dtm.getNodeName(targetNode))); // %REVIEW% I think this is right
       break;
     case DTM.PROCESSING_INSTRUCTION_NODE :
-      head = (TemplateSubPatternAssociation) m_patternTable.get(
-        dtm.getLocalName(targetNode));
+      head = (TemplateSubPatternAssociation)(m_patternTable.get(
+        dtm.getLocalName(targetNode)));
       break;
     case DTM.COMMENT_NODE :
       head = m_commentPatterns;
@@ -591,8 +593,8 @@ public class TemplateList implements java.io.Serializable
       break;
     case DTM.NOTATION_NODE :
     default :
-      head = (TemplateSubPatternAssociation) m_patternTable.get(
-        dtm.getNodeName(targetNode)); // %REVIEW% I think this is right
+      head = (TemplateSubPatternAssociation)(m_patternTable.get(
+        dtm.getNodeName(targetNode))); // %REVIEW% I think this is right
     }
 
     return (null == head) ? m_wildCardPatterns : head;
@@ -614,15 +616,18 @@ public class TemplateList implements java.io.Serializable
    *                                       shall be evaluated and appropriate XSL transform error or 
    *                                       warning shall be emitted.
    * @param dtm                            An DTM object instance, for the supplied node reference
-   * @param xslOnMultipleMatchStr
-   * @param xslWarningOnMultipleMatch
+   * @param xslOnMultipleMatchStr          xsl:mode instruction "on-multiple-match" attribute's value
+   * @param xslWarningOnMultipleMatch      xsl:mode instruction "warning-on-multiple-match" attribute's value 
+   * @param isXdmParentlessSiblingNodes    Boolean value, telling whether 'targetNode' for which XSL template 
+   *                                       rule needs to be found, doesn't have an XDM parent node.
+   *                                        
    * @return                               An XSL template rule object reference  
    * @throws TransformerException 
    */
   public ElemTemplate getTemplateFast(XPathContext xctxt, int targetNode, int expTypeID,
                                       QName mode, int maxImportLevel, boolean quietConflictWarnings,
-                                      DTM dtm, String xslOnMultipleMatchStr, boolean xslWarningOnMultipleMatch) 
-                                    		                                                                throws TransformerException
+                                      DTM dtm, String xslOnMultipleMatchStr, boolean xslWarningOnMultipleMatch, 
+                                                                                                     boolean isXdmParentlessSiblingNodes) throws TransformerException
   {
     
     TemplateSubPatternAssociation head;
@@ -633,8 +638,8 @@ public class TemplateList implements java.io.Serializable
     {
     case DTM.ELEMENT_NODE :
     case DTM.ATTRIBUTE_NODE :
-    	head = (TemplateSubPatternAssociation) m_patternTable.get(
-    			dtm.getLocalNameFromExpandedNameID(expTypeID));
+    	head = (TemplateSubPatternAssociation)(m_patternTable.get(
+    			dtm.getLocalNameFromExpandedNameID(expTypeID)));
     	break;
     case DTM.TEXT_NODE :
     case DTM.CDATA_SECTION_NODE :
@@ -642,12 +647,12 @@ public class TemplateList implements java.io.Serializable
     	break;
     case DTM.ENTITY_REFERENCE_NODE :
     case DTM.ENTITY_NODE :
-    	head = (TemplateSubPatternAssociation) m_patternTable.get(
-    			dtm.getNodeName(targetNode)); // %REVIEW% I think this is right
+    	head = (TemplateSubPatternAssociation)(m_patternTable.get(
+    			dtm.getNodeName(targetNode))); // %REVIEW% I think this is right
     	break;
     case DTM.PROCESSING_INSTRUCTION_NODE :
-    	head = (TemplateSubPatternAssociation) m_patternTable.get(
-    			dtm.getLocalName(targetNode));
+    	head = (TemplateSubPatternAssociation)(m_patternTable.get(
+    			dtm.getLocalName(targetNode)));
     	break;
     case DTM.COMMENT_NODE :
     	head = m_commentPatterns;
@@ -658,32 +663,103 @@ public class TemplateList implements java.io.Serializable
     	break;
     case DTM.NOTATION_NODE :
     default :
-    	head = (TemplateSubPatternAssociation) m_patternTable.get(
-    			dtm.getNodeName(targetNode)); // %REVIEW% I think this is right
+    	head = (TemplateSubPatternAssociation)(m_patternTable.get(
+    			dtm.getNodeName(targetNode))); // %REVIEW% I think this is right
     }
 
-    if(null == head)
+    if (head == null)
     {
     	head = m_wildCardPatterns;
-    	if(null == head)
+    	if (head == null)
     		return null;
     }                                              
 
     xctxt.pushNamespaceContextNull();
+    
     try
     {
       do
       {
-    	  if ( (maxImportLevel > -1) && (head.getImportLevel() > maxImportLevel) )
+    	  if ((maxImportLevel > -1) && (head.getImportLevel() > maxImportLevel))
     	  {
     		  continue;
     	  }
+    	  
     	  ElemTemplate template = head.getTemplate();        
     	  xctxt.setNamespaceContext(template);
     	  
+    	  if (isXdmParentlessSiblingNodes) {    		      		      		  
+    		  int prevSibling = dtm.getPreviousSibling(targetNode);
+    		  boolean isXslDocumentChild = false;
+    		  while (prevSibling != DTM.NULL) {
+    			  String str1 = dtm.getNodeValue(prevSibling);
+    			  if ((Constants.XSL_DOCUMENT_INSTRUCTION_MARKER).equals(str1)) {
+    				  isXslDocumentChild = true;
+
+    				  break;
+    			  }
+
+    			  prevSibling = dtm.getPreviousSibling(prevSibling); 
+    		  }
+    		  
+    		  String nodeName = dtm.getNodeName(targetNode);
+
+    		  String headPatternStr = head.getPattern();
+
+    		  if (headPatternStr.startsWith("/") && !(headPatternStr.startsWith("//"))) {
+    			  if (head.getNext() != null) {
+    				  continue;  
+    			  }
+    		  }
+
+    		  if (headPatternStr.startsWith("//")) {
+    			  if ((head.m_stepPattern.execute(xctxt, targetNode, dtm, expTypeID) != NodeTest.SCORE_NONE)
+    					                                                                                    && head.matchMode(mode)) {    		  
+    				  TemplateSubPatternAssociation head1 = head;    		      		      		  
+
+    				  while ((head1 = head1.getNext()) != null) {    		  
+    					  String head1PatternStr = head1.getPattern();
+
+    					  ElemTemplate template1 = head1.getTemplate();    					  
+
+    					  if (head1PatternStr.equals(headPatternStr.substring(2))) {    					      					  
+    						  if (quietConflictWarnings) {
+    							  checkConflicts(head1, xctxt, targetNode, mode, dtm, expTypeID, 
+    									                                                    xslOnMultipleMatchStr, xslWarningOnMultipleMatch);
+    						  }
+
+    						  if (!isXslDocumentChild) {
+    							  return template1;
+    						  }
+    					  }
+    					  
+    					  Expression matchExpr2 = (template1.getMatch()).getExpression();
+    					  if (matchExpr2 instanceof UnionPattern) {
+    						  UnionPattern unionPattern = (UnionPattern)matchExpr2;
+    						  StepPattern[] stepPatternArr = unionPattern.getPatterns();
+    						  int stepPatternCount = stepPatternArr.length;
+    						  for (int idx = 0; idx < stepPatternCount; idx++) {
+    							  StepPattern stepPattern = stepPatternArr[idx];
+    							  if ((stepPattern.execute(xctxt, targetNode, dtm, expTypeID) != NodeTest.SCORE_NONE)
+    									                                                                            && head1.matchMode(mode)) {
+    								  if (quietConflictWarnings) {
+    									  checkConflicts(head1, xctxt, targetNode, mode, dtm, expTypeID, 
+    											                                                    xslOnMultipleMatchStr, xslWarningOnMultipleMatch);
+    								  }
+
+    								  if (!isXslDocumentChild) {
+    								     return template1;
+    								  }
+    							  }
+    						  }
+    					  }
+    				  }
+    			  }
+    		  }
+          }
+    	  
     	  if ((head.m_stepPattern.execute(xctxt, targetNode, dtm, expTypeID) != NodeTest.SCORE_NONE)
-    			  																					&& head.matchMode(mode))
-    	  {
+    			  																					&& head.matchMode(mode)) {
     		  if (quietConflictWarnings) {
     			  checkConflicts(head, xctxt, targetNode, mode, dtm, expTypeID, 
     					                                                   xslOnMultipleMatchStr, xslWarningOnMultipleMatch);

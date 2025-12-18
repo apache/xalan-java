@@ -1071,7 +1071,7 @@ public class ElemValueOf extends ElemTemplateElement {
                 				  str1 = XslTransformEvaluationHelper.getStrVal(xObj);
                 			  }
 
-                			  if (str1 != null) {
+                			  if ((str1 != null) && !((idx == 0) && "".equals(str1))) {                			  
                 				  if (idx < (rSeqLngth - 1)) {
                 					  strBuff = strBuff.append(str1 + separatorStrValue); 
                 				  }

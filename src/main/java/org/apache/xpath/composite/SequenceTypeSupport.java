@@ -632,7 +632,7 @@ public class SequenceTypeSupport {
 	            		  }
 	            		  
 	            		  return result;
-	            	   }
+	            	   }	            	   
 	            	}
 	            	else if (sequenceTypeKindTest.getKindVal() == ELEMENT_KIND) {
 	            	   if (srcValue instanceof XNodeSetForDOM) {	            		   

@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
@@ -97,12 +96,6 @@ public class XslTransformData {
     public static ResultSequence m_xpathNamedFunctionRefSequence = new ResultSequence();
     
     /**
-     * This class field is used to refer to a document node, that an
-     * xsl:document instruction's evaluation has produced.
-     */
-    public static XMLNodeCursorImpl m_xslDocumentEvaluationResult;
-    
-    /**
      * This class field is used to refer to, list of URI strings 
      * processed by xsl:result-document instruction.
      */
@@ -134,7 +127,6 @@ public class XslTransformData {
 		m_templateMatchDotPatternPredicateStr = null;
 		m_xpathCallingOpCode = Integer.MIN_VALUE;
 		m_xpathNamedFunctionRefSequence.clear();
-		m_xslDocumentEvaluationResult = null;
 		m_xslResultDocumentUriStrList.clear();
 		m_is_xsl_test_invocation = false;
 	}		

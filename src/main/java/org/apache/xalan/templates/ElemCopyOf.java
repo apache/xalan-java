@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import java.util.List;
@@ -360,25 +357,32 @@ public class ElemCopyOf extends ElemTemplateElement
             switch (xObjectType) {           
                 case XObject.CLASS_NODESET :
                   XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)value;
+                  
                   if (!m_copy_namespaces) {					  					 					  
                 	 xNodeSet = XslTransformEvaluationHelper.stripNamespacesNodeSet(xNodeSet, xctxt);
                   }
+                  
                   xNodeSet.setTypeAttrForValidation(type);
+                  
                   if (validationStr != null) {
                 	  if (!isValidationStrOk(validationStr)) {
                 		 throw new TransformerException("XTTE1540 : An XSL copy-of instruction's attribute 'validation' can only have one of following "
                                                                                                           + "values : strict, lax, preserve, strip.", srcLocator);  
                 	  }
                   }
+                  
                   xNodeSet.setValidationAttrForValidation(validationStr);
-                  copyOfActionOnNodeSet(xNodeSet, transformer, rhandler, xctxt);          
+                  copyOfActionOnNodeSet(xNodeSet, transformer, rhandler, xctxt);
+                  
                   break;
                 case XObject.CLASS_RTREEFRAG :
                   SerializerUtils.outputResultTreeFragment(
                                                         rhandler, value, transformer.getXPathContext());
+                  
                   break;
                 case XObject.CLASS_RESULT_SEQUENCE :         
                   ResultSequence resultSequence = (ResultSequence)value;
+                  
                   if (!m_copy_namespaces) {
                 	 int rSeqLength = resultSequence.size();
                 	 for (int idx = 0; idx < rSeqLength; idx++) {
@@ -389,12 +393,15 @@ public class ElemCopyOf extends ElemTemplateElement
                 		}
                 	 }
                   }
-                  copyOfActionOnResultSequence(resultSequence, transformer, rhandler, xctxt, false, this);          
+                  
+                  copyOfActionOnResultSequence(resultSequence, transformer, rhandler, xctxt, false, this);
+                  
                   break;
                 case XObject.CLASS_ARRAY : 
                   XPathArray xpathArray = (XPathArray)value;
                   List<XObject> nativeArr = xpathArray.getNativeArray();
                   ResultSequence resultSequenceArr = getResultSequenceFromXPathArray(nativeArr);
+                  
                   if (!m_copy_namespaces) {
                 	  int rSeqLength = resultSequenceArr.size();
                 	  for (int idx = 0; idx < rSeqLength; idx++) {
@@ -405,7 +412,9 @@ public class ElemCopyOf extends ElemTemplateElement
                 		  }
                 	  }
                   }
+                  
                   copyOfActionOnResultSequence(resultSequenceArr, transformer, rhandler, xctxt, false, this);
+                  
                   break;
                 case XObject.CLASS_UNKNOWN :
                   if (value instanceof XMLAttribute) {
@@ -422,6 +431,7 @@ public class ElemCopyOf extends ElemTemplateElement
                 			             "CDATA", 
                 			             attrValue, false);
                   }
+                  
                   break;	
                 default :
                   // no op
@@ -520,11 +530,11 @@ public class ElemCopyOf extends ElemTemplateElement
 	  DTMCursorIterator dtmIter = nodeSet.iter();
 
       DTMTreeWalker tw = new TreeWalker2Result(transformer, handler);
-      int pos;
       
-      DTM dtm1 = nodeSet.getDtm();
+      DTM dtm1 = nodeSet.getDtm();      
+      int pos = dtmIter.nextNode();
 
-      while ((pos = dtmIter.nextNode()) != DTM.NULL) {    	  
+      while (pos != DTM.NULL) {    	  
           DTM dtm = null;
           
           if (dtm1 == null) {
@@ -555,10 +565,12 @@ public class ElemCopyOf extends ElemTemplateElement
         	  // Validate an XML attribute node if required by XSL stylesheet, and emit 
         	  // the node to XSL transform's output if validation succeeds.
         	  validateAndEmitAttributeNode(nodeSet, handler, xctxt, pos, dtm);
-          }
+          }          
           else {
         	  tw.traverse(pos);
           }
+          
+          pos = dtmIter.nextNode();
       } 
   }
   
@@ -579,6 +591,12 @@ public class ElemCopyOf extends ElemTemplateElement
          XObject xdmItem = resultSequence.item(idx);
          if (xdmItem instanceof XMLNodeCursorImpl) {
         	 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xdmItem;
+        	 
+        	 String nodeStrValue = xmlNodeCursorImpl.str();
+        	 if ((Constants.XSL_DOCUMENT_INSTRUCTION_MARKER).equals(nodeStrValue)) {
+        		continue; 
+        	 }
+        	 
         	 int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
         	 DTM dtm = xctxt.getDTM(nodeHandle);
         	 boolean flg1 = false;

@@ -23,15 +23,15 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformData;
-import org.apache.xml.dtm.DTM;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.SequenceTypeKindTest;
+import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
-import org.apache.xpath.objects.XNodeSetForDOM;
-import org.apache.xpath.objects.XRTreeFrag;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.apache.xpath.objects.XObject;
 
 /**
  * Implementation of XSLT 3.0 xsl:document instruction.
@@ -40,11 +40,9 @@ import org.w3c.dom.NodeList;
  * 
  * @xsl.usage advanced
  */
-public class ElemDocument extends ElemTemplateElement
-{
+public class ElemDocument extends ElemTemplateElement {
   
   private static final long serialVersionUID = -4941523610958927295L;
-
   
   /**
    * This class field is used during, XPath.fixupVariables(..) action 
@@ -66,23 +64,31 @@ public class ElemDocument extends ElemTemplateElement
    */
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
-    super.compose(sroot);
-    
-    java.util.Vector vnames = (sroot.getComposeState()).getVariableNames();
-    
-    m_vars = (Vector)(vnames.clone()); 
-    m_globals_size = (sroot.getComposeState()).getGlobalsSize();
+	  super.compose(sroot);
+
+	  java.util.Vector vnames = (sroot.getComposeState()).getVariableNames();
+
+	  m_vars = (Vector)(vnames.clone()); 
+	  m_globals_size = (sroot.getComposeState()).getGlobalsSize();
+  }
+
+  /**
+   * This after the template's children have been composed.
+   */
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {
+	  super.endCompose(sroot);
   }
 
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * @return The token ID for this element
+   * @return The token id for this element
    */
   public int getXSLToken()
   {
-    return Constants.ELEMNAME_DOCUMENT;
+	  return Constants.ELEMNAME_DOCUMENT;
   }
 
   /**
@@ -92,13 +98,11 @@ public class ElemDocument extends ElemTemplateElement
    */
   public String getNodeName()
   {
-    return Constants.ELEMNAME_DOCUMENT_STRING;
+	  return Constants.ELEMNAME_DOCUMENT_STRING;
   }
 
   /**
-   * The xsl:document instruction is used to create a new document node
-   * during an XSL transformation. The document nodes created by xsl:document
-   * instruction are not serialized.
+   * Method definition, to evaluate xsl:document instruction.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -111,39 +115,70 @@ public class ElemDocument extends ElemTemplateElement
 
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
+	  int contextNode = xctxt.getCurrentNode(); 
+
 	  QName type = getType();
-	  
+
 	  String validationStr = getValidation();
 
 	  if ((type != null) && (validationStr != null)) {
 		  throw new TransformerException("XTTE1540 : An XSL 'document' instruction cannot have both the attributes "
-				  																							 + "'type' and 'validation'.", srcLocator); 
+				                                                                                      + "'type' and 'validation'.", srcLocator); 
 	  }
 	  
-	  int rootNodeHandleOfRtf = transformer.transformToRTF(this);
-	  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
-	  XNodeSetForDOM xNodeSetForDOM = new XNodeSetForDOM(nodeList, xctxt);    	  
-	  int nodeHandle = xNodeSetForDOM.asNode(xctxt);
-	  DTM dtm = xNodeSetForDOM.getDTM(nodeHandle);
-	  Node node = dtm.getNode(nodeHandle);
+	  SerializationHandler handler = transformer.getSerializationHandler();	  	  	  	  
 	  
-	  if (node.getNodeType() == Node.DOCUMENT_NODE) {
-		  ElemTemplateElement parentXslElem = getParentElem();
-		  if (!(parentXslElem instanceof ElemVariable)) {
-			  for (ElemTemplateElement t = this.m_firstChild; t != null; t = t.m_nextSibling) {
-				  xctxt.setSAXLocator(t);
-				  transformer.setCurrentElement(t);
-				  t.execute(transformer);
-			  }
-		  }
-		  else {
-		      XslTransformData.m_xslDocumentEvaluationResult = new XMLNodeCursorImpl(nodeHandle, xctxt);
-		  }
+	  boolean isCharMarkerToEmit = false;
+	  
+	  ElemTemplateElement elemTemplateElement = getParentElem();
+	  if (elemTemplateElement instanceof ElemVariable) {
+		 ElemVariable elemVariable = (ElemVariable)elemTemplateElement;
+		 String asAttrValue = elemVariable.getAs();
+		 if (asAttrValue != null) { 			 
+			 XPath seqTypeXPath = new XPath(asAttrValue, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
+			 XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
+			 SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+			 
+			 SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+			 if ((seqTypeKindTest != null) && !(seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND)) {
+				isCharMarkerToEmit = true;
+			 }
+		 }
 	  }
-	  else {
-		  throw new TransformerException("XTTE1540 : An XSL sequence constructor within XSL 'document' instruction "
-				  																					    + "produced a node that is not a document node.", srcLocator); 
-	  }  	  
+	  else if (elemTemplateElement instanceof ElemTemplate) {
+		 ElemTemplate elemTemplate = (ElemTemplate)elemTemplateElement;
+		 String asAttrValue = elemTemplate.getAs();
+		 if ((asAttrValue != null) && ((elemTemplate.getMatch() == null) && (elemTemplate.getName() != null)) 
+				                                                                                 && !(elemTemplateElement instanceof ElemFunction)) { 			 
+			 XPath seqTypeXPath = new XPath(asAttrValue, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
+			 XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
+			 SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+			 
+			 SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+			 int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+			 if ((seqTypeKindTest != null) && !((seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND) || 
+					                            (itemTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT))) {
+				isCharMarkerToEmit = true;
+			 }
+		 }
+	  }
+	  
+	  try {
+		  if (isCharMarkerToEmit) {
+			 char[] charArray = (Constants.XSL_DOCUMENT_INSTRUCTION_MARKER).toCharArray();
+			 
+		     handler.characters(charArray, 0, charArray.length);
+		  }
+
+		  int rootNodeHandleOfRtf = transformer.transformToRTF(this);
+
+		  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(rootNodeHandleOfRtf, xctxt);	  	  
+
+		  ElemCopyOf.copyOfActionOnNodeSet(xmlNodeCursorImpl, transformer, handler, xctxt);
+	  } 
+	  catch (Exception ex) {
+		  // no op
+	  }
   }
 
   /**
@@ -154,17 +189,17 @@ public class ElemDocument extends ElemTemplateElement
    * @return Child just added to child list
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
-  {	 
+  {	 	  
 	  return super.appendChild(newChild);
   }
-  
+
   /**
    * Call the children visitors.
    * @param visitor The visitor whose appropriate method will be called.
    */
   protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
   {  	  	
-     super.callChildVisitors(visitor, callAttrs);
+	  super.callChildVisitors(visitor, callAttrs);
   }
 
 }

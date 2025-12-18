@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:34Z" fail="11" name="xsl-document" pass="14" skipped="0" statusUnknown="0" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-18T16:48:04Z" fail="11" name="xsl-document" pass="14" run="25" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="xsl-document-0101"/>
    <testResult status="fail" testName="xsl-document-0102"/>
    <testResult status="pass" testName="xsl-document-0103"/>
@@ -24,7 +24,7 @@
    </testResult>
    <testResult status="fail" testName="xsl-document-0601">
       <outResult>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Can not add document to comment</errTrace>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: 14,28 : An XSL transformation processing could not add 'document' to 'comment'.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="xsl-document-0602"/>

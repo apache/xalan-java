@@ -1,69 +1,69 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-12-16T16:54:50Z" desc="W3C XSLT 3.0 test suite results" fail="918" pass="2453" skipped="596" success="72.64%" totalRun="3377" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-12-18T16:48:24Z" desc="W3C XSLT 3.0 test suite results" fail="916" pass="2455" run="3377" skipped="596" success="72.7%" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
-    <as fail="30" pass="81" skipped="93" success="72.97%" totalRun="111"/>
-    <avt fail="1" pass="33" skipped="1" success="97.06%" totalRun="34"/>
-    <disable-output-escaping fail="5" pass="22" skipped="5" success="81.48%" totalRun="27"/>
-    <expand-text fail="8" pass="51" skipped="3" success="86.44%" totalRun="59"/>
-    <match fail="82" pass="100" skipped="112" success="54.95%" totalRun="182"/>
-    <mode fail="59" pass="64" skipped="46" success="52.03%" totalRun="123"/>
-    <select fail="27" pass="104" skipped="26" success="78.79%" totalRun="132"/>
-    <tunnel fail="40" pass="18" skipped="0" success="31.03%" totalRun="58"/>
-    <xpath-default-namespace fail="11" pass="11" skipped="4" success="50.0%" totalRun="22"/>
+    <as fail="30" pass="81" run="111" skipped="93" success="72.97%"/>
+    <avt fail="1" pass="33" run="34" skipped="1" success="97.06%"/>
+    <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
+    <expand-text fail="8" pass="51" run="59" skipped="3" success="86.44%"/>
+    <match fail="82" pass="100" run="182" skipped="112" success="54.95%"/>
+    <mode fail="59" pass="64" run="123" skipped="46" success="52.03%"/>
+    <select fail="27" pass="104" run="132" skipped="26" success="78.79%"/>
+    <tunnel fail="40" pass="18" run="58" skipped="0" success="31.03%"/>
+    <xpath-default-namespace fail="11" pass="11" run="22" skipped="4" success="50.0%"/>
   </attr>
   <decl>
-    <attribute-set fail="7" pass="42" skipped="1" success="85.71%" totalRun="49"/>
-    <character-map fail="14" pass="13" skipped="1" success="46.43%" totalRun="28"/>
-    <function fail="28" pass="59" skipped="23" success="67.82%" totalRun="87"/>
-    <param fail="18" pass="12" skipped="1" success="40.0%" totalRun="30"/>
-    <strip-space fail="14" pass="13" skipped="3" success="48.15%" totalRun="27"/>
-    <template fail="0" pass="6" skipped="0" success="100.0%" totalRun="6"/>
-    <variable fail="18" pass="85" skipped="5" success="82.52%" totalRun="103"/>
+    <attribute-set fail="7" pass="42" run="49" skipped="1" success="85.71%"/>
+    <character-map fail="14" pass="13" run="28" skipped="1" success="46.43%"/>
+    <function fail="28" pass="59" run="87" skipped="23" success="67.82%"/>
+    <param fail="18" pass="12" run="30" skipped="1" success="40.0%"/>
+    <strip-space fail="14" pass="13" run="27" skipped="3" success="48.15%"/>
+    <template fail="0" pass="6" run="6" skipped="0" success="100.0%"/>
+    <variable fail="18" pass="85" run="103" skipped="5" success="82.52%"/>
   </decl>
   <expr>
-    <axes fail="10" pass="190" skipped="2" success="95.0%" totalRun="200"/>
-    <castable fail="3" pass="6" skipped="0" success="66.67%" totalRun="9"/>
-    <expression fail="15" pass="84" skipped="5" success="84.0%" totalRun="100"/>
-    <for fail="1" pass="2" skipped="1" success="66.67%" totalRun="3"/>
-    <higher-order-functions fail="36" pass="33" skipped="7" success="47.83%" totalRun="69"/>
-    <math fail="25" pass="128" skipped="8" success="83.66%" totalRun="153"/>
-    <nodetest fail="0" pass="3" skipped="35" success="100.0%" totalRun="3"/>
-    <path fail="3" pass="7" skipped="0" success="70.0%" totalRun="10"/>
-    <predicate fail="4" pass="48" skipped="5" success="92.31%" totalRun="52"/>
+    <axes fail="10" pass="190" run="200" skipped="2" success="95.0%"/>
+    <castable fail="3" pass="6" run="9" skipped="0" success="66.67%"/>
+    <expression fail="15" pass="84" run="100" skipped="5" success="84.0%"/>
+    <for fail="1" pass="2" run="3" skipped="1" success="66.67%"/>
+    <higher-order-functions fail="36" pass="33" run="69" skipped="7" success="47.83%"/>
+    <math fail="25" pass="128" run="153" skipped="8" success="83.66%"/>
+    <nodetest fail="0" pass="3" run="3" skipped="35" success="100.0%"/>
+    <path fail="3" pass="7" run="10" skipped="0" success="70.0%"/>
+    <predicate fail="4" pass="48" run="52" skipped="5" success="92.31%"/>
   </expr>
   <fn>
-    <deep-equal fail="0" pass="2" skipped="0" success="100.0%" totalRun="2"/>
-    <format-number fail="32" pass="32" skipped="10" success="50.0%" totalRun="64"/>
-    <json-to-xml fail="7" pass="18" skipped="35" success="72.0%" totalRun="25"/>
-    <key fail="36" pass="60" skipped="3" success="62.5%" totalRun="96"/>
-    <position fail="19" pass="191" skipped="1" success="90.95%" totalRun="210"/>
-    <root fail="3" pass="7" skipped="0" success="70.0%" totalRun="10"/>
-    <xml-to-json fail="35" pass="52" skipped="65" success="59.09%" totalRun="88"/>
+    <deep-equal fail="0" pass="2" run="2" skipped="0" success="100.0%"/>
+    <format-number fail="32" pass="32" run="64" skipped="10" success="50.0%"/>
+    <json-to-xml fail="7" pass="18" run="25" skipped="35" success="72.0%"/>
+    <key fail="36" pass="60" run="96" skipped="3" success="62.5%"/>
+    <position fail="19" pass="191" run="210" skipped="1" success="90.95%"/>
+    <root fail="3" pass="7" run="10" skipped="0" success="70.0%"/>
+    <xml-to-json fail="35" pass="52" run="88" skipped="65" success="59.09%"/>
   </fn>
   <insn>
-    <analyze-string fail="14" pass="39" skipped="5" success="73.58%" totalRun="53"/>
-    <apply-templates fail="15" pass="22" skipped="13" success="59.46%" totalRun="37"/>
-    <attribute fail="11" pass="11" skipped="7" success="47.83%" totalRun="23"/>
-    <call-template fail="12" pass="28" skipped="2" success="70.0%" totalRun="40"/>
-    <choose fail="6" pass="48" skipped="1" success="88.89%" totalRun="54"/>
-    <copy fail="47" pass="78" skipped="23" success="62.4%" totalRun="125"/>
-    <element fail="14" pass="15" skipped="0" success="51.72%" totalRun="29"/>
-    <for-each-group fail="28" pass="51" skipped="6" success="64.56%" totalRun="79"/>
-    <iterate fail="1" pass="43" skipped="0" success="97.73%" totalRun="44"/>
-    <message fail="7" pass="34" skipped="3" success="80.95%" totalRun="42"/>
-    <sequence fail="30" pass="55" skipped="7" success="64.71%" totalRun="85"/>
-    <sort fail="29" pass="52" skipped="0" success="64.2%" totalRun="81"/>
-    <try fail="7" pass="27" skipped="8" success="79.41%" totalRun="34"/>
-    <xsl-document fail="11" pass="14" skipped="0" success="56.0%" totalRun="25"/>
+    <analyze-string fail="14" pass="39" run="53" skipped="5" success="73.58%"/>
+    <apply-templates fail="15" pass="22" run="37" skipped="13" success="59.46%"/>
+    <attribute fail="11" pass="11" run="23" skipped="7" success="47.83%"/>
+    <call-template fail="12" pass="28" run="40" skipped="2" success="70.0%"/>
+    <choose fail="6" pass="48" run="54" skipped="1" success="88.89%"/>
+    <copy fail="48" pass="77" run="125" skipped="23" success="61.6%"/>
+    <element fail="14" pass="15" run="29" skipped="0" success="51.72%"/>
+    <for-each-group fail="28" pass="51" run="79" skipped="6" success="64.56%"/>
+    <iterate fail="1" pass="43" run="44" skipped="0" success="97.73%"/>
+    <message fail="7" pass="34" run="42" skipped="3" success="80.95%"/>
+    <sequence fail="27" pass="58" run="85" skipped="7" success="68.24%"/>
+    <sort fail="29" pass="52" run="81" skipped="0" success="64.2%"/>
+    <try fail="7" pass="27" run="34" skipped="8" success="79.41%"/>
+    <xsl-document fail="11" pass="14" run="25" skipped="0" success="56.0%"/>
   </insn>
   <misc>
-    <built-in-templates fail="2" pass="3" skipped="1" success="60.0%" totalRun="5"/>
-    <regex fail="12" pass="32" skipped="6" success="72.73%" totalRun="44"/>
+    <built-in-templates fail="2" pass="3" run="5" skipped="1" success="60.0%"/>
+    <regex fail="12" pass="32" run="44" skipped="6" success="72.73%"/>
   </misc>
   <type>
-    <boolean fail="1" pass="104" skipped="7" success="99.05%" totalRun="105"/>
-    <date fail="73" pass="61" skipped="4" success="45.52%" totalRun="134"/>
-    <node fail="1" pass="31" skipped="0" success="96.88%" totalRun="32"/>
-    <string fail="6" pass="128" skipped="2" success="95.52%" totalRun="134"/>
+    <boolean fail="1" pass="104" run="105" skipped="7" success="99.05%"/>
+    <date fail="73" pass="61" run="134" skipped="4" success="45.52%"/>
+    <node fail="1" pass="31" run="32" skipped="0" success="96.88%"/>
+    <string fail="6" pass="128" run="134" skipped="2" success="95.52%"/>
   </type>
 </testResult>

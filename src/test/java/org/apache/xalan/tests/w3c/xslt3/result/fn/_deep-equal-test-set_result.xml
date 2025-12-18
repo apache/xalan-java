@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:32Z" fail="0" name="deep-equal" pass="2" skipped="0" statusUnknown="0" totalRun="2">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-18T16:48:03Z" fail="0" name="deep-equal" pass="2" run="2" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="deep-equal-001"/>
    <testResult status="pass" testName="deep-equal-002"/>
 </testrun>

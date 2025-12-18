@@ -1123,12 +1123,6 @@ public class ElemVariable extends ElemTemplateElement
     			  XslTransformData.m_xpathMap = null;
     		  }
     	  }
-    	  else if (XslTransformData.m_xslDocumentEvaluationResult != null) {
-    		  if (m_asAttr == null) {
-    			  var = XslTransformData.m_xslDocumentEvaluationResult;
-    			  XslTransformData.m_xslDocumentEvaluationResult = null;
-    		  }
-          }
     	  else if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) {
     		  if (m_asAttr == null) {
     			  if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() == 1) {
@@ -1196,17 +1190,6 @@ public class ElemVariable extends ElemTemplateElement
     		if ((seqExpectedTypeData.getSequenceTypeMapTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
     			var = XslTransformData.m_xpathMap;
     			XslTransformData.m_xpathMap = null;
-    		}
-    		else {
-    			throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
-																	                              + "result doesn't match the specified "
-																	                              + "xdm sequence type " + m_asAttr + ".", srcLocator); 
-    		}
-    	}
-    	else if (XslTransformData.m_xslDocumentEvaluationResult != null) {
-    		if ((seqTypeKindVal == SequenceTypeSupport.DOCUMENT_KIND) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {
-    			var = XslTransformData.m_xslDocumentEvaluationResult;
-    			XslTransformData.m_xslDocumentEvaluationResult = null;
     		}
     		else {
     			throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
@@ -1384,7 +1367,7 @@ public class ElemVariable extends ElemTemplateElement
     			}
     		}
     		
-    		if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.TEXT_KIND)) {
+    		if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.TEXT_KIND)) {    			
     			XNodeSetForDOM xNodeSetForDom = (XNodeSetForDOM)var;
     			int nodeHandle = xNodeSetForDom.asNode(xctxt);
     			DTM dtm = xctxt.getDTM(nodeHandle);
@@ -1400,6 +1383,51 @@ public class ElemVariable extends ElemTemplateElement
     			   else {
     				  var = var.getFresh(); 
     			   }
+    			}
+    		}
+    		
+    		if ((seqTypeKindTest != null) && ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || 
+    				                          (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND))) {    			
+    			XNodeSetForDOM xNodeSetForDom = (XNodeSetForDOM)var;
+    			int nodeHandle = xNodeSetForDom.asNode(xctxt);
+    			DTM dtm = xctxt.getDTM(nodeHandle);
+    			int childNode = dtm.getFirstChild(nodeHandle);
+    			ResultSequence rSeq = new ResultSequence();
+    			while (childNode != DTM.NULL) {    				
+    				XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(childNode, xctxt);    				
+    				rSeq.add(xmlNodeCursorImpl);
+    				childNode = dtm.getNextSibling(childNode); 
+    			}
+
+    			rSeq.setXdmParentlessSiblingNodes(true); 
+
+    			int rSeqLength = rSeq.size();
+
+    			boolean isSeqTypeOccrIndicatorOk = false;
+    			if (seqTypeOccrIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+    				isSeqTypeOccrIndicatorOk = true;
+    			}
+    			else if ((seqTypeOccrIndicator == OccurrenceIndicator.ONE_OR_MANY) && (rSeqLength > 0)) {
+    				isSeqTypeOccrIndicatorOk = true;
+    			}
+    			else if ((seqTypeOccrIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (rSeqLength <= 1)) {
+    				isSeqTypeOccrIndicatorOk = true;
+    			}
+    			else if ((seqTypeOccrIndicator == OccurrenceIndicator.ABSENT) && (rSeqLength == 1)) {
+    				isSeqTypeOccrIndicatorOk = true;
+    			}
+
+    			if (isSeqTypeOccrIndicatorOk) {   			
+    				var = rSeq; 
+
+    				return var;
+    			}
+    			else {
+    				var = var.getFresh();
+    				
+    				throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
+																			                          + "result doesn't match the specified "
+																			                          + "xdm sequence type " + m_asAttr + ".", srcLocator); 
     			}
     		}
 

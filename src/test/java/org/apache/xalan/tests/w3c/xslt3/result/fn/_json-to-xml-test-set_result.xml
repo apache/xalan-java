@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-10T16:52:34Z" fail="7" name="json-to-xml" pass="18" skipped="35" statusUnknown="0" totalRun="25">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-18T16:48:04Z" fail="7" name="json-to-xml" pass="18" run="25" skipped="35" statusUnknown="0">
    <testResult status="pass" testName="json-to-xml-001"/>
    <testResult status="pass" testName="json-to-xml-002"/>
    <testResult status="pass" testName="json-to-xml-003"/>

@@ -33,9 +33,12 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
+
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of the XSLT 3.0 xsl:perform-sort instruction.
@@ -148,6 +151,11 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 	private Vector m_vars;
 	  
 	private int m_globals_size;
+	
+	/**
+	 * An xdm sequence with items as, namespace node string values.
+	 */
+	public static ResultSequence m_namespace_result_seq = new ResultSequence();
 	
 	/**
 	 * This function is called after everything else has been
@@ -316,7 +324,7 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 			if (m_selectExpression != null) {			   			   
 				XObject xObj = m_selectExpression.execute(xctxt);
 				if (xObj instanceof XMLNodeCursorImpl) {
-					XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+					XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;										
 					DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.asIterator(xctxt, contextNode);
 
 					ElemForEach elemForEach = new ElemForEach();
@@ -324,8 +332,22 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 					final Vector sortKeys = (m_sortElems == null) ? null 
 							                                          : transformer.processSortKeys(this, contextNode);
 
-					dtmCursorIterator = elemForEach.sortNodes(xctxt, sortKeys, dtmCursorIterator);
-					ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)dtmCursorIterator, transformer, handler, xctxt);
+					dtmCursorIterator = elemForEach.sortNodes(xctxt, sortKeys, dtmCursorIterator);										
+					
+					int nextNode = dtmCursorIterator.nextNode();
+					while (nextNode != DTM.NULL) {
+					   DTM dtm = xctxt.getDTM(nextNode);
+					   if (dtm.getNodeType(nextNode) == DTM.NAMESPACE_NODE) {
+						  String nodeValue = dtm.getNodeValue(nextNode);
+						  m_namespace_result_seq.add(new XSString(nodeValue));
+					   }
+					   else {
+						  XMLNodeCursorImpl node1 = new XMLNodeCursorImpl(nextNode, xctxt);
+						  ElemCopyOf.copyOfActionOnNodeSet(node1, transformer, handler, xctxt);
+					   }
+					   
+					   nextNode = dtmCursorIterator.nextNode(); 
+					}
 				}
 			}
 			else {

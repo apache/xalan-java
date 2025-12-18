@@ -101,18 +101,18 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 					   Document testSetResultDoc = docBuilder.parse(pathStr + "\\" + fileName);
 					   Element docElem = testSetResultDoc.getDocumentElement();
 					   String testSetName = docElem.getAttribute("name");
-					   int totalRun = Integer.valueOf(docElem.getAttribute("totalRun"));
-					   totalCount += totalRun; 
+					   int run = Integer.valueOf(docElem.getAttribute("run"));
+					   totalCount += run; 
 					   int pass = Integer.valueOf(docElem.getAttribute("pass"));
 					   totalPass += pass;
 					   int fail = Integer.valueOf(docElem.getAttribute("fail"));
 					   totalFail += fail;
 					   int skipped = Integer.valueOf(docElem.getAttribute("skipped"));
 					   totalSkipped += skipped;
-					   double successPer = ((pass / (double)totalRun)) * 100;
+					   double successPer = ((pass / (double)run)) * 100;
 					   double successPerDbl = (Double.valueOf(decimalFormat.format(Double.valueOf(String.valueOf(successPer))))).doubleValue();
 					   Element testSetElem = document.createElement(testSetName);
-					   testSetElem.setAttribute("totalRun", String.valueOf(totalRun));
+					   testSetElem.setAttribute("run", String.valueOf(run));
 					   testSetElem.setAttribute("pass", String.valueOf(pass));
 					   testSetElem.setAttribute("fail", String.valueOf(fail));
 					   testSetElem.setAttribute("skipped", String.valueOf(skipped));
@@ -126,7 +126,7 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 			
 			double totalSuccessPer = ((totalPass / (double)totalCount)) * 100;
 			double totalSuccessPerDbl = (Double.valueOf(decimalFormat.format(Double.valueOf(String.valueOf(totalSuccessPer))))).doubleValue();
-			testResultElem.setAttribute("totalRun", String.valueOf(totalCount));
+			testResultElem.setAttribute("run", String.valueOf(totalCount));
 			testResultElem.setAttribute("pass", String.valueOf(totalPass));
 			testResultElem.setAttribute("fail", String.valueOf(totalFail));
 			testResultElem.setAttribute("skipped", String.valueOf(totalSkipped));

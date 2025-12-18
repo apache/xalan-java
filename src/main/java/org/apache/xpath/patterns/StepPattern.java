@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.patterns;
 
 import org.apache.xml.dtm.Axis;
@@ -36,19 +33,19 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * This class represents a single pattern match step.
+ * This class represents an XPath single pattern match step.
+ * 
  * @xsl.usage advanced
  */
 public class StepPattern extends NodeTest implements SubContextList, ExpressionOwner
 {
   static final long serialVersionUID = 9071668960168152644L;
 
-  /** The axis for this test. */
+  /** The axis for this test */
   protected int m_axis;
 
   /**
    * Construct a StepPattern that tests for namespaces and node names.
-   *
    *
    * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    * @param namespace The namespace to be tested.
@@ -68,7 +65,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   /**
    * Construct a StepPattern that doesn't test for node names.
    *
-   *
    * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    * @param axis The Axis for this test, one of of Axes.ANCESTORORSELF, etc.
    * @param axisForPredicate No longer used.
@@ -83,7 +79,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
 
   /**
    * The target local name or psuedo name, for hash table lookup optimization.
-   *  @serial
    */
   String m_targetString;  // only calculate on head
 
@@ -131,7 +126,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
    * Get the local name or psuedo name of the node that this pattern will test,
    * for hash table lookup optimization.
    *
-   *
    * @return local name or psuedo name of the node.
    * @see org.apache.xpath.compiler.PsuedoNames
    */
@@ -141,15 +135,14 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   }
 
   /**
-   * Reference to nodetest and predicate for
-   * parent or ancestor.
-   * @serial
+   * Reference to nodetest and predicate for parent or ancestor.
    */
   StepPattern m_relativePathPattern;
 
   /**
    * This function is used to fixup variables from QNames to stack frame
    * indexes at stylesheet build time.
+   * 
    * @param vars List of QNames that correspond to variables.  This list
    * should be searched backwards for the first qualified name that
    * corresponds to the variable reference qname.  The position of the
@@ -181,7 +174,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
    * Set the reference to nodetest and predicate for
    * parent or ancestor.
    *
-   *
    * @param expr The relative pattern expression.
    */
   public void setRelativePathPattern(StepPattern expr)
@@ -197,7 +189,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
    * Get the reference to nodetest and predicate for
    * parent or ancestor.
    *
-   *
    * @return The relative pattern expression.
    */
   public StepPattern getRelativePathPattern()
@@ -205,17 +196,9 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
     return m_relativePathPattern;
   }
 
-  //  /**
-  //   * Set the list of predicate expressions for this pattern step.
-  //   * @param predicates List of expression objects.
-  //   */
-  //  public void setPredicates(Expression[] predicates)
-  //  {
-  //    m_predicates = predicates;
-  //  }
-
   /**
    * Set the list of predicate expressions for this pattern step.
+   * 
    * @return List of expression objects.
    */
   public Expression[] getPredicates()
@@ -225,7 +208,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
 
   /**
    * The list of predicate expressions for this pattern step.
-   *  @serial
    */
   Expression[] m_predicates;
 
@@ -255,7 +237,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   /**
    * Get a predicate expression.
    *
-   *
    * @param i The index of the predicate.
    *
    * @return A predicate expression.
@@ -268,7 +249,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   /**
    * Get the number of predicates for this match pattern step.
    *
-   *
    * @return the number of predicates for this match pattern step.
    */
   public final int getPredicateCount()
@@ -278,7 +258,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
 
   /**
    * Set the predicates for this match pattern step.
-   *
    *
    * @param predicates An array of expressions that define predicates
    *                   for this step.
@@ -348,7 +327,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   /**
    * Execute this pattern step, including predicates.
    *
-   *
    * @param xctxt XPath runtime context.
    *
    * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST},
@@ -415,7 +393,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   }
 
   /**
-   * New Method to check whether the current node satisfies a position predicate
+   * New Method to check whether the current node satisfies a position predicate.
    *
    * @param xctxt The XPath runtime context.
    * @param predPos Which predicate we're evaluating of foo[1][2][3].
@@ -512,7 +490,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   /**
    * Get the proximity position index of the current node based on this
    * node test.
-   *
    *
    * @param xctxt XPath runtime context.
    * @param predPos Which predicate we're evaluating of foo[1][2][3].
@@ -619,7 +596,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
    * Get the proximity position index of the current node based on this
    * node test.
    *
-   *
    * @param xctxt XPath runtime context.
    *
    * @return the proximity position index of the current node based on the
@@ -633,9 +609,8 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   /**
    * Get the count of the nodes that match the test, which is the proximity
    * position of the last node that can pass this test in the sub context
-   * selection.  In XSLT 1-based indexing, this count is the index of the last
+   * selection. In XSLT 1-based indexing, this count is the index of the last
    * node.
-   *
    *
    * @param xctxt XPath runtime context.
    *
@@ -648,7 +623,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
 
   /**
    * Execute the match pattern step relative to another step.
-   *
    *
    * @param xctxt The XPath runtime context.
    * @param dtm The DTM of the current node.
@@ -785,8 +759,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   }
 
   /**
-   * Get the string represenentation of this step for diagnostic purposes.
-   *
+   * Get the string representation of this step for diagnostic purposes.
    *
    * @return A string representation of this step, built by reverse-engineering 
    * the contained info.
@@ -879,7 +852,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
     return buf.toString();
   }
 
-  /** Set to true to send diagnostics about pattern matches to the consol. */
+  /** Set to true to send diagnostics about pattern matches to jvm's console. */
   private static final boolean DEBUG_MATCHES = false;
 
   /**
@@ -914,13 +887,11 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
       xctxt.popCurrentNode();
       xctxt.popCurrentExpressionNode();
     }
-
-    // return XPath.MATCH_SCORE_NONE;
+    
   }
 
   /**
    * Set the axis that this step should follow. 
-   *
    *
    * @param axis The Axis for this test, one of of Axes.ANCESTORORSELF, etc.
    */
@@ -931,7 +902,6 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
 
   /**
    * Get the axis that this step follows. 
-   *
    *
    * @return The Axis for this test, one of of Axes.ANCESTORORSELF, etc.
    */
@@ -980,7 +950,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   }
 
   /**
-   * Call the visitors on the subtree.  Factored out from callVisitors 
+   * Call the visitors on the subtree. Factored out from callVisitors 
    * so it may be called by derived classes.
    */
   protected void callSubtreeVisitors(XPathVisitor visitor)

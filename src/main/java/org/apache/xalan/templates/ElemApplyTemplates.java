@@ -382,7 +382,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 				  XObject xObj = resultSeq.item(idx);
 				  if (xObj instanceof XMLNodeCursorImpl) {
 					  sourceNodes = ((XMLNodeCursorImpl)xObj).iterRaw();					  
-					  xslApplyTemplatesOnNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator);
+					  xslApplyTemplatesOnNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator, 
+							                                                                            resultSeq.isXdmParentlessSiblingNodes());
 				  }
 				  else {
 					  ResultSequence rSeq = new ResultSequence();
@@ -474,7 +475,12 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  }
 
 	  if (sourceNodes != null) {
-	     xslApplyTemplatesOnNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator);
+		 boolean isXdmParentlessSiblingNodes = false; 
+		 if (resultSeq != null) {			 
+			 isXdmParentlessSiblingNodes = resultSeq.isXdmParentlessSiblingNodes();
+		 }
+		 
+	     xslApplyTemplatesOnNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator, isXdmParentlessSiblingNodes);
 	  }
   }
 
@@ -487,10 +493,12 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * @param contextNode                            XPath context node                             
    * @param sourceNodes                            An iterator for the xdm nodes
    * @param srcLocator                             XPath SourceLocator object instance
+   * @param isXdmParentlessSiblingNodes 
    * @throws TransformerException
    */
   private void xslApplyTemplatesOnNodes(TransformerImpl transformer, XPathContext xctxt, int contextNode,
-		                                DTMCursorIterator sourceNodes, SourceLocator srcLocator) throws TransformerException {
+		                                DTMCursorIterator sourceNodes, SourceLocator srcLocator, boolean isXdmParentlessSiblingNodes) 
+		                                		                                                                                  throws TransformerException {
 	  
 	  VariableStack vars = xctxt.getVarStack();
 	  int nParams = getParamElemCount();
@@ -669,9 +677,15 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  final int exNodeType = dtm.getExpandedTypeID(child);
 
 			  final int nodeType = dtm.getNodeType(child);
+			  
+			  String str2 = dtm.getNodeValue(child);			  			  
+    		  if ((Constants.XSL_DOCUMENT_INSTRUCTION_MARKER).equals(str2)) {
+    			 continue; 
+    		  }
 
 			  ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, -1, true, dtm, 
-					  																		xslOnMultipleMatchStr, xslWarningOnMultipleMatch);			 
+					  																		xslOnMultipleMatchStr, 
+					  																		xslWarningOnMultipleMatch, isXdmParentlessSiblingNodes);			 
 
 			  // If that didn't locate an XSL stylesheet user written template rule, 
 			  // fall back to a default template rule.

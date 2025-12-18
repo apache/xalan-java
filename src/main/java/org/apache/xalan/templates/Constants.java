@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 /**
@@ -459,7 +456,7 @@ public class Constants extends org.apache.xml.utils.Constants
   
   public static final String XSL_INITIAL_TEMPLATE_DEFAULT_NAME = "xsl:initial-template";
   
-  /** XSLT 3.0 xsl:try and xsl:catch processing constants */
+  /** XSLT 3.0 xsl:try and xsl:catch instruction's processing constants */
   
   public static final String XSL_ERROR_NAMESACE = "http://www.w3.org/2005/xqt-errors";
   public static final String XSL_ERROR_CODE = "code";
@@ -479,12 +476,15 @@ public class Constants extends org.apache.xml.utils.Constants
   public static final String ATTRVAL_FAIL = "fail".intern();
   public static final String ATTRVAL_USE_LAST = "use-last".intern();
   
-  // This is an XSLT 3.0 Xalan-J's internal string constant value, for an 
+  // This is Xalan-J XSLT 3.0 string constant internal value, for an 
   // implementation of XPath 3.1 function fn:random-number-generator.
   public static final String FN_XALAN_RNG_PERMUTE = "'FnXalanPermute'";
   
   public static final String FN_XALAN_RNG_NEXT = "next";
   
   public static final String FN_XALAN_RNG_PERMUTE_STR = "permute";
+  
+  // This is used for Xalan-J XSLT 3.0 instruction xsl:document's implementation
+  public static final String XSL_DOCUMENT_INSTRUCTION_MARKER = "###xslDocument###";
   
 }

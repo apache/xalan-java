@@ -400,7 +400,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
         	   elemTestRun.setAttribute("fail", String.valueOf(testsfailCount));
         	   elemTestRun.setAttribute("skipped", String.valueOf(testsSkippedCount));
         	   elemTestRun.setAttribute("statusUnknown", String.valueOf(testStatusUnknownCount));
-        	   elemTestRun.setAttribute("totalRun", String.valueOf(totalTestsRun));
+        	   elemTestRun.setAttribute("run", String.valueOf(totalTestsRun));
         	   
     		   // Serialize W3C XSLT 3.0 test set results file to file system
     		   String xslTestResultStr = serializeXmlDomElementNode(testResultDoc);
@@ -647,7 +647,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
         	   elemTestRun.setAttribute("fail", String.valueOf(testsfailCount));
         	   elemTestRun.setAttribute("skipped", String.valueOf(testsSkippedCount));
         	   elemTestRun.setAttribute("statusUnknown", String.valueOf(testStatusUnknownCount));
-        	   elemTestRun.setAttribute("totalRun", String.valueOf(totalTestsRun));
+        	   elemTestRun.setAttribute("run", String.valueOf(totalTestsRun));
         	   
     		   // Serialize W3C XSLT 3.0 test set results file to file system
     		   String xslTestResultStr = serializeXmlDomElementNode(testResultDoc);
