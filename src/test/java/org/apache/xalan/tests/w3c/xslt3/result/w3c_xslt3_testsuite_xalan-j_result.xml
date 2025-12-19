@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-12-18T16:48:24Z" desc="W3C XSLT 3.0 test suite results" fail="916" pass="2455" run="3377" skipped="596" success="72.7%" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-12-19T17:28:23Z" desc="W3C XSLT 3.0 test suite results" fail="915" pass="2456" run="3377" skipped="596" success="72.73%" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="30" pass="81" run="111" skipped="93" success="72.97%"/>
     <avt fail="1" pass="33" run="34" skipped="1" success="97.06%"/>
@@ -52,7 +52,7 @@
     <iterate fail="1" pass="43" run="44" skipped="0" success="97.73%"/>
     <message fail="7" pass="34" run="42" skipped="3" success="80.95%"/>
     <sequence fail="27" pass="58" run="85" skipped="7" success="68.24%"/>
-    <sort fail="29" pass="52" run="81" skipped="0" success="64.2%"/>
+    <sort fail="28" pass="53" run="81" skipped="0" success="65.43%"/>
     <try fail="7" pass="27" run="34" skipped="8" success="79.41%"/>
     <xsl-document fail="11" pass="14" run="25" skipped="0" success="56.0%"/>
   </insn>

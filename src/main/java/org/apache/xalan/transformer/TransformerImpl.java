@@ -3001,18 +3001,18 @@ public class TransformerImpl extends Transformer
 
   /**
    * Get the keys for the xsl:sort elements.
-   * Note: Should this go into ElemForEach?
    *
-   * @param foreach Valid ElemForEach element, not null.
-   * @param sourceNodeContext The current node context in the source tree,
-   * needed to evaluate the Attribute Value Templates.
+   * @param foreachOrPerformSort                Valid non null ElemForEach, or ElemPerformSort object
+   * @param sourceNodeContext                   The current node context in the source tree,
+   *                                            needed to evaluate the Attribute Value Templates.
    *
-   * @return A Vector of NodeSortKeys, or null.
+   * @return A Vector of NodeSortKeys, or null
    *
    * @throws TransformerException
+   * 
    * @xsl.usage advanced
    */
-  public Vector processSortKeys(Object foreach, int sourceNodeContext)
+  public Vector processSortKeys(Object foreachOrPerformSort, int sourceNodeContext)
           throws TransformerException
   {
 
@@ -3020,51 +3020,51 @@ public class TransformerImpl extends Transformer
     XPathContext xctxt = m_xcontext;
     
     int nElems;
-    if (foreach instanceof ElemForEach) {
-       nElems = ((ElemForEach)foreach).getSortElemCount();
+    if (foreachOrPerformSort instanceof ElemForEach) {
+       nElems = ((ElemForEach)foreachOrPerformSort).getSortElemCount();
     }
     else {
-       nElems = ((ElemPerformSort)foreach).getSortElemCount();
+       nElems = ((ElemPerformSort)foreachOrPerformSort).getSortElemCount();
     }
 
     if (nElems > 0)
       keys = new Vector();
 
-    // March backwards, collecting the sort keys
-    for (int i = 0; i < nElems; i++)
+    // Traverse the list of xsl:sort elements
+    for (int idx = 0; idx < nElems; idx++)
     {
       ElemSort sort = null;
       
-      if (foreach instanceof ElemForEach) {
-    	  sort = ((ElemForEach)foreach).getSortElem(i);
+      if (foreachOrPerformSort instanceof ElemForEach) {
+    	  sort = ((ElemForEach)foreachOrPerformSort).getSortElem(idx);
       }
       else {
-    	  sort = ((ElemPerformSort)foreach).getSortElem(i);
+    	  sort = ((ElemPerformSort)foreachOrPerformSort).getSortElem(idx);
       }
       
       if (m_debug)
         getTraceManager().emitTraceEvent(sort);
      
       String langString = null;
-      if (foreach instanceof ElemForEach) {
+      if (foreachOrPerformSort instanceof ElemForEach) {
     	  langString =
     			  (null != sort.getLang())
-    			  ? sort.getLang().evaluate(xctxt, sourceNodeContext, (ElemForEach)foreach) : null;
+    			  ? sort.getLang().evaluate(xctxt, sourceNodeContext, (ElemForEach)foreachOrPerformSort) : null;
       }
       else {
     	  langString =
     			  (null != sort.getLang())
-    			  ? sort.getLang().evaluate(xctxt, sourceNodeContext, (ElemPerformSort)foreach) : null; 
+    			  ? sort.getLang().evaluate(xctxt, sourceNodeContext, (ElemPerformSort)foreachOrPerformSort) : null; 
       }
       
       String dataTypeString = null;
-      if (foreach instanceof ElemForEach) {
+      if (foreachOrPerformSort instanceof ElemForEach) {
     	  dataTypeString = sort.getDataType().evaluate(xctxt,
-    			  sourceNodeContext, (ElemForEach)foreach);
+    			  sourceNodeContext, (ElemForEach)foreachOrPerformSort);
       }
       else {
     	  dataTypeString = sort.getDataType().evaluate(xctxt,
-    			  sourceNodeContext, (ElemPerformSort)foreach);
+    			  sourceNodeContext, (ElemPerformSort)foreachOrPerformSort);
       }
 
       if (dataTypeString.indexOf(":") >= 0)
@@ -3073,13 +3073,13 @@ public class TransformerImpl extends Transformer
       else if (!(dataTypeString.equalsIgnoreCase(Constants.ATTRVAL_DATATYPE_TEXT))
                &&!(dataTypeString.equalsIgnoreCase(
                  Constants.ATTRVAL_DATATYPE_NUMBER))) {
-    	  if (foreach instanceof ElemForEach) {    	  
-    		  ((ElemForEach)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+    	  if (foreachOrPerformSort instanceof ElemForEach) {    	  
+    		  ((ElemForEach)foreachOrPerformSort).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
     				  new Object[]{ Constants.ATTRNAME_DATATYPE,
     						  dataTypeString });
     	  }
     	  else {
-    		  ((ElemPerformSort)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+    		  ((ElemPerformSort)foreachOrPerformSort).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
     				  new Object[]{ Constants.ATTRNAME_DATATYPE,
     						  dataTypeString });
     	  }
@@ -3090,25 +3090,25 @@ public class TransformerImpl extends Transformer
         Constants.ATTRVAL_DATATYPE_NUMBER)) ? true : false;
       
       String orderString = null;
-      if (foreach instanceof ElemForEach) { 
+      if (foreachOrPerformSort instanceof ElemForEach) { 
     	  orderString = sort.getOrder().evaluate(xctxt, sourceNodeContext,
-    			  (ElemForEach)foreach);
+    			  (ElemForEach)foreachOrPerformSort);
       }
       else {
     	  orderString = sort.getOrder().evaluate(xctxt, sourceNodeContext,
-    			  (ElemPerformSort)foreach);
+    			  (ElemPerformSort)foreachOrPerformSort);
       }
 
       if (!(orderString.equalsIgnoreCase(Constants.ATTRVAL_ORDER_ASCENDING))
               &&!(orderString.equalsIgnoreCase(
                 Constants.ATTRVAL_ORDER_DESCENDING))) {
-    	  if (foreach instanceof ElemForEach) {    	  
-    		  ((ElemForEach)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+    	  if (foreachOrPerformSort instanceof ElemForEach) {    	  
+    		  ((ElemForEach)foreachOrPerformSort).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
                       new Object[]{ Constants.ATTRNAME_ORDER,
                                     orderString });
     	  }
     	  else {
-    		  ((ElemPerformSort)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+    		  ((ElemPerformSort)foreachOrPerformSort).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
                       new Object[]{ Constants.ATTRNAME_ORDER,
                                     orderString });
     	  }
@@ -3123,25 +3123,25 @@ public class TransformerImpl extends Transformer
       if (null != caseOrder)
       {
     	  String caseOrderString = null;
-    	  if (foreach instanceof ElemForEach) {
+    	  if (foreachOrPerformSort instanceof ElemForEach) {
     		  caseOrderString = caseOrder.evaluate(xctxt, sourceNodeContext,
-    				  (ElemForEach)foreach);
+    				  (ElemForEach)foreachOrPerformSort);
     	  }
     	  else {
     		  caseOrderString = caseOrder.evaluate(xctxt, sourceNodeContext,
-    				  (ElemPerformSort)foreach);  
+    				  (ElemPerformSort)foreachOrPerformSort);  
     	  }
 
         if (!(caseOrderString.equalsIgnoreCase(Constants.ATTRVAL_CASEORDER_UPPER))
                 &&!(caseOrderString.equalsIgnoreCase(
                   Constants.ATTRVAL_CASEORDER_LOWER))) {
-        	if (foreach instanceof ElemForEach) {
-        		((ElemForEach)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+        	if (foreachOrPerformSort instanceof ElemForEach) {
+        		((ElemForEach)foreachOrPerformSort).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
                         new Object[]{ Constants.ATTRNAME_CASEORDER,
                                       caseOrderString });
         	}
         	else {
-        		((ElemPerformSort)foreach).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+        		((ElemPerformSort)foreachOrPerformSort).error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
                         new Object[]{ Constants.ATTRNAME_CASEORDER,
                                       caseOrderString });
         	}
@@ -3163,15 +3163,15 @@ public class TransformerImpl extends Transformer
       }
       
       NodeSortKey nodeSortKey = null;
-      if (foreach instanceof ElemForEach) {
+      if (foreachOrPerformSort instanceof ElemForEach) {
     	  nodeSortKey = new NodeSortKey(this, xpathSelect, treatAsNumbers,
-    			  descending, langString, caseOrderUpper, 
-    			  (ElemForEach)foreach);
+    			                        descending, langString, caseOrderUpper, 
+    			                        (ElemForEach)foreachOrPerformSort);
       }
       else {
     	  nodeSortKey = new NodeSortKey(this, xpathSelect, treatAsNumbers,
-    			  descending, langString, caseOrderUpper, 
-    			  (ElemPerformSort)foreach);
+    			                        descending, langString, caseOrderUpper, 
+    			                        (ElemPerformSort)foreachOrPerformSort);
       }
       
       keys.addElement(nodeSortKey);    	  	  

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <value>1</value>
+  <map>
+    <item key="name">bar</item>
+    <item key="value">2</item>
+  </map>
+  <map>
+    <item key="name">foo</item>
+    <item key="value">3</item>
+  </map>
+  <value>5</value>
+</result>

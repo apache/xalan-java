@@ -362,37 +362,55 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   }
 
   /**
-   * Sort the given xdm nodes.
+   * Sort the, supplied xdm XML nodes.
    *
-   * @param xctxt The XPath runtime state for the sort.
-   * @param keys Vector of sort keyx
-   * @param sourceNodes Iterator of nodes to sort
+   * @param xctxt                        The XPath runtime state for the sort
+   * @param keys                         Vector of sort keys
+   * @param sourceNodes                  Iterator of nodes to sort
    *
    * @return iterator of sorted nodes
    *
    * @throws TransformerException
    */
-  public DTMCursorIterator sortNodes(
-          XPathContext xctxt, Vector keys, DTMCursorIterator sourceNodes)
-            throws TransformerException
-  {
+  public DTMCursorIterator sortNodes(XPathContext xctxt, Vector keys, DTMCursorIterator sourceNodes)
+                                                                                                   throws TransformerException {
+	  NodeSorter sorter = new NodeSorter(xctxt);
+	  sourceNodes.setShouldCacheNodes(true);
+	  sourceNodes.runTo(-1);
+	  xctxt.pushContextNodeList(sourceNodes);
 
-    NodeSorter sorter = new NodeSorter(xctxt);
-    sourceNodes.setShouldCacheNodes(true);
-    sourceNodes.runTo(-1);
-    xctxt.pushContextNodeList(sourceNodes);
+	  try
+	  {
+		  sorter.sort(sourceNodes, keys, xctxt);
+		  sourceNodes.setCurrentPos(0);
+	  }
+	  finally
+	  {
+		  xctxt.popContextNodeList();
+	  }
 
-    try
-    {
-      sorter.sort(sourceNodes, keys, xctxt);
-      sourceNodes.setCurrentPos(0);
-    }
-    finally
-    {
-      xctxt.popContextNodeList();
-    }
+	  return sourceNodes;
+  }
+  
+  /**
+   * Sort the, supplied xdm sequence of items.
+   *
+   * @param xctxt                         The XPath runtime state for the sort
+   * @param keys                          Vector of sort keys
+   * @param rSeq                          An xdm sequence to sort
+   *
+   * @return The sorted xdm sequence object
+   *
+   * @throws TransformerException
+   */
+  public ResultSequence sortXdmSequence(XPathContext xctxt, Vector keys, ResultSequence rSeq)
+				                                                                            throws TransformerException {
+	  ResultSequence result = null;	  
 
-    return sourceNodes;
+	  NodeSorter sorter = new NodeSorter(xctxt);
+	  result = sorter.sort(rSeq, keys, xctxt);
+
+	  return result;
   }
 
   /**

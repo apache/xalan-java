@@ -91,7 +91,7 @@ public class XslTransformData {
     
     /**
      * This class field is used to return XPath 'named function reference' 
-     * compiled information from an XSL stylesheet function call.
+     * compiled information from an XSL stylesheet xsl:function call.
      */
     public static ResultSequence m_xpathNamedFunctionRefSequence = new ResultSequence();
     
@@ -102,19 +102,26 @@ public class XslTransformData {
     public static List<String> m_xslResultDocumentUriStrList = new ArrayList<String>();
     
     /**
-     * Class field, to support Xalan-J's test driver for W3C XSLT 3.0 test suite. 
+     * Class field, to implement Xalan-J's test driver for W3C 
+     * XSLT 3.0 test suite. 
      */
     public static boolean m_is_xsl_test_invocation = false;
     
     /**
-     * Class field, to store XSL stylesheet result from xsl:message 
-     * instructions. These results are emitted as prefix of XSL 
-     * transform's output. 
+     * Class field, to store XSL stylesheet transformation result from 
+     * xsl:message instructions. These results are emitted as prefix of 
+     * XSL transform's output. 
      */
-    public static ResultSequence m_xsl_message_rSeq = null;        
+    public static ResultSequence m_xsl_message_rSeq = null;
     
     /**
-	 * Method definition to reset the variable values specified 
+     * Class field, to store XSL stylesheet transformation result from 
+     * xsl:perform-sort instruction.
+     */
+    public static ResultSequence m_xsl_perform_sort_resultSeq = null;
+    
+    /**
+	 * Method definition, to reset the class field values specified 
 	 * within this class.
 	 */
 	public static void reset() {
@@ -129,6 +136,7 @@ public class XslTransformData {
 		m_xpathNamedFunctionRefSequence.clear();
 		m_xslResultDocumentUriStrList.clear();
 		m_is_xsl_test_invocation = false;
+		m_xsl_perform_sort_resultSeq = null;
 	}		
 
 }

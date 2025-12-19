@@ -816,9 +816,9 @@ public class ElemVariable extends ElemTemplateElement
            }
         }
       }
-      else if (null == getFirstChildElem()) {
+      else if (getFirstChildElem() == null) {
           var = XString.EMPTYSTRING;
-      }
+      }      
       else {
     	  int rootNodeHandleOfRtf = DTM.NULL;
     	  
@@ -1097,7 +1097,7 @@ public class ElemVariable extends ElemTemplateElement
     		  else {
     		      rootNodeHandleOfRtf = transformer.transformToRTF(this);
     		  }
-    	  }
+    	  }    	      	  
     	  
     	  if (XslTransformData.m_xpathInlineFunction != null) {
     		  // This condition is met after method call transformer.transformToGlobalRTF/transformer.transformToRTF 
@@ -1132,6 +1132,9 @@ public class ElemVariable extends ElemTemplateElement
     			     var = XslTransformData.m_xpathNamedFunctionRefSequence;
     			  }
     		  }
+    	  }
+    	  else if (XslTransformData.m_xsl_perform_sort_resultSeq != null) {
+    		  var = XslTransformData.m_xsl_perform_sort_resultSeq; 
     	  }
     	  else if (var == null) {
     	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  

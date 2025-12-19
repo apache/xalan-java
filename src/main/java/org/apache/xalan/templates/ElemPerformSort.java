@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
@@ -36,6 +37,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathMap;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSString;
@@ -349,6 +352,39 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 					   nextNode = dtmCursorIterator.nextNode(); 
 					}
 				}
+				else if (xObj instanceof ResultSequence) {
+					ElemForEach elemForEach = new ElemForEach();
+					
+					final Vector sortKeys = (m_sortElems == null) ? null 
+                                                                      : transformer.processSortKeys(this, contextNode);
+					ResultSequence rSeq = (ResultSequence)xObj;
+					rSeq = elemForEach.sortXdmSequence(xctxt, sortKeys, rSeq);
+					
+					ElemTemplateElement elemTemplateParent = getParentElem();
+					boolean isXslNamedTemplateChild = false;
+					if ((elemTemplateParent instanceof ElemTemplate) && !(elemTemplateParent instanceof ElemFunction)) {
+					   ElemTemplate elemTemplate = (ElemTemplate)elemTemplateParent;
+					   if ((elemTemplate.getMatch() == null) && (elemTemplate.getName() != null)) {
+						   isXslNamedTemplateChild = true;
+					   }
+					}
+					
+					if ((elemTemplateParent instanceof ElemVariable) || isXslNamedTemplateChild 
+							                                                           || (elemTemplateParent instanceof ElemFunction)) {
+						int rSeqLength = rSeq.size();
+						for (int idx = 0; idx < rSeqLength; idx++) {
+							XObject xObj1 = rSeq.item(idx);
+							if ((xObj1 instanceof XPathMap) || (xObj1 instanceof XPathArray)) {
+							   XslTransformData.m_xsl_perform_sort_resultSeq = rSeq; 
+							   
+							   return;
+							}
+						}
+					}
+					
+					ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false, this);
+					
+				}
 			}
 			else {
 				int rootNodeHandleOfRtf = transformer.transformToRTF(this);
@@ -376,7 +412,10 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 			}
 		}
 		catch (SAXException ex) {
-			// no op
+			throw new TransformerException(ex.getMessage(), srcLocator);
+		}
+		catch (TransformerException ex) {
+			throw new TransformerException(ex.getMessage(), srcLocator);
 		}
 		finally
 		{
