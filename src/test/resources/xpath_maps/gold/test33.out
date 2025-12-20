@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <map>
+    <one>5</one>
+    <two>6</two>
+    <three>hello</three>
+    <allValues>hello 5 6</allValues>
+  </map>
+  <map>
+    <one>2</one>
+    <two>3</two>
+    <three>hello1</three>
+    <allValues>hello1 2 3</allValues>
+  </map>
+  <array>
+    <item>10</item>
+    <allValues>5 10 7 8</allValues>
+  </array>
+  <array>
+    <item>12</item>
+    <allValues>2 12</allValues>
+  </array>
+</result>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <item>
+    <name>hello</name>
+    <value>1</value>
+  </item>
+  <item>
+    <name>bar</name>
+    <value>2</value>
+  </item>
+  <item>
+    <name>foo</name>
+    <value>3</value>
+  </item>
+  <item>
+    <name>how are you</name>
+    <value>4</value>
+  </item>
+  <item>
+    <name>there</name>
+    <value>5</value>
+  </item>
+</result>

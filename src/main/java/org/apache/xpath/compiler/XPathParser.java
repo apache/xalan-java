@@ -2065,16 +2065,37 @@ public class XPathParser
 	  else if (tokenIs("?")) {
 		  // A function argument placeholder, for a function call partial 
 		  // function application.
+		  
+		  // This is also used for, XPath map and array information lookup
 
 		  int opPos1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
 		  appendOp(2, OpCodes.XPath3OpCodes.OP_FUNC_ARG_PLACEHOLDER);
 
-		  consumeExpected('?');
+		  consumeExpected('?');		  
 
 		  FuncArgPlaceholder funcArgPlaceholder = new FuncArgPlaceholder();
-		  m_funcArgPlaceHolderList.add(funcArgPlaceholder);
+		  
+		  if (m_token != null) {
+			  List<String> argList = new ArrayList<>();
+			  argList.add(m_token);
+			  
+			  nextToken();
 
+			  XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();
+			  xpathDynamicFunctionCall.setFuncRefVarName(Constants.UNARY_LOOKUP_MAP_ARRAY);
+			  xpathDynamicFunctionCall.setIsFromUnaryLookupEvaluation(true);
+			  xpathDynamicFunctionCall.setArgList(argList);
+			  
+			  funcArgPlaceholder.setXPathDynamicFunctionCall(xpathDynamicFunctionCall);
+		  }
+		  
+		  m_funcArgPlaceHolderList.add(funcArgPlaceholder);
+		  
+		  if (m_token != null) {
+			 EqualityExpr(-1); 
+		  }
+		  		  
 		  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
 				                                  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
 	  }
@@ -4919,7 +4940,7 @@ public class XPathParser
        // XPath literal map expression as, function argument    	
   	   mapFuncArg();	
     }
-    else if (tokenIs("?")) {
+    else if (tokenIs('?')) {
        // A function argument placeholder, for a function call partial 
        // function application.    	
        appendOp(2, OpCodes.XPath3OpCodes.OP_FUNC_ARG_PLACEHOLDER);

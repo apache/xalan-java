@@ -487,4 +487,6 @@ public class Constants extends org.apache.xml.utils.Constants
   // This is used for Xalan-J XSLT 3.0 instruction xsl:document's implementation
   public static final String XSL_DOCUMENT_INSTRUCTION_MARKER = "###xslDocument###";
   
+  public static final String UNARY_LOOKUP_MAP_ARRAY = "unary_lookup_map_array";
+  
 }
