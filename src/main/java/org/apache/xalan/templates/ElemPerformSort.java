@@ -37,8 +37,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XPathArray;
-import org.apache.xpath.objects.XPathMap;
+import org.apache.xpath.objects.XdmAttributeItem;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSString;
@@ -326,6 +325,7 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 
 			if (m_selectExpression != null) {			   			   
 				XObject xObj = m_selectExpression.execute(xctxt);
+				
 				if (xObj instanceof XMLNodeCursorImpl) {
 					XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;										
 					DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.asIterator(xctxt, contextNode);
@@ -369,21 +369,14 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 					   }
 					}
 					
-					if ((elemTemplateParent instanceof ElemVariable) || isXslNamedTemplateChild 
-							                                                           || (elemTemplateParent instanceof ElemFunction)) {
-						int rSeqLength = rSeq.size();
-						for (int idx = 0; idx < rSeqLength; idx++) {
-							XObject xObj1 = rSeq.item(idx);
-							if ((xObj1 instanceof XPathMap) || (xObj1 instanceof XPathArray)) {
-							   XslTransformData.m_xsl_perform_sort_resultSeq = rSeq; 
-							   
-							   return;
-							}
-						}
+					if (((elemTemplateParent instanceof ElemVariable) || isXslNamedTemplateChild 
+							                                          || (elemTemplateParent instanceof ElemFunction)) 
+							                                                                                      && !(rSeq.item(0) instanceof XdmAttributeItem)) {												
+						XslTransformData.m_xsl_perform_sort_resultSeq = rSeq;
 					}
-					
-					ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false, this);
-					
+					else {
+					    ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false, this);
+					}
 				}
 			}
 			else {
@@ -408,6 +401,7 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 						                                            : transformer.processSortKeys(this, contextNode);
 
 				dtmCursorIterator = elemForEach.sortNodes(xctxt, sortKeys, dtmCursorIterator);
+				
 				ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)dtmCursorIterator, transformer, handler, xctxt);
 			}
 		}

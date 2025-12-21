@@ -2066,7 +2066,8 @@ public class XPathParser
 		  // A function argument placeholder, for a function call partial 
 		  // function application.
 		  
-		  // This is also used for, XPath map and array information lookup
+		  // This is also used for, XPath map and array unary lookup expressions
+		  // (e.g, ?keyName, with an XPath context item as map or array)
 
 		  int opPos1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
