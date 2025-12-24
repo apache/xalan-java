@@ -202,7 +202,7 @@ public class ElemFork extends ElemTemplateElement
 	    			XslSequenceAndResultPair xslSequenceAndResultPair = xslSequenceEvalResultList.get(idx);	    			
 	    			try {
 	    				ElemSequence elemSequence = xslSequenceAndResultPair.getElemSequence();
-						elemSequence.emitXdmObjectToResultTree(xctxt, transformer, 
+						elemSequence.emitXdmItemToXSLResultTree(xctxt, transformer, 
 								                                         xslSequenceAndResultPair.getEvalResult());
 								                                         
 					} catch (TransformerException ex) {

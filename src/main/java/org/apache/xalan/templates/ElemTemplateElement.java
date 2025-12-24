@@ -199,12 +199,12 @@ public class ElemTemplateElement extends UnImplNode
   protected String ATTRIBUTE = "ATTRIBUTE";
   
   /**
-   * Class field to store value of an attribute named 'type'.
+   * Class field to refer to, value of an attribute named 'type'.
    */
   private QName m_type = null;
   
   /**
-   * Class field to store value of an attribute named 'validation'.
+   * Class field to refer to, value of an attribute named 'validation'.
    */
   private String m_validation = null;
   

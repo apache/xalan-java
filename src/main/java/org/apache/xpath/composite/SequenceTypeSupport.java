@@ -1364,10 +1364,26 @@ public class SequenceTypeSupport {
                result = castXdmValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
                                                                                                     expectedSeqTypeData, xctxt);
             }
-            else if (srcValue instanceof XNodeSetForDOM) {               
+            else if (srcValue instanceof XNodeSetForDOM) {            	
                result = castXNodeSetForDOMInstance(srcValue, sequenceTypeXPathExprStr, expectedSeqTypeData, 
                                                                               xctxt, srcLocator, itemTypeOccurenceIndicator, 
-                                                                                                                       sequenceTypeKindTest);
+                                                                                                                       sequenceTypeKindTest);               
+               if (result != null) {
+            	   String strValue = XslTransformEvaluationHelper.getStrVal(result);
+            	   if (strValue.contains(ElemSequence.STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX)) {               
+            		   if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (expectedSeqTypeData == null)) {
+            			   XPath seqTypeXPath2 = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
+            			   XObject seqTypeExpressionEvalResult2 = seqTypeXPath2.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
+            			   SequenceTypeData seqExpectedTypeData2 = (SequenceTypeData)seqTypeExpressionEvalResult2;            			   
+            			   int builtInTypeId = seqExpectedTypeData2.getBuiltInSequenceType();
+            			   if (builtInTypeId == STRING) {
+            				   result = null;
+            				   
+            				   return result;
+            			   }            			   
+            		   }
+            	   }
+               }
             }
             else if (srcValue instanceof XMLNodeCursorImpl) {
                result = castXNodeSetInstance(srcValue, sequenceTypeXPathExprStr, expectedSeqTypeData, 
@@ -2087,10 +2103,10 @@ public class SequenceTypeSupport {
                                                                                                           throws TransformerException {
         XObject result = null;
 
-        XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)srcValue;
-        DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDOM.object());
+        XNodeSetForDOM xNodeSetForDom = (XNodeSetForDOM)srcValue;
+        DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDom.object());
 
-        DTMManager dtmMgr = xNodeSetForDOM.getDTMManager();
+        DTMManager dtmMgr = xNodeSetForDom.getDTMManager();
 
         List<Integer> xdmNodesDtmList = new ArrayList<Integer>();
 
@@ -2102,16 +2118,11 @@ public class SequenceTypeSupport {
         final int contextNode = xctxt.getCurrentNode();         
                 
         int attrCount = SerializerUtils.m_xdmAttrList.size();
-        if ((nodeSetLen == 0) && (attrCount > 0)) {        	        	
-        	XPath seqTypeXPath = null;
-            XObject seqTypeExpressionEvalResult = null;
-            SequenceTypeData seqExpectedTypeData = null;
-            
+        if ((nodeSetLen == 0) && (attrCount > 0)) {        	        	            
             if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (seqExpectedTypeDataInp == null)) {
-            	seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
-            			                                                                          XPath.SELECT, null, true);            
-            	seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
-            	seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;            	
+            	XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
+            	XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
+            	SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;            	
             	SequenceTypeKindTest sequenceTypeKindTest2 = seqExpectedTypeData.getSequenceTypeKindTest();
             	boolean isXdmValueMatchesType = false;
             	if ((sequenceTypeKindTest2 != null) && (sequenceTypeKindTest2.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) ||

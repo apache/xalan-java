@@ -77,7 +77,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
   static final long serialVersionUID = 2903125371542621004L;
   
   /**
-   * Class field to store, XPath expression for subsequent 
+   * Class field to refer to, XPath expression for subsequent 
    * processing.
    */
   private XPath m_xpath2 = null;
@@ -382,8 +382,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 				  XObject xObj = resultSeq.item(idx);
 				  if (xObj instanceof XMLNodeCursorImpl) {
 					  sourceNodes = ((XMLNodeCursorImpl)xObj).iterRaw();					  
-					  xslApplyTemplatesOnNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator, 
-							                                                                            resultSeq.isXdmParentlessSiblingNodes());
+					  xslApplyTemplatesToNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator);
 				  }
 				  else {
 					  ResultSequence rSeq = new ResultSequence();
@@ -474,13 +473,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  }
 	  }
 
-	  if (sourceNodes != null) {
-		 boolean isXdmParentlessSiblingNodes = false; 
-		 if (resultSeq != null) {			 
-			 isXdmParentlessSiblingNodes = resultSeq.isXdmParentlessSiblingNodes();
-		 }
-		 
-	     xslApplyTemplatesOnNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator, isXdmParentlessSiblingNodes);
+	  if (sourceNodes != null) {		 
+	     xslApplyTemplatesToNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator);
 	  }
   }
 
@@ -493,12 +487,11 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * @param contextNode                            XPath context node                             
    * @param sourceNodes                            An iterator for the xdm nodes
    * @param srcLocator                             XPath SourceLocator object instance
-   * @param isXdmParentlessSiblingNodes 
    * @throws TransformerException
    */
-  private void xslApplyTemplatesOnNodes(TransformerImpl transformer, XPathContext xctxt, int contextNode,
-		                                DTMCursorIterator sourceNodes, SourceLocator srcLocator, boolean isXdmParentlessSiblingNodes) 
-		                                		                                                                                  throws TransformerException {
+  private void xslApplyTemplatesToNodes(TransformerImpl transformer, XPathContext xctxt, int contextNode,
+		                                                                        DTMCursorIterator sourceNodes, SourceLocator srcLocator) 
+		                                                                        		                                             throws TransformerException {
 	  
 	  VariableStack vars = xctxt.getVarStack();
 	  int nParams = getParamElemCount();
@@ -664,6 +657,31 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  }
 
 		  int child;
+		  
+		  boolean isXdmParentlessSiblingNodes = false;
+		  List<Integer> nodeHandleList = new ArrayList<Integer>();
+		  DTM dtm2 = dtm;
+		  while (DTM.NULL != (child = sourceNodes.nextNode()))
+		  {
+			  nodeHandleList.add(child);
+			  dtm = xctxt.getDTM(child); 
+			  String str2 = dtm.getNodeValue(child);			  
+			  if ((Constants.XSL_DOCUMENT_INSTRUCTION_MARKER).equals(str2)) {
+				  isXdmParentlessSiblingNodes = true;	    			 	    			 
+			  }
+		  }
+		  
+		  if (!isXdmParentlessSiblingNodes) {
+			  dtm = dtm2; 
+		  }
+		  
+		  xctxt.popContextNodeList();
+
+		  XMLNodeCursorImpl nodeList = new XMLNodeCursorImpl(nodeHandleList, xctxt);
+		  sourceNodes = nodeList.iterRaw();
+		  
+		  xctxt.pushContextNodeList(sourceNodes);
+		  
 		  while (DTM.NULL != (child = sourceNodes.nextNode()))
 		  {
 			  currentNodes.setTop(child);
@@ -1153,8 +1171,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 					  int dtmNodeHandle = transformer.transformToGlobalRTF(template);
 
-					  NodeList nodeList = (new XRTreeFrag(dtmNodeHandle, xctxt, template)).convertToNodeset();             
-					  XObject templateEvalResultForAsAttr = new XNodeSetForDOM(nodeList, xctxt);
+					  NodeList nodeList2 = (new XRTreeFrag(dtmNodeHandle, xctxt, template)).convertToNodeset();             
+					  XObject templateEvalResultForAsAttr = new XNodeSetForDOM(nodeList2, xctxt);
 
 					  templateEvalResultForAsAttr = SequenceTypeSupport.castXdmValueToAnotherType(templateEvalResultForAsAttr, templateAsAttrVal, 
 							  																													null, xctxt);

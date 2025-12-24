@@ -120,6 +120,7 @@ import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSToken;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
@@ -603,6 +604,11 @@ public class XSL3FunctionService {
     						}
 
     						break;
+    					case Keywords.XS_UNTYPED_ATOMIC :
+    						Expression funcArg = funcObj.getArg(0);    						
+							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    						
+    						evalResult = new XSUntypedAtomic(argStr);
     					default:
     						// NO OP
     					}

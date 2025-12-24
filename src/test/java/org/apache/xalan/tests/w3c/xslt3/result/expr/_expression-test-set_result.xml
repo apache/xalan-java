@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-18T16:47:59Z" fail="15" name="expression" pass="84" run="100" skipped="5" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-24T11:28:11Z" fail="14" name="expression" pass="85" run="100" skipped="5" statusUnknown="1">
    <testResult status="pass" testName="expression-0101"/>
    <testResult status="pass" testName="expression-0301"/>
    <testResult status="pass" testName="expression-0302"/>
@@ -38,7 +38,7 @@
    <testResult status="pass" testName="expression-0921"/>
    <testResult status="pass" testName="expression-0922"/>
    <testResult status="pass" testName="expression-0923"/>
-   <testResult status="fail" testName="expression-0924"/>
+   <testResult status="pass" testName="expression-0924"/>
    <testResult status="fail" testName="expression-0925"/>
    <testResult status="fail" testName="expression-0926"/>
    <testResult status="pass" testName="expression-0927"/>

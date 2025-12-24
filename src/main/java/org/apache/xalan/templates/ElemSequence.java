@@ -118,6 +118,8 @@ public class ElemSequence extends ElemTemplateElement
   
   public static String SER_SUFFIX_ID = "XSL_SEQ";
   
+  public static String SER_NUMERIC_SUFFIX_ID = "XSL_SEQ_NUMERIC";
+  
   /**
    * We use this string value constant to add as a suffix to, a string value that
    * is being serialized by Xalan serializer, when XSL serialization is
@@ -129,6 +131,8 @@ public class ElemSequence extends ElemTemplateElement
    * to be present within an input document that is getting transformed.
    */
   public static String STRING_VAL_SERIALIZATION_SUFFIX = SER_SUFFIX_ID + ElemCopyOf.SPACE_CHAR + SER_SUFFIX_ID;
+  
+  public static String STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX = SER_NUMERIC_SUFFIX_ID + ElemCopyOf.SPACE_CHAR + SER_NUMERIC_SUFFIX_ID;
 
   /**
    * Set the value of "select" attribute.
@@ -587,7 +591,7 @@ public class ElemSequence extends ElemTemplateElement
 				 result = new XSString(strBuff.toString());
 			  }
 			  
-			  emitXdmObjectToResultTree(xctxt, transformer, result);          
+			  emitXdmItemToXSLResultTree(xctxt, transformer, result);          
 		  }
 	  }
 	  catch (SAXException se) {
@@ -610,7 +614,7 @@ public class ElemSequence extends ElemTemplateElement
    * @throws TransformerException
    * @throws SAXException
    */
-  public void emitXdmObjectToResultTree(XPathContext xctxt, TransformerImpl transformer, 
+  public void emitXdmItemToXSLResultTree(XPathContext xctxt, TransformerImpl transformer, 
 		                                                    XObject xdmObject) throws TransformerException, SAXException {
 	  
 	  if (xdmObject instanceof XPathInlineFunction) {
@@ -674,13 +678,32 @@ public class ElemSequence extends ElemTemplateElement
 
 		  boolean isToAddStrValSerializationSuffix = isToAddXslSequenceSerializationSuffix(xctxt); 
 
-		  if ((xdmObject instanceof XBoolean) || (xdmObject instanceof XNumber) || 
-				                                      (xdmObject instanceof XString)) {
+		  if ((xdmObject instanceof XBoolean) || (xdmObject instanceof XString)) {
 			  if (isToAddStrValSerializationSuffix) {
 				  strVal = xdmObject.str() + STRING_VAL_SERIALIZATION_SUFFIX;
 			  }
 			  else {
 				  strVal = xdmObject.str();  
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XNumber) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = xdmObject.str() + STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX;
+			  }
+			  else {
+				  strVal = xdmObject.str();  
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XSNumericType) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = ((XSAnyAtomicType)xdmObject).stringValue() + STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX;
+			  }
+			  else {
+				  strVal = ((XSAnyAtomicType)xdmObject).stringValue();
 			  }
 
 			  handler.characters(strVal.toCharArray(), 0, strVal.length());

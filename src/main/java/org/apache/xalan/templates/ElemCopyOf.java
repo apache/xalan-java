@@ -302,12 +302,22 @@ public class ElemCopyOf extends ElemTemplateElement
     	  m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
       }
       
+      String xpathPatternStr = m_selectExpression.getPatternString();
+      if (xpathPatternStr.startsWith("/") && !xpathPatternStr.startsWith("//")) {
+    	  DTM dtm = xctxt.getDTM(sourceNode);
+    	  int documentNodeHandle = dtm.getDocument();
+    	  if (documentNodeHandle == DTM.NULL) {
+    		  throw new TransformerException("XPDY0050 : An XPath expression string " + xpathPatternStr + " cannot be "
+    		  		                                                                                    + "evaluated, because xdm tree containing "
+    		  		                                                                                    + "the context item is not a document node.", srcLocator); 
+    	  }
+      }
+      
       XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
       if (m_isDot && (xpath3ContextItem != null)) {
           value = xpath3ContextItem;  
       }
-      else {
-    	  String xpathPatternStr = m_selectExpression.getPatternString();
+      else {    	  
     	  if ((sourceNode == DTM.NULL) && xpathPatternStr.startsWith("$")) {    		 
     		  String varRef = null;
     		  int idx = xpathPatternStr.indexOf('/');

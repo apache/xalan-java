@@ -63,14 +63,14 @@ public class XMLNodeCursorImpl extends NodeCursor
   protected XMLNodeCursorImpl() { }
   
   /**
-   * Class field to store value of an attribute named 'type', for 
+   * Class field to refer to, value of an attribute named 'type', for 
    * validating this xdm node object.
    */
   private QName m_type = null;
   
   /**
-   * Class field to store value of an attribute named 'validation', for 
-   * validating this xdm node object.
+   * Class field to refer to, value of an attribute named 'validation', 
+   * for validating this xdm node object instance.
    */
   private String m_validation = null;
   

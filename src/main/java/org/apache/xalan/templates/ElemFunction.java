@@ -90,6 +90,7 @@ import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
+import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSYearMonthDuration;
@@ -955,21 +956,43 @@ public class ElemFunction extends ElemTemplate
         if (nodeType == Node.TEXT_NODE) {
              String strVal = ((Text)node).getNodeValue();             
              if (seqTypeKindTest == null) {               
-                result = new ResultSequence();                  
+                //result = new ResultSequence();                  
                 if (strVal.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX);
                    for (int idx = 0; idx < strParts.length; idx++) {
                       String seqItemStrVal = strParts[idx];
                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
                       if (xObject != null) {
+                    	 if (result == null) {
+                    		result = new ResultSequence(); 
+                    	 }
+                    	 
                          result.add(xObject);
                       }
                    }
                 }
+                else if (strVal.contains(ElemSequence.STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX)) {
+                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX);
+                    for (int idx = 0; idx < strParts.length; idx++) {
+                       String seqItemStrVal = strParts[idx];
+                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
+                       if (xObject instanceof XSNumericType) {
+                    	   if (result == null) {
+                    		   result = new ResultSequence(); 
+                    	   }
+
+                    	   result.add(xObject);
+                       }
+                    }
+                 }
                 else {
                    XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getBuiltInSequenceType());
                    if (xObject != null) {
-                      result.add(xObject);
+                	   if (result == null) {
+                		   result = new ResultSequence(); 
+                	   }
+                	   
+                	   result.add(xObject);
                    }
                 }
              }

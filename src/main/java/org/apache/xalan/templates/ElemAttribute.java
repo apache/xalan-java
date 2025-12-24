@@ -66,7 +66,7 @@ public class ElemAttribute extends ElemElement
     protected Expression m_selectExpression = null;
     
     /**
-     * Class field to store, XPath expression for subsequent 
+     * Class field to refer to, XPath expression for subsequent 
      * processing.
      */
     protected XPath m_xpath = null;
@@ -90,8 +90,8 @@ public class ElemAttribute extends ElemElement
     private String m_attrVal = null;
     
     /**
-     * Class field to store the fact that, whether to serialize an 
-     * attribute to XSL transform's output.
+     * Class field to refer to the fact that, whether to 
+     * serialize an attribute to XSL transform's output.
      */
     private boolean m_is_serialize = true;
     

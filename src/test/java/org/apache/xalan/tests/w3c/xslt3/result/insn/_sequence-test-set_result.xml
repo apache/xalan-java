@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-18T16:47:57Z" fail="27" name="sequence" pass="58" run="85" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-24T11:28:07Z" fail="20" name="sequence" pass="65" run="85" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="pass" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -24,33 +24,17 @@
    <testResult status="pass" testName="sequence-0123"/>
    <testResult status="pass" testName="sequence-0124"/>
    <testResult status="fail" testName="sequence-0125"/>
-   <testResult status="fail" testName="sequence-0126"/>
+   <testResult status="pass" testName="sequence-0126"/>
    <testResult reason="Xalan configured" status="skipped" testName="sequence-0127"/>
    <testResult status="pass" testName="sequence-0128"/>
    <testResult status="pass" testName="sequence-0129"/>
-   <testResult status="fail" testName="sequence-0130">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: Variable $q accessed before it is bound!</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="sequence-0131">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;zzz&gt;1,4,9,16,25,36,49,64,81,100&lt;/zzz&gt;&#13;
-&#13;
-</outResult>
-   </testResult>
+   <testResult status="pass" testName="sequence-0130"/>
+   <testResult status="pass" testName="sequence-0131"/>
    <testResult status="pass" testName="sequence-0132"/>
    <testResult status="pass" testName="sequence-0133"/>
    <testResult status="pass" testName="sequence-0134"/>
-   <testResult status="fail" testName="sequence-0135">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;foo/&gt;&#13;
-&#13;
-</outResult>
-   </testResult>
-   <testResult status="fail" testName="sequence-0136">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-&#13;
-</outResult>
-   </testResult>
+   <testResult status="pass" testName="sequence-0135"/>
+   <testResult status="pass" testName="sequence-0136"/>
    <testResult status="skipped" testName="sequence-0137" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="fail" testName="sequence-0137a">
       <outResult>
@@ -72,16 +56,8 @@
    <testResult status="pass" testName="sequence-0303"/>
    <testResult status="pass" testName="sequence-0304"/>
    <testResult status="pass" testName="sequence-0305"/>
-   <testResult status="fail" testName="sequence-0306">
-      <outResult>
-         <errTrace>java.lang.NoSuchMethodException: For extension function, could not find method java.lang.String.untypedAtomic([ExpressionContext,] ).</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="sequence-0307">
-      <outResult>
-         <errTrace>java.lang.NoSuchMethodException: For extension function, could not find method java.lang.String.untypedAtomic([ExpressionContext,] ).</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="sequence-0306"/>
+   <testResult status="pass" testName="sequence-0307"/>
    <testResult status="pass" testName="sequence-0401"/>
    <testResult status="pass" testName="sequence-0402"/>
    <testResult status="fail" testName="sequence-0403"/>

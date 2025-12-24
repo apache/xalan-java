@@ -657,7 +657,7 @@ public class ElemValueOf extends ElemTemplateElement {
                       }
                       else if (evalResult instanceof ResultSequence) {
                     	 strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult, separatorStrValue); 
-                      }
+                      }                      
                       else if (evalResult instanceof XMLNodeCursorImpl) {                    	  
                     	  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;
                     	  DTMCursorIterator iter = xmlNodeCursorImpl.iterRaw();                    	  

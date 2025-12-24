@@ -110,7 +110,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   protected Expression m_selectExpression = null;
   
   /**
-   * Class field to store, XPath expression for subsequent 
+   * Class field to refer to, XPath expression for subsequent 
    * processing.
    */
   protected XPath m_xpath = null;

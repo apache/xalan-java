@@ -27,10 +27,11 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
+import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the subsequence() function.
+ * Implementation of XPath 3.1 function fn:subsequence.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -48,16 +49,17 @@ public class FuncSubsequence extends FunctionMultiArgs {
     }
     
     /**
-     * The number of arguments passed to the fn:sort function 
-     * call.
+     * The number of arguments passed to the function call 
+     * fn:subsequence.
      */
     private int numOfArgs = 0;
 
     /**
-     * Execute the function. The function must return a valid object.
+     * Implementation of the function. The function must return a 
+     * valid object.
      * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
+     * @param xctxt                          An XPath context object
+     * @return                               A valid XObject
      *
      * @throws javax.xml.transform.TransformerException
      */
@@ -79,31 +81,77 @@ public class FuncSubsequence extends FunctionMultiArgs {
                                                                                           xObject0, xctxt);
             
             XObject arg1Obj = arg1.execute(xctxt);
+            boolean isStartingLocNegInf = false;
+            boolean isStartingLocNan = false;
+            if (arg1Obj instanceof XSDouble) {
+                XSDouble xsDouble = (XSDouble)arg1Obj;
+                Double dbl = Double.valueOf(xsDouble.doubleValue());
+                if (dbl.doubleValue() == Double.NEGATIVE_INFINITY) {
+                   isStartingLocNegInf = true;
+                }
+                else if (dbl.isNaN()) {
+                   isStartingLocNan = true;
+                }
+            }
+            
+            boolean isLengthInf = false;
+            boolean isLengthNan = false;
+            XObject arg2Obj = null;
+            if (numOfArgs == 3) {
+            	arg2 = m_arg2;
+            	arg2Obj = arg2.execute(xctxt);
+            	if (arg2Obj instanceof XSDouble) {
+             	   XSDouble xsDouble = (XSDouble)arg2Obj;
+             	   Double dbl = Double.valueOf(xsDouble.doubleValue());
+             	   if (dbl.doubleValue() == Double.POSITIVE_INFINITY) {
+             		   isLengthInf = true;
+             	   }
+             	   else if (dbl.isNaN()) {
+             		   isLengthNan = true;
+             	   }
+                }
+            }
+            
+            if (isStartingLocNan || isLengthNan) {
+               return result;
+            }
+            
+            if (isStartingLocNegInf && !isLengthInf) {
+                return result;
+            }
+            
+            if (isStartingLocNegInf && isLengthInf) {
+                return result;
+            }
+            
             int startingLoc = getIntFromXObject(arg1Obj);
             
-            startingLoc = (startingLoc <= 0) ? 1 : startingLoc; 
+            int rSeqLength = rsArg0.size();
             
             // This function call requires either two arguments, or three arguments
             if (numOfArgs == 2) {
-               for (int idx = (startingLoc - 1); idx < rsArg0.size(); idx++) {
-                  result.add(rsArg0.item(idx)); 
-               }
+            	for (int idx = (startingLoc - 1); idx < rSeqLength; idx++) {
+            		if ((idx >= 0) && (idx < rSeqLength)) {
+            			result.add(rsArg0.item(idx)); 
+            		}
+            	}
             }
             else {
-               // The function call has three arguments
-               arg2 = m_arg2;
-               XObject arg2Obj = arg2.execute(xctxt);           
-               int lengthVal = getIntFromXObject(arg2Obj);
-               if (lengthVal < 0) {
-                  lengthVal = 0;    
-               }
-               else if ((startingLoc + lengthVal) > rsArg0.size()) {
-                  lengthVal = rsArg0.size() - startingLoc + 1;    
-               }
-               
-               for (int idx = (startingLoc - 1); idx < ((startingLoc - 1) + lengthVal); idx++) {
-                  result.add(rsArg0.item(idx)); 
-               }
+            	// The function call has three arguments                                                                                       	            	
+            	int rIndex;
+            	if (!isLengthInf) {
+            		int lengthVal = getIntFromXObject(arg2Obj); 
+            		rIndex = ((startingLoc - 1) + lengthVal);
+            	}
+            	else {            		           		            		
+            		rIndex = rSeqLength;
+            	}
+
+            	for (int idx = (startingLoc - 1); idx < rIndex; idx++) {
+            		if ((idx >= 0) && (idx < rSeqLength)) {
+            			result.add(rsArg0.item(idx));
+            		}
+            	}
             }
         }
         catch (javax.xml.transform.TransformerException ex) {
@@ -143,46 +191,58 @@ public class FuncSubsequence extends FunctionMultiArgs {
     }
     
     /**
-     * Given an evaluated XPath expression for function fn:subsequence's second or third
-     * argument, get its value as an integer. 
+     * Method definition, to convert an XObject value which is function fn:subsequence's 
+     * second or third argument to primitive integer. 
+     * 
+     * @param xObject							The supplied XObject value
+     * @return                                  The result integer value
+     * @throws javax.xml.transform.TransformerException
      */
     private int getIntFromXObject(XObject xObject) throws javax.xml.transform.TransformerException {
-       int returnVal = -1;
+       
+       int result = -1;
        
        double dblVal = 0.0;
        
        if (xObject instanceof XNumber) {
           dblVal = ((XNumber)xObject).num();
-          returnVal = roundDoubleToInt(dblVal); 
+          result = roundDoubleToInt(dblVal); 
        }
        else if (xObject instanceof XSNumericType) {
           String strVal = ((XSNumericType)xObject).stringValue();
           dblVal = (Double.valueOf(strVal)).doubleValue();
-          returnVal = roundDoubleToInt(dblVal);
+          result = roundDoubleToInt(dblVal);
        }
        else {
           throw new javax.xml.transform.TransformerException("FORG0006 : The second or third argument's value, to "
-                                                                                 + "function fn:subsequence is not numeric or "
-                                                                                 + "cannot be cast to numeric."); 
+					                                                                                 + "function fn:subsequence is not numeric or "
+					                                                                                 + "cannot be cast to numeric."); 
        }
        
-       return returnVal;
+       return result;
     }
     
     /**
-     * Do a numeric round of a double value, to an integer value.
+     * Method definition, to do numeric round of double value 
+     * to an integer.
+     * 
+     * @param dblVal					The supplied numeric double
+     *                                  value.
+     * @return                          The return value
      */
     private int roundDoubleToInt(double dblVal) {
-       int returnVal = -1;
+    	
+       int result = -1;
        
-       if ((dblVal >= -0.5 && dblVal < 0) || (dblVal == 0.0)) {
-          returnVal = 0;  
+       if (((dblVal >= -0.5) && (dblVal < 0)) || (dblVal == 0.0)) {
+          result = 0;  
        }
        else {
-          returnVal = (int)(Math.floor(dblVal + 0.5)); 
+          result = (int)(Math.floor(dblVal + 0.5)); 
        }
        
-       return returnVal; 
+       return result;
+       
     }
 
 }

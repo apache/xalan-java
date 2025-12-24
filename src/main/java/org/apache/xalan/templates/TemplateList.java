@@ -701,8 +701,6 @@ public class TemplateList implements java.io.Serializable
 
     			  prevSibling = dtm.getPreviousSibling(prevSibling); 
     		  }
-    		  
-    		  String nodeName = dtm.getNodeName(targetNode);
 
     		  String headPatternStr = head.getPattern();
 

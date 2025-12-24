@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-18T16:47:52Z" fail="30" name="as" pass="81" run="111" skipped="93" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-24T11:28:02Z" fail="29" name="as" pass="82" run="111" skipped="93" statusUnknown="0">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
@@ -91,7 +91,7 @@
    <testResult status="fail" testName="as-0802"/>
    <testResult status="fail" testName="as-0802a">
       <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>XTTE0505 : The required result type of XSL template 'a15' is xs:double+. But XSL template's result doesn't conform to this required type.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="as-0802b"/>
@@ -145,11 +145,7 @@
    <testResult status="fail" testName="as-1601">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;5</outResult>
    </testResult>
-   <testResult status="fail" testName="as-1602">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="as-1602"/>
    <testResult feature="schema_aware" status="skipped" testName="as-1701"/>
    <testResult feature="schema_aware" status="skipped" testName="as-1702"/>
    <testResult feature="schema_aware" status="skipped" testName="as-1703"/>

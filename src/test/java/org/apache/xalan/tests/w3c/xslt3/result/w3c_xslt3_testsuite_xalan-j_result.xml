@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2025-12-19T17:28:23Z" desc="W3C XSLT 3.0 test suite results" fail="915" pass="2456" run="3377" skipped="596" success="72.73%" xslt_processor="Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2025-12-24T11:28:34Z" desc="W3C XSLT 3.0 test suite results" fail="906" pass="2465" run="3377" skipped="596" success="72.99%" xslt_processor="Xalan-J XSLT 3.0 development code">
   <attr>
-    <as fail="30" pass="81" run="111" skipped="93" success="72.97%"/>
+    <as fail="29" pass="82" run="111" skipped="93" success="73.87%"/>
     <avt fail="1" pass="33" run="34" skipped="1" success="97.06%"/>
     <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
     <expand-text fail="8" pass="51" run="59" skipped="3" success="86.44%"/>
@@ -23,7 +23,7 @@
   <expr>
     <axes fail="10" pass="190" run="200" skipped="2" success="95.0%"/>
     <castable fail="3" pass="6" run="9" skipped="0" success="66.67%"/>
-    <expression fail="15" pass="84" run="100" skipped="5" success="84.0%"/>
+    <expression fail="14" pass="85" run="100" skipped="5" success="85.0%"/>
     <for fail="1" pass="2" run="3" skipped="1" success="66.67%"/>
     <higher-order-functions fail="36" pass="33" run="69" skipped="7" success="47.83%"/>
     <math fail="25" pass="128" run="153" skipped="8" success="83.66%"/>
@@ -51,7 +51,7 @@
     <for-each-group fail="28" pass="51" run="79" skipped="6" success="64.56%"/>
     <iterate fail="1" pass="43" run="44" skipped="0" success="97.73%"/>
     <message fail="7" pass="34" run="42" skipped="3" success="80.95%"/>
-    <sequence fail="27" pass="58" run="85" skipped="7" success="68.24%"/>
+    <sequence fail="20" pass="65" run="85" skipped="7" success="76.47%"/>
     <sort fail="28" pass="53" run="81" skipped="0" success="65.43%"/>
     <try fail="7" pass="27" run="34" skipped="8" success="79.41%"/>
     <xsl-document fail="11" pass="14" run="25" skipped="0" success="56.0%"/>

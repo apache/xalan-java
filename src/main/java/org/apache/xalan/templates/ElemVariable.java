@@ -17,6 +17,7 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -395,23 +396,32 @@ public class ElemVariable extends ElemTemplateElement
   {
 
     if (transformer.getDebug())
-      transformer.getTraceManager().emitTraceEvent(this);
+       transformer.getTraceManager().emitTraceEvent(this);
+    
+    XPathContext xctxt = transformer.getXPathContext();
 
-    int sourceNode = transformer.getXPathContext().getCurrentNode();
+    final int sourceNode = xctxt.getCurrentNode();
   
     XObject var = getValue(transformer, sourceNode);
     
+    if (var instanceof ResultSequence) {
+    	ResultSequence rSeq = (ResultSequence)var;
+    	if (rSeq.isXdmParentlessSiblingNodes()) {
+    		var = getNodeSetFromSequence(xctxt, rSeq);
+    	}
+    }
+    
     if (var instanceof XPathInlineFunction) 
     {
-        Map<QName, XObject> xpathVarMap = (transformer.getXPathContext()).getXPathVarMap();
+        Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
         xpathVarMap.put(m_qname, var);
     }
     else {
-        transformer.getXPathContext().getVarStack().setLocalVariable(m_index, var);
+    	(xctxt.getVarStack()).setLocalVariable(m_index, var);
     }
     
     if (transformer.getDebug())
-	  transformer.getTraceManager().emitTraceEndEvent(this);         
+	    transformer.getTraceManager().emitTraceEndEvent(this);         
   }
 
   /**
@@ -457,6 +467,14 @@ public class ElemVariable extends ElemTemplateElement
             		SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
             		if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
             			return evalResult;
+            		}            		            		
+            	}
+            	
+            	if ((m_asAttr != null) && (evalResult instanceof XSUntypedAtomic)) {
+            		SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, srcLocator);
+            		int xsBuiltInTypeId = seqExpectedTypeData.getBuiltInSequenceType();
+            		if ((xsBuiltInTypeId == SequenceTypeSupport.XS_UNTYPED_ATOMIC) || (xsBuiltInTypeId == SequenceTypeSupport.ITEM_KIND)) {
+            		   return evalResult;
             		}
             	}
             	
@@ -466,8 +484,7 @@ public class ElemVariable extends ElemTemplateElement
             	String evalResultStrValue = XslTransformEvaluationHelper.getStrVal(evalResult);
             	if (m_asAttr != null && !(XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
                    evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
-                   if (evalResult == null) {
-                	  String xpathPatternStr = m_selectPattern.getPatternString();                	  
+                   if (evalResult == null) {                	  
                 	  throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation result, doesn't "
                 	  		                                                                            + "match an expected xdm sequence type " 
                 			                                                                            + m_asAttr + ".", srcLocator); 
@@ -1090,8 +1107,14 @@ public class ElemVariable extends ElemTemplateElement
  					 }    				  
     				  
     			     var = SequenceTypeSupport.castXdmValueToAnotherType(rSeqCopy, seqExpectedTypeData, false);
-    			     
-    			     return var;
+    			     if (var != null) {
+    			    	 return var; 
+    			     }
+    			     else {
+    			    	 throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
+																					    			    			 + "result doesn't match the specified "
+																					    			    			 + "xdm sequence type " + m_asAttr + ".", srcLocator);
+    			     }
     			  }    			      			  
 			  }
     		  else {
@@ -1138,7 +1161,7 @@ public class ElemVariable extends ElemTemplateElement
     	  }
     	  else if (var == null) {
     	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
-    	     var = new XNodeSetForDOM(nodeList, xctxt);    	         	         	         	     
+    	     var = new XNodeSetForDOM(nodeList, xctxt);    	     
     	  }
       }
     }
@@ -1421,8 +1444,8 @@ public class ElemVariable extends ElemTemplateElement
     			}
 
     			if (isSeqTypeOccrIndicatorOk) {   			
-    				var = rSeq; 
-
+    				var = rSeq;
+    				    				
     				return var;
     			}
     			else {
@@ -1445,8 +1468,13 @@ public class ElemVariable extends ElemTemplateElement
     		if (variableConvertedVal != null) {
     			var = variableConvertedVal;    
     		}
-    		else {
-    			var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt); 
+    		else {    			    			
+    			var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);    			
+    			if (var == null) {
+    				throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
+																		                             + "result doesn't match the specified "
+																		                             + "xdm sequence type " + m_asAttr + ".", srcLocator); 	
+    			}
     		}
     	}
     	else if (var instanceof XPathMap) {
@@ -1767,6 +1795,32 @@ public class ElemVariable extends ElemTemplateElement
 		  }
 	  }
 
+	  return result;
+  }
+  
+  /**
+   * Method definition, to convert an xdm sequence with all node 
+   * items within it, to a node set object.
+   * 
+   * @param xctxt						   An XPath context object
+   * @param rSeq                           The supplied xdm sequence
+   * @return                               Node set object    
+   */
+  private XObject getNodeSetFromSequence(XPathContext xctxt, ResultSequence rSeq) {
+	  
+	  XObject result = null;
+	  
+	  List<Integer> nodeHandleList = new ArrayList<Integer>();
+	  int rSeqLength = rSeq.size(); 
+	  for (int idx = 0; idx < rSeqLength; idx++) {
+		  XObject xObj = rSeq.item(idx);
+		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;    			
+		  int nextNode = xmlNodeCursorImpl.nextNode();
+		  nodeHandleList.add(Integer.valueOf(nextNode));
+	  }
+
+	  result = new XMLNodeCursorImpl(nodeHandleList, xctxt);
+	  
 	  return result;
   }
 
