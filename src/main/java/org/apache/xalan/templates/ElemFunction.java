@@ -320,8 +320,8 @@ public class ElemFunction extends ElemTemplate
   /**
    * Get an integer representation of the element type.
    *
-   * @return An integer representation of the element, defined in the
-   *     Constants class.
+   * @return         An integer representation of the element, defined in the
+   *                 Constants class.
    * @see org.apache.xalan.templates.Constants
    */
   public int getXSLToken()
@@ -536,6 +536,9 @@ public class ElemFunction extends ElemTemplate
 
     	  // Get xsl:function's result, before processing with "as" attribute
     	  result = getXslFunctionResult(transformer, xctxt);
+      }
+      catch (TransformerException ex) {
+    	  throw ex;
       }
       finally {
     	  if (xslParamMap.size() > 0) {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-24T11:28:07Z" fail="20" name="sequence" pass="65" run="85" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-26T11:43:56Z" fail="19" name="sequence" pass="66" run="85" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="pass" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -63,9 +63,7 @@
    <testResult status="fail" testName="sequence-0403"/>
    <testResult status="fail" testName="sequence-0501"/>
    <testResult status="fail" testName="sequence-0502"/>
-   <testResult status="fail" testName="sequence-0601">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="sequence-0601"/>
    <testResult status="pass" testName="sequence-0701"/>
    <testResult status="pass" testName="sequence-0702"/>
    <testResult status="pass" testName="sequence-0703"/>

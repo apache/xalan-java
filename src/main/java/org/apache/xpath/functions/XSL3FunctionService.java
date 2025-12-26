@@ -784,7 +784,13 @@ public class XSL3FunctionService {
     		}
     	}
     	catch (TransformerException ex) {
-    		throw new TransformerException(ex.getMessage(), srcLocator); 
+    		String errMesg = ex.getMessage();
+    		SourceLocator srcLocatorTemp = ex.getLocator();
+    		if (srcLocatorTemp == null) {
+    			srcLocatorTemp = srcLocator; 	
+    		}
+    		
+    		throw new TransformerException(errMesg, srcLocatorTemp);
     	}
 
     	return evalResult;        
