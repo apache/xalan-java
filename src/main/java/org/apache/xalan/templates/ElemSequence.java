@@ -64,6 +64,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
@@ -118,7 +122,13 @@ public class ElemSequence extends ElemTemplateElement
   
   public static String SER_SUFFIX_ID = "XSL_SEQ";
   
-  public static String SER_NUMERIC_SUFFIX_ID = "XSL_SEQ_NUMERIC";
+  public static String SER_INTEGER_SUFFIX_ID = "XSL_SEQ_INTEGER";
+  
+  public static String SER_DECIMAL_SUFFIX_ID = "XSL_SEQ_DECIMAL";
+  
+  public static String SER_DOUBLE_SUFFIX_ID = "XSL_SEQ_DOUBLE";
+  
+  public static String SER_FLOAT_SUFFIX_ID = "XSL_SEQ_FLOAT";
   
   /**
    * We use this string value constant to add as a suffix to, a string value that
@@ -130,9 +140,15 @@ public class ElemSequence extends ElemTemplateElement
    * We're assuming that, this string value is significantly random, and is unlikely
    * to be present within an input document that is getting transformed.
    */
-  public static String STRING_VAL_SERIALIZATION_SUFFIX = SER_SUFFIX_ID + ElemCopyOf.SPACE_CHAR + SER_SUFFIX_ID;
+  public static String STRING_VAL_SER_SUFFIX = SER_SUFFIX_ID + ElemCopyOf.SPACE_CHAR + SER_SUFFIX_ID;
   
-  public static String STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX = SER_NUMERIC_SUFFIX_ID + ElemCopyOf.SPACE_CHAR + SER_NUMERIC_SUFFIX_ID;
+  public static String STRING_VAL_SER_INTEGER_SUFFIX = SER_INTEGER_SUFFIX_ID + ElemCopyOf.SPACE_CHAR + SER_INTEGER_SUFFIX_ID;
+  
+  public static String STRING_VAL_SER_DECIMAL_SUFFIX = SER_DECIMAL_SUFFIX_ID + ElemCopyOf.SPACE_CHAR + SER_DECIMAL_SUFFIX_ID;
+  
+  public static String STRING_VAL_SER_DOUBLE_SUFFIX = SER_DOUBLE_SUFFIX_ID + ElemCopyOf.SPACE_CHAR + SER_DOUBLE_SUFFIX_ID;
+  
+  public static String STRING_VAL_SER_FLOAT_SUFFIX = SER_FLOAT_SUFFIX_ID + ElemCopyOf.SPACE_CHAR + SER_FLOAT_SUFFIX_ID;
 
   /**
    * Set the value of "select" attribute.
@@ -680,7 +696,7 @@ public class ElemSequence extends ElemTemplateElement
 
 		  if ((xdmObject instanceof XBoolean) || (xdmObject instanceof XString)) {
 			  if (isToAddStrValSerializationSuffix) {
-				  strVal = xdmObject.str() + STRING_VAL_SERIALIZATION_SUFFIX;
+				  strVal = xdmObject.str() + STRING_VAL_SER_SUFFIX;
 			  }
 			  else {
 				  strVal = xdmObject.str();  
@@ -690,7 +706,7 @@ public class ElemSequence extends ElemTemplateElement
 		  }
 		  else if (xdmObject instanceof XNumber) {
 			  if (isToAddStrValSerializationSuffix) {
-				  strVal = xdmObject.str() + STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX;
+				  strVal = xdmObject.str() + STRING_VAL_SER_DOUBLE_SUFFIX;
 			  }
 			  else {
 				  strVal = xdmObject.str();  
@@ -698,19 +714,49 @@ public class ElemSequence extends ElemTemplateElement
 
 			  handler.characters(strVal.toCharArray(), 0, strVal.length());
 		  }
-		  else if (xdmObject instanceof XSNumericType) {
+		  else if (xdmObject instanceof XSInteger) {
 			  if (isToAddStrValSerializationSuffix) {
-				  strVal = ((XSAnyAtomicType)xdmObject).stringValue() + STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX;
+				  strVal = ((XSInteger)xdmObject).stringValue() + STRING_VAL_SER_INTEGER_SUFFIX;
 			  }
 			  else {
-				  strVal = ((XSAnyAtomicType)xdmObject).stringValue();
+				  strVal = ((XSInteger)xdmObject).stringValue();
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XSDecimal) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = ((XSDecimal)xdmObject).stringValue() + STRING_VAL_SER_DECIMAL_SUFFIX;
+			  }
+			  else {
+				  strVal = ((XSDecimal)xdmObject).stringValue();
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XSDouble) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = ((XSDouble)xdmObject).stringValue() + STRING_VAL_SER_DOUBLE_SUFFIX;
+			  }
+			  else {
+				  strVal = ((XSDouble)xdmObject).stringValue();
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XSFloat) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = ((XSFloat)xdmObject).stringValue() + STRING_VAL_SER_FLOAT_SUFFIX;
+			  }
+			  else {
+				  strVal = ((XSFloat)xdmObject).stringValue();
 			  }
 
 			  handler.characters(strVal.toCharArray(), 0, strVal.length());
 		  }
 		  else if (xdmObject instanceof XSAnyAtomicType) {
 			  if (isToAddStrValSerializationSuffix) {
-				  strVal = ((XSAnyAtomicType)xdmObject).stringValue() + STRING_VAL_SERIALIZATION_SUFFIX;
+				  strVal = ((XSAnyAtomicType)xdmObject).stringValue() + STRING_VAL_SER_SUFFIX;
 			  }
 			  else {
 				  strVal = ((XSAnyAtomicType)xdmObject).stringValue();

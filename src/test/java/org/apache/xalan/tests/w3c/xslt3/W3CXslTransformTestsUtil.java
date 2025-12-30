@@ -727,7 +727,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   XObject value = xslParamMap.get(key);
     			   transformerImpl.setParameter(key, value);
     			}
-    		}
+    		}    		    		
     		
     		Node nodeExpected = (expectedResultElem.getFirstChild()).getNextSibling();
     		String expectedNodeKindName = nodeExpected.getNodeName();
@@ -754,18 +754,6 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			Element resultOutElem = testResultDoc.createElement("outResult");
     			resultOutElem.setTextContent(resultStrWriter.toString());
     			elemTestResult.appendChild(resultOutElem);
-
-    			return;
-    		}
-    		else if (testCaseName.equals("sequence-0120")) {
-    			/**
-    			 * This is test of XPath function fn:unordered, which
-    			 * produces implementation dependent permutation of an
-    			 * xdm sequence. There may be better way to represent this
-    			 * within this XSLT test suite.
-    			 */
-    			
-    			elemTestResult.setAttribute("status", "pass");
 
     			return;
     		}

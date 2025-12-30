@@ -79,6 +79,9 @@ import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.NodeList;
 
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
@@ -1377,8 +1380,8 @@ public class ElemVariable extends ElemTemplateElement
 
     		if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_QNAME) {
     			String strValue = var.str();
-    			if (strValue.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
-    				strValue = (strValue.replace(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX, " ")).trim();    			   
+    			if (strValue.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
+    				strValue = (strValue.replace(ElemSequence.STRING_VAL_SER_SUFFIX, " ")).trim();    			   
     				String regexStr = "\\{.*\\}.*";       // e.g, string value is  {uri}localName 
     				java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regexStr);
     				java.util.regex.Matcher matcher = pattern.matcher(strValue);
@@ -1390,6 +1393,83 @@ public class ElemVariable extends ElemTemplateElement
 
     					return var;
     				}
+    			}
+    		}
+    		
+    		if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) {
+    			String strValue = var.str();
+    			if (strValue.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX) || 
+    					                                                   strValue.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX) || 
+    					                                                   strValue.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX) || 
+    					                                                   strValue.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {
+    				throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
+																		                              + "result doesn't match the specified "
+																		                              + "xdm sequence type " + m_asAttr + ".", srcLocator);	
+    			}
+    		}
+    		
+    		if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INTEGER) {
+    			String strValue = var.str();
+    			boolean isResultStaticTypeOk = false;
+    			if (strValue.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX)) {
+    				strValue = (strValue.replace(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX, " ")).trim();
+    				isResultStaticTypeOk = true;
+    			}
+    			else if (strValue.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX)) {
+    				strValue = (strValue.replace(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX, " ")).trim();
+    				isResultStaticTypeOk = true;
+    			}
+    			
+    			if (isResultStaticTypeOk) {
+    			   String[] strArray = strValue.split(" ");
+    			   int arrLength1 = strArray.length;
+    			   ResultSequence rSeq = new ResultSequence();
+    			   for (int idx = 0; idx < arrLength1; idx++) {
+    				  String str1 = strArray[idx];
+    				  try {
+    				     Integer intValue = Integer.valueOf(str1);
+    				     rSeq.add(new XSInteger(str1));
+    				  }
+    				  catch (NumberFormatException ex) {
+    					  throw new javax.xml.transform.TransformerException("XPTY0004 : XSL variable " + m_qname.toString() + "'s value "
+																				                                  + "doesn't conform to variable's type "
+																				                                  + "declaration " + m_asAttr + ".", srcLocator); 
+    				  }
+    			   }
+    			   
+    			   int rSeqLength = rSeq.size(); 
+    			   
+    			   boolean isSeqTypeOccrIndicatorOk = false;
+    			   if (seqTypeOccrIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+    				   isSeqTypeOccrIndicatorOk = true;
+    			   }
+    			   else if ((seqTypeOccrIndicator == OccurrenceIndicator.ONE_OR_MANY) && (rSeqLength > 0)) {
+    				   isSeqTypeOccrIndicatorOk = true;
+    			   }
+    			   else if ((seqTypeOccrIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (rSeqLength <= 1)) {
+    				   isSeqTypeOccrIndicatorOk = true;
+    			   }
+    			   else if ((seqTypeOccrIndicator == OccurrenceIndicator.ABSENT) && (rSeqLength == 1)) {
+    				   isSeqTypeOccrIndicatorOk = true;
+    			   }
+
+    			   if (isSeqTypeOccrIndicatorOk) {   			
+    				   var = rSeq;
+
+    				   return var;
+    			   }
+    			   else {
+    				   var = var.getFresh();
+
+    				   throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
+																	    						         + "result doesn't match the specified "
+																	    						         + "xdm sequence type " + m_asAttr + ".", srcLocator); 
+    			   }
+    			}
+    			else {
+    				throw new javax.xml.transform.TransformerException("XTTE0570 : XSL variable " + m_qname.toString() + "'s value "
+    						                                                                                           + "doesn't conform to variable's type "
+    						                                                                                           + "declaration " + m_asAttr + ".", srcLocator);
     			}
     		}
     		
@@ -1427,7 +1507,100 @@ public class ElemVariable extends ElemTemplateElement
 
     			rSeq.setXdmParentlessSiblingNodes(true); 
 
-    			int rSeqLength = rSeq.size();
+    			int rSeqLength = rSeq.size();    			    			
+    			if (rSeqLength == 1) {
+    			   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)(rSeq.item(0));
+    			   String nodeStrValue = xmlNodeCursorImpl.str();
+    			   if (nodeStrValue.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
+    				  String[] strArray = nodeStrValue.split(ElemSequence.STRING_VAL_SER_SUFFIX);
+    				  int rSeqLengthTmp1 = strArray.length;
+    				  rSeq.clear();
+    				  for (int idx = 0; idx < rSeqLengthTmp1; idx++) {
+    					  String str1 = strArray[idx];
+    					  if (str1.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX)) {
+    						  String[] strArray1 = str1.split(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX);
+    						  int arrLength1 = strArray1.length;
+    						  for (int idx1 = 0; idx1 < arrLength1; idx1++) {
+    							  String str2 = strArray1[idx1];
+    							  rSeq.add(new XSInteger(str2));  
+    						  }
+    					  }
+    					  else if (str1.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX)) {
+    						  String[] strArray1 = str1.split(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX);
+    						  int arrLength1 = strArray1.length;
+    						  for (int idx1 = 0; idx1 < arrLength1; idx1++) {
+    							  String str2 = strArray1[idx1];
+    							  rSeq.add(new XSDecimal(str2));  
+    						  }
+    					  }
+    					  else if (str1.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX)) {
+    						  String[] strArray1 = str1.split(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX);
+    						  int arrLength1 = strArray1.length;
+    						  for (int idx1 = 0; idx1 < arrLength1; idx1++) {
+    							  String str2 = strArray1[idx1];
+    							  rSeq.add(new XSDouble(str2));  
+    						  }
+    					  }
+    					  else if (str1.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {
+    						  String[] strArray1 = str1.split(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX);
+    						  int arrLength1 = strArray1.length;
+    						  for (int idx1 = 0; idx1 < arrLength1; idx1++) {
+    							  String str2 = strArray1[idx1];
+    							  rSeq.add(new XSFloat(str2));  
+    						  }
+    					  }
+    					  else {
+    						  rSeq.add(new XSString(str1));
+    					  }
+    				  }
+    				  
+    				  rSeqLength = rSeq.size();
+    			   }
+    			   else if (nodeStrValue.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX)) {    				  
+    				   String[] strArray = nodeStrValue.split(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX);
+    				   int rSeqEffectiveLength = strArray.length;
+    				   rSeq.clear();
+    				   for (int idx = 0; idx < rSeqEffectiveLength; idx++) {
+    					   String str1 = strArray[idx];
+    					   rSeq.add(new XSInteger(str1));  
+    				   }
+
+    				   rSeqLength = rSeqEffectiveLength; 
+    			   }
+    			   else if (nodeStrValue.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX)) {    				  
+    				   String[] strArray = nodeStrValue.split(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX);
+    				   int rSeqEffectiveLength = strArray.length;
+    				   rSeq.clear();
+    				   for (int idx = 0; idx < rSeqEffectiveLength; idx++) {
+    					   String str1 = strArray[idx];
+    					   rSeq.add(new XSDecimal(str1));  
+    				   }
+
+    				   rSeqLength = rSeqEffectiveLength; 
+    			   }
+    			   else if (nodeStrValue.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX)) {    				  
+    				   String[] strArray = nodeStrValue.split(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX);
+    				   int rSeqEffectiveLength = strArray.length;
+    				   rSeq.clear();
+    				   for (int idx = 0; idx < rSeqEffectiveLength; idx++) {
+    					   String str1 = strArray[idx];
+    					   rSeq.add(new XSDouble(str1));  
+    				   }
+
+    				   rSeqLength = rSeqEffectiveLength; 
+    			   }
+    			   else if (nodeStrValue.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {    				  
+    				   String[] strArray = nodeStrValue.split(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX);
+    				   int rSeqEffectiveLength = strArray.length;
+    				   rSeq.clear();
+    				   for (int idx = 0; idx < rSeqEffectiveLength; idx++) {
+    					   String str1 = strArray[idx];
+    					   rSeq.add(new XSFloat(str1));  
+    				   }
+
+    				   rSeqLength = rSeqEffectiveLength; 
+    			   }
+    			}
 
     			boolean isSeqTypeOccrIndicatorOk = false;
     			if (seqTypeOccrIndicator == OccurrenceIndicator.ZERO_OR_MANY) {

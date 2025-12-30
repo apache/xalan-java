@@ -90,7 +90,6 @@ import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
-import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSYearMonthDuration;
@@ -958,10 +957,9 @@ public class ElemFunction extends ElemTemplate
         short nodeType = node.getNodeType();
         if (nodeType == Node.TEXT_NODE) {
              String strVal = ((Text)node).getNodeValue();             
-             if (seqTypeKindTest == null) {               
-                //result = new ResultSequence();                  
-                if (strVal.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
-                   String[] strParts = strVal.split(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX);
+             if (seqTypeKindTest == null) {                                 
+                if (strVal.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
+                   String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_SUFFIX);
                    for (int idx = 0; idx < strParts.length; idx++) {
                       String seqItemStrVal = strParts[idx];
                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
@@ -974,12 +972,13 @@ public class ElemFunction extends ElemTemplate
                       }
                    }
                 }
-                else if (strVal.contains(ElemSequence.STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX)) {
-                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX);
+                else if (strVal.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX)) {
+                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX);
                     for (int idx = 0; idx < strParts.length; idx++) {
                        String seqItemStrVal = strParts[idx];
-                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
-                       if (xObject instanceof XSNumericType) {
+                       int xsBuiltInSeqType = seqExpectedTypeData.getBuiltInSequenceType();                       
+                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, xsBuiltInSeqType);
+                       if (xObject instanceof XSInteger) {
                     	   if (result == null) {
                     		   result = new ResultSequence(); 
                     	   }
@@ -987,7 +986,49 @@ public class ElemFunction extends ElemTemplate
                     	   result.add(xObject);
                        }
                     }
-                 }
+                }
+                else if (strVal.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX)) {
+                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX);
+                    for (int idx = 0; idx < strParts.length; idx++) {
+                       String seqItemStrVal = strParts[idx];
+                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
+                       if (xObject instanceof XSDecimal) {
+                    	   if (result == null) {
+                    		   result = new ResultSequence(); 
+                    	   }
+
+                    	   result.add(xObject);
+                       }
+                    }
+                }
+                else if (strVal.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX)) {
+                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX);
+                    for (int idx = 0; idx < strParts.length; idx++) {
+                       String seqItemStrVal = strParts[idx];
+                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
+                       if ((xObject instanceof XSDouble) || (xObject instanceof XSInteger)) {
+                    	   if (result == null) {
+                    		   result = new ResultSequence(); 
+                    	   }
+
+                    	   result.add(xObject);
+                       }
+                    }
+                }
+                else if (strVal.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {
+                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX);
+                    for (int idx = 0; idx < strParts.length; idx++) {
+                       String seqItemStrVal = strParts[idx];
+                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
+                       if (xObject instanceof XSFloat) {
+                    	   if (result == null) {
+                    		   result = new ResultSequence(); 
+                    	   }
+
+                    	   result.add(xObject);
+                       }
+                    }
+                }
                 else {
                    XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getBuiltInSequenceType());
                    if (xObject != null) {
@@ -998,7 +1039,7 @@ public class ElemFunction extends ElemTemplate
                 	   result.add(xObject);
                    }
                 }
-             }
+             }             
          }
      }
      

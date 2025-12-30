@@ -61,6 +61,10 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
@@ -664,10 +668,10 @@ public class ElemCopyOf extends ElemTemplateElement
         	 }
          }
          
-         if ((xdmItem instanceof XBoolean) || (xdmItem instanceof XNumber) || (xdmItem instanceof XString)) {
+         if ((xdmItem instanceof XBoolean) || (xdmItem instanceof XString)) {
              strVal = xdmItem.str();
              if (isXslSeqDelimEmit) {
-                 strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
+                 strVal = strVal + ElemSequence.STRING_VAL_SER_SUFFIX;
                  serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
              }
              else {
@@ -677,23 +681,10 @@ public class ElemCopyOf extends ElemTemplateElement
                  } 
              }
          }
-         else if (xdmItem instanceof XSAnyAtomicType) {
-            strVal = ((XSAnyAtomicType)xdmItem).stringValue();
-            if (isXslSeqDelimEmit) {
-                strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
-                serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
-            }
-            else {
-                serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
-                if (idx < (resultSequence.size() - 1)) {                     
-                   serializationHandler.characters(spaceCharArr, 0, 1);
-                }
-            }
-         }
-         else if (xdmItem instanceof XSUntypedAtomic) {
-             strVal = ((XSUntypedAtomic)xdmItem).stringValue();
-             if (isXslSeqDelimEmit) {
-                 strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
+         else if ((xdmItem instanceof XNumber) || (xdmItem instanceof XSDouble)) {
+        	 strVal = XslTransformEvaluationHelper.getStrVal(xdmItem);
+        	 if (isXslSeqDelimEmit) {
+                 strVal = strVal + ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX;
                  serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
              }
              else {
@@ -702,11 +693,76 @@ public class ElemCopyOf extends ElemTemplateElement
                     serializationHandler.characters(spaceCharArr, 0, 1);
                  }
              }
-          }
+         }
+         else if (xdmItem instanceof XSInteger) {
+        	 strVal = XslTransformEvaluationHelper.getStrVal(xdmItem);
+        	 if (isXslSeqDelimEmit) {
+                 strVal = strVal + ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX;
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+             }
+             else {
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    serializationHandler.characters(spaceCharArr, 0, 1);
+                 }
+             }
+         }
+         else if (xdmItem instanceof XSDecimal) {
+        	 strVal = XslTransformEvaluationHelper.getStrVal(xdmItem);
+        	 if (isXslSeqDelimEmit) {
+                 strVal = strVal + ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX;
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+             }
+             else {
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    serializationHandler.characters(spaceCharArr, 0, 1);
+                 }
+             }
+         }
+         else if (xdmItem instanceof XSFloat) {
+        	 strVal = XslTransformEvaluationHelper.getStrVal(xdmItem);
+        	 if (isXslSeqDelimEmit) {
+                 strVal = strVal + ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX;
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+             }
+             else {
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    serializationHandler.characters(spaceCharArr, 0, 1);
+                 }
+             }
+         }
+         else if (xdmItem instanceof XSUntypedAtomic) {
+             strVal = ((XSUntypedAtomic)xdmItem).stringValue();
+             if (isXslSeqDelimEmit) {
+                 strVal = strVal + ElemSequence.STRING_VAL_SER_SUFFIX;
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+             }
+             else {
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    serializationHandler.characters(spaceCharArr, 0, 1);
+                 }
+             }
+         }
+         else if (xdmItem instanceof XSAnyAtomicType) {
+            strVal = ((XSAnyAtomicType)xdmItem).stringValue();
+            if (isXslSeqDelimEmit) {
+                strVal = strVal + ElemSequence.STRING_VAL_SER_SUFFIX;
+                serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+            }
+            else {
+                serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+                if (idx < (resultSequence.size() - 1)) {                     
+                   serializationHandler.characters(spaceCharArr, 0, 1);
+                }
+            }
+         }         
          else if (xdmItem instanceof XSUntyped) {
              strVal = ((XSUntyped)xdmItem).stringValue();
              if (isXslSeqDelimEmit) {
-                 strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
+                 strVal = strVal + ElemSequence.STRING_VAL_SER_SUFFIX;
                  serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
              }
              else {

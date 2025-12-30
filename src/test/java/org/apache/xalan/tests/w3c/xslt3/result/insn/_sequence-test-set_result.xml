@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-26T11:43:56Z" fail="19" name="sequence" pass="66" run="85" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-30T16:42:30Z" fail="17" name="sequence" pass="68" run="85" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="pass" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -13,7 +13,11 @@
    <testResult status="pass" testName="sequence-0112"/>
    <testResult status="pass" testName="sequence-0113"/>
    <testResult status="pass" testName="sequence-0114"/>
-   <testResult status="pass" testName="sequence-0115"/>
+   <testResult status="fail" testName="sequence-0115">
+      <outResult>
+         <errTrace>XTTE0570 : XSL variable int's value doesn't conform to variable's type declaration xs:integer.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="sequence-0116"/>
    <testResult status="pass" testName="sequence-0117"/>
    <testResult status="pass" testName="sequence-0118"/>
@@ -36,11 +40,7 @@
    <testResult status="pass" testName="sequence-0135"/>
    <testResult status="pass" testName="sequence-0136"/>
    <testResult status="skipped" testName="sequence-0137" xsltVersion="XSLT 2.0/1.0 only test case"/>
-   <testResult status="fail" testName="sequence-0137a">
-      <outResult>
-         <errTrace>XTTE0570 : The supplied value cannot be cast to type xs:integer .</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="sequence-0137a"/>
    <testResult status="pass" testName="sequence-0138"/>
    <testResult status="pass" testName="sequence-0139"/>
    <testResult status="pass" testName="sequence-0201"/>
@@ -96,8 +96,8 @@
    <testResult status="fail" testName="sequence-1801"/>
    <testResult status="fail" testName="sequence-1901"/>
    <testResult status="pass" testName="sequence-2001"/>
-   <testResult status="fail" testName="sequence-2002"/>
-   <testResult status="fail" testName="sequence-2101"/>
+   <testResult status="pass" testName="sequence-2002"/>
+   <testResult status="pass" testName="sequence-2101"/>
    <testResult status="fail" testName="sequence-2301"/>
    <testResult status="skipped" testName="sequence-2401a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="sequence-2401b"/>

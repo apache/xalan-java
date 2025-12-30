@@ -22,13 +22,14 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the remove() function.
+ * Implementation of XPath 3.1 function fn:remove.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -109,7 +110,7 @@ public class FuncRemove extends Function2Args {
           }
           else {
              throw new TransformerException("FORG0006 : Incorrect value " + dbl + " provided to second argument "
-                                                                              + "of function fn:remove. This argument value "
+                                                                              + "of an XPath function remove. This argument value "
                                                                               + "needs to be an integer."); 
           }
        }
@@ -121,13 +122,34 @@ public class FuncRemove extends Function2Args {
           }
           else {
              throw new TransformerException("FORG0006 : Incorrect value " + dbl + " provided to second argument "
-                                                                              + "of function fn:remove. This argument value "
+                                                                              + "of an XPath function remove. This argument value "
                                                                               + "needs to be an integer.");  
           }
        }
+       else if (xObject instanceof XMLNodeCursorImpl) {
+           String argStrVal = ((XMLNodeCursorImpl)xObject).str();
+           double dbl = 0.0;           
+           try {
+              dbl = (Double.valueOf(argStrVal)).doubleValue();
+           }
+           catch (NumberFormatException ex) {
+        	  throw new TransformerException("FORG0006 : Incorrect value " + dbl + " provided to second argument "
+														                       + "of an XPath function remove. This argument value "
+														                       + "needs to be an integer.");  
+           }
+           
+           if (dbl == (int)dbl) {
+              seqRemovePos = (int)dbl;  
+           }
+           else {
+              throw new TransformerException("FORG0006 : Incorrect value " + dbl + " provided to second argument "
+                                                                               + "of an XPath function remove. This argument value "
+                                                                               + "needs to be an integer.");  
+           }
+       }
        else {
-          throw new TransformerException("FORG0006 : The second argument to function fn:remove, needs to be "
-                                                                                                         + "an integer value");  
+          throw new TransformerException("FORG0006 : The second argument to XPath function remove, needs to be "
+                                                                                                                 + "an integer value");  
        }
        
        return seqRemovePos; 

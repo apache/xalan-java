@@ -292,12 +292,6 @@ public class ElemValueOf extends ElemTemplateElement {
   {
     return Constants.ELEMNAME_VALUEOF;
   }
-  
-  /**
-   * This class field's value denotes the constant string "XSL_SEQ" which 
-   * is used during processing of xsl:sequence instruction.
-   */
-  private static final String XSL_SEQ = "XSL_SEQ";
 
   /**
    * This function is called after everything else has been
@@ -1156,8 +1150,8 @@ public class ElemValueOf extends ElemTemplateElement {
   private String preProcessStrBeforeXslSerialization(String str) {
 	 String resultStr = str;
 	 
-	 if (resultStr.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
-	     resultStr = resultStr.replace(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX, "");
+	 if (resultStr.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
+	     resultStr = resultStr.replace(ElemSequence.STRING_VAL_SER_SUFFIX, "");
 	 }
 	 
 	 return resultStr;
@@ -1214,23 +1208,43 @@ public class ElemValueOf extends ElemTemplateElement {
 		  }
 
 		  String nodeStrVal = (nodeStrValBuff.toString()).trim();
-		  if (nodeStrVal.contains(XSL_SEQ)) {
-			  nodeStrVal = nodeStrVal.replace(XSL_SEQ, "");
-			  if (separatorStrValue != null) {        				
-				  nodeStrVal = nodeStrVal.replace(" ", separatorStrValue);
-				  nodeStrVal = nodeStrVal.substring(0, (nodeStrVal.length() - 1));
-				  String rTrimmedSeparator = strRtrim(separatorStrValue);
-				  if (!separatorStrValue.equals(rTrimmedSeparator)) {
-					  int lIdx = nodeStrVal.lastIndexOf(rTrimmedSeparator);
-					  if (lIdx > 0) {
-						  nodeStrVal = nodeStrVal.substring(0, lIdx);
-					  } 
-				  }
-			  }
-			  else {
-				  nodeStrVal = nodeStrVal.trim();
+		  boolean status1 = false;		  
+		  if (nodeStrVal.contains(ElemSequence.SER_INTEGER_SUFFIX_ID)) {
+			  nodeStrVal = nodeStrVal.replace(ElemSequence.SER_INTEGER_SUFFIX_ID, "");
+			  status1 = true;
+		  }
+		  else if (nodeStrVal.contains(ElemSequence.SER_DOUBLE_SUFFIX_ID)) {
+			  nodeStrVal = nodeStrVal.replace(ElemSequence.SER_DOUBLE_SUFFIX_ID, "");
+			  status1 = true;
+		  }
+		  else if (nodeStrVal.contains(ElemSequence.SER_DECIMAL_SUFFIX_ID)) {
+			  nodeStrVal = nodeStrVal.replace(ElemSequence.SER_DECIMAL_SUFFIX_ID, "");
+			  status1 = true;
+		  }
+		  else if (nodeStrVal.contains(ElemSequence.SER_FLOAT_SUFFIX_ID)) {
+			  nodeStrVal = nodeStrVal.replace(ElemSequence.SER_FLOAT_SUFFIX_ID, "");
+			  status1 = true;
+		  }
+		  else if (nodeStrVal.contains(ElemSequence.SER_SUFFIX_ID)) {
+			  nodeStrVal = nodeStrVal.replace(ElemSequence.SER_SUFFIX_ID, "");
+			  status1 = true;
+		  }
+
+		  if (status1 && (separatorStrValue != null)) {        				
+			  nodeStrVal = nodeStrVal.replace(" ", separatorStrValue);
+			  nodeStrVal = nodeStrVal.substring(0, (nodeStrVal.length() - 1));
+			  String rTrimmedSeparator = strRtrim(separatorStrValue);
+			  if (!separatorStrValue.equals(rTrimmedSeparator)) {
+				  int lIdx = nodeStrVal.lastIndexOf(rTrimmedSeparator);
+				  if (lIdx > 0) {
+					  nodeStrVal = nodeStrVal.substring(0, lIdx);
+				  } 
 			  }
 		  }
+		  else {
+			  nodeStrVal = nodeStrVal.trim();
+		  }
+
 		  (new XString(nodeStrVal)).dispatchCharactersEvents(rth);
 	  }
 	  else {

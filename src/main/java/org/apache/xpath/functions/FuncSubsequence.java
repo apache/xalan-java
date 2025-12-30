@@ -23,6 +23,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -213,9 +214,22 @@ public class FuncSubsequence extends FunctionMultiArgs {
           dblVal = (Double.valueOf(strVal)).doubleValue();
           result = roundDoubleToInt(dblVal);
        }
+       else if (xObject instanceof XMLNodeCursorImpl) {
+    	  String strVal = ((XMLNodeCursorImpl)xObject).str();
+    	  try {
+    	     dblVal = (Double.valueOf(strVal)).doubleValue();
+    	  }
+    	  catch (NumberFormatException ex) {
+    		  throw new javax.xml.transform.TransformerException("FORG0006 : The second or third argument's value to "
+																				                      + "XPath function subsequence is not numeric or "
+																				                      + "cannot be cast to numeric."); 
+    	  }
+    	  
+          result = roundDoubleToInt(dblVal);
+       }
        else {
-          throw new javax.xml.transform.TransformerException("FORG0006 : The second or third argument's value, to "
-					                                                                                 + "function fn:subsequence is not numeric or "
+          throw new javax.xml.transform.TransformerException("FORG0006 : The second or third argument's value to "
+					                                                                                 + "XPath function subsequence is not numeric or "
 					                                                                                 + "cannot be cast to numeric."); 
        }
        

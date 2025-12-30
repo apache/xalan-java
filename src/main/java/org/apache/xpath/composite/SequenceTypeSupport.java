@@ -978,8 +978,8 @@ public class SequenceTypeSupport {
             			int child = dtm.getFirstChild(docNodeHandle);
             			if (dtm.getNodeType(child) == DTM.TEXT_NODE) {
             				String nodeStrValue = dtm.getNodeValue(child);
-            				if (nodeStrValue.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
-            					nodeStrValue = (nodeStrValue.replace(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX, " ")).trim();
+            				if (nodeStrValue.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
+            					nodeStrValue = (nodeStrValue.replace(ElemSequence.STRING_VAL_SER_SUFFIX, " ")).trim();
             					if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) || 
             							                                                 (itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY)) {             						            					
             						String[] strArray = nodeStrValue.split(" ");
@@ -1365,12 +1365,13 @@ public class SequenceTypeSupport {
                                                                                                     expectedSeqTypeData, xctxt);
             }
             else if (srcValue instanceof XNodeSetForDOM) {            	
-               result = castXNodeSetForDOMInstance(srcValue, sequenceTypeXPathExprStr, expectedSeqTypeData, 
-                                                                              xctxt, srcLocator, itemTypeOccurenceIndicator, 
-                                                                                                                       sequenceTypeKindTest);               
+               result = castXNodeSetForDomInstance(srcValue, sequenceTypeXPathExprStr, expectedSeqTypeData, 
+                                                                                                        xctxt, srcLocator, itemTypeOccurenceIndicator, 
+                                                                                                        sequenceTypeKindTest);               
                if (result != null) {
             	   String strValue = XslTransformEvaluationHelper.getStrVal(result);
-            	   if (strValue.contains(ElemSequence.STRING_VAL_SERIALIZATION_NUMERIC_SUFFIX)) {               
+            	   if (strValue.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX) || strValue.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX) || 
+            		   strValue.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX) || strValue.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {               
             		   if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (expectedSeqTypeData == null)) {
             			   XPath seqTypeXPath2 = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
             			   XObject seqTypeExpressionEvalResult2 = seqTypeXPath2.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
@@ -2095,7 +2096,7 @@ public class SequenceTypeSupport {
      *    evaluated content). The template's evaluated content passed as an argument to this method, 
      *    is checked against the expected type.  
      */
-    private static XObject castXNodeSetForDOMInstance(XObject srcValue,
+    private static XObject castXNodeSetForDomInstance(XObject srcValue,
                                                                   String sequenceTypeXPathExprStr,
                                                                   SequenceTypeData seqExpectedTypeDataInp, XPathContext xctxt,
                                                                   SourceLocator srcLocator, int itemTypeOccurenceIndicator,
@@ -2257,7 +2258,23 @@ public class SequenceTypeSupport {
                         sequenceTypeNewXPathExprStr = sequenceTypeXPathExprStr;  
                     }
 
-                    String nodeStrVal = node.getTextContent();
+                    String nodeStrVal = node.getTextContent();                    
+                    if (nodeStrVal.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
+                    	nodeStrVal = (nodeStrVal.replace(ElemSequence.STRING_VAL_SER_SUFFIX, "")).trim();
+                    }
+                    else if (nodeStrVal.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX)) {
+                    	nodeStrVal = (nodeStrVal.replace(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX, "")).trim();
+                    }
+                    else if (nodeStrVal.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX)) {
+                    	nodeStrVal = (nodeStrVal.replace(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX, "")).trim();
+                    }
+                    else if (nodeStrVal.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {
+                    	nodeStrVal = (nodeStrVal.replace(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX, "")).trim();
+                    }
+                    else if (nodeStrVal.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX)) {
+                    	nodeStrVal = (nodeStrVal.replace(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX, "")).trim();
+                    }
+                    
                     XObject xObject = castXdmValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
                                                                                                                       seqExpectedTypeDataInp, xctxt);                       
                     convertedResultSeq.add(xObject); 
