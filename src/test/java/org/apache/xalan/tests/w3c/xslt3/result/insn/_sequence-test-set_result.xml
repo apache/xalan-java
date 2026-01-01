@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-30T16:42:30Z" fail="17" name="sequence" pass="68" run="85" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-01T11:21:26Z" fail="14" name="sequence" pass="70" run="84" skipped="8" statusUnknown="0">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="pass" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -13,11 +13,7 @@
    <testResult status="pass" testName="sequence-0112"/>
    <testResult status="pass" testName="sequence-0113"/>
    <testResult status="pass" testName="sequence-0114"/>
-   <testResult status="fail" testName="sequence-0115">
-      <outResult>
-         <errTrace>XTTE0570 : XSL variable int's value doesn't conform to variable's type declaration xs:integer.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult reason="Xalan configured" status="skipped" testName="sequence-0115"/>
    <testResult status="pass" testName="sequence-0116"/>
    <testResult status="pass" testName="sequence-0117"/>
    <testResult status="pass" testName="sequence-0118"/>
@@ -80,7 +76,7 @@
    <testResult status="fail" testName="sequence-1201">
       <outResult>
          <errTrace>Expected ), but found: ,</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XString cannot be cast to java.lang.String</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="sequence-1202"/>
@@ -93,8 +89,8 @@
    <testResult status="fail" testName="sequence-1501"/>
    <testResult status="fail" testName="sequence-1601"/>
    <testResult status="fail" testName="sequence-1701"/>
-   <testResult status="fail" testName="sequence-1801"/>
-   <testResult status="fail" testName="sequence-1901"/>
+   <testResult status="pass" testName="sequence-1801"/>
+   <testResult status="pass" testName="sequence-1901"/>
    <testResult status="pass" testName="sequence-2001"/>
    <testResult status="pass" testName="sequence-2002"/>
    <testResult status="pass" testName="sequence-2101"/>

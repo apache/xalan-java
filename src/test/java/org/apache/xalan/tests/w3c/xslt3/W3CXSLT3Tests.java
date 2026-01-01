@@ -73,7 +73,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * Xalan-J XSL 3 test driver entry point, to run W3C XSLT 3.0 
+ * Apache Xalan XSL 3 test driver entry point, to run W3C XSLT 3.0 
  * transformation tests.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -81,9 +81,9 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XslVariableTests.class, XslAsAttrTests.class, XslAvtAttrTests.class, XslMatchAttrTests.class, XslSelectAttrTests.class,
+@SuiteClasses({ XslVariableTests.class, XslAsAttrTests.class, XslAvtAttrTests.class, XslSequenceTests.class, XslMatchAttrTests.class, XslSelectAttrTests.class,
 	            XslApplyTemplatesTests.class, XslIterateTests.class, XslForEachGroupTests.class, XslHigherOrderFunctionTests.class, XslTryTests.class, 
-	            XslBooleanTests.class, XslChooseTests.class, XslCopyTests.class, XslSequenceTests.class, XslElementTests.class, 
+	            XslBooleanTests.class, XslChooseTests.class, XslCopyTests.class, XslElementTests.class, 
 	            XslSortTests.class, XslFunctionTests.class, XslCharacterMapTests.class, XslAttributeSetTests.class, 
 	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class, XslMathTests.class, 
 	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, XslAttributeTests.class, XslCallTemplateTests.class, 

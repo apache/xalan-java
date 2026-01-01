@@ -141,6 +141,12 @@ public class ElemForEachGroup extends ElemTemplateElement
   private boolean m_expand_text;
   
   /**
+   * This class field, represents xsl:for-each-group instruction's
+   * sorted list of groups.
+   */
+  private List<GroupingKeyAndGroupPair> m_sortedGroups = null;
+  
+  /**
    * The class constructor.
    */
   public ElemForEachGroup() {}
@@ -477,24 +483,20 @@ public class ElemForEachGroup extends ElemTemplateElement
   /**
    * Sort the provided xsl:for-each-group groups.
    *
+   * @param xctxt             An XPath context object
+   * @param sortKeys          Vector of sort keys
+   * @param forEachGroups     An object instance representing, groups 
+   *                          to be sorted.
    *
-   * @param xctxt             the XPath runtime state for the sort
-   * @param sortKeys          vector of sort keys
-   * @param forEachGroups     an object representing, groups to be sorted
-   *
-   * @return a list of sorted groups
+   * @return                  void
    *
    * @throws TransformerException
    */
-  public List<GroupingKeyAndGroupPair> sortGroups(XPathContext xctxt, Vector sortKeys, Object forEachGroups)
-                                                            throws TransformerException {
-        List<GroupingKeyAndGroupPair> sortedGroups = null;
-      
+  public void sortGroups(XPathContext xctxt, Vector sortKeys, Object forEachGroups)
+                                                                                throws TransformerException {      
         ForEachGroupXslSortSorter sorter = new ForEachGroupXslSortSorter(xctxt, this);
         
-        sortedGroups = sorter.sort(forEachGroups, sortKeys, xctxt);
-    
-        return sortedGroups;
+        m_sortedGroups = sorter.sort(forEachGroups, sortKeys, xctxt);
   }
 
   /**
@@ -506,17 +508,14 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
-        int type = ((ElemTemplateElement) newChild).getXSLToken();
-    
-        if (type == Constants.ELEMNAME_SORT)
-        {
-            setSortElem((ElemSort) newChild);
+        int type = ((ElemTemplateElement)newChild).getXSLToken();
         
-            return newChild;
+        if (type == Constants.ELEMNAME_SORT) {
+        	ElemSort elemSort = (ElemSort)newChild;        
+        	setSortElem(elemSort);
         }
-        else {
-            return super.appendChild(newChild);
-        }
+        
+        return super.appendChild(newChild);
   }
   
   /**
@@ -526,14 +525,14 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public void callChildVisitors(XSLTVisitor visitor, boolean callAttributes)
   {
-      	if(callAttributes && (null != m_selectExpression))
+      	if (callAttributes && (m_selectExpression != null))
       		m_selectExpression.callVisitors(this, visitor);
       		
         int length = getSortElemCount();
     
-        for (int i = 0; i < length; i++)
+        for (int idx = 0; idx < length; idx++)
         {
-           getSortElem(i).callVisitors(visitor);
+           (getSortElem(idx)).callVisitors(visitor);
         }
     
         super.callChildVisitors(visitor, callAttributes);
@@ -545,7 +544,6 @@ public class ElemForEachGroup extends ElemTemplateElement
   public Expression getExpression()
   {
 	  return m_selectExpression.getExpression();
-      // return m_selectExpression;
   }
 
   /**
@@ -781,15 +779,17 @@ public class ElemForEachGroup extends ElemTemplateElement
         			forEachGroups = xslForEachGroupStartingWithEndingWith;   
         		}
 
-        		List<GroupingKeyAndGroupPair> groupingKeyAndGroupPairList = sortGroups(xctxt, sortKeys, forEachGroups);
+        		sortGroups(xctxt, sortKeys, forEachGroups);
+        		
+        		int xslGroupCount = m_sortedGroups.size();
 
-        		for (int idx = 0; idx < groupingKeyAndGroupPairList.size(); idx++) {
-        			GroupingKeyAndGroupPair groupingKeyAndGroupPair = groupingKeyAndGroupPairList.get(idx);
+        		for (int idx = 0; idx < xslGroupCount; idx++) {
+        			GroupingKeyAndGroupPair groupingKeyAndGroupPair = m_sortedGroups.get(idx);
         			Object groupingKey = groupingKeyAndGroupPair.getGroupingKey();
-        			List<Integer> groupNodesDtmHandles = groupingKeyAndGroupPair.getGroupNodesDtmHandles();
+        			List<Integer> groupNodesDtmHandles = groupingKeyAndGroupPair.getGroupNodeDtmHandles();
 
         			xctxt.setPos(idx + 1);    							// Set value of fn:position() function within xsl:for-each-group
-        			xctxt.setLast(groupingKeyAndGroupPairList.size());        // Set value of the number of groups formed
+        			xctxt.setLast(m_sortedGroups.size());               // Set value of the number of groups formed
 
         			for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
         					templateElem = templateElem.m_nextSibling) {
@@ -878,7 +878,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         				GroupingKeyAndGroupPair groupingKeyAndGroupPair = xslForEachGroupAdjacentList.get(idx);
 
         				Object groupingKey = groupingKeyAndGroupPair.getGroupingKey();                             // current-grouping-key() value, for this group
-        				List<Integer> groupNodesDtmHandles = groupingKeyAndGroupPair.getGroupNodesDtmHandles();    // current-group() contents, for this group
+        				List<Integer> groupNodesDtmHandles = groupingKeyAndGroupPair.getGroupNodeDtmHandles();    // current-group() contents, for this group
 
         				xctxt.setPos(idx + 1);										                   // Set value of fn:position() function within xsl:for-each-group
         				xctxt.setLast(xslForEachGroupAdjacentList.size());		                           // Set value of the number of groups formed                        
@@ -1329,7 +1329,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 	        if (currGroupingKeyValue.equals(prevGroupingKeyValue)) {
 	        	int currResultSize = xslForEachGroupAdjacentList.size();
 	        	GroupingKeyAndGroupPair groupingKeyAndGroupPair = xslForEachGroupAdjacentList.get(currResultSize - 1);
-	        	group = groupingKeyAndGroupPair.getGroupNodesDtmHandles(); 
+	        	group = groupingKeyAndGroupPair.getGroupNodeDtmHandles(); 
 	            group.add(nextNode);
 	        }
 	        else {
@@ -1564,6 +1564,14 @@ public class ElemForEachGroup extends ElemTemplateElement
      }
      
      return sourceNodes; 
+  }
+
+  public List<GroupingKeyAndGroupPair> getSortedGroups() {
+	  return m_sortedGroups;
+  }
+
+  public void setSortedGroups(List<GroupingKeyAndGroupPair> sortedGroups) {
+	  this.m_sortedGroups = sortedGroups;
   }
 
 }

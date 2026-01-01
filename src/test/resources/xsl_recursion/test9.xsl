@@ -10,7 +10,7 @@
    <!-- An XSL 3 stylesheet test case, to test xsl:function 
         instruction's recursive call. An XSL stylesheet example,
         similar to this is specified within XSLT 3.0 specification. 
-   -->					
+   -->				
 
    <xsl:output method="xml" indent="yes"/>				
   
@@ -20,7 +20,7 @@
 	  </result>
    </xsl:template>
    
-   <xsl:function name="fn0:getResult1" as="item()*">
+   <xsl:function name="fn0:getResult1" as="xs:integer*">
       <xsl:param name="n1" as="xs:integer"/>
 	  <xsl:sequence select="if ($n1 = 0) then () else ($n1, fn0:getResult1($n1 - 1))"/>
    </xsl:function>

@@ -50,7 +50,7 @@ public class FuncCurrentGroup extends Function
    */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {
-       XMLNodeCursorImpl currentGroupNodes = null;
+       XMLNodeCursorImpl result = null;
        
        SourceLocator srcLocator = xctxt.getSAXLocator();
        
@@ -66,14 +66,14 @@ public class FuncCurrentGroup extends Function
        }
        
        if (groupNodesDtmHandles != null) {
-          currentGroupNodes = new XMLNodeCursorImpl(groupNodesDtmHandles, xctxt);
+          result = new XMLNodeCursorImpl(groupNodesDtmHandles, xctxt);
        }
        else {
-    	  throw new javax.xml.transform.TransformerException("XTDE1061 : The fn:current-group function call couldn't "
-    	  		                                                                                     + "determine a group of XDM items.", srcLocator);  
+    	  throw new javax.xml.transform.TransformerException("XTDE1061 : An XPath current-group function call couldn't "
+    	  		                                                                                                       + "determine a group of xdm items.", srcLocator);  
        }
               
-       return currentGroupNodes;
+       return result;
    }
 
    @Override

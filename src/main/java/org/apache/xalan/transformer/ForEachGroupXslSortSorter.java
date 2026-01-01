@@ -104,7 +104,8 @@ public class ForEachGroupXslSortSorter
         else {
             List<List<Integer>> xslForEachGroupStartingWithEndingWith = (ArrayList<List<Integer>>)forEachGroups;
             
-            for (int idx = 0; idx < xslForEachGroupStartingWithEndingWith.size(); idx++) {
+            int size1 = xslForEachGroupStartingWithEndingWith.size();            
+            for (int idx = 0; idx < size1; idx++) {
                 Object groupingKey = null;
                 List<Integer> groupNodesDtmHandles = xslForEachGroupStartingWithEndingWith.get(idx);
                                 
@@ -116,7 +117,7 @@ public class ForEachGroupXslSortSorter
     
         int numberOfGroups = groupingKeyAndGroupPairList.size();
         
-        // populate a vector of node compare elements, based on an input list of 
+        // Populate a vector of node compare elements, based on an input list of 
         // xsl:for-each-group groups.
         Vector nodeCompareElements = new Vector();
     
@@ -132,7 +133,8 @@ public class ForEachGroupXslSortSorter
         
         groupingKeyAndGroupPairList.clear();
         
-        for (int idx = 0; idx < nodeCompareElements.size(); idx++)
+        int size2 = nodeCompareElements.size();
+        for (int idx = 0; idx < size2; idx++)
         {
             GroupingKeyAndGroupPair groupingKeyAndGroupPair = ((NodeCompareElem)nodeCompareElements.get(idx)).
                                                                         getGroupingKeyAndGroupPair();
@@ -161,9 +163,9 @@ public class ForEachGroupXslSortSorter
 
     int result = 0;
     
-    int n1ContextNode = ((n1.getGroupingKeyAndGroupPair()).getGroupNodesDtmHandles()).get(0);
+    int n1ContextNode = ((n1.getGroupingKeyAndGroupPair()).getGroupNodeDtmHandles()).get(0);
     
-    int n2ContextNode = ((n2.getGroupingKeyAndGroupPair()).getGroupNodesDtmHandles()).get(0);
+    int n2ContextNode = ((n2.getGroupingKeyAndGroupPair()).getGroupNodeDtmHandles()).get(0);
     
     NodeSortKey k = (NodeSortKey) m_keys.elementAt(kIndex);
 
@@ -376,12 +378,12 @@ public class ForEachGroupXslSortSorter
             
               this.m_groupingKeyAndGroupPair = groupingKeyAndGroupPair; 
             
-              int contextNodeDtmHandle = ((groupingKeyAndGroupPair.getGroupNodesDtmHandles()).
+              int contextNodeDtmHandle = ((groupingKeyAndGroupPair.getGroupNodeDtmHandles()).
                                                                                       get(0)).intValue();
               
               TransformerImpl transformer = (TransformerImpl) m_execContext.getOwnerObject();
               m_elemForEachGroup.setGroupingKey(groupingKeyAndGroupPair.getGroupingKey());
-              m_elemForEachGroup.setGroupNodesDtmHandles(groupingKeyAndGroupPair.getGroupNodesDtmHandles());
+              m_elemForEachGroup.setGroupNodesDtmHandles(groupingKeyAndGroupPair.getGroupNodeDtmHandles());
               transformer.setCurrentElement(m_elemForEachGroup);
               
               // for the xsl:sort element select expression's evaluation, the context item is the 

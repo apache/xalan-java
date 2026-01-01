@@ -20,7 +20,7 @@
 	  </result>
    </xsl:template>
    
-   <xsl:function name="fn0:getResult1" as="item()*">
+   <xsl:function name="fn0:getResult1">
       <xsl:param name="n1" as="xs:integer"/>
 	  <xsl:sequence select="if ($n1 = 0) then () else ($n1, fn0:getResult1($n1 - 1))"/>
    </xsl:function>

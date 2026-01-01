@@ -62,7 +62,7 @@ public class GroupingKeyAndGroupPair {
         this.groupingKey = groupingKey;
     }
 
-    public List<Integer> getGroupNodesDtmHandles() {
+    public List<Integer> getGroupNodeDtmHandles() {
         return groupNodesDtmHandles;
     }
 

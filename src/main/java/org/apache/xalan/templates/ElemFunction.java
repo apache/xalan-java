@@ -553,9 +553,7 @@ public class ElemFunction extends ElemTemplate
     	 funcAsAttrStrVal = "item()*"; 
       }
       
-      if (funcAsAttrStrVal != null) {
-    	  // Process xsl:function's evaluation result with "as" attribute
-    	  
+      if (funcAsAttrStrVal != null) {    	  
     	  try {
     		SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
     		
@@ -1039,7 +1037,95 @@ public class ElemFunction extends ElemTemplate
                 	   result.add(xObject);
                    }
                 }
-             }             
+             }
+             else if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+            	 if (strVal.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
+            		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_SUFFIX);
+            		 for (int idx = 0; idx < strParts.length; idx++) {
+            			 String seqItemStrVal = strParts[idx];
+            			 if (result == null) {
+            				 result = new ResultSequence(); 
+            			 }
+            			 
+            			 result.add(new XSString(seqItemStrVal));
+            		 }
+            	 }
+            	 else if (strVal.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX)) {
+            		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX);
+            		 for (int idx = 0; idx < strParts.length; idx++) {
+            			 String seqItemStrVal = strParts[idx];
+            			 if (result == null) {
+            				 result = new ResultSequence(); 
+            			 }
+            			 
+            			 try {
+            				Integer intValue1 = Integer.valueOf(seqItemStrVal);
+            				result.add(new XSInteger(seqItemStrVal));
+            			 }
+            			 catch(NumberFormatException ex) {
+            				// to do 
+            			 }            			             			 
+            		 }
+            	 }
+            	 else if (strVal.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX)) {
+            		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX);
+            		 for (int idx = 0; idx < strParts.length; idx++) {
+            			 String seqItemStrVal = strParts[idx];
+            			 if (result == null) {
+            				 result = new ResultSequence(); 
+            			 }
+            			 
+            			 try {
+            				Double dblValue1 = Double.valueOf(seqItemStrVal);
+            				result.add(new XSDecimal(seqItemStrVal));
+            			 }
+            			 catch(NumberFormatException ex) {
+            				// to do 
+            			 }
+            		 }
+            	 }
+            	 else if (strVal.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX)) {
+            		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX);
+            		 for (int idx = 0; idx < strParts.length; idx++) {
+            			 String seqItemStrVal = strParts[idx];
+            			 if (result == null) {
+            				 result = new ResultSequence(); 
+            			 }
+            			 
+            			 try {
+            				Double dblValue1 = Double.valueOf(seqItemStrVal);
+            				result.add(new XSDouble(seqItemStrVal));
+            			 }
+            			 catch(NumberFormatException ex) {
+            				// to do 
+            			 }
+            		 }
+            	 }
+            	 else if (strVal.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {
+            		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX);
+            		 for (int idx = 0; idx < strParts.length; idx++) {
+            			 String seqItemStrVal = strParts[idx];
+            			 if (result == null) {
+            				 result = new ResultSequence(); 
+            			 }
+            			 
+            			 try {
+            				Float fltValue1 = Float.valueOf(seqItemStrVal);
+            				result.add(new XSFloat(seqItemStrVal));
+            			 }
+            			 catch(NumberFormatException ex) {
+            				// to do 
+            			 }
+            		 }
+            	 }
+            	 else {
+            		 if (result == null) {
+        				 result = new ResultSequence(); 
+        			 }
+        			 
+        			 result.add(new XSString(strVal));
+            	 }
+             }
          }
      }
      

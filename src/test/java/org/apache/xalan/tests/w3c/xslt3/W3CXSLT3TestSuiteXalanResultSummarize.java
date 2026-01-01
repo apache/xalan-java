@@ -80,7 +80,7 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 			Document document = docBuilder.newDocument();
 			Element testResultElem = document.createElement("testResult");
 			testResultElem.setAttribute("desc", "W3C XSLT 3.0 test suite results");
-			testResultElem.setAttribute("xslt_processor", "Xalan-J XSLT 3.0 development code");
+			testResultElem.setAttribute("xslt_processor", "Apache Xalan XSLT 3.0 development code");
 			String testRunDateStrValue = getDateISOString(new Date());
 			testResultElem.setAttribute("dateTime", testRunDateStrValue);
 
