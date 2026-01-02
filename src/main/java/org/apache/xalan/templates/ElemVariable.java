@@ -163,7 +163,7 @@ public class ElemVariable extends ElemTemplateElement
 
   /**
    * The value of the "select" attribute.
-   * @serial
+   * 
    */
   private XPath m_selectPattern;
 
@@ -199,7 +199,7 @@ public class ElemVariable extends ElemTemplateElement
 
   /**
    * The value of the "name" attribute.
-   * @serial
+   * 
    */
   protected QName m_qname;
 

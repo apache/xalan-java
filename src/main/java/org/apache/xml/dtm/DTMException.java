@@ -38,7 +38,7 @@ public class DTMException extends RuntimeException {
     static final long serialVersionUID = -775576419181334734L;
 
     /** Field locator specifies where the error occured.
-     *  @serial */
+     *   */
     SourceLocator locator;
 
     /**
@@ -62,7 +62,7 @@ public class DTMException extends RuntimeException {
     }
 
     /** Field containedException specifies a wrapped exception.  May be null.
-     *  @serial */
+     *   */
     Throwable containedException;
 
     /**

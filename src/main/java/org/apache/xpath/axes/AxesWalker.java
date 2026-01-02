@@ -575,11 +575,11 @@ public class AxesWalker extends PredicatedNodeTest
   transient boolean m_isFresh;
 
   /** The next walker in the location step chain.
-   *  @serial  */
+   *    */
   protected AxesWalker m_nextWalker;
   
   /** The previous walker in the location step chain, or null.
-   *  @serial   */
+   *     */
   AxesWalker m_prevWalker;
   
   /** The traversal axis from where the nodes will be filtered. */

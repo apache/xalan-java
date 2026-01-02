@@ -50,7 +50,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
     static final long serialVersionUID = -6559409339256269446L;
 
   /** An instance of DecimalFormatSymbols for this element.
-   *  @serial       */
+   *         */
   DecimalFormatSymbols m_dfs;
 
   /**
@@ -96,7 +96,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
   /**
    * If there is a name attribute, then the element declares a named
    * decimal-format; otherwise, it declares the default decimal-format.
-   * @serial
+   * 
    */
   private QName m_qname = null;
 

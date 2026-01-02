@@ -54,7 +54,7 @@ public class ProcessorImportSchema extends XSLTElementProcessor
   
   /**
    * The base URL of the XSL document.
-   * @serial
+   * 
    */
   private String m_href = null;
 

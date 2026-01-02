@@ -70,7 +70,7 @@ public class ElemLiteralResult extends ElemUse
    * Tells if this element represents a root element
    * that is also the stylesheet element.
    * TODO: This should be a derived class.
-   * @serial
+   * 
    */
   private boolean isLiteralResultAsStylesheet = false;
 
@@ -127,12 +127,12 @@ public class ElemLiteralResult extends ElemUse
    * The created element node will have the attribute nodes
    * that were present on the element node in the stylesheet tree,
    * other than attributes with names in the XSLT namespace.
-   * @serial
+   * 
    */
   private List m_avts = null;
 
   /** List of attributes with the XSLT namespace.
-   *  @serial */
+   *   */
   private List m_xslAttr = null;
 
   /**
@@ -423,7 +423,7 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * The namespace of the element to be created.
-   * @serial
+   * 
    */
   private String m_namespace;
 
@@ -459,7 +459,7 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * The local name of the element to be created.
-   * @serial
+   * 
    */
   private String m_localName;
 
@@ -490,7 +490,7 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * The raw name of the element to be created.
-   * @serial
+   * 
    */
   private String m_rawName;
 
@@ -596,7 +596,7 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * The "extension-element-prefixes" property, actually contains URIs.
-   * @serial
+   * 
    */
   private StringVector m_ExtensionElementURIs;
 
@@ -1286,7 +1286,7 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * The XSLT version as specified by this element.
-   * @serial
+   * 
    */
   private String m_version;
 
@@ -1314,7 +1314,7 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * The "exclude-result-prefixes" property.
-   * @serial
+   * 
    */
   private StringVector m_excludeResultPrefixes;
 

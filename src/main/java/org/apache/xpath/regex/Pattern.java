@@ -239,14 +239,14 @@ public final class Pattern
     /**
      * The original regular-expression pattern string.
      *
-     * @serial
+     * 
      */
     private String pattern;
 
     /**
      * The original pattern flags.
      *
-     * @serial
+     * 
      */
     private int flags;
 

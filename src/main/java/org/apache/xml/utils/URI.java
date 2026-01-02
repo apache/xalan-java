@@ -110,34 +110,34 @@ public class URI implements Serializable
   private static final String USERINFO_CHARACTERS = ";:&=+$,";
 
   /** Stores the scheme (usually the protocol) for this URI.
-   *  @serial */
+   *   */
   private String m_scheme = null;
 
   /** If specified, stores the userinfo for this URI; otherwise null.
-   *  @serial */
+   *   */
   private String m_userinfo = null;
 
   /** If specified, stores the host for this URI; otherwise null.
-   *  @serial */
+   *   */
   private String m_host = null;
 
   /** If specified, stores the port for this URI; otherwise -1.
-   *  @serial */
+   *   */
   private int m_port = -1;
 
   /** If specified, stores the path for this URI; otherwise null.
-   *  @serial */
+   *   */
   private String m_path = null;
 
   /**
    * If specified, stores the query string for this URI; otherwise
    *   null. 
-   * @serial 
+   *  
    */
   private String m_queryString = null;
 
   /** If specified, stores the fragment for this URI; otherwise null.
-   *  @serial */
+   *   */
   private String m_fragment = null;
 
   /** Indicate whether in DEBUG mode          */

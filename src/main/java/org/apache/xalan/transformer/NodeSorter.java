@@ -43,7 +43,7 @@ public class NodeSorter
 {
 
   /** Current XPath context           */
-  XPathContext m_execContext;
+  XPathContext m_xctxt;
 
   /** Vector of NodeSortKeys          */
   Vector m_keys;
@@ -53,11 +53,11 @@ public class NodeSorter
    * so it can know how to get the node data according to
    * the proper whitespace rules.
    *
-   * @param p Xpath context to use
+   * @param xctxt               An XPath context object
    */
-  public NodeSorter(XPathContext p)
+  public NodeSorter(XPathContext xctxt)
   {
-    m_execContext = p;
+      m_xctxt = xctxt;
   }
 
   /**
@@ -181,9 +181,9 @@ public class NodeSorter
 		  else
 		  {
 			  // Get values dynamically
-			  XObject r1 = k.m_selectPat.execute(m_execContext, n1.m_node,
+			  XObject r1 = k.m_selectPat.execute(m_xctxt, n1.m_node,
 					                             k.m_namespaceContext);
-			  XObject r2 = k.m_selectPat.execute(m_execContext, n2.m_node,
+			  XObject r2 = k.m_selectPat.execute(m_xctxt, n2.m_node,
 					                             k.m_namespaceContext);
 			  n1Num = r1.num();
 
@@ -234,13 +234,16 @@ public class NodeSorter
 		  else
 		  {
 			  // Get values dynamically
-			  XObject r1 = k.m_selectPat.execute(m_execContext, n1.m_node,
+			  XObject r1 = k.m_selectPat.execute(m_xctxt, n1.m_node,
 					                             k.m_namespaceContext);
-			  XObject r2 = k.m_selectPat.execute(m_execContext, n2.m_node,
+			  XObject r2 = k.m_selectPat.execute(m_xctxt, n2.m_node,
 					                             k.m_namespaceContext);
 
-			  n1String = k.m_col.getCollationKey(r1.str());
-			  n2String = k.m_col.getCollationKey(r2.str());
+			  String str1 = XslTransformEvaluationHelper.getStrVal(r1);
+			  String str2 = XslTransformEvaluationHelper.getStrVal(r2);
+			  
+			  n1String = k.m_col.getCollationKey(str1);
+			  n2String = k.m_col.getCollationKey(str2);
 		  }
 
 		  // Use collation keys for faster compare, but note that whitespaces 
@@ -418,7 +421,7 @@ public class NodeSorter
     	if (!m_keys.isEmpty())
     	{
     		NodeSortKey k1 = (NodeSortKey) m_keys.elementAt(0);
-    		XObject r = k1.m_selectPat.execute(m_execContext, node, k1.m_namespaceContext);
+    		XObject r = k1.m_selectPat.execute(m_xctxt, node, k1.m_namespaceContext);
 
     		double d;
 
@@ -452,14 +455,15 @@ public class NodeSorter
     		{
     			NodeSortKey k2 = (NodeSortKey) m_keys.elementAt(1);
 
-    			XObject r2 = k2.m_selectPat.execute(m_execContext, node,
+    			XObject r2 = k2.m_selectPat.execute(m_xctxt, node,
     					k2.m_namespaceContext);
 
     			if (k2.m_treatAsNumbers) {
     				d = r2.num();
     				m_key2Value = new Double(d);
     			} else {
-    				m_key2Value = k2.m_col.getCollationKey(r2.str());
+    				String str2 = XslTransformEvaluationHelper.getStrVal(r2);
+    				m_key2Value = k2.m_col.getCollationKey(str2);
     			}
     		}        
     	}  // end if not empty    
@@ -480,15 +484,15 @@ public class NodeSorter
     	{
     		NodeSortKey k1 = (NodeSortKey) m_keys.elementAt(0);
     		
-    		XObject prevXctxtItem = m_execContext.getXPath3ContextItem();    		
+    		XObject prevXctxtItem = m_xctxt.getXPath3ContextItem();    		
     		XObject r = null;
     		
     		try {
-    			m_execContext.setXPath3ContextItem(xObj);    		
-    			r = k1.m_selectPat.execute(m_execContext, DTM.NULL, k1.m_namespaceContext);
+    			m_xctxt.setXPath3ContextItem(xObj);    		
+    			r = k1.m_selectPat.execute(m_xctxt, DTM.NULL, k1.m_namespaceContext);
     		}
     		finally {    		
-    			m_execContext.setXPath3ContextItem(prevXctxtItem);
+    			m_xctxt.setXPath3ContextItem(prevXctxtItem);
     		}
 
     		double d = 0.0;
@@ -523,14 +527,14 @@ public class NodeSorter
     		{
     			NodeSortKey k2 = (NodeSortKey) m_keys.elementAt(1);
 
-    			m_execContext.setXPath3ContextItem(xObj);
+    			m_xctxt.setXPath3ContextItem(xObj);
     			XObject r2 = null;
     			
     			try {
-    				r2 = k2.m_selectPat.execute(m_execContext, DTM.NULL, k2.m_namespaceContext);
+    				r2 = k2.m_selectPat.execute(m_xctxt, DTM.NULL, k2.m_namespaceContext);
     			}
     			finally {
-    				m_execContext.setXPath3ContextItem(prevXctxtItem);
+    				m_xctxt.setXPath3ContextItem(prevXctxtItem);
     			}
 
     			if (k2.m_treatAsNumbers) {    				
@@ -545,7 +549,8 @@ public class NodeSorter
 
     				m_key2Value = new Double(d);
     			} else {
-    				m_key2Value = k2.m_col.getCollationKey(r2.str());
+    				String str2 = XslTransformEvaluationHelper.getStrVal(r2);
+    				m_key2Value = k2.m_col.getCollationKey(str2);
     			}
     		}        
     	}  // end if not empty

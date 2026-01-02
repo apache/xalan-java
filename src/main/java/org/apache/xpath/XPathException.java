@@ -38,7 +38,7 @@ public class XPathException extends TransformerException
     static final long serialVersionUID = 4263549717619045963L;
 
   /** The home of the expression that caused the error.
-   *  @serial  */
+   *    */
   Object m_styleNode = null;
 
   /**
@@ -61,7 +61,7 @@ public class XPathException extends TransformerException
 
 
   /** A nested exception.
-   *  @serial   */
+   *     */
   protected Exception m_exception;
 
   /**

@@ -1159,7 +1159,7 @@ public class NodeSetDTM extends NodeVector
   transient protected boolean m_mutable = true;
 
   /** True if this list is cached.
-   *  @serial  */
+   *    */
   transient protected boolean m_cacheNodes = true;
   
   /** The root of the iteration, if available. */

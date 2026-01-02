@@ -65,7 +65,7 @@ public class FunctionPattern extends StepPattern
 
   /**
    * Should be a {@link org.apache.xpath.functions.Function expression}.
-   *  @serial   
+   *     
    */
   Expression m_functionExpr;
   

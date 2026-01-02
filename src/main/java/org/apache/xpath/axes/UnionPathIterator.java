@@ -463,7 +463,7 @@ public class UnionPathIterator extends LocPathIterator
    * The location path iterators, one for each
    * <a href="http://www.w3.org/TR/xpath#NT-LocationPath">location
    * path</a> contained in the union expression.
-   * @serial
+   * 
    */
   protected LocPathIterator[] m_exprs;
 
@@ -472,7 +472,7 @@ public class UnionPathIterator extends LocPathIterator
    * The location path iterators, one for each
    * <a href="http://www.w3.org/TR/xpath#NT-LocationPath">location
    * path</a> contained in the union expression.
-   * @serial
+   * 
    */
   protected DTMCursorIterator[] m_iterators;
       

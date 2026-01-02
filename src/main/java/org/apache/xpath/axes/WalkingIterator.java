@@ -310,11 +310,11 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
 
   
   /** The last used step walker in the walker list.
-   *  @serial */
+   *   */
   protected AxesWalker m_lastUsedWalker;
 
   /** The head of the step walker list.
-   *  @serial */
+   *   */
   protected AxesWalker m_firstWalker;
 
   /**

@@ -48,7 +48,7 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   /** Prefix string for this extension element.
-   *  @serial         */
+   *           */
   private String m_prefix = null;
 
   /**
@@ -74,7 +74,7 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   /** StringVector holding the names of functions defined in this extension.
-   *  @serial     */
+   *       */
   private StringVector m_functions = new StringVector();
 
   /**
@@ -130,7 +130,7 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   /** StringVector of elements defined in this extension.
-   *  @serial         */
+   *           */
   private StringVector m_elements = null;
 
   /**

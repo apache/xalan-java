@@ -52,7 +52,7 @@ public class XUnresolvedVariable extends XObject
   transient private int m_varStackContext;
   
   /** true if this variable or parameter is a global.
-   *  @serial */
+   *   */
   private boolean m_isGlobal;
   
   /** true if this variable or parameter is not currently being evaluated. */

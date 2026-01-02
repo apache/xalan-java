@@ -769,7 +769,7 @@ public class NodeSet
   transient protected boolean m_mutable = true;
 
   /** True if this list is cached.
-   *  @serial  */
+   *    */
   transient protected boolean m_cacheNodes = true;
 
   /**
@@ -819,19 +819,19 @@ public class NodeSet
   }
   
   /** Size of blocks to allocate.
-   *  @serial          */
+   *            */
   private int m_blocksize;
 
   /** Array of nodes this points to.
-   *  @serial          */
+   *            */
   Node m_map[];
 
   /** Number of nodes in this NodeVector.
-   *  @serial          */
+   *            */
   protected int m_firstFree = 0;
 
   /** Size of the array this points to.
-   *  @serial           */
+   *             */
   private int m_mapSize;  // lazy initialization
 
   /**

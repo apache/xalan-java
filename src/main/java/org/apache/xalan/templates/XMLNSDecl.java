@@ -44,7 +44,7 @@ public class XMLNSDecl
   }
 
   /** non-null reference to prefix, using "" for default namespace.
-   *  @serial */
+   *   */
   private String m_prefix;
 
   /**
@@ -58,7 +58,7 @@ public class XMLNSDecl
   }
 
   /** non-null reference to namespace URI.
-   *  @serial  */
+   *    */
   private String m_uri;
 
   /**
@@ -71,7 +71,7 @@ public class XMLNSDecl
   }
 
   /** true if this namespace declaration should normally be excluded.
-   *  @serial  */
+   *    */
   private boolean m_isExcluded;
 
   /**

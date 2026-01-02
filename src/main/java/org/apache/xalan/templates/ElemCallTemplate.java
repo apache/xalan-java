@@ -47,7 +47,7 @@ public class ElemCallTemplate extends ElemForEach
   /**
    * An xsl:call-template element invokes a template by name;
    * it has a required name attribute that identifies the template to be invoked.
-   * @serial
+   * 
    */
   public QName m_templateName = null;
 
@@ -77,7 +77,7 @@ public class ElemCallTemplate extends ElemForEach
 
   /**
    * The template which is named by QName.
-   * @serial
+   * 
    */
   private ElemTemplate m_template = null;
   
@@ -362,7 +362,7 @@ public class ElemCallTemplate extends ElemForEach
   }
   
   /** Vector of xsl:param elements associated with this element. 
-   *  @serial */
+   *   */
   protected ElemWithParam[] m_paramElems = null;
 
   /**

@@ -34,7 +34,7 @@ public abstract class UnaryOperation extends Expression implements ExpressionOwn
     static final long serialVersionUID = 6536083808424286166L;
 
   /** The operand for the operation.
-   *  @serial */
+   *   */
   protected Expression m_right;
   
   /**

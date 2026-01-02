@@ -39,7 +39,7 @@ public class ElemExtensionScript extends ElemTemplateElement
   }
 
   /** Language used in extension.
-   *  @serial          */
+   *            */
   private String m_lang = null;
 
   /**
@@ -65,7 +65,7 @@ public class ElemExtensionScript extends ElemTemplateElement
   }
 
   /** Extension handler.
-   *  @serial          */
+   *            */
   private String m_src = null;
 
   /**

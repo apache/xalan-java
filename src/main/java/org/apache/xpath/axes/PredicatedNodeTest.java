@@ -603,7 +603,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
   transient protected boolean m_foundLast = false;
     
   /** The owning location path iterator.
-   *  @serial */
+   *   */
   protected LocPathIterator m_lpi;
   
   /**
@@ -613,7 +613,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
   
   /** The list of predicate expressions. Is static and does not need 
    *  to be deep cloned.
-   *  @serial 
+   *   
    */
   private Expression[] m_predicates;
 

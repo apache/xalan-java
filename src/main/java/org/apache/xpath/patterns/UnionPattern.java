@@ -36,7 +36,7 @@ public class UnionPattern extends Expression
     static final long serialVersionUID = -6670449967116905820L;
 
   /** Array of the contained step patterns to be tested.
-   *  @serial  */
+   *    */
   private StepPattern[] m_patterns;
   
   /**

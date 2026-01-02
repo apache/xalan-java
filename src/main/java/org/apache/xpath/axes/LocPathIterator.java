@@ -972,7 +972,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    * Value determined at compile time, indicates that this is an
    * iterator at the top level of the expression, rather than inside
    * a predicate.
-   * @serial
+   * 
    */
   private boolean m_isTopLevel = false;
 
@@ -1003,7 +1003,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   /**
    * Fast access to the current prefix resolver.  It isn't really
    * clear that this is needed.
-   * @serial
+   * 
    */
   private PrefixResolver m_prefixResolver;
 
@@ -1040,7 +1040,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
 //   * The analysis pattern built by the WalkerFactory.
 //   * TODO: Move to LocPathIterator.
 //   * @see org.apache.xpath.axes.WalkerFactory
-//   * @serial
+//   * 
 //   */
 //  protected int m_analysis = 0x00000000;
   /**

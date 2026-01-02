@@ -38,7 +38,7 @@ public class SAXSourceLocator extends LocatorImpl
 {
     static final long serialVersionUID = 3181680946321164112L;
   /** The SAX Locator object.
-   *  @serial
+   *  
    */
   Locator m_locator;
 

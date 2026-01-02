@@ -50,7 +50,7 @@ public class KeyDeclaration extends ElemTemplateElement
 
   /**
    * The "name" property.
-   * @serial
+   * 
    */
   private QName m_name;
 
@@ -93,7 +93,7 @@ public class KeyDeclaration extends ElemTemplateElement
 
   /**
    * The "match" attribute.
-   * @serial
+   * 
    */
   private XPath m_matchPattern = null;
 
@@ -127,7 +127,7 @@ public class KeyDeclaration extends ElemTemplateElement
 
   /**
    * The "use" attribute.
-   * @serial
+   * 
    */
   private XPath m_use;
 

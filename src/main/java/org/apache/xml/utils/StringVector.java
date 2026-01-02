@@ -29,16 +29,16 @@ public class StringVector implements java.io.Serializable
 {
     static final long serialVersionUID = 4995234972032919748L;
 
-  /** @serial Size of blocks to allocate           */
+  /**  Size of blocks to allocate           */
   protected int m_blocksize;
 
-  /** @serial Array of strings this contains          */
+  /**  Array of strings this contains          */
   protected String m_map[];
 
-  /** @serial Number of strings this contains          */
+  /**  Number of strings this contains          */
   protected int m_firstFree = 0;
 
-  /** @serial Size of the array          */
+  /**  Size of the array          */
   protected int m_mapSize;
 
   /**

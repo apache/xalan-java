@@ -54,7 +54,7 @@ public class NodeTest extends Expression
 
   /**
    * This attribute determines which node types are accepted.
-   * @serial
+   * 
    */
   protected int m_whatToShow;
 
@@ -90,7 +90,7 @@ public class NodeTest extends Expression
 
   /**
    * The namespace to be tested for, which may be null.
-   *  @serial 
+   *   
    */
   String m_namespace;
 
@@ -116,7 +116,7 @@ public class NodeTest extends Expression
 
   /**
    * The local name to be tested for.
-   *  @serial 
+   *   
    */
   protected String m_name;
 
@@ -147,7 +147,7 @@ public class NodeTest extends Expression
    *  {@link #SCORE_NSWILD},
    *  {@link #SCORE_QNAME}, or
    *  {@link #SCORE_OTHER}.
-   *  @serial
+   *  
    */
   XNumber m_score;
 
@@ -293,7 +293,7 @@ public class NodeTest extends Expression
 
   /**
    * True if this test has a null namespace and a local name of {@link #WILD}.
-   *  @serial 
+   *   
    */
   private boolean m_isTotallyWild;
   

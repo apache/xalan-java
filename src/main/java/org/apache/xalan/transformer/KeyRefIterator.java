@@ -164,7 +164,7 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
   protected QName m_name;
 
   /** Vector of Key declarations in the stylesheet.
-   *  @serial          */
+   *            */
   protected Vector m_keyDeclarations;
 
 }

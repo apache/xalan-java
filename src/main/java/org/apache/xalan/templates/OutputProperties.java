@@ -668,7 +668,7 @@ public class OutputProperties extends ElemTemplateElement
   }
 
   /** The output properties.
-   *  @serial */
+   *   */
   private Properties m_properties = null;
 
     /**

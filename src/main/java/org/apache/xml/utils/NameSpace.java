@@ -33,15 +33,15 @@ public class NameSpace implements Serializable
     static final long serialVersionUID = 1471232939184881839L;
 
   /** Next NameSpace element on the stack.
-   *  @serial             */
+   *               */
   public NameSpace m_next = null;
 
   /** Prefix of this NameSpace element.
-   *  @serial          */
+   *            */
   public String m_prefix;
 
   /** Namespace URI of this NameSpace element.
-   *  @serial           */
+   *             */
   public String m_uri;  // if null, then Element namespace is empty.
 
   /**

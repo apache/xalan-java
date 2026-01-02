@@ -40,23 +40,23 @@ public class ElemExtensionCall extends ElemLiteralResult
     static final long serialVersionUID = 3171339708500216920L;
 
   /** The Namespace URI for this extension call element.
-   *  @serial          */
+   *            */
   String m_extns;
 
   /** Language used by extension.
-   *  @serial          */
+   *            */
   String m_lang;
 
   /** URL pointing to extension.
-   *  @serial          */
+   *            */
   String m_srcURL;
 
   /** Source for script.
-   *  @serial          */
+   *            */
   String m_scriptSrc;
 
   /** Declaration for Extension element. 
-   *  @serial          */
+   *            */
   ElemExtensionDecl m_decl = null;
 
   /**

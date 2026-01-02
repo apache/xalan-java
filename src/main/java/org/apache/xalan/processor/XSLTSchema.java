@@ -423,12 +423,7 @@ public class XSLTSchema extends XSLTElementDef
     // Default: "node()"
     // xsl:apply-templates                                           
     XSLTAttributeDef selectAttrDefNode = new XSLTAttributeDef(null, "select",
-                                           XSLTAttributeDef.T_EXPR, false, XSLTAttributeDef.ERROR, "node()");
-    // Optional
-    // Default: "."
-    // xsl:sort                                        
-    XSLTAttributeDef selectAttrDefDot = new XSLTAttributeDef(null, "select",
-                                          XSLTAttributeDef.T_EXPR, false, XSLTAttributeDef.ERROR, ".");    
+                                           XSLTAttributeDef.T_EXPR, false, XSLTAttributeDef.ERROR, "node()");   
     
     // xsl:key                                      
     XSLTAttributeDef matchAttrRequired = new XSLTAttributeDef(null, "match",

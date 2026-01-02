@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.transformer;
 
 import java.text.CollationKey;
@@ -33,14 +30,16 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.GroupingKeyAndGroupPair;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An instance of this class, shall sort xsl:for-each-group groups, according to 
- * xsl:sort element(s) within xsl:for-each-group element.
+ * An instance of this class, shall sort xsl:for-each-group's groups, 
+ * according to xsl:sort elements contained within xsl:for-each-group
+ * instruction.
+ * 
+ *  An implementation of this class, follows design of xsl:for-each 
+ *  instruction's xsl:sort element.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -50,24 +49,26 @@ public class ForEachGroupXslSortSorter
 {
 
   /** Reference to the current xsl:for-each-group element */
-  ElemForEachGroup m_elemForEachGroup;
+  private ElemForEachGroup m_elemForEachGroup;
   
   /** Current XPath context */
-  XPathContext m_execContext;
+  private XPathContext m_xctxt;
 
   /** Vector of NodeSortKeys */
-  Vector m_keys;
+  private Vector m_keys;
 
+  
   /**
-   * Constructor for this class.
+   * Class constructor.
    *
-   * @param xpathContext       XPath context to use
+   * @param xctxt                     An XPath context object
    * 
-   * @param elemForEachGroup   reference to current xsl:for-each-group element
+   * @param elemForEachGroup          An xsl:for-each-group instruction's object
+   *                                  reference.
    */
-  public ForEachGroupXslSortSorter(XPathContext xpathContext, ElemForEachGroup elemForEachGroup)
+  public ForEachGroupXslSortSorter(XPathContext xctxt, ElemForEachGroup elemForEachGroup)
   {
-      m_execContext = xpathContext;
+      m_xctxt = xctxt;
       m_elemForEachGroup = elemForEachGroup; 
   }
 
@@ -75,13 +76,13 @@ public class ForEachGroupXslSortSorter
    * Given an object representing xsl:for-each-group groups to be sorted, sort these groups 
    * according to the criteria represented by the xsl:sort element(s).
    * 
-   * @param forEachGroups     groups to be sorted.
-   * @param sortKeys          a vector of NodeSortKeys.
-   * @param xpathContext      XPath context to use
+   * @param forEachGroups                   Reference of groups to be sorted
+   * @param sortKeys                        Vector of sort key objects
+   * @param xctxt                           An XPath context object
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public List<GroupingKeyAndGroupPair> sort(Object forEachGroups, Vector sortKeys, XPathContext xpathContext)
+  public List<GroupingKeyAndGroupPair> sort(Object forEachGroups, Vector sortKeys, XPathContext xctxt)
                                                     throws javax.xml.transform.TransformerException {
       
         List<GroupingKeyAndGroupPair> groupingKeyAndGroupPairList = new ArrayList<GroupingKeyAndGroupPair>();
@@ -122,21 +123,24 @@ public class ForEachGroupXslSortSorter
         Vector nodeCompareElements = new Vector();
     
         for (int idx = 0; idx < numberOfGroups; idx++) {
-            NodeCompareElem elem = new NodeCompareElem(groupingKeyAndGroupPairList.get(idx));
+            XslForEachGroupNodeCompareElem elem = new XslForEachGroupNodeCompareElem(m_elemForEachGroup, 
+            		                                                                 groupingKeyAndGroupPairList.get(idx),
+            		                                                                 m_keys,
+            		                                                                 xctxt);
     
             nodeCompareElements.addElement(elem);
         }
     
         Vector scratchVector = new Vector();
     
-        mergesort(nodeCompareElements, scratchVector, 0, numberOfGroups - 1, xpathContext);
+        mergesort(nodeCompareElements, scratchVector, 0, numberOfGroups - 1, xctxt);
         
         groupingKeyAndGroupPairList.clear();
         
         int size2 = nodeCompareElements.size();
         for (int idx = 0; idx < size2; idx++)
         {
-            GroupingKeyAndGroupPair groupingKeyAndGroupPair = ((NodeCompareElem)nodeCompareElements.get(idx)).
+            GroupingKeyAndGroupPair groupingKeyAndGroupPair = ((XslForEachGroupNodeCompareElem)nodeCompareElements.get(idx)).
                                                                         getGroupingKeyAndGroupPair();
             groupingKeyAndGroupPairList.add(groupingKeyAndGroupPair);
         }
@@ -148,18 +152,18 @@ public class ForEachGroupXslSortSorter
   /**
    * Return the results of a compare of two xsl:for-each-group groups.
    *
-   * @param n1              first node to use for compare
-   * @param n2              second node to use for compare
-   * @param kIndex          index of NodeSortKey to use for sort
-   * @param xpathContext    XPath context to use
+   * @param n1                    first node to use for compare
+   * @param n2                    second node to use for compare
+   * @param kIndex                index of NodeSortKey to use for sort
+   * @param xctxt                 An XPath context object
    *
-   * @return    The result of comparing two xsl:for-each-group groups, for the purpose of sorting 
-   *            with xsl:sort element(s).
+   * @return                      The result of comparing relative sort order between 
+   *                              two xsl:for-each-group groups.
    *
    * @throws TransformerException
    */
-  int compare(NodeCompareElem n1, NodeCompareElem n2, int kIndex, 
-                                        XPathContext xpathContext) throws TransformerException {
+  private int compare(XslForEachGroupNodeCompareElem n1, XslForEachGroupNodeCompareElem n2, int kIndex, 
+                                                                                      XPathContext xctxt) throws TransformerException {
 
     int result = 0;
     
@@ -185,9 +189,9 @@ public class ForEachGroupXslSortSorter
       else
       {
         // get values dynamically
-        XObject r1 = k.m_selectPat.execute(m_execContext, n1ContextNode,
+        XObject r1 = k.m_selectPat.execute(m_xctxt, n1ContextNode,
                                            k.m_namespaceContext);
-        XObject r2 = k.m_selectPat.execute(m_execContext, n2ContextNode,
+        XObject r2 = k.m_selectPat.execute(m_xctxt, n2ContextNode,
                                            k.m_namespaceContext);
         n1Num = r1.num();
         
@@ -196,7 +200,7 @@ public class ForEachGroupXslSortSorter
 
       if ((n1Num == n2Num) && ((kIndex + 1) < m_keys.size()))
       {
-        result = compare(n1, n2, kIndex + 1, xpathContext);
+        result = compare(n1, n2, kIndex + 1, xctxt);
       }
       else
       {
@@ -235,9 +239,9 @@ public class ForEachGroupXslSortSorter
       else
       {
         // get values dynamically
-        XObject r1 = k.m_selectPat.execute(m_execContext, n1ContextNode,
+        XObject r1 = k.m_selectPat.execute(m_xctxt, n1ContextNode,
                                            k.m_namespaceContext);
-        XObject r2 = k.m_selectPat.execute(m_execContext, n2ContextNode,
+        XObject r2 = k.m_selectPat.execute(m_xctxt, n2ContextNode,
                                            k.m_namespaceContext);
 
         n1String = k.m_col.getCollationKey(r1.str());
@@ -269,12 +273,12 @@ public class ForEachGroupXslSortSorter
     if (0 == result) {
       if ((kIndex + 1) < m_keys.size())
       {
-        result = compare(n1, n2, kIndex + 1, xpathContext);
+        result = compare(n1, n2, kIndex + 1, xctxt);
       }
     }
 
     if (0 == result) {
-        DTM dtm = xpathContext.getDTM(n1ContextNode);
+        DTM dtm = xctxt.getDTM(n1ContextNode);
         result = dtm.isNodeAfter(n1ContextNode, n2ContextNode) ? -1 : 1;
     }
 
@@ -293,7 +297,7 @@ public class ForEachGroupXslSortSorter
    *
    * @throws TransformerException
    */
-  void mergesort(Vector a, Vector b, int l, int r, XPathContext xpathContext)
+  private void mergesort(Vector a, Vector b, int l, int r, XPathContext xpathContext)
                                                          throws TransformerException {
 
         if ((r - l) > 0) {
@@ -329,8 +333,8 @@ public class ForEachGroupXslSortSorter
                   if (i == j)
                      compVal = -1;
                   else
-                     compVal = compare((NodeCompareElem) b.elementAt(i),
-                                           (NodeCompareElem) b.elementAt(j), 0, xpathContext);
+                     compVal = compare((XslForEachGroupNodeCompareElem) b.elementAt(i),
+                                           (XslForEachGroupNodeCompareElem) b.elementAt(j), 0, xpathContext);
         
                   if (compVal < 0) {
                      a.setElementAt(b.elementAt(i), k);        
@@ -342,102 +346,6 @@ public class ForEachGroupXslSortSorter
                   }
               }
         }
-  }
-
-  /**
-   * This class stores the value(s) produced by evaluating the given
-   * xsl:for-each-group group with the sort key(s).
-   *  
-   * @xsl.usage internal
-   */
-  class NodeCompareElem {
-    
-        /** This maxkey value was chosen arbitrarily. We're assuming that the    
-            maxkey + 1 keys will only occur fairly rarely and therefore, we will 
-            get the node values for those keys dynamically.
-        */
-        int maxkey = 2;
-    
-        /** Value from first sort key */
-        Object m_key1Value;
-    
-        /** Value from second sort key */
-        Object m_key2Value;
-        
-        GroupingKeyAndGroupPair m_groupingKeyAndGroupPair;
-
-        /**
-         * Constructor function, of this class.
-         *
-         * @param groupingKeyAndGroupPair    current GroupingKeyAndGroupPair object
-         *
-         * @throws javax.xml.transform.TransformerException
-         */
-        NodeCompareElem(GroupingKeyAndGroupPair groupingKeyAndGroupPair) throws 
-                                                               javax.xml.transform.TransformerException {
-            
-              this.m_groupingKeyAndGroupPair = groupingKeyAndGroupPair; 
-            
-              int contextNodeDtmHandle = ((groupingKeyAndGroupPair.getGroupNodeDtmHandles()).
-                                                                                      get(0)).intValue();
-              
-              TransformerImpl transformer = (TransformerImpl) m_execContext.getOwnerObject();
-              m_elemForEachGroup.setGroupingKey(groupingKeyAndGroupPair.getGroupingKey());
-              m_elemForEachGroup.setGroupNodesDtmHandles(groupingKeyAndGroupPair.getGroupNodeDtmHandles());
-              transformer.setCurrentElement(m_elemForEachGroup);
-              
-              // for the xsl:sort element select expression's evaluation, the context item is the 
-              // initial item of the group.
-              m_execContext.pushCurrentNode(contextNodeDtmHandle);
-              
-              if (!m_keys.isEmpty()) {
-                    NodeSortKey k1 = (NodeSortKey) m_keys.elementAt(0);
-                    XObject r = (k1.m_selectPat).execute(m_execContext, contextNodeDtmHandle,
-                                                                                k1.m_namespaceContext);
-            
-                    double d;
-            
-                    if (k1.m_treatAsNumbers) {
-                          d = r.num();
-                          m_key1Value = new Double(d);
-                    }
-                    else {
-                          m_key1Value = k1.m_col.getCollationKey(r.str());
-                    }
-            
-                    if (r.getType() == XObject.CLASS_NODESET) {
-                          DTMCursorIterator ni = ((XMLNodeCursorImpl)r).iterRaw();
-                          int current = ni.getCurrentNode();
-                          if(DTM.NULL == current) {
-                             current = ni.nextNode();
-                          }
-                    }
-            
-                    if (m_keys.size() > 1) {
-                          NodeSortKey k2 = (NodeSortKey) m_keys.elementAt(1);
-                
-                          XObject r2 = (k2.m_selectPat).execute(m_execContext, contextNodeDtmHandle,
-                                                              k2.m_namespaceContext);
-                
-                          if (k2.m_treatAsNumbers) {
-                              d = r2.num();
-                              m_key2Value = new Double(d);
-                          } else {
-                              m_key2Value = k2.m_col.getCollationKey(r2.str());
-                          }
-                    }
-              }   
-        }
-
-        public GroupingKeyAndGroupPair getGroupingKeyAndGroupPair() {
-            return m_groupingKeyAndGroupPair;
-        }
-
-        public void setGroupingKeyAndGroupPair(GroupingKeyAndGroupPair 
-                                                             groupingKeyAndGroupPair) {
-            this.m_groupingKeyAndGroupPair = groupingKeyAndGroupPair;
-        }
-    
   }
   
 }

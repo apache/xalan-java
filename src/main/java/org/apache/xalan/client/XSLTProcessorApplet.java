@@ -71,12 +71,12 @@ public class XSLTProcessorApplet extends Applet
   transient TransformerFactory m_tfactory = null;
 
   /**
-   * @serial
+   * 
    */
   private String m_styleURL;
 
   /**
-   * @serial
+   * 
    */
   private String m_documentURL;
 
@@ -85,12 +85,12 @@ public class XSLTProcessorApplet extends Applet
   //--------------------------------------------------------------------------
 
   /**
-   * @serial
+   * 
    */
   private final String PARAM_styleURL = "styleURL";
 
   /**
-   * @serial
+   * 
    */
   private final String PARAM_documentURL = "documentURL";
 
@@ -99,29 +99,29 @@ public class XSLTProcessorApplet extends Applet
   // are cached.
 
   /**
-   * @serial
+   * 
    */
   private String m_styleURLOfCached = null;
 
   /**
-   * @serial
+   * 
    */
   private String m_documentURLOfCached = null;
 
   /**
    * Save this for use on the worker thread; may not be necessary.
-   * @serial
+   * 
    */
   private URL m_codeBase = null;
   
   /**
-   * @serial
+   * 
    */
   private String m_treeURL = null;
 
   /** 
    * DocumentBase URL
-   * @serial       
+   *        
    */
   private URL m_documentBase = null;
 

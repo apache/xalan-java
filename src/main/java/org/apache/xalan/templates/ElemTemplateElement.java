@@ -759,11 +759,11 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /** line number where the current document event ends.
-   *  @serial         */
+   *           */
   private int m_lineNumber;
 
   /** line number where the current document event ends.
-   *  @serial         */
+   *           */
   private int m_endLineNumber;
 
   /**
@@ -791,11 +791,11 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /** the column number where the current document event ends.
-   *  @serial        */
+   *          */
   private int m_columnNumber;
 
   /** the column number where the current document event ends.
-   *  @serial        */
+   *          */
   private int m_endColumnNumber;
 
   /**
@@ -877,19 +877,19 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Tell if this element has the default space handling
    * turned off or on according to the xml:space attribute.
-   * @serial
+   * 
    */
   private boolean m_defaultSpace = true;
 
   /**
    * Tell if this element only has one text child, for optimization purposes.
-   * @serial
+   * 
    */
   private boolean m_hasTextLitOnly = false;
 
   /**
    * Tell if this element only has one text child, for optimization purposes.
-   * @serial
+   * 
    */
   protected boolean m_hasVariableDecl = false;
   
@@ -931,7 +931,7 @@ public class ElemTemplateElement extends UnImplNode
 
   /**
    * The list of namespace declarations for this element only.
-   * @serial
+   * 
    */
   private List m_declaredPrefixes;
 
@@ -1072,7 +1072,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * The table of {@link XMLNSDecl}s for this element
    * and all parent elements, screened for excluded prefixes.
-   * @serial
+   * 
    */
   private List m_prefixTable;
 
@@ -1375,7 +1375,7 @@ public class ElemTemplateElement extends UnImplNode
   }
   
   /** The *relative* document order number of this element.
-   *  @serial */
+   *   */
   protected int m_docOrderNumber = -1;
   
   /**
@@ -1401,7 +1401,7 @@ public class ElemTemplateElement extends UnImplNode
 
   /**
    * Parent node.
-   * @serial
+   * 
    */
   protected ElemTemplateElement m_parentNode;
 
@@ -1437,7 +1437,7 @@ public class ElemTemplateElement extends UnImplNode
 
   /**
    * Next sibling.
-   * @serial
+   * 
    */
   ElemTemplateElement m_nextSibling;
 
@@ -1526,7 +1526,7 @@ public class ElemTemplateElement extends UnImplNode
 
   /**
    * First child.
-   * @serial
+   * 
    */
   ElemTemplateElement m_firstChild;
 

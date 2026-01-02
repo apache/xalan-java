@@ -34,25 +34,25 @@ public class NodeVector implements Serializable, Cloneable
 
   /**
    * Size of blocks to allocate.
-   *  @serial          
+   *            
    */
   private int m_blocksize;
 
   /**
    * Array of nodes this points to.
-   *  @serial          
+   *            
    */
   private int m_map[];
 
   /**
    * Number of nodes in this NodeVector.
-   *  @serial          
+   *            
    */
   protected int m_firstFree = 0;
 
   /**
    * Size of the array this points to.
-   *  @serial           
+   *             
    */
   private int m_mapSize;  // lazy initialization
 

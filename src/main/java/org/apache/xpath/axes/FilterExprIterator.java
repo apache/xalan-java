@@ -30,7 +30,7 @@ public class FilterExprIterator extends BasicTestIterator
 {
     static final long serialVersionUID = 2552176105165737614L;
   /** The contained expression. Should be non-null.
-   *  @serial   */
+   *     */
   private Expression m_expr;
 
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
