@@ -580,25 +580,6 @@ public class FunctionTable
   /** The 'document-location()' id (Proprietary). */
   public static final int FUNC_DOCLOCATION = 35;
   
-  /**
-   * XPath 3.1 built-in functions namespace uri, for most of the functions
-   * available to XPath 3.1 language users. The XPath functions available within
-   * this namespace, may be used without binding the function name with an XML 
-   * namespace, or binding with a non-null XML namespace (the commonly used XML 
-   * namespace prefix for this namespace uri is "fn", as specified by
-   * XPath 3.1 spec).
-   */
-  public static final String XPATH_BUILT_IN_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions";
-  
-  /**
-   * XPath 3.1 built-in functions namespace uri, for maths trigonometric and exponential 
-   * functions. The XPath functions available within this namespace, must be used by 
-   * qualifying the function name with an XML namespace bound to this uri (the commonly 
-   * used XML namespace prefix for this namespace uri is "math", as specified by 
-   * XPath 3.1 spec).
-   */
-  public static final String XPATH_BUILT_IN_MATH_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/math";
-  
   static final Integer[] XPATH_MATH_FUNC_IDS = new Integer[] { new Integer(FUNC_MATH_PI), new Integer(FUNC_MATH_EXP),
                                                                new Integer(FUNC_MATH_EXP10), new Integer(FUNC_MATH_LOG),
                                                                new Integer(FUNC_MATH_LOG10), new Integer(FUNC_MATH_POW),
@@ -609,13 +590,6 @@ public class FunctionTable
   
   static final List<Integer> XPATH_MATH_FUNC_IDS_ARR = Arrays.asList(XPATH_MATH_FUNC_IDS);
   
-  /**
-   * XPath 3.1 built-in functions namespace uri, for map related functions. The XPath functions available 
-   * within this namespace, must be used by qualifying the function name with an XML namespace bound to this 
-   * uri (the commonly used XML namespace prefix for this namespace uri is "map", as specified by 
-   * XPath 3.1 spec).
-   */
-  public static final String XPATH_BUILT_IN_MAP_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/map";
     
   static final Integer[] XPATH_MAP_FUNC_IDS = new Integer[] { new Integer(FUNC_MAP_MERGE), new Integer(FUNC_MAP_SIZE), 
 		                                                      new Integer(FUNC_MAP_KEYS), new Integer(FUNC_MAP_CONTAINS), 
@@ -625,13 +599,6 @@ public class FunctionTable
   
   static final List<Integer> XPATH_MAP_FUNC_IDS_ARR = Arrays.asList(XPATH_MAP_FUNC_IDS);
   
-  /**
-   * XPath 3.1 built-in functions namespace uri, for array related functions. The XPath functions available 
-   * within this namespace, must be used by qualifying the function name with an XML namespace bound to this 
-   * uri (the commonly used XML namespace prefix for this namespace uri is "array", as specified by 
-   * XPath 3.1 spec).
-   */
-  public static final String XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/array";
     
   static final Integer[] XPATH_ARRAY_FUNC_IDS = new Integer[] { new Integer(FUNC_ARRAY_SIZE), new Integer(FUNC_ARRAY_GET),
 		                                                        new Integer(FUNC_ARRAY_PUT), new Integer(FUNC_ARRAY_APPEND),

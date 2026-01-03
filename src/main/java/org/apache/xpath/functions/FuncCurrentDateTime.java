@@ -48,20 +48,20 @@ public class FuncCurrentDateTime extends Function {
    }
 
    /**
-   * Execute the function. The function must return a valid object.
+   * Implementation of the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
+   * @param xctxt                       An XPath context object
    * 
-   * @return A valid XObject.
+   * @return                            A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
     
-    XSDateTime xsDateTime = new XSDateTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
-    xsDateTime.setPopulatedFromFnCurrentDateTime(true);
-    
-    return xsDateTime;
+	  XSDateTime xsDateTime = new XSDateTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
+	  xsDateTime.setPopulatedFromFnCurrentDateTime(true);
+
+	  return xsDateTime;
   }
 
   /**

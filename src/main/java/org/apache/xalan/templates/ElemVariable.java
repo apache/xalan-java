@@ -38,6 +38,7 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPath3StaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -1562,8 +1563,8 @@ public class ElemVariable extends ElemTemplateElement
 						  String funcLocalName = funcRef1.getFuncName(); 
 						  String funcNamespace = funcRef1.getFuncNamespace();    					  
 						  int xpathNamedFuncRefArity = 0;           
-		            	  if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
-		            			  															(Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+		            	  if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+		            			  															        (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
 		            		  xpathNamedFuncRefArity = funcRef1.getConcatArity();
 		            	  }
 		            	  else {

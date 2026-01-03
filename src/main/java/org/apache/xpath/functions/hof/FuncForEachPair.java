@@ -30,6 +30,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPath3StaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
@@ -135,8 +136,8 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
            String funcNamespace = namedFuncRef.getFuncNamespace();
            String funcLocalName = namedFuncRef.getFuncName();
            int funcArity = 0;           
-           if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
-        		                                                              (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+           if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+        		                                                                     (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
         	   funcArity = namedFuncRef.getConcatArity();
            }
            else {
@@ -146,16 +147,16 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
            FunctionTable funcTable = xctxt.getFunctionTable();
            
            Object funcIdObj = null;
-           if (FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
+           if (XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
               funcIdObj = funcTable.getFunctionId(funcLocalName);
            }
-           else if (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
+           else if (XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
               funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
            }
-           else if (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
+           else if (XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
               funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
            }
-           else if (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
+           else if (XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
               funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
            }
            

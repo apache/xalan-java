@@ -57,6 +57,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPath3StaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.FunctionTable;
@@ -233,9 +234,9 @@ public class XSL3FunctionService {
     						String namespace = xpathNamedFunctionReference.getFuncNamespace();
     						Short arity = xpathNamedFunctionReference.getArity();    					   
     						if ((int)arity == funcExtArgStrList.size()) {
-    							if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) || (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
-    									                                                             (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || 
-    									                                                             (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
+    							if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) || (XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
+    									                                                                   (XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || 
+    									                                                                   (XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
     								FunctionTable funcTable = xctxt.getFunctionTable();
     								Object funcId = funcTable.getFunctionId(localName);
     								if (funcId != null) {
@@ -849,8 +850,8 @@ public class XSL3FunctionService {
     	String funcNamespace = xpathNamedFuncRef.getFuncNamespace();
     	String funcLocalName = xpathNamedFuncRef.getFuncName();
     	int funcArity = 0;           
-    	if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
-    																		(Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+    	if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+    																		     (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
     		funcArity = xpathNamedFuncRef.getConcatArity();
     	}
     	else {
@@ -862,16 +863,16 @@ public class XSL3FunctionService {
     	FunctionTable funcTable = xctxt.getFunctionTable();
 
     	Object funcIdObj = null;
-    	if (FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
+    	if (XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
     		funcIdObj = funcTable.getFunctionId(funcLocalName);
     	}
-    	else if (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
+    	else if (XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
     		funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
     	}
-    	else if (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
+    	else if (XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
     		funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
     	}
-    	else if (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
+    	else if (XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
     		funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
     	}
 
@@ -1021,22 +1022,22 @@ public class XSL3FunctionService {
         
         FunctionTable funcTable = xctxt.getFunctionTable();
         
-        if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace)) {
+        if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace)) {
            Object funcId = funcTable.getFunctionIdForXPathBuiltinFuncs(funcName);
            int funcIdValue = (int)Integer.valueOf(funcId.toString());
            result = funcTable.getFunction(funcIdValue);
         }
-        else if ((FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace)) {
+        else if ((XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace)) {
            Object funcId = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcName);
            int funcIdValue = (int)Integer.valueOf(funcId.toString());
            result = funcTable.getFunction(funcIdValue);
         }
-        else if ((FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace)) {
+        else if ((XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace)) {
            Object funcId = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcName);
            int funcIdValue = (int)Integer.valueOf(funcId.toString());
            result = funcTable.getFunction(funcIdValue);
         }
-        else if ((FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace)) {
+        else if ((XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace)) {
            Object funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcName);
            int funcIdValue = (int)Integer.valueOf(funcId.toString());
            result = funcTable.getFunction(funcIdValue);

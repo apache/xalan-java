@@ -128,6 +128,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPath3StaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.SharedLexerState;
@@ -4615,11 +4616,11 @@ public class TransformerImpl extends Transformer
 			String localName = func1.getFunctionName();
 			String namespaceUri = func1.getNamespace();			
 			
-			if ((namespaceUri != null) && !((Constants.S_EXTENSIONS_JAVA_URL).equals(namespaceUri) || (FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespaceUri) ||
-				                                                                  (FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespaceUri) || 
-				                                                                  (FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespaceUri) ||
-				                                                                  (FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespaceUri) ||
-				                                                                  (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(namespaceUri))) {
+			if ((namespaceUri != null) && !((Constants.S_EXTENSIONS_JAVA_URL).equals(namespaceUri) || (XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespaceUri) ||
+				                                                                                      (XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespaceUri) || 
+				                                                                                      (XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespaceUri) ||
+				                                                                                      (XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespaceUri) ||
+				                                                                                      (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(namespaceUri))) {
 				int funcArity = (func1.getArgVector()).size();
 				QName qName = new QName(namespaceUri, localName);
 				ElemTemplate elemTemplate = templList.getXslFunction(qName, funcArity);

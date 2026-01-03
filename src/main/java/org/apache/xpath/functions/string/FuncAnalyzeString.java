@@ -28,6 +28,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xpath.XPath3StaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.functions.FunctionMultiArgs;
@@ -126,8 +127,8 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         
         Document document = createEmptyXmlDom(srcLocator);
         
-        Element analyzeStrResultElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, 
-        		                                                                                        "analyze-string-result");
+        Element analyzeStrResultElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, 
+        		                                                                                               "analyze-string-result");
         document.appendChild(analyzeStrResultElem);
         
         if (strToBeAnalyzed.length() > 0) {
@@ -300,7 +301,7 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 	 */
 	private void createNonMatchNodeToResult(Document document, Element analyzeStrResultElem, 
 			                                String nonMatchStr) {
-		Element nonMatchElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, "non-match");
+		Element nonMatchElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, "non-match");
 		Text txtNode2 = document.createTextNode(nonMatchStr);
 		nonMatchElem.appendChild(txtNode2);
 		analyzeStrResultElem.appendChild(nonMatchElem);
@@ -317,14 +318,14 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 	 */
 	private void createMatchNodeToResult(Document document, Element analyzeStrResultElem, 
 			                             String subsequenceStr, String regexStr) {
-		Element matchElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, "match");		
+		Element matchElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, "match");		
 		Pattern regexSubsequencePattern = Pattern.compile(regexStr);
 		Matcher regexSubsequenceMatcher = regexSubsequencePattern.matcher(subsequenceStr);
 		int grpCount = regexSubsequenceMatcher.groupCount();
 		if (grpCount > 0) {
 		   if (regexSubsequenceMatcher.matches()) {
 			   for (int idx = 0; idx < grpCount; idx++) {			  
-				  Element grpElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, "group");
+				  Element grpElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, "group");
 				  grpElem.setAttribute("nr", String.valueOf(idx+1));
 				  String grpStrValue = regexSubsequenceMatcher.group(idx+1);
 				  Text grpTxtNode = document.createTextNode(grpStrValue);

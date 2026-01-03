@@ -41,6 +41,7 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPath3StaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
@@ -703,8 +704,8 @@ public class ElemFunction extends ElemTemplate
         					   if (xpathNamedFunctionReference.getXslStylesheetFunction() == null) {
         						   String funcNamespace = xpathNamedFunctionReference.getFuncNamespace();
         						   int actualFuncArity = 0;           
-        						   if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
-        								   																(Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+        						   if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+        								   																     (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
         							   actualFuncArity = xpathNamedFunctionReference.getConcatArity();
         						   }
         						   else {

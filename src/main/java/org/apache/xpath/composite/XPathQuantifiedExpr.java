@@ -34,6 +34,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPath3StaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.FunctionTable;
@@ -239,10 +240,10 @@ public class XPathQuantifiedExpr extends Expression {
            if (idx2 != -1) {
         	  String xpathLhsStr = varBindingXPathStr.substring(0, idx2);
         	  String xpathRhsStr = varBindingXPathStr.substring(idx2 + 1);
-         	  if (!(xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI) || 
-															         			 xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
-															         			 xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) ||
-															         			 xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI))) {         		 
+         	  if (!(xpathLhsStr.endsWith(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI) || 
+																	         			 xpathLhsStr.endsWith(XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
+																	         			 xpathLhsStr.endsWith(XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) ||
+																	         			 xpathLhsStr.endsWith(XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI))) {         		 
        		     if (!XPathParser.isStrHasXPathAxisNamePrefix(xpathRhsStr) && (xpathRhsStr.endsWith("()") || xpathRhsStr.endsWith("(.)"))) {    		  
        		    	XPath xpathLhsObj = new XPath(xpathLhsStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
        		    	

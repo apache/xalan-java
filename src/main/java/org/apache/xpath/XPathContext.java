@@ -18,14 +18,9 @@
 package org.apache.xpath;
 
 import java.lang.reflect.Method;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Stack;
-import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.xml.transform.ErrorListener;
@@ -35,63 +30,53 @@ import javax.xml.transform.URIResolver;
 
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
-import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.ObjectStack;
 import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.axes.SubContextList;
-import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.functions.XSL3FunctionService;
-import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.DTMXRTreeFrag;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.xml.sax.XMLReader;
 
-import xml.xpath31.processor.types.XSDayTimeDuration;
-import xml.xpath31.processor.types.XSDuration;
-
 /**
- * Default class for the runtime execution context for XPath.
+ * Class definition, to represent XPath 3.1 expression's evaluation 
+ * context.
  * 
- * @xsl.usage advanced
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Gary L Peskin <garyp@apache.org>
+ * @author Myriam Midy <mmidy@apache.org>
+ * 
+ * @author Joseph Kesselman <keshlam@alum.mit.edu>
+ * @author Morris Kwan <mkwan@apache.org>, Ilene Seelemann <ilene@apache.org>, Henry Zongaro <zongaro@ca.ibm.com>,
+ *         Brian Minchau <minchau@apache.org>, Sarah McNamara <mcnamara@apache.org>
+ *         
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XPath 3.1 specific changes, to this class)         
+ * 
+ * @xsl.usage general
  */
-public class XPathContext extends DTMManager // implements ExpressionContext
+public class XPathContext extends XPath3StaticContext
 {
   
-  IntStack m_last_pushed_rtfdtm=new IntStack();
-  
-  /**
-   * Stack of cached "reusable" DTMs for Result Tree Fragments.
-   * This is a kluge to handle the problem of starting an RTF before
-   * the old one is complete.
-   * 
-   * %REVIEW% I'm using a Vector rather than Stack so we can reuse
-   * the DTMs if the problem occurs multiple times. I'm not sure that's
-   * really a net win versus discarding the DTM and starting a new one...
-   * but the retained RTF DTM will have been tail-pruned so should be small.
-   */
-  private Vector m_rtfdtm_stack=null;
+  private IntStack m_last_pushed_rtfdtm = new IntStack();
   
   /** Index of currently active RTF DTM in m_rtfdtm_stack */
-  private int m_which_rtfdtm=-1;
+  private int m_which_rtfdtm = -1;
   
   /**
    * Most recent "reusable" DTM for Global Result Tree Fragments. No stack is
    * required since we're never going to pop these.
    */
-  private SAX2RTFDTM m_global_rtfdtm=null;
+  private SAX2RTFDTM m_global_rtfdtm = null;
   
   /**
    * HashMap of cached the DTMXRTreeFrag objects, which are identified by DTM IDs.
@@ -102,77 +87,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   /**
    * state of the secure processing feature.
    */
-  private boolean m_isSecureProcessing = false;
-  
-  /**
-   *  This data value, represents the XPath 3.1's current evaluation 
-   *  context item. This is in addition to, XPath context item
-   *  retrieved in other ways, by Xalan-J implementation.
-   */
-  private XObject m_xpath3ContextItem = null;
-  
-  /**
-   *  This data value, represents the XPath 3.1's current evaluation 
-   *  context position.
-   */
-  private int m_xpath3ContextPosition = -1;
-  
-  /**
-   *  This data value, represents the XPath 3.1's current evaluation 
-   *  context size.
-   */
-  private int m_xpath3ContextSize = -1; 
-  
-  /**
-   * This data value, represents certain custom data (represented 
-   * as a java.util.Map object) within the current XPath 3.1 evaluation 
-   * context.
-   */
-  private Map<String, String> m_customDataMap = new HashMap<String, String>();
-  
-  private GregorianCalendar m_currentDateTime;
-  
-  private XSDuration m_timezone;
-  
-  /**
-   * We use this java.util.Map object, to store variable binding information 
-   * (i.e, mapping from variable name to its value) for implementations of 
-   * XPath 3.1 'inline function', 'for', 'let' and 'quantified' expressions.
-   * 
-   * We don't use, Xalan-J xpath variable stack for this purpose.
-   */
-  private Map<QName, XObject> xpathVarMap = new HashMap<QName, XObject>();
-  
-  /**
-   * The default collation uri (the default collation for Xalan-J's XSL 3 support 
-   * is, "Unicode Codepoint Collation").
-   */
-  private String m_default_collation = XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI;
-  
-  /**
-   * An XPathCollationSupport object instance to support, collations within XPath implementation.
-   */
-  private XPathCollationSupport m_collationSupport = new XPathCollationSupport(m_default_collation);
-	
-  /**
-   * Though XPathContext context extends 
-   * the DTMManager, it really is a proxy for this object, which 
-   * is the real DTMManager.
-   */
-  protected DTMManager m_dtmManager = DTMManager.newInstance(
-                   											org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
-  
-  /** 
-   * The value of this class field, represents the value returned by fn:position() 
-   * function when called within XSL instructions 'xsl:for-each-group' or 'xsl:analyze-string'.
-   */
-  private int m_pos;
-  
-  /** 
-   * The value of this class field, represents the value returned by fn:last() 
-   * function when called within XSL instructions 'xsl:for-each-group' or 'xsl:analyze-string'.
-   */
-  private int m_last;
+  private boolean m_isSecureProcessing = false; 
   
   /**
    * Return the DTMManager object. Though XPathContext context extends 
@@ -200,181 +115,9 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   {
     return m_isSecureProcessing;
   }
-  
-  /**
-   * Get an instance of a DTM, loaded with the content from the
-   * specified source.  If the unique flag is true, a new instance will
-   * always be returned.  Otherwise it is up to the DTMManager to return a
-   * new instance or an instance that it already created and may be being used
-   * by someone else.
-   * (I think more parameters will need to be added for error handling, and entity
-   * resolution).
-   *
-   * @param source the specification of the source object, which may be null, 
-   *               in which case it is assumed that node construction will take 
-   *               by some other means.
-   * @param unique true if the returned DTM must be unique, probably because it
-   * is going to be mutated.
-   * @param wsfilter Enables filtering of whitespace nodes, and may be null.
-   * @param incremental true if the construction should try and be incremental.
-   * @param doIndexing true if the caller considers it worth it to use 
-   *                   indexing schemes.
-   *
-   * @return a non-null DTM reference.
-   */
-  public DTM getDTM(javax.xml.transform.Source source, boolean unique, 
-                    DTMWSFilter wsfilter,
-                    boolean incremental,
-                    boolean doIndexing)
-  {
-    return m_dtmManager.getDTM(source, unique, wsfilter, 
-                               incremental, doIndexing);
-  }
-                             
-  /**
-   * Get an instance of a DTM that "owns" a node handle. 
-   *
-   * @param nodeHandle the nodeHandle.
-   *
-   * @return a non-null DTM reference.
-   */
-  public DTM getDTM(int nodeHandle)
-  {
-    return m_dtmManager.getDTM(nodeHandle);
-  }
 
   /**
-   * Given a W3C DOM node, try and return a DTM handle.
-   * Note: calling this may be non-optimal.
-   * 
-   * @param node Non-null reference to a DOM node.
-   * 
-   * @return a valid DTM handle.
-   */
-  public int getDTMHandleFromNode(org.w3c.dom.Node node)
-  {
-    return m_dtmManager.getDTMHandleFromNode(node);
-  }
-//
-//  
-  /**
-   * %TBD% Doc
-   */
-  public int getDTMIdentity(DTM dtm)
-  {
-    return m_dtmManager.getDTMIdentity(dtm);
-  }
-//  
-  /**
-   * Creates an empty <code>DocumentFragment</code> object. 
-   * @return A new <code>DocumentFragment handle</code>.
-   */
-  public DTM createDocumentFragment()
-  {
-    return m_dtmManager.createDocumentFragment();
-  }
-//  
-  /**
-   * Release a DTM either to a lru pool, or completely remove reference.
-   * DTMs without system IDs are always hard deleted.
-   * State: experimental.
-   * 
-   * @param dtm The DTM to be released.
-   * @param shouldHardDelete True if the DTM should be removed no matter what.
-   * @return true if the DTM was removed, false if it was put back in a lru pool.
-   */
-  public boolean release(DTM dtm, boolean shouldHardDelete)
-  {
-    // %REVIEW% If it's a DTM which may contain multiple Result Tree
-    // Fragments, we can't discard it unless we know not only that it
-    // is empty, but that the XPathContext itself is going away. So do
-    // _not_ accept the request. (May want to do it as part of
-    // reset(), though.)
-    if(m_rtfdtm_stack!=null && m_rtfdtm_stack.contains(dtm))
-    {
-      return false;
-    }
-  	
-    return m_dtmManager.release(dtm, shouldHardDelete);
-  }
-
-  /**
-   * Create a new <code>DTMIterator</code> based on an XPath
-   * <a href="http://www.w3.org/TR/xpath#NT-LocationPath>LocationPath</a> or
-   * a <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.
-   *
-   * @param xpathCompiler ??? Somehow we need to pass in a subpart of the
-   * expression.  I hate to do this with strings, since the larger expression
-   * has already been parsed.
-   *
-   * @param pos The position in the expression.
-   * @return The newly created <code>DTMIterator</code>.
-   */
-  public DTMCursorIterator createDTMIterator(Object xpathCompiler, int pos)
-  {
-    return m_dtmManager.createDTMIterator(xpathCompiler, pos);
-  }
-//
-  /**
-   * Create a new <code>DTMIterator</code> based on an XPath
-   * <a href="http://www.w3.org/TR/xpath#NT-LocationPath>LocationPath</a> or
-   * a <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.
-   *
-   * @param xpathString Must be a valid string expressing a
-   * <a href="http://www.w3.org/TR/xpath#NT-LocationPath>LocationPath</a> or
-   * a <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.
-   *
-   * @param presolver An object that can resolve prefixes to namespace URLs.
-   *
-   * @return The newly created <code>DTMIterator</code>.
-   */
-  public DTMCursorIterator createDTMIterator(String xpathString,
-          PrefixResolver presolver)
-  {
-    return m_dtmManager.createDTMIterator(xpathString, presolver);
-  }
-//
-  /**
-   * Create a new <code>DTMIterator</code> based only on a whatToShow and
-   * a DTMFilter.  The traversal semantics are defined as the descendant
-   * access.
-   *
-   * @param whatToShow This flag specifies which node types may appear in
-   *   the logical view of the tree presented by the iterator. See the
-   *   description of <code>NodeFilter</code> for the set of possible
-   *   <code>SHOW_</code> values.These flags can be combined using
-   *   <code>OR</code>.
-   * @param filter The <code>NodeFilter</code> to be used with this
-   *   <code>TreeWalker</code>, or <code>null</code> to indicate no filter.
-   * @param entityReferenceExpansion The value of this flag determines
-   *   whether entity reference nodes are expanded.
-   *
-   * @return The newly created <code>NodeIterator</code>.
-   */
-  public DTMCursorIterator createDTMIterator(int whatToShow,
-          DTMFilter filter, boolean entityReferenceExpansion)
-  {
-    return m_dtmManager.createDTMIterator(whatToShow, filter, entityReferenceExpansion);
-  }
-  
-  /**
-   * Create a new <code>DTMIterator</code> that holds exactly one node.
-   *
-   * @param node The node handle that the DTMIterator will iterate to.
-   *
-   * @return The newly created <code>DTMIterator</code>.
-   */
-  public DTMCursorIterator createDTMIterator(int node)
-  {
-    // DescendantIterator iter = new DescendantIterator();
-    DTMCursorIterator iter = new org.apache.xpath.axes.OneStepIteratorForward(Axis.SELF);
-    iter.setRoot(node, this);
-    return iter;
-    // return m_dtmManager.createDTMIterator(node);
-  }
-
-  /**
-   * Create an XPathContext instance.  This is equivalent to calling
+   * Create an XPathContext instance. This is equivalent to calling
    * the {@link #XPathContext(boolean)} constructor with the value
    * <code>true</code>.
    */
@@ -384,46 +127,49 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
   /**
    * Create an XPathContext instance.
-   * @param recursiveVarContext A <code>boolean</code> value indicating whether
-   *             the XPath context needs to support pushing of scopes for
-   *             variable resolution
+   * 
+   * @param recursiveVarContext         A <code>boolean</code> value indicating whether
+   *                                    the XPath context needs to support pushing of scopes for
+   *                                    variable resolution.
    */
   public XPathContext(boolean recursiveVarContext) {
-    m_prefixResolvers.push(null);
-    m_currentNodes.push(DTM.NULL);
-    m_currentExpressionNodes.push(DTM.NULL);
-    m_saxLocations.push(null);
-    m_variableStacks = recursiveVarContext ? new VariableStack()
-                                           : new VariableStack(1);
+	  m_prefixResolvers.push(null);
+	  m_currentNodes.push(DTM.NULL);
+	  m_currentExpressionNodes.push(DTM.NULL);
+	  m_saxLocations.push(null);
+	  m_variableStacks = recursiveVarContext ? new VariableStack() 
+			                                                      : new VariableStack(1);
   }
 
   /**
-   * Create an XPathContext instance.  This is equivalent to calling the
+   * Create an XPathContext instance. This is equivalent to calling the
    * constructor {@link #XPathContext(java.lang.Object,boolean)} with the
    * value of the second parameter set to <code>true</code>.
+   * 
    * @param owner Value that can be retrieved via the getOwnerObject() method.
    * @see #getOwnerObject
    */
   public XPathContext(Object owner)
   {
-    this(owner, true);
+	  this(owner, true);
   }
 
   /**
    * Create an XPathContext instance.
+   * 
    * @param owner Value that can be retrieved via the getOwnerObject() method.
    * @see #getOwnerObject
-   * @param recursiveVarContext A <code>boolean</code> value indicating whether
-   *             the XPath context needs to support pushing of scopes for
-   *             variable resolution
+   * @param recursiveVarContext           A <code>boolean</code> value indicating whether
+   *                                      the XPath context needs to support pushing of scopes for
+   *                                      variable resolution.
    */
   public XPathContext(Object owner, boolean recursiveVarContext) {
-    this(recursiveVarContext);
-    m_owner = owner;
-    try {
-      m_ownerGetErrorListener = m_owner.getClass().getMethod("getErrorListener", new Class[] {});
-    }
-    catch (NoSuchMethodException nsme) {}
+	  this(recursiveVarContext);
+	  m_owner = owner;
+	  try {
+		  m_ownerGetErrorListener = m_owner.getClass().getMethod("getErrorListener", new Class[] {});
+	  }
+	  catch (NoSuchMethodException nsme) {}
   }
 
   /**
@@ -431,37 +177,37 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public void reset()
   {
-    releaseDTMXRTreeFrags();
-  	// These couldn't be disposed of earlier (see comments in release()); zap them now.
-  	if(m_rtfdtm_stack!=null)
-  		 for (java.util.Enumeration e = m_rtfdtm_stack.elements() ; e.hasMoreElements() ;) 
-  		 	m_dtmManager.release((DTM)e.nextElement(), true);
+	  releaseDTMXRTreeFrags();
+	  // These couldn't be disposed of earlier (see comments in release()); zap them now.
+	  if(m_rtfdtm_stack!=null)
+		  for (java.util.Enumeration e = m_rtfdtm_stack.elements() ; e.hasMoreElements() ;) 
+			  m_dtmManager.release((DTM)e.nextElement(), true);
 
-    m_rtfdtm_stack=null; // drop our references too
-    m_which_rtfdtm=-1;
-    
-    if(m_global_rtfdtm!=null)
-  		 	m_dtmManager.release(m_global_rtfdtm,true);
-    m_global_rtfdtm=null;
-    
-  	
-    m_dtmManager = DTMManager.newInstance(
-                   org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
-                   
-    m_saxLocations.removeAllElements();   
-	m_axesIteratorStack.removeAllElements();
-	m_contextNodeLists.removeAllElements();
-	m_currentExpressionNodes.removeAllElements();
-	m_currentNodes.removeAllElements();
-	m_iteratorRoots.RemoveAllNoClear();
-	m_predicatePos.removeAllElements();
-	m_predicateRoots.RemoveAllNoClear();
-	m_prefixResolvers.removeAllElements();
-	
-	m_prefixResolvers.push(null);
-    m_currentNodes.push(DTM.NULL);
-    m_currentExpressionNodes.push(DTM.NULL);
-    m_saxLocations.push(null);
+	  m_rtfdtm_stack=null; // drop our references too
+	  m_which_rtfdtm=-1;
+
+	  if(m_global_rtfdtm!=null)
+		  m_dtmManager.release(m_global_rtfdtm,true);
+	  m_global_rtfdtm=null;
+
+
+	  m_dtmManager = DTMManager.newInstance(
+			                               org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+
+	  m_saxLocations.removeAllElements();   
+	  m_axesIteratorStack.removeAllElements();
+	  m_contextNodeLists.removeAllElements();
+	  m_currentExpressionNodes.removeAllElements();
+	  m_currentNodes.removeAllElements();
+	  m_iteratorRoots.RemoveAllNoClear();
+	  m_predicatePos.removeAllElements();
+	  m_predicateRoots.RemoveAllNoClear();
+	  m_prefixResolvers.removeAllElements();
+
+	  m_prefixResolvers.push(null);
+	  m_currentNodes.push(DTM.NULL);
+	  m_currentExpressionNodes.push(DTM.NULL);
+	  m_saxLocations.push(null);
   }
 
   /** The current stylesheet locator. */
@@ -490,13 +236,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   /**
    * Push a slot on the locations stack so that setSAXLocator can be 
    * repeatedly called.
-   *
    */
   public void pushSAXLocatorNull()
   {
     m_saxLocations.push(null);
   }
-
 
   /**
    * Pop the current locater.
@@ -856,8 +600,6 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     m_currentExpressionNodes.quickPop(1);
     m_prefixResolvers.pop();
   }
-
-
 
   /**
    * Set the current context node.
@@ -1424,118 +1166,6 @@ public class XPathContext extends DTMManager // implements ExpressionContext
       iter.remove();
     }
     m_DTMXRTreeFrags = null;
-  }
-  
-  public FunctionTable getFunctionTable() {
-	  return new FunctionTable();
-  }
-
-  public Map<String, String> getCustomDataMap() {
-	  return m_customDataMap;
-  }
-
-  public void setCustomDataMap(Map<String, String> customDataMap) {
-	  this.m_customDataMap = customDataMap;
-  }
-
-  public XObject getXPath3ContextItem() {
-	  return m_xpath3ContextItem;
-  }
-
-  public void setXPath3ContextItem(XObject xpath3ContextItem) {
-	  this.m_xpath3ContextItem = xpath3ContextItem;
-  }
-
-  public int getXPath3ContextPosition() {
-	  return m_xpath3ContextPosition;
-  }
-
-  public void setXPath3ContextPosition(int xpath3ContextPosition) {
-	  this.m_xpath3ContextPosition = xpath3ContextPosition;
-  }
-
-  public int getXPath3ContextSize() {
-	  return m_xpath3ContextSize;
-  }
-
-  public void setXPath3ContextSize(int xpath3ContextSize) {
-	  this.m_xpath3ContextSize = xpath3ContextSize;
-  }
-
-  public GregorianCalendar getCurrentDateTime() {
-	  if (m_currentDateTime == null) {
-		  m_currentDateTime = new GregorianCalendar(TimeZone.getDefault());
-	  }
-
-	  return m_currentDateTime;
-  }
-
-  public void setCurrentDateTime(GregorianCalendar currentDateTime) {
-	  this.m_currentDateTime = currentDateTime;
-  }
-
-  /**
-   * Get the value of implicit timezone.
-   * 
-   * @return        Implicit timezone as xs:dayTimeDuration value. 
-   */
-  public XSDuration getTimezone() {
-	  if (m_timezone == null) {
-		  ZonedDateTime zonedDateTime = ZonedDateTime.now();
-		  ZoneOffset zoneOffset = zonedDateTime.getOffset();
-		  String zoneOffsetStr = zoneOffset.toString();
-		  String[] zoneOffsetStrParts = zoneOffsetStr.split("\\+|\\-|:");
-		  int zoneHrs = 0;
-		  int zoneMinutes = 0;
-		  if (zoneOffsetStrParts.length > 1) {
-			  zoneHrs = (new Integer(zoneOffsetStrParts[1])).intValue();
-			  zoneMinutes = (new Integer(zoneOffsetStrParts[2])).intValue();
-		  }
-		  boolean isNegativeTimezone = !zoneOffsetStr.startsWith("+");
-		  m_timezone = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, isNegativeTimezone);
-	  }
-
-	  return m_timezone;
-  }
-
-  public void setTimezone(XSDuration timezone) {
-	  this.m_timezone = timezone;
-  }
-
-  public Map<QName, XObject> getXPathVarMap() {
-	  return xpathVarMap;
-  }
-
-  public void setXPathVarMap(Map<QName, XObject> xpathVarMap) {
-	  this.xpathVarMap = xpathVarMap;
-  }
-
-  public XPathCollationSupport getXPathCollationSupport() {
-	  return m_collationSupport;
-  }
-
-  public String getDefaultCollation() {
-	  return m_default_collation;
-  }
-  
-  public XSL3FunctionService getXSLFunctionService() {
-	  return XSLFunctionBuilder.getXSLFunctionService(); 
-  }
-
-  public void setPos(int pos) {
-	 this.m_pos = pos;
-  }
-  
-  public int getPos() {
-	 return this.m_pos;
-  }
-
-  public void setLast(int last) {
-	 this.m_last = last;	
-  }
-  
-  public int getLast() {
-     return this.m_last;
   }
   
 }

@@ -49,27 +49,38 @@ import org.xml.sax.InputSource;
  * <p>The system property that determines which Factory implementation
  * to create is named "org.apache.xml.utils.DTMFactory". This
  * property names a concrete subclass of the DTMFactory abstract
- *  class. If the property is not defined, a platform default is be used.</p>
+ * class. If the property is not defined, a platform default is be used.</p>
  *
  * <p>An instance of this class <emph>must</emph> be safe to use across
  * thread instances.  It is expected that a client will create a single instance
- * of a DTMManager to use across multiple threads.  This will allow sharing
+ * of a DTMManager to use across multiple threads. This will allow sharing
  * of DTMs across multiple processes.</p>
  *
- * <p>Note: this class is incomplete right now.  It will be pretty much
+ * <p>Note: this class is incomplete right now. It will be pretty much
  * modeled after javax.xml.transform.TransformerFactory in terms of its
  * factory support.</p>
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Gary L Peskin <garyp@apache.org>
+ * @author Myriam Midy <mmidy@apache.org>
+ * 
+ * @author Joseph Kesselman <keshlam@alum.mit.edu>
+ * @author Morris Kwan <mkwan@apache.org>, Ilene Seelemann <ilene@apache.org>, Henry Zongaro <zongaro@ca.ibm.com>,
+ *         Brian Minchau <minchau@apache.org>, Sarah McNamara <mcnamara@apache.org>
+ *         
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XPath 3.1 specific changes, to this class)
+ *         
+ * @xsl.usage general         
  */
 public abstract class DTMManager
 {
 
-  /** The default property name to load the manager. */
-  private static final String defaultPropName =
-    "org.apache.xml.dtm.DTMManager";
+  /** The default property name to load DTMManager object instance by jvm */
+  private static final String defaultPropName = "org.apache.xml.dtm.DTMManager";
   
-  /** The default class name to use as the manager. */
-  private static String defaultClassName =
-    "org.apache.xml.dtm.ref.DTMManagerDefault";
+  /** The default class name to use as DTMManager object instance */
+  private static String defaultClassName = "org.apache.xml.dtm.ref.DTMManagerDefault";
 
   /**
    * Factory for creating XMLString objects.
@@ -560,39 +571,27 @@ public abstract class DTMManager
    */
   public static final int IDENT_DTM_DEFAULT = ~IDENT_NODE_DEFAULT;
 
-  /** This is the maximum number of DTMs available.  The highest DTM is
-    * one less than this.
+  /** 
+   * This is the maximum number of DTMs available. Maximum DTM 
+   * number is one less than this.
    */
   public static final int IDENT_MAX_DTMS = (IDENT_DTM_DEFAULT >>> IDENT_DTM_NODE_BITS) + 1;
 
 
   /**
-   * %TBD% Doc
-   *
-   * NEEDSDOC @param dtm
-   *
-   * NEEDSDOC ($objectName$) @return
+   * Given a DTM, find the id number in the DTM tables which addresses
+   * the start of the document.
    */
   public abstract int getDTMIdentity(DTM dtm);
 
-  /**
-   * %TBD% Doc
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
   public int getDTMIdentityMask()
   {
-    return IDENT_DTM_DEFAULT;
+	  return IDENT_DTM_DEFAULT;
   }
 
-  /**
-   * %TBD% Doc
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
   public int getNodeIdentityMask()
   {
-    return IDENT_NODE_DEFAULT;
+	  return IDENT_NODE_DEFAULT;
   }
 
 }

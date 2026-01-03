@@ -791,19 +791,24 @@ public class ElemForEachGroup extends ElemTemplateElement
         			xctxt.setPos(idx + 1);    							// Set value of fn:position() function within xsl:for-each-group
         			xctxt.setLast(m_sortedGroups.size());               // Set value of the number of groups formed
 
-        			for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
-        					templateElem = templateElem.m_nextSibling) {
+        			try {
         				/**
         				 * Set context item for whole of group contents evaluation, to the initial
         				 * item of the group.
         				 */
         				xctxt.pushCurrentNode((groupNodesDtmHandles.get(0)).intValue());
 
-        				templateElem.setGroupingKey(groupingKey);
-        				templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
-        				xctxt.setSAXLocator(templateElem);
-        				transformer.setCurrentElement(templateElem);                   
-        				templateElem.execute(transformer);
+        				for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
+        						                                                            templateElem = templateElem.m_nextSibling) {        				
+        					templateElem.setGroupingKey(groupingKey);
+        					templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
+        					xctxt.setSAXLocator(templateElem);
+        					transformer.setCurrentElement(templateElem);                   
+        					templateElem.execute(transformer);
+        				}
+        			}
+        			finally {
+        				xctxt.popCurrentNode();
         			}
         		}
         	}
@@ -844,28 +849,35 @@ public class ElemForEachGroup extends ElemTemplateElement
         			 * Loop through these groups formed by xsl:for-each-group instruction, and process
         			 * the XSL contents of each group.
         			 */
-        			for (int idx = 0; idx < groupingKeyAndNodeHandlePairList.size(); idx++) {
+        			
+        			int size1 = groupingKeyAndNodeHandlePairList.size();        			
+        			for (int idx = 0; idx < size1; idx++) {
         				GroupingKeyAndNodeHandlePair groupingKeyNodeHandlePair = groupingKeyAndNodeHandlePairList.get(idx);
 
         				Object groupingKey = groupingKeyNodeHandlePair.getGroupingKey();              // current-grouping-key() value, for this group
         				List<Integer> groupNodesDtmHandles = xslForEachGroupMap.get(groupingKey);     // current-group() contents, for this group
 
         				xctxt.setPos(idx + 1);										      // Set value of fn:position() function within xsl:for-each-group
-        				xctxt.setLast(groupingKeyAndNodeHandlePairList.size());		          // Set value of the number of groups formed                        
+        				xctxt.setLast(size1);		                                      // Set value of the number of groups formed                        
 
-        				for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
-        																						templateElem = templateElem.m_nextSibling) {
+        				try {
         					/**
         					 * Set context item for whole of group contents evaluation, to the
         					 * initial item of the group.
         					 */
         					xctxt.pushCurrentNode((groupNodesDtmHandles.get(0)).intValue());
 
-        					templateElem.setGroupingKey(groupingKey);
-        					templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
-        					xctxt.setSAXLocator(templateElem);
-        					transformer.setCurrentElement(templateElem);                   
-        					templateElem.execute(transformer);
+        					for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
+        							                                                             templateElem = templateElem.m_nextSibling) {        					
+        						templateElem.setGroupingKey(groupingKey);
+        						templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
+        						xctxt.setSAXLocator(templateElem);
+        						transformer.setCurrentElement(templateElem);                   
+        						templateElem.execute(transformer);
+        					}
+        				}
+        				finally {
+        					xctxt.popCurrentNode();
         				}
         			}
         		}
@@ -874,28 +886,35 @@ public class ElemForEachGroup extends ElemTemplateElement
         			 * Loop through the groups formed by xsl:for-each-group instruction using 
         			 * 'group-adjacent' attribute, and process the XSL contents of each group.
         			 */
-        			for (int idx = 0; idx < xslForEachGroupAdjacentList.size(); idx++) {
+        			
+        			int size1 = xslForEachGroupAdjacentList.size();
+        			for (int idx = 0; idx < size1; idx++) {
         				GroupingKeyAndGroupPair groupingKeyAndGroupPair = xslForEachGroupAdjacentList.get(idx);
 
         				Object groupingKey = groupingKeyAndGroupPair.getGroupingKey();                             // current-grouping-key() value, for this group
         				List<Integer> groupNodesDtmHandles = groupingKeyAndGroupPair.getGroupNodeDtmHandles();    // current-group() contents, for this group
 
         				xctxt.setPos(idx + 1);										                   // Set value of fn:position() function within xsl:for-each-group
-        				xctxt.setLast(xslForEachGroupAdjacentList.size());		                           // Set value of the number of groups formed                        
+        				xctxt.setLast(size1);		                                                   // Set value of the number of groups formed                        
 
-        				for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
-        																						templateElem = templateElem.m_nextSibling) {
+        				try {
         					/**
         					 * Set context item for whole of group contents evaluation, to the
         					 * initial item of the group.
         					 */
         					xctxt.pushCurrentNode((groupNodesDtmHandles.get(0)).intValue());
 
-        					templateElem.setGroupingKey(groupingKey);
-        					templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
-        					xctxt.setSAXLocator(templateElem);
-        					transformer.setCurrentElement(templateElem);                   
-        					templateElem.execute(transformer);
+        					for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
+        							                                                            templateElem = templateElem.m_nextSibling) {        					
+        						templateElem.setGroupingKey(groupingKey);
+        						templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
+        						xctxt.setSAXLocator(templateElem);
+        						transformer.setCurrentElement(templateElem);                   
+        						templateElem.execute(transformer);
+        					}
+        				}
+        				finally {
+        					xctxt.popCurrentNode();
         				}
         			}
         		}
@@ -906,30 +925,36 @@ public class ElemForEachGroup extends ElemTemplateElement
         			 * instruction, and process the XSL contents of each group.
         			 */
 
-        			for (int idx = 0; idx < xslForEachGroupStartingWithEndingWith.size(); idx++) {
+        			int size1 = xslForEachGroupStartingWithEndingWith.size();
+        			for (int idx = 0; idx < size1; idx++) {
         				List<Integer> groupNodesDtmHandles = xslForEachGroupStartingWithEndingWith.get(idx);
 
         				xctxt.setPos(idx + 1);											// Set value of fn:position() function within xsl:for-each-group
-        				xctxt.setLast(xslForEachGroupStartingWithEndingWith.size());	        // Set value of the number of groups formed                       
+        				xctxt.setLast(size1);	                                        // Set value of the number of groups formed                       
 
-        				for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
-        																						templateElem = templateElem.m_nextSibling) {                   
+        				try {
         					/**
         					 * Set context item for whole of group contents evaluation, to the initial
         					 * item of the group.
         					 */
         					xctxt.pushCurrentNode((groupNodesDtmHandles.get(0)).intValue());
 
-        					/**
-        					 * The grouping key is absent when, attributes 'group-starting-with' or
-        					 * 'group-ending-with' are used.
-        					 */
-        					templateElem.setGroupingKey(FuncCurrentGroupingKey.XSL_GROUPING_KEY_ABSENT);
-        					
-        					templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
-        					xctxt.setSAXLocator(templateElem);
-        					transformer.setCurrentElement(templateElem);                   
-        					templateElem.execute(transformer);
+        					for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
+        							                                                             templateElem = templateElem.m_nextSibling) {                           					
+        						/**
+        						 * The grouping key is absent when, attributes 'group-starting-with' or
+        						 * 'group-ending-with' are used.
+        						 */
+        						templateElem.setGroupingKey(FuncCurrentGroupingKey.XSL_GROUPING_KEY_ABSENT);
+
+        						templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
+        						xctxt.setSAXLocator(templateElem);
+        						transformer.setCurrentElement(templateElem);                   
+        						templateElem.execute(transformer);
+        					}
+        				}
+        				finally {
+        					xctxt.popCurrentNode();
         				}
         			}
         		}
@@ -951,13 +976,6 @@ public class ElemForEachGroup extends ElemTemplateElement
         	xctxt.setLast(0);
         	sourceNodes.detach();
         }
-
-        /**
-         * When a particular xsl:for-each-group's evaluation has completed, set the XPath evaluation 
-         * context node to the node which was the context node before xsl:for-each-group evaluation 
-         * was started.
-         */         
-        xctxt.pushCurrentNode(currentNode);
   }
   
   /**

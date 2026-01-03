@@ -81,6 +81,7 @@ import org.apache.xml.utils.ObjectVector;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
+import org.apache.xpath.XPath3StaticContext;
 import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.LetExprVarBinding;
@@ -1334,18 +1335,18 @@ public class XPathParser
       // a FilterExpr. 
       id = Keywords.lookupNodeTest(key);
       if (id == null) {
-    	if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri)) {
+    	if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri)) {
     	   // This check is there, to avoid XPath parse conflicts with map & array 
     	   // functions with same local name as functions from namespace http://www.w3.org/2005/xpath-functions. 
     	   id = m_functionTable.getFunctionIdForXPathBuiltinFuncs(key);
     	}
-    	else if ((FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(nsUri)) {    	       	   
+    	else if ((XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(nsUri)) {    	       	   
      	   id = m_functionTable.getFunctionIdForXPathBuiltinMathFuncs(key);
      	}
-    	else if ((FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {    	       	   
+    	else if ((XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {    	       	   
     	   id = m_functionTable.getFunctionIdForXPathBuiltinMapFuncs(key);
     	}
-    	else if ((FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {     	   
+    	else if ((XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {     	   
      	  id = m_functionTable.getFunctionIdForXPathBuiltinArrayFuncs(key);
      	}
     	else {
@@ -5056,10 +5057,10 @@ public class XPathParser
        if (idx != -1) {
     	  String xpathLhsStr = xpathExprStr.substring(0, idx);    	  
     	  String xpathRhsStr = xpathExprStr.substring(idx + 1);
-    	  if (xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI) || 
-								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
-								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) ||
-								    			  		xpathLhsStr.endsWith(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
+    	  if (xpathLhsStr.endsWith(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI) || 
+													    			  		xpathLhsStr.endsWith(XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
+													    			  		xpathLhsStr.endsWith(XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) ||
+													    			  		xpathLhsStr.endsWith(XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
               restoreTokenQueueScanPosition(prevTokQueueScanPosition);
               
     		  Expr(); 
@@ -5125,17 +5126,17 @@ public class XPathParser
 
 	  if (lookahead(':', 1))
 	  {
-		  if (tokenIs(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI)) 
+		  if (tokenIs(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI)) 
 		  {
 			  nextToken();
 			  consumeExpected(':');
 
-			  int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
+			  int funcTok = getFunctionToken(m_token, XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
 
 			  if (-1 == funcTok)
 			  {
 				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-						  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
+						  new Object[] {"{" + XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
 			  }         
 
 			  switch (funcTok)
@@ -5154,17 +5155,17 @@ public class XPathParser
 
 			  nextToken();
 		  }
-		  else if (tokenIs(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI)) 
+		  else if (tokenIs(XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI)) 
 		  {
 			  nextToken();
 			  consumeExpected(':');
 
-			  int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
+			  int funcTok = getFunctionToken(m_token, XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
 
 			  if (-1 == funcTok)
 			  {
 				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-						  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI + "}" + m_token + "()"});
+						  new Object[] {"{" + XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI + "}" + m_token + "()"});
 			  }         
 
 			  switch (funcTok)
@@ -5183,17 +5184,17 @@ public class XPathParser
 
 			  nextToken();
 		  }
-		  else if (tokenIs(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI)) 
+		  else if (tokenIs(XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI)) 
 		  {
 			  nextToken();
 			  consumeExpected(':');
 
-			  int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
+			  int funcTok = getFunctionToken(m_token, XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
 
 			  if (-1 == funcTok)
 			  {
 				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-						  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI + "}" + m_token + "()"});
+						  new Object[] {"{" + XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI + "}" + m_token + "()"});
 			  }         
 
 			  switch (funcTok)
@@ -5212,17 +5213,17 @@ public class XPathParser
 
 			  nextToken();
 		  }
-		  else if (tokenIs(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) 
+		  else if (tokenIs(XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) 
 		  {
 			  nextToken();
 			  consumeExpected(':');
 
-			  int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
+			  int funcTok = getFunctionToken(m_token, XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
 
 			  if (-1 == funcTok)
 			  {
 				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-						  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});
+						  new Object[] {"{" + XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});
 			  }         
 
 			  switch (funcTok)
@@ -5256,12 +5257,12 @@ public class XPathParser
 	  }
 	  else
 	  {
-		  int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
+		  int funcTok = getFunctionToken(m_token, XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
 
 		  if (-1 == funcTok)
 		  {
 			  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-					  new Object[]{"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
+					  new Object[]{"{" + XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
 		  }      
 
 		  switch (funcTok)
@@ -7878,9 +7879,9 @@ public class XPathParser
     */
 	private void handleXPathParseNamedFuncRefWithNSQual(int opPos) throws TransformerException {				    	  
 
-		if (tokenIs(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI) || tokenIs(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
-																  tokenIs(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) || 
-				                                                  tokenIs(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
+		if (tokenIs(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI) || tokenIs(XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
+																	    tokenIs(XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) || 
+					                                                    tokenIs(XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
 			String funcNamespaceUri = m_token;
 			String nextTokenToAnalyze = getTokenRelative(1);
 			
@@ -8017,7 +8018,7 @@ public class XPathParser
 		TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
 
 		String funcName = m_token.substring(0, m_token.indexOf('#'));
-		int funcTok = getFunctionToken(funcName, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
+		int funcTok = getFunctionToken(funcName, XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
 		if (funcTok >= 0) {
 			String namedFuncRef = m_token;
 			nextToken();
@@ -8025,7 +8026,7 @@ public class XPathParser
 
 			m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
 			m_xpathNamedFunctionReference.setFuncName(funcName);
-			m_xpathNamedFunctionReference.setFuncNamespace(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);			
+			m_xpathNamedFunctionReference.setFuncNamespace(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);			
 			String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
 			if ((Keywords.FUNC_CONCAT_STRING).equals(funcName)) {
 			   m_xpathNamedFunctionReference.setConcatArity(Integer.valueOf(funcArityStr));
@@ -8532,10 +8533,10 @@ public class XPathParser
   	     char chr2 = str.charAt(strLength - 1);
   	     if (chr2 == ')') {
   	    	String str2 = str.substring(0, idx1); 
-  	    	int funcTok1 = getFunctionToken(str2, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
-  	    	int funcTok2 = getFunctionToken(str2, FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
-  	    	int funcTok3 = getFunctionToken(str2, FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
-  	    	int funcTok4 = getFunctionToken(str2, FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
+  	    	int funcTok1 = getFunctionToken(str2, XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
+  	    	int funcTok2 = getFunctionToken(str2, XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
+  	    	int funcTok3 = getFunctionToken(str2, XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
+  	    	int funcTok4 = getFunctionToken(str2, XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
   	    	if ((funcTok1 > -1) || (funcTok2 > -1) || (funcTok3 > -1) || (funcTok4 > -1)) {
   	    		result = true;
   	    	}
