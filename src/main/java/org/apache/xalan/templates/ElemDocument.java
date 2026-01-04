@@ -84,7 +84,7 @@ public class ElemDocument extends ElemTemplateElement {
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * @return The token id for this element
+   * @return           The token id for this element
    */
   public int getXSLToken()
   {

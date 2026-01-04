@@ -37,7 +37,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
-import org.apache.xpath.XPath3StaticContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.objects.XBoolean;
@@ -428,7 +428,7 @@ public class FuncJsonToXml extends JsonFunction
     private void constructXmlDom(Object jsonObj, Document document, Node parentNode, String keyVal) {
     	
     	if (jsonObj instanceof JSONObject) {
-    		Element mapElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.MAP);
+    		Element mapElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.MAP);
     		parentNode.appendChild(mapElem);    		
     		if (keyVal != null) {
     		   mapElem.setAttribute(XSLJsonConstants.KEY, keyVal);	
@@ -440,28 +440,28 @@ public class FuncJsonToXml extends JsonFunction
 	      	   Object value = ((JSONObject)jsonObj).get(key);
 	      	   
 	      	   if (value instanceof String) {
-	      		 Element strElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
+	      		 Element strElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
 	      		 strElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		 Text text = document.createTextNode((String)value);
 	      		 strElem.appendChild(text);
 	      		 mapElem.appendChild(strElem);
 	      	   }
 	      	   else if (value instanceof Number) {
-	      		 Element numberElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NUMBER);
+	      		 Element numberElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NUMBER);
 	      		 numberElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		 Text text = document.createTextNode(value.toString());
 	      		 numberElem.appendChild(text);
 	      		 mapElem.appendChild(numberElem);
 	      	   }
 	      	   else if (value instanceof Boolean) {
-	      		 Element boolElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.BOOLEAN);
+	      		 Element boolElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.BOOLEAN);
 	      		 boolElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		 Text text = document.createTextNode(value.toString());
 	      		 boolElem.appendChild(text);
 	      		 mapElem.appendChild(boolElem);
 	      	   }	      	   
 	      	   else if (value instanceof JSONArray) {
-	      		  Element arrayElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.ARRAY);
+	      		  Element arrayElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.ARRAY);
 	      		  arrayElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		  mapElem.appendChild(arrayElem);
 	      		  JSONArray jsonArr = (JSONArray)value;
@@ -469,25 +469,25 @@ public class FuncJsonToXml extends JsonFunction
 	    		  for (int idx = 0; idx < arrLen; idx++) {
 	    			  Object arrItem = jsonArr.get(idx);
 	    			  if (arrItem instanceof String) {
-	    				  Element strElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
+	    				  Element strElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
 	    				  Text text = document.createTextNode((String)arrItem);
 	    				  strElem.appendChild(text);
 	    				  arrayElem.appendChild(strElem);	 
 	    			  }
 	    			  else if (arrItem instanceof Number) {
-	    				  Element numberElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NUMBER);
+	    				  Element numberElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NUMBER);
 	    				  Text text = document.createTextNode(arrItem.toString());
 	    				  numberElem.appendChild(text);
 	    				  arrayElem.appendChild(numberElem); 
 	    			  }
 	    			  else if (arrItem instanceof Boolean) {
-	    				  Element boolElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.BOOLEAN);
+	    				  Element boolElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.BOOLEAN);
 	    				  Text text = document.createTextNode(arrItem.toString());
 	    				  boolElem.appendChild(text);
 	    				  arrayElem.appendChild(boolElem);  
 	    			  }
 	    			  else if (JSONObject.NULL.equals(arrItem)) {
-	         			  Element nullElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NULL);
+	         			  Element nullElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NULL);
 	         	          arrayElem.appendChild(nullElem);  
 	         		  }
 	    			  else if (arrItem instanceof JSONObject) {
@@ -502,7 +502,7 @@ public class FuncJsonToXml extends JsonFunction
 	      		  constructXmlDom(value, document, mapElem, key); 
 	      	   }
 	      	   else if ((JSONObject.NULL).equals(value)) {
-	      		  Element nullElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, "null");
+	      		  Element nullElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, "null");
 	      		  nullElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		  mapElem.appendChild(nullElem);
 	      	   }
@@ -511,10 +511,10 @@ public class FuncJsonToXml extends JsonFunction
     	else if (jsonObj instanceof JSONArray) {
     		Element arrayElem = null;
     		if (parentNode.getNodeType() == Node.DOCUMENT_NODE) {
-    		   arrayElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.ARRAY);
+    		   arrayElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.ARRAY);
      		}
      		else {
-     		   arrayElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.ARRAY);
+     		   arrayElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.ARRAY);
      		}
     		
      		parentNode.appendChild(arrayElem);
@@ -528,25 +528,25 @@ public class FuncJsonToXml extends JsonFunction
     		for (int idx = 0; idx < arrLen; idx++) {
     		   Object arrItem = jsonArr.get(idx);
     		   if (arrItem instanceof String) {
-    			  Element strElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
+    			  Element strElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
   	      		  Text text = document.createTextNode((String)arrItem);
   	      		  strElem.appendChild(text);
   	      		  arrayElem.appendChild(strElem);	 
     		   }
     		   else if (arrItem instanceof Number) {
-    			  Element numberElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NUMBER);
+    			  Element numberElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NUMBER);
    	      		  Text text = document.createTextNode(arrItem.toString());
    	      		  numberElem.appendChild(text);
    	      		  arrayElem.appendChild(numberElem); 
     		   }
     		   else if (arrItem instanceof Boolean) {
-    			  Element boolElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.BOOLEAN);
+    			  Element boolElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.BOOLEAN);
     	          Text text = document.createTextNode(arrItem.toString());
     	          boolElem.appendChild(text);
     	          arrayElem.appendChild(boolElem);  
     		   }
     		   else if ((JSONObject.NULL).equals(arrItem)) {
-     			  Element nullElem = document.createElementNS(XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NULL);
+     			  Element nullElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NULL);
      	          arrayElem.appendChild(nullElem);  
      		   }
     		   else if (arrItem instanceof JSONObject) {

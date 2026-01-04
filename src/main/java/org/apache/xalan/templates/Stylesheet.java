@@ -359,7 +359,7 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	}
 	
 	/**
-	 * This class field, represents the value of "xpath-default-namespace" 
+	 * Class field, that represents the value of "xpath-default-namespace" 
 	 * attribute.
 	 */
 	private String m_xpath_default_namespace = null;
@@ -384,7 +384,7 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	}
 	
 	/**
-	 * This class field, represents the value of "expand-text" 
+	 * Class field, that represents the value of "expand-text" 
 	 * attribute.
 	 */
 	private boolean m_expand_text;

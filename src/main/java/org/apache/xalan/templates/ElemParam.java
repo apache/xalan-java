@@ -113,7 +113,7 @@ public class ElemParam extends ElemVariable
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * @return The token ID of the element
+   * @return The token id of the element
    */
   public int getXSLToken()
   {

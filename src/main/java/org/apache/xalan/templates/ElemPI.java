@@ -107,7 +107,7 @@ public class ElemPI extends ElemTemplateElement
   private boolean m_expand_text_declared;
   
   /**
-   * This class field, represents the value of "expand-text" 
+   * Class field, that represents the value of "expand-text" 
    * attribute.
    */
   private boolean m_expand_text;
@@ -223,7 +223,7 @@ public class ElemPI extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * @return The token ID for the element
+   * @return The token id for the element
    */
   public int getXSLToken()
   {

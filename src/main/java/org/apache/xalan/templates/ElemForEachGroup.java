@@ -129,25 +129,25 @@ public class ElemForEachGroup extends ElemTemplateElement
   private Vector m_sortElems = null;
   
   /**
-   * This class field, represents the value of "xpath-default-namespace" 
+   * Class field, that represents the value of "xpath-default-namespace" 
    * attribute.
    */
   private String m_xpath_default_namespace = null;
   
   /**
-   * This class field, represents the value of "expand-text" 
+   * Class field, that represents the value of "expand-text" 
    * attribute.
    */
   private boolean m_expand_text;
   
   /**
-   * This class field, represents xsl:for-each-group instruction's
+   * Class field, that represents xsl:for-each-group instruction's
    * sorted list of groups.
    */
   private List<GroupingKeyAndGroupPair> m_sortedGroups = null;
   
   /**
-   * The class constructor.
+   * Class constructor.
    */
   public ElemForEachGroup() {}
   
@@ -436,7 +436,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * @return The token ID for this element
+   * @return           The token id for this element
    */
   public int getXSLToken()
   {
@@ -892,7 +892,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         				GroupingKeyAndGroupPair groupingKeyAndGroupPair = xslForEachGroupAdjacentList.get(idx);
 
         				Object groupingKey = groupingKeyAndGroupPair.getGroupingKey();                             // current-grouping-key() value, for this group
-        				List<Integer> groupNodesDtmHandles = groupingKeyAndGroupPair.getGroupNodeDtmHandles();    // current-group() contents, for this group
+        				List<Integer> groupNodesDtmHandles = groupingKeyAndGroupPair.getGroupNodeDtmHandles();     // current-group() contents, for this group
 
         				xctxt.setPos(idx + 1);										                   // Set value of fn:position() function within xsl:for-each-group
         				xctxt.setLast(size1);		                                                   // Set value of the number of groups formed                        
@@ -998,7 +998,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  try {
 		  int pos = 0;
 		  
-		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+		  while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
 			  FuncPosition.m_forEachGroupGroupByPos = ++pos; 
 			  XObject xpathEvalResult = m_groupByExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());
 			  Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
@@ -1083,7 +1083,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  
 	  if (!isInpSeqAllAtomicValues) {
 		  int idx = 0;
-		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+		  while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
 			  allNodeHandleList.add(Integer.valueOf(nextNode));
 			  DTM dtm = xctxt.getDTM(nextNode);		  
 			  if (idx == 0) {
@@ -1092,7 +1092,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 				  groupStartingWithEvalResult = m_groupStartingWithExpression.execute(xctxt, parentNode, xctxt.getNamespaceContext());
 				  XMLNodeCursorImpl grpStartingWithNodeInit = (XMLNodeCursorImpl)groupStartingWithEvalResult;
 				  DTMCursorIterator dtmCursorIter = grpStartingWithNodeInit.getContainedIter();
-				  while (DTM.NULL != (nextNode = dtmCursorIter.nextNode())) {            	 
+				  while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {            	 
 					  grpStartNodeHandles.add(Integer.valueOf(nextNode)); 
 				  }				  		  			  
 			  }
@@ -1101,7 +1101,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 		  }
 	  }
 	  else {
-		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+		  while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
 			  allNodeHandleList.add(Integer.valueOf(nextNode));
 			  DTM dtm = xctxt.getDTM(nextNode);
 			  Node node = dtm.getNode(nextNode);
@@ -1198,7 +1198,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  
 	  if (!isInpSeqAllAtomicValues) {
 		  int idx = 0;
-		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+		  while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
 			  allNodeHandleList.add(Integer.valueOf(nextNode));		  
 			  DTM dtm = xctxt.getDTM(nextNode);
 			  if (idx == 0) {
@@ -1206,7 +1206,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 				  XObject groupStartingWithEvalResult = m_groupEndingWithExpression.execute(xctxt, parentNode, xctxt.getNamespaceContext());
 				  XMLNodeCursorImpl grpStartingWithNodeInit = (XMLNodeCursorImpl)groupStartingWithEvalResult;
 				  DTMCursorIterator dtmCursorIter = grpStartingWithNodeInit.getContainedIter();
-				  while (DTM.NULL != (nextNode = dtmCursorIter.nextNode())) {            	 
+				  while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {            	 
 					  grpEndNodeHandles.add(Integer.valueOf(nextNode)); 
 				  }
 			  }
@@ -1215,7 +1215,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 		  }
 	  }
 	  else {
-		  while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+		  while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
 			  allNodeHandleList.add(Integer.valueOf(nextNode));
 			  DTM dtm = xctxt.getDTM(nextNode);			  
 			  Node node = dtm.getNode(nextNode);
@@ -1315,7 +1315,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 	 int idx = 0;
 	 int nextNode;
 	 
-	 while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {	     
+	 while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {	     
 	     XObject xpathEvalResult = m_groupAdjacentExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());                 
 	     Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
 	     

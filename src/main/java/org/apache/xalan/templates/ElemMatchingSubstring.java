@@ -61,7 +61,7 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
   public ElemMatchingSubstring(){}
   
   /**
-   * This class field, represents the value of "xpath-default-namespace" 
+   * Class field, that represents the value of "xpath-default-namespace" 
    * attribute.
    */
   private String m_xpath_default_namespace = null;
@@ -92,7 +92,7 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
   private boolean m_expand_text_declared;
   
   /**
-   * This class field, represents the value of "expand-text" 
+   * Class field, that represents the value of "expand-text" 
    * attribute.
    */
   private boolean m_expand_text;
@@ -148,7 +148,7 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * @return The token ID for this element
+   * @return           The token id for this element
    */
   public int getXSLToken() {
      return Constants.ELEMNAME_MATCHING_SUBSTRING;

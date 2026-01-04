@@ -64,7 +64,7 @@ import org.xml.sax.XMLReader;
  * 
  * @xsl.usage general
  */
-public class XPathContext extends XPath3StaticContext
+public class XPathContext extends XPathStaticContext
 {
   
   private IntStack m_last_pushed_rtfdtm = new IntStack();
@@ -260,19 +260,19 @@ public class XPathContext extends XPath3StaticContext
     return (SourceLocator) m_saxLocations.peek();
   }
 
-  /** The owner context of this XPathContext.  In the case of XSLT, this will be a
+  /** The owner context of this XPathContext. In the case of XSLT, this will be a
    *  Transformer object.
    */
   private Object m_owner;
 
-  /** The owner context of this XPathContext.  In the case of XSLT, this will be a
+  /** The owner context of this XPathContext. In the case of XSLT, this will be a
    *  Transformer object.
    */
   private Method m_ownerGetErrorListener;
 
   /**
    * Get the "owner" context of this context, which should be,
-   * in the case of XSLT, the Transformer object.  This is needed
+   * in the case of XSLT, the Transformer object. This is needed
    * so that XSLT functions can get the Transformer.
    * @return The owner object passed into the constructor, or null.
    */
@@ -284,7 +284,7 @@ public class XPathContext extends XPath3StaticContext
   // ================ VarStack ===================
 
   /**
-   * The stack of Variable stacks.  A VariableStack will be
+   * The stack of Variable stacks. A VariableStack will be
    * pushed onto this stack for each template invocation.
    */
   private VariableStack m_variableStacks;
@@ -340,7 +340,10 @@ public class XPathContext extends XPath3StaticContext
   
   // =================================================
 
-  /** The ErrorListener where errors and warnings are to be reported.   */
+  /**
+   * An XSL implementation ErrorListener where errors and warnings 
+   * are to be reported. 
+   */
   private ErrorListener m_errorListener;
 
   /** A default ErrorListener in case our m_errorListener was not specified and our
@@ -419,7 +422,7 @@ public class XPathContext extends XPath3StaticContext
 
   // =================================================
 
-  /** The reader of the primary source tree.    */
+  /** An XMLReader object instance for the, primary XML source tree. */
   public XMLReader m_primaryReader;
 
   /**
@@ -536,9 +539,8 @@ public class XPathContext extends XPath3StaticContext
   public static final int RECURSIONLIMIT = (1024*4);
 
   /** The stack of <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a> objects.
-   *  Not to be confused with the current node list.  %REVIEW% Note that there 
-   *  are no bounds check and resize for this stack, so if it is blown, it's all 
-   *  over.  */
+   *  Not to be confused with the current node list.
+   */
   private IntStack m_currentNodes = new IntStack(RECURSIONLIMIT);
    
 //  private NodeVector m_currentNodes = new NodeVector();
@@ -946,7 +948,6 @@ public class XPathContext extends XPath3StaticContext
      */
     public double toNumber(org.w3c.dom.Node n)
     {
-      // %REVIEW% You can't get much uglier than this...
       int nodeHandle = getDTMHandleFromNode(n);
       DTM dtm = getDTM(nodeHandle);
       XString xobj = (XString)dtm.getStringValue(nodeHandle);
@@ -960,7 +961,6 @@ public class XPathContext extends XPath3StaticContext
      */
     public String toString(org.w3c.dom.Node n)
     {
-      // %REVIEW% You can't get much uglier than this...
       int nodeHandle = getDTMHandleFromNode(n);
       DTM dtm = getDTM(nodeHandle);
       XMLString strVal = dtm.getStringValue(nodeHandle);

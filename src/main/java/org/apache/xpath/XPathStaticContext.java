@@ -22,7 +22,7 @@ import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 
 /**
- * A class definition, that implements XPath 3.1 expression evaluation's 
+ * Class definition, to represent XPath 3.1 expression evaluation's 
  * static context.
  * 
  * Please refer to, XPath 3.1 recommendation section, '2.1.1 Static Context'.
@@ -40,7 +40,7 @@ import org.apache.xpath.functions.XSLFunctionBuilder;
  * 
  * @xsl.usage general
  */
-public class XPath3StaticContext extends XPath3DynamicContext {
+public class XPathStaticContext extends XPathDynamicContext {
 	
 	/**
 	 * XPath 3.1 built-in functions namespace uri, for most of the functions

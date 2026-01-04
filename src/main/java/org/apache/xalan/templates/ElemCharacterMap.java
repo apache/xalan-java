@@ -117,7 +117,7 @@ public class ElemCharacterMap extends ElemTemplateElement
 	 * Get an int constant identifying the type of element.
 	 * @see org.apache.xalan.templates.Constants
 	 *
-	 * @return The token ID for the element
+	 * @return The token id for the element
 	 */
 	public int getXSLToken()
 	{

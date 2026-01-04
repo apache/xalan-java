@@ -33,7 +33,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
-import org.apache.xpath.XPath3StaticContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
@@ -168,8 +168,8 @@ public class FuncFunctionArity extends FunctionDef1Arg
 				String localName = xpathNamedFunctionReference.getFuncName();
 				String namespace = xpathNamedFunctionReference.getFuncNamespace();
 				Short arity = xpathNamedFunctionReference.getArity(); 
-				if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) || (XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
-					(XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || (XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
+				if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) || (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
+					(XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
 					FunctionTable funcTable = xctxt.getFunctionTable();
 					Object funcId = funcTable.getFunctionId(localName);
 					if (funcId != null) {
@@ -255,9 +255,9 @@ public class FuncFunctionArity extends FunctionDef1Arg
 		
 		ElemFunction elemFunction = xpathNamedFunctionReference.getXslStylesheetFunction();
 		
-		if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) || (XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace) ||
-						                                                               (XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace) || 
-						                                                               (XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace) ||
+		if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) || (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace) ||
+						                                                               (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace) || 
+						                                                               (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace) ||
 						                                                               (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(funcNamespace)) {				   
 			XSL3FunctionService xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
 			Function function = xsl3FunctionService.getXPathBuiltInFunction(funcName, funcNamespace, xctxt);

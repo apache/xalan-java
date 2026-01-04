@@ -41,7 +41,7 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPath3StaticContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
@@ -108,7 +108,7 @@ public class ElemFunction extends ElemTemplate
   private static final long serialVersionUID = 4973132678982467288L;
   
   /**
-   * This class field, represents the value of "xpath-default-namespace" 
+   * Class field, that represents the value of "xpath-default-namespace" 
    * attribute.
    */
   private String m_xpath_default_namespace = null;
@@ -134,7 +134,7 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * This class field, represents the value of "override" 
+   * Class field, that represents the value of "override" 
    * attribute.
    */
   private boolean m_override;
@@ -168,7 +168,7 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * This class field, represents the value of "override-extension-function" 
+   * Class field, that represents the value of "override-extension-function" 
    * attribute. An xsl:function's attributes "override-extension-function" and 
    * "override" are synonym. An xsl:function attribute "override" is deprecated 
    * with XSLT 3.0. 
@@ -204,7 +204,7 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * This class field, represents the value of "new-each-time" 
+   * Class field, that represents the value of "new-each-time" 
    * attribute.
    */
   private String m_newEachTime = null;
@@ -264,7 +264,7 @@ public class ElemFunction extends ElemTemplate
   private boolean m_cache;
   
   /**
-   * This class field, represents the value of "expand-text" 
+   * Class field, that represents the value of "expand-text" 
    * attribute.
    */
   private boolean m_expand_text;
@@ -704,7 +704,7 @@ public class ElemFunction extends ElemTemplate
         					   if (xpathNamedFunctionReference.getXslStylesheetFunction() == null) {
         						   String funcNamespace = xpathNamedFunctionReference.getFuncNamespace();
         						   int actualFuncArity = 0;           
-        						   if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+        						   if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
         								   																     (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
         							   actualFuncArity = xpathNamedFunctionReference.getConcatArity();
         						   }

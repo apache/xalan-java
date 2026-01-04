@@ -28,7 +28,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPath3StaticContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -175,10 +175,10 @@ public class XPathIfExpr extends Expression {
        if ((evalResult instanceof XPathNamedFunctionReference) && (m_xpathSuffixStr != null)) {
     	   XPathNamedFunctionReference xPathNamedFunctionReference = (XPathNamedFunctionReference)evalResult;
     	   String funcNamespace = xPathNamedFunctionReference.getFuncNamespace();
-    	   if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) || 
-    		   (XPath3StaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace) ||
-    		   (XPath3StaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace) ||
-    		   (XPath3StaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace)) {
+    	   if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) || 
+    		   (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace) ||
+    		   (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace) ||
+    		   (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace)) {
     		   XSL3FunctionService xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
     		   ResultSequence argSeq = new ResultSequence();
     		   if (!m_xpathSuffixStr.equals("()")) {

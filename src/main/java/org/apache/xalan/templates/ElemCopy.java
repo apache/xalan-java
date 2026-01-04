@@ -58,7 +58,7 @@ public class ElemCopy extends ElemUse
   static final long serialVersionUID = 5478580783896941384L;
   
   /**
-   * This class field, represents the value of "xpath-default-namespace" 
+   * Class field, that represents the value of "xpath-default-namespace" 
    * attribute.
    */
   private String m_xpath_default_namespace = null;
@@ -89,7 +89,7 @@ public class ElemCopy extends ElemUse
   private boolean m_expand_text_declared;
   
   /**
-   * This class field, represents the value of "expand-text" 
+   * Class field, that represents the value of "expand-text" 
    * attribute.
    */
   private boolean m_expand_text;
@@ -153,7 +153,7 @@ public class ElemCopy extends ElemUse
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * @return The token ID for this element 
+   * @return           The token id for this element 
    */
   public int getXSLToken()
   {

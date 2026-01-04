@@ -116,13 +116,13 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   protected XPath m_xpath = null;
   
   /**
-   * This class field, represents the value of "xpath-default-namespace" 
+   * Class field, that represents the value of "xpath-default-namespace" 
    * attribute.
    */
   private String m_xpath_default_namespace = null;
   
   /**
-   * This class field, represents the value of "expand-text" 
+   * Class field, that represents the value of "expand-text" 
    * attribute.
    */
   private boolean m_expand_text;
@@ -303,7 +303,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * @return The token id for this element
+   * @return           The token id for this element
    */
   public int getXSLToken()
   {

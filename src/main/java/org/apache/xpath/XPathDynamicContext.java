@@ -39,7 +39,7 @@ import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDuration;
 
 /**
- * A class definition, that implements XPath 3.1 expression evaluation's 
+ * Class definition, to represent XPath 3.1 expression evaluation's 
  * dynamic context.
  * 
  * Please refer to, XPath 3.1 recommendation section, '2.1.2 Dynamic Context'.
@@ -57,7 +57,7 @@ import xml.xpath31.processor.types.XSDuration;
  * 
  * @xsl.usage general
  */
-public class XPath3DynamicContext extends DTMManager {
+public class XPathDynamicContext extends DTMManager {
 	
 	/** 
 	 * The value of this class field, represents the value returned by fn:position() 
@@ -91,7 +91,7 @@ public class XPath3DynamicContext extends DTMManager {
 	private int m_xpath3ContextSize = -1;
 	
 	/**
-	 * This class field, represents XPath dynamic context's 
+	 * Class field, that represents XPath dynamic context's 
 	 * implicit timezone. This value is of XML Schema type xs:dayTimeDuration.
 	 */
 	private XSDuration m_timezone;
@@ -140,8 +140,8 @@ public class XPath3DynamicContext extends DTMManager {
 
 	/**
 	 * Get an instance of a DTM, loaded with the content from the
-	 * specified source.  If the unique flag is true, a new instance will
-	 * always be returned.  Otherwise it is up to the DTMManager to return a
+	 * specified source. If the unique flag is true, a new instance will
+	 * always be returned. Otherwise it is up to the DTMManager to return a
 	 * new instance or an instance that it already created and may be being used
 	 * by someone else.
 	 * (I think more parameters will need to be added for error handling, and entity
@@ -206,12 +206,7 @@ public class XPath3DynamicContext extends DTMManager {
 	 * @param shouldHardDelete True if the DTM should be removed no matter what.
 	 * @return true if the DTM was removed, false if it was put back in a lru pool.
 	 */
-	public boolean release(DTM dtm, boolean shouldHardDelete) {
-		// %REVIEW% If it's a DTM which may contain multiple Result Tree
-		// Fragments, we can't discard it unless we know not only that it
-		// is empty, but that the XPathContext itself is going away. So do
-		// _not_ accept the request. (May want to do it as part of
-		// reset(), though.)
+	public boolean release(DTM dtm, boolean shouldHardDelete) {		
 		if(m_rtfdtm_stack!=null && m_rtfdtm_stack.contains(dtm))
 		{
 			return false;
@@ -225,11 +220,10 @@ public class XPath3DynamicContext extends DTMManager {
 	 * <a href="http://www.w3.org/TR/xpath#NT-LocationPath>LocationPath</a> or
 	 * a <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.
 	 *
-	 * @param xpathCompiler ??? Somehow we need to pass in a subpart of the
-	 * expression.  I hate to do this with strings, since the larger expression
-	 * has already been parsed.
+	 * @param xpathCompiler
 	 *
-	 * @param pos The position in the expression.
+	 * @param pos The position in the expression
+	 * 
 	 * @return The newly created <code>DTMIterator</code>.
 	 */
 	public DTMCursorIterator createDTMIterator(Object xpathCompiler, int pos) {
@@ -256,7 +250,7 @@ public class XPath3DynamicContext extends DTMManager {
 	//
 	/**
 	 * Create a new <code>DTMIterator</code> based only on a whatToShow and
-	 * a DTMFilter.  The traversal semantics are defined as the descendant
+	 * a DTMFilter. The traversal semantics are defined as the descendant
 	 * access.
 	 *
 	 * @param whatToShow This flag specifies which node types may appear in

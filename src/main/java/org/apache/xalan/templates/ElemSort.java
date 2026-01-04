@@ -271,7 +271,7 @@ public class ElemSort extends ElemTemplateElement
   }
   
   /**
-   * This class field, represents an optional collation URI specified 
+   * Class field, that represents an optional collation URI specified 
    * with xsl:sort instruction.
    */
   private AVT m_collation = null;
@@ -295,7 +295,7 @@ public class ElemSort extends ElemTemplateElement
   }
   
   /**
-   * This class field, represents an optional 'stable' 
+   * Class field, that represents an optional 'stable' 
    * attribute's value (default 'true') specified with xsl:sort 
    * instruction.
    * 
@@ -344,7 +344,7 @@ public class ElemSort extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * @return The token ID of the element
+   * @return The token id of the element
    */
   public int getXSLToken()
   {

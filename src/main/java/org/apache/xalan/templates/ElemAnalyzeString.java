@@ -130,7 +130,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   }
   
   /**
-   * This class field, represents the value of "xpath-default-namespace" 
+   * Class field, that represents the value of "xpath-default-namespace" 
    * attribute.
    */
   private String m_xpath_default_namespace = null;
@@ -161,7 +161,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   private boolean m_expand_text_declared;
   
   /**
-   * This class field, represents the value of "expand-text" 
+   * Class field, that represents the value of "expand-text" 
    * attribute.
    */
   private boolean m_expand_text;
@@ -226,7 +226,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   /**
    * Get an int constant identifying the type of element.
    *
-   * @return The token ID for this element
+   * @return           The token id for this element
    */
   public int getXSLToken() {
       return Constants.ELEMNAME_ANALYZESTRING;

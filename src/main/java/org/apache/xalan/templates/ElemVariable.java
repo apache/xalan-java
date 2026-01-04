@@ -38,7 +38,7 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPath3StaticContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -288,7 +288,7 @@ public class ElemVariable extends ElemTemplateElement
   }
   
   /**
-   * This class field, represents the value of "xpath-default-namespace" 
+   * Class field, that represents the value of "xpath-default-namespace" 
    * attribute.
    */
   private String m_xpath_default_namespace = null;
@@ -319,7 +319,7 @@ public class ElemVariable extends ElemTemplateElement
   private boolean m_expand_text_declared;
   
   /**
-   * This class field, represents the value of "expand-text" 
+   * Class field, that represents the value of "expand-text" 
    * attribute.
    */
   private boolean m_expand_text;
@@ -1563,7 +1563,7 @@ public class ElemVariable extends ElemTemplateElement
 						  String funcLocalName = funcRef1.getFuncName(); 
 						  String funcNamespace = funcRef1.getFuncNamespace();    					  
 						  int xpathNamedFuncRefArity = 0;           
-		            	  if ((XPath3StaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+		            	  if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
 		            			  															        (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
 		            		  xpathNamedFuncRefArity = funcRef1.getConcatArity();
 		            	  }
