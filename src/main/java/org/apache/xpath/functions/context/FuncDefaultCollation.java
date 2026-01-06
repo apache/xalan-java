@@ -15,37 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.context;
 
 import java.util.Vector;
 
-import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.res.XPATHErrorResources;
 
-import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XPath 3.1 function fn:current-date.
+ * Implementation of an XPath 3.1 fn:default-collation function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncCurrentDate extends Function {
+public class FuncDefaultCollation extends Function {
 
-   private static final long serialVersionUID = -8672902204838660435L;
-   
-   /**
-    * Default constructor.
-    */
-   public FuncCurrentDate() {
-	   m_defined_arity = new Short[] { 0 };	
-   }
+  private static final long serialVersionUID = 2310223969416091883L;
+  
+  /**
+   * Default constructor.
+   */
+  public FuncDefaultCollation() {
+	  m_defined_arity = new Short[] { 0 }; 
+  }
 
   /**
    * Execute the function. The function must return a valid object.
@@ -58,35 +54,9 @@ public class FuncCurrentDate extends Function {
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
     
-    XSDate xsDate = new XSDate(xctxt.getCurrentDateTime(), xctxt.getTimezone());    
-    xsDate.setPopulatedFromFnCurrentDate(true);
+     XSString defaultCollation = new XSString(xctxt.getDefaultCollation());
 
-    return xsDate;
-  }
-
-  /**
-   * Check that the number of arguments passed to this function is correct.
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-     if (argNum > 0) {
-        reportWrongNumberArgs();
-     }
-  }
-
-  /**
-   * Constructs and throws a WrongNumberArgException with the appropriate
-   * message for this function object.
-   *
-   * @throws WrongNumberArgsException
-   */
-  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
-                                                XPATHErrorResources.ER_ZERO, null)); //"0"
+     return defaultCollation;
   }
 
   @Override

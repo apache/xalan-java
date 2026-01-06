@@ -41,7 +41,7 @@ import org.apache.xpath.XPathCollationSupport;
  * @xsl.usage advanced
  */
 public class StringWithCollation {
-	
+
 	/**
 	 * The string value which may belong to any language locale, supported by
 	 * Xalan-J XSL 3 implementation's XPathCollationSupport class.

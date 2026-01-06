@@ -650,8 +650,8 @@ public class FunctionTable
 	  m_functions = new Class[NUM_BUILT_IN_FUNCS];
 	  
 	  m_functions[FUNC_CURRENT] = org.apache.xpath.functions.FuncCurrent.class;
-	  m_functions[FUNC_LAST] = org.apache.xpath.functions.FuncLast.class;
-	  m_functions[FUNC_POSITION] = org.apache.xpath.functions.FuncPosition.class;
+	  m_functions[FUNC_LAST] = org.apache.xpath.functions.context.FuncLast.class;
+	  m_functions[FUNC_POSITION] = org.apache.xpath.functions.context.FuncPosition.class;
 	  m_functions[FUNC_COUNT] = org.apache.xpath.functions.FuncCount.class;
 	  m_functions[FUNC_ID] = org.apache.xpath.functions.FuncId.class;
 	  m_functions[FUNC_KEY] = org.apache.xalan.templates.FuncKey.class;
@@ -720,12 +720,12 @@ public class FunctionTable
 	  m_functions[FUNC_COLLECTION] = org.apache.xpath.functions.FuncCollection.class;
 	  m_functions[FUNC_COLLECTION] = org.apache.xpath.functions.FuncCollection.class;
 	  m_functions[FUNC_STRING_JOIN] = org.apache.xpath.functions.string.FuncStringJoin.class;
-	  m_functions[FUNC_CURRENT_DATETIME] = org.apache.xpath.functions.FuncCurrentDateTime.class;
-	  m_functions[FUNC_CURRENT_DATE] = org.apache.xpath.functions.FuncCurrentDate.class;
-	  m_functions[FUNC_CURRENT_TIME] = org.apache.xpath.functions.FuncCurrentTime.class;
+	  m_functions[FUNC_CURRENT_DATETIME] = org.apache.xpath.functions.context.FuncCurrentDateTime.class;
+	  m_functions[FUNC_CURRENT_DATE] = org.apache.xpath.functions.context.FuncCurrentDate.class;
+	  m_functions[FUNC_CURRENT_TIME] = org.apache.xpath.functions.context.FuncCurrentTime.class;
 	  m_functions[FUNC_UPPER_CASE] = org.apache.xpath.functions.string.FuncUpperCase.class;
 	  m_functions[FUNC_LOWER_CASE] = org.apache.xpath.functions.string.FuncLowerCase.class;
-	  m_functions[FUNC_IMPLICIT_TIMEZONE] = org.apache.xpath.functions.FuncImplicitTimezone.class;
+	  m_functions[FUNC_IMPLICIT_TIMEZONE] = org.apache.xpath.functions.context.FuncImplicitTimezone.class;
 	  m_functions[FUNC_INDEX_OF] = org.apache.xpath.functions.FuncIndexOf.class;        
 	  m_functions[FUNC_DISTINCT_VALUES] = org.apache.xpath.functions.FuncDistinctValues.class;
 
@@ -815,7 +815,7 @@ public class FunctionTable
 	   
 	   m_functions[FUNC_FORMAT_INTEGER] = org.apache.xpath.functions.FuncFormatInteger.class;
 
-	   m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.FuncDefaultCollation.class;
+	   m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.context.FuncDefaultCollation.class;
 	   m_functions[FUNC_BASE_URI] = org.apache.xpath.functions.FuncBaseUri.class;
 	   m_functions[FUNC_DOCUMENT_URI] = org.apache.xpath.functions.FuncDocumentUri.class;        
 

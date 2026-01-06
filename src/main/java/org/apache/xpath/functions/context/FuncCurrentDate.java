@@ -18,50 +18,52 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.context;
 
 import java.util.Vector;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
-import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDate;
 
 /**
- * Implementation of XPath 3.1 function fn:current-dateTime.
+ * Implementation of XPath 3.1 function fn:current-date.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncCurrentDateTime extends Function {
+public class FuncCurrentDate extends Function {
 
-   private static final long serialVersionUID = -2032033071326423919L;
+   private static final long serialVersionUID = -8672902204838660435L;
    
    /**
     * Default constructor.
     */
-   public FuncCurrentDateTime() {
+   public FuncCurrentDate() {
 	   m_defined_arity = new Short[] { 0 };	
    }
 
-   /**
-   * Implementation of the function. The function must return a valid object.
+  /**
+   * Execute the function. The function must return a valid object.
    * 
-   * @param xctxt                       An XPath context object
+   * @param xctxt The current execution context.
    * 
-   * @return                            A valid XObject
+   * @return A valid XObject.
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
     
-	  XSDateTime xsDateTime = new XSDateTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
-	  xsDateTime.setPopulatedFromFnCurrentDateTime(true);
+    XSDate xsDate = new XSDate(xctxt.getCurrentDateTime(), xctxt.getTimezone());    
+    xsDate.setPopulatedFromFnCurrentDate(true);
 
-	  return xsDateTime;
+    return xsDate;
   }
 
   /**

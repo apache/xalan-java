@@ -15,12 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.context;
 
 import java.util.Vector;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 

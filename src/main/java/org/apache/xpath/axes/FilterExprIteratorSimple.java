@@ -144,7 +144,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
         
         XObject exprEvalResult = expr.execute(xctxt);
         Object obj1 = null;
-        if ((exprEvalResult instanceof ResultSequence) && XslTransformEvaluationHelper.isSequenceContainsAllXDMAtomicValues((ResultSequence)exprEvalResult)) {
+        if ((exprEvalResult instanceof ResultSequence) && XslTransformEvaluationHelper.isSequenceContainsAllXdmAtomicValues((ResultSequence)exprEvalResult)) {
            DTMManager dtmMgr = xctxt.getDTMManager();
            DTM dtm = dtmMgr.getXmlDTMTreeFromResultSequence((ResultSequence)exprEvalResult);
            int docNodeHandle = dtm.getDocument();

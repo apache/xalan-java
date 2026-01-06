@@ -19,9 +19,11 @@ package org.apache.xalan.templates;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.Vector;
 
 import javax.xml.XMLConstants;
@@ -94,20 +96,27 @@ public class ElemTemplateElement extends UnImplNode
                    WhitespaceStrippingElementMatcher, XSLTVisitable
 {
    static final long serialVersionUID = 4440018597841834447L;
+   
+   /**
+    * This class field refers to, an XPath context object.
+    */
+   private XPathContext m_xpathContext;
+   
+   private boolean m_xmlSourceAbsent;
+   
+   /**
+    * This class field refers to, xsl:for-each-group instruction's 
+    * grouping key stack. Having stack for keeping fn:current-grouping-key
+    * values, helps solve issue of nested xsl:for-each-group instructions.
+    */
+   static Stack<Object> m_groupingKeyStack = new Stack<Object>();  
     
    /**
-    * This class field supports implementation of, xsl:for-each-group's grouping key. 
-    * An instance of this class, stores this value for a specific xsl:for-each-group  
-    * element within an XSL stylesheet.
+    * This class field refers to, xsl:for-each-group instruction's 
+    * current group stack. Having stack for keeping fn:current-group
+    * values, helps solve issue of nested xsl:for-each-group instructions.
     */
-   private Object m_groupingKey = null;
-    
-   /**
-    * This class field supports implementation of, xsl:for-each-group's current-group 
-    * contents. An instance of this class, stores this value for a specific 
-    * xsl:for-each-group element within an XSL stylesheet. 
-    */
-   private List<Integer> m_groupNodesDtmHandles = null;
+   static Stack<List<Integer>> m_groupNodesDtmHandlesStack = new Stack<List<Integer>>();
    
    /**
     * This class field refers to xsl:merge evaluation's merge key
@@ -124,12 +133,6 @@ public class ElemTemplateElement extends UnImplNode
     */
    private List<XObject> m_tunnelParamObjList = new ArrayList<XObject>();
    
-   /**
-    * This class field stores an XPath context object.
-    */
-   private XPathContext m_xpathContext;
-   
-   private boolean m_xmlSourceAbsent;
 
   /**
    * Construct a template element instance.
@@ -1779,21 +1782,59 @@ public class ElemTemplateElement extends UnImplNode
   public boolean handlesNullPrefixes() {
       return false;
   }
-
-  public Object getGroupingKey() {
-      return m_groupingKey;
+  
+  public List<Integer> getGroupNodesDtmHandles() {	  
+	  
+	  List<Integer> result = null;
+	  
+	  try {
+		 result = m_groupNodesDtmHandlesStack.peek();
+	  }
+	  catch (EmptyStackException ex) {
+		 // no op 
+	  }
+	  
+	  return result;
   }
 
-  public void setGroupingKey(Object groupingKey) {
-      this.m_groupingKey = groupingKey;
+  public void setGroupNodesDtmHandles(List<Integer> groupNodesDtmHandles) {	  
+	  m_groupNodesDtmHandlesStack.push(groupNodesDtmHandles);
+  }
+  
+  public void popGroupNodesDtmHandles() {	  
+	  try {
+		  m_groupNodesDtmHandlesStack.pop(); 
+	  }
+	  catch (EmptyStackException ex) {
+		  // no op  
+	  }
   }
 
-  public List<Integer> getGroupNodesDtmHandles() {
-      return m_groupNodesDtmHandles;
+  public Object getGroupingKey() {	  	  
+	  
+	  Object result = null;
+	  
+	  try {
+		 result = m_groupingKeyStack.peek();
+	  }
+	  catch (EmptyStackException ex) {
+		 // no op 
+	  }
+	  
+	  return result;
   }
 
-  public void setGroupNodesDtmHandles(List<Integer> groupNodesDtmHandles) {
-      this.m_groupNodesDtmHandles = groupNodesDtmHandles;
+  public void setGroupingKey(Object groupingKey) {      
+	  m_groupingKeyStack.push(groupingKey);
+  }
+  
+  public void popGroupingKey() {  	  
+	  try {
+		  m_groupingKeyStack.pop(); 
+	  }
+	  catch (EmptyStackException ex) {
+		  // no op  
+	  }
   }
   
   public Object getMergeKey() {

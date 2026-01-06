@@ -18,50 +18,52 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.context;
 
 import java.util.Vector;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
-import xml.xpath31.processor.types.XSTime;
+import xml.xpath31.processor.types.XSDateTime;
 
 /**
- * Implementation of XPath 3.1 function fn:current-time.
+ * Implementation of XPath 3.1 function fn:current-dateTime.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncCurrentTime extends Function {
+public class FuncCurrentDateTime extends Function {
 
-   private static final long serialVersionUID = -8672902204838660435L;
+   private static final long serialVersionUID = -2032033071326423919L;
    
    /**
     * Default constructor.
     */
-   public FuncCurrentTime() {
+   public FuncCurrentDateTime() {
 	   m_defined_arity = new Short[] { 0 };	
    }
 
-  /**
-   * Execute the function. The function must return a valid object.
+   /**
+   * Implementation of the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
+   * @param xctxt                       An XPath context object
    * 
-   * @return A valid XObject.
+   * @return                            A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {    
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
     
-    XSTime xsCurrentTime = new XSTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
-    xsCurrentTime.setPopulatedFromFnCurrentTime(true);
-    
-    return xsCurrentTime;
+	  XSDateTime xsDateTime = new XSDateTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
+	  xsDateTime.setPopulatedFromFnCurrentDateTime(true);
+
+	  return xsDateTime;
   }
 
   /**

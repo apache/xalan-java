@@ -53,6 +53,24 @@ public class FuncCurrentGroup extends Function
 	   XMLNodeCursorImpl result = null;
 
 	   SourceLocator srcLocator = xctxt.getSAXLocator();
+	   
+	   ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
+	  
+	   boolean status1 = false; 
+	   while (elemTemplateElement != null) {
+		   if (elemTemplateElement instanceof ElemForEachGroup) {
+			   status1 = true;
+
+			   break; 
+		   }
+
+		   elemTemplateElement = elemTemplateElement.getParentElem();
+	   }
+	  
+	   if (!status1) {
+		  elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
+		  elemTemplateElement.m_groupNodesDtmHandlesStack.clear();
+	   }   	   
 
 	   TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            
 	   ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();       

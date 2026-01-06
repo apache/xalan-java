@@ -47,7 +47,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.NodeCursor;
-import org.apache.xpath.functions.FuncPosition;
+import org.apache.xpath.functions.context.FuncPosition;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -662,7 +662,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         if (selectExprResult instanceof ResultSequence) {
         	ResultSequence resultSeq = (ResultSequence)selectExprResult;
         	
-        	if (!XslTransformEvaluationHelper.isSequenceContainsAllXDMAtomicValues(resultSeq)) {
+        	if (!XslTransformEvaluationHelper.isSequenceContainsAllXdmAtomicValues(resultSeq)) {
         		// We assume here that, an xsl:for-each-group's input sequence has all 
         		// values as nodes.            	
         		sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);
@@ -990,7 +990,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    * @throws TransformerException
    */
   private void constructGroupsForGroupBy(XPathContext xctxt, DTMCursorIterator sourceNodes,
-		  							     Map<Object, List<Integer>> xslForEachGroupByMap) throws TransformerException {
+		  							                                   Map<Object, List<Integer>> xslForEachGroupByMap) throws TransformerException {
 	  int nextNode;
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
@@ -1027,7 +1027,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 		  }
 	  }
 	  finally {	  
-	     FuncPosition.m_forEachGroupGroupByPos = 0;
+	      FuncPosition.m_forEachGroupGroupByPos = 0;
 	  }
 	  
   }
@@ -1072,8 +1072,8 @@ public class ElemForEachGroup extends ElemTemplateElement
    * @throws TransformerException
    */
   private void constructGroupsForGroupStartingWith(XPathContext xctxt, DTMCursorIterator sourceNodes,
-		                                           List<List<Integer>> xslForEachGroupStartingWith, 
-		                                           boolean isInpSeqAllAtomicValues) throws TransformerException {	  
+		                                                                             List<List<Integer>> xslForEachGroupStartingWith, 
+		                                                                             boolean isInpSeqAllAtomicValues) throws TransformerException {	  
 	  
 	  List<Integer> allNodeHandleList = new ArrayList<Integer>();	  
 	  
@@ -1098,6 +1098,30 @@ public class ElemForEachGroup extends ElemTemplateElement
 			  }
 			  
 			  idx++;
+		  }
+		  
+		  if (grpStartNodeHandles.size() > 0) {
+			  /**
+			   * Adding the first group which may be present, before the
+			   * first XML group-starting-with matching xdm node, to the
+			   * result.
+			   */
+			  int nodeId = grpStartNodeHandles.get(0);
+			  int size1 = allNodeHandleList.size();
+			  List<Integer> groupNodeHandles = new ArrayList<Integer>();
+			  for (int idx1 = 0; idx1 < size1; idx1++) {
+				  int nodeHandle = allNodeHandleList.get(idx1);
+				  if (nodeHandle != nodeId) {
+					  groupNodeHandles.add(nodeHandle);
+				  }
+				  else {
+					  if (groupNodeHandles.size() > 0) {
+						  xslForEachGroupStartingWith.add(groupNodeHandles);
+					  }
+
+					  break;
+				  }
+			  }
 		  }
 	  }
 	  else {
@@ -1187,8 +1211,8 @@ public class ElemForEachGroup extends ElemTemplateElement
    * @throws TransformerException
    */
   private void constructGroupsForGroupEndingWith(XPathContext xctxt, DTMCursorIterator sourceNodes,
-		  									     List<List<Integer>> xslForEachGroupEndingWith, 
-		  									     boolean isInpSeqAllAtomicValues) throws TransformerException {
+		  									                                       List<List<Integer>> xslForEachGroupEndingWith, 
+		  									                                                     boolean isInpSeqAllAtomicValues) throws TransformerException {
 	  
 	  List<Integer> allNodeHandleList = new ArrayList<Integer>();
 	  
@@ -1306,7 +1330,8 @@ public class ElemForEachGroup extends ElemTemplateElement
    * @throws TransformerException
    */
   private void constructGroupsForGroupAdjacent(XPathContext xctxt, DTMCursorIterator sourceNodes,
-		                                       List<GroupingKeyAndGroupPair> xslForEachGroupAdjacentList) throws TransformerException {
+		                                                                         List<GroupingKeyAndGroupPair> xslForEachGroupAdjacentList) 
+		                                                                        		                                             throws TransformerException {
 	 
 	 Object prevGroupingKeyValue = null;
 	 

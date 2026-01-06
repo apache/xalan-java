@@ -671,7 +671,7 @@ public class XslTransformEvaluationHelper {
      * @param resultSeq				The supplied XPath sequence object
      * @return						boolean value true or false
      */
-    public static boolean isSequenceContainsAllXDMAtomicValues(ResultSequence resultSeq) {
+    public static boolean isSequenceContainsAllXdmAtomicValues(ResultSequence resultSeq) {
     	
     	boolean result = true;
     	

@@ -277,8 +277,7 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test23.out";
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, 
-                                                            new XslTestsErrorHandler());
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, new XslTestsErrorHandler());
     }
     
     @Test

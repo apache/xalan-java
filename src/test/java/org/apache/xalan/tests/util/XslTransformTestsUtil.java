@@ -120,15 +120,13 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      * compares the XSLT transformation's output with the corresponding expected output.
      */
     protected void runXslTransformAndAssertOutput(String xmlFilePath, String xslFilePath, 
-                                                               String xslGoldFilePath, 
-                                                               XslTestsErrorHandler xslTransformErrHandler) {
-        try {
-           
-           
+	                                                                  String xslGoldFilePath, 
+	                                                                  XslTestsErrorHandler xslTransformErrHandler) {
+        try {                      
            String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
            
            if (m_initTemplateName != null) {
-        	  m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName); 
+        	   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName); 
            }
            
            if (m_initModeName != null) {
@@ -177,6 +175,19 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
 
            transformer.transform(xmlInpSrc, new DOMResult(outNode));
            
+           if (xslTransformErrHandler != null) {
+               List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();
+               List<String> trfFatalErrorList = xslTransformErrHandler.getTrfFatalErrorList();
+               if ((trfErrorList.size() > 0) || (trfFatalErrorList.size() > 0)) {
+                   // The test has passed
+                   return;
+               }
+               else {
+                   // The test has failed
+                   Assert.fail();  
+               }
+           }
+           
            // Running the following another XSL transform, normalizes an XSL 
            // transform's result for comparison purposes.
            
@@ -190,44 +201,30 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            StreamResult streamResult = new StreamResult(resultStrWriter);
            identityTransformer.transform(new DOMSource(outNode), streamResult);
            
-           if (xslTransformErrHandler != null) {
-               List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();
-               List<String> trfFatalErrorList = xslTransformErrHandler.getTrfFatalErrorList();
-               if (trfErrorList.size() > 0 || trfFatalErrorList.size() > 0) {
-                   // The test has passed
-                   return;
-               }
-               else {
-                   // The test has failed
-                   Assert.fail();  
-               }
+           byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
+
+           if ((XSLTestConstants.XML).equals(m_fileComparisonType)) {
+        	   String expectedResultStr = (new String(goldFileBytes)).trim();
+        	   String actualResultStr = (resultStrWriter.toString()).trim();
+        	   if (!isXMLFileContentsEqual(expectedResultStr, actualResultStr)) {
+        		   Assert.fail(); 
+        	   }
            }
-           else {
-              byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
-              
-              if ((XSLTestConstants.XML).equals(m_fileComparisonType)) {
-            	  String expectedResultStr = (new String(goldFileBytes)).trim();
-            	  String actualResultStr = (resultStrWriter.toString()).trim();
-            	  if (!isXMLFileContentsEqual(expectedResultStr, actualResultStr)) {
-            		  Assert.fail(); 
-            	  }
-              }
-              else if ((XSLTestConstants.HTML).equals(m_fileComparisonType)) { 
-            	  String expectedResultStr = (new String(goldFileBytes)).trim();
-            	  String actualResultStr = (resultStrWriter.toString()).trim();
-            	  Assert.assertEquals(expectedResultStr, actualResultStr);
-              }
-              else if ((XSLTestConstants.JSON).equals(m_fileComparisonType)) {
-  				  if (!isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
-  				     Assert.fail();
-  				  } 
-              }
-              else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType)) {
-            	  String expectedResultStr = new String(goldFileBytes);
-            	  String actualResultStr = resultStrWriter.toString();
-            	  Assert.assertEquals(expectedResultStr, actualResultStr);
-              }              
+           else if ((XSLTestConstants.HTML).equals(m_fileComparisonType)) { 
+        	   String expectedResultStr = (new String(goldFileBytes)).trim();
+        	   String actualResultStr = (resultStrWriter.toString()).trim();
+        	   Assert.assertEquals(expectedResultStr, actualResultStr);
            }
+           else if ((XSLTestConstants.JSON).equals(m_fileComparisonType)) {
+        	   if (!isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
+        		   Assert.fail();
+        	   } 
+           }
+           else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType)) {
+        	   String expectedResultStr = new String(goldFileBytes);
+        	   String actualResultStr = resultStrWriter.toString();
+        	   Assert.assertEquals(expectedResultStr, actualResultStr);
+           }              
         }
         catch (Exception ex) {
             Assert.fail();    
