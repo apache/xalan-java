@@ -42,8 +42,6 @@ import org.w3c.dom.NodeList;
 /**
  * Implementation of XSLT xsl:with-param element.
  * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-with-param
- * 
  * @xsl.usage advanced
  */
 public class ElemWithParam extends ElemTemplateElement

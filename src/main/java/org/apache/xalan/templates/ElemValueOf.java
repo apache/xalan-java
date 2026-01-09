@@ -415,7 +415,7 @@ public class ElemValueOf extends ElemTemplateElement {
         		  return;
         	  }
         	  catch (Exception ex) {
-        		  // NO OP 
+        		  // no op 
         	  }
           }
 
@@ -990,7 +990,7 @@ public class ElemValueOf extends ElemTemplateElement {
                         		   }
                         	   }
                         	   catch (Exception ex) {
-                        		   // NO OP
+                        		   // no op
                         	   }
                            }
                         }

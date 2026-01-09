@@ -600,7 +600,7 @@ public class InstanceOf extends Operation
     				  dblValue = Double.valueOf(nodeStrValue);
     			  }
     			  catch (NumberFormatException ex) {
-    				  // NO OP 
+    				  // no op 
     			  }
 
     			  if (dblValue != null) {

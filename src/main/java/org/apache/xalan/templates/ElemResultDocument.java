@@ -547,7 +547,7 @@ public class ElemResultDocument extends ElemTemplateElement
 
   @Override
   public void setExpression(Expression exp) {
-	  // NO OP
+	  // no op
   }
   
   /**

@@ -100,7 +100,7 @@ public class ElemSequence extends ElemTemplateElement
    * Default constructor.
    */
   public ElemSequence() {
-	  // NO OP
+	  // no op
   }
   
   /**
@@ -443,7 +443,7 @@ public class ElemSequence extends ElemTemplateElement
 					  dtmIter = locPathIterator.asIterator(xctxt, contextNode);
 				  }
 				  catch (ClassCastException ex) {
-					  // NO OP
+					  // no op
 				  }
 
 				  if (dtmIter != null) {               
@@ -689,7 +689,7 @@ public class ElemSequence extends ElemTemplateElement
 			  
 			  break;
 		  default :
-			  // NO OP
+			  // no op
 		  }
 
 		  boolean isToAddStrValSerializationSuffix = isToAddXslSequenceSerializationSuffix(xctxt); 

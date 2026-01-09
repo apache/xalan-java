@@ -364,19 +364,40 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		    		                                                                                  expectedResultElem, elemTestRun, testResultDoc);
     		   }
     		   catch (Exception ex) {
-    			  System.out.println("Test case name : " + testCaseName + ", Exception message : " + ex.getMessage()); 
+    			  // no op 
     		   }
     		   finally {
     			   if ("for-each-group-028".equals(testCaseName)) {
     				   // These W3C XSLT 3.0 test suite, test cases fail when running together 
     				   // with other test cases from test suite, but pass independently.
-    				   verifyTestCaseAgain(testResultDoc, "for-each-group-028", "group014.xml", "for-each-group-028.xsl", "for-each-group-028.out");
+    				   try {
+    					   Node nodeExpected = (expectedResultElem.getFirstChild()).getNextSibling();
+    					   String expectedNodeKindName = nodeExpected.getNodeName();
+    					   if (EXPECTED_NODE_KIND_ASSERT_XML.equals(expectedNodeKindName)) {
+    						   Element elemNode = (Element)nodeExpected;
+    						   String fileName = elemNode.getAttribute(FILE_ATTR);
+    						   String expectedResultStr = null;
+    						   if (!"".equals(fileName)) {
+    							   URI uri = new URI(m_xslTransformTestSetFilePath);
+    							   uri = uri.resolve(fileName);
+    							   expectedResultStr = getStringContentFromUrl(uri.toURL());
+    						   }
+    						   else {
+    							   expectedResultStr = elemNode.getTextContent();            		
+    						   }
+
+    						   verifyTestCaseAgain(testResultDoc, testCaseName, xmlDocInpStr, xslStreamSrc, expectedResultStr);
+    					   }
+    				   }
+    				   catch (Exception ex) {
+    					   // no op
+    				   }
     			   }
     		   }
     	   }    	   
     	}
     	catch (Exception ex) {
-    	   System.out.println(ex.getMessage());
+    	   // no op
     	}
     	finally {    	   	
     	   try {
@@ -423,7 +444,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 			   testResultFos.close();
 		   } 
     	   catch (Exception ex) {
-			   ex.printStackTrace();
+			   // no op
 		   }
     	}
     }
@@ -616,7 +637,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		    		                                                     expectedResultElem, elemTestRun, testResultDoc);
     		   }
     		   catch (Exception ex) {
-    			  System.out.println("Test case name : " + testCaseName + ", Exception message : " + ex.getMessage()); 
+    			  // no op 
     		   }
     		   finally {
     			  m_initTemplateName = null; 
@@ -624,7 +645,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	   }    	   
     	}
     	catch (Exception ex) {
-    	   System.out.println(ex.getMessage());
+    	   // no op
     	}
     	finally {    	   	
     	   try {
@@ -670,7 +691,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 			   testResultFos.close();
 		   } 
     	   catch (Exception ex) {
-			   ex.printStackTrace();
+			   // no op
 		   }
     	}
     }
@@ -693,10 +714,6 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		String expErrCodeName = null;
 		
 		elemTestResult.setAttribute("testName", testCaseName);
-		
-		if ("for-each-group-005".equals(testCaseName)) {
-		   int ii = 0;	
-		}
     	
     	try {
     		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);
@@ -1628,7 +1645,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    				}
 	    		    }
 	    		    catch (Exception ex) {
-	    		    	// NO OP
+	    		    	// no op
 	    		    }
 	    		}
 	    		else {
@@ -1762,7 +1779,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     						uri = uri.resolve(fileName);    						
 							result = getStringContentFromUrl(uri.toURL());
 						} catch (Exception ex) {
-							ex.printStackTrace();
+							// no op
 						}
     				}
     				
@@ -2004,39 +2021,25 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	 * Method definition, to verify success, or failure status of specific 
 	 * XSL tests.
 	 */
-	private void verifyTestCaseAgain(Document testResultDoc, String testCaseName, String xmlFileName, 
-			                                                          String xslFileName, String expectedResultFileName)
+	private void verifyTestCaseAgain(Document testResultDoc, String testCaseName, String xmlDocInpStr, 
+			                                                                           StreamSource xslStreamSrc, String expectedResultStr)
 			                                                                     throws URISyntaxException, IOException, MalformedURLException, SAXException, Exception,
 			                                                                              ParserConfigurationException, 
 			                                                                              TransformerConfigurationException, TransformerException {
+		
 		NodeList nodeList3 = testResultDoc.getElementsByTagName("testResult");		
 		int length1 = nodeList3.getLength();
 		for (int idx2 = 0; idx2 < length1; idx2++) {
-			Element element = (Element)(nodeList3.item(idx2));
-			String testName = element.getAttribute("testName");
-			String statusValue = element.getAttribute("status");
-			if (testCaseName.equals(testName) && "fail".equals(statusValue)) {    						       						       						   
-				URI uri = new URI(m_xslTransformTestSetFilePath);
-				uri = uri.resolve(xmlFileName);    						
-				String xmlStr1 = getStringContentFromUrl(uri.toURL());   							   
-
-				InputSource xmlInpSrc = new InputSource(new StringReader(xmlStr1));
+			Element elem1 = (Element)(nodeList3.item(idx2));
+			String testName = elem1.getAttribute("testName");
+			String statusValue = elem1.getAttribute("status");
+			if (testCaseName.equals(testName) && "fail".equals(statusValue)) {    						       						       						      							   
+				InputSource xmlInpSrc = new InputSource(new StringReader(xmlDocInpStr));
 				Node node2 = m_xmlDocumentBuilder.parse(xmlInpSrc);
 				DOMSource xmlDomSrc = new DOMSource(node2);
-
-				uri = new URI(m_xslTransformTestSetFilePath);
-				uri = uri.resolve(xslFileName);    						
-				String xslStr1 = getStringContentFromUrl(uri.toURL());
-
-				InputSource xslInpSrc = new InputSource(new StringReader(xslStr1));
-				Node node3 = m_xmlDocumentBuilder.parse(xslInpSrc);
-				DOMSource xslDomSrc = new DOMSource(node3);
-
-				uri = new URI(m_xslTransformTestSetFilePath);
-				uri = uri.resolve(expectedResultFileName);    						
-				String resultExpectedStr1 = getStringContentFromUrl(uri.toURL());
-				Node node4 = m_xmlDocumentBuilder.parse(new InputSource(new StringReader(resultExpectedStr1)));
-				resultExpectedStr1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node4); 
+				
+				Node node4 = m_xmlDocumentBuilder.parse(new InputSource(new StringReader(expectedResultStr)));				
+				expectedResultStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node4); 
 
 				DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 				dfactory.setNamespaceAware(true);
@@ -2045,11 +2048,12 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 				Document doc = docBuilder.newDocument();
 				org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
 
-				Transformer transformer = m_xslTransformerFactory.newTransformer(xslDomSrc);
+				Transformer transformer = m_xslTransformerFactory.newTransformer(xslStreamSrc);
 				transformer.transform(xmlDomSrc, new DOMResult(outNode));
 				String xslTrfResultStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(outNode);
-				if (xslTrfResultStr.equals(resultExpectedStr1)) {
-					element.setAttribute("status", "pass"); 
+				if (xslTrfResultStr.equals(expectedResultStr)) {
+					elem1.setAttribute("status", "pass");
+					elem1.setAttribute("status_qualifier", "revisit_xsl test_verification_code");
 				}
 			}
 		}

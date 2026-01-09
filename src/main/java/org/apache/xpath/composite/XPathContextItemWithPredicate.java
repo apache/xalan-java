@@ -102,12 +102,12 @@ public class XPathContextItemWithPredicate extends Expression {
 	
 	@Override
 	public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-		// NO OP
+		// no op
 	}
 
 	@Override
 	public boolean deepEquals(Expression expr) {
-		// NO OP
+		// no op
 		return false;
 	}
 

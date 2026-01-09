@@ -130,7 +130,7 @@ public class ElemOutputCharacter extends ElemTemplateElement
 	 * Execute an XSL xsl:output-character transformation.
 	 */
 	public void execute(TransformerImpl transformer) throws TransformerException {	    
-		// NO OP
+		// no op
 	}
 	
 	/**
@@ -157,13 +157,13 @@ public class ElemOutputCharacter extends ElemTemplateElement
 
 	@Override
 	public Expression getExpression() {
-		// NO OP
+		// no op
 		return null;
 	}
 
 	@Override
 	public void setExpression(Expression exp) {		
-		// NO OP		
+		// no op		
 	}
 
 }

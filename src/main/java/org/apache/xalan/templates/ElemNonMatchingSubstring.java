@@ -238,7 +238,7 @@ public class ElemNonMatchingSubstring extends ElemTemplateElement implements Exp
    * @see ExpressionOwner#setExpression(Expression)
    */
   public void setExpression(Expression exp) {
-  	  // NO OP
+  	  // no op
   }
   
   public String getStrValue() {

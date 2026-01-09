@@ -22,7 +22,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of the reverse() function.
+ * Implementation of an XPath 3.1 function fn:reverse.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -40,10 +40,10 @@ public class FuncReverse extends FunctionOneArg {
     }
 
     /**
-     * Execute the function. The function must return a valid object.
+     * Implementation of the function. The function must return a valid object.
      * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
+     * @param xctxt                            An XPath context object
+     * @return                                 A valid XObject
      *
      * @throws javax.xml.transform.TransformerException
      */
@@ -55,9 +55,9 @@ public class FuncReverse extends FunctionOneArg {
         XObject xObject0 = m_arg0.execute(xctxt);
             
         ResultSequence rsArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
-                                                                                      xObject0, xctxt);
-            
-        for (int idx = (rsArg0.size() - 1); idx >= 0; idx--) {
+                                                                                      xObject0, xctxt);            
+        int rSeqLength = rsArg0.size();
+        for (int idx = (rSeqLength - 1); idx >= 0; idx--) {
            result.add(rsArg0.item(idx)); 
         }
         

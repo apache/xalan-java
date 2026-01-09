@@ -43,7 +43,7 @@ public class XSLanguage extends XSToken {
 	 * Default constructor.
 	 */
 	public XSLanguage() {
-		// NO OP
+		// no op
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class XSLanguage extends XSToken {
 			XSLanguage xsLanguage = new XSLanguage(strVal);
 			result.add(xsLanguage);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

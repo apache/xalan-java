@@ -28,9 +28,7 @@ import org.apache.xpath.XPath;
  * Implementation of the XSLT 3.0 xsl:merge-key instruction.
  * 
  * One or more xsl:merge-key elements appear as child elements
- * of xsl:merge-source elements. 
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-merge-key
+ * of xsl:merge-source elements.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  

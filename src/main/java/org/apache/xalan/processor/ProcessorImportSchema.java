@@ -41,8 +41,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * stylesheet element. An instance of this class is also XalanJ's 
  * TransformerFactory class for xsl:import-schema markup.
  * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-import-schema
- * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage internal
@@ -53,8 +51,7 @@ public class ProcessorImportSchema extends XSLTElementProcessor
   private static final long serialVersionUID = -3961853486503008040L;
   
   /**
-   * The base URL of the XSL document.
-   * 
+   * The base URL of an XSL document.
    */
   private String m_href = null;
 

@@ -157,7 +157,7 @@ public class ElemCharacterMap extends ElemTemplateElement
 	 * Execute an XSL xsl:character-map transformation.
 	 */
 	public void execute(TransformerImpl transformer) throws TransformerException {	    
-		// NO OP
+		// no op
 	}
 	
 	/**
@@ -184,13 +184,13 @@ public class ElemCharacterMap extends ElemTemplateElement
 
 	@Override
 	public Expression getExpression() {
-		// NO OP
+		// no op
 		return null;
 	}
 
 	@Override
 	public void setExpression(Expression exp) {		
-		// NO OP		
+		// no op		
 	}
 
 }

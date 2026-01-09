@@ -38,8 +38,6 @@ import org.xml.sax.SAXException;
 /**
  * Implementation of the XSLT 3.0 xsl:fork instruction.
  * 
- * Ref : https://www.w3.org/TR/xslt-30/#fork-instruction
- * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  
  * @xsl.usage advanced
@@ -99,7 +97,7 @@ public class ElemFork extends ElemTemplateElement
   }
 
   /**
-   * Execute the xsl:fork transformation.
+   * Implementation of xsl:fork transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -119,11 +117,13 @@ public class ElemFork extends ElemTemplateElement
 	    		transformer.getTraceManager().emitTraceEvent(this);
 	    	}
 	    	
-	    	// An xsl:fork instruction has zero or more xsl:sequence sibling child 
-	    	// elements, or has xsl:for-each-group as child element.
-	    	// i.e, xsl:fork instruction XSL child content has following grammar,
-	    	// (xsl:sequence* | xsl:for-each-group).
-	    	// We validate this xsl:fork's grammar definition below.
+	    	/**
+	    	 * An xsl:fork instruction has zero or more xsl:sequence sibling child
+	    	 * elements, or has xsl:for-each-group as child element.
+	    	 * i.e, xsl:fork instruction XSL child content has following grammar,
+	    	 * (xsl:sequence* | xsl:for-each-group).
+	    	 * We validate this xsl:fork's grammar definition below.
+	    	 */
 	    	
 	    	ElemTemplateElement xslForkLastChildElem = null;
 	    	
@@ -145,11 +145,13 @@ public class ElemFork extends ElemTemplateElement
 	    	}
 	    		    	
 	    	if (!(xslForkLastChildElem instanceof ElemForEachGroup)) {
-	    		// Evaluate xsl:fork's xsl:sequence child elements in parallel threads, 
-	    		// and emit xsl:fork's evaluation result to an XSL transformation serializer 
-	    		// in a sequential order as per xsl:sequence element siblings (i.e, first 
-	    		// xsl:sequence's evaluation result will be emitted first, then for the 
-	    		// next xsl:sequence sibling element and so on).
+	    		/**
+	    		 * Evaluate xsl:fork's xsl:sequence child elements in parallel threads,
+	    		 * and emit xsl:fork's evaluation result to an XSL transformation serializer
+	    		 * in sequential order as per xsl:sequence element siblings (i.e, first
+	    		 * xsl:sequence's evaluation result will be emitted first, then for the
+	    		 * next xsl:sequence sibling element and so on).
+	    		 */
 	    		
 	    		List<XslSequenceAndResultPair> xslSequenceEvalResultList = new ArrayList<XslSequenceAndResultPair>();
 	    		
@@ -163,9 +165,11 @@ public class ElemFork extends ElemTemplateElement
 	    			noOfXslSeqElems++;
 	    		}
 	    		
-	    		// Instantiate java.util.concurrent.ExecutorService, with thread pool size 
-	    		// equal to the number of xsl:sequence sibling instructions within 
-	    		// xsl:fork element.
+	    		/**
+	    		 * Instantiate java.util.concurrent.ExecutorService, with thread pool size
+	    		 * equal to the number of xsl:sequence sibling instructions within
+	    		 * xsl:fork element.
+	    		 */
 	    		ExecutorService executorServiceObj = Executors.newFixedThreadPool(noOfXslSeqElems);	    		
 	    		
 	    		for (ElemTemplateElement t = this.m_firstChild; t != null;
@@ -262,7 +266,7 @@ public class ElemFork extends ElemTemplateElement
 
   @Override
   public void setExpression(Expression exp) {
-	  // NO OP
+	  // no op
   }
   
   /**
@@ -305,7 +309,7 @@ public class ElemFork extends ElemTemplateElement
 			  return xslSequenceAndResultPair;
 		  }
 		  catch (TransformerException ex) {
-			  // NO OP
+			  // no op
 		  }
 		  
 		  return null;

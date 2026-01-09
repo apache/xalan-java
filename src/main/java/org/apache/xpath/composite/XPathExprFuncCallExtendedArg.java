@@ -46,23 +46,23 @@ public class XPathExprFuncCallExtendedArg extends Expression {
 
 	@Override
 	public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-		// NO OP
+		// no op
 	}
 
 	@Override
 	public XObject execute(XPathContext xctxt) throws TransformerException {
-		// NO OP
+		// no op
 		return null;
 	}
 
 	@Override
 	public void fixupVariables(Vector vars, int globalsSize) {
-		// NO OP
+		// no op
 	}
 
 	@Override
 	public boolean deepEquals(Expression expr) {
-		// NO OP
+		// no op
 		return false;
 	}
 

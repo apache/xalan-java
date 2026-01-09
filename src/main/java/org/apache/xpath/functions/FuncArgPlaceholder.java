@@ -61,7 +61,7 @@ public class FuncArgPlaceholder extends Expression {
 	 * Class constructor.
 	 */
 	public FuncArgPlaceholder() {
-	   // NO OP	
+	   // no op	
 	}
 
 	@Override
@@ -156,17 +156,17 @@ public class FuncArgPlaceholder extends Expression {
 	
 	@Override
 	public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-		// NO OP
+		// no op
 	}
 
 	@Override
 	public void fixupVariables(Vector vars, int globalsSize) {
-	   // NO OP
+	   // no op
 	}
 
 	@Override
 	public boolean deepEquals(Expression expr) {
-		// NO OP
+		// no op
 		return false;		
 	}
 

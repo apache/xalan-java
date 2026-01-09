@@ -114,14 +114,16 @@ public class XslTransformEvaluationHelper {
      */
     public static void expandResultSequence(ResultSequence seqToBeExpanded, 
                                                                   ResultSequence result) {               
-        for (int idx = 0; idx < seqToBeExpanded.size(); idx++) {
+    	int size1 = seqToBeExpanded.size();
+    	for (int idx = 0; idx < size1; idx++) {
           XObject seqItem = seqToBeExpanded.item(idx);
           if (seqItem instanceof ResultSequence) {
              expandResultSequence((ResultSequence)seqItem, result); 
           }
           if (seqItem instanceof XPathArray) {
              ResultSequence rSeq = ((XPathArray)seqItem).atomize();
-             for (int idx2 = 0; idx2 < rSeq.size(); idx2++) {
+             int size2 = rSeq.size();
+             for (int idx2 = 0; idx2 < size2; idx2++) {
             	XObject xObject2 = rSeq.item(idx2);            	
             	result.add(xObject2);
              }
@@ -141,7 +143,8 @@ public class XslTransformEvaluationHelper {
                                                                           List<XMLNSDecl> nsPrefixTable) {
        String replacedXPathExprStr = xpathExprStr;
        
-       for (int idx = 0; idx < nsPrefixTable.size(); idx++) {
+       int size1 = nsPrefixTable.size();
+       for (int idx = 0; idx < size1; idx++) {
           XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
           String prefix = xmlNSDecl.getPrefix();
           String uri = xmlNSDecl.getURI();
@@ -159,7 +162,8 @@ public class XslTransformEvaluationHelper {
     	String xmlSchemaNsPrefix = null;
 
     	if (nsUri != null) {
-    		for (int idx = 0; idx < nsPrefixTable.size(); idx++) {
+    		int size1 = nsPrefixTable.size();
+    		for (int idx = 0; idx < size1; idx++) {
     			XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
     			if (nsUri.equals(xmlNSDecl.getURI())) {
     				xmlSchemaNsPrefix = xmlNSDecl.getPrefix();
@@ -180,7 +184,8 @@ public class XslTransformEvaluationHelper {
     	String result = null;
 
     	if (prefix != null) {    		
-    		for (int idx = 0; idx < nsPrefixTable.size(); idx++) {
+    		int size1 = nsPrefixTable.size();
+    		for (int idx = 0; idx < size1; idx++) {
     			XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
     			if (prefix.equals(xmlNSDecl.getPrefix())) {
     				result = xmlNSDecl.getURI();
@@ -293,7 +298,8 @@ public class XslTransformEvaluationHelper {
         else if (xObject instanceof ResultSequence) {
            ResultSequence rSeq = (ResultSequence)xObject;
            
-           for (int idx = 0; idx < rSeq.size(); idx++) {
+           int size1 = rSeq.size();
+           for (int idx = 0; idx < size1; idx++) {
               resultSeq.add(rSeq.item(idx)); 
            }
         }
@@ -344,7 +350,7 @@ public class XslTransformEvaluationHelper {
            }
         }
         
-        if (dtmNodeHandleList.size() == resultSeq.size()) {
+        if (dtmNodeHandleList.size() == rSeqLength) {
            result = new XMLNodeCursorImpl(dtmNodeHandleList, dtmMgr);
         }
         
@@ -421,7 +427,7 @@ public class XslTransformEvaluationHelper {
      * the count of xdm items represented by the provided compiled XPath expression 
      * object.  
      */
-    public static XNumber getCountOfSequenceItems(Expression expr, XPathContext xctxt) throws 
+    public static XNumber getSequenceItemCount(Expression expr, XPathContext xctxt) throws 
                                                                                   javax.xml.transform.TransformerException {
         int xdmSequenceSize = 0;
         
@@ -542,7 +548,8 @@ public class XslTransformEvaluationHelper {
        
        boolean isSeqContains = false;
        
-       for (int idx = 0; idx < resultSeq.size(); idx++) {
+       int size1 = resultSeq.size();
+       for (int idx = 0; idx < size1; idx++) {
           XObject resultSeqItem = resultSeq.item(idx);
           if ((resultSeqItem instanceof XSUntyped) && (srch instanceof XSUntyped)) {
              if (((XSUntyped)resultSeqItem).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
@@ -675,7 +682,8 @@ public class XslTransformEvaluationHelper {
     	
     	boolean result = true;
     	
-    	for (int idx = 0; idx < resultSeq.size(); idx++) {
+    	int size1 = resultSeq.size();
+    	for (int idx = 0; idx < size1; idx++) {
     		XObject seqItem = resultSeq.item(idx);
     		if (!((seqItem instanceof XNumber) || (seqItem instanceof XBooleanStatic) || (seqItem instanceof XBoolean) || 
 						        				  (seqItem instanceof XSBoolean) || (seqItem instanceof XString) || 
@@ -916,7 +924,8 @@ public class XslTransformEvaluationHelper {
        
        double sum = 0.0;
        
-       for (int idx = 0; idx < resultSeq.size(); idx++) {
+       int size1 = resultSeq.size();
+       for (int idx = 0; idx < size1; idx++) {
           XObject xObj = resultSeq.item(idx);
           String str = null;
           if (xObj instanceof XSAnyType) {

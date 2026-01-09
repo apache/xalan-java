@@ -42,7 +42,7 @@ public class XSNmToken extends XSToken {
 	 * Default constructor.
 	 */
 	public XSNmToken() {
-	   // NO OP	
+	   // no op	
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class XSNmToken extends XSToken {
 			XSNmToken xsNmToken = new XSNmToken(strVal);
 			result.add(xsNmToken);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

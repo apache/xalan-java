@@ -70,7 +70,7 @@ public class XPathNamedFunctionReference extends XObject {
 
 	@Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
-		// NO OP
+		// no op
 		return null;
     }
 
@@ -120,7 +120,7 @@ public class XPathNamedFunctionReference extends XObject {
 	}
 	
 	public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-        // NO OP
+        // no op
     }
     
     public int getType() {

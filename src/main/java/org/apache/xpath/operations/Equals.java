@@ -274,7 +274,7 @@ public class Equals extends Operation
 				}
 			}
 			catch (NumberFormatException ex) {
-				// NO OP
+				// no op
 			}
 		 }
 		 

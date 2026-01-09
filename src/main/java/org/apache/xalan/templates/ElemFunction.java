@@ -1513,7 +1513,7 @@ public class ElemFunction extends ElemTemplate
 						  }
 					  }
 					  catch (TransformerException ex) {
-						  // NO OP
+						  // no op
 					  }
 				  }
 			  }

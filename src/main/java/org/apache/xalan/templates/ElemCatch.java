@@ -325,13 +325,13 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	
 	@Override
 	public Expression getExpression() {
-		// NO OP
+		// no op
 		return null;
 	}
 
 	@Override
 	public void setExpression(Expression exp) {
-		// NO OP
+		// no op
 	}
 
 }

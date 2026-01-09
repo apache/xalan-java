@@ -317,6 +317,6 @@ public class StylesheetComposed extends Stylesheet
    */
   public void recomposeTemplates(boolean flushFirst) throws TransformerException
   {
-     // NO OP
+     // no op
   }
 }

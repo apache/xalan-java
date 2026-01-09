@@ -92,7 +92,7 @@ public class JsonFunction extends FunctionMultiArgs {
 				result = new XSDouble(dbl);
 			}
 			catch (NumberFormatException ex) {
-				// NO OP	
+				// no op	
 			}
 
 			if (result == null) {

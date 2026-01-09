@@ -32,8 +32,6 @@ import org.apache.xpath.XPath;
  * One or more xsl:merge-source elements appear as child elements
  * of xsl:merge elements. 
  * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-merge-source
- * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  
  * @xsl.usage advanced
@@ -266,7 +264,7 @@ public class ElemMergeSource extends ElemTemplateElement
    */
   private void transformSelectedNodes(TransformerImpl transformer)
                                                                throws TransformerException {
-	  // NO OP
+	  // no op
   }
   
   /**

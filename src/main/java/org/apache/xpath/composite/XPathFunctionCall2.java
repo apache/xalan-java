@@ -87,7 +87,7 @@ public class XPathFunctionCall2 extends Expression {
 	
 	@Override
 	public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-		// NO OP
+		// no op
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class XPathFunctionCall2 extends Expression {
 
 	@Override
 	public boolean deepEquals(Expression expr) {
-		// NO OP
+		// no op
 		
 		return false;
 	}

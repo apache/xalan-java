@@ -38,11 +38,10 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
@@ -93,8 +92,6 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Implementation of XSLT xsl:variable element.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#element-variable
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Gary L Peskin <garyp@apache.org>
@@ -796,7 +793,7 @@ public class ElemVariable extends ElemTemplateElement
     			}
     		}
     		catch (Exception ex) {
-    			// NO OP
+    			// no op
     		}
         }
         else if (selectExpression instanceof XPathArrayConstructor) {

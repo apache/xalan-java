@@ -282,7 +282,7 @@ public class ElemMode extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(TransformerImpl transformer) throws TransformerException {    
-	  // NO OP    
+	  // no op    
   }
 
 }

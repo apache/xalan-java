@@ -40,7 +40,7 @@ public class XSIdRef extends XSNCName {
 	 * Default constructor.
 	 */
 	public XSIdRef() {
-	   // NO OP	
+	   // no op	
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class XSIdRef extends XSNCName {
 			XSIdRef xsIdRef = new XSIdRef(strVal);
 			result.add(xsIdRef);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

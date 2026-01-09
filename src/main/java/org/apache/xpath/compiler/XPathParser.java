@@ -4505,7 +4505,7 @@ public class XPathParser
     		   String delim = "t0_" + (UUID.randomUUID()).toString();
 
     		   while (m_token != null && isXPathDynamicFuncCallParseAhead(argDetailsStrPartsList, delim)) {
-    			   // NO OP
+    			   // no op
     		   }
 
     		   m_dynamicFunctionCallArgumentMarker = false;

@@ -1096,7 +1096,7 @@ public class FunctionTable
    * Class constructor.
    */
   public FunctionTable() {
-	  // NO OP
+	  // no op
   }
   
   /**
@@ -1260,7 +1260,7 @@ public class FunctionTable
 				 id = FunctionTable.FUNC_MATH_TAN;
 				 break;
 			  default:
-				 // NO OP 
+				 // no op 
 		}
 		
 		return id; 
@@ -1306,7 +1306,7 @@ public class FunctionTable
 				 id = FunctionTable.FUNC_MAP_FIND;
 				 break;
 			  default:
-				 // NO OP 
+				 // no op 
 		}
 		
 		return id;	
@@ -1376,7 +1376,7 @@ public class FunctionTable
 			     id = FunctionTable.FUNC_ARRAY_FLATTEN;
 				 break;
 			  default:
-				 // NO OP 
+				 // no op 
 		}
 		
 		return id;		

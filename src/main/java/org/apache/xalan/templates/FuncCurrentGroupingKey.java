@@ -42,10 +42,10 @@ public class FuncCurrentGroupingKey extends Function
     public static final String XSL_GROUPING_KEY_ABSENT = "XSL_GROUPING_KEY_ABSENT";
 
     /**
-      * Execute the function. The function must return a valid object.
+      * Implementation of the function. The function must return a valid object.
       * 
-      * @param xctxt The current execution context.
-      * @return a valid XObject.
+      * @param xctxt                          An XPath context object
+      * @return                               A valid XObject
       *
       * @throws javax.xml.transform.TransformerException
     */
@@ -57,10 +57,10 @@ public class FuncCurrentGroupingKey extends Function
     	
     	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
   	  
-    	boolean status1 = false; 
+    	boolean isFnCurrentGroupingKeyRefValidContext = false; 
     	while (elemTemplateElement != null) {
     		if (elemTemplateElement instanceof ElemForEachGroup) {
-    			status1 = true;
+    			isFnCurrentGroupingKeyRefValidContext = true;
 
     			break; 
     		}
@@ -68,9 +68,9 @@ public class FuncCurrentGroupingKey extends Function
     		elemTemplateElement = elemTemplateElement.getParentElem();
     	}
 
-    	if (!status1) {
+    	if (!isFnCurrentGroupingKeyRefValidContext) {
     		elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
-    		elemTemplateElement.m_groupingKeyStack.clear();
+    		(elemTemplateElement.m_groupingKeyStack).clear();
     	} 
     	
         TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            
@@ -93,7 +93,7 @@ public class FuncCurrentGroupingKey extends Function
         	groupingKeyObj = ((StringWithCollation)groupingKeyObj).getStrValue();	
         }
         else if (XSL_GROUPING_KEY_ABSENT.equals(groupingKeyObj.toString())) {
-        	throw new javax.xml.transform.TransformerException("XTDE1071 : An XSL 'for-each-group' instruction's fn:current-grouping-key "
+        	throw new javax.xml.transform.TransformerException("XTDE1071 : An XSL 'for-each-group' instruction's current-grouping-key "
         			                                                                                                            + "value is not available.", srcLocator);
         }
         
@@ -104,6 +104,6 @@ public class FuncCurrentGroupingKey extends Function
 
     @Override
     public void fixupVariables(Vector vars, int globalsSize) {
-       // NO OP    
+       // no op    
     }
 }

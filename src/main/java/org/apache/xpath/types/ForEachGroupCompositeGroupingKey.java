@@ -112,9 +112,9 @@ public class ForEachGroupCompositeGroupingKey {
 			   result = funcDeepEqual.isTwoSequenceDeepEqual(m_xctxt, m_collationUri, m_value, value2);
 			}
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		} catch (Exception ex) {
-			// NO OP			
+			// no op			
 		} 
 		
 		return result;

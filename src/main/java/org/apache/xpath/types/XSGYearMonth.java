@@ -47,7 +47,7 @@ public class XSGYearMonth extends XSAnyAtomicType {
 	 * Default constructor.
 	 */
 	public XSGYearMonth() {
-		// NO OP
+		// no op
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class XSGYearMonth extends XSAnyAtomicType {
 			XSGYearMonth xsGYearMonth = new XSGYearMonth(strVal);
 			result.add(xsGYearMonth);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

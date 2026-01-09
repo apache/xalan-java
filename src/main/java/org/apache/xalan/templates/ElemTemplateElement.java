@@ -240,6 +240,13 @@ public class ElemTemplateElement extends UnImplNode
   public String getValidation() {
 	 return m_validation;  
   }
+  
+  /**
+   * Value of this class field, refers to the fact that,
+   * xsl:for-each-group instruction is been used to group
+   * sequence of xdm atomic values.
+   */
+  private boolean m_isGroupingXdmAtomicValues;
 
   /**
    * This function will be called on top-level elements
@@ -2481,6 +2488,14 @@ public class ElemTemplateElement extends UnImplNode
 	  }
 
 	  return result;
+  }
+
+  public void setIsGroupingXdmAtomicValues(boolean isInpSeqAllAtomicValues) {
+	  m_isGroupingXdmAtomicValues = isInpSeqAllAtomicValues;	
+  }
+  
+  public boolean getIsGroupingXdmAtomicValues() {
+	  return m_isGroupingXdmAtomicValues;
   }
 
 }

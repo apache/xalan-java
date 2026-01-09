@@ -251,7 +251,7 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
     	 * Class constructor.
     	 */
     	public RegexMatchInfo() {
-    	    // NO OP
+    	    // no op
     	}
 
 		public int getStartIdx() {

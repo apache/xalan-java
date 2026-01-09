@@ -32,7 +32,7 @@ public class XSBase64Binary extends XSAnyAtomicType {
 	 * Default constructor.
 	 */
 	public XSBase64Binary() {
-	   // NO OP
+	   // no op
 	}
 	
 	/**

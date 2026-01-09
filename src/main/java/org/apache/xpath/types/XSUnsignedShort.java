@@ -38,7 +38,7 @@ public class XSUnsignedShort extends XSUnsignedInt {
 	 * Class constructor.
 	 */
 	public XSUnsignedShort() {
-	   // NO OP	
+	   // no op	
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public class XSUnsignedShort extends XSUnsignedInt {
 			XSUnsignedShort xsUnsignedShort = new XSUnsignedShort(strVal);
 			result.add(xsUnsignedShort);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

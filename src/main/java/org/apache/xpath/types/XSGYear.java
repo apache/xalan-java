@@ -45,7 +45,7 @@ public class XSGYear extends XSAnyAtomicType {
 	 * Default constructor.
 	 */
 	public XSGYear() {
-		// NO OP
+		// no op
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class XSGYear extends XSAnyAtomicType {
 			XSGYear xsGYear = new XSGYear(strVal);
 			result.add(xsGYear);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

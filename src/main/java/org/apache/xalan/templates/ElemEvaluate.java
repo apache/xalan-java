@@ -287,7 +287,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 	 * Class constructor.
 	 */
 	public ElemEvaluate() {
-	   // NO OP
+	   // no op
 	}
 	
 	/**

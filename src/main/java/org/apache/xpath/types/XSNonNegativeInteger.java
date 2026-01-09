@@ -41,7 +41,7 @@ public class XSNonNegativeInteger extends XSInteger {
 	 * Class constructor.
 	 */
 	public XSNonNegativeInteger() {
-	   // NO OP	
+	   // no op	
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class XSNonNegativeInteger extends XSInteger {
 			XSNonNegativeInteger xsNonNegativeInteger = new XSNonNegativeInteger(strVal);
 			result.add(xsNonNegativeInteger);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

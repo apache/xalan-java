@@ -38,7 +38,7 @@ public class CharacterMapConfig {
 	 * Class constructor.
 	 */
 	public CharacterMapConfig() {
-		// NO OP
+		// no op
 	}
 
 	public void put(Integer codePoint, String strValue) {

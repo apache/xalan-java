@@ -42,7 +42,7 @@ public class XSShort extends XSInt {
 	 * Class constructor.
 	 */
 	public XSShort() {
-	   // NO OP	
+	   // no op	
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class XSShort extends XSInt {
 			XSShort xsShort = new XSShort(strVal);
 			result.add(xsShort);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

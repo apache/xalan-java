@@ -93,7 +93,7 @@ public class FuncCurrentTime extends Function {
 
   @Override
   public void fixupVariables(Vector vars, int globalsSize) {
-     // NO OP    
+     // no op    
   }
   
 }

@@ -631,7 +631,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 	   * Class constructor.
 	   */
 	  public RegexMatchInfo() {
-		  // NO OP
+		  // no op
 	  }
 
 	  public int getStartIdx() {

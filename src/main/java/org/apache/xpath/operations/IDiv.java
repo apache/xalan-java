@@ -50,6 +50,7 @@ import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * An XPath 'idiv' operation implementation.
@@ -119,7 +120,8 @@ public class IDiv extends XPathArithmeticOperation
 	  if ((left instanceof XSInteger) || (left instanceof XSDecimal) || 
 			                                                      (left instanceof XSFloat) || 
 			                                                      (left instanceof XSDouble) || 
-	                                                              (left instanceof XNumber)) {
+	                                                              (left instanceof XNumber) ||
+	                                                              (left instanceof XSString)) {
 		 arg0Str = XslTransformEvaluationHelper.getStrVal(left);		 
 	  }
 	  

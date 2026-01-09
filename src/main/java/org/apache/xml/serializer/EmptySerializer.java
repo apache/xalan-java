@@ -787,6 +787,6 @@ public class EmptySerializer implements SerializationHandler
 
 	@Override
 	public void setOutputMethod(String outputMethod) {
-		// NO OP		
+		// no op		
 	}
 }

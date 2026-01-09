@@ -635,7 +635,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                      indexVal = Integer.valueOf(xpathIndexExprStr);
                   }
                   catch (NumberFormatException ex) {
-                	 // NO OP
+                	 // no op
                   }
                   
                   ResultSequence rSeq = new ResultSequence();
@@ -1446,7 +1446,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 			   }			   			   
 		   }
 		   catch (TransformerException ex) {
-			   // NO OP			  
+			   // no op			  
 		   }
 		   
 		   return result;

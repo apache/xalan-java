@@ -54,8 +54,6 @@ import xml.xpath31.processor.types.XSTime;
 /**
  * Implementation of the XSLT 3.0 xsl:merge instruction.
  * 
- * Ref : https://www.w3.org/TR/xslt-30/#merge-instruction
- * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  
  * @xsl.usage advanced
@@ -277,7 +275,7 @@ public class ElemMerge extends ElemTemplateElement
    */
   public void setExpression(Expression exp)
   {
-      // NO OP
+      // no op
   }
   
   /**

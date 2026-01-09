@@ -42,7 +42,7 @@ public class XSName extends XSToken {
 	 * Default constructor.
 	 */
 	public XSName() {
-	   // NO OP	
+	   // no op	
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class XSName extends XSToken {
 			XSName xsName = new XSName(strVal);
 			result.add(xsName);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

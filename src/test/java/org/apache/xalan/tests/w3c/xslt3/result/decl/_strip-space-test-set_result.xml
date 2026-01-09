@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2025-12-18T16:48:05Z" fail="14" name="strip-space" pass="13" run="27" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:28Z" fail="14" name="strip-space" pass="13" run="27" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="strip-space-001"/>
    <testResult status="fail" testName="strip-space-002">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;TEST xmlns:xs="http://www.w3.org/2001/XMLSchema"/&gt;</outResult>

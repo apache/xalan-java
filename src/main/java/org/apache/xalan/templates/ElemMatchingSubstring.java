@@ -252,7 +252,7 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
 
   @Override
   public void setExpression(Expression exp) {
-      // NO OP 
+      // no op 
   }
 
   public String getStrValue() {

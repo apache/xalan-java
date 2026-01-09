@@ -1429,7 +1429,7 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 				}
 				catch (TransformerException se)
 				{
-					// NO OP
+					// no op
 				}
 			}
 

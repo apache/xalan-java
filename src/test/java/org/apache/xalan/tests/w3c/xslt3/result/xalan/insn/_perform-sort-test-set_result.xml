@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:50:27Z" fail="0" name="perform_sort" pass="10" run="10" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="perform-sort-001"/>
+   <testResult status="pass" testName="perform-sort-002"/>
+   <testResult status="pass" testName="perform-sort-003"/>
+   <testResult status="pass" testName="perform-sort-004"/>
+   <testResult status="pass" testName="perform-sort-005"/>
+   <testResult status="pass" testName="perform-sort-006"/>
+   <testResult status="pass" testName="perform-sort-007"/>
+   <testResult status="pass" testName="perform-sort-008"/>
+   <testResult status="pass" testName="perform-sort-009"/>
+   <testResult status="pass" testName="perform-sort-010"/>
+</testrun>

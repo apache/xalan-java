@@ -40,7 +40,7 @@ public class XSNCName extends XSName {
 	 * Default constructor.
 	 */
 	public XSNCName() {
-	   // NO OP	
+	   // no op	
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class XSNCName extends XSName {
 			XSNCName xsNcName = new XSNCName(strVal);
 			result.add(xsNcName);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

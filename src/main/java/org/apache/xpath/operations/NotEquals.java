@@ -275,7 +275,7 @@ public class NotEquals extends Operation
 				}
 			}
 			catch (NumberFormatException ex) {
-				// NO OP
+				// no op
 			}
 		 }
 		 

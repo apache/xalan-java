@@ -623,7 +623,7 @@ public class XPathDynamicFunctionCall extends Expression {
     
     @Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-        // NO OP
+        // no op
     }
 
     @Override

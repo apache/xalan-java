@@ -40,7 +40,7 @@ public class XSID extends XSNCName {
 	 * Default constructor.
 	 */
 	public XSID() {
-	   // NO OP	
+	   // no op	
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class XSID extends XSNCName {
 			XSID xsId = new XSID(strVal);
 			result.add(xsId);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

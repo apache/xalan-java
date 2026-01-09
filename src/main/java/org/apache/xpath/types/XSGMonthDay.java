@@ -48,7 +48,7 @@ public class XSGMonthDay extends XSAnyAtomicType {
 	 * Default constructor.
 	 */
 	public XSGMonthDay() {
-		// NO OP
+		// no op
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class XSGMonthDay extends XSAnyAtomicType {
 			XSGMonthDay xsGMonthDay = new XSGMonthDay(strVal);
 			result.add(xsGMonthDay);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

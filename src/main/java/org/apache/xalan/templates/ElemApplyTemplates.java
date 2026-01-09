@@ -1335,7 +1335,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  }
 					  }
 					  catch (TransformerException ex) {
-						  // NO OP
+						  // no op
 					  }
 				  }
 			  }
@@ -1649,7 +1649,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	   * Default constructor.
 	   */
 	  public TemplateDefnPriorityPair() {
-		 // NO OP  
+		 // no op  
 	  }
 	  
 	  /**

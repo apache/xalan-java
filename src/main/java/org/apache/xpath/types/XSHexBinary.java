@@ -32,7 +32,7 @@ public class XSHexBinary extends XSAnyAtomicType {
 	 * Default constructor.
 	 */
 	public XSHexBinary() {
-	   // NO OP
+	   // no op
 	}
 	
 	/**

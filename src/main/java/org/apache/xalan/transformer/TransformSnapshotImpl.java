@@ -152,7 +152,7 @@ class TransformSnapshotImpl implements TransformSnapshot
          rtf = transformer.getResultTreeHandler();
       }
       catch (javax.xml.transform.TransformerException ex) {
-    	 // NO OP
+    	 // no op
       }
 
       {
@@ -216,7 +216,7 @@ class TransformSnapshotImpl implements TransformSnapshot
          rtf = transformer.getResultTreeHandler();
       }
       catch (javax.xml.transform.TransformerException ex) {
-    	 // NO OP  
+    	 // no op  
       }
 
       if (rtf != null)

@@ -251,7 +251,7 @@ public class XSL3FunctionService {
     												function.setArg(argXPath.getExpression(), idx);
     											} 
     											catch (WrongNumberArgsException ex) {
-    												// NO OP
+    												// no op
     											}    									
     										}
 
@@ -611,7 +611,7 @@ public class XSL3FunctionService {
     						
     						evalResult = new XSUntypedAtomic(argStr);
     					default:
-    						// NO OP
+    						// no op
     					}
     				}
     				catch (Exception ex) {

@@ -112,7 +112,7 @@ public class FuncDocAvailable extends FunctionOneArg {
 
 		@Override
 		public void warning(SAXParseException spe) throws SAXException {
-		   // NO OP			
+		   // no op			
 		}
 		
 		public boolean getErrorStatus() {

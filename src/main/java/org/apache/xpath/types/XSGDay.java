@@ -43,7 +43,7 @@ public class XSGDay extends XSAnyAtomicType {
 	 * Default constructor.
 	 */
 	public XSGDay() {
-		// NO OP
+		// no op
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class XSGDay extends XSAnyAtomicType {
 			XSGDay xsGDay = new XSGDay(strVal);
 			result.add(xsGDay);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

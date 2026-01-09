@@ -1,7 +1,24 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.xalan.tests.w3c.xslt3;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -75,6 +92,8 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 		
 		DecimalFormat decimalFormat = new DecimalFormat("#." + getStrForZeros(2));
 
+		URI uri1 = null;
+		String pathStr = null;
 		try {
 			DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 			Document document = docBuilder.newDocument();
@@ -90,34 +109,42 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 			int totalFail = 0;
 			int totalSkipped = 0;
 			for (int idx = 0; idx < strArray.length; idx++) {
-				String testSetKindName = strArray[idx];	       // e.g, decl, expr etc				
-				String pathStr = folderRoot + "\\"+ testSetKindName;
+				String testSetKindName = strArray[idx];	                       // e.g, decl, expr etc				
+				pathStr = folderRoot + File.separator + testSetKindName;
+				
+				if (pathStr.contains("xslt3" + File.separator + "result" + File.separator + "xalan")) {
+				   continue;	
+				}
+				
 				File file = new File(pathStr);
 				if (file.isDirectory()) {
 					String[] fileNames = file.list();
 					Element testSetKindElem = document.createElement(testSetKindName);
 					for (int idx2 = 0; idx2 < fileNames.length; idx2++) {
-					   String fileName = fileNames[idx2];
-					   Document testSetResultDoc = docBuilder.parse(pathStr + "\\" + fileName);
-					   Element docElem = testSetResultDoc.getDocumentElement();
-					   String testSetName = docElem.getAttribute("name");
-					   int run = Integer.valueOf(docElem.getAttribute("run"));
-					   totalCount += run; 
-					   int pass = Integer.valueOf(docElem.getAttribute("pass"));
-					   totalPass += pass;
-					   int fail = Integer.valueOf(docElem.getAttribute("fail"));
-					   totalFail += fail;
-					   int skipped = Integer.valueOf(docElem.getAttribute("skipped"));
-					   totalSkipped += skipped;
-					   double successPer = ((pass / (double)run)) * 100;
-					   double successPerDbl = (Double.valueOf(decimalFormat.format(Double.valueOf(String.valueOf(successPer))))).doubleValue();
-					   Element testSetElem = document.createElement(testSetName);
-					   testSetElem.setAttribute("run", String.valueOf(run));
-					   testSetElem.setAttribute("pass", String.valueOf(pass));
-					   testSetElem.setAttribute("fail", String.valueOf(fail));
-					   testSetElem.setAttribute("skipped", String.valueOf(skipped));
-					   testSetElem.setAttribute("success", String.valueOf(successPerDbl) + "%");
-					   testSetKindElem.appendChild(testSetElem);
+						String fileName = fileNames[idx2];
+						String localFilePath = (pathStr + File.separator + fileName);						
+						File file1 = new File(localFilePath);
+						uri1 = file1.toURI();						
+						Document testSetResultDoc = docBuilder.parse(uri1.toString());
+						Element docElem = testSetResultDoc.getDocumentElement();
+						String testSetName = docElem.getAttribute("name");
+						int run = Integer.valueOf(docElem.getAttribute("run"));
+						totalCount += run; 
+						int pass = Integer.valueOf(docElem.getAttribute("pass"));
+						totalPass += pass;
+						int fail = Integer.valueOf(docElem.getAttribute("fail"));
+						totalFail += fail;
+						int skipped = Integer.valueOf(docElem.getAttribute("skipped"));
+						totalSkipped += skipped;
+						double successPer = ((pass / (double)run)) * 100;
+						double successPerDbl = (Double.valueOf(decimalFormat.format(Double.valueOf(String.valueOf(successPer))))).doubleValue();
+						Element testSetElem = document.createElement(testSetName);
+						testSetElem.setAttribute("run", String.valueOf(run));
+						testSetElem.setAttribute("pass", String.valueOf(pass));
+						testSetElem.setAttribute("fail", String.valueOf(fail));
+						testSetElem.setAttribute("skipped", String.valueOf(skipped));
+						testSetElem.setAttribute("success", String.valueOf(successPerDbl) + "%");
+						testSetKindElem.appendChild(testSetElem);
 					}
 					
 					testResultElem.appendChild(testSetKindElem);
@@ -143,7 +170,7 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 			transformer.setOutputProperty(XSL_SERIALIZATION_INDENT_KEY, String.valueOf(XSL_SERIALIZATION_INDENT_VALUE));
 			
 			DOMSource domSource = new DOMSource(document);
-			FileWriter fileWriter = new FileWriter(new File(W3C_XSLT3_XALAN_TESTSUITE_RESULT_FOLDER_ROOT + "\\" + RESULT_FILE_NAME));
+			FileWriter fileWriter = new FileWriter(new File(W3C_XSLT3_XALAN_TESTSUITE_RESULT_FOLDER_ROOT + File.separator + RESULT_FILE_NAME));
 			StreamResult streamResult = new StreamResult(fileWriter);
 			
 			transformer.transform(domSource, streamResult);

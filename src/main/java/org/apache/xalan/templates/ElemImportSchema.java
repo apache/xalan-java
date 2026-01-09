@@ -70,7 +70,7 @@ public class ElemImportSchema extends ElemTemplateElement
    */
   public void execute(TransformerImpl transformer) throws TransformerException
   {
-     // NO OP
+     // no op
   }
 
   /**
@@ -84,12 +84,12 @@ public class ElemImportSchema extends ElemTemplateElement
   
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
-	 // NO OP  
+	 // no op  
   }
   
   public void endCompose(StylesheetRoot sroot) throws TransformerException
   {
-	 // NO OP  
+	 // no op  
   }
   
   public void setParentElem(ElemTemplateElement p)

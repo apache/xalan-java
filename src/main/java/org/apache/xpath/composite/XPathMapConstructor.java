@@ -181,7 +181,7 @@ public class XPathMapConstructor extends Expression {
                 dtmIter = locPathIterator.asIterator(xctxt, contextNode);
             }
             catch (ClassCastException ex) {
-                // NO OP
+                // no op
             }
             
             if (dtmIter != null) {

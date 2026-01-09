@@ -41,7 +41,7 @@ public class XSByte extends XSShort {
 	 * Class constructor.
 	 */
 	public XSByte() {
-	   // NO OP	
+	   // no op	
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class XSByte extends XSShort {
 			XSByte xsByte = new XSByte(strVal);
 			result.add(xsByte);
 		} catch (TransformerException ex) {
-			// NO OP
+			// no op
 		}
 		
 		return result;

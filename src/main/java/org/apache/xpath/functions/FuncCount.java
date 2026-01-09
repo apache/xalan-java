@@ -53,7 +53,7 @@ public class FuncCount extends FunctionOneArg
   {
       XObject result = null;
       
-	  XNumber xNumber = XslTransformEvaluationHelper.getCountOfSequenceItems(m_arg0, xctxt);
+	  XNumber xNumber = XslTransformEvaluationHelper.getSequenceItemCount(m_arg0, xctxt);
 	  
 	  result = xNumber;
       
