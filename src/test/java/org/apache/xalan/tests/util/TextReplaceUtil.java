@@ -71,7 +71,8 @@ public class TextReplaceUtil {
 	private void applnInit() {
 	   fileExts.add(".html");
 	   fileExts.add(".properties");
-	   fileExts.add(".java");	   
+	   fileExts.add(".java");
+	   fileExts.add(".xsl");
 	}
 	
 	/**

@@ -42,7 +42,7 @@ public class FuncCurrentGroup extends Function
    private static final long serialVersionUID = -9147780878956514961L;
 
    /**
-     * Implementation of the function. The function must return a valid object.
+     * Evaluate the function. The function must return a valid object.
      * 
      * @param xctxt                          An XPath context object
      * @return                               A valid XObject

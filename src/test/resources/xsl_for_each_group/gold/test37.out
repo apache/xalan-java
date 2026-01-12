@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <element count="1" path="a"/>
+  <element count="3" path="a/b"/>
+  <element count="4" path="a/b/c"/>
+  <element count="2" path="a/b/c/d"/>
+</result>

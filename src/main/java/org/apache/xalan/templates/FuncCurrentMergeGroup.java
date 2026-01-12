@@ -42,7 +42,7 @@ public class FuncCurrentMergeGroup extends Function
 	private static final long serialVersionUID = 4774706928214182885L;
 
 	/**
-      * Execute the function. The function must return a valid object.
+      * Evaluate the function. The function must return a valid object.
       * 
       * @param xctxt The current execution context.
       * @return a valid XObject.

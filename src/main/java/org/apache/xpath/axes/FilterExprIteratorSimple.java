@@ -41,12 +41,16 @@ import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
-import org.apache.xpath.types.ForEachGroupCompositeGroupingKey;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XslForEachGroupCompositeGroupingKey;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -109,92 +113,146 @@ public class FilterExprIteratorSimple extends LocPathIterator
   }
 
   /**
-   * Execute the expression. Meant for reuse by other FilterExpr iterators 
-   * that are not derived from this object.
+   * Method definition, to evaluate an XPath filter expression. Meant for 
+   * reuse by other FilterExpr iterators that are not derived from this object.
    */
   public static XMLNodeCursorImpl executeFilterExpr(int context, XPathContext xctxt, 
-	  												PrefixResolver prefixResolver,
-	  												boolean isTopLevel,
-	  												int stackFrame,
-	  												Expression expr)
-    throws org.apache.xml.utils.WrappedRuntimeException
-  {    
+				  												 PrefixResolver prefixResolver,
+				  												 boolean isTopLevel,
+				  												 int stackFrame,
+				  												 Expression expr) throws org.apache.xml.utils.WrappedRuntimeException {    
     
-	XMLNodeCursorImpl result = null;
-    
-    PrefixResolver savedResolver = xctxt.getNamespaceContext();
+	  XMLNodeCursorImpl result = null;
 
-    try
-    {
-      xctxt.pushCurrentNode(context);
-      xctxt.setNamespaceContext(prefixResolver);
+	  PrefixResolver savedResolver = xctxt.getNamespaceContext();
 
-      // The setRoot operation can take place with a reset operation, 
-      // and so we may not be in the context of LocPathIterator#nextNode, 
-      // so we have to set up the variable context, execute the expression, 
-      // and then restore the variable context.
+	  try
+	  {
+		  xctxt.pushCurrentNode(context);
+		  xctxt.setNamespaceContext(prefixResolver);
 
-      if (isTopLevel)
-      {
-        VariableStack vars = xctxt.getVarStack();
+		  // The setRoot operation can take place with a reset operation, 
+		  // and so we may not be in the context of LocPathIterator#nextNode, 
+		  // so we have to set up the variable context, execute the expression, 
+		  // and then restore the variable context.
 
-        // These three statements need to be combined into one operation.
-        int savedStart = vars.getStackFrame();
-        vars.setStackFrame(stackFrame);
-        
-        XObject exprEvalResult = expr.execute(xctxt);
-        Object obj1 = null;
-        if ((exprEvalResult instanceof ResultSequence) && XslTransformEvaluationHelper.isSequenceContainsAllXdmAtomicValues((ResultSequence)exprEvalResult)) {
-           DTMManager dtmMgr = xctxt.getDTMManager();
-           DTM dtm = dtmMgr.getXmlDtmTreeFromResultSequence((ResultSequence)exprEvalResult);
-           int docNodeHandle = dtm.getDocument();
-           int docElemHandle = dtm.getFirstChild(docNodeHandle);
-           int nextNode = dtm.getFirstChild(docElemHandle);
-           List<Integer> nodeHandleList = new ArrayList<Integer>();
-           while (nextNode != DTM.NULL) {
-        	   nodeHandleList.add(nextNode);        	   
-        	   XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, dtmMgr);
-         	   xmlNodeCursorImpl.setIsTransformedAtomicValue(true);         	  
-        	   nextNode = dtm.getNextSibling(nextNode);        	   
-           }
-           
-           result = new XMLNodeCursorImpl(nodeHandleList, dtmMgr);
-        }
-        else {
-           obj1 = exprEvalResult.object();	
-        }
-        
-        if (result == null) {
-        	if (obj1 instanceof ForEachGroupCompositeGroupingKey) {        		
-        		ForEachGroupCompositeGroupingKey forEachGroupCompositeGroupingKeyObj = (ForEachGroupCompositeGroupingKey)obj1;
-        		ResultSequence groupingKeySeq = forEachGroupCompositeGroupingKeyObj.getValue();
-        		result = getCompositeGroupingKeyNodeset(groupingKeySeq, xctxt);
-        	}
-        	else {
-        		result = (org.apache.xpath.objects.XMLNodeCursorImpl)exprEvalResult;
-        	}
-        }        
-        
-        result.setShouldCacheNodes(true);
+		  if (isTopLevel)
+		  {
+			  VariableStack vars = xctxt.getVarStack();
 
-        // These two statements need to be combined into one operation.
-        vars.setStackFrame(savedStart);
-      }
-      else
-        result = (org.apache.xpath.objects.XMLNodeCursorImpl) expr.execute(xctxt);
+			  int savedStart = vars.getStackFrame();
+			  vars.setStackFrame(stackFrame);
 
-    }
-    catch (javax.xml.transform.TransformerException se)
-    {
-      throw new org.apache.xml.utils.WrappedRuntimeException(se);
-    }
-    finally
-    {
-      xctxt.popCurrentNode();
-      xctxt.setNamespaceContext(savedResolver);
-    }
-    
-    return result;
+			  XObject exprEvalResult = expr.execute(xctxt);
+			  Object obj1 = null;
+			  
+			  if (exprEvalResult instanceof ResultSequence) {
+				  if (XslTransformEvaluationHelper.isSequenceContainsAllXdmAtomicValues((ResultSequence)exprEvalResult)) {
+					  DTMManager dtmManager = xctxt.getDTMManager();
+					  DTM dtm = dtmManager.getXmlDTMTreeFromResultSequence((ResultSequence)exprEvalResult);
+					  int docNodeHandle = dtm.getDocument();
+					  int docElemHandle = dtm.getFirstChild(docNodeHandle);
+					  int nextNode = dtm.getFirstChild(docElemHandle);
+					  List<Integer> nodeHandleList = new ArrayList<Integer>();
+					  while (nextNode != DTM.NULL) {
+						  nodeHandleList.add(nextNode);        	   
+						  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, xctxt);
+						  xmlNodeCursorImpl.setIsTransformedAtomicValue(true);         	  
+						  nextNode = dtm.getNextSibling(nextNode);        	   
+					  }
+
+					  result = new XMLNodeCursorImpl(nodeHandleList, xctxt);
+				  }
+				  else if (XslTransformEvaluationHelper.isSequenceContainsAllXdmNodes((ResultSequence)exprEvalResult)) {
+					  ResultSequence rSeq = (ResultSequence)exprEvalResult;
+					  int rSeqLength = rSeq.size();
+					  List<Integer> nodeHandleList = new ArrayList<Integer>();
+					  for (int idx = 0; idx < rSeqLength; idx++) {
+						  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)(rSeq.item(idx));
+						  int nodeHandle = (xmlNodeCursorImpl.iter()).nextNode();
+						  nodeHandleList.add(Integer.valueOf(nodeHandle));
+					  }
+
+					  result = new XMLNodeCursorImpl(nodeHandleList, xctxt); 
+				  }
+				  else {        		
+					  DTMManager dtmManager = xctxt.getDTMManager();        		
+					  ResultSequence rSeq = (ResultSequence)exprEvalResult;
+					  int rSeqLength = rSeq.size();
+					  List<Integer> nodeHandleList = new ArrayList<Integer>();
+					  boolean isSeqNodeAndAtomicValues = true;
+					  for (int idx = 0; idx < rSeqLength; idx++) {
+						  XObject xObj = rSeq.item(idx);
+						  if (xObj instanceof XMLNodeCursorImpl) {
+							  int nodeHandle = (((XMLNodeCursorImpl)xObj).iter()).nextNode();
+							  nodeHandleList.add(Integer.valueOf(nodeHandle)); 
+						  }
+						  else if ((xObj instanceof XString) || (xObj instanceof XNumber) || 
+															    (xObj instanceof XBoolean) || 
+															    (xObj instanceof XBooleanStatic) || (xObj instanceof XSAnyAtomicType)) {        				        				
+							  ResultSequence rSeq1 = new ResultSequence();
+							  rSeq1.add(xObj);
+
+							  // XSL transform of an xdm atomic value to a wrapper text node
+							  DTM dtm = dtmManager.getXmlDTMTreeFromResultSequence(rSeq1);        				
+
+							  int docNodeHandle = dtm.getDocument();
+							  int docElemNodeHandle = dtm.getFirstChild(docNodeHandle);
+							  int node = dtm.getFirstChild(docElemNodeHandle);
+							  int textNodeHandle = dtm.getFirstChild(node);
+							  nodeHandleList.add(Integer.valueOf(textNodeHandle)); 
+						  }
+						  else {
+							  // An xdm sequence contains an item other than a node or atomic 
+							  // value, for e.g function item, map etc.
+							  isSeqNodeAndAtomicValues = false;        			   
+							  
+							  nodeHandleList.clear();
+							  obj1 = exprEvalResult.object();
+
+							  break;
+						  }
+					  }
+
+					  if (isSeqNodeAndAtomicValues) {
+						  result = new XMLNodeCursorImpl(nodeHandleList, xctxt);
+					  }
+				  }
+			  }
+			  else {
+				  obj1 = exprEvalResult.object();	
+			  }
+
+			  if (result == null) {
+				  if (obj1 instanceof XslForEachGroupCompositeGroupingKey) {        		
+					  XslForEachGroupCompositeGroupingKey forEachGroupCompositeGroupingKeyObj = (XslForEachGroupCompositeGroupingKey)obj1;
+					  ResultSequence groupingKeySeq = forEachGroupCompositeGroupingKeyObj.getValue();
+					  result = getCompositeGroupingKeyNodeset(groupingKeySeq, xctxt);
+				  }
+				  else {
+					  result = (org.apache.xpath.objects.XMLNodeCursorImpl)exprEvalResult;
+				  }
+			  }        
+
+			  result.setShouldCacheNodes(true);
+
+			  vars.setStackFrame(savedStart);
+		  }
+		  else
+			  result = (org.apache.xpath.objects.XMLNodeCursorImpl) expr.execute(xctxt);
+
+	  }
+	  catch (javax.xml.transform.TransformerException se)
+	  {
+		  throw new org.apache.xml.utils.WrappedRuntimeException(se);
+	  }
+	  finally
+	  {
+		  xctxt.popCurrentNode();
+		  xctxt.setNamespaceContext(savedResolver);
+	  }
+
+	  return result;
   }
   
   /**

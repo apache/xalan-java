@@ -698,6 +698,30 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
+     * Method definition to check whether, all the values of the 
+     * supplied input sequence are XPath node references.
+     * 
+     * @param resultSeq				The supplied XPath sequence object
+     * @return						boolean value true or false
+     */
+    public static boolean isSequenceContainsAllXdmNodes(ResultSequence resultSeq) {
+    	
+    	boolean result = true;
+    	
+    	int size1 = resultSeq.size();
+    	for (int idx = 0; idx < size1; idx++) {
+    		XObject seqItem = resultSeq.item(idx);
+    		if (!(seqItem instanceof XMLNodeCursorImpl)) {
+    			result = false;
+
+    			break;
+    		}
+    	}
+    	
+    	return result;
+    }
+    
+    /**
      * This method definition does the xsl:character-map transformation
      * on the supplied string value, using a CharacterMapConfig 
      * run-time object. 

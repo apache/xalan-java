@@ -56,7 +56,7 @@ public class FuncSubsequence extends FunctionMultiArgs {
     private int numOfArgs = 0;
 
     /**
-     * Implementation of the function. The function must return a 
+     * Evaluate the function. The function must return a 
      * valid object.
      * 
      * @param xctxt                          An XPath context object

@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.string;
 
 import javax.xml.transform.SourceLocator;
@@ -46,7 +43,7 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Implementation of an XPath 3.1 string-join function.
+ * Implementation of an XPath 3.1 function fn:string-join.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -64,11 +61,11 @@ public class FuncStringJoin extends Function2Args {
    }
 
    /**
-   * Implementation of the function.
+   * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
+   * @param xctxt                           An XPath context object
    * 
-   * @return A valid XObject.
+   * @return                                A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -87,7 +84,7 @@ public class FuncStringJoin extends Function2Args {
 	        XObject evalResult = m_arg0.execute(xctxt);
 	        if (evalResult instanceof ResultSequence) {
 	           arg0ResultSeq = (ResultSequence)evalResult;   
-	        }                
+	        }	        
 	    }    
 	    else if (m_arg0 instanceof LocPathIterator) {
 	        arg0ResultSeq = new ResultSequence();
@@ -133,8 +130,8 @@ public class FuncStringJoin extends Function2Args {
 	    }
 	    
 	    if (arg0ResultSeq == null) {
-	        throw new javax.xml.transform.TransformerException("The 1st argument of function call fn:string-join, did "
-	        		                                            + "not evaluate to a sequence.", srcLocator);    
+	        throw new javax.xml.transform.TransformerException("FOAP0001 : The first argument of XPath function call string-join, "
+	        		                                                                                          + "did'nt evaluate to a sequence.", srcLocator);    
 	    }
 	    
 	    String strJoinSeparator = null;
@@ -146,8 +143,8 @@ public class FuncStringJoin extends Function2Args {
 	       strJoinSeparator = ((XString)m_arg1).str();
 	    }
 	    else {
-	       throw new javax.xml.transform.TransformerException("The 2nd argument of function call fn:string-join must be "
-	       		                                               + "absent, or it must be a string value.", srcLocator);
+	       throw new javax.xml.transform.TransformerException("FOAP0001 : The second argument of XPath function call string-join "
+	       		                                                                                              + "must be absent, or it must be a string value.", srcLocator);
 	    }
 	    
 	    StringBuffer strBuffer = new StringBuffer();

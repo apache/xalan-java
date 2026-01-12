@@ -329,7 +329,7 @@ public class XSLTSchema extends XSLTElementDef
     // Optional
     // xsl:for-each-group
     XSLTAttributeDef compositeAttrOpt = new XSLTAttributeDef(null, "composite",
-                                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.WARNING);
+                                                      XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     // Optional
     // xsl:for-each-group, xsl:sort 
     XSLTAttributeDef collationAttrOpt = new XSLTAttributeDef(null, "collation", 

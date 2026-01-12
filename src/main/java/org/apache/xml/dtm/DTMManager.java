@@ -324,7 +324,7 @@ public abstract class DTMManager
    * @param rSeq				     The supplied xdm sequence object
    * @return                         The constructed DTM object instance     
    */
-  public DTM getXmlDtmTreeFromResultSequence(ResultSequence rSeq) {
+  public DTM getXmlDTMTreeFromResultSequence(ResultSequence rSeq) {
       
 	  try {
 		  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);

@@ -50,7 +50,7 @@ public class FuncCurrentDateTime extends Function {
    }
 
    /**
-   * Implementation of the function. The function must return a valid object.
+   * Evaluate the function. The function must return a valid object.
    * 
    * @param xctxt                       An XPath context object
    * 

@@ -57,7 +57,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
-import org.apache.xpath.types.ForEachGroupCompositeGroupingKey;
+import org.apache.xpath.types.XslForEachGroupCompositeGroupingKey;
 import org.apache.xpath.types.StringWithCollation;
 import org.w3c.dom.Node;
 
@@ -688,7 +688,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 
         		// Construct an XML DOM wrapper over a sequence of input 
         		// atomic values, for the purpose of grouping
-        		DTM dtm = dtmManager.getXmlDtmTreeFromResultSequence(resultSeq);
+        		DTM dtm = dtmManager.getXmlDTMTreeFromResultSequence(resultSeq);
 
         		int docNodeHandle = dtm.getDocument();
         		int topMostElemNodeHandle = dtm.getFirstChild(docNodeHandle);
@@ -1033,8 +1033,8 @@ public class ElemForEachGroup extends ElemTemplateElement
 			  }
 			  else {
 				  // Processing for xsl:for-each-group's composite grouping key
-				  if (groupingKeyValue instanceof ForEachGroupCompositeGroupingKey) {
-					  ForEachGroupCompositeGroupingKey groupingKeyObj = (ForEachGroupCompositeGroupingKey)groupingKeyValue;
+				  if (groupingKeyValue instanceof XslForEachGroupCompositeGroupingKey) {
+					  XslForEachGroupCompositeGroupingKey groupingKeyObj = (XslForEachGroupCompositeGroupingKey)groupingKeyValue;
 					  ResultSequence groupingKeySeq = groupingKeyObj.getValue();
 					  if (groupingKeySeq.size() >= 1) {
 						  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue);
@@ -1445,8 +1445,8 @@ public class ElemForEachGroup extends ElemTemplateElement
 	     Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
 	     
 	     if (m_composite) {
-	    	 if (groupingKeyValue instanceof ForEachGroupCompositeGroupingKey) {
-				  ForEachGroupCompositeGroupingKey groupingKeyObj = (ForEachGroupCompositeGroupingKey)groupingKeyValue;
+	    	 if (groupingKeyValue instanceof XslForEachGroupCompositeGroupingKey) {
+				  XslForEachGroupCompositeGroupingKey groupingKeyObj = (XslForEachGroupCompositeGroupingKey)groupingKeyValue;
 				  ResultSequence groupingKeySeq = groupingKeyObj.getValue();
 				  if (groupingKeySeq.size() == 0) {
 					  throw new TransformerException("XTSE1080 : An XSL for-each-group instruction with attribute "
@@ -1593,7 +1593,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  
 	  String collation = null;
 	  if (m_collationUri != null) {
-	     collation = m_collationUri.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
+	      collation = m_collationUri.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
 	  }
       
       if (groupingKeyValue instanceof XString) {
@@ -1670,7 +1670,7 @@ public class ElemForEachGroup extends ElemTemplateElement
     		  collation = XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI;   
     	  }
     	  
-    	  normalizedGroupingKeyValue = new ForEachGroupCompositeGroupingKey(xctxt, (ResultSequence)groupingKeyValue, 
+    	  normalizedGroupingKeyValue = new XslForEachGroupCompositeGroupingKey(xctxt, (ResultSequence)groupingKeyValue, 
     			                                                                                                 collation, m_xpathCollationSupport);
       }
       else {

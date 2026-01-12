@@ -57,7 +57,7 @@ public class FuncContains extends XSL3StringCollationAwareFunction
   private int numOfArgs = 0;
 
   /**
-   * Execute the function. The function must return a valid object.
+   * Evaluate the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
    * @return A valid XObject.

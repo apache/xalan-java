@@ -1526,8 +1526,12 @@ public class XSLTAttributeDef
 	  if (!("yes".equals(normalizedValueStr) || "true".equals(normalizedValueStr) || "1".equals(normalizedValueStr) || 
 			                                    "no".equals(normalizedValueStr) || "false".equals(normalizedValueStr) 
 			                                                                    || "0".equals(normalizedValueStr)))
-	  {      
-		  handleError(handler, XSLTErrorResources.INVALID_BOOLEAN, new Object[] {name,value}, null);
+	  {      		  
+		  ElemTemplateElement elemTemplateElem = handler.getElemTemplateElement();
+		  Integer lineNo = elemTemplateElem.getLineNumber();
+		  Integer colNo = elemTemplateElem.getColumnNumber();
+		  		  
+		  handleError(handler, XSLTErrorResources.INVALID_BOOLEAN, new Object[] {name, value, lineNo, colNo}, null);
 		  return null;
 	  }
 

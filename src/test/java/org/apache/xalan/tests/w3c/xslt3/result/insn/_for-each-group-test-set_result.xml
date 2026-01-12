@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:11Z" fail="20" name="for-each-group" pass="59" run="79" skipped="6" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-12T12:17:50Z" fail="18" name="for-each-group" pass="61" run="79" skipped="6" statusUnknown="0">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" testName="for-each-group-002a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -73,13 +73,11 @@
    <testResult status="fail" testName="for-each-group-069"/>
    <testResult status="fail" testName="for-each-group-070"/>
    <testResult status="fail" testName="for-each-group-071"/>
-   <testResult status="fail" testName="for-each-group-072"/>
+   <testResult status="pass" testName="for-each-group-072"/>
    <testResult status="pass" testName="for-each-group-073"/>
    <testResult status="pass" testName="for-each-group-074"/>
    <testResult status="pass" testName="for-each-group-075"/>
-   <testResult status="fail" testName="for-each-group-076">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;group pop="5" country="italy"&gt;&lt;city country="italy" name="milan" pop="5"/&gt;&lt;/group&gt;&lt;group pop="7" country="france"&gt;&lt;city country="france" name="paris" pop="7"/&gt;&lt;/group&gt;&lt;group pop="4" country="germany"&gt;&lt;city country="germany" name="munich" pop="4"/&gt;&lt;/group&gt;&lt;group pop="2" country="france"&gt;&lt;city country="france" name="lyon" pop="2"/&gt;&lt;/group&gt;&lt;group pop="10" country="england"&gt;&lt;city country="england" name="london" pop="10"/&gt;&lt;/group&gt;&lt;group pop="5" country="england"&gt;&lt;city country="england" name="bristol" pop="5.0"/&gt;&lt;city country="england" name="sheffield" pop="05"/&gt;&lt;/group&gt;&lt;group pop="7" country="england"&gt;&lt;city country="england" name="manchester" pop="7.0"/&gt;&lt;city country="england" name="liverpool" pop="7"/&gt;&lt;/group&gt;&lt;group pop="1" country="italy"&gt;&lt;city country="italy" name="venice" pop="1"/&gt;&lt;/group&gt;&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-076"/>
    <testResult status="pass" testName="for-each-group-078a"/>
    <testResult status="fail" testName="for-each-group-078b">
       <outResult>

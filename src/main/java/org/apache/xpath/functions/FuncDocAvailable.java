@@ -45,7 +45,7 @@ public class FuncDocAvailable extends FunctionOneArg {
     }
 
 	/**
-     * Execute the function. The function must return a valid object.
+     * Evaluate the function. The function must return a valid object.
      * 
      * @param xctxt The current execution context.
      * @return A valid XObject.

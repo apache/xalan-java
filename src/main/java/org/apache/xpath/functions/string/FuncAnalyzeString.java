@@ -70,7 +70,7 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
     private int fNumOfArgs = 0;
     
     /**
-     * Implementation of the function. The function must return a valid object.
+     * Evaluate the function. The function must return a valid object.
      * 
      * @param xctxt The current execution context.
      * @return A valid XObject.

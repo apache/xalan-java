@@ -97,7 +97,7 @@ public class FuncLast extends Function
   }
 
   /**
-   * Execute the function. The function must return a valid 
+   * Evaluate the function. The function must return a valid 
    * object.
    * 
    * @param xctxt The current execution context.

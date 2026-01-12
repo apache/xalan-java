@@ -62,7 +62,7 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 	}
 	
 	/**
-	 * Implementation of the function.
+	 * Evaluate the function.
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{          

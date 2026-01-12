@@ -34,7 +34,7 @@ import org.apache.xpath.objects.ResultSequence;
  * 
  * @xsl.usage advanced
  */
-public class ForEachGroupCompositeGroupingKey {
+public class XslForEachGroupCompositeGroupingKey {
 	
 	/**
 	 * The sequence that has items for the composite 
@@ -60,8 +60,8 @@ public class ForEachGroupCompositeGroupingKey {
 	/**
 	 * Class constructor.
 	 */
-	public ForEachGroupCompositeGroupingKey(XPathContext xctxt, ResultSequence value, String collationUri, 
-			                                XPathCollationSupport xPathCollationSupport) {	   
+	public XslForEachGroupCompositeGroupingKey(XPathContext xctxt, ResultSequence value, String collationUri, 
+			                                                                                   XPathCollationSupport xPathCollationSupport) {	   
 	   this.m_value = value;
 	   this.m_collationUri = collationUri;
 	   this.m_xpathCollationSupport = xPathCollationSupport; 
@@ -103,7 +103,7 @@ public class ForEachGroupCompositeGroupingKey {
 	public boolean equals(Object obj2) {
 		boolean result = false;
 		
-		ForEachGroupCompositeGroupingKey grpKey2 = (ForEachGroupCompositeGroupingKey)obj2;
+		XslForEachGroupCompositeGroupingKey grpKey2 = (XslForEachGroupCompositeGroupingKey)obj2;
 		ResultSequence value2 = grpKey2.getValue();
 						
 		try {

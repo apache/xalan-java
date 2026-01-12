@@ -49,7 +49,7 @@ public class FuncAdjustDateTimeToTimezone extends FunctionMultiArgs {
 	}
 	
 	/**
-	 * Implementation of the function. The function must return a valid object.
+	 * Evaluate the function. The function must return a valid object.
 	 * 
 	 * @param xctxt						An XPath context object
 	 * @return 							A valid XObject

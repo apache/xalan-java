@@ -60,7 +60,7 @@ public class FuncName extends FunctionMultiArgs {
   }
 
   /**
-   * Implementation of the function. The function must return
+   * Evaluate the function. The function must return
    * a valid object.
    * 
    * @param xctxt The current execution context.

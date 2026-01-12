@@ -26,6 +26,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.types.StringWithCollation;
+import org.apache.xpath.types.XslForEachGroupCompositeGroupingKey;
 
 /**   
  * Implementation of an XSLT 3.0 function fn:current-grouping-key.
@@ -42,7 +43,7 @@ public class FuncCurrentGroupingKey extends Function
     public static final String XSL_GROUPING_KEY_ABSENT = "XSL_GROUPING_KEY_ABSENT";
 
     /**
-      * Implementation of the function. The function must return a valid object.
+      * Evaluate the function. The function must return a valid object.
       * 
       * @param xctxt                          An XPath context object
       * @return                               A valid XObject
@@ -97,7 +98,12 @@ public class FuncCurrentGroupingKey extends Function
         			                                                                                                            + "value is not available.", srcLocator);
         }
         
-        result = XObject.create(groupingKeyObj); 
+        if (groupingKeyObj instanceof XslForEachGroupCompositeGroupingKey) {
+           result = ((XslForEachGroupCompositeGroupingKey)groupingKeyObj).getValue(); 
+        }
+        else {
+           result = XObject.create(groupingKeyObj);
+        }
       
         return result;
     }

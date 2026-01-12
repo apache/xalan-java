@@ -74,7 +74,7 @@ public class FuncJsonDoc extends JsonFunction {
     }
     
     /**
-     * Implementation of the function. The function must return a valid object.
+     * Evaluate the function. The function must return a valid object.
      * 
      * @param xctxt The current execution context.
      * @return A valid XObject.

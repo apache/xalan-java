@@ -42,7 +42,7 @@ public class FuncRegexGroup extends FunctionOneArg
     private static final long serialVersionUID = 2690898828342290061L;
 
     /**
-      * Execute the function. The function must return a valid object.
+      * Evaluate the function. The function must return a valid object.
       * 
       * @param xctxt The current execution context.
       * @return a valid XObject.

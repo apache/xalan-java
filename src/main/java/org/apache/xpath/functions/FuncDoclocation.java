@@ -35,7 +35,7 @@ public class FuncDoclocation extends FunctionDef1Arg
     static final long serialVersionUID = 7469213946343568769L;
 
   /**
-   * Execute the function.  The function must return
+   * Evaluate the function. The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.

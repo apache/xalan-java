@@ -59,7 +59,7 @@ public class FuncTokenize extends Function3Args {
   }
 
   /**
-   * Execute the function. The function must return a valid object.
+   * Evaluate the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
    * 

@@ -15,20 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
+
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSQName;
 
 /**
- * Execute the node-name() function.
+ * Implementation of XPath 3.1 function fn:node-name.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -46,29 +48,59 @@ public class FuncNodeName extends FunctionDef1Arg {
    }
 
    /**
-   * Execute the function. The function must return a valid object.
+   * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context
-   * @return A valid XObject
+   * @param xctxt                             An XPath context object
+   * @return                                  A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 
-	    int nodeHandle = getArg0AsNode(xctxt);
-	    
-	    XObject result = null;
-	
-	    if (nodeHandle != DTM.NULL) {
-	       DTM dtm = xctxt.getDTM(nodeHandle);
-	       Node node = dtm.getNode(nodeHandle);
-	       String nodeLocalName = node.getLocalName();
-	       String namespaceUri = node.getNamespaceURI();
-	       String nodeNamePrefix = node.getPrefix();
-	       result = new XSQName(nodeNamePrefix, nodeLocalName, namespaceUri);
-	    }
-	
-	    return result;
+	  XObject result = null;
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+	  int nodeHandle = DTM.NULL;
+	  
+	  if (m_arg0 == null) {
+		  XObject xObj = xctxt.getXPath3ContextItem();
+		  if (xObj != null) {
+			 if (xObj instanceof XMLNodeCursorImpl) {
+				XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+				nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+			 }
+			 else {
+				throw new TransformerException("XPTY0004 : While evaluating XPath function node-name without an argument, XPath context "
+						                                                                                     + "item didn't evaluate to a valid node.");
+			 }
+		  }
+		  else {
+			 nodeHandle = xctxt.getCurrentNode(); 
+		  }
+	  }
+	  else {
+		  try {
+		     nodeHandle = m_arg0.asNode(xctxt);
+		  }
+		  catch (TransformerException ex) {
+			 throw new TransformerException("XPDY0002 : While evaluating XPath function node-name, function's argument didn't evaluate to a valid node."); 
+		  }
+	  }
+	  
+	  if (nodeHandle != DTM.NULL) {
+		  DTM dtm = xctxt.getDTM(nodeHandle);
+		  Node node = dtm.getNode(nodeHandle);
+		  String nodeLocalName = node.getLocalName();
+		  String namespaceUri = node.getNamespaceURI();
+		  String nodeNamePrefix = node.getPrefix();
+		  result = new XSQName(nodeNamePrefix, nodeLocalName, namespaceUri);
+	  }
+	  else {
+		  result = new ResultSequence();
+	  }
+
+	  return result;
   }
   
 }

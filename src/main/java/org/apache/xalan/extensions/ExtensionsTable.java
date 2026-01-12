@@ -98,7 +98,8 @@ public class ExtensionsTable
   }
 
   /**
-   * Execute the function-available() function.
+   * Evaluate the function fn:function-available.
+   * 
    * @param ns       the URI of namespace in which the function is needed
    * @param funcName the function name being tested
    *

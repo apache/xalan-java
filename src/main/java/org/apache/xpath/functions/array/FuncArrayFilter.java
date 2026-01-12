@@ -74,7 +74,7 @@ public class FuncArrayFilter extends Function2Args {
    private int m_globals_size;
 
    /**
-   * Implementation of the function. The function must return a valid object.
+   * Evaluate the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
    * 

@@ -63,7 +63,7 @@ public class FuncDocument extends Function2Args
     static final long serialVersionUID = 2483304325971281424L;
 
   /**
-   * Execute the function.  The function must return
+   * Evaluate the function. The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.

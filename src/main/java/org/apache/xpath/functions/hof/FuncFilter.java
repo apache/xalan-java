@@ -83,7 +83,7 @@ public class FuncFilter extends Function2Args {
    private int m_globals_size;
 
    /**
-   * Execute the function. The function must return a valid object.
+   * Evaluate the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
    * 
