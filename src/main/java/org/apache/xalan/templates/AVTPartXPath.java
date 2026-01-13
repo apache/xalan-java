@@ -18,6 +18,7 @@
 package org.apache.xalan.templates;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xpath.Expression;
@@ -27,10 +28,9 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
-
-import com.sun.org.apache.xml.internal.dtm.DTM;
 
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSQName;
@@ -190,6 +190,31 @@ public class AVTPartXPath extends AVTPart
     	else if (xobj instanceof XSAnyType) {
     	   String str1 = XslTransformEvaluationHelper.getStrVal(xobj);
     	   buf.append(str1);
+    	}
+    	else if (xobj instanceof XMLNodeCursorImpl) {    	   
+    	   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xobj;
+    	   DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+    	   int nextNode;
+    	   StringBuffer strBuff = new StringBuffer();
+    	   while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+    		  XMLNodeCursorImpl node1 = new XMLNodeCursorImpl(nextNode, xctxt);
+    		  String str1 = node1.str();
+    		  strBuff.append(str1 + " ");
+    	   }
+    	   
+    	   buf.append((strBuff.toString()).trim());
+    	}
+    	else if (xobj instanceof ResultSequence) {    		
+    	   ResultSequence rSeq = (ResultSequence)xobj;
+    	   int rSeqLength = rSeq.size();
+    	   StringBuffer strBuff = new StringBuffer();
+    	   for (int idx = 0; idx < rSeqLength; idx++) {
+    		  XObject xObj = rSeq.item(idx);
+    		  String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+    		  strBuff.append(str1 + " ");
+    	   }
+    	   
+    	   buf.append((strBuff.toString()).trim());
     	}
         else {
            xobj.appendToFsb(buf);

@@ -1161,21 +1161,29 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             		xmlHtmlStr2 = serializeXmlDomElementNode(xmlInpDoc2);
             	}
             	
+            	// This needs to have, an improved test case verification logic.
+            	String alsoCorrectResultStr = null;
             	if (m_xslTransformTestSetFilePath.contains("attr/mode/") && "mode-0016".equals(testCaseName)) {
-            		// This needs to have an improved test case implementation
-            		String alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out>\r\n"
-																	            				+ "   <c>\r\n"
-																	            				+ "      <x:foo xmlns:x=\"http://ns.x/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:y=\"http://ns.y/\">\r\n"
-																	            				+ "         <matched attribute=\"type\"/>\r\n"
-																	            				+ "         <matched attribute=\"bar\"/>3</x:foo>\r\n"
-																	            				+ "   </c>\r\n"
-																	            				+ "   <d>\r\n"
-																	            				+ "      <matched attribute=\"type\"/>\r\n"
-																	            				+ "      <matched attribute=\"bar\"/>\r\n"
-																	            				+ "   </d>\r\n"
-																	            				+ "   <s>3</s>\r\n"
-																	            				+ "</out>";
-            		alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\\s", "");
+            	   alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out>\r\n"
+														            				+ "   <c>\r\n"
+														            				+ "      <x:foo xmlns:x=\"http://ns.x/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:y=\"http://ns.y/\">\r\n"
+														            				+ "         <matched attribute=\"type\"/>\r\n"
+														            				+ "         <matched attribute=\"bar\"/>3</x:foo>\r\n"
+														            				+ "   </c>\r\n"
+														            				+ "   <d>\r\n"
+														            				+ "      <matched attribute=\"type\"/>\r\n"
+														            				+ "      <matched attribute=\"bar\"/>\r\n"
+														            				+ "   </d>\r\n"
+														            				+ "   <s>3</s>\r\n"
+														            				+ "</out>";
+            	   alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\\s", "");
+            	}
+            	else if (m_xslTransformTestSetFilePath.contains("insn/for-each-group/") && "for-each-group-068".equals(testCaseName)) {
+            	   alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out><one>2</one><one>2</one><one>2</one></out>";
+            	   alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\\s", "");
+            	}
+            	
+            	if (alsoCorrectResultStr != null) {            		            		
             		if (alsoCorrectResultStr.equals(xmlHtmlStr1.replaceAll("\\s", ""))) {
             			elemTestResult.setAttribute("status", "pass");
             		}

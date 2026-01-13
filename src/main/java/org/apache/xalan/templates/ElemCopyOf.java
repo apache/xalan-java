@@ -296,7 +296,14 @@ public class ElemCopyOf extends ElemTemplateElement
       if ((type != null) && (validationStr != null)) {
       	  throw new TransformerException("XTTE1540 : An XSL copy-of instruction cannot have both the attributes "
       	  																						+ "'type' and 'validation'.", srcLocator); 
-      }      
+      }
+      
+      if (validationStr != null) {
+    	  if (!isValidationStrOk(validationStr)) {
+    		 throw new TransformerException("XTTE1540 : An XSL copy-of instruction's attribute 'validation' can only have one of following "
+                                                                                                + "values : strict, lax, preserve, strip.", srcLocator);  
+    	  }
+      }
               
       int sourceNode = xctxt.getCurrentNode();
       
@@ -353,7 +360,7 @@ public class ElemCopyOf extends ElemTemplateElement
     		  }
     	  }
     	  else {
-             value = m_selectExpression.execute(xctxt, sourceNode, this);
+              value = m_selectExpression.execute(xctxt, sourceNode, this);
     	  }
       }
 
@@ -370,45 +377,32 @@ public class ElemCopyOf extends ElemTemplateElement
     
             switch (xObjectType) {           
                 case XObject.CLASS_NODESET :
-                  XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)value;
-                  
-                  if (!m_copy_namespaces) {					  					 					  
-                	 xNodeSet = XslTransformEvaluationHelper.stripNamespacesNodeSet(xNodeSet, xctxt);
+                  XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)value;                  
+                                    
+                  if (!m_copy_namespaces) {
+                	 copyOfNodeSetStripNsNodes(nodeSet, transformer, xctxt, type, validationStr, rhandler);                	                 	 
                   }
-                  
-                  xNodeSet.setTypeAttrForValidation(type);
-                  
-                  if (validationStr != null) {
-                	  if (!isValidationStrOk(validationStr)) {
-                		 throw new TransformerException("XTTE1540 : An XSL copy-of instruction's attribute 'validation' can only have one of following "
-                                                                                                          + "values : strict, lax, preserve, strip.", srcLocator);  
-                	  }
+                  else {
+                	 nodeSet.setTypeAttrForValidation(type);                                                      
+                	 nodeSet.setValidationAttrForValidation(validationStr);
+              		
+                	 copyOfActionOnNodeSet(nodeSet, transformer, rhandler, xctxt); 
                   }
-                  
-                  xNodeSet.setValidationAttrForValidation(validationStr);
-                  copyOfActionOnNodeSet(xNodeSet, transformer, rhandler, xctxt);
                   
                   break;
                 case XObject.CLASS_RTREEFRAG :
-                  SerializerUtils.outputResultTreeFragment(
-                                                        rhandler, value, transformer.getXPathContext());
+                  SerializerUtils.outputResultTreeFragment(rhandler, value, transformer.getXPathContext());
                   
                   break;
                 case XObject.CLASS_RESULT_SEQUENCE :         
-                  ResultSequence resultSequence = (ResultSequence)value;
+                  ResultSequence rSeq = (ResultSequence)value;
                   
                   if (!m_copy_namespaces) {
-                	 int rSeqLength = resultSequence.size();
-                	 for (int idx = 0; idx < rSeqLength; idx++) {
-                		XObject xObj = resultSequence.item(idx);
-                		if (xObj instanceof XMLNodeCursorImpl) {
-                		   XMLNodeCursorImpl nodeSet1 = XslTransformEvaluationHelper.stripNamespacesNodeSet((XMLNodeCursorImpl)xObj, xctxt);
-                		   resultSequence.set(idx, nodeSet1);
-                		}
-                	 }
+                	  copyOfXdmSequenceStripNsNodes(rSeq, transformer, xctxt, type, validationStr, rhandler);
                   }
-                  
-                  copyOfActionOnResultSequence(resultSequence, transformer, rhandler, xctxt, false, this);
+                  else {
+                	  copyOfActionOnResultSequence(rSeq, transformer, rhandler, xctxt, false, this);
+                  }
                   
                   break;
                 case XObject.CLASS_ARRAY : 
@@ -417,17 +411,11 @@ public class ElemCopyOf extends ElemTemplateElement
                   ResultSequence resultSequenceArr = getResultSequenceFromXPathArray(nativeArr);
                   
                   if (!m_copy_namespaces) {
-                	  int rSeqLength = resultSequenceArr.size();
-                	  for (int idx = 0; idx < rSeqLength; idx++) {
-                		  XObject xObj = resultSequenceArr.item(idx);
-                		  if (xObj instanceof XMLNodeCursorImpl) {
-                			  XMLNodeCursorImpl nodeSet1 = XslTransformEvaluationHelper.stripNamespacesNodeSet((XMLNodeCursorImpl)xObj, xctxt);
-                			  resultSequenceArr.set(idx, nodeSet1);
-                		  }
-                	  }
+                	  copyOfXdmSequenceStripNsNodes(resultSequenceArr, transformer, xctxt, type, validationStr, rhandler);
                   }
-                  
-                  copyOfActionOnResultSequence(resultSequenceArr, transformer, rhandler, xctxt, false, this);
+                  else {
+                      copyOfActionOnResultSequence(resultSequenceArr, transformer, rhandler, xctxt, false, this);
+                  }
                   
                   break;
                 case XObject.CLASS_UNKNOWN :
@@ -618,8 +606,8 @@ public class ElemCopyOf extends ElemTemplateElement
         		 Node node = dtm.getNode(nodeHandle);
         		 String nodeName = node.getNodeName();
         		 try {
-        			 if (nodeName.startsWith("b_")) {
-        				 Integer int1 = Integer.valueOf(nodeName.substring(2));
+        			 if (nodeName.startsWith("b_")) {        				 
+        				 Integer int1 = Integer.valueOf(nodeName.substring(2));        				 
         				 Element elemNode = (Element)node;
           				 xdmItem = new XString(elemNode.getTextContent());
         			 }
@@ -1018,6 +1006,91 @@ public class ElemCopyOf extends ElemTemplateElement
 		  nodeSet.setTypeAttrForValidation(null);
 		  nodeSet.setValidationAttrForValidation(null);
 	  }
+   }
+   
+   /**
+    * Method definition, to copy a supplied xdm sequence, to XSL result tree,
+    * where all xdm element nodes within the sequence are stripped with their
+    * XML namespace nodes before copying them to an XSL result tree.
+    * 
+    * @param rSeq                                 The supplied xdm sequence object.
+    * @param transformer                          An XSL TransformerImpl object
+    * @param xctxt                                An XPath context object
+    * @param type                                 An xdm type's qname value  if available,
+    *                                             for validation of an xdm node.
+    * @param validationStr                        The value of xsl:copy-of's 'validation'
+    *                                             attribute of available, with possible
+    *                                             values 'strict', 'lax', 'preserve', 'strip'.
+    * @param rhandler                             Xalan's XSL SerializationHandler object instance.
+    * @throws TransformerException
+    * @throws SAXException
+    */
+   private void copyOfXdmSequenceStripNsNodes(ResultSequence rSeq, TransformerImpl transformer, XPathContext xctxt, QName type,
+ 		                                                                                        String validationStr, SerializationHandler rhandler)
+ 				                                                                                                    throws TransformerException, SAXException {	  
+ 	  int rSeqLength = rSeq.size();
+ 	  ResultSequence rSeq2 = new ResultSequence(); 
+ 	  for (int idx = 0; idx < rSeqLength; idx++) {
+ 		  XObject xObj = rSeq.item(idx);
+ 		  if (xObj instanceof XMLNodeCursorImpl) {
+ 			  XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObj;
+ 			  DTMCursorIterator dtmCursorIterator = nodeSet.iter();
+ 			  int nextNode;
+ 			  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+ 				  XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(nextNode, xctxt);
+ 				  DTM dtm = xctxt.getDTM(nextNode);
+ 				  if (dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) {
+ 					  xdmNode = XslTransformEvaluationHelper.stripNsNodesFromXdmElementNode(xdmNode, xctxt);
+ 				  }
+
+ 				  xdmNode.setTypeAttrForValidation(type);                                                      
+ 				  xdmNode.setValidationAttrForValidation(validationStr);
+
+ 				  rSeq2.add(xdmNode);
+ 			  } 
+ 		  }
+ 		  else {
+ 			  rSeq2.add(xObj);
+ 		  }
+ 	  }
+
+ 	  copyOfActionOnResultSequence(rSeq2, transformer, rhandler, xctxt, false, this);
+   }
+
+   /**
+    * Method definition, to copy a supplied xdm node set, to XSL result tree,
+    * and stripping XML namespace nodes from supplied element nodes before copying 
+    * the supplied nodeset to an XSL result tree.
+    * 
+    * @param nodeset                              The supplied xdm nodeset object.
+    * @param transformer                          An XSL TransformerImpl object
+    * @param xctxt                                An XPath context object
+    * @param type                                 An xdm type's qname value  if available,
+    *                                             for validation of an xdm node.
+    * @param validationStr                        The value of xsl:copy-of's 'validation'
+    *                                             attribute of available, with possible
+    *                                             values 'strict', 'lax', 'preserve', 'strip'.
+    * @param rhandler                             Xalan's XSL SerializationHandler object instance.
+    * @throws TransformerException
+    * @throws SAXException
+    */
+   private void copyOfNodeSetStripNsNodes(XMLNodeCursorImpl nodeset, TransformerImpl transformer, XPathContext xctxt, QName type,
+ 		                                                                                          String validationStr, SerializationHandler rhandler)
+ 				                                                                                                         throws TransformerException, SAXException {
+ 	  DTMCursorIterator dtmCursorIterator = nodeset.iter();
+ 	  int nextNode;
+ 	  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+ 		  XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(nextNode, xctxt);
+ 		  DTM dtm = xctxt.getDTM(nextNode);
+ 		  if (dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) {
+ 			  xdmNode = XslTransformEvaluationHelper.stripNsNodesFromXdmElementNode(xdmNode, xctxt);
+ 		  }
+
+ 		  xdmNode.setTypeAttrForValidation(type);                                                      
+ 		  xdmNode.setValidationAttrForValidation(validationStr);
+
+ 		  copyOfActionOnNodeSet(xdmNode, transformer, rhandler, xctxt);
+ 	  }
    }
 
 }

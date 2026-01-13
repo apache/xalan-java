@@ -824,7 +824,7 @@ public class XslTransformEvaluationHelper {
      * @param nodeSet					The supplied XMLNodeCursorImpl node set object
      * @param xctxt					    An XPath context object
      */
-    public static XMLNodeCursorImpl stripNamespacesNodeSet(XMLNodeCursorImpl nodeSet, XPathContext xctxt) throws TransformerException {
+    public static XMLNodeCursorImpl stripNsNodesFromXdmElementNode(XMLNodeCursorImpl nodeSet, XPathContext xctxt) throws TransformerException {
  	   
  	   XMLNodeCursorImpl result = null;
  	   
@@ -847,13 +847,13 @@ public class XslTransformEvaluationHelper {
  		   StringReader strReader = new StringReader(xmlStr);
  		   InputSource inpSource = new InputSource(strReader);
  		   Document document = docBuilder.parse(inpSource);
- 		   nodeNamespacesStrip(document.getDocumentElement());
+ 		   stripNsNodesFromXmlDocument(document.getDocumentElement());
 
  		   DTMManager dtmManager = xctxt.getDTMManager();
  		   DTM resultDtm = dtmManager.getDTM(new DOMSource(document), true, null, false, false);
  		   int resultNodeHandle = resultDtm.getDocument();
 
- 		   result = new XMLNodeCursorImpl(resultNodeHandle, dtmManager);
+ 		   result = new XMLNodeCursorImpl(resultNodeHandle, xctxt);
  	   }
  	   catch (Exception ex) {
  		   throw new TransformerException(ex.getMessage(), srcLocator); 
@@ -973,7 +973,7 @@ public class XslTransformEvaluationHelper {
      * 
      * @param elemNode					The supplied XML dom element node
      */
-    private static void nodeNamespacesStrip(Element elemNode) {
+    private static void stripNsNodesFromXmlDocument(Element elemNode) {
 
  	   NamedNodeMap namedNodeMap = elemNode.getAttributes();
 
@@ -988,7 +988,7 @@ public class XslTransformEvaluationHelper {
  			   for (int idx2 = 0; idx2 < nodeListLength; idx2++) {
  				   Node node2 = nodeList.item(idx2);
  				   if (node2.getNodeType() == Node.ELEMENT_NODE) {
- 					   nodeNamespacesStrip((Element)node2); 
+ 					   stripNsNodesFromXmlDocument((Element)node2); 
  				   }
  			   }
  		   }

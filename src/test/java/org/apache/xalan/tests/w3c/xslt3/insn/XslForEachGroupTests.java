@@ -41,8 +41,7 @@ public class XslForEachGroupTests extends W3CXslTransformTestsUtil {
     	// Xalan-J has bugs with following, W3C XSLT 3.0 test cases.
     	// Skipping these XSL test cases for now.
     	
-    	m_skipped_tests_list.add("for-each-group-084");
-    	m_skipped_tests_list.add("for-each-group-089");
+    	m_skipped_tests_list.add("for-each-group-084");   // Xalan goes to inf loop, with this test case
     }
 
     @AfterClass

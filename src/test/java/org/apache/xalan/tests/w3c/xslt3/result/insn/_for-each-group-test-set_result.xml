@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-12T12:17:50Z" fail="18" name="for-each-group" pass="61" run="79" skipped="6" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-13T11:49:39Z" fail="14" name="for-each-group" pass="66" run="80" skipped="5" statusUnknown="0">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" testName="for-each-group-002a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -69,7 +69,7 @@
    <testResult status="pass" testName="for-each-group-065"/>
    <testResult status="pass" testName="for-each-group-066"/>
    <testResult status="fail" testName="for-each-group-067"/>
-   <testResult status="fail" testName="for-each-group-068"/>
+   <testResult status="pass" testName="for-each-group-068"/>
    <testResult status="fail" testName="for-each-group-069"/>
    <testResult status="fail" testName="for-each-group-070"/>
    <testResult status="fail" testName="for-each-group-071"/>
@@ -79,34 +79,27 @@
    <testResult status="pass" testName="for-each-group-075"/>
    <testResult status="pass" testName="for-each-group-076"/>
    <testResult status="pass" testName="for-each-group-078a"/>
-   <testResult status="fail" testName="for-each-group-078b">
-      <outResult>
-         <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>Unknown error in XPath.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-078b"/>
    <testResult status="pass" testName="for-each-group-079a"/>
-   <testResult status="fail" testName="for-each-group-079b">
-      <outResult>
-         <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>Unknown error in XPath.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-079b"/>
    <testResult status="pass" testName="for-each-group-080"/>
    <testResult status="skipped" testName="for-each-group-081a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="for-each-group-081b"/>
-   <testResult status="fail" testName="for-each-group-082"/>
+   <testResult status="pass" testName="for-each-group-082"/>
    <testResult status="pass" testName="for-each-group-083"/>
    <testResult reason="Xalan configured" status="skipped" testName="for-each-group-084"/>
    <testResult status="fail" testName="for-each-group-085"/>
    <testResult status="fail" testName="for-each-group-086"/>
    <testResult status="fail" testName="for-each-group-087"/>
    <testResult status="pass" testName="for-each-group-088"/>
-   <testResult reason="Xalan configured" status="skipped" testName="for-each-group-089"/>
-   <testResult status="fail" testName="for-each-group-090">
+   <testResult status="fail" testName="for-each-group-089">
       <outResult>
+         <errTrace>XTSE0090 : An attribute 'copy-accumulators' is not allowed to appear on XSL element "copy-of".</errTrace>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
+   <testResult status="pass" testName="for-each-group-090"/>
    <testResult status="pass" testName="for-each-group-091"/>
 </testrun>

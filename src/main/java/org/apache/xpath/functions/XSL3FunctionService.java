@@ -894,7 +894,7 @@ public class XSL3FunctionService {
     		if (argList != null) {
     		   argCount = argList.size();
     		}
-    		else {
+    		else if (argSeq != null) {
     		   argCount = argSeq.size();	
     		}
     		

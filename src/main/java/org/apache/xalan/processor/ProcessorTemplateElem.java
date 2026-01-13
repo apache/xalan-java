@@ -143,7 +143,7 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
 				  String attrLocalName = attributes.getLocalName(idx);
 				  XSLTAttributeDef attrDef = elemDef.getAttributeDef(null, attrLocalName);
 				  if (attrDef == null) {
-					  TransformerException te = new TransformerException("XTSE0090 : An attribute '" + attrLocalName + "' is not defined "
+					  TransformerException te = new TransformerException("XTSE0090 : An attribute '" + attrLocalName + "' is not allowed "
 							  															          + "to appear on XSL element \"" + localName + "\".", elem);					  
 					  handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMTMPL, null, te);
 				  }
