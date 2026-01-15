@@ -50,7 +50,9 @@ public class XPathExprFunctionCallSuffix extends Expression {
 	private static final long serialVersionUID = -4971046034028352044L;
 	
 	/**
-	 * An XPath path expression string.
+	 * This class field represents, an XPath expression string
+	 * that has trailing function call suffix after character 
+	 * '/'. For e.g, abc/pqr()
 	 */
 	private String m_xpathExprStr = null;
 	

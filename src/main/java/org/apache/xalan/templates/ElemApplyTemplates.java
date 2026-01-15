@@ -547,8 +547,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  final StylesheetRoot sroot = transformer.getStylesheet();
 		  final TemplateList tl = sroot.getTemplateListComposed();
 
-		  // final boolean quiet = transformer.getQuietConflictWarnings();
-
 		  // Should be able to get this from the iterator 
 		  // but there might be a codebase issue.
 		  DTM dtm = xctxt.getDTM(contextNode);
@@ -1119,28 +1117,29 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  ElemWithParam ewp = m_paramElems[i];
 								  if (ewp.m_qnameID == ep.m_qnameID)                  
 								  {
-									  XObject obj = vars.getLocalVariable(i, argsFrame);
-
-									  XObject argConvertedVal = null;
+									  XObject obj = vars.getLocalVariable(i, argsFrame);									  
 									  String paramAsAttrStrVal = ep.getAs();
-
 									  if (paramAsAttrStrVal != null) {
-										  argConvertedVal = getParamValueAsAttributeProcessing(obj, templateMatchPatternStr, elem.getPrefixTable(), 
+										  XObject argConvertedVal = getParamValueAsAttributeProcessing(obj, templateMatchPatternStr, elem.getPrefixTable(), 
 												  																				i, paramAsAttrStrVal, transformer, srcLocator);
-									  }
-									  else {
-										  argConvertedVal = obj;  
-									  }
-
-									  if (argConvertedVal instanceof ResultSequence) {                
-										  XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)argConvertedVal, 
-												  																												xctxt);
-										  if (nodeSet != null) {
-											  argConvertedVal = nodeSet;  
+										  if (argConvertedVal != null) {
+											  if ((obj instanceof XMLNodeCursorImpl) && !(argConvertedVal instanceof XSAnyAtomicType)) {
+												  obj = obj.getFresh();
+												  vars.setLocalVariable(paramIndex, obj);
+											  }
+											  else {
+												  vars.setLocalVariable(paramIndex, argConvertedVal); 
+											  }
+										  }
+										  else {
+											  throw new TransformerException("XPTY0004 : An XSL apply-templates with-param value doesn't match the specified "
+                                                                                                                                     + "xdm sequence type " + paramAsAttrStrVal + ".", srcLocator); 
 										  }
 									  }
-
-									  vars.setLocalVariable(paramIndex, argConvertedVal);
+									  else {
+										  vars.setLocalVariable(paramIndex, obj);
+									  }
+									  
 									  break;
 								  }
 							  }              

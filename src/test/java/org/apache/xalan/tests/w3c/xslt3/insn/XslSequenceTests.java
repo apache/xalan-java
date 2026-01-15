@@ -39,13 +39,13 @@ public class XslSequenceTests extends W3CXslTransformTestsUtil {
     	
     	m_testResultFileName = "_sequence-test-set_result.xml";
     	
-    	// Apache Xalan's XSLT 3.0 implementation, has bugs with following, 
+    	// Xalan's XSLT 3.0 implementation, has bugs with following, 
     	// W3C XSLT 3.0 test cases. Skipping these XSL test cases for now.
     	
     	m_skipped_tests_list.add("sequence-0120");
     	m_skipped_tests_list.add("sequence-0127");
     	
-    	// Apache Xalan's implementation looks to be ok for this, test case
+    	// Xalan's implementation looks to be ok for this, test case
     	m_skipped_tests_list.add("sequence-0115");
     }
 

@@ -81,8 +81,8 @@ import org.apache.xml.utils.ObjectVector;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathProcessorException;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.LetExprVarBinding;
 import org.apache.xpath.composite.SequenceTypeArrayTest;
@@ -373,6 +373,13 @@ public class XPathParser
     m_functionTable = compiler.getFunctionTable();
     
     m_isSequenceTypeXPathExpr = isSequenceTypeXPathExpr;
+    
+    int idx2 = expression.lastIndexOf('/');    
+    if ((idx2 != -1) && expression.contains("(") && expression.contains(")")) {
+       // XPath expression strings of type abc/pqr(), are transformed
+       // to equivalent XPath 'for' expressions.
+       expression = xslTransformXPathExprStr(expression, idx2);
+    }
     
     m_xpathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
     
@@ -7713,20 +7720,21 @@ public class XPathParser
    }
    
    /**
-    * Method definition to check, whether the supplied string value has 
-    * an XPath axis name prefix.
+    * Method definition, to check whether the supplied XPath string 
+    * value has an XPath axis name prefix.
     * 
-    * @param strValue			Supplied string value
-    * @return					Boolean true if the supplied string value has an 
-    *                           XPath axis name prefix.
+    * @param xpathStr			The supplied, string value
+    * @return					Boolean value true, if the supplied string 
+    *                           value has an XPath axis name prefix, otherwise
+    *                           false.
     */
-   public static boolean isStrHasXPathAxisNamePrefix(String strValue) {
+   public static boolean isStrHasXPathAxisNamePrefix(String xpathStr) {
 	   
 	   boolean result = false;
 
-	   int idx = strValue.indexOf("::");
-	   if (idx >= 0) {
-		   String xpathAxisStrValue = strValue.substring(0, idx);
+	   int idx = xpathStr.indexOf("::");
+	   if (idx != -1) {
+		   String xpathAxisStrValue = xpathStr.substring(0, idx);
 		   switch (xpathAxisStrValue) {
 		   case Keywords.FROM_ANCESTORS_STRING:
 			   result = true;
@@ -8499,21 +8507,21 @@ public class XPathParser
      */
     private boolean isTextAndNodeExpr(int queueMark) {
   	  
-  	  boolean result = false;
-  	  
-  	  if ((queueMark == 1) || (queueMark == 3)) {
-  		  if (tokenIs('/') && lookahead('/', 2) && (lookahead("text", 3) || lookahead("node", 3)) && lookahead('(', 4) && 
-  				  																		lookahead(')', 5) && lookahead('[', 6)) {		  
-  			  result = true;
-  			  nextToken();		  		  
-  		  }
-  		  else if (!tokenIs('/') && lookahead('/', 1) && (lookahead("text", 2) || lookahead("node", 2)) && lookahead('(', 3) && 
-  				  																		lookahead(')', 4) && lookahead('[', 5)) {		  
-  			  result = true;		  		  
-  		  }
-  	  }
-  	  
-  	  return result;
+    	boolean result = false;
+
+    	if ((queueMark == 1) || (queueMark == 3)) {
+    		if (tokenIs('/') && lookahead('/', 2) && (lookahead("text", 3) || lookahead("node", 3)) && lookahead('(', 4) && 
+    				                                                                            lookahead(')', 5) && lookahead('[', 6)) {		  
+    			result = true;
+    			nextToken();		  		  
+    		}
+    		else if (!tokenIs('/') && lookahead('/', 1) && (lookahead("text", 2) || lookahead("node", 2)) && lookahead('(', 3) && 
+    				                                                                            lookahead(')', 4) && lookahead('[', 5)) {		  
+    			result = true;		  		  
+    		}
+    	}
+
+    	return result;
     }
     
     /**
@@ -8525,25 +8533,66 @@ public class XPathParser
      */
     private boolean isXPathBuiltInFunctionCall(String str) {	  
   	  
-  	  boolean result = false;
+    	boolean result = false;
+
+    	int strLength = str.length();	  
+    	int idx1 = str.indexOf('(');
+    	if (idx1 > -1) {
+    		char chr2 = str.charAt(strLength - 1);
+    		if (chr2 == ')') {
+    			String str2 = str.substring(0, idx1); 
+    			int funcTok1 = getFunctionToken(str2, XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
+    			int funcTok2 = getFunctionToken(str2, XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
+    			int funcTok3 = getFunctionToken(str2, XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
+    			int funcTok4 = getFunctionToken(str2, XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
+    			if ((funcTok1 > -1) || (funcTok2 > -1) || (funcTok3 > -1) || (funcTok4 > -1)) {
+    				result = true;
+    			}
+    		}
+    	}
+
+    	return result;
+    }
+    
+    /**
+     * Method definition, to XSL transform the supplied XPath string
+     * value of type abc/pqr(), to an equivalent XPath 'for' 
+     * expression.
+     * 
+     * @param xpathExprStr					The supplied XPath string value
+     * @param idx1                          An index value within the supplied string,
+     *                                      of last occurrence of character '/'.  
+     * @return                              An XSL transformation of supplied XPath 
+     *                                      string value.
+     */
+    private String xslTransformXPathExprStr(String xpathExprStr, int idx1) {	  
   	  
-  	  int strLength = str.length();	  
-  	  int idx1 = str.indexOf('(');
-  	  if (idx1 > -1) {
-  	     char chr2 = str.charAt(strLength - 1);
-  	     if (chr2 == ')') {
-  	    	String str2 = str.substring(0, idx1); 
-  	    	int funcTok1 = getFunctionToken(str2, XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
-  	    	int funcTok2 = getFunctionToken(str2, XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
-  	    	int funcTok3 = getFunctionToken(str2, XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
-  	    	int funcTok4 = getFunctionToken(str2, XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
-  	    	if ((funcTok1 > -1) || (funcTok2 > -1) || (funcTok3 > -1) || (funcTok4 > -1)) {
-  	    		result = true;
-  	    	}
-  	     }
-  	  }
-  	  
-  	  return result;
+    	String result = xpathExprStr;
+
+    	// XPath string LHS value. i.e, for XPath string abc/pqr(), 
+    	// this is abc.
+    	String str1 = result.substring(0, idx1);
+    	
+    	// Regex pattern for simple function call syntax. Function
+    	// argument should not have the character '('.
+    	java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("[a-zA-Z_0-9\\-]+\\s*\\((.[^(])*\\)");
+    			
+    	String str2 = result.substring(idx1 + 1);
+    	boolean isStrRhsFuncCall = (pattern.matcher(str2)).matches();
+    	
+    	// XPath string LHS value, should be an XPath axes reference, or function call
+    	
+    	boolean strHasXPathAxisNamePrefix = isStrHasXPathAxisNamePrefix(str1);    	    	    	
+		
+		java.util.regex.Matcher matcher = pattern.matcher(str1);
+
+    	if ((strHasXPathAxisNamePrefix || matcher.matches()) && isStrRhsFuncCall) {    		    		
+    		int idx2 = str2.indexOf('(');
+    		String funcName2 = str2.substring(0, idx2);
+    		result = "for $v1 in " + str1 + " return " + funcName2 + "($v1)";
+    	}
+
+    	return result;
     }
   
 }
