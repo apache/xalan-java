@@ -50,6 +50,7 @@
 			<version>1.4.02</version>
 		</dependency>
 		<dependency>
+			<!-- Code repos url : https://github.com/xercesj/xalanj_xpath31_types -->
 			<groupId>org.apache.xerces</groupId>
 			<artifactId>xalan-java_xpath31_types</artifactId>
 			<version>0.1</version>

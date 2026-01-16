@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:20Z" fail="73" name="date" pass="61" run="134" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-16T11:47:11Z" fail="70" name="date" pass="64" run="134" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -55,12 +55,8 @@
    <testResult status="pass" testName="date-049"/>
    <testResult status="fail" testName="date-050"/>
    <testResult status="pass" testName="date-051"/>
-   <testResult status="fail" testName="date-052"/>
-   <testResult status="fail" testName="date-053">
-      <outResult>
-         <errTrace>FODC0005 : An XPath dynamic error has occured, evaluating constructor function call for xs:duration. XTTE0570 : The supplied string value 'P28DT11H65M' cannot be parsed to a xs:duration value.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="date-052"/>
+   <testResult status="pass" testName="date-053"/>
    <testResult status="fail" testName="date-054"/>
    <testResult status="fail" testName="date-055"/>
    <testResult status="fail" testName="date-056"/>
@@ -114,11 +110,7 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="date-091"/>
-   <testResult status="fail" testName="date-092">
-      <outResult>
-         <errTrace>org.apache.xpath.operations.Variable cannot be cast to org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="date-092"/>
    <testResult status="pass" testName="date-093"/>
    <testResult status="fail" testName="date-094a">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>

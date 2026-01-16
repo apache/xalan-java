@@ -28,7 +28,7 @@ import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSTime;
 
 /**
- * Implementation of fn:seconds-from-time function.
+ * Implementation of XPath 3.1 function fn:seconds-from-time.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -46,10 +46,10 @@ public class FuncSecondsFromTime extends FunctionOneArg
   }
 
   /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * Evaluate the function. The function must return a valid object.
+   * 
+   * @param xctxt                          An XPath context object
+   * @return                               A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -64,13 +64,13 @@ public class FuncSecondsFromTime extends FunctionOneArg
 	  XObject arg0Val = arg0.execute(xctxt);
 	  
 	  if (!(arg0Val instanceof XSTime)) {
-		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of "
-		 		                                                   + "fn:seconds-from-time() is xs:time, whereas the supplied "
-		 		                                                   + "argument is not conformant.", srcLocator);   
+		 throw new javax.xml.transform.TransformerException("FORG0006 : The required item type of the first argument of "
+		 		                                                                              + "function seconds-from-time() is XML Schema type 'time', whereas the supplied "
+		 		                                                                              + "argument is not conformant.", srcLocator);   
 	  }
 	  else {
 		 XSTime xsTimeVal = (XSTime)arg0Val;
-		 result = new XSDecimal(xsTimeVal.second() + "");
+		 result = new XSDecimal(String.valueOf(xsTimeVal.second()));
 	  }
 	  
 	  return result;

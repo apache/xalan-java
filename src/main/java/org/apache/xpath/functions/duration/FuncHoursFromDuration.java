@@ -22,16 +22,18 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSDuration;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
- * Implementation of the hours-from-duration() function.
+ * Implementation of XPath 3.1 function fn:hours-from-duration.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -48,6 +50,14 @@ public class FuncHoursFromDuration extends FunctionOneArg {
     	m_defined_arity = new Short[] { 1 };	
     }
 
+    /**
+     * Evaluate the function. The function must return a valid object.
+     * 
+     * @param xctxt                          An XPath context object
+     * @return                               A valid XObject
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         XObject result = null;
@@ -62,7 +72,21 @@ public class FuncHoursFromDuration extends FunctionOneArg {
               return resultSeq;
            }
             
-           XSDuration xsDuration = (XSDuration)(((XSL3ConstructorOrExtensionFunction)arg0).execute(xctxt));
+           XSDuration xsDuration = null;
+           if (arg0 instanceof SelfIteratorNoPredicate) {
+        	  if (xctxt.getXPath3ContextItem() != null) {
+        		 xsDuration = (XSDuration)(xctxt.getXPath3ContextItem());   
+        	  }
+           }
+           
+           if (xsDuration == null) {
+         	  if (arg0 instanceof Variable) {
+         		  xsDuration = (XSDuration)(arg0.execute(xctxt));
+         	  }
+         	  else {
+         		  xsDuration = (XSDuration)(((XSL3ConstructorOrExtensionFunction)arg0).execute(xctxt));  
+         	  }        	    
+           }
             
            int hours = xsDuration.hours();
            if (xsDuration.negative()) {
@@ -72,7 +96,8 @@ public class FuncHoursFromDuration extends FunctionOneArg {
            result = new XSInteger(BigInteger.valueOf(hours));
         }
         catch (Exception ex) {
-           throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator); 
+           String errMesg = ex.getMessage();           
+           throw new javax.xml.transform.TransformerException("FORG0006 : " + errMesg + ".", srcLocator); 
         }
         
         return result;

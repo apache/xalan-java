@@ -16,6 +16,8 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -56,7 +58,23 @@ public class FuncEmpty extends FunctionOneArg {
         
         XObject result = null;
         
-        XObject arg0Obj = m_arg0.execute(xctxt);
+        XObject arg0Obj = null;
+        
+        try {
+           arg0Obj = m_arg0.execute(xctxt);
+        }
+        catch (Exception ex) {
+           if (ex instanceof TransformerException) {
+        	  throw ex; 
+           }
+           else {
+              result = XBoolean.S_TRUE;
+           }
+        }
+        
+        if (result != null) {
+           return result;
+        }
         
         if (arg0Obj instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg0Obj;

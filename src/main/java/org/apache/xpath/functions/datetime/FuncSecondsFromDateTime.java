@@ -30,7 +30,7 @@ import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDecimal;
 
 /**
- * Implementation of fn:seconds-from-dateTime function.
+ * Implementation of XPath 3.1 function fn:seconds-from-dateTime.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -49,11 +49,10 @@ public class FuncSecondsFromDateTime extends FunctionOneArg
   }
 
   /**
-   * Evaluate the function. The function must return
-   * a valid object.
+   * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * @param xctxt                          An XPath context object
+   * @return                               A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -68,9 +67,9 @@ public class FuncSecondsFromDateTime extends FunctionOneArg
 	  XObject arg0Val = arg0.execute(xctxt);
 	  
 	  if (!(arg0Val instanceof XSDateTime)) {
-		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of "
-		 		                                                   + "fn:seconds-from-dateTime() is xs:dateTime, whereas the supplied "
-		 		                                                   + "argument is not conformant.", srcLocator);   
+		 throw new javax.xml.transform.TransformerException("FORG0006 : The required item type of the first argument of XPath function "
+		 		                                                                              + "seconds-from-dateTime() is XML Schema type 'dateTime', "
+		 		                                                                              + "whereas the supplied argument is not conformant.", srcLocator);   
 	  }
 	  else {
 		 XSDateTime xsDateTimeVal = (XSDateTime)arg0Val;
