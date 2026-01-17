@@ -24,9 +24,10 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.XPathArithmeticOperation;
+import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPathArithmeticOperation;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -36,6 +37,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
@@ -174,9 +176,8 @@ public class Div extends XPathArithmeticOperation
          if (rNodeSet.getLength() > 1) {
         	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
-         else {
-            java.lang.String rStrVal = rNodeSet.str();
-            double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+         else {            
+            double rDouble = getDoubleFromXdmNode(rNodeSet, xctxt);
             
             result = doubleDiv(lDouble, rDouble);
          }
@@ -188,11 +189,10 @@ public class Div extends XPathArithmeticOperation
          if (lNodeSet.getLength() > 1) {
         	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
-         else {
-            java.lang.String lStrVal = lNodeSet.str();
-            double lDouble = (Double.valueOf(lStrVal)).doubleValue();
-            
-            result = doubleDiv(lDouble, rDouble);
+         else {        	         	 
+        	 double lDouble = getDoubleFromXdmNode(lNodeSet, xctxt);
+
+        	 result = doubleDiv(lDouble, rDouble);
          }
      }
      else if ((left instanceof XSNumericType) && (right instanceof XMLNodeCursorImpl)) {
@@ -203,11 +203,10 @@ public class Div extends XPathArithmeticOperation
          if (rNodeSet.getLength() > 1) {
         	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
-         else {
-            java.lang.String rStrVal = rNodeSet.str();
-            double rDouble = (Double.valueOf(rStrVal)).doubleValue();
-            
-            result = doubleDiv(lDouble, rDouble);
+         else {        	 
+        	 double rDouble = getDoubleFromXdmNode(rNodeSet, xctxt); 
+
+        	 result = doubleDiv(lDouble, rDouble);
          }
      }
      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XSNumericType)) {
@@ -219,35 +218,32 @@ public class Div extends XPathArithmeticOperation
         	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
          }
          else {
-            java.lang.String lStrVal = lNodeSet.str();
-            double lDouble = (Double.valueOf(lStrVal)).doubleValue();
-            
-            result = doubleDiv(lDouble, rDouble);
+        	 double lDouble = getDoubleFromXdmNode(lNodeSet, xctxt);
+
+        	 result = doubleDiv(lDouble, rDouble);
          }
      }
      else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {
-         double lDouble = 0.0d;
-         double rDouble = 0.0d;
-         
-         XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
-         if (lNodeSet.getLength() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
-         }
-         else {
-            java.lang.String lStrVal = lNodeSet.str();
-            lDouble = (Double.valueOf(lStrVal)).doubleValue();
-         }
-         
-         XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
-         if (rNodeSet.getLength() > 1) {
-        	 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
-         }
-         else {
-            java.lang.String rStrVal = rNodeSet.str();
-            rDouble = (Double.valueOf(rStrVal)).doubleValue();
-         }
-         
-         result = doubleDiv(lDouble, rDouble);
+    	 double lDouble = 0.0d;
+    	 double rDouble = 0.0d;
+
+    	 XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
+    	 if (lNodeSet.getLength() > 1) {
+    		 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
+    	 }
+    	 else {
+    		 lDouble = getDoubleFromXdmNode(lNodeSet, xctxt);
+    	 }
+
+    	 XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
+    	 if (rNodeSet.getLength() > 1) {
+    		 error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_DIV}, elemTemplateElement);  
+    	 }
+    	 else {
+    		 rDouble = getDoubleFromXdmNode(rNodeSet, xctxt); 
+    	 }
+
+    	 result = doubleDiv(lDouble, rDouble);
      }     
      else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
          ResultSequence rsLeft = (ResultSequence)left;          
@@ -360,7 +356,12 @@ public class Div extends XPathArithmeticOperation
          BigDecimal rBigDecimal = null;
          
     	 try {
-    		 java.lang.String lStrVal = lNodeSet.str();
+    		 int nodeHandle = (lNodeSet.iter()).nextNode();
+    		 DTM dtm = xctxt.getDTM(nodeHandle);
+
+    		 XMLString xmlString = dtm.getStringValue(nodeHandle);
+    		 java.lang.String lStrVal = xmlString.toString(); 
+    		 
              java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
     		 lBigDecimal = new BigDecimal(lStrVal); 
         	 rBigDecimal = new BigDecimal(rStrVal);
@@ -382,7 +383,16 @@ public class Div extends XPathArithmeticOperation
          catch (XPathException ex) {
             throw new javax.xml.transform.TransformerException(ex.getMessage());  
          }
-     }     
+     }
+     else if (left instanceof XSDayTimeDuration) {
+         try {
+            java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
+            result = ((XSDayTimeDuration)left).div(new XSDouble(rStrVal));
+         }
+         catch (XPathException ex) {
+            throw new javax.xml.transform.TransformerException(ex.getMessage());  
+         }
+     }
      else {
     	 try {
     		 java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);

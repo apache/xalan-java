@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import java.math.BigDecimal;
@@ -39,6 +36,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
@@ -179,9 +177,8 @@ public class Mult extends XPathArithmeticOperation
 			                                                                                   + "than one item is not allowed as the second "
 			                                                                                   + "operand of an XPath operator '*'.");  
           }
-          else {
-             java.lang.String rStrVal = rNodeSet.str();
-             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          else {             
+             double rDouble = getDoubleFromXdmNode(rNodeSet, xctxt);
              
              result = new XNumber(lDouble * rDouble);
           }
@@ -196,8 +193,7 @@ public class Mult extends XPathArithmeticOperation
 																		                      + "operand of an XPath operator '*'.");   
           }
           else {
-             java.lang.String lStrVal = lNodeSet.str();
-             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+        	 double lDouble = getDoubleFromXdmNode(lNodeSet, xctxt);
              
              result = new XNumber(lDouble * rDouble);
           }
@@ -499,6 +495,33 @@ public class Mult extends XPathArithmeticOperation
     	  try {
     		  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
     		  result = ((XSYearMonthDuration)left).mult(new XSDouble(rStrVal));
+    	  }
+    	  catch (XPathException ex) {
+    		  throw new javax.xml.transform.TransformerException(ex.getMessage());  
+    	  }
+      }
+      else if (right instanceof XSYearMonthDuration) {
+    	  try {
+    		  java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
+    		  result = ((XSYearMonthDuration)right).mult(new XSDouble(lStrVal));
+    	  }
+    	  catch (XPathException ex) {
+    		  throw new javax.xml.transform.TransformerException(ex.getMessage());  
+    	  }
+      }
+      else if (left instanceof XSDayTimeDuration) {
+    	  try {
+    		  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
+    		  result = ((XSDayTimeDuration)left).mult(new XSDouble(rStrVal));
+    	  }
+    	  catch (XPathException ex) {
+    		  throw new javax.xml.transform.TransformerException(ex.getMessage());  
+    	  }
+      }
+      else if (right instanceof XSDayTimeDuration) {
+    	  try {
+    		  java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
+    		  result = ((XSDayTimeDuration)right).mult(new XSDouble(lStrVal));
     	  }
     	  catch (XPathException ex) {
     		  throw new javax.xml.transform.TransformerException(ex.getMessage());  

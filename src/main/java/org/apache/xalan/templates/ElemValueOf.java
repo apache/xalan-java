@@ -17,6 +17,7 @@
  */
 package org.apache.xalan.templates;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -53,6 +54,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Div;
+import org.apache.xpath.operations.Mult;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
 import org.w3c.dom.DOMException;
@@ -695,13 +697,23 @@ public class ElemValueOf extends ElemTemplateElement {
                 		}
                 	 }
                 	 
-                	 if ((expr instanceof Div) && (evalResult == null)) {
-                		 evalResult = new XSString("NaN"); 
+                	 String strValue = null;
+                	 
+                	 if (expr instanceof Div) {
+                		 if (evalResult == null) {
+                			 strValue = "NaN";
+                		 }
+                		 else if (evalResult instanceof XSDayTimeDuration) {
+                			 strValue = getFormattedStrXsDaytimeDuration((XSDayTimeDuration)evalResult); 
+                		 }
+                		 else {
+                			 strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                		 }
                 	 }
-                     
-                     String strValue = null;
-                     
-                     if (evalResult instanceof ResultSequence) {                         
+                	 else if ((expr instanceof Mult) && (evalResult instanceof XSDayTimeDuration)) {                		 
+                		 strValue = getFormattedStrXsDaytimeDuration((XSDayTimeDuration)evalResult);
+                	 }                	                                           
+                	 else if (evalResult instanceof ResultSequence) {                         
                          strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult, separatorStrValue);
                      }                     
                      else {
@@ -1323,6 +1335,50 @@ public class ElemValueOf extends ElemTemplateElement {
 	   else {
 		   (new XString(xsDayTimeDurationValue.stringValue())).dispatchCharactersEvents(rth);
 	   }
+   }
+   
+   /**
+    * Method definition, to format xs:dayTimeDuration's seconds value 
+    * component, to either two or three decimal places.
+    * 
+    * @param xsDayTimeDuration                   The supplied xs:dayTimeDuration value
+    * @return                                    The formatted xs:dayTimeDuration string 
+    *                                            value.
+    */
+   private String getFormattedStrXsDaytimeDuration(XSDayTimeDuration xsDayTimeDuration) {
+	   
+	   String result = null;
+	   
+	   int days = xsDayTimeDuration.days();
+	   int hrs = xsDayTimeDuration.hours();
+	   int mins = xsDayTimeDuration.minutes();
+
+	   double secs = xsDayTimeDuration.seconds();
+	   
+	   // Format seconds value to two decimal places
+	   DecimalFormat df = new DecimalFormat("#.##");
+	   String frmtSecValue = df.format(secs);
+	   double secs1 = (Double.valueOf(frmtSecValue)).doubleValue();
+	   
+	   // Format seconds value to three decimal places
+	   df = new DecimalFormat("#.###");
+	   frmtSecValue = df.format(secs);
+	   double secs2 = (Double.valueOf(frmtSecValue)).doubleValue();
+	   
+	   if (secs2 > secs1) {
+		  secs = secs2;  
+	   }
+	   else {
+		  secs = secs1; 
+	   }
+
+	   boolean isNegative = xsDayTimeDuration.negative();
+
+	   XSDayTimeDuration xsDtdNormalizedValue = new XSDayTimeDuration(days, hrs, mins, secs, isNegative);
+	   
+	   result = xsDtdNormalizedValue.stringValue();
+	   
+	   return result;
    }
 
 }

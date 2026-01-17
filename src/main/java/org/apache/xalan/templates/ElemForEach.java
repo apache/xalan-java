@@ -385,6 +385,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 	  try
 	  {
 		  sorter.sort(sourceNodes, keys, xctxt);
+		  
 		  sourceNodes.setCurrentPos(0);
 	  }
 	  finally
@@ -411,6 +412,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 	  ResultSequence result = null;	  
 
 	  NodeSorter sorter = new NodeSorter(xctxt);
+	  
 	  result = sorter.sort(rSeq, keys, xctxt);
 
 	  return result;

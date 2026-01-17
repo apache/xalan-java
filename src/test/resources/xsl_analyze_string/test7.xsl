@@ -15,7 +15,7 @@
       <elem>
          <xsl:call-template name="strTokenizer">
             <xsl:with-param name="inpStr" select="elem"/>
-	    <xsl:with-param name="regex" select="'(\s)+'"/>
+	        <xsl:with-param name="regex" select="'(\s)+'"/>
          </xsl:call-template>
       </elem>
    </xsl:template>
@@ -26,9 +26,9 @@
       <xsl:param name="regex"/>
       
       <xsl:analyze-string select="elem" regex="{$regex}">
-	 <xsl:non-matching-substring>
-	    <token><xsl:value-of select="."/></token>
-	 </xsl:non-matching-substring>
+	     <xsl:non-matching-substring>
+	        <token><xsl:value-of select="."/></token>
+	     </xsl:non-matching-substring>
       </xsl:analyze-string>
    </xsl:template>
    

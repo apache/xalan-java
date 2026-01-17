@@ -37,6 +37,7 @@ import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
@@ -399,6 +400,11 @@ public class Minus extends XPathArithmeticOperation
       }
       else if ((left instanceof XSYearMonthDuration) && (right instanceof XSYearMonthDuration)) {
           result = ((XSYearMonthDuration)left).subtract((XSYearMonthDuration)right);
+          
+          return result;
+      }
+      else if ((left instanceof XSDayTimeDuration) && (right instanceof XSDayTimeDuration)) {
+          result = ((XSDayTimeDuration)left).subtract((XSDayTimeDuration)right);
           
           return result;
       }

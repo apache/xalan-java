@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import java.math.BigDecimal;
@@ -27,9 +24,9 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.XPathArithmeticOperation;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPathArithmeticOperation;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FuncArgPlaceholder;
@@ -40,6 +37,7 @@ import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
@@ -185,8 +183,7 @@ public class Plus extends XPathArithmeticOperation
 				  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_PLUS}, elemTemplateElement);  
 			  }
 			  else {
-				  java.lang.String rStrVal = rNodeSet.str();
-				  double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+				  double rDouble = getDoubleFromXdmNode(rNodeSet, xctxt);
 
 				  result = new XNumber(lDouble + rDouble);
 			  }
@@ -199,8 +196,7 @@ public class Plus extends XPathArithmeticOperation
 				  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_PLUS}, elemTemplateElement);  
 			  }
 			  else {
-				  java.lang.String lStrVal = lNodeSet.str();
-				  double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+				  double lDouble = getDoubleFromXdmNode(lNodeSet, xctxt);
 
 				  result = new XNumber(lDouble + rDouble);
 			  }
@@ -336,6 +332,9 @@ public class Plus extends XPathArithmeticOperation
 		  }
 		  else if ((left instanceof XSYearMonthDuration) && (right instanceof XSYearMonthDuration)) {
 			  result = ((XSYearMonthDuration)left).add((XSYearMonthDuration)right);  
+		  }
+		  else if ((left instanceof XSDayTimeDuration) && (right instanceof XSDayTimeDuration)) {
+			  result = ((XSDayTimeDuration)left).add((XSDayTimeDuration)right);  
 		  }
 		  else if (left instanceof XSDate) {
 			  result = ((XSDate)left).add(right);  

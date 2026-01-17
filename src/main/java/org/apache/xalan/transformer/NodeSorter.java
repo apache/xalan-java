@@ -28,6 +28,8 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
+
 /**
  * This class can sort vectors of xdm nodes according 
  * to an XPath select pattern.
@@ -219,36 +221,53 @@ public class NodeSorter
 	  }  // end treat as numbers 
 	  else
 	  {
-		  CollationKey n1String, n2String;
-
-		  if (kIndex == 0)
-		  {
-			  n1String = (CollationKey) n1.m_key1Value;
-			  n2String = (CollationKey) n2.m_key1Value;
-		  }
-		  else if (kIndex == 1)
-		  {
-			  n1String = (CollationKey) n1.m_key2Value;
-			  n2String = (CollationKey) n2.m_key2Value;
-		  }
-		  else
-		  {
-			  // Get values dynamically
-			  XObject r1 = k.m_selectPat.execute(m_xctxt, n1.m_node,
-					                             k.m_namespaceContext);
-			  XObject r2 = k.m_selectPat.execute(m_xctxt, n2.m_node,
-					                             k.m_namespaceContext);
-
-			  String str1 = XslTransformEvaluationHelper.getStrVal(r1);
-			  String str2 = XslTransformEvaluationHelper.getStrVal(r2);
-			  
-			  n1String = k.m_col.getCollationKey(str1);
-			  n2String = k.m_col.getCollationKey(str2);
-		  }
+		  CollationKey n1String = null;
+		  CollationKey n2String = null;
 
 		  // Use collation keys for faster compare, but note that whitespaces 
 		  // etc... are treated differently from if we were comparing Strings.
-		  result = n1String.compareTo(n2String);
+		  
+		  if ((n1.m_key1Value instanceof XSAnyAtomicType) && (n2.m_key1Value instanceof XSAnyAtomicType)) {
+			 XObject xObj1 = (XSAnyAtomicType)(n1.m_key1Value);
+			 XObject xObj2 = (XSAnyAtomicType)(n2.m_key1Value);
+			 if (xObj1.vcEquals(xObj2, null, null, true)) {
+				result = 0; 
+			 }
+			 else if (xObj1.vcLessThan(xObj2, null, null, true)) {
+				result = -1; 
+			 }
+			 else {
+				result = 1;	 
+			 }
+		  }
+		  else {
+			  if (kIndex == 0)
+			  {
+				  n1String = (CollationKey) n1.m_key1Value;
+				  n2String = (CollationKey) n2.m_key1Value;
+			  }
+			  else if (kIndex == 1)
+			  {
+				  n1String = (CollationKey) n1.m_key2Value;
+				  n2String = (CollationKey) n2.m_key2Value;
+			  }
+			  else
+			  {
+				  // Get values dynamically
+				  XObject r1 = k.m_selectPat.execute(m_xctxt, n1.m_node,
+						                             k.m_namespaceContext);
+				  XObject r2 = k.m_selectPat.execute(m_xctxt, n2.m_node,
+						                             k.m_namespaceContext);
+
+				  String str1 = XslTransformEvaluationHelper.getStrVal(r1);
+				  String str2 = XslTransformEvaluationHelper.getStrVal(r2);
+				  
+				  n1String = k.m_col.getCollationKey(str1);
+				  n2String = k.m_col.getCollationKey(str2);
+			  } 
+		     
+			  result = n1String.compareTo(n2String);
+		  }
 
 		  //Process caseOrder parameter
 		  if (k.m_caseOrderUpper)
@@ -488,7 +507,7 @@ public class NodeSorter
     		XObject r = null;
     		
     		try {
-    			m_xctxt.setXPath3ContextItem(xObj);    		
+    			m_xctxt.setXPath3ContextItem(m_xobj);    		
     			r = k1.m_selectPat.execute(m_xctxt, DTM.NULL, k1.m_namespaceContext);
     		}
     		finally {    		
@@ -509,6 +528,9 @@ public class NodeSorter
 
     			// Can't use NaN for compare. They are never equal. Use zero instead.  
     			m_key1Value = new Double(d);
+    		}
+    		else if (r instanceof XSAnyAtomicType) {
+    		    m_key1Value = r;
     		}
     		else
     		{
@@ -548,7 +570,11 @@ public class NodeSorter
     				}
 
     				m_key2Value = new Double(d);
-    			} else {
+    			}
+    			else if (r2 instanceof XSAnyAtomicType) {
+    				m_key2Value = r2;
+        		}
+    			else {
     				String str2 = XslTransformEvaluationHelper.getStrVal(r2);
     				m_key2Value = k2.m_col.getCollationKey(str2);
     			}

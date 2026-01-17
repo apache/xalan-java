@@ -23,6 +23,9 @@ import java.math.RoundingMode;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.XMLString;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
@@ -298,6 +301,30 @@ public class XPathArithmeticOperation extends Operation {
 		else {
 			result = new XSDecimal(BigDecimal.valueOf(resultDbl));
 		}
+
+		return result;
+	}
+	
+	/**
+	 * Method definition, to get java primitive double value, from 
+	 * an XMLNodeCursorImpl object instance. 
+	 * 
+	 * @param xmlNodeCursorImpl                   An XMLNodeCursorImpl object 
+	 *                                            instance.
+	 * @param xctxt                               An XPath context object.
+	 * @return                                    The computed double value, corresponding
+	 *                                            to XMLNodeCursorImpl object.
+	 */
+	protected double getDoubleFromXdmNode(XMLNodeCursorImpl xmlNodeCursorImpl, XPathContext xctxt) {
+
+		double result = 0.0;
+
+		int nodeHandle = (xmlNodeCursorImpl.iter()).nextNode();
+		DTM dtm = xctxt.getDTM(nodeHandle);
+
+		XMLString xmlString = dtm.getStringValue(nodeHandle);
+		java.lang.String rStrVal = xmlString.toString(); 
+		result = (Double.valueOf(rStrVal)).doubleValue();
 
 		return result;
 	}

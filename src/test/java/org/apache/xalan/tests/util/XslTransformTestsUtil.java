@@ -816,6 +816,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         			  String strTrim2 = (strArr2[idx2]).trim();
         			  if (!strTrim1.equals(strTrim2)) {
         				  result = false;
+        				  
         				  break;
         			  }
         		  }

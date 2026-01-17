@@ -59,6 +59,7 @@ import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSDuration;
@@ -69,6 +70,7 @@ import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
+import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
  * This class represents an XPath object, and is capable of
@@ -1075,6 +1077,32 @@ public class XObject extends Expression implements Serializable, Cloneable
         	  return false; 
            }
        }
+       else if (this instanceof XSYearMonthDuration) {
+ 		  if (obj2 instanceof XSYearMonthDuration) {
+ 			  result = ((XSYearMonthDuration)this).lt((XSYearMonthDuration)obj2);
+ 		  }
+ 		  else {
+ 			  result = false; 
+ 		  }
+
+ 		  result = (isLtTest) ? result : !result;
+ 		  
+ 		  return result;
+ 	   }
+       else if (this instanceof XSDayTimeDuration) {
+  		  if (obj2 instanceof XSDayTimeDuration) {  			  
+  			  double dbl1 = ((XSDayTimeDuration)this).value();
+  			  double dbl2 = ((XSDayTimeDuration)obj2).value();
+  			  result = ((dbl1 < dbl2) ? true : false); 
+  		  }
+  		  else {
+  			  result = false; 
+  		  }
+
+  		  result = (isLtTest) ? result : !result;
+  		  
+  		  return result;
+  	   }
        else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
     	  emitXsAnyAtomicTypeError(obj2, expressionOwner);   
        }
@@ -1406,6 +1434,32 @@ public class XObject extends Expression implements Serializable, Cloneable
         	  return true; 
            }
        }
+       else if (this instanceof XSYearMonthDuration) {
+  		  if (obj2 instanceof XSYearMonthDuration) {
+  			  result = ((XSYearMonthDuration)this).gt((XSYearMonthDuration)obj2);
+  		  }
+  		  else {
+  			  result = false; 
+  		  }
+
+  		  result = (isGtTest) ? result : !result;
+  		  
+  		  return result;
+  	   }
+       else if (this instanceof XSDayTimeDuration) {
+    	   if (obj2 instanceof XSDayTimeDuration) {  			  
+    		   double dbl1 = ((XSDayTimeDuration)this).value();
+    		   double dbl2 = ((XSDayTimeDuration)obj2).value();
+    		   result = ((dbl1 > dbl2) ? true : false); 
+    	   }
+    	   else {
+    		   result = false; 
+    	   }
+
+    	   result = (isGtTest) ? result : !result;
+
+    	   return result;
+   	   }
        else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
     	  emitXsAnyAtomicTypeError(obj2, expressionOwner);   
        }
@@ -2013,6 +2067,26 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  else if (this instanceof XSTime) {
 		  if (obj2 instanceof XSTime) {
 			  result = DateTimeUtil.isEqual((XSTime)this, (XSTime)obj2);
+		  }
+		  else {
+			  result = false; 
+		  }
+
+		  result = (isEqTest) ? result : !result;
+	  }
+	  else if (this instanceof XSYearMonthDuration) {
+		  if (obj2 instanceof XSYearMonthDuration) {
+			  result = ((XSYearMonthDuration)this).equals((XSYearMonthDuration)obj2);
+		  }
+		  else {
+			  result = false; 
+		  }
+
+		  result = (isEqTest) ? result : !result;
+	  }
+	  else if (this instanceof XSDayTimeDuration) {
+		  if (obj2 instanceof XSDayTimeDuration) {
+			  result = ((((XSDayTimeDuration)this).value() - ((XSDayTimeDuration)obj2).value()) == 0);
 		  }
 		  else {
 			  result = false; 
