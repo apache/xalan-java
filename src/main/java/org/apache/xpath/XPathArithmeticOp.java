@@ -37,12 +37,12 @@ import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * A class definition, providing utility methods to help implement 
- * XPath arithmetic operations +, -, div & mod.
+ * A class definition, providing utility methods to support 
+ * implementing XPath arithmetic operators +, -, div & mod.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
-public class XPathArithmeticOperation extends Operation {
+public class XPathArithmeticOp extends Operation {
 	
 	private static final long serialVersionUID = 7567257906066639674L;
 

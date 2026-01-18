@@ -26,7 +26,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathArithmeticOperation;
+import org.apache.xpath.XPathArithmeticOp;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FuncArgPlaceholder;
@@ -55,7 +55,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XPath 3.1 specific changes, to this class)
  */
-public class Plus extends XPathArithmeticOperation
+public class Plus extends XPathArithmeticOp
 {
    static final long serialVersionUID = -4492072861616504256L;
 
@@ -454,6 +454,9 @@ public class Plus extends XPathArithmeticOperation
 		  else {
 			 throw new javax.xml.transform.TransformerException("XPTY0004 : One or both of the operands of operator + are not numeric."); 
 		  }
+	  }
+	  catch (Exception ex) {
+		  result = new ResultSequence();
 	  }
       
       return result;

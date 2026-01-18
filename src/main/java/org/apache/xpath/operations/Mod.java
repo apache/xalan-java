@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.XPathArithmeticOperation;
+import org.apache.xpath.XPathArithmeticOp;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -52,7 +52,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XSLT 3 specific changes, to this class)
  */
-public class Mod extends XPathArithmeticOperation
+public class Mod extends XPathArithmeticOp
 {
    static final long serialVersionUID = 5009471154238918201L;
 

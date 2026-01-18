@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-18T06:21:09Z" fail="12" name="construct-node" pass="22" run="34" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="construct-node-001"/>
+   <testResult status="pass" testName="construct-node-002"/>
+   <testResult status="pass" testName="construct-node-003"/>
+   <testResult status="pass" testName="construct-node-004"/>
+   <testResult status="pass" testName="construct-node-005"/>
+   <testResult status="fail" testName="construct-node-006"/>
+   <testResult status="pass" testName="construct-node-007"/>
+   <testResult status="fail" testName="construct-node-008"/>
+   <testResult status="pass" testName="construct-node-009"/>
+   <testResult status="pass" testName="construct-node-010"/>
+   <testResult status="pass" testName="construct-node-011"/>
+   <testResult status="fail" testName="construct-node-012"/>
+   <testResult status="fail" testName="construct-node-013"/>
+   <testResult status="pass" testName="construct-node-014"/>
+   <testResult status="pass" testName="construct-node-015"/>
+   <testResult status="pass" testName="construct-node-016"/>
+   <testResult status="pass" testName="construct-node-017"/>
+   <testResult status="fail" testName="construct-node-018"/>
+   <testResult status="fail" testName="construct-node-019"/>
+   <testResult status="fail" testName="construct-node-020"/>
+   <testResult status="pass" testName="construct-node-021"/>
+   <testResult status="pass" testName="construct-node-022"/>
+   <testResult status="pass" testName="construct-node-023"/>
+   <testResult status="pass" testName="construct-node-024"/>
+   <testResult status="pass" testName="construct-node-025"/>
+   <testResult status="pass" testName="construct-node-026"/>
+   <testResult status="pass" testName="construct-node-027"/>
+   <testResult status="pass" testName="construct-node-028"/>
+   <testResult status="fail" testName="construct-node-029"/>
+   <testResult status="pass" testName="construct-node-030"/>
+   <testResult status="fail" testName="construct-node-031"/>
+   <testResult status="fail" testName="construct-node-032">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: 13,128 : An XSL transformation processing could not add 'sequence' to 'comment'.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="construct-node-033">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: 13,128 : An XSL transformation processing could not add 'sequence' to 'processing-instruction'.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="construct-node-034">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+</testrun>

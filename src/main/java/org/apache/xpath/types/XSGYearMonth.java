@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.xpath.types;
 
 import javax.xml.transform.TransformerException;
@@ -9,6 +26,7 @@ import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.Pattern;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSDate;
 
 /**
  * Implementation of XML Schema data type xs:gYearMonth.
@@ -53,9 +71,33 @@ public class XSGYearMonth extends XSAnyAtomicType {
 	/**
 	 * Class constructor.
 	 */
-	public XSGYearMonth(String gYearMonthStrValue) throws TransformerException {		
-		parse(gYearMonthStrValue);
-		m_gYearMonthStrValue = gYearMonthStrValue;
+	public XSGYearMonth(String gYearMonthStrValue) throws TransformerException {				
+		try {
+			XSDate xsDate = XSDate.parseDate(gYearMonthStrValue);
+			int year = xsDate.year();
+			int month = xsDate.month();
+			String yrStr1 = String.valueOf(year);
+
+			String monthStr1 = String.valueOf(month);			
+			if (month < 10) {
+				monthStr1 = ("0" + monthStr1);
+			}
+
+			String str1 = (yrStr1 + "-" + monthStr1);
+
+			parse(str1);
+
+			m_gYearMonthStrValue = str1;
+		}
+		catch (TransformerException ex) {
+			// no op
+		}
+
+		if (m_gYearMonthStrValue == null) {
+			parse(gYearMonthStrValue);
+			
+			m_gYearMonthStrValue = gYearMonthStrValue;
+		}
 	}
 	
 	@Override

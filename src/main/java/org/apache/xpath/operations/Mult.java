@@ -24,7 +24,7 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.XPathArithmeticOperation;
+import org.apache.xpath.XPathArithmeticOp;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -53,7 +53,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XPath 3.1 specific changes, to this class)
  */
-public class Mult extends XPathArithmeticOperation
+public class Mult extends XPathArithmeticOp
 {
    static final long serialVersionUID = -4956770147013414675L;
 

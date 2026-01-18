@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-17T11:19:23Z" fail="65" name="date" pass="69" run="134" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-18T06:20:59Z" fail="60" name="date" pass="74" run="134" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -66,8 +66,8 @@
    <testResult status="pass" testName="date-060"/>
    <testResult status="pass" testName="date-061"/>
    <testResult status="pass" testName="date-062"/>
-   <testResult status="fail" testName="date-063"/>
-   <testResult status="fail" testName="date-063a"/>
+   <testResult status="pass" testName="date-063"/>
+   <testResult status="pass" testName="date-063a"/>
    <testResult status="fail" testName="date-064">
       <outResult>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-time()</errTrace>
@@ -75,8 +75,8 @@
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="date-065"/>
-   <testResult status="fail" testName="date-066"/>
+   <testResult status="pass" testName="date-065"/>
+   <testResult status="pass" testName="date-066"/>
    <testResult status="fail" testName="date-067"/>
    <testResult status="fail" testName="date-068"/>
    <testResult status="fail" testName="date-069"/>
@@ -101,7 +101,7 @@
    <testResult status="fail" testName="date-085"/>
    <testResult status="pass" testName="date-086"/>
    <testResult status="fail" testName="date-087"/>
-   <testResult status="fail" testName="date-088"/>
+   <testResult status="pass" testName="date-088"/>
    <testResult status="fail" testName="date-089"/>
    <testResult status="fail" testName="date-090">
       <outResult>

@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.xpath.types;
 
 import javax.xml.transform.TransformerException;
@@ -9,6 +26,7 @@ import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.Pattern;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSDate;
 
 /**
  * Implementation of XML Schema data type xs:gYear.
@@ -52,8 +70,24 @@ public class XSGYear extends XSAnyAtomicType {
 	 * Class constructor.
 	 */
 	public XSGYear(String gYearStrValue) throws TransformerException {
-		parse(gYearStrValue);
-		m_gYearStrValue = gYearStrValue; 
+		try {
+		   XSDate xsDate = XSDate.parseDate(gYearStrValue);
+		   int year = xsDate.year();
+		   String str1 = String.valueOf(year);		   		   
+		   
+		   parse(str1);
+		   
+		   m_gYearStrValue = str1;
+		}
+		catch (TransformerException ex) {
+		   // no op
+		}
+		
+		if (m_gYearStrValue == null) {
+		   parse(gYearStrValue);
+		   
+		   m_gYearStrValue = gYearStrValue;
+		}
 	}
 
 	@Override

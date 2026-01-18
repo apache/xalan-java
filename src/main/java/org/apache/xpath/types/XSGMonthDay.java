@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.xpath.types;
 
 import java.util.ArrayList;
@@ -12,6 +29,7 @@ import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.Pattern;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSDate;
 
 /**
  * Implementation of XML Schema data type xs:gMonthDay.
@@ -54,9 +72,35 @@ public class XSGMonthDay extends XSAnyAtomicType {
 	/**
 	 * Class constructor.
 	 */
-	public XSGMonthDay(String gMonthDayStrValue) throws TransformerException {		
-		parse(gMonthDayStrValue);
-		m_gMonthDayStrValue = gMonthDayStrValue; 
+	public XSGMonthDay(String gMonthDayStrValue) throws TransformerException {				
+		try {
+			XSDate xsDate = XSDate.parseDate(gMonthDayStrValue);
+			int month = xsDate.month();
+			int day = xsDate.day();
+			String monthStr1 = String.valueOf(month);
+			String dayStr1 = String.valueOf(day);
+
+			if (month < 10) {
+				monthStr1 = ("0" + monthStr1);  
+			}
+
+			if (day < 10) {
+				dayStr1 = ("0" + dayStr1);  
+			}
+
+			parse("--" + monthStr1 + "-" + dayStr1);
+
+			m_gMonthDayStrValue = "--" + monthStr1 + "-" + dayStr1;
+		}
+		catch (TransformerException ex) {
+			// no op
+		}
+
+		if (m_gMonthDayStrValue == null) {
+			parse(gMonthDayStrValue);
+
+			m_gMonthDayStrValue = gMonthDayStrValue;
+		}
 	}
 
 	@Override
@@ -260,9 +304,10 @@ public class XSGMonthDay extends XSAnyAtomicType {
 		try {
 			if (gMonthDayStrValue.startsWith("--")) {
 				String suffixValue = gMonthDayStrValue.substring(2);
+				int strLength1 = suffixValue.length();
 				if (suffixValue.endsWith("Z") && (suffixValue.charAt(2) == '-')) {
-					String monthStrValue = suffixValue.substring(0,2);
-					String dayStrValue = suffixValue.substring(3);
+					String monthStrValue = suffixValue.substring(0, 2);
+					String dayStrValue = suffixValue.substring(3, strLength1 - 1);
 					if (isMonthAndDayValueConsistent(monthStrValue, dayStrValue)) {
 						m_month = Integer.valueOf(monthStrValue);					
 						m_day = Integer.valueOf(dayStrValue);

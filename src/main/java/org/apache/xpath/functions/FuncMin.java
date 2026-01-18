@@ -34,6 +34,7 @@ import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
 
 import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
@@ -44,8 +45,6 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
  * Implementation of an XPath 3.1 function fn:min.
- * 
- * Ref : https://www.w3.org/TR/xpath-functions-31/#func-min
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -96,9 +95,10 @@ public class FuncMin extends FunctionMultiArgs
       
       int doubleItemCount = 0;
       int strItemCount = 0;
-      int dateItemCount = 0;
-      int yearMonthDurationItemCount = 0;
-      int dayTimeDurationItemCount = 0;
+      int xsDateItemCount = 0;
+      int xsYearMonthDurationItemCount = 0;
+      int xsDayTimeDurationItemCount = 0;
+      int xsDateTimeItemCount = 0;
       
       if (xObjArg0 instanceof XMLNodeCursorImpl) {
          // If for all the nodes of an input sequence, the node's string
@@ -158,15 +158,19 @@ public class FuncMin extends FunctionMultiArgs
             }
             else if (seqObj instanceof XSDate) {
                convetedInpSequence.add((XSDate)seqObj);
-               dateItemCount++;
+               xsDateItemCount++;
             }
             else if (seqObj instanceof XSYearMonthDuration) {
                convetedInpSequence.add((XSYearMonthDuration)seqObj);
-               yearMonthDurationItemCount++;
+               xsYearMonthDurationItemCount++;
             }
             else if (seqObj instanceof XSDayTimeDuration) {
                convetedInpSequence.add((XSDayTimeDuration)seqObj);
-               dayTimeDurationItemCount++;
+               xsDayTimeDurationItemCount++;
+            }
+            else if (seqObj instanceof XSDateTime) {
+               convetedInpSequence.add((XSDateTime)seqObj);
+               xsDateTimeItemCount++;
             }
          }
       }
@@ -180,22 +184,21 @@ public class FuncMin extends FunctionMultiArgs
          }
          else if ((strItemCount > 0) && (convetedInpSequence.size() == strItemCount)) {
             String collationUri = getCollationUri(xctxt);
-            result = getMinValueFromXSStringSequence(convetedInpSequence, collationUri, 
-                                                                                    xctxt);
+            result = getMinValueFromXSStringSequence(convetedInpSequence, collationUri, xctxt);
          }
-         else if ((dateItemCount > 0) && (convetedInpSequence.size() == dateItemCount)) {
+         else if ((xsDateItemCount > 0) && (convetedInpSequence.size() == xsDateItemCount)) {
             result = getMinValueFromXSDateSequence(convetedInpSequence);
          }
-         else if ((yearMonthDurationItemCount > 0) && (convetedInpSequence.size() == 
-                                                                             yearMonthDurationItemCount)) {
+         else if ((xsYearMonthDurationItemCount > 0) && (convetedInpSequence.size() == xsYearMonthDurationItemCount)) {
             result = getMinValueFromXSYearMonthDurationSequence(convetedInpSequence);
          }
-         else if ((dayTimeDurationItemCount > 0) && (convetedInpSequence.size() == 
-                                                                             dayTimeDurationItemCount)) {
+         else if ((xsDayTimeDurationItemCount > 0) && (convetedInpSequence.size() == xsDayTimeDurationItemCount)) {
             result = getMinValueFromXSDayTimeDurationSequence(convetedInpSequence);
          }
-         else if ((xObjArg0 instanceof ResultSequence) && (((ResultSequence)xObjArg0).
-                                                                                  size() == 0)) {
+         else if ((xsDateTimeItemCount > 0) && (convetedInpSequence.size() == xsDateTimeItemCount)) {
+            result = getMinValueFromXSDateTimeSequence(convetedInpSequence);
+         }
+         else if ((xObjArg0 instanceof ResultSequence) && (((ResultSequence)xObjArg0).size() == 0)) {
             // the result value is an empty sequence
             result = new ResultSequence(); 
          }
@@ -279,8 +282,7 @@ public class FuncMin extends FunctionMultiArgs
      
      for (int idx = 1; idx < inpSeq.size(); idx++) {
         XSString nextVal = (XSString)(inpSeq.item(idx));
-        if (xpathCollationSupport.compareStringsUsingCollation(nextVal.stringValue(), result.stringValue(), 
-                                                                                                      collationUri) == -1) {
+        if (xpathCollationSupport.compareStringsUsingCollation(nextVal.stringValue(), result.stringValue(), collationUri) == -1) {
            result = nextVal;  
         }
      }
@@ -308,11 +310,10 @@ public class FuncMin extends FunctionMultiArgs
   
   /**
    * Given a sequence of xdm XSYearMonthDuration objects, find the
-   * XSYearMonthDuration object that represents the smallest value
+   * XSYearMonthDuration object that represents the minimum value
    * amongst the items of the provided sequence.  
    */
-  private XSYearMonthDuration getMinValueFromXSYearMonthDurationSequence(
-                                                                     ResultSequence inpSeq) {
+  private XSYearMonthDuration getMinValueFromXSYearMonthDurationSequence(ResultSequence inpSeq) {
      XSYearMonthDuration result = (XSYearMonthDuration)(inpSeq.item(0));
          
      for (int idx = 1; idx < inpSeq.size(); idx++) {
@@ -327,15 +328,32 @@ public class FuncMin extends FunctionMultiArgs
   
   /**
    * Given a sequence of xdm XSDayTimeDuration objects, find the
-   * XSDayTimeDuration object that represents the smallest value
+   * XSDayTimeDuration object that represents the minimum value
    * amongst the items of the provided sequence.  
    */
-  private XSDayTimeDuration getMinValueFromXSDayTimeDurationSequence(
-                                                                     ResultSequence inpSeq) {
+  private XSDayTimeDuration getMinValueFromXSDayTimeDurationSequence(ResultSequence inpSeq) {
      XSDayTimeDuration result = (XSDayTimeDuration)(inpSeq.item(0));
          
      for (int idx = 1; idx < inpSeq.size(); idx++) {
         XSDayTimeDuration nextVal = (XSDayTimeDuration)(inpSeq.item(idx));
+        if (nextVal.lt(result)) {
+           result = nextVal;   
+        }
+     }
+     
+     return result;
+  }
+  
+  /**
+   * Given a sequence of xdm XSDateTime objects, find the
+   * XSDateTime object that represents the minimum value
+   * amongst the items of the provided sequence.  
+   */
+  private XSDateTime getMinValueFromXSDateTimeSequence(ResultSequence inpSeq) {
+	  XSDateTime result = (XSDateTime)(inpSeq.item(0));
+         
+     for (int idx = 1; idx < inpSeq.size(); idx++) {
+    	XSDateTime nextVal = (XSDateTime)(inpSeq.item(idx));
         if (nextVal.lt(result)) {
            result = nextVal;   
         }

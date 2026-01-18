@@ -319,7 +319,7 @@ public class XSL3FunctionService {
 
     			if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {                
     				// Evaluate XPath constructor function call, for schema types 
-    				// in XML Schema namespace.
+    				// within XML Schema namespace.
 
     				ResultSequence argSequence = new ResultSequence();
     				ResultSequence evalResultSequence = null;
