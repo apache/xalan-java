@@ -27,11 +27,14 @@ import org.apache.xpath.regex.Pattern;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
 
 /**
  * Implementation of XML Schema data type xs:gMonth.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage general
  */
 public class XSGMonth extends XSAnyAtomicType {
 
@@ -67,14 +70,24 @@ public class XSGMonth extends XSAnyAtomicType {
 	/**
 	 * Class constructor.
 	 */
-	public XSGMonth(String gMonthStrValue) throws TransformerException {		
+	public XSGMonth(String gMonthStrValue) throws TransformerException {
+		
+		boolean isXsDate = true;
+		
 		try {
+			// Constructing xs:gMonth value, from supplied xs:date lexical value
 			XSDate xsDate = XSDate.parseDate(gMonthStrValue);
+			String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateValue(xsDate);
+			
 			int month = xsDate.month();
 			String str1 = String.valueOf(month);
 
 			if (month < 10) {
 				str1 = ("0" + str1);  
+			}
+			
+			if (timeZoneStr != null) {
+				str1 += timeZoneStr; 
 			}
 
 			parse("--" + str1);
@@ -82,10 +95,37 @@ public class XSGMonth extends XSAnyAtomicType {
 			m_gMonthStrValue = "--" + str1;
 		}
 		catch (TransformerException ex) {
-			// no op
+			isXsDate = false;
+		}
+		
+		if (!isXsDate) {
+			try {
+				// Constructing xs:gMonth value, from supplied xs:dateTime lexical value
+				XSDateTime xsDateTime = XSDateTime.parseDateTime(gMonthStrValue);
+				String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateTimeValue(xsDateTime);
+
+				int month = xsDateTime.month();
+				String str1 = String.valueOf(month);
+
+				if (month < 10) {
+					str1 = ("0" + str1);  
+				}
+
+				if (timeZoneStr != null) {
+					str1 += timeZoneStr;
+				}
+
+				parse("--" + str1);
+
+				m_gMonthStrValue = "--" + str1; 
+			}
+			catch (TransformerException ex) {
+				// no op 
+			}
 		}
 
 		if (m_gMonthStrValue == null) {
+			// Constructing xs:gMonth value, from supplied xs:gMonth lexical value
 			parse(gMonthStrValue);
 
 			m_gMonthStrValue = gMonthStrValue;

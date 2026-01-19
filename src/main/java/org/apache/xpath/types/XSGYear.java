@@ -27,11 +27,14 @@ import org.apache.xpath.regex.Pattern;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
 
 /**
  * Implementation of XML Schema data type xs:gYear.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage general
  */
 public class XSGYear extends XSAnyAtomicType {
 	
@@ -70,20 +73,53 @@ public class XSGYear extends XSAnyAtomicType {
 	 * Class constructor.
 	 */
 	public XSGYear(String gYearStrValue) throws TransformerException {
+		
+		boolean isXsDate = true;
+		
 		try {
+		   // Constructing xs:gYear value, from supplied xs:date lexical value
 		   XSDate xsDate = XSDate.parseDate(gYearStrValue);
+		   String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateValue(xsDate);
+		   
 		   int year = xsDate.year();
-		   String str1 = String.valueOf(year);		   		   
+		   String str1 = String.valueOf(year);
+		   
+		   if (timeZoneStr != null) {
+			  str1 += timeZoneStr; 
+		   }
 		   
 		   parse(str1);
 		   
 		   m_gYearStrValue = str1;
 		}
 		catch (TransformerException ex) {
-		   // no op
+			isXsDate = false;
+		}
+		
+		if (!isXsDate) {
+		   try {
+			  // Constructing xs:gYear value, from supplied xs:dateTime lexical value 
+		      XSDateTime xsDateTime = XSDateTime.parseDateTime(gYearStrValue);		      
+		      String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateTimeValue(xsDateTime);
+		      
+		      int year = xsDateTime.year();
+		      String str1 = String.valueOf(year);
+		      
+		      if (timeZoneStr != null) {
+		    	 str1 += timeZoneStr;   
+		      }
+			   
+			  parse(str1);
+			   
+			  m_gYearStrValue = str1;
+		   }
+		   catch (TransformerException ex) {
+		      // no op	   
+		   }
 		}
 		
 		if (m_gYearStrValue == null) {
+		   // Constructing xs:gYear value, from supplied xs:gYear lexical value	
 		   parse(gYearStrValue);
 		   
 		   m_gYearStrValue = gYearStrValue;

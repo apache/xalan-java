@@ -17,7 +17,6 @@
  */
 package org.apache.xalan.templates;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -26,6 +25,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
@@ -54,15 +54,16 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Div;
-import org.apache.xpath.operations.Mult;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.types.DateTimeUtil;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
@@ -703,16 +704,17 @@ public class ElemValueOf extends ElemTemplateElement {
                 		 if (evalResult == null) {
                 			 strValue = "NaN";
                 		 }
-                		 else if (evalResult instanceof XSDayTimeDuration) {
-                			 strValue = getFormattedStrXsDaytimeDuration((XSDayTimeDuration)evalResult); 
-                		 }
                 		 else {
                 			 strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                 		 }
                 	 }
-                	 else if ((expr instanceof Mult) && (evalResult instanceof XSDayTimeDuration)) {                		 
-                		 strValue = getFormattedStrXsDaytimeDuration((XSDayTimeDuration)evalResult);
-                	 }                	                                           
+                	 else if (evalResult instanceof XSDayTimeDuration) {
+                		 strValue = DateTimeUtil.getFormattedStrXsDaytimeDuration((XSDayTimeDuration)evalResult);
+                	 }
+                	 else if (evalResult instanceof XSDateTime) {                		 
+                		 XSDateTime xsDateTime = (XSDateTime)evalResult;                		 
+                		 strValue = xsDateTime.stringValue();
+                	 } 
                 	 else if (evalResult instanceof ResultSequence) {                         
                          strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult, separatorStrValue);
                      }                     
@@ -1245,7 +1247,7 @@ public class ElemValueOf extends ElemTemplateElement {
 		  if (status1 && (separatorStrValue != null)) {        				
 			  nodeStrVal = nodeStrVal.replace(" ", separatorStrValue);
 			  nodeStrVal = nodeStrVal.substring(0, (nodeStrVal.length() - 1));
-			  String rTrimmedSeparator = strRtrim(separatorStrValue);
+			  String rTrimmedSeparator = StringUtil.strRtrim(separatorStrValue);
 			  if (!separatorStrValue.equals(rTrimmedSeparator)) {
 				  int lIdx = nodeStrVal.lastIndexOf(rTrimmedSeparator);
 				  if (lIdx > 0) {
@@ -1266,38 +1268,6 @@ public class ElemValueOf extends ElemTemplateElement {
 		  String nodeStrVal = node.getTextContent();
 		  (new XString(nodeStrVal)).dispatchCharactersEvents(rth);
 	  }
-   }
-  
-   /**
-    * Method definition to trim whitespace characters from RHS of 
-    * an input string, and returning resulting string.
-    */
-   private String strRtrim(String str) {
-	  String resultStr = null;
-	  
-	  if (str.length() == 0) {
-		 resultStr = "";  
-	  }
-	  else if (str.length() == 1) {
-		 if (Character.isWhitespace(str.charAt(0))) {
-			resultStr = ""; 
-		 }
-		 else {
-			resultStr = str;
-		 }
-	  }
-	  else {
-		 char chr = str.charAt(str.length() - 1);
-		 if (Character.isWhitespace(chr)) {
-			resultStr = str.substring(0, str.length() - 1);
-			resultStr = strRtrim(resultStr); 
-		 }
-		 else {
-			resultStr = str; 
-		 }
-	  }
-	  
-	  return resultStr;
    }
    
    /**
@@ -1335,50 +1305,6 @@ public class ElemValueOf extends ElemTemplateElement {
 	   else {
 		   (new XString(xsDayTimeDurationValue.stringValue())).dispatchCharactersEvents(rth);
 	   }
-   }
-   
-   /**
-    * Method definition, to format xs:dayTimeDuration's seconds value 
-    * component, to either two or three decimal places.
-    * 
-    * @param xsDayTimeDuration                   The supplied xs:dayTimeDuration value
-    * @return                                    The formatted xs:dayTimeDuration string 
-    *                                            value.
-    */
-   private String getFormattedStrXsDaytimeDuration(XSDayTimeDuration xsDayTimeDuration) {
-	   
-	   String result = null;
-	   
-	   int days = xsDayTimeDuration.days();
-	   int hrs = xsDayTimeDuration.hours();
-	   int mins = xsDayTimeDuration.minutes();
-
-	   double secs = xsDayTimeDuration.seconds();
-	   
-	   // Format seconds value to two decimal places
-	   DecimalFormat df = new DecimalFormat("#.##");
-	   String frmtSecValue = df.format(secs);
-	   double secs1 = (Double.valueOf(frmtSecValue)).doubleValue();
-	   
-	   // Format seconds value to three decimal places
-	   df = new DecimalFormat("#.###");
-	   frmtSecValue = df.format(secs);
-	   double secs2 = (Double.valueOf(frmtSecValue)).doubleValue();
-	   
-	   if (secs2 > secs1) {
-		  secs = secs2;  
-	   }
-	   else {
-		  secs = secs1; 
-	   }
-
-	   boolean isNegative = xsDayTimeDuration.negative();
-
-	   XSDayTimeDuration xsDtdNormalizedValue = new XSDayTimeDuration(days, hrs, mins, secs, isNegative);
-	   
-	   result = xsDtdNormalizedValue.stringValue();
-	   
-	   return result;
    }
 
 }

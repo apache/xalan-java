@@ -27,11 +27,14 @@ import org.apache.xpath.regex.Pattern;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
 
 /**
  * Implementation of XML Schema data type xs:gYearMonth.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage general
  */
 public class XSGYearMonth extends XSAnyAtomicType {
 
@@ -71,9 +74,15 @@ public class XSGYearMonth extends XSAnyAtomicType {
 	/**
 	 * Class constructor.
 	 */
-	public XSGYearMonth(String gYearMonthStrValue) throws TransformerException {				
+	public XSGYearMonth(String gYearMonthStrValue) throws TransformerException {
+		
+		boolean isXsDate = true;
+		
 		try {
+			// Constructing xs:gYearMonth value, from supplied xs:date lexical value
 			XSDate xsDate = XSDate.parseDate(gYearMonthStrValue);
+			String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateValue(xsDate);
+			
 			int year = xsDate.year();
 			int month = xsDate.month();
 			String yrStr1 = String.valueOf(year);
@@ -85,17 +94,52 @@ public class XSGYearMonth extends XSAnyAtomicType {
 
 			String str1 = (yrStr1 + "-" + monthStr1);
 
+			if (timeZoneStr != null) {
+			   str1 += timeZoneStr; 
+			}
+			
 			parse(str1);
 
 			m_gYearMonthStrValue = str1;
 		}
 		catch (TransformerException ex) {
-			// no op
+			isXsDate = false;
+		}
+
+		if (!isXsDate) {
+			try {
+				// Constructing xs:gYearMonth value, from supplied xs:dateTime lexical value
+				XSDateTime xsDateTime = XSDateTime.parseDateTime(gYearMonthStrValue);
+				String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateTimeValue(xsDateTime);
+				
+				int year = xsDateTime.year();
+				int month = xsDateTime.month();
+				String yrStr1 = String.valueOf(year);
+
+				String monthStr1 = String.valueOf(month);			
+				if (month < 10) {
+					monthStr1 = ("0" + monthStr1);
+				}
+
+				String str1 = (yrStr1 + "-" + monthStr1);
+				
+				if (timeZoneStr != null) {
+			       str1 += timeZoneStr;   
+			    }
+
+				parse(str1);
+
+				m_gYearMonthStrValue = str1;
+			}
+			catch (TransformerException ex) {
+				// no op
+			}
 		}
 
 		if (m_gYearMonthStrValue == null) {
+			// Constructing xs:gYearMonth value, from supplied xs:gYearMonth lexical value
 			parse(gYearMonthStrValue);
-			
+
 			m_gYearMonthStrValue = gYearMonthStrValue;
 		}
 	}

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-18T06:20:59Z" fail="60" name="date" pass="74" run="134" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-19T11:37:27Z" fail="56" name="date" pass="78" run="134" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -77,9 +77,9 @@
    </testResult>
    <testResult status="pass" testName="date-065"/>
    <testResult status="pass" testName="date-066"/>
-   <testResult status="fail" testName="date-067"/>
+   <testResult status="pass" testName="date-067"/>
    <testResult status="fail" testName="date-068"/>
-   <testResult status="fail" testName="date-069"/>
+   <testResult status="pass" testName="date-069"/>
    <testResult status="fail" testName="date-070"/>
    <testResult status="fail" testName="date-071"/>
    <testResult status="fail" testName="date-072"/>
@@ -98,11 +98,11 @@
    <testResult reason="Xalan configured" status="skipped" testName="date-082"/>
    <testResult reason="Xalan configured" status="skipped" testName="date-083"/>
    <testResult status="fail" testName="date-084"/>
-   <testResult status="fail" testName="date-085"/>
+   <testResult status="pass" testName="date-085"/>
    <testResult status="pass" testName="date-086"/>
    <testResult status="fail" testName="date-087"/>
    <testResult status="pass" testName="date-088"/>
-   <testResult status="fail" testName="date-089"/>
+   <testResult status="pass" testName="date-089"/>
    <testResult status="fail" testName="date-090">
       <outResult>
          <errTrace>Expected ), but found: ,</errTrace>

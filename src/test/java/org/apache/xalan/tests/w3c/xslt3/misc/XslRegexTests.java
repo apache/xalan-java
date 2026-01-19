@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XslMiscRegexTests extends W3CXslTransformTestsUtil {     
+public class XslRegexTests extends W3CXslTransformTestsUtil {     
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -57,7 +57,7 @@ public class XslMiscRegexTests extends W3CXslTransformTestsUtil {
     }
 
     @Test
-    public void runXslMiscRegexTests() {    	
+    public void runXslRegexTests() {    	
        runXslTestSet();
     }
 

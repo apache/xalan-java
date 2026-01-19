@@ -27,11 +27,14 @@ import org.apache.xpath.regex.Pattern;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
 
 /**
  * Implementation of XML Schema data type xs:gDay.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage general
  */
 public class XSGDay extends XSAnyAtomicType {
 
@@ -67,9 +70,15 @@ public class XSGDay extends XSAnyAtomicType {
 	/**
 	 * Class constructor.
 	 */
-	public XSGDay(String gDayStrValue) throws TransformerException {		
+	public XSGDay(String gDayStrValue) throws TransformerException {
+		
+		boolean isXsDate = true;
+		
 		try {
+			// Constructing xs:gDay value, from supplied xs:date lexical value
 			XSDate xsDate = XSDate.parseDate(gDayStrValue);
+			String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateValue(xsDate);
+			
 			int day = xsDate.day();
 			String str1 = String.valueOf(day);
 
@@ -77,15 +86,46 @@ public class XSGDay extends XSAnyAtomicType {
 				str1 = "0" + str1;  
 			}
 
+			if (timeZoneStr != null) {
+				str1 += timeZoneStr; 
+			}
+			
 			parse("---" + str1);
 
 			m_gDayStrValue = "---" + str1;
 		}
 		catch (TransformerException ex) {
-			// no op
+			isXsDate = false;
 		}
+		
+		if (!isXsDate) { 
+		   try {
+			   // Constructing xs:gDay value, from supplied xs:dateTime lexical value
+			   XSDateTime xsDateTime = XSDateTime.parseDateTime(gDayStrValue);
+			   String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateTimeValue(xsDateTime);
 
+			   int day = xsDateTime.day();
+			   String str1 = String.valueOf(day);
+
+			   if (day < 10) {
+				   str1 = "0" + str1;  
+			   }
+
+			   if (timeZoneStr != null) {
+				   str1 += timeZoneStr; 
+			   }
+
+			   parse("---" + str1);
+
+			   m_gDayStrValue = "---" + str1;				
+		   }
+		   catch (TransformerException ex) {
+			  // no op  
+		   }
+		}
+		
 		if (m_gDayStrValue == null) {
+			// Constructing xs:gDay value, from supplied xs:gDay lexical value
 			parse(gDayStrValue);
 
 			m_gDayStrValue = gDayStrValue;

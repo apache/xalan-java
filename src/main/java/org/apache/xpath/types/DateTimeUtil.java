@@ -17,6 +17,7 @@
  */
 package org.apache.xpath.types;
 
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,6 +27,7 @@ import javax.xml.transform.TransformerException;
 
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSTime;
 
 /**
@@ -35,7 +37,7 @@ import xml.xpath31.processor.types.XSTime;
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
- * @xsl.usage advanced
+ * @xsl.usage general
  */
 public class DateTimeUtil {
 	
@@ -823,6 +825,108 @@ public class DateTimeUtil {
 
 		result = dateStr1;
 
+		return result;
+	}
+	
+	/**
+	 * Method definition, to format xs:dayTimeDuration's seconds value 
+	 * component, to either two or three decimal places.
+	 * 
+	 * @param xsDayTimeDuration                   The supplied xs:dayTimeDuration value
+	 * @return                                    The formatted xs:dayTimeDuration string 
+	 *                                            value.
+	 */
+	public static String getFormattedStrXsDaytimeDuration(XSDayTimeDuration xsDayTimeDuration) {
+
+		String result = null;
+
+		int days = xsDayTimeDuration.days();
+		int hrs = xsDayTimeDuration.hours();
+		int mins = xsDayTimeDuration.minutes();
+
+		double secs = xsDayTimeDuration.seconds();
+
+		// Format seconds value to two decimal places
+		DecimalFormat df = new DecimalFormat("#.##");
+		String frmtSecValue = df.format(secs);
+		double secs1 = (Double.valueOf(frmtSecValue)).doubleValue();
+
+		// Format seconds value to three decimal places
+		df = new DecimalFormat("#.###");
+		frmtSecValue = df.format(secs);
+		double secs2 = (Double.valueOf(frmtSecValue)).doubleValue();
+
+		if (secs2 > secs1) {
+			secs = secs2;  
+		}
+		else {
+			secs = secs1; 
+		}
+
+		boolean isNegative = xsDayTimeDuration.negative();
+
+		XSDayTimeDuration xsDtdNormalizedValue = new XSDayTimeDuration(days, hrs, mins, secs, isNegative);
+
+		result = xsDtdNormalizedValue.stringValue();
+
+		return result;
+	}
+	
+	/**
+	 * Method definition, to get time zone string value, from
+	 * the supplied xs:dateTime value.
+	 * 
+	 * @param xsDateTime                        The supplied xs:dateTime value
+	 * @return                                  Time zone string value
+	 */
+    public static String getTimeZoneStrFromXsDateTimeValue(XSDateTime xsDateTime) {
+		
+    	String result = null;
+
+    	String xsDateTimeStr = xsDateTime.stringValue();
+    	String[] strArray = xsDateTimeStr.split("-");		   
+    	int idx2 = xsDateTimeStr.indexOf('+');
+    	int idx3 = xsDateTimeStr.indexOf('Z');
+    	if (strArray.length == 4) {
+    		int idx = xsDateTimeStr.lastIndexOf('-');
+    		result = xsDateTimeStr.substring(idx); 
+    	}
+    	else if (idx2 != -1) {
+    		result = xsDateTimeStr.substring(idx2); 
+    	}
+    	else if (idx3 != -1) {
+    		result = xsDateTimeStr.substring(idx3); 
+    	}
+
+    	return result;
+	}
+
+    /**
+	 * Method definition, to get time zone string value, from
+	 * the supplied xs:date value.
+	 * 
+	 * @param xsDate                           The supplied xs:date value
+	 * @return                                 Time zone string value
+	 */
+    public static String getTimeZoneStrFromXsDateValue(XSDate xsDate) {
+		
+		String result = null;
+		
+		String xsDateStr = xsDate.stringValue();
+		String[] strArray = xsDateStr.split("-");		
+		int idx2 = xsDateStr.indexOf('+');
+		int idx3 = xsDateStr.indexOf('Z');
+		if (strArray.length == 4) {
+			int idx = xsDateStr.lastIndexOf('-');
+			result = xsDateStr.substring(idx); 
+		}
+		else if (idx2 != -1) {
+			result = xsDateStr.substring(idx2); 
+		}
+		else if (idx3 != -1) {
+			result = xsDateStr.substring(idx3); 
+		}
+		
 		return result;
 	}
 

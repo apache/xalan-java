@@ -339,8 +339,14 @@ public class Plus extends XPathArithmeticOp
 		  else if (left instanceof XSDate) {
 			  result = ((XSDate)left).add(right);  
 		  }
-		  else if (left instanceof XSDateTime) {
-			  result = ((XSDateTime)left).add(right);  
+		  else if (right instanceof XSDate) {
+			  result = ((XSDate)right).add(left);  
+		  }
+		  else if (left instanceof XSDateTime) {			  
+			  result = ((XSDateTime)left).add(right);
+		  }
+		  else if (right instanceof XSDateTime) {
+			  result = ((XSDateTime)right).add(left);  
 		  }
 		  else if (left instanceof XSTime) {
 			  result = ((XSTime)left).add(right);  

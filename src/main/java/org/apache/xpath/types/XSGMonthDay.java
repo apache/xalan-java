@@ -30,11 +30,14 @@ import org.apache.xpath.regex.Pattern;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
 
 /**
  * Implementation of XML Schema data type xs:gMonthDay.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage general
  */
 public class XSGMonthDay extends XSAnyAtomicType {
 
@@ -72,9 +75,15 @@ public class XSGMonthDay extends XSAnyAtomicType {
 	/**
 	 * Class constructor.
 	 */
-	public XSGMonthDay(String gMonthDayStrValue) throws TransformerException {				
+	public XSGMonthDay(String gMonthDayStrValue) throws TransformerException {
+		
+		boolean isXsDate = true;
+		
 		try {
+			// Constructing xs:gMonthDay value, from supplied xs:date lexical value
 			XSDate xsDate = XSDate.parseDate(gMonthDayStrValue);
+			String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateValue(xsDate);
+			
 			int month = xsDate.month();
 			int day = xsDate.day();
 			String monthStr1 = String.valueOf(month);
@@ -87,16 +96,57 @@ public class XSGMonthDay extends XSAnyAtomicType {
 			if (day < 10) {
 				dayStr1 = ("0" + dayStr1);  
 			}
+			
+			String str1 = ("--" + monthStr1 + "-" + dayStr1);
+			
+			if (timeZoneStr != null) {
+				str1 += timeZoneStr; 
+			}
 
-			parse("--" + monthStr1 + "-" + dayStr1);
+			parse(str1);
 
-			m_gMonthDayStrValue = "--" + monthStr1 + "-" + dayStr1;
+			m_gMonthDayStrValue = str1;
 		}
 		catch (TransformerException ex) {
-			// no op
+			isXsDate = false;
+		}
+		
+		if (!isXsDate) {
+		    try {
+		    	// Constructing xs:gMonthDay value, from supplied xs:dateTime lexical value
+		    	XSDateTime xsDateTime = XSDateTime.parseDateTime(gMonthDayStrValue);
+		    	String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateTimeValue(xsDateTime);
+				
+				int month = xsDateTime.month();
+				int day = xsDateTime.day();
+				String monthStr1 = String.valueOf(month);
+				String dayStr1 = String.valueOf(day);
+
+				if (month < 10) {
+					monthStr1 = ("0" + monthStr1);  
+				}
+
+				if (day < 10) {
+					dayStr1 = ("0" + dayStr1);  
+				}
+				
+				String str1 = "--" + monthStr1 + "-" + dayStr1;
+				
+				if (timeZoneStr != null) {
+					str1 += timeZoneStr;
+				}
+				
+				parse(str1);
+				
+				m_gMonthDayStrValue = str1;
+		    }
+		    catch (TransformerException ex) {
+		       // no op
+		    }
 		}
 
 		if (m_gMonthDayStrValue == null) {
+			// Constructing xs:gMonthDay value, from supplied xs:gMonthDay lexical value
 			parse(gMonthDayStrValue);
 
 			m_gMonthDayStrValue = gMonthDayStrValue;
