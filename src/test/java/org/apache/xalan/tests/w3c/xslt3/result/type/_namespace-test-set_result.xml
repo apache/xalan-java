@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-18T06:20:58Z" fail="3" name="namespace" pass="4" run="7" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-19T17:09:21Z" fail="83" name="namespace" pass="138" run="221" skipped="3" statusUnknown="0">
    <testResult status="fail" testName="namespace-0101">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;a/&gt;&lt;/out&gt;</outResult>
    </testResult>
@@ -8,4 +8,308 @@
    <testResult status="pass" testName="namespace-0401"/>
    <testResult status="pass" testName="namespace-0402"/>
    <testResult status="fail" testName="namespace-0501"/>
+   <testResult status="fail" testName="namespace-0601"/>
+   <testResult status="fail" testName="namespace-0602"/>
+   <testResult status="pass" testName="namespace-0603"/>
+   <testResult status="fail" testName="namespace-0701"/>
+   <testResult status="fail" testName="namespace-0801"/>
+   <testResult status="fail" testName="namespace-0802"/>
+   <testResult status="fail" testName="namespace-0901"/>
+   <testResult status="fail" testName="namespace-0902"/>
+   <testResult status="pass" testName="namespace-0903"/>
+   <testResult status="pass" testName="namespace-0904"/>
+   <testResult status="pass" testName="namespace-0905"/>
+   <testResult status="pass" testName="namespace-0906"/>
+   <testResult status="fail" testName="namespace-0907"/>
+   <testResult status="fail" testName="namespace-0908"/>
+   <testResult reason="Xalan configured" status="skipped" testName="namespace-0909"/>
+   <testResult status="fail" testName="namespace-0910"/>
+   <testResult status="pass" testName="namespace-0911"/>
+   <testResult status="fail" testName="namespace-0912"/>
+   <testResult status="fail" testName="namespace-0913">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-0914">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="namespace-1101"/>
+   <testResult status="pass" testName="namespace-1102"/>
+   <testResult status="pass" testName="namespace-1103"/>
+   <testResult status="fail" testName="namespace-1104"/>
+   <testResult status="pass" testName="namespace-1201"/>
+   <testResult status="fail" testName="namespace-1301"/>
+   <testResult status="pass" testName="namespace-1401"/>
+   <testResult status="fail" testName="namespace-1402"/>
+   <testResult status="pass" testName="namespace-1403"/>
+   <testResult status="fail" testName="namespace-1404"/>
+   <testResult status="fail" testName="namespace-1501"/>
+   <testResult status="fail" testName="namespace-1502"/>
+   <testResult status="fail" testName="namespace-1601"/>
+   <testResult status="fail" testName="namespace-1602"/>
+   <testResult status="pass" testName="namespace-1701"/>
+   <testResult status="pass" testName="namespace-1801"/>
+   <testResult status="fail" testName="namespace-1901"/>
+   <testResult status="fail" testName="namespace-2001">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2101">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="namespace-2201"/>
+   <testResult status="fail" testName="namespace-2301"/>
+   <testResult status="fail" testName="namespace-2302"/>
+   <testResult status="fail" testName="namespace-2401"/>
+   <testResult status="fail" testName="namespace-2402"/>
+   <testResult status="pass" testName="namespace-2501"/>
+   <testResult status="pass" testName="namespace-2502"/>
+   <testResult status="pass" testName="namespace-2503"/>
+   <testResult status="pass" testName="namespace-2601"/>
+   <testResult status="fail" testName="namespace-2602">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: 17,46 : An XSL transformation processing could not add 'attribute' to 'namespace'.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-2603">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2604">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2605">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2606"/>
+   <testResult status="fail" testName="namespace-2607">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2608"/>
+   <testResult status="fail" testName="namespace-2609"/>
+   <testResult status="fail" testName="namespace-2610">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2611">
+      <outResult>
+         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
+         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
+         <errTrace>Expected ], but found: </errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-2612"/>
+   <testResult status="fail" testName="namespace-2614"/>
+   <testResult status="fail" testName="namespace-2615"/>
+   <testResult status="fail" testName="namespace-2616"/>
+   <testResult status="fail" testName="namespace-2617">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;name xmlns:axml="http://www.example.com/alias-xml" xmlns:a="http://alpha/" x="2"/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-2618">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;p:item xmlns:p="http://p.uri/"/&gt;</outResult>
+   </testResult>
+   <testResult feature="schema_aware" status="skipped" testName="namespace-2619"/>
+   <testResult status="fail" testName="namespace-2621">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;a:foo xmlns:a="http://www.w3.org/2000/xmlns/"&gt;&lt;yyy/&gt;&lt;/a:foo&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-2622">
+      <outResult>
+         <errTrace>XPTY0004 : One or both of the operands of operator + are not numeric.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-2623">
+      <outResult>
+         <errTrace>XTSE0010 : yyy is not allowed in this position in the stylesheet</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="namespace-2624"/>
+   <testResult status="fail" testName="namespace-2625">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2626">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2627">
+      <outResult>&lt;?xml version="1.1" encoding="UTF-8"?&gt;&lt;n:a xmlns:n="http://n/" xmlns="http://d/"&gt;&lt;n:b xmlns:n="http://n2/"/&gt;&lt;c xmlns="http://n3/"/&gt;&lt;/n:a&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-2628">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2629">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2630">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2631">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2632">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="namespace-2633">
+      <outResult>&lt;?xml version="1.1" encoding="UTF-8"?&gt;&lt;a xmlns:n="http://n/"&gt;&lt;b/&gt;&lt;/a&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="namespace-2701"/>
+   <testResult status="pass" testName="namespace-2801"/>
+   <testResult status="fail" testName="namespace-2901">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="namespace-3001"/>
+   <testResult status="fail" testName="namespace-3002"/>
+   <testResult status="fail" testName="namespace-3003"/>
+   <testResult status="pass" testName="namespace-3004"/>
+   <testResult status="fail" testName="namespace-3005">
+      <outResult>
+         <errTrace>XTTE0570 : An XSL variable n1's evaluation result doesn't match the specified xdm sequence type node().</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-3101">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;yyy/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-3102">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;yyy/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-3103">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;yyy/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-3104">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;yyy/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-3105">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns="http://testguys.com/"&gt;&lt;yyy/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-3106">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;yyy/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="namespace-3107">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;yyy xmlns="http://test.com/"/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="namespace-3108"/>
+   <testResult status="pass" testName="namespace-3109"/>
+   <testResult status="pass" testName="namespace-3110"/>
+   <testResult status="pass" testName="namespace-3111"/>
+   <testResult status="fail" testName="namespace-3112"/>
+   <testResult status="pass" testName="namespace-3113"/>
+   <testResult status="pass" testName="namespace-3114"/>
+   <testResult status="pass" testName="namespace-3115"/>
+   <testResult status="pass" testName="namespace-3116"/>
+   <testResult status="pass" testName="namespace-3117"/>
+   <testResult status="pass" testName="namespace-3118"/>
+   <testResult status="pass" testName="namespace-3119"/>
+   <testResult status="fail" testName="namespace-3120"/>
+   <testResult status="pass" testName="namespace-3121"/>
+   <testResult status="pass" testName="namespace-3122"/>
+   <testResult status="pass" testName="namespace-3123"/>
+   <testResult status="pass" testName="namespace-3124"/>
+   <testResult status="pass" testName="namespace-3125"/>
+   <testResult status="pass" testName="namespace-3126"/>
+   <testResult status="pass" testName="namespace-3127"/>
+   <testResult status="pass" testName="namespace-3128"/>
+   <testResult status="pass" testName="namespace-3129"/>
+   <testResult status="pass" testName="namespace-3130"/>
+   <testResult status="pass" testName="namespace-3131"/>
+   <testResult status="fail" testName="namespace-3132"/>
+   <testResult status="pass" testName="namespace-3133"/>
+   <testResult status="pass" testName="namespace-3134"/>
+   <testResult status="pass" testName="namespace-3135"/>
+   <testResult status="pass" testName="namespace-3136"/>
+   <testResult status="pass" testName="namespace-3137"/>
+   <testResult status="pass" testName="namespace-3138"/>
+   <testResult status="pass" testName="namespace-3139"/>
+   <testResult status="pass" testName="namespace-3140"/>
+   <testResult status="pass" testName="namespace-3141"/>
+   <testResult status="pass" testName="namespace-3142"/>
+   <testResult status="pass" testName="namespace-3143"/>
+   <testResult status="pass" testName="namespace-3144"/>
+   <testResult status="pass" testName="namespace-3145"/>
+   <testResult status="pass" testName="namespace-3146"/>
+   <testResult status="pass" testName="namespace-3147"/>
+   <testResult status="pass" testName="namespace-3148"/>
+   <testResult status="pass" testName="namespace-3149"/>
+   <testResult status="pass" testName="namespace-3150"/>
+   <testResult status="pass" testName="namespace-3151"/>
+   <testResult status="pass" testName="namespace-3152"/>
+   <testResult status="pass" testName="namespace-3153"/>
+   <testResult status="pass" testName="namespace-3154"/>
+   <testResult status="pass" testName="namespace-3155"/>
+   <testResult status="pass" testName="namespace-3156"/>
+   <testResult status="pass" testName="namespace-3157"/>
+   <testResult status="pass" testName="namespace-3158"/>
+   <testResult status="pass" testName="namespace-3159"/>
+   <testResult status="pass" testName="namespace-3160"/>
+   <testResult status="pass" testName="namespace-3161"/>
+   <testResult status="pass" testName="namespace-3162"/>
+   <testResult status="pass" testName="namespace-3163"/>
+   <testResult status="pass" testName="namespace-3164"/>
+   <testResult status="fail" testName="namespace-3201">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:err="http://www.error.com/"&gt;&lt;yyy/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="namespace-3202"/>
+   <testResult status="fail" testName="namespace-3203">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;yyy/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="namespace-3301"/>
+   <testResult status="pass" testName="namespace-3302"/>
+   <testResult status="pass" testName="namespace-3303"/>
+   <testResult status="pass" testName="namespace-3304"/>
+   <testResult status="pass" testName="namespace-3305"/>
+   <testResult status="pass" testName="namespace-3306"/>
+   <testResult status="pass" testName="namespace-3307"/>
+   <testResult status="pass" testName="namespace-3308"/>
+   <testResult status="pass" testName="namespace-3309"/>
+   <testResult status="pass" testName="namespace-3310"/>
+   <testResult status="pass" testName="namespace-3311"/>
+   <testResult status="pass" testName="namespace-3312"/>
+   <testResult status="pass" testName="namespace-3313"/>
+   <testResult reason="Xalan configured" status="skipped" testName="namespace-3314"/>
+   <testResult status="pass" testName="namespace-3315"/>
+   <testResult status="pass" testName="namespace-3401"/>
+   <testResult status="fail" testName="namespace-3501"/>
+   <testResult status="pass" testName="namespace-3502"/>
+   <testResult status="fail" testName="namespace-3503"/>
+   <testResult status="pass" testName="namespace-3504"/>
+   <testResult status="pass" testName="namespace-3505"/>
+   <testResult status="pass" testName="namespace-3601"/>
+   <testResult status="pass" testName="namespace-3701"/>
+   <testResult status="pass" testName="namespace-3702"/>
+   <testResult status="pass" testName="namespace-3703"/>
+   <testResult status="pass" testName="namespace-3801"/>
+   <testResult status="pass" testName="namespace-3901"/>
+   <testResult status="pass" testName="namespace-3902"/>
+   <testResult status="pass" testName="namespace-3903"/>
+   <testResult status="pass" testName="namespace-4001"/>
+   <testResult status="pass" testName="namespace-4002"/>
+   <testResult status="pass" testName="namespace-4003"/>
+   <testResult status="pass" testName="namespace-4004"/>
+   <testResult status="pass" testName="namespace-4005"/>
+   <testResult status="pass" testName="namespace-4006"/>
+   <testResult status="pass" testName="namespace-4007"/>
+   <testResult status="pass" testName="namespace-4008"/>
+   <testResult status="pass" testName="namespace-4009"/>
+   <testResult status="fail" testName="namespace-4101"/>
+   <testResult status="pass" testName="namespace-4301"/>
+   <testResult status="fail" testName="namespace-4302"/>
+   <testResult status="pass" testName="namespace-4401"/>
+   <testResult status="fail" testName="namespace-4501"/>
+   <testResult status="fail" testName="namespace-4601"/>
+   <testResult status="pass" testName="namespace-4801"/>
+   <testResult status="pass" testName="namespace-4901"/>
+   <testResult status="pass" testName="namespace-5001"/>
+   <testResult status="pass" testName="namespace-5101"/>
+   <testResult status="pass" testName="namespace-5201"/>
+   <testResult status="fail" testName="namespace-5301"/>
+   <testResult status="pass" testName="namespace-5401"/>
+   <testResult status="pass" testName="namespace-5501"/>
+   <testResult status="fail" testName="namespace-5601"/>
+   <testResult status="pass" testName="namespace-5602"/>
+   <testResult status="pass" testName="namespace-5701"/>
+   <testResult status="pass" testName="namespace-5901"/>
+   <testResult status="pass" testName="namespace-5902"/>
+   <testResult status="pass" testName="namespace-5903"/>
+   <testResult status="pass" testName="namespace-6001"/>
+   <testResult status="pass" testName="namespace-6002"/>
+   <testResult status="pass" testName="namespace-6003"/>
+   <testResult status="pass" testName="namespace-6101"/>
+   <testResult status="pass" testName="namespace-6201"/>
+   <testResult status="pass" testName="namespace-6202"/>
 </testrun>

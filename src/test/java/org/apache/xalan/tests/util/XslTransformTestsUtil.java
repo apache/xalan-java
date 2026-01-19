@@ -756,7 +756,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
 											   String expErrCodeName) {		
 		
 		Element resultOutElem = testResultDoc.createElement("outResult");
-		for (int idx = 0; idx < trfErrorList.size(); idx++) {
+		int size1 = trfErrorList.size();
+		for (int idx = 0; idx < size1; idx++) {
 			String errTraceInfo = trfErrorList.get(idx);
 			if ((expErrCodeName != null) && errTraceInfo.contains(expErrCodeName)) {
 			   elemTestResult.setAttribute("status", "pass");
@@ -768,7 +769,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
 			resultOutElem.appendChild(errTraceElem);
 		}
 		
-		for (int idx = 0; idx < trfFatalErrorList.size(); idx++) {
+		int size2 = trfFatalErrorList.size();
+		for (int idx = 0; idx < size2; idx++) {
 			String errTraceInfo = trfFatalErrorList.get(idx);
 			if ((expErrCodeName != null) && errTraceInfo.contains(expErrCodeName)) {
 				elemTestResult.setAttribute("status", "pass");

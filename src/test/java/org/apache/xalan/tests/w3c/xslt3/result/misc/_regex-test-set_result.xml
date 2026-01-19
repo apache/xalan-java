@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:25Z" fail="12" name="regex" pass="32" run="44" skipped="6" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-19T17:09:27Z" fail="20" name="regex" pass="39" run="59" skipped="6" statusUnknown="0">
    <testResult status="pass" testName="regex-001"/>
    <testResult status="fail" testName="regex-002"/>
    <testResult status="pass" testName="regex-003"/>
@@ -63,4 +63,54 @@
    <testResult reason="Xalan configured" status="skipped" testName="regex-070c"/>
    <testResult reason="Xalan configured" status="skipped" testName="regex-070d"/>
    <testResult reason="Xalan configured" status="skipped" testName="regex-070e"/>
+   <testResult status="fail" testName="regex-070f">
+      <outResult>
+         <errTrace>Expected ,, but found: ''</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-070g">
+      <outResult>
+         <errTrace>Expected ,, but found: ''</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-070h">
+      <outResult>
+         <errTrace>Expected ,, but found: ''</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-070i">
+      <outResult>
+         <errTrace>Expected ,, but found: ''</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-070j">
+      <outResult>
+         <errTrace>Expected ,, but found: ''</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-070k">
+      <outResult>
+         <errTrace>Expected ,, but found: ''</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-070l">
+      <outResult>
+         <errTrace>Expected ,, but found: ''</errTrace>
+         <errTrace>java.lang.ClassCastException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-071"/>
+   <testResult status="pass" testName="regex-072"/>
+   <testResult status="pass" testName="regex-086a"/>
+   <testResult status="pass" testName="regex-086b"/>
+   <testResult status="pass" testName="regex-086c"/>
+   <testResult status="pass" testName="regex-086d"/>
+   <testResult status="fail" testName="regex-090"/>
+   <testResult status="pass" testName="regex-091"/>
 </testrun>
