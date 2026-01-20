@@ -23,28 +23,31 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XSL 3.0 transformation 
- * tests for, testing XPath 3.1 regex feature.
+ * tests for, testing XPath 3.1 regex syntax.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslRegexTests extends W3CXslTransformTestsUtil {     
+public class XslRegexSyntaxTests extends W3CXslTransformTestsUtil {     
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-    	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "misc/regex/_regex-test-set.xml";
+    	m_xslTransformTestSetFilePath = W3C_XSLT3_TESTS_META_DATA_DIR_HOME + "misc/regex-syntax/_regex-syntax-test-set.xml";
     	m_resultSubFolderName = "misc";
     	
-    	m_testResultFileName = "_regex-test-set_result.xml";
+    	m_testResultFileName = "_regex-syntax-test-set_result.xml";
     	
     	/**
-    	 * Following W3C XSLT 3.0 test case, causes inf loop within
-    	 * Xalan's XSLT 3.0 development code. Skipping this test case
+    	 * Following W3C XSLT 3.0 test cases, cause Xalan-J XSL 3 issues
+    	 * running applicable XSL test cases. Skipping this test case
     	 * for now.
     	 */
     	
-    	m_skipped_tests_list.add("regex-056");
+    	m_skipped_tests_list.add("regex-syntax-0217");
+    	m_skipped_tests_list.add("regex-syntax-0689");
+    	m_skipped_tests_list.add("regex-syntax-0877");
+    	m_skipped_tests_list.add("regex-syntax-0878");
     }
 
     @AfterClass
@@ -55,7 +58,7 @@ public class XslRegexTests extends W3CXslTransformTestsUtil {
     }
 
     @Test
-    public void runXslRegexTests() {    	
+    public void runXslRegexSyntaxTests() {    	
        runXslTestSet();
     }
 

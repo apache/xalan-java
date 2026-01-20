@@ -1,0 +1,1623 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-20T11:12:24Z" fail="369" name="regex-syntax" pass="617" run="986" skipped="4" statusUnknown="0">
+   <testResult status="pass" testName="regex-syntax-0001"/>
+   <testResult status="pass" testName="regex-syntax-0002"/>
+   <testResult status="pass" testName="regex-syntax-0003"/>
+   <testResult status="pass" testName="regex-syntax-0004"/>
+   <testResult status="pass" testName="regex-syntax-0005"/>
+   <testResult status="pass" testName="regex-syntax-0006"/>
+   <testResult status="pass" testName="regex-syntax-0007"/>
+   <testResult status="pass" testName="regex-syntax-0008"/>
+   <testResult status="pass" testName="regex-syntax-0009"/>
+   <testResult status="pass" testName="regex-syntax-0010"/>
+   <testResult status="pass" testName="regex-syntax-0011"/>
+   <testResult status="pass" testName="regex-syntax-0012"/>
+   <testResult status="pass" testName="regex-syntax-0013"/>
+   <testResult status="pass" testName="regex-syntax-0014"/>
+   <testResult status="pass" testName="regex-syntax-0015"/>
+   <testResult status="pass" testName="regex-syntax-0016"/>
+   <testResult status="pass" testName="regex-syntax-0017"/>
+   <testResult status="pass" testName="regex-syntax-0018"/>
+   <testResult status="fail" testName="regex-syntax-0019">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="123 49 125 97" value="{1}a"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0020"/>
+   <testResult status="pass" testName="regex-syntax-0021"/>
+   <testResult status="pass" testName="regex-syntax-0022"/>
+   <testResult status="pass" testName="regex-syntax-0023"/>
+   <testResult status="pass" testName="regex-syntax-0024"/>
+   <testResult status="pass" testName="regex-syntax-0025"/>
+   <testResult status="pass" testName="regex-syntax-0026"/>
+   <testResult status="pass" testName="regex-syntax-0027"/>
+   <testResult status="pass" testName="regex-syntax-0028"/>
+   <testResult status="pass" testName="regex-syntax-0029"/>
+   <testResult status="pass" testName="regex-syntax-0030"/>
+   <testResult status="pass" testName="regex-syntax-0031"/>
+   <testResult status="pass" testName="regex-syntax-0032"/>
+   <testResult status="pass" testName="regex-syntax-0033"/>
+   <testResult status="pass" testName="regex-syntax-0034"/>
+   <testResult status="pass" testName="regex-syntax-0035"/>
+   <testResult status="pass" testName="regex-syntax-0036"/>
+   <testResult status="pass" testName="regex-syntax-0037"/>
+   <testResult status="pass" testName="regex-syntax-0038"/>
+   <testResult status="pass" testName="regex-syntax-0039"/>
+   <testResult status="pass" testName="regex-syntax-0040"/>
+   <testResult status="pass" testName="regex-syntax-0041"/>
+   <testResult status="fail" testName="regex-syntax-0042">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="63" value="?"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;string actual-match="true" expected-match="false" cp="" value=""/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0043"/>
+   <testResult status="pass" testName="regex-syntax-0044"/>
+   <testResult status="pass" testName="regex-syntax-0045"/>
+   <testResult status="pass" testName="regex-syntax-0046"/>
+   <testResult status="pass" testName="regex-syntax-0047"/>
+   <testResult status="pass" testName="regex-syntax-0048"/>
+   <testResult status="pass" testName="regex-syntax-0049"/>
+   <testResult status="pass" testName="regex-syntax-0050"/>
+   <testResult status="pass" testName="regex-syntax-0051"/>
+   <testResult status="pass" testName="regex-syntax-0052"/>
+   <testResult status="pass" testName="regex-syntax-0053"/>
+   <testResult status="fail" testName="regex-syntax-0054"/>
+   <testResult status="fail" testName="regex-syntax-0055"/>
+   <testResult status="fail" testName="regex-syntax-0056">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;true/&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0056a"/>
+   <testResult status="pass" testName="regex-syntax-0057"/>
+   <testResult status="fail" testName="regex-syntax-0058"/>
+   <testResult status="fail" testName="regex-syntax-0059"/>
+   <testResult status="fail" testName="regex-syntax-0060"/>
+   <testResult status="pass" testName="regex-syntax-0061"/>
+   <testResult status="pass" testName="regex-syntax-0062"/>
+   <testResult status="pass" testName="regex-syntax-0063"/>
+   <testResult status="fail" testName="regex-syntax-0064"/>
+   <testResult status="pass" testName="regex-syntax-0065"/>
+   <testResult status="pass" testName="regex-syntax-0066"/>
+   <testResult status="fail" testName="regex-syntax-0067"/>
+   <testResult status="fail" testName="regex-syntax-0068"/>
+   <testResult status="pass" testName="regex-syntax-0069"/>
+   <testResult status="pass" testName="regex-syntax-0070"/>
+   <testResult status="pass" testName="regex-syntax-0071"/>
+   <testResult status="fail" testName="regex-syntax-0072">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="91 94 91 97 45 98 93 93" value="[^[a-b]]"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0073"/>
+   <testResult status="pass" testName="regex-syntax-0074"/>
+   <testResult status="pass" testName="regex-syntax-0075"/>
+   <testResult status="pass" testName="regex-syntax-0076"/>
+   <testResult status="fail" testName="regex-syntax-0077"/>
+   <testResult status="fail" testName="regex-syntax-0078"/>
+   <testResult status="pass" testName="regex-syntax-0079"/>
+   <testResult status="fail" testName="regex-syntax-0080"/>
+   <testResult status="fail" testName="regex-syntax-0081"/>
+   <testResult status="pass" testName="regex-syntax-0082"/>
+   <testResult status="pass" testName="regex-syntax-0083"/>
+   <testResult status="fail" testName="regex-syntax-0084"/>
+   <testResult status="fail" testName="regex-syntax-0085"/>
+   <testResult status="fail" testName="regex-syntax-0086">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;true/&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0086a"/>
+   <testResult status="pass" testName="regex-syntax-0087"/>
+   <testResult status="pass" testName="regex-syntax-0088"/>
+   <testResult status="pass" testName="regex-syntax-0089"/>
+   <testResult status="pass" testName="regex-syntax-0090"/>
+   <testResult status="pass" testName="regex-syntax-0091"/>
+   <testResult status="pass" testName="regex-syntax-0092"/>
+   <testResult status="pass" testName="regex-syntax-0093"/>
+   <testResult status="pass" testName="regex-syntax-0094"/>
+   <testResult status="pass" testName="regex-syntax-0095"/>
+   <testResult status="pass" testName="regex-syntax-0096"/>
+   <testResult status="pass" testName="regex-syntax-0097"/>
+   <testResult status="pass" testName="regex-syntax-0098"/>
+   <testResult status="pass" testName="regex-syntax-0099"/>
+   <testResult status="pass" testName="regex-syntax-0100"/>
+   <testResult status="pass" testName="regex-syntax-0101"/>
+   <testResult status="fail" testName="regex-syntax-0102">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;true/&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0102a"/>
+   <testResult status="pass" testName="regex-syntax-0103"/>
+   <testResult status="pass" testName="regex-syntax-0104"/>
+   <testResult status="pass" testName="regex-syntax-0105"/>
+   <testResult status="pass" testName="regex-syntax-0106"/>
+   <testResult status="pass" testName="regex-syntax-0107"/>
+   <testResult status="pass" testName="regex-syntax-0108"/>
+   <testResult status="fail" testName="regex-syntax-0109"/>
+   <testResult status="fail" testName="regex-syntax-0110"/>
+   <testResult status="pass" testName="regex-syntax-0111"/>
+   <testResult status="pass" testName="regex-syntax-0112"/>
+   <testResult status="pass" testName="regex-syntax-0113"/>
+   <testResult status="pass" testName="regex-syntax-0114"/>
+   <testResult status="pass" testName="regex-syntax-0115"/>
+   <testResult status="pass" testName="regex-syntax-0116"/>
+   <testResult status="pass" testName="regex-syntax-0117"/>
+   <testResult status="pass" testName="regex-syntax-0118"/>
+   <testResult status="pass" testName="regex-syntax-0119"/>
+   <testResult status="pass" testName="regex-syntax-0120"/>
+   <testResult status="pass" testName="regex-syntax-0121"/>
+   <testResult status="pass" testName="regex-syntax-0122"/>
+   <testResult status="pass" testName="regex-syntax-0123"/>
+   <testResult status="pass" testName="regex-syntax-0124"/>
+   <testResult status="fail" testName="regex-syntax-0125"/>
+   <testResult status="fail" testName="regex-syntax-0126"/>
+   <testResult status="pass" testName="regex-syntax-0127"/>
+   <testResult status="fail" testName="regex-syntax-0128"/>
+   <testResult status="pass" testName="regex-syntax-0129"/>
+   <testResult status="pass" testName="regex-syntax-0130"/>
+   <testResult status="pass" testName="regex-syntax-0131"/>
+   <testResult status="pass" testName="regex-syntax-0132"/>
+   <testResult status="pass" testName="regex-syntax-0133"/>
+   <testResult status="pass" testName="regex-syntax-0134"/>
+   <testResult status="pass" testName="regex-syntax-0135"/>
+   <testResult status="pass" testName="regex-syntax-0136"/>
+   <testResult status="pass" testName="regex-syntax-0137"/>
+   <testResult status="pass" testName="regex-syntax-0138"/>
+   <testResult status="pass" testName="regex-syntax-0139"/>
+   <testResult status="pass" testName="regex-syntax-0140"/>
+   <testResult status="pass" testName="regex-syntax-0141"/>
+   <testResult status="pass" testName="regex-syntax-0142"/>
+   <testResult status="pass" testName="regex-syntax-0143"/>
+   <testResult status="pass" testName="regex-syntax-0144"/>
+   <testResult status="pass" testName="regex-syntax-0145"/>
+   <testResult status="pass" testName="regex-syntax-0146"/>
+   <testResult status="pass" testName="regex-syntax-0147"/>
+   <testResult status="pass" testName="regex-syntax-0148"/>
+   <testResult status="pass" testName="regex-syntax-0149"/>
+   <testResult status="pass" testName="regex-syntax-0150"/>
+   <testResult status="pass" testName="regex-syntax-0151"/>
+   <testResult status="pass" testName="regex-syntax-0152"/>
+   <testResult status="pass" testName="regex-syntax-0153"/>
+   <testResult status="pass" testName="regex-syntax-0154"/>
+   <testResult status="pass" testName="regex-syntax-0155"/>
+   <testResult status="pass" testName="regex-syntax-0156"/>
+   <testResult status="pass" testName="regex-syntax-0157"/>
+   <testResult status="pass" testName="regex-syntax-0158"/>
+   <testResult status="pass" testName="regex-syntax-0159"/>
+   <testResult status="pass" testName="regex-syntax-0160"/>
+   <testResult status="pass" testName="regex-syntax-0161"/>
+   <testResult status="pass" testName="regex-syntax-0162"/>
+   <testResult status="pass" testName="regex-syntax-0163"/>
+   <testResult status="pass" testName="regex-syntax-0164"/>
+   <testResult status="pass" testName="regex-syntax-0165"/>
+   <testResult status="pass" testName="regex-syntax-0166"/>
+   <testResult status="pass" testName="regex-syntax-0167"/>
+   <testResult status="pass" testName="regex-syntax-0168"/>
+   <testResult status="pass" testName="regex-syntax-0169"/>
+   <testResult status="pass" testName="regex-syntax-0170"/>
+   <testResult status="pass" testName="regex-syntax-0171"/>
+   <testResult status="pass" testName="regex-syntax-0172"/>
+   <testResult status="pass" testName="regex-syntax-0173"/>
+   <testResult status="pass" testName="regex-syntax-0174"/>
+   <testResult status="pass" testName="regex-syntax-0175"/>
+   <testResult status="pass" testName="regex-syntax-0176"/>
+   <testResult status="pass" testName="regex-syntax-0177"/>
+   <testResult status="pass" testName="regex-syntax-0178"/>
+   <testResult status="pass" testName="regex-syntax-0179"/>
+   <testResult status="pass" testName="regex-syntax-0180"/>
+   <testResult status="pass" testName="regex-syntax-0181"/>
+   <testResult status="pass" testName="regex-syntax-0182"/>
+   <testResult status="pass" testName="regex-syntax-0183"/>
+   <testResult status="pass" testName="regex-syntax-0184"/>
+   <testResult status="pass" testName="regex-syntax-0185"/>
+   <testResult status="pass" testName="regex-syntax-0186"/>
+   <testResult status="pass" testName="regex-syntax-0187"/>
+   <testResult status="pass" testName="regex-syntax-0188"/>
+   <testResult status="pass" testName="regex-syntax-0189"/>
+   <testResult status="pass" testName="regex-syntax-0190"/>
+   <testResult status="pass" testName="regex-syntax-0191"/>
+   <testResult status="pass" testName="regex-syntax-0192"/>
+   <testResult status="pass" testName="regex-syntax-0193"/>
+   <testResult status="pass" testName="regex-syntax-0194"/>
+   <testResult status="pass" testName="regex-syntax-0195"/>
+   <testResult status="pass" testName="regex-syntax-0196"/>
+   <testResult status="pass" testName="regex-syntax-0197"/>
+   <testResult status="pass" testName="regex-syntax-0198"/>
+   <testResult status="pass" testName="regex-syntax-0199"/>
+   <testResult status="pass" testName="regex-syntax-0200"/>
+   <testResult status="pass" testName="regex-syntax-0201"/>
+   <testResult status="pass" testName="regex-syntax-0202"/>
+   <testResult status="pass" testName="regex-syntax-0203"/>
+   <testResult status="pass" testName="regex-syntax-0204"/>
+   <testResult status="pass" testName="regex-syntax-0205"/>
+   <testResult status="pass" testName="regex-syntax-0206"/>
+   <testResult status="pass" testName="regex-syntax-0207"/>
+   <testResult status="pass" testName="regex-syntax-0208"/>
+   <testResult status="pass" testName="regex-syntax-0209"/>
+   <testResult status="pass" testName="regex-syntax-0210"/>
+   <testResult status="pass" testName="regex-syntax-0211"/>
+   <testResult status="pass" testName="regex-syntax-0212"/>
+   <testResult status="pass" testName="regex-syntax-0213"/>
+   <testResult status="pass" testName="regex-syntax-0214"/>
+   <testResult status="pass" testName="regex-syntax-0215"/>
+   <testResult status="pass" testName="regex-syntax-0216"/>
+   <testResult reason="Xalan configured" status="skipped" testName="regex-syntax-0217"/>
+   <testResult status="pass" testName="regex-syntax-0218"/>
+   <testResult status="pass" testName="regex-syntax-0219"/>
+   <testResult status="pass" testName="regex-syntax-0220"/>
+   <testResult status="pass" testName="regex-syntax-0221"/>
+   <testResult status="pass" testName="regex-syntax-0222"/>
+   <testResult status="pass" testName="regex-syntax-0223"/>
+   <testResult status="pass" testName="regex-syntax-0224"/>
+   <testResult status="pass" testName="regex-syntax-0225"/>
+   <testResult status="pass" testName="regex-syntax-0226"/>
+   <testResult status="pass" testName="regex-syntax-0227"/>
+   <testResult status="pass" testName="regex-syntax-0228"/>
+   <testResult status="pass" testName="regex-syntax-0229"/>
+   <testResult status="pass" testName="regex-syntax-0230"/>
+   <testResult status="pass" testName="regex-syntax-0231"/>
+   <testResult status="pass" testName="regex-syntax-0232"/>
+   <testResult status="pass" testName="regex-syntax-0233"/>
+   <testResult status="pass" testName="regex-syntax-0234"/>
+   <testResult status="pass" testName="regex-syntax-0235"/>
+   <testResult status="pass" testName="regex-syntax-0236"/>
+   <testResult status="pass" testName="regex-syntax-0237"/>
+   <testResult status="pass" testName="regex-syntax-0238"/>
+   <testResult status="pass" testName="regex-syntax-0239"/>
+   <testResult status="pass" testName="regex-syntax-0240"/>
+   <testResult status="pass" testName="regex-syntax-0241"/>
+   <testResult status="pass" testName="regex-syntax-0242"/>
+   <testResult status="pass" testName="regex-syntax-0243"/>
+   <testResult status="pass" testName="regex-syntax-0244"/>
+   <testResult status="pass" testName="regex-syntax-0245"/>
+   <testResult status="pass" testName="regex-syntax-0246"/>
+   <testResult status="pass" testName="regex-syntax-0247"/>
+   <testResult status="pass" testName="regex-syntax-0248"/>
+   <testResult status="pass" testName="regex-syntax-0249"/>
+   <testResult status="pass" testName="regex-syntax-0250"/>
+   <testResult status="pass" testName="regex-syntax-0251"/>
+   <testResult status="pass" testName="regex-syntax-0252"/>
+   <testResult status="pass" testName="regex-syntax-0253"/>
+   <testResult status="pass" testName="regex-syntax-0254"/>
+   <testResult status="pass" testName="regex-syntax-0255"/>
+   <testResult status="pass" testName="regex-syntax-0256"/>
+   <testResult status="pass" testName="regex-syntax-0257"/>
+   <testResult status="pass" testName="regex-syntax-0258"/>
+   <testResult status="pass" testName="regex-syntax-0259"/>
+   <testResult status="pass" testName="regex-syntax-0260"/>
+   <testResult status="pass" testName="regex-syntax-0261"/>
+   <testResult status="pass" testName="regex-syntax-0262"/>
+   <testResult status="pass" testName="regex-syntax-0263"/>
+   <testResult status="pass" testName="regex-syntax-0264"/>
+   <testResult status="pass" testName="regex-syntax-0265"/>
+   <testResult status="pass" testName="regex-syntax-0266"/>
+   <testResult status="pass" testName="regex-syntax-0267"/>
+   <testResult status="pass" testName="regex-syntax-0268"/>
+   <testResult status="pass" testName="regex-syntax-0269"/>
+   <testResult status="pass" testName="regex-syntax-0270"/>
+   <testResult status="pass" testName="regex-syntax-0271"/>
+   <testResult status="pass" testName="regex-syntax-0272"/>
+   <testResult status="pass" testName="regex-syntax-0273"/>
+   <testResult status="pass" testName="regex-syntax-0274"/>
+   <testResult status="pass" testName="regex-syntax-0275"/>
+   <testResult status="pass" testName="regex-syntax-0276"/>
+   <testResult status="pass" testName="regex-syntax-0277"/>
+   <testResult status="pass" testName="regex-syntax-0278"/>
+   <testResult status="pass" testName="regex-syntax-0279"/>
+   <testResult status="pass" testName="regex-syntax-0280"/>
+   <testResult status="pass" testName="regex-syntax-0281"/>
+   <testResult status="pass" testName="regex-syntax-0282"/>
+   <testResult status="pass" testName="regex-syntax-0283"/>
+   <testResult status="pass" testName="regex-syntax-0284"/>
+   <testResult status="pass" testName="regex-syntax-0285"/>
+   <testResult status="pass" testName="regex-syntax-0286"/>
+   <testResult status="pass" testName="regex-syntax-0287"/>
+   <testResult status="pass" testName="regex-syntax-0288"/>
+   <testResult status="pass" testName="regex-syntax-0288a"/>
+   <testResult status="pass" testName="regex-syntax-0288b"/>
+   <testResult status="pass" testName="regex-syntax-0289"/>
+   <testResult status="pass" testName="regex-syntax-0290"/>
+   <testResult status="pass" testName="regex-syntax-0291"/>
+   <testResult status="pass" testName="regex-syntax-0292"/>
+   <testResult status="pass" testName="regex-syntax-0293"/>
+   <testResult status="pass" testName="regex-syntax-0294"/>
+   <testResult status="pass" testName="regex-syntax-0295"/>
+   <testResult status="pass" testName="regex-syntax-0296"/>
+   <testResult status="pass" testName="regex-syntax-0297"/>
+   <testResult status="pass" testName="regex-syntax-0298"/>
+   <testResult status="pass" testName="regex-syntax-0299"/>
+   <testResult status="pass" testName="regex-syntax-0300"/>
+   <testResult status="pass" testName="regex-syntax-0301"/>
+   <testResult status="pass" testName="regex-syntax-0302"/>
+   <testResult status="pass" testName="regex-syntax-0303"/>
+   <testResult status="pass" testName="regex-syntax-0304"/>
+   <testResult status="pass" testName="regex-syntax-0305"/>
+   <testResult status="pass" testName="regex-syntax-0306"/>
+   <testResult status="pass" testName="regex-syntax-0307"/>
+   <testResult status="pass" testName="regex-syntax-0308"/>
+   <testResult status="pass" testName="regex-syntax-0309"/>
+   <testResult status="pass" testName="regex-syntax-0310"/>
+   <testResult status="pass" testName="regex-syntax-0311"/>
+   <testResult status="pass" testName="regex-syntax-0312"/>
+   <testResult status="pass" testName="regex-syntax-0313"/>
+   <testResult status="pass" testName="regex-syntax-0314"/>
+   <testResult status="pass" testName="regex-syntax-0315"/>
+   <testResult status="pass" testName="regex-syntax-0316"/>
+   <testResult status="pass" testName="regex-syntax-0317"/>
+   <testResult status="pass" testName="regex-syntax-0318"/>
+   <testResult status="pass" testName="regex-syntax-0319"/>
+   <testResult status="pass" testName="regex-syntax-0320"/>
+   <testResult status="pass" testName="regex-syntax-0321"/>
+   <testResult status="pass" testName="regex-syntax-0322"/>
+   <testResult status="pass" testName="regex-syntax-0323"/>
+   <testResult status="pass" testName="regex-syntax-0324"/>
+   <testResult status="pass" testName="regex-syntax-0325"/>
+   <testResult status="pass" testName="regex-syntax-0326"/>
+   <testResult status="pass" testName="regex-syntax-0327"/>
+   <testResult status="pass" testName="regex-syntax-0328"/>
+   <testResult status="pass" testName="regex-syntax-0329"/>
+   <testResult status="pass" testName="regex-syntax-0330"/>
+   <testResult status="pass" testName="regex-syntax-0331"/>
+   <testResult status="pass" testName="regex-syntax-0332"/>
+   <testResult status="pass" testName="regex-syntax-0333"/>
+   <testResult status="pass" testName="regex-syntax-0334"/>
+   <testResult status="pass" testName="regex-syntax-0335"/>
+   <testResult status="pass" testName="regex-syntax-0336"/>
+   <testResult status="pass" testName="regex-syntax-0337"/>
+   <testResult status="pass" testName="regex-syntax-0338"/>
+   <testResult status="pass" testName="regex-syntax-0339"/>
+   <testResult status="pass" testName="regex-syntax-0340"/>
+   <testResult status="pass" testName="regex-syntax-0341"/>
+   <testResult status="pass" testName="regex-syntax-0342"/>
+   <testResult status="pass" testName="regex-syntax-0343"/>
+   <testResult status="pass" testName="regex-syntax-0344"/>
+   <testResult status="pass" testName="regex-syntax-0345"/>
+   <testResult status="pass" testName="regex-syntax-0346"/>
+   <testResult status="pass" testName="regex-syntax-0347"/>
+   <testResult status="pass" testName="regex-syntax-0348"/>
+   <testResult status="pass" testName="regex-syntax-0349"/>
+   <testResult status="pass" testName="regex-syntax-0350"/>
+   <testResult status="pass" testName="regex-syntax-0351"/>
+   <testResult status="pass" testName="regex-syntax-0352"/>
+   <testResult status="pass" testName="regex-syntax-0353"/>
+   <testResult status="pass" testName="regex-syntax-0354"/>
+   <testResult status="pass" testName="regex-syntax-0355"/>
+   <testResult status="pass" testName="regex-syntax-0356"/>
+   <testResult status="pass" testName="regex-syntax-0357"/>
+   <testResult status="pass" testName="regex-syntax-0358"/>
+   <testResult status="pass" testName="regex-syntax-0359"/>
+   <testResult status="pass" testName="regex-syntax-0360"/>
+   <testResult status="pass" testName="regex-syntax-0361"/>
+   <testResult status="pass" testName="regex-syntax-0362"/>
+   <testResult status="pass" testName="regex-syntax-0363"/>
+   <testResult status="pass" testName="regex-syntax-0364"/>
+   <testResult status="pass" testName="regex-syntax-0365"/>
+   <testResult status="pass" testName="regex-syntax-0366"/>
+   <testResult status="pass" testName="regex-syntax-0367"/>
+   <testResult status="pass" testName="regex-syntax-0368"/>
+   <testResult status="pass" testName="regex-syntax-0370"/>
+   <testResult status="pass" testName="regex-syntax-0370a"/>
+   <testResult status="pass" testName="regex-syntax-0371"/>
+   <testResult status="pass" testName="regex-syntax-0372"/>
+   <testResult status="pass" testName="regex-syntax-0373"/>
+   <testResult status="pass" testName="regex-syntax-0374"/>
+   <testResult status="pass" testName="regex-syntax-0375"/>
+   <testResult status="pass" testName="regex-syntax-0376"/>
+   <testResult status="pass" testName="regex-syntax-0377"/>
+   <testResult status="pass" testName="regex-syntax-0378"/>
+   <testResult status="pass" testName="regex-syntax-0379"/>
+   <testResult status="pass" testName="regex-syntax-0380"/>
+   <testResult status="pass" testName="regex-syntax-0381"/>
+   <testResult status="pass" testName="regex-syntax-0382"/>
+   <testResult status="pass" testName="regex-syntax-0383"/>
+   <testResult status="pass" testName="regex-syntax-0384"/>
+   <testResult status="pass" testName="regex-syntax-0385"/>
+   <testResult status="pass" testName="regex-syntax-0386"/>
+   <testResult status="pass" testName="regex-syntax-0387"/>
+   <testResult status="fail" testName="regex-syntax-0388"/>
+   <testResult status="fail" testName="regex-syntax-0389"/>
+   <testResult status="fail" testName="regex-syntax-0390"/>
+   <testResult status="fail" testName="regex-syntax-0391"/>
+   <testResult status="fail" testName="regex-syntax-0392"/>
+   <testResult status="fail" testName="regex-syntax-0393"/>
+   <testResult status="fail" testName="regex-syntax-0394"/>
+   <testResult status="fail" testName="regex-syntax-0395"/>
+   <testResult status="fail" testName="regex-syntax-0396"/>
+   <testResult status="fail" testName="regex-syntax-0397"/>
+   <testResult status="fail" testName="regex-syntax-0398"/>
+   <testResult status="fail" testName="regex-syntax-0399"/>
+   <testResult status="fail" testName="regex-syntax-0400"/>
+   <testResult status="fail" testName="regex-syntax-0401"/>
+   <testResult status="fail" testName="regex-syntax-0402"/>
+   <testResult status="fail" testName="regex-syntax-0403"/>
+   <testResult status="fail" testName="regex-syntax-0404"/>
+   <testResult status="fail" testName="regex-syntax-0405"/>
+   <testResult status="fail" testName="regex-syntax-0406"/>
+   <testResult status="fail" testName="regex-syntax-0407"/>
+   <testResult status="fail" testName="regex-syntax-0408"/>
+   <testResult status="fail" testName="regex-syntax-0409"/>
+   <testResult status="fail" testName="regex-syntax-0410"/>
+   <testResult status="fail" testName="regex-syntax-0411"/>
+   <testResult status="fail" testName="regex-syntax-0412"/>
+   <testResult status="fail" testName="regex-syntax-0413"/>
+   <testResult status="fail" testName="regex-syntax-0414"/>
+   <testResult status="fail" testName="regex-syntax-0415"/>
+   <testResult status="fail" testName="regex-syntax-0416"/>
+   <testResult status="fail" testName="regex-syntax-0417"/>
+   <testResult status="fail" testName="regex-syntax-0418"/>
+   <testResult status="fail" testName="regex-syntax-0419"/>
+   <testResult status="fail" testName="regex-syntax-0420"/>
+   <testResult status="fail" testName="regex-syntax-0421"/>
+   <testResult status="fail" testName="regex-syntax-0422"/>
+   <testResult status="fail" testName="regex-syntax-0423"/>
+   <testResult status="fail" testName="regex-syntax-0424"/>
+   <testResult status="fail" testName="regex-syntax-0425"/>
+   <testResult status="fail" testName="regex-syntax-0426"/>
+   <testResult status="fail" testName="regex-syntax-0427"/>
+   <testResult status="fail" testName="regex-syntax-0428"/>
+   <testResult status="fail" testName="regex-syntax-0429"/>
+   <testResult status="fail" testName="regex-syntax-0430"/>
+   <testResult status="fail" testName="regex-syntax-0431"/>
+   <testResult status="fail" testName="regex-syntax-0432"/>
+   <testResult status="fail" testName="regex-syntax-0433"/>
+   <testResult status="fail" testName="regex-syntax-0434"/>
+   <testResult status="fail" testName="regex-syntax-0435"/>
+   <testResult status="fail" testName="regex-syntax-0436"/>
+   <testResult status="fail" testName="regex-syntax-0437"/>
+   <testResult status="fail" testName="regex-syntax-0438"/>
+   <testResult status="fail" testName="regex-syntax-0439"/>
+   <testResult status="fail" testName="regex-syntax-0440"/>
+   <testResult status="fail" testName="regex-syntax-0441"/>
+   <testResult status="fail" testName="regex-syntax-0442"/>
+   <testResult status="fail" testName="regex-syntax-0443"/>
+   <testResult status="fail" testName="regex-syntax-0444"/>
+   <testResult status="fail" testName="regex-syntax-0445"/>
+   <testResult status="fail" testName="regex-syntax-0446"/>
+   <testResult status="fail" testName="regex-syntax-0447"/>
+   <testResult status="fail" testName="regex-syntax-0448"/>
+   <testResult status="fail" testName="regex-syntax-0449"/>
+   <testResult status="fail" testName="regex-syntax-0450"/>
+   <testResult status="fail" testName="regex-syntax-0451"/>
+   <testResult status="fail" testName="regex-syntax-0452"/>
+   <testResult status="fail" testName="regex-syntax-0453"/>
+   <testResult status="fail" testName="regex-syntax-0454"/>
+   <testResult status="fail" testName="regex-syntax-0455"/>
+   <testResult status="fail" testName="regex-syntax-0456"/>
+   <testResult status="fail" testName="regex-syntax-0457"/>
+   <testResult status="fail" testName="regex-syntax-0458"/>
+   <testResult status="fail" testName="regex-syntax-0459"/>
+   <testResult status="fail" testName="regex-syntax-0460"/>
+   <testResult status="fail" testName="regex-syntax-0462"/>
+   <testResult status="fail" testName="regex-syntax-0463"/>
+   <testResult status="fail" testName="regex-syntax-0464"/>
+   <testResult status="fail" testName="regex-syntax-0465"/>
+   <testResult status="fail" testName="regex-syntax-0466"/>
+   <testResult status="fail" testName="regex-syntax-0467"/>
+   <testResult status="fail" testName="regex-syntax-0468"/>
+   <testResult status="fail" testName="regex-syntax-0469"/>
+   <testResult status="fail" testName="regex-syntax-0470"/>
+   <testResult status="fail" testName="regex-syntax-0471"/>
+   <testResult status="fail" testName="regex-syntax-0472"/>
+   <testResult status="fail" testName="regex-syntax-0473"/>
+   <testResult status="fail" testName="regex-syntax-0474"/>
+   <testResult status="fail" testName="regex-syntax-0475"/>
+   <testResult status="fail" testName="regex-syntax-0476"/>
+   <testResult status="fail" testName="regex-syntax-0477"/>
+   <testResult status="fail" testName="regex-syntax-0478"/>
+   <testResult status="fail" testName="regex-syntax-0479"/>
+   <testResult status="pass" testName="regex-syntax-0480"/>
+   <testResult status="pass" testName="regex-syntax-0481"/>
+   <testResult status="pass" testName="regex-syntax-0482"/>
+   <testResult status="pass" testName="regex-syntax-0483"/>
+   <testResult status="pass" testName="regex-syntax-0484"/>
+   <testResult status="fail" testName="regex-syntax-0485"/>
+   <testResult status="pass" testName="regex-syntax-0486"/>
+   <testResult status="fail" testName="regex-syntax-0487"/>
+   <testResult status="pass" testName="regex-syntax-0488"/>
+   <testResult status="pass" testName="regex-syntax-0489"/>
+   <testResult status="pass" testName="regex-syntax-0490"/>
+   <testResult status="pass" testName="regex-syntax-0491"/>
+   <testResult status="fail" testName="regex-syntax-0492"/>
+   <testResult status="pass" testName="regex-syntax-0493"/>
+   <testResult status="pass" testName="regex-syntax-0494"/>
+   <testResult status="pass" testName="regex-syntax-0495"/>
+   <testResult status="pass" testName="regex-syntax-0496"/>
+   <testResult status="pass" testName="regex-syntax-0497"/>
+   <testResult status="pass" testName="regex-syntax-0498"/>
+   <testResult status="pass" testName="regex-syntax-0499"/>
+   <testResult status="pass" testName="regex-syntax-0500"/>
+   <testResult status="pass" testName="regex-syntax-0501"/>
+   <testResult status="pass" testName="regex-syntax-0502"/>
+   <testResult status="fail" testName="regex-syntax-0503">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0504"/>
+   <testResult status="fail" testName="regex-syntax-0505"/>
+   <testResult status="fail" testName="regex-syntax-0506">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0507"/>
+   <testResult status="pass" testName="regex-syntax-0508"/>
+   <testResult status="pass" testName="regex-syntax-0509"/>
+   <testResult status="pass" testName="regex-syntax-0510"/>
+   <testResult status="pass" testName="regex-syntax-0511"/>
+   <testResult status="pass" testName="regex-syntax-0512"/>
+   <testResult status="pass" testName="regex-syntax-0513"/>
+   <testResult status="pass" testName="regex-syntax-0514"/>
+   <testResult status="pass" testName="regex-syntax-0515"/>
+   <testResult status="pass" testName="regex-syntax-0516"/>
+   <testResult status="pass" testName="regex-syntax-0517"/>
+   <testResult status="pass" testName="regex-syntax-0518"/>
+   <testResult status="pass" testName="regex-syntax-0519"/>
+   <testResult status="pass" testName="regex-syntax-0520"/>
+   <testResult status="pass" testName="regex-syntax-0521"/>
+   <testResult status="pass" testName="regex-syntax-0522"/>
+   <testResult status="fail" testName="regex-syntax-0523"/>
+   <testResult status="pass" testName="regex-syntax-0524"/>
+   <testResult status="pass" testName="regex-syntax-0525"/>
+   <testResult status="pass" testName="regex-syntax-0526"/>
+   <testResult status="pass" testName="regex-syntax-0527"/>
+   <testResult status="pass" testName="regex-syntax-0528"/>
+   <testResult status="pass" testName="regex-syntax-0529"/>
+   <testResult status="pass" testName="regex-syntax-0530"/>
+   <testResult status="pass" testName="regex-syntax-0531"/>
+   <testResult status="fail" testName="regex-syntax-0532"/>
+   <testResult status="fail" testName="regex-syntax-0533"/>
+   <testResult status="pass" testName="regex-syntax-0534"/>
+   <testResult status="pass" testName="regex-syntax-0535"/>
+   <testResult status="pass" testName="regex-syntax-0536"/>
+   <testResult status="pass" testName="regex-syntax-0537"/>
+   <testResult status="pass" testName="regex-syntax-0538"/>
+   <testResult status="fail" testName="regex-syntax-0539"/>
+   <testResult status="pass" testName="regex-syntax-0540"/>
+   <testResult status="pass" testName="regex-syntax-0541"/>
+   <testResult status="pass" testName="regex-syntax-0542"/>
+   <testResult status="pass" testName="regex-syntax-0543"/>
+   <testResult status="pass" testName="regex-syntax-0544"/>
+   <testResult status="pass" testName="regex-syntax-0545"/>
+   <testResult status="pass" testName="regex-syntax-0546"/>
+   <testResult status="pass" testName="regex-syntax-0547"/>
+   <testResult status="pass" testName="regex-syntax-0548"/>
+   <testResult status="pass" testName="regex-syntax-0549"/>
+   <testResult status="pass" testName="regex-syntax-0550"/>
+   <testResult status="pass" testName="regex-syntax-0551"/>
+   <testResult status="pass" testName="regex-syntax-0552"/>
+   <testResult status="pass" testName="regex-syntax-0553"/>
+   <testResult status="fail" testName="regex-syntax-0554"/>
+   <testResult status="fail" testName="regex-syntax-0555"/>
+   <testResult status="pass" testName="regex-syntax-0556"/>
+   <testResult status="fail" testName="regex-syntax-0557"/>
+   <testResult status="pass" testName="regex-syntax-0558"/>
+   <testResult status="fail" testName="regex-syntax-0559"/>
+   <testResult status="fail" testName="regex-syntax-0560"/>
+   <testResult status="pass" testName="regex-syntax-0561"/>
+   <testResult status="pass" testName="regex-syntax-0562"/>
+   <testResult status="pass" testName="regex-syntax-0563"/>
+   <testResult status="pass" testName="regex-syntax-0564"/>
+   <testResult status="pass" testName="regex-syntax-0565"/>
+   <testResult status="pass" testName="regex-syntax-0566"/>
+   <testResult status="pass" testName="regex-syntax-0567"/>
+   <testResult status="pass" testName="regex-syntax-0568"/>
+   <testResult status="pass" testName="regex-syntax-0569"/>
+   <testResult status="pass" testName="regex-syntax-0570"/>
+   <testResult status="fail" testName="regex-syntax-0571">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 99 58 102 111 111 41" value="(?c:foo)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0572"/>
+   <testResult status="pass" testName="regex-syntax-0573"/>
+   <testResult status="pass" testName="regex-syntax-0574"/>
+   <testResult status="fail" testName="regex-syntax-0575"/>
+   <testResult status="fail" testName="regex-syntax-0576"/>
+   <testResult status="fail" testName="regex-syntax-0577"/>
+   <testResult status="fail" testName="regex-syntax-0578"/>
+   <testResult status="fail" testName="regex-syntax-0579"/>
+   <testResult status="fail" testName="regex-syntax-0580"/>
+   <testResult status="pass" testName="regex-syntax-0581"/>
+   <testResult status="pass" testName="regex-syntax-0582"/>
+   <testResult status="pass" testName="regex-syntax-0583"/>
+   <testResult status="pass" testName="regex-syntax-0584"/>
+   <testResult status="pass" testName="regex-syntax-0585"/>
+   <testResult status="pass" testName="regex-syntax-0586"/>
+   <testResult status="pass" testName="regex-syntax-0587"/>
+   <testResult status="pass" testName="regex-syntax-0588"/>
+   <testResult status="pass" testName="regex-syntax-0589"/>
+   <testResult status="pass" testName="regex-syntax-0590"/>
+   <testResult status="pass" testName="regex-syntax-0591"/>
+   <testResult status="pass" testName="regex-syntax-0592"/>
+   <testResult status="pass" testName="regex-syntax-0593"/>
+   <testResult status="pass" testName="regex-syntax-0594"/>
+   <testResult status="pass" testName="regex-syntax-0595"/>
+   <testResult status="pass" testName="regex-syntax-0596"/>
+   <testResult status="pass" testName="regex-syntax-0597"/>
+   <testResult status="pass" testName="regex-syntax-0598"/>
+   <testResult status="fail" testName="regex-syntax-0599"/>
+   <testResult status="pass" testName="regex-syntax-0600"/>
+   <testResult status="fail" testName="regex-syntax-0601"/>
+   <testResult status="fail" testName="regex-syntax-0602"/>
+   <testResult status="fail" testName="regex-syntax-0603"/>
+   <testResult status="fail" testName="regex-syntax-0604"/>
+   <testResult status="fail" testName="regex-syntax-0605"/>
+   <testResult status="fail" testName="regex-syntax-0606"/>
+   <testResult status="pass" testName="regex-syntax-0607"/>
+   <testResult status="pass" testName="regex-syntax-0608"/>
+   <testResult status="pass" testName="regex-syntax-0609"/>
+   <testResult status="pass" testName="regex-syntax-0610"/>
+   <testResult status="fail" testName="regex-syntax-0611"/>
+   <testResult status="fail" testName="regex-syntax-0612"/>
+   <testResult status="pass" testName="regex-syntax-0613"/>
+   <testResult status="pass" testName="regex-syntax-0614"/>
+   <testResult status="pass" testName="regex-syntax-0615"/>
+   <testResult status="fail" testName="regex-syntax-0616">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 40 92 55 55 41" value="(foo)(\77)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0617"/>
+   <testResult status="fail" testName="regex-syntax-0618">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 40 92 51 48 48 41" value="(foo)(\300)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0619">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 40 92 52 55 55 41" value="(foo)(\477)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0620">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 40 92 55 55 55 41" value="(foo)(\777)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0621">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 40 92 55 55 55 48 41" value="(foo)(\7770)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0622">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 40 92 55 41" value="(foo)(\7)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0623">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 40 92 52 48 41" value="(foo)(\40)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0624"/>
+   <testResult status="fail" testName="regex-syntax-0625">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 40 92 51 55 55 41" value="(foo)(\377)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0626">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 40 92 52 48 48 41" value="(foo)(\400)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0627"/>
+   <testResult status="pass" testName="regex-syntax-0628"/>
+   <testResult status="pass" testName="regex-syntax-0629"/>
+   <testResult status="pass" testName="regex-syntax-0630"/>
+   <testResult status="pass" testName="regex-syntax-0631"/>
+   <testResult status="pass" testName="regex-syntax-0632"/>
+   <testResult status="pass" testName="regex-syntax-0633"/>
+   <testResult status="pass" testName="regex-syntax-0634"/>
+   <testResult status="pass" testName="regex-syntax-0635"/>
+   <testResult status="pass" testName="regex-syntax-0636"/>
+   <testResult status="pass" testName="regex-syntax-0637"/>
+   <testResult status="pass" testName="regex-syntax-0638"/>
+   <testResult status="fail" testName="regex-syntax-0639"/>
+   <testResult status="fail" testName="regex-syntax-0640"/>
+   <testResult status="fail" testName="regex-syntax-0641"/>
+   <testResult status="pass" testName="regex-syntax-0642"/>
+   <testResult status="fail" testName="regex-syntax-0643"/>
+   <testResult status="fail" testName="regex-syntax-0644"/>
+   <testResult status="fail" testName="regex-syntax-0645"/>
+   <testResult status="fail" testName="regex-syntax-0646">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 65 40 102 111 111 41 92 115 43 40 98 97 114 41" value="\A(foo)\s+(bar)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0647">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 92 115 43 40 98 97 114 41 92 90" value="(foo)\s+(bar)\Z"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0648">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 102 111 111 41 92 115 43 40 98 97 114 41 92 122" value="(foo)\s+(bar)\z"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0649">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 98 64 102 111 111" value="\b@foo"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0650">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 98 44 102 111 111" value="\b,foo"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0651">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 98 92 91 102 111 111" value="\b\[foo"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0652">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 66 64 102 111 111" value="\B@foo"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0653">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 66 44 102 111 111" value="\B,foo"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0654">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 66 92 91 102 111 111" value="\B\[foo"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0655"/>
+   <testResult status="fail" testName="regex-syntax-0656"/>
+   <testResult status="fail" testName="regex-syntax-0657"/>
+   <testResult status="pass" testName="regex-syntax-0658"/>
+   <testResult status="fail" testName="regex-syntax-0659"/>
+   <testResult status="pass" testName="regex-syntax-0660"/>
+   <testResult status="pass" testName="regex-syntax-0661"/>
+   <testResult status="pass" testName="regex-syntax-0662"/>
+   <testResult status="pass" testName="regex-syntax-0663"/>
+   <testResult status="pass" testName="regex-syntax-0664"/>
+   <testResult status="pass" testName="regex-syntax-0665"/>
+   <testResult status="fail" testName="regex-syntax-0666"/>
+   <testResult status="fail" testName="regex-syntax-0667"/>
+   <testResult status="fail" testName="regex-syntax-0668"/>
+   <testResult status="fail" testName="regex-syntax-0669"/>
+   <testResult status="fail" testName="regex-syntax-0670"/>
+   <testResult status="fail" testName="regex-syntax-0671"/>
+   <testResult status="fail" testName="regex-syntax-0672"/>
+   <testResult status="fail" testName="regex-syntax-0673"/>
+   <testResult status="pass" testName="regex-syntax-0674"/>
+   <testResult status="pass" testName="regex-syntax-0675"/>
+   <testResult status="pass" testName="regex-syntax-0676"/>
+   <testResult status="pass" testName="regex-syntax-0677"/>
+   <testResult status="pass" testName="regex-syntax-0678"/>
+   <testResult status="pass" testName="regex-syntax-0679"/>
+   <testResult status="fail" testName="regex-syntax-0680">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="94 91 97 98 99 100 93 42 43 36" value="^[abcd]*+$"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;string actual-match="true" expected-match="false" cp="" value=""/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0681"/>
+   <testResult status="pass" testName="regex-syntax-0682"/>
+   <testResult status="pass" testName="regex-syntax-0683"/>
+   <testResult status="pass" testName="regex-syntax-0684"/>
+   <testResult status="pass" testName="regex-syntax-0685"/>
+   <testResult status="fail" testName="regex-syntax-0686">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="94 91 97 98 99 100 93 42 123 48 44 53 125 36" value="^[abcd]*{0,5}$"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;string actual-match="true" expected-match="false" cp="" value=""/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0687">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="94 91 97 98 99 100 93 43 123 48 44 53 125 36" value="^[abcd]+{0,5}$"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0688">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="94 91 97 98 99 100 93 63 123 48 44 53 125 36" value="^[abcd]?{0,5}$"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;string actual-match="true" expected-match="false" cp="" value=""/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult reason="Xalan configured" status="skipped" testName="regex-syntax-0689"/>
+   <testResult status="fail" testName="regex-syntax-0690"/>
+   <testResult status="fail" testName="regex-syntax-0691"/>
+   <testResult status="pass" testName="regex-syntax-0692"/>
+   <testResult status="fail" testName="regex-syntax-0693"/>
+   <testResult status="fail" testName="regex-syntax-0694"/>
+   <testResult status="fail" testName="regex-syntax-0695"/>
+   <testResult status="fail" testName="regex-syntax-0696"/>
+   <testResult status="fail" testName="regex-syntax-0697"/>
+   <testResult status="fail" testName="regex-syntax-0698"/>
+   <testResult status="fail" testName="regex-syntax-0699"/>
+   <testResult status="fail" testName="regex-syntax-0700"/>
+   <testResult status="fail" testName="regex-syntax-0701"/>
+   <testResult status="fail" testName="regex-syntax-0702"/>
+   <testResult status="fail" testName="regex-syntax-0703"/>
+   <testResult status="fail" testName="regex-syntax-0704"/>
+   <testResult status="fail" testName="regex-syntax-0705"/>
+   <testResult status="fail" testName="regex-syntax-0706"/>
+   <testResult status="fail" testName="regex-syntax-0707"/>
+   <testResult status="fail" testName="regex-syntax-0708"/>
+   <testResult status="fail" testName="regex-syntax-0709"/>
+   <testResult status="fail" testName="regex-syntax-0710"/>
+   <testResult status="fail" testName="regex-syntax-0711"/>
+   <testResult status="fail" testName="regex-syntax-0712"/>
+   <testResult status="fail" testName="regex-syntax-0713"/>
+   <testResult status="fail" testName="regex-syntax-0714"/>
+   <testResult status="fail" testName="regex-syntax-0715"/>
+   <testResult status="fail" testName="regex-syntax-0716"/>
+   <testResult status="fail" testName="regex-syntax-0717"/>
+   <testResult status="fail" testName="regex-syntax-0718"/>
+   <testResult status="fail" testName="regex-syntax-0719"/>
+   <testResult status="fail" testName="regex-syntax-0720"/>
+   <testResult status="fail" testName="regex-syntax-0721"/>
+   <testResult status="fail" testName="regex-syntax-0722"/>
+   <testResult status="fail" testName="regex-syntax-0723"/>
+   <testResult status="fail" testName="regex-syntax-0724"/>
+   <testResult status="fail" testName="regex-syntax-0725"/>
+   <testResult status="fail" testName="regex-syntax-0726"/>
+   <testResult status="fail" testName="regex-syntax-0727"/>
+   <testResult status="fail" testName="regex-syntax-0728"/>
+   <testResult status="fail" testName="regex-syntax-0729"/>
+   <testResult status="fail" testName="regex-syntax-0730"/>
+   <testResult status="fail" testName="regex-syntax-0731"/>
+   <testResult status="fail" testName="regex-syntax-0732"/>
+   <testResult status="fail" testName="regex-syntax-0733"/>
+   <testResult status="fail" testName="regex-syntax-0734"/>
+   <testResult status="fail" testName="regex-syntax-0735"/>
+   <testResult status="fail" testName="regex-syntax-0736"/>
+   <testResult status="fail" testName="regex-syntax-0737"/>
+   <testResult status="fail" testName="regex-syntax-0738"/>
+   <testResult status="fail" testName="regex-syntax-0739"/>
+   <testResult status="fail" testName="regex-syntax-0740"/>
+   <testResult status="pass" testName="regex-syntax-0741"/>
+   <testResult status="pass" testName="regex-syntax-0742"/>
+   <testResult status="pass" testName="regex-syntax-0743"/>
+   <testResult status="fail" testName="regex-syntax-0744">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="91 92 91 92 93 97 45 102 45 91 93 93 93 43" value="[\[\]a-f-[]]]+"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0745">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="91 97 98 92 45 92 91 99 100 45 91 45 91 93 93 93 93" value="[ab\-\[cd-[-[]]]]"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0746">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="91 97 98 92 45 92 91 99 100 45 91 91 93 93 93 93" value="[ab\-\[cd-[[]]]]"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0747"/>
+   <testResult status="fail" testName="regex-syntax-0748"/>
+   <testResult status="fail" testName="regex-syntax-0749"/>
+   <testResult status="fail" testName="regex-syntax-0750">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="91 91 97 98 99 100 93 45 91 98 99 93 93 43" value="[[abcd]-[bc]]+"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0751"/>
+   <testResult status="fail" testName="regex-syntax-0752"/>
+   <testResult status="fail" testName="regex-syntax-0753"/>
+   <testResult status="fail" testName="regex-syntax-0754">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="91 94 45 91 98 99 93 93" value="[^-[bc]]"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0755"/>
+   <testResult status="pass" testName="regex-syntax-0756"/>
+   <testResult status="pass" testName="regex-syntax-0757"/>
+   <testResult status="fail" testName="regex-syntax-0758"/>
+   <testResult status="fail" testName="regex-syntax-0759"/>
+   <testResult status="fail" testName="regex-syntax-0760"/>
+   <testResult status="pass" testName="regex-syntax-0761"/>
+   <testResult status="pass" testName="regex-syntax-0762"/>
+   <testResult status="fail" testName="regex-syntax-0763">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="91 97 32 45 32 99 32 45 32 91 32 98 32 93 32 93 43" value="[a - c - [ b ] ]+"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0764"/>
+   <testResult status="pass" testName="regex-syntax-0765"/>
+   <testResult status="pass" testName="regex-syntax-0766"/>
+   <testResult status="fail" testName="regex-syntax-0767">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="97 98 99 40 63 61 88 88 88 41 92 119 43" value="abc(?=XXX)\w+"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0768">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="97 98 99 40 63 33 88 88 88 41 92 119 43" value="abc(?!XXX)\w+"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0769">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="91 94 48 45 57 93 43 40 63 62 91 48 45 57 93 43 41 51" value="[^0-9]+(?&amp;gt;[0-9]+)3"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0770"/>
+   <testResult status="fail" testName="regex-syntax-0771"/>
+   <testResult status="fail" testName="regex-syntax-0772"/>
+   <testResult status="fail" testName="regex-syntax-0773"/>
+   <testResult status="fail" testName="regex-syntax-0774"/>
+   <testResult status="pass" testName="regex-syntax-0775"/>
+   <testResult status="fail" testName="regex-syntax-0776"/>
+   <testResult status="fail" testName="regex-syntax-0777"/>
+   <testResult status="fail" testName="regex-syntax-0778"/>
+   <testResult status="fail" testName="regex-syntax-0779"/>
+   <testResult status="fail" testName="regex-syntax-0780"/>
+   <testResult status="pass" testName="regex-syntax-0781"/>
+   <testResult status="fail" testName="regex-syntax-0782"/>
+   <testResult status="pass" testName="regex-syntax-0783"/>
+   <testResult status="fail" testName="regex-syntax-0784">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="46 42 92 66 40 83 85 67 67 69 83 83 41 92 66 46 42" value=".*\B(SUCCESS)\B.*"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0785"/>
+   <testResult status="pass" testName="regex-syntax-0786"/>
+   <testResult status="pass" testName="regex-syntax-0787"/>
+   <testResult status="fail" testName="regex-syntax-0788"/>
+   <testResult status="fail" testName="regex-syntax-0789"/>
+   <testResult status="pass" testName="regex-syntax-0790"/>
+   <testResult status="pass" testName="regex-syntax-0791"/>
+   <testResult status="fail" testName="regex-syntax-0792">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="46 42 92 98 40 92 119 43 41 92 98" value=".*\b(\w+)\b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0793"/>
+   <testResult status="fail" testName="regex-syntax-0794"/>
+   <testResult status="fail" testName="regex-syntax-0795"/>
+   <testResult status="pass" testName="regex-syntax-0796"/>
+   <testResult status="fail" testName="regex-syntax-0797"/>
+   <testResult status="fail" testName="regex-syntax-0798"/>
+   <testResult status="fail" testName="regex-syntax-0799"/>
+   <testResult status="pass" testName="regex-syntax-0800"/>
+   <testResult status="pass" testName="regex-syntax-0801"/>
+   <testResult status="pass" testName="regex-syntax-0802"/>
+   <testResult status="pass" testName="regex-syntax-0803"/>
+   <testResult status="fail" testName="regex-syntax-0804">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="97 93" value="a]"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0805">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="97 91 93 93 98" value="a[]]b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0806">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="97 91 94 93 98 93 99" value="a[^]b]c"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0807">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 98 97 92 98" value="\ba\b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0808">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 98 121 92 98" value="\by\b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0809">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 66 97 92 66" value="\Ba\B"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0810">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 66 121 92 98" value="\By\b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0811">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 98 121 92 66" value="\by\B"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0812">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 66 121 92 66" value="\By\B"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0813"/>
+   <testResult status="pass" testName="regex-syntax-0814"/>
+   <testResult status="pass" testName="regex-syntax-0815"/>
+   <testResult status="pass" testName="regex-syntax-0816"/>
+   <testResult status="pass" testName="regex-syntax-0817"/>
+   <testResult status="fail" testName="regex-syntax-0818"/>
+   <testResult status="pass" testName="regex-syntax-0819"/>
+   <testResult status="fail" testName="regex-syntax-0820">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 49 48 40 40 40 40 40 40 40 40 40 40 97 41 41 41 41 41 41 41 41 41 41" value="\10((((((((((a))))))))))"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0821">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 49 40 97 98 99 41" value="\1(abc)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0822">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 49 40 91 97 45 99 93 42 41" value="\1([a-c]*)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0823">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 49" value="\1"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0824">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 50" value="\2"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0825"/>
+   <testResult status="fail" testName="regex-syntax-0826">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 97 41 124 92 54" value="(a)|\6"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0827">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 92 50 98 42 63 40 91 97 45 99 93 41 41 42" value="(\2b*?([a-c]))*"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;string actual-match="true" expected-match="false" cp="" value=""/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0828">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 92 50 98 42 63 40 91 97 45 99 93 41 41 123 51 125" value="(\2b*?([a-c])){3}"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0829">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 120 40 97 41 92 51 40 92 50 124 98 41 41 43" value="(x(a)\3(\2|b))+"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0830">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 97 41 92 51 40 92 50 124 98 41 41 123 50 44 125" value="((a)\3(\2|b)){2,}"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0831"/>
+   <testResult status="fail" testName="regex-syntax-0832"/>
+   <testResult status="fail" testName="regex-syntax-0833"/>
+   <testResult status="fail" testName="regex-syntax-0834"/>
+   <testResult status="fail" testName="regex-syntax-0835"/>
+   <testResult status="fail" testName="regex-syntax-0836"/>
+   <testResult status="fail" testName="regex-syntax-0837"/>
+   <testResult status="fail" testName="regex-syntax-0838"/>
+   <testResult status="fail" testName="regex-syntax-0839"/>
+   <testResult status="fail" testName="regex-syntax-0840"/>
+   <testResult status="fail" testName="regex-syntax-0841"/>
+   <testResult status="fail" testName="regex-syntax-0842"/>
+   <testResult status="fail" testName="regex-syntax-0843"/>
+   <testResult status="pass" testName="regex-syntax-0844"/>
+   <testResult status="pass" testName="regex-syntax-0845"/>
+   <testResult status="pass" testName="regex-syntax-0846"/>
+   <testResult status="pass" testName="regex-syntax-0847"/>
+   <testResult status="pass" testName="regex-syntax-0848"/>
+   <testResult status="pass" testName="regex-syntax-0849"/>
+   <testResult status="pass" testName="regex-syntax-0850"/>
+   <testResult status="pass" testName="regex-syntax-0851"/>
+   <testResult status="pass" testName="regex-syntax-0852"/>
+   <testResult status="pass" testName="regex-syntax-0853"/>
+   <testResult status="pass" testName="regex-syntax-0854"/>
+   <testResult status="pass" testName="regex-syntax-0855"/>
+   <testResult status="pass" testName="regex-syntax-0856"/>
+   <testResult status="pass" testName="regex-syntax-0857"/>
+   <testResult status="pass" testName="regex-syntax-0858"/>
+   <testResult status="pass" testName="regex-syntax-0859"/>
+   <testResult status="pass" testName="regex-syntax-0860"/>
+   <testResult status="pass" testName="regex-syntax-0861"/>
+   <testResult status="fail" testName="regex-syntax-0862">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="94 40 97 92 49 63 41 123 52 125 36" value="^(a\1?){4}$"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0863"/>
+   <testResult status="pass" testName="regex-syntax-0864"/>
+   <testResult status="pass" testName="regex-syntax-0865"/>
+   <testResult status="pass" testName="regex-syntax-0866"/>
+   <testResult status="fail" testName="regex-syntax-0867">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 58 40 63 105 41 97 41 98" value="(?:(?i)a)b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0868">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 105 41 97 41 98" value="((?i)a)b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0869">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 105 58 97 41 98" value="(?i:a)b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0870">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 105 58 97 41 41 98" value="((?i:a))b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0871">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 58 40 63 45 105 41 97 41 98" value="(?:(?-i)a)b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0872">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 45 105 41 97 41 98" value="((?-i)a)b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0873">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 45 105 58 97 41 98" value="(?-i:a)b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0874">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 45 105 58 97 41 41 98" value="((?-i:a))b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0875">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 45 105 58 97 46 41 41 98" value="((?-i:a.))b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0876">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 115 45 105 58 97 46 41 41 98" value="((?s-i:a.))b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult reason="Xalan configured" status="skipped" testName="regex-syntax-0877"/>
+   <testResult reason="Xalan configured" status="skipped" testName="regex-syntax-0878"/>
+   <testResult status="fail" testName="regex-syntax-0879">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 49 92 100 40 97 98 41" value="\1\d(ab)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0880"/>
+   <testResult status="pass" testName="regex-syntax-0881"/>
+   <testResult status="pass" testName="regex-syntax-0882"/>
+   <testResult status="pass" testName="regex-syntax-0883"/>
+   <testResult status="fail" testName="regex-syntax-0884">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 115 41 94 97 40 46 41 41 40 40 63 109 41 94 98 36 41" value="((?s)^a(.))((?m)^b$)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0885">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 109 41 94 98 36 41" value="((?m)^b$)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0886">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 109 41 94 98" value="(?m)^b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0887">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 109 41 94 40 98 41" value="(?m)^(b)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0888">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 109 41 94 98 41" value="((?m)^b)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0889">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 110 40 40 63 109 41 94 98 41" value="\n((?m)^b)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0890">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 115 41 46 41 99 40 63 33 46 41" value="((?s).)c(?!.)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0891">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 115 41 98 46 41 99 40 63 33 46 41" value="((?s)b.)c(?!.)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0892"/>
+   <testResult status="pass" testName="regex-syntax-0893"/>
+   <testResult status="pass" testName="regex-syntax-0894"/>
+   <testResult status="pass" testName="regex-syntax-0895"/>
+   <testResult status="pass" testName="regex-syntax-0896"/>
+   <testResult status="pass" testName="regex-syntax-0897"/>
+   <testResult status="pass" testName="regex-syntax-0898"/>
+   <testResult status="pass" testName="regex-syntax-0899"/>
+   <testResult status="pass" testName="regex-syntax-0900"/>
+   <testResult status="pass" testName="regex-syntax-0901"/>
+   <testResult status="pass" testName="regex-syntax-0902"/>
+   <testResult status="fail" testName="regex-syntax-0903">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 98 97 92 50 41 40 63 61 40 97 43 63 41 41" value="(ba\2)(?=(a+?))"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0904">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="98 97 92 49 40 63 61 40 97 43 63 41 41 36" value="ba\1(?=(a+?))$"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0905">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 62 97 43 41 98" value="(?&amp;gt;a+)b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0906"/>
+   <testResult status="pass" testName="regex-syntax-0907"/>
+   <testResult status="pass" testName="regex-syntax-0908"/>
+   <testResult status="pass" testName="regex-syntax-0909"/>
+   <testResult status="pass" testName="regex-syntax-0910"/>
+   <testResult status="fail" testName="regex-syntax-0911">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 91 97 91 58 120 121 122 58 93 98 93 43 41" value="([a[:xyz:]b]+)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0912">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 63 62 97 43 41 98 41" value="((?&amp;gt;a+)b)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0913">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 62 40 97 43 41 41 98" value="(?&amp;gt;(a+))b"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0914">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;true/&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0915"/>
+   <testResult status="fail" testName="regex-syntax-0916">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="97 92 90" value="a\Z"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0917">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="98 92 90" value="b\Z"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0918">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="98 92 122" value="b\z"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0919">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="114 111 117 110 100 92 40 40 40 63 62 91 94 40 41 93 43 41 41 92 41" value="round\(((?&amp;gt;[^()]+))\)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0920"/>
+   <testResult status="pass" testName="regex-syntax-0921"/>
+   <testResult status="pass" testName="regex-syntax-0922"/>
+   <testResult status="pass" testName="regex-syntax-0923"/>
+   <testResult status="pass" testName="regex-syntax-0924"/>
+   <testResult status="pass" testName="regex-syntax-0925"/>
+   <testResult status="pass" testName="regex-syntax-0926"/>
+   <testResult status="fail" testName="regex-syntax-0927">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 49 97 40 92 100 42 41 123 48 44 50 125" value="\1a(\d*){0,2}"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0928">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 49 97 40 92 100 42 41 123 50 44 125" value="\1a(\d*){2,}"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0929">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 49 97 40 92 100 42 41 123 48 44 50 125 63" value="\1a(\d*){0,2}?"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0930">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="92 49 97 40 92 100 42 41 123 50 44 125 63" value="\1a(\d*){2,}?"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0931">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="122 92 49 97 40 92 100 42 41 123 50 44 125 63" value="z\1a(\d*){2,}?"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0932"/>
+   <testResult status="fail" testName="regex-syntax-0933"/>
+   <testResult status="fail" testName="regex-syntax-0934"/>
+   <testResult status="pass" testName="regex-syntax-0935"/>
+   <testResult status="fail" testName="regex-syntax-0936"/>
+   <testResult status="fail" testName="regex-syntax-0937">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 92 51 124 98 41 92 50 40 97 41 120 41 43" value="((\3|b)\2(a)x)+"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0938">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 40 92 51 124 98 41 92 50 40 97 41 41 123 50 44 125" value="((\3|b)\2(a)){2,}"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0939">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="97 40 63 33 98 41 46" value="a(?!b)."&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0940">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="97 40 63 61 100 41 46" value="a(?=d)."&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0941">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="97 40 63 61 99 124 100 41 46" value="a(?=c|d)."&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0942"/>
+   <testResult status="pass" testName="regex-syntax-0943"/>
+   <testResult status="pass" testName="regex-syntax-0944"/>
+   <testResult status="pass" testName="regex-syntax-0945"/>
+   <testResult status="pass" testName="regex-syntax-0946"/>
+   <testResult status="pass" testName="regex-syntax-0947"/>
+   <testResult status="fail" testName="regex-syntax-0948"/>
+   <testResult status="pass" testName="regex-syntax-0949"/>
+   <testResult status="pass" testName="regex-syntax-0950"/>
+   <testResult status="pass" testName="regex-syntax-0951"/>
+   <testResult status="pass" testName="regex-syntax-0952"/>
+   <testResult status="pass" testName="regex-syntax-0953"/>
+   <testResult status="pass" testName="regex-syntax-0954"/>
+   <testResult status="pass" testName="regex-syntax-0955"/>
+   <testResult status="fail" testName="regex-syntax-0956">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="94 40 63 58 98 124 97 40 63 61 40 46 41 41 41 42 92 49" value="^(?:b|a(?=(.)))*\1"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0957"/>
+   <testResult status="pass" testName="regex-syntax-0958"/>
+   <testResult status="pass" testName="regex-syntax-0959"/>
+   <testResult status="pass" testName="regex-syntax-0960"/>
+   <testResult status="pass" testName="regex-syntax-0961"/>
+   <testResult status="pass" testName="regex-syntax-0962"/>
+   <testResult status="pass" testName="regex-syntax-0963"/>
+   <testResult status="pass" testName="regex-syntax-0964"/>
+   <testResult status="pass" testName="regex-syntax-0965"/>
+   <testResult status="pass" testName="regex-syntax-0966"/>
+   <testResult status="pass" testName="regex-syntax-0967"/>
+   <testResult status="pass" testName="regex-syntax-0968"/>
+   <testResult status="pass" testName="regex-syntax-0969"/>
+   <testResult status="fail" testName="regex-syntax-0970">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 61 40 97 43 63 41 41 40 92 49 97 98 41" value="(?=(a+?))(\1ab)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0971">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="94 40 63 61 40 97 43 63 41 41 92 49 97 98" value="^(?=(a+?))\1ab"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0972"/>
+   <testResult status="fail" testName="regex-syntax-0973"/>
+   <testResult status="fail" testName="regex-syntax-0974"/>
+   <testResult status="fail" testName="regex-syntax-0975"/>
+   <testResult status="fail" testName="regex-syntax-0976"/>
+   <testResult status="fail" testName="regex-syntax-0977">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 63 62 92 100 43 41 51" value="(?&amp;gt;\d+)3"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="regex-syntax-0978">
+      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="40 92 119 40 63 61 97 97 41 97 97 41" value="(\w(?=aa)aa)"&gt;&#13;
+&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
+&lt;/regex&gt;&#13;
+&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="regex-syntax-0979"/>
+   <testResult status="pass" testName="regex-syntax-0980"/>
+   <testResult status="pass" testName="regex-syntax-0982"/>
+   <testResult status="pass" testName="regex-syntax-0983"/>
+   <testResult status="fail" testName="regex-syntax-0984"/>
+   <testResult status="fail" testName="regex-syntax-0985"/>
+   <testResult status="pass" testName="regex-syntax-0986"/>
+   <testResult status="pass" testName="regex-syntax-0987"/>
+</testrun>

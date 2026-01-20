@@ -447,14 +447,14 @@ public class XslTransformEvaluationHelper {
         else if (expr instanceof Variable) {
            XObject evalResult = ((Variable)expr).execute(xctxt);
            if (evalResult instanceof XMLNodeCursorImpl) {
-               xdmSequenceSize = ((XMLNodeCursorImpl)evalResult).getLength();   
+        	   xdmSequenceSize = ((XMLNodeCursorImpl)evalResult).getLength();   
            }
            else if (evalResult instanceof ResultSequence) {
-              xdmSequenceSize = ((ResultSequence)evalResult).size();
+        	   xdmSequenceSize = ((ResultSequence)evalResult).size();
            }
            else {
-        	  // Here, evalResult is probably of types XSAnyAtomicType, XString, XNumber etc
-        	  xdmSequenceSize = 1; 
+        	   // Here, evalResult is probably of types XSAnyAtomicType, XString, XNumber etc
+        	   xdmSequenceSize = 1; 
            }
         }
         else if (expr instanceof XPathSequenceConstructor) {

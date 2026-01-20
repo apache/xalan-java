@@ -64,6 +64,7 @@ import org.apache.xalan.tests.w3c.xslt3.insn.XslSequenceTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslSortTests;
 import org.apache.xalan.tests.w3c.xslt3.insn.XslTryTests;
 import org.apache.xalan.tests.w3c.xslt3.misc.XslBuiltInTemplateTests;
+import org.apache.xalan.tests.w3c.xslt3.misc.XslRegexSyntaxTests;
 import org.apache.xalan.tests.w3c.xslt3.misc.XslRegexTests;
 import org.apache.xalan.tests.w3c.xslt3.misc.XslWhitespaceTests;
 import org.apache.xalan.tests.w3c.xslt3.type.XslBooleanTests;
@@ -91,7 +92,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class, XslMathTests.class, 
 	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, XslAttributeTests.class, XslCallTemplateTests.class, 
 	            XslNodeTests.class, XslNamespaceTests.class, XslStringTests.class, XslDateTests.class, XslFnDeepEqualTests.class, XslFnPositionTests.class, 
-	            XslAnalyzeStringTests.class, XslFnRootTests.class, XslFnKeyTests.class, XslFnFormatNumberTests.class, XslRegexTests.class,
+	            XslAnalyzeStringTests.class, XslFnRootTests.class, XslFnKeyTests.class, XslFnFormatNumberTests.class, XslRegexTests.class, XslRegexSyntaxTests.class,
 	            XslDocumentTests.class, XslXPathDefaultNamespaceAttrTests.class, XslExpandTextAttrTests.class, XslFnJsonToXmlTests.class,
 	            XslBuiltInTemplateTests.class, XslModeTests.class, XslDisableOutputEscapingAttrTests.class, XslTunnelAttrTests.class,
 	            XslParamTests.class, XslStripSpaceTests.class, XslTemplateTests.class, XslFnXmlToJsonTests.class, XslMessageTests.class,

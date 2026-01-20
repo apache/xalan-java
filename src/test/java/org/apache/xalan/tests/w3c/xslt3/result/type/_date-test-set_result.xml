@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-19T11:37:27Z" fail="56" name="date" pass="78" run="134" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-20T11:12:19Z" fail="55" name="date" pass="79" run="134" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -45,7 +45,7 @@
    <testResult status="pass" testName="date-043"/>
    <testResult status="fail" testName="date-044">
       <outResult>
-         <errTrace>This NodeSetDTM can not iterate to a previous node!</errTrace>
+         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.ResultSequence cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="date-045"/>
@@ -109,7 +109,7 @@
          <errTrace>java.lang.ClassCastException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="date-091"/>
+   <testResult status="pass" testName="date-091"/>
    <testResult status="pass" testName="date-092"/>
    <testResult status="pass" testName="date-093"/>
    <testResult status="fail" testName="date-094a">

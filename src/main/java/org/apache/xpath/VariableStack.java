@@ -472,7 +472,7 @@ public class VariableStack implements Cloneable
 
     XObject val = _stackFrames[index];
 
-    // Lazy execution of variables.
+    // Lazy dereference of variables
     if (val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
       return (_stackFrames[index] = val.execute(xctxt));
 

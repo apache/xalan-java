@@ -104,37 +104,32 @@ public class XUnresolvedVariable extends XObject
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    if (!m_doneEval) 
-    {
-      this.m_transformer.getMsgMgr().error      
-        (xctxt.getSAXLocator(), XSLTErrorResources.ER_REFERENCING_ITSELF, 
-          new Object[]{((ElemVariable)this.object()).getName().getLocalName()}); 
-    }
-    VariableStack vars = xctxt.getVarStack();
-    
-    // These three statements need to be combined into one operation.
-    int currentFrame = vars.getStackFrame();
-    //// vars.setStackFrame(m_varStackPos);
-   
+	  if (!m_doneEval) 
+	  {
+		  this.m_transformer.getMsgMgr().error      
+		  (xctxt.getSAXLocator(), XSLTErrorResources.ER_REFERENCING_ITSELF, 
+				  new Object[]{((ElemVariable)this.object()).getName().getLocalName()}); 
+	  }
 
-    ElemVariable velem = (ElemVariable)m_obj;
-    try
-    {
-      m_doneEval = false;
-      if(-1 != velem.m_frameSize)
-      	vars.link(velem.m_frameSize);
-      XObject var = velem.getValue(m_transformer, m_context);
-      m_doneEval = true;
-      return var;
-    }
-    finally
-    {
-      // These two statements need to be combined into one operation.
-      // vars.setStackFrame(currentFrame);
-      
-      if(-1 != velem.m_frameSize)
-	  	vars.unlink(currentFrame);
-    }
+	  VariableStack vars = xctxt.getVarStack();
+
+	  int currentFrame = vars.getStackFrame();
+
+	  ElemVariable velem = (ElemVariable)m_obj;
+	  try
+	  {
+		  m_doneEval = false;
+		  if(-1 != velem.m_frameSize)
+			  vars.link(velem.m_frameSize);
+		  XObject var = velem.getValue(m_transformer, m_context);
+		  m_doneEval = true;
+		  return var;
+	  }
+	  finally
+	  {
+		  if(-1 != velem.m_frameSize)
+			  vars.unlink(currentFrame);
+	  }
   }
   
   /**
