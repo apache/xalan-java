@@ -201,7 +201,7 @@ public class ProcessorImportSchema extends XSLTElementProcessor
         }
       }
       
-      if(source != null) {
+      if (source != null) {
         String absURL = SystemIDResolver.getAbsoluteURI(getHref(), handler.getBaseIdentifier());
         source = new StreamSource(absURL);
       }
@@ -211,7 +211,7 @@ public class ProcessorImportSchema extends XSLTElementProcessor
       
       XMLReader reader = null;
       
-      if(source instanceof SAXSource)
+      if (source instanceof SAXSource)
       {
         SAXSource saxSource = (SAXSource)source;
         reader = saxSource.getXMLReader(); // may be null

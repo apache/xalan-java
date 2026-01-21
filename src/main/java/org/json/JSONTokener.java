@@ -141,10 +141,10 @@ public class JSONTokener {
      */
     private void decrementIndexes() {
         this.index--;
-        if(this.previous=='\r' || this.previous == '\n') {
+        if (this.previous=='\r' || this.previous == '\n') {
             this.line--;
             this.character=this.characterPreviousLine ;
-        } else if(this.character > 0){
+        } else if (this.character > 0){
             this.character--;
         }
     }
@@ -186,7 +186,7 @@ public class JSONTokener {
      *  or backward while checking for more data.
      */
     public boolean more() throws JSONException {
-        if(this.usePrevious) {
+        if (this.usePrevious) {
             return true;
         }
         try {
@@ -196,7 +196,7 @@ public class JSONTokener {
         }
         try {
             // -1 is EOF, but next() can not consume the null character '\0'
-            if(this.reader.read() <= 0) {
+            if (this.reader.read() <= 0) {
                 this.eof = true;
                 return false;
             }
@@ -247,14 +247,14 @@ public class JSONTokener {
      * @param c the current character read.
      */
     private void incrementIndexes(int c) {
-        if(c > 0) {
+        if (c > 0) {
             this.index++;
-            if(c=='\r') {
+            if (c=='\r') {
                 this.line++;
                 this.characterPreviousLine = this.character;
                 this.character=0;
             }else if (c=='\n') {
-                if(this.previous != '\r') {
+                if (this.previous != '\r') {
                     this.line++;
                     this.characterPreviousLine = this.character;
                 }
@@ -275,7 +275,7 @@ public class JSONTokener {
     public char next(char c) throws JSONException {
         char n = this.next();
         if (n != c) {
-            if(n > 0) {
+            if (n > 0) {
                 throw this.syntaxError("Expected '" + c + "' and instead saw '" +
                         n + "'");
             }
@@ -596,7 +596,7 @@ public class JSONTokener {
      * @throws IOException If an I/O error occurs while closing the reader.
      */
     public void close() throws IOException {
-        if(reader!=null){
+        if (reader!=null){
             reader.close();
         }
     }

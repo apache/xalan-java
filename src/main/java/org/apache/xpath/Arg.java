@@ -93,7 +93,7 @@ public class Arg
    */
   public void detach()
   {
-    if(null != m_val)
+    if (null != m_val)
     {
       m_val.allowDetachToRelease(true);
       m_val.detach();
@@ -231,7 +231,7 @@ public class Arg
    */
   public boolean equals(Object obj) 
   {
-    if(obj instanceof QName)
+    if (obj instanceof QName)
     {
       return m_qname.equals(obj);
     }

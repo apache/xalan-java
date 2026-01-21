@@ -99,25 +99,25 @@ public class WalkingIteratorSorted extends WalkingIterator
       int prevAxis = -1;
       boolean prevIsSimpleDownAxis = true;
 
-      for(int i = 0; null != walker; i++)
+      for (int i = 0; null != walker; i++)
       {
         int axis = walker.getAxis();
         
-        if(walker.isDocOrdered())
+        if (walker.isDocOrdered())
         {
           boolean isSimpleDownAxis = ((axis == Axis.CHILD)
                                    || (axis == Axis.SELF)
                                    || (axis == Axis.ROOT));
           // Catching the filtered list here is only OK because
           // FilterExprWalker#isDocOrdered() did the right thing.
-          if(isSimpleDownAxis || (axis == -1))
+          if (isSimpleDownAxis || (axis == -1))
             walker = walker.getNextWalker();
           else
           {
             boolean isLastWalker = (null == walker.getNextWalker());
-            if(isLastWalker)
+            if (isLastWalker)
             {
-              if(walker.isDocOrdered() && (axis == Axis.DESCENDANT || 
+              if (walker.isDocOrdered() && (axis == Axis.DESCENDANT || 
                  axis == Axis.DESCENDANTORSELF || axis == Axis.DESCENDANTSFROMROOT
                  || axis == Axis.DESCENDANTSORSELFFROMROOT) || (axis == Axis.ATTRIBUTE))
                 return true;
@@ -149,25 +149,25 @@ public class WalkingIteratorSorted extends WalkingIterator
 //      int prevAxis = -1;
 //      boolean prevIsSimpleDownAxis = true;
 //
-//      for(int i = 0; null != walker; i++)
+//      for (int i = 0; null != walker; i++)
 //      {
 //        int axis = walker.getAxis();
 //        
-//        if(walker.isDocOrdered())
+//        if (walker.isDocOrdered())
 //        {
 //          boolean isSimpleDownAxis = ((axis == Axis.CHILD)
 //                                   || (axis == Axis.SELF)
 //                                   || (axis == Axis.ROOT));
 //          // Catching the filtered list here is only OK because
 //          // FilterExprWalker#isDocOrdered() did the right thing.
-//          if(isSimpleDownAxis || (axis == -1))
+//          if (isSimpleDownAxis || (axis == -1))
 //            walker = walker.getNextWalker();
 //          else
 //          {
 //            boolean isLastWalker = (null == walker.getNextWalker());
-//            if(isLastWalker)
+//            if (isLastWalker)
 //            {
-//              if(walker.isDocOrdered() && (axis == Axis.DESCENDANT || 
+//              if (walker.isDocOrdered() && (axis == Axis.DESCENDANT || 
 //                 axis == Axis.DESCENDANTORSELF || axis == Axis.DESCENDANTSFROMROOT
 //                 || axis == Axis.DESCENDANTSORSELFFROMROOT) || (axis == Axis.ATTRIBUTE))
 //                return true;
@@ -198,7 +198,7 @@ public class WalkingIteratorSorted extends WalkingIterator
     super.fixupVariables(vars, globalsSize);
 
     int analysis = getAnalysisBits();
-    if(WalkerFactory.isNaturalDocOrder(analysis))
+    if (WalkerFactory.isNaturalDocOrder(analysis))
     {
     	m_inNaturalOrderStatic = true;
     }

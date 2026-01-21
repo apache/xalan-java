@@ -28,11 +28,10 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.ResultSequence;
@@ -44,7 +43,8 @@ import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * An implementation of XPath 3.1 'if' expression.
+ * Class definition, representing an implementation of 
+ * XPath 3.1 'if' expression.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -83,7 +83,7 @@ public class XPathIfExpr extends Expression {
        
        SourceLocator srcLocator = xctxt.getSAXLocator();
        
-       int contextNode = xctxt.getContextNode();
+       final int currentNode = xctxt.getContextNode();
        
        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
        List<XMLNSDecl> prefixTable = null;
@@ -102,14 +102,14 @@ public class XPathIfExpr extends Expression {
           ifConditionXPath.fixupVariables(m_vars, m_globals_size);
        }
        
-       XObject ifConditionXPathResult = ifConditionXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());       
+       XObject ifConditionXPathResult = ifConditionXPath.execute(xctxt, currentNode, xctxt.getNamespaceContext());       
        
        boolean ifConditionEvalResult = false;
-       boolean eagerIfConditionCheck = false;
+       boolean ifConditionEagerCheck = false;
        String strVal = null;
        if ((ifConditionXPathResult instanceof XSString) || (ifConditionXPathResult instanceof XSAnyURI) || 
     		                                               (ifConditionXPathResult instanceof XSUntypedAtomic)) {
-    	   eagerIfConditionCheck = true;
+    	   ifConditionEagerCheck = true;
     	   XSAnyType xsAnyType = (XSAnyType)ifConditionXPathResult;
     	   strVal = xsAnyType.stringValue();
     	   if ((strVal != null) && (strVal.length() > 0)) {
@@ -117,7 +117,7 @@ public class XPathIfExpr extends Expression {
     	   }
        }
        
-       if ((eagerIfConditionCheck && ifConditionEvalResult) || (!eagerIfConditionCheck && ifConditionXPathResult.bool())) {
+       if ((ifConditionEagerCheck && ifConditionEvalResult) || (!ifConditionEagerCheck && ifConditionXPathResult.bool())) {
            if (prefixTable != null) {
               m_thenExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                         m_thenExprXPathStr, prefixTable);
@@ -144,10 +144,10 @@ public class XPathIfExpr extends Expression {
         	  evalResult = (XPathNamedFunctionReference)expr;   
            }
            else {
-              evalResult = thenExprXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+              evalResult = thenExprXPath.execute(xctxt, currentNode, xctxt.getNamespaceContext());
            }
        }
-       else if ((eagerIfConditionCheck && !ifConditionEvalResult) || (!eagerIfConditionCheck && !ifConditionXPathResult.bool())) {
+       else if ((ifConditionEagerCheck && !ifConditionEvalResult) || (!ifConditionEagerCheck && !ifConditionXPathResult.bool())) {
            if (prefixTable != null) {
               m_elseExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_elseExprXPathStr, 
                                                                                                           prefixTable);
@@ -168,7 +168,7 @@ public class XPathIfExpr extends Expression {
         	  evalResult = (XPathNamedFunctionReference)expr;   
            }
            else {
-              evalResult = elseExprXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+              evalResult = elseExprXPath.execute(xctxt, currentNode, xctxt.getNamespaceContext());
            }
        }
        
@@ -189,7 +189,7 @@ public class XPathIfExpr extends Expression {
     				   argXPath.fixupVariables(m_vars, m_globals_size);
     			   }
     			   
-    			   XObject xObj = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    			   XObject xObj = argXPath.execute(xctxt, currentNode, xctxt.getNamespaceContext());
     			   if (xObj instanceof ResultSequence) {
     				  argSeq = (ResultSequence)xObj; 
     			   }

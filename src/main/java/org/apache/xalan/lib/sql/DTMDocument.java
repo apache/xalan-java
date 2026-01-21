@@ -387,7 +387,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
         return m_xstrf.newstr( s );
       }
-      else if( o != null )
+      else if ( o != null )
       {
         return m_xstrf.newstr(o.toString());
     }
@@ -661,7 +661,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
     break;
     case Node.PROCESSING_INSTRUCTION_NODE : // %REVIEW%
     case Node.COMMENT_NODE :
-      if(0 != depth)
+      if (0 != depth)
         break;
         // NOTE: Because this operation works in the DOM space, it does _not_ attempt
         // to perform Text Coalition. That should only be done in DTM space.
@@ -669,7 +669,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
     case Node.CDATA_SECTION_NODE :
     case Node.ATTRIBUTE_NODE :
       String str = node.getNodeValue();
-      if(ch instanceof CharacterNodeHandler)
+      if (ch instanceof CharacterNodeHandler)
       {
         ((CharacterNodeHandler)ch).characters(node);
       }
@@ -911,7 +911,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
       normalize + ")");
     }
 
-    if(normalize)
+    if (normalize)
     {
       XMLString str = getStringValue(nodeHandle);
       str = str.fixWhiteSpace(true, true, false);

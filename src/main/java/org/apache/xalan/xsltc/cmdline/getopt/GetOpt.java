@@ -49,29 +49,29 @@ public class GetOpt{
 	theCmdArgs = new ArrayList(); 
 	theOptionMatcher = new OptionMatcher(optString);
 	// fill in the options list
-	for(int i=0; i<args.length; i++){
+	for (int i=0; i<args.length; i++){
 	    String token = args[i];
 	    int tokenLength = token.length();
-	    if(token.equals("--")){	    // end of opts
+	    if (token.equals("--")){	    // end of opts
 	        currOptIndex = i+1;	    // set index of first operand
                 break;                      // end of options
 	    }
-	    else if(token.startsWith("-") && tokenLength == 2){ 
+	    else if (token.startsWith("-") && tokenLength == 2){ 
 		// simple option token such as '-s' found
 		theOptions.add(new Option(token.charAt(1)));	
 	    }
-	    else if(token.startsWith("-") && tokenLength > 2){
+	    else if (token.startsWith("-") && tokenLength > 2){
 		// stacked options found, such as '-shm'
 		// iterate thru the tokens after the dash and
 		// add them to theOptions list
-		for(int j=1; j<tokenLength; j++){
+		for (int j=1; j<tokenLength; j++){
 		    theOptions.add(new Option(token.charAt(j)));
 		}
 	    }		
-	    else if(!token.startsWith("-")){
+	    else if (!token.startsWith("-")){
 		// case 1- there are not options stored yet therefore
 		// this must be an command argument, not an option argument
-		if(theOptions.size() == 0){
+		if (theOptions.size() == 0){
 		    currOptIndex = i;
 		    break;		// stop processing options
 		}
@@ -83,7 +83,7 @@ public class GetOpt{
 		    indexoflast = theOptions.size()-1;
 		    Option op = (Option)theOptions.get(indexoflast);
 		    char opLetter = op.getArgLetter();
-		    if(!op.hasArg() && theOptionMatcher.hasArg(opLetter)){
+		    if (!op.hasArg() && theOptionMatcher.hasArg(opLetter)){
 		        op.setArg(token);
 		    }
 		    else{
@@ -103,7 +103,7 @@ public class GetOpt{
 	theOptionsIterator = theOptions.listIterator();
 
 	// options are done, now fill out cmd arg list with remaining args
-	for(int i=currOptIndex; i<args.length; i++){
+	for (int i=currOptIndex; i<args.length; i++){
 	    String token = args[i];
 	    theCmdArgs.add(token);
 	}
@@ -114,11 +114,11 @@ public class GetOpt{
     * debugging routine to print out all options collected
     */
     public void printOptions(){
-	for(ListIterator it=theOptions.listIterator(); it.hasNext();){
+	for (ListIterator it=theOptions.listIterator(); it.hasNext();){
 	    Option opt = (Option)it.next();
 	    System.out.print("OPT =" + opt.getArgLetter());
 	    String arg = opt.getArgument();
-	    if(arg != null){
+	    if (arg != null){
 	       System.out.print(" " + arg);
 	    }
 	    System.out.println();
@@ -142,17 +142,17 @@ public class GetOpt{
 	MissingOptArgException
     {
 	int retval = -1;
-	if(theOptionsIterator.hasNext()){
+	if (theOptionsIterator.hasNext()){
 	    theCurrentOption = (Option)theOptionsIterator.next();
 	    char c = theCurrentOption.getArgLetter();
 	    boolean shouldHaveArg = theOptionMatcher.hasArg(c);
 	    String arg = theCurrentOption.getArgument();
-	    if(!theOptionMatcher.match(c)) {
+	    if (!theOptionMatcher.match(c)) {
                 ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_CMDLINE_OPTION_ERR,
                                             new Character(c));
 		throw (new IllegalArgumentException(msg.toString()));
 	    }
-	    else if(shouldHaveArg && (arg == null)) {
+	    else if (shouldHaveArg && (arg == null)) {
                 ErrorMsg msg = new ErrorMsg(ErrorMsg.CMDLINE_OPT_MISSING_ARG_ERR,
                                             new Character(c));
 		throw (new MissingOptArgException(msg.toString()));
@@ -172,7 +172,7 @@ public class GetOpt{
 	String retval = null;
 	String tmp = theCurrentOption.getArgument();
 	char c = theCurrentOption.getArgLetter();
-	if(theOptionMatcher.hasArg(c)){
+	if (theOptionMatcher.hasArg(c)){
 	    retval = tmp;
 	}
 	return retval;	
@@ -189,7 +189,7 @@ public class GetOpt{
     public String[] getCmdArgs(){
 	String[] retval = new String[theCmdArgs.size()];
 	int i=0;
-        for(ListIterator it=theCmdArgs.listIterator(); it.hasNext();){
+        for (ListIterator it=theCmdArgs.listIterator(); it.hasNext();){
             retval[i++] = (String)it.next();
         }
 	return retval;
@@ -231,7 +231,7 @@ public class GetOpt{
         }
         public boolean match(char c){
 	    boolean retval = false;
-	    if(theOptString.indexOf(c) != -1){
+	    if (theOptString.indexOf(c) != -1){
 	        retval = true;
 	    }
 	    return retval;	
@@ -243,7 +243,7 @@ public class GetOpt{
 	        // reached end of theOptString
 	        retval = false;
 	    }
-            else if(theOptString.charAt(index) == ':'){
+            else if (theOptString.charAt(index) == ':'){
                 retval = true;
             }
             return retval;

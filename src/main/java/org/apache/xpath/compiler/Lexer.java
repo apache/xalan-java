@@ -458,7 +458,7 @@ class Lexer
 
     if (0 == nesting)
     {
-      if(m_patternMapSize >= m_patternMap.length)
+      if (m_patternMapSize >= m_patternMap.length)
       {
         int patternMap[] = m_patternMap;
         int len = m_patternMap.length;

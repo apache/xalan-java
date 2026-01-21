@@ -607,7 +607,7 @@ public class ExsltDynamic extends ExsltBase
           closureSet.addNode(n);
       }
       
-    } while(iterationList.getLength() > 0);
+    } while (iterationList.getLength() > 0);
     
     return closureSet;
               

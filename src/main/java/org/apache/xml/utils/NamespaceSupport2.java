@@ -151,7 +151,7 @@ public class NamespaceSupport2
     public void popContext ()
     {
         Context2 parentContext=currentContext.getParent();
-        if(parentContext==null)
+        if (parentContext==null)
             throw new EmptyStackException();
         else
             currentContext = parentContext;
@@ -245,7 +245,7 @@ public class NamespaceSupport2
                                   boolean isAttribute)
     {
         String[] name=currentContext.processName(qName, isAttribute);
-        if(name==null)
+        if (name==null)
             return null;
 
         // JJK: This recopying is required because processName may return
@@ -408,13 +408,13 @@ class PrefixForUriEnumerator implements Enumeration
         
     public boolean hasMoreElements()
     {
-        if(lookahead!=null)
+        if (lookahead!=null)
             return true;
             
-        while(allPrefixes.hasMoreElements())
+        while (allPrefixes.hasMoreElements())
             {
                 String prefix=(String)allPrefixes.nextElement();
-                if(uri.equals(nsup.getURI(prefix)))
+                if (uri.equals(nsup.getURI(prefix)))
                     {
                         lookahead=prefix;
                         return true;
@@ -425,7 +425,7 @@ class PrefixForUriEnumerator implements Enumeration
         
     public Object nextElement()
     {
-        if(hasMoreElements())
+        if (hasMoreElements())
             {
                 String tmp=lookahead;
                 lookahead=null;
@@ -479,7 +479,7 @@ final class Context2 {
      */
     Context2 (Context2 parent)
     {
-        if(parent==null)
+        if (parent==null)
             {
                 prefixTable = new Hashtable();
                 uriTable = new Hashtable();
@@ -581,11 +581,11 @@ final class Context2 {
             
                                 // Select the appropriate table.
         if (isAttribute) {
-            if(elementNameTable==null)
+            if (elementNameTable==null)
                 elementNameTable=new Hashtable();
             table = elementNameTable;
         } else {
-            if(attributeNameTable==null)
+            if (attributeNameTable==null)
                 attributeNameTable=new Hashtable();
             table = attributeNameTable;
         }
@@ -741,9 +741,9 @@ final class Context2 {
         // As far as I can tell, these caches are never actually
         // used in Xalan... More efficient to remove the whole
         // cache system? ****
-        if(elementNameTable!=null)
+        if (elementNameTable!=null)
             elementNameTable=new Hashtable(); 
-        if(attributeNameTable!=null)
+        if (attributeNameTable!=null)
             attributeNameTable=new Hashtable(); 
         tablesDirty = true;
     }

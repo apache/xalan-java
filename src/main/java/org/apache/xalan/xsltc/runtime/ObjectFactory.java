@@ -293,25 +293,25 @@ final class ObjectFactory {
                 FileInputStream fis = null;
                 try {
                     // file existed last time
-                    if(fLastModified >= 0) {
-                        if(propertiesFileExists &&
+                    if (fLastModified >= 0) {
+                        if (propertiesFileExists &&
                                 (fLastModified < (fLastModified = SecuritySupport.getLastModified(propertiesFile)))) {
                             loadProperties = true;
                         } else {
                             // file has stopped existing...
-                            if(!propertiesFileExists) {
+                            if (!propertiesFileExists) {
                                 fLastModified = -1;
                                 fXalanProperties = null;
                             } // else, file wasn't modified!
                         }
                     } else {
                         // file has started to exist:
-                        if(propertiesFileExists) {
+                        if (propertiesFileExists) {
                             loadProperties = true;
                             fLastModified = SecuritySupport.getLastModified(propertiesFile);
                         } // else, nothing's changed
                     }
-                    if(loadProperties) {
+                    if (loadProperties) {
                         // must never have attempted to read xalan.properties
                         // before (or it's outdeated)
                         fXalanProperties = new Properties();
@@ -336,7 +336,7 @@ final class ObjectFactory {
                     }
                 }	            
             }
-            if(fXalanProperties != null) {
+            if (fXalanProperties != null) {
                 factoryClassName = fXalanProperties.getProperty(factoryId);
             }
         } else {

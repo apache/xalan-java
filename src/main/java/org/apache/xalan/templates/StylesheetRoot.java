@@ -80,8 +80,7 @@ import org.xml.sax.SAXParseException;
  * 
  * @xsl.usage general
  */
-public class StylesheetRoot extends StylesheetComposed
-        implements java.io.Serializable, Templates
+public class StylesheetRoot extends StylesheetComposed implements java.io.Serializable, Templates
 {
     static final long serialVersionUID = 3875353123529147855L;
     
@@ -106,8 +105,8 @@ public class StylesheetRoot extends StylesheetComposed
     private boolean m_isSecureProcessing = false;
     
     /**
-     * We store stylesheet global variable declarations that refer to
-     * XPath 3.1 inline functions, within this java.util.Map object.   
+     * This class field represents, XSL stylesheet's top level xsl:variable
+     * declarations for XPath 3.1 inline functions. 
      */
     private Map<QName, XPathInlineFunction> m_inlineFunctionVarMap = 
                                                   new HashMap<QName, XPathInlineFunction>();
@@ -119,8 +118,8 @@ public class StylesheetRoot extends StylesheetComposed
     private TransformerImpl m_transformerImpl = null;
     
     /**
-     * This object stores a compiled representation of an XML Schema document, available
-     * via xsl:import-schema instruction.
+     * This class field refers to, a compiled representation of an 
+     * XML Schema document, available via xsl:import-schema instruction.
      */
     private XSModel m_xsModel;
     
@@ -139,6 +138,13 @@ public class StylesheetRoot extends StylesheetComposed
      * are enabled, otherwise false.
      */
     private boolean m_assert;
+    
+    /**
+     * Class field, that represents xsl:stylesheet, xsl:transform elements's
+     * attribute input-type-annotations with possible values 
+     * "preserve" | "strip" | "unspecified".
+     */
+    private String m_input_type_annotations;
     
     private ErrorListener m_errorListener;
     
@@ -249,17 +255,7 @@ public class StylesheetRoot extends StylesheetComposed
   public Vector getExtensions()
   {
     return m_extNsMgr != null ? m_extNsMgr.getExtensions() : null;
-  }  
-
-/*
-  public void runtimeInit(TransformerImpl transformer) throws TransformerException
-  {
-    System.out.println("StylesheetRoot.runtimeInit()");
-      
-  //    try{throw new Exception("StylesheetRoot.runtimeInit()");} catch(Exception e){e.printStackTrace();}
-
-    }
-*/  
+  }   
 
   //============== Templates Interface ================
 
@@ -390,7 +386,7 @@ public class StylesheetRoot extends StylesheetComposed
     // eleminateRedundentGlobals will add variables to the m_variables vector, which 
     // it then copied in the ComposeState constructor.
     
-//    if(true && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
+//    if (true && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
 //    {
 //          RedundentExprEliminator ree = new RedundentExprEliminator();
 //          callVisitors(ree);
@@ -956,7 +952,7 @@ public class StylesheetRoot extends StylesheetComposed
       for (int i = 0; i < n; i++)
       {
         ElemVariable var = (ElemVariable)m_variables.elementAt(i);
-        if(var.getName().equals(qname))
+        if (var.getName().equals(qname))
           return var;
       }
     }
@@ -1044,16 +1040,16 @@ public class StylesheetRoot extends StylesheetComposed
   {
     if (null != m_whiteSpaceInfoList)
     {
-      while(DTM.NULL != targetElement)
+      while (DTM.NULL != targetElement)
       {
         DTM dtm = support.getDTM(targetElement);
         WhiteSpaceInfo info = (WhiteSpaceInfo) m_whiteSpaceInfoList.getTemplate(support,
                 targetElement, null, false, dtm);
-        if(null != info)
+        if (null != info)
           return info.getShouldStripSpace();
         
         int parent = dtm.getParent(targetElement);
-        if(DTM.NULL != parent && DTM.ELEMENT_NODE == dtm.getNodeType(parent))
+        if (DTM.NULL != parent && DTM.ELEMENT_NODE == dtm.getNodeType(parent))
           targetElement = parent;
         else
           targetElement = DTM.NULL;
@@ -1452,23 +1448,23 @@ public class StylesheetRoot extends StylesheetComposed
         ElemTemplateElement midNode = (ElemTemplateElement) v.elementAt( ( lo0 + hi0 ) / 2 );
 
         // loop through the array until indices cross
-        while( lo <= hi )
+        while ( lo <= hi )
         {
           // find the first element that is greater than or equal to
           // the partition element starting from the left Index.
-          while( (lo < hi0) && (((ElemTemplateElement) v.elementAt(lo)).compareTo(midNode) < 0) )
+          while ( (lo < hi0) && (((ElemTemplateElement) v.elementAt(lo)).compareTo(midNode) < 0) )
           {
             ++lo;
           } // end while
 
           // find an element that is smaller than or equal to
           // the partition element starting from the right Index.
-          while( (hi > lo0) && (((ElemTemplateElement) v.elementAt(hi)).compareTo(midNode) > 0) )          {
+          while ( (hi > lo0) && (((ElemTemplateElement) v.elementAt(hi)).compareTo(midNode) > 0) )          {
             --hi;
           }
 
           // if the indexes have not crossed, swap
-          if( lo <= hi )
+          if ( lo <= hi )
           {
             ElemTemplateElement node = (ElemTemplateElement) v.elementAt(lo);
             v.setElementAt(v.elementAt(hi), lo);
@@ -1481,14 +1477,14 @@ public class StylesheetRoot extends StylesheetComposed
 
         // If the right index has not reached the left side of array
         // must now sort the left partition.
-        if( lo0 < hi )
+        if ( lo0 < hi )
         {
           QuickSort2( v, lo0, hi );
         }
 
         // If the left index has not reached the right side of array
         // must now sort the right partition.
-        if( lo < hi0 )
+        if ( lo < hi0 )
         {
           QuickSort2( v, lo, hi0 );
         }
@@ -1597,7 +1593,7 @@ public class StylesheetRoot extends StylesheetComposed
         int pos = m_variableNames.size();
         m_variableNames.addElement(qname);
         int frameSize = m_variableNames.size() - getGlobalsSize();
-        if(frameSize > m_maxStackFrameSize)
+        if (frameSize > m_maxStackFrameSize)
           m_maxStackFrameSize++;
         return pos;
       }
@@ -2072,6 +2068,14 @@ public class StylesheetRoot extends StylesheetComposed
 	 */
 	public void setAssertEnabled(boolean xslAssert) {
 		this.m_assert = xslAssert;
+	}
+	
+	public void setInputTypeAnnotations(String inputTypeAnnotations) {
+		this.m_input_type_annotations = inputTypeAnnotations; 
+	}
+	
+	public String getInputTypeAnnotations() {
+		return m_input_type_annotations;
 	}
 
 }

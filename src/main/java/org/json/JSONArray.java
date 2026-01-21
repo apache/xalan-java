@@ -358,7 +358,7 @@ public class JSONArray implements Iterable<Object> {
      */
     public double getDouble(int index) throws JSONException {
         final Object object = this.get(index);
-        if(object instanceof Number) {
+        if (object instanceof Number) {
             return ((Number)object).doubleValue();
         }
         try {
@@ -380,7 +380,7 @@ public class JSONArray implements Iterable<Object> {
      */
     public float getFloat(int index) throws JSONException {
         final Object object = this.get(index);
-        if(object instanceof Number) {
+        if (object instanceof Number) {
             return ((Number)object).floatValue();
         }
         try {
@@ -428,7 +428,7 @@ public class JSONArray implements Iterable<Object> {
      */
     public <E extends Enum<E>> E getEnum(Class<E> clazz, int index) throws JSONException {
         E val = optEnum(clazz, index);
-        if(val==null) {
+        if (val==null) {
             // JSONException should really take a throwable argument.
             // If it did, I would re-implement this with the Enum.valueOf
             // method and place any thrown exception in the JSONException
@@ -454,7 +454,7 @@ public class JSONArray implements Iterable<Object> {
     public BigDecimal getBigDecimal (int index) throws JSONException {
         Object object = this.get(index);
         BigDecimal val = JSONObject.objectToBigDecimal(object, null);
-        if(val == null) {
+        if (val == null) {
             throw wrongValueFormatException(index, "BigDecimal", object, null);
         }
         return val;
@@ -473,7 +473,7 @@ public class JSONArray implements Iterable<Object> {
     public BigInteger getBigInteger (int index) throws JSONException {
         Object object = this.get(index);
         BigInteger val = JSONObject.objectToBigInteger(object, null);
-        if(val == null) {
+        if (val == null) {
             throw wrongValueFormatException(index, "BigInteger", object, null);
         }
         return val;
@@ -490,7 +490,7 @@ public class JSONArray implements Iterable<Object> {
      */
     public int getInt(int index) throws JSONException {
         final Object object = this.get(index);
-        if(object instanceof Number) {
+        if (object instanceof Number) {
             return ((Number)object).intValue();
         }
         try {
@@ -548,7 +548,7 @@ public class JSONArray implements Iterable<Object> {
      */
     public long getLong(int index) throws JSONException {
         final Object object = this.get(index);
-        if(object instanceof Number) {
+        if (object instanceof Number) {
             return ((Number)object).longValue();
         }
         try {
@@ -1463,7 +1463,7 @@ public class JSONArray implements Iterable<Object> {
             this.myArrayList.set(index, value);
             return this;
         }
-        if(index == this.length()){
+        if (index == this.length()){
             // simple append
             return this.put(value);
         }
@@ -1639,10 +1639,10 @@ public class JSONArray implements Iterable<Object> {
         for (int i = 0; i < len; i += 1) {
             Object valueThis = this.myArrayList.get(i);
             Object valueOther = ((JSONArray)other).myArrayList.get(i);
-            if(valueThis == valueOther) {
+            if (valueThis == valueOther) {
             	continue;
             }
-            if(valueThis == null) {
+            if (valueThis == null) {
             	return false;
             }
             if (valueThis instanceof JSONObject) {
@@ -2007,13 +2007,13 @@ public class JSONArray implements Iterable<Object> {
             String valueType,
             Object value,
             Throwable cause) {
-        if(value == null) {
+        if (value == null) {
             return new JSONException(
                     "JSONArray[" + idx + "] is not a " + valueType + " (null)."
                     , cause);
         }
         // don't try to toString collections or known object types that could be large.
-        if(value instanceof Map || value instanceof Iterable || value instanceof JSONObject) {
+        if (value instanceof Map || value instanceof Iterable || value instanceof JSONObject) {
             return new JSONException(
                     "JSONArray[" + idx + "] is not a " + valueType + " (" + value.getClass() + ")."
                     , cause);

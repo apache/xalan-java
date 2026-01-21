@@ -135,7 +135,7 @@ public abstract class Function extends Expression
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {
-  	if(visitor.visitFunction(owner, this))
+  	if (visitor.visitFunction(owner, this))
   	{
   		callArgVisitors(visitor);
   	}
@@ -146,7 +146,7 @@ public abstract class Function extends Expression
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!isSameClass(expr))
+  	if (!isSameClass(expr))
   		return false;
   		
   	return true;

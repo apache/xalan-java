@@ -110,7 +110,7 @@ public class XMLNodeCursorImpl extends NodeCursor
   public XMLNodeCursorImpl(DTMCursorIterator val)
   {
   	super();
-  	if(val instanceof XMLNodeCursorImpl)
+  	if (val instanceof XMLNodeCursorImpl)
   	{
         final XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl) val;
 	    setIter(nodeSet.m_iter);
@@ -118,7 +118,7 @@ public class XMLNodeCursorImpl extends NodeCursor
 	    m_last = nodeSet.m_last;
         // First make sure the DTMCursorIterator value has a cache,
         // so if it doesn't have one, make one.
-	    if(!nodeSet.hasCache())
+	    if (!nodeSet.hasCache())
 	        nodeSet.setShouldCacheNodes(true);
         
         // Get the cache from val and use it ourselves (we share it).
@@ -139,7 +139,7 @@ public class XMLNodeCursorImpl extends NodeCursor
     setIter(val.m_iter);
     m_dtmMgr = val.m_dtmMgr;
     m_last = val.m_last;
-    if(!val.hasCache())
+    if (!val.hasCache())
     	val.setShouldCacheNodes(true);
     setObject(val.m_obj);
   }
@@ -287,7 +287,7 @@ public class XMLNodeCursorImpl extends NodeCursor
   {
     // %OPT%
     // I guess we'll have to get a static instance of the DTM manager...
-    if(DTM.NULL != n)
+    if (DTM.NULL != n)
     {
       return m_dtmMgr.getDTM(n).getStringValue(n);
     }
@@ -313,7 +313,7 @@ public class XMLNodeCursorImpl extends NodeCursor
   {
     int node = item(0);
 	
-    if(node != DTM.NULL)
+    if (node != DTM.NULL)
     {
       m_dtmMgr.getDTM(node).dispatchCharactersEvents(node, ch, false);
     }
@@ -363,7 +363,7 @@ public class XMLNodeCursorImpl extends NodeCursor
    */
   public Object object()
   {
-    if(null == m_obj)
+    if (null == m_obj)
     	return this;
     else
     	return m_obj;
@@ -421,7 +421,7 @@ public class XMLNodeCursorImpl extends NodeCursor
   {
     try
     {
-    	if(hasCache())
+    	if (hasCache())
       		return cloneWithReset();
       	else
       		return this; // don't bother to clone... won't do any good!
@@ -441,7 +441,7 @@ public class XMLNodeCursorImpl extends NodeCursor
   {
     try
     {
-    	if(hasCache())
+    	if (hasCache())
       		return (XObject)cloneWithReset();
       	else
       		return this; // don't bother to clone... won't do any good!
@@ -461,7 +461,7 @@ public class XMLNodeCursorImpl extends NodeCursor
   {
     NodeSetDTM mnl;
 
-    if(m_obj instanceof NodeSetDTM)
+    if (m_obj instanceof NodeSetDTM)
     {
       mnl = (NodeSetDTM) m_obj;
     }

@@ -513,7 +513,7 @@ public final class EncodingInfo extends Object
              *  //     ||  "SJIS".equals(javaName)   )
              * 
              *   // Work around some bugs in JRE for Japanese
-             *   if(data[0] == 0x21)
+             *   if (data[0] == 0x21)
              *     isInEncoding = false;
              *   else if (ch == 0xA5)
              *     isInEncoding = false;

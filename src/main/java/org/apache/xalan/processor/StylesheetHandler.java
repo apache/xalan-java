@@ -649,7 +649,7 @@ public class StylesheetHandler extends DefaultHandler
     XSLTElementProcessor elemProcessor = getProcessorFor(uri, localName,
                                            rawName);
 
-    if(null != elemProcessor)  // defensive, for better multiple error reporting. -sb
+    if (null != elemProcessor)  // defensive, for better multiple error reporting. -sb
     {
       this.pushProcessor(elemProcessor);
       elemProcessor.startElement(this, uri, localName, rawName, attributes);
@@ -797,7 +797,7 @@ public class StylesheetHandler extends DefaultHandler
     
     String prefix="",ns="", localName=target;
     int colon=target.indexOf(':');
-    if(colon>=0)
+    if (colon>=0)
     {
       ns=getNamespaceForPrefix(prefix=target.substring(0,colon));
       localName=target.substring(colon+1);
@@ -812,14 +812,14 @@ public class StylesheetHandler extends DefaultHandler
       // the testcase we're trying to support is inconsistant in whether
       // it binds the prefix, I'm going to make this sloppy for
       // testing purposes.
-      if(
+      if (
         "xalan-doc-cache-off".equals(target) ||
         "xalan:doc-cache-off".equals(target) ||
 	   ("doc-cache-off".equals(localName) &&
 	    ns.equals("org.apache.xalan.xslt.extensions.Redirect") )
 	 )
       {
-	if(!(m_elems.peek() instanceof ElemForEach))
+	if (!(m_elems.peek() instanceof ElemForEach))
           throw new TransformerException
 	    ("xalan:doc-cache-off not allowed here!", 
 	     getLocator());
@@ -1697,15 +1697,15 @@ public class StylesheetHandler extends DefaultHandler
     throws org.xml.sax.SAXParseException
   {    
     String value = attrs.getValue("xml:space");
-    if(null == value)
+    if (null == value)
     {
       m_spacePreserveStack.push(m_spacePreserveStack.peekOrFalse());
     }
-    else if(value.equals("preserve"))
+    else if (value.equals("preserve"))
     {
       m_spacePreserveStack.push(true);
     }
-    else if(value.equals("default"))
+    else if (value.equals("default"))
     {
       m_spacePreserveStack.push(false);
     }

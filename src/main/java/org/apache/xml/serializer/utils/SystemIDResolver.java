@@ -124,7 +124,7 @@ public final class SystemIDResolver
       * Bugzilla Bug 22777 ). 
      **/
      //"fix" for Bugzilla Bug 22777
-    if(isWindowsAbsolutePath(systemId)){
+    if (isWindowsAbsolutePath(systemId)){
         return false;
      }
     
@@ -135,11 +135,11 @@ public final class SystemIDResolver
     
     //finding substring  before '#', '?', and '/' 
     int index = systemId.length() -1;
-    if(fragmentIndex > 0) 
+    if (fragmentIndex > 0) 
         index = fragmentIndex;
-    if((queryIndex > 0) && (queryIndex <index)) 
+    if ((queryIndex > 0) && (queryIndex <index)) 
         index = queryIndex;
-    if((slashIndex > 0) && (slashIndex <index))
+    if ((slashIndex > 0) && (slashIndex <index))
         index = slashIndex; 
     // return true if there is ':' before '#', '?', and '/'
     return ((colonIndex >0) && (colonIndex<index));
@@ -154,7 +154,7 @@ public final class SystemIDResolver
    */
   public static boolean isAbsolutePath(String systemId)
   {
-    if(systemId == null)
+    if (systemId == null)
         return false;
     final File file = new File(systemId);
     return file.isAbsolute();
@@ -169,7 +169,7 @@ public final class SystemIDResolver
    */
     private static boolean isWindowsAbsolutePath(String systemId)
   {
-    if(!isAbsolutePath(systemId))
+    if (!isAbsolutePath(systemId))
       return false;
     // On Windows, an absolute path starts with "[drive_letter]:\"
     if (systemId.length() > 2 

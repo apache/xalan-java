@@ -487,7 +487,7 @@ public class XPathParser
         	}
         	catch (org.apache.xpath.XPathProcessorException e)
         	{
-        		if(CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
+        		if (CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
         		{
         			initXPath(compiler, "/..",  namespaceContext, false);
         		}
@@ -517,7 +517,7 @@ public class XPathParser
     } 
     catch (org.apache.xpath.XPathProcessorException e)
     {
-	  if(CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
+	  if (CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
 	  {
 		 initXPath(compiler, "/..",  namespaceContext, false);
 	  }
@@ -6076,7 +6076,7 @@ public class XPathParser
   protected void QName() throws javax.xml.transform.TransformerException
   {
     // Namespace
-    if(lookahead(':', 1))
+    if (lookahead(':', 1))
     {
       m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
       m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);

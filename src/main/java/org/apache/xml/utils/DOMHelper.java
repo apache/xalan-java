@@ -303,14 +303,14 @@ public class DOMHelper
 
             break;  // from while loop
           }
-        }  // end if(startNode1 == startNode2)
+        }  // end if (startNode1 == startNode2)
 
                 // Move up one level and try again
         prevChild1 = startNode1;
         startNode1 = getParentOfNode(startNode1);
         prevChild2 = startNode2;
         startNode2 = getParentOfNode(startNode2);
-      }  // end while(parents exist to examine)
+      }  // end while (parents exist to examine)
     }  // end big else (not immediate siblings)
         
         // WARNING: The following diagnostic won't report the early
@@ -515,7 +515,7 @@ public class DOMHelper
     {
       namespace = QName.S_XMLNAMESPACEURI; // Hardcoded, per Namespace spec
     }
-        else if(prefix.equals("xmlns"))
+        else if (prefix.equals("xmlns"))
     {
           // Hardcoded in the DOM spec, expected to be adopted by
           // Namespace spec. NOTE: Namespace declarations _must_ use
@@ -548,7 +548,7 @@ public class DOMHelper
                         
                 // NOTE: declname is set earlier, outside the loop.
                         Attr attr=((Element)parent).getAttributeNode(declname);
-                        if(attr!=null)
+                        if (attr!=null)
                         {
                 namespace = attr.getNodeValue();
                 break;
@@ -1012,7 +1012,7 @@ public class DOMHelper
       Document doc = node.getOwnerDocument();
           /*
       TBD:
-      if(null == doc)
+      if (null == doc)
       {
         throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CHILD_HAS_NO_OWNER_DOCUMENT, null));//"Attribute child does not have an owner document!");
       }
@@ -1028,7 +1028,7 @@ public class DOMHelper
           // (Shouldn't have to check whether impl is null in a compliant DOM,
           // but let's be paranoid for a moment...)
           DOMImplementation impl=doc.getImplementation();
-          if(impl!=null && impl.hasFeature("Core","2.0"))
+          if (impl!=null && impl.hasFeature("Core","2.0"))
           {
                   parent=((Attr)node).getOwnerElement();
                   return parent;
@@ -1053,7 +1053,7 @@ public class DOMHelper
     {
       parent = node.getParentNode();
 
-      // if((Node.DOCUMENT_NODE != nodeType) && (null == parent))
+      // if ((Node.DOCUMENT_NODE != nodeType) && (null == parent))
       // {
       //   throw new RuntimeException("Child does not have parent!");
       // }
@@ -1129,10 +1129,10 @@ public class DOMHelper
     if (null != doctype)
     {
       NamedNodeMap entities = doctype.getEntities();
-      if(null == entities)
+      if (null == entities)
         return url;
       Entity entity = (Entity) entities.getNamedItem(name);
-      if(null == entity)
+      if (null == entity)
         return url;
       
       String notationName = entity.getNotationName();
@@ -1197,7 +1197,7 @@ public class DOMHelper
         // different namespaces, and we'd need to get getAttributeNodeNS...
         // but later levels also have Attr.getOwnerElement.
         Attr check=elem.getAttributeNode(attr.getNodeName());
-        if(check==attr)
+        if (check==attr)
                 parent = elem;
 
     if (null == parent)

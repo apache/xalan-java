@@ -300,9 +300,9 @@ public final class Matcher implements MatchResult {
         first = -1;
         last = 0;
         oldLast = -1;
-        for(int i=0; i<groups.length; i++)
+        for (int i=0; i<groups.length; i++)
             groups[i] = -1;
-        for(int i=0; i<locals.length; i++)
+        for (int i=0; i<locals.length; i++)
             locals[i] = -1;
         lastAppendPosition = 0;
         from = 0;

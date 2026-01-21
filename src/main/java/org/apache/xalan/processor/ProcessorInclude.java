@@ -256,7 +256,7 @@ public class ProcessorInclude extends XSLTElementProcessor
         }
       }
       
-      if(null == source)
+      if (null == source)
       {
         String absURL = SystemIDResolver.getAbsoluteURI(getHref(),
                           handler.getBaseIdentifier());
@@ -269,7 +269,7 @@ public class ProcessorInclude extends XSLTElementProcessor
       
       XMLReader reader = null;
       
-      if(source instanceof SAXSource)
+      if (source instanceof SAXSource)
       {
         SAXSource saxSource = (SAXSource)source;
         reader = saxSource.getXMLReader(); // may be null

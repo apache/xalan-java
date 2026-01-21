@@ -399,7 +399,7 @@ public class URI implements Serializable
       initializeScheme(uriSpec);
       uriSpec = uriSpec.substring(colonIndex+1);
       // This is a fix for XALANJ-2059.
-      if(m_scheme != null && p_base != null)
+      if (m_scheme != null && p_base != null)
       {	  	
         // a) If <uriSpec> starts with a slash (/), it means <uriSpec> is absolute 
         //    and p_base can be ignored.
@@ -415,7 +415,7 @@ public class URI implements Serializable
         // 
         // c) if <p_base> is not hierarchical, it can be ignored.
         //
-        if(uriSpec.startsWith("/") || !m_scheme.equals(p_base.m_scheme) || !p_base.getSchemeSpecificPart().startsWith("/"))
+        if (uriSpec.startsWith("/") || !m_scheme.equals(p_base.m_scheme) || !p_base.getSchemeSpecificPart().startsWith("/"))
         {
           p_base = null;
         }

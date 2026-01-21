@@ -1149,7 +1149,7 @@ public class ElemValueOf extends ElemTemplateElement {
    */
   protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
   {
-  	  if(callAttrs)
+  	  if (callAttrs)
   		 m_selectExpression.getExpression().callVisitors(m_selectExpression, visitor);
       super.callChildVisitors(visitor, callAttrs);
   }

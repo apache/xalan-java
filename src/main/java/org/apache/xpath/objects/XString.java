@@ -315,11 +315,11 @@ public class XString extends XObject implements XMLString
 	    // If at least one object to be compared is a boolean, then each object 
 	    // to be compared is converted to a boolean as if by applying the 
 	    // boolean function. 
-	    else if(XObject.CLASS_BOOLEAN == t)
+	    else if (XObject.CLASS_BOOLEAN == t)
 	    	return obj2.bool() == bool();
 	    // Otherwise, if at least one object to be compared is a number, then each object 
 	    // to be compared is converted to a number as if by applying the number function. 
-	    else if(XObject.CLASS_NUMBER == t)
+	    else if (XObject.CLASS_NUMBER == t)
 	    	return obj2.num() == num();
     }
     catch(javax.xml.transform.TransformerException te)

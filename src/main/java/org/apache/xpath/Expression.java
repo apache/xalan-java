@@ -438,7 +438,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    */
   protected final boolean isSameClass(Expression expr)
   {
-  	if(null == expr)
+  	if (null == expr)
   	  return false;
   	  
   	return (getClass() == expr.getClass());
@@ -536,7 +536,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   public ExpressionNode getExpressionOwner()
   {
   	ExpressionNode parent = exprGetParent();
-  	while((null != parent) && (parent instanceof Expression))
+  	while ((null != parent) && (parent instanceof Expression))
   		parent = parent.exprGetParent();
   	return parent;
   }
@@ -591,7 +591,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    */
   public String getPublicId()
   {
-  	if(null == m_parent)
+  	if (null == m_parent)
   	  return null;
   	return m_parent.getPublicId();
   }
@@ -612,7 +612,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    */
   public String getSystemId()
   {
-  	if(null == m_parent)
+  	if (null == m_parent)
   	  return null;
   	return m_parent.getSystemId();
   }
@@ -634,7 +634,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    */
   public int getLineNumber()
   {
-  	if(null == m_parent)
+  	if (null == m_parent)
   	  return 0;
   	return m_parent.getLineNumber();
   }
@@ -656,7 +656,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    */
   public int getColumnNumber()
   {
-  	if(null == m_parent)
+  	if (null == m_parent)
   	  return 0;
   	return m_parent.getColumnNumber();
   }

@@ -238,7 +238,7 @@ public final class TreeWalker
   private final void dispatachChars(Node node)
      throws org.xml.sax.SAXException
   {
-    if(m_Serializer != null)
+    if (m_Serializer != null)
     {
       this.m_Serializer.characters(node);
     }
@@ -356,7 +356,7 @@ public final class TreeWalker
       }
 
       String ns = m_dh.getNamespaceOfNode(node);
-      if(null == ns)
+      if (null == ns)
         ns = "";
       this.m_contentHandler.startElement(ns,
                                          m_dh.getLocalNameOfNode(node),
@@ -457,7 +457,7 @@ public final class TreeWalker
       
     case Node.ELEMENT_NODE :
       String ns = m_dh.getNamespaceOfNode(node);
-      if(null == ns)
+      if (null == ns)
         ns = "";
       this.m_contentHandler.endElement(ns,
                                          m_dh.getLocalNameOfNode(node),

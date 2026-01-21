@@ -150,7 +150,7 @@ public class JSONPointer {
         do {
             prevSlashIdx = slashIdx + 1;
             slashIdx = refs.indexOf('/', prevSlashIdx);
-            if(prevSlashIdx == slashIdx || prevSlashIdx == refs.length()) {
+            if (prevSlashIdx == slashIdx || prevSlashIdx == refs.length()) {
                 // found 2 slashes in a row ( obj//next )
                 // or single slash at the end of a string ( obj/test/ )
                 this.refTokens.add("");

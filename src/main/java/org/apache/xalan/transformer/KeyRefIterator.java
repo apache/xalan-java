@@ -66,9 +66,9 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
   protected int getNextNode()
   {                  
   	int next;   
-    while(DTM.NULL != (next = m_keysNodes.nextNode()))
+    while (DTM.NULL != (next = m_keysNodes.nextNode()))
     {
-    	if(DTMCursorIterator.FILTER_ACCEPT == filterNode(next))
+    	if (DTMCursorIterator.FILTER_ACCEPT == filterNode(next))
     		break;
     }
     m_lastFetched = next;
@@ -97,7 +97,7 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
     KeyIterator ki = (KeyIterator)(((XMLNodeCursorImpl)m_keysNodes).getContainedIter());
     org.apache.xpath.XPathContext xctxt = ki.getXPathContext();
     
-    if(null == xctxt)
+    if (null == xctxt)
     	assertion(false, "xctxt can not be null here!");
 
     try
@@ -145,7 +145,7 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
           }
         }
 
-      } // end for(int i = 0; i < nDeclarations; i++)
+      } // end for (int i = 0; i < nDeclarations; i++)
     }
     catch (javax.xml.transform.TransformerException te)
     {

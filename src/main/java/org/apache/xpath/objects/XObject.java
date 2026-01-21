@@ -1257,8 +1257,22 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
     	   return DateTimeUtil.isAfter((XSDateTime)this, (XSDateTime)obj2);   
        }       
-       else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
-    	   return DateTimeUtil.isAfter((XSTime)this, (XSTime)obj2);    
+       else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {    	   
+    	   XSTime xsTime1 = (XSTime)this;
+    	   String str1 = xsTime1.stringValue();
+    	   if (!(str1.contains("+") || str1.contains("-") || str1.contains("Z"))) {
+    		  str1 += "+14:00";
+    		  xsTime1 = XSTime.parseTime(str1);
+    	   }    	   
+    	   
+    	   XSTime xsTime2 = (XSTime)obj2;
+    	   String str2 = xsTime2.stringValue();
+    	   if (!(str2.contains("+") || str2.contains("-") || str2.contains("Z"))) {
+    		   str2 += "+14:00";
+    		   xsTime2 = XSTime.parseTime(str2); 
+     	   }    	   
+    	   
+    	   return DateTimeUtil.isAfter(xsTime1, xsTime2);    
        }
        else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
      	  String lStr = ((XSNumericType)this).stringValue();
@@ -2285,7 +2299,7 @@ public class XObject extends Expression implements Serializable, Cloneable
     //                                      m_support.ERROR,
     //                                      null, 
     //                                      null, fmsg, 0, 0);
-    // if(shouldThrow)
+    // if (shouldThrow)
     {
       throw new XPathException(fmsg, this);
     }
@@ -2333,13 +2347,13 @@ public class XObject extends Expression implements Serializable, Cloneable
    */
   public boolean deepEquals(Expression expr)
   {
-	  if(!isSameClass(expr))
+	  if (!isSameClass(expr))
 		  return false;
 
 	  // If equals at the expression level calls deepEquals, I think we're 
 	  // still safe from infinite recursion since this object overrides 
 	  // equals.  I hope.
-	  if(!this.equals((XObject)expr))
+	  if (!this.equals((XObject)expr))
 		  return false;
 
 	  return true;

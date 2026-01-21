@@ -82,7 +82,7 @@ public class TrAXFilter extends XMLFilterImpl
   { 
     super.setParent(parent);
     
-    if(null != parent.getContentHandler())
+    if (null != parent.getContentHandler())
       this.setContentHandler(parent.getContentHandler());
 
     // Not really sure if we should do this here, but 
@@ -105,7 +105,7 @@ public class TrAXFilter extends XMLFilterImpl
   public void parse (InputSource input)
     throws org.xml.sax.SAXException, IOException
   {
-    if(null == getParent())
+    if (null == getParent())
     {
       XMLReader reader=null;
 
@@ -135,7 +135,7 @@ public class TrAXFilter extends XMLFilterImpl
       catch (AbstractMethodError ame){}
 
       XMLReader parent;
-      if( reader==null )
+      if ( reader==null )
           parent= XMLReaderFactory.createXMLReader();
       else
           parent=reader;
@@ -153,16 +153,16 @@ public class TrAXFilter extends XMLFilterImpl
       // Make sure everything is set up.
       setupParse ();
     }
-    if(null == m_transformer.getContentHandler())
+    if (null == m_transformer.getContentHandler())
     {
       throw new org.xml.sax.SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_CALL_PARSE, null)); //"parse can not be called if the ContentHandler has not been set!");
     }
 
     getParent().parse(input);
     Exception e = m_transformer.getExceptionThrown();
-    if(null != e)
+    if (null != e)
     {
-      if(e instanceof org.xml.sax.SAXException)
+      if (e instanceof org.xml.sax.SAXException)
         throw (org.xml.sax.SAXException)e;
       else
         throw new org.xml.sax.SAXException(e);
@@ -202,7 +202,7 @@ public class TrAXFilter extends XMLFilterImpl
     }
     
     ContentHandler ch = m_transformer.getInputContentHandler();
-//    if(ch instanceof SourceTreeHandler)
+//    if (ch instanceof SourceTreeHandler)
 //      ((SourceTreeHandler)ch).setUseMultiThreading(true);
     p.setContentHandler(ch);
     p.setEntityResolver(this);

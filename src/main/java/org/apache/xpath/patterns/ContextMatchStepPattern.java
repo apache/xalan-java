@@ -102,7 +102,7 @@ public class ContextMatchStepPattern extends StepPattern
       boolean iterRootIsAttr = (dtm.getNodeType(xctxt.getIteratorRoot()) 
                                  == DTM.ATTRIBUTE_NODE);
 
-      if((Axis.PRECEDING == axis) && iterRootIsAttr)
+      if ((Axis.PRECEDING == axis) && iterRootIsAttr)
       {
         axis = Axis.PRECEDINGANDANCESTOR;
       }
@@ -128,7 +128,7 @@ public class ContextMatchStepPattern extends StepPattern
 	      score = NodeTest.SCORE_NONE;
           }
           
-          if(needToTraverseAttrs && iterRootIsAttr
+          if (needToTraverseAttrs && iterRootIsAttr
              && (DTM.ELEMENT_NODE == dtm.getNodeType(relative)))
           {
             int xaxis = Axis.ATTRIBUTE;

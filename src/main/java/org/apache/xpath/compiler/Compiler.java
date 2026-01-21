@@ -1260,14 +1260,14 @@ private static final boolean DEBUG = false;
     switch (stepType)
     {
     case OpCodes.OP_FUNCTION :
-      if(DEBUG)
+      if (DEBUG)
         System.out.println("MATCH_FUNCTION: "+m_currentPattern); 
       addMagicSelf = false;
       argLen = getOp(opPos + OpMap.MAPINDEX_LENGTH);
       pattern = new FunctionPattern(compileFunction(opPos), Axis.PARENT, Axis.CHILD);
       break;
     case OpCodes.FROM_ROOT :
-      if(DEBUG)
+      if (DEBUG)
         System.out.println("FROM_ROOT, "+m_currentPattern);
       addMagicSelf = false;
       argLen = getArgLengthOfStep(opPos);
@@ -1277,7 +1277,7 @@ private static final boolean DEBUG = false;
                                 Axis.PARENT, Axis.CHILD);
       break;
     case OpCodes.MATCH_ATTRIBUTE :
-     if(DEBUG)
+     if (DEBUG)
         System.out.println("MATCH_ATTRIBUTE: "+getStepLocalName(startOpPos)+", "+m_currentPattern);
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
@@ -1287,13 +1287,13 @@ private static final boolean DEBUG = false;
                                 Axis.PARENT, Axis.ATTRIBUTE);
       break;
     case OpCodes.MATCH_ANY_ANCESTOR :
-      if(DEBUG)
+      if (DEBUG)
         System.out.println("MATCH_ANY_ANCESTOR: "+getStepLocalName(startOpPos)+", "+m_currentPattern);
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
       int what = getWhatToShow(startOpPos);
       // bit-o-hackery, but this code is due for the morgue anyway...
-      if(0x00000500 == what)
+      if (0x00000500 == what)
         addMagicSelf = false;
       pattern = new StepPattern(getWhatToShow(startOpPos),
                                         getStepNS(startOpPos),
@@ -1301,7 +1301,7 @@ private static final boolean DEBUG = false;
                                         Axis.ANCESTOR, Axis.CHILD);
       break;
     case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
-      if(DEBUG)
+      if (DEBUG)
         System.out.println("MATCH_IMMEDIATE_ANCESTOR: "+getStepLocalName(startOpPos)+", "+m_currentPattern);
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
@@ -1317,7 +1317,7 @@ private static final boolean DEBUG = false;
     }
 
     pattern.setPredicates(getCompiledPredicates(opPos + argLen));
-    if(null == ancestorPattern)
+    if (null == ancestorPattern)
     {
       // This is the magic and invisible "." at the head of every 
       // match pattern, and corresponds to the current node in the context 
@@ -1328,7 +1328,7 @@ private static final boolean DEBUG = false;
       // translate this to a select pattern from the node being tested, 
       // which is really how we're treating match patterns, it works out to 
       // self::foo/parent::node[child::foo[3]]", or close enough.
-	/*      if(addMagicSelf && pattern.getPredicateCount() > 0)
+	/*      if (addMagicSelf && pattern.getPredicateCount() > 0)
       {
         StepPattern selfPattern = new StepPattern(DTMFilter.SHOW_ALL, 
                                                   Axis.PARENT, Axis.CHILD);

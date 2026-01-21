@@ -520,7 +520,7 @@ public abstract class SyntaxTreeNode implements Constants {
         // references falling out-of-scope inside the for-each element.
         // (the cause of which being 'lazy' register allocation for references)
         for (int i = 0; i < n; i++) {
-            if( _contents.elementAt(i) instanceof VariableBase) {
+            if ( _contents.elementAt(i) instanceof VariableBase) {
                 final VariableBase var = (VariableBase)_contents.elementAt(i);
                 var.unmapRegister(methodGen);
             }

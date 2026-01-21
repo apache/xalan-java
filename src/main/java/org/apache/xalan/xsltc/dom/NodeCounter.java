@@ -111,7 +111,7 @@ public abstract class NodeCounter {
   
   // format == null assumed here 
  private final void setTokens(final String format){
-     if( (_format!=null) &&(format.equals(_format)) ){// has already been set
+     if ( (_format!=null) &&(format.equals(_format)) ){// has already been set
         return;
      }
      _format = format;

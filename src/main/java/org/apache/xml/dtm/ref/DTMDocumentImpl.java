@@ -416,7 +416,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
   private void processAccumulatedText()
   {
     int len=m_char.length();
-    if(len!=m_char_current_start)
+    if (len!=m_char_current_start)
       {
         // The FastStringBuffer has been previously agreed upon
         appendTextChild(m_char_current_start,len-m_char_current_start);
@@ -479,7 +479,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
     // %TBD% Split prefix off qname
     String prefix=null;
     int colon=qName.indexOf(':');
-    if(colon>0)
+    if (colon>0)
       prefix=qName.substring(0,colon);
 
     // %TBD% Where do we pool expandedName, or is it just the union, or...
@@ -493,14 +493,14 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
     // %TBD% Is there an easier way to test for NSDecl?
     int nAtts=(atts==null) ? 0 : atts.getLength();
     // %TBD% Countdown is more efficient if nobody cares about sequence.
-    for(int i=nAtts-1;i>=0;--i)
+    for (int i=nAtts-1;i>=0;--i)
       {
         qName=atts.getQName(i);
-        if(qName.startsWith("xmlns:") || "xmlns".equals(qName))
+        if (qName.startsWith("xmlns:") || "xmlns".equals(qName))
           {
             prefix=null;
             colon=qName.indexOf(':');
-            if(colon>0)
+            if (colon>0)
               {
                 prefix=qName.substring(0,colon);
               }
@@ -518,17 +518,17 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
           }
       }
 
-    for(int i=nAtts-1;i>=0;--i)
+    for (int i=nAtts-1;i>=0;--i)
       {
         qName=atts.getQName(i);
-        if(!(qName.startsWith("xmlns:") || "xmlns".equals(qName)))
+        if (!(qName.startsWith("xmlns:") || "xmlns".equals(qName)))
           {
             // %TBD% I hate having to extract the prefix into a new
             // string when we may never use it. Consider pooling whole
             // qNames, which are already strings?
             prefix=null;
             colon=qName.indexOf(':');
-            if(colon>0)
+            if (colon>0)
               {
                 prefix=qName.substring(0,colon);
                 localName=qName.substring(colon+1);
@@ -543,7 +543,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
             m_char.append(atts.getValue(i)); // Single-string value
             int contentEnd=m_char.length();
 
-            if(!("xmlns".equals(prefix) || "xmlns".equals(qName)))
+            if (!("xmlns".equals(prefix) || "xmlns".equals(qName)))
               appendAttribute(m_nsNames.stringToIndex(atts.getURI(i)),
                                   m_localNames.stringToIndex(localName),
                                   m_prefixNames.stringToIndex(prefix),
@@ -1610,7 +1610,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
 
                   name=m_localNames.indexToString(i & 0xFFFF);
                   String prefix=m_prefixNames.indexToString(i >>16);
-                  if(prefix!=null && prefix.length()>0)
+                  if (prefix!=null && prefix.length()>0)
                     name=prefix+":"+name;
                 }
                 return name;
@@ -1644,7 +1644,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
                 if ((type==ELEMENT_NODE) || (type==ATTRIBUTE_NODE)) {
                   int i=gotslot[3];
                   name=m_localNames.indexToString(i & 0xFFFF);
-                  if(name==null) name="";
+                  if (name==null) name="";
                 }
                 return name;
         }
@@ -1667,10 +1667,10 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
                 nodes.readSlot(nodeHandle, gotslot);
                 short type = (short) (gotslot[0] & 0xFFFF);
                 String name = "";
-                if((type==ELEMENT_NODE) || (type==ATTRIBUTE_NODE)) {
+                if ((type==ELEMENT_NODE) || (type==ATTRIBUTE_NODE)) {
                   int i=gotslot[3];
                   name=m_prefixNames.indexToString(i >>16);
-                  if(name==null) name="";
+                  if (name==null) name="";
                 }
                 return name;
         }

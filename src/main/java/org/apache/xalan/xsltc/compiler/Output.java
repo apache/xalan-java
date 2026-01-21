@@ -393,7 +393,7 @@ final class Output extends TopLevelElement {
 	}
 
         //Compile code to set indent amount.
-        if(_indentamount != null && !_indentamount.equals(EMPTYSTRING)){
+        if (_indentamount != null && !_indentamount.equals(EMPTYSTRING)){
             field = cpg.addFieldref(TRANSLET_CLASS, "_indentamount", "I");
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, Integer.parseInt(_indentamount)));

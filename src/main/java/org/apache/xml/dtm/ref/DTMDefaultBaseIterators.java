@@ -731,7 +731,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
      */
     public int next()
     {
-      if(_startNode == _currentNode)
+      if (_startNode == _currentNode)
         return NULL;
 
       _currentNode = _startNode;
@@ -768,7 +768,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
      */
     public int next()
     {
-    	if(_startNode == _currentNode)
+    	if (_startNode == _currentNode)
         return NULL;
 
       int nodeType = _nodeType;
@@ -1118,14 +1118,14 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
         _startNode = node;
         node = _startNodeID = makeNodeIdentity(node);
 
-        if(node == NULL)
+        if (node == NULL)
         {
           _currentNode = node;
           return resetPosition();
         }
 
         int type = m_expandedNameTable.getType(_exptype(node));
-        if(ExpandedNameTable.ATTRIBUTE == type 
+        if (ExpandedNameTable.ATTRIBUTE == type 
            || ExpandedNameTable.NAMESPACE == type )
         {
           _currentNode = node;
@@ -1134,7 +1134,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
         {
           // Be careful to handle the Document node properly
           _currentNode = _parent(node);
-          if(NULL!=_currentNode)	
+          if (NULL!=_currentNode)	
             _currentNode = _firstch(_currentNode);
           else
             _currentNode = node;
@@ -1332,7 +1332,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 			}
 			_stack[index] = parent;
         }
-        if(index>0)
+        if (index>0)
 	        --index; // Pop actual root node (if not start) back off the stack
 
         _currentNode=_stack[index]; // Last parent before root node
@@ -1355,13 +1355,13 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     	// Bugzilla 8324: We were forgetting to skip Attrs and NS nodes.
     	// Also recoded the loop controls for clarity and to flatten out
     	// the tail-recursion.
-   		for(++_currentNode; 
+   		for (++_currentNode; 
    			_sp>=0; 
    			++_currentNode)
    		{
-   			if(_currentNode < _stack[_sp])
+   			if (_currentNode < _stack[_sp])
    			{
-   				if(_type(_currentNode) != ATTRIBUTE_NODE &&
+   				if (_type(_currentNode) != ATTRIBUTE_NODE &&
    					_type(_currentNode) != NAMESPACE_NODE)
    					return returnNode(makeNodeHandle(_currentNode));
    			}
@@ -1893,7 +1893,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
           _currentNode = NULL;
           return END;
         }
-      } while(ATTRIBUTE_NODE == type || TEXT_NODE == type
+      } while (ATTRIBUTE_NODE == type || TEXT_NODE == type
                  || NAMESPACE_NODE == type);
 
       _currentNode = node;

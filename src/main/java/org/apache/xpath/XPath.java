@@ -164,7 +164,7 @@ public class XPath implements Serializable, ExpressionOwner
    */
   public void setExpression(Expression exp)
   {
-  	if(null != m_mainExp)
+  	if (null != m_mainExp)
     	exp.exprSetParent(m_mainExp.exprGetParent()); // a bit bogus
     m_mainExp = exp;
   }
@@ -342,7 +342,7 @@ public class XPath implements Serializable, ExpressionOwner
   { 
 	  m_funcTable = funcTable;
 
-	  if(errorListener == null)
+	  if (errorListener == null)
 		  errorListener = new org.apache.xml.utils.DefaultErrorHandler();
 
 	  if (exprString.contains("||") || exprString.contains("//element(")) {
@@ -609,7 +609,7 @@ public class XPath implements Serializable, ExpressionOwner
     {
       te.setLocator(this.getLocator());
       ErrorListener el = xctxt.getErrorListener();
-      if(null != el)
+      if (null != el)
       {
         el.error(te);
       }
@@ -634,7 +634,7 @@ public class XPath implements Serializable, ExpressionOwner
       TransformerException te = new TransformerException(msg,
               getLocator(), e);
       ErrorListener el = xctxt.getErrorListener();
-      if(null != el)
+      if (null != el)
       {
         el.fatalError(te);
       }
@@ -937,7 +937,7 @@ public class XPath implements Serializable, ExpressionOwner
 		  }  
 		  TransformerException te = new TransformerException(msg, getLocator(), e);
 		  ErrorListener el = xctxt.getErrorListener();
-		  if(null != el)
+		  if (null != el)
 		  {
 			  el.fatalError(te);
 		  }

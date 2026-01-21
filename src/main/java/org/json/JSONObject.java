@@ -377,7 +377,7 @@ public class JSONObject {
         } else {
             this.map = new LinkedHashMap<String, Object>(m.size());
         	for (final Entry<?, ?> e : m.entrySet()) {
-        	    if(e.getKey() == null) {
+        	    if (e.getKey() == null) {
         	        throw new NullPointerException("Null key.");
         	    }
                 final Object value = e.getValue();
@@ -702,7 +702,7 @@ public class JSONObject {
      */
     public <E extends Enum<E>> E getEnum(Class<E> clazz, String key) throws JSONException {
         E val = optEnum(clazz, key);
-        if(val==null) {
+        if (val==null) {
             // JSONException should really take a throwable argument.
             // If it did, I would re-implement this with the Enum.valueOf
             // method and place any thrown exception in the JSONException
@@ -788,7 +788,7 @@ public class JSONObject {
      */
     public double getDouble(String key) throws JSONException {
         final Object object = this.get(key);
-        if(object instanceof Number) {
+        if (object instanceof Number) {
             return ((Number)object).doubleValue();
         }
         try {
@@ -810,7 +810,7 @@ public class JSONObject {
      */
     public float getFloat(String key) throws JSONException {
         final Object object = this.get(key);
-        if(object instanceof Number) {
+        if (object instanceof Number) {
             return ((Number)object).floatValue();
         }
         try {
@@ -854,7 +854,7 @@ public class JSONObject {
      */
     public int getInt(String key) throws JSONException {
         final Object object = this.get(key);
-        if(object instanceof Number) {
+        if (object instanceof Number) {
             return ((Number)object).intValue();
         }
         try {
@@ -910,7 +910,7 @@ public class JSONObject {
      */
     public long getLong(String key) throws JSONException {
         final Object object = this.get(key);
-        if(object instanceof Number) {
+        if (object instanceof Number) {
             return ((Number)object).longValue();
         }
         try {
@@ -1110,7 +1110,7 @@ public class JSONObject {
      *        is empty.
      */
     public JSONArray names() {
-    	if(this.map.isEmpty()) {
+    	if (this.map.isEmpty()) {
     		return null;
     	}
         return new JSONArray(this.map.keySet());
@@ -1405,7 +1405,7 @@ public class JSONObject {
             // this conversion to BigDecimal then to BigInteger is to maintain
             // that type cast support that may truncate the decimal.
             final String valStr = val.toString();
-            if(isDecimalNotation(valStr)) {
+            if (isDecimalNotation(valStr)) {
                 return new BigDecimal(valStr).toBigInteger();
             }
             return new BigInteger(valStr);
@@ -2423,10 +2423,10 @@ public class JSONObject {
                 String name = entry.getKey();
                 Object valueThis = entry.getValue();
                 Object valueOther = ((JSONObject)other).get(name);
-                if(valueThis == valueOther) {
+                if (valueThis == valueOther) {
                 	continue;
                 }
-                if(valueThis == null) {
+                if (valueThis == null) {
                 	return false;
                 }
                 if (valueThis instanceof JSONObject) {
@@ -2478,7 +2478,7 @@ public class JSONObject {
 
         // if the classes are the same and implement Comparable
         // then use the built in compare first.
-        if(l.getClass().equals(r.getClass()) && l instanceof Comparable) {
+        if (l.getClass().equals(r.getClass()) && l instanceof Comparable) {
             @SuppressWarnings({ "rawtypes", "unchecked" })
             int compareTo = ((Comparable)l).compareTo(r);
             return compareTo==0;
@@ -2578,7 +2578,7 @@ public class JSONObject {
                 // keep that by forcing a decimal.
                 try {
                     BigDecimal bd = new BigDecimal(val);
-                    if(initial == '-' && BigDecimal.ZERO.compareTo(bd)==0) {
+                    if (initial == '-' && BigDecimal.ZERO.compareTo(bd)==0) {
                         return Double.valueOf(-0.0);
                     }
                     return bd;
@@ -2586,7 +2586,7 @@ public class JSONObject {
                     // this is to support "Hex Floats" like this: 0x1.0P-1074
                     try {
                         Double d = Double.valueOf(val);
-                        if(d.isNaN() || d.isInfinite()) {
+                        if (d.isNaN() || d.isInfinite()) {
                             throw new NumberFormatException("val ["+val+"] is not a valid number.");
                         }
                         return d;
@@ -2596,15 +2596,15 @@ public class JSONObject {
                 }
             }
             // block items like 00 01 etc. Java number parsers treat these as Octal.
-            if(initial == '0' && val.length() > 1) {
+            if (initial == '0' && val.length() > 1) {
                 char at1 = val.charAt(1);
-                if(at1 >= '0' && at1 <= '9') {
+                if (at1 >= '0' && at1 <= '9') {
                     throw new NumberFormatException("val ["+val+"] is not a valid number.");
                 }
             } else if (initial == '-' && val.length() > 2) {
                 char at1 = val.charAt(1);
                 char at2 = val.charAt(2);
-                if(at1 == '0' && at2 >= '0' && at2 <= '9') {
+                if (at1 == '0' && at2 >= '0' && at2 <= '9') {
                     throw new NumberFormatException("val ["+val+"] is not a valid number.");
                 }
             }
@@ -2617,10 +2617,10 @@ public class JSONObject {
             // only what they need. i.e. Less runtime overhead if the value is
             // long lived.
             BigInteger bi = new BigInteger(val);
-            if(bi.bitLength() <= 31){
+            if (bi.bitLength() <= 31){
                 return Integer.valueOf(bi.intValue());
             }
-            if(bi.bitLength() <= 63){
+            if (bi.bitLength() <= 63){
                 return Long.valueOf(bi.longValue());
             }
             return bi;
@@ -2875,7 +2875,7 @@ public class JSONObject {
         } else if (value instanceof Number) {
             // not all Numbers may match actual JSON Numbers. i.e. fractions or Imaginary
             final String numberAsString = numberToString((Number) value);
-            if(NUMBER_PATTERN.matcher(numberAsString).matches()) {
+            if (NUMBER_PATTERN.matcher(numberAsString).matches()) {
                 writer.write(numberAsString);
             } else {
                 // The Number value is not a valid JSON number.
@@ -3032,14 +3032,14 @@ public class JSONObject {
             String valueType,
             Object value,
             Throwable cause) {
-        if(value == null) {
+        if (value == null) {
 
             return new JSONException(
                     "JSONObject[" + quote(key) + "] is not a " + valueType + " (null)."
                     , cause);
         }
         // don't try to toString collections or known object types that could be large.
-        if(value instanceof Map || value instanceof Iterable || value instanceof JSONObject) {
+        if (value instanceof Map || value instanceof Iterable || value instanceof JSONObject) {
             return new JSONException(
                     "JSONObject[" + quote(key) + "] is not a " + valueType + " (" + value.getClass() + ")."
                     , cause);

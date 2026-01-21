@@ -352,7 +352,7 @@ public class DOMBuilder
 
           String attrNS = atts.getURI(i);
 
-          if("".equals(attrNS))
+          if ("".equals(attrNS))
             attrNS = null; // DOM represents no-namespace as null
 
           // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
@@ -471,7 +471,7 @@ public class DOMBuilder
    */
   public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
-    if(isOutsideDocElem()
+    if (isOutsideDocElem()
        && org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
       return;  // avoid DOM006 Hierarchy request error
 
@@ -491,7 +491,7 @@ public class DOMBuilder
     
     Node childNode;
     childNode =  m_currentNode != null ? m_currentNode.getLastChild(): null;
-    if( childNode != null && childNode.getNodeType() == Node.TEXT_NODE ){
+    if ( childNode != null && childNode.getNodeType() == Node.TEXT_NODE ){
        ((Text)childNode).appendData(s);
     }
     else{
@@ -513,7 +513,7 @@ public class DOMBuilder
   public void charactersRaw(char ch[], int start, int length)
           throws org.xml.sax.SAXException
   {
-    if(isOutsideDocElem()
+    if (isOutsideDocElem()
        && org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
       return;  // avoid DOM006 Hierarchy request error
 
@@ -589,7 +589,7 @@ public class DOMBuilder
   public void ignorableWhitespace(char ch[], int start, int length)
           throws org.xml.sax.SAXException
   {
-    if(isOutsideDocElem())
+    if (isOutsideDocElem())
       return;  // avoid DOM006 Hierarchy request error
 
     String s = new String(ch, start, length);
@@ -693,7 +693,7 @@ public class DOMBuilder
    */
   public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
-    if(isOutsideDocElem()
+    if (isOutsideDocElem()
        && org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
       return;  // avoid DOM006 Hierarchy request error
 
@@ -766,7 +766,7 @@ public class DOMBuilder
   public void startPrefixMapping(String prefix, String uri)
           throws org.xml.sax.SAXException
   {
-	      if(null == prefix || prefix.length() == 0)
+	      if (null == prefix || prefix.length() == 0)
 	        prefix = "xmlns";
 	      else prefix = "xmlns:"+prefix;
 	      m_prefixMappings.addElement(prefix);

@@ -351,7 +351,7 @@ public class XML {
                                 && NULL_ATTR.equals(string)
                                 && Boolean.parseBoolean((String) token)) {
                             nilAttributeFound = true;
-                        } else if(config.getXsiTypeMap() != null && !config.getXsiTypeMap().isEmpty()
+                        } else if (config.getXsiTypeMap() != null && !config.getXsiTypeMap().isEmpty()
                                 && TYPE_ATTR.equals(string)) {
                             xmlXsiTypeConverter = config.getXsiTypeMap().get(token);
                         } else if (!nilAttributeFound) {
@@ -413,7 +413,7 @@ public class XML {
                         } else if (token instanceof String) {
                             string = (String) token;
                             if (string.length() > 0) {
-                                if(xmlXsiTypeConverter != null) {
+                                if (xmlXsiTypeConverter != null) {
                                     jsonObject.accumulate(config.getcDataTagName(),
                                             stringToValue(string, xmlXsiTypeConverter));
                                 } else {
@@ -530,7 +530,7 @@ public class XML {
                 // keep that by forcing a decimal.
                 try {
                     BigDecimal bd = new BigDecimal(val);
-                    if(initial == '-' && BigDecimal.ZERO.compareTo(bd)==0) {
+                    if (initial == '-' && BigDecimal.ZERO.compareTo(bd)==0) {
                         return Double.valueOf(-0.0);
                     }
                     return bd;
@@ -538,7 +538,7 @@ public class XML {
                     // this is to support "Hex Floats" like this: 0x1.0P-1074
                     try {
                         Double d = Double.valueOf(val);
-                        if(d.isNaN() || d.isInfinite()) {
+                        if (d.isNaN() || d.isInfinite()) {
                             throw new NumberFormatException("val ["+val+"] is not a valid number.");
                         }
                         return d;
@@ -548,15 +548,15 @@ public class XML {
                 }
             }
             // block items like 00 01 etc. Java number parsers treat these as Octal.
-            if(initial == '0' && val.length() > 1) {
+            if (initial == '0' && val.length() > 1) {
                 char at1 = val.charAt(1);
-                if(at1 >= '0' && at1 <= '9') {
+                if (at1 >= '0' && at1 <= '9') {
                     throw new NumberFormatException("val ["+val+"] is not a valid number.");
                 }
             } else if (initial == '-' && val.length() > 2) {
                 char at1 = val.charAt(1);
                 char at2 = val.charAt(2);
-                if(at1 == '0' && at2 >= '0' && at2 <= '9') {
+                if (at1 == '0' && at2 >= '0' && at2 <= '9') {
                     throw new NumberFormatException("val ["+val+"] is not a valid number.");
                 }
             }
@@ -569,10 +569,10 @@ public class XML {
             // only what they need. i.e. Less runtime overhead if the value is
             // long lived.
             BigInteger bi = new BigInteger(val);
-            if(bi.bitLength() <= 31){
+            if (bi.bitLength() <= 31){
                 return Integer.valueOf(bi.intValue());
             }
-            if(bi.bitLength() <= 63){
+            if (bi.bitLength() <= 63){
                 return Long.valueOf(bi.longValue());
             }
             return bi;
@@ -595,7 +595,7 @@ public class XML {
      * @return JSON value of this string or the string
      */
     public static Object stringToValue(String string, XMLXsiTypeConverter<?> typeConverter) {
-        if(typeConverter != null) {
+        if (typeConverter != null) {
             return typeConverter.convert(string);
         }
         return stringToValue(string);
@@ -704,7 +704,7 @@ public class XML {
      * @throws JSONException Thrown if there is an errors while parsing the string
      */
     public static JSONObject toJSONObject(Reader reader, boolean keepStrings) throws JSONException {
-        if(keepStrings) {
+        if (keepStrings) {
             return toJSONObject(reader, XMLParserConfiguration.KEEP_STRINGS);
         }
         return toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
@@ -739,10 +739,10 @@ public class XML {
      */
     public static JSONObject toJSONObject(Reader reader, boolean keepNumberAsString, boolean keepBooleanAsString) throws JSONException {
         XMLParserConfiguration xmlParserConfiguration = new XMLParserConfiguration();
-        if(keepNumberAsString) {
+        if (keepNumberAsString) {
             xmlParserConfiguration = xmlParserConfiguration.withKeepNumberAsString(keepNumberAsString);
         }
-        if(keepBooleanAsString) {
+        if (keepBooleanAsString) {
             xmlParserConfiguration = xmlParserConfiguration.withKeepBooleanAsString(keepBooleanAsString);
         }
         return toJSONObject(reader, xmlParserConfiguration);
@@ -773,7 +773,7 @@ public class XML {
         XMLTokener x = new XMLTokener(reader, config);
         while (x.more()) {
             x.skipPast("<");
-            if(x.more()) {
+            if (x.more()) {
                 parse(x, jo, null, config, 0);
             }
         }
@@ -938,7 +938,7 @@ public class XML {
                 sb.append('<');
                 sb.append(tagName);
                 sb.append('>');
-                if(indentFactor > 0){
+                if (indentFactor > 0){
                     sb.append("\n");
                     indent += indentFactor;
                 }
@@ -1027,7 +1027,7 @@ public class XML {
                 sb.append("</");
                 sb.append(tagName);
                 sb.append('>');
-                if(indentFactor > 0){
+                if (indentFactor > 0){
                     sb.append("\n");
                 }
             }
@@ -1036,7 +1036,7 @@ public class XML {
         }
 
         if (object != null && (object instanceof JSONArray ||  object.getClass().isArray())) {
-            if(object.getClass().isArray()) {
+            if (object.getClass().isArray()) {
                 ja = new JSONArray(object);
             } else {
                 ja = (JSONArray) object;
@@ -1056,9 +1056,9 @@ public class XML {
 
         string = (object == null) ? "null" : escape(object.toString());
         String indentationSuffix = (indentFactor > 0) ? "\n" : "";
-        if(tagName == null){
+        if (tagName == null){
             return indent(indent) + "\"" + string + "\"" + indentationSuffix;
-        } else if(string.length() == 0){
+        } else if (string.length() == 0){
             return indent(indent) + "<" + tagName + "/>" + indentationSuffix;
         } else {
             return indent(indent) + "<" + tagName

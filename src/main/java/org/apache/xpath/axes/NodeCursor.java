@@ -193,11 +193,11 @@ public class NodeCursor extends XObject
     if (nodeVector instanceof NodeVector) {
         SetVector((NodeVector) nodeVector);
     }
-  	if(null != nodeVector)
+  	if (null != nodeVector)
   	{
   		assertion(nodeVector instanceof NodeVector, 
   			"Must have a NodeVector as the object for NodeSequence!");
-  		if(nodeVector instanceof DTMCursorIterator)
+  		if (nodeVector instanceof DTMCursorIterator)
   		{
   			setIter((DTMCursorIterator)nodeVector);
   			m_last = ((DTMCursorIterator)nodeVector).getLength();
@@ -233,7 +233,7 @@ public class NodeCursor extends XObject
   public DTM getDTM(int nodeHandle)
   {
   	DTMManager mgr = getDTMManager();
-  	if(null != mgr)
+  	if (null != mgr)
     	return getDTMManager().getDTM(nodeHandle);
     else
     {
@@ -255,7 +255,7 @@ public class NodeCursor extends XObject
    */
   public int getRoot()
   {
-  	if(null != m_iter)
+  	if (null != m_iter)
     	return m_iter.getRoot();
   	else
   	{
@@ -271,14 +271,14 @@ public class NodeCursor extends XObject
    */
   public void setRoot(int nodeHandle, Object environment)
   {
-  	if(null != m_iter)
+  	if (null != m_iter)
   	{
   		XPathContext xctxt = (XPathContext)environment;
   		m_dtmMgr = xctxt.getDTMManager();
   		m_iter.setRoot(nodeHandle, environment);
-  		if(!m_iter.isDocOrdered())
+  		if (!m_iter.isDocOrdered())
   		{
-  			if(!hasCache())
+  			if (!hasCache())
   				setShouldCacheNodes(true);
   			runTo(-1);
   			m_next=0;
@@ -311,7 +311,7 @@ public class NodeCursor extends XObject
    */
   public boolean getExpandEntityReferences()
   {
-  	if(null != m_iter)
+  	if (null != m_iter)
   		return m_iter.getExpandEntityReferences();
   	else
     	return true;
@@ -328,14 +328,14 @@ public class NodeCursor extends XObject
     if (null != vec)
     {	
         // There is a cache
-    	if(m_next < vec.size())
+    	if (m_next < vec.size())
     	{
             // The node is in the cache, so just return it.
 			int next = vec.elementAt(m_next);
 	    	m_next++;
 	    	return next;
     	}
-    	else if(cacheComplete() || (-1 != m_last) || (null == m_iter))
+    	else if (cacheComplete() || (-1 != m_last) || (null == m_iter))
     	{
     		m_next++;
     		return DTM.NULL;
@@ -346,11 +346,11 @@ public class NodeCursor extends XObject
     return DTM.NULL;
   
  	int next = m_iter.nextNode();
-    if(DTM.NULL != next)
+    if (DTM.NULL != next)
     {
-    	if(hasCache())
+    	if (hasCache())
     	{
-    		if(m_iter.isDocOrdered())
+    		if (m_iter.isDocOrdered())
     	    {
     			getVector().addElement(next);
     			m_next++;
@@ -358,7 +358,7 @@ public class NodeCursor extends XObject
     		else
     		{
     			int insertIndex = addNodeInDocOrder(next);
-    			if(insertIndex >= 0)
+    			if (insertIndex >= 0)
     				m_next++;
     		}
     	}
@@ -384,9 +384,9 @@ public class NodeCursor extends XObject
    */
   public int previousNode()
   {
-  	if(hasCache())
+  	if (hasCache())
   	{
-  		if(m_next <= 0)
+  		if (m_next <= 0)
   			return DTM.NULL;
   		else
   		{
@@ -407,7 +407,7 @@ public class NodeCursor extends XObject
    */
   public void detach()
   {
-  	if(null != m_iter)
+  	if (null != m_iter)
   		m_iter.detach();
   	super.detach();
   }
@@ -419,12 +419,12 @@ public class NodeCursor extends XObject
    */
   public void allowDetachToRelease(boolean allowRelease)
   {
-  	if((false == allowRelease) && !hasCache())
+  	if ((false == allowRelease) && !hasCache())
   	{
   		setShouldCacheNodes(true);
   	}
   	
-  	if(null != m_iter)
+  	if (null != m_iter)
   		m_iter.allowDetachToRelease(allowRelease);
   	super.allowDetachToRelease(allowRelease);
   }
@@ -434,17 +434,17 @@ public class NodeCursor extends XObject
    */
   public int getCurrentNode()
   {
-  	if(hasCache())
+  	if (hasCache())
   	{
   		int currentIndex = m_next-1;
   		NodeVector vec = getVector();
-  		if((currentIndex >= 0) && (currentIndex < vec.size()))
+  		if ((currentIndex >= 0) && (currentIndex < vec.size()))
   			return vec.elementAt(currentIndex);
   		else
   			return DTM.NULL;
   	}
   	
-  	if(null != m_iter)
+  	if (null != m_iter)
   	{
     	return m_iter.getCurrentNode();
   	}
@@ -467,7 +467,7 @@ public class NodeCursor extends XObject
   {
     if (b)
     {
-      if(!hasCache())
+      if (!hasCache())
       {
         SetVector(new NodeVector());
       }
@@ -507,15 +507,15 @@ public class NodeCursor extends XObject
       while (DTM.NULL != (n = nextNode()));
       m_next = pos;
     }
-    else if(m_next == index)
+    else if (m_next == index)
     {
       return;
     }
-    else if(hasCache() && m_next < getVector().size())
+    else if (hasCache() && m_next < getVector().size())
     {
       m_next = index;
     }
-    else if((null == getVector()) && (index < m_next))
+    else if ((null == getVector()) && (index < m_next))
     {
       while ((m_next >= index) && DTM.NULL != (n = previousNode()));
     }
@@ -551,7 +551,7 @@ public class NodeCursor extends XObject
   public void setItem(int node, int index)
   {
   	NodeVector vec = getVector();
-  	if(null != vec)
+  	if (null != vec)
   	{
         int oldNode = vec.elementAt(index);
         if (oldNode != node && m_cache.useCount() > 1) {
@@ -601,7 +601,7 @@ public class NodeCursor extends XObject
   {
     IteratorCache cache = getCache();
     
-  	if(cache != null)
+  	if (cache != null)
   	{
         // Nodes from the iterator are cached
         if (cache.isComplete()) {
@@ -619,7 +619,7 @@ public class NodeCursor extends XObject
             return m_iter.getLength();
         }    
         
-	  	if(-1 == m_last)
+	  	if (-1 == m_last)
 	  	{
 	  		int pos = m_next;
 	  		runTo(-1);
@@ -684,7 +684,7 @@ public class NodeCursor extends XObject
    */
   public boolean isDocOrdered()
   {
-  	if(null != m_iter)
+  	if (null != m_iter)
   		return m_iter.isDocOrdered();
   	else
     	return true; // can't be sure?
@@ -695,7 +695,7 @@ public class NodeCursor extends XObject
    */
   public int getAxis()
   {
-  	if(null != m_iter)
+  	if (null != m_iter)
     	return m_iter.getAxis();
     else
     {
@@ -709,7 +709,7 @@ public class NodeCursor extends XObject
    */
   public int getAnalysisBits()
   {
-  	if((null != m_iter) && (m_iter instanceof PathComponent))
+  	if ((null != m_iter) && (m_iter instanceof PathComponent))
     	return ((PathComponent)m_iter).getAnalysisBits();
     else
     	return 0;

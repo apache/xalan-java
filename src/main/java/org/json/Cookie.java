@@ -82,7 +82,7 @@ public class Cookie {
         
         name = unescape(x.nextTo('=').trim());
         //per RFC6265, if the name is blank, the cookie should be ignored.
-        if("".equals(name)) {
+        if ("".equals(name)) {
             throw new JSONException("Cookies must have a 'name'");
         }
         jo.put("name", name);
@@ -96,10 +96,10 @@ public class Cookie {
         while (x.more()) {
             name = unescape(x.nextTo("=;")).trim().toLowerCase(Locale.ROOT);
             // don't allow a cookies attributes to overwrite its name or value.
-            if("name".equalsIgnoreCase(name)) {
+            if ("name".equalsIgnoreCase(name)) {
                 throw new JSONException("Illegal attribute name: 'name'");
             }
-            if("value".equalsIgnoreCase(name)) {
+            if ("value".equalsIgnoreCase(name)) {
                 throw new JSONException("Illegal attribute name: 'value'");
             }
             // check to see if it's a flag property
@@ -110,7 +110,7 @@ public class Cookie {
                 x.next();
             }
             // only store non-blank attributes
-            if(!"".equals(name) && !"".equals(value)) {
+            if (!"".equals(name) && !"".equals(value)) {
                 jo.put(name, value);
             }
         }
@@ -134,22 +134,22 @@ public class Cookie {
         
         String name = null;
         Object value = null;
-        for(String key : jo.keySet()){
-            if("name".equalsIgnoreCase(key)) {
+        for (String key : jo.keySet()){
+            if ("name".equalsIgnoreCase(key)) {
                 name = jo.getString(key).trim();
             }
-            if("value".equalsIgnoreCase(key)) {
+            if ("value".equalsIgnoreCase(key)) {
                 value=jo.getString(key).trim();
             }
-            if(name != null && value != null) {
+            if (name != null && value != null) {
                 break;
             }
         }
         
-        if(name == null || "".equals(name.trim())) {
+        if (name == null || "".equals(name.trim())) {
             throw new JSONException("Cookie does not have a name");
         }
-        if(value == null) {
+        if (value == null) {
             value = "";
         }
         
@@ -157,15 +157,15 @@ public class Cookie {
         sb.append("=");
         sb.append(escape((String)value));
         
-        for(String key : jo.keySet()){
-            if("name".equalsIgnoreCase(key)
+        for (String key : jo.keySet()){
+            if ("name".equalsIgnoreCase(key)
                     || "value".equalsIgnoreCase(key)) {
                 // already processed above
                 continue;
             }
             value = jo.opt(key);
-            if(value instanceof Boolean) {
-                if(Boolean.TRUE.equals(value)) {
+            if (value instanceof Boolean) {
+                if (Boolean.TRUE.equals(value)) {
                     sb.append(';').append(escape(key));
                 }
                 // don't emit false values

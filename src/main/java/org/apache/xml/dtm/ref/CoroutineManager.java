@@ -183,9 +183,9 @@ public class CoroutineManager
    * */
   public synchronized int co_joinCoroutineSet(int coroutineID)
   {
-    if(coroutineID>=0)
+    if (coroutineID>=0)
       {
-        if(coroutineID>=m_unreasonableId || m_activeIDs.get(coroutineID))
+        if (coroutineID>=m_unreasonableId || m_activeIDs.get(coroutineID))
           return -1;
       }
     else
@@ -193,14 +193,14 @@ public class CoroutineManager
         // What I want is "Find first clear bit". That doesn't exist.
         // JDK1.2 added "find last set bit", but that doesn't help now.
         coroutineID=0;
-        while(coroutineID<m_unreasonableId)
+        while (coroutineID<m_unreasonableId)
           {
-            if(m_activeIDs.get(coroutineID))
+            if (m_activeIDs.get(coroutineID))
               ++coroutineID;
             else
               break;
           }
-        if(coroutineID>=m_unreasonableId)
+        if (coroutineID>=m_unreasonableId)
           return -1;
       }
 
@@ -225,10 +225,10 @@ public class CoroutineManager
    * */
   public synchronized Object co_entry_pause(int thisCoroutine) throws java.lang.NoSuchMethodException
   {
-    if(!m_activeIDs.get(thisCoroutine))
+    if (!m_activeIDs.get(thisCoroutine))
       throw new java.lang.NoSuchMethodException();
 
-    while(m_nextCoroutine != thisCoroutine)
+    while (m_nextCoroutine != thisCoroutine)
       {
         try 
           {
@@ -260,7 +260,7 @@ public class CoroutineManager
    * */
   public synchronized Object co_resume(Object arg_object,int thisCoroutine,int toCoroutine) throws java.lang.NoSuchMethodException
   {
-    if(!m_activeIDs.get(toCoroutine))
+    if (!m_activeIDs.get(toCoroutine))
       throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_NOT_AVAIL, new Object[]{Integer.toString(toCoroutine)})); //"Coroutine not available, id="+toCoroutine);
 
     // We expect these values to be overwritten during the notify()/wait()
@@ -269,7 +269,7 @@ public class CoroutineManager
     m_nextCoroutine=toCoroutine;
 
     notify();
-    while(m_nextCoroutine != thisCoroutine || m_nextCoroutine==ANYBODY || m_nextCoroutine==NOBODY)
+    while (m_nextCoroutine != thisCoroutine || m_nextCoroutine==ANYBODY || m_nextCoroutine==NOBODY)
       {
         try 
           {
@@ -283,7 +283,7 @@ public class CoroutineManager
           }
       }
 
-    if(m_nextCoroutine==NOBODY)
+    if (m_nextCoroutine==NOBODY)
       {
         // Pass it along
         co_exit(thisCoroutine);
@@ -329,7 +329,7 @@ public class CoroutineManager
    * */
   public synchronized void co_exit_to(Object arg_object,int thisCoroutine,int toCoroutine) throws java.lang.NoSuchMethodException
   {
-    if(!m_activeIDs.get(toCoroutine))
+    if (!m_activeIDs.get(toCoroutine))
       throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_NOT_AVAIL, new Object[]{Integer.toString(toCoroutine)})); //"Coroutine not available, id="+toCoroutine);
     
     // We expect these values to be overwritten during the notify()/wait()

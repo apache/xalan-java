@@ -93,7 +93,7 @@ public class OneStepIterator extends ChildTestIterator
   public void setRoot(int context, Object environment)
   {
     super.setRoot(context, environment);
-    if(m_axis > -1)
+    if (m_axis > -1)
       m_iterator = m_cdtm.getAxisIterator(m_axis);
     m_iterator.setStartNode(m_context);
   }
@@ -107,9 +107,9 @@ public class OneStepIterator extends ChildTestIterator
    */
   public void detach()
   {    
-    if(m_allowDetach)
+    if (m_allowDetach)
     {
-      if(m_axis > -1)
+      if (m_axis > -1)
         m_iterator = null;
       
       // Always call the superclass detach last!
@@ -138,7 +138,7 @@ public class OneStepIterator extends ChildTestIterator
     
     OneStepIterator clone = (OneStepIterator) super.clone();
 
-    if(m_iterator != null)
+    if (m_iterator != null)
     {
       clone.m_iterator = m_iterator.cloneIterator();
     }
@@ -187,13 +187,13 @@ public class OneStepIterator extends ChildTestIterator
    */
   protected int getProximityPosition(int predicateIndex)
   {
-    if(!isReverseAxes())
+    if (!isReverseAxes())
       return super.getProximityPosition(predicateIndex);
       
     // A negative predicate index seems to occur with
     // (preceding-sibling::*|following-sibling::*)/ancestor::*[position()]/*[position()]
     // -sb
-    if(predicateIndex < 0)
+    if (predicateIndex < 0)
       return -1;
       
     if (m_proximityPositions[predicateIndex] <= 0)
@@ -243,7 +243,7 @@ public class OneStepIterator extends ChildTestIterator
    */
   public int getLength()
   {
-    if(!isReverseAxes())
+    if (!isReverseAxes())
       return super.getLength();
       
     // Tell if this is being called from within a predicate.
@@ -299,7 +299,7 @@ public class OneStepIterator extends ChildTestIterator
    */
   protected void countProximityPosition(int i)
   {
-    if(!isReverseAxes())
+    if (!isReverseAxes())
       super.countProximityPosition(i);
     else if (i < m_proximityPositions.length)
       m_proximityPositions[i]--;
@@ -312,7 +312,7 @@ public class OneStepIterator extends ChildTestIterator
   {
 
     super.reset();
-    if(null != m_iterator)
+    if (null != m_iterator)
       m_iterator.reset();
   }
   
@@ -332,10 +332,10 @@ public class OneStepIterator extends ChildTestIterator
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!super.deepEquals(expr))
+  	if (!super.deepEquals(expr))
   		return false;
   		
-  	if(m_axis != ((OneStepIterator)expr).m_axis)
+  	if (m_axis != ((OneStepIterator)expr).m_axis)
   		return false;
   		
   	return true;

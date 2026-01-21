@@ -116,7 +116,7 @@ final class SerializerTraceWriter extends Writer implements WriterChain
         if (count > 0)
         {
             char[] chars = new char[count];
-            for(int i=0; i<count; i++)
+            for (int i=0; i<count; i++)
                 chars[i] = (char) buf[i];
 
             if (m_tracer != null)

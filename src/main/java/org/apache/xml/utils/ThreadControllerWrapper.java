@@ -70,7 +70,7 @@ public class ThreadControllerWrapper
 
       t.start();
 
-      //       if( priority > 0 )
+      //       if ( priority > 0 )
       //      t.setPriority( priority );
       return t;
     }

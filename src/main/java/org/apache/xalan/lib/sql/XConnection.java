@@ -1105,7 +1105,7 @@ public class XConnection
     // If it is really called then we must me using a single
     // document interface, so close all open documents.
 
-    while(m_OpenSQLDocuments.size() != 0)
+    while (m_OpenSQLDocuments.size() != 0)
     {
       SQLDocument d = (SQLDocument) m_OpenSQLDocuments.elementAt(0);
       try

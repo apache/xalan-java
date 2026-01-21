@@ -156,7 +156,7 @@ public class Redirect
   {
     String fileName = getFilename(context, elem);
     Object flistener = m_formatterListeners.get(fileName);
-    if(null == flistener)
+    if (null == flistener)
     {
       String mkdirsExpr 
         = elem.getAttribute ("mkdirs", context.getContextNode(), 
@@ -187,7 +187,7 @@ public class Redirect
     Object flObject = m_formatterListeners.get(fileName);
     ContentHandler formatter;
     boolean inTable = false;
-    if(null == flObject)
+    if (null == flObject)
     {
       String mkdirsExpr 
         = ((ElemExtensionCall)elem).getAttribute ("mkdirs", 
@@ -219,10 +219,10 @@ public class Redirect
                                  
     endRedirection(transf); // for tracing only
     
-    if(!inTable)
+    if (!inTable)
     {
       OutputStream ostream = (OutputStream)m_outputStreams.get(fileName);
-      if(null != ostream)
+      if (null != ostream)
       {
         try
         {
@@ -251,7 +251,7 @@ public class Redirect
   {
     String fileName = getFilename(context, elem);
     Object formatterObj = m_formatterListeners.get(fileName);
-    if(null != formatterObj)
+    if (null != formatterObj)
     {
       ContentHandler fl = (ContentHandler)formatterObj;
       try
@@ -263,7 +263,7 @@ public class Redirect
         throw new TransformerException(se);
       }
       OutputStream ostream = (OutputStream)m_outputStreams.get(fileName);
-      if(null != ostream)
+      if (null != ostream)
       {
         ostream.close();
         m_outputStreams.remove(fileName);
@@ -286,14 +286,14 @@ public class Redirect
       = ((ElemExtensionCall)elem).getAttribute ("select", 
                                                 context.getContextNode(), 
                                                 context.getTransformer());
-    if(null != fileNameExpr)
+    if (null != fileNameExpr)
     {
       org.apache.xpath.XPathContext xctxt 
         = context.getTransformer().getXPathContext();
       XPath myxpath = new XPath(fileNameExpr, elem, xctxt.getNamespaceContext(), XPath.SELECT);
       XObject xobj = myxpath.execute(xctxt, context.getContextNode(), elem);
       fileName = xobj.str();
-      if((null == fileName) || (fileName.length() == 0))
+      if ((null == fileName) || (fileName.length() == 0))
       {
         fileName = elem.getAttribute ("file", 
                                       context.getContextNode(), 
@@ -305,7 +305,7 @@ public class Redirect
       fileName = elem.getAttribute ("file", context.getContextNode(), 
                                                                context.getTransformer());
     }
-    if(null == fileName)
+    if (null == fileName)
     {
       context.getTransformer().getMsgMgr().error(elem, elem, 
                                      context.getContextNode(), 
@@ -320,25 +320,25 @@ public class Redirect
   //    be fully correct! Patches (with test cases) welcomed. -sc
   private String urlToFileName(String base)
   {
-    if(null != base)
+    if (null != base)
     {
-      if(base.startsWith("file:////"))
+      if (base.startsWith("file:////"))
       {
         base = base.substring(7);
       }
-      else if(base.startsWith("file:///"))
+      else if (base.startsWith("file:///"))
       {
         base = base.substring(6);
       }
-      else if(base.startsWith("file://"))
+      else if (base.startsWith("file://"))
       {
         base = base.substring(5); // absolute?
       }
-      else if(base.startsWith("file:/"))
+      else if (base.startsWith("file:/"))
       {
         base = base.substring(5);
       }
-      else if(base.startsWith("file:"))
+      else if (base.startsWith("file:"))
       {
         base = base.substring(4);
       }
@@ -364,7 +364,7 @@ public class Redirect
     TransformerImpl transformer = context.getTransformer();
     String base;          // Base URI to use for relative paths
 
-    if(!file.isAbsolute())
+    if (!file.isAbsolute())
     {
       // This code is attributed to Jon Grov <jon@linpro.no>.  A relative file name
       // is relative to the Result used to kick off the transform.  If no such
@@ -382,7 +382,7 @@ public class Redirect
         base = urlToFileName(transformer.getBaseURLOfSource());
       }
 
-      if(null != base)
+      if (null != base)
       {
         File baseFile = new File(base);
         file = new File(baseFile.getParent(), fileName);
@@ -390,10 +390,10 @@ public class Redirect
       // System.out.println("file is: "+file.toString());
     }
 
-    if(mkdirs)
+    if (mkdirs)
     {
       String dirStr = file.getParent();
-      if((null != dirStr) && (dirStr.length() > 0))
+      if ((null != dirStr) && (dirStr.length() > 0))
       {
         File dir = new File(dirStr);
         dir.mkdirs();
@@ -425,7 +425,7 @@ public class Redirect
       {
         throw new TransformerException(se);
       }
-      if(shouldPutInTable)
+      if (shouldPutInTable)
       {
         m_outputStreams.put(fileName, ostream);
         m_formatterListeners.put(fileName, flistener);

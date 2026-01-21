@@ -621,11 +621,11 @@ public class ToXMLStream extends ToStream
     public String getXMLVersion()
     {
         String xmlVersion = getVersion();
-        if(xmlVersion == null || xmlVersion.equals(XMLVERSION10))
+        if (xmlVersion == null || xmlVersion.equals(XMLVERSION10))
         {
             xmlVersion = XMLVERSION10;
         }
-        else if(xmlVersion.equals(XMLVERSION11))
+        else if (xmlVersion.equals(XMLVERSION11))
         {
             xmlVersion = XMLVERSION11;
         }

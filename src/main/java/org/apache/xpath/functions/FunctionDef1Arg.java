@@ -91,7 +91,7 @@ public class FunctionDef1Arg extends FunctionOneArg
     if (m_arg0 == null)
     {
       int currentNode = xctxt.getCurrentNode();
-      if(DTM.NULL == currentNode) {
+      if (DTM.NULL == currentNode) {
           resultVal = XString.EMPTYSTRING;
       }
       else
@@ -141,10 +141,10 @@ public class FunctionDef1Arg extends FunctionOneArg
           throws javax.xml.transform.TransformerException
   {
 
-    if(null == m_arg0)
+    if (null == m_arg0)
     {
       int currentNode = xctxt.getCurrentNode();
-      if(DTM.NULL == currentNode)
+      if (DTM.NULL == currentNode)
         return 0;
       else
       {

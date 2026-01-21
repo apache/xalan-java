@@ -75,7 +75,7 @@ public class FilterExprWalker extends AxesWalker
     case OpCodes.OP_VARIABLE :
       m_expr = compiler.compile(opPos);
       m_expr.exprSetParent(this);
-      if(m_expr instanceof org.apache.xpath.operations.Variable)
+      if (m_expr instanceof org.apache.xpath.operations.Variable)
       {
       	m_canDetachNodeset = false;
       }
@@ -323,7 +323,7 @@ public class FilterExprWalker extends AxesWalker
                 return false;
 
       FilterExprWalker walker = (FilterExprWalker)expr;
-      if(!m_expr.deepEquals(walker.m_expr))
+      if (!m_expr.deepEquals(walker.m_expr))
       	return false;
 
       return true;

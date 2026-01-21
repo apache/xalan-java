@@ -121,17 +121,17 @@ public class TransformerHandlerImpl
    */
   protected void clearCoRoutine(SAXException ex)
   {
-    if(null != ex)
+    if (null != ex)
       m_transformer.setExceptionThrown(ex);
     
-    if(m_dtm instanceof SAX2DTM)
+    if (m_dtm instanceof SAX2DTM)
     {
-      if(DEBUG)
+      if (DEBUG)
         System.err.println("In clearCoRoutine...");
       try
       {
         SAX2DTM sax2dtm = ((SAX2DTM)m_dtm);          
-        if(null != m_contentHandler 
+        if (null != m_contentHandler 
            && m_contentHandler instanceof IncrementalSAXSource_Filter)
         {
           IncrementalSAXSource_Filter sp =
@@ -152,7 +152,7 @@ public class TransformerHandlerImpl
         throwable.printStackTrace();
       }
       
-      if(DEBUG)
+      if (DEBUG)
         System.err.println("...exiting clearCoRoutine");
     }
   }
@@ -322,7 +322,7 @@ public class TransformerHandlerImpl
 
     this.m_locator = locator;
     
-    if(null == m_baseSystemID)
+    if (null == m_baseSystemID)
     {
       setSystemId(locator.getSystemId());
     }
@@ -353,7 +353,7 @@ public class TransformerHandlerImpl
     if (m_contentHandler != null)
     {
       //m_transformer.setTransformThread(listener);
-      if(m_incremental)
+      if (m_incremental)
       {
         m_transformer.setSourceTreeDocForThread(m_dtm.getDocument());
             
@@ -396,7 +396,7 @@ public class TransformerHandlerImpl
       m_contentHandler.endDocument();
     }
     
-    if(m_incremental)
+    if (m_incremental)
     {
       m_transformer.waitTransformThread();
     }
@@ -632,7 +632,7 @@ public class TransformerHandlerImpl
     // can't really be configured, so I think this is the best thing right now 
     // for error reporting.  Possibly another JAXP 1.1 hole.  -sb
     javax.xml.transform.ErrorListener errorListener = m_transformer.getErrorListener();
-    if(errorListener instanceof ErrorHandler)
+    if (errorListener instanceof ErrorHandler)
     {
       ((ErrorHandler)errorListener).warning(e);
     }
@@ -667,10 +667,10 @@ public class TransformerHandlerImpl
     // can't really be configured, so I think this is the best thing right now 
     // for error reporting.  Possibly another JAXP 1.1 hole.  -sb
     javax.xml.transform.ErrorListener errorListener = m_transformer.getErrorListener();
-    if(errorListener instanceof ErrorHandler)
+    if (errorListener instanceof ErrorHandler)
     {
       ((ErrorHandler)errorListener).error(e);
-      if(null != m_errorHandler)
+      if (null != m_errorHandler)
         m_errorHandler.error(e); // may not be called.
     }
     else
@@ -678,7 +678,7 @@ public class TransformerHandlerImpl
       try
       {
         errorListener.error(new javax.xml.transform.TransformerException(e));
-        if(null != m_errorHandler)
+        if (null != m_errorHandler)
           m_errorHandler.error(e); // may not be called.
       }
       catch(javax.xml.transform.TransformerException te)
@@ -698,7 +698,7 @@ public class TransformerHandlerImpl
    */
   public void fatalError(SAXParseException e) throws SAXException
   {
-    if(null != m_errorHandler)
+    if (null != m_errorHandler)
     {
       try
       {
@@ -717,10 +717,10 @@ public class TransformerHandlerImpl
     // for error reporting.  Possibly another JAXP 1.1 hole.  -sb
     javax.xml.transform.ErrorListener errorListener = m_transformer.getErrorListener();
     
-    if(errorListener instanceof ErrorHandler)
+    if (errorListener instanceof ErrorHandler)
     {
       ((ErrorHandler)errorListener).fatalError(e);
-      if(null != m_errorHandler)
+      if (null != m_errorHandler)
         m_errorHandler.fatalError(e); // may not be called.
     }
     else
@@ -728,7 +728,7 @@ public class TransformerHandlerImpl
       try
       {
         errorListener.fatalError(new javax.xml.transform.TransformerException(e));
-        if(null != m_errorHandler)
+        if (null != m_errorHandler)
           m_errorHandler.fatalError(e); // may not be called.
       }
       catch(javax.xml.transform.TransformerException te)

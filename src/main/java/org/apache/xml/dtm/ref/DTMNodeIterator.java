@@ -156,7 +156,7 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
    *  */
   public Node nextNode() throws DOMException
     {
-      if(!valid)
+      if (!valid)
         throw new DTMDOMException(DOMException.INVALID_STATE_ERR);
       
       int handle=dtm_iter.nextNode();
@@ -174,7 +174,7 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
    *  */
   public Node previousNode() 
     {
-      if(!valid)
+      if (!valid)
         throw new DTMDOMException(DOMException.INVALID_STATE_ERR);
       
       int handle=dtm_iter.previousNode();

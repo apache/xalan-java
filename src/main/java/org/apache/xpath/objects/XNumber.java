@@ -192,7 +192,7 @@ public class XNumber extends XObject
 //
 //    int decimalPos = -1;
 //    int start = (s.charAt(0) == '-') ? 1 : 0;
-//    findStart: for( ; start < len; start++ )
+//    findStart: for ( ; start < len; start++ )
 //    {
 //      switch (s.charAt(start))
 //      {
@@ -206,7 +206,7 @@ public class XNumber extends XObject
 //      }
 //    }
 //    int end = s.length() - 1;
-//    findEnd: for( ; end > start; end-- )
+//    findEnd: for ( ; end > start; end-- )
 //    {
 //      switch (s.charAt(end))
 //      {
@@ -399,7 +399,7 @@ public class XNumber extends XObject
    */
   public Object object()
   {
-    if(null == m_obj)
+    if (null == m_obj)
       setObject(new Double(m_val));
     return m_obj;
   }
@@ -425,7 +425,7 @@ public class XNumber extends XObject
     {
 	    if (t == XObject.CLASS_NODESET)
 	      return obj2.equals(this);
-	    else if(t == XObject.CLASS_BOOLEAN)
+	    else if (t == XObject.CLASS_BOOLEAN)
 	      return obj2.bool() == bool();
 		else
 	       return m_val == obj2.num();

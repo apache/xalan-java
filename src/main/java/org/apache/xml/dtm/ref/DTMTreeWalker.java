@@ -159,7 +159,7 @@ public class DTMTreeWalker
   public void traverse(int pos, int top) throws org.xml.sax.SAXException
   {
     // %OPT% Can we simplify the loop conditionals by adding:
-    //		if(top==DTM.NULL) top=0
+    //		if (top==DTM.NULL) top=0
     // -- or by simply ignoring this case and relying on the fact that
     // pos will never equal DTM.NULL until we're ready to exit?
 
@@ -258,7 +258,7 @@ public class DTMTreeWalker
       // System.out.println("m_dh.getNamespaceOfNode(node): "+m_dh.getNamespaceOfNode(node));
       // System.out.println("m_dh.getLocalNameOfNode(node): "+m_dh.getLocalNameOfNode(node));
       String ns = dtm.getNamespaceURI(node);
-      if(null == ns)
+      if (null == ns)
         ns = "";
         
       // %OPT% !!
@@ -371,7 +371,7 @@ public class DTMTreeWalker
       break;
     case DTM.ELEMENT_NODE :
       String ns = m_dtm.getNamespaceURI(node);
-      if(null == ns)
+      if (null == ns)
         ns = "";
       this.m_contentHandler.endElement(ns,
                                          m_dtm.getLocalName(node),

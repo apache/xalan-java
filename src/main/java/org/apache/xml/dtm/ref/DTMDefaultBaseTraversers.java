@@ -361,12 +361,12 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
           int parentID = m_parent.elementAt(nextID);
           
           // Is it a child?
-          if(parentID == axisRoot)
+          if (parentID == axisRoot)
             return nextID;
           
           // If the parent occured before the subtree root, then 
           // we know it is past the child axis.
-          if(parentID < axisRoot)
+          if (parentID < axisRoot)
               return NULL;
           
           // Otherwise, it could be a descendant below the subtree root 
@@ -377,10 +377,10 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
           do
           {
             parentID = m_parent.elementAt(parentID);
-            if(parentID < axisRoot)
+            if (parentID < axisRoot)
               return NULL;
           }
-            while(parentID > axisRoot);
+            while (parentID > axisRoot);
           
           // System.out.println("Found node via index: "+first);
           nextPotential = nextID+1;
@@ -389,7 +389,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
         nextNode();
         
-        if(!(m_nextsib.elementAt(axisRoot) == NOTPROCESSED))
+        if (!(m_nextsib.elementAt(axisRoot) == NOTPROCESSED))
           break;
       }
 
@@ -429,7 +429,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context, int expandedTypeID)
     {
-      if(true)
+      if (true)
       {
         int identity = makeNodeIdentity(context);
         
@@ -556,7 +556,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
       int nsIndex = m_expandedNameTable.getNamespaceID(expandedTypeID);
       int lnIndex = m_expandedNameTable.getLocalNameID(expandedTypeID);
 
-      while(true)
+      while (true)
       {
         int next = findElementFromIndex(nsIndex, lnIndex, nextPotential);
 
@@ -568,7 +568,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
           // System.out.println("Found node via index: "+first);
           return next;
         }
-        else if(axisHasBeenProcessed(axisRoot))
+        else if (axisHasBeenProcessed(axisRoot))
           break;
 
         nextNode();
@@ -656,11 +656,11 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 			// (next-sib or ancestor's-next-sib). Probably shallower search.
       do
       {
-        if(identity == axisRoot)
+        if (identity == axisRoot)
           return false;
         identity = m_parent.elementAt(identity);
       }
-        while(identity >= axisRoot);
+        while (identity >= axisRoot);
         
       return true;
     }

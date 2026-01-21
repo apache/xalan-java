@@ -187,7 +187,7 @@ public class XPathImpl implements javax.xml.xpath.XPath {
     private static Document getDummyDocument( ) {
         // we don't need synchronization here; even if two threads
         // enter this code at the same time, we just waste a little time
-        if(d==null) {
+        if (d==null) {
             DOMImplementation dim = getParser().getDOMImplementation();
             d = dim.createDocument("http://java.sun.com/jaxp/xpath",
                 "dummyroot", null);
@@ -447,7 +447,7 @@ public class XPathImpl implements javax.xml.xpath.XPath {
     public Object evaluate(String expression, InputSource source, 
             QName returnType) throws XPathExpressionException {
         // Checking validity of different parameters
-        if( source== null ) {
+        if ( source== null ) {
             String fmsg = XSLMessages.createXPATHMessage( 
                     XPATHErrorResources.ER_ARG_CANNOT_BE_NULL,
                     new Object[] {"source"} );

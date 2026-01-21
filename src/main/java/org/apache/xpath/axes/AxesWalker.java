@@ -114,32 +114,32 @@ public class AxesWalker extends PredicatedNodeTest
      throws CloneNotSupportedException
   {
     AxesWalker clone = findClone(this, cloneList);
-    if(null != clone)
+    if (null != clone)
       return clone;
     clone = (AxesWalker)this.clone();
     clone.setLocPathIterator(cloneOwner);
-    if(null != cloneList)
+    if (null != cloneList)
     {
       cloneList.addElement(this);
       cloneList.addElement(clone);
     }
     
-    if(wi().m_lastUsedWalker == this)
+    if (wi().m_lastUsedWalker == this)
       cloneOwner.m_lastUsedWalker = clone;
       
-    if(null != m_nextWalker)
+    if (null != m_nextWalker)
       clone.m_nextWalker = m_nextWalker.cloneDeep(cloneOwner, cloneList);
       
     // If you don't check for the cloneList here, you'll go into an 
     // recursive infinate loop.  
-    if(null != cloneList)
+    if (null != cloneList)
     {
-      if(null != m_prevWalker)
+      if (null != m_prevWalker)
         clone.m_prevWalker = m_prevWalker.cloneDeep(cloneOwner, cloneList);
     }
     else
     {
-      if(null != m_nextWalker)
+      if (null != m_nextWalker)
         clone.m_nextWalker.m_prevWalker = clone;
     }
     return clone;
@@ -156,13 +156,13 @@ public class AxesWalker extends PredicatedNodeTest
    */
   static AxesWalker findClone(AxesWalker key, Vector cloneList)
   {
-    if(null != cloneList)
+    if (null != cloneList)
     {
       // First, look for clone on list.
       int n = cloneList.size();
       for (int i = 0; i < n; i+=2) 
       {
-        if(key == cloneList.elementAt(i))
+        if (key == cloneList.elementAt(i))
           return (AxesWalker)cloneList.elementAt(i+1);
       }
     }
@@ -330,7 +330,7 @@ public class AxesWalker extends PredicatedNodeTest
     // I shouldn't have to do this the check for current node, I think.
     // numbering\numbering24.xsl fails if I don't do this.  I think 
     // it occurs as the walkers are backing up. -sb
-    else if(DTM.NULL != m_currentNode) 
+    else if (DTM.NULL != m_currentNode) 
     {
       m_currentNode = m_traverser.next(m_root, m_currentNode);
     }
@@ -393,8 +393,8 @@ public class AxesWalker extends PredicatedNodeTest
 
           continue;
         }
-      }  // if(null != nextNode)
-    }  // while(null != walker)
+      }  // if (null != nextNode)
+    }  // while (null != walker)
 
     return nextNode;
   }
@@ -519,10 +519,10 @@ public class AxesWalker extends PredicatedNodeTest
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {
-  	if(visitor.visitStep(owner, this))
+  	if (visitor.visitStep(owner, this))
   	{
   		callPredicateVisitors(visitor);
-  		if(null != m_nextWalker)
+  		if (null != m_nextWalker)
   		{
   			m_nextWalker.callVisitors(this, visitor);
   		}
@@ -555,7 +555,7 @@ public class AxesWalker extends PredicatedNodeTest
                 return false;
 
       AxesWalker walker = (AxesWalker)expr;
-      if(this.m_axis != walker.m_axis)
+      if (this.m_axis != walker.m_axis)
       	return false;
 
       return true;

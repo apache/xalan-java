@@ -134,7 +134,7 @@ public class ProcessorExsltFunction extends ProcessorTemplateElem
         handler.error(msg, new SAXException(msg));
       }
       
-      if((elem instanceof ElemApplyImport
+      if ((elem instanceof ElemApplyImport
 	 || elem instanceof ElemApplyTemplates
 	 || elem instanceof ElemAttribute
 	 || elem instanceof ElemCallTemplate

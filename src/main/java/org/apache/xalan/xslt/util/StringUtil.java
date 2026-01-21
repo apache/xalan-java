@@ -46,7 +46,7 @@ public class StringUtil {
        
        int strLen = strValue.length();
        
-       for(int idx = 0; idx < strLen; idx++) {
+       for (int idx = 0; idx < strLen; idx++) {
            char ch = strValue.charAt(idx);
            if (ch == lParenChar) {
               charStack.push(ch); 
@@ -91,7 +91,7 @@ public class StringUtil {
         
         int strLen = strValue.length();
         
-        for(int idx = 0; idx < strLen; idx++) {
+        for (int idx = 0; idx < strLen; idx++) {
             char ch = strValue.charAt(idx);
             if (ch == lDelimChar) {
                charStack.push(ch); 

@@ -56,7 +56,7 @@ final class ChunkedIntArray
    */
   ChunkedIntArray(int slotsize)
   {
-    if(this.slotsize<slotsize)
+    if (this.slotsize<slotsize)
       throw new ArrayIndexOutOfBoundsException(XMLMessages.createXMLMessage(XMLErrorResources.ER_CHUNKEDINTARRAY_NOT_SUPPORTED, new Object[]{Integer.toString(slotsize)})); //"ChunkedIntArray("+slotsize+") not currently supported");
     else if (this.slotsize>slotsize)
       System.out.println("*****WARNING: ChunkedIntArray("+slotsize+") wasting "+(this.slotsize-slotsize)+" words per slot");
@@ -139,7 +139,7 @@ final class ChunkedIntArray
           // We have to look all the way up the ancestor chain
           // to make sure we don't have an ancestor.
           int ancestor = startPos;
-          while(ancestor > 0)
+          while (ancestor > 0)
           {
                 // Get the node whose index == ancestor
                 ancestor*=slotsize;
@@ -152,7 +152,7 @@ final class ChunkedIntArray
                 // rather than a ChunkedIntArray feature.)
                 ancestor = chunk[slotpos + 1];
 
-                if(ancestor == position)
+                if (ancestor == position)
                          break;
           }
 
@@ -283,10 +283,10 @@ final class ChunkedIntArray
     
     void addElement(int[] value)
     {
-      if(pos >= m_mapSize)
+      if (pos >= m_mapSize)
       {
         int orgMapSize = m_mapSize;
-        while(pos >= m_mapSize)
+        while (pos >= m_mapSize)
           m_mapSize+=BLOCKSIZE;
         int[] newMap[] = new int[m_mapSize][];
         System.arraycopy(m_map, 0, newMap, 0, orgMapSize);

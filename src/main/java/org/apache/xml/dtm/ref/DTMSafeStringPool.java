@@ -74,30 +74,30 @@ extends DTMStringPool
 
     System.out.println("If no complaints are printed below, we passed initial test.");
 
-    for(int pass=0;pass<=1;++pass)
+    for (int pass=0;pass<=1;++pass)
       {
         int i;
 
-        for(i=0;i<word.length;++i)
+        for (i=0;i<word.length;++i)
           {
             int j=pool.stringToIndex(word[i]);
-            if(j!=i)
+            if (j!=i)
               System.out.println("\tMismatch populating pool: assigned "+
                                  j+" for create "+i);
           }
 
-        for(i=0;i<word.length;++i)
+        for (i=0;i<word.length;++i)
           {
             int j=pool.stringToIndex(word[i]);
-            if(j!=i)
+            if (j!=i)
               System.out.println("\tMismatch in stringToIndex: returned "+
                                  j+" for lookup "+i);
           }
 
-        for(i=0;i<word.length;++i)
+        for (i=0;i<word.length;++i)
           {
             String w=pool.indexToString(i);
-            if(!word[i].equals(w))
+            if (!word[i].equals(w))
               System.out.println("\tMismatch in indexToString: returned"+
                                  w+" for lookup "+i);
           }

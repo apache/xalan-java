@@ -310,7 +310,7 @@ public class VariableStack implements Cloneable
 
     XObject val = _stackFrames[index];
     
-    if(null == val)
+    if (null == val)
       throw new TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_VARIABLE_ACCESSED_BEFORE_BIND, null),
                      xctxt.getSAXLocator());
       // "Variable accessed before it is bound!", xctxt.getSAXLocator());
@@ -367,7 +367,7 @@ public class VariableStack implements Cloneable
 
     XObject val = _stackFrames[index];
     
-    if(null == val)
+    if (null == val)
       throw new TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_VARIABLE_ACCESSED_BEFORE_BIND, null),
                      xctxt.getSAXLocator());
       // "Variable accessed before it is bound!", xctxt.getSAXLocator());

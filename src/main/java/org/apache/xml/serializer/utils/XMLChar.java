@@ -901,11 +901,11 @@ public class XMLChar {
         if (name.length() == 0)
             return false;
         char ch = name.charAt(0);
-        if( isNameStart(ch) == false)
+        if ( isNameStart(ch) == false)
            return false;
         for (int i = 1; i < name.length(); i++ ) {
            ch = name.charAt(i);
-           if( isName( ch ) == false ){
+           if ( isName( ch ) == false ){
               return false;
            }
         }
@@ -928,11 +928,11 @@ public class XMLChar {
         if (ncName.length() == 0)
             return false;
         char ch = ncName.charAt(0);
-        if( isNCNameStart(ch) == false)
+        if ( isNCNameStart(ch) == false)
            return false;
         for (int i = 1; i < ncName.length(); i++ ) {
            ch = ncName.charAt(i);
-           if( isNCName( ch ) == false ){
+           if ( isNCName( ch ) == false ){
               return false;
            }
         }
@@ -954,7 +954,7 @@ public class XMLChar {
             return false;
         for (int i = 0; i < nmtoken.length(); i++ ) {
            char ch = nmtoken.charAt(i);
-           if(  ! isName( ch ) ){
+           if (  ! isName( ch ) ){
               return false;
            }
         }

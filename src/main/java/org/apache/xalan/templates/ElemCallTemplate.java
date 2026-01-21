@@ -216,10 +216,10 @@ public class ElemCallTemplate extends ElemForEach
         for (ElemTemplateElement ete = m_template.getFirstChildElem(); 
              null != ete; ete = ete.getNextSiblingElem()) 
         {
-          if(ete.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE)
+          if (ete.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE)
           {
             ElemParam ep = (ElemParam)ete;
-            if(ep.getName().equals(ewp.getName()))
+            if (ep.getName().equals(ewp.getName()))
             {
               ewp.m_index = etePos;
             }
@@ -274,11 +274,11 @@ public class ElemCallTemplate extends ElemForEach
       
       // We have to clear the section of the stack frame that has params 
       // so that the default param evaluation will work correctly.
-      if(m_template.m_inArgsSize > 0)
+      if (m_template.m_inArgsSize > 0)
       {
         vars.clearLocalSlots(0, m_template.m_inArgsSize);
       
-        if(null != m_paramElems)
+        if (null != m_paramElems)
         {
           int currentNode = xctxt.getCurrentNode();
           vars.setStackFrame(thisframe);
@@ -289,7 +289,7 @@ public class ElemCallTemplate extends ElemForEach
           for (int i = 0; i < size; i++) 
           {
             ElemWithParam ewp = m_paramElems[i];
-            if(ewp.m_index >= 0)
+            if (ewp.m_index >= 0)
             {
               if (transformer.getDebug())
                 transformer.getTraceManager().emitTraceEvent(ewp);

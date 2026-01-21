@@ -207,7 +207,7 @@ public class XPathDynamicContext extends DTMManager {
 	 * @return true if the DTM was removed, false if it was put back in a lru pool.
 	 */
 	public boolean release(DTM dtm, boolean shouldHardDelete) {		
-		if(m_rtfdtm_stack!=null && m_rtfdtm_stack.contains(dtm))
+		if (m_rtfdtm_stack!=null && m_rtfdtm_stack.contains(dtm))
 		{
 			return false;
 		}

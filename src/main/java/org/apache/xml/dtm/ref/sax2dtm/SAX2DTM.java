@@ -532,7 +532,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       int offset = m_data.elementAt(dataIndex);
       int length = m_data.elementAt(dataIndex + 1);
 
-      if(normalize)
+      if (normalize)
         m_chars.sendNormalizedSAXcharacters(ch, offset, length);
       else
         m_chars.sendSAXcharacters(ch, offset, length);
@@ -569,13 +569,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
         if (length > 0)
         {
-          if(normalize)
+          if (normalize)
             m_chars.sendNormalizedSAXcharacters(ch, offset, length);
           else
             m_chars.sendSAXcharacters(ch, offset, length);
         }
       }
-      else if(type != DTM.ELEMENT_NODE)
+      else if (type != DTM.ELEMENT_NODE)
       {
         int dataIndex = _dataOrQName(identity);
 
@@ -587,7 +587,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
         String str = m_valuesOrPrefixes.indexToString(dataIndex);
 
-          if(normalize)
+          if (normalize)
             FastStringBuffer.sendNormalizedSAXcharacters(str.toCharArray(),
                                                          0, str.length(), ch);
           else
@@ -813,11 +813,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     // no-op.
     if (!(gotMore instanceof Boolean))
     {
-      if(gotMore instanceof RuntimeException)
+      if (gotMore instanceof RuntimeException)
       {
         throw (RuntimeException)gotMore;
       }
-      else if(gotMore instanceof Exception)
+      else if (gotMore instanceof Exception)
       {
         throw new WrappedRuntimeException((Exception)gotMore);
       }
@@ -890,7 +890,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int nodeIndex = m_size++;
 
     // Have we overflowed a DTM Identity's addressing range?
-    if(m_dtmIdent.size() == (nodeIndex>>>DTMManager.IDENT_DTM_NODE_BITS))
+    if (m_dtmIdent.size() == (nodeIndex>>>DTMManager.IDENT_DTM_NODE_BITS))
     {
       addNewDTMID(nodeIndex);
     }
@@ -942,7 +942,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   protected void addNewDTMID(int nodeIndex) {
     try
     {
-      if(m_mgr==null)
+      if (m_mgr==null)
         throw new ClassCastException();
                               
                               // Handle as Extended Addressing
@@ -1267,7 +1267,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
     int identity = makeNodeIdentity(nodeHandle);
     int type;
-    if(identity==DTM.NULL) // Separate lines because I wanted to breakpoint it
+    if (identity==DTM.NULL) // Separate lines because I wanted to breakpoint it
       type = DTM.NULL;
     else
       type= _type(identity);
@@ -1315,7 +1315,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           return m_xstrf.newstr(m_chars, offset, length);
         }
       }
-      else if(type != DTM.ELEMENT_NODE)
+      else if (type != DTM.ELEMENT_NODE)
       {
         int dataIndex = _dataOrQName(identity);
 
@@ -1342,7 +1342,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
     int identity = makeNodeIdentity(nodeHandle);
     int type;
-    if(identity==DTM.NULL) // Separate lines because I wanted to breakpoint it
+    if (identity==DTM.NULL) // Separate lines because I wanted to breakpoint it
       type = DTM.NULL;
     else
       type= _type(identity);
@@ -1496,7 +1496,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     String uri = "";
     int prefixIndex = m_contextIndexes.peek() - 1 ;
 
-    if(null == prefix)
+    if (null == prefix)
       prefix = "";
 
       do
@@ -1771,7 +1771,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       System.out.println("startPrefixMapping: prefix: " + prefix + ", uri: "
                          + uri);
 
-    if(null == prefix)
+    if (null == prefix)
       prefix = "";
     m_prefixMappings.addElement(prefix);  // JDK 1.1.x compat -sc
     m_prefixMappings.addElement(uri);  // JDK 1.1.x compat -sc
@@ -1794,7 +1794,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     if (DEBUG)
       System.out.println("endPrefixMapping: prefix: " + prefix);
 
-    if(null == prefix)
+    if (null == prefix)
       prefix = "";
 
     int index = m_contextIndexes.peek() - 1;
@@ -1876,10 +1876,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 												 + localName + ", qname: "+qName+", atts: " + attributes);
 
 			boolean DEBUG_ATTRS=true;
-			if(DEBUG_ATTRS & attributes!=null)
+			if (DEBUG_ATTRS & attributes!=null)
 			{
 				int n = attributes.getLength();
-				if(n==0)
+				if (n==0)
 					System.out.println("\tempty attribute list");
 				else for (int i = 0; i < n; i++)
 					System.out.println("\t attr: uri: " + attributes.getURI(i) +
@@ -1901,7 +1901,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int elemNode = addNode(DTM.ELEMENT_NODE, exName,
                            m_parents.peek(), m_previous, prefixIndex, true);
 
-    if(m_indexing)
+    if (m_indexing)
       indexNode(exName, elemNode);
     
 
@@ -1911,7 +1911,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int nDecls = m_prefixMappings.size();
     int prev = DTM.NULL;
 
-    if(!m_pastFirstElement)
+    if (!m_pastFirstElement)
     {
       // SPECIAL CASE: Implied declaration at root element
       prefix="xml";
@@ -1973,7 +1973,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
       // Bit of a hack... if somehow valString is null, stringToIndex will
       // return -1, which will make things very unhappy.
-      if(null == valString)
+      if (null == valString)
         valString = "";
 
       int val = m_valuesOrPrefixes.stringToIndex(valString);
@@ -2514,11 +2514,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
                              m_sourceLine.elementAt(node),
                              m_sourceColumn.elementAt(node));
     }
-    else if(m_locator!=null)
+    else if (m_locator!=null)
     {
     	return new NodeLocator(null,m_locator.getSystemId(),-1,-1);
     }
-    else if(m_systemId!=null)
+    else if (m_systemId!=null)
     {
     	return new NodeLocator(null,m_systemId,-1,-1);
     }

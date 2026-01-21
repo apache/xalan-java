@@ -126,7 +126,7 @@ public class FunctionOneArg extends Function implements ExpressionOwner
    */
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
-    if(null != m_arg0)
+    if (null != m_arg0)
       m_arg0.fixupVariables(vars, globalsSize);
   }
   
@@ -135,7 +135,7 @@ public class FunctionOneArg extends Function implements ExpressionOwner
    */
   public void callArgVisitors(XPathVisitor visitor)
   {
-  	if(null != m_arg0)
+  	if (null != m_arg0)
   		m_arg0.callVisitors(this, visitor);
   }
 
@@ -162,18 +162,18 @@ public class FunctionOneArg extends Function implements ExpressionOwner
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!super.deepEquals(expr))
+  	if (!super.deepEquals(expr))
   		return false;
   		
-  	if(null != m_arg0)
+  	if (null != m_arg0)
   	{
-  		if(null == ((FunctionOneArg)expr).m_arg0)
+  		if (null == ((FunctionOneArg)expr).m_arg0)
   			return false;
   			
-  		if(!m_arg0.deepEquals(((FunctionOneArg)expr).m_arg0))
+  		if (!m_arg0.deepEquals(((FunctionOneArg)expr).m_arg0))
   			return false;
   	}
-  	else if(null != ((FunctionOneArg)expr).m_arg0)
+  	else if (null != ((FunctionOneArg)expr).m_arg0)
   		return false;
 
   	return true;

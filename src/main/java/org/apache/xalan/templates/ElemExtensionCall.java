@@ -241,10 +241,10 @@ public class ElemExtensionCall extends ElemLiteralResult
 	  executeFallbacks(transformer);
 	else
 	{
-          if(e instanceof TransformerException)
+          if (e instanceof TransformerException)
           {
             TransformerException te = (TransformerException)e;
-            if(null == te.getLocator())
+            if (null == te.getLocator())
               te.setLocator(this);
             
             transformer.getErrorListener().fatalError(te);            

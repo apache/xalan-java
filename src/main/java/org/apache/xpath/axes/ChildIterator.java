@@ -83,7 +83,7 @@ public class ChildIterator extends LocPathIterator
    */
   public int nextNode()
   {
-  	if(m_foundLast)
+  	if (m_foundLast)
   		return DTM.NULL;
 
     int next;

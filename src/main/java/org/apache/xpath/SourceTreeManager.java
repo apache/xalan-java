@@ -143,12 +143,12 @@ public class SourceTreeManager
    */
   public void removeDocumentFromCache(int n)
   {
-    if(DTM.NULL ==n)
+    if (DTM.NULL ==n)
       return;
-    for(int i=m_sourceTree.size()-1;i>=0;--i)
+    for (int i=m_sourceTree.size()-1;i>=0;--i)
     {
       SourceTree st=(SourceTree)m_sourceTree.elementAt(i);
-      if(st!=null && st.m_root==n)
+      if (st!=null && st.m_root==n)
       {
 	m_sourceTree.removeElementAt(i);
 	return;
@@ -304,7 +304,7 @@ public class SourceTreeManager
     {      
       Object xowner = xctxt.getOwnerObject();
       DTM dtm;
-      if(null != xowner && xowner instanceof org.apache.xml.dtm.DTMWSFilter)
+      if (null != xowner && xowner instanceof org.apache.xml.dtm.DTMWSFilter)
       {
         dtm = xctxt.getDTM(source, false, 
                           (org.apache.xml.dtm.DTMWSFilter)xowner, false, true);
@@ -363,7 +363,7 @@ public class SourceTreeManager
         } catch( NoSuchMethodError ex2 ) {
         }
         catch (AbstractMethodError ame){}
-        if(null == reader)
+        if (null == reader)
           reader = XMLReaderFactory.createXMLReader();
       }
 

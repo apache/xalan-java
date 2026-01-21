@@ -37,7 +37,7 @@ public class LocaleUtility {
     
    
  public static Locale langToLocale(String lang) {
-       if((lang == null) || lang.equals(EMPTY_STRING)){ // not specified => getDefault
+       if ((lang == null) || lang.equals(EMPTY_STRING)){ // not specified => getDefault
             return Locale.getDefault();
        }
         String language = EMPTY_STRING;
@@ -59,19 +59,19 @@ public class LocaleUtility {
             }
         }
         
-        if(language.length() == 2){
+        if (language.length() == 2){
            language = language.toLowerCase();
         }else {
           language = EMPTY_STRING;
         }
         
-        if(country.length() == 2){
+        if (country.length() == 2){
            country = country.toUpperCase();
         }else {
           country = EMPTY_STRING;
         }
         
-        if((variant.length() > 0) && 
+        if ((variant.length() > 0) && 
         ((language.length() == 2) ||(country.length() == 2))){
            variant = variant.toUpperCase();
         }else{

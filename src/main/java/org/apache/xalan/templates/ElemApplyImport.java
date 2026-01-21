@@ -87,7 +87,7 @@ public class ElemApplyImport extends ElemTemplateElement
       ElemTemplate matchTemplate = transformer.getMatchedTemplate();
       transformer.applyTemplateToNode(this, matchTemplate, sourceNode);
     }
-    else  // if(null == sourceNode)
+    else  // if (null == sourceNode)
     {
       transformer.getMsgMgr().error(this,
         XSLTErrorResources.ER_NULL_SOURCENODE_APPLYIMPORTS);  //"sourceNode is null in xsl:apply-imports!");

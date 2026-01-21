@@ -76,12 +76,12 @@ public class FuncKey extends Function2Args
     KeyManager kmgr = transformer.getKeyManager();
     
     // Don't bother with nodeset logic if the thing is only one node.
-    if(argIsNodeSetDTM)
+    if (argIsNodeSetDTM)
     {
     	XMLNodeCursorImpl ns = (XMLNodeCursorImpl)arg;
     	ns.setShouldCacheNodes(true);
     	int len = ns.getLength();
-    	if(len <= 1)
+    	if (len <= 1)
     		argIsNodeSetDTM = false;
     }
 

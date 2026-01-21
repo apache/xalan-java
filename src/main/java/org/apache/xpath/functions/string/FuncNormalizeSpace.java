@@ -80,10 +80,10 @@ public class FuncNormalizeSpace extends FunctionDef1Arg
     throws javax.xml.transform.TransformerException,
            org.xml.sax.SAXException
   {
-    if(Arg0IsNodesetExpr())
+    if (Arg0IsNodesetExpr())
     {
       int node = getArg0AsNode(xctxt);
-      if(DTM.NULL != node)
+      if (DTM.NULL != node)
       {
         DTM dtm = xctxt.getDTM(node);
         dtm.dispatchCharactersEvents(node, handler, true);

@@ -127,7 +127,7 @@ public class DefaultConnectionPool implements ConnectionPool
     // Iterate over the entire pool closing the
     // JDBC Connections.
     Iterator i = m_pool.iterator();
-    while(i.hasNext())
+    while (i.hasNext())
     {
       PooledConnection pcon =
         (PooledConnection) i.next();

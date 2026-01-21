@@ -94,7 +94,7 @@ public class DTMChildIterNodeList extends DTMNodeListBase {
      */
     public Node item(int index) {
         int handle=m_firstChild;
-        while(--index>=0 && handle!=DTM.NULL) {
+        while (--index>=0 && handle!=DTM.NULL) {
             handle=m_parentDTM.getNextSibling(handle);
         }
         if (handle == DTM.NULL) {

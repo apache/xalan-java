@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-20T11:12:19Z" fail="55" name="date" pass="79" run="134" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-21T11:08:01Z" fail="53" name="date" pass="81" run="134" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -43,17 +43,13 @@
    <testResult status="pass" testName="date-041"/>
    <testResult status="pass" testName="date-042"/>
    <testResult status="pass" testName="date-043"/>
-   <testResult status="fail" testName="date-044">
-      <outResult>
-         <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.ResultSequence cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="date-044"/>
    <testResult status="pass" testName="date-045"/>
    <testResult status="pass" testName="date-046"/>
    <testResult status="pass" testName="date-047"/>
    <testResult status="pass" testName="date-048"/>
    <testResult status="pass" testName="date-049"/>
-   <testResult status="fail" testName="date-050"/>
+   <testResult status="pass" testName="date-050"/>
    <testResult status="pass" testName="date-051"/>
    <testResult status="pass" testName="date-052"/>
    <testResult status="pass" testName="date-053"/>

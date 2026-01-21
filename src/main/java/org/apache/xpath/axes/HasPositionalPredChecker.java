@@ -63,7 +63,7 @@ public class HasPositionalPredChecker extends XPathVisitor
 	 */
 	public boolean visitFunction(ExpressionOwner owner, Function func)
 	{
-		if((func instanceof FuncPosition) ||
+		if ((func instanceof FuncPosition) ||
 		   (func instanceof FuncLast))
 			m_hasPositionalPred = true;
 		return true;
@@ -96,9 +96,9 @@ public class HasPositionalPredChecker extends XPathVisitor
   {
     m_predDepth++;
 
-    if(m_predDepth == 1)
+    if (m_predDepth == 1)
     {
-      if((pred instanceof Variable) || 
+      if ((pred instanceof Variable) || 
          (pred instanceof XNumber) ||
          (pred instanceof Div) ||
          (pred instanceof Plus) ||

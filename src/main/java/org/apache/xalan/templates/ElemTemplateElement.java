@@ -567,13 +567,13 @@ public class ElemTemplateElement extends UnImplNode
    */
   public Node insertBefore(Node newChild, Node refChild) throws DOMException
   {
-  	if(null == refChild)
+  	if (null == refChild)
   	{
   		appendChild(newChild);
   		return newChild;
   	}
   	
-  	if(newChild == refChild)
+  	if (newChild == refChild)
   	{
   		// hmm...
   		return newChild;
@@ -586,9 +586,9 @@ public class ElemTemplateElement extends UnImplNode
     while (null != node)
     {
     	// If the newChild is already in the tree, it is first removed.
-    	if(newChild == node)
+    	if (newChild == node)
     	{
-    		if(null != prev)
+    		if (null != prev)
     			((ElemTemplateElement)prev).m_nextSibling = 
     				(ElemTemplateElement)node.getNextSibling();
     		else
@@ -596,9 +596,9 @@ public class ElemTemplateElement extends UnImplNode
     		node = node.getNextSibling();
     		continue; // prev remains the same.
     	}
-    	if(refChild == node)
+    	if (refChild == node)
     	{
-    		if(null != prev)
+    		if (null != prev)
     		{
     			((ElemTemplateElement)prev).m_nextSibling = (ElemTemplateElement)newChild;
     		}
@@ -617,7 +617,7 @@ public class ElemTemplateElement extends UnImplNode
     	node = node.getNextSibling();
     }
     
-    if(!foundit)
+    if (!foundit)
     	throw new DOMException(DOMException.NOT_FOUND_ERR, 
     		"refChild was not found in insertBefore method!");
     else
@@ -727,10 +727,10 @@ public class ElemTemplateElement extends UnImplNode
   {
   	ElemTemplateElement el = this;
   	int type = el.getXSLToken();
-  	while((null != el) && (type != Constants.ELEMNAME_TEMPLATE))
+  	while ((null != el) && (type != Constants.ELEMNAME_TEMPLATE))
   	{
     	el = el.getParentElem();
-    	if(null != el)
+    	if (null != el)
   			type = el.getXSLToken();
   	}
   	return (ElemTemplate)el;
@@ -1051,7 +1051,7 @@ public class ElemTemplateElement extends UnImplNode
     if (null != nsDecls)
     {
       int n = nsDecls.size();
-      if(prefix.equals(Constants.ATTRVAL_DEFAULT_PREFIX))
+      if (prefix.equals(Constants.ATTRVAL_DEFAULT_PREFIX))
       {
         prefix = "";
       }
@@ -1072,7 +1072,7 @@ public class ElemTemplateElement extends UnImplNode
     // JJK: No ancestors; try implicit
     // %REVIEW% Are there literals somewhere that we should use instead?
     // %REVIEW% Is this really the best place to patch?
-    if("xml".equals(prefix))
+    if ("xml".equals(prefix))
       return "http://www.w3.org/XML/1998/namespace";
 
     // No parent, so no definition
@@ -1114,7 +1114,7 @@ public class ElemTemplateElement extends UnImplNode
   public boolean containsExcludeResultPrefix(String prefix, String uri)
   {
     ElemTemplateElement parent = this.getParentElem();
-    if(null != parent)
+    if (null != parent)
       return parent.containsExcludeResultPrefix(prefix, uri);
       
     return false;
@@ -1182,7 +1182,7 @@ public class ElemTemplateElement extends UnImplNode
         XMLNSDecl decl = (XMLNSDecl) m_declaredPrefixes.get(i);
         String prefix = decl.getPrefix();
         String uri = decl.getURI();
-        if(null == uri)
+        if (null == uri)
           uri = "";
         boolean shouldExclude = excludeResultNSDecl(prefix, uri);
 
@@ -1191,7 +1191,7 @@ public class ElemTemplateElement extends UnImplNode
             setPrefixTable(new ArrayList());
 
         NamespaceAlias nsAlias = stylesheet.getNamespaceAliasComposed(uri);
-        if(null != nsAlias)
+        if (null != nsAlias)
         {
           // Should I leave the non-aliased element in the table as 
           // an excluded element?
@@ -1754,7 +1754,7 @@ public class ElemTemplateElement extends UnImplNode
    */
   public void callVisitors(XSLTVisitor visitor)
   {
-  	if(accept(visitor))
+  	if (accept(visitor))
   	{
 		callChildVisitors(visitor);
   	}

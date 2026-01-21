@@ -116,7 +116,7 @@ public class ProcessorCharacters extends XSLTElementProcessor
 
     m_accumulator.append(ch, start, length);
     
-    if(null == m_firstBackPointer)
+    if (null == m_firstBackPointer)
       m_firstBackPointer = handler.getOriginatingNode();
 
     // Catch all events until a non-character event.

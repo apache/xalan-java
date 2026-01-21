@@ -1489,7 +1489,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	final String pattern = "`aload'`pop'`instruction'";
 	final InstructionList il = methodGen.getInstructionList();
 	final InstructionFinder find = new InstructionFinder(il);
-	for(Iterator iter=find.search(pattern); iter.hasNext(); ) {
+	for (Iterator iter=find.search(pattern); iter.hasNext(); ) {
 	    InstructionHandle[] match = (InstructionHandle[])iter.next();
 	    try {
 		il.delete(match[0], match[1]);

@@ -437,7 +437,7 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
                 createXSLTCTransformerFactory();
             }
 	    ErrorListener errorListener = _xsltcFactory.getErrorListener();
-            if(errorListener != null) {
+            if (errorListener != null) {
                 try {
                     errorListener.fatalError(e1);
                     return null;

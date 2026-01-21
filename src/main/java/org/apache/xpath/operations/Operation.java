@@ -286,7 +286,7 @@ public class Operation extends Expression implements ExpressionOwner
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {
-  	if(visitor.visitBinaryOperation(owner, this))
+  	if (visitor.visitBinaryOperation(owner, this))
   	{
   		m_left.callVisitors(new LeftExprOwner(), visitor);
   		m_right.callVisitors(this, visitor);
@@ -315,13 +315,13 @@ public class Operation extends Expression implements ExpressionOwner
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!isSameClass(expr))
+  	if (!isSameClass(expr))
   		return false;
   		
-  	if(!m_left.deepEquals(((Operation)expr).m_left))
+  	if (!m_left.deepEquals(((Operation)expr).m_left))
   		return false;
   		
-  	if(!m_right.deepEquals(((Operation)expr).m_right))
+  	if (!m_right.deepEquals(((Operation)expr).m_right))
   		return false;
   		
   	return true;

@@ -292,7 +292,7 @@ public class ListingErrorHandler implements ErrorHandler, ErrorListener
         do
         {
             // Find the current locator, if one present
-            if(cause instanceof SAXParseException)
+            if (cause instanceof SAXParseException)
             {
                 // A SAXSourceLocator is a Xalan helper class 
                 //  that implements both a SourceLocator and a SAX Locator
@@ -304,28 +304,28 @@ public class ListingErrorHandler implements ErrorHandler, ErrorListener
             else if (cause instanceof TransformerException)
             {
                 SourceLocator causeLocator = ((TransformerException)cause).getLocator();
-                if(null != causeLocator)
+                if (null != causeLocator)
                 {
                     locator = causeLocator;
                 }
             }
             
             // Then walk back down the chain of exceptions
-            if(cause instanceof TransformerException)
+            if (cause instanceof TransformerException)
                 cause = ((TransformerException)cause).getCause();
-            else if(cause instanceof WrappedRuntimeException)
+            else if (cause instanceof WrappedRuntimeException)
                 cause = ((WrappedRuntimeException)cause).getException();
-            else if(cause instanceof SAXException)
+            else if (cause instanceof SAXException)
                 cause = ((SAXException)cause).getException();
             else
                 cause = null;
         }
-        while(null != cause);
+        while (null != cause);
 
         // Formatting note: mimic javac-like errors:
         //  path\filename:123: message-here
         //  systemId:L=1;C=2: message-here
-        if(null != locator)
+        if (null != locator)
         {
             String id = (locator.getPublicId() != locator.getPublicId())
                       ? locator.getPublicId()

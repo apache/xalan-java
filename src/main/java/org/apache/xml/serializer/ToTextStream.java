@@ -281,7 +281,7 @@ public class ToTextStream extends ToStream
         /* copy a few "constants" before the loop for performance */
         final char S_LINEFEED = CharInfo.S_LINEFEED;
 
-        // This for() loop always increments i by one at the end
+        // This for () loop always increments i by one at the end
         // of the loop.  Additional increments of i adjust for when
         // two input characters (a high/low UTF16 surrogate pair)
         // are processed.

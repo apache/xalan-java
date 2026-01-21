@@ -33,7 +33,7 @@ package org.apache.xml.dtm;
  *
  * <p>Typical usage:</p>
  * <pre><code>
- * for(int nodeHandle=myTraverser.first(myContext);
+ * for (int nodeHandle=myTraverser.first(myContext);
  *     nodeHandle!=DTM.NULL;
  *     nodeHandle=myTraverser.next(myContext,nodeHandle))
  * { ... processing for node indicated by nodeHandle goes here ... }

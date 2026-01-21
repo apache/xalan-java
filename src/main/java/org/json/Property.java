@@ -32,7 +32,7 @@ public class Property {
         JSONObject jo = new JSONObject();
         if (properties != null && !properties.isEmpty()) {
             Enumeration<?> enumProperties = properties.propertyNames();
-            while(enumProperties.hasMoreElements()) {
+            while (enumProperties.hasMoreElements()) {
                 String name = (String)enumProperties.nextElement();
                 jo.put(name, properties.getProperty(name));
             }

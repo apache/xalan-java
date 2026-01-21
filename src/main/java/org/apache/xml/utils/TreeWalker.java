@@ -268,7 +268,7 @@ public class TreeWalker
   private final void dispatachChars(Node node)
      throws org.xml.sax.SAXException
   {
-    if(m_contentHandler instanceof org.apache.xml.dtm.ref.dom2dtm.DOM2DTM.CharacterNodeHandler)
+    if (m_contentHandler instanceof org.apache.xml.dtm.ref.dom2dtm.DOM2DTM.CharacterNodeHandler)
     {
       ((org.apache.xml.dtm.ref.dom2dtm.DOM2DTM.CharacterNodeHandler)m_contentHandler).characters(node);
     }
@@ -360,7 +360,7 @@ public class TreeWalker
       // System.out.println("m_dh.getNamespaceOfNode(node): "+m_dh.getNamespaceOfNode(node));
       // System.out.println("m_dh.getLocalNameOfNode(node): "+m_dh.getLocalNameOfNode(node));
       String ns = m_dh.getNamespaceOfNode(node);
-      if(null == ns)
+      if (null == ns)
         ns = "";
       this.m_contentHandler.startElement(ns,
                                          m_dh.getLocalNameOfNode(node),
@@ -461,7 +461,7 @@ public class TreeWalker
       
     case Node.ELEMENT_NODE :
       String ns = m_dh.getNamespaceOfNode(node);
-      if(null == ns)
+      if (null == ns)
         ns = "";
       this.m_contentHandler.endElement(ns,
                                          m_dh.getLocalNameOfNode(node),

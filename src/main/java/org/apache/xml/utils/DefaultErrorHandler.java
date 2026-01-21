@@ -282,25 +282,25 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
     // Try to find the locator closest to the cause
     do
     {
-      if(cause instanceof SAXParseException)
+      if (cause instanceof SAXParseException)
       {
         locator = new SAXSourceLocator((SAXParseException)cause);
       }
       else if (cause instanceof TransformerException)
       {
         SourceLocator causeLocator = ((TransformerException)cause).getLocator();
-        if(null != causeLocator)
+        if (null != causeLocator)
           locator = causeLocator;
       }
       
-      if(cause instanceof TransformerException)
+      if (cause instanceof TransformerException)
         cause = ((TransformerException)cause).getCause();
-      else if(cause instanceof SAXException)
+      else if (cause instanceof SAXException)
         cause = ((SAXException)cause).getException();
       else
         cause = null;
     }
-    while(null != cause);
+    while (null != cause);
     
     exception.setLocator(locator);
   }
@@ -367,7 +367,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
 		  else
 			  cause = null;
 	  }
-	  while(null != cause);
+	  while (null != cause);
 
 	  if (null != locator)
 	  {

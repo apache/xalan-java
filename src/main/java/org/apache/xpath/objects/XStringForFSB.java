@@ -335,7 +335,7 @@ public class XStringForFSB extends XString
     {
       return true;
     }
-    if(obj2.getType() == XObject.CLASS_NUMBER)
+    if (obj2.getType() == XObject.CLASS_NUMBER)
     	return obj2.equals(this);
 
     String str = obj2.str();
@@ -421,7 +421,7 @@ public class XStringForFSB extends XString
     if (null == obj2)
       return false;
       
-    if(obj2 instanceof XNumber)
+    if (obj2 instanceof XNumber)
     	return obj2.equals(this);
 
       // In order to handle the 'all' semantics of 
@@ -946,7 +946,7 @@ public class XStringForFSB extends XString
    * if the string can not be converted.  */
   public double toDouble()
   {
-    if(m_length == 0)
+    if (m_length == 0)
       return Double.NaN;
     int i;
     char c;

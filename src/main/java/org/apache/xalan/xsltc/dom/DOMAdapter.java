@@ -232,7 +232,7 @@ public final class DOMAdapter implements DOM {
             type = mapping[_enhancedDOM.getExpandedTypeID2(node)];
         }
         else {
-        	if(null != mapping)
+        	if (null != mapping)
         	{
             	type = mapping[_dom.getExpandedTypeID(node)];
         	}

@@ -104,7 +104,7 @@ public final class AttList implements Attributes
   public String getURI(int index)
   {
     String ns = m_dh.getNamespaceOfNode(((Attr) m_attrs.item(index)));
-    if(null == ns)
+    if (null == ns)
       ns = "";
     return ns;
   }
@@ -230,11 +230,11 @@ public final class AttList implements Attributes
    */
   public int getIndex(String uri, String localPart)
   {
-    for(int i=m_attrs.getLength()-1;i>=0;--i)
+    for (int i=m_attrs.getLength()-1;i>=0;--i)
     {
       Node a=m_attrs.item(i);
       String u=a.getNamespaceURI();
-      if( (u==null ? uri==null : u.equals(uri))
+      if ( (u==null ? uri==null : u.equals(uri))
       &&
       a.getLocalName().equals(localPart) )
     return i;
@@ -251,10 +251,10 @@ public final class AttList implements Attributes
    */
   public int getIndex(String qName)
   {
-    for(int i=m_attrs.getLength()-1;i>=0;--i)
+    for (int i=m_attrs.getLength()-1;i>=0;--i)
     {
       Node a=m_attrs.item(i);
-      if(a.getNodeName().equals(qName) )
+      if (a.getNodeName().equals(qName) )
     return i;
     }
     return -1;

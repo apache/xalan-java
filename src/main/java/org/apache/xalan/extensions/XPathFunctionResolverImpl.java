@@ -78,7 +78,7 @@ public class XPathFunctionResolverImpl implements XPathFunctionResolver
         else
             methodName = localPart;
      
-        if(null == className || className.trim().length() == 0 
+        if (null == className || className.trim().length() == 0 
            || null == methodName || methodName.trim().length() == 0) 
             return null;
     

@@ -640,21 +640,21 @@ public class ElemNumber extends ElemTemplateElement
     super.compose(sroot);
     StylesheetRoot.ComposeState cstate = sroot.getComposeState();
     java.util.Vector vnames = cstate.getVariableNames();
-    if(null != m_countMatchPattern)
+    if (null != m_countMatchPattern)
       m_countMatchPattern.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_format_avt)
+    if (null != m_format_avt)
       m_format_avt.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_fromMatchPattern)
+    if (null != m_fromMatchPattern)
       m_fromMatchPattern.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_groupingSeparator_avt)
+    if (null != m_groupingSeparator_avt)
       m_groupingSeparator_avt.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_groupingSize_avt)
+    if (null != m_groupingSize_avt)
       m_groupingSize_avt.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_lang_avt)
+    if (null != m_lang_avt)
       m_lang_avt.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_lettervalue_avt)
+    if (null != m_lettervalue_avt)
       m_lettervalue_avt.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_valueExpr)
+    if (null != m_valueExpr)
       m_valueExpr.fixupVariables(vnames, cstate.getGlobalsSize());
   }
 
@@ -1450,7 +1450,7 @@ public class ElemNumber extends ElemTemplateElement
               lastSepString += formatToken;
             }
           }  // else
-        }  // end if(formatTokenizer.hasMoreTokens())
+        }  // end if (formatTokenizer.hasMoreTokens())
 
         // if this is the first token and there was a prefix
         // append the prefix else, append the separator
@@ -2213,24 +2213,24 @@ public class ElemNumber extends ElemTemplateElement
    */
   public void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
   {
-  	if(callAttrs)
+  	if (callAttrs)
   	{
-	  	if(null != m_countMatchPattern)
+	  	if (null != m_countMatchPattern)
 	  		m_countMatchPattern.getExpression().callVisitors(m_countMatchPattern, visitor);
-	  	if(null != m_fromMatchPattern)
+	  	if (null != m_fromMatchPattern)
 	  		m_fromMatchPattern.getExpression().callVisitors(m_fromMatchPattern, visitor);
-	  	if(null != m_valueExpr)
+	  	if (null != m_valueExpr)
 	  		m_valueExpr.getExpression().callVisitors(m_valueExpr, visitor);
 	
-	  	if(null != m_format_avt)
+	  	if (null != m_format_avt)
 	  		m_format_avt.callVisitors(visitor);
-	  	if(null != m_groupingSeparator_avt)
+	  	if (null != m_groupingSeparator_avt)
 	  		m_groupingSeparator_avt.callVisitors(visitor);
-	  	if(null != m_groupingSize_avt)
+	  	if (null != m_groupingSize_avt)
 	  		m_groupingSize_avt.callVisitors(visitor);
-	  	if(null != m_lang_avt)
+	  	if (null != m_lang_avt)
 	  		m_lang_avt.callVisitors(visitor);
-	  	if(null != m_lettervalue_avt)
+	  	if (null != m_lettervalue_avt)
 	  		m_lettervalue_avt.callVisitors(visitor);
   	}
 

@@ -609,7 +609,7 @@ final class CharInfo
         int j = (i >> SHIFT_PER_WORD); // this word is used
         int k = j + 1;       
         
-        if(firstWordNotUsed < k) // for optimization purposes.
+        if (firstWordNotUsed < k) // for optimization purposes.
             firstWordNotUsed = k;
             
         array_of_bits[j] |= (1 << (i & LOW_ORDER_BITMASK));
@@ -632,7 +632,7 @@ final class CharInfo
         int j = (i >> SHIFT_PER_WORD); // wordIndex(i)
         // an optimization here, ... a quick test to see
         // if this integer is beyond any of the words in use
-        if(j < firstWordNotUsed)
+        if (j < firstWordNotUsed)
             in_the_set = (array_of_bits[j] & 
                           (1 << (i & LOW_ORDER_BITMASK))
             ) != 0;  // 0L for 64 bit words

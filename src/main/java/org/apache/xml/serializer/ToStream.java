@@ -1681,7 +1681,7 @@ abstract public class ToStream extends SerializerBase
      */
     private static boolean isCharacterInC0orC1Range(char ch)
     {
-        if(ch == 0x09 || ch == 0x0A || ch == 0x0D)
+        if (ch == 0x09 || ch == 0x0A || ch == 0x0D)
         	return false;
         else        	    	
         	return (ch >= 0x7F && ch <= 0x9F)|| (ch >= 0x01 && ch <= 0x1F);
@@ -1921,7 +1921,7 @@ abstract public class ToStream extends SerializerBase
         try
         {
             if (m_needToOutputDocTypeDecl) {
-                if(null != getDoctypeSystem()) {
+                if (null != getDoctypeSystem()) {
                     outputDocTypeDecl(name, true);
                 }
                 m_needToOutputDocTypeDecl = false;

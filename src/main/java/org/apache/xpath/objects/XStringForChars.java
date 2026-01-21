@@ -51,7 +51,7 @@ public class XStringForChars extends XString
     super(val);
     m_start = start;
     m_length = length;
-    if(null == val)
+    if (null == val)
       throw new IllegalArgumentException(
                           XSLMessages.createXPATHMessage(XPATHErrorResources.ER_FASTSTRINGBUFFER_CANNOT_BE_NULL, null)); //"The FastStringBuffer argument can not be null!!");
   }
@@ -108,7 +108,7 @@ public class XStringForChars extends XString
    */
   public String str()
   {
-    if(null == m_strCache)
+    if (null == m_strCache)
       m_strCache = new String((char[])m_obj, m_start, m_length);
     
     return m_strCache;

@@ -132,7 +132,7 @@ public class OutputProperties extends ElemTemplateElement
    */
   public void setProperty(String key, String value)
   {
-    if(key.equals(OutputKeys.METHOD))
+    if (key.equals(OutputKeys.METHOD))
     {
       setMethodDefaults(value);
     }
@@ -311,7 +311,7 @@ public class OutputProperties extends ElemTemplateElement
   {
         String defaultMethod = m_properties.getProperty(OutputKeys.METHOD);
  
-        if((null == defaultMethod) || !defaultMethod.equals(method)
+        if ((null == defaultMethod) || !defaultMethod.equals(method)
          // bjm - add the next condition as a hack
          // but it is because both output_xml.properties and
          // output_unknown.properties have the same method=xml
@@ -609,7 +609,7 @@ public class OutputProperties extends ElemTemplateElement
       {
         String val = (String) src.get(key);
         
-        if(shouldResetDefaults && key.equals(OutputKeys.METHOD))
+        if (shouldResetDefaults && key.equals(OutputKeys.METHOD))
         {
           setMethodDefaults(val);
         }

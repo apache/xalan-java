@@ -266,9 +266,9 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   {
 
     m_predicates = predicates;
-    if(null != predicates)
+    if (null != predicates)
     {
-    	for(int i = 0; i < predicates.length; i++)
+    	for (int i = 0; i < predicates.length; i++)
     	{
     		predicates[i].exprSetParent(this);
     	}
@@ -943,7 +943,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {
-  	 	if(visitor.visitMatchPattern(owner, this))
+  	 	if (visitor.visitMatchPattern(owner, this))
   	 	{
   	 		callSubtreeVisitors(visitor);
   	 	}
@@ -996,7 +996,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!super.deepEquals(expr))
+  	if (!super.deepEquals(expr))
   		return false;
   		
   	StepPattern sp = (StepPattern)expr;
@@ -1015,12 +1015,12 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
     else if (null != sp.m_predicates)
     	return false;
   		
-  	if(null != m_relativePathPattern)
+  	if (null != m_relativePathPattern)
   	{
-  		if(!m_relativePathPattern.deepEquals(sp.m_relativePathPattern))
+  		if (!m_relativePathPattern.deepEquals(sp.m_relativePathPattern))
   			return false;
   	}
-  	else if(sp.m_relativePathPattern != null)
+  	else if (sp.m_relativePathPattern != null)
   		return false;
   		
   	return true;

@@ -183,7 +183,7 @@ public class ElemWhen extends ElemTemplateElement
    */
   protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
   {
-  	if(callAttrs)
+  	if (callAttrs)
   		m_test.getExpression().callVisitors(m_test, visitor);
     super.callChildVisitors(visitor, callAttrs);
   }

@@ -109,7 +109,7 @@ public class SuballocatedByteVector
    */
   private  void setSize(int sz)
   {
-    if(m_firstFree<sz)
+    if (m_firstFree<sz)
       m_firstFree = sz;
   }
 
@@ -120,7 +120,7 @@ public class SuballocatedByteVector
    */
   public  void addElement(byte value)
   {
-    if(m_firstFree<m_blocksize)
+    if (m_firstFree<m_blocksize)
       m_map0[m_firstFree++]=value;
     else
     {
@@ -128,7 +128,7 @@ public class SuballocatedByteVector
       int offset=m_firstFree%m_blocksize;
       ++m_firstFree;
 
-      if(index>=m_map.length)
+      if (index>=m_map.length)
       {
         int newsize=index+m_numblocks;
         byte[][] newMap=new byte[newsize][];
@@ -136,7 +136,7 @@ public class SuballocatedByteVector
         m_map=newMap;
       }
       byte[] block=m_map[index];
-      if(null==block)
+      if (null==block)
         block=m_map[index]=new byte[m_blocksize];
       block[offset]=value;
     }
@@ -149,7 +149,7 @@ public class SuballocatedByteVector
    */
   private  void addElements(byte value, int numberOfElements)
   {
-    if(m_firstFree+numberOfElements<m_blocksize)
+    if (m_firstFree+numberOfElements<m_blocksize)
       for (int i = 0; i < numberOfElements; i++) 
       {
         m_map0[m_firstFree++]=value;
@@ -159,9 +159,9 @@ public class SuballocatedByteVector
       int index=m_firstFree/m_blocksize;
       int offset=m_firstFree%m_blocksize;
       m_firstFree+=numberOfElements;
-      while( numberOfElements>0)
+      while ( numberOfElements>0)
       {
-        if(index>=m_map.length)
+        if (index>=m_map.length)
         {
           int newsize=index+m_numblocks;
           byte[][] newMap=new byte[newsize][];
@@ -169,12 +169,12 @@ public class SuballocatedByteVector
           m_map=newMap;
         }
         byte[] block=m_map[index];
-        if(null==block)
+        if (null==block)
           block=m_map[index]=new byte[m_blocksize];
         int copied=(m_blocksize-offset < numberOfElements)
           ? m_blocksize-offset : numberOfElements;
         numberOfElements-=copied;
-        while(copied-- > 0)
+        while (copied-- > 0)
           block[offset++]=value;
 
         ++index;offset=0;
@@ -191,11 +191,11 @@ public class SuballocatedByteVector
   private  void addElements(int numberOfElements)
   {
     int newlen=m_firstFree+numberOfElements;
-    if(newlen>m_blocksize)
+    if (newlen>m_blocksize)
     {
       int index=m_firstFree%m_blocksize;
       int newindex=(m_firstFree+numberOfElements)%m_blocksize;
-      for(int i=index+1;i<=newindex;++i)
+      for (int i=index+1;i<=newindex;++i)
         m_map[i]=new byte[m_blocksize];
     }
     m_firstFree=newlen;
@@ -214,12 +214,12 @@ public class SuballocatedByteVector
    */
   private  void insertElementAt(byte value, int at)
   {
-    if(at==m_firstFree)
+    if (at==m_firstFree)
       addElement(value);
     else if (at>m_firstFree)
     {
       int index=at/m_blocksize;
-      if(index>=m_map.length)
+      if (index>=m_map.length)
       {
         int newsize=index+m_numblocks;
         byte[][] newMap=new byte[newsize][];
@@ -227,7 +227,7 @@ public class SuballocatedByteVector
         m_map=newMap;
       }
       byte[] block=m_map[index];
-      if(null==block)
+      if (null==block)
         block=m_map[index]=new byte[m_blocksize];
       int offset=at%m_blocksize;
       block[offset]=value;
@@ -242,11 +242,11 @@ public class SuballocatedByteVector
       byte push;
       
       // ***** Easier to work down from top?
-      while(index<=maxindex)
+      while (index<=maxindex)
       {
         int copylen=m_blocksize-offset-1;
         byte[] block=m_map[index];
-        if(null==block)
+        if (null==block)
         {
           push=0;
           block=m_map[index]=new byte[m_blocksize];
@@ -286,7 +286,7 @@ public class SuballocatedByteVector
   private  boolean removeElement(byte s)
   {
     int at=indexOf(s,0);
-    if(at<0)
+    if (at<0)
       return false;
     removeElementAt(at);
     return true;
@@ -303,24 +303,24 @@ public class SuballocatedByteVector
   private  void removeElementAt(int at)
   {
     // No point in removing elements that "don't exist"...  
-    if(at<m_firstFree)
+    if (at<m_firstFree)
     {
       int index=at/m_blocksize;
       int maxindex=m_firstFree/m_blocksize;
       int offset=at%m_blocksize;
       
-      while(index<=maxindex)
+      while (index<=maxindex)
       {
         int copylen=m_blocksize-offset-1;
         byte[] block=m_map[index];
-        if(null==block)
+        if (null==block)
           block=m_map[index]=new byte[m_blocksize];
         else
           System.arraycopy(block, offset+1, block, offset, copylen);
-        if(index<maxindex)
+        if (index<maxindex)
         {
           byte[] next=m_map[index+1];
-          if(next!=null)
+          if (next!=null)
             block[m_blocksize-1]=(next!=null) ? next[0] : 0;
         }
         else
@@ -344,7 +344,7 @@ public class SuballocatedByteVector
    */
   public void setElementAt(byte value, int at)
   {
-    if(at<m_blocksize)
+    if (at<m_blocksize)
     {
       m_map0[at]=value;
       return;
@@ -353,7 +353,7 @@ public class SuballocatedByteVector
     int index=at/m_blocksize;
     int offset=at%m_blocksize;
         
-    if(index>=m_map.length)
+    if (index>=m_map.length)
     {
       int newsize=index+m_numblocks;
       byte[][] newMap=new byte[newsize][];
@@ -362,11 +362,11 @@ public class SuballocatedByteVector
     }
 
     byte[] block=m_map[index];
-    if(null==block)
+    if (null==block)
       block=m_map[index]=new byte[m_blocksize];
     block[offset]=value;
 
-    if(at>=m_firstFree)
+    if (at>=m_firstFree)
       m_firstFree=at+1;
   }
 
@@ -395,7 +395,7 @@ public class SuballocatedByteVector
   {
     // %OPT% Does this really buy us anything? Test versus division for small,
     // test _plus_ division for big docs.
-    if(i<m_blocksize)
+    if (i<m_blocksize)
       return m_map0[i];
 
     return m_map[i/m_blocksize][i%m_blocksize];
@@ -426,7 +426,7 @@ public class SuballocatedByteVector
    */
   public int indexOf(byte elem, int index)
   {
-    if(index>=m_firstFree)
+    if (index>=m_firstFree)
       return -1;
           
     int bindex=index/m_blocksize;
@@ -434,20 +434,20 @@ public class SuballocatedByteVector
     int maxindex=m_firstFree/m_blocksize;
     byte[] block;
     
-    for(;bindex<maxindex;++bindex)
+    for (;bindex<maxindex;++bindex)
     {
       block=m_map[bindex];
-      if(block!=null)
-        for(int offset=boffset;offset<m_blocksize;++offset)
-          if(block[offset]==elem)
+      if (block!=null)
+        for (int offset=boffset;offset<m_blocksize;++offset)
+          if (block[offset]==elem)
             return offset+bindex*m_blocksize;
       boffset=0; // after first
     }
     // Last block may need to stop before end
     int maxoffset=m_firstFree%m_blocksize;
     block=m_map[maxindex];
-    for(int offset=boffset;offset<maxoffset;++offset)
-      if(block[offset]==elem)
+    for (int offset=boffset;offset<maxoffset;++offset)
+      if (block[offset]==elem)
         return offset+maxindex*m_blocksize;
 
     return -1;    
@@ -481,14 +481,14 @@ public class SuballocatedByteVector
   private  int lastIndexOf(byte elem)
   {
     int boffset=m_firstFree%m_blocksize;
-    for(int index=m_firstFree/m_blocksize;
+    for (int index=m_firstFree/m_blocksize;
         index>=0;
         --index)
     {
       byte[] block=m_map[index];
-      if(block!=null)
-        for(int offset=boffset; offset>=0; --offset)
-          if(block[offset]==elem)
+      if (block!=null)
+        for (int offset=boffset; offset>=0; --offset)
+          if (block[offset]==elem)
             return offset+index*m_blocksize;
       boffset=0; // after first
     }

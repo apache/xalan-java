@@ -103,7 +103,7 @@ public class OneStepIteratorForward extends ChildTestIterator
 //  public int asNode(XPathContext xctxt)
 //    throws javax.xml.transform.TransformerException
 //  {
-//    if(getPredicateCount() > 0)
+//    if (getPredicateCount() > 0)
 //      return super.asNode(xctxt);
 //      
 //    int current = xctxt.getCurrentNode();
@@ -117,7 +117,7 @@ public class OneStepIteratorForward extends ChildTestIterator
 //    
 //    // System.out.println("what: ");
 //    // NodeTest.debugWhatToShow(what);
-//    if(DTMFilter.SHOW_ALL == what
+//    if (DTMFilter.SHOW_ALL == what
 //       || ((DTMFilter.SHOW_ELEMENT & what) == 0)
 //       || localName == NodeTest.WILD
 //       || namespace == NodeTest.WILD)
@@ -159,10 +159,10 @@ public class OneStepIteratorForward extends ChildTestIterator
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!super.deepEquals(expr))
+  	if (!super.deepEquals(expr))
   		return false;
   		
-  	if(m_axis != ((OneStepIteratorForward)expr).m_axis)
+  	if (m_axis != ((OneStepIteratorForward)expr).m_axis)
   		return false;
   		
   	return true;

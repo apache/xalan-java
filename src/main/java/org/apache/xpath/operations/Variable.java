@@ -135,7 +135,7 @@ public class Variable extends Expression implements PathComponent
 		  if (qn.equals(m_qname))
 		  {
 
-			  if(i < globalsSize)
+			  if (i < globalsSize)
 			  {
 				  m_isGlobal = true;
 				  m_index = i;
@@ -412,7 +412,7 @@ public class Variable extends Expression implements PathComponent
 
           while (null != (prev = prev.getPreviousSiblingElem()))
           {
-            if(prev instanceof org.apache.xalan.templates.ElemVariable)
+            if (prev instanceof org.apache.xalan.templates.ElemVariable)
             {
               vvar = (org.apache.xalan.templates.ElemVariable) prev;
             
@@ -453,13 +453,13 @@ public class Variable extends Expression implements PathComponent
   public int getAnalysisBits()
   {
   	org.apache.xalan.templates.ElemVariable vvar = getElemVariable();
-  	if(null != vvar)
+  	if (null != vvar)
   	{
   		XPath xpath = vvar.getSelect();
-  		if(null != xpath)
+  		if (null != xpath)
   		{
 	  		Expression expr = xpath.getExpression();
-	  		if(null != expr && expr instanceof PathComponent)
+	  		if (null != expr && expr instanceof PathComponent)
 	  		{
 	  			return ((PathComponent)expr).getAnalysisBits();
 	  		}
@@ -481,15 +481,15 @@ public class Variable extends Expression implements PathComponent
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!isSameClass(expr))
+  	if (!isSameClass(expr))
   		return false;
   		
-  	if(!m_qname.equals(((Variable)expr).m_qname))
+  	if (!m_qname.equals(((Variable)expr).m_qname))
   		return false;
   		
   	// We have to make sure that the qname really references 
   	// the same variable element.
-    if(getElemVariable() != ((Variable)expr).getElemVariable())
+    if (getElemVariable() != ((Variable)expr).getElemVariable())
     	return false;
   		
   	return true;
@@ -504,9 +504,9 @@ public class Variable extends Expression implements PathComponent
   public boolean isPsuedoVarRef()
   {
   	java.lang.String ns = m_qname.getNamespaceURI();
-  	if((null != ns) && ns.equals(PSUEDOVARNAMESPACE))
+  	if ((null != ns) && ns.equals(PSUEDOVARNAMESPACE))
   	{
-  		if(m_qname.getLocalName().startsWith("#"))
+  		if (m_qname.getLocalName().startsWith("#"))
   			return true;
   	}
   	return false;

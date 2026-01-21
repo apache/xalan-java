@@ -99,7 +99,7 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
   {
 
     ElemTemplateElement parent = handler.getElemTemplateElement();
-    if(null != parent)  // defensive, for better multiple error reporting. -sb
+    if (null != parent)  // defensive, for better multiple error reporting. -sb
     {
       parent.appendChild(elem);
       handler.pushElemTemplateElement(elem);

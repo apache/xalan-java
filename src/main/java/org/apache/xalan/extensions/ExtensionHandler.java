@@ -60,7 +60,7 @@ public abstract class ExtensionHandler
       throws ClassNotFoundException
   {
     // Hack for backwards compatibility with XalanJ1 stylesheets
-    if(className.equals("org.apache.xalan.xslt.extensions.Redirect")) {
+    if (className.equals("org.apache.xalan.xslt.extensions.Redirect")) {
       className = "org.apache.xalan.lib.Redirect";
     }
 

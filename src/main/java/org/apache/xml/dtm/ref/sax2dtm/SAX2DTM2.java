@@ -378,7 +378,7 @@ public class SAX2DTM2 extends SAX2DTM
      */
     public int next()
     {
-      if(_startNode == _currentNode)
+      if (_startNode == _currentNode)
         return NULL;
 
       final int node = _startNode;
@@ -654,14 +654,14 @@ public class SAX2DTM2 extends SAX2DTM
         _startNode = node;
         node = _startNodeID = makeNodeIdentity(node);
 
-        if(node == NULL)
+        if (node == NULL)
         {
           _currentNode = node;
           return resetPosition();
         }
 
         int type = _type2(node);
-        if(ExpandedNameTable.ATTRIBUTE == type
+        if (ExpandedNameTable.ATTRIBUTE == type
            || ExpandedNameTable.NAMESPACE == type )
         {
           _currentNode = node;
@@ -670,7 +670,7 @@ public class SAX2DTM2 extends SAX2DTM
         {
           // Be careful to handle the Document node properly
           _currentNode = _parent2(node);
-          if(NULL!=_currentNode)
+          if (NULL!=_currentNode)
             _currentNode = _firstch2(_currentNode);
           else
             _currentNode = node;
@@ -895,7 +895,7 @@ public class SAX2DTM2 extends SAX2DTM
 	  _stack[index] = parent;
         }
 
-        if(index>0)
+        if (index>0)
 	  --index; // Pop actual root node (if not start) back off the stack
 
         _currentNode=_stack[index]; // Last parent before root node
@@ -918,12 +918,12 @@ public class SAX2DTM2 extends SAX2DTM
     	// Bugzilla 8324: We were forgetting to skip Attrs and NS nodes.
     	// Also recoded the loop controls for clarity and to flatten out
     	// the tail-recursion.
-   	for(++_currentNode; _sp>=0; ++_currentNode)
+   	for (++_currentNode; _sp>=0; ++_currentNode)
    	{
-   	  if(_currentNode < _stack[_sp])
+   	  if (_currentNode < _stack[_sp])
    	  {
    	    int type = _type2(_currentNode);
-   	    if(type != ATTRIBUTE_NODE && type != NAMESPACE_NODE)
+   	    if (type != ATTRIBUTE_NODE && type != NAMESPACE_NODE)
    	      return returnNode(makeNodeHandle(_currentNode));
    	  }
    	  else
@@ -1611,7 +1611,7 @@ public class SAX2DTM2 extends SAX2DTM
             _currentNode = NULL;
             return END;
           }
-        } while(ATTRIBUTE_NODE == type || TEXT_NODE == type
+        } while (ATTRIBUTE_NODE == type || TEXT_NODE == type
                  || NAMESPACE_NODE == type);
       }
 
@@ -1879,7 +1879,7 @@ public class SAX2DTM2 extends SAX2DTM
 
     // Initialize the values of m_SHIFT and m_MASK.
     int shift;
-    for(shift=0; (blocksize>>>=1) != 0; ++shift);
+    for (shift=0; (blocksize>>>=1) != 0; ++shift);
 
     m_blocksize = 1<<shift;
     m_SHIFT = shift;
@@ -2102,7 +2102,7 @@ public class SAX2DTM2 extends SAX2DTM
     int elemNode = addNode(DTM.ELEMENT_NODE, exName,
                            m_parents.peek(), m_previous, prefixIndex, true);
 
-    if(m_indexing)
+    if (m_indexing)
       indexNode(exName, elemNode);
 
     m_parents.push(elemNode);
@@ -2111,7 +2111,7 @@ public class SAX2DTM2 extends SAX2DTM
     int nDecls = m_prefixMappings.size();
     String prefix;
 
-    if(!m_pastFirstElement)
+    if (!m_pastFirstElement)
     {
       // SPECIAL CASE: Implied declaration at root element
       prefix="xml";
@@ -2173,7 +2173,7 @@ public class SAX2DTM2 extends SAX2DTM
 
       // Bit of a hack... if somehow valString is null, stringToIndex will
       // return -1, which will make things very unhappy.
-      if(null == valString)
+      if (null == valString)
         valString = "";
 
       m_values.addElement(valString);
@@ -2348,7 +2348,7 @@ public class SAX2DTM2 extends SAX2DTM
     int nodeIndex = m_size++;
 
     // Have we overflowed a DTM Identity's addressing range?
-    //if(m_dtmIdent.size() == (nodeIndex>>>DTMManager.IDENT_DTM_NODE_BITS))
+    //if (m_dtmIdent.size() == (nodeIndex>>>DTMManager.IDENT_DTM_NODE_BITS))
     if (nodeIndex == m_maxNodeIndex)
     {
       addNewDTMID(nodeIndex);
@@ -3073,7 +3073,7 @@ public class SAX2DTM2 extends SAX2DTM
 
 	if (length > 0)
 	{
-          if(normalize)
+          if (normalize)
             m_chars.sendNormalizedSAXcharacters(ch, offset, length);
           else
 	    m_chars.sendSAXcharacters(ch, offset, length);
@@ -3115,7 +3115,7 @@ public class SAX2DTM2 extends SAX2DTM
 
       String str = (String)m_values.elementAt(dataIndex);
 
-      if(normalize)
+      if (normalize)
         FastStringBuffer.sendNormalizedSAXcharacters(str.toCharArray(),
                                                      0, str.length(), ch);
       else
@@ -3335,7 +3335,7 @@ public class SAX2DTM2 extends SAX2DTM
     protected final void copyAttributes(final int nodeID, SerializationHandler handler)
         throws SAXException{
 
-       for(int current = getFirstAttributeIdentity(nodeID); current != DTM.NULL; current = getNextAttributeIdentity(current)){
+       for (int current = getFirstAttributeIdentity(nodeID); current != DTM.NULL; current = getNextAttributeIdentity(current)){
             int eType = _exptype2(current);
             copyAttribute(current, eType, handler);
        }

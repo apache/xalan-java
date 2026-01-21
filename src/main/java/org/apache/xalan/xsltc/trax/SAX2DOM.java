@@ -92,7 +92,7 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 	// No text nodes can be children of root (DOM006 exception)
         if (last != _document) {
             final String text = new String(ch, start, length);
-            if( _lastSibling != null && _lastSibling.getNodeType() == Node.TEXT_NODE ){
+            if ( _lastSibling != null && _lastSibling.getNodeType() == Node.TEXT_NODE ){
                   ((Text)_lastSibling).appendData(text);
             }
             else if (last == _root && _nextSibling != null) {

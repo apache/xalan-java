@@ -195,7 +195,7 @@ public class FastStringBuffer
   public FastStringBuffer(int initChunkBits, int maxChunkBits,
                           int rebundleBits)
   {
-    if(DEBUG_FORCE_INIT_BITS!=0) initChunkBits=DEBUG_FORCE_INIT_BITS;
+    if (DEBUG_FORCE_INIT_BITS!=0) initChunkBits=DEBUG_FORCE_INIT_BITS;
     
     // %REVIEW%
     // Should this force to larger value, or smaller? Smaller less efficient, but if
@@ -204,8 +204,8 @@ public class FastStringBuffer
     // adopt the larger size. Dither, dither, dither... This is just stopgap workaround
     // anyway; we need a permanant solution.
     //
-    if(DEBUG_FORCE_FIXED_CHUNKSIZE) maxChunkBits=initChunkBits;
-    //if(DEBUG_FORCE_FIXED_CHUNKSIZE) initChunkBits=maxChunkBits;
+    if (DEBUG_FORCE_FIXED_CHUNKSIZE) maxChunkBits=initChunkBits;
+    //if (DEBUG_FORCE_FIXED_CHUNKSIZE) initChunkBits=maxChunkBits;
 
     m_array = new char[16][];
 
@@ -339,7 +339,7 @@ public class FastStringBuffer
 	  // pay the cost of dealing with that in the append loops (more scattered and more
 	  // inner-loop), we correct it here by moving to the safe side of that
 	  // line -- as we would have left the indexes had we appended up to that point.
-      if(m_firstFree==0 && m_lastChunk>0)
+      if (m_firstFree==0 && m_lastChunk>0)
       {
       	--m_lastChunk;
       	m_firstFree=m_chunkSize;

@@ -78,7 +78,7 @@ public class ChildTestIterator extends BasicTestIterator
    */
   protected int getNextNode()
   {                     
-    if(true /* 0 == m_extendedTypeID */)
+    if (true /* 0 == m_extendedTypeID */)
     {
       m_lastFetched = (DTM.NULL == m_lastFetched)
                    ? m_traverser.first(m_context)
@@ -131,7 +131,7 @@ public class ChildTestIterator extends BasicTestIterator
 //    int what = m_whatToShow;
 //    // System.out.println("what: ");
 //    // NodeTest.debugWhatToShow(what);
-//    if(DTMFilter.SHOW_ALL == what ||
+//    if (DTMFilter.SHOW_ALL == what ||
 //       ((DTMFilter.SHOW_ELEMENT & what) == 0)
 //       || localName == NodeTest.WILD
 //       || namespace == NodeTest.WILD)
@@ -166,7 +166,7 @@ public class ChildTestIterator extends BasicTestIterator
    */
   public void detach()
   {   
-    if(m_allowDetach)
+    if (m_allowDetach)
     {
       m_traverser = null;
       

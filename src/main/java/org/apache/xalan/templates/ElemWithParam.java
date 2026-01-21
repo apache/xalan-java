@@ -202,18 +202,18 @@ public class ElemWithParam extends ElemTemplateElement
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
     // See if we can reduce an RTF to a select with a string expression.
-    if(null == m_selectPattern  
+    if (null == m_selectPattern  
        && sroot.getOptimizer())
     {
       XPath newSelect = ElemVariable.rewriteChildToExpression(this);
-      if(null != newSelect)
+      if (null != newSelect)
         m_selectPattern = newSelect;
     }
     m_qnameID = sroot.getComposeState().getQNameID(m_qname);
     super.compose(sroot);
     
     java.util.Vector vnames = sroot.getComposeState().getVariableNames();
-    if(null != m_selectPattern)
+    if (null != m_selectPattern)
       m_selectPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
       
     // m_index must be resolved by ElemApplyTemplates and ElemCallTemplate!
@@ -320,7 +320,7 @@ public class ElemWithParam extends ElemTemplateElement
    */
   protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
   {
-  	if(callAttrs && (null != m_selectPattern))
+  	if (callAttrs && (null != m_selectPattern))
   		m_selectPattern.getExpression().callVisitors(m_selectPattern, visitor);
     super.callChildVisitors(visitor, callAttrs);
   }

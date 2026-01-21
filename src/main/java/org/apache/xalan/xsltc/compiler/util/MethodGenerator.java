@@ -1554,7 +1554,7 @@ public class MethodGenerator extends MethodGen
                                        lastCopyHandle);
                          pendingTargetMappingHandle =
                                  pendingTargetMappingHandle.getNext();
-                    } while(pendingTargetMappingHandle != ih);
+                    } while (pendingTargetMappingHandle != ih);
 
                     chunkStartTargetMappingsPending = false;
                 }

@@ -108,7 +108,7 @@ public class XslForEachGroupNodeCompareElem {
 				if (r.getType() == XObject.CLASS_NODESET) {
 					DTMCursorIterator ni = ((XMLNodeCursorImpl)r).iterRaw();
 					int current = ni.getCurrentNode();
-					if(DTM.NULL == current) {
+					if (DTM.NULL == current) {
 						current = ni.nextNode();
 					}
 				}

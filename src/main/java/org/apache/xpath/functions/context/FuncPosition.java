@@ -96,9 +96,9 @@ public class FuncPosition extends Function
     if (null != cnl)
     {
       int n = cnl.getCurrentNode();
-      if(n == DTM.NULL)
+      if (n == DTM.NULL)
       {
-        if(cnl.getCurrentPos() == 0)
+        if (cnl.getCurrentPos() == 0)
           return 0;
           
         // Then I think we're in a sort.  See sort21.xsl. So the iterator has 
@@ -116,9 +116,9 @@ public class FuncPosition extends Function
         }
         
         int currentNode = xctxt.getContextNode();
-        while(DTM.NULL != (n = cnl.nextNode()))
+        while (DTM.NULL != (n = cnl.nextNode()))
         {
-          if(n == currentNode)
+          if (n == currentNode)
             break;
         }
       }

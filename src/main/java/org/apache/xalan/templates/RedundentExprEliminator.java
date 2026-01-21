@@ -137,7 +137,7 @@ public class RedundentExprEliminator extends XSLTVisitor
     
     eleminateSharedPartialPaths(psuedoVarRecipient, paths);
     
-    if(DIAGNOSE_NUM_PATHS_REDUCED)
+    if (DIAGNOSE_NUM_PATHS_REDUCED)
 		diagnoseNumPaths(paths, numPathsEliminated, numUniquePathsEliminated);
   }
   
@@ -152,9 +152,9 @@ public class RedundentExprEliminator extends XSLTVisitor
   protected void eleminateSharedPartialPaths(ElemTemplateElement psuedoVarRecipient, Vector paths)
   {
   	MultistepExprHolder list = createMultistepExprList(paths);
-  	if(null != list)
+  	if (null != list)
   	{
-  		if(DIAGNOSE_MULTISTEPLIST)
+  		if (DIAGNOSE_MULTISTEPLIST)
         	list.diagnose();
         	
         boolean isGlobal = (paths == m_absPaths);
@@ -165,9 +165,9 @@ public class RedundentExprEliminator extends XSLTVisitor
     	for (int i = longestStepsCount-1; i >= 1; i--)
     	{
     		MultistepExprHolder next = list;
-        	while(null != next)
+        	while (null != next)
         	{
-        		if(next.m_stepCount < i)
+        		if (next.m_stepCount < i)
         			break;
 				list = matchAndEliminatePartialPaths(next, list, isGlobal, i, psuedoVarRecipient);
 				next = next.m_next;
@@ -189,17 +189,17 @@ public class RedundentExprEliminator extends XSLTVisitor
                                                int lengthToTest,
                                                ElemTemplateElement varScope)
   {  	
-  	if(null == testee.m_exprOwner)
+  	if (null == testee.m_exprOwner)
   		return head;
   		
     // Start with the longest possible match, and move down.
     WalkingIterator iter1 = (WalkingIterator) testee.m_exprOwner.getExpression();
-    if(partialIsVariable(testee, lengthToTest))
+    if (partialIsVariable(testee, lengthToTest))
     	return head;
     MultistepExprHolder matchedPaths = null;
     MultistepExprHolder matchedPathsTail = null;
     MultistepExprHolder meh = head;
-    while( null != meh)
+    while ( null != meh)
     {
       if ((meh != testee) && (null != meh.m_exprOwner))
       {
@@ -232,20 +232,20 @@ public class RedundentExprEliminator extends XSLTVisitor
     }
     	
 	int matchCount = 0;
-	if(null != matchedPaths)
+	if (null != matchedPaths)
 	{
 		ElemTemplateElement root = isGlobal ? varScope : findCommonAncestor(matchedPaths);
 		WalkingIterator sharedIter = (WalkingIterator)matchedPaths.m_exprOwner.getExpression();
 		WalkingIterator newIter = createIteratorFromSteps(sharedIter, lengthToTest);
 		ElemVariable var = createPseudoVarDecl(root, newIter, isGlobal);
-		if(DIAGNOSE_MULTISTEPLIST)
+		if (DIAGNOSE_MULTISTEPLIST)
 			System.err.println("Created var: "+var.getName()+(isGlobal ? "(Global)" : ""));
-		while(null != matchedPaths)
+		while (null != matchedPaths)
 		{
 			ExpressionOwner owner = matchedPaths.m_exprOwner;
 			WalkingIterator iter = (WalkingIterator)owner.getExpression();
 			
-			if(DIAGNOSE_MULTISTEPLIST)
+			if (DIAGNOSE_MULTISTEPLIST)
 				diagnoseLineNumber(iter);
 			
 			LocPathIterator newIter2 = 
@@ -256,7 +256,7 @@ public class RedundentExprEliminator extends XSLTVisitor
 		}
 	}
 	
-	if(DIAGNOSE_MULTISTEPLIST)
+	if (DIAGNOSE_MULTISTEPLIST)
 		diagnoseMultistepList(matchCount, lengthToTest, isGlobal);
     return head;
   }
@@ -267,10 +267,10 @@ public class RedundentExprEliminator extends XSLTVisitor
    */
   boolean partialIsVariable(MultistepExprHolder testee, int lengthToTest)
   {
-  	if(1 == lengthToTest)
+  	if (1 == lengthToTest)
   	{
   		WalkingIterator wi = (WalkingIterator)testee.m_exprOwner.getExpression();
-  		if(wi.getFirstWalker() instanceof FilterExprWalker)
+  		if (wi.getFirstWalker() instanceof FilterExprWalker)
   			return true;
   	}
   	return false;
@@ -303,14 +303,14 @@ public class RedundentExprEliminator extends XSLTVisitor
     // ancestors.
   	MultistepExprHolder next = head;
   	int shortestAncestorCount = 10000;
-  	for(int i = 0; i < numExprs; i++)
+  	for (int i = 0; i < numExprs; i++)
   	{
   		ElemTemplateElement elem = 
   			getElemFromExpression(next.m_exprOwner.getExpression());
   		elems[i] = elem;
   		int numAncestors = countAncestors(elem);
   		ancestorCounts[i] = numAncestors;
-  		if(numAncestors < shortestAncestorCount)
+  		if (numAncestors < shortestAncestorCount)
   		{
   			shortestAncestorCount = numAncestors;
   		}
@@ -318,12 +318,12 @@ public class RedundentExprEliminator extends XSLTVisitor
   	}
   	
   	// Now loop through and "correct" the elements that have more ancestors.
-  	for(int i = 0; i < numExprs; i++)
+  	for (int i = 0; i < numExprs; i++)
   	{
-  		if(ancestorCounts[i] > shortestAncestorCount)
+  		if (ancestorCounts[i] > shortestAncestorCount)
   		{
   			int numStepCorrection = ancestorCounts[i] - shortestAncestorCount;
-  			for(int j = 0; j < numStepCorrection; j++)
+  			for (int j = 0; j < numStepCorrection; j++)
   			{
   				elems[i] = elems[i].getParentElem();
   			}
@@ -333,13 +333,13 @@ public class RedundentExprEliminator extends XSLTVisitor
   	// Now everyone has an equal number of ancestors.  Walk up from here 
   	// equally until all are equal.
   	ElemTemplateElement first = null;
-  	while(shortestAncestorCount-- >= 0)
+  	while (shortestAncestorCount-- >= 0)
   	{
   		boolean areEqual = true;
   		first = elems[0];
-  		for(int i = 1; i < numExprs; i++)
+  		for (int i = 1; i < numExprs; i++)
   		{
-  			if(first != elems[i])
+  			if (first != elems[i])
   			{
   				areEqual = false;
   				break;
@@ -347,9 +347,9 @@ public class RedundentExprEliminator extends XSLTVisitor
   		}
   		// This second check is to make sure we have a common ancestor that is not the same 
   		// as the expression owner... i.e. the var decl has to go above the expression owner.
-  		if(areEqual && isNotSameAsOwner(head, first) && first.canAcceptVariables())
+  		if (areEqual && isNotSameAsOwner(head, first) && first.canAcceptVariables())
   		{
-  			if(DIAGNOSE_MULTISTEPLIST)
+  			if (DIAGNOSE_MULTISTEPLIST)
   			{
   				System.err.print(first.getClass().getName());
   				System.err.println(" at   " + first.getSystemId() + " Line " + first.getLineNumber());
@@ -357,7 +357,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   			return first;
   		}
    			
-  		for(int i = 0; i < numExprs; i++)
+  		for (int i = 0; i < numExprs; i++)
   		{
   			elems[i] = elems[i].getParentElem();
   		}
@@ -382,10 +382,10 @@ public class RedundentExprEliminator extends XSLTVisitor
   protected boolean isNotSameAsOwner(MultistepExprHolder head, ElemTemplateElement ete)
   {
   	MultistepExprHolder next = head;
-  	while(null != next)
+  	while (null != next)
   	{
   		ElemTemplateElement elemOwner = getElemFromExpression(next.m_exprOwner.getExpression());
-  		if(elemOwner == ete)
+  		if (elemOwner == ete)
   			return false;
   		next = next.m_next;
   	}
@@ -401,7 +401,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   protected int countAncestors(ElemTemplateElement elem)
   {
   	int count = 0;
-  	while(null != elem)
+  	while (null != elem)
   	{
   		count++;
   		elem = elem.getParentElem();
@@ -442,7 +442,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   	Variable var = new Variable();
   	var.setQName(uniquePseudoVarName);
   	var.setIsGlobal(isGlobal);
-  	if(isGlobal)
+  	if (isGlobal)
   	{	ElemTemplateElement elem = getElemFromExpression(wi);
   		StylesheetRoot root = elem.getStylesheetRoot();
   		Vector vars = root.getVariablesAndParamsComposed();
@@ -451,13 +451,13 @@ public class RedundentExprEliminator extends XSLTVisitor
   	
   	// Walk to the first walker after the one's we are replacing.
   	AxesWalker walker = wi.getFirstWalker();
-  	for(int i = 0; i < numSteps; i++)
+  	for (int i = 0; i < numSteps; i++)
   	{
   		assertion(null != walker, "Walker should not be null!");
   		walker = walker.getNextWalker();
   	}
   	
-  	if(null != walker)
+  	if (null != walker)
   	{
   	
   	  FilterExprWalker few = new FilterExprWalker(wi);
@@ -492,7 +492,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   		AxesWalker walker = (AxesWalker)wi.getFirstWalker().clone();
   		newIter.setFirstWalker(walker);
   		walker.setLocPathIterator(newIter);
-  		for(int i = 1; i < numSteps; i++)
+  		for (int i = 1; i < numSteps; i++)
   		{
   			AxesWalker next = (AxesWalker)walker.getNextWalker().clone();
   			walker.setNextWalker(next);
@@ -523,12 +523,12 @@ public class RedundentExprEliminator extends XSLTVisitor
   	AxesWalker aw1 = iter1.getFirstWalker();
   	AxesWalker aw2 = iter2.getFirstWalker();
   	
-  	for(int i = 0; (i < numSteps); i++)
+  	for (int i = 0; (i < numSteps); i++)
   	{
-  		if((null == aw1) || (null == aw2))
+  		if ((null == aw1) || (null == aw2))
   		 	return false;
   		 	
-  		if(!aw1.deepEquals(aw2))
+  		if (!aw1.deepEquals(aw2))
   			return false;
   		
   		aw1 = aw1.getNextWalker();
@@ -555,25 +555,25 @@ public class RedundentExprEliminator extends XSLTVisitor
   {
   	MultistepExprHolder first = null;
   	int n = paths.size();
-  	for(int i = 0; i < n; i++)
+  	for (int i = 0; i < n; i++)
   	{
   		ExpressionOwner eo = (ExpressionOwner)paths.elementAt(i);
-  		if(null == eo)
+  		if (null == eo)
   			continue;
   			
   		// Assuming location path iterators should be OK.
   		LocPathIterator lpi = (LocPathIterator)eo.getExpression();
   		int numPaths = countSteps(lpi);
-  		if(numPaths > 1)
+  		if (numPaths > 1)
   		{
-  			if(null == first)
+  			if (null == first)
   				first = new MultistepExprHolder(eo, numPaths, null);
   			else
   				first = first.addInSortedOrder(eo, numPaths);
   		}
   	}
   	
-  	if((null == first) || (first.getLength() <= 1))
+  	if ((null == first) || (first.getLength() <= 1))
   		return null;
   	else
   		return first;
@@ -605,22 +605,22 @@ public class RedundentExprEliminator extends XSLTVisitor
 	int n = paths.size();
 	
 	Expression expr1 = firstOccuranceOwner.getExpression();
-	if(DEBUG)
+	if (DEBUG)
 		assertIsLocPathIterator(expr1, firstOccuranceOwner);
 	boolean isGlobal = (paths == m_absPaths);
 	LocPathIterator lpi = (LocPathIterator)expr1;
 	int stepCount = countSteps(lpi);
-	for(int j = start; j < n; j++)
+	for (int j = start; j < n; j++)
 	{
 		ExpressionOwner owner2 = (ExpressionOwner)paths.elementAt(j);
-		if(null != owner2)
+		if (null != owner2)
 		{
 			Expression expr2 = owner2.getExpression();
 			boolean isEqual = expr2.deepEquals(lpi);
-			if(isEqual)
+			if (isEqual)
 			{  		
 				LocPathIterator lpi2  = (LocPathIterator)expr2;				
-				if(null == head)
+				if (null == head)
 				{
 					head = new MultistepExprHolder(firstOccuranceOwner, stepCount, null);
 					tail = head;
@@ -639,24 +639,24 @@ public class RedundentExprEliminator extends XSLTVisitor
 	}
 	
 	// Change all globals in xsl:templates, etc, to global vars no matter what.
-	if((0 == numPathsFound) && isGlobal)
+	if ((0 == numPathsFound) && isGlobal)
 	{
       head = new MultistepExprHolder(firstOccuranceOwner, stepCount, null);
       numPathsFound++;
 	}
 	
-	if(null != head)
+	if (null != head)
 	{
 		ElemTemplateElement root = isGlobal ? psuedoVarRecipient : findCommonAncestor(head);
 		LocPathIterator sharedIter = (LocPathIterator)head.m_exprOwner.getExpression();
 		ElemVariable var = createPseudoVarDecl(root, sharedIter, isGlobal);
-		if(DIAGNOSE_MULTISTEPLIST)
+		if (DIAGNOSE_MULTISTEPLIST)
 			System.err.println("Created var: "+var.getName()+(isGlobal ? "(Global)" : ""));
 		QName uniquePseudoVarName = var.getName();
-		while(null != head)
+		while (null != head)
 		{
 			ExpressionOwner owner = head.m_exprOwner;	
-			if(DIAGNOSE_MULTISTEPLIST)
+			if (DIAGNOSE_MULTISTEPLIST)
 				diagnoseLineNumber(owner.getExpression());
 			changeToVarRef(uniquePseudoVarName, owner, paths, root);
 			head = head.m_next;
@@ -683,28 +683,28 @@ public class RedundentExprEliminator extends XSLTVisitor
 	int numPathsFound = 0;
 	int n = paths.size();
 	Expression expr1 = firstOccuranceOwner.getExpression();
-	if(DEBUG)
+	if (DEBUG)
 		assertIsLocPathIterator(expr1, firstOccuranceOwner);
 	boolean isGlobal = (paths == m_absPaths);
 	LocPathIterator lpi = (LocPathIterator)expr1;
-	for(int j = start; j < n; j++)
+	for (int j = start; j < n; j++)
 	{
 		ExpressionOwner owner2 = (ExpressionOwner)paths.elementAt(j);
-		if(null != owner2)
+		if (null != owner2)
 		{
 			Expression expr2 = owner2.getExpression();
 			boolean isEqual = expr2.deepEquals(lpi);
-			if(isEqual)
+			if (isEqual)
 			{  		
 				LocPathIterator lpi2  = (LocPathIterator)expr2;				
-				if(!foundFirst)
+				if (!foundFirst)
 				{
 					foundFirst = true;
 					// Insert variable decl into psuedoVarRecipient
 					// We want to insert this into the first legitimate 
 					// position for a variable.
 				    ElemVariable var = createPseudoVarDecl(psuedoVarRecipient, lpi, isGlobal);
-				    if(null == var)
+				    if (null == var)
 				    	return 0;
 				    uniquePseudoVarName = var.getName();
 	
@@ -729,10 +729,10 @@ public class RedundentExprEliminator extends XSLTVisitor
 	}
 	
 	// Change all globals in xsl:templates, etc, to global vars no matter what.
-	if((0 == numPathsFound) && (paths == m_absPaths))
+	if ((0 == numPathsFound) && (paths == m_absPaths))
 	{
       ElemVariable var = createPseudoVarDecl(psuedoVarRecipient, lpi, true);
-      if(null == var)
+      if (null == var)
         return 0;
 	  uniquePseudoVarName = var.getName();
       changeToVarRef(uniquePseudoVarName, firstOccuranceOwner, paths, psuedoVarRecipient);
@@ -750,12 +750,12 @@ public class RedundentExprEliminator extends XSLTVisitor
    */
   protected int countSteps(LocPathIterator lpi)
   {
-  	if(lpi instanceof WalkingIterator)
+  	if (lpi instanceof WalkingIterator)
   	{
   		WalkingIterator wi = (WalkingIterator)lpi;
   		AxesWalker aw = wi.getFirstWalker();
   		int count = 0;
-  		while(null != aw)
+  		while (null != aw)
   		{
   			count++;
   			aw = aw.getNextWalker();
@@ -787,7 +787,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   {
 	Variable varRef = (paths == m_absPaths) ? new VariableSafeAbsRef() : new Variable();
 	varRef.setQName(varName);
-	if(paths == m_absPaths)
+	if (paths == m_absPaths)
 	{
 		StylesheetRoot root = (StylesheetRoot)psuedoVarRecipient;
 		Vector globalVars = root.getVariablesAndParamsComposed();
@@ -820,7 +820,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   {
     QName uniquePseudoVarName = new QName (PSUEDOVARNAMESPACE, "#"+getPseudoVarID());
   		
-  	if(isGlobal)
+  	if (isGlobal)
   	{
   	  return createGlobalPseudoVarDecl(uniquePseudoVarName, 
   	                                  (StylesheetRoot)psuedoVarRecipient, lpi);
@@ -926,7 +926,7 @@ public class RedundentExprEliminator extends XSLTVisitor
     if ((null != ete) && (Constants.ELEMNAME_PARAMVARIABLE == ete.getXSLToken()))
     {
       // Can't stick something in front of a param, so abandon! (see variable13.xsl)
-      if(isParam(lpi))
+      if (isParam(lpi))
         return null;
 
       while (null != ete)
@@ -946,16 +946,16 @@ public class RedundentExprEliminator extends XSLTVisitor
    */
   protected boolean isParam(ExpressionNode expr)
   {
-  	while(null != expr)
+  	while (null != expr)
   	{
-  		if(expr instanceof ElemTemplateElement)
+  		if (expr instanceof ElemTemplateElement)
   			break;
   		expr = expr.exprGetParent();
   	}
-  	if(null != expr)
+  	if (null != expr)
   	{
   		ElemTemplateElement ete = (ElemTemplateElement)expr;
-  		while(null != ete)
+  		while (null != ete)
   		{
   			int type = ete.getXSLToken();
   			switch(type)
@@ -986,11 +986,11 @@ public class RedundentExprEliminator extends XSLTVisitor
   {
   	// This could be somewhat optimized.  since getPreviousSiblingElem is a  
   	// fairly expensive operation.
-  	while(null != (elem = getPrevElementWithinContext(elem)))
+  	while (null != (elem = getPrevElementWithinContext(elem)))
   	{
   		int type = elem.getXSLToken();
   			
-  		if((Constants.ELEMNAME_VARIABLE == type) ||
+  		if ((Constants.ELEMNAME_VARIABLE == type) ||
   		   (Constants.ELEMNAME_PARAMVARIABLE == type))
   		{
   			return (ElemVariable)elem;
@@ -1010,12 +1010,12 @@ public class RedundentExprEliminator extends XSLTVisitor
   protected ElemTemplateElement getPrevElementWithinContext(ElemTemplateElement elem)
   {
   	ElemTemplateElement prev = elem.getPreviousSiblingElem();
-  	if(null == prev)
+  	if (null == prev)
   		prev = elem.getParentElem();
-  	if(null != prev)
+  	if (null != prev)
   	{
   	  int type = prev.getXSLToken();
-  	  if((Constants.ELEMNAME_FOREACH == type) || 
+  	  if ((Constants.ELEMNAME_FOREACH == type) || 
   	     (Constants.ELEMNAME_TEMPLATE == type) ||
   	     (Constants.ELEMNAME_STYLESHEET == type))
   	  {
@@ -1036,9 +1036,9 @@ public class RedundentExprEliminator extends XSLTVisitor
   protected ElemTemplateElement getElemFromExpression(Expression expr)
   {
   	ExpressionNode parent = expr.exprGetParent();
-  	while(null != parent)
+  	while (null != parent)
   	{
-  		if(parent instanceof ElemTemplateElement)
+  		if (parent instanceof ElemTemplateElement)
   			return (ElemTemplateElement)parent;
   		parent = parent.exprGetParent();
   	}
@@ -1057,7 +1057,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   	int analysis = path.getAnalysisBits();
     boolean isAbs = (WalkerFactory.isSet(analysis, WalkerFactory.BIT_ROOT) || 
            WalkerFactory.isSet(analysis, WalkerFactory.BIT_ANY_DESCENDANT_FROM_ROOT));
-    if(isAbs)
+    if (isAbs)
     {
     	isAbs = m_absPathChecker.checkAbsolute(path);
     }
@@ -1076,32 +1076,32 @@ public class RedundentExprEliminator extends XSLTVisitor
   {
   	// Don't optimize "." or single step variable paths.
   	// Both of these cases could use some further optimization by themselves.
-  	if(path instanceof SelfIteratorNoPredicate)
+  	if (path instanceof SelfIteratorNoPredicate)
   	{
   		return true;
   	}
-  	else if(path instanceof WalkingIterator)
+  	else if (path instanceof WalkingIterator)
   	{
   		WalkingIterator wi = (WalkingIterator)path;
   		AxesWalker aw = wi.getFirstWalker();
-  		if((aw instanceof FilterExprWalker) && (null == aw.getNextWalker()))
+  		if ((aw instanceof FilterExprWalker) && (null == aw.getNextWalker()))
   		{
   			FilterExprWalker few = (FilterExprWalker)aw;
   			Expression exp = few.getInnerExpression();
-  			if(exp instanceof Variable)
+  			if (exp instanceof Variable)
   				return true;
   		}
   	}
 
     if (isAbsolute(path) && (null != m_absPaths))
     {
-      if(DEBUG)
+      if (DEBUG)
         validateNewAddition(m_absPaths, owner, path);
       m_absPaths.addElement(owner);
     }
     else if (m_isSameContext && (null != m_paths))
     {
-      if(DEBUG)
+      if (DEBUG)
         validateNewAddition(m_paths, owner, path);
       m_paths.addElement(owner);
     }
@@ -1171,7 +1171,7 @@ public class RedundentExprEliminator extends XSLTVisitor
         {
           
           // Just get the select value.
-          if(type == Constants.ELEMNAME_FOREACH)
+          if (type == Constants.ELEMNAME_FOREACH)
           {
             ElemForEach efe = (ElemForEach) elem;
    		    
@@ -1218,7 +1218,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   {
 		if (numPathsEliminated > 0)
 		{ 
-		  if(paths == m_paths)
+		  if (paths == m_paths)
 		  {
 		    System.err.println("Eliminated " + numPathsEliminated + " total paths!");
 		    System.err.println(
@@ -1241,10 +1241,10 @@ public class RedundentExprEliminator extends XSLTVisitor
   private final void assertIsLocPathIterator(Expression expr1, ExpressionOwner eo) 
     throws RuntimeException 
   {
-		if(!(expr1 instanceof LocPathIterator))
+		if (!(expr1 instanceof LocPathIterator))
 		{
 			String errMsg;
-			if(expr1 instanceof Variable)
+			if (expr1 instanceof Variable)
 			{
 				errMsg = "Programmer's assertion: expr1 not an iterator: "+
 				          ((Variable)expr1).getQName();
@@ -1272,7 +1272,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   	assertion(owner.getExpression() == path, "owner.getExpression() != path!!!");
 	int n = paths.size();
 	// There should never be any duplicates in the list!
-	for(int i = 0; i < n; i++)
+	for (int i = 0; i < n; i++)
 	{
 		ExpressionOwner ew = (ExpressionOwner)paths.elementAt(i);
 		assertion(ew != owner, "duplicate owner on the list!!!");
@@ -1285,7 +1285,7 @@ public class RedundentExprEliminator extends XSLTVisitor
    */
   protected static void assertion(boolean b, String msg)
   {
-  	if(!b)
+  	if (!b)
   	{
   		throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR, new Object[]{msg}));
   		// "Programmer's assertion in RundundentExprEliminator: "+msg);
@@ -1339,12 +1339,12 @@ public class RedundentExprEliminator extends XSLTVisitor
 		MultistepExprHolder first = this;
 		MultistepExprHolder next = this;
 		MultistepExprHolder prev = null;
-		while(null != next)
+		while (null != next)
 		{
-			if(stepCount >= next.m_stepCount)
+			if (stepCount >= next.m_stepCount)
 			{
 				MultistepExprHolder newholder = new MultistepExprHolder(exprOwner, stepCount, next);
-				if(null == prev)
+				if (null == prev)
 					first = newholder;
 				else
 					prev.m_next = newholder;
@@ -1374,11 +1374,11 @@ public class RedundentExprEliminator extends XSLTVisitor
 		MultistepExprHolder first = this;
 		MultistepExprHolder next = this;
 		MultistepExprHolder prev = null;
-		while(null != next)
+		while (null != next)
 		{
-			if(next == itemToRemove)
+			if (next == itemToRemove)
 			{
-				if(null == prev)
+				if (null == prev)
 					first = next.m_next;
 				else
 					prev.m_next = next.m_next;
@@ -1402,7 +1402,7 @@ public class RedundentExprEliminator extends XSLTVisitor
 	{
 		int count = 0;
 		MultistepExprHolder next = this;
-		while(null != next)
+		while (null != next)
 		{
 			count++;
 			next = next.m_next;

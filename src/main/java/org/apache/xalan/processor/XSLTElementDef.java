@@ -64,7 +64,7 @@ public class XSLTElementDef
         || namespace.equals(Constants.S_BUILTIN_OLD_EXTENSIONS_URL)))
     {
       schema.addAvailableElement(new QName(namespace, name));
-      if(null != nameAlias)
+      if (null != nameAlias)
         schema.addAvailableElement(new QName(namespace, nameAlias));
     } 
   }
@@ -94,7 +94,7 @@ public class XSLTElementDef
         || namespace.equals(Constants.S_BUILTIN_OLD_EXTENSIONS_URL)))
     {
       schema.addAvailableElement(new QName(namespace, name));
-      if(null != nameAlias)
+      if (null != nameAlias)
         schema.addAvailableElement(new QName(namespace, nameAlias));
     } 
 		
@@ -587,11 +587,11 @@ public class XSLTElementDef
         String uriDef = attrDef.getNamespace();
         String nameDef = attrDef.getName();
         
-        if ("xpath-default-namespace".equals(localName) && "xpath-default-namespace".equals(nameDef) 
+        if ((Constants.ATTRNAME_XPATH_DEFAULT_NAMESPACE).equals(localName) && (Constants.ATTRNAME_XPATH_DEFAULT_NAMESPACE).equals(nameDef) 
         		                                                                 && equalsMayBeNullOrZeroLen(uri, uriDef)) {
         	return attrDef;
         }
-        else if ("expand-text".equals(localName) && "expand-text".equals(nameDef) 
+        else if ((Constants.ATTRNAME_EXPAND_TEXT).equals(localName) && (Constants.ATTRNAME_EXPAND_TEXT).equals(nameDef) 
                                                                                  && equalsMayBeNullOrZeroLen(uri, uriDef)) {
             return attrDef;
         }

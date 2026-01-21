@@ -153,7 +153,7 @@ public class Function4Args extends Function3Args
   public void callArgVisitors(XPathVisitor visitor)
   {
   	super.callArgVisitors(visitor);
-  	if(null != m_arg3)
+  	if (null != m_arg3)
   		m_arg3.callVisitors(new Arg3Owner(), visitor);
   }
 
@@ -162,15 +162,15 @@ public class Function4Args extends Function3Args
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!super.deepEquals(expr))
+  	if (!super.deepEquals(expr))
   		return false;
   		
-  	if(null != m_arg3)
+  	if (null != m_arg3)
   	{
-  		if(null == ((Function4Args)expr).m_arg3)
+  		if (null == ((Function4Args)expr).m_arg3)
   			return false;
 
-  		if(!m_arg3.deepEquals(((Function4Args)expr).m_arg3))
+  		if (!m_arg3.deepEquals(((Function4Args)expr).m_arg3))
   			return false;
   	}
   	else if (null != ((Function4Args)expr).m_arg3)

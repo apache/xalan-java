@@ -332,7 +332,7 @@ class XPathResultImpl implements XPathResult, EventListener {
 		}			 
 
         Node node = m_iterator.nextNode();
-        if(null == node)
+        if (null == node)
         	removeEventListener(); // JIRA 1673
         // Wrap "namespace node" in an XPathNamespace 
         if (isNamespaceNode(node)) {
@@ -492,7 +492,7 @@ class XPathResultImpl implements XPathResult, EventListener {
  *
  */
   private void addEventListener(){
-  	if(m_contextNode instanceof EventTarget)
+  	if (m_contextNode instanceof EventTarget)
 		((EventTarget)m_contextNode).addEventListener("DOMSubtreeModified",this,true);
   	
   }
@@ -503,7 +503,7 @@ class XPathResultImpl implements XPathResult, EventListener {
  *
  */
 private void removeEventListener(){
-	if(m_contextNode instanceof EventTarget)
+	if (m_contextNode instanceof EventTarget)
 		((EventTarget)m_contextNode).removeEventListener("DOMSubtreeModified",this,true);
 }
   

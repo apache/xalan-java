@@ -94,7 +94,7 @@ public class MethodResolver
     int nMethods = constructors.length;
     int bestScore = Integer.MAX_VALUE;
     int bestScoreCount = 0;
-    for(int i = 0; i < nMethods; i++)
+    for (int i = 0; i < nMethods; i++)
     {
       Constructor ctor = constructors[i];
       Class[] paramTypes = ctor.getParameterTypes();
@@ -105,11 +105,11 @@ public class MethodResolver
       // System.out.println("numberMethodParams: "+numberMethodParams);
       // System.out.println("argsIn.length: "+argsIn.length);
       // System.out.println("exprContext: "+exprContext);
-      if(numberMethodParams == (argsIn.length+1))
+      if (numberMethodParams == (argsIn.length+1))
       {
         Class javaClass = paramTypes[0];
         // System.out.println("first javaClass: "+javaClass.getName());
-        if(ExpressionContext.class.isAssignableFrom(javaClass))
+        if (ExpressionContext.class.isAssignableFrom(javaClass))
         {
           isFirstExpressionContext = true;
           scoreStart = 0;
@@ -122,14 +122,14 @@ public class MethodResolver
       else
           scoreStart = 1000;
       
-      if(argsIn.length == (numberMethodParams - paramStart))
+      if (argsIn.length == (numberMethodParams - paramStart))
       {
         // then we have our candidate.
         int score = scoreMatch(paramTypes, paramStart, argsIn, scoreStart);
         // System.out.println("score: "+score);
-        if(-1 == score)	
+        if (-1 == score)	
           continue;
-        if(score < bestScore)
+        if (score < bestScore)
         {
           // System.out.println("Assigning best ctor: "+ctor);
           bestConstructor = ctor;
@@ -142,7 +142,7 @@ public class MethodResolver
       }
     }
 
-    if(null == bestConstructor)
+    if (null == bestConstructor)
     {
       throw new NoSuchMethodException(errString("function", "constructor", classObj,
                                                                         "", 0, argsIn));
@@ -193,12 +193,12 @@ public class MethodResolver
     int bestScore = Integer.MAX_VALUE;
     int bestScoreCount = 0;
     boolean isStatic;
-    for(int i = 0; i < nMethods; i++)
+    for (int i = 0; i < nMethods; i++)
     {
       Method method = methods[i];
       // System.out.println("looking at method: "+method);
       int xsltParamStart = 0;
-      if(method.getName().equals(name))
+      if (method.getName().equals(name))
       {
         isStatic = Modifier.isStatic(method.getModifiers());
         switch(searchMethod)
@@ -233,10 +233,10 @@ public class MethodResolver
         // System.out.println("argsIn.length: "+argsIn.length);
         // System.out.println("exprContext: "+exprContext);
         int argsLen = (null != argsIn) ? argsIn.length : 0;
-        if(numberMethodParams == (argsLen-xsltParamStart+1))
+        if (numberMethodParams == (argsLen-xsltParamStart+1))
         {
           Class javaClass = paramTypes[0];
-          if(ExpressionContext.class.isAssignableFrom(javaClass))
+          if (ExpressionContext.class.isAssignableFrom(javaClass))
           {
             isFirstExpressionContext = true;
             scoreStart = 0;
@@ -250,14 +250,14 @@ public class MethodResolver
         else
             scoreStart = 1000;
         
-        if((argsLen - xsltParamStart) == (numberMethodParams - javaParamStart))
+        if ((argsLen - xsltParamStart) == (numberMethodParams - javaParamStart))
         {
           // then we have our candidate.
           int score = scoreMatch(paramTypes, javaParamStart, argsIn, scoreStart);
           // System.out.println("score: "+score);
-          if(-1 == score)
+          if (-1 == score)
             continue;
-          if(score < bestScore)
+          if (score < bestScore)
           {
             // System.out.println("Assigning best method: "+method);
             bestMethod = method;
@@ -328,11 +328,11 @@ public class MethodResolver
     Method[] methods = classObj.getMethods();
     int nMethods = methods.length;
     int bestScoreCount = 0;
-    for(int i = 0; i < nMethods; i++)
+    for (int i = 0; i < nMethods; i++)
     {
       Method method = methods[i];
       // System.out.println("looking at method: "+method);
-      if(method.getName().equals(name))
+      if (method.getName().equals(name))
       {
         Class[] paramTypes = method.getParameterTypes();
         if ( (paramTypes.length == 2)
@@ -382,7 +382,7 @@ public class MethodResolver
       int nParams = paramTypes.length;
       argsOut[0] = new Object[nParams];
       int paramIndex = 0;
-      if((nParams > 0) 
+      if ((nParams > 0) 
          && ExpressionContext.class.isAssignableFrom(paramTypes[0]))
       {
         argsOut[0][0] = exprContext;
@@ -392,7 +392,7 @@ public class MethodResolver
 
       if (argsIn != null)
       {
-        for(int i = argsIn.length - nParams + paramIndex ; paramIndex < nParams; i++, paramIndex++)
+        for (int i = argsIn.length - nParams + paramIndex ; paramIndex < nParams; i++, paramIndex++)
         {
           // System.out.println("paramTypes[i]: "+paramTypes[i]);
           argsOut[0][paramIndex] = convert(argsIn[i], paramTypes[paramIndex]);
@@ -554,7 +554,7 @@ public class MethodResolver
     if ((xsltArgs == null) || (javaParamTypes == null))
       return score;
     int nParams = xsltArgs.length;
-    for(int i = nParams - javaParamTypes.length + javaParamsStart, javaParamTypesIndex = javaParamsStart; 
+    for (int i = nParams - javaParamTypes.length + javaParamsStart, javaParamTypesIndex = javaParamsStart; 
         i < nParams; 
         i++, javaParamTypesIndex++)
     {
@@ -567,11 +567,11 @@ public class MethodResolver
       // System.out.println("Checking xslt: "+xsltObj.getClass().getName()+
       //                   " against java: "+javaClass.getName());
       
-      if(xsltClassType == XObject.CLASS_NULL)
+      if (xsltClassType == XObject.CLASS_NULL)
       {
         // In Xalan I have objects of CLASS_NULL, though I'm not 
         // sure they're used any more.  For now, do something funky.
-        if(!javaClass.isPrimitive())
+        if (!javaClass.isPrimitive())
         {
           // Then assume that a null can be used, but give it a low score.
           score += 10;
@@ -584,10 +584,10 @@ public class MethodResolver
       ConversionInfo[] convInfo = m_conversions[xsltClassType];
       int nConversions = convInfo.length;
       int k;
-      for(k = 0; k < nConversions; k++)
+      for (k = 0; k < nConversions; k++)
       {
         ConversionInfo cinfo = convInfo[k];
-        if(javaClass.isAssignableFrom(cinfo.m_class))
+        if (javaClass.isAssignableFrom(cinfo.m_class))
         {
           score += cinfo.m_score;
           break; // from k loop
@@ -672,7 +672,7 @@ public class MethodResolver
   static Object convert(Object xsltObj, Class javaClass)
     throws javax.xml.transform.TransformerException
   {
-    if(xsltObj instanceof XObject)
+    if (xsltObj instanceof XObject)
     {
       XObject xobj = ((XObject)xsltObj);
       int xsltClassType = xobj.getType();
@@ -684,7 +684,7 @@ public class MethodResolver
         
       case XObject.CLASS_BOOLEAN:
         {
-          if(javaClass == java.lang.String.class)
+          if (javaClass == java.lang.String.class)
             return xobj.str();
           else
             return xobj.bool() ? Boolean.TRUE : Boolean.FALSE;
@@ -692,9 +692,9 @@ public class MethodResolver
         // break; Unreachable
       case XObject.CLASS_NUMBER:
         {
-          if(javaClass == java.lang.String.class)
+          if (javaClass == java.lang.String.class)
             return xobj.str();
-          else if(javaClass == Boolean.TYPE)
+          else if (javaClass == Boolean.TYPE)
             return xobj.bool() ? Boolean.TRUE : Boolean.FALSE;
           else 
           {
@@ -705,18 +705,18 @@ public class MethodResolver
         
       case XObject.CLASS_STRING:
         {
-          if((javaClass == java.lang.String.class) ||
+          if ((javaClass == java.lang.String.class) ||
              (javaClass == java.lang.Object.class))
             return xobj.str();
-          else if(javaClass == Character.TYPE)
+          else if (javaClass == Character.TYPE)
           {
             String str = xobj.str();
-            if(str.length() > 0)
+            if (str.length() > 0)
               return new Character(str.charAt(0));
             else
               return null; // ??
           }
-          else if(javaClass == Boolean.TYPE)
+          else if (javaClass == Boolean.TYPE)
             return xobj.bool() ? Boolean.TRUE : Boolean.FALSE;
           else 
           {
@@ -732,7 +732,7 @@ public class MethodResolver
           //       Besides, if the javaClass is a subclass of NodeIterator
           //       the condition will be true and we'll create a NodeIterator
           //       which may not match the javaClass, causing a RuntimeException.
-          // if((NodeIterator.class.isAssignableFrom(javaClass)) ||
+          // if ((NodeIterator.class.isAssignableFrom(javaClass)) ||
           if ( (javaClass == NodeIterator.class) ||
                (javaClass == java.lang.Object.class) )
           {
@@ -744,23 +744,23 @@ public class MethodResolver
             return ((XRTreeFrag) xobj).convertToNodeset();
           }
           // Same comment as above
-          // else if(Node.class.isAssignableFrom(javaClass))
-          else if(javaClass == Node.class)
+          // else if (Node.class.isAssignableFrom(javaClass))
+          else if (javaClass == Node.class)
           {
             DTMCursorIterator iter = ((XRTreeFrag) xobj).asNodeIterator();
             int rootHandle = iter.nextNode();
             DTM dtm = iter.getDTM(rootHandle);
             return dtm.getNode(dtm.getFirstChild(rootHandle));
           }
-          else if(javaClass == java.lang.String.class)
+          else if (javaClass == java.lang.String.class)
           {
             return xobj.str();
           }
-          else if(javaClass == Boolean.TYPE)
+          else if (javaClass == Boolean.TYPE)
           {
             return xobj.bool() ? Boolean.TRUE : Boolean.FALSE;
           }
-          else if(javaClass.isPrimitive())
+          else if (javaClass.isPrimitive())
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
           }
@@ -771,7 +771,7 @@ public class MethodResolver
             DTM dtm = iter.getDTM(rootHandle);
             Node child = dtm.getNode(dtm.getFirstChild(rootHandle));
 
-            if(javaClass.isAssignableFrom(child.getClass()))
+            if (javaClass.isAssignableFrom(child.getClass()))
               return child;
             else
               return null;
@@ -786,21 +786,21 @@ public class MethodResolver
           //       Besides, if the javaClass is a subclass of NodeIterator
           //       the condition will be true and we'll create a NodeIterator
           //       which may not match the javaClass, causing a RuntimeException.
-          // if((NodeIterator.class.isAssignableFrom(javaClass)) ||
+          // if ((NodeIterator.class.isAssignableFrom(javaClass)) ||
           if ( (javaClass == NodeIterator.class) ||
                (javaClass == java.lang.Object.class) )
           {
             return xobj.nodeset();
           }
           // Same comment as above
-          // else if(NodeList.class.isAssignableFrom(javaClass))
-          else if(javaClass == NodeList.class)
+          // else if (NodeList.class.isAssignableFrom(javaClass))
+          else if (javaClass == NodeList.class)
           {
             return xobj.nodelist();
           }
           // Same comment as above
-          // else if(Node.class.isAssignableFrom(javaClass))
-          else if(javaClass == Node.class)
+          // else if (Node.class.isAssignableFrom(javaClass))
+          else if (javaClass == Node.class)
           {
             // Xalan ensures that iter() always returns an
             // iterator positioned at the beginning.
@@ -811,15 +811,15 @@ public class MethodResolver
             else
               return null;
           }
-          else if(javaClass == java.lang.String.class)
+          else if (javaClass == java.lang.String.class)
           {
             return xobj.str();
           }
-          else if(javaClass == Boolean.TYPE)
+          else if (javaClass == Boolean.TYPE)
           {
             return xobj.bool() ? Boolean.TRUE : Boolean.FALSE;
           }
-          else if(javaClass.isPrimitive())
+          else if (javaClass.isPrimitive())
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
           }
@@ -829,7 +829,7 @@ public class MethodResolver
             int childHandle = iter.nextNode();
             DTM dtm = iter.getDTM(childHandle);
             Node child = dtm.getNode(childHandle);
-            if(javaClass.isAssignableFrom(child.getClass()))
+            if (javaClass.isAssignableFrom(child.getClass()))
               return child;
             else
               return null;
@@ -841,23 +841,23 @@ public class MethodResolver
       } // end switch
       xsltObj = xobj.object();
       
-    } // end if if(xsltObj instanceof XObject)
+    } // end if if (xsltObj instanceof XObject)
     
     // At this point, we have a raw java object, not an XObject.
     if (null != xsltObj)
     {
-      if(javaClass == java.lang.String.class)
+      if (javaClass == java.lang.String.class)
       {
         return xsltObj.toString();
       }
-      else if(javaClass.isPrimitive())
+      else if (javaClass.isPrimitive())
       {
         // Assume a number conversion
         XString xstr = new XString(xsltObj.toString());
         double num = xstr.num();
         return convertDoubleToNumber(num, javaClass);
       }
-      else if(javaClass == java.lang.Class.class)
+      else if (javaClass == java.lang.Class.class)
       {
         return xsltObj.getClass();
       }
@@ -885,36 +885,36 @@ public class MethodResolver
     // In the code below, I don't check for NaN, etc., instead 
     // using the standard Java conversion, as I think we should 
     // specify.  See issue-runtime-errors.
-    if((javaClass == Double.TYPE) ||
+    if ((javaClass == Double.TYPE) ||
        (javaClass == java.lang.Double.class))
       return new Double(num);
-    else if(javaClass == Float.TYPE)
+    else if (javaClass == Float.TYPE)
       return new Float(num);
-    else if(javaClass == Long.TYPE)
+    else if (javaClass == Long.TYPE)
     {
       // Use standard Java Narrowing Primitive Conversion
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672
       return new Long((long)num);
     }
-    else if(javaClass == Integer.TYPE)
+    else if (javaClass == Integer.TYPE)
     {
       // Use standard Java Narrowing Primitive Conversion
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672
       return new Integer((int)num);
     }
-    else if(javaClass == Short.TYPE)
+    else if (javaClass == Short.TYPE)
     {
       // Use standard Java Narrowing Primitive Conversion
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672
       return new Short((short)num);
     }
-    else if(javaClass == Character.TYPE)
+    else if (javaClass == Character.TYPE)
     {
       // Use standard Java Narrowing Primitive Conversion
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672
       return new Character((char)num);
     }
-    else if(javaClass == Byte.TYPE)
+    else if (javaClass == Byte.TYPE)
     {
       // Use standard Java Narrowing Primitive Conversion
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672

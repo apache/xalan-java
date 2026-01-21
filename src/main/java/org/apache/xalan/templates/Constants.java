@@ -202,7 +202,8 @@ public class Constants extends org.apache.xml.utils.Constants
       XS_VALIDATION_STRICT_STRING = "strict",
       XS_VALIDATION_LAX_STRING = "lax",
       XS_VALIDATION_PRESERVE_STRING = "preserve",
-      XS_VALIDATION_STRIP_STRING = "strip",
+      XS_VALIDATION_STRIP_STRING = "strip",      
+      XS_VALIDATION_UNSPECIFIED_STRING = "unspecified",
       
       ELEMNAME_CONTEXT_ITEM_STRING = "context-item",
       ELEMNAME_CONTEXT_ITEM_REQUIRED_STRING = "required",
@@ -312,7 +313,10 @@ public class Constants extends org.apache.xml.utils.Constants
       ATTRNAME_XMLNSDEF = "xmlns", // default namespace
       ATTRNAME_XMLSPACE = "xml:space", 
       ATTRNAME_ZERODIGIT = "zero-digit",      
-      ATTRNAME_USE_CHARACTER_MAPS = "use-character-maps";
+      ATTRNAME_USE_CHARACTER_MAPS = "use-character-maps",
+      ATTRNAME_XPATH_DEFAULT_NAMESPACE = "xpath-default-namespace",
+      ATTRNAME_EXPAND_TEXT = "expand-text",
+      ATTRNAME_INPUT_TYPE_ANNOTATIONS = "input-type-annotations";
 
   /** IDs for XSL attribute types. These are associated
    * with the string literals in the TransformerImpl class.

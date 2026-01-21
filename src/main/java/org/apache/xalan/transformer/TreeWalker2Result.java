@@ -90,7 +90,7 @@ public class TreeWalker2Result extends DTMTreeWalker
   protected void endNode(int node) throws org.xml.sax.SAXException
   {
     super.endNode(node);
-    if(DTM.ELEMENT_NODE == m_dtm.getNodeType(node))
+    if (DTM.ELEMENT_NODE == m_dtm.getNodeType(node))
     {
       m_transformer.getXPathContext().popCurrentNode();
     }
@@ -115,7 +115,7 @@ public class TreeWalker2Result extends DTMTreeWalker
       {
         xcntxt.pushCurrentNode(node);                   
                                         
-        if(m_startNode != node)
+        if (m_startNode != node)
         {
           super.startNode(node);
         }

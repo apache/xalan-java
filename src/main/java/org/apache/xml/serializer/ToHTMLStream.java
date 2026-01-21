@@ -1195,7 +1195,7 @@ public class ToHTMLStream extends ToStream
                     // Page 92.
 
                     // Note that Kay doesn't escape 0x20...
-                    //  if(ch == 0x20) // Not sure about this... -sb
+                    //  if (ch == 0x20) // Not sure about this... -sb
                     //  {
                     //    writer.write(ch);
                     //  }
@@ -1312,7 +1312,7 @@ public class ToHTMLStream extends ToStream
                 // Dmitri Ilyin: to check if '%' number number is invalid. It must be checked if %xx is a sign, that would be encoded
                 // The encoded signes are in Hex form. So %xx my be in form %3C that is "<" sign. I will try to change here a little.
 
-                //        if( ((i+2) < len) && isASCIIDigit(stringArray[i+1]) && isASCIIDigit(stringArray[i+2]) )
+                //        if ( ((i+2) < len) && isASCIIDigit(stringArray[i+1]) && isASCIIDigit(stringArray[i+2]) )
 
                 // We are no longer escaping '%'
 
@@ -1369,7 +1369,7 @@ public class ToHTMLStream extends ToStream
         else if (cleanLength == 1)
         {
             // a little optimization for 1 clean character
-            // (we could have let the previous if(...) handle them all)
+            // (we could have let the previous if (...) handle them all)
             writer.write(ch);
         }
     }
@@ -1442,7 +1442,7 @@ public class ToHTMLStream extends ToStream
  
                             writeUTF16Surrogate(ch, chars, i, end);
                             i++; // two input characters processed
-                                 // this increments by one and the for()
+                                 // this increments by one and the for ()
                                  // loop itself increments by another one.
                     }
 
@@ -1475,7 +1475,7 @@ public class ToHTMLStream extends ToStream
                 }
                 cleanStart = i + 1;
             }
-        } // end of for()
+        } // end of for ()
         
         // are there any clean characters at the end of the array
         // that we haven't processed yet?
@@ -1492,7 +1492,7 @@ public class ToHTMLStream extends ToStream
         else if (cleanLength == 1)
         {
             // a little optimization for 1 clean character
-            // (we could have let the previous if(...) handle them all)
+            // (we could have let the previous if (...) handle them all)
             writer.write(ch);
         }
     }

@@ -119,7 +119,7 @@ public class XUnresolvedVariable extends XObject
 	  try
 	  {
 		  m_doneEval = false;
-		  if(-1 != velem.m_frameSize)
+		  if (-1 != velem.m_frameSize)
 			  vars.link(velem.m_frameSize);
 		  XObject var = velem.getValue(m_transformer, m_context);
 		  m_doneEval = true;
@@ -127,7 +127,7 @@ public class XUnresolvedVariable extends XObject
 	  }
 	  finally
 	  {
-		  if(-1 != velem.m_frameSize)
+		  if (-1 != velem.m_frameSize)
 			  vars.unlink(currentFrame);
 	  }
   }

@@ -418,15 +418,15 @@ public class ElemSort extends ElemTemplateElement
     super.compose(sroot);
     StylesheetRoot.ComposeState cstate = sroot.getComposeState();
     java.util.Vector vnames = cstate.getVariableNames();
-    if(null != m_caseorder_avt)
+    if (null != m_caseorder_avt)
       m_caseorder_avt.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_dataType_avt)
+    if (null != m_dataType_avt)
       m_dataType_avt.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_lang_avt)
+    if (null != m_lang_avt)
       m_lang_avt.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_order_avt)
+    if (null != m_order_avt)
       m_order_avt.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_selectExpression)
+    if (null != m_selectExpression)
       m_selectExpression.fixupVariables(vnames, cstate.getGlobalsSize());
   }
   

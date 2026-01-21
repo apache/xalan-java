@@ -278,7 +278,7 @@ public class IncrementalSAXSource_Xerces
       throw new SAXException(ex);
     }
     
-    if(!ok)
+    if (!ok)
       throw new SAXException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COULD_NOT_INIT_PARSER, null)); //"could not initialize parser with");
   }
 
@@ -297,7 +297,7 @@ public class IncrementalSAXSource_Xerces
    * */
   public Object deliverMoreNodes (boolean parsemore)
   {
-    if(!parsemore)
+    if (!parsemore)
     {
       fParseInProgress=false;
       return Boolean.FALSE;
@@ -323,7 +323,7 @@ public class IncrementalSAXSource_Xerces
 					 java.lang.reflect.InvocationTargetException,
 					 java.lang.InstantiationException
 	{
-		if(fConfigSetInput!=null)
+		if (fConfigSetInput!=null)
 		{
 			// Obtain input from SAX inputSource object, construct XNI version of
 			// that object. Logic adapted from Xerces2.
@@ -364,7 +364,7 @@ public class IncrementalSAXSource_Xerces
 					 java.lang.reflect.InvocationTargetException
 	{
 		// Take next parsing step, return false iff parsing complete:
-		if(fConfigSetInput!=null)
+		if (fConfigSetInput!=null)
 		{
 			Object ret=(Boolean)(fConfigParse.invoke(fPullParserConfig,parmsfalse));
 			return ((Boolean)ret).booleanValue();
@@ -403,7 +403,7 @@ public class IncrementalSAXSource_Xerces
 
     // Tell coroutine to begin parsing, run while parsing is in progress
 
-    for(int arg=0;arg<args.length;++arg)
+    for (int arg=0;arg<args.length;++arg)
     {
       try
       {
@@ -411,14 +411,14 @@ public class IncrementalSAXSource_Xerces
         Object result=null;
         boolean more=true;
         parser.startParse(source);
-        for(result = parser.deliverMoreNodes(more);
+        for (result = parser.deliverMoreNodes(more);
             result==Boolean.TRUE;
             result = parser.deliverMoreNodes(more))
         {
           System.out.println("\nSome parsing successful, trying more.\n");
             
           // Special test: Terminate parsing early.
-          if(arg+1<args.length && "!".equals(args[arg+1]))
+          if (arg+1<args.length && "!".equals(args[arg+1]))
           {
             ++arg;
             more=false;

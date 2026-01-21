@@ -117,7 +117,7 @@ public class UnionPathIterator extends LocPathIterator
       m_iterators[len] = expr;
     }
     expr.nextNode();
-    if(expr instanceof Expression)
+    if (expr instanceof Expression)
     	((Expression)expr).exprSetParent(this);
   }
   
@@ -130,9 +130,9 @@ public class UnionPathIterator extends LocPathIterator
    */
   public void detach()
   {
-          if(m_allowDetach && null != m_iterators){         
+          if (m_allowDetach && null != m_iterators){         
                   int n = m_iterators.length;
-                  for(int i = 0; i < n; i++)
+                  for (int i = 0; i < n; i++)
                   {
                           m_iterators[i].detach();
                   }
@@ -186,11 +186,11 @@ public class UnionPathIterator extends LocPathIterator
   	UnionPathIterator upi = new UnionPathIterator(compiler, opPos);
   	int nPaths = upi.m_exprs.length;
   	boolean isAllChildIterators = true;
-  	for(int i = 0; i < nPaths; i++)
+  	for (int i = 0; i < nPaths; i++)
   	{
   		LocPathIterator lpi = upi.m_exprs[i];
   		
-  		if(lpi.getAxis() != Axis.CHILD)
+  		if (lpi.getAxis() != Axis.CHILD)
   		{
   			isAllChildIterators = false;
   			break;
@@ -198,18 +198,18 @@ public class UnionPathIterator extends LocPathIterator
   		else
   		{
   			// check for positional predicates or position function, which won't work.
-  			if(HasPositionalPredChecker.check(lpi))
+  			if (HasPositionalPredChecker.check(lpi))
   			{
   				isAllChildIterators = false;
   				break;
   			}
   		}
   	}
-  	if(isAllChildIterators)
+  	if (isAllChildIterators)
   	{
   		UnionChildIterator uci = new UnionChildIterator();
   		
-	  	for(int i = 0; i < nPaths; i++)
+	  	for (int i = 0; i < nPaths; i++)
 	  	{
 	  		PredicatedNodeTest lpi = upi.m_exprs[i];
 	  		// I could strip the lpi down to a pure PredicatedNodeTest, but 
@@ -357,7 +357,7 @@ public class UnionPathIterator extends LocPathIterator
           new WalkingIterator(compiler.getNamespaceContext());
         iter.exprSetParent(this);
           
-        if(compiler.getLocationPathDepth() <= 0)
+        if (compiler.getLocationPathDepth() <= 0)
           iter.setIsTopLevel(true);
 
         iter.m_firstWalker = new org.apache.xpath.axes.FilterExprWalker(iter);
@@ -381,7 +381,7 @@ public class UnionPathIterator extends LocPathIterator
    */
   public int nextNode()
   {
-  	if(m_foundLast)
+  	if (m_foundLast)
   		return DTM.NULL;
 
     // Loop through the iterators getting the current fetched 
@@ -511,7 +511,7 @@ public class UnionPathIterator extends LocPathIterator
     public void setExpression(Expression exp)
     {
     	
-    	if(!(exp instanceof LocPathIterator))
+    	if (!(exp instanceof LocPathIterator))
     	{
     		// Yuck.  Need FilterExprIter.  Or make it so m_exprs can be just 
     		// plain expressions?
@@ -536,12 +536,12 @@ public class UnionPathIterator extends LocPathIterator
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {
-  	 	if(visitor.visitUnionPath(owner, this))
+  	 	if (visitor.visitUnionPath(owner, this))
   	 	{
-  	 		if(null != m_exprs)
+  	 		if (null != m_exprs)
   	 		{
   	 			int n = m_exprs.length;
-  	 			for(int i = 0; i < n; i++)
+  	 			for (int i = 0; i < n; i++)
   	 			{
   	 				m_exprs[i].callVisitors(new iterOwner(i), visitor);
   	 			}
@@ -563,12 +563,12 @@ public class UnionPathIterator extends LocPathIterator
       {
         int n = m_exprs.length;
         
-        if((null == upi.m_exprs) || (upi.m_exprs.length != n))
+        if ((null == upi.m_exprs) || (upi.m_exprs.length != n))
         	return false;
         
         for (int i = 0; i < n; i++)
         {
-          if(!m_exprs[i].deepEquals(upi.m_exprs[i]))
+          if (!m_exprs[i].deepEquals(upi.m_exprs[i]))
           	return false;
         }
       }

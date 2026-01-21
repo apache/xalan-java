@@ -195,7 +195,7 @@ public class JSONWriter {
             try {
                 JSONObject topObject = this.stack[this.top - 1];
                 // don't use the built in putOnce method to maintain Android support
-				if(topObject.has(string)) {
+				if (topObject.has(string)) {
 					throw new JSONException("Duplicate key \"" + string + "\"");
 				}
                 topObject.put(string, true);
@@ -320,7 +320,7 @@ public class JSONWriter {
         if (value instanceof Number) {
             // not all Numbers may match actual JSON Numbers. i.e. Fractions or Complex
             final String numberAsString = JSONObject.numberToString((Number) value);
-            if(JSONObject.NUMBER_PATTERN.matcher(numberAsString).matches()) {
+            if (JSONObject.NUMBER_PATTERN.matcher(numberAsString).matches()) {
                 // Close enough to a JSON number that we will return it unquoted
                 return numberAsString;
             }
@@ -343,7 +343,7 @@ public class JSONWriter {
         if (value.getClass().isArray()) {
             return new JSONArray(value).toString();
         }
-        if(value instanceof Enum<?>){
+        if (value instanceof Enum<?>){
             return JSONObject.quote(((Enum<?>)value).name());
         }
         return JSONObject.quote(value.toString());

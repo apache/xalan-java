@@ -171,7 +171,7 @@ public class XMLTokener extends JSONTokener {
             return new String(new int[] {cp},0,1);
         } 
         Character knownEntity = entity.get(e);
-        if(knownEntity==null) {
+        if (knownEntity==null) {
             // we don't know the entity so keep it encoded
             return '&' + e + ';';
         }

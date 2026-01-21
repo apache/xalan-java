@@ -112,7 +112,7 @@ public class XPathException extends TransformerException
   protected ExpressionNode getExpressionOwner(ExpressionNode ex)
   {
   	ExpressionNode parent = ex.exprGetParent();
-  	while((null != parent) && (parent instanceof Expression))
+  	while ((null != parent) && (parent instanceof Expression))
   		parent = parent.exprGetParent();
   	return parent;
   }

@@ -112,7 +112,7 @@ public class TransformerIdentityImpl extends Transformer
    */
   public void setResult(Result result) throws IllegalArgumentException
   {
-    if(null == result)
+    if (null == result)
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_RESULT_NULL, null)); //"Result should not be null");        
     m_result = result;
   }
@@ -381,11 +381,11 @@ public class TransformerIdentityImpl extends Transformer
         {
           try
           {
-            if(dNode.getNodeType() == Node.ATTRIBUTE_NODE)
+            if (dNode.getNodeType() == Node.ATTRIBUTE_NODE)
               this.startDocument();
             try
             {
-              if(dNode.getNodeType() == Node.ATTRIBUTE_NODE)
+              if (dNode.getNodeType() == Node.ATTRIBUTE_NODE)
               {
                 String data = dNode.getNodeValue();
                 char[] chars = data.toCharArray();
@@ -400,7 +400,7 @@ public class TransformerIdentityImpl extends Transformer
             }
             finally
             {
-              if(dNode.getNodeType() == Node.ATTRIBUTE_NODE)
+              if (dNode.getNodeType() == Node.ATTRIBUTE_NODE)
                 this.endDocument();
             }
           }
@@ -562,7 +562,7 @@ public class TransformerIdentityImpl extends Transformer
     }
     finally
     {
-      if(null != m_outputStream)
+      if (null != m_outputStream)
       {
         try
         {
@@ -975,7 +975,7 @@ public class TransformerIdentityImpl extends Transformer
   protected final void flushStartDoc()
      throws SAXException
   {
-    if(!m_flushedStartDoc)
+    if (!m_flushedStartDoc)
     {
       if (m_resultContentHandler == null)
       {

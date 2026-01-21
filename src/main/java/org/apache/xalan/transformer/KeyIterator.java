@@ -133,7 +133,7 @@ public class KeyIterator extends OneStepIteratorForward
 
         return DTMCursorIterator.FILTER_ACCEPT;
 
-      } // end for(int i = 0; i < nDeclarations; i++)
+      } // end for (int i = 0; i < nDeclarations; i++)
     }
     catch (TransformerException se)
     {

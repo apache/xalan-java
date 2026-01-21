@@ -287,7 +287,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
 
         argArray[i] = (o instanceof XObject) ? ((XObject) o).object() : o;
         o = argArray[i];
-        if(null != o && o instanceof DTMCursorIterator)
+        if (null != o && o instanceof DTMCursorIterator)
         {
           argArray[i] = new DTMNodeList((DTMCursorIterator)o);
         }

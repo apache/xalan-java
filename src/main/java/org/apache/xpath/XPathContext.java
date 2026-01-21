@@ -179,14 +179,14 @@ public class XPathContext extends XPathStaticContext
   {
 	  releaseDTMXRTreeFrags();
 	  // These couldn't be disposed of earlier (see comments in release()); zap them now.
-	  if(m_rtfdtm_stack!=null)
+	  if (m_rtfdtm_stack!=null)
 		  for (java.util.Enumeration e = m_rtfdtm_stack.elements() ; e.hasMoreElements() ;) 
 			  m_dtmManager.release((DTM)e.nextElement(), true);
 
 	  m_rtfdtm_stack=null; // drop our references too
 	  m_which_rtfdtm=-1;
 
-	  if(m_global_rtfdtm!=null)
+	  if (m_global_rtfdtm!=null)
 		  m_dtmManager.release(m_global_rtfdtm,true);
 	  m_global_rtfdtm=null;
 
@@ -522,7 +522,7 @@ public class XPathContext extends XPathStaticContext
    */
   public final void popContextNodeList()
   {
-  	/*if(m_contextNodeLists.isEmpty())
+  	/*if (m_contextNodeLists.isEmpty())
   	  System.err.println("Warning: popContextNodeList when stack is empty!");
   	else
       m_contextNodeLists.pop(); */
@@ -1013,7 +1013,7 @@ public class XPathContext extends XPathStaticContext
 	// If it doesn't exist, or if the one already existing is in the middle of
 	// being constructed, we need to obtain a new DTM to write into. I'm not sure
 	// the latter will ever arise, but I'd rather be just a bit paranoid..
-	if( m_global_rtfdtm==null || m_global_rtfdtm.isTreeIncomplete() )
+	if ( m_global_rtfdtm==null || m_global_rtfdtm.isTreeIncomplete() )
 	{
   		m_global_rtfdtm=(SAX2RTFDTM)m_dtmManager.getDTM(null,true,null,false,false);
 	}
@@ -1046,14 +1046,14 @@ public class XPathContext extends XPathStaticContext
   	// isTreeIncomplete all the way up to DTM, so we wouldn't need to explicitly
   	// specify the subclass here.)
 
-	if(m_rtfdtm_stack==null)
+	if (m_rtfdtm_stack==null)
 	{
 		m_rtfdtm_stack=new Vector();
   		rtfdtm=(SAX2RTFDTM)m_dtmManager.getDTM(null,true,null,false,false);
     m_rtfdtm_stack.addElement(rtfdtm);
 		++m_which_rtfdtm;
 	}
-	else if(m_which_rtfdtm<0)
+	else if (m_which_rtfdtm<0)
 	{
 		rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(++m_which_rtfdtm);
 	}
@@ -1067,9 +1067,9 @@ public class XPathContext extends XPathStaticContext
   		// one onto a stack so we can return to it. This is not as uncommon a case
   		// as we might wish, unfortunately, as some folks insist on coding XSLT
   		// as if it were a procedural language...
-  		if(rtfdtm.isTreeIncomplete())
+  		if (rtfdtm.isTreeIncomplete())
 	  	{
-	  		if(++m_which_rtfdtm < m_rtfdtm_stack.size())
+	  		if (++m_which_rtfdtm < m_rtfdtm_stack.size())
 				rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(m_which_rtfdtm);
 	  		else
 	  		{
@@ -1089,7 +1089,7 @@ public class XPathContext extends XPathStaticContext
   public void pushRTFContext()
   {
   	m_last_pushed_rtfdtm.push(m_which_rtfdtm);
-  	if(null!=m_rtfdtm_stack)
+  	if (null!=m_rtfdtm_stack)
 	  	((SAX2RTFDTM)(getRTFDTM())).pushRewindMark();
   }
   
@@ -1110,17 +1110,17 @@ public class XPathContext extends XPathStaticContext
   public void popRTFContext()
   {
   	int previous=m_last_pushed_rtfdtm.pop();
-  	if(null==m_rtfdtm_stack)
+  	if (null==m_rtfdtm_stack)
   		return;
   
-  	if(m_which_rtfdtm==previous)
+  	if (m_which_rtfdtm==previous)
   	{
-  		if(previous>=0) // guard against none-active
+  		if (previous>=0) // guard against none-active
   		{
 	  		boolean isEmpty=((SAX2RTFDTM)(m_rtfdtm_stack.elementAt(previous))).popRewindMark();
   		}
   	}
-  	else while(m_which_rtfdtm!=previous)
+  	else while (m_which_rtfdtm!=previous)
   	{
   		// Empty each DTM before popping, so it's ready for reuse
   		// _DON'T_ pop the previous, since it's still open (which is why we
@@ -1138,11 +1138,11 @@ public class XPathContext extends XPathStaticContext
    * @return DTMXRTreeFrag
    */
   public DTMXRTreeFrag getDTMXRTreeFrag(int dtmIdentity){
-    if(m_DTMXRTreeFrags == null){
+    if (m_DTMXRTreeFrags == null){
       m_DTMXRTreeFrags = new HashMap();     
     }
     
-    if(m_DTMXRTreeFrags.containsKey(new Integer(dtmIdentity))){
+    if (m_DTMXRTreeFrags.containsKey(new Integer(dtmIdentity))){
        return (DTMXRTreeFrag)m_DTMXRTreeFrags.get(new Integer(dtmIdentity));
     }else{
       final DTMXRTreeFrag frag = new DTMXRTreeFrag(dtmIdentity,this);
@@ -1156,11 +1156,11 @@ public class XPathContext extends XPathStaticContext
    * to DTM and XPathContext objects.   
    */
   private final void releaseDTMXRTreeFrags(){
-    if(m_DTMXRTreeFrags == null){
+    if (m_DTMXRTreeFrags == null){
       return;
     }
     final Iterator iter = (m_DTMXRTreeFrags.values()).iterator();
-    while(iter.hasNext()){
+    while (iter.hasNext()){
       DTMXRTreeFrag frag = (DTMXRTreeFrag)iter.next();
       frag.destruct();
       iter.remove();

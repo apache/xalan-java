@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.processor;
 
 import java.util.ArrayList;
@@ -27,7 +24,9 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xml.utils.IntStack;
 import org.xml.sax.Attributes;
@@ -321,7 +320,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
 		String xpathDefNamespaceattrQName = attributes.getQName(i);
 		String xpathDefNamespaceattrValue = attributes.getValue(i);
 		
-    	if ("xpath-default-namespace".equals(xpathDefNamespaceattrLocalName)) {    		
+    	if ((Constants.ATTRNAME_XPATH_DEFAULT_NAMESPACE).equals(xpathDefNamespaceattrLocalName)) {    		
     		XSLTAttributeDef xpathDefNamespaceAttrDef = def.getAttributeDef(xpathDefNamespaceattrUri, xpathDefNamespaceattrLocalName);
 
     		boolean success = xpathDefNamespaceAttrDef.setAttrValue(handler, xpathDefNamespaceattrUri, xpathDefNamespaceattrLocalName,
@@ -335,18 +334,33 @@ public class XSLTElementProcessor extends ElemTemplateElement
     	}	
     }
     
+    boolean isXsInputTypeAnnotationsAttr = false;
+    
     for (int i = 0; i < nAttrs; i++)
     {    	
-    	if (!"xpath-default-namespace".equals(attributes.getLocalName(i))) {
+    	if (!((Constants.ATTRNAME_XPATH_DEFAULT_NAMESPACE).equals(attributes.getLocalName(i)))) {
     		String attrUri = attributes.getURI(i);
     		// Hack for Crimson.  -sb
-    		if((null != attrUri) && (attrUri.length() == 0)
+    		if ((null != attrUri) && (attrUri.length() == 0)
     				&& (attributes.getQName(i).startsWith("xmlns:") || 
     						attributes.getQName(i).equals("xmlns")))
     		{
     			attrUri = org.apache.xalan.templates.Constants.S_XMLNAMESPACEURI;
     		}
+    		
     		String attrLocalName = attributes.getLocalName(i);
+    		
+    		if ((Constants.ATTRNAME_INPUT_TYPE_ANNOTATIONS).equals(attrLocalName) && (target instanceof StylesheetRoot)) {
+    			// Validation of allowable values for xsl:stylesheet, xsl:transform instruction's 
+    			// attribute 'input-type-annotations'. 
+    			isXsInputTypeAnnotationsAttr = true;
+    			String attrValue = attributes.getValue(i);
+    			if (!((Constants.XS_VALIDATION_PRESERVE_STRING).equals(attrValue) || (Constants.XS_VALIDATION_STRIP_STRING).equals(attrValue) 
+    					                                                          || (Constants.XS_VALIDATION_UNSPECIFIED_STRING).equals(attrValue))) {
+    			   handler.error(XSLTErrorResources.ER_BAD_VALUE, new Object[]{ attrLocalName, attrValue }, null);
+    			}
+    		}
+    		
     		XSLTAttributeDef attrDef = def.getAttributeDef(attrUri, attrLocalName);
 
     		if (null == attrDef)
@@ -359,17 +373,17 @@ public class XSLTElementProcessor extends ElemTemplateElement
     			else
     			{
     				undefines.addAttribute(attrUri, attrLocalName,
-    						attributes.getQName(i),
-    						attributes.getType(i),
-    						attributes.getValue(i));
+									    						attributes.getQName(i),
+									    						attributes.getType(i),
+									    						attributes.getValue(i));
     			}
     		}
     		else
     		{
     			//handle secure processing
-    			if(handler.getStylesheetProcessor()==null)
+    			if (handler.getStylesheetProcessor()==null)
     				System.out.println("stylesheet processor null");
-    			if(attrDef.getName().compareTo("*")==0 && handler.getStylesheetProcessor().isSecureProcessing())
+    			if (attrDef.getName().compareTo("*")==0 && handler.getStylesheetProcessor().isSecureProcessing())
     			{            
     				handler.error(XSLTErrorResources.ER_ATTR_NOT_ALLOWED, new Object[]{attributes.getQName(i), rawName}, null);            
     			}
@@ -407,6 +421,16 @@ public class XSLTElementProcessor extends ElemTemplateElement
     			}
     		}    		    		
     	}    	    		
+    }
+    
+    if ((target instanceof StylesheetRoot) && !isXsInputTypeAnnotationsAttr) {
+    	// Setting xsl:stylesheet, xsl:transform attribute input-type-annotations's default
+    	// value to "unspecified". 
+    	XSLTAttributeDef attrDef = def.getAttributeDef(null, Constants.ATTRNAME_INPUT_TYPE_ANNOTATIONS);
+    	attrDef.setAttrValue(handler, null, Constants.ATTRNAME_INPUT_TYPE_ANNOTATIONS, Constants.ATTRNAME_INPUT_TYPE_ANNOTATIONS, 
+    			                                                                                                       Constants.XS_VALIDATION_UNSPECIFIED_STRING, target);
+    	
+    	processedDefs.add(attrDef);
     }
 
     XSLTAttributeDef[] attrDefs = def.getAttributes();

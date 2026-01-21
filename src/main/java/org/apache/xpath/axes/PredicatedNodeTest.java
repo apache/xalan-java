@@ -102,7 +102,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
                        this.m_proximityPositions.length);
     }
     
-    if(clone.m_lpi == this)
+    if (clone.m_lpi == this)
       clone.m_lpi = (LocPathIterator)clone;
 
     return clone;
@@ -118,7 +118,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    */
   public int getPredicateCount()
   {
-    if(-1 == m_predCount)
+    if (-1 == m_predCount)
       return (null == m_predicates) ? 0 : m_predicates.length;
     else
       return m_predCount;
@@ -136,7 +136,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    */
   public void setPredicateCount(int count)
   {
-    if(count > 0)
+    if (count > 0)
     {
       Expression[] newPredicates = new Expression[count];
       for (int i = 0; i < count; i++) 
@@ -165,12 +165,12 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
 
     int pos = compiler.getFirstPredicateOpPos(opPos);
 
-    if(pos > 0)
+    if (pos > 0)
     {
       m_predicates = compiler.getCompiledPredicates(pos);
-      if(null != m_predicates)
+      if (null != m_predicates)
       {
-      	for(int i = 0; i < m_predicates.length; i++)
+      	for (int i = 0; i < m_predicates.length; i++)
       	{
       		m_predicates[i].exprSetParent(this);
       	}
@@ -392,7 +392,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
           // We can't set m_foundLast = true unless we're sure that -all-
           // remaining parameters are stable, or else last() fails. Fixed so
           // only sets m_foundLast if on the last predicate
-          if(m_predicates[i].isStableNumber() && i == nPredicates - 1)
+          if (m_predicates[i].isStableNumber() && i == nPredicates - 1)
           {
             m_foundLast = true;
           }
@@ -446,7 +446,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    */
   protected String nodeToString(int n)
   {
-    if(DTM.NULL != n)
+    if (DTM.NULL != n)
     {
       DTM dtm = m_lpi.getXPathContext().getDTM(n);
       return dtm.getNodeName(n) + "{" + (n+1) + "}";
@@ -527,7 +527,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
   public void setLocPathIterator(LocPathIterator li)
   {
     m_lpi = li;
-    if(this != li)
+    if (this != li)
       li.exprSetParent(this);
   }
   
@@ -542,7 +542,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
     int n = getPredicateCount();
     for (int i = 0; i < n; i++) 
     {
-      if(getPredicate(i).canTraverseOutsideSubtree())
+      if (getPredicate(i).canTraverseOutsideSubtree())
         return true;
     }
     return false;

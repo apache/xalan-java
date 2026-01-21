@@ -101,7 +101,7 @@ public class FunctionMultiArgs extends Function3Args
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
     super.fixupVariables(vars, globalsSize);
-    if(null != m_args)
+    if (null != m_args)
     {
       for (int i = 0; i < m_args.length; i++) 
       {

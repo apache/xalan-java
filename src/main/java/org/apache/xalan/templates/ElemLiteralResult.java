@@ -176,11 +176,11 @@ public class ElemLiteralResult extends ElemUse
   {
     addLiteralResultAttribute(avt);
     String val = avt.getSimpleString();
-    if(val.equals("default"))
+    if (val.equals("default"))
     {
       super.setXmlSpace(Constants.ATTRVAL_STRIP);
     }
-    else if(val.equals("preserve"))
+    else if (val.equals("preserve"))
     {
       super.setXmlSpace(Constants.ATTRVAL_PRESERVE);
     }
@@ -316,7 +316,7 @@ public class ElemLiteralResult extends ElemUse
 
     // This loop is ok here because this code only runs during
     // stylesheet compile time.    
-        if(m_excludeResultPrefixes!=null)
+        if (m_excludeResultPrefixes!=null)
             for (int i =0; i< m_excludeResultPrefixes.size(); i++)
             {
                 if (uri.equals(getNamespaceForPrefix(m_excludeResultPrefixes.elementAt(i))))
@@ -324,7 +324,7 @@ public class ElemLiteralResult extends ElemUse
             }    
         
         // JJK Bugzilla 1133: Also check locally-scoped extensions
-    if(m_ExtensionElementURIs!=null && m_ExtensionElementURIs.contains(uri))
+    if (m_ExtensionElementURIs!=null && m_ExtensionElementURIs.contains(uri))
        return true;
 
         return super.containsExcludeResultPrefix(prefix, uri);
@@ -438,7 +438,7 @@ public class ElemLiteralResult extends ElemUse
    */
   public void setNamespace(String ns)
   {
-    if(null == ns) // defensive, shouldn't have to do this.
+    if (null == ns) // defensive, shouldn't have to do this.
       ns = "";
     m_namespace = ns;
   }

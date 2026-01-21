@@ -63,7 +63,7 @@ public class DOM2Helper extends DOMHelper
   public void checkNode(Node node) throws TransformerException
   {
 
-    // if(!(node instanceof org.apache.xerces.dom.NodeImpl))
+    // if (!(node instanceof org.apache.xerces.dom.NodeImpl))
     //  throw new TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XERCES_CANNOT_HANDLE_NODES, new Object[]{((Object)node).getClass()})); //"DOM2Helper can not handle nodes of type"
     //+((Object)node).getClass());
   }
@@ -150,7 +150,7 @@ public class DOM2Helper extends DOMHelper
 
       /*
       // domParser.setFeature("http://apache.org/xml/features/dom/create-entity-ref-nodes", getShouldExpandEntityRefs()? false : true);
-      if(m_useDOM2getNamespaceURI)
+      if (m_useDOM2getNamespaceURI)
       {
       parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
       parser.setFeature("http://xml.org/sax/features/namespaces", true);
@@ -166,7 +166,7 @@ public class DOM2Helper extends DOMHelper
       parser.setErrorHandler(
         new org.apache.xml.utils.DefaultErrorHandler());
 
-      // if(null != m_entityResolver)
+      // if (null != m_entityResolver)
       // {
       // System.out.println("Setting the entity resolver.");
       //  parser.setEntityResolver(m_entityResolver);
@@ -232,7 +232,7 @@ public class DOM2Helper extends DOMHelper
 
     // Assume first that the nodes are DTM nodes, since discovering node 
     // order is massivly faster for the DTM.
-    if(node1 instanceof DOMOrder && node2 instanceof DOMOrder)
+    if (node1 instanceof DOMOrder && node2 instanceof DOMOrder)
     {
       int index1 = ((DOMOrder) node1).getUid();
       int index2 = ((DOMOrder) node2).getUid();
@@ -263,7 +263,7 @@ public class DOM2Helper extends DOMHelper
   public static Node getParentOfNode(Node node)
   {
           Node parent=node.getParentNode();
-          if(parent==null && (Node.ATTRIBUTE_NODE == node.getNodeType()) )
+          if (parent==null && (Node.ATTRIBUTE_NODE == node.getNodeType()) )
            parent=((Attr) node).getOwnerElement();
           return parent;
   }

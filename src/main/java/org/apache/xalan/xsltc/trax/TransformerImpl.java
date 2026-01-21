@@ -203,7 +203,7 @@ public final class TransformerImpl extends Transformer
 	}
      
 	public void displayMessage(String msg) {
-	    if(_errorListener == null) {
+	    if (_errorListener == null) {
 		System.err.println(msg); 
 	    }
 	    else {

@@ -67,25 +67,25 @@ public class DescendantIterator extends LocPathIterator
       orSelf = true;
       // firstStepPos += 8;
     }
-    else if(OpCodes.FROM_ROOT == stepType)
+    else if (OpCodes.FROM_ROOT == stepType)
     {
       fromRoot = true;
       // Ugly code... will go away when AST work is done.
       int nextStepPos = compiler.getNextStepPos(firstStepPos);
-      if(compiler.getOp(nextStepPos) == OpCodes.FROM_DESCENDANTS_OR_SELF)
+      if (compiler.getOp(nextStepPos) == OpCodes.FROM_DESCENDANTS_OR_SELF)
         orSelf = true;
       // firstStepPos += 8;
     }
     
     // Find the position of the last step.
     int nextStepPos = firstStepPos;
-    while(true)
+    while (true)
     {
       nextStepPos = compiler.getNextStepPos(nextStepPos);
-      if(nextStepPos > 0)
+      if (nextStepPos > 0)
       {
         int stepOp = compiler.getOp(nextStepPos);
-        if(OpCodes.ENDOP != stepOp)
+        if (OpCodes.ENDOP != stepOp)
           firstStepPos = nextStepPos;
         else
           break;
@@ -96,17 +96,17 @@ public class DescendantIterator extends LocPathIterator
     }
     
     // Fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1336
-    if((analysis & WalkerFactory.BIT_CHILD) != 0)
+    if ((analysis & WalkerFactory.BIT_CHILD) != 0)
       orSelf = false;
       
-    if(fromRoot)
+    if (fromRoot)
     {
-      if(orSelf)
+      if (orSelf)
         m_axis = Axis.DESCENDANTSORSELFFROMROOT;
       else
         m_axis = Axis.DESCENDANTSFROMROOT;
     }
-    else if(orSelf)
+    else if (orSelf)
       m_axis = Axis.DESCENDANTORSELF;
     else
       m_axis = Axis.DESCENDANT;
@@ -172,10 +172,10 @@ public class DescendantIterator extends LocPathIterator
    */
   public int nextNode()
   {
-   	if(m_foundLast)
+   	if (m_foundLast)
   		return DTM.NULL;
 
-    if(DTM.NULL == m_lastFetched)
+    if (DTM.NULL == m_lastFetched)
     {
       resetProximityPositions();
     }
@@ -204,7 +204,7 @@ public class DescendantIterator extends LocPathIterator
     {
       do
       {
-        if(0 == m_extendedTypeID)
+        if (0 == m_extendedTypeID)
         {
           next = m_lastFetched = (DTM.NULL == m_lastFetched)
                        ? m_traverser.first(m_context)
@@ -220,7 +220,7 @@ public class DescendantIterator extends LocPathIterator
   
         if (DTM.NULL != next)
         {
-          if(DTMCursorIterator.FILTER_ACCEPT == acceptNode(next))
+          if (DTMCursorIterator.FILTER_ACCEPT == acceptNode(next))
             break;
           else
             continue;
@@ -269,7 +269,7 @@ public class DescendantIterator extends LocPathIterator
     int what = m_whatToShow;
     // System.out.println("what: ");
     // NodeTest.debugWhatToShow(what);
-    if(DTMFilter.SHOW_ALL == what
+    if (DTMFilter.SHOW_ALL == what
        || NodeTest.WILD.equals(localName)
        || NodeTest.WILD.equals(namespace))
     {
@@ -294,7 +294,7 @@ public class DescendantIterator extends LocPathIterator
   public int asNode(XPathContext xctxt)
     throws javax.xml.transform.TransformerException
   {
-    if(getPredicateCount() > 0)
+    if (getPredicateCount() > 0)
       return super.asNode(xctxt);
 
     int current = xctxt.getCurrentNode();
@@ -310,7 +310,7 @@ public class DescendantIterator extends LocPathIterator
     
     // System.out.println("what: ");
     // NodeTest.debugWhatToShow(what);
-    if(DTMFilter.SHOW_ALL == what
+    if (DTMFilter.SHOW_ALL == what
        || localName == NodeTest.WILD
        || namespace == NodeTest.WILD)
     {
@@ -368,10 +368,10 @@ public class DescendantIterator extends LocPathIterator
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!super.deepEquals(expr))
+  	if (!super.deepEquals(expr))
   		return false;
   		
-  	if(m_axis != ((DescendantIterator)expr).m_axis)
+  	if (m_axis != ((DescendantIterator)expr).m_axis)
   		return false;
   		
   	return true;

@@ -256,7 +256,7 @@ public class ElemAttribute extends ElemElement
           
       if (null == prefix || prefix.length() == 0 || prefix.equals("xmlns"))
       {
-        if(nodeNamespace.length() > 0)
+        if (nodeNamespace.length() > 0)
         {
             NamespaceMappings prefixMapping = rhandler.getNamespaceMappings();
             prefix = prefixMapping.generateNextPrefix();
@@ -277,9 +277,9 @@ public class ElemAttribute extends ElemElement
    */
    protected boolean validateNodeName(String nodeName)
    {
-      if(null == nodeName)
+      if (null == nodeName)
         return false;
-      if(nodeName.equals("xmlns"))
+      if (nodeName.equals("xmlns"))
         return false;
       return XML11Char.isXML11ValidQName(nodeName);
    }

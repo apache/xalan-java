@@ -1476,7 +1476,7 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
             StringBuffer result = new StringBuffer(origPath.length());
             int size = tokenizer.countTokens();
             result.append(tokenizer.nextToken());
-            for(int i = 1; i < size; ++i) {
+            for (int i = 1; i < size; ++i) {
                 String token = tokenizer.nextToken();
                 if (token.length() >= 2 && isHexDigit(token.charAt(0)) && 
                         isHexDigit(token.charAt(1))) {

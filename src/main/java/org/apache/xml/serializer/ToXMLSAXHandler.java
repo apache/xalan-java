@@ -211,7 +211,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
         // now we don't need them anymore.
         m_attributes.clear();
 
-        if(m_state != null)
+        if (m_state != null)
           m_state.setCurrentNode(null);
     }
 

@@ -177,7 +177,7 @@ public class TraceManager
       for (int i = 0; i < nListeners; i++)
       {
         TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
-        if(tl instanceof TraceListenerEx2)
+        if (tl instanceof TraceListenerEx2)
         {
           ((TraceListenerEx2)tl).traceEnd(te);
         }
@@ -279,7 +279,7 @@ public class TraceManager
       {
         TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
 
-        if(tl instanceof TraceListenerEx)
+        if (tl instanceof TraceListenerEx)
           ((TraceListenerEx)tl).selectEnd(se);
       }
     }
@@ -330,7 +330,7 @@ public class TraceManager
       for (int i = 0; i < nListeners; i++)
       {
         TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
-        if(tl instanceof TraceListenerEx3)
+        if (tl instanceof TraceListenerEx3)
         {
           ((TraceListenerEx3)tl).extensionEnd(ee);
         }
@@ -358,7 +358,7 @@ public class TraceManager
       for (int i = 0; i < nListeners; i++)
       {
         TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
-        if(tl instanceof TraceListenerEx3)
+        if (tl instanceof TraceListenerEx3)
         {
           ((TraceListenerEx3)tl).extension(ee);
         }
@@ -382,7 +382,7 @@ public class TraceManager
       for (int i = 0; i < nListeners; i++)
       {
         TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
-        if(tl instanceof TraceListenerEx3)
+        if (tl instanceof TraceListenerEx3)
         {
           ((TraceListenerEx3)tl).extensionEnd(ee);
         }
@@ -407,7 +407,7 @@ public class TraceManager
       for (int i = 0; i < nListeners; i++)
       {
         TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
-        if(tl instanceof TraceListenerEx3)
+        if (tl instanceof TraceListenerEx3)
         {
           ((TraceListenerEx3)tl).extension(ee);
         }

@@ -141,7 +141,7 @@ public class DTMManagerDefault extends DTMManager
    */
   synchronized public void addDTM(DTM dtm, int id, int offset)
   {
-		if(id>=IDENT_MAX_DTMS)
+		if (id>=IDENT_MAX_DTMS)
 		{
 			// TODO: %REVIEW% Not really the right error message.
 	    throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DTMIDS_AVAIL, null)); //"No more DTM IDs are available!");			 
@@ -153,7 +153,7 @@ public class DTMManagerDefault extends DTMManager
 		// handy-dandy Fast*Vectors, but this will do for now.
 		// %REVIEW%
 		int oldlen=m_dtms.length;
-		if(oldlen<=id)
+		if (oldlen<=id)
 		{
 			// Various growth strategies are possible. I think we don't want 
 			// to over-allocate excessively, and I'm willing to reallocate
@@ -185,7 +185,7 @@ public class DTMManagerDefault extends DTMManager
     int n = m_dtms.length;
     for (int i = 1; i < n; i++)
     {
-      if(null == m_dtms[i])
+      if (null == m_dtms[i])
       {
         return i;
       }
@@ -237,7 +237,7 @@ public class DTMManagerDefault extends DTMManager
                                  boolean incremental, boolean doIndexing)
   {
 
-    if(DEBUG && null != source)
+    if (DEBUG && null != source)
       System.out.println("Starting "+
                          (unique ? "UNIQUE" : "shared")+
                          " source: "+source.getSystemId()
@@ -308,7 +308,7 @@ public class DTMManagerDefault extends DTMManager
           }
           /**************************************************************
           // EXPERIMENTAL 3/22/02
-          else if(JKESS_XNI_EXPERIMENT && m_incremental) {        	
+          else if (JKESS_XNI_EXPERIMENT && m_incremental) {        	
             dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
                               xstringFactory, doIndexing);
           }
@@ -489,7 +489,7 @@ public class DTMManagerDefault extends DTMManager
    */
   synchronized public int getDTMHandleFromNode(org.w3c.dom.Node node)
   {
-    if(null == node)
+    if (null == node)
       throw new IllegalArgumentException(XMLMessages.createXMLMessage(XMLErrorResources.ER_NODE_NON_NULL, null)); //"node must be non-null for getDTMHandleFromNode!");
 
     if (node instanceof org.apache.xml.dtm.ref.DTMNodeProxy)
@@ -519,13 +519,13 @@ public class DTMManagerDefault extends DTMManager
 			//   Generate a list of _unique_ DTM objects?
 			//   Have each DTM cache last DOM node search?
 			int max = m_dtms.length;
-      for(int i = 0; i < max; i++)
+      for (int i = 0; i < max; i++)
         {
           DTM thisDTM=m_dtms[i];
-          if((null != thisDTM) && thisDTM instanceof DOM2DTM)
+          if ((null != thisDTM) && thisDTM instanceof DOM2DTM)
           {
             int handle=((DOM2DTM)thisDTM).getHandleOfNode(node);
-            if(handle!=DTM.NULL) return handle;
+            if (handle!=DTM.NULL) return handle;
           }
          }
 
@@ -560,7 +560,7 @@ public class DTMManagerDefault extends DTMManager
 
       int handle;
       
-      if(node instanceof org.apache.xml.dtm.ref.dom2dtm.DOM2DTMdefaultNamespaceDeclarationNode)
+      if (node instanceof org.apache.xml.dtm.ref.dom2dtm.DOM2DTMdefaultNamespaceDeclarationNode)
       {
 				// Can't return the same node since it's unique to a specific DTM, 
 				// but can return the equivalent node -- find the corresponding 
@@ -571,7 +571,7 @@ public class DTMManagerDefault extends DTMManager
       else
 				handle = ((DOM2DTM)dtm).getHandleOfNode(node);
 
-      if(DTM.NULL == handle)
+      if (DTM.NULL == handle)
         throw new RuntimeException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COULD_NOT_RESOLVE_NODE, null)); //"Could not resolve the node to a handle!");
 
       return handle;
@@ -648,7 +648,7 @@ public class DTMManagerDefault extends DTMManager
     }
     catch(java.lang.ArrayIndexOutOfBoundsException e)
     {
-      if(nodeHandle==DTM.NULL)
+      if (nodeHandle==DTM.NULL)
 				return null;		// Accept as a special case.
       else
 				throw e;		// Programming error; want to know about it.
@@ -669,10 +669,10 @@ public class DTMManagerDefault extends DTMManager
   {
 	// Shortcut using DTMDefaultBase's extension hooks
 	// %REVIEW% Should the lookup be part of the basic DTM API?
-	if(dtm instanceof DTMDefaultBase)
+	if (dtm instanceof DTMDefaultBase)
 	{
 		DTMDefaultBase dtmdb=(DTMDefaultBase)dtm;
-		if(dtmdb.getManager()==this)
+		if (dtmdb.getManager()==this)
 			return dtmdb.getDTMIDs().elementAt(0);
 		else
 			return -1;
@@ -708,7 +708,7 @@ public class DTMManagerDefault extends DTMManager
    */
   synchronized public boolean release(DTM dtm, boolean shouldHardDelete)
   {
-    if(DEBUG)
+    if (DEBUG)
     {
       System.out.println("Releasing "+
 			 (shouldHardDelete ? "HARD" : "soft")+
@@ -732,10 +732,10 @@ public class DTMManagerDefault extends DTMManager
 		// painful.
 		//
 		// %REVIEW% Should the lookup move up into the basic DTM API?
-		if(dtm instanceof DTMDefaultBase)
+		if (dtm instanceof DTMDefaultBase)
 		{
 			org.apache.xml.utils.SuballocatedIntVector ids=((DTMDefaultBase)dtm).getDTMIDs();
-			for(int i=ids.size()-1;i>=0;--i)
+			for (int i=ids.size()-1;i>=0;--i)
 				m_dtms[ids.elementAt(i)>>>DTMManager.IDENT_DTM_NODE_BITS]=null;
 		}
 		else

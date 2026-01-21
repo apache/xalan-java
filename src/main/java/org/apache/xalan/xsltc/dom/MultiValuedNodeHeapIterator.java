@@ -209,7 +209,7 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
 	if (_isRestartable) {
 	    _startNode = node;
 	    for (int i = 0; i < _free; i++) {
-         	if(!_heap[i]._isStartSet){
+         	if (!_heap[i]._isStartSet){
         	   _heap[i].setStartNode(node);
         	   _heap[i].step();	// to get the first node
         	   _heap[i]._isStartSet = true;

@@ -150,7 +150,7 @@ public class PrintTraceListener implements TraceListenerEx3
 //  	m_traceElements = true;
 //  	m_traceTemplates = true;
 //  	
-//  	for(int i = 0; i < m_indent; i++)
+//  	for (int i = 0; i < m_indent; i++)
 //  		m_pw.print(" ");
 //    m_indent = m_indent+2;
 //  	m_pw.print("trace: ");
@@ -169,7 +169,7 @@ public class PrintTraceListener implements TraceListenerEx3
 //  	m_traceTemplates = true;
 //  	
 //  	m_indent = m_indent-2;
-//  	for(int i = 0; i < m_indent; i++)
+//  	for (int i = 0; i < m_indent; i++)
 //  		m_pw.print(" ");
 //  	m_pw.print("etrac: ");
 //	_trace(ev);

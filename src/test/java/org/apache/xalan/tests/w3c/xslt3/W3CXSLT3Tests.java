@@ -77,8 +77,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * Apache Xalan XSL 3 test driver entry point, to run W3C XSLT 3.0 
- * transformation tests.
+ * Apache Xalan XSL 3 test driver entry point, to run 
+ * W3C XSLT 3.0 transformation tests.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -88,10 +88,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ XslVariableTests.class, XslAsAttrTests.class, XslAvtAttrTests.class, XslSequenceTests.class, XslMatchAttrTests.class, XslSelectAttrTests.class,
 	            XslApplyTemplatesTests.class, XslIterateTests.class, XslForEachGroupTests.class, XslHigherOrderFunctionTests.class, XslTryTests.class, 
 	            XslBooleanTests.class, XslChooseTests.class, XslCopyTests.class, XslElementTests.class, 
-	            XslSortTests.class, XslFunctionTests.class, XslCharacterMapTests.class, XslAttributeSetTests.class, 
+	            XslSortTests.class, XslFunctionTests.class, XslCharacterMapTests.class, XslAttributeSetTests.class, XslFnPositionTests.class, 
 	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class, XslMathTests.class, 
 	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, XslAttributeTests.class, XslCallTemplateTests.class, 
-	            XslNodeTests.class, XslNamespaceTests.class, XslStringTests.class, XslDateTests.class, XslFnDeepEqualTests.class, XslFnPositionTests.class, 
+	            XslNodeTests.class, XslDateTests.class, XslNamespaceTests.class, XslStringTests.class, XslFnDeepEqualTests.class, 
 	            XslAnalyzeStringTests.class, XslFnRootTests.class, XslFnKeyTests.class, XslFnFormatNumberTests.class, XslRegexTests.class, XslRegexSyntaxTests.class,
 	            XslDocumentTests.class, XslXPathDefaultNamespaceAttrTests.class, XslExpandTextAttrTests.class, XslFnJsonToXmlTests.class,
 	            XslBuiltInTemplateTests.class, XslModeTests.class, XslDisableOutputEscapingAttrTests.class, XslTunnelAttrTests.class,

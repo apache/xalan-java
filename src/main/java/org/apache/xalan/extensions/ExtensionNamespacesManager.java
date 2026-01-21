@@ -158,7 +158,7 @@ public class ExtensionNamespacesManager
   }
   public ExtensionNamespaceSupport defineJavaNamespace(String ns, String classOrPackage)
   {
-    if(null == ns || ns.trim().length() == 0) // defensive. I don't think it's needed.  -sb
+    if (null == ns || ns.trim().length() == 0) // defensive. I don't think it's needed.  -sb
       return null;
 
     // Prepare the name of the actual class or package, stripping
@@ -174,7 +174,7 @@ public class ExtensionNamespacesManager
       
     // The className can be null here, and can cause an error in getClassForName
     // in JDK 1.8.
-    if(null == className || className.trim().length() == 0) 
+    if (null == className || className.trim().length() == 0) 
       return null;
     
     try

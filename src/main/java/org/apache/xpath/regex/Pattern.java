@@ -517,7 +517,7 @@ public final class Pattern
         Matcher m = matcher(input);
 
         // Add segments before each match found
-        while(m.find()) {
+        while (m.find()) {
             if (!matchLimited || matchList.size() < limit - 1) {
                 if (index == 0 && index == m.start() && m.start() == m.end()) {
                     // no empty leading substring included for zero-width match
@@ -684,7 +684,7 @@ public final class Pattern
 
         // Modify pattern to match canonical equivalences
         StringBuilder newPattern = new StringBuilder(patternLength);
-        for(int i=0; i<patternLength; ) {
+        for (int i=0; i<patternLength; ) {
             int c = normalizedPattern.codePointAt(i);
             StringBuilder sequenceBuffer;
             if ((Character.getType(c) == Character.NON_SPACING_MARK)
@@ -692,7 +692,7 @@ public final class Pattern
                 sequenceBuffer = new StringBuilder();
                 sequenceBuffer.appendCodePoint(lastCodePoint);
                 sequenceBuffer.appendCodePoint(c);
-                while(Character.getType(c) == Character.NON_SPACING_MARK) {
+                while (Character.getType(c) == Character.NON_SPACING_MARK) {
                     i += Character.charCount(c);
                     if (i >= patternLength)
                         break;
@@ -729,7 +729,7 @@ public final class Pattern
         if (i == normalizedPattern.length())
             throw error("Unclosed character class");
         charClass.append("[");
-        while(true) {
+        while (true) {
             int c = normalizedPattern.codePointAt(i);
             StringBuilder sequenceBuffer;
 
@@ -739,7 +739,7 @@ public final class Pattern
             } else if (Character.getType(c) == Character.NON_SPACING_MARK) {
                 sequenceBuffer = new StringBuilder();
                 sequenceBuffer.appendCodePoint(lastCodePoint);
-                while(Character.getType(c) == Character.NON_SPACING_MARK) {
+                while (Character.getType(c) == Character.NON_SPACING_MARK) {
                     sequenceBuffer.appendCodePoint(c);
                     i += Character.charCount(c);
                     if (i >= normalizedPattern.length())
@@ -791,7 +791,7 @@ public final class Pattern
         StringBuilder result = new StringBuilder(source);
 
         // Add combined permutations
-        for(int x=0; x<perms.length; x++) {
+        for (int x=0; x<perms.length; x++) {
             String next = base + perms[x];
             if (x>0)
                 result.append("|"+next);
@@ -832,13 +832,13 @@ public final class Pattern
 
         int length = 1;
         int nCodePoints = countCodePoints(input);
-        for(int x=1; x<nCodePoints; x++)
+        for (int x=1; x<nCodePoints; x++)
             length = length * (x+1);
 
         String[] temp = new String[length];
 
         int combClass[] = new int[nCodePoints];
-        for(int x=0, i=0; x<nCodePoints; x++) {
+        for (int x=0, i=0; x<nCodePoints; x++) {
             int c = Character.codePointAt(input, i);
             combClass[x] = getClass(c);
             i +=  Character.charCount(c);
@@ -849,10 +849,10 @@ public final class Pattern
         int index = 0;
         int len;
         // offset maintains the index in code units.
-loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
+loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
             len = countChars(input, offset, 1);
             boolean skip = false;
-            for(int y=x-1; y>=0; y--) {
+            for (int y=x-1; y>=0; y--) {
                 if (combClass[y] == combClass[x]) {
                     continue loop;
                 }
@@ -862,7 +862,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
             String[] subResult = producePermutations(otherChars);
 
             String prefix = input.substring(offset, offset+len);
-            for(int y=0; y<subResult.length; y++)
+            for (int y=0; y<subResult.length; y++)
                 temp[index++] =  prefix + subResult[y];
         }
         String[] result = new String[index];
@@ -1051,7 +1051,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
      * Used to print out a subtree of the Pattern to help with debugging.
      */
     private static void printObjectTree(Node node) {
-        while(node != null) {
+        while (node != null) {
             if (node instanceof Prolog) {
                 System.out.println(node);
                 printObjectTree(((Prolog)node).loop);
@@ -1571,7 +1571,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
      */
     private Node ref(int refNum) {
         boolean done = false;
-        while(!done) {
+        while (!done) {
             int ch = peek();
             switch(ch) {
             case '0':
@@ -2036,7 +2036,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
         } else {
             int i = cursor;
             mark('}');
-            while(read() != '}') {
+            while (read() != '}') {
             }
             mark('\000');
             int j = cursor;

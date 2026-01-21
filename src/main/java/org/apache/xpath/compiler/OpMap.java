@@ -282,7 +282,7 @@ public class OpMap
     {
       return opPos + m_opMap.elementAt(opPos + 1);
     }
-    else if(-2 == stepType)
+    else if (-2 == stepType)
     {
       return -2;
     }

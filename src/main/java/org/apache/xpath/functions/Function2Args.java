@@ -64,7 +64,7 @@ public class Function2Args extends FunctionOneArg
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
     super.fixupVariables(vars, globalsSize);
-    if(null != m_arg1)
+    if (null != m_arg1)
       m_arg1.fixupVariables(vars, globalsSize);
   }
 
@@ -156,7 +156,7 @@ public class Function2Args extends FunctionOneArg
   public void callArgVisitors(XPathVisitor visitor)
   {
   	super.callArgVisitors(visitor);
-  	if(null != m_arg1)
+  	if (null != m_arg1)
   		m_arg1.callVisitors(new Arg1Owner(), visitor);
   }
 
@@ -165,18 +165,18 @@ public class Function2Args extends FunctionOneArg
    */
   public boolean deepEquals(Expression expr)
   {
-  	if(!super.deepEquals(expr))
+  	if (!super.deepEquals(expr))
   		return false;
   		
-  	if(null != m_arg1)
+  	if (null != m_arg1)
   	{
-  		if(null == ((Function2Args)expr).m_arg1)
+  		if (null == ((Function2Args)expr).m_arg1)
   			return false;
   			
-  		if(!m_arg1.deepEquals(((Function2Args)expr).m_arg1))
+  		if (!m_arg1.deepEquals(((Function2Args)expr).m_arg1))
   			return false;
   	}
-  	else if(null != ((Function2Args)expr).m_arg1)
+  	else if (null != ((Function2Args)expr).m_arg1)
   		return false;
   		
   	return true;

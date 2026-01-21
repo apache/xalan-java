@@ -179,9 +179,9 @@ public class KeyDeclaration extends ElemTemplateElement
   {
     super.compose(sroot);
     java.util.Vector vnames = sroot.getComposeState().getVariableNames();
-    if(null != m_matchPattern)
+    if (null != m_matchPattern)
       m_matchPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
-    if(null != m_use)
+    if (null != m_use)
       m_use.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
   }
 

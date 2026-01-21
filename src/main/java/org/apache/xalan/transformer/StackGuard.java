@@ -97,7 +97,7 @@ public class StackGuard
   	int count = 1;
     for (int i = pos-1; i >= 0; i--)
     {
-    	if((ElemTemplateElement)elems.elementAt(i) == templ)
+    	if ((ElemTemplateElement)elems.elementAt(i) == templ)
     		count++;
     }
 	
@@ -118,9 +118,9 @@ public class StackGuard
     for (int i = pos; i >= 0; i--)
     {
     	ElemTemplateElement elem = (ElemTemplateElement) elems.elementAt(i);
-    	if(null != elem)
+    	if (null != elem)
     	{
-	    	if(elem.getXSLToken() == Constants.ELEMNAME_TEMPLATE)
+	    	if (elem.getXSLToken() == Constants.ELEMNAME_TEMPLATE)
 	    	{
 	    		return (ElemTemplate)elem;
 	    	}
@@ -137,10 +137,10 @@ public class StackGuard
   public void checkForInfiniteLoop() throws TransformerException
   {
     int nTemplates = m_transformer.getCurrentTemplateElementsCount();
-    if(nTemplates < m_recursionLimit)
+    if (nTemplates < m_recursionLimit)
     	return;
     	
-    if(m_recursionLimit <= 0)
+    if (m_recursionLimit <= 0)
     	return;  // Safety check.
     	
     // loop from the top index down to the recursion limit (I don't think 
@@ -149,7 +149,7 @@ public class StackGuard
     {
     	ElemTemplate template = getNextMatchOrNamedTemplate(i);
     	
-    	if(null == template)
+    	if (null == template)
     		break;
     		
     	int loopCount = countLikeTemplates(template, i);

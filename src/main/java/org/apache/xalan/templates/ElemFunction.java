@@ -39,10 +39,11 @@ import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xml.dtm.ref.DTMNodeProxy;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
+import org.apache.xml.utils.XMLString;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.SequenceTypeData;
@@ -461,7 +462,7 @@ public class ElemFunction extends ElemTemplate
     		 
     	 }
     	 else {
-    		// TO DO
+    		// to do
     	 }    	 
       }
       
@@ -509,7 +510,7 @@ public class ElemFunction extends ElemTemplate
     				  String paramAsAttrStrVal = ((ElemParam)elem).getAs();
     				  
     				  if (paramAsAttrStrVal != null) {
-    					  List prefixTable = elem.getPrefixTable();    		
+    					  List prefixTable = elem.getPrefixTable();    					  
     					  argConvertedVal = getParamValueAsAttributeProcessing(argValue, funcLocalName, funcNameSpaceUri, paramIdx, 
     							                                               prefixTable, paramAsAttrStrVal, transformer, xctxt);
     				  }
@@ -1064,7 +1065,7 @@ public class ElemFunction extends ElemTemplate
             				result.add(new XSInteger(seqItemStrVal));
             			 }
             			 catch(NumberFormatException ex) {
-            				// to do 
+            				// no op
             			 }            			             			 
             		 }
             	 }
@@ -1081,7 +1082,7 @@ public class ElemFunction extends ElemTemplate
             				result.add(new XSDecimal(seqItemStrVal));
             			 }
             			 catch(NumberFormatException ex) {
-            				// to do 
+            				// no op
             			 }
             		 }
             	 }
@@ -1098,7 +1099,7 @@ public class ElemFunction extends ElemTemplate
             				result.add(new XSDouble(seqItemStrVal));
             			 }
             			 catch(NumberFormatException ex) {
-            				// to do 
+            				// no op 
             			 }
             		 }
             	 }
@@ -1115,7 +1116,7 @@ public class ElemFunction extends ElemTemplate
             				result.add(new XSFloat(seqItemStrVal));
             			 }
             			 catch(NumberFormatException ex) {
-            				// to do 
+            				// no op 
             			 }
             		 }
             	 }
@@ -1487,6 +1488,7 @@ public class ElemFunction extends ElemTemplate
 		  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;          
 
 		  XMLNodeCursorImpl nodeSet = SequenceTypeSupport.getNodeReference(srcValue);
+		  
 		  if (nodeSet != null) {
 			  XSTypeDefinition typeDef = nodeSet.getXsTypeDefinition();                    	                      	                      	  
 			  if (typeDef != null) {                    		  
@@ -1506,15 +1508,30 @@ public class ElemFunction extends ElemTemplate
 					  try {
 						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
 								                                                                               (NodeTest)dtmIter, transformer, srcLocator);
-						  if (elemFunction != null) {
-							  // REVISIT : To check for elemFunction object's conformance with details in 
-							  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()  
+						  if (elemFunction != null) { 
 							  argConvertedVal = new ElemFunctionItem(elemFunction);
 						  }
 					  }
 					  catch (TransformerException ex) {
 						  // no op
 					  }
+				  }
+			  }
+			  else if (seqExpectedTypeData.getBuiltInSequenceType() != 0) {
+				  // This should work, if node doesn't have attributes,
+				  // and only has text node child. revisit
+				  int nodeHandle = nodeSet.asNode(xctxt);
+				  DTM dtm = xctxt.getDTM(nodeHandle);
+				  XMLString xmlStr1 = dtm.getStringValue(nodeHandle);
+				  String str1 = xmlStr1.toString();
+				  XObject xObj = SequenceTypeSupport.castXdmValueToAnotherType(new XSString(str1), seqExpectedTypeData, false);
+				  if (xObj != null) {
+					  argConvertedVal = xObj;  
+				  }
+				  else {
+					  throw new TransformerException("XPTY0004 : An XSL function call argument at position " + (paramIdx + 1) + " for "
+																								  + "function {" + funcNameSpaceUri + "}" + funcLocalName + ", doesn't "
+																								  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator); 
 				  }
 			  }
 		  }

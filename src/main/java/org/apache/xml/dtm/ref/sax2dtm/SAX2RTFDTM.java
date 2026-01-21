@@ -197,7 +197,7 @@ public class SAX2RTFDTM extends SAX2DTM
    */
   protected int _documentRoot(int nodeIdentifier)
   {
-    if(nodeIdentifier==NULL) return NULL;
+    if (nodeIdentifier==NULL) return NULL;
 
     for (int parent=_parent(nodeIdentifier);
          parent!=NULL;
@@ -276,7 +276,7 @@ public class SAX2RTFDTM extends SAX2DTM
    * */
   public void pushRewindMark()
   {
-    if(m_indexing || m_elemIndexes!=null)
+    if (m_indexing || m_elemIndexes!=null)
       throw new java.lang.NullPointerException("Coding error; Don't try to mark/rewind an indexed DTM");
 
     // Values from DTMDefaultBase

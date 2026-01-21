@@ -92,7 +92,7 @@ public class SuballocatedIntVector
   public SuballocatedIntVector(int blocksize, int numblocks)
   {
     //m_blocksize = blocksize;
-    for(m_SHIFT=0;0!=(blocksize>>>=1);++m_SHIFT)
+    for (m_SHIFT=0;0!=(blocksize>>>=1);++m_SHIFT)
       ;
     m_blocksize=1<<m_SHIFT;
     m_MASK=m_blocksize-1;
@@ -133,7 +133,7 @@ public class SuballocatedIntVector
    */
   public void setSize(int sz)
   {
-    if(m_firstFree>sz) // Whups; had that backward!
+    if (m_firstFree>sz) // Whups; had that backward!
       m_firstFree = sz;
   }
 
@@ -147,7 +147,7 @@ public class SuballocatedIntVector
     int indexRelativeToCache = m_firstFree - m_buildCacheStartIndex;
 
     // Is the new index an index into the cache row of m_map?
-    if(indexRelativeToCache >= 0 && indexRelativeToCache < m_blocksize) {
+    if (indexRelativeToCache >= 0 && indexRelativeToCache < m_blocksize) {
       m_buildCache[indexRelativeToCache]=value;
       ++m_firstFree;
     } else {
@@ -161,7 +161,7 @@ public class SuballocatedIntVector
       int index=m_firstFree>>>m_SHIFT;
       int offset=m_firstFree&m_MASK;
 
-      if(index>=m_map.length)
+      if (index>=m_map.length)
       {
 	int newsize=index+m_numblocks;
 	int[][] newMap=new int[newsize][];
@@ -169,7 +169,7 @@ public class SuballocatedIntVector
 	m_map=newMap;
       }
       int[] block=m_map[index];
-      if(null==block)
+      if (null==block)
 	block=m_map[index]=new int[m_blocksize];
       block[offset]=value;
 
@@ -189,7 +189,7 @@ public class SuballocatedIntVector
    */
   private  void addElements(int value, int numberOfElements)
   {
-    if(m_firstFree+numberOfElements<m_blocksize)
+    if (m_firstFree+numberOfElements<m_blocksize)
       for (int i = 0; i < numberOfElements; i++) 
       {
         m_map0[m_firstFree++]=value;
@@ -199,9 +199,9 @@ public class SuballocatedIntVector
       int index=m_firstFree>>>m_SHIFT;
       int offset=m_firstFree&m_MASK;
       m_firstFree+=numberOfElements;
-      while( numberOfElements>0)
+      while ( numberOfElements>0)
       {
-        if(index>=m_map.length)
+        if (index>=m_map.length)
         {
           int newsize=index+m_numblocks;
           int[][] newMap=new int[newsize][];
@@ -209,12 +209,12 @@ public class SuballocatedIntVector
           m_map=newMap;
         }
         int[] block=m_map[index];
-        if(null==block)
+        if (null==block)
           block=m_map[index]=new int[m_blocksize];
         int copied=(m_blocksize-offset < numberOfElements)
           ? m_blocksize-offset : numberOfElements;
         numberOfElements-=copied;
-        while(copied-- > 0)
+        while (copied-- > 0)
           block[offset++]=value;
 
         ++index;offset=0;
@@ -231,11 +231,11 @@ public class SuballocatedIntVector
   private  void addElements(int numberOfElements)
   {
     int newlen=m_firstFree+numberOfElements;
-    if(newlen>m_blocksize)
+    if (newlen>m_blocksize)
     {
       int index=m_firstFree>>>m_SHIFT;
       int newindex=(m_firstFree+numberOfElements)>>>m_SHIFT;
-      for(int i=index+1;i<=newindex;++i)
+      for (int i=index+1;i<=newindex;++i)
         m_map[i]=new int[m_blocksize];
     }
     m_firstFree=newlen;
@@ -254,12 +254,12 @@ public class SuballocatedIntVector
    */
   private  void insertElementAt(int value, int at)
   {
-    if(at==m_firstFree)
+    if (at==m_firstFree)
       addElement(value);
     else if (at>m_firstFree)
     {
       int index=at>>>m_SHIFT;
-      if(index>=m_map.length)
+      if (index>=m_map.length)
       {
         int newsize=index+m_numblocks;
         int[][] newMap=new int[newsize][];
@@ -267,7 +267,7 @@ public class SuballocatedIntVector
         m_map=newMap;
       }
       int[] block=m_map[index];
-      if(null==block)
+      if (null==block)
         block=m_map[index]=new int[m_blocksize];
       int offset=at&m_MASK;
           block[offset]=value;
@@ -282,11 +282,11 @@ public class SuballocatedIntVector
       int push;
       
       // ***** Easier to work down from top?
-      while(index<=maxindex)
+      while (index<=maxindex)
       {
         int copylen=m_blocksize-offset-1;
         int[] block=m_map[index];
-        if(null==block)
+        if (null==block)
         {
           push=0;
           block=m_map[index]=new int[m_blocksize];
@@ -328,7 +328,7 @@ public class SuballocatedIntVector
   private  boolean removeElement(int s)
   {
     int at=indexOf(s,0);
-    if(at<0)
+    if (at<0)
       return false;
     removeElementAt(at);
     return true;
@@ -345,24 +345,24 @@ public class SuballocatedIntVector
   private  void removeElementAt(int at)
   {
         // No point in removing elements that "don't exist"...  
-    if(at<m_firstFree)
+    if (at<m_firstFree)
     {
       int index=at>>>m_SHIFT;
       int maxindex=m_firstFree>>>m_SHIFT;
       int offset=at&m_MASK;
       
-      while(index<=maxindex)
+      while (index<=maxindex)
       {
         int copylen=m_blocksize-offset-1;
         int[] block=m_map[index];
-        if(null==block)
+        if (null==block)
           block=m_map[index]=new int[m_blocksize];
         else
           System.arraycopy(block, offset+1, block, offset, copylen);
-        if(index<maxindex)
+        if (index<maxindex)
         {
           int[] next=m_map[index+1];
-          if(next!=null)
+          if (next!=null)
             block[m_blocksize-1]=(next!=null) ? next[0] : 0;
         }
         else
@@ -386,14 +386,14 @@ public class SuballocatedIntVector
    */
   public void setElementAt(int value, int at)
   {
-    if(at<m_blocksize)
+    if (at<m_blocksize)
       m_map0[at]=value;
     else
     {
       int index=at>>>m_SHIFT;
       int offset=at&m_MASK;
         
-      if(index>=m_map.length)
+      if (index>=m_map.length)
       {
 	int newsize=index+m_numblocks;
 	int[][] newMap=new int[newsize][];
@@ -402,12 +402,12 @@ public class SuballocatedIntVector
       }
 
       int[] block=m_map[index];
-      if(null==block)
+      if (null==block)
 	block=m_map[index]=new int[m_blocksize];
       block[offset]=value;
     }
 
-    if(at>=m_firstFree)
+    if (at>=m_firstFree)
       m_firstFree=at+1;
   }
   
@@ -436,7 +436,7 @@ public class SuballocatedIntVector
   public int elementAt(int i)
   {
     // This is actually a significant optimization!
-    if(i<m_blocksize)
+    if (i<m_blocksize)
       return m_map0[i];
 
     return m_map[i>>>m_SHIFT][i&m_MASK];
@@ -467,7 +467,7 @@ public class SuballocatedIntVector
    */
   public int indexOf(int elem, int index)
   {
-        if(index>=m_firstFree)
+        if (index>=m_firstFree)
                 return -1;
           
     int bindex=index>>>m_SHIFT;
@@ -475,20 +475,20 @@ public class SuballocatedIntVector
     int maxindex=m_firstFree>>>m_SHIFT;
     int[] block;
     
-    for(;bindex<maxindex;++bindex)
+    for (;bindex<maxindex;++bindex)
     {
       block=m_map[bindex];
-      if(block!=null)
-        for(int offset=boffset;offset<m_blocksize;++offset)
-          if(block[offset]==elem)
+      if (block!=null)
+        for (int offset=boffset;offset<m_blocksize;++offset)
+          if (block[offset]==elem)
             return offset+bindex*m_blocksize;
       boffset=0; // after first
     }
     // Last block may need to stop before end
     int maxoffset=m_firstFree&m_MASK;
     block=m_map[maxindex];
-    for(int offset=boffset;offset<maxoffset;++offset)
-      if(block[offset]==elem)
+    for (int offset=boffset;offset<maxoffset;++offset)
+      if (block[offset]==elem)
         return offset+maxindex*m_blocksize;
 
     return -1;    
@@ -522,14 +522,14 @@ public class SuballocatedIntVector
   private  int lastIndexOf(int elem)
   {
     int boffset=m_firstFree&m_MASK;
-    for(int index=m_firstFree>>>m_SHIFT;
+    for (int index=m_firstFree>>>m_SHIFT;
         index>=0;
         --index)
     {
       int[] block=m_map[index];
-      if(block!=null)
-        for(int offset=boffset; offset>=0; --offset)
-          if(block[offset]==elem)
+      if (block!=null)
+        for (int offset=boffset; offset>=0; --offset)
+          if (block[offset]==elem)
             return offset+index*m_blocksize;
       boffset=0; // after first
     }

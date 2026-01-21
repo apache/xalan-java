@@ -94,7 +94,7 @@ public class FuncCurrent extends Function
 				  }
 			  }
 		  }
-		  else if(subContextList instanceof StepPattern) {        	         	 
+		  else if (subContextList instanceof StepPattern) {        	         	 
 			  throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSOR_ERROR, null));
 
 		  }

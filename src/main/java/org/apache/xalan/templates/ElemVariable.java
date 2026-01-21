@@ -563,13 +563,16 @@ public class ElemVariable extends ElemTemplateElement
             return evalResult; 
         }
         else if (selectExpression instanceof Operation) {
-        	Operation xpathOperation = (Operation)selectExpression;            
-            XObject leftOperand = (xpathOperation.getLeftOperand()).execute(xctxt);
-            XObject rightOperand = (xpathOperation.getRightOperand()).execute(xctxt);
+        	Operation xpathOp = (Operation)selectExpression;            
+            XObject leftOperand = (xpathOp.getLeftOperand()).execute(xctxt);
+            XObject rightOperand = (xpathOp.getRightOperand()).execute(xctxt);
             
             XObject evalResult = null;
             try {
-               evalResult = xpathOperation.operate(leftOperand, rightOperand);
+               evalResult = xpathOp.operate(leftOperand, rightOperand);
+               if (evalResult == null) {
+            	  evalResult = xpathOp.execute(xctxt);   
+               }
             }
             catch (TransformerException ex) {
                throw new TransformerException(ex.getMessage(), srcLocator); 
@@ -1188,11 +1191,11 @@ public class ElemVariable extends ElemTemplateElement
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
     // See if we can reduce an RTF to a select with a string expression.
-    if(null == m_selectPattern  
+    if (null == m_selectPattern  
        && sroot.getOptimizer())
     {
       XPath newSelect = rewriteChildToExpression(this);
-      if(null != newSelect)
+      if (null != newSelect)
         m_selectPattern = newSelect;
     }
     
@@ -1205,12 +1208,12 @@ public class ElemVariable extends ElemTemplateElement
     m_vars = (Vector)vnames.clone();
     m_globals_size = cstate.getGlobalsSize();
     
-    if(null != m_selectPattern)
+    if (null != m_selectPattern)
       m_selectPattern.fixupVariables(vnames, cstate.getGlobalsSize());
       
     // Only add the variable if this is not a global.  If it is a global, 
     // it was already added by stylesheet root.
-    if(!(m_parentNode instanceof Stylesheet) && m_qname != null)
+    if (!(m_parentNode instanceof Stylesheet) && m_qname != null)
     {
       m_index = cstate.addVariableName(m_qname) - cstate.getGlobalsSize();
     }
@@ -1235,7 +1238,7 @@ public class ElemVariable extends ElemTemplateElement
   public void endCompose(StylesheetRoot sroot) throws TransformerException
   {
     super.endCompose(sroot);
-    if(m_parentNode instanceof Stylesheet)
+    if (m_parentNode instanceof Stylesheet)
     {
     	StylesheetRoot.ComposeState cstate = sroot.getComposeState();
     	m_frameSize = cstate.getFrameSize();
@@ -1339,7 +1342,7 @@ public class ElemVariable extends ElemTemplateElement
    */
   protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
   {
-  	if(null != m_selectPattern)
+  	if (null != m_selectPattern)
   		m_selectPattern.getExpression().callVisitors(m_selectPattern, visitor);
     super.callChildVisitors(visitor, callAttrs);
   }
@@ -1351,9 +1354,9 @@ public class ElemVariable extends ElemTemplateElement
   public boolean isPsuedoVar()
   {
   	java.lang.String ns = m_qname.getNamespaceURI();
-  	if((null != ns) && ns.equals(RedundentExprEliminator.PSUEDOVARNAMESPACE))
+  	if ((null != ns) && ns.equals(RedundentExprEliminator.PSUEDOVARNAMESPACE))
   	{
-  		if(m_qname.getLocalName().startsWith("#"))
+  		if (m_qname.getLocalName().startsWith("#"))
   			return true;
   	}
   	return false;

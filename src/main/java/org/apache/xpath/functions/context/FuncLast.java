@@ -87,7 +87,7 @@ public class FuncLast extends Function
 
     DTMCursorIterator cnl = xctxt.getContextNodeList();
     int count;
-    if(null != cnl)
+    if (null != cnl)
     {
       count = cnl.getLength();
     }

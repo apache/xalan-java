@@ -20,15 +20,21 @@ package org.apache.xalan.transformer;
 import java.text.CollationKey;
 import java.util.Vector;
 
+import javax.xml.XMLConstants;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSTime;
 
 /**
  * This class can sort vectors of xdm nodes according 
@@ -461,7 +467,7 @@ public class NodeSorter
     			// %REVIEW%
     			DTMCursorIterator ni = ((XMLNodeCursorImpl)r).iterRaw();
     			int current = ni.getCurrentNode();
-    			if(DTM.NULL == current)
+    			if (DTM.NULL == current)
     				current = ni.nextNode();
 
     			// if (ni instanceof ContextNodeList) // %REVIEW%
@@ -506,8 +512,30 @@ public class NodeSorter
     		XObject prevXctxtItem = m_xctxt.getXPath3ContextItem();    		
     		XObject r = null;
     		
-    		try {
-    			m_xctxt.setXPath3ContextItem(m_xobj);    		
+    		try {    			
+    			Expression expr1 = k1.m_selectPat.getExpression();
+    			if (expr1 instanceof XSL3ConstructorOrExtensionFunction) {
+    				XSL3ConstructorOrExtensionFunction obj1 = (XSL3ConstructorOrExtensionFunction)expr1;
+    				String funcName = obj1.getFunctionName();
+    				String namespace = obj1.getNamespace();
+    				if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(namespace) && (Keywords.XS_TIME).equals(funcName)) {
+    					String str1 = XslTransformEvaluationHelper.getStrVal(m_xobj);
+    					if (!(str1.contains("+") || str1.contains("-") || str1.contains("Z"))) {
+    						str1 += "+14:00";
+    						m_xctxt.setXPath3ContextItem(XSTime.parseTime(str1));
+    					}
+    					else {
+    						m_xctxt.setXPath3ContextItem(m_xobj); 
+    					}
+    				}
+    				else {
+    					m_xctxt.setXPath3ContextItem(m_xobj);
+    				}
+    			}
+    			else {
+    				m_xctxt.setXPath3ContextItem(m_xobj);
+    			}
+
     			r = k1.m_selectPat.execute(m_xctxt, DTM.NULL, k1.m_namespaceContext);
     		}
     		finally {    		
@@ -541,7 +569,7 @@ public class NodeSorter
     		{
     			DTMCursorIterator ni = ((XMLNodeCursorImpl)r).iterRaw();
     			int current = ni.getCurrentNode();
-    			if(DTM.NULL == current)
+    			if (DTM.NULL == current)
     				current = ni.nextNode();
     		}
 
@@ -549,10 +577,32 @@ public class NodeSorter
     		{
     			NodeSortKey k2 = (NodeSortKey) m_keys.elementAt(1);
 
-    			m_xctxt.setXPath3ContextItem(xObj);
     			XObject r2 = null;
     			
     			try {
+    				Expression expr1 = k2.m_selectPat.getExpression();
+    				if (expr1 instanceof XSL3ConstructorOrExtensionFunction) {
+    					XSL3ConstructorOrExtensionFunction obj1 = (XSL3ConstructorOrExtensionFunction)expr1;
+    					String funcName = obj1.getFunctionName();
+    					String namespace = obj1.getNamespace();
+    					if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(namespace) && (Keywords.XS_TIME).equals(funcName)) {
+    						String str1 = XslTransformEvaluationHelper.getStrVal(m_xobj);
+    						if (!(str1.contains("+") || str1.contains("-") || str1.contains("Z"))) {
+    							str1 += "+14:00";
+    							m_xctxt.setXPath3ContextItem(XSTime.parseTime(str1));
+    						}
+    						else {
+    							m_xctxt.setXPath3ContextItem(m_xobj); 
+    						}
+    					}
+    					else {
+    						m_xctxt.setXPath3ContextItem(m_xobj);
+    					}
+    				}
+    				else {
+    					m_xctxt.setXPath3ContextItem(m_xobj);
+    				}
+
     				r2 = k2.m_selectPat.execute(m_xctxt, DTM.NULL, k2.m_namespaceContext);
     			}
     			finally {

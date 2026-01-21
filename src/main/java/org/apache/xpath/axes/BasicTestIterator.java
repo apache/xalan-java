@@ -132,13 +132,13 @@ public abstract class BasicTestIterator extends LocPathIterator
    */
   public int nextNode()
   {      
-  	if(m_foundLast)
+  	if (m_foundLast)
   	{
   		m_lastFetched = DTM.NULL;
   		return DTM.NULL;
   	}
   		
-    if(DTM.NULL == m_lastFetched)
+    if (DTM.NULL == m_lastFetched)
     {
       resetProximityPositions();
     }
@@ -171,7 +171,7 @@ public abstract class BasicTestIterator extends LocPathIterator
   
         if (DTM.NULL != next)
         {
-          if(DTMCursorIterator.FILTER_ACCEPT == acceptNode(next))
+          if (DTMCursorIterator.FILTER_ACCEPT == acceptNode(next))
             break;
           else
             continue;

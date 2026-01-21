@@ -67,7 +67,7 @@ class ProcessorNamespaceAlias extends XSLTElementProcessor
 
     setPropertiesFromAttributes(handler, rawName, attributes, na);
     String prefix = na.getStylesheetPrefix();
-    if(prefix.equals("#default"))
+    if (prefix.equals("#default"))
     {
       prefix = "";
       na.setStylesheetPrefix(prefix);
@@ -75,18 +75,18 @@ class ProcessorNamespaceAlias extends XSLTElementProcessor
     String stylesheetNS = handler.getNamespaceForPrefix(prefix);
     na.setStylesheetNamespace(stylesheetNS);
     prefix = na.getResultPrefix();
-    if(prefix.equals("#default"))
+    if (prefix.equals("#default"))
     {
       prefix = "";
       na.setResultPrefix(prefix);
       resultNS = handler.getNamespaceForPrefix(prefix);
-      if(null == resultNS)
+      if (null == resultNS)
         handler.error(XSLTErrorResources.ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX_FOR_DEFAULT, null, null);
     }
     else
     {
         resultNS = handler.getNamespaceForPrefix(prefix);
-        if(null == resultNS)
+        if (null == resultNS)
          handler.error(XSLTErrorResources.ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX, new Object[] {prefix}, null);
     }
    

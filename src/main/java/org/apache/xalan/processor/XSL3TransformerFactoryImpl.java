@@ -334,7 +334,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
           reader = XMLReaderFactory.createXMLReader();
         }
 
-        if(m_isSecureProcessing)
+        if (m_isSecureProcessing)
         {
             reader.setFeature("http://xml.org/sax/features/external-general-entities",false);
         }
@@ -531,12 +531,12 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   {
     if (name.equals(FEATURE_INCREMENTAL))
     {
-      if(value instanceof Boolean)
+      if (value instanceof Boolean)
       {
         // Accept a Boolean object..
         m_incremental = ((Boolean)value).booleanValue();
       }
-      else if(value instanceof String)
+      else if (value instanceof String)
       {
         // .. or a String object
         m_incremental = (new Boolean((String)value)).booleanValue();
@@ -549,12 +549,12 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 	}
     else if (name.equals(FEATURE_OPTIMIZE))
     {
-      if(value instanceof Boolean)
+      if (value instanceof Boolean)
       {
         // Accept a Boolean object..
         m_optimize = ((Boolean)value).booleanValue();
       }
-      else if(value instanceof String)
+      else if (value instanceof String)
       {
         // .. or a String object
         m_optimize = (new Boolean((String)value)).booleanValue();
@@ -571,14 +571,14 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     //
     // %REVIEW% Should the name of this field really be in XalanProperties?
     // %REVIEW% I hate that it's a global static, but didn't want to change APIs yet.
-    else if(name.equals(FEATURE_SOURCE_LOCATION))
+    else if (name.equals(FEATURE_SOURCE_LOCATION))
     {
-      if(value instanceof Boolean)
+      if (value instanceof Boolean)
       {
         // Accept a Boolean object..
         m_source_location = ((Boolean)value).booleanValue();
       }
-      else if(value instanceof String)
+      else if (value instanceof String)
       {
         // .. or a String object
         m_source_location = (new Boolean((String)value)).booleanValue();
@@ -589,15 +589,15 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
         throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_BAD_VALUE, new Object[]{name, value})); //name + " bad value " + value);
       }
     }
-    else if(name.equals(FEATURE_INIT_TEMPLATE))
+    else if (name.equals(FEATURE_INIT_TEMPLATE))
     {
     	m_init_template_name = (String)value; 
     }
-    else if(name.equals(FEATURE_INIT_MODE))
+    else if (name.equals(FEATURE_INIT_MODE))
     {
     	m_init_mode_name = (String)value; 
     }
-    else if(name.equals(FEATURE_ASSERT))
+    else if (name.equals(FEATURE_ASSERT))
     {
     	m_assert = (Boolean)value; 
     }
@@ -662,7 +662,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   {
 
     Templates templates = newTemplates(src);
-    if( templates==null ) return null;
+    if ( templates==null ) return null;
     
     return newXMLFilter(templates);
   }
@@ -686,7 +686,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     } 
     catch( TransformerConfigurationException ex ) 
     {
-      if( m_errorListener != null) 
+      if ( m_errorListener != null) 
       {
         try 
         {
@@ -722,7 +722,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   {
 
     Templates templates = newTemplates(src);
-    if( templates==null ) return null;
+    if ( templates==null ) return null;
     
     return newTransformerHandler(templates);
   }
@@ -750,7 +750,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
     } 
     catch( TransformerConfigurationException ex ) 
     {
-      if( m_errorListener != null ) 
+      if ( m_errorListener != null ) 
       {
         try 
         {
@@ -822,14 +822,14 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
          instead of throwing an exception" - the newTemplates() does
          that, and returns null.
       */
-      if( tmpl==null ) return null;
+      if ( tmpl==null ) return null;
       Transformer transformer = tmpl.newTransformer();
       transformer.setURIResolver(m_uriResolver);
       return transformer;
     } 
     catch( TransformerConfigurationException ex ) 
     {
-      if( m_errorListener != null ) 
+      if ( m_errorListener != null ) 
       {
         try 
         {

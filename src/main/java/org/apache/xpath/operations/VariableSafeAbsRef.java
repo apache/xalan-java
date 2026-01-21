@@ -61,7 +61,7 @@ public class VariableSafeAbsRef extends Variable
   	XMLNodeCursorImpl xns = (XMLNodeCursorImpl)super.execute(xctxt, destructiveOK);
   	DTMManager dtmMgr = xctxt.getDTMManager();
   	int context = xctxt.getContextNode();
-  	if(dtmMgr.getDTM(xns.getRoot()).getDocument() != 
+  	if (dtmMgr.getDTM(xns.getRoot()).getDocument() != 
   	   dtmMgr.getDTM(context).getDocument())
   	{
   		Expression expr = (Expression)xns.getContainedIter();

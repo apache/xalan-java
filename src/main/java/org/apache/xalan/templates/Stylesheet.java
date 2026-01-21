@@ -943,7 +943,7 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 			for (int i = 0; i < n; i++)
 			{
 				ElemVariable var = getVariableOrParam(i);
-				if((var.getXSLToken() == Constants.ELEMNAME_VARIABLE) &&
+				if ((var.getXSLToken() == Constants.ELEMNAME_VARIABLE) &&
 						(var.getName().equals(qname)))
 					return var;
 			}
@@ -1005,7 +1005,7 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 			for (int i = 0; i < n; i++)
 			{
 				ElemVariable var = getVariableOrParam(i);
-				if((var.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) &&
+				if ((var.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) &&
 						(var.getName().equals(qname)))
 					return (ElemParam)var;
 			}
@@ -1669,10 +1669,10 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 			visitor.visitTopLevelInstruction(getPreserveSpace(j));
 		}
 
-		if(m_nonXslTopLevel != null)
+		if (m_nonXslTopLevel != null)
 		{
 			java.util.Enumeration elements = m_nonXslTopLevel.elements();
-			while(elements.hasMoreElements())
+			while (elements.hasMoreElements())
 			{
 				ElemTemplateElement elem = (ElemTemplateElement)elements.nextElement();
 				if (visitor.visitTopLevelInstruction(elem))

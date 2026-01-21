@@ -66,7 +66,7 @@ public class XRTreeFrag extends XObject implements Cloneable
   private final void initDTM(int root, XPathContext xctxt){
     m_dtmRoot = root;
     final DTM dtm = xctxt.getDTM(root);
-    if(dtm != null){
+    if (dtm != null){
       m_DTMXRTreeFrag = xctxt.getDTMXRTreeFrag(xctxt.getDTMIdentity(dtm));
     }
   }
@@ -115,7 +115,7 @@ public class XRTreeFrag extends XObject implements Cloneable
    * In general, detach should only be called once on the object.
    */
   public void detach(){
-    if(m_allowRelease){
+    if (m_allowRelease){
     	m_DTMXRTreeFrag.destruct();
       setObject(null);
     }
@@ -176,7 +176,7 @@ public class XRTreeFrag extends XObject implements Cloneable
    */
   public XMLString xstr()
   {
-    if(null == m_xmlStr)
+    if (null == m_xmlStr)
       m_xmlStr = m_DTMXRTreeFrag.getDTM().getStringValue(m_dtmRoot);
     
     return m_xmlStr;

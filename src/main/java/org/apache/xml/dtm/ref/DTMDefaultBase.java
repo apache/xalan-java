@@ -225,7 +225,7 @@ public abstract class DTMDefaultBase implements DTM
       m_prevsib = new SuballocatedIntVector(blocksize, numblocks);
 
     m_mgr = mgr;
-    if(mgr instanceof DTMManagerDefault)
+    if (mgr instanceof DTMManagerDefault)
       m_mgrDefault=(DTMManagerDefault)mgr;
     
     m_documentBaseURI = (null != source) ? source.getSystemId() : null;
@@ -513,7 +513,7 @@ public abstract class DTMDefaultBase implements DTM
     }
 
     int i=0;
-    while(NULL != (identity=_parent(identity)))
+    while (NULL != (identity=_parent(identity)))
       ++i;
     return i;
   }
@@ -543,7 +543,7 @@ public abstract class DTMDefaultBase implements DTM
       else
       {
         info = m_firstch.elementAt(identity);
-        if(info == NOTPROCESSED && !isMore)
+        if (info == NOTPROCESSED && !isMore)
           return NULL;
       }
     }
@@ -575,7 +575,7 @@ public abstract class DTMDefaultBase implements DTM
       else
       {
         info = m_nextsib.elementAt(identity);
-        if(info == NOTPROCESSED && !isMore)
+        if (info == NOTPROCESSED && !isMore)
           return NULL;
       }
     }
@@ -644,7 +644,7 @@ public abstract class DTMDefaultBase implements DTM
   {
     try
     {
-      if(os==null)
+      if (os==null)
       {
 	      File f = new File("DTMDump"+((Object)this).hashCode()+".txt");
  	      System.err.println("Dumping... "+f.getAbsolutePath());
@@ -795,7 +795,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   public String dumpNode(int nodeHandle)
   {	  
-	  if(nodeHandle==DTM.NULL)
+	  if (nodeHandle==DTM.NULL)
 		  return "[null]";
 		  
         String typestring;
@@ -907,9 +907,9 @@ public abstract class DTMDefaultBase implements DTM
    * */
   final public int makeNodeHandle(int nodeIdentity)
   {
-    if(NULL==nodeIdentity) return NULL;
+    if (NULL==nodeIdentity) return NULL;
 		
-    if(JJK_DEBUG && nodeIdentity>DTMManager.IDENT_NODE_DEFAULT)
+    if (JJK_DEBUG && nodeIdentity>DTMManager.IDENT_NODE_DEFAULT)
       System.err.println("GONK! (only useful in limited situations)");
 
     return m_dtmIdent.elementAt(nodeIdentity >>> DTMManager.IDENT_DTM_NODE_BITS)
@@ -934,9 +934,9 @@ public abstract class DTMDefaultBase implements DTM
    * */
   final public int makeNodeIdentity(int nodeHandle)
   {
-    if(NULL==nodeHandle) return NULL;
+    if (NULL==nodeHandle) return NULL;
 
-    if(m_mgrDefault!=null)
+    if (m_mgrDefault!=null)
     {
       // Optimization: use the DTMManagerDefault's fast DTMID-to-offsets
       // table.  I'm not wild about this solution but this operation
@@ -948,7 +948,7 @@ public abstract class DTMDefaultBase implements DTM
       // someone is apparently asking DTMs whether they contain nodes
       // which really don't belong to them. That's probably a bug
       // which should be fixed, but until it is:
-      if(m_mgrDefault.m_dtms[whichDTMindex]!=this)
+      if (m_mgrDefault.m_dtms[whichDTMindex]!=this)
 	return NULL;
       else
 	return
@@ -1268,7 +1268,7 @@ public abstract class DTMDefaultBase implements DTM
   protected void declareNamespaceInContext(int elementNodeIndex,int namespaceNodeIndex)
   {
     SuballocatedIntVector nsList=null;
-    if(m_namespaceDeclSets==null)
+    if (m_namespaceDeclSets==null)
       {
 
         // First
@@ -1284,12 +1284,12 @@ public abstract class DTMDefaultBase implements DTM
         // %OPT% Is there a lastElement() method? Should there be?
         int last=m_namespaceDeclSetElements.size()-1;
 	        
-        if(last>=0 && elementNodeIndex==m_namespaceDeclSetElements.elementAt(last))
+        if (last>=0 && elementNodeIndex==m_namespaceDeclSetElements.elementAt(last))
           {
             nsList=(SuballocatedIntVector)m_namespaceDeclSets.elementAt(last);
           }
       }
-    if(nsList==null)
+    if (nsList==null)
       {
         m_namespaceDeclSetElements.addElement(elementNodeIndex);
 
@@ -1307,7 +1307,7 @@ public abstract class DTMDefaultBase implements DTM
             nsList=new SuballocatedIntVector(Math.max(Math.min(isize+16,2048),
                                                       32));
 
-            for(int i=0;i<isize;++i)
+            for (int i=0;i<isize;++i)
               {
                 nsList.addElement(inherited.elementAt(i));
               }
@@ -1324,9 +1324,9 @@ public abstract class DTMDefaultBase implements DTM
     // which has recopying costs. But these are generally short lists...
     int newEType=_exptype(namespaceNodeIndex);
 
-    for(int i=nsList.size()-1;i>=0;--i)
+    for (int i=nsList.size()-1;i>=0;--i)
       {
-        if(newEType==getExpandedTypeID(nsList.elementAt(i)))
+        if (newEType==getExpandedTypeID(nsList.elementAt(i)))
           {
             nsList.setElementAt(makeNodeHandle(namespaceNodeIndex),i);
             return;
@@ -1350,9 +1350,9 @@ public abstract class DTMDefaultBase implements DTM
         // (... It may be, in large docs with many NS decls.)
         int wouldBeAt=findInSortedSuballocatedIntVector(m_namespaceDeclSetElements,
                                             elementNodeIndex);
-        if(wouldBeAt>=0) // Found it
+        if (wouldBeAt>=0) // Found it
           return (SuballocatedIntVector) m_namespaceDeclSets.elementAt(wouldBeAt);
-        if(wouldBeAt == -1) // -1-wouldbeat == 0
+        if (wouldBeAt == -1) // -1-wouldbeat == 0
           return null; // Not after anything; definitely not found
 
         // Not found, but we know where it should have been.
@@ -1383,7 +1383,7 @@ public abstract class DTMDefaultBase implements DTM
           }
         }
 
-        while(wouldBeAt>=0 && ancestor>0)
+        while (wouldBeAt>=0 && ancestor>0)
           {
             if (candidate==ancestor) {
                 // Found ancestor in list
@@ -1393,7 +1393,7 @@ public abstract class DTMDefaultBase implements DTM
                 do {
                   ancestor=_parent(ancestor);
                 } while (candidate < ancestor);
-            } else if(wouldBeAt > 0){
+            } else if (wouldBeAt > 0){
               // Too late in list
               candidate=m_namespaceDeclSetElements.elementAt(--wouldBeAt);
             }
@@ -1422,14 +1422,14 @@ public abstract class DTMDefaultBase implements DTM
   {
     // Binary search
     int i = 0;
-    if(vector != null) {
+    if (vector != null) {
       int first = 0;
       int last  = vector.size() - 1;
 
       while (first <= last) {
         i = (first + last) / 2;
         int test = lookfor-vector.elementAt(i);
-        if(test == 0) {
+        if (test == 0) {
           return i; // Name found
         }
         else if (test < 0) {
@@ -1464,13 +1464,13 @@ public abstract class DTMDefaultBase implements DTM
    */
   public int getFirstNamespaceNode(int nodeHandle, boolean inScope)
   {
-        if(inScope)
+        if (inScope)
         {
             int identity = makeNodeIdentity(nodeHandle);
             if (_type(identity) == DTM.ELEMENT_NODE)
             {
               SuballocatedIntVector nsContext=findNamespaceContext(identity);
-              if(nsContext==null || nsContext.size()<1)
+              if (nsContext==null || nsContext.size()<1)
                 return NULL;
 
               return nsContext.elementAt(0);
@@ -1517,7 +1517,7 @@ public abstract class DTMDefaultBase implements DTM
   public int getNextNamespaceNode(int baseHandle, int nodeHandle,
                                   boolean inScope)
   {
-        if(inScope)
+        if (inScope)
           {
             //Since we've been given the base, try direct lookup
             //(could look from nodeHandle but this is at least one
@@ -1526,10 +1526,10 @@ public abstract class DTMDefaultBase implements DTM
 
                 SuballocatedIntVector nsContext=findNamespaceContext(makeNodeIdentity(baseHandle));
 
-            if(nsContext==null)
+            if (nsContext==null)
               return NULL;
             int i=1 + nsContext.indexOf(nodeHandle);
-            if(i<=0 || i==nsContext.size())
+            if (i<=0 || i==nsContext.size())
               return NULL;
 
             return nsContext.elementAt(i);
@@ -1686,7 +1686,7 @@ public abstract class DTMDefaultBase implements DTM
     // %REVIEW% This _should_ only be null if someone asked the wrong DTM about the node...
     // which one would hope would never happen...
     int id=makeNodeIdentity(nodeHandle);
-    if(id==NULL)
+    if (id==NULL)
       return NULL;
     return _exptype(id);
   }
@@ -2348,7 +2348,7 @@ public abstract class DTMDefaultBase implements DTM
    public void migrateTo(DTMManager mgr)
    {
      m_mgr = mgr;
-     if(mgr instanceof DTMManagerDefault)
+     if (mgr instanceof DTMManagerDefault)
        m_mgrDefault=(DTMManagerDefault)mgr;     
    }      
 
@@ -2371,7 +2371,7 @@ public abstract class DTMDefaultBase implements DTM
 	  */
 	 public SuballocatedIntVector getDTMIDs()
 	 {
-		 if(m_mgr==null) return null;
+		 if (m_mgr==null) return null;
 		 return m_dtmIdent;
 	 }
 }

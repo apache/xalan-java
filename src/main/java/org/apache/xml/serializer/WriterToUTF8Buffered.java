@@ -260,7 +260,7 @@ final class WriterToUTF8Buffered extends Writer implements WriterChain
          * occurs when writing out ASCII characters. 
          */ 
         char c;
-        for(; i < n && (c = chars[i])< 0x80 ; i++ )
+        for (; i < n && (c = chars[i])< 0x80 ; i++ )
             buf_loc[count_loc++] = (byte)c;
     }
     for (; i < n; i++)
@@ -388,7 +388,7 @@ final class WriterToUTF8Buffered extends Writer implements WriterChain
          * occurs when writing out ASCII characters. 
          */ 
         char c;
-        for(; i < n && (c = chars[i])< 0x80 ; i++ )
+        for (; i < n && (c = chars[i])< 0x80 ; i++ )
             buf_loc[count_loc++] = (byte)c;
     }
     for (; i < n; i++)

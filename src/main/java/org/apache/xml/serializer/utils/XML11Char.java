@@ -296,7 +296,7 @@ public class XML11Char {
             return false;
         int i = 1;
         char ch = name.charAt(0);
-        if( !isXML11NameStart(ch) ) {
+        if ( !isXML11NameStart(ch) ) {
             if ( length > 1 && isXML11NameHighSurrogate(ch) ) {
                 char ch2 = name.charAt(1);
                 if ( !XMLChar.isLowSurrogate(ch2) || 
@@ -346,7 +346,7 @@ public class XML11Char {
             return false;
         int i = 1;
         char ch = ncName.charAt(0);
-        if( !isXML11NCNameStart(ch) ) {
+        if ( !isXML11NCNameStart(ch) ) {
             if ( length > 1 && isXML11NameHighSurrogate(ch) ) {
                 char ch2 = ncName.charAt(1);
                 if ( !XMLChar.isLowSurrogate(ch2) || 
@@ -394,7 +394,7 @@ public class XML11Char {
             return false;
         for (int i = 0; i < length; ++i ) {
             char ch = nmtoken.charAt(i);
-            if( !isXML11Name(ch) ) {
+            if ( !isXML11Name(ch) ) {
                 if ( ++i < length && isXML11NameHighSurrogate(ch) ) {
                     char ch2 = nmtoken.charAt(i);
                     if ( !XMLChar.isLowSurrogate(ch2) || 

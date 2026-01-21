@@ -110,15 +110,15 @@ public class MatchPatternIterator extends LocPathIterator
               & (WalkerFactory.BIT_ATTRIBUTE | WalkerFactory.BIT_NAMESPACE)))
       walkAttributes = true;
       
-    if(false || DEBUG)
+    if (false || DEBUG)
     {
       System.out.print("analysis: "+Integer.toBinaryString(analysis));
       System.out.println(", "+WalkerFactory.getAnalysisString(analysis));
     }
       
-    if(fromRoot || walkBack)
+    if (fromRoot || walkBack)
     {
-      if(walkAttributes)
+      if (walkAttributes)
       {
         m_superAxis = Axis.ALL;
       }
@@ -127,9 +127,9 @@ public class MatchPatternIterator extends LocPathIterator
         m_superAxis = Axis.DESCENDANTSFROMROOT;
       }
     }
-    else if(walkDescendants)
+    else if (walkDescendants)
     {
-      if(walkAttributes)
+      if (walkAttributes)
       {
         m_superAxis = Axis.ALLFROMNODE;
       }
@@ -142,7 +142,7 @@ public class MatchPatternIterator extends LocPathIterator
     {
       m_superAxis = Axis.ALL;
     }
-    if(false || DEBUG)
+    if (false || DEBUG)
     {
       System.out.println("axis: "+Axis.getNames(m_superAxis));
     }
@@ -172,7 +172,7 @@ public class MatchPatternIterator extends LocPathIterator
    */
   public void detach()
   {    
-    if(m_allowDetach)
+    if (m_allowDetach)
     {
       m_traverser = null;
       
@@ -202,7 +202,7 @@ public class MatchPatternIterator extends LocPathIterator
    */
   public int nextNode()
   {      
-  	if(m_foundLast)
+  	if (m_foundLast)
   		return DTM.NULL;
 
     int next;
@@ -227,7 +227,7 @@ public class MatchPatternIterator extends LocPathIterator
     
     try
     {
-      if(DEBUG)
+      if (DEBUG)
         System.out.println("m_pattern"+m_pattern.toString());
 
       do
@@ -236,7 +236,7 @@ public class MatchPatternIterator extends LocPathIterator
   
         if (DTM.NULL != next)
         {
-          if(DTMCursorIterator.FILTER_ACCEPT == acceptNode(next, m_execContext))
+          if (DTMCursorIterator.FILTER_ACCEPT == acceptNode(next, m_execContext))
             break;
           else
             continue;
@@ -248,7 +248,7 @@ public class MatchPatternIterator extends LocPathIterator
       
       if (DTM.NULL != next)
       {
-        if(DEBUG)
+        if (DEBUG)
         {
           System.out.println("next: "+next);
           System.out.println("name: "+m_cdtm.getNodeName(next));
@@ -291,19 +291,19 @@ public class MatchPatternIterator extends LocPathIterator
     {
       xctxt.pushCurrentNode(n);
       xctxt.pushIteratorRoot(m_context);
-      if(DEBUG)
+      if (DEBUG)
       {
         System.out.println("traverser: "+m_traverser);
         System.out.print("node: "+n);
         System.out.println(", "+m_cdtm.getNodeName(n));
-        // if(m_cdtm.getNodeName(n).equals("near-east"))
+        // if (m_cdtm.getNodeName(n).equals("near-east"))
         System.out.println("pattern: "+m_pattern.toString());
         m_pattern.debugWhatToShow(m_pattern.getWhatToShow());
       }
       
       XObject score = m_pattern.execute(xctxt);
       
-      if(DEBUG)
+      if (DEBUG)
       {
         // System.out.println("analysis: "+Integer.toBinaryString(m_analysis));
         System.out.println("score: "+score);

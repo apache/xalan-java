@@ -596,14 +596,14 @@ public class DTMNodeProxy
   {
 		int dochandle=dtm.getDocument();
 		int elementhandle=DTM.NULL;
-		for(int kidhandle=dtm.getFirstChild(dochandle);
+		for (int kidhandle=dtm.getFirstChild(dochandle);
 				kidhandle!=DTM.NULL;
 				kidhandle=dtm.getNextSibling(kidhandle))
 		{
 			switch(dtm.getNodeType(kidhandle))
 			{
 			case Node.ELEMENT_NODE:
-				if(elementhandle!=DTM.NULL) 
+				if (elementhandle!=DTM.NULL) 
 				{
 					elementhandle=DTM.NULL; // More than one; ill-formed.
 					kidhandle=dtm.getLastChild(dochandle); // End loop
@@ -624,7 +624,7 @@ public class DTMNodeProxy
 				break;
 			}
 		}
-		if(elementhandle==DTM.NULL)
+		if (elementhandle==DTM.NULL)
 			throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
 		else
 			return (Element)(dtm.getNode(elementhandle));
@@ -800,7 +800,7 @@ public class DTMNodeProxy
       {
         listVector.add(tempNode);
       }
-      if(tempNode.hasChildNodes())
+      if (tempNode.hasChildNodes())
       {
         NodeList nodeList = tempNode.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++)
@@ -880,12 +880,12 @@ public class DTMNodeProxy
       if (DTM.ELEMENT_NODE == retNode.getNodeType())
       {
         NodeList nodeList = retNode.getChildNodes();                    
-        for(int i = 0; i < nodeList.getLength(); i++)
+        for (int i = 0; i < nodeList.getLength(); i++)
         {
           traverseChildren(listVector, nodeList.item(i), namespaceURI, localName, isNamespaceURIWildCard, isLocalNameWildCard);
         }
       }
-      else if(DTM.DOCUMENT_NODE == retNode.getNodeType())
+      else if (DTM.DOCUMENT_NODE == retNode.getNodeType())
       {
         traverseChildren(listVector, dtm.getNode(node), namespaceURI, localName, isNamespaceURIWildCard, isLocalNameWildCard);
       }
@@ -937,10 +937,10 @@ public class DTMNodeProxy
           listVector.add(tempNode); 
         } 
       }
-      if(tempNode.hasChildNodes())
+      if (tempNode.hasChildNodes())
       {
         NodeList nl = tempNode.getChildNodes();                 
-        for(int i = 0; i < nl.getLength(); i++)
+        for (int i = 0; i < nl.getLength(); i++)
         {
           traverseChildren(listVector, nl.item(i), namespaceURI, localname,
                            isNamespaceURIWildCard, isLocalNameWildCard);
@@ -1198,7 +1198,7 @@ public class DTMNodeProxy
   {
        Node retNode = null;
        int n = dtm.getAttributeNode(node,namespaceURI,localName);
-       if(n != DTM.NULL)
+       if (n != DTM.NULL)
                retNode = dtm.getNode(n);
        return (null == retNode) ? EMPTYSTRING : retNode.getNodeValue();
   }
@@ -1245,7 +1245,7 @@ public class DTMNodeProxy
   {
        Attr retAttr = null;
        int n = dtm.getAttributeNode(node,namespaceURI,localName);
-       if(n != DTM.NULL)
+       if (n != DTM.NULL)
                retAttr = (Attr) dtm.getNode(n);
        return retAttr;
   }
@@ -1422,7 +1422,7 @@ public class DTMNodeProxy
      */
     public boolean hasFeature(String feature,String version)
     {
-      if( ("CORE".equals(feature.toUpperCase()) || "XML".equals(feature.toUpperCase())) 
+      if ( ("CORE".equals(feature.toUpperCase()) || "XML".equals(feature.toUpperCase())) 
 					&& 
           ("1.0".equals(version) || "2.0".equals(version))
           )

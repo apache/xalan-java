@@ -101,7 +101,7 @@ public class ProcessorLRE extends ProcessorTemplateElem
         // ***** Note that we're assigning an empty locator. Is this necessary?
         SAXSourceLocator slocator = new SAXSourceLocator();
         Locator locator = handler.getLocator();
-        if(null != locator)
+        if (null != locator)
         {
           slocator.setLineNumber(locator.getLineNumber());
           slocator.setColumnNumber(locator.getColumnNumber());
@@ -367,7 +367,7 @@ public class ProcessorLRE extends ProcessorTemplateElem
 		for (int i = 0; i < n; i++)
 		{
 			XMLNSDecl decl = (XMLNSDecl) declaredPrefixes.get(i);
-			if(decl.getURI().equals(Constants.S_XSLNAMESPACEURL))
+			if (decl.getURI().equals(Constants.S_XSLNAMESPACEURL))
 				return true;
 		}
 		return false;

@@ -193,9 +193,9 @@ public class ElemElement extends ElemUse
     
     StylesheetRoot.ComposeState cstate = sroot.getComposeState();
     java.util.Vector vnames = cstate.getVariableNames();
-    if(null != m_name_avt)
+    if (null != m_name_avt)
       m_name_avt.fixupVariables(vnames, cstate.getGlobalsSize());
-    if(null != m_namespace_avt)
+    if (null != m_namespace_avt)
       m_namespace_avt.fixupVariables(vnames, cstate.getGlobalsSize());
   }
 
@@ -531,12 +531,12 @@ public class ElemElement extends ElemUse
    */
   protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
   {
-  	if(callAttrs)
+  	if (callAttrs)
   	{
-  	  if(null != m_name_avt)
+  	  if (null != m_name_avt)
   		m_name_avt.callVisitors(visitor);
   		
-  	  if(null != m_namespace_avt)
+  	  if (null != m_namespace_avt)
   		m_namespace_avt.callVisitors(visitor);
   	}
   		

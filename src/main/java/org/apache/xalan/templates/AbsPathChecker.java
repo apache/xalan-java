@@ -59,7 +59,7 @@ public class AbsPathChecker extends XPathVisitor
 	 */
 	public boolean visitFunction(ExpressionOwner owner, Function func)
 	{
-		if((func instanceof FuncCurrent) ||
+		if ((func instanceof FuncCurrent) ||
 		   (func instanceof XSL3ConstructorOrExtensionFunction))
 			m_isAbs = false;
 		return true;

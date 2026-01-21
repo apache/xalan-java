@@ -562,7 +562,7 @@ public class TransformerImpl extends Transformer
     {
       if (sroot.getExtensions() != null)
         //only load extensions if secureProcessing is disabled
-        if(!sroot.isSecureProcessing())
+        if (!sroot.isSecureProcessing())
             m_extensionsTable = new ExtensionsTable(sroot);
     }
     catch (javax.xml.transform.TransformerException te)
@@ -1313,7 +1313,7 @@ public class TransformerImpl extends Transformer
 
         if (null != method)
           m_outputFormat = new OutputProperties(method);
-        else if(m_outputFormat==null)
+        else if (m_outputFormat==null)
           m_outputFormat = new OutputProperties();
 
         m_outputFormat.copyFrom(oformat);
@@ -1681,10 +1681,10 @@ public class TransformerImpl extends Transformer
         // an endDocument.
         
         // SAXSourceLocator
-        while(se instanceof org.apache.xml.utils.WrappedRuntimeException)
+        while (se instanceof org.apache.xml.utils.WrappedRuntimeException)
         {
           Exception e = ((org.apache.xml.utils.WrappedRuntimeException)se).getException();
-          if(null != e)
+          if (null != e)
             se = e;
         }
         
@@ -1692,9 +1692,9 @@ public class TransformerImpl extends Transformer
         {
           try
           {
-            if(se instanceof org.xml.sax.SAXParseException)
+            if (se instanceof org.xml.sax.SAXParseException)
               m_serializationHandler.fatalError((org.xml.sax.SAXParseException)se);
-            else if(se instanceof TransformerException)
+            else if (se instanceof TransformerException)
             {
               TransformerException te = ((TransformerException)se);
               SAXSourceLocator sl = new SAXSourceLocator( te.getLocator() );
@@ -1708,11 +1708,11 @@ public class TransformerImpl extends Transformer
           catch (Exception e){}
         }        
         
-        if(se instanceof TransformerException)
+        if (se instanceof TransformerException)
         {
           m_errorHandler.fatalError((TransformerException)se);
         }
-        else if(se instanceof org.xml.sax.SAXParseException)
+        else if (se instanceof org.xml.sax.SAXParseException)
         {
           m_errorHandler.fatalError(new TransformerException(se.getMessage(), 
                       new SAXSourceLocator((org.xml.sax.SAXParseException)se), 
@@ -2109,7 +2109,7 @@ public class TransformerImpl extends Transformer
       XObject xobj = new XUnresolvedVariable(v, contextNode, this,
                                      vs.getStackFrame(), 0, true);
       
-      if(null == vs.elementAt(i))                               
+      if (null == vs.elementAt(i))                               
         vs.setGlobalVariable(i, xobj);
     }
 
@@ -2409,9 +2409,9 @@ public class TransformerImpl extends Transformer
           throws TransformerException
   {
     ElemTemplateElement firstChild = elem.getFirstChildElem();
-    if(null == firstChild)
+    if (null == firstChild)
       return "";
-    if(elem.hasTextLitOnly() && m_optimizer)
+    if (elem.hasTextLitOnly() && m_optimizer)
     {
       return ((ElemTextLiteral)firstChild).getNodeValue();
     }
@@ -2765,7 +2765,7 @@ public class TransformerImpl extends Transformer
 
     try
     {
-      if((null != mode) && (m_init_mode_name == null)) {
+      if ((null != mode) && (m_init_mode_name == null)) {
         pushMode(mode);
       }
       xctxt.pushCurrentNode(xctxt.getDTMHandleFromNode(context));
@@ -2777,7 +2777,7 @@ public class TransformerImpl extends Transformer
       
       // I'm not sure where or why this was here.  It is clearly in 
       // error though, without a corresponding pushMode().
-      if((null != mode) && (m_init_mode_name == null)) {
+      if ((null != mode) && (m_init_mode_name == null)) {
         popMode();
       }
     }
@@ -3302,10 +3302,10 @@ public class TransformerImpl extends Transformer
   {
   	Vector elems = new Vector();
   	int nStackSize = m_currentTemplateElements.size();
-  	for(int i = 0; i < nStackSize; i++)
+  	for (int i = 0; i < nStackSize; i++)
   	{
   		ElemTemplateElement elem = (ElemTemplateElement) m_currentTemplateElements.elementAt(i);
-  		if(null != elem)
+  		if (null != elem)
   		{
   			elems.addElement(elem);
   		}
@@ -3402,10 +3402,10 @@ public class TransformerImpl extends Transformer
   {
   	Vector elems = new Vector();
   	int nStackSize = m_currentTemplateElements.size();
-  	for(int i = 0; i < nStackSize; i++)
+  	for (int i = 0; i < nStackSize; i++)
   	{
   		ElemTemplateElement elem = (ElemTemplateElement) m_currentTemplateElements.elementAt(i);
-  		if(null != elem && (elem.getXSLToken() != Constants.ELEMNAME_TEMPLATE))
+  		if (null != elem && (elem.getXSLToken() != Constants.ELEMNAME_TEMPLATE))
   		{
   			elems.addElement(elem);
   		}
@@ -4135,7 +4135,7 @@ public class TransformerImpl extends Transformer
   {
 
     // Commented out in response to problem reported by Nicola Brown <Nicola.Brown@jacobsrimell.com>
-    //    if(m_reportInPostExceptionFromThread)
+    //    if (m_reportInPostExceptionFromThread)
     //    {
     //      // Consider re-throwing the exception if this flag is set.
     //      e.printStackTrace();
@@ -4149,7 +4149,7 @@ public class TransformerImpl extends Transformer
     //    }
  //   ContentHandler ch = getContentHandler();
 
-    //    if(ch instanceof SourceTreeHandler)
+    //    if (ch instanceof SourceTreeHandler)
     //    {
     //      SourceTreeHandler sth = (SourceTreeHandler) ch;
     //      ((TransformerImpl)(sth.getTransformer())).postExceptionFromThread(e);
@@ -4195,7 +4195,7 @@ public class TransformerImpl extends Transformer
         m_isTransformDone = false;
         
         // Should no longer be needed...
-//          if(m_inputContentHandler instanceof TransformerHandlerImpl)
+//          if (m_inputContentHandler instanceof TransformerHandlerImpl)
 //          {
 //            TransformerHandlerImpl thi = (TransformerHandlerImpl)m_inputContentHandler;
 //            thi.waitForInitialEvents();

@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.processor;
 
 import java.lang.reflect.InvocationTargetException;
@@ -1361,8 +1358,8 @@ public class XSLTAttributeDef
    * @return String value itself.
    */
   String processSTRING(StylesheetHandler handler, String uri, String name, 
-                                                  String rawName, String value) {
-     return value;
+                                                  String rawName, String value) {     
+	  return value;
   }
 
   /**
@@ -1725,8 +1722,10 @@ public class XSLTAttributeDef
         {
            enumNamesList.append(' ');
         }
+        
         enumNamesList.append(enumValues[i]);
-    }        
+    }
+     
     return enumNamesList;
   }
 
@@ -1747,13 +1746,13 @@ public class XSLTAttributeDef
           String attrRawName, String attrValue, ElemTemplateElement elem)
             throws org.xml.sax.SAXException
   {
-    if(attrRawName.equals("xmlns") || attrRawName.startsWith("xmlns:"))
-      return true;
-    
-    if (attrRawName.equals("name") && elem instanceof ProcessorOutputElem) {
-       // To implement xsl:output element's attribute ''use-character-maps'
-       return true;
-    }
+	  if (attrRawName.equals("xmlns") || attrRawName.startsWith("xmlns:"))
+		  return true;
+
+	  if (attrRawName.equals("name") && elem instanceof ProcessorOutputElem) {
+		  // Used to implement xsl:output element's attribute 'use-character-maps'
+		  return true;
+	  }
       
     String setterString = getSetterMethodName();
 
@@ -1766,10 +1765,10 @@ public class XSLTAttributeDef
         Method meth;
         Object[] args;
 
-        if(setterString.equals(S_FOREIGNATTR_SETTER))
+        if (setterString.equals(S_FOREIGNATTR_SETTER))
         {
           // workaround for possible crimson bug
-          if( attrUri==null) attrUri="";
+          if ( attrUri==null) attrUri="";
           // First try to match with the primative value.
           Class sclass = attrUri.getClass();
           Class[] argTypes = new Class[]{ sclass, sclass,

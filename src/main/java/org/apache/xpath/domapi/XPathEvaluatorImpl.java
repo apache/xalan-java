@@ -175,7 +175,7 @@ public final class XPathEvaluatorImpl implements XPathEvaluator {
 		} catch (TransformerException e) {
 			// Need to pass back exception code DOMException.NAMESPACE_ERR also.
 			// Error found in DOM Level 3 XPath Test Suite.
-			if(e instanceof XPathStylesheetDOM3Exception)
+			if (e instanceof XPathStylesheetDOM3Exception)
 				throw new DOMException(DOMException.NAMESPACE_ERR,e.getMessageAndLocation());
 			else
 				throw new XPathException(XPathException.INVALID_EXPRESSION_ERR,e.getMessageAndLocation());

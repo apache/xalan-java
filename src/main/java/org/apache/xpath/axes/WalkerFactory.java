@@ -209,9 +209,9 @@ public class WalkerFactory
       // and predicate testing.
       iter = new AttributeIterator(compiler, opPos, analysis);
     }
-    else if(isOneStep && !walksFilteredList(analysis))
+    else if (isOneStep && !walksFilteredList(analysis))
     {
-      if( !walksNamespaces(analysis) 
+      if ( !walksNamespaces(analysis) 
       && (walksInDocOrder(analysis) || isSet(analysis, BIT_PARENT)))
       {
         if (false || DEBUG_ITERATOR_CREATION)
@@ -257,7 +257,7 @@ public class WalkerFactory
     }
     else
     { 
-      if(isNaturalDocOrder(compiler, firstStepPos, 0, analysis))
+      if (isNaturalDocOrder(compiler, firstStepPos, 0, analysis))
       {
         if (false || DEBUG_ITERATOR_CREATION)
         {
@@ -274,7 +274,7 @@ public class WalkerFactory
         iter = new WalkingIteratorSorted(compiler, opPos, analysis, true);
       }
     }
-    if(iter instanceof LocPathIterator)
+    if (iter instanceof LocPathIterator)
       ((LocPathIterator)iter).setIsTopLevel(isTopLevel);
       
     return iter;
@@ -415,7 +415,7 @@ public class WalkerFactory
           int innerExprOpPos = p+2;
           int argOp = compiler.getOp(innerExprOpPos);
           boolean prox = isProximateInnerExpr(compiler, innerExprOpPos);
-          if(prox)
+          if (prox)
             return true;
         }
 
@@ -430,7 +430,7 @@ public class WalkerFactory
     switch(op)
     {
       case OpCodes.OP_ARGUMENT:
-        if(isProximateInnerExpr(compiler, innerExprOpPos))
+        if (isProximateInnerExpr(compiler, innerExprOpPos))
           return true;
         break;
       case OpCodes.OP_VARIABLE:
@@ -440,7 +440,7 @@ public class WalkerFactory
         break; // OK
       case OpCodes.OP_FUNCTION:
         boolean isProx = functionProximateOrContainsProximate(compiler, opPos);
-        if(isProx)
+        if (isProx)
           return true;
         break;
       case OpCodes.OP_GT:
@@ -451,10 +451,10 @@ public class WalkerFactory
         int leftPos = OpMap.getFirstChildPos(op);
         int rightPos = compiler.getNextOpPos(leftPos);
         isProx = isProximateInnerExpr(compiler, leftPos);
-        if(isProx)
+        if (isProx)
           return true;
         isProx = isProximateInnerExpr(compiler, rightPos);
-        if(isProx)
+        if (isProx)
           return true;
         break;
       default:
@@ -508,7 +508,7 @@ public class WalkerFactory
         case OpCodes.OP_FUNCTION:
           boolean isProx 
             = functionProximateOrContainsProximate(compiler, innerExprOpPos);
-          if(isProx)
+          if (isProx)
             return true;
           break;
         case OpCodes.OP_GT:
@@ -519,10 +519,10 @@ public class WalkerFactory
           int leftPos = OpMap.getFirstChildPos(innerExprOpPos);
           int rightPos = compiler.getNextOpPos(leftPos);
           isProx = isProximateInnerExpr(compiler, leftPos);
-          if(isProx)
+          if (isProx)
             return true;
           isProx = isProximateInnerExpr(compiler, rightPos);
-          if(isProx)
+          if (isProx)
             return true;
           break;
         default:
@@ -566,15 +566,15 @@ public class WalkerFactory
     {
       // The DescendantIterator can only do one node test.  If there's more 
       // than one, use another iterator.
-      if(nodeTestType != OpCodes.NODETYPE_NODE && nodeTestType != OpCodes.NODETYPE_ROOT)
+      if (nodeTestType != OpCodes.NODETYPE_NODE && nodeTestType != OpCodes.NODETYPE_ROOT)
         return false;
         
       stepCount++;
-      if(stepCount > 3)
+      if (stepCount > 3)
         return false;
         
       boolean mightBeProximate = mightBeProximate(compiler, stepOpCodePos, stepType);
-      if(mightBeProximate)
+      if (mightBeProximate)
         return false;
 
       switch (stepType)
@@ -597,22 +597,22 @@ public class WalkerFactory
       case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
         return false;
       case OpCodes.FROM_ROOT :
-        if(1 != stepCount)
+        if (1 != stepCount)
           return false;
         break;
       case OpCodes.FROM_CHILDREN :
-        if(!foundDS && !(foundDorDS && foundSelf))
+        if (!foundDS && !(foundDorDS && foundSelf))
           return false;
         break;
       case OpCodes.FROM_DESCENDANTS_OR_SELF :
         foundDS = true;
       case OpCodes.FROM_DESCENDANTS :
-        if(3 == stepCount)
+        if (3 == stepCount)
           return false;
         foundDorDS = true;
         break;
       case OpCodes.FROM_SELF :
-        if(1 != stepCount)
+        if (1 != stepCount)
           return false;
         foundSelf = true;
         break;
@@ -628,9 +628,9 @@ public class WalkerFactory
       if (nextStepOpCodePos < 0)
         break;
         
-      if(OpCodes.ENDOP != compiler.getOp(nextStepOpCodePos))
+      if (OpCodes.ENDOP != compiler.getOp(nextStepOpCodePos))
       {
-        if(compiler.countPredicates(stepOpCodePos) > 0)
+        if (compiler.countPredicates(stepOpCodePos) > 0)
         {
           return false;
         }
@@ -884,12 +884,12 @@ public class WalkerFactory
       // Lovely business, this.
       // -sb
       int whatToShow = pat.getWhatToShow();
-      if(whatToShow == DTMFilter.SHOW_ATTRIBUTE || 
+      if (whatToShow == DTMFilter.SHOW_ATTRIBUTE || 
          whatToShow == DTMFilter.SHOW_NAMESPACE)
       {
         int newAxis = (whatToShow == DTMFilter.SHOW_ATTRIBUTE) ? 
                        Axis.ATTRIBUTE : Axis.NAMESPACE;
-        if(isDownwardAxisOfMany(axis))
+        if (isDownwardAxisOfMany(axis))
         {
           StepPattern attrPat = new StepPattern(whatToShow, 
                                     pat.getNamespace(),
@@ -911,15 +911,15 @@ public class WalkerFactory
           // wacky Xalan rules for following from an attribute.  See axes108.
           // By these rules, following from an attribute is not strictly 
           // inverseable.
-          if(Axis.PRECEDING == pat.getAxis())
+          if (Axis.PRECEDING == pat.getAxis())
             pat.setAxis(Axis.PRECEDINGANDANCESTOR);
             
-          else if(Axis.DESCENDANT == pat.getAxis())
+          else if (Axis.DESCENDANT == pat.getAxis())
             pat.setAxis(Axis.DESCENDANTORSELF);
           
           pat = attrPat;
         }
-        else if(Axis.CHILD == pat.getAxis())
+        else if (Axis.CHILD == pat.getAxis())
         {
           // In this case just change the axis.
           // pat.setWhatToShow(whatToShow);
@@ -931,7 +931,7 @@ public class WalkerFactory
       tail = pat;
     }
     
-    if(axis < Axis.ALL)
+    if (axis < Axis.ALL)
     {
       StepPattern selfPattern = new ContextMatchStepPattern(axis, paxis);
       // We need to keep the new nodetest from affecting the score...
@@ -1082,7 +1082,7 @@ public class WalkerFactory
       throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_ERROR_HANDLER, new Object[]{Integer.toString(stepType)})); //"Programmer's assertion: unknown opcode: "
                                  //+ stepType);
     }
-    if(null == ai)
+    if (null == ai)
     {
       whatToShow = compiler.getWhatToShow(opPos); // %REVIEW%
       ai = new StepPattern(whatToShow, compiler.getStepNS(opPos),
@@ -1280,71 +1280,71 @@ public class WalkerFactory
   {
     StringBuffer buf = new StringBuffer();
     buf.append("count: "+getStepCount(analysis)+" ");
-    if((analysis & BIT_NODETEST_ANY) != 0)
+    if ((analysis & BIT_NODETEST_ANY) != 0)
     {
       buf.append("NTANY|");
     }
-    if((analysis & BIT_PREDICATE) != 0)
+    if ((analysis & BIT_PREDICATE) != 0)
     {
       buf.append("PRED|");
     }
-    if((analysis & BIT_ANCESTOR) != 0)
+    if ((analysis & BIT_ANCESTOR) != 0)
     {
       buf.append("ANC|");
     }
-    if((analysis & BIT_ANCESTOR_OR_SELF) != 0)
+    if ((analysis & BIT_ANCESTOR_OR_SELF) != 0)
     {
       buf.append("ANCOS|");
     }
-    if((analysis & BIT_ATTRIBUTE) != 0)
+    if ((analysis & BIT_ATTRIBUTE) != 0)
     {
       buf.append("ATTR|");
     }
-    if((analysis & BIT_CHILD) != 0)
+    if ((analysis & BIT_CHILD) != 0)
     {
       buf.append("CH|");
     }
-    if((analysis & BIT_DESCENDANT) != 0)
+    if ((analysis & BIT_DESCENDANT) != 0)
     {
       buf.append("DESC|");
     }
-    if((analysis & BIT_DESCENDANT_OR_SELF) != 0)
+    if ((analysis & BIT_DESCENDANT_OR_SELF) != 0)
     {
       buf.append("DESCOS|");
     }
-    if((analysis & BIT_FOLLOWING) != 0)
+    if ((analysis & BIT_FOLLOWING) != 0)
     {
       buf.append("FOL|");
     }
-    if((analysis & BIT_FOLLOWING_SIBLING) != 0)
+    if ((analysis & BIT_FOLLOWING_SIBLING) != 0)
     {
       buf.append("FOLS|");
     }
-    if((analysis & BIT_NAMESPACE) != 0)
+    if ((analysis & BIT_NAMESPACE) != 0)
     {
       buf.append("NS|");
     }
-    if((analysis & BIT_PARENT) != 0)
+    if ((analysis & BIT_PARENT) != 0)
     {
       buf.append("P|");
     }
-    if((analysis & BIT_PRECEDING) != 0)
+    if ((analysis & BIT_PRECEDING) != 0)
     {
       buf.append("PREC|");
     }
-    if((analysis & BIT_PRECEDING_SIBLING) != 0)
+    if ((analysis & BIT_PRECEDING_SIBLING) != 0)
     {
       buf.append("PRECS|");
     }
-    if((analysis & BIT_SELF) != 0)
+    if ((analysis & BIT_SELF) != 0)
     {
       buf.append(".|");
     }
-    if((analysis & BIT_FILTER) != 0)
+    if ((analysis & BIT_FILTER) != 0)
     {
       buf.append("FLT|");
     }
-    if((analysis & BIT_ROOT) != 0)
+    if ((analysis & BIT_ROOT) != 0)
     {
       buf.append("R|");
     }
@@ -1559,19 +1559,19 @@ public class WalkerFactory
   public static boolean canCrissCross(int analysis)
   {
     // This could be done faster.  Coded for clarity.
-    if(walksSelfOnly(analysis))
+    if (walksSelfOnly(analysis))
       return false;
-    else if(walksDownOnly(analysis) && !canSkipSubtrees(analysis))
+    else if (walksDownOnly(analysis) && !canSkipSubtrees(analysis))
       return false;
-    else if(walksChildrenAndExtraAndSelfOnly(analysis))
+    else if (walksChildrenAndExtraAndSelfOnly(analysis))
       return false;
-    else if(walksDescendantsAndExtraAndSelfOnly(analysis))
+    else if (walksDescendantsAndExtraAndSelfOnly(analysis))
       return false;
-    else if(walksUpOnly(analysis))
+    else if (walksUpOnly(analysis))
       return false;
-    else if(walksExtraNodesOnly(analysis))
+    else if (walksExtraNodesOnly(analysis))
       return false;
-    else if(walksSubtree(analysis) 
+    else if (walksSubtree(analysis) 
            && (walksSideways(analysis) 
             || walksUp(analysis) 
             || canSkipSubtrees(analysis)))
@@ -1592,11 +1592,11 @@ public class WalkerFactory
    */
   static public boolean isNaturalDocOrder(int analysis)
   {
-    if(canCrissCross(analysis) || isSet(analysis, BIT_NAMESPACE) ||
+    if (canCrissCross(analysis) || isSet(analysis, BIT_NAMESPACE) ||
        walksFilteredList(analysis))
       return false;
       
-    if(walksInDocOrder(analysis))
+    if (walksInDocOrder(analysis))
       return true;
       
     return false;
@@ -1620,12 +1620,12 @@ public class WalkerFactory
           Compiler compiler, int stepOpCodePos, int stepIndex, int analysis)
             throws javax.xml.transform.TransformerException
   {
-    if(canCrissCross(analysis))
+    if (canCrissCross(analysis))
       return false;
       
     // Namespaces can present some problems, so just punt if we're looking for 
     // these.
-    if(isSet(analysis, BIT_NAMESPACE))
+    if (isSet(analysis, BIT_NAMESPACE))
       return false;
       
     // The following, preceding, following-sibling, and preceding sibling can 
@@ -1634,7 +1634,7 @@ public class WalkerFactory
     // duplicates, so it's better for us to eliminate this case so we don't 
     // have to check for duplicates during runtime if we're using a 
     // WalkingIterator.
-    if(isSet(analysis, BIT_FOLLOWING | BIT_FOLLOWING_SIBLING) && 
+    if (isSet(analysis, BIT_FOLLOWING | BIT_FOLLOWING_SIBLING) && 
        isSet(analysis, BIT_PRECEDING | BIT_PRECEDING_SIBLING))
       return  false;
       
@@ -1660,7 +1660,7 @@ public class WalkerFactory
       {
       case OpCodes.FROM_ATTRIBUTES :
       case OpCodes.MATCH_ATTRIBUTE :
-        if(foundWildAttribute) // Maybe not needed, but be safe.
+        if (foundWildAttribute) // Maybe not needed, but be safe.
           return false;
         
         // This doesn't seem to work as a test for wild card.  Hmph.
@@ -1668,7 +1668,7 @@ public class WalkerFactory
         
         String localName = compiler.getStepLocalName(stepOpCodePos);
         // System.err.println("localName: "+localName);
-        if(localName.equals("*"))
+        if (localName.equals("*"))
         {
           foundWildAttribute = true;
         }
@@ -1689,13 +1689,13 @@ public class WalkerFactory
       case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
       case OpCodes.FROM_DESCENDANTS_OR_SELF :
       case OpCodes.FROM_DESCENDANTS :
-        if(potentialDuplicateMakingStepCount > 0)
+        if (potentialDuplicateMakingStepCount > 0)
             return false;
         potentialDuplicateMakingStepCount++;
       case OpCodes.FROM_ROOT :
       case OpCodes.FROM_CHILDREN :
       case OpCodes.FROM_SELF :
-        if(foundWildAttribute)
+        if (foundWildAttribute)
           return false;
         break;
       default :

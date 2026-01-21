@@ -265,7 +265,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
    */
   public int nextNode()
   {
-  	if(m_foundLast)
+  	if (m_foundLast)
   		return DTM.NULL;
 
     int next;
@@ -298,7 +298,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
    */
   public void detach()
   {  
-    if(m_allowDetach)
+    if (m_allowDetach)
     {
   		super.detach();
   		m_exprObj.detach();
@@ -422,7 +422,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
    */
   public int getAxis()
   {
-  	if(null != m_exprObj)
+  	if (null != m_exprObj)
     	return m_exprObj.getAxis();
     else
     	return Axis.FILTEREDLIST;

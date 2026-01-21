@@ -101,7 +101,7 @@ public class ElemTextLiteral extends ElemTemplateElement
    */
   public synchronized String getNodeValue()
   {
-	  if(null == m_str)
+	  if (null == m_str)
 	  {
 		  m_str = new String(m_ch);
 	  }

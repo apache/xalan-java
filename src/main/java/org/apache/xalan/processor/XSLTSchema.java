@@ -133,10 +133,10 @@ public class XSLTSchema extends XSLTElementDef
                                       true, false, XSLTAttributeDef.ERROR);
     
     XSLTAttributeDef xpathDefaultNamespaceAttrOpt = new XSLTAttributeDef(null, "xpath-default-namespace",
-                                           XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.WARNING);
+                                           XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
     XSLTAttributeDef xslXpathDefaultNamespaceAttrOpt = new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "xpath-default-namespace",
-                                           XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.WARNING);
+                                           XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
     XSLTAttributeDef expandTextAttrOpt = new XSLTAttributeDef(null, "expand-text",
                                            XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
@@ -530,7 +530,7 @@ public class XSLTSchema extends XSLTElementDef
     terminateAttr.setDefault("no");
 
 	// top level attributes
-    XSLTAttributeDef xslExcludeResultPrefixesAttr =
+    XSLTAttributeDef xslExcludeResultPrefixesAttrOpt =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL,
                            "exclude-result-prefixes",
                            XSLTAttributeDef.T_PREFIXLIST, false, false, XSLTAttributeDef.ERROR);
@@ -538,6 +538,7 @@ public class XSLTSchema extends XSLTElementDef
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL,
                            "extension-element-prefixes",
                            XSLTAttributeDef.T_PREFIX_URLLIST, false, false, XSLTAttributeDef.ERROR);
+    
     // result-element-atts                       
     XSLTAttributeDef xslUseAttributeSetsAttr =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "use-attribute-sets",
@@ -601,9 +602,9 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
                                      templateElements /* elements */,
-                                     new XSLTAttributeDef[]{
+                                     new XSLTAttributeDef[] {
                                        spaceAttrLiteral, // special
-                                       xslExcludeResultPrefixesAttr,
+                                       xslExcludeResultPrefixesAttrOpt,
                                        xslExtensionElementPrefixesAttr,
                                        xslUseAttributeSetsAttr,
                                        xslVersionAttr,
@@ -618,7 +619,7 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef unknownElement =
       new XSLTElementDef(this, "*", "unknown", null /*alias */,
                          templateElementsAndParams /* elements */,
-                         new XSLTAttributeDef[]{ xslExcludeResultPrefixesAttr,
+                         new XSLTAttributeDef[]{ xslExcludeResultPrefixesAttrOpt,
                                                  xslExtensionElementPrefixesAttr,
                                                  xslUseAttributeSetsAttr,
                                                  xslVersionAttr,
@@ -1416,6 +1417,9 @@ public class XSLTSchema extends XSLTElementDef
                                              XSLTAttributeDef.T_NMTOKEN,
                                              true,false, XSLTAttributeDef.WARNING);
     
+    XSLTAttributeDef xslInputTypeAnnotationsAttrOpt = new XSLTAttributeDef(null, "input-type-annotations",
+                                XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.WARNING);
+    
     XSLTElementDef stylesheetElemDef = new XSLTElementDef(this,
                                          Constants.S_XSLNAMESPACEURL,
                                          "stylesheet", "transform",
@@ -1428,6 +1432,7 @@ public class XSLTSchema extends XSLTElementDef
                                            xpathDefaultNamespaceAttrOpt,
                                            expandTextAttrOpt,
                                            defaultModeAttr,
+                                           xslInputTypeAnnotationsAttrOpt,
                                            spaceAttr }, new ProcessorStylesheetElement(),  /* ContentHandler */
                                          null  /* class object */,
                                          true, -1, false);

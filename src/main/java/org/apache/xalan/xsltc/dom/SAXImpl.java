@@ -322,7 +322,7 @@ public final class SAXImpl extends SAX2DTM2
          */
         public TypedNamespaceIterator(int nodeType) { 
             super();
-            if(m_expandedNameTable != null){
+            if (m_expandedNameTable != null){
                 _nsPrefix = m_expandedNameTable.getLocalName(nodeType);
             }
         }
@@ -1612,7 +1612,7 @@ public final class SAXImpl extends SAX2DTM2
             {
                 case DTM.ROOT_NODE:
                 case DTM.DOCUMENT_NODE:
-                    for(int c = _firstch2(nodeID); c != DTM.NULL; c = _nextsib2(c)) {
+                    for (int c = _firstch2(nodeID); c != DTM.NULL; c = _nextsib2(c)) {
                         copy(makeNodeHandle(c), handler, true);
                     }
                     break;
@@ -1650,7 +1650,7 @@ public final class SAXImpl extends SAX2DTM2
                     {
                         // Start element definition
                         final String name = copyElement(nodeID, eType, handler);
-                        //if(isChild) => not to copy any namespaces  from parents
+                        //if (isChild) => not to copy any namespaces  from parents
                         // else copy all namespaces in scope
                         copyNS(nodeID, handler,!isChild);
                         copyAttributes(nodeID, handler);

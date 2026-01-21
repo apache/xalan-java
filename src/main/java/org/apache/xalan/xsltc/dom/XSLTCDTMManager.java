@@ -265,7 +265,7 @@ public class XSLTCDTMManager extends DTMManagerDefault
 		    boolean doIndexing, boolean hasUserReader, int size,
 		    boolean buildIdIndex, boolean newNameTable)
   {
-        if(DEBUG && null != source) {
+        if (DEBUG && null != source) {
             System.out.println("Starting "+
 			 (unique ? "UNIQUE" : "shared")+
 			 " source: "+source.getSystemId());
@@ -374,7 +374,7 @@ public class XSLTCDTMManager extends DTMManagerDefault
                     reader.setDTDHandler(dtm);
                 }
                 
-                if(!hasUserReader || null == reader.getErrorHandler()) {
+                if (!hasUserReader || null == reader.getErrorHandler()) {
                     reader.setErrorHandler(dtm);
                 }
 

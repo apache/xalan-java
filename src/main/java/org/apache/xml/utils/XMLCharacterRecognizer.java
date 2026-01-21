@@ -116,7 +116,7 @@ public class XMLCharacterRecognizer
   public static boolean isWhiteSpace(String s)
   {
 
-    if(null != s)
+    if (null != s)
     {
       int n = s.length();
   
