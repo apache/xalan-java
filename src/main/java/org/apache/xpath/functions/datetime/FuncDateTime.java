@@ -32,7 +32,7 @@ import xml.xpath31.processor.types.XSDuration;
 import xml.xpath31.processor.types.XSTime;
 
 /**
- * Implementation of fn:dateTime function.
+ * Implementation of XPath 3.1 function fn:dateTime.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -108,8 +108,16 @@ public class FuncDateTime extends Function2Args
 	  cal.set(dateVal.year(), dateVal.month() - 1, dateVal.day());
 	  cal.set(Calendar.HOUR_OF_DAY, timeVal.hour());
 	  cal.set(Calendar.MINUTE, timeVal.minute());
-	  cal.set(Calendar.SECOND, (new Double(Math.floor(timeVal.second())).intValue()));
-	  cal.set(Calendar.MILLISECOND, 0);
+	  
+	  double secsValue = timeVal.second();
+	  int secs = (int)secsValue;
+	  int deltaMilliSecs = 0;
+	  if (secsValue > secs) {
+	     deltaMilliSecs = (int)((secsValue - secs) * 1000);
+	  }
+	  
+	  cal.set(Calendar.SECOND, secs);
+	  cal.set(Calendar.MILLISECOND, deltaMilliSecs);
 	  
 	  result = new XSDateTime(cal, resultTimeZone);
 	  

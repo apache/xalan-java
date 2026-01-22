@@ -377,8 +377,24 @@ public class Div extends XPathArithmeticOp
      }
      else if (left instanceof XSYearMonthDuration) {
          try {
-            java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
-            result = ((XSYearMonthDuration)left).div(new XSDouble(rStrVal));
+        	 if (right instanceof XSYearMonthDuration) {
+        		 XSYearMonthDuration lValue = (XSYearMonthDuration)left;        		         		 
+        		 XSYearMonthDuration rValue = (XSYearMonthDuration)right;
+        		 
+        		 boolean isNegativeValue = ((lValue.negative() && !rValue.negative()) || (!lValue.negative() && rValue.negative()));
+        		 
+        		 int lMonthValue = (lValue.year() * 12) + lValue.month();
+        		 int rMonthValue = (rValue.year() * 12) + rValue.month();        		 
+        		 double rDouble = (lMonthValue / (double)rMonthValue);
+        		 
+        		 rDouble = (isNegativeValue ? -1 * rDouble : rDouble); 
+        		 
+        		 result = new XSDecimal(java.lang.String.valueOf(rDouble));
+        	 }
+        	 else {
+        		 java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
+        		 result = ((XSYearMonthDuration)left).div(new XSDouble(rStrVal));
+        	 }
          }
          catch (XPathException ex) {
             throw new javax.xml.transform.TransformerException(ex.getMessage());  
