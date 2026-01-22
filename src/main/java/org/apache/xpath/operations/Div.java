@@ -386,8 +386,16 @@ public class Div extends XPathArithmeticOp
      }
      else if (left instanceof XSDayTimeDuration) {
          try {
-            java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
-            result = ((XSDayTimeDuration)left).div(new XSDouble(rStrVal));
+        	if (right instanceof XSDayTimeDuration) {
+        		int days1 = ((XSDayTimeDuration)left).days();
+        		int days2 = ((XSDayTimeDuration)right).days();
+        		int resultInt = (days1 / days2);        		
+        		result = new XSDecimal(java.lang.String.valueOf(resultInt));
+        	}
+        	else {
+                java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
+                result = ((XSDayTimeDuration)left).div(new XSDouble(rStrVal));
+        	}
          }
          catch (XPathException ex) {
             throw new javax.xml.transform.TransformerException(ex.getMessage());  

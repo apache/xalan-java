@@ -73,6 +73,7 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XdmAttributeItem;
+import org.apache.xpath.types.DateTimeUtil;
 import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSGDay;
@@ -1153,9 +1154,24 @@ public class SequenceTypeSupport {
                } 
             }
             else if (srcValue instanceof XSDate) {
-               String srcStrVal = ((XSDate)srcValue).stringValue();
+               XSDate xsDate = (XSDate)srcValue;
+               String srcStrVal = xsDate.stringValue();
                if ((expectedType == XS_DATE) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
+               }
+               else if (expectedType == XS_DATETIME) {
+            	  String xsDateTimeZoneStr1 = DateTimeUtil.getTimeZoneStrFromXsDateValue(xsDate);
+            	  String xsDateTimeStr = null;
+            	  if (xsDateTimeZoneStr1 != null) {
+            		 int idx = srcStrVal.indexOf(xsDateTimeZoneStr1);
+            		 String xsDateStr = srcStrVal.substring(0, idx);
+            		 xsDateTimeStr = xsDateStr + "T00:00:00" + xsDateTimeZoneStr1;  
+            	  }
+            	  else {
+            		 xsDateTimeStr = srcStrVal + "T00:00:00";   
+            	  }
+            	  
+            	  result = XSDateTime.parseDateTime(xsDateTimeStr);
                }
                else if (sequenceTypeKindTest != null) {
                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 

@@ -1075,6 +1075,9 @@ public class ElemValueOf extends ElemTemplateElement {
                 					  str1 = xmlNodeCursorImpl.str();  
                 				  }
                 			  }
+                			  else if (xObj instanceof XSDayTimeDuration) {
+                				  str1 = DateTimeUtil.getFormattedStrXsDaytimeDuration((XSDayTimeDuration)xObj); 
+                			  }
                 			  else {
                 				  str1 = XslTransformEvaluationHelper.getStrVal(xObj);
                 			  }
