@@ -71,6 +71,7 @@ public class FuncReplace extends Function4Args {
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	    
 	    XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+	    
 	    String inputStr = null;
 	    if ((m_arg0 instanceof SelfIteratorNoPredicate) && (xpath3ContextItem != null)) {
 	       inputStr = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem); 
@@ -78,7 +79,9 @@ public class FuncReplace extends Function4Args {
 	    else {
            inputStr = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
 	    }
-        String patternStr = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
+	    
+        String patternStr = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));        
+        
         String replacementStr = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
         
         String flagStr = null;
@@ -93,16 +96,28 @@ public class FuncReplace extends Function4Args {
         }
         
         try {
-            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(
-            		                                                                                             patternStr), flagStr, inputStr);
-            String resultStr = matcher.replaceAll(replacementStr);
+        	Matcher regexMatcher = null;
+        	
+        	try {
+                regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtractionOp(patternStr), flagStr, inputStr);
+        	}
+        	catch (Exception ex) {
+        		throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
+																							                        ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
+																							                        srcLocator);
+        	}
+        	
+            String resultStr = regexMatcher.replaceAll(replacementStr);
             result = new XSString(resultStr);
         }
         catch (PatternSyntaxException ex) {
             throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
                                                                                                                 ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
                                                                                                                 srcLocator);   
-        }                
+        }
+        catch (Exception ex) {
+            throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator); 
+        }
     
         return result;
   }

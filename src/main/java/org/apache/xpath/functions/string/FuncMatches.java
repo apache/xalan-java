@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.string;
 
 import javax.xml.transform.SourceLocator;
@@ -85,16 +82,29 @@ public class FuncMatches extends Function3Args {
         
         boolean boolValue = false;
         
-        try {                
-            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(patternStr), 
+        try {        	        	        	
+        	Matcher regexMatcher = null;
+        	
+        	try {
+                regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtractionOp(patternStr), 
             																									flagStr != null ? flagStr : null, inputStr);
-            while (matcher.find()) {
+        	}
+        	catch (Exception ex) {
+        		throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
+                                                                                                                ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator);
+        	}
+        	
+            while (regexMatcher.find()) {
                boolValue = true;
                break;
             }            
-        } catch (PatternSyntaxException ex) {
+        } 
+        catch (PatternSyntaxException ex) {
             throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
                                                         									ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator); 
+        }
+        catch (Exception ex) {
+        	throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);
         }
         
         result = (boolValue ? new XSBoolean(true) : new XSBoolean(false));  

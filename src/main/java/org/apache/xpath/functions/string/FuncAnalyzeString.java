@@ -28,9 +28,8 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.RegexEvaluationSupport;
 import org.apache.xpath.functions.WrongNumberArgsException;
@@ -55,6 +54,8 @@ import xml.xpath31.processor.types.XSString;
 public class FuncAnalyzeString extends FunctionMultiArgs {
 
 	private static final long serialVersionUID = -1559008263985308212L;
+	
+	private static final String FUNCTION_NAME = "analyze-string()";
 	
 	/**
 	 * Class constructor.
@@ -132,9 +133,17 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         document.appendChild(analyzeStrResultElem);
         
         if (strToBeAnalyzed.length() > 0) {
-        	Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(
-        			                                    RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr), 
-        			                                    flagsStr, strToBeAnalyzed);
+        	Matcher regexMatcher = null;
+        	
+        	try {
+        		regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr), 
+        				                                                                                                                flagsStr, strToBeAnalyzed);
+        	}
+        	catch (Exception ex) {
+        		throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
+																							        				ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
+																							        				srcLocator);
+        	}
 
         	List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();
 

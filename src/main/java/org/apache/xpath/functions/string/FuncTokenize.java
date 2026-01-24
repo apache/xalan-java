@@ -135,7 +135,7 @@ public class FuncTokenize extends Function3Args {
         	}
         	catch (PatternSyntaxException ex) {
         		throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-        				ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator);  
+        				                                                                       ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator);  
         	}
         	catch (Exception ex) {
         		throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);   
@@ -185,12 +185,16 @@ public class FuncTokenize extends Function3Args {
       Matcher regexMatcher = null;
 
       try {
-          regexMatcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(
+          regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtractionOp(
                                                                                             pattern.toString()), flags != null ? 
                                                                                             flags.toString() : null, inputStr.toString());
       }
       catch (PatternSyntaxException ex) {
           throw ex;   
+      }
+      catch (Exception ex) {
+      	  throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
+					                                                                        ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }));
       }
 
       int startpos = 0;

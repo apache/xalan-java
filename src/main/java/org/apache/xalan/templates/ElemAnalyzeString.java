@@ -313,7 +313,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
     	  regex_flags_str = m_regex_flags.evaluate(xctxt, contextNode, xctxt.getNamespaceContext()); 
        }
        
-       if (regex_flags_str != null && !RegexEvaluationSupport.isFlagStrValid(regex_flags_str)) {
+       if ((regex_flags_str != null) && !RegexEvaluationSupport.isFlagStrValid(regex_flags_str)) {
            throw new javax.xml.transform.TransformerException("XTDE1145 : Incorrect regex flag value(s) are present as value of 'flags' "
            		                                                                  									 + "attribute of an XSL analyze-string element.", srcLocator);    
        }
@@ -347,9 +347,17 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
        }
        
        if (strToBeAnalyzed.length() > 0) {
-    	   String regexStr = m_regex.evaluate(xctxt, xctxt.getContextNode(), this);
-    	   Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr), 
-    			   																															regex_flags_str, strToBeAnalyzed);
+    	   String regexStr = m_regex.evaluate(xctxt, contextNode, this);
+    	   
+    	   Matcher regexMatcher = null;
+    			   
+    	   try {
+    	       regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr),
+    	    		                                                                                                                    regex_flags_str, strToBeAnalyzed);
+    	   }
+    	   catch (Exception ex) {
+       		   throw new javax.xml.transform.TransformerException("FORX0002: XSL instruction analyze-string's regex syntax is invalid.", srcLocator);
+       	   }
 
     	   List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();
 

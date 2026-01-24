@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
 import org.apache.xpath.regex.Matcher;
@@ -60,8 +57,9 @@ public class RegexEvaluationSupport {
 		return transformedPatternStr;
 	}
 	
-	public static Matcher regex(String pattern, String flags, String src) {
+	public static Matcher getRegexMatcher(String pattern, String flags, String src) {
 		Matcher matcher = compileAndExecute(pattern, flags, src);
+		
 		return matcher;
 	}
 	
@@ -81,8 +79,16 @@ public class RegexEvaluationSupport {
 	}
 	
 	public static Matcher compileAndExecute(String regexStr, String regexFlags, 
-	                                                                  String inputStr) {
-		int flag = Pattern.UNIX_LINES;
+	                                                                  String inputStr) {	
+				
+		int flag = 0;
+		
+		String osNameStr = System.getProperty("os.name");
+		if (!osNameStr.startsWith("Windows")) {
+		   flag = Pattern.UNIX_LINES;
+		}
+		
+		Pattern pattern = null;
 		
 		if (regexFlags != null) {			
 			if (regexFlags.indexOf("s") >= 0) {
@@ -100,9 +106,12 @@ public class RegexEvaluationSupport {
 			if (regexFlags.indexOf("q") >= 0) {
                 flag = flag | Pattern.LITERAL;
             }
+			
+			pattern = Pattern.compile(regexStr, flag);
 		}
-		
-		Pattern pattern = Pattern.compile(regexStr, flag);
+		else {
+		    pattern = Pattern.compile(regexStr);
+		}
 		
 		return pattern.matcher(inputStr);
 	}

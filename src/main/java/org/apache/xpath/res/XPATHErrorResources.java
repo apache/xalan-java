@@ -901,10 +901,10 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
        "Attempting to set a null XPathVariableResolver:{0}#setXPathVariableResolver(null)"},
   
   { ER_INVALID_REGEX_FLAGS,
-       "FORX0001: Invalid regular expression flag(s) usage, with function call {0}."},
+       "FORX0001: Invalid regex flag(s) usage, with function call {0}."},
   
   { ER_INVALID_REGEX,
-       "FORX0002: Invalid regular expression syntax used, with function call {0}."},
+       "FORX0002: Invalid regex syntax used, with function call {0}."},
   
   { ER_EQ_OPERAND_CARDINALITY_ERROR,
        "XPTY0004 : none of the eq's operands can be a sequence with length greater than one."},
