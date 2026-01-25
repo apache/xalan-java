@@ -193,8 +193,12 @@ public class FuncTokenize extends Function3Args {
           throw ex;   
       }
       catch (Exception ex) {
-      	  throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-					                                                                        ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }));
+    	  String errMesg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME });        		
+
+    	  String mesg1 = ex.getMessage();
+    	  errMesg = (mesg1 != null) ? (errMesg + " " + mesg1) : errMesg;  
+
+    	  throw new javax.xml.transform.TransformerException(errMesg);
       }
 
       int startpos = 0;

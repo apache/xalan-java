@@ -102,9 +102,12 @@ public class FuncReplace extends Function4Args {
                 regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtractionOp(patternStr), flagStr, inputStr);
         	}
         	catch (Exception ex) {
-        		throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-																							                        ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
-																							                        srcLocator);
+                String errMesg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME });        		
+        		
+        		String mesg1 = ex.getMessage();
+        		errMesg = (mesg1 != null) ? (errMesg + " " + mesg1) : errMesg;  
+        		
+        		throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
         	}
         	
             String resultStr = regexMatcher.replaceAll(replacementStr);

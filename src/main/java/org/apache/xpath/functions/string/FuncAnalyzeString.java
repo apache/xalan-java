@@ -139,10 +139,13 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         		regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr), 
         				                                                                                                                flagsStr, strToBeAnalyzed);
         	}
-        	catch (Exception ex) {
-        		throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-																							        				ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
-																							        				srcLocator);
+        	catch (Exception ex) {        		        		
+                String errMesg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME });        		
+        		
+        		String mesg1 = ex.getMessage();
+        		errMesg = (mesg1 != null) ? (errMesg + " " + mesg1) : errMesg;  
+        		
+        		throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
         	}
 
         	List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();

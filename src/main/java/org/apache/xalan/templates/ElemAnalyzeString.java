@@ -355,8 +355,13 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
     	       regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr),
     	    		                                                                                                                    regex_flags_str, strToBeAnalyzed);
     	   }
-    	   catch (Exception ex) {
-       		   throw new javax.xml.transform.TransformerException("FORX0002: XSL instruction analyze-string's regex syntax is invalid.", srcLocator);
+    	   catch (Exception ex) {    		   
+    		   String errMesg = "FORX0002: An XSL instruction analyze-string's regex syntax is invalid.";        		
+
+    		   String mesg1 = ex.getMessage();
+    		   errMesg = (mesg1 != null) ? (errMesg + " " + mesg1) : errMesg;  
+
+    		   throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
        	   }
 
     	   List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();

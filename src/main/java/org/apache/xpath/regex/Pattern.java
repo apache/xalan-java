@@ -48,7 +48,7 @@ import org.apache.xerces.util.XML11Char;
  * Minor modifications to this class provided by JDK 1.8, were done to make it compliant 
  * to XPath 3.1 regex syntax (https://www.w3.org/TR/xpath-functions-31/#regex-syntax).
  *  
- * The following, XPath 3.1 related modifications to this class were done:
+ * The following, XPath 3.1 related modifications to this class have been done:
  * 
  * 1) The COMMENTS flag was renamed to IGNORE_WHITESPACE. The behavior of this
  * flag was changed, to not recognize regex inline comments starting with
@@ -74,6 +74,9 @@ import org.apache.xerces.util.XML11Char;
  * 
  * 3) Modification to this class were done, to support XPath 3.1 / XSD 
  * unicode block escape expressions, like \p{IsBasicLatin}, \p{IsLatin-1Supplement} etc.
+ * 
+ * 4) Error handling implementation, for regex expressions like {2}a, ^({2}a)$
+ *    where regex expression is not present before quantifier {...}.
  * 
  * Other than above mentioned modifications, this class behaves exactly like the
  * Java class : java.util.regex.Pattern.
@@ -1011,6 +1014,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
         } else {
             // Start recursive descent parsing
             matchRoot = expr(lastAccept);
+            
             // Check extra pattern characters
             if (patternLength != cursor) {
                 if (peek() == ')') {
@@ -1425,7 +1429,8 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
                     else {
                         node = new Dot();
                     }*/
-                	// changes for XPath 3.1 regex compliance
+                	
+                	// Changes for XPath 3.1 regex implementation
                     node = new XPath3Dot();
                 }
                 break;
@@ -1617,7 +1622,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
         int ch = skip();
         switch (ch) {
         case '0':
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	break;
             // return o();
         case '1':
@@ -1644,7 +1649,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
             return -1;
         case 'C':
             // break;
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	if (create) root = new XMLNameChar().complement();
             return -1;
         case 'D':
@@ -1663,7 +1668,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
             if (create) root = new HorizWS().complement();
             return -1;
         case 'I':
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	if (create) root = new XMLNameStartChar().complement();
             return -1;
         case 'J':
@@ -1683,7 +1688,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
             /*if (create) root = has(UNICODE_CHARACTER_CLASS)
                                ? new Utype(UnicodeProp.WHITE_SPACE).complement()
                                : new Ctype(ASCII.SPACE).complement();*/
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
             if (create) root = new XPath3Whitespace().complement();
             return -1;
         case 'T':
@@ -1710,7 +1715,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
             }
             return -1;
         case 'a':
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	break;
             // return '\007';
         case 'b':
@@ -1719,7 +1724,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
             return -1;
         case 'c':
             //return c();
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	if (create) root = new XMLNameChar();
             return -1;
         case 'd':
@@ -1728,11 +1733,11 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
                                : new Ctype(ASCII.DIGIT);
             return -1;
         case 'e':
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	break;
             // return '\033';
         case 'f':
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	break;
             // return '\f';
         case 'g':
@@ -1741,7 +1746,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
             if (create) root = new HorizWS();
             return -1;
         case 'i':
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	if (create) root = new XMLNameStartChar();
             return -1;
         case 'j':
@@ -1776,17 +1781,17 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
             /*if (create) root = has(UNICODE_CHARACTER_CLASS)
                                ? new Utype(UnicodeProp.WHITE_SPACE)
                                : new Ctype(ASCII.SPACE);*/
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	if (create) root = new XPath3Whitespace();
             return -1;
         case 't':
             return '\t';
         case 'u':
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	break;
             // return u();
         case 'v':
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	break;
             // '\v' was implemented as VT/0x0B in releases < 1.8 (though
             // undocumented). In JDK8 '\v' is specified as a predefined
@@ -1806,7 +1811,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
                                : new Ctype(ASCII.WORD);
             return -1;
         case 'x':
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	break;
             // return x();
         case 'y':
@@ -2086,7 +2091,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
                     node = charPropertyNodeFor(name);
             }*/
         	
-        	// changes for XPath 3.1 regex compliance
+        	// Changes for XPath 3.1 regex implementation
         	if (name.startsWith("Is")) {
                 // \p{isBlockName}
                 node = unicodeBlockPropertyFor(name.substring(2));
@@ -2450,7 +2455,7 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
      */
     private Node closure(Node prev) {
         Node atom;
-        int ch = peek();
+        int ch = peek();                        
         switch (ch) {
         case '?':
             ch = next();
@@ -2482,8 +2487,11 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
                 return new Curly(prev, 1, MAX_REPS, POSSESSIVE);
             }
             return new Curly(prev, 1, MAX_REPS, GREEDY);
-        case '{':
+        case '{':        	
             ch = temp[cursor+1];
+            
+            int cursorValueBeforeCurlyExpr = cursor;
+            
             if (ASCII.isDigit(ch)) {
                 skip();
                 int cmin = 0;
@@ -2517,6 +2525,35 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
                 } else {
                     curly = new Curly(prev, cmin, cmax, GREEDY);
                 }
+                
+                if (curly != null) {
+                	// Changes for XPath 3.1 regex implementation
+                	
+                	if (cursorValueBeforeCurlyExpr == 0) {
+                		// An erroneous regex, for e.g {2}a is present
+                		throw error("Error with regex repetition construct {...}. No regex expression is present before {...}.");
+                	}
+                	else if (cursorValueBeforeCurlyExpr == 2) {
+                		boolean isRegExAnchorOpen = false;
+                		if ((pattern.charAt(0) == '^') && (pattern.charAt(1) == '(')) {
+                		   isRegExAnchorOpen = true;
+                		}
+                		
+                		int regexLength = pattern.length();
+                		int idx1 = pattern.lastIndexOf(')');
+                		int idx2 = pattern.lastIndexOf('$');
+                		boolean isRegExAnchorClose = false;
+                		if ((idx1 == (regexLength - 2)) && (idx2 == (regexLength - 1))) {
+                			isRegExAnchorClose = true; 
+                		}
+
+                		if (isRegExAnchorOpen && isRegExAnchorClose) {
+                			// An erroneous regex, for e.g ^({2}a)$ is present
+                			throw error("Error with regex repetition construct {...}. No regex expression is present before {...}.");
+                		}
+                	}
+                }
+                
                 return curly;
             } else {
                 throw error("Illegal repetition");
@@ -3530,28 +3567,28 @@ loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
         }
     }
     
-    // changes for XPath 3.1 regex compliance
+    // Changes for XPath 3.1 regex implementation
     static final class XPath3Dot extends CharProperty {
         boolean isSatisfiedBy(int ch) {
             return ch != '\n' && ch != '\r';
         }
     }
     
-    // changes for XPath 3.1 regex compliance
+    // Changes for XPath 3.1 regex implementation
     static final class XPath3Whitespace extends CharProperty {
         boolean isSatisfiedBy(int ch) {
             return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
         }
     }
     
-    // changes for XPath 3.1 regex compliance
+    // Changes for XPath 3.1 regex implementation
     static final class XMLNameStartChar extends CharProperty {
         boolean isSatisfiedBy(int ch) {
             return XML11Char.isXML11NameStart(ch);
         }
     }
     
-    // changes for XPath 3.1 regex compliance
+    // Changes for XPath 3.1 regex implementation
     static final class XMLNameChar extends CharProperty {
         boolean isSatisfiedBy(int ch) {
             return XML11Char.isXML11Name(ch);

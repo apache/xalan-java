@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-20T11:12:24Z" fail="369" name="regex-syntax" pass="617" run="986" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-25T11:37:37Z" fail="368" name="regex-syntax" pass="618" run="986" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="regex-syntax-0001"/>
    <testResult status="pass" testName="regex-syntax-0002"/>
    <testResult status="pass" testName="regex-syntax-0003"/>
@@ -17,13 +17,7 @@
    <testResult status="pass" testName="regex-syntax-0016"/>
    <testResult status="pass" testName="regex-syntax-0017"/>
    <testResult status="pass" testName="regex-syntax-0018"/>
-   <testResult status="fail" testName="regex-syntax-0019">
-      <outResult>&lt;?xml version="1.0" encoding="us-ascii"?&gt;&lt;regex cp="123 49 125 97" value="{1}a"&gt;&#13;
-&lt;string actual-match="false" expected-match="true" cp="45 45 45 45" value="----"/&gt;&#13;
-&lt;/regex&gt;&#13;
-&#13;
-</outResult>
-   </testResult>
+   <testResult status="pass" testName="regex-syntax-0019"/>
    <testResult status="pass" testName="regex-syntax-0020"/>
    <testResult status="pass" testName="regex-syntax-0021"/>
    <testResult status="pass" testName="regex-syntax-0022"/>
