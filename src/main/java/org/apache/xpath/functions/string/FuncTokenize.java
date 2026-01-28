@@ -141,7 +141,8 @@ public class FuncTokenize extends Function3Args {
         		throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);   
         	}
 
-        	for (int idx = 0; idx < tokenList.size(); idx++) {
+        	int count1 = tokenList.size();
+        	for (int idx = 0; idx < count1; idx++) {
         		resultSeq.add(new XString(tokenList.get(idx)));    
         	}
         }

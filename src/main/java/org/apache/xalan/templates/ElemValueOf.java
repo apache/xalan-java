@@ -1180,13 +1180,31 @@ public class ElemValueOf extends ElemTemplateElement {
    * available.
    */
   private String getEffectiveSequenceStrValue(ResultSequence seq, String separatorStrValue) {	
-	String strValue = seq.str();
-	
-	if (separatorStrValue != null) {
-	   strValue = strValue.replace(" ", separatorStrValue);
+		  
+    String result = null;	  
+	  
+	StringBuffer strBuff = new StringBuffer();
+	int size1 = seq.size();
+	for (int idx = 0; idx < size1; idx++) {
+	   XObject xObj = seq.item(idx);
+	   String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+	   if (idx < (size1 - 1)) {
+		   if (separatorStrValue != null) {
+			  strBuff.append(str1 + separatorStrValue);
+		   }
+		   else {
+			  strBuff.append(str1 + " ");
+		   }
+	   }
+	   else {
+		   strBuff.append(str1);
+	   }
 	}
 	
-	return strValue;
+	result = strBuff.toString(); 
+	
+	return result;
+	
   }
   
   /**
