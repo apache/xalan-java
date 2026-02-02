@@ -6,12 +6,9 @@
 			    
   <!-- Author: mukulg@apache.org -->
 
-  <!--  An XSL 3 stylesheet test case, to test xsl:template match 
-        with pattern ".", and ".[...]" (i.e, XPath string "." 
-        followed by an XPath predicate.
-        
-        This XSL stylesheet example's algorithm has been borrowed
-        from XSLT 3.0 spec.         
+  <!--  An XSL 3 stylesheet test case, to test xsl:template
+        match pattern, matching text nodes present within an
+        intermediate XSL stylesheet result variable.         
   -->			     
 
   <xsl:output method="html"/>
@@ -22,21 +19,30 @@
 		   <title>XSL transformation result</title>
 		 </head>
 		 <body>		   
-		   <br/><xsl:apply-templates select="unparsed-text-lines('input.txt')"/>
+		   <br/>
+		   <xsl:variable name="txtLines">
+		      <xsl:for-each select="unparsed-text-lines('input.txt')">
+		         <node><xsl:value-of select="."/></node>
+		      </xsl:for-each>
+		   </xsl:variable>
+		   <xsl:apply-templates select="$txtLines/node"/>
 		 </body>
 	  </html>
   </xsl:template>
-  
-  <xsl:template match=".[starts-with(., '==')]">
-    <h1><xsl:value-of select="replace(., '==', '')"/></h1>
-  </xsl:template>
-  
-  <xsl:template match=".[starts-with(., '::')]">
-    <h2><xsl:value-of select="replace(., '::', '')"/></h2>
-  </xsl:template>
 
-  <xsl:template match=".">
-    <h3><xsl:value-of select="."/></h3>
+  <xsl:template match="node">
+    <xsl:variable name="strValue1" select="string(.)"/>
+    <xsl:choose>
+       <xsl:when test="starts-with(., '==')">
+          <h1><xsl:value-of select="replace($strValue1, '==', '')"/></h1>
+       </xsl:when>
+       <xsl:when test="starts-with(., '::')">
+          <h2><xsl:value-of select="replace($strValue1, '::', '')"/></h2>
+       </xsl:when>
+       <xsl:otherwise>
+          <h3><xsl:value-of select="$strValue1"/></h3>
+       </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <!--
