@@ -145,7 +145,12 @@ public class XPathDynamicFunctionCall extends Expression {
               StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
               Map<QName, XPathInlineFunction> globalInlineFunctionVarMap = stylesheetRoot.
                                                                             getInlineFunctionVarMap();
-              functionRef = globalInlineFunctionVarMap.get(new QName(m_funcRefVarName)); 
+              functionRef = globalInlineFunctionVarMap.get(new QName(m_funcRefVarName));
+              
+              String errMesg = ex.getMessage();
+              if (errMesg.startsWith("XPST0008")) {
+            	 throw ex; 
+              }
            }           
        }
        

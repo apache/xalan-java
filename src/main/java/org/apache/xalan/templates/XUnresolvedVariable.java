@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import org.apache.xalan.res.XSLTErrorResources;
@@ -33,7 +30,8 @@ import org.apache.xpath.objects.XObject;
  */
 public class XUnresolvedVariable extends XObject
 {  
-    static final long serialVersionUID = -256779804767950188L;
+  static final long serialVersionUID = -256779804767950188L;
+  
   /** The node context for execution. */
   transient private int m_context;
   
@@ -77,20 +75,20 @@ public class XUnresolvedVariable extends XObject
   public XUnresolvedVariable(ElemVariable obj, int sourceNode, 
                              TransformerImpl transformer,
                              int varStackPos, int varStackContext,
-                             boolean isGlobal)
-  {
-    super(obj);
-    m_context = sourceNode;
-    m_transformer = transformer;
-    
-    // For globals, this value will have to be updated once we 
-    // have determined how many global variables have been pushed.
-    m_varStackPos = varStackPos;
-    
-    // For globals, this should zero.
-    m_varStackContext = varStackContext;
-    
-    m_isGlobal = isGlobal;
+                             boolean isGlobal) {
+	  super(obj);
+
+	  m_context = sourceNode;
+	  m_transformer = transformer;
+
+	  // For globals, this value will have to be updated once we 
+	  // have determined how many global variables have been pushed.
+	  m_varStackPos = varStackPos;
+
+	  // For globals, this should zero
+	  m_varStackContext = varStackContext;
+
+	  m_isGlobal = isGlobal;
   }
     
   /**

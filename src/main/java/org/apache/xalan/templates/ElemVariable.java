@@ -49,15 +49,25 @@ import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.SequenceTypeSupport.OccurrenceIndicator;
 import org.apache.xpath.composite.XPathArrayConstructor;
+import org.apache.xpath.composite.XPathForExpr;
+import org.apache.xpath.composite.XPathIfExpr;
+import org.apache.xpath.composite.XPathMapConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathTextAndNodeExpr;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.functions.FunctionMultiArgs;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
@@ -76,9 +86,12 @@ import org.apache.xpath.operations.ArrowOp;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
+import org.apache.xpath.operations.UnaryOperation;
+import org.apache.xpath.operations.Variable;
 import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.NodeList;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
@@ -380,7 +393,6 @@ public class ElemVariable extends ElemTemplateElement
    */
   public ElemVariable(ElemVariable param) throws TransformerException
   {
-
     m_selectPattern = param.m_selectPattern;
     m_qname = param.m_qname;   
     m_isTopLevel = param.m_isTopLevel;
@@ -449,6 +461,175 @@ public class ElemVariable extends ElemTemplateElement
     SourceLocator srcLocator = xctxt.getSAXLocator();
     
     Expression selectExpression = null;
+    
+    if (m_isTopLevel) {
+		if (this instanceof ElemParam) {
+			if (((ElemParam)this).getRequired() && ((ElemParam)this).getRequiredDeclared()) {
+				if ((m_selectPattern == null) && (getFirstChildElem() == null)) {
+					throw new TransformerException("XTDE0050 : An XSL stylesheet required top level parameter '" + m_qname.toString() 
+					                                                                                            + "''s value is not provided.", srcLocator);
+									
+				}
+			}
+		} 
+		else if (m_selectPattern != null) {
+			/**
+			 * This is XSL stylesheet top level xsl:variable declaration
+			 * having "select" attribute. We need to check for variable
+			 * cyclic dependencies.
+			 * 
+			 * This has been done to solve, various W3C XSLT 3.0 test cases,
+			 * within following code.
+			 */
+			
+			List <QName> qNameList = new ArrayList<QName>();
+			List<QName> list1 = XslTransformData.m_xsl_variable_qname_list;
+			int size1 = list1.size();
+			for (int idx = 0; idx < size1; idx++) {
+				qNameList.add(list1.get(idx));
+			}
+									
+			String xpathPatternStr1 = m_selectPattern.getPatternString();
+			if (xpathPatternStr1 != null) {
+				List<XMLNSDecl> prefixTable = (List<XMLNSDecl>)this.getPrefixTable();
+				if (prefixTable != null) {
+				   xpathPatternStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathPatternStr1, prefixTable);					
+				}
+				
+				XPath xpathSelect1 = new XPath(xpathPatternStr1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+				
+				if (m_vars != null) {
+					xpathSelect1.fixupVariables(m_vars, m_globals_size);
+				}
+
+				Expression expr1 = xpathSelect1.getExpression();
+				if (expr1 instanceof XPathInlineFunction) {
+					XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)expr1;
+					String xpathInlineFuncBody1 = xpathInlineFunc.getFuncBodyXPathExprStr();
+					if (prefixTable != null) {
+						xpathInlineFuncBody1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathInlineFuncBody1, prefixTable);					
+					}
+
+					xpathSelect1 = new XPath(xpathInlineFuncBody1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+					if (m_vars != null) {
+						xpathSelect1.fixupVariables(m_vars, m_globals_size);
+					}
+					
+					expr1 = xpathSelect1.getExpression();
+					if (expr1 instanceof XPathIfExpr) {
+						XPathIfExpr xpathIfExpr = (XPathIfExpr)expr1;
+						String xpathIfCondStr = xpathIfExpr.getIfConditionXPathStr();
+						String xpathIfThenStr = xpathIfExpr.getThenExprXPathStr();
+						String xpathIfElseStr = xpathIfExpr.getElseExprXPathStr();
+						XPath xpathSelect_a = new XPath(xpathIfCondStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+						XPath xpathSelect_b = new XPath(xpathIfThenStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+						XPath xpathSelect_c = new XPath(xpathIfElseStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+						Expression a1 = xpathSelect_a.getExpression();
+						Expression a2 = xpathSelect_b.getExpression();
+						Expression a3 = xpathSelect_c.getExpression();
+						if (a1 instanceof XPathDynamicFunctionCall) {
+							XPathDynamicFunctionCall dfc1 = (XPathDynamicFunctionCall)a1;
+							String dfcName1 = dfc1.getFuncRefVarName();
+							XslTransformData.m_xsl_variable_qname_list.add(new QName(dfcName1));
+							List<String> funcArgList1 = dfc1.getArgList();
+							int funcArgListSize = funcArgList1.size();
+							for (int idx = 0; idx < funcArgListSize; idx++) {
+								String argStr1 = funcArgList1.get(idx);
+								XslTransformData.m_xsl_variable_qname_list.add(new QName(argStr1));
+							}
+						}
+
+						if (a2 instanceof XPathDynamicFunctionCall) {
+							XPathDynamicFunctionCall dfc2 = (XPathDynamicFunctionCall)a2;
+							String dfcName2 = dfc2.getFuncRefVarName();
+							XslTransformData.m_xsl_variable_qname_list.add(new QName(dfcName2));
+							List<String> funcArgList2 = dfc2.getArgList();
+							int funcArgListSize = funcArgList2.size();
+							for (int idx = 0; idx < funcArgListSize; idx++) {
+								String argStr1 = funcArgList2.get(idx);
+								XslTransformData.m_xsl_variable_qname_list.add(new QName(argStr1));
+							}
+						}
+
+						if (a3 instanceof XPathDynamicFunctionCall) {
+							XPathDynamicFunctionCall dfc3 = (XPathDynamicFunctionCall)a3;
+							String dfcName3 = dfc3.getFuncRefVarName();
+							XslTransformData.m_xsl_variable_qname_list.add(new QName(dfcName3));
+							List<String> funcArgList3 = dfc3.getArgList();
+							int funcArgListSize = funcArgList3.size();
+							for (int idx = 0; idx < funcArgListSize; idx++) {
+								String argStr1 = funcArgList3.get(idx);
+								XslTransformData.m_xsl_variable_qname_list.add(new QName(argStr1));
+							}
+						}
+
+						List <QName> qNameList2 = new ArrayList<QName>();
+						List<QName> list3 = XslTransformData.m_xsl_variable_qname_list;
+						int size3 = list3.size();
+						for (int idx = 0; idx < size3; idx++) {
+							qNameList2.add(list3.get(idx));
+						}
+
+						for (int idx = 0; idx < qNameList.size(); idx++) {
+							QName qName1 = qNameList.get(idx);
+							qNameList2.remove(qName1);
+						}
+
+						if (qNameList2.contains(m_qname)) {
+							throw new TransformerException("XPST0008 : An XSL stylesheet top level variable '" + m_qname.toString() 
+																											   + "' cannot be resolved to a value due "
+																											   + "to cyclic variable dependency.", srcLocator);
+						}
+					}
+					else {
+						List <QName> qNameList2 = new ArrayList<QName>();
+						List<QName> list3 = XslTransformData.m_xsl_variable_qname_list;
+						int size3 = list3.size();
+						for (int idx = 0; idx < size3; idx++) {
+							qNameList2.add(list3.get(idx));
+						}
+
+						for (int idx = 0; idx < qNameList.size(); idx++) {
+							QName qName1 = qNameList.get(idx);
+							qNameList2.remove(qName1);
+						}
+
+						if (qNameList2.contains(m_qname)) {
+							throw new TransformerException("XPST0008 : An XSL stylesheet top level variable '" + m_qname.toString() 
+																											   + "' cannot be resolved to a value due "
+																											   + "to cyclic variable dependency.", srcLocator);
+						}
+					}
+				}			
+				else if ((expr1 instanceof Function) || (expr1 instanceof UnaryOperation)) {
+					// no op
+				}
+				else if ((expr1 instanceof XString) || (expr1 instanceof XBoolean) || (expr1 instanceof XBooleanStatic) 
+						                                                           || (expr1 instanceof XNumber) || (expr1 instanceof XSAnyAtomicType)) {
+					// no op
+				}
+				else if ((expr1 instanceof Variable) || (expr1 instanceof XPathMapConstructor)) {
+					// no op
+				}
+				else if ((expr1 instanceof LocPathIterator) || (expr1 instanceof XPathSequenceConstructor) 
+						                                                           || (expr1 instanceof ResultSequence) || (expr1 instanceof Range)) {
+					// no op
+				}
+				else if (expr1 instanceof Operation) {
+					// no op
+				}
+				else if (expr1 instanceof XPathForExpr) {
+					// no op
+				}
+				else if (qNameList.contains(m_qname)) {
+					throw new TransformerException("XPST0008 : An XSL stylesheet top level variable '" + m_qname.toString() 
+																									   + "' cannot be resolved to a value due "
+																									   + "to cyclic variable dependency.", srcLocator);
+				}
+		    }
+		}
+    }
     
     if ((m_selectPattern != null) && (m_xpath_default_namespace != null)) {    		
        m_selectPattern = new XPath(m_selectPattern.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1182,7 +1363,7 @@ public class ElemVariable extends ElemTemplateElement
     
   }
 
-  /**
+ /**
    * This function is called after everything else has been
    * recomposed, and allows the template to set remaining
    * values that may be based on some other property that
@@ -2085,5 +2266,97 @@ public class ElemVariable extends ElemTemplateElement
 		
 		return result;
 	}
+  
+    private boolean xpathExpressionAllowable(Expression xpathExpr, QName inspectableVarName) {
+
+    	boolean result = true;
+
+    	if (xpathExpr != null) {
+    		if (xpathExpr instanceof Operation) {
+    			Operation opn1 = (Operation)xpathExpr;
+    			Expression lOperand = opn1.getLeftOperand();
+    			Expression rOperand = opn1.getRightOperand();
+
+    			if (lOperand instanceof Variable) {
+    				Variable var1 = (Variable)lOperand;
+    				if ((var1.getQName()).equals(inspectableVarName)) {
+    					result = true;    			       			   
+    				}
+    			}
+    			else if (((lOperand instanceof XSAnyAtomicType) || (lOperand instanceof XNumber) 
+                                                                || (lOperand instanceof XString) 
+                                                                || (lOperand instanceof XBooleanStatic) 
+                                                                || (lOperand instanceof XBoolean))) {
+    				result = false;
+                }    			
+
+    			if (rOperand instanceof Variable) {
+    				Variable var1 = (Variable)rOperand;
+    				if ((var1.getQName()).equals(inspectableVarName)) {
+    					result = true;
+    				}
+    			}
+    			else if (((rOperand instanceof XSAnyAtomicType) || (rOperand instanceof XNumber) 
+									                            || (rOperand instanceof XString) 
+									                            || (rOperand instanceof XBooleanStatic) 
+									                            || (rOperand instanceof XBoolean))) {
+    				result = false;
+                }
+    		}
+    		else if (xpathExpr instanceof FunctionOneArg) {
+    			FunctionOneArg function = (FunctionOneArg)xpathExpr;    			
+    			Expression arg0 = function.getArg0();
+
+    			if (arg0 instanceof Variable) {
+    				Variable var1 = (Variable)arg0;
+    				if ((var1.getQName()).equals(inspectableVarName)) {
+    					result = true;
+    				}
+    			}
+    			else if (((arg0 instanceof XSAnyAtomicType) || (arg0 instanceof XNumber) 
+									    					|| (arg0 instanceof XString) 
+									    					|| (arg0 instanceof XBooleanStatic) 
+									    					|| (arg0 instanceof XBoolean))) {
+    				result = false;
+    			}    			
+    		}
+    		else if (xpathExpr instanceof Function2Args) {
+    			Function2Args function = (Function2Args)xpathExpr;
+    			Expression arg0 = function.getArg0();
+    			Expression arg1 = function.getArg1();
+    			
+    			result = xpathExpressionAllowable(arg0, inspectableVarName);
+    			result = xpathExpressionAllowable(arg1, inspectableVarName);
+    		}
+            else if (xpathExpr instanceof Function3Args) {
+            	Function3Args function = (Function3Args)xpathExpr;
+    			Expression arg0 = function.getArg0();
+    			Expression arg1 = function.getArg1();
+    			Expression arg2 = function.getArg2();
+    			
+    			result = xpathExpressionAllowable(arg0, inspectableVarName);
+    			result = xpathExpressionAllowable(arg1, inspectableVarName);
+    			result = xpathExpressionAllowable(arg2, inspectableVarName);
+    		}
+            else if (xpathExpr instanceof FunctionMultiArgs) {
+            	FunctionMultiArgs function = (FunctionMultiArgs)xpathExpr;
+    			Expression arg0 = function.getArg0();
+    			Expression arg1 = function.getArg1();
+    			Expression arg2 = function.getArg2();
+    			Expression[] exprArray = function.getArgs();
+    			
+    			result = xpathExpressionAllowable(arg0, inspectableVarName);
+    			result = xpathExpressionAllowable(arg1, inspectableVarName);
+    			result = xpathExpressionAllowable(arg2, inspectableVarName);
+    		}
+    		else {
+    			Expression xpathParentExpr = (Expression)(xpathExpr.exprGetParent());
+
+    			result = xpathExpressionAllowable(xpathParentExpr, inspectableVarName);
+    		}
+    	}
+
+    	return result;
+    }
 
 }

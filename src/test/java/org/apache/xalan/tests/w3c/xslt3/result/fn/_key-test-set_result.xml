@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-13T11:49:51Z" fail="35" name="key" pass="61" run="96" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-04T16:23:18Z" fail="36" name="key" pass="60" run="96" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="key-001"/>
    <testResult status="fail" testName="key-002">
       <outResult>
@@ -14,7 +14,7 @@
    <testResult status="fail" testName="key-006">
       <outResult>
          <errTrace>XPST0003 : An XPath expression generate-id() = generate-id(./text()[1]) has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="key-007"/>
@@ -38,13 +38,13 @@
    <testResult status="fail" testName="key-025">
       <outResult>
          <errTrace>XPST0003 : An XPath expression contains($accumulated,concat('+',generate-id(./text()),'+')) has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="key-026">
       <outResult>
          <errTrace>XPST0003 : An XPath expression contains($accumulated,concat('+',generate-id(./text()),'+')) has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="key-027"/>
@@ -65,7 +65,7 @@
    <testResult status="fail" testName="key-042">
       <outResult>
          <errTrace>XPST0003 : An XPath expression contains($accumulated,concat('+',generate-id(./text()),'+')) has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="key-043"/>
@@ -74,7 +74,7 @@
          <errTrace>A location step was expected following the '/' or '//' token.</errTrace>
          <errTrace>A relative location path was expected following the '/' or '//' token.</errTrace>
          <errTrace>XPST0003 : An XPath expression generate-id((document('key151a.xml')//text())[1]) != generate-id((document(a)//text())[1]) has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="key-045"/>
@@ -103,7 +103,12 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="pass" testName="key-063"/>
    <testResult status="pass" testName="key-064"/>
    <testResult status="pass" testName="key-065"/>
-   <testResult status="pass" testName="key-066"/>
+   <testResult status="fail" testName="key-066">
+      <outResult>
+         <errTrace>Variable data is directly or indirectly referencing itself!</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Variable $data accessed before it is bound!</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="key-067"/>
    <testResult status="fail" testName="key-068"/>
    <testResult status="fail" testName="key-069"/>

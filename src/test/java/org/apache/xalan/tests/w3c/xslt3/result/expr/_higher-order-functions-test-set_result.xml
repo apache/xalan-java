@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:12Z" fail="36" name="higher-order-functions" pass="33" run="69" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-04T16:23:02Z" fail="35" name="higher-order-functions" pass="34" run="69" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -132,9 +132,7 @@
    <testResult status="fail" testName="higher-order-functions-067"/>
    <testResult status="pass" testName="higher-order-functions-068"/>
    <testResult status="fail" testName="higher-order-functions-069"/>
-   <testResult status="fail" testName="higher-order-functions-070">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;2&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="higher-order-functions-070"/>
    <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-071"/>
    <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-072"/>
    <testResult status="fail" testName="higher-order-functions-073">

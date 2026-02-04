@@ -4598,6 +4598,9 @@ public class XPathParser
     {
       nextToken();  // consume '$'
       appendOp(2, OpCodes.OP_VARIABLE);
+      
+      (XslTransformData.m_xsl_variable_qname_list).add(new org.apache.xml.utils.QName(m_token));
+      
       QName();
       
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:28Z" fail="18" name="param" pass="12" run="30" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-04T16:23:29Z" fail="17" name="param" pass="13" run="30" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="param-0101"/>
    <testResult status="pass" testName="param-0102"/>
    <testResult status="pass" testName="param-0103"/>
@@ -14,10 +14,7 @@
    <testResult status="fail" testName="param-0111">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt; par1= defaultValue&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="param-0112">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
-	par1= &lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="param-0112"/>
    <testResult status="fail" testName="param-0113">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt; Parameter Value: test param&lt;/out&gt;</outResult>
    </testResult>

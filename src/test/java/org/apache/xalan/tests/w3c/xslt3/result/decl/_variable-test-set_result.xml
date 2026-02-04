@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:04Z" fail="18" name="variable" pass="85" run="103" skipped="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-04T16:22:50Z" fail="16" name="variable" pass="87" run="103" skipped="5" statusUnknown="0">
    <testResult status="pass" testName="variable-0101"/>
    <testResult status="pass" testName="variable-0102"/>
    <testResult status="pass" testName="variable-0103"/>
@@ -10,25 +10,19 @@
    <testResult status="pass" testName="variable-0109"/>
    <testResult status="pass" testName="variable-0110"/>
    <testResult status="pass" testName="variable-0111"/>
-   <testResult status="fail" testName="variable-0112">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out result=""/&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="variable-0112"/>
    <testResult status="pass" testName="variable-0113"/>
    <testResult status="pass" testName="variable-0114"/>
    <testResult status="pass" testName="variable-0115"/>
    <testResult status="pass" testName="variable-0116"/>
    <testResult status="pass" testName="variable-0117"/>
-   <testResult status="fail" testName="variable-0118">
-      <outResult>*** Error not detected! ***&#13;
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" att="2"/&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="variable-0118"/>
    <testResult status="fail" testName="variable-0119">
       <outResult>
          <errTrace>XTSE0740 : An XSL with-param's name attribute doesn't have a URI reference</errTrace>
          <errTrace>XTSE0740 : An XSL param's name attribute doesn't have a URI reference</errTrace>
          <errTrace>XTSE0740 : An XSL with-param's name attribute doesn't have a URI reference</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>java.lang.IllegalArgumentException: Argument 'localName' is null</errTrace>
       </outResult>
    </testResult>
    <testResult reason="Xalan configured" status="skipped" testName="variable-0120"/>
