@@ -30,6 +30,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.CountersTable;
 import org.apache.xalan.transformer.DecimalToRoman;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.NodeVector;
@@ -960,8 +961,7 @@ public class ElemNumber extends ElemTemplateElement
     XPathContext xctxt = transformer.getXPathContext();
     CountersTable ctable = transformer.getCountersTable();
 
-    if (null != m_valueExpr)
-    {
+    if (m_valueExpr != null) {
       XObject countObj = m_valueExpr.execute(xctxt, sourceNode, this);
       
       if (countObj instanceof ResultSequence) {
@@ -973,12 +973,19 @@ public class ElemNumber extends ElemTemplateElement
     	  }
       }
       
-      //According to Errata E24
+      // According to XSL errata E24
       
       double num1 = 0.0;
       
       try {
-         num1 = countObj.num();
+    	 String str1 = XslTransformEvaluationHelper.getStrVal(countObj); 
+    	 try {
+            num1 = (Double.valueOf(str1)).doubleValue();
+    	 }
+    	 catch (NumberFormatException ex) {
+    		throw new TransformerException("NumberFormatException"); 
+    	 }
+         
          if (num1 == 0.0) {
         	 long count = (long)num1;
         	 list = new long[1];

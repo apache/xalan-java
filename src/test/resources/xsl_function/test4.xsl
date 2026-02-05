@@ -10,6 +10,7 @@
     <!-- An XSLT stylesheet test case, to test a stylesheet
          function defined with an XSL element xsl:function.
     -->
+    
     <xsl:output method="xml" indent="yes"/>
     
     <xsl:template match="/">

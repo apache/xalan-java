@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-01-28T01:36:58Z" desc="W3C XSLT 3.0 test suite results" fail="1336" pass="3324" run="4666" skipped="598" success="71.24%" xslt_processor="Apache Xalan XSLT 3.0 development code">
+<testResult dateTime="2026-02-05T17:53:09Z" desc="W3C XSLT 3.0 test suite results" fail="1333" pass="3327" run="4666" skipped="598" success="71.3%" xslt_processor="Apache Xalan XSLT 3.0 development code">
   <attr>
     <as fail="29" pass="82" run="111" skipped="93" success="73.87%"/>
     <avt fail="1" pass="33" run="34" skipped="1" success="97.06%"/>
@@ -15,17 +15,17 @@
     <attribute-set fail="7" pass="42" run="49" skipped="1" success="85.71%"/>
     <character-map fail="14" pass="13" run="28" skipped="1" success="46.43%"/>
     <function fail="28" pass="59" run="87" skipped="23" success="67.82%"/>
-    <param fail="18" pass="12" run="30" skipped="1" success="40.0%"/>
+    <param fail="17" pass="13" run="30" skipped="1" success="43.33%"/>
     <strip-space fail="14" pass="13" run="27" skipped="3" success="48.15%"/>
     <template fail="0" pass="6" run="6" skipped="0" success="100.0%"/>
-    <variable fail="18" pass="85" run="103" skipped="5" success="82.52%"/>
+    <variable fail="16" pass="87" run="103" skipped="5" success="84.47%"/>
   </decl>
   <expr>
     <axes fail="10" pass="190" run="200" skipped="2" success="95.0%"/>
     <castable fail="3" pass="6" run="9" skipped="0" success="66.67%"/>
     <expression fail="14" pass="85" run="100" skipped="5" success="85.0%"/>
     <for fail="1" pass="2" run="3" skipped="1" success="66.67%"/>
-    <higher-order-functions fail="36" pass="33" run="69" skipped="7" success="47.83%"/>
+    <higher-order-functions fail="35" pass="34" run="69" skipped="7" success="49.28%"/>
     <math fail="25" pass="128" run="153" skipped="8" success="83.66%"/>
     <nodetest fail="0" pass="3" run="3" skipped="35" success="100.0%"/>
     <path fail="3" pass="7" run="10" skipped="0" success="70.0%"/>
@@ -35,7 +35,7 @@
     <deep-equal fail="0" pass="2" run="2" skipped="0" success="100.0%"/>
     <format-number fail="32" pass="32" run="64" skipped="10" success="50.0%"/>
     <json-to-xml fail="7" pass="18" run="25" skipped="35" success="72.0%"/>
-    <key fail="35" pass="61" run="96" skipped="3" success="63.54%"/>
+    <key fail="36" pass="60" run="96" skipped="3" success="62.5%"/>
     <position fail="18" pass="192" run="210" skipped="1" success="91.43%"/>
     <root fail="3" pass="7" run="10" skipped="0" success="70.0%"/>
     <xml-to-json fail="35" pass="52" run="88" skipped="65" success="59.09%"/>
