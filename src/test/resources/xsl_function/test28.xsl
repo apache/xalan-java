@@ -2,18 +2,25 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:str="http://example.com/namespace"               
-               exclude-result-prefixes="#all"
+               exclude-result-prefixes="xs str"
 			   version="3.0">
 			   
    <!-- Author: mukulg@apache.org -->			   
 			   
-   <!-- An XSL stylesheet example, to test stylesheet function. 
-        Ref : XSLT 3.0 specification, section 10.3.9 Examples of Stylesheet Functions. -->			   
+   <!-- An XSL 3 stylesheet example, to test stylesheet function. 
+        Ref : XSLT 3.0 specification, section 10.3.9 Examples of 
+        Stylesheet Functions. -->			   
 			   
-   <xsl:output method="xml" indent="yes"/>			   
+   <xsl:output method="xml" indent="yes"/>
+   
+   <xsl:template match="/">
+      <result>
+        <xsl:value-of select="str:reverse('dog bites man')"/>
+      </result>
+   </xsl:template>			   
 
-   <!-- An XSL stylesheet recursive function named str:reverse 
-        that reverses the words in a supplied sentence. -->
+   <!-- An XSL stylesheet function that, reverses the words 
+        from a supplied English sentence. -->
    <xsl:function name="str:reverse" as="xs:string">
       <xsl:param name="sentence" as="xs:string"/>
       <xsl:sequence select="if (contains($sentence, ' '))
@@ -22,12 +29,6 @@
                                     substring-before($sentence, ' '))
                                   else $sentence"/>
    </xsl:function>
-
-   <xsl:template match="/">
-      <output>
-        <xsl:value-of select="str:reverse('DOG BITES MAN')"/>
-      </output>
-   </xsl:template>
    
    <!--
       * Licensed to the Apache Software Foundation (ASF) under one

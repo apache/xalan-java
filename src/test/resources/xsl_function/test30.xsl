@@ -2,31 +2,32 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:num="http://example.com/namespace"               
-               exclude-result-prefixes="#all"
+               exclude-result-prefixes="xs num"
 			   version="3.0">
 			   
    <!-- Author: mukulg@apache.org -->			   
 			   
-   <!-- An XSL stylesheet example, to test stylesheet function. 
-        Ref : XSLT 3.0 specification, section 10.3.9 Examples of Stylesheet Functions. -->			   
+   <!-- An XSL 3 stylesheet example, to test stylesheet function. 
+        Ref : XSLT 3.0 specification, section 10.3.9 Examples of 
+        Stylesheet Functions. -->		   
 			   
-   <xsl:output method="xml" indent="yes"/>			   
+   <xsl:output method="xml" indent="yes"/>
+   
+   <xsl:template match="/">
+      <result>
+        <xsl:iterate select="1 to 10">
+		   <value num="{.}"><xsl:value-of select="num:roman(.)"/></value>
+		</xsl:iterate>
+      </result>
+   </xsl:template>			   
 
    <!-- An XSL stylesheet function, that transforms a supplied 
         decimal integer value to a numeric value with roman 
-		alphabets. -->
+		numerals. -->
    <xsl:function name="num:roman" as="xs:string">
       <xsl:param name="value" as="xs:integer"/>
       <xsl:number value="$value" format="i"/>
    </xsl:function>
-
-   <xsl:template match="/">
-      <output>
-        <xsl:iterate select="1 to 10">
-		   <value num="{.}"><xsl:value-of select="num:roman(.)"/></value>
-		</xsl:iterate>
-      </output>
-   </xsl:template>
    
    <!--
       * Licensed to the Apache Software Foundation (ASF) under one

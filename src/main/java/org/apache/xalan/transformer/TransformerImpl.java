@@ -128,9 +128,8 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.SharedLexerState;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
@@ -2513,7 +2512,7 @@ public class TransformerImpl extends Transformer
                                 : xslInstruction.getXSLToken()
                                   == Constants.ELEMNAME_APPLY_IMPORTS);        
 
-    if (null == template || isApplyImports)
+    if ((template == null) || isApplyImports)
     {
       int maxImportLevel, endImportLevel=0;
 
@@ -2560,11 +2559,21 @@ public class TransformerImpl extends Transformer
         	 
              template = m_stylesheetRoot.getTemplateComposed(initTemplateQName);
              
-             if (template != null) {
+             if (template != null) {            	             	             	 
             	 m_xcontext.pushNamespaceContext(template);
             	 pushElemTemplateElement(template);
                  m_xcontext.pushCurrentNode(child);
                  pushPairCurrentMatched(template, child);
+                                                   
+                 Stylesheet xslStylesheet = (Stylesheet)(template.getParentElem());
+                 
+                 if (xslStylesheet.isXslPackage()) {
+                	 // An xsl:template element is child of xsl:package element
+                	 String xslTemplateVisibility = template.getVisibility();
+                	 if (!"public".equals(xslTemplateVisibility)) {
+                		 throw new TransformerException("XTDE0040 : An XSL stylesheet initial template must be 'public'.", template); 
+                	 }
+                 }
                  
                  DTMCursorIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
                  m_xcontext.pushContextNodeList(cnl);

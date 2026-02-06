@@ -701,38 +701,6 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     }
     
     /**
-     * When running W3C XSLT 3.0 test suite, check whether the test case 
-     * is written for xsl:package feature.
-     *  
-     * @param testCaseNode
-     * @return						Boolean value true or false						
-     */
-    protected boolean isXslt3PackageFeatureTestCase(Node testCaseNode) {
-    	
-        boolean result = false;
-        
-        NodeList nodeList = testCaseNode.getChildNodes();
-        int nodeListLength = nodeList.getLength();
-        for (int idx = 0; idx < nodeListLength; idx++) {
-     	  Node node = nodeList.item(idx);
-     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
-     		 Element elemNode = (Element)node;
-     		 String elemName = elemNode.getLocalName();
-     		 if ("test".equals(elemName)) {
-     			 NodeList nodeList1 = elemNode.getElementsByTagName("package");
-     			 if (nodeList1.getLength() > 0) {
-     				 result = true;
-
-     				 break; 
-     			 }
-     		 }
-     	  }
-        }
-        
-        return result;
-    }
-    
-    /**
      * Set XML Schema validation and xsl:evaluate XSL transformation properties, on 
      * Xalan-J's TransformerImpl object. 
      */

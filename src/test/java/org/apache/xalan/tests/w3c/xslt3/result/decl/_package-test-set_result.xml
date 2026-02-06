@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-06T11:40:59Z" fail="2" name="package" pass="1" run="3" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="package-001"/>
+   <testResult status="fail" testName="package-001a">
+      <outResult>
+         <errTrace>XTSE0010 : xsl:package requires attribute: package-version</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-001b">
+      <outResult>
+         <errTrace>XTSE0010 : xsl:package requires attribute: package-version</errTrace>
+      </outResult>
+   </testResult>
+</testrun>

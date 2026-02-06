@@ -359,6 +359,31 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	}
 	
 	/**
+	 * The "name" property.
+	 */
+	private String m_name;
+
+	/**
+	 * Set the "name" property.
+	 *
+	 * @param v Value for the "name" property.
+	 */
+	public void setName(String name)
+	{
+		m_name = name;
+	}
+
+	/**
+	 * Get the "name" property.
+	 *
+	 * @return The value of the "name" property.
+	 */
+	public String getName()
+	{
+		return m_name;
+	}
+	
+	/**
 	 * Class field, that represents the value of "xpath-default-namespace" 
 	 * attribute.
 	 */
@@ -441,6 +466,11 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	 * Whether or not the stylesheet is in "Forward Compatibility Mode".
 	 */
 	private boolean m_isCompatibleMode = false;
+	
+	/**
+	 * The "package-version" property.
+	 */
+	private String m_package_version;
 
 	/**
 	 * Set the "version" property.
@@ -451,6 +481,23 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	{
 		m_Version = v;
 		m_isCompatibleMode = (Double.valueOf(v).doubleValue() > Constants.XSLTVERSUPPORTED);
+	}
+	
+	private boolean m_is_xsl_package = false;
+	
+	/**
+	 * Set the "package-version" property.
+	 *
+	 * @param v Value for the "package-version" property.
+	 */
+	public void setPackageVersion(String v)
+	{
+		m_package_version = v;		
+		m_is_xsl_package = true;
+	}
+	
+	public boolean isXslPackage() {
+		return m_is_xsl_package;
 	}
 
 	/**
@@ -471,6 +518,16 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	public String getVersion()
 	{
 		return m_Version;
+	}
+	
+	/**
+	 * Get the "package-version" property.
+	 *
+	 * @return The value of the "package-version" property.
+	 */
+	public String getPackageVersion()
+	{
+		return m_package_version;
 	}
 
 	/**

@@ -218,16 +218,6 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
        			  
        			  continue; 
      		   }
-    		   else if (isXslt3PackageFeatureTestCase(xslTestCaseNode)) {
-    			   // We skip running XSLT 3.0 xsl:package feature test cases, for now
-    			   Element elemTestResult = testResultDoc.createElement("testResult");
-    			   elemTestResult.setAttribute("testName", testCaseName);
-    			   elemTestResult.setAttribute("status", "skipped");
-    			   elemTestResult.setAttribute("feature", "xsl:package test case");
-    			   elemTestRun.appendChild(elemTestResult);
-
-    			   continue; 
-      		   }
     		   else if (m_skipped_tests_list.contains(testCaseName)) {
     			   /**
     			    * We skip running XSLT 3.0 test cases available within this
@@ -264,6 +254,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     							   if (envName.equals(xslTestCaseEnvObj)) {
     								   xmlDocInpStr = getXMLInputDocStr(elemNode);    							   
     								   NodeList nodeList1 = elemNode.getElementsByTagName("stylesheet");
+    								   if (nodeList1.getLength() == 0) {
+    									   nodeList1 = elemNode.getElementsByTagName("package"); 
+    								   }
+    								   
     								   Element elemNode1 = (Element)(nodeList1.item(0));
     								   if (elemNode1 != null) {
     									   String fileName = elemNode1.getAttribute(FILE_ATTR);
@@ -276,6 +270,9 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     									   NodeList nodeList3 = elem1.getElementsByTagName("test");
     									   Element elem2 = (Element)(nodeList3.item(0));
     									   NodeList nodeList4 = elem2.getElementsByTagName("stylesheet");
+    									   if (nodeList4.getLength() == 0) {
+    										   nodeList4 = elem2.getElementsByTagName("package"); 
+    									   }
 
     									   Element elemNode2 = (Element)(nodeList4.item(0));				   
     									   String fileName = elemNode2.getAttribute(FILE_ATTR);
@@ -308,6 +305,9 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				   NodeList nodeList1 = elem1.getElementsByTagName("test");
     				   Element elem2 = (Element)(nodeList1.item(0));
     				   NodeList nodeList3 = elem2.getElementsByTagName("stylesheet");
+    				   if (nodeList3.getLength() == 0) {
+    					  nodeList3 = elem2.getElementsByTagName("package"); 
+    				   }
 
     				   Element elemNode1 = (Element)(nodeList3.item(0));				   
     				   String fileName = elemNode1.getAttribute(FILE_ATTR);
@@ -328,6 +328,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				   if (ELEM_NODE_NAME_TEST.equals(elemNode.getLocalName())) {
     					   if (xslStylesheetUriStr == null) {
     						   NodeList nodeList3 = elemNode.getElementsByTagName("stylesheet");
+    						   if (nodeList3.getLength() == 0) {
+    							   nodeList3 = elemNode.getElementsByTagName("package");  
+    						   }
+    						   
     						   Element elemNode2 = (Element)(nodeList3.item(0));    					   
     						   String fileName = elemNode2.getAttribute(FILE_ATTR);
     						   URI uri = new URI(m_xslTransformTestSetFilePath);
@@ -542,17 +546,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      			   elemTestRun.appendChild(elemTestResult);
 
      			   continue; 
-      		   }
-     		   else if (isXslt3PackageFeatureTestCase(node)) {
-     			   // We skip running XSLT 3.0 package feature test cases
-     			   Element elemTestResult = testResultDoc.createElement("testResult");
-     			   elemTestResult.setAttribute("testName", testCaseName);
-     			   elemTestResult.setAttribute("status", "skipped");
-     			   elemTestResult.setAttribute("feature", "xsl:package test case");
-     			   elemTestRun.appendChild(elemTestResult);
-
-     			   continue; 
-       		   }
+      		   }     		   
      		   else if (m_skipped_tests_list.contains(testCaseName)) {
      			   /**
      			    * We skip running XSLT 3.0 test cases available within this

@@ -28,6 +28,7 @@ import org.apache.xalan.tests.w3c.xslt3.attr.XslXPathDefaultNamespaceAttrTests;
 import org.apache.xalan.tests.w3c.xslt3.decl.XslAttributeSetTests;
 import org.apache.xalan.tests.w3c.xslt3.decl.XslCharacterMapTests;
 import org.apache.xalan.tests.w3c.xslt3.decl.XslFunctionTests;
+import org.apache.xalan.tests.w3c.xslt3.decl.XslPackageTests;
 import org.apache.xalan.tests.w3c.xslt3.decl.XslParamTests;
 import org.apache.xalan.tests.w3c.xslt3.decl.XslStripSpaceTests;
 import org.apache.xalan.tests.w3c.xslt3.decl.XslTemplateTests;
@@ -96,7 +97,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XslDocumentTests.class, XslXPathDefaultNamespaceAttrTests.class, XslExpandTextAttrTests.class, XslFnJsonToXmlTests.class,
 	            XslBuiltInTemplateTests.class, XslModeTests.class, XslDisableOutputEscapingAttrTests.class, XslTunnelAttrTests.class,
 	            XslParamTests.class, XslStripSpaceTests.class, XslTemplateTests.class, XslFnXmlToJsonTests.class, XslMessageTests.class,
-	            XslConstructNodeTests.class, XslWhitespaceTests.class })
+	            XslConstructNodeTests.class, XslWhitespaceTests.class, XslPackageTests.class })
 public class W3CXSLT3Tests {
 
 }

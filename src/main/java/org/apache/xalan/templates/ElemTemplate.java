@@ -218,6 +218,18 @@ public class ElemTemplate extends ElemTemplateElement
   {
 	  return m_name;
   }
+  
+  protected String m_visibility = null;
+  
+  public void setVisibility(String v)
+  {
+	  m_visibility = v;
+  }
+  
+  public String getVisibility()
+  {
+	  return m_visibility;
+  }
 
   /**
    * Modes allow an element to be processed multiple times,

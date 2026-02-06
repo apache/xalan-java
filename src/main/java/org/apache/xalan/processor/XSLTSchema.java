@@ -225,7 +225,13 @@ public class XSLTSchema extends XSLTElementDef
                                      XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
     
     // Optional
-    // xsl:merge-source
+    // Static error if invalid
+    // xsl:template
+    XSLTAttributeDef visibilityAttrOpt = new XSLTAttributeDef(null, "visibility",
+                                     XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
+    // xsl:merge-source, xsl:package
     XSLTAttributeDef nameAttrOpt = new XSLTAttributeDef(null, "name",
                                      XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.WARNING);
     
@@ -1340,6 +1346,7 @@ public class XSLTSchema extends XSLTElementDef
                                                    priorityAttr,
                                                    modeAttr,
                                                    asAttrOpt,
+                                                   visibilityAttrOpt,
                                                    xpathDefaultNamespaceAttrOpt,
                                                    expandTextAttrOpt,
                                                    spaceAttr }, 
@@ -1417,6 +1424,11 @@ public class XSLTSchema extends XSLTElementDef
                                              XSLTAttributeDef.T_NMTOKEN,
                                              true,false, XSLTAttributeDef.WARNING);
     
+    XSLTAttributeDef packageVersionAttrOpt = new XSLTAttributeDef(null,
+								             "package-version",
+								             XSLTAttributeDef.T_NMTOKEN,
+								             true,false, XSLTAttributeDef.WARNING);
+    
     XSLTAttributeDef xslInputTypeAnnotationsAttrOpt = new XSLTAttributeDef(null, "input-type-annotations",
                                 XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.WARNING);
     
@@ -1436,6 +1448,25 @@ public class XSLTSchema extends XSLTElementDef
                                            spaceAttr }, new ProcessorStylesheetElement(),  /* ContentHandler */
                                          null  /* class object */,
                                          true, -1, false);
+    
+    XSLTElementDef packageElemDef = new XSLTElementDef(this,
+            Constants.S_XSLNAMESPACEURL,
+            "package", null,
+            topLevelElements,
+            new XSLTAttributeDef[]{
+              extensionElementPrefixesAttr,
+              excludeResultPrefixesAttr,
+              idAttr,
+              nameAttrOpt,
+              packageVersionAttrOpt,
+              versionAttrRequired,
+              xpathDefaultNamespaceAttrOpt,
+              expandTextAttrOpt,
+              defaultModeAttr,
+              xslInputTypeAnnotationsAttrOpt,
+              spaceAttr }, new ProcessorPackageElement(),  /* ContentHandler */
+            null  /* class object */,
+            true, -1, false);
 
     importDef.setElements(new XSLTElementDef[]{ stylesheetElemDef,
                                                 resultElement,
@@ -1443,7 +1474,9 @@ public class XSLTSchema extends XSLTElementDef
     includeDef.setElements(new XSLTElementDef[]{ stylesheetElemDef,
                                                  resultElement,
                                                  unknownElement });
+    
     build(null, null, null, new XSLTElementDef[]{ stylesheetElemDef,
+    		                                      packageElemDef,
                                                   whiteSpaceOnly,
                                                   resultElement,
                                                   unknownElement }, null,

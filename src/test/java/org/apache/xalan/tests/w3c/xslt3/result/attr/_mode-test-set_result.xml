@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:27Z" fail="59" name="mode" pass="64" run="123" skipped="46" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-06T11:40:48Z" fail="73" name="mode" pass="68" run="141" skipped="28" statusUnknown="0">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
@@ -366,14 +366,10 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="pass" testName="mode-1505"/>
    <testResult feature="streaming" status="skipped" testName="mode-1506"/>
    <testResult status="fail" testName="mode-1507">
-      <outResult>
-         <errTrace>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="mode-1508">
-      <outResult>
-         <errTrace>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="mode-1509">
       <outResult>
@@ -424,24 +420,73 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="fail" testName="mode-1617"/>
    <testResult status="fail" testName="mode-1618"/>
    <testResult status="fail" testName="mode-1619"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1701"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1701a"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1702"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1702a"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1703"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1704"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1705"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1705a"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1705b"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1706"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1707"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1708"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1709"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1710"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1711"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1712"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1713"/>
-   <testResult feature="xsl:package test case" status="skipped" testName="mode-1714err"/>
+   <testResult status="pass" testName="mode-1701"/>
+   <testResult status="pass" testName="mode-1701a"/>
+   <testResult status="fail" testName="mode-1702">
+      <outResult>
+         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1702a">
+      <outResult>
+         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1703">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1704">
+      <outResult>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: default-mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1705">
+      <outResult>
+         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1705a">
+      <outResult>
+         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1705b">
+      <outResult>
+         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1706">
+      <outResult>
+         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1707">
+      <outResult/>
+   </testResult>
+   <testResult status="pass" testName="mode-1708"/>
+   <testResult status="fail" testName="mode-1709"/>
+   <testResult status="fail" testName="mode-1710">
+      <outResult>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1711"/>
+   <testResult status="fail" testName="mode-1712">
+      <outResult>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="mode-1713"/>
+   <testResult status="fail" testName="mode-1714err">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+  a-text&#13;
+</outResult>
+   </testResult>
    <testResult status="fail" testName="mode-1801">
       <outResult/>
    </testResult>
@@ -450,8 +495,8 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    </testResult>
    <testResult status="fail" testName="mode-1803">
       <outResult>
-         <errTrace>XTSE0010 : xsl:package is not allowed in this position in the stylesheet</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="mode-1901"/>
