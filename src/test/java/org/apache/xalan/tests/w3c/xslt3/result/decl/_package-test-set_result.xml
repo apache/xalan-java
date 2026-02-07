@@ -1,13 +1,165 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-06T11:40:59Z" fail="2" name="package" pass="1" run="3" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-07T07:10:43Z" fail="31" name="package" pass="22" run="53" skipped="19" statusUnknown="0">
    <testResult status="pass" testName="package-001"/>
    <testResult status="fail" testName="package-001a">
-      <outResult>
-         <errTrace>XTSE0010 : xsl:package requires attribute: package-version</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;not-ok/&gt;</outResult>
    </testResult>
    <testResult status="fail" testName="package-001b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;not-ok/&gt;</outResult>
+   </testResult>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001c"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001d"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001e"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001f"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001g"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001h"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001i"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001j"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001j-contra"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001k"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001l"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001m"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001n"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001o"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001p"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001q"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001r"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001s"/>
+   <testResult reason="Xalan configured" status="skipped" testName="package-001t"/>
+   <testResult status="pass" testName="package-002"/>
+   <testResult status="pass" testName="package-003"/>
+   <testResult status="pass" testName="package-004"/>
+   <testResult status="pass" testName="package-005"/>
+   <testResult status="pass" testName="package-006"/>
+   <testResult status="pass" testName="package-007"/>
+   <testResult status="pass" testName="package-008"/>
+   <testResult status="pass" testName="package-009"/>
+   <testResult status="pass" testName="package-010"/>
+   <testResult status="pass" testName="package-011"/>
+   <testResult status="pass" testName="package-012"/>
+   <testResult status="fail" testName="package-013"/>
+   <testResult status="pass" testName="package-014"/>
+   <testResult status="fail" testName="package-015"/>
+   <testResult status="pass" testName="package-016"/>
+   <testResult status="pass" testName="package-016a"/>
+   <testResult status="pass" testName="package-016b"/>
+   <testResult status="pass" testName="package-016c"/>
+   <testResult status="pass" testName="package-017"/>
+   <testResult status="pass" testName="package-018"/>
+   <testResult status="fail" testName="package-019"/>
+   <testResult status="fail" testName="package-020"/>
+   <testResult status="fail" testName="package-021"/>
+   <testResult status="fail" testName="package-021err">
       <outResult>
-         <errTrace>XTSE0010 : xsl:package requires attribute: package-version</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: javax.xml.transform.TransformerException: Instance method call to method function1 requires an Object instance as first argument</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-022"/>
+   <testResult status="fail" testName="package-022err">
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: javax.xml.transform.TransformerException: Instance method call to method function1 requires an Object instance as first argument</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-100">
+      <outResult>
+         <errTrace>java.lang.NoSuchMethodException: For extension function, could not find method java.lang.String.parse([ExpressionContext,] ).</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-101">
+      <outResult>
+         <errTrace>java.lang.NoSuchMethodException: For extension function, could not find method java.lang.String.parse([ExpressionContext,] ).</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-902">
+      <outResult>
+         <errTrace>XTDE0040 : An XSL template named 'main' doesn't exist.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="package-903"/>
+   <testResult status="pass" testName="package-904"/>
+   <testResult status="fail" testName="package-905">
+      <outResult>
+         <errTrace>XTDE0040 : An XSL template named 'main' doesn't exist.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-905a">
+      <outResult>
+         <errTrace>XTDE0040 : An XSL template named 'xsl:initial-template' doesn't exist.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-905b">
+      <outResult>
+         <errTrace>XTDE0040 : An XSL template named 'xsl:initial-template' doesn't exist.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-906">
+      <outResult>
+         <errTrace>"package" attribute is not allowed on the xsl:package element!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-907">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;not-ok/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="package-908">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="package-909">
+      <outResult>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: name</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-910">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+    &#13;
+    Some random input file&#13;
+</outResult>
+   </testResult>
+   <testResult status="pass" testName="package-911"/>
+   <testResult status="fail" testName="package-912">
+      <outResult>
+         <errTrace>Variable $var accessed before it is bound!</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-913">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+    &#13;
+    test&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="package-913a">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+    &#13;
+    test&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="package-913b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
+    &#13;
+    test&#13;
+</outResult>
+   </testResult>
+   <testResult status="fail" testName="package-914a">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="package-914b">
+      <outResult>
+         <errTrace>Illegal value: #unnamed used for QNAME attribute: default-mode</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-914c">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="package-914d">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="package-914e">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="package-200">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: ElemTemplateElement error: test:main
+javax.xml.transform.TransformerException: ElemTemplateElement error: test:main</errTrace>
+         <errTrace>Could not find template named: test:main</errTrace>
       </outResult>
    </testResult>
 </testrun>

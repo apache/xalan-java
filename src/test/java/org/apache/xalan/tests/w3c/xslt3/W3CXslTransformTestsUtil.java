@@ -1286,6 +1286,29 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             		elemTestResult.setAttribute("status", "fail");
             	}
     		}
+            else if (EXPECTED_NODE_KIND_ASSERT_STRING_VALUE.equals(expectedNodeKindName)) {
+            	String strExpectedValue = (nodeExpected.getTextContent()).trim();
+            	String actualResultStr = null;
+            	try {
+            	   Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
+            	   actualResultStr = serializeXmlDomElementNode(xmlInpDoc1);            	   
+            	}
+            	catch(Exception ex) {
+            	   // no op
+            	}
+            	
+            	if (actualResultStr == null) {
+            	   actualResultStr = resultStrWriter.toString();
+            	   actualResultStr = actualResultStr.substring(actualResultStr.indexOf('>') + 1, actualResultStr.length());
+            	   actualResultStr = actualResultStr.trim();
+            	   if (strExpectedValue.equals(actualResultStr)) {
+            		  elemTestResult.setAttribute("status", "pass");  
+            	   }
+            	   else {
+            		  elemTestResult.setAttribute("status", "fail"); 
+            	   }
+            	}
+            }
             else if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
             	handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
                         							                trfFatalErrorList, expErrCodeName, resultStrWriter);

@@ -218,18 +218,6 @@ public class ElemTemplate extends ElemTemplateElement
   {
 	  return m_name;
   }
-  
-  protected String m_visibility = null;
-  
-  public void setVisibility(String v)
-  {
-	  m_visibility = v;
-  }
-  
-  public String getVisibility()
-  {
-	  return m_visibility;
-  }
 
   /**
    * Modes allow an element to be processed multiple times,
@@ -380,6 +368,21 @@ public class ElemTemplate extends ElemTemplateElement
    */
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
+  }
+  
+  /**
+   * An xsl:template element's "visibility" attribute.
+   */
+  private String m_visibility = null;
+  
+  public void setVisibility(String v)
+  {
+	  m_visibility = v;
+  }
+  
+  public String getVisibility()
+  {
+	  return m_visibility;
   }
   
   /**

@@ -226,7 +226,7 @@ public class XSLTSchema extends XSLTElementDef
     
     // Optional
     // Static error if invalid
-    // xsl:template
+    // xsl:template, xsl:mode
     XSLTAttributeDef visibilityAttrOpt = new XSLTAttributeDef(null, "visibility",
                                      XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
@@ -461,6 +461,12 @@ public class XSLTSchema extends XSLTElementDef
     // xsl:try
     XSLTAttributeDef rollbackOutputAttrOpt = new XSLTAttributeDef(null, "rollback-output",
                                           					XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
+    // Default: "yes"
+    // xsl:package
+    XSLTAttributeDef declaredModesAttrOpt = new XSLTAttributeDef(null, "declared-modes",
+				                                            XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
                                                     
     XSLTAttributeDef spaceAttrLiteral =
       new XSLTAttributeDef(Constants.S_XMLNAMESPACEURI, "space", 
@@ -1332,6 +1338,7 @@ public class XSLTSchema extends XSLTElementDef
                                                   onMultipleMatchOpt,
                                                   warningOnNoMatchOpt,
                                                   warningOnMultipleMatchOpt,
+                                                  visibilityAttrOpt,
                                                   spaceAttr }, 
                                           new ProcessorElemMode(), ElemMode.class /* class object */, true, 20, true),
                                   new XSLTElementDef(
@@ -1418,55 +1425,57 @@ public class XSLTSchema extends XSLTElementDef
       new XSLTAttributeDef(null, "extension-element-prefixes",
                            XSLTAttributeDef.T_PREFIX_URLLIST, false, false, XSLTAttributeDef.WARNING);
     XSLTAttributeDef idAttr = new XSLTAttributeDef(null, "id",
-                                XSLTAttributeDef.T_CDATA, false, false, XSLTAttributeDef.WARNING);    
+                                XSLTAttributeDef.T_CDATA, false, false, XSLTAttributeDef.WARNING);
+    
     XSLTAttributeDef versionAttrRequired = new XSLTAttributeDef(null,
                                              "version",
                                              XSLTAttributeDef.T_NMTOKEN,
-                                             true,false, XSLTAttributeDef.WARNING);
+                                             true, false, XSLTAttributeDef.WARNING);
     
     XSLTAttributeDef packageVersionAttrOpt = new XSLTAttributeDef(null,
 								             "package-version",
 								             XSLTAttributeDef.T_NMTOKEN,
-								             true,false, XSLTAttributeDef.WARNING);
+								             false, false, XSLTAttributeDef.WARNING);
     
     XSLTAttributeDef xslInputTypeAnnotationsAttrOpt = new XSLTAttributeDef(null, "input-type-annotations",
                                 XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.WARNING);
     
     XSLTElementDef stylesheetElemDef = new XSLTElementDef(this,
-                                         Constants.S_XSLNAMESPACEURL,
-                                         "stylesheet", "transform",
-                                         topLevelElements,
-                                         new XSLTAttributeDef[]{
-                                           extensionElementPrefixesAttr,
-                                           excludeResultPrefixesAttr,
-                                           idAttr,
-                                           versionAttrRequired,
-                                           xpathDefaultNamespaceAttrOpt,
-                                           expandTextAttrOpt,
-                                           defaultModeAttr,
-                                           xslInputTypeAnnotationsAttrOpt,
-                                           spaceAttr }, new ProcessorStylesheetElement(),  /* ContentHandler */
-                                         null  /* class object */,
-                                         true, -1, false);
+											    		Constants.S_XSLNAMESPACEURL,
+											    		"stylesheet", "transform",
+											    		topLevelElements,
+											    		new XSLTAttributeDef[]{
+											    				extensionElementPrefixesAttr,
+											    				excludeResultPrefixesAttr,
+											    				idAttr,
+											    				versionAttrRequired,
+											    				xpathDefaultNamespaceAttrOpt,
+											    				expandTextAttrOpt,
+											    				defaultModeAttr,
+											    				xslInputTypeAnnotationsAttrOpt,
+											    				spaceAttr }, new ProcessorStylesheetElement(),  /* ContentHandler */
+											    		null  /* class object */,
+											    		true, -1, false);
     
     XSLTElementDef packageElemDef = new XSLTElementDef(this,
-            Constants.S_XSLNAMESPACEURL,
-            "package", null,
-            topLevelElements,
-            new XSLTAttributeDef[]{
-              extensionElementPrefixesAttr,
-              excludeResultPrefixesAttr,
-              idAttr,
-              nameAttrOpt,
-              packageVersionAttrOpt,
-              versionAttrRequired,
-              xpathDefaultNamespaceAttrOpt,
-              expandTextAttrOpt,
-              defaultModeAttr,
-              xslInputTypeAnnotationsAttrOpt,
-              spaceAttr }, new ProcessorPackageElement(),  /* ContentHandler */
-            null  /* class object */,
-            true, -1, false);
+											    		Constants.S_XSLNAMESPACEURL,
+											    		"package", null,
+											    		topLevelElements,
+											    		new XSLTAttributeDef[]{
+											    				extensionElementPrefixesAttr,
+											    				excludeResultPrefixesAttr,
+											    				idAttr,
+											    				nameAttrOpt,
+											    				packageVersionAttrOpt,
+											    				versionAttrRequired,
+											    				xpathDefaultNamespaceAttrOpt,
+											    				expandTextAttrOpt,
+											    				defaultModeAttr,
+											    				xslInputTypeAnnotationsAttrOpt,
+											    				declaredModesAttrOpt,
+											    				spaceAttr }, new ProcessorPackageElement(),  /* ContentHandler */
+											    		null  /* class object */,
+											    		true, -1, false);
 
     importDef.setElements(new XSLTElementDef[]{ stylesheetElemDef,
                                                 resultElement,

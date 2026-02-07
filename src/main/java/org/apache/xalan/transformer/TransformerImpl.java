@@ -2564,15 +2564,23 @@ public class TransformerImpl extends Transformer
             	 pushElemTemplateElement(template);
                  m_xcontext.pushCurrentNode(child);
                  pushPairCurrentMatched(template, child);
-                                                   
-                 Stylesheet xslStylesheet = (Stylesheet)(template.getParentElem());
                  
-                 if (xslStylesheet.isXslPackage()) {
-                	 // An xsl:template element is child of xsl:package element
-                	 String xslTemplateVisibility = template.getVisibility();
-                	 if (!"public".equals(xslTemplateVisibility)) {
-                		 throw new TransformerException("XTDE0040 : An XSL stylesheet initial template must be 'public'.", template); 
-                	 }
+                 String xslTemplateVisibility = template.getVisibility();                 
+                 if (xslTemplateVisibility != null) {
+                	if (!("public".equals(xslTemplateVisibility) || "private".equals(xslTemplateVisibility) 
+                			                                                        || "final".equals(xslTemplateVisibility) 
+                			                                                        || "abstract".equals(xslTemplateVisibility))) {                	                   	   
+                	   throw new TransformerException("XTSE0020 : An XSL stylesheet template attribute \"visibility\"'s value "
+																				                                + "is not one of, 'public', "
+																				                                + "'private', 'final', 'abstract'.", template); 
+                	}
+                 }
+                 else {
+                	 xslTemplateVisibility = "public"; 
+                 }
+                 
+                 if (!"public".equals(xslTemplateVisibility)) {
+                	 throw new TransformerException("XTDE0040 : An XSL stylesheet initial template attribute \"visibility\"'s value is not 'public'.", template); 
                  }
                  
                  DTMCursorIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());

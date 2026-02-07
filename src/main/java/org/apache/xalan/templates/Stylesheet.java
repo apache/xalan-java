@@ -326,11 +326,6 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 		}
 
 		return false;
-
-		/*  if (prefix.length() == 0)
-      prefix = Constants.ATTRVAL_DEFAULT_PREFIX;
-
-    return m_ExcludeResultPrefixs.contains(prefix); */
 	}
 
 	/**
@@ -483,8 +478,6 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 		m_isCompatibleMode = (Double.valueOf(v).doubleValue() > Constants.XSLTVERSUPPORTED);
 	}
 	
-	private boolean m_is_xsl_package = false;
-	
 	/**
 	 * Set the "package-version" property.
 	 *
@@ -493,11 +486,16 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	public void setPackageVersion(String v)
 	{
 		m_package_version = v;		
-		m_is_xsl_package = true;
 	}
 	
-	public boolean isXslPackage() {
-		return m_is_xsl_package;
+	private boolean m_declared_modes = true;
+
+	public void setDeclaredModes(boolean declaredModes) {
+		m_declared_modes = declaredModes; 
+	}
+
+	public boolean getDeclaredModes() {
+		return m_declared_modes;
 	}
 
 	/**
