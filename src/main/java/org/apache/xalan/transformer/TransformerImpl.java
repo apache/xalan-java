@@ -64,6 +64,7 @@ import org.apache.xalan.templates.ElemCatch;
 import org.apache.xalan.templates.ElemCharacterMap;
 import org.apache.xalan.templates.ElemChoose;
 import org.apache.xalan.templates.ElemComment;
+import org.apache.xalan.templates.ElemContextItem;
 import org.apache.xalan.templates.ElemCopy;
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemElement;
@@ -75,11 +76,13 @@ import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemMatchingSubstring;
 import org.apache.xalan.templates.ElemMessage;
+import org.apache.xalan.templates.ElemMode;
 import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemOutputCharacter;
 import org.apache.xalan.templates.ElemPI;
+import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemPerformSort;
 import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemSort;
@@ -915,11 +918,11 @@ public class TransformerImpl extends Transformer
     		  
     		  this.transformNode(dtm.getDocument());
     	  }
-    	  else if (m_init_template_name != null) {
+    	  else if ((m_init_template_name != null) || (m_init_mode_name != null)) {
     		  /**
-    		   * An XSL stylesheet initial template name is available,
-    		   * but context item is not available. An XSL transformation
-    		   * will be attempted with an absent focus.
+    		   * An XSL stylesheet 'initial template' or 'mode' name is 
+    		   * available, but context item is not available. An XSL 
+    		   * transformation will be attempted with an absent focus.
     		   */
     		  this.transformNode(DTM.NULL);
     	  }
@@ -2564,24 +2567,15 @@ public class TransformerImpl extends Transformer
             	 pushElemTemplateElement(template);
                  m_xcontext.pushCurrentNode(child);
                  pushPairCurrentMatched(template, child);
-                 
-                 String xslTemplateVisibility = template.getVisibility();                 
-                 if (xslTemplateVisibility != null) {
-                	if (!("public".equals(xslTemplateVisibility) || "private".equals(xslTemplateVisibility) 
-                			                                                        || "final".equals(xslTemplateVisibility) 
-                			                                                        || "abstract".equals(xslTemplateVisibility))) {                	                   	   
-                	   throw new TransformerException("XTSE0020 : An XSL stylesheet template attribute \"visibility\"'s value "
-																				                                + "is not one of, 'public', "
-																				                                + "'private', 'final', 'abstract'.", template); 
-                	}
-                 }
-                 else {
-                	 xslTemplateVisibility = "public"; 
-                 }
-                 
-                 if (!"public".equals(xslTemplateVisibility)) {
-                	 throw new TransformerException("XTDE0040 : An XSL stylesheet initial template attribute \"visibility\"'s value is not 'public'.", template); 
-                 }
+                                                                  	                	
+                 if (((Stylesheet)m_stylesheetRoot).isXslPackage()) {
+                	 String xslTemplateVisibility = template.getVisibility();
+                	 if (!Constants.ATTRVAL_PUBLIC.equals(xslTemplateVisibility)) {
+                		 throw new TransformerException("XTDE0040 : An XSL stylesheet initial template attribute \"visibility\"'s "
+                		 		                                                                             + "value is not 'public'. This must be "
+                		 		                                                                             + "true for XSL template declarations within XSL 'package' element.", template); 
+                	 }
+                 }                                                  
                  
                  DTMCursorIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
                  m_xcontext.pushContextNodeList(cnl);
@@ -2614,7 +2608,16 @@ public class TransformerImpl extends Transformer
           else {
         	  QName mode = null;        	  
         	  if (m_init_mode_name != null) {
-        		 mode = new QName(m_init_mode_name);        		         		 
+        		 mode = new QName(m_init_mode_name);
+        		 Stylesheet stylesheet = (Stylesheet)m_stylesheetRoot;
+        		 if (stylesheet.isXslPackage()) {
+        		    ElemMode elemMode = stylesheet.getElemMode(mode);
+        		    String modeVisibility = elemMode.getVisibility();
+        		    if (!Constants.ATTRVAL_PUBLIC.equals(modeVisibility)) {
+        		       throw new TransformerException("XTDE0045 : An XSL stylesheet, initial mode must be 'public' "
+        		       		                                                                          + "within XSL stylesheet 'package' element.", elemMode);
+        		    }
+        		 }
         	  }
         	  else {
         	     mode = this.getMode();
@@ -2680,6 +2683,35 @@ public class TransformerImpl extends Transformer
       m_xcontext.pushCurrentNode(child);
       pushPairCurrentMatched(template, child);
       
+      String xslTemplateVisibility = template.getVisibility(); 
+      
+      if (xslTemplateVisibility != null) {
+    	  // Ref : XSLT 3.0 specification, section 6.1 Defining Templates
+    	  if (Constants.ATTRVAL_ABSTRACT.equals(xslTemplateVisibility)) {
+        	  if (template.getMatch() != null) {
+        		 throw new TransformerException("XTTE0505 : An XSL template with attribute \"visibility\"'s value as "
+        		 		                                                                             + "'abstract' cannot have an attribute 'match'.", template); 
+        	  }
+        	  
+        	  ElemTemplateElement elemTemplateElement = template.getFirstChildElem();
+        	  while (elemTemplateElement != null) {
+        		 if (!((elemTemplateElement instanceof ElemContextItem) || (elemTemplateElement instanceof ElemParam))) {
+        			 throw new TransformerException("XTTE0505 : An XSL template with attribute \"visibility\"'s value as "
+        			 		                                                                        + "'abstract' cannot have any XSL child elements other "
+        			 		                                                                        + "that 'context-item' and 'param'.", template); 
+        		 }
+        		 
+        		 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+        	  }
+          }
+    	  else if (!(Constants.ATTRVAL_PUBLIC.equals(xslTemplateVisibility) || Constants.ATTRVAL_PRIVATE.equals(xslTemplateVisibility) 
+											    		                    || Constants.ATTRVAL_FINAL.equals(xslTemplateVisibility))) {    	  
+    	      throw new TransformerException("XTSE0020 : An XSL stylesheet template attribute \"visibility\"'s value "
+																					    			  + "is not one of, 'public', "
+																					    			  + "'private', 'final', 'abstract'.", template);
+    	  }
+      }            
+      
       if (!isApplyImports) {
           DTMCursorIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
           m_xcontext.pushContextNodeList(cnl);
@@ -2736,7 +2768,7 @@ public class TransformerImpl extends Transformer
     }
     catch (org.xml.sax.SAXException se)
     {
-      throw new TransformerException(se);
+    	throw new TransformerException(se);
     }
     finally
     {

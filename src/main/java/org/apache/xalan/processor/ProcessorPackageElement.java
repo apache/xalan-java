@@ -29,6 +29,8 @@ import org.xml.sax.Attributes;
  * TransformerFactory for xsl:package markup.
  * @see <a href="https://www.w3.org/TR/xslt-30/#element-package">package-element within XSLT specification</a>
  * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
  * @xsl.usage internal
  */
 public class ProcessorPackageElement extends XSLTElementProcessor
@@ -93,6 +95,8 @@ public class ProcessorPackageElement extends XSLTElementProcessor
 				  parent.setInclude(stylesheet);
 			  }
 		  }
+		  
+		  stylesheet.setIsXslPackage(true);
 
 		  stylesheet.setDOMBackPointer(handler.getOriginatingNode());
 		  stylesheet.setLocaterInfo(handler.getLocator());

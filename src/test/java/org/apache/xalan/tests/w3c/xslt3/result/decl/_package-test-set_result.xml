@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-07T07:10:43Z" fail="31" name="package" pass="22" run="53" skipped="19" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-07T11:36:43Z" fail="31" name="package" pass="23" run="54" skipped="18" statusUnknown="0">
    <testResult status="pass" testName="package-001"/>
-   <testResult status="fail" testName="package-001a">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;not-ok/&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="package-001b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;not-ok/&gt;</outResult>
-   </testResult>
-   <testResult reason="Xalan configured" status="skipped" testName="package-001c"/>
+   <testResult status="pass" testName="package-001a"/>
+   <testResult status="pass" testName="package-001b"/>
+   <testResult status="pass" testName="package-001c"/>
    <testResult reason="Xalan configured" status="skipped" testName="package-001d"/>
    <testResult reason="Xalan configured" status="skipped" testName="package-001e"/>
    <testResult reason="Xalan configured" status="skipped" testName="package-001f"/>
@@ -74,8 +70,16 @@
          <errTrace>XTDE0040 : An XSL template named 'main' doesn't exist.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="pass" testName="package-903"/>
-   <testResult status="pass" testName="package-904"/>
+   <testResult status="fail" testName="package-903">
+      <outResult>
+         <errTrace>XTDE0040 : An XSL stylesheet initial template attribute "visibility"'s value is not 'public'. This must be true for XSL template declarations within XSL 'package' element.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="package-904">
+      <outResult>
+         <errTrace>XTDE0040 : An XSL stylesheet initial template attribute "visibility"'s value is not 'public'. This must be true for XSL template declarations within XSL 'package' element.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="package-905">
       <outResult>
          <errTrace>XTDE0040 : An XSL template named 'main' doesn't exist.</errTrace>
@@ -94,10 +98,13 @@
    <testResult status="fail" testName="package-906">
       <outResult>
          <errTrace>"package" attribute is not allowed on the xsl:package element!</errTrace>
+         <errTrace>XTDE0040 : An XSL stylesheet initial template attribute "visibility"'s value is not 'public'. This must be true for XSL template declarations within XSL 'package' element.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="package-907">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;not-ok/&gt;</outResult>
+      <outResult>
+         <errTrace>XTDE0040 : An XSL stylesheet initial template attribute "visibility"'s value is not 'public'. This must be true for XSL template declarations within XSL 'package' element.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="package-908">
       <outResult/>
@@ -144,16 +151,23 @@
    <testResult status="fail" testName="package-914b">
       <outResult>
          <errTrace>Illegal value: #unnamed used for QNAME attribute: default-mode</errTrace>
+         <errTrace>XTDE0045 : An XSL stylesheet, initial mode must be 'public' within XSL stylesheet 'package' element.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="package-914c">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="package-914d">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="package-914e">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="package-200">
       <outResult>

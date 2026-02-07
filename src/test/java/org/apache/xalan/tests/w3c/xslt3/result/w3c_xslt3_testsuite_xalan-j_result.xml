@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-02-07T07:11:01Z" desc="W3C XSLT 3.0 test suite results" fail="1378" pass="3353" run="4737" skipped="599" success="70.78%" xslt_processor="Apache Xalan XSLT 3.0 development code">
+<testResult dateTime="2026-02-07T11:37:40Z" desc="W3C XSLT 3.0 test suite results" fail="1375" pass="3357" run="4738" skipped="598" success="70.85%" xslt_processor="Apache Xalan XSLT 3.0 development code">
   <attr>
     <as fail="29" pass="82" run="111" skipped="93" success="73.87%"/>
     <avt fail="1" pass="33" run="34" skipped="1" success="97.06%"/>
     <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
     <expand-text fail="8" pass="51" run="59" skipped="3" success="86.44%"/>
     <match fail="82" pass="100" run="182" skipped="112" success="54.95%"/>
-    <mode fail="73" pass="68" run="141" skipped="28" success="48.23%"/>
+    <mode fail="70" pass="71" run="141" skipped="28" success="50.35%"/>
     <select fail="27" pass="104" run="132" skipped="26" success="78.79%"/>
     <tunnel fail="40" pass="18" run="58" skipped="0" success="31.03%"/>
     <xpath-default-namespace fail="11" pass="11" run="22" skipped="4" success="50.0%"/>
@@ -15,7 +15,7 @@
     <attribute-set fail="7" pass="42" run="49" skipped="1" success="85.71%"/>
     <character-map fail="14" pass="13" run="28" skipped="1" success="46.43%"/>
     <function fail="28" pass="59" run="87" skipped="23" success="67.82%"/>
-    <package fail="31" pass="22" run="53" skipped="19" success="41.51%"/>
+    <package fail="31" pass="23" run="54" skipped="18" success="42.59%"/>
     <param fail="17" pass="13" run="30" skipped="1" success="43.33%"/>
     <strip-space fail="14" pass="13" run="27" skipped="3" success="48.15%"/>
     <template fail="0" pass="6" run="6" skipped="0" success="100.0%"/>

@@ -527,6 +527,20 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	{
 		return m_package_version;
 	}
+	
+	/**
+	 * Class field, to denote whether this XSL stylesheet
+	 * object has been constructed from xsl:package instruction.
+	 */
+	private boolean m_is_xsl_package;
+	
+	public void setIsXslPackage(boolean isXslPackage) {
+	    m_is_xsl_package = isXslPackage; 
+	}
+	
+	public boolean isXslPackage() {
+		return m_is_xsl_package;
+	}
 
 	/**
 	 * The "xsl:import" list.
@@ -1183,6 +1197,17 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	public void setElemMode(ElemMode elemMode) throws TransformerException
 	{
 		QName modeName = elemMode.getName();
+		
+		String elemModeVisibility = elemMode.getVisibility();
+		if (elemModeVisibility != null) {
+			// Ref : XSLT 3.0 specification, section 6.6.1 Declaring Modes
+			if (!(Constants.ATTRVAL_PUBLIC.equals(elemModeVisibility) || Constants.ATTRVAL_PRIVATE.equals(elemModeVisibility) 
+					                                                  || Constants.ATTRVAL_FINAL.equals(elemModeVisibility))) {
+				throw new TransformerException("XTSE0020 : An XSL stylesheet 'mode' instruction \"visibility\" attribute's "
+						                                                                      + "value can be 'public', 'private', 'final'. "
+						                                                                      + "The supplied value '" + elemModeVisibility + "' is invalid.", elemMode);
+			}
+		}
 		
 		if (modeName != null) {
 			if (m_modeList == null) {

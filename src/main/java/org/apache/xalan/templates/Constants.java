@@ -493,4 +493,12 @@ public class Constants extends org.apache.xml.utils.Constants
   
   public static final String UNARY_LOOKUP_MAP_ARRAY = "unary_lookup_map_array";
   
+  public static final String ATTRVAL_PUBLIC = "public";
+  
+  public static final String ATTRVAL_PRIVATE = "private";
+  
+  public static final String ATTRVAL_FINAL = "final";
+  
+  public static final String ATTRVAL_ABSTRACT = "abstract";
+  
 }

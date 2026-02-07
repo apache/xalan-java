@@ -42,12 +42,11 @@ public class XslPackageTests extends W3CXslTransformTestsUtil {
     	 * All of the following W3C XSLT 3.0 skipped test cases, 
     	 * specify like <initial-mode name="#default" select="42"/>,
     	 * which isn't correct XSLT logic, because within XSLT 3.0, 
-    	 * xsl:mode doesn't specify an attribute "select".
+    	 * xsl:mode instruction doesn't specify an attribute "select".
     	 * 
     	 * We need to seek clarification about these issues, from
     	 * W3C XSLT 3.0 WG.
     	 */
-    	m_skipped_tests_list.add("package-001c");
     	m_skipped_tests_list.add("package-001d");
     	m_skipped_tests_list.add("package-001e");
     	m_skipped_tests_list.add("package-001f");
@@ -65,7 +64,7 @@ public class XslPackageTests extends W3CXslTransformTestsUtil {
     	m_skipped_tests_list.add("package-001q");
     	m_skipped_tests_list.add("package-001r");
     	m_skipped_tests_list.add("package-001s");
-    	m_skipped_tests_list.add("package-001t");   	
+    	m_skipped_tests_list.add("package-001t");  	
     }
 
     @AfterClass

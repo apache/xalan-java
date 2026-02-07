@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-06T11:40:48Z" fail="73" name="mode" pass="68" run="141" skipped="28" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-07T11:36:40Z" fail="70" name="mode" pass="71" run="141" skipped="28" statusUnknown="0">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
@@ -371,11 +371,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="fail" testName="mode-1508">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="mode-1509">
-      <outResult>
-         <errTrace>XTDE0040 : An XSL template named 'main' doesn't exist.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="mode-1509"/>
    <testResult status="fail" testName="mode-1510">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
    </testResult>
@@ -424,13 +420,13 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="pass" testName="mode-1701a"/>
    <testResult status="fail" testName="mode-1702">
       <outResult>
-         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
          <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
+         <errTrace>XTDE0045 : An XSL stylesheet, initial mode must be 'public' within XSL stylesheet 'package' element.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1702a">
       <outResult>
-         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1703">
@@ -443,30 +439,25 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    </testResult>
    <testResult status="fail" testName="mode-1705">
       <outResult>
-         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
          <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1705a">
       <outResult>
-         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
          <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
+         <errTrace>XTDE0045 : An XSL stylesheet, initial mode must be 'public' within XSL stylesheet 'package' element.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="mode-1705b">
-      <outResult>
-         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
-         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="mode-1705b"/>
    <testResult status="fail" testName="mode-1706">
       <outResult>
-         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
          <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1707">
-      <outResult/>
+      <outResult>
+         <errTrace>XTDE0045 : An XSL stylesheet, initial mode must be 'public' within XSL stylesheet 'package' element.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="mode-1708"/>
    <testResult status="fail" testName="mode-1709"/>
@@ -482,11 +473,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="mode-1713"/>
-   <testResult status="fail" testName="mode-1714err">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-  a-text&#13;
-</outResult>
-   </testResult>
+   <testResult status="pass" testName="mode-1714err"/>
    <testResult status="fail" testName="mode-1801">
       <outResult/>
    </testResult>
@@ -495,8 +482,8 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    </testResult>
    <testResult status="fail" testName="mode-1803">
       <outResult>
-         <errTrace>"declared-modes" attribute is not allowed on the xsl:package element!</errTrace>
          <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
+         <errTrace>XTDE0045 : An XSL stylesheet, initial mode must be 'public' within XSL stylesheet 'package' element.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="mode-1901"/>

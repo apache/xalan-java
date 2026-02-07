@@ -237,7 +237,7 @@ public class ElemMode extends ElemTemplateElement
   /**
    * An xsl:mode element's "visibility" attribute.
    * 
-   * Xalan's default value for this attribute is 'private'.
+   * An XSL stylesheet default value for this attribute is 'private'.
    */
   private String m_visibility = "private";
   
