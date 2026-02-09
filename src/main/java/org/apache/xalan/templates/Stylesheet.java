@@ -1087,6 +1087,16 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	 * The "xsl:template" properties.
 	 */
 	private Vector m_templates;
+	
+	/**
+	 * The "xsl:use-package" properties.
+	 */
+	private Vector m_usePackageVector;
+	
+	/**
+	 * The "xsl:accept" properties.
+	 */
+	private Vector m_acceptPackageVector;
 
 	/**
 	 * Set an "xsl:template" property.
@@ -1117,6 +1127,36 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 			throw new ArrayIndexOutOfBoundsException();
 
 		return (ElemTemplate) m_templates.elementAt(i);
+	}
+	
+	/**
+	 * Set an "xsl:use-package" property.
+	 *
+	 * @param v ElemUsePackage to add to list of use-package 
+	 *          reference objects.
+	 */
+	public void setUsePackage(ElemUsePackage v)
+	{
+		if (m_usePackageVector == null)
+			m_usePackageVector = new Vector();
+
+		m_usePackageVector.addElement(v);
+		v.setStylesheet(this);
+	}
+	
+	/**
+	 * Set an "xsl:accept" property.
+	 *
+	 * @param v ElemAccept to add to list of accept 
+	 *          object references.
+	 */
+	public void setAccept(ElemAccept v)
+	{
+		if (m_acceptPackageVector == null)
+			m_acceptPackageVector = new Vector();
+
+		m_acceptPackageVector.addElement(v);
+		v.setStylesheet(this);
 	}
 
 	/**

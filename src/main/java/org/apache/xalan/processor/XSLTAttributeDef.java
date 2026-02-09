@@ -1011,7 +1011,7 @@ public class XSLTAttributeDef
    * @param value A string that represents a potentially prefix qualified name.
    * @param owner
    *
-   * @return A QName object if this attribute does not support AVT's.  Otherwise, an AVT
+   * @return A QName object if this attribute does not support AVT's. Otherwise, an AVT
    *         is returned.
    *
    * @throws org.xml.sax.SAXException if the string contains a prefix that can not be

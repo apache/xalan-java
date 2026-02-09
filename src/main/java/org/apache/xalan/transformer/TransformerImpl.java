@@ -2610,7 +2610,7 @@ public class TransformerImpl extends Transformer
         	  if (m_init_mode_name != null) {
         		 mode = new QName(m_init_mode_name);
         		 Stylesheet stylesheet = (Stylesheet)m_stylesheetRoot;
-        		 if (stylesheet.isXslPackage()) {
+        		 if (stylesheet.isXslPackage() && !Constants.ATTRVAL_UNNAMED_PREFIX.equals(m_init_mode_name)) {
         		    ElemMode elemMode = stylesheet.getElemMode(mode);
         		    String modeVisibility = elemMode.getVisibility();
         		    if (!Constants.ATTRVAL_PUBLIC.equals(modeVisibility)) {

@@ -50,6 +50,7 @@ public class TemplateList implements java.io.Serializable
   /**
    * Construct a TemplateList object. Needs to be public so it can
    * be invoked from the CompilingStylesheetHandler.
+ * @param xPathContext 
    */
   public TemplateList()
   {
@@ -142,14 +143,28 @@ public class TemplateList implements java.io.Serializable
         }
     	else {
     		ElemFunction newFunc = (ElemFunction)template;
+    		
+    		QName funcName = newFunc.getName();
+    		
+    		int funcLineNo = newFunc.getLineNumber();
+    		int funcColNo = newFunc.getColumnNumber();
+    		
+    		String funcVisibility = newFunc.getVisibility();    		
+    		if (!(Constants.ATTRVAL_PUBLIC.equals(funcVisibility) || Constants.ATTRVAL_PRIVATE.equals(funcVisibility) 
+    				                                              || Constants.ATTRVAL_FINAL.equals(funcVisibility) 
+    				                                              || Constants.ATTRVAL_ABSTRACT.equals(funcVisibility))) {
+    			throw new TransformerException("XTSE0020 [line : " + funcLineNo + ", column : " + funcColNo + "] : An XSL function '" + funcName.toString() + "' \"visibility\" attribute's "
+																				    					                              + "value can be 'public', 'private', 'final', 'abstract'. "
+																				    					                              + "The supplied value '" + funcVisibility + "' is invalid.");    			
+    		}
+    		
     		int funcArity = newFunc.getArity();
     		boolean isOverrideDecl = newFunc.isOverrideAttrDeclared();
     		boolean isOverrideExtDecl = newFunc.isOverrideExtensionFunctionAttrDeclared();
-    		if (isOverrideDecl && isOverrideExtDecl && (newFunc.getOverride() != newFunc.getOverrideExtensionFunction())) {
-    			  QName funcName = newFunc.getName();
-    			  throw new TransformerException("XTSE0020 : An XSL function '" + funcName.toString() + "' has both "
+    		if (isOverrideDecl && isOverrideExtDecl && (newFunc.getOverride() != newFunc.getOverrideExtensionFunction())) {    			  
+    			  throw new TransformerException("XTSE0020 [line : " + funcLineNo + ", column : " + funcColNo + "] : An XSL function '" + funcName.toString() + "' has both "
 															                            + "the attributes 'override' and 'override-extension-function', "
-															                            + "but they don't have the same value.", newFunc);
+															                            + "but they don't have the same value.");
     	    }
     		
     		if (!isOverrideDecl) {
@@ -162,10 +177,9 @@ public class TemplateList implements java.io.Serializable
     			newFunc.setOverrideExtensionFunction(true);
     		}
     		
-    		QName funcQName = newFunc.getName();
-    		if ((Constants.XSL_ERROR_NAMESACE).equals(funcQName.getNamespace())) {
-    		   throw new TransformerException("XTSE0740 : An XSL function declaration that has local name '" + funcQName.getLocalName() 
-    		                                                                                            + "', doesn't have function name's namespace.", newFunc);
+    		if ((Constants.XSL_ERROR_NAMESACE).equals(funcName.getNamespace())) {
+    		   throw new TransformerException("XTSE0740 [line : " + funcLineNo + ", column : " + funcColNo + "] : An XSL function declaration that has local name '" + funcName.getLocalName() 
+    		                                                                                            + "', doesn't have function name's namespace.");
     		}
     		
     		XslFunctionDefinitionKey funcDefnKey = new XslFunctionDefinitionKey(newFunc.getName(), funcArity, newFunc.getOverride());

@@ -300,6 +300,23 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
+   * An xsl:function element's "visibility" attribute.
+   * 
+   * An XSL stylesheet default value for this attribute is 'private'.
+   */
+  private String m_visibility = "private";
+  
+  public void setVisibility(String v)
+  {
+	  m_visibility = v;
+  }
+  
+  public String getVisibility()
+  {
+	  return m_visibility;
+  }
+  
+  /**
    * Set the value of "cache" attribute.
    *
    * @param isCacheResult              Value of the "cache" attribute
@@ -462,7 +479,7 @@ public class ElemFunction extends ElemTemplate
     		 
     	 }
     	 else {
-    		// to do
+    		// We may try to implement this feature
     	 }    	 
       }
       
@@ -533,7 +550,7 @@ public class ElemFunction extends ElemTemplate
     				  break; 
     			  }
     		  }                    
-    	  }            
+    	  }
 
     	  // Get xsl:function's result, before processing with "as" attribute
     	  result = getXslFunctionResult(transformer, xctxt);

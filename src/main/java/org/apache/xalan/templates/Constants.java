@@ -97,9 +97,11 @@ public class Constants extends org.apache.xml.utils.Constants
   ELEMNAME_DOCUMENT = 114, ELEMNAME_MODE = 115,  
   ELEMNAME_NAMESPACE = 116,
   ELEMNAME_ASSERT = 117,
-  ELEMNAME_PERFORMSORT = 118;
+  ELEMNAME_PERFORMSORT = 118,
+  ELEMNAME_USE_PACKAGE = 119,
+  ELEMNAME_ACCEPT = 120;
   
-  // next available number : 119
+  // next available number : 121
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -183,6 +185,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_TARGETPI_STRING = "target-pi",
       ELEMNAME_TARGETTEXT_STRING = "target-text",
       ELEMNAME_TEMPLATE_STRING = "template",
+      ELEMNAME_USE_PACKEGE_STRING = "use-package",
+      ELEMNAME_ACCEPT_STRING = "accept",
       
       ELEMNAME_TEXT_STRING = "text",
       ELEMNAME_TRANSFORM_STRING = "transform",
