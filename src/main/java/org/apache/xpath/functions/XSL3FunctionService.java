@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,14 +35,23 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 
+import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemAccept;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemUsePackage;
+import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XMLNSDecl;
@@ -53,12 +63,13 @@ import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
+import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
@@ -103,6 +114,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
 
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
@@ -221,9 +233,114 @@ public class XSL3FunctionService {
     				}
 
     				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcName), xslFuncArgCount);
+    				
+    				if (elemTemplate == null) {    					
+    					ElemTemplateElement elemTemplateElement1 = stylesheetRoot.getFirstChildElem();
+    					
+    					while (elemTemplateElement1 != null) {
+    						if (elemTemplateElement1 instanceof ElemUsePackage) {
+    							// Resolve function call reference
+    							
+    							System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.XSL3TransformerFactoryImpl");
+
+    							try {
+    								TransformerFactory tfactory = TransformerFactory.newInstance();
+    								tfactory.setErrorListener(new DefaultErrorHandler(true));
+
+    								ElemUsePackage elemUsePackage = (ElemUsePackage)elemTemplateElement1;
+    								AVT packageAvt = elemUsePackage.getName();
+    								String packageName = packageAvt.evaluate(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+
+    								DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+    								dfactory.setNamespaceAware(true);
+    								dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    								DocumentBuilder docBuilder = dfactory.newDocumentBuilder();    							    							
+
+    								URL resolvedUrl = null;
+    								URI uri = new URI(packageName);
+    								if (uri.isAbsolute()) {
+    									resolvedUrl = new URL(packageName); 
+    								}
+    								else {
+    									String stylesheetSystemId = srcLocator.getSystemId();    				            	
+    									if (stylesheetSystemId != null) {
+    										URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(packageName);
+    										resolvedUrl = resolvedUriArg.toURL();
+    									}
+    									else {
+    										resolvedUrl = new URL(packageName);
+    									}
+    								}
+
+    								String xslResolverUrlStr = resolvedUrl.toString();
+
+    								InputSource inpSrc = new InputSource(xslResolverUrlStr);
+
+    								Document xslDocument = docBuilder.parse(inpSrc);
+
+    								Templates templates = tfactory.newTemplates(new DOMSource(xslDocument, xslResolverUrlStr));
+
+    								/**
+    								 * This will provide to us expanded XSL component definitions.
+    								 * We need to verify, that which of these components to use,
+    								 * using xsl:accept instruction, information from xsl:use-package.
+    								 */
+    								Stylesheet stylesheet = (Stylesheet)templates;
+    								
+    								StylesheetRoot styleRoot = (StylesheetRoot)templates;
+    								transformerImpl = (TransformerImpl)styleRoot.newTransformer();
+
+    								ElemTemplateElement elem1 = elemUsePackage.getFirstChildElem();
+    								while ((elem1 != null) && (elem1 instanceof ElemAccept)) {
+    									ElemAccept elemAccept = (ElemAccept)elem1;
+    									String component = elemAccept.getComponent();    								
+    									if ("function".equals(component)) {
+    										Vector componentNames = elemAccept.getNames();
+    										String compVisibilityValue = elemAccept.getVisibility();
+    										if ("public".equals(compVisibilityValue)) {    								    
+    											int xslTemplateCount = stylesheet.getTemplateCount();
+    											for (int idx = 0; idx < xslTemplateCount; idx++) {
+    												ElemTemplate template = stylesheet.getTemplate(idx);
+    												if (template instanceof ElemFunction) {
+    													ElemFunction elemFunction = (ElemFunction)template;
+    													if (isElemFunctionEligible(elemFunction, componentNames, funcNamespace, 
+    															                                                        funcName, xslFuncArgCount)) {
+    													   elemTemplate = elemFunction;
+    													   
+    													   break;
+    													}    													
+    												}
+    											}
+    											
+    											if (elemTemplate != null) {
+    											   break;	
+    											}
+    										}
+    									}
+    									
+    									if (elemTemplate != null) {
+										    break;	
+									    }
+
+    									elem1 = elem1.getNextSiblingElem();
+    								}
+    							}	
+    							catch (Exception ex) {
+    								// to do	
+    							}
+    						}
+
+    						if (elemTemplate != null) {
+    							break;	
+    						}
+
+    						elemTemplateElement1 = elemTemplateElement1.getNextSiblingElem();
+    					}
+    			    }
 
     				if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
-    					// Evaluate XSL stylesheet function call    					
+    					// Evaluate XSL stylesheet function call
+    					
     					ElemFunction elemFunction = (ElemFunction)elemTemplate;
 
     					evalResult = elemFunction.evaluateXslFunction(transformerImpl, xslFuncArgSequence);
@@ -314,7 +431,7 @@ public class XSL3FunctionService {
     					}
 
     					return evalResult;
-    				}
+    			    }
     			}
 
     			if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {                
@@ -1424,6 +1541,54 @@ public class XSL3FunctionService {
     	}
     	
     	return argStr;
+    }
+    
+    /**
+     * Method definition, to check whether the supplied xsl:function object,
+     * can be used to resolve the function call.
+     * 
+     * @param elemFunction                      The supplied xsl:function object reference
+     * @param componentNames					The allowed Vector information for
+     *                                          xsl:function names.
+     * @param funcCallNs                        xsl:function name's namespace from
+     *                                          function call reference.
+     * @param funcCallName                      xsl:function name's local-name from
+     *                                          function call reference.
+     * @param funcCallArgCount                  The function arity information, from
+     *                                          function call reference.
+     *                                          
+     * @return                                  Boolean value true or false
+     */
+    private boolean isElemFunctionEligible(ElemFunction elemFunction, Vector componentNames, 
+    		                                                          String funcCallNs, String funcCallName, 
+    		                                                          int funcCallArgCount) {
+        
+    	boolean result = false;
+        
+        Enumeration enum1 = componentNames.elements();
+        
+        QName fqName = elemFunction.getName();
+        String fLocalName = fqName.getLocalName();
+        String fUri = fqName.getNamespace();
+        int fArity = elemFunction.getArity();
+        
+        while (enum1.hasMoreElements()) {
+			QName qName2 = (QName)(enum1.nextElement());
+			String localName2 = qName2.getLocalName();
+			String namespace2 = qName2.getNamespace();
+			if (localName2.indexOf('#') != -1) {
+				int arity = Integer.valueOf(localName2.substring(localName2.indexOf('#') + 1));
+				String localName = localName2.substring(0, localName2.indexOf('#')); 
+				if (fLocalName.equals(localName) && fUri.equals(namespace2) && fUri.equals(funcCallNs) 
+						                         && (fArity == arity) && (arity == funcCallArgCount)) {
+					result = true;
+
+					break;
+				}				
+			}    														
+		}
+        
+        return result;
     }
     
 }

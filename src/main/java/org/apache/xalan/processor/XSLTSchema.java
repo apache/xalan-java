@@ -20,6 +20,7 @@ package org.apache.xalan.processor;
 import java.util.HashMap;
 
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemAccept;
 import org.apache.xalan.templates.ElemAnalyzeString;
 import org.apache.xalan.templates.ElemApplyImport;
 import org.apache.xalan.templates.ElemApplyTemplates;
@@ -207,6 +208,11 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef nameAttrRequired = new XSLTAttributeDef(null, "name",
                                           XSLTAttributeDef.T_QNAME, true, false, XSLTAttributeDef.ERROR);
     
+    // Required
+    // xsl:use-package
+    XSLTAttributeDef nameAttrUsePackageRequired = new XSLTAttributeDef(null, "name",
+                                          XSLTAttributeDef.T_URL, true, true, XSLTAttributeDef.ERROR);
+    
 	// Required
     // Support AVT
     // xsl:element, xsl:attribute                                    
@@ -281,7 +287,7 @@ public class XSLTSchema extends XSLTElementDef
            
     // xsl:element, xsl:attribute                              
     XSLTAttributeDef namespaceAVTOpt = new XSLTAttributeDef(null,
-                                         "namespace",XSLTAttributeDef.T_URL,
+                                         "namespace", XSLTAttributeDef.T_URL,
                                          false, true, XSLTAttributeDef.WARNING);
     // xsl:decimal-format                                     
     XSLTAttributeDef decimalSeparatorAttr = new XSLTAttributeDef(null,
@@ -1214,8 +1220,7 @@ public class XSLTSchema extends XSLTElementDef
 										      		new XSLTElementDef[] { },
 										      		new XSLTAttributeDef[] { componentAttr, xslNamesAttr, visibilityAttr }, 
 										      		new ProcessorAcceptElement(),  /* ContentHandler */
-										      		null  /* class object */,
-										      		true, -1, false);
+										      		ElemAccept.class  /* class object */, 20, true);
     
     XSLTAttributeDef[] scriptAttrs = new XSLTAttributeDef[]{
     					    new XSLTAttributeDef(null, "lang", XSLTAttributeDef.T_NMTOKEN,
@@ -1408,7 +1413,7 @@ public class XSLTSchema extends XSLTElementDef
                                           "use-package",
                                           null /*alias */,
                                           new XSLTElementDef[] { acceptElemDef }, /* elements */
-                                          new XSLTAttributeDef[] { nameAttrRequired, packageVersionAttrOpt }, 
+                                          new XSLTAttributeDef[] { nameAttrUsePackageRequired, packageVersionAttrOpt }, 
                                           new ProcessorUsePackage(), ElemUsePackage.class /* class object */, true, 20, true),
                                   
                                   new XSLTElementDef(

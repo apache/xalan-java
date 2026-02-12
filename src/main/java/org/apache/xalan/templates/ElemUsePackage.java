@@ -21,7 +21,6 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xml.utils.QName;
 import org.apache.xpath.XPathContext;
 
 /**
@@ -56,20 +55,20 @@ public class ElemUsePackage extends ElemTemplateElement
 	  return Constants.ELEMNAME_USE_PACKEGE_STRING;
   }
   
-  private QName m_name;
+  private AVT m_name;
   
   /**
    * Set the value of xsl:use-package's "name" attribute.
    */
-  public void setName(QName qName)
+  public void setName(AVT avtValue)
   {      
-	  m_name = qName; 
+	  m_name = avtValue; 
   }
 
   /**
    * Get the value of xsl:use-package's "name" attribute. 
    */
-  public QName getName()
+  public AVT getName()
   {
       return m_name;
   }

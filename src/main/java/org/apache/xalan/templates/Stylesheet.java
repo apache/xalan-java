@@ -1094,9 +1094,9 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	private Vector m_usePackageVector;
 	
 	/**
-	 * The "xsl:accept" properties.
+	 * The "xsl:expose" properties.
 	 */
-	private Vector m_acceptPackageVector;
+	private Vector m_exposePackageVector;
 
 	/**
 	 * Set an "xsl:template" property.
@@ -1144,18 +1144,22 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 		v.setStylesheet(this);
 	}
 	
+	public Vector getUsePackageVector() {
+		return m_usePackageVector;
+	}
+	
 	/**
-	 * Set an "xsl:accept" property.
+	 * Set an "xsl:expose" property.
 	 *
-	 * @param v ElemAccept to add to list of accept 
+	 * @param v ElemExpose to add to list of accept 
 	 *          object references.
 	 */
-	public void setAccept(ElemAccept v)
+	public void setExpose(ElemExpose v)
 	{
-		if (m_acceptPackageVector == null)
-			m_acceptPackageVector = new Vector();
+		if (m_exposePackageVector == null)
+			m_exposePackageVector = new Vector();
 
-		m_acceptPackageVector.addElement(v);
+		m_exposePackageVector.addElement(v);
 		v.setStylesheet(this);
 	}
 

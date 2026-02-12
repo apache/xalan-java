@@ -19,12 +19,9 @@ package org.apache.xalan.templates;
 
 import java.util.Vector;
 
-import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xml.utils.QName;
-import org.apache.xpath.XPathContext;
 
 /**
  * Implementation of XSLT 3.0 xsl:accept element.
@@ -134,28 +131,14 @@ public class ElemAccept extends ElemTemplateElement
   }
 
   /**
-   * Evaluate an XSL xsl:use-package transformation.
+   * Evaluate an XSL xsl:accept transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
    * @throws TransformerException
    */
-  public void execute(TransformerImpl transformer) throws TransformerException {
-    
-	  XPathContext xctxt = transformer.getXPathContext();
-
-	  SourceLocator srcLocator = xctxt.getSAXLocator();
-
-	  if (transformer.getDebug()) {
-		  transformer.getTraceManager().emitTraceEvent(this);		  
-	  }      
-
-	  // to do
-
-	  if (transformer.getDebug()) {
-		  transformer.getTraceManager().emitTraceEndEvent(this);
-	  }
-    
+  public void execute(TransformerImpl transformer) throws TransformerException {    
+	  // no op    
   }
 
 }

@@ -17,13 +17,8 @@
  */
 package org.apache.xalan.processor;
 
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.templates.StylesheetComposed;
-import org.apache.xalan.templates.StylesheetRoot;
-import org.xml.sax.Attributes;
+import org.apache.xalan.templates.ElemExpose;
+import org.apache.xalan.templates.ElemTemplateElement;
 
 /**
  * TransformerFactory for xsl:expose markup.
@@ -32,115 +27,29 @@ import org.xml.sax.Attributes;
  * 
  * @xsl.usage internal
  */
-public class ProcessorExposeElement extends XSLTElementProcessor
+public class ProcessorExposeElement extends ProcessorTemplateElem
 {
 
-  private static final long serialVersionUID = 3952244172949248100L;
+	private static final long serialVersionUID = 3952244172949248100L;
 
-  /**
-   * Receive notification of the start of an strip-space element.
-   *
-   * @param handler The calling StylesheetHandler/TemplatesBuilder.
-   * @param uri The Namespace URI, or the empty string if the
-   *        element has no Namespace URI or if Namespace
-   *        processing is not being performed.
-   * @param localName The local name (without prefix), or the
-   *        empty string if Namespace processing is not being
-   *        performed.
-   * @param rawName The raw XML 1.0 name (with prefix), or the
-   *        empty string if raw names are not available.
-   * @param attributes The attributes attached to the element.  If
-   *        there are no attributes, it shall be an empty
-   *        Attributes object.
-   */
-  public void startElement(StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            																											throws org.xml.sax.SAXException
-  {
+	/**
+	 * Append the current template element to the current
+	 * template element, and then push it onto the current template
+	 * element stack.
+	 *
+	 * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+	 * @param elem Must be a non-null reference to a {@link org.apache.xalan.templates.ElemTemplate} object.
+	 *
+	 * @throws org.xml.sax.SAXException Any SAX exception, possibly
+	 *            wrapping another exception.
+	 */
+	protected void appendAndPush(
+			StylesheetHandler handler, ElemTemplateElement elem)
+					throws org.xml.sax.SAXException
+	{
 
-	  super.startElement(handler, uri, localName, rawName, attributes);
-	  
-	  try
-	  {
-		  int stylesheetType = handler.getStylesheetType();
-		  Stylesheet stylesheet;
-
-		  if (stylesheetType == StylesheetHandler.STYPE_ROOT)
-		  {
-			  try
-			  {
-				  stylesheet = getStylesheetRoot(handler);
-			  }
-			  catch(TransformerConfigurationException tfe)
-			  {
-				  throw new TransformerException(tfe);
-			  }
-		  }
-		  else
-		  {
-			  Stylesheet parent = handler.getStylesheet();
-
-			  if (stylesheetType == StylesheetHandler.STYPE_IMPORT)
-			  {
-				  StylesheetComposed sc = new StylesheetComposed(parent);
-
-				  parent.setImport(sc);
-
-				  stylesheet = sc;
-			  }
-			  else
-			  {
-				  stylesheet = new Stylesheet(parent);
-
-				  parent.setInclude(stylesheet);
-			  }
-		  }
-		  
-		  stylesheet.setIsXslPackage(true);
-
-		  stylesheet.setDOMBackPointer(handler.getOriginatingNode());
-		  stylesheet.setLocaterInfo(handler.getLocator());
-
-		  stylesheet.setPrefixes(handler.getNamespaceSupport());
-		  handler.pushStylesheet(stylesheet);
-		  setPropertiesFromAttributes(handler, rawName, attributes, handler.getStylesheet());
-		  handler.pushElemTemplateElement(handler.getStylesheet());
-	  }
-	  catch(TransformerException te)
-	  {
-		  throw new org.xml.sax.SAXException(te);
-	  }
-  }
-
-  /**
-   * This method can be over-ridden by a class that extends this one.
-   * 
-   * @param handler The calling StylesheetHandler/TemplatesBuilder.
-   */
-  protected Stylesheet getStylesheetRoot(StylesheetHandler handler) throws TransformerConfigurationException
-  {
-	  StylesheetRoot stylesheet;
-	  stylesheet = new StylesheetRoot(handler.getSchema(), handler.getStylesheetProcessor().getErrorListener());
-
-	  if (handler.getStylesheetProcessor().isSecureProcessing())
-		  stylesheet.setSecureProcessing(true);
-
-	  return stylesheet;
-  }
-
- /**
-   * Receive notification of the end of an element.
-   *
-   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
-   * @param uri The Namespace URI, or an empty string.
-   * @param localName The local name (without prefix), or empty string if not namespace processing.
-   * @param rawName The qualified name (with prefix).
-   */
-  public void endElement(StylesheetHandler handler, String uri, String localName, String rawName)
-            																					throws org.xml.sax.SAXException
-  {
-	  super.endElement(handler, uri, localName, rawName);
-	  
-	  handler.popElemTemplateElement();
-	  handler.popStylesheet();
-  }
+		super.appendAndPush(handler, elem);
+		elem.setDOMBackPointer(handler.getOriginatingNode());
+		handler.getStylesheet().setExpose((ElemExpose)elem);
+	}
 }

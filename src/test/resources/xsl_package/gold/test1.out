@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>Hello ....., ref local only function. This cannot be accessed, from outside this package.</one>
+  <two>hello world</two>
+</result>

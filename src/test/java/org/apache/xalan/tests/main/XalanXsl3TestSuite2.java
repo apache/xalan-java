@@ -16,6 +16,7 @@
  */
 package org.apache.xalan.tests.main;
 
+import org.apache.xalan.tests.w3c.xslt3.decl.XslPackageTests;
 import org.apache.xalan.tests.xpath3.FnAdjustDateToTimezoneTests;
 import org.apache.xalan.tests.xpath3.FnAdjustDatetimeToTimezoneTests;
 import org.apache.xalan.tests.xpath3.FnAdjustTimeToTimezoneTests;
@@ -158,7 +159,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathPartialFuncApplnTests.class, XslCopyTests.class, XalanJavascriptExtensionTests.class, XalanJavaExtensionTests.class,
                 XPathTextAndNodePattern.class, XPathLiteralSequenceTests.class, XslModeTests.class, XslTemplatePriorityTests.class,
                 XslDisableOutputEscapingAttrTests.class, XslMessageTests.class, FnAdjustDatetimeToTimezoneTests.class,
-                FnAdjustDateToTimezoneTests.class, FnAdjustTimeToTimezoneTests.class, FnFormatIntegerTests.class, XslPerformSortTests.class  } )
+                FnAdjustDateToTimezoneTests.class, FnAdjustTimeToTimezoneTests.class, FnFormatIntegerTests.class, XslPerformSortTests.class,
+                XslPackageTests.class } )
 public class XalanXsl3TestSuite2 {
 
 }

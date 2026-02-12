@@ -17,7 +17,6 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.templates.ElemAccept;
 import org.apache.xalan.templates.ElemTemplateElement;
 
 /**
@@ -48,8 +47,6 @@ public class ProcessorAcceptElement extends ProcessorTemplateElem
 	  super.appendAndPush(handler, elem);
 	  
 	  elem.setDOMBackPointer(handler.getOriginatingNode());
-	  
-	  handler.getStylesheet().setAccept((ElemAccept)elem);
   }
   
 }
