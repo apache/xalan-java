@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                version="3.0">
+                
+    <!-- Author: mukulg@apache.org -->
+   
+    <!-- An XSL 3 stylesheet test case to, test XSL attribute "use-when". -->                 
+				
+    <xsl:output method="xml" indent="yes"/>
+
+    <xsl:variable name="seq1" as="element()*">
+       <a12/>
+	   <b123/>
+	   <c1234/>
+	   <d123/>
+	   <e123456/>
+	   <f1234567/>
+	   <g123/>
+    </xsl:variable>	
+    
+    <xsl:template match="/">
+	   <result>
+	      <xsl:variable name="xslt3">
+		     <xsl:for-each-group select="$seq1" group-by="string-length(name())" use-when="'xslt_3'">
+			    <group group-key="{current-grouping-key()}">
+				   <xsl:copy-of select="current-group()"/>
+			    </group>
+			 </xsl:for-each-group>
+		  </xsl:variable>
+		  <one>
+		     <xsl:copy-of select="$xslt3/*"/>		  
+		  </one>
+		  <xsl:variable name="xslt1">
+		     <xsl:for-each select="$seq1" use-when="'xslt_1'">
+			    <xsl:copy-of select="."/>
+			 </xsl:for-each>
+		  </xsl:variable>
+		  <two>
+		     <xsl:copy-of select="$xslt1/*"/>
+		  </two>
+	   </result>
+	</xsl:template>
+	
+	<!--
+      * Licensed to the Apache Software Foundation (ASF) under one
+      * or more contributor license agreements. See the NOTICE file
+      * distributed with this work for additional information
+      * regarding copyright ownership. The ASF licenses this file
+      * to you under the Apache License, Version 2.0 (the "License");
+      * you may not use this file except in compliance with the License.
+      * You may obtain a copy of the License at
+      *
+      *     http://www.apache.org/licenses/LICENSE-2.0
+      *
+      * Unless required by applicable law or agreed to in writing, software
+      * distributed under the License is distributed on an "AS IS" BASIS,
+      * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      * See the License for the specific language governing permissions and
+      * limitations under the License.
+    -->
+    
+</xsl:stylesheet>

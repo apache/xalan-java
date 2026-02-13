@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <group group-key="3">
+      <a12/>
+    </group>
+    <group group-key="4">
+      <b123/>
+      <d123/>
+      <g123/>
+    </group>
+    <group group-key="5">
+      <c1234/>
+    </group>
+    <group group-key="7">
+      <e123456/>
+    </group>
+    <group group-key="8">
+      <f1234567/>
+    </group>
+  </one>
+  <two>
+    <a12/>
+    <b123/>
+    <c1234/>
+    <d123/>
+    <e123456/>
+    <f1234567/>
+    <g123/>
+  </two>
+</result>

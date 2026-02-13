@@ -349,6 +349,12 @@ public class XSLTSchema extends XSLTElementDef
                                             XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
     
     // Optional
+    // Any XSL stylesheet instruction
+    XSLTAttributeDef useWhenAttrOpt = new XSLTAttributeDef(null,
+                                            "use-when",
+                                           XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional
     // xsl:for-each-group
     XSLTAttributeDef compositeAttrOpt = new XSLTAttributeDef(null, "composite",
                                                       XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
@@ -752,7 +758,7 @@ public class XSLTSchema extends XSLTElementDef
                                   null /*alias */, templateElementsAndSort,
                                   new XSLTAttributeDef[]{ selectAttrRequired,
                                 		                  xpathDefaultNamespaceAttrOpt, expandTextAttrOpt, 
-                                		                  spaceAttr }, 
+                                		                  useWhenAttrOpt, spaceAttr }, 
                                                new ProcessorTemplateElem(),
                                   ElemForEach.class /* class object */, true, false, true, 20, true);
     
@@ -778,7 +784,7 @@ public class XSLTSchema extends XSLTElementDef
                                              new XSLTAttributeDef[]{ selectAttrRequired, groupByAttrOpt, groupAdjacentAttrOpt, 
                                                                      groupStartingWithAttrOpt, groupEndingWithAttrOpt, 
                                                                      compositeAttrOpt, collationAttrOpt, xpathDefaultNamespaceAttrOpt, 
-                                                                     expandTextAttrOpt, spaceAttr }, 
+                                                                     expandTextAttrOpt, useWhenAttrOpt, spaceAttr }, 
                                              new ProcessorTemplateElem(),
                                              ElemForEachGroup.class /* class object */, true, false, true, 20, true);
     

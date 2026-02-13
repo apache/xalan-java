@@ -143,6 +143,11 @@ public class ElemForEachGroup extends ElemTemplateElement
   private boolean m_expand_text;
   
   /**
+   * An XPath expression for 'use-when' attribute. 
+   */
+  private XPath m_useWhen = null;
+  
+  /**
    * Class field, that represents xsl:for-each-group instruction's
    * sorted list of groups.
    */
@@ -374,6 +379,28 @@ public class ElemForEachGroup extends ElemTemplateElement
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }
+  
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+      return m_useWhen;
+  }
 
   /**
    * This function is called after everything else has been
@@ -471,7 +498,20 @@ public class ElemForEachGroup extends ElemTemplateElement
         }
     
         try {
-            transformSelectedNodes(transformer);
+        	XPathContext xctxt = transformer.getXPathContext();
+        	
+        	final int sourceNode = xctxt.getCurrentNode();
+        	
+        	if (m_useWhen != null) {
+        		XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+        		if (useWhenResult.bool()) {
+        		   transformSelectedNodes(transformer);
+        		}
+        	}
+        	else {
+                transformSelectedNodes(transformer);
+        	}
+            
         }
         finally {
             if (transformer.getDebug()) {
