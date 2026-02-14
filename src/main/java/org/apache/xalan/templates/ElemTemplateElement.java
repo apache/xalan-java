@@ -54,6 +54,10 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.functions.FunctionMultiArgs;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -61,6 +65,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Operation;
+import org.apache.xpath.operations.Variable;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -2496,6 +2502,292 @@ public class ElemTemplateElement extends UnImplNode
   
   public boolean getIsGroupingXdmAtomicValues() {
 	  return m_isGroupingXdmAtomicValues;
+  }
+  
+  /**
+   * Method definition, to check whether the supplied XPath expression 
+   * is statically typed. This requires that, if there are any variable 
+   * references within an XPath expression, those variable references
+   * resolve to xsl:variable declaration that has attribute "static"
+   * with value 'yes'. By definition, static variables and parameters
+   * are top-level within an XSL stylesheet.
+   * 
+   * @param expr1					The supplied XPath expression
+   * @return                        Boolean value true or false
+   */
+  public boolean isXPathExpressionStatic(Expression expr1) {	 
+
+	   boolean result = true;
+
+	   if (expr1 instanceof Variable) {
+		   Variable var = (Variable)expr1;
+		   ElemVariable elemVariable = getElemVariable(var);
+		   if (!elemVariable.getStatic()) {
+			   return false; 
+		   }
+	   }
+	   else if (expr1 instanceof Operation) {
+		   Expression lOpn = ((Operation)expr1).getLeftOperand(); 
+		   Expression rOpn = ((Operation)expr1).getRightOperand();
+		   if (lOpn instanceof Variable) {
+			   Variable var = (Variable)lOpn;
+			   ElemVariable elemVariable = getElemVariable(var);
+			   if (!elemVariable.getStatic()) {
+				   return false; 
+			   }
+		   }
+
+		   if (rOpn instanceof Variable) {
+			   Variable var = (Variable)rOpn;
+			   ElemVariable elemVariable = getElemVariable(var);
+			   if (!elemVariable.getStatic()) {
+				   return false; 
+			   }
+		   }
+
+		   ExpressionNode node1 = lOpn.exprGetParent();
+		   if (node1 instanceof Expression) {
+			   boolean result1 = isXPathExpressionStatic((Expression)node1);
+			   if (!result1) {
+				   return false; 
+			   }
+		   }
+
+		   ExpressionNode node2 = rOpn.exprGetParent();
+		   if (node2 instanceof Expression) {
+			   boolean result2 = isXPathExpressionStatic((Expression)node2);
+			   if (!result2) {
+				   return false; 
+			   }
+		   }
+	   }
+	   else if (expr1 instanceof Function) {
+		   Function function = (Function)expr1;
+		   if (function instanceof FunctionOneArg) {
+			   FunctionOneArg functionOneArg = (FunctionOneArg)function;
+			   Expression arg0 = functionOneArg.getArg0();
+			   if (arg0 instanceof Variable) {
+				   Variable var = (Variable)arg0;
+				   ElemVariable elemVariable = getElemVariable(var);
+				   if (!elemVariable.getStatic()) {
+					   return false; 
+				   }
+			   }
+
+			   ExpressionNode node = arg0.exprGetParent();
+			   if (node instanceof Expression) {
+				   boolean result2 = isXPathExpressionStatic((Expression)node);
+				   if (!result2) {
+					   return false; 
+				   }
+			   }
+		   }
+		   else if (function instanceof Function2Args) {
+			   Function2Args func = (Function2Args)function;
+			   Expression exprA = func.getArg0();
+			   Expression exprB = func.getArg1();
+
+			   if (exprA instanceof Variable) {
+				   Variable var = (Variable)exprA;
+				   ElemVariable elemVariable = getElemVariable(var);
+				   if (!elemVariable.getStatic()) {
+					   return false; 
+				   }
+			   }
+
+			   if (exprB instanceof Variable) {
+				   Variable var = (Variable)exprB;
+				   ElemVariable elemVariable = getElemVariable(var);
+				   if (!elemVariable.getStatic()) {
+					   return false; 
+				   }
+			   }
+
+			   ExpressionNode node = exprA.exprGetParent();
+			   if (node instanceof Expression) {
+				   boolean result2 = isXPathExpressionStatic((Expression)node);
+				   if (!result2) {
+					   return false; 
+				   }
+			   }
+
+			   node = exprB.exprGetParent();
+			   if (node instanceof Expression) {
+				   boolean result2 = isXPathExpressionStatic((Expression)node);
+				   if (!result2) {
+					   return false; 
+				   }
+			   }
+		   }
+		   else if (function instanceof Function3Args) {
+			   Function3Args func = (Function3Args)function;
+			   Expression exprA = func.getArg0();
+			   Expression exprB = func.getArg1();
+			   Expression exprC = func.getArg2();
+
+			   if (exprA instanceof Variable) {
+				   Variable var = (Variable)exprA;
+				   ElemVariable elemVariable = getElemVariable(var);
+				   if (!elemVariable.getStatic()) {
+					   return false; 
+				   }
+			   }
+
+			   if (exprB instanceof Variable) {
+				   Variable var = (Variable)exprB;
+				   ElemVariable elemVariable = getElemVariable(var);
+				   if (!elemVariable.getStatic()) {
+					   return false; 
+				   }
+			   }
+
+			   if (exprC instanceof Variable) {
+				   Variable var = (Variable)exprC;
+				   ElemVariable elemVariable = getElemVariable(var);
+				   if (!elemVariable.getStatic()) {
+					   return false; 
+				   }
+			   }
+
+			   ExpressionNode node = exprA.exprGetParent();
+			   if (node instanceof Expression) {
+				   boolean result2 = isXPathExpressionStatic((Expression)node);
+				   if (!result2) {
+					   return false; 
+				   }
+			   }
+
+			   node = exprB.exprGetParent();
+			   if (node instanceof Expression) {
+				   boolean result2 = isXPathExpressionStatic((Expression)node);
+				   if (!result2) {
+					   return false; 
+				   }
+			   }
+
+			   node = exprC.exprGetParent();
+			   if (node instanceof Expression) {
+				   boolean result2 = isXPathExpressionStatic((Expression)node);
+				   if (!result2) {
+					   return false; 
+				   }
+			   }
+		   }
+		   else if (function instanceof FunctionMultiArgs) {
+			   FunctionMultiArgs func = (FunctionMultiArgs)function;
+			   Expression exprA = func.getArg0();
+			   Expression exprB = func.getArg1();
+			   Expression exprC = func.getArg2();
+			   Expression[] moreArgs = func.getArgs();
+
+			   if (exprA instanceof Variable) {
+				   Variable var = (Variable)exprA;
+				   ElemVariable elemVariable = getElemVariable(var);
+				   if (!elemVariable.getStatic()) {
+					   return false; 
+				   }
+			   }
+
+			   if (exprB instanceof Variable) {
+				   Variable var = (Variable)exprB;
+				   ElemVariable elemVariable = getElemVariable(var);
+				   if (!elemVariable.getStatic()) {
+					   return false; 
+				   }
+			   }
+
+			   if (exprC instanceof Variable) {
+				   Variable var = (Variable)exprC;
+				   ElemVariable elemVariable = getElemVariable(var);
+				   if (!elemVariable.getStatic()) {
+					   return false; 
+				   }
+			   }
+
+			   ExpressionNode node = exprA.exprGetParent();
+			   if (node instanceof Expression) {
+				   boolean result2 = isXPathExpressionStatic((Expression)node);
+				   if (!result2) {
+					   return false; 
+				   }
+			   }
+
+			   node = exprB.exprGetParent();
+			   if (node instanceof Expression) {
+				   boolean result2 = isXPathExpressionStatic((Expression)node);
+				   if (!result2) {
+					   return false; 
+				   }
+			   }
+
+			   node = exprC.exprGetParent();
+			   if (node instanceof Expression) {
+				   boolean result2 = isXPathExpressionStatic((Expression)node);
+				   if (!result2) {
+					   return false; 
+				   }
+			   }
+
+			   int length1 = moreArgs.length;
+			   for (int idx = 0; idx < length1; idx++) {
+				   Expression expr = moreArgs[idx];
+				   if (expr instanceof Variable) {
+					   Variable var = (Variable)expr;
+					   ElemVariable elemVariable = getElemVariable(var);
+					   if (!elemVariable.getStatic()) {
+						   return false; 
+					   }
+				   }
+
+				   node = expr.exprGetParent();
+				   if (node instanceof Expression) {
+					   boolean result2 = isXPathExpressionStatic((Expression)node);
+					   if (!result2) {
+						   return false; 
+					   }
+				   }
+			   }
+		   }
+	   }
+
+	   return result;
+  }
+
+  /**
+   * Method definition, to find an xsl:variable declaration
+   * corresponding to a variable reference.
+   * 
+   * @param var							The supplied XSL variable
+   *                                    reference object.
+   * @return                            An xsl:variable declaration
+   *                                    object.
+   */
+  private ElemVariable getElemVariable(Variable var) {
+	   
+	   ElemVariable result = null;
+	   
+	   QName qname1 = var.getQName();
+	   ElemTemplateElement elemTemplateElem = (ElemTemplateElement)var.getExpressionOwner();
+	   while (elemTemplateElem != null) {
+		   if (elemTemplateElem instanceof ElemVariable) {
+			   ElemVariable elemVariable2 = (ElemVariable)elemTemplateElem;
+			   QName qName2 = elemVariable2.getName();
+			   if (qName2.equals(qname1)) {
+				   result = (ElemVariable)elemTemplateElem;
+				   
+				   return result;
+			   }
+		   }
+		   		   
+		   if (elemTemplateElem.getPreviousSiblingElem() != null) {
+			   elemTemplateElem = elemTemplateElem.getPreviousSiblingElem();   
+		   }
+		   else {
+			   elemTemplateElem = elemTemplateElem.getParentElem(); 
+		   }
+	   }
+	   
+	   return result;
   }
 
 }

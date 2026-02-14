@@ -17,6 +17,7 @@
  */
 package org.apache.xalan.templates;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
@@ -186,14 +187,23 @@ public class ElemNonMatchingSubstring extends ElemTemplateElement implements Exp
   public void execute(TransformerImpl transformer) throws TransformerException {
 	  
 	  XPathContext xctxt = transformer.getXPathContext();
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
 	  final int sourceNode = xctxt.getCurrentNode();
 	    
 	  if (m_useWhen != null) {
-		 XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
-		 if (xObj.bool()) {
-			transformSelectedNodes(transformer); 
-		 }
+		  boolean result1 = isXPathExpressionStatic(m_useWhen.getExpression());
+		  if (result1) {
+			  XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+			  if (useWhenResult.bool()) {
+				  transformSelectedNodes(transformer);
+			  }
+		  }
+		  else {
+			  throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
+					                                                                                 + "used within XPath static expression.", srcLocator);
+		  }
 	  }
 	  else {
          transformSelectedNodes(transformer);

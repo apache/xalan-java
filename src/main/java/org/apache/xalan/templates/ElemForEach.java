@@ -372,10 +372,19 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	
     	final int sourceNode = xctxt.getCurrentNode();
     	
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
+    	
     	if (m_useWhen != null) {
-    		XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
-    		if (useWhenResult.bool()) {
-    			transformXdmItems(transformer);
+    		boolean result1 = isXPathExpressionStatic(m_useWhen.getExpression());
+    		if (result1) {
+    			XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    			if (useWhenResult.bool()) {
+    				transformXdmItems(transformer);
+    			}
+    		}
+    		else {
+    			throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
+    					                                                                             + "used within XPath static expression.", srcLocator);
     		}
     	}
     	else {

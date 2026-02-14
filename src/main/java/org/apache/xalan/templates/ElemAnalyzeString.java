@@ -280,12 +280,21 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 	  XPathContext xctxt = transformer.getXPathContext();
 
 	  final int sourceNode = xctxt.getCurrentNode();
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	    
 	  if (m_useWhen != null) {
-		 XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
-		 if (xObj.bool()) {
-			transformSelectedNodes(transformer); 
-		 }
+		  boolean result1 = isXPathExpressionStatic(m_useWhen.getExpression());
+		  if (result1) {
+			  XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+			  if (useWhenResult.bool()) {
+				  transformSelectedNodes(transformer);
+			  }
+		  }
+		  else {
+			  throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
+					                                                                                 + "used within XPath static expression.", srcLocator);
+		  }
 	  }
 	  else {
          transformSelectedNodes(transformer);

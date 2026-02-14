@@ -180,12 +180,21 @@ public class ElemChoose extends ElemTemplateElement
     
     XPathContext xctxt = transformer.getXPathContext();
     
+    SourceLocator srcLocator = xctxt.getSAXLocator();
+    
     final int sourceNode = xctxt.getCurrentNode(); 
     
     if (m_useWhen != null) {
-    	XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
-    	if (!xObj.bool()) {
-    		return; 
+    	boolean result1 = isXPathExpressionStatic(m_useWhen.getExpression());
+    	if (result1) {
+    		XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    		if (!useWhenResult.bool()) {
+    			return;
+    		}
+    	}
+    	else {
+    		throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
+    				                                                                               + "used within XPath static expression.", srcLocator);
     	}
     }
 
@@ -201,7 +210,6 @@ public class ElemChoose extends ElemTemplateElement
         ElemWhen when = (ElemWhen) childElem;                
 
         // must be xsl:when
-        SourceLocator srcLocator = xctxt.getSAXLocator(); 
         XPath whenTest = when.getTest();
         if (when.getXpathDefaultNamespace() != null) {
            whenTest = new XPath(whenTest.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

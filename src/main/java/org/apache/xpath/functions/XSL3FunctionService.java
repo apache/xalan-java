@@ -1584,7 +1584,7 @@ public class XSL3FunctionService {
      */
     private boolean isElemFunctionEligible(ElemFunction elemFunction, Vector componentNames, 
     		                                                          String funcCallNs, String funcCallName, 
-    		                                                          int funcCallArgCount) {
+    		                                                          int funcCallArgCount) throws TransformerException {
         
     	boolean result = false;
         
@@ -1594,6 +1594,15 @@ public class XSL3FunctionService {
         String fLocalName = fqName.getLocalName();
         String fUri = fqName.getNamespace();
         int fArity = elemFunction.getArity();
+        
+        XPath useWhenExpr = elemFunction.getUseWhen();
+        if (useWhenExpr != null) {
+           boolean result1 = ((ElemTemplateElement)elemFunction).isXPathExpressionStatic(useWhenExpr.getExpression());
+           if (!result1) {
+        	   throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
+						                                                                           + "used within XPath static expression.", elemFunction); 
+           }
+        }
         
         while (enum1.hasMoreElements()) {
 			QName qName2 = (QName)(enum1.nextElement());

@@ -150,6 +150,9 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslCopyNamespacesOpt = new XSLTAttributeDef(null, "copy-namespaces",
                                            XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
     
+    XSLTAttributeDef xslStaticOpt = new XSLTAttributeDef(null, "static",
+                                           XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
+    
     // Optional
     // xsl:number 
     XSLTAttributeDef ordinalAttrOpt = new XSLTAttributeDef(null, "ordinal",
@@ -971,7 +974,7 @@ public class XSLTSchema extends XSLTElementDef
                                    templateElements /* elements */,  // %template;>
                                    new XSLTAttributeDef[]{ nameAttrRequired,
                                                            selectAttrOpt, asAttrOpt, xpathDefaultNamespaceAttrOpt, 
-                                                           expandTextAttrOpt, useWhenAttrOpt }, 
+                                                           expandTextAttrOpt, useWhenAttrOpt, xslStaticOpt }, 
                                   new ProcessorTemplateElem(),
                                    ElemVariable.class /* class object */, 20, true);
     XSLTElementDef xslSequence = new XSLTElementDef(this,
@@ -987,7 +990,7 @@ public class XSLTSchema extends XSLTElementDef
                                 null /*alias */,
                                 templateElements /* elements */,  // %template;>
                                 new XSLTAttributeDef[]{ nameAttrRequired, selectAttrOpt, 
-                                		                asAttrOpt, tunnelAttrOpt, requiredAttrOpt }, 
+                                		                asAttrOpt, tunnelAttrOpt, requiredAttrOpt, xslStaticOpt }, 
                                                         new ProcessorTemplateElem(),
                                                         ElemParam.class /* class object */, 19, true);
     XSLTElementDef xslText =

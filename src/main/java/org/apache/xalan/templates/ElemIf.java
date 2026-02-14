@@ -20,6 +20,7 @@
  */
 package org.apache.xalan.templates;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
@@ -223,13 +224,23 @@ public class ElemIf extends ElemTemplateElement
   {
 
     XPathContext xctxt = transformer.getXPathContext();
+    
+    SourceLocator srcLocator = xctxt.getSAXLocator(); 
+    
     int sourceNode = xctxt.getCurrentNode();
     
     if (m_useWhen != null) {
-       XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
-       if (!xObj.bool()) {
-    	  return; 
-       }
+    	boolean result1 = isXPathExpressionStatic(m_useWhen.getExpression());
+    	if (result1) {
+    		XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    		if (!useWhenResult.bool()) {
+    			return;
+    		}
+    	}
+    	else {
+    		throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
+    				                                                                               + "used within XPath static expression.", srcLocator);
+    	}
     }
     
     if (m_xpath_default_namespace != null) {

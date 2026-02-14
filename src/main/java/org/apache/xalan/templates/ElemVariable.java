@@ -388,6 +388,30 @@ public class ElemVariable extends ElemTemplateElement
   {
 	  return m_useWhen;
   }
+  
+  /**
+   * Class field, representing value of xsl:variable/xsl:param's
+   * attribute "static".
+   */
+  private boolean m_static;
+  
+  public void setStatic(boolean v) {
+	 m_static = v;  
+  }
+  
+  public boolean getStatic() {
+	 return m_static; 
+  }
+  
+  private String m_visibility = "private";
+  
+  public void setVisibility(String str) {
+	 m_visibility = str; 
+  }
+  
+  public String getVisibility() {
+	 return m_visibility; 
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -440,18 +464,28 @@ public class ElemVariable extends ElemTemplateElement
        transformer.getTraceManager().emitTraceEvent(this);
     
     XPathContext xctxt = transformer.getXPathContext();
+    
+    SourceLocator srcLocator = xctxt.getSAXLocator();
 
     final int sourceNode = xctxt.getCurrentNode();
     
     XObject var = null;
-    if (m_useWhen != null) {
-       XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
-       if (xObj.bool()) {
-    	  var = getValue(transformer, sourceNode);  
-       }
-       else {
-    	  return; 
-       }
+    
+    if (m_useWhen != null) {              
+    	boolean result1 = isXPathExpressionStatic(m_useWhen.getExpression());
+    	if (result1) {
+    		XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    		if (useWhenResult.bool()) {
+    			var = getValue(transformer, sourceNode); 
+    		}
+    		else {
+    			return;
+    		}
+    	}
+    	else {
+    		throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
+    																										+ "used within XPath static expression.", srcLocator);
+    	}
     }
     else {
        var = getValue(transformer, sourceNode);
@@ -668,6 +702,26 @@ public class ElemVariable extends ElemTemplateElement
 				}
 		    }
 		}
+		
+		if (m_static && !"private".equals(m_visibility)) {
+			throw new TransformerException("XPST0008 : A top-level static variable " + m_qname.toString() + " is not declared as private.", srcLocator);
+		}
+		
+		if (m_static && (getFirstChildElem() != null)) {
+			throw new TransformerException("XTSE0010 : A top-level xsl:variable/xsl:param " + m_qname.toString() + " declared as static, "
+					                                                                                      + "has non-empty content.", srcLocator);
+		}
+		
+		if (m_static && !(this instanceof ElemParam) && (m_selectPattern == null)) {
+			throw new TransformerException("XTSE0010 : A top-level xsl:variable " + m_qname.toString() + " declared as static doesn't "
+					                                                                                   + "have an attribute \"select\".", srcLocator);
+		}
+    }
+    else if (m_static) {
+    	throw new TransformerException("XPST0008 : An XSL stylesheet's local variables and parameters cannot be "
+    			                                                                                       + "declared with attribute \"static\" = yes. "
+    			                                                                                       + "An xsl:variable/xsl:param " + m_qname.toString() 
+    			                                                                                       + " that is non-local is declared to be static.", srcLocator);
     }
     
     if ((m_selectPattern != null) && (m_xpath_default_namespace != null)) {    		

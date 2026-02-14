@@ -269,13 +269,22 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
        {    	   
     	   XPathContext xctxt = transformer.getXPathContext();
     	   
+    	   SourceLocator srcLocator = xctxt.getSAXLocator(); 
+    	   
  		   final int sourceNode = xctxt.getCurrentNode();
  		  
     	   if (m_useWhen != null) {    		  
-    		  XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
-    		  if (xObj.bool()) {
-    			 transformSelectedXdmItems(transformer);  
-    		  }
+    		   boolean result1 = isXPathExpressionStatic(m_useWhen.getExpression());
+    	    	if (result1) {
+    	    		XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    	    		if (useWhenResult.bool()) {
+    	    			transformSelectedXdmItems(transformer);
+    	    		}
+    	    	}
+    	    	else {
+    	    		throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
+    	    				                                                                               + "used within XPath static expression.", srcLocator);
+    	    	}
     	   }
     	   else {
     	      transformSelectedXdmItems(transformer);

@@ -2579,22 +2579,29 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
                  m_xcontext.setSAXLocator(template);
            	     m_xcontext.getVarStack().link(template.m_frameSize);
            	     
-           	     XPath useWhenExpr = template.getUseWhen();
-           	     if (useWhenExpr != null) {
-           	    	 XObject xObj = useWhenExpr.execute(xctxt, sourceNode, xctxt.getNamespaceContext());           	    	 
-           	    	 if (xObj.bool()) {
-           	    		 if (XslTransformData.m_xsl_message_rSeq == null) {
-           	    			 // An XSL stylesheet doesn't contain xsl:message
-           	    			 // instruction.
-           	    			 executeChildTemplates(template, true);
+           	     XPath useWhenExpr = template.getUseWhen();           	     
+           	     if (useWhenExpr != null) { 
+           	    	 boolean result1 = ((ElemTemplateElement)template).isXPathExpressionStatic(useWhenExpr.getExpression());
+           	    	 if (result1) {
+           	    		 XObject xObj = useWhenExpr.execute(xctxt, sourceNode, xctxt.getNamespaceContext());           	    	 
+           	    		 if (xObj.bool()) {
+           	    			 if (XslTransformData.m_xsl_message_rSeq == null) {
+           	    				 // An XSL stylesheet doesn't contain xsl:message
+           	    				 // instruction.
+           	    				 executeChildTemplates(template, true);
+           	    			 }
+           	    			 else { 
+           	    				 // An XSL stylesheet contains one or more xsl:message
+           	    				 // instructions.
+           	    				 int rootNodeHandleOfRtf = this.transformToRTF(template);
+           	    				 NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, template)).convertToNodeset();    	  
+           	    				 m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, xctxt);
+           	    			 } 
            	    		 }
-           	    		 else { 
-           	    			 // An XSL stylesheet contains one or more xsl:message
-           	    			 // instructions.
-           	    			 int rootNodeHandleOfRtf = this.transformToRTF(template);
-           	    			 NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, template)).convertToNodeset();    	  
-           	    			 m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, xctxt);
-           	    		 } 
+           	    	 }
+           	    	 else {
+           	    		 throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
+           	    				                                                                                 + "used within XPath static expression.", template);
            	    	 }
            	     }
            	     else {
@@ -2770,20 +2777,27 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     	  
     	  XPath useWhenExpr = template.getUseWhen();    	  
     	  if (useWhenExpr != null) {
-    		  XObject xObj = useWhenExpr.execute(m_xcontext, sourceNode, m_xcontext.getNamespaceContext());    		  
-    		  if (xObj.bool()) {
-    			  if (XslTransformData.m_xsl_message_rSeq == null) {
-    				  // An XSL stylesheet doesn't contain xsl:message
-    				  // instruction.
-    				  executeChildTemplates(template, true);
+    		  boolean result1 = ((ElemTemplateElement)template).isXPathExpressionStatic(useWhenExpr.getExpression());
+    		  if (result1) {
+    			  XObject xObj = useWhenExpr.execute(m_xcontext, sourceNode, m_xcontext.getNamespaceContext());    		  
+    			  if (xObj.bool()) {
+    				  if (XslTransformData.m_xsl_message_rSeq == null) {
+    					  // An XSL stylesheet doesn't contain xsl:message
+    					  // instruction.
+    					  executeChildTemplates(template, true);
+    				  }
+    				  else {
+    					  // An XSL stylesheet contains one or more xsl:message
+    					  // instructions.
+    					  int rootNodeHandleOfRtf = this.transformToRTF(template);
+    					  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, m_xcontext, template)).convertToNodeset();    	  
+    					  m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, m_xcontext);
+    				  } 
     			  }
-    			  else {
-    				  // An XSL stylesheet contains one or more xsl:message
-    				  // instructions.
-    				  int rootNodeHandleOfRtf = this.transformToRTF(template);
-    				  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, m_xcontext, template)).convertToNodeset();    	  
-    				  m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, m_xcontext);
-    			  } 
+    		  }
+    		  else {
+    			  throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
+						                                                                                        + "used within XPath static expression.", template);
     		  }
     	  }
     	  else {
