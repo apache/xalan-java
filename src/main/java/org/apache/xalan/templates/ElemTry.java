@@ -170,6 +170,33 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	}
 	
 	/**
+	 * An XPath expression for 'use-when' attribute. 
+	 */
+	private XPath m_useWhen = null;
+
+	/**
+	 * Method definition, to set the value of XSL attribute 
+	 * "use-when".
+	 * 
+	 * @param xpath            XPath expression for attribute "use-when"
+	 */
+	public void setUseWhen(XPath xpath)
+	{
+		m_useWhen = xpath;  
+	}
+
+	/**
+	 * Method definition, to get the value of XSL attribute 
+	 * "use-when".
+	 * 
+	 * @return			XPath expression for attribute "use-when"
+	 */
+	public XPath getUseWhen()
+	{
+		return m_useWhen;
+	}
+	
+	/**
 	 * This class field is used during, XPath.fixupVariables(..) 
 	 * evaluation as performed within object of this class.  
 	 */    
@@ -252,7 +279,14 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	    
-	    int contextNode = xctxt.getContextNode();
+	    final int sourceNode = xctxt.getContextNode();
+	    
+	    if (m_useWhen != null) {
+	    	XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+	    	if (!xObj.bool()) {
+	    		return; 
+	    	}
+	    }
 	    
 	    if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
 	    	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -291,7 +325,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    		}
 
 	    		m_selectExpression.setIsConcreteExceptionProcessing(true);
-	    		XObject xpathEvalResult = m_selectExpression.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+	    		XObject xpathEvalResult = m_selectExpression.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 	    		ResultSequence rSeq = new ResultSequence();
 	    		rSeq.add(xpathEvalResult);
 	    		SerializationHandler handler = transformer.getSerializationHandler(); 

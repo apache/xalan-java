@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import java.util.List;
@@ -31,18 +28,19 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 
 /**
- * Implementation of XSLT xsl:call-template element.
+ * Implementation of XSLT 3.0 instruction xsl:call-template.
  * 
  * @xsl.usage advanced
  */
 public class ElemCallTemplate extends ElemForEach
 {
-    static final long serialVersionUID = 5009634612916030591L;
+  static final long serialVersionUID = 5009634612916030591L;
 
   /**
    * An xsl:call-template element invokes a template by name;
@@ -144,6 +142,33 @@ public class ElemCallTemplate extends ElemForEach
    */
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
+  }
+  
+  /**
+   * An XPath expression for 'use-when' attribute. 
+   */
+  private XPath m_useWhen = null;
+
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
   }
   
   /**
@@ -256,108 +281,114 @@ public class ElemCallTemplate extends ElemForEach
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer)
-            throws TransformerException
-  {
+  public void execute(TransformerImpl transformer) throws TransformerException {
 
-    if (transformer.getDebug())
-      transformer.getTraceManager().emitTraceEvent(this);
+	  if (transformer.getDebug())
+		  transformer.getTraceManager().emitTraceEvent(this);
 
-    if (null != m_template)
-    {
-      XPathContext xctxt = transformer.getXPathContext();
-      VariableStack vars = xctxt.getVarStack();
+	  XPathContext xctxt = transformer.getXPathContext();
 
-      int thisframe = vars.getStackFrame();
-      int nextFrame = vars.link(m_template.m_frameSize);
-      
-      // We have to clear the section of the stack frame that has params 
-      // so that the default param evaluation will work correctly.
-      if (m_template.m_inArgsSize > 0)
-      {
-        vars.clearLocalSlots(0, m_template.m_inArgsSize);
-      
-        if (null != m_paramElems)
-        {
-          int currentNode = xctxt.getCurrentNode();
-          vars.setStackFrame(thisframe);
-          int size = m_paramElems.length;
-          
-          int maxParamStackFrameIndex = -1;
-          
-          for (int i = 0; i < size; i++) 
-          {
-            ElemWithParam ewp = m_paramElems[i];
-            if (ewp.m_index >= 0)
-            {
-              if (transformer.getDebug())
-                transformer.getTraceManager().emitTraceEvent(ewp);
-              XObject obj = ewp.getValue(transformer, currentNode);
-              if (transformer.getDebug())
-                transformer.getTraceManager().emitTraceEndEvent(ewp);                            
-              
-              String tunnelStrVal = ewp.getTunnel();
-              obj.setTunnel(tunnelStrVal);
-              QName qName = ewp.getName();
-              obj.setQName(qName);
-              
-              // Note here that the index for ElemWithParam must have been 
-              // statically made relative to the xsl:template being called, 
-              // NOT this xsl:template.
-              vars.setLocalVariable(ewp.m_index, obj, nextFrame);
-              maxParamStackFrameIndex = ewp.m_index; 
-            }
-          }
-          
-          propagateTunnelParameters(vars, thisframe, nextFrame, maxParamStackFrameIndex);
-          
-          vars.setStackFrame(nextFrame);
-        }
-        else {
-            vars.setStackFrame(thisframe);            
-            int maxParamStackFrameIndex = -1;
-            
-            propagateTunnelParameters(vars, thisframe, nextFrame, maxParamStackFrameIndex);             
-            
-            vars.setStackFrame(nextFrame);
-         }
-      }
-      
-      SourceLocator savedLocator = xctxt.getSAXLocator();
+	  final int sourceNode = xctxt.getCurrentNode();
 
-      try
-      {
-        xctxt.setSAXLocator(m_template);
+	  if (m_useWhen != null) {
+		  XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+		  if (!xObj.bool()) {
+			  return; 
+		  }
+	  }
 
-        // template.executeChildTemplates(transformer, sourceNode, mode, true);
-        transformer.pushElemTemplateElement(m_template);
-        m_template.execute(transformer);
-      }
-      finally
-      {
-        transformer.popElemTemplateElement();
-        xctxt.setSAXLocator(savedLocator);
-        // When we entered this function, the current 
-        // frame buffer (cfb) index in the variable stack may 
-        // have been manually set.  If we just call 
-        // unlink(), however, it will restore the cfb to the 
-        // previous link index from the link stack, rather than 
-        // the manually set cfb.  So, 
-        // the only safe solution is to restore it back 
-        // to the same position it was on entry, since we're 
-        // really not working in a stack context here. (Bug4218)
-        vars.unlink(thisframe);
-      }
-    }
-    else
-    {
-      transformer.getMsgMgr().error(this, XSLTErrorResources.ER_TEMPLATE_NOT_FOUND,
-                                    new Object[]{ m_templateName });  //"Could not find template named: '"+templateName+"'");
-    }
-    
-    if (transformer.getDebug())
-	  transformer.getTraceManager().emitTraceEndEvent(this); 
+	  if (m_template != null)
+	  {      
+		  VariableStack vars = xctxt.getVarStack();
+
+		  int thisframe = vars.getStackFrame();
+		  int nextFrame = vars.link(m_template.m_frameSize);
+
+		  // We have to clear the section of the stack frame that has params 
+		  // so that the default param evaluation will work correctly.
+		  if (m_template.m_inArgsSize > 0)
+		  {
+			  vars.clearLocalSlots(0, m_template.m_inArgsSize);
+
+			  if (null != m_paramElems)
+			  {          
+				  vars.setStackFrame(thisframe);
+				  int size = m_paramElems.length;
+
+				  int maxParamStackFrameIndex = -1;
+
+				  for (int i = 0; i < size; i++) 
+				  {
+					  ElemWithParam ewp = m_paramElems[i];
+					  if (ewp.m_index >= 0)
+					  {
+						  if (transformer.getDebug())
+							  transformer.getTraceManager().emitTraceEvent(ewp);
+						  XObject obj = ewp.getValue(transformer, sourceNode);
+						  if (transformer.getDebug())
+							  transformer.getTraceManager().emitTraceEndEvent(ewp);                            
+
+						  String tunnelStrVal = ewp.getTunnel();
+						  obj.setTunnel(tunnelStrVal);
+						  QName qName = ewp.getName();
+						  obj.setQName(qName);
+
+						  // Note here that the index for ElemWithParam must have been 
+						  // statically made relative to the xsl:template being called, 
+						  // NOT this xsl:template.
+						  vars.setLocalVariable(ewp.m_index, obj, nextFrame);
+						  maxParamStackFrameIndex = ewp.m_index; 
+					  }
+				  }
+
+				  propagateTunnelParameters(vars, thisframe, nextFrame, maxParamStackFrameIndex);
+
+				  vars.setStackFrame(nextFrame);
+			  }
+			  else {
+				  vars.setStackFrame(thisframe);            
+				  int maxParamStackFrameIndex = -1;
+
+				  propagateTunnelParameters(vars, thisframe, nextFrame, maxParamStackFrameIndex);             
+
+				  vars.setStackFrame(nextFrame);
+			  }
+		  }
+
+		  SourceLocator savedLocator = xctxt.getSAXLocator();
+
+		  try
+		  {
+			  xctxt.setSAXLocator(m_template);
+
+			  // template.executeChildTemplates(transformer, sourceNode, mode, true);
+			  transformer.pushElemTemplateElement(m_template);
+			  m_template.execute(transformer);
+		  }
+		  finally
+		  {
+			  transformer.popElemTemplateElement();
+			  xctxt.setSAXLocator(savedLocator);
+			  // When we entered this function, the current 
+			  // frame buffer (cfb) index in the variable stack may 
+			  // have been manually set.  If we just call 
+			  // unlink(), however, it will restore the cfb to the 
+			  // previous link index from the link stack, rather than 
+			  // the manually set cfb.  So, 
+			  // the only safe solution is to restore it back 
+			  // to the same position it was on entry, since we're 
+			  // really not working in a stack context here. (Bug4218)
+			  vars.unlink(thisframe);
+		  }
+	  }
+	  else
+	  {
+		  transformer.getMsgMgr().error(this, XSLTErrorResources.ER_TEMPLATE_NOT_FOUND,
+				  new Object[]{ m_templateName });  //"Could not find template named: '"+templateName+"'");
+	  }
+
+	  if (transformer.getDebug())
+		  transformer.getTraceManager().emitTraceEndEvent(this); 
 
   }
   

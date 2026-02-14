@@ -399,7 +399,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   public XPath getUseWhen()
   {
-      return m_useWhen;
+	  return m_useWhen;
   }
 
   /**

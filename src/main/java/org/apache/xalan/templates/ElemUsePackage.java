@@ -21,10 +21,11 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
 /**
- * Implementation of XSLT 3.0 xsl:use-package element.
+ * Implementation of XSLT 3.0 instruction xsl:use-package.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -106,6 +107,33 @@ public class ElemUsePackage extends ElemTemplateElement
   
   public Stylesheet getStylesheet() {
 	 return m_stylesheet; 
+  }
+  
+  /**
+   * An XPath expression for 'use-when' attribute. 
+   */
+  private XPath m_useWhen = null;
+
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
   }
   
   /**

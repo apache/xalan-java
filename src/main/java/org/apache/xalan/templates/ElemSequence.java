@@ -232,6 +232,33 @@ public class ElemSequence extends ElemTemplateElement
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }
+  
+  /**
+   * An XPath expression for 'use-when' attribute. 
+   */
+  private XPath m_useWhen = null;
+
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -259,20 +286,295 @@ public class ElemSequence extends ElemTemplateElement
    */
   public void execute(TransformerImpl transformer) throws TransformerException {
 
-      int sourceNode = transformer.getXPathContext().getCurrentNode();
+	  XPathContext xctxt = transformer.getXPathContext();
+	  
+	  final int sourceNode = xctxt.getCurrentNode();
+      
+      if (m_useWhen != null) {
+    	 XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    	 if (xObj.bool()) {
+    		processXslSequence(transformer, sourceNode); 
+    	 }
+      }
+      else {
+         processXslSequence(transformer, sourceNode);
+      }
+  }
   
-      processXslSequence(transformer, sourceNode);       
+  /**
+   * Method definition, to emit contents of xsl:sequence instruction's 
+   * evaluation result, to XSL transformation result tree.
+   * 
+   * @param xctxt							An XPathContext object instance 
+   * @param transformer						TransformerImpl object instance
+   * @param xdmObject					    An XObject object instance, representing 
+   *                                        result of evaluation of the xsl:sequence 
+   *                                        instruction.
+   * @throws TransformerException
+   * @throws SAXException
+   */
+  public void emitXdmItemToXSLResultTree(XPathContext xctxt, TransformerImpl transformer, 
+		                                                    XObject xdmObject) throws TransformerException, SAXException {
+	  
+	  if (xdmObject instanceof XPathInlineFunction) {
+		  XslTransformData.m_xpathInlineFunction = (XPathInlineFunction)xdmObject;   
+	  }
+	  else if (xdmObject instanceof XPathMap) {
+		  XslTransformData.m_xpathMap = (XPathMap)xdmObject;
+	  }
+	  else {
+		  SerializationHandler handler = transformer.getSerializationHandler();
+
+		  int xObjectType = xdmObject.getType();
+		  String strVal = null;
+
+		  switch (xObjectType) {           
+		  case XObject.CLASS_NODESET :          
+			  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xdmObject, transformer, handler, xctxt);          
+			  break;
+		  case XObject.CLASS_RTREEFRAG :
+			  SerializerUtils.outputResultTreeFragment(handler, xdmObject, xctxt);
+			  break;
+		  case XObject.CLASS_RESULT_SEQUENCE :         
+			  ResultSequence resultSequence = (ResultSequence)xdmObject;			  
+			  
+			  ElemTemplateElement elemTemplateParentElem = getParentElem();			  
+			  boolean isXslSeqDelimEmit = false;
+			  while (elemTemplateParentElem != null) {
+				  if (elemTemplateParentElem instanceof ElemCatch) {
+					  isXslSeqDelimEmit = true;
+					  
+					  break;
+				  }
+				  else {
+					  elemTemplateParentElem = elemTemplateParentElem.getParentElem(); 
+				  }
+			  }
+			  
+			  if (isXslSeqDelimEmit) {
+				  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, !isXslSeqDelimEmit, this);
+			  }
+			  else {
+				  elemTemplateParentElem = getParentElem();				  
+				  while (elemTemplateParentElem != null) {
+					  if ((elemTemplateParentElem instanceof ElemValueOf) || (elemTemplateParentElem instanceof ElemVariable)
+							                                              || (elemTemplateParentElem instanceof ElemFunction)) {
+						  isXslSeqDelimEmit = true;
+
+						  break;
+					  }
+
+					  elemTemplateParentElem = elemTemplateParentElem.getParentElem();
+				  }
+
+				  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, isXslSeqDelimEmit, this);
+			  }
+			  
+			  break;
+		  default :
+			  // no op
+		  }
+
+		  boolean isToAddStrValSerializationSuffix = isToAddXslSequenceSerializationSuffix(xctxt); 
+
+		  if ((xdmObject instanceof XBoolean) || (xdmObject instanceof XString)) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = xdmObject.str() + STRING_VAL_SER_SUFFIX;
+			  }
+			  else {
+				  strVal = xdmObject.str();  
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XNumber) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = xdmObject.str() + STRING_VAL_SER_DOUBLE_SUFFIX;
+			  }
+			  else {
+				  strVal = xdmObject.str();  
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XSInteger) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = ((XSInteger)xdmObject).stringValue() + STRING_VAL_SER_INTEGER_SUFFIX;
+			  }
+			  else {
+				  strVal = ((XSInteger)xdmObject).stringValue();
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XSDecimal) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = ((XSDecimal)xdmObject).stringValue() + STRING_VAL_SER_DECIMAL_SUFFIX;
+			  }
+			  else {
+				  strVal = ((XSDecimal)xdmObject).stringValue();
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XSDouble) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = ((XSDouble)xdmObject).stringValue() + STRING_VAL_SER_DOUBLE_SUFFIX;
+			  }
+			  else {
+				  strVal = ((XSDouble)xdmObject).stringValue();
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XSFloat) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = ((XSFloat)xdmObject).stringValue() + STRING_VAL_SER_FLOAT_SUFFIX;
+			  }
+			  else {
+				  strVal = ((XSFloat)xdmObject).stringValue();
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+		  else if (xdmObject instanceof XSAnyAtomicType) {
+			  if (isToAddStrValSerializationSuffix) {
+				  strVal = ((XSAnyAtomicType)xdmObject).stringValue() + STRING_VAL_SER_SUFFIX;
+			  }
+			  else {
+				  strVal = ((XSAnyAtomicType)xdmObject).stringValue();
+			  }
+
+			  handler.characters(strVal.toCharArray(), 0, strVal.length());
+		  }
+	  }
   }
 
   /**
-   * This method, helps to evaluate an xsl:sequence instruction.
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   */
+  public void compose(StylesheetRoot sroot) throws TransformerException {	  
+     StylesheetRoot.ComposeState cstate = sroot.getComposeState();
+    
+     java.util.Vector vnames = cstate.getVariableNames();
+        
+     m_vars = (Vector)vnames.clone();
+     m_globals_size = cstate.getGlobalsSize();
+        
+     if (m_selectPattern != null) {
+        m_selectPattern.fixupVariables(vnames, cstate.getGlobalsSize());
+     }
+    
+     super.compose(sroot);
+  }
+  
+  /**
+   * This after the template's children have been composed.
+   */
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {
+     super.endCompose(sroot);
+  }
+  
+  /**
+   * Set the parent as an ElemTemplateElement.
+   *
+   * @param p This node's parent as an ElemTemplateElement
+   */
+  public void setParentElem(ElemTemplateElement p)
+  {
+    super.setParentElem(p);
+  }
+
+  
+  /**
+   * Call the children visitors.
+   * 
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
+  {
+  	if (m_selectPattern != null) {
+  	   m_selectPattern.getExpression().callVisitors(m_selectPattern, visitor);
+  	}
+  	
+    super.callChildVisitors(visitor, callAttrs);
+  }
+  
+  /**
+   * Method definition, to check whether Xalan serialization suffix is 
+   * to be added when emitting xdm atomic values during evaluation of 
+   * xsl:sequence instruction.
+   */
+  public boolean isToAddXslSequenceSerializationSuffix(XPathContext xctxt) throws TransformerException {
+     
+     boolean result = true;
+     
+     ElemTemplateElement elemTemplateElem = getParentElem();
+     
+     String asAttrStrVal = null;
+     
+     while (elemTemplateElem != null) {
+        if (elemTemplateElem instanceof ElemFunction) {
+           asAttrStrVal = ((ElemFunction)elemTemplateElem).getAs();
+           
+           break;
+        }
+        else if (elemTemplateElem instanceof ElemVariable) {
+           asAttrStrVal = ((ElemVariable)elemTemplateElem).getAs();
+           
+           break;
+        }
+        else {
+           elemTemplateElem = elemTemplateElem.getParentElem();  
+        }
+     }
+     
+     if (asAttrStrVal != null) {
+         XPath seqTypeXPath = new XPath(asAttrStrVal, xctxt.getSAXLocator(), xctxt.getNamespaceContext(), 
+        		                                                             XPath.SELECT, null, true);
+         XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), 
+                                                                             xctxt.getNamespaceContext());
+         SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+         if (seqExpectedTypeData.getSequenceTypeKindTest() != null) {
+            result = false; 
+         }
+     }
+     else {
+         result = false;
+     }
+     
+     return result; 
+  }
+
+  public boolean getIsCalledFromXslFork() {
+	  return m_isCalledFromXslFork;
+  }
+
+  public void setIsCalledFromXslFork(boolean isCalledFromXslFork) {
+	  this.m_isCalledFromXslFork = isCalledFromXslFork;
+  }
+
+  public XObject getXslSequenceEvalResult() {
+	  return m_xslSequenceEvalResult;
+  }
+
+  public void setXslSequenceEvalResult(XObject xslSequenceEvalResult) {
+	  this.m_xslSequenceEvalResult = xslSequenceEvalResult;
+  }
+  
+  /**
+   * Method definition, to evaluate an xsl:sequence instruction.
    * 
    * @param transformer non-null reference to the the current transform-time state.
    * @param sourceNode non-null reference to the current source node.
    *
    * @throws TransformerException
    */
-  public void processXslSequence(TransformerImpl transformer, int sourceNode) 
+  private void processXslSequence(TransformerImpl transformer, int sourceNode) 
                                                                            throws TransformerException
   {
 
@@ -616,271 +918,6 @@ public class ElemSequence extends ElemTemplateElement
 	  finally {      
 		  xctxt.popCurrentNode();
 	  }   
-  }
-  
-  /**
-   * Method definition, to emit contents of xsl:sequence instruction's 
-   * evaluation result, to XSL transformation result tree.
-   * 
-   * @param xctxt							An XPathContext object instance 
-   * @param transformer						TransformerImpl object instance
-   * @param xdmObject					    An XObject object instance, representing 
-   *                                        result of evaluation of the xsl:sequence 
-   *                                        instruction.
-   * @throws TransformerException
-   * @throws SAXException
-   */
-  public void emitXdmItemToXSLResultTree(XPathContext xctxt, TransformerImpl transformer, 
-		                                                    XObject xdmObject) throws TransformerException, SAXException {
-	  
-	  if (xdmObject instanceof XPathInlineFunction) {
-		  XslTransformData.m_xpathInlineFunction = (XPathInlineFunction)xdmObject;   
-	  }
-	  else if (xdmObject instanceof XPathMap) {
-		  XslTransformData.m_xpathMap = (XPathMap)xdmObject;
-	  }
-	  else {
-		  SerializationHandler handler = transformer.getSerializationHandler();
-
-		  int xObjectType = xdmObject.getType();
-		  String strVal = null;
-
-		  switch (xObjectType) {           
-		  case XObject.CLASS_NODESET :          
-			  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xdmObject, transformer, handler, xctxt);          
-			  break;
-		  case XObject.CLASS_RTREEFRAG :
-			  SerializerUtils.outputResultTreeFragment(handler, xdmObject, xctxt);
-			  break;
-		  case XObject.CLASS_RESULT_SEQUENCE :         
-			  ResultSequence resultSequence = (ResultSequence)xdmObject;			  
-			  
-			  ElemTemplateElement elemTemplateParentElem = getParentElem();			  
-			  boolean isXslSeqDelimEmit = false;
-			  while (elemTemplateParentElem != null) {
-				  if (elemTemplateParentElem instanceof ElemCatch) {
-					  isXslSeqDelimEmit = true;
-					  
-					  break;
-				  }
-				  else {
-					  elemTemplateParentElem = elemTemplateParentElem.getParentElem(); 
-				  }
-			  }
-			  
-			  if (isXslSeqDelimEmit) {
-				  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, !isXslSeqDelimEmit, this);
-			  }
-			  else {
-				  elemTemplateParentElem = getParentElem();				  
-				  while (elemTemplateParentElem != null) {
-					  if ((elemTemplateParentElem instanceof ElemValueOf) || (elemTemplateParentElem instanceof ElemVariable)
-							                                              || (elemTemplateParentElem instanceof ElemFunction)) {
-						  isXslSeqDelimEmit = true;
-
-						  break;
-					  }
-
-					  elemTemplateParentElem = elemTemplateParentElem.getParentElem();
-				  }
-
-				  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, isXslSeqDelimEmit, this);
-			  }
-			  
-			  break;
-		  default :
-			  // no op
-		  }
-
-		  boolean isToAddStrValSerializationSuffix = isToAddXslSequenceSerializationSuffix(xctxt); 
-
-		  if ((xdmObject instanceof XBoolean) || (xdmObject instanceof XString)) {
-			  if (isToAddStrValSerializationSuffix) {
-				  strVal = xdmObject.str() + STRING_VAL_SER_SUFFIX;
-			  }
-			  else {
-				  strVal = xdmObject.str();  
-			  }
-
-			  handler.characters(strVal.toCharArray(), 0, strVal.length());
-		  }
-		  else if (xdmObject instanceof XNumber) {
-			  if (isToAddStrValSerializationSuffix) {
-				  strVal = xdmObject.str() + STRING_VAL_SER_DOUBLE_SUFFIX;
-			  }
-			  else {
-				  strVal = xdmObject.str();  
-			  }
-
-			  handler.characters(strVal.toCharArray(), 0, strVal.length());
-		  }
-		  else if (xdmObject instanceof XSInteger) {
-			  if (isToAddStrValSerializationSuffix) {
-				  strVal = ((XSInteger)xdmObject).stringValue() + STRING_VAL_SER_INTEGER_SUFFIX;
-			  }
-			  else {
-				  strVal = ((XSInteger)xdmObject).stringValue();
-			  }
-
-			  handler.characters(strVal.toCharArray(), 0, strVal.length());
-		  }
-		  else if (xdmObject instanceof XSDecimal) {
-			  if (isToAddStrValSerializationSuffix) {
-				  strVal = ((XSDecimal)xdmObject).stringValue() + STRING_VAL_SER_DECIMAL_SUFFIX;
-			  }
-			  else {
-				  strVal = ((XSDecimal)xdmObject).stringValue();
-			  }
-
-			  handler.characters(strVal.toCharArray(), 0, strVal.length());
-		  }
-		  else if (xdmObject instanceof XSDouble) {
-			  if (isToAddStrValSerializationSuffix) {
-				  strVal = ((XSDouble)xdmObject).stringValue() + STRING_VAL_SER_DOUBLE_SUFFIX;
-			  }
-			  else {
-				  strVal = ((XSDouble)xdmObject).stringValue();
-			  }
-
-			  handler.characters(strVal.toCharArray(), 0, strVal.length());
-		  }
-		  else if (xdmObject instanceof XSFloat) {
-			  if (isToAddStrValSerializationSuffix) {
-				  strVal = ((XSFloat)xdmObject).stringValue() + STRING_VAL_SER_FLOAT_SUFFIX;
-			  }
-			  else {
-				  strVal = ((XSFloat)xdmObject).stringValue();
-			  }
-
-			  handler.characters(strVal.toCharArray(), 0, strVal.length());
-		  }
-		  else if (xdmObject instanceof XSAnyAtomicType) {
-			  if (isToAddStrValSerializationSuffix) {
-				  strVal = ((XSAnyAtomicType)xdmObject).stringValue() + STRING_VAL_SER_SUFFIX;
-			  }
-			  else {
-				  strVal = ((XSAnyAtomicType)xdmObject).stringValue();
-			  }
-
-			  handler.characters(strVal.toCharArray(), 0, strVal.length());
-		  }
-	  }
-  }
-
-  /**
-   * This function is called after everything else has been
-   * recomposed, and allows the template to set remaining
-   * values that may be based on some other property that
-   * depends on recomposition.
-   */
-  public void compose(StylesheetRoot sroot) throws TransformerException {	  
-     StylesheetRoot.ComposeState cstate = sroot.getComposeState();
-    
-     java.util.Vector vnames = cstate.getVariableNames();
-        
-     m_vars = (Vector)vnames.clone();
-     m_globals_size = cstate.getGlobalsSize();
-        
-     if (m_selectPattern != null) {
-        m_selectPattern.fixupVariables(vnames, cstate.getGlobalsSize());
-     }
-    
-     super.compose(sroot);
-  }
-  
-  /**
-   * This after the template's children have been composed.
-   */
-  public void endCompose(StylesheetRoot sroot) throws TransformerException
-  {
-     super.endCompose(sroot);
-  }
-  
-  /**
-   * Set the parent as an ElemTemplateElement.
-   *
-   * @param p This node's parent as an ElemTemplateElement
-   */
-  public void setParentElem(ElemTemplateElement p)
-  {
-    super.setParentElem(p);
-  }
-
-  
-  /**
-   * Call the children visitors.
-   * 
-   * @param visitor The visitor whose appropriate method will be called.
-   */
-  protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
-  {
-  	if (m_selectPattern != null) {
-  	   m_selectPattern.getExpression().callVisitors(m_selectPattern, visitor);
-  	}
-  	
-    super.callChildVisitors(visitor, callAttrs);
-  }
-  
-  /**
-   * Method definition, to check whether Xalan serialization suffix is 
-   * to be added when emitting xdm atomic values during evaluation of 
-   * xsl:sequence instruction.
-   */
-  public boolean isToAddXslSequenceSerializationSuffix(XPathContext xctxt) throws TransformerException {
-     
-     boolean result = true;
-     
-     ElemTemplateElement elemTemplateElem = getParentElem();
-     
-     String asAttrStrVal = null;
-     
-     while (elemTemplateElem != null) {
-        if (elemTemplateElem instanceof ElemFunction) {
-           asAttrStrVal = ((ElemFunction)elemTemplateElem).getAs();
-           
-           break;
-        }
-        else if (elemTemplateElem instanceof ElemVariable) {
-           asAttrStrVal = ((ElemVariable)elemTemplateElem).getAs();
-           
-           break;
-        }
-        else {
-           elemTemplateElem = elemTemplateElem.getParentElem();  
-        }
-     }
-     
-     if (asAttrStrVal != null) {
-         XPath seqTypeXPath = new XPath(asAttrStrVal, xctxt.getSAXLocator(), xctxt.getNamespaceContext(), 
-        		                                                             XPath.SELECT, null, true);
-         XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), 
-                                                                             xctxt.getNamespaceContext());
-         SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
-         if (seqExpectedTypeData.getSequenceTypeKindTest() != null) {
-            result = false; 
-         }
-     }
-     else {
-         result = false;
-     }
-     
-     return result; 
-  }
-
-  public boolean getIsCalledFromXslFork() {
-	  return m_isCalledFromXslFork;
-  }
-
-  public void setIsCalledFromXslFork(boolean isCalledFromXslFork) {
-	  this.m_isCalledFromXslFork = isCalledFromXslFork;
-  }
-
-  public XObject getXslSequenceEvalResult() {
-	  return m_xslSequenceEvalResult;
-  }
-
-  public void setXslSequenceEvalResult(XObject xslSequenceEvalResult) {
-	  this.m_xslSequenceEvalResult = xslSequenceEvalResult;
-  }
+   }
 
 }

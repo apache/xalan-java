@@ -361,6 +361,33 @@ public class ElemVariable extends ElemTemplateElement
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }
+  
+  /**
+   * An XPath expression for 'use-when' attribute. 
+   */
+  private XPath m_useWhen = null;
+
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -415,8 +442,20 @@ public class ElemVariable extends ElemTemplateElement
     XPathContext xctxt = transformer.getXPathContext();
 
     final int sourceNode = xctxt.getCurrentNode();
-  
-    XObject var = getValue(transformer, sourceNode);
+    
+    XObject var = null;
+    if (m_useWhen != null) {
+       XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+       if (xObj.bool()) {
+    	  var = getValue(transformer, sourceNode);  
+       }
+       else {
+    	  return; 
+       }
+    }
+    else {
+       var = getValue(transformer, sourceNode);
+    }
     
     if (var instanceof ResultSequence) {
     	ResultSequence rSeq = (ResultSequence)var;

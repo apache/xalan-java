@@ -162,8 +162,8 @@ import xml.xpath31.processor.types.XSString;
  * 
  * @xsl.usage advanced
  */
-public class TransformerImpl extends Transformer
-        implements Runnable, DTMWSFilter, ExtensionsProvider, org.apache.xml.serializer.SerializerTrace
+public class TransformerImpl extends Transformer implements Runnable, DTMWSFilter, ExtensionsProvider, 
+                                                                                                 org.apache.xml.serializer.SerializerTrace
 {
 
   // Synch object to gaurd against setting values from an 
@@ -1264,22 +1264,19 @@ public class TransformerImpl extends Transformer
           throws IllegalArgumentException
   {
 
-    synchronized (m_reentryGuard)
-    {
+    synchronized (m_reentryGuard) {
+    	// Get the output format that was set by the user, otherwise get the 
+    	// output format from the stylesheet.
+    	if (m_outputFormat == null)
+    	{
+    		m_outputFormat = (OutputProperties) getStylesheet().getOutputComposed().clone();
+    	}
 
-      // Get the output format that was set by the user, otherwise get the 
-      // output format from the stylesheet.
-      if (null == m_outputFormat)
-      {
-        m_outputFormat =
-          (OutputProperties) getStylesheet().getOutputComposed().clone();
-      }
+    	if (!OutputProperties.isLegalPropertyKey(name))
+    		throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{name})); //"output property not recognized: "
+    	//+ name);
 
-      if (!OutputProperties.isLegalPropertyKey(name))
-        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{name})); //"output property not recognized: "
-                                           //+ name);
-
-      m_outputFormat.setProperty(name, value);
+    	m_outputFormat.setProperty(name, value);
     }
   }
 
@@ -1301,34 +1298,31 @@ public class TransformerImpl extends Transformer
    * @throws IllegalArgumentException if any of the argument keys are not
    * recognized and are not namespace qualified.   
    */
-  public void setOutputProperties(Properties oformat)
-  		throws IllegalArgumentException
+  public void setOutputProperties(Properties oformat) throws IllegalArgumentException
   {
 
-    synchronized (m_reentryGuard)
-    {
-      if (null != oformat)
-      {
+    synchronized (m_reentryGuard) {    	
+    	if (oformat != null)
+    	{
+    		// See if an *explicit* method was set
+    		String method = (String) oformat.get(OutputKeys.METHOD);
 
-        // See if an *explicit* method was set.
-        String method = (String) oformat.get(OutputKeys.METHOD);
+    		if (null != method)
+    			m_outputFormat = new OutputProperties(method);
+    		else if (m_outputFormat==null)
+    			m_outputFormat = new OutputProperties();
 
-        if (null != method)
-          m_outputFormat = new OutputProperties(method);
-        else if (m_outputFormat==null)
-          m_outputFormat = new OutputProperties();
-
-        m_outputFormat.copyFrom(oformat);
-        // copyFrom does not set properties that have been already set, so 
-        // this must be called after, which is a bit in the reverse from 
-        // what one might think.
-        m_outputFormat.copyFrom(m_stylesheetRoot.getOutputProperties());
-      }
-      else {
-        // if oformat is null JAXP says that any props previously set are removed
-        // and we are to revert back to those in the templates object (i.e. Stylesheet).
-        m_outputFormat = null;
-      }
+    		m_outputFormat.copyFrom(oformat);
+    		// copyFrom does not set properties that have been already set, so 
+    		// this must be called after, which is a bit in the reverse from 
+    		// what one might think.
+    		m_outputFormat.copyFrom(m_stylesheetRoot.getOutputProperties());
+    	}
+    	else {
+    		// if oformat is null JAXP says that any props previously set are removed
+    		// and we are to revert back to those in the templates object (i.e. Stylesheet).
+    		m_outputFormat = null;
+    	}
     }
   }
 
@@ -1574,12 +1568,12 @@ public class TransformerImpl extends Transformer
 	  
     synchronized (m_reentryGuard)
     {
-      SerializationHandler xoh = createSerializationHandler(outputTarget);
-      this.setSerializationHandler(xoh);        
+    	SerializationHandler xoh = createSerializationHandler(outputTarget);
+    	this.setSerializationHandler(xoh);        
 
-      m_outputTarget = outputTarget;
+    	m_outputTarget = outputTarget;
 
-      transform(xmlSource, shouldRelease);
+    	transform(xmlSource, shouldRelease);
     }
   }
 
@@ -2064,11 +2058,11 @@ public class TransformerImpl extends Transformer
 
     synchronized (m_reentryGuard)
     {
-      VariableStack varstack = new VariableStack();
+    	VariableStack varstack = new VariableStack();
 
-      m_xcontext.setVarStack(varstack);
+    	m_xcontext.setVarStack(varstack);
 
-      m_userParams = null;
+    	m_userParams = null;
     }
   }
 
@@ -2128,7 +2122,7 @@ public class TransformerImpl extends Transformer
 
     synchronized (m_reentryGuard)
     {
-      m_xcontext.getSourceTreeManager().setURIResolver(resolver);
+    	m_xcontext.getSourceTreeManager().setURIResolver(resolver);
     }
   }
 
@@ -2546,6 +2540,8 @@ public class TransformerImpl extends Transformer
         // Find the XSL template that is the best match for the 
         // element.        
         XPathContext xctxt = m_xcontext;
+        
+        final int sourceNode = xctxt.getCurrentNode();
 
         try
         {
@@ -2583,21 +2579,42 @@ public class TransformerImpl extends Transformer
                  m_xcontext.setSAXLocator(template);
            	     m_xcontext.getVarStack().link(template.m_frameSize);
            	     
-           	     if (XslTransformData.m_xsl_message_rSeq == null) {
-           	         // An XSL stylesheet doesn't contain xsl:message
-           		     // instruction.
-           	    	 executeChildTemplates(template, true);
+           	     XPath useWhenExpr = template.getUseWhen();
+           	     if (useWhenExpr != null) {
+           	    	 XObject xObj = useWhenExpr.execute(xctxt, sourceNode, xctxt.getNamespaceContext());           	    	 
+           	    	 if (xObj.bool()) {
+           	    		 if (XslTransformData.m_xsl_message_rSeq == null) {
+           	    			 // An XSL stylesheet doesn't contain xsl:message
+           	    			 // instruction.
+           	    			 executeChildTemplates(template, true);
+           	    		 }
+           	    		 else { 
+           	    			 // An XSL stylesheet contains one or more xsl:message
+           	    			 // instructions.
+           	    			 int rootNodeHandleOfRtf = this.transformToRTF(template);
+           	    			 NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, template)).convertToNodeset();    	  
+           	    			 m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, xctxt);
+           	    		 } 
+           	    	 }
            	     }
-           	     else { 
-           	         // An XSL stylesheet contains one or more xsl:message
-           		     // instructions.
-           	    	 int rootNodeHandleOfRtf = this.transformToRTF(template);
-           	    	 NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, template)).convertToNodeset();    	  
-           	    	 m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, xctxt);
+           	     else {
+           	    	 if (XslTransformData.m_xsl_message_rSeq == null) {
+           	    		 // An XSL stylesheet doesn't contain xsl:message
+           	    		 // instruction.
+           	    		 executeChildTemplates(template, true);
+           	    	 }
+           	    	 else { 
+           	    		 // An XSL stylesheet contains one or more xsl:message
+           	    		 // instructions.
+           	    		 int rootNodeHandleOfRtf = this.transformToRTF(template);
+           	    		 NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, template)).convertToNodeset();    	  
+           	    		 m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, xctxt);
+           	    	 }
            	     }
-
+           	     
            	     if (m_debug)
            		    getTraceManager().emitTraceEndEvent(template);
+           	     
            	     
            	     return true;
              }
@@ -2749,17 +2766,39 @@ public class TransformerImpl extends Transformer
     	  m_xcontext.setSAXLocator(template);
     	  m_xcontext.getVarStack().link(template.m_frameSize);
     	  
-    	  if (XslTransformData.m_xsl_message_rSeq == null) {
-    		  // An XSL stylesheet doesn't contain xsl:message
-    		  // instruction.
-    		  executeChildTemplates(template, true);
+    	  final int sourceNode = m_xcontext.getCurrentNode();
+    	  
+    	  XPath useWhenExpr = template.getUseWhen();    	  
+    	  if (useWhenExpr != null) {
+    		  XObject xObj = useWhenExpr.execute(m_xcontext, sourceNode, m_xcontext.getNamespaceContext());    		  
+    		  if (xObj.bool()) {
+    			  if (XslTransformData.m_xsl_message_rSeq == null) {
+    				  // An XSL stylesheet doesn't contain xsl:message
+    				  // instruction.
+    				  executeChildTemplates(template, true);
+    			  }
+    			  else {
+    				  // An XSL stylesheet contains one or more xsl:message
+    				  // instructions.
+    				  int rootNodeHandleOfRtf = this.transformToRTF(template);
+    				  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, m_xcontext, template)).convertToNodeset();    	  
+    				  m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, m_xcontext);
+    			  } 
+    		  }
     	  }
     	  else {
-    		  // An XSL stylesheet contains one or more xsl:message
-    		  // instructions.
-    		  int rootNodeHandleOfRtf = this.transformToRTF(template);
-    		  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, m_xcontext, template)).convertToNodeset();    	  
-    		  m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, m_xcontext);
+    		  if (XslTransformData.m_xsl_message_rSeq == null) {
+    			  // An XSL stylesheet doesn't contain xsl:message
+    			  // instruction.
+    			  executeChildTemplates(template, true);
+    		  }
+    		  else {
+    			  // An XSL stylesheet contains one or more xsl:message
+    			  // instructions.
+    			  int rootNodeHandleOfRtf = this.transformToRTF(template);
+    			  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, m_xcontext, template)).convertToNodeset();    	  
+    			  m_xsl_transform_result_with_message = new XNodeSetForDOM(nodeList, m_xcontext);
+    		  }
     	  }
 
     	  if (m_debug)
@@ -3889,10 +3928,10 @@ public class TransformerImpl extends Transformer
 
     synchronized (m_reentryGuard)
     {
-      if (listener == null)
-        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NULL_ERROR_HANDLER, null)); //"Null error handler");
+    	if (listener == null)
+    		throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NULL_ERROR_HANDLER, null)); //"Null error handler");
 
-      m_errorHandler = listener;
+    	m_errorHandler = listener;
     }
   }
 

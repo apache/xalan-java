@@ -107,6 +107,33 @@ public class ElemChoose extends ElemTemplateElement
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }
+  
+  /**
+   * An XPath expression for 'use-when' attribute. 
+   */
+  private XPath m_useWhen = null;
+
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
+  }
 
   /**
    * Get an int constant identifying the type of element.
@@ -150,6 +177,17 @@ public class ElemChoose extends ElemTemplateElement
       transformer.getTraceManager().emitTraceEvent(this);
 
     boolean found = false;
+    
+    XPathContext xctxt = transformer.getXPathContext();
+    
+    final int sourceNode = xctxt.getCurrentNode(); 
+    
+    if (m_useWhen != null) {
+    	XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    	if (!xObj.bool()) {
+    		return; 
+    	}
+    }
 
     for (ElemTemplateElement childElem = getFirstChildElem();
             childElem != null; childElem = childElem.getNextSiblingElem())
@@ -163,14 +201,11 @@ public class ElemChoose extends ElemTemplateElement
         ElemWhen when = (ElemWhen) childElem;                
 
         // must be xsl:when
-        XPathContext xctxt = transformer.getXPathContext();
         SourceLocator srcLocator = xctxt.getSAXLocator(); 
         XPath whenTest = when.getTest();
         if (when.getXpathDefaultNamespace() != null) {
            whenTest = new XPath(whenTest.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         }
-        
-        int sourceNode = xctxt.getCurrentNode();
 
         if (transformer.getDebug())
         {

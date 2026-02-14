@@ -1091,7 +1091,7 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	/**
 	 * The "xsl:use-package" properties.
 	 */
-	private Vector m_usePackageVector;
+	private Vector m_usePackages;
 	
 	/**
 	 * The "xsl:expose" properties.
@@ -1136,16 +1136,16 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	 *          reference objects.
 	 */
 	public void setUsePackage(ElemUsePackage v)
-	{
-		if (m_usePackageVector == null)
-			m_usePackageVector = new Vector();
+	{		
+		if (m_usePackages == null)
+			m_usePackages = new Vector();
 
-		m_usePackageVector.addElement(v);
+		m_usePackages.addElement(v);
 		v.setStylesheet(this);
 	}
 	
-	public Vector getUsePackageVector() {
-		return m_usePackageVector;
+	public Vector getUsePackages() {
+		return m_usePackages;
 	}
 	
 	/**

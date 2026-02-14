@@ -208,7 +208,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    * An XPath expression for 'use-when' attribute. 
    */
   private XPath m_useWhen = null;
-  
+
   /**
    * Method definition, to set the value of XSL attribute 
    * "use-when".
@@ -228,7 +228,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    */
   public XPath getUseWhen()
   {
-      return m_useWhen;
+	  return m_useWhen;
   }
   
   private Vector m_vars;

@@ -138,6 +138,33 @@ public class ElemIf extends ElemTemplateElement
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }
+  
+  /**
+   * An XPath expression for 'use-when' attribute. 
+   */
+  private XPath m_useWhen = null;
+
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
+  }
 
   /**
    * This function is called after everything else has been
@@ -198,6 +225,13 @@ public class ElemIf extends ElemTemplateElement
     XPathContext xctxt = transformer.getXPathContext();
     int sourceNode = xctxt.getCurrentNode();
     
+    if (m_useWhen != null) {
+       XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+       if (!xObj.bool()) {
+    	  return; 
+       }
+    }
+    
     if (m_xpath_default_namespace != null) {
        m_test = new XPath(m_test.getPatternString(), xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null);
     }
@@ -229,10 +263,6 @@ public class ElemIf extends ElemTemplateElement
       //    transformer.getTraceManager().emitSelectedEvent(sourceNode, this,
       //            "endTest", m_test, test);
     }
-    /*else if (m_test.bool(xctxt, sourceNode, this))
-    {
-      transformer.executeChildTemplates(this, true);
-    }*/
     else {
         XObject xpath3ContextItem = xctxt.getXPath3ContextItem();        
         if (xpath3ContextItem != null) {

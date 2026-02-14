@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
@@ -27,10 +24,12 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of the XSLT 3.0 non-matching-substring instruction.
+ * Implementation of the XSLT 3.0 instruction xsl:non-matching-substring.
  *    
  * @author Mukul Gandhi <mukulg@apache.org>
  *   
@@ -111,6 +110,33 @@ public class ElemNonMatchingSubstring extends ElemTemplateElement implements Exp
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }
+  
+  /**
+   * An XPath expression for 'use-when' attribute. 
+   */
+  private XPath m_useWhen = null;
+
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
+  }
 
   /**
    * This function is called after everything else has been
@@ -158,7 +184,20 @@ public class ElemNonMatchingSubstring extends ElemTemplateElement implements Exp
    * @throws TransformerException
    */
   public void execute(TransformerImpl transformer) throws TransformerException {
-      transformSelectedNodes(transformer);
+	  
+	  XPathContext xctxt = transformer.getXPathContext();
+
+	  final int sourceNode = xctxt.getCurrentNode();
+	    
+	  if (m_useWhen != null) {
+		 XObject xObj = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+		 if (xObj.bool()) {
+			transformSelectedNodes(transformer); 
+		 }
+	  }
+	  else {
+         transformSelectedNodes(transformer);
+	  }
   }
 
   /**

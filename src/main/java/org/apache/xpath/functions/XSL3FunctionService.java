@@ -179,6 +179,8 @@ public class XSL3FunctionService {
     	XObject evalResult = null;
 
     	SourceLocator srcLocator = xctxt.getSAXLocator();
+    	
+    	final int sourceNode = xctxt.getCurrentNode();
 
     	try {        
     		XSL3ConstructorOrExtensionFunction funcObj = xpathExpr;
@@ -241,6 +243,15 @@ public class XSL3FunctionService {
     						if (elemTemplateElement1 instanceof ElemUsePackage) {
     							// Resolve function call reference
     							
+    							ElemUsePackage elemUsePackage2 = (ElemUsePackage)elemTemplateElement1;
+    							XPath useWhenExpr = elemUsePackage2.getUseWhen();
+    							XObject xObj = useWhenExpr.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    							if (!xObj.bool()) {
+    							   elemTemplateElement1 = elemTemplateElement1.getNextSiblingElem();
+    							   
+    							   continue;
+    							}
+    							
     							System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.XSL3TransformerFactoryImpl");
 
     							try {
@@ -249,7 +260,7 @@ public class XSL3FunctionService {
 
     								ElemUsePackage elemUsePackage = (ElemUsePackage)elemTemplateElement1;
     								AVT packageAvt = elemUsePackage.getName();
-    								String packageName = packageAvt.evaluate(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+    								String packageName = packageAvt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
 
     								DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
     								dfactory.setNamespaceAware(true);
@@ -342,8 +353,20 @@ public class XSL3FunctionService {
     					// Evaluate XSL stylesheet function call
     					
     					ElemFunction elemFunction = (ElemFunction)elemTemplate;
-
-    					evalResult = elemFunction.evaluateXslFunction(transformerImpl, xslFuncArgSequence);
+    					
+    					XPath useWhenExpr = elemFunction.getUseWhen();
+                        if (useWhenExpr != null) {
+                        	XObject xObj = useWhenExpr.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+                        	if (xObj.bool()) {
+                        	   evalResult = elemFunction.evaluateXslFunction(transformerImpl, xslFuncArgSequence);
+                        	}
+                        	else {
+                        	   evalResult = new ResultSequence();
+                        	}
+                        }
+                        else {
+    					    evalResult = elemFunction.evaluateXslFunction(transformerImpl, xslFuncArgSequence);
+                        }
 
     					if ((evalResult instanceof XPathNamedFunctionReference) && (funcExtArgStrList != null)) {
     						XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)evalResult;    					   
