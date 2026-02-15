@@ -86,8 +86,8 @@ public class ElemExpose extends ElemTemplateElement
   private Vector m_names;
   
   /**
-   * Class field, to refer to xsl:expose instruction's attribute 
-   * "visibility".
+   * Class field, to refer to xsl:expose instruction's 
+   * attribute "visibility".
    */
   private String m_visibility;
   

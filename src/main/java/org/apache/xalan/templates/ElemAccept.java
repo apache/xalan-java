@@ -82,8 +82,8 @@ public class ElemAccept extends ElemTemplateElement
   private Vector m_names;
   
   /**
-   * Class field, to refer to xsl:accept instruction's attribute 
-   * "visibility".
+   * Class field, to refer to xsl:accept instruction's 
+   * attribute "visibility".
    */
   private String m_visibility;
   

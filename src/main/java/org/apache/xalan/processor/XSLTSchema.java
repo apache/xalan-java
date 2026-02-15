@@ -1358,7 +1358,7 @@ public class XSLTSchema extends XSLTElementDef
                                            templateElements /* elements */,
                                            new XSLTAttributeDef[]{
                                                    nameAttrRequired,
-                                                   selectAttrOpt, asAttrOpt }, 
+                                                   selectAttrOpt, asAttrOpt, xslStaticOpt }, 
                                            new ProcessorGlobalVariableDecl(),
                                            ElemVariable.class /* class object */, 20, true),
                                   new XSLTElementDef(
@@ -1369,7 +1369,8 @@ public class XSLTSchema extends XSLTElementDef
                                            templateElements /* elements */,
                                            new XSLTAttributeDef[]{
                                                    nameAttrRequired,
-                                                   selectAttrOpt, asAttrOpt, requiredAttrOpt }, 
+                                                   selectAttrOpt, asAttrOpt, requiredAttrOpt,
+                                                   xslStaticOpt }, 
                                            new ProcessorGlobalParamDecl(),
                                            ElemParam.class /* class object */, 20, true),                                  
                                   new XSLTElementDef(

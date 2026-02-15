@@ -214,8 +214,8 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
 			  }
 		  }
 		  else {
-			  throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
-					                                                                                 + "used within XPath static expression.", srcLocator);
+			  throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables/parameters, cannot be "
+                      																										+ "used within XPath static expression.", srcLocator);
 		  }
 	  }
 	  else {

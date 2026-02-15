@@ -371,7 +371,8 @@ public class ElemTemplate extends ElemTemplateElement
   }
   
   /**
-   * An xsl:template element's "visibility" attribute.
+   * Class field, to refer to xsl:template instruction's 
+   * attribute "visibility".
    */
   private String m_visibility = null;
   

@@ -314,8 +314,8 @@ public class XSL3FunctionService {
     												ElemTemplate template = stylesheet.getTemplate(idx);
     												if (template instanceof ElemFunction) {
     													ElemFunction elemFunction = (ElemFunction)template;
-    													if (isElemFunctionEligible(elemFunction, componentNames, funcNamespace, 
-    															                                                        funcName, xslFuncArgCount)) {
+    													if (isElemFunctionEligible(elemFunction, componentNames, 
+    															                                 funcNamespace, funcName, xslFuncArgCount)) {
     													   elemTemplate = elemFunction;
     													   
     													   break;
@@ -1599,8 +1599,8 @@ public class XSL3FunctionService {
         if (useWhenExpr != null) {
            boolean result1 = ((ElemTemplateElement)elemFunction).isXPathExpressionStatic(useWhenExpr.getExpression());
            if (!result1) {
-        	   throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
-						                                                                           + "used within XPath static expression.", elemFunction); 
+        	   throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables/parameters, cannot be "
+                       																										  + "used within XPath static expression.", elemFunction); 
            }
         }
         

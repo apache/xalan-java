@@ -403,6 +403,10 @@ public class ElemVariable extends ElemTemplateElement
 	 return m_static; 
   }
   
+  /**
+   * Class field, to refer to xsl:variable instruction's 
+   * attribute "visibility".
+   */
   private String m_visibility = "private";
   
   public void setVisibility(String str) {
@@ -483,8 +487,8 @@ public class ElemVariable extends ElemTemplateElement
     		}
     	}
     	else {
-    		throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
-    																										+ "used within XPath static expression.", srcLocator);
+    		throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables/parameters, cannot be "
+                    																									+ "used within XPath static expression.", srcLocator);
     	}
     }
     else {
@@ -701,7 +705,7 @@ public class ElemVariable extends ElemTemplateElement
 																									   + "to cyclic variable dependency.", srcLocator);
 				}
 		    }
-		}
+		} 
 		
 		if (m_static && !"private".equals(m_visibility)) {
 			throw new TransformerException("XPST0008 : A top-level static variable " + m_qname.toString() + " is not declared as private.", srcLocator);

@@ -300,9 +300,8 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * An xsl:function element's "visibility" attribute.
-   * 
-   * An XSL stylesheet default value for this attribute is 'private'.
+   * Class field, to refer to xsl:function instruction's 
+   * attribute "visibility".
    */
   private String m_visibility = "private";
   

@@ -2506,270 +2506,411 @@ public class ElemTemplateElement extends UnImplNode
   
   /**
    * Method definition, to check whether the supplied XPath expression 
-   * is statically typed. This requires that, if there are any variable 
-   * references within an XPath expression, those variable references
-   * resolve to xsl:variable declaration that has attribute "static"
-   * with value 'yes'. By definition, static variables and parameters
-   * are top-level within an XSL stylesheet.
+   * is statically typed. Wrt this, XSLT 3.0 spec, requires that, if there 
+   * are any variable references within an XPath expression, those variable 
+   * references resolve to xsl:variable declaration that has attribute "static"
+   * with value 'yes'. Also, by definition, XSLT static variable and parameter
+   * declarations are specified as XSLT top-level declarations. 
    * 
-   * @param expr1					The supplied XPath expression
-   * @return                        Boolean value true or false
+   * @param expr1					    The supplied XPath expression
+   * @return                            Boolean value true or false
+   * @throws TransformerException 
    */
-  public boolean isXPathExpressionStatic(Expression expr1) {	 
+  public boolean isXPathExpressionStatic(Expression expr1) throws TransformerException {	 
 
 	   boolean result = true;
 
 	   if (expr1 instanceof Variable) {
 		   Variable var = (Variable)expr1;
 		   ElemVariable elemVariable = getElemVariable(var);
-		   if (!elemVariable.getStatic()) {
-			   return false; 
+		   if (elemVariable != null) {			   
+			   result = elemVariable.getStatic() ? true : false;
+			   
+			   return result;
+		   }
+		   else {
+               throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+		                                                                                    + (var.getQName()).toString() + " not found. "
+		                                                                                    + "This is required within an XSL run-time context "
+		                                                                                    + "requiring static variable/param.");
 		   }
 	   }
 	   else if (expr1 instanceof Operation) {
-		   Expression lOpn = ((Operation)expr1).getLeftOperand(); 
-		   Expression rOpn = ((Operation)expr1).getRightOperand();
-		   if (lOpn instanceof Variable) {
-			   Variable var = (Variable)lOpn;
-			   ElemVariable elemVariable = getElemVariable(var);
-			   if (!elemVariable.getStatic()) {
-				   return false; 
-			   }
-		   }
-
-		   if (rOpn instanceof Variable) {
-			   Variable var = (Variable)rOpn;
-			   ElemVariable elemVariable = getElemVariable(var);
-			   if (!elemVariable.getStatic()) {
-				   return false; 
-			   }
-		   }
-
-		   ExpressionNode node1 = lOpn.exprGetParent();
-		   if (node1 instanceof Expression) {
-			   boolean result1 = isXPathExpressionStatic((Expression)node1);
-			   if (!result1) {
-				   return false; 
-			   }
-		   }
-
-		   ExpressionNode node2 = rOpn.exprGetParent();
-		   if (node2 instanceof Expression) {
-			   boolean result2 = isXPathExpressionStatic((Expression)node2);
-			   if (!result2) {
-				   return false; 
-			   }
-		   }
+		   result = isXPathBinaryOpStatic(expr1);
 	   }
 	   else if (expr1 instanceof Function) {
-		   Function function = (Function)expr1;
-		   if (function instanceof FunctionOneArg) {
-			   FunctionOneArg functionOneArg = (FunctionOneArg)function;
-			   Expression arg0 = functionOneArg.getArg0();
-			   if (arg0 instanceof Variable) {
-				   Variable var = (Variable)arg0;
-				   ElemVariable elemVariable = getElemVariable(var);
-				   if (!elemVariable.getStatic()) {
-					   return false; 
-				   }
-			   }
-
-			   ExpressionNode node = arg0.exprGetParent();
-			   if (node instanceof Expression) {
-				   boolean result2 = isXPathExpressionStatic((Expression)node);
-				   if (!result2) {
-					   return false; 
-				   }
-			   }
-		   }
-		   else if (function instanceof Function2Args) {
-			   Function2Args func = (Function2Args)function;
-			   Expression exprA = func.getArg0();
-			   Expression exprB = func.getArg1();
-
-			   if (exprA instanceof Variable) {
-				   Variable var = (Variable)exprA;
-				   ElemVariable elemVariable = getElemVariable(var);
-				   if (!elemVariable.getStatic()) {
-					   return false; 
-				   }
-			   }
-
-			   if (exprB instanceof Variable) {
-				   Variable var = (Variable)exprB;
-				   ElemVariable elemVariable = getElemVariable(var);
-				   if (!elemVariable.getStatic()) {
-					   return false; 
-				   }
-			   }
-
-			   ExpressionNode node = exprA.exprGetParent();
-			   if (node instanceof Expression) {
-				   boolean result2 = isXPathExpressionStatic((Expression)node);
-				   if (!result2) {
-					   return false; 
-				   }
-			   }
-
-			   node = exprB.exprGetParent();
-			   if (node instanceof Expression) {
-				   boolean result2 = isXPathExpressionStatic((Expression)node);
-				   if (!result2) {
-					   return false; 
-				   }
-			   }
-		   }
-		   else if (function instanceof Function3Args) {
-			   Function3Args func = (Function3Args)function;
-			   Expression exprA = func.getArg0();
-			   Expression exprB = func.getArg1();
-			   Expression exprC = func.getArg2();
-
-			   if (exprA instanceof Variable) {
-				   Variable var = (Variable)exprA;
-				   ElemVariable elemVariable = getElemVariable(var);
-				   if (!elemVariable.getStatic()) {
-					   return false; 
-				   }
-			   }
-
-			   if (exprB instanceof Variable) {
-				   Variable var = (Variable)exprB;
-				   ElemVariable elemVariable = getElemVariable(var);
-				   if (!elemVariable.getStatic()) {
-					   return false; 
-				   }
-			   }
-
-			   if (exprC instanceof Variable) {
-				   Variable var = (Variable)exprC;
-				   ElemVariable elemVariable = getElemVariable(var);
-				   if (!elemVariable.getStatic()) {
-					   return false; 
-				   }
-			   }
-
-			   ExpressionNode node = exprA.exprGetParent();
-			   if (node instanceof Expression) {
-				   boolean result2 = isXPathExpressionStatic((Expression)node);
-				   if (!result2) {
-					   return false; 
-				   }
-			   }
-
-			   node = exprB.exprGetParent();
-			   if (node instanceof Expression) {
-				   boolean result2 = isXPathExpressionStatic((Expression)node);
-				   if (!result2) {
-					   return false; 
-				   }
-			   }
-
-			   node = exprC.exprGetParent();
-			   if (node instanceof Expression) {
-				   boolean result2 = isXPathExpressionStatic((Expression)node);
-				   if (!result2) {
-					   return false; 
-				   }
-			   }
-		   }
-		   else if (function instanceof FunctionMultiArgs) {
-			   FunctionMultiArgs func = (FunctionMultiArgs)function;
-			   Expression exprA = func.getArg0();
-			   Expression exprB = func.getArg1();
-			   Expression exprC = func.getArg2();
-			   Expression[] moreArgs = func.getArgs();
-
-			   if (exprA instanceof Variable) {
-				   Variable var = (Variable)exprA;
-				   ElemVariable elemVariable = getElemVariable(var);
-				   if (!elemVariable.getStatic()) {
-					   return false; 
-				   }
-			   }
-
-			   if (exprB instanceof Variable) {
-				   Variable var = (Variable)exprB;
-				   ElemVariable elemVariable = getElemVariable(var);
-				   if (!elemVariable.getStatic()) {
-					   return false; 
-				   }
-			   }
-
-			   if (exprC instanceof Variable) {
-				   Variable var = (Variable)exprC;
-				   ElemVariable elemVariable = getElemVariable(var);
-				   if (!elemVariable.getStatic()) {
-					   return false; 
-				   }
-			   }
-
-			   ExpressionNode node = exprA.exprGetParent();
-			   if (node instanceof Expression) {
-				   boolean result2 = isXPathExpressionStatic((Expression)node);
-				   if (!result2) {
-					   return false; 
-				   }
-			   }
-
-			   node = exprB.exprGetParent();
-			   if (node instanceof Expression) {
-				   boolean result2 = isXPathExpressionStatic((Expression)node);
-				   if (!result2) {
-					   return false; 
-				   }
-			   }
-
-			   node = exprC.exprGetParent();
-			   if (node instanceof Expression) {
-				   boolean result2 = isXPathExpressionStatic((Expression)node);
-				   if (!result2) {
-					   return false; 
-				   }
-			   }
-
-			   int length1 = moreArgs.length;
-			   for (int idx = 0; idx < length1; idx++) {
-				   Expression expr = moreArgs[idx];
-				   if (expr instanceof Variable) {
-					   Variable var = (Variable)expr;
-					   ElemVariable elemVariable = getElemVariable(var);
-					   if (!elemVariable.getStatic()) {
-						   return false; 
-					   }
-				   }
-
-				   node = expr.exprGetParent();
-				   if (node instanceof Expression) {
-					   boolean result2 = isXPathExpressionStatic((Expression)node);
-					   if (!result2) {
-						   return false; 
-					   }
-				   }
-			   }
-		   }
+		   result = isXPathFuncCallStatic(expr1);
 	   }
 
 	   return result;
   }
 
   /**
-   * Method definition, to find an xsl:variable declaration
-   * corresponding to a variable reference.
+   * Method definition, to check whether the supplied XPath function
+   * call expression is statically typed. The method checks, whether
+   * XPath function call's all the argument expressions are static.
    * 
-   * @param var							The supplied XSL variable
-   *                                    reference object.
-   * @return                            An xsl:variable declaration
-   *                                    object.
+   * @param xpathFuncCallExpr1	                The supplied XPath function
+   *                                            call expression.
+   * @return                                    Boolean value true or false
+   * @throws TransformerException
    */
-  private ElemVariable getElemVariable(Variable var) {
+  private boolean isXPathFuncCallStatic(Expression xpathFuncCallExpr1) throws TransformerException {
+	
+	  boolean result = true;
+
+	  Function function = (Function)xpathFuncCallExpr1;
+	  if (function instanceof FunctionOneArg) {
+		  FunctionOneArg functionOneArg = (FunctionOneArg)function;
+		  Expression arg0 = functionOneArg.getArg0();
+		  if (arg0 instanceof Variable) {
+			  Variable var = (Variable)arg0;
+			  ElemVariable elemVariable = getElemVariable(var);				   
+			  if (elemVariable != null) {			   
+				  result = elemVariable.getStatic() ? true : false;
+
+				  return result;
+			  }
+			  else {
+				  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																										  + (var.getQName()).toString() + " not found. "
+																										  + "This is required within an XSL run-time context "
+																										  + "requiring static variable/param.");
+			  }
+		  }
+		  else if (arg0 instanceof Operation) {
+			  result = isXPathBinaryOpStatic(arg0);
+		  }
+		  else if (arg0 instanceof Function) {
+			  result = isXPathFuncCallStatic(arg0); 
+		  }
+	  }
+	  else if (function instanceof Function2Args) {
+		  Function2Args func = (Function2Args)function;
+
+		  Expression arg0 = func.getArg0();
+		  Expression arg1 = func.getArg1();
+
+		  if (arg0 instanceof Variable) {
+			  Variable var = (Variable)arg0;
+			  ElemVariable elemVariable = getElemVariable(var);
+			  if (elemVariable != null) {			   
+				  result = elemVariable.getStatic() ? true : false;
+
+				  return result;
+			  }
+			  else {
+				  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																										  + (var.getQName()).toString() + " not found. "
+																										  + "This is required within an XSL run-time context "
+																										  + "requiring static variable/param.");
+			  }
+		  }
+		  else if (arg0 instanceof Operation) {
+			  result = isXPathBinaryOpStatic(arg0);
+		  }
+		  else if (arg0 instanceof Function) {
+			  result = isXPathFuncCallStatic(arg0);
+		  }
+
+		  if (result) {
+			  if (arg1 instanceof Variable) {
+				  Variable var = (Variable)arg1;
+				  ElemVariable elemVariable = getElemVariable(var);
+				  if (elemVariable != null) {			   
+					  result = elemVariable.getStatic() ? true : false;
+
+					  return result;
+				  }
+				  else {
+					  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																									    + (var.getQName()).toString() + " not found. "
+																									    + "This is required within an XSL run-time context "
+																									    + "requiring static variable/param.");
+				  }
+			  }
+			  else if (arg1 instanceof Operation) {
+				  result = isXPathBinaryOpStatic(arg1);
+			  }
+			  else if (arg1 instanceof Function) {
+				  result = isXPathFuncCallStatic(arg1);
+			  }
+		  }
+	  }
+	  else if (function instanceof Function3Args) {
+		  Function3Args func = (Function3Args)function;
+
+		  Expression arg0 = func.getArg0();
+		  Expression arg1 = func.getArg1();
+		  Expression arg2 = func.getArg2();
+
+		  if (arg0 instanceof Variable) {
+			  Variable var = (Variable)arg0;
+			  ElemVariable elemVariable = getElemVariable(var);
+			  if (elemVariable != null) {			   
+				  result = elemVariable.getStatic() ? true : false;
+
+				  return result;
+			  }
+			  else {
+				  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																										  + (var.getQName()).toString() + " not found. "
+																										  + "This is required within an XSL run-time context "
+																										  + "requiring static variable/param.");
+			  }
+		  }
+		  else if (arg0 instanceof Operation) {
+			  result = isXPathBinaryOpStatic(arg0);
+		  }
+		  else if (arg0 instanceof Function) {
+			  result = isXPathFuncCallStatic(arg0);
+		  }
+
+		  if (result) {
+			  if (arg1 instanceof Variable) {
+				  Variable var = (Variable)arg1;
+				  ElemVariable elemVariable = getElemVariable(var);
+				  if (elemVariable != null) {			   
+					  result = elemVariable.getStatic() ? true : false;
+
+					  return result;
+				  }
+				  else {
+					  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																									   + (var.getQName()).toString() + " not found. "
+																									   + "This is required within an XSL run-time context "
+																									   + "requiring static variable/param.");
+				  }
+			  }
+			  else if (arg1 instanceof Operation) {
+				  result = isXPathBinaryOpStatic(arg1);
+			  }
+			  else if (arg1 instanceof Function) {
+				  result = isXPathFuncCallStatic(arg1);
+			  }
+		  }
+
+		  if (result) {
+			  if (arg2 instanceof Variable) {
+				  Variable var = (Variable)arg2;
+				  ElemVariable elemVariable = getElemVariable(var);
+				  if (elemVariable != null) {			   
+					  result = elemVariable.getStatic() ? true : false;
+
+					  return result;
+				  }
+				  else {
+					  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																								    + (var.getQName()).toString() + " not found. "
+																								    + "This is required within an XSL run-time context "
+																								    + "requiring static variable/param.");
+				  }
+			  }
+			  else if (arg2 instanceof Operation) {
+				  result = isXPathBinaryOpStatic(arg2);
+			  }
+			  else if (arg2 instanceof Function) {
+				  result = isXPathFuncCallStatic(arg2);
+			  }
+		  }
+	  }
+	  else if (function instanceof FunctionMultiArgs) {
+		  FunctionMultiArgs func = (FunctionMultiArgs)function;
+
+		  Expression arg0 = func.getArg0();
+		  Expression arg1 = func.getArg1();
+		  Expression arg2 = func.getArg2();
+
+		  Expression[] funcMoreArgs = func.getArgs();
+
+		  if (arg0 instanceof Variable) {
+			  Variable var = (Variable)arg0;
+			  ElemVariable elemVariable = getElemVariable(var);
+			  if (elemVariable != null) {			   
+				  result = elemVariable.getStatic() ? true : false;
+
+				  return result;
+			  }
+			  else {
+				  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																										  + (var.getQName()).toString() + " not found. "
+																										  + "This is required within an XSL run-time context "
+																										  + "requiring static variable/param.");
+			  }
+		  }
+		  else if (arg0 instanceof Operation) {
+			  result = isXPathBinaryOpStatic(arg0);
+		  }
+		  else if (arg0 instanceof Function) {
+			  result = isXPathFuncCallStatic(arg0);
+		  }
+
+		  if (result) {
+			  if (arg1 instanceof Variable) {
+				  Variable var = (Variable)arg1;
+				  ElemVariable elemVariable = getElemVariable(var);
+				  if (elemVariable != null) {			   
+					  result = elemVariable.getStatic() ? true : false;
+
+					  return result;
+				  }
+				  else {
+					  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																										  + (var.getQName()).toString() + " not found. "
+																										  + "This is required within an XSL run-time context "
+																										  + "requiring static variable/param.");
+				  }
+			  }
+			  else if (arg1 instanceof Operation) {
+				  result = isXPathBinaryOpStatic(arg1);
+			  }
+			  else if (arg1 instanceof Function) {
+				  result = isXPathFuncCallStatic(arg1);
+			  }
+		  }
+
+		  if (result) {
+			  if (arg2 instanceof Variable) {
+				  Variable var = (Variable)arg2;
+				  ElemVariable elemVariable = getElemVariable(var);
+				  if (elemVariable != null) {			   
+					  result = elemVariable.getStatic() ? true : false;
+
+					  return result;
+				  }
+				  else {
+					  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																										  + (var.getQName()).toString() + " not found. "
+																										  + "This is required within an XSL run-time context "
+																										  + "requiring static variable/param.");
+				  }
+			  }
+			  else if (arg2 instanceof Operation) {
+				  result = isXPathBinaryOpStatic(arg2);
+			  }
+			  else if (arg2 instanceof Function) {
+				  result = isXPathFuncCallStatic(arg2);
+			  }
+		  }
+
+		  if (result) {
+			  int length1 = funcMoreArgs.length;
+			  for (int idx = 0; idx < length1; idx++) {
+				  Expression expr = funcMoreArgs[idx];
+				  if (expr instanceof Variable) {
+					  Variable var = (Variable)expr;
+					  ElemVariable elemVariable = getElemVariable(var);
+					  if (elemVariable != null) {			   
+						  result = elemVariable.getStatic() ? true : false;
+
+						  return result;
+					  }
+					  else {
+						  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																											  + (var.getQName()).toString() + " not found. "
+																											  + "This is required within an XSL run-time context "
+																											  + "requiring static variable/param.");
+					  }
+				  }
+				  else if (expr instanceof Operation) {
+					  result = isXPathBinaryOpStatic(expr);
+				  }
+				  else if (expr instanceof Function) {
+					  result = isXPathFuncCallStatic(expr);
+				  }
+			  }
+		  }
+	  }
+
+	  return result;
+  }
+
+  /**
+   * Method definition, to check whether an XPath binary 
+   * operator expression evaluation is statically typed.
+   * 
+   * @param expr1                         The supplied XPath binary
+   *                                      operator expression.
+   * @return                              Boolean value true or false
+   * @throws TransformerException
+   */
+  private boolean isXPathBinaryOpStatic(Expression expr1) throws TransformerException {
+	
+	  boolean result = true;
+
+	  Expression lOpn = ((Operation)expr1).getLeftOperand(); 
+	  Expression rOpn = ((Operation)expr1).getRightOperand();
+
+	  if (lOpn instanceof Variable) {
+		  Variable var = (Variable)lOpn;
+		  ElemVariable elemVariable = getElemVariable(var);			   			   
+		  if (elemVariable != null) {			   
+			  result = elemVariable.getStatic() ? true : false;
+		  }
+		  else {
+			  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																										  + (var.getQName()).toString() + " not found. "
+																										  + "This is required within an XSL run-time context "
+																										  + "requiring static variable/param.");
+		  }
+	  }
+	  else if (lOpn instanceof Operation) {
+		  result = isXPathBinaryOpStatic(lOpn); 
+	  }
+	  else if (lOpn instanceof Function) {
+		  result = isXPathFuncCallStatic(lOpn);
+	  }
+
+	  if (result) {
+		  /**
+		   * An XPath binary operator's lhs expression
+		   * is static. We need to check whether XPath
+		   * rhs expression is static.
+		   */
+		  if (rOpn instanceof Variable) {
+			  Variable var = (Variable)rOpn;
+			  ElemVariable elemVariable = getElemVariable(var);			   			   
+			  if (elemVariable != null) {			   
+				  result = elemVariable.getStatic() ? true : false;
+			  }
+			  else {
+				  throw new TransformerException("XPST0008 : An XSL top-level variable/param declaration for variable reference " 
+																											  + (var.getQName()).toString() + " not found. "
+																											  + "This is required within an XSL run-time context "
+																											  + "requiring static variable/param.");
+			  }
+		  }
+		  else if (rOpn instanceof Operation) {
+			  result = isXPathBinaryOpStatic(rOpn); 
+		  }
+		  else if (rOpn instanceof Function) {
+			  result = isXPathFuncCallStatic(rOpn);
+		  } 
+	  }
+	  
+	  return result;
+	
+  }
+
+  /**
+   * Method definition, to find an xsl:variable top-level
+   * declaration corresponding to an XSL stylesheet variable 
+   * reference.
+   * 
+   * @param var1					    The supplied XSL variable reference 
+   *                                    object.
+   * @return                            An xsl:variable declaration object, 
+   *                                    or null if variable reference doesn't 
+   *                                    resolve to a declaration.
+   */
+  private ElemVariable getElemVariable(Variable var1) {
 	   
 	   ElemVariable result = null;
 	   
-	   QName qname1 = var.getQName();
-	   ElemTemplateElement elemTemplateElem = (ElemTemplateElement)var.getExpressionOwner();
+	   QName qname1 = var1.getQName();
+	   ElemTemplateElement elemTemplateElem = (ElemTemplateElement)(var1.getExpressionOwner());
 	   while (elemTemplateElem != null) {
-		   if (elemTemplateElem instanceof ElemVariable) {
+		   if ((elemTemplateElem instanceof ElemVariable) && ((ElemVariable)elemTemplateElem).getIsTopLevel()) {
 			   ElemVariable elemVariable2 = (ElemVariable)elemTemplateElem;
 			   QName qName2 = elemVariable2.getName();
 			   if (qName2.equals(qname1)) {

@@ -2600,8 +2600,8 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
            	    		 }
            	    	 }
            	    	 else {
-           	    		 throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
-           	    				                                                                                 + "used within XPath static expression.", template);
+           	    		 throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables/parameters, cannot be "
+           	    				 																									+ "used within XPath static expression.", template);
            	    	 }
            	     }
            	     else {
@@ -2796,8 +2796,8 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     			  }
     		  }
     		  else {
-    			  throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
-						                                                                                        + "used within XPath static expression.", template);
+    			  throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables/parameters, cannot be "
+                          																										+ "used within XPath static expression.", template);
     		  }
     	  }
     	  else {

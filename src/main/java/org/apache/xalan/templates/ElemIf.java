@@ -238,8 +238,8 @@ public class ElemIf extends ElemTemplateElement
     		}
     	}
     	else {
-    		throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables, cannot be "
-    				                                                                               + "used within XPath static expression.", srcLocator);
+    		throw new TransformerException("XPST0008 : XSL variables other than XSLT static variables/parameters, cannot be "
+                    																									+ "used within XPath static expression.", srcLocator);
     	}
     }
     

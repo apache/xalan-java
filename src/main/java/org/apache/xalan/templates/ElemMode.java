@@ -235,9 +235,8 @@ public class ElemMode extends ElemTemplateElement
   }
   
   /**
-   * An xsl:mode element's "visibility" attribute.
-   * 
-   * An XSL stylesheet default value for this attribute is 'private'.
+   * Class field, to refer to xsl:mode instruction's 
+   * attribute "visibility".
    */
   private String m_visibility = "private";
   
