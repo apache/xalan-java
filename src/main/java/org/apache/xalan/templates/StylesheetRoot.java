@@ -146,6 +146,8 @@ public class StylesheetRoot extends StylesheetComposed implements java.io.Serial
      */
     private String m_input_type_annotations;
     
+    private boolean m_initial_context_node_available;
+    
     private ErrorListener m_errorListener;
     
   /**
@@ -2076,6 +2078,14 @@ public class StylesheetRoot extends StylesheetComposed implements java.io.Serial
 	
 	public String getInputTypeAnnotations() {
 		return m_input_type_annotations;
+	}
+	
+	public void setInitialContextNode(boolean initialContextNode) {
+		this.m_initial_context_node_available = initialContextNode; 
+	}
+	
+	public boolean isInitContextNodeSet() {
+		return m_initial_context_node_available;
 	}
 
 }

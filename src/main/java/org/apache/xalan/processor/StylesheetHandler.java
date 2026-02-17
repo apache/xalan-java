@@ -106,6 +106,12 @@ public class StylesheetHandler extends DefaultHandler
   private boolean m_assert;
   
   /**
+   * Value indicating, whether XSL transformation
+   * initial context node is set.
+   */
+  private boolean m_initial_context_node;
+  
+  /**
    * Create a StylesheetHandler object, creating a root stylesheet
    * as the target.
    *
@@ -141,7 +147,9 @@ public class StylesheetHandler extends DefaultHandler
        m_init_mode_name = ((String)processor.getAttribute(XSL3TransformerFactoryImpl.FEATURE_INIT_MODE)).toString();
     }
     
-    m_assert = (Boolean)(processor.getAttribute(XSL3TransformerFactoryImpl.FEATURE_ASSERT)); 
+    m_assert = (Boolean)(processor.getAttribute(XSL3TransformerFactoryImpl.FEATURE_ASSERT));
+    
+    m_initial_context_node = (Boolean)(processor.getAttribute(XSL3TransformerFactoryImpl.INIT_CONTEXT_NODE));
     
     init(processor);
   }
@@ -1235,6 +1243,7 @@ public class StylesheetHandler extends DefaultHandler
 	  m_stylesheetRoot.setInitTemplateName(m_init_template_name);
 	  m_stylesheetRoot.setInitModeName(m_init_mode_name);
 	  m_stylesheetRoot.setAssertEnabled(m_assert);
+	  m_stylesheetRoot.setInitialContextNode(m_initial_context_node);
 
 	  return m_stylesheetRoot;
   }

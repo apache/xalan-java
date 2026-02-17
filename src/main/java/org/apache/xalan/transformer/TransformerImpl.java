@@ -2551,8 +2551,17 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
         	 if ((Constants.XSL_INITIAL_TEMPLATE_DEFAULT_NAME).equals(initTemplateName)) {
         		 initTemplateQName = new QName(Constants.S_XSLNAMESPACEURL, "initial-template"); 
         	 }
-        	 else {
-        		 initTemplateQName = new QName(initTemplateName);  
+        	 else {        		         		 
+        		 int a = initTemplateName.indexOf('{');
+        		 int b = initTemplateName.indexOf('}');
+        		 if ((a != -1) && (b != -1) && (a < b)) {
+        			String nsUri = initTemplateName.substring(a + 1, b);
+        			String prefix = initTemplateName.substring(b + 1);
+        			initTemplateQName = new QName(nsUri, prefix);
+        		 }
+        		 else {
+        			initTemplateQName = new QName(initTemplateName); 
+        		 }
         	 }
         	 
              template = m_stylesheetRoot.getTemplateComposed(initTemplateQName);

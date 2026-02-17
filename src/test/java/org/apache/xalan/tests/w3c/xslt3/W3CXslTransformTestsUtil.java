@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -343,6 +344,17 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
    						   if (nodeList4.getLength() == 1) {
    							   Element elemNode3 = (Element)(nodeList4.item(0));
    							   m_initTemplateName = elemNode3.getAttribute(NAME_ATTR);
+   							   if (m_initTemplateName.contains(":")) {
+   								  int idx3 = m_initTemplateName.indexOf(':');
+   								  if (idx3 != -1) {
+   									 String nsPrefix = m_initTemplateName.substring(0, idx3);
+   									 String localName = m_initTemplateName.substring(idx3 + 1);
+   									 String nsUri = elemNode3.getAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, nsPrefix);
+   									 if (nsUri != null) {
+   									    m_initTemplateName = "{" + nsUri + "}" + localName;
+   									 }
+   								  }
+   							   }
    						   }
    						   
    						   Node siblingNode = elemNode.getNextSibling();
@@ -749,7 +761,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);
     		
     		if (m_initTemplateName != null) {
-    		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);
+    		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);    		   
+    		   if (xmlInpDomSource != null) {
+    			  m_xslTransformerFactory.setAttribute(XalanProperties.INIT_CONTEXT_NODE, Boolean.valueOf(true));
+    		   }
+    		   else {
+    			  m_xslTransformerFactory.setAttribute(XalanProperties.INIT_CONTEXT_NODE, Boolean.valueOf(false)); 
+    		   }
     		}
     		else {
     		   DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -761,9 +779,15 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   for (int idx = 0; idx < nodeListLength; idx++) {
     			  Element elem = (Element)(nodeList.item(idx));
     			  String attrValue = elem.getAttribute("name");
-    			  if (attrValue.endsWith("initial-template")) {
+    			  if (attrValue.endsWith("initial-template")) {    				 
     				 m_initTemplateName = attrValue; 
-    				 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);
+    				 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);    				 
+    				 if (xmlInpDomSource != null) {
+    					 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_CONTEXT_NODE, Boolean.valueOf(true));
+    				 }
+    				 else {
+    					 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_CONTEXT_NODE, Boolean.valueOf(false)); 
+    				 }
     				 
     				 break;
     			  }

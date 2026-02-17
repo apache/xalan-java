@@ -319,6 +319,13 @@ public class ElemCallTemplate extends ElemForEach
 
 			VariableStack vars = xctxt.getVarStack();
 			int thisframe = vars.getStackFrame();
+			
+			String nsUri = m_templateName.getNamespace();
+			String localName = m_templateName.getLocalName();
+			if ((Constants.S_XSLNAMESPACEURL).equals(nsUri) && !"initial-template".equals(localName)) {
+				throw new TransformerException("XTSE0080 : An XSL named template uses reserved namespace " + Constants.S_XSLNAMESPACEURL 
+						                                                                                   + " within its name.", srcLocator);
+			}
 
 			try {
 				int nextFrame = vars.link(m_template.m_frameSize);

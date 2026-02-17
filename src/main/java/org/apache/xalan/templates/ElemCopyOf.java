@@ -44,6 +44,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -311,6 +312,48 @@ public class ElemCopyOf extends ElemTemplateElement
       
       if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
     	  m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+      }
+      
+      Expression expr1 = m_selectExpression.getExpression();
+      if (expr1 instanceof LocPathIterator) {
+    	  LocPathIterator locPathIterator = (LocPathIterator)expr1;    	      	  
+    	  
+    	  int nextNode = DTM.NULL;
+    	  if (sourceNode != DTM.NULL) {
+    	     nextNode = locPathIterator.asNode(xctxt);
+    	  }
+    	  
+    	  if (!((transformer.getStylesheet()).isInitContextNodeSet()) && (nextNode == DTM.NULL)) {   		  
+    		  ElemTemplateElement elemTemplateElement = getParentElem();
+    		  QName templateName = null;
+    		  boolean isError = false;
+    		  while (elemTemplateElement != null) {
+    			  if (elemTemplateElement instanceof ElemTemplate) {
+    				  ElemTemplate elemTemplate = (ElemTemplate)elemTemplateElement;
+    				  templateName = elemTemplate.getName();
+    			  }
+    			  else if (elemTemplateElement instanceof StylesheetRoot) {
+    				  StylesheetRoot stylesheetRoot = (StylesheetRoot)elemTemplateElement;
+    				  String initTemplateName = stylesheetRoot.getInitTemplateName();
+    				  if (initTemplateName != null) {
+    					  QName qName = new QName(initTemplateName);
+    					  if (qName.equals(templateName)) {
+    						  isError = true;
+
+    						  break;
+    					  }
+    				  }
+    			  }
+
+    			  elemTemplateElement = elemTemplateElement.getParentElem();
+    		  }
+
+    		  if (isError) {
+    			  throw new TransformerException("XPDY0002 : An XSL transformation attempts to access XPath focus with copy-of "
+																								    					  + "instruction, but intial context "
+																								    					  + "node is not set.", srcLocator);
+    		  }
+    	  }
       }
       
       String xpathPatternStr = m_selectExpression.getPatternString();
