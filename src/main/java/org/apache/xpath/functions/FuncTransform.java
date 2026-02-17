@@ -67,12 +67,8 @@ public class FuncTransform extends FunctionDef1Arg
 	private static final long serialVersionUID = 4109927115539483019L;
 	
 	/**
-	 * Definition of various class, constant field definitions. 
+	 * Class, constant field definitions. 
 	 */
-	
-    public static final String XSLT_TRANSFORMER_FACTORY_KEY = "javax.xml.transform.TransformerFactory";
-    
-    public static final String XSLT_TRANSFORMER_FACTORY_VALUE = "org.apache.xalan.processor.XSL3TransformerFactoryImpl";
     
     public static final String STYLESHEET_LOCATION = "stylesheet-location";    
     
@@ -124,11 +120,12 @@ public class FuncTransform extends FunctionDef1Arg
 		ElemResultDocument.m_fnTransformResult = result;
 		
 		System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-    	System.setProperty(XSLT_TRANSFORMER_FACTORY_KEY, XSLT_TRANSFORMER_FACTORY_VALUE);
+    	
+		System.setProperty(Constants.XSL_TRANSFORM_FACTORY_KEY, Constants.XSL_TRANSFORM_FACTORY_VALUE);
 		
 		if (!(arg0Obj instanceof XPathMap)) {
-			throw new javax.xml.transform.TransformerException("FODC0005 : The 1st argument to function call fn:transform "
-					                                                                                  + "is not an XDM map.", srcLocator);
+			throw new javax.xml.transform.TransformerException("FODC0005 : First argument to function call fn:transform "
+					                                                                                                   + "is not an XDM map.", srcLocator);
 		}
 		else {
 		   XPathMap mapArg = (XPathMap)arg0Obj;

@@ -1,35 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:package name="test1.xsl"
+<xsl:package name="test1_1.xsl"
 	         package-version="1.0.0"	
              version="3.0"
              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	         xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	         xmlns:fn0="http://fn0"
-	         exclude-result-prefixes="fn0">
+	         exclude-result-prefixes="xs fn0">
 	         
     <!-- Author: mukulg@apache.org -->
-    
-    <!-- use with test1.xml -->
   
-    <!-- An XSL 3 stylesheet test case to test, xsl:package instruction -->
+    <!-- An XSL 3 stylesheet test case to test, xsl:package instruction -->	         
+			
+    <xsl:expose component="function" names="fn0:abc#0 fn0:abc2#1" visibility="public"/>	
 	
-	<xsl:output method="xml" indent="yes"/>
+	<xsl:function name="fn0:abc" visibility="public" as="xs:string">
+	    <xsl:sequence select="'Hello ' || fn0:abc1()"/>
+	</xsl:function>
 	
-	<xsl:mode name="mode1" visibility="public"/>
+	<xsl:function name="fn0:abc1" visibility="private" as="xs:string">
+	    <xsl:sequence select="'....., ref local only function. This cannot be accessed, from outside this package.'"/>
+	</xsl:function>
 	
-	<xsl:use-package name="test1_1.xsl" package-version="1.0.0">
-	   <xsl:accept component="function" names="fn0:abc#0 fn0:abc2#1" visibility="public"/>		   
-	</xsl:use-package>
-    
-    <xsl:template match="/abc" mode="mode1">
-	   <result>
-	      <one>
-	         <xsl:value-of select="fn0:abc()"/>
-		  </one>
-		  <two>
-		     <xsl:copy-of select="fn0:abc2('hello')"/>
-		  </two>
-	   </result>
-	</xsl:template>
+	<xsl:function name="fn0:abc2" visibility="public" as="xs:string">
+	   <xsl:param name="arg1" as="xs:string"/>
+	   <xsl:sequence select="$arg1 || ' world'"/>
+	</xsl:function>
 	
 	<!--
       * Licensed to the Apache Software Foundation (ASF) under one

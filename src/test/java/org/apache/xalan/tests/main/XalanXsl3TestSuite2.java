@@ -16,7 +16,6 @@
  */
 package org.apache.xalan.tests.main;
 
-import org.apache.xalan.tests.w3c.xslt3.decl.XslPackageTests;
 import org.apache.xalan.tests.xpath3.FnAdjustDateToTimezoneTests;
 import org.apache.xalan.tests.xpath3.FnAdjustDatetimeToTimezoneTests;
 import org.apache.xalan.tests.xpath3.FnAdjustTimeToTimezoneTests;
@@ -105,6 +104,7 @@ import org.apache.xalan.tests.xslt3.XslMergeTests;
 import org.apache.xalan.tests.xslt3.XslMessageTests;
 import org.apache.xalan.tests.xslt3.XslMethodOutputJsonTests;
 import org.apache.xalan.tests.xslt3.XslModeTests;
+import org.apache.xalan.tests.xslt3.XslPackageTests;
 import org.apache.xalan.tests.xslt3.XslPerformSortTests;
 import org.apache.xalan.tests.xslt3.XslResultDocumentTests;
 import org.apache.xalan.tests.xslt3.XslRtfMigrationTests;

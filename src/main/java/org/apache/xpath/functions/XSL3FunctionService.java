@@ -41,11 +41,13 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemAccept;
+import org.apache.xalan.templates.ElemExpose;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemTemplate;
@@ -229,6 +231,7 @@ public class XSL3FunctionService {
     						else {
     							xslFuncArgVal = argExpr.execute(xctxt); 	
     						}
+    						
     						xslFuncArgSequence.add(xslFuncArgVal);
     						xslFuncArgCount++;
     					}
@@ -236,135 +239,33 @@ public class XSL3FunctionService {
 
     				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcName), xslFuncArgCount);
     				
-    				if (elemTemplate == null) {    					
-    					ElemTemplateElement elemTemplateElement1 = stylesheetRoot.getFirstChildElem();
-    					
-    					while (elemTemplateElement1 != null) {
-    						if (elemTemplateElement1 instanceof ElemUsePackage) {
-    							// Resolve function call reference
-    							
-    							ElemUsePackage elemUsePackage2 = (ElemUsePackage)elemTemplateElement1;
-    							XPath useWhenExpr = elemUsePackage2.getUseWhen();
-    							XObject xObj = useWhenExpr.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
-    							if (!xObj.bool()) {
-    							   elemTemplateElement1 = elemTemplateElement1.getNextSiblingElem();
-    							   
-    							   continue;
-    							}
-    							
-    							System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.XSL3TransformerFactoryImpl");
-
-    							try {
-    								TransformerFactory tfactory = TransformerFactory.newInstance();
-    								tfactory.setErrorListener(new DefaultErrorHandler(true));
-
-    								ElemUsePackage elemUsePackage = (ElemUsePackage)elemTemplateElement1;
-    								AVT packageAvt = elemUsePackage.getName();
-    								String packageName = packageAvt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
-
-    								DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-    								dfactory.setNamespaceAware(true);
-    								dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-    								DocumentBuilder docBuilder = dfactory.newDocumentBuilder();    							    							
-
-    								URL resolvedUrl = null;
-    								URI uri = new URI(packageName);
-    								if (uri.isAbsolute()) {
-    									resolvedUrl = new URL(packageName); 
-    								}
-    								else {
-    									String stylesheetSystemId = srcLocator.getSystemId();    				            	
-    									if (stylesheetSystemId != null) {
-    										URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(packageName);
-    										resolvedUrl = resolvedUriArg.toURL();
-    									}
-    									else {
-    										resolvedUrl = new URL(packageName);
-    									}
-    								}
-
-    								String xslResolverUrlStr = resolvedUrl.toString();
-
-    								InputSource inpSrc = new InputSource(xslResolverUrlStr);
-
-    								Document xslDocument = docBuilder.parse(inpSrc);
-
-    								Templates templates = tfactory.newTemplates(new DOMSource(xslDocument, xslResolverUrlStr));
-
-    								/**
-    								 * This will provide to us expanded XSL component definitions.
-    								 * We need to verify, that which of these components to use,
-    								 * using xsl:accept instruction, information from xsl:use-package.
-    								 */
-    								Stylesheet stylesheet = (Stylesheet)templates;
-    								
-    								StylesheetRoot styleRoot = (StylesheetRoot)templates;
-    								transformerImpl = (TransformerImpl)styleRoot.newTransformer();
-
-    								ElemTemplateElement elem1 = elemUsePackage.getFirstChildElem();
-    								while ((elem1 != null) && (elem1 instanceof ElemAccept)) {
-    									ElemAccept elemAccept = (ElemAccept)elem1;
-    									String component = elemAccept.getComponent();    								
-    									if ("function".equals(component)) {
-    										Vector componentNames = elemAccept.getNames();
-    										String compVisibilityValue = elemAccept.getVisibility();
-    										if ("public".equals(compVisibilityValue)) {    								    
-    											int xslTemplateCount = stylesheet.getTemplateCount();
-    											for (int idx = 0; idx < xslTemplateCount; idx++) {
-    												ElemTemplate template = stylesheet.getTemplate(idx);
-    												if (template instanceof ElemFunction) {
-    													ElemFunction elemFunction = (ElemFunction)template;
-    													if (isElemFunctionEligible(elemFunction, componentNames, 
-    															                                 funcNamespace, funcName, xslFuncArgCount)) {
-    													   elemTemplate = elemFunction;
-    													   
-    													   break;
-    													}    													
-    												}
-    											}
-    											
-    											if (elemTemplate != null) {
-    											   break;	
-    											}
-    										}
-    									}
-    									
-    									if (elemTemplate != null) {
-										    break;	
-									    }
-
-    									elem1 = elem1.getNextSiblingElem();
-    								}
-    							}	
-    							catch (Exception ex) {
-    								// to do	
-    							}
-    						}
-
-    						if (elemTemplate != null) {
-    							break;	
-    						}
-
-    						elemTemplateElement1 = elemTemplateElement1.getNextSiblingElem();
-    					}
+    				if (elemTemplate == null) { 
+    					elemTemplate = getXslFunctionDeclUsingXslPackage(transformerImpl, funcNamespace, 
+    							                                                                      funcName, xslFuncArgCount);
     			    }
 
     				if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
-    					// Evaluate XSL stylesheet function call
+    					// Evaluate an XSL stylesheet function call
     					
     					ElemFunction elemFunction = (ElemFunction)elemTemplate;
-    					
+    					    					
     					XPath useWhenExpr = elemFunction.getUseWhen();
                         if (useWhenExpr != null) {
                         	XObject xObj = useWhenExpr.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
                         	if (xObj.bool()) {
                         	   evalResult = elemFunction.evaluateXslFunction(transformerImpl, xslFuncArgSequence);
-                        	}
-                        	else {
-                        	   evalResult = new ResultSequence();
-                        	}
+                        	}                        	
                         }
                         else {
+                        	Stylesheet stylesheet3 = elemTemplate.getStylesheet();
+                        	if (stylesheet3 != null) {
+                        	   StylesheetRoot stylesheetRoot2 = stylesheet3.getStylesheetRoot();
+                        	   transformerImpl = stylesheetRoot2.getTransformerImpl();
+                        	   if (transformerImpl == null) {
+                        	      transformerImpl = new TransformerImpl(stylesheetRoot2);
+                        	   }
+                        	}
+                        	
     					    evalResult = elemFunction.evaluateXslFunction(transformerImpl, xslFuncArgSequence);
                         }
 
@@ -454,7 +355,7 @@ public class XSL3FunctionService {
     					}
 
     					return evalResult;
-    			    }
+    			    }    				
     			}
 
     			if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {                
@@ -1621,6 +1522,215 @@ public class XSL3FunctionService {
 		}
         
         return result;
+    }
+    
+    /**
+     * Method definition, to get xsl:function declaration object, for the supplied
+     * xsl:function call reference information.
+     * 
+     * @param transformerImpl                                      An XSL run-time TransformerImpl 
+     *                                                             object instance. 
+     * @param funcNamespace                                        An xsl:function declaration's desired 
+     *                                                             XML namespace value.
+     * @param funcName                                             An xsl:function declaration's desired
+     *                                                             local name.
+     * @param xslFuncExpectedArity                                 An xsl:function declaration's desired
+     *                                                             arity.
+     * @return                                                     An xsl:function declaration object,
+     *                                                             or null.
+     * @throws TransformerException
+     * @throws TransformerFactoryConfigurationError
+     */
+    private ElemTemplate getXslFunctionDeclUsingXslPackage(TransformerImpl transformerImpl, String funcNamespace, 
+    		                                                                                     String funcName, 
+    		                                                                                     int xslFuncExpectedArity) throws TransformerException, 
+                                                                                                                     TransformerFactoryConfigurationError {
+    	ElemTemplate result = null;
+    	    	    	
+    	XPathContext xctxt = transformerImpl.getXPathContext();
+    	    	    	
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
+    	
+    	final int sourceNode = xctxt.getCurrentNode();
+    	
+    	Stylesheet sroot = transformerImpl.getStylesheet();
+    	
+    	ElemTemplateElement elemTemplateElement1 = sroot.getFirstChildElem();
+    	
+    	Stylesheet stylesheet2 = null;
+		
+		while (elemTemplateElement1 != null) {
+			if (elemTemplateElement1 instanceof ElemUsePackage) {
+				// Resolve function call reference				
+				ElemUsePackage elemUsePackage2 = (ElemUsePackage)elemTemplateElement1;
+				XPath useWhenExpr = elemUsePackage2.getUseWhen();
+				if (useWhenExpr != null) {
+					XObject xObj = useWhenExpr.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+					if (!xObj.bool()) {
+						elemTemplateElement1 = elemTemplateElement1.getNextSiblingElem();
+
+						continue;
+					}
+				}
+				
+				System.setProperty(Constants.XSL_TRANSFORM_FACTORY_KEY, Constants.XSL_TRANSFORM_FACTORY_VALUE);
+
+				try {
+					TransformerFactory tfactory = TransformerFactory.newInstance();
+					tfactory.setErrorListener(new DefaultErrorHandler(true));
+
+					ElemUsePackage elemUsePackage = (ElemUsePackage)elemTemplateElement1;
+					AVT packageAvt = elemUsePackage.getName();
+					String packageName = packageAvt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
+
+					DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+					dfactory.setNamespaceAware(true);
+					dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+					DocumentBuilder docBuilder = dfactory.newDocumentBuilder();    							    							
+
+					URL resolvedUrl = null;
+					URI uri = new URI(packageName);
+					if (uri.isAbsolute()) {
+						resolvedUrl = new URL(packageName); 
+					}
+					else {
+						String stylesheetSystemId = srcLocator.getSystemId();    				            	
+						if (stylesheetSystemId != null) {
+							URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(packageName);
+							resolvedUrl = resolvedUriArg.toURL();
+						}
+						else {
+							resolvedUrl = new URL(packageName);
+						}
+					}
+
+					String xslResolverUrlStr = resolvedUrl.toString();
+
+					InputSource inpSrc = new InputSource(xslResolverUrlStr);
+
+					Document xslDocument = docBuilder.parse(inpSrc);
+
+					Templates templates = tfactory.newTemplates(new DOMSource(xslDocument, xslResolverUrlStr));
+
+					/**
+					 * This shall provide to us XSL expanded component definitions.
+					 * We need to verify, that which of these components to use,
+					 * using xsl:accept instruction, information from xsl:use-package.
+					 */
+					stylesheet2 = (Stylesheet)templates;
+
+					ElemTemplateElement elem1 = elemUsePackage.getFirstChildElem();
+					while ((elem1 != null) && (elem1 instanceof ElemAccept)) {
+						ElemAccept elemAccept = (ElemAccept)elem1;
+						String component = elemAccept.getComponent();    								
+						if ("function".equals(component)) {
+							Vector componentNames = elemAccept.getNames();
+							String compVisibilityValue = elemAccept.getVisibility();
+							if ("public".equals(compVisibilityValue)) {    								    
+								int xslTemplateCount = stylesheet2.getTemplateCount();
+								for (int idx = 0; idx < xslTemplateCount; idx++) {
+									ElemTemplate template = stylesheet2.getTemplate(idx);
+									if (template instanceof ElemFunction) {
+										ElemFunction elemFunction = (ElemFunction)template;
+										if (isElemFunctionEligible(elemFunction, componentNames, 
+												                                 funcNamespace, funcName, xslFuncExpectedArity)) {
+										   result = elemFunction;
+										   
+										   break;
+										}    													
+									}
+								}
+								
+								if (result != null) {
+								   break;	
+								}
+							}
+						}
+						
+						if (result != null) {
+						    break;	
+					    }
+
+						elem1 = elem1.getNextSiblingElem();
+				    }
+				}	
+				catch (Exception ex) {
+					// no op	
+				}
+			}
+
+			if (result != null) {
+				break;	
+			}
+
+			elemTemplateElement1 = elemTemplateElement1.getNextSiblingElem();
+		}
+		
+		if (result != null) {
+			// Verify xsl:function declaration object found via xsl:use-package 
+			// instruction, with xsl:expose instruction.
+
+			ElemTemplateElement elemTemplateElem = stylesheet2.getFirstChildElem();
+			boolean isXslExposeAllows = false;
+									
+			while (elemTemplateElem != null) {
+				if (elemTemplateElem instanceof ElemExpose) {
+					ElemExpose elemExpose = (ElemExpose)elemTemplateElem;					
+					String componentType = elemExpose.getComponent();
+					Vector nameVector = elemExpose.getNames();
+					String visibility = elemExpose.getVisibility();
+					if ("public".equals(visibility) && ("function".equals(componentType) || "*".equals(componentType))) {
+						Enumeration enum1 = nameVector.elements();
+						while (enum1.hasMoreElements()) {
+							QName qNameExposeValue1 = (QName)(enum1.nextElement());
+																					
+							String ns1 =  qNameExposeValue1.getNamespace();
+							String localName1 = qNameExposeValue1.getLocalName();
+							int arity = -1;
+							if (localName1.contains("#")) {
+							   int idx = localName1.indexOf('#');
+							   arity = Integer.valueOf(localName1.substring(idx + 1));
+							   localName1 = localName1.substring(0, idx);
+							   qNameExposeValue1 = new QName(ns1, localName1);							   
+							}
+							
+							QName qNameFuncDeclValue1 = result.getName();
+							String ns2 = qNameFuncDeclValue1.getNamespace();
+							String localName2 = qNameFuncDeclValue1.getLocalName();
+	
+							isXslExposeAllows = (new QName(ns2, localName2)).equals(new QName(ns1, localName1));
+							if (isXslExposeAllows) {
+								ElemFunction elemFunc = (ElemFunction)result;
+								if ((arity != -1) && !(arity == elemFunc.getArity())) {
+									isXslExposeAllows = false;
+								}
+							}
+							
+							if (isXslExposeAllows) {
+								break; 
+							}
+						}						
+					}
+
+					if (isXslExposeAllows) {
+						break;	
+					}
+				}
+
+				elemTemplateElem = elemTemplateElem.getNextSiblingElem();
+			}
+
+			if (!isXslExposeAllows) {
+				result = null; 
+			}			
+		}
+		
+		if ((result != null) && (stylesheet2 != null)) {
+			StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheet2;
+			result.setStylesheet(stylesheetRoot);
+		}
+		
+		return result;
     }
     
 }

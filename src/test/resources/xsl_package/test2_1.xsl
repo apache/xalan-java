@@ -1,29 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:package xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-             xmlns:xs="http://www.w3.org/2001/XMLSchema"
-			 name="test2.xsl"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"        
+			 name="test2_1.xsl"
 			 package-version="1.0.0"
 			 exclude-result-prefixes="xs"
              version="3.0">
              
     <!-- Author: mukulg@apache.org -->
   
-    <!-- An XSL 3 stylesheet test case to test, xsl:package instruction -->             
-				
-    <xsl:output method="xml" indent="yes"/>
-	
-	<xsl:mode name="mode1" visibility="public"/>
+    <!-- An XSL 3 stylesheet test case to test, xsl:package instruction -->              
 
-    <xsl:use-package name="test2_1.xsl" package-version="1.0.0">
-	   <xsl:accept component="template" names="Template1" visibility="public"/>
-	</xsl:use-package>
+    <!-- An XSL component to be exported, must be explicitly granted 
+         access via xsl:expose instruction. -->
+    <xsl:expose component="template" names="Template1" visibility="public"/>
     
-    <xsl:template match="/" mode="mode1">
-	   <result>
-	      <xsl:call-template name="Template1">
-		     <xsl:with-param name="n1" select="10" as="xs:integer"/>
-		  </xsl:call-template>
-	   </result>
+    <xsl:template name="Template1" visibility="public">
+	   <xsl:param name="n1" as="xs:integer"/>
+	   <xsl:value-of select="1 to $n1"/>
 	</xsl:template>
 	
 	<!--

@@ -17,7 +17,6 @@
 package org.apache.xalan.tests.xslt3;
 
 import org.apache.xalan.tests.util.XSLTestConstants;
-import org.apache.xalan.tests.util.XslTestsErrorHandler;
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -56,6 +55,18 @@ public class XslPackageTests extends XslTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
+        
+        m_initModeName = "mode1";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslPackageTest2() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";
         
         m_initModeName = "mode1";
         

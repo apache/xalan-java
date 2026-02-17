@@ -921,8 +921,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     	  else if ((m_init_template_name != null) || (m_init_mode_name != null)) {
     		  /**
     		   * An XSL stylesheet 'initial template' or 'mode' name is 
-    		   * available, but context item is not available. An XSL 
-    		   * transformation will be attempted with an absent focus.
+    		   * available, but context node is not available.
     		   */
     		  this.transformNode(DTM.NULL);
     	  }

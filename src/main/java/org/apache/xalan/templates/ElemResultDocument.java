@@ -584,7 +584,8 @@ public class ElemResultDocument extends ElemTemplateElement
 	  
 	  if ((m_fnTransformDeliveryFormat == null) || (FuncTransform.DOCUMENT).equals(m_fnTransformDeliveryFormat)) {
 		  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-	      System.setProperty(FuncTransform.XSLT_TRANSFORMER_FACTORY_KEY, FuncTransform.XSLT_TRANSFORMER_FACTORY_VALUE);
+		  
+	      System.setProperty(Constants.XSL_TRANSFORM_FACTORY_KEY, Constants.XSL_TRANSFORM_FACTORY_VALUE);
 		  
 	      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		  DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
