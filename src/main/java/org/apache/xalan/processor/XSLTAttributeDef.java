@@ -35,6 +35,7 @@ import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xml.utils.NamespaceSupport2;
 import org.apache.xml.utils.QName;
@@ -42,6 +43,7 @@ import org.apache.xml.utils.StringToIntTable;
 import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.XML11Char;
 import org.apache.xpath.XPath;
+import org.w3c.dom.Node;
 import org.xml.sax.helpers.NamespaceSupport;
 
  
@@ -1024,7 +1026,8 @@ public class XSLTAttributeDef
 
      try 
         {
-    	  QName qname = null;    	  
+    	  QName qname = null;
+    	  value = value.trim();
     	  if (value.startsWith("Q{")) {
     		 // Support for XPath 3.1 URI qualified names    
     		 int idx = value.indexOf('}');
@@ -1037,8 +1040,12 @@ public class XSLTAttributeDef
     			String localName = value.substring(idx + 1);
     			qname = new QName(Constants.XSL_ERROR_NAMESACE, localName, true); 
     		 }
+    		 else if ((idx == 2) && ((owner instanceof ElemTemplate) || (owner instanceof ElemVariable))) {
+     			String localName = value.substring(idx + 1);
+     			qname = new QName(null, localName, true); 
+     		 }
     		 
-    		 if ((qname == null) && !(owner instanceof ElemFunction)) {
+    		 if ((qname == null) && !((owner instanceof ElemTemplate) || (owner instanceof ElemVariable))) {
     			handleError(handler,XSLTErrorResources.ER_ABSENT_NAMESPACE_URI, new Object[] {owner.getNodeName()}, null);
     			
     			return null; 
@@ -1223,6 +1230,8 @@ public class XSLTAttributeDef
     StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
     int nQNames = tokenizer.countTokens();
     Vector qnames = new Vector(nQNames);
+    
+    Node node = handler.getOriginatingNode();
 
     for (int i = 0; i < nQNames; i++)
     {

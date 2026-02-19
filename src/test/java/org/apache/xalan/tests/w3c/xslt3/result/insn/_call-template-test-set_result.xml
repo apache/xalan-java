@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-17T16:50:58Z" fail="10" name="call-template" pass="30" run="40" skipped="2" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-19T11:59:03Z" fail="8" name="call-template" pass="32" run="40" skipped="2" statusUnknown="0">
    <testResult status="pass" testName="call-template-0001"/>
    <testResult status="pass" testName="call-template-0101"/>
    <testResult status="fail" testName="call-template-0102"/>
@@ -8,13 +8,7 @@
    <testResult status="pass" testName="call-template-0106"/>
    <testResult status="pass" testName="call-template-0107"/>
    <testResult status="pass" testName="call-template-0108"/>
-   <testResult status="fail" testName="call-template-0109">
-      <outResult>
-         <errTrace>Illegal value:  Q{}temp  used for QNAME attribute: name</errTrace>
-         <errTrace>Illegal value:  Q{http://another/}temp  used for QNAME attribute: name</errTrace>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: xsl:template requires either a name or a match attribute.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="call-template-0109"/>
    <testResult status="fail" testName="call-template-0110">
       <outResult>
          <errTrace>java.lang.RuntimeException: Prefix must resolve to a namespace: *</errTrace>
@@ -35,12 +29,7 @@
    <testResult status="pass" testName="call-template-0601"/>
    <testResult status="pass" testName="call-template-0701"/>
    <testResult status="fail" testName="call-template-0702"/>
-   <testResult status="fail" testName="call-template-0703">
-      <outResult>
-         <errTrace>XTSE0740 : An XSL param's name attribute doesn't have a URI reference</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="call-template-0703"/>
    <testResult status="pass" testName="call-template-0801"/>
    <testResult status="pass" testName="call-template-0802"/>
    <testResult status="fail" testName="call-template-0901"/>
