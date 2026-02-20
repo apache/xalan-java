@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
 import org.apache.xalan.res.XSLMessages;
@@ -30,16 +27,18 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
+import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSString;
 
 /**
  * Base class for functions that accept one argument that can be defaulted if
  * not specified.
+ * 
  * @xsl.usage advanced
  */
 public class FunctionDef1Arg extends FunctionOneArg
 {
-    static final long serialVersionUID = 2325189412814149264L;
+  static final long serialVersionUID = 2325189412814149264L;
 
   /**
    * Execute the first argument expression that is expected to return a
@@ -167,7 +166,26 @@ public class FunctionDef1Arg extends FunctionOneArg
        XObject xObj = m_arg0.execute(xctxt);
        if (xObj instanceof XSString) {
     	   XString xStr = new XString(((XSString)xObj).stringValue());
+    	   
     	   return xStr.num();
+       }
+       else if (xObj instanceof XString) {
+    	   XString xStr = (XString)xObj;
+    	   String str1 = xStr.str();
+    	   if ("INF".equals(str1)) {
+    		  return Double.POSITIVE_INFINITY; 
+    	   }
+    	   else if ("-INF".equals(str1)) {
+    		  return Double.NEGATIVE_INFINITY; 
+    	   }
+    	   else {
+    		  return xStr.num();  
+    	   }
+       }
+       else if (xObj instanceof XSDecimal) {
+    	   XSDecimal xsDecimal = (XSDecimal)xObj;
+    	   
+    	   return xsDecimal.doubleValue();
        }
        else {
     	   return m_arg0.execute(xctxt).num();   

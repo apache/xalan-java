@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:16Z" fail="10" name="axes" pass="190" run="200" skipped="2" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:44Z" fail="8" name="axes" pass="192" run="200" skipped="2" statusUnknown="0">
    <testResult status="pass" testName="axes-001"/>
    <testResult status="pass" testName="axes-002"/>
    <testResult status="pass" testName="axes-003"/>
@@ -60,15 +60,10 @@
          <errTrace>Can not convert #STRING to a NodeList!</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="axes-058"/>
+   <testResult status="pass" testName="axes-058"/>
    <testResult status="fail" testName="axes-059"/>
    <testResult status="pass" testName="axes-060"/>
-   <testResult status="fail" testName="axes-061">
-      <outResult>
-         <errTrace>XPST0003 : An XPath expression                 /out/u = "2,9,3,4"                /out/u = "9,2,3,4"              has syntax error. Unknown op code : 21.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="axes-061"/>
    <testResult status="fail" testName="axes-062"/>
    <testResult status="pass" testName="axes-063"/>
    <testResult status="pass" testName="axes-064"/>
@@ -142,7 +137,7 @@
    <testResult status="fail" testName="axes-132">
       <outResult>
          <errTrace>XPST0003 : An XPath expression f:nn(/comment()[1]) has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="axes-133"/>

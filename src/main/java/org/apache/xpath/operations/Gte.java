@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import java.util.ArrayList;
@@ -34,6 +31,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
 
+import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
@@ -73,6 +71,18 @@ public class Gte extends Operation
 	  XObject rObj = null;
 	  
 	  List<java.lang.String> strList = new ArrayList<java.lang.String>();
+	  
+	  if (left instanceof XSDouble) {
+		  XSDouble lXsDouble = (XSDouble)left;
+		  if (lXsDouble.nan()) {
+			 if (right instanceof XNumber) {
+				double rDbl = ((XNumber)right).num();
+				if (!((new Double(rDbl)).isNaN() || (rDbl == Double.POSITIVE_INFINITY) || (rDbl == Double.NEGATIVE_INFINITY))) {
+				   return XBoolean.S_FALSE;
+				}
+			 }
+		  }
+	  }
 	  
 	  if ((left instanceof XMLNodeCursorImpl) && ((right instanceof XString) || (right instanceof XSString))) {
 		  lObj = left;

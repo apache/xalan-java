@@ -232,6 +232,10 @@ public class Equals extends Operation
 			java.lang.String lStrValue = xmlNodeCursorImpl1.str();
 			try {
 				if (right instanceof XNumber) {
+					if ("".equals(lStrValue)) {
+					   throw new javax.xml.transform.TransformerException("FORG0001 : Not able to convert string \"\" to double", getExpressionOwner());
+					}
+					
 					double lDbl = Double.valueOf(lStrValue);
 					XNumber rXNumber = (XNumber)right;
 					double rDbl = rXNumber.num();
@@ -240,6 +244,10 @@ public class Equals extends Operation
 					}
 				}
 				else if (right instanceof XSNumericType) {
+					if ("".equals(lStrValue)) {
+					   throw new javax.xml.transform.TransformerException("FORG0001 : Not able to convert string \"\" to double", getExpressionOwner());
+					}
+					
 					double lDbl = Double.valueOf(lStrValue);
 					XSNumericType xsNumericType = (XSNumericType)right;
 					java.lang.String rStrValue = xsNumericType.stringValue();

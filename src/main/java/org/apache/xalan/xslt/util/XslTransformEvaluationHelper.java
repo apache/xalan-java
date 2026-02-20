@@ -368,11 +368,26 @@ public class XslTransformEvaluationHelper {
         
         if (expr instanceof Variable) {
            Variable xslVariable = (Variable)expr;
-           XObject resultObj = xslVariable.execute(xctxt);
-           if (resultObj instanceof ResultSequence) {
-              ResultSequence resultSeq = (ResultSequence)resultObj;
-              sum = sumResultSequence(resultSeq);          
-           }       
+           XObject resultObj = xslVariable.execute(xctxt);           
+           if (resultObj instanceof XMLNodeCursorImpl) {
+        	   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)resultObj;
+        	   int pos;
+
+        	   DTMCursorIterator nodes = xmlNodeCursorImpl.iter();
+
+        	   while ((pos = nodes.nextNode()) != DTM.NULL) {
+        		   DTM dtm = nodes.getDTM(pos);
+        		   XMLString xmlStr = dtm.getStringValue(pos);
+
+        		   if (xmlStr != null) {
+        			   sum += xmlStr.toDouble();
+        		   }
+        	   }
+           }
+           else if (resultObj instanceof ResultSequence) {
+        	   ResultSequence resultSeq = (ResultSequence)resultObj;
+        	   sum = sumResultSequence(resultSeq);          
+           }
         }
         else if (expr instanceof Function) {
            XObject resultObj = ((Function)expr).execute(xctxt);
@@ -416,6 +431,7 @@ public class XslTransformEvaluationHelper {
                  sum += xmlStr.toDouble();
               }
            }
+           
            nodes.detach();
         }
 

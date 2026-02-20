@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-28T01:36:25Z" fail="368" name="regex-syntax" pass="618" run="986" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:29Z" fail="368" name="regex-syntax" pass="618" run="986" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="regex-syntax-0001"/>
    <testResult status="pass" testName="regex-syntax-0002"/>
    <testResult status="pass" testName="regex-syntax-0003"/>

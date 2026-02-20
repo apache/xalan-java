@@ -81,7 +81,7 @@ public class FuncBoolean extends FunctionOneArg
 	  
 	  try {	     	     
 	     xObj = m_arg0.execute(xctxt);	     
-	     if (xObj == null) {
+	     if ((xObj == null) || ((xObj instanceof XSDouble) && ((XSDouble)xObj).nan())) {
 	    	result = new XSBoolean(false); 
 	     }
 	     else if (xObj instanceof XString) {

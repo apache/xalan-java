@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-19T11:37:36Z" fail="12" name="whitespace" pass="16" run="28" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:51Z" fail="11" name="whitespace" pass="17" run="28" skipped="0" statusUnknown="0">
    <testResult status="fail" testName="whitespace-001"/>
    <testResult status="pass" testName="whitespace-002"/>
    <testResult status="fail" testName="whitespace-003"/>
@@ -12,7 +12,7 @@
    <testResult status="fail" testName="whitespace-011"/>
    <testResult status="pass" testName="whitespace-012"/>
    <testResult status="fail" testName="whitespace-013"/>
-   <testResult status="fail" testName="whitespace-014"/>
+   <testResult status="pass" testName="whitespace-014"/>
    <testResult status="fail" testName="whitespace-015"/>
    <testResult status="pass" testName="whitespace-016"/>
    <testResult status="pass" testName="whitespace-017"/>
@@ -23,16 +23,10 @@
    <testResult status="pass" testName="whitespace-020"/>
    <testResult status="pass" testName="whitespace-021"/>
    <testResult status="fail" testName="whitespace-022">
-      <outResult>
-         <errTrace>XPST0003 : An XPath expression /text() = "test" has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="whitespace-023">
-      <outResult>
-         <errTrace>XPST0003 : An XPath expression /text() = "a" has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="whitespace-024"/>
    <testResult status="fail" testName="whitespace-025"/>
@@ -40,7 +34,6 @@
    <testResult status="pass" testName="whitespace-027"/>
    <testResult status="fail" testName="whitespace-028">
       <outResult>
-         <errTrace>Illegal value:       xml       used for QNAME attribute: method</errTrace>
          <errTrace>"default-collation" attribute is not allowed on the xsl:template element!</errTrace>
       </outResult>
    </testResult>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:26Z" fail="7" name="json-to-xml" pass="18" run="25" skipped="35" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:40Z" fail="7" name="json-to-xml" pass="18" run="25" skipped="35" statusUnknown="0">
    <testResult status="pass" testName="json-to-xml-001"/>
    <testResult status="pass" testName="json-to-xml-002"/>
    <testResult status="pass" testName="json-to-xml-003"/>
@@ -12,24 +12,31 @@
    <testResult status="pass" testName="json-to-xml-011"/>
    <testResult status="pass" testName="json-to-xml-012"/>
    <testResult status="pass" testName="json-to-xml-101"/>
-   <testResult status="fail" testName="json-to-xml-escape-001"/>
-   <testResult status="fail" testName="json-to-xml-escape-002"/>
+   <testResult status="fail" testName="json-to-xml-escape-001">
+      <outResult/>
+   </testResult>
+   <testResult status="fail" testName="json-to-xml-escape-002">
+      <outResult/>
+   </testResult>
    <testResult status="fail" testName="json-to-xml-escape-003">
       <outResult>
-         <errTrace>misquoted literal... expected double quote!</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : An option 'escape' used for the function call fn:json-to-xml, is not supported. This implementation supports, only the options 'liberal', 'duplicates' and 'validate' for the function fn:json-to-xml.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="json-to-xml-escape-004">
       <outResult>
-         <errTrace>misquoted literal... expected double quote!</errTrace>
-         <errTrace>misquoted literal... expected double quote!</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : An option 'escape' used for the function call fn:json-to-xml, is not supported. This implementation supports, only the options 'liberal', 'duplicates' and 'validate' for the function fn:json-to-xml.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="json-to-xml-escape-005">
-      <outResult/>
+      <outResult>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : An option 'escape' used for the function call fn:json-to-xml, is not supported. This implementation supports, only the options 'liberal', 'duplicates' and 'validate' for the function fn:json-to-xml.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="json-to-xml-escape-006">
-      <outResult/>
+      <outResult>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : An option 'escape' used for the function call fn:json-to-xml, is not supported. This implementation supports, only the options 'liberal', 'duplicates' and 'validate' for the function fn:json-to-xml.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="json-to-xml-duplicates-001"/>
    <testResult status="pass" testName="json-to-xml-duplicates-002"/>

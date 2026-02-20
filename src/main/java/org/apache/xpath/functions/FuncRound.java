@@ -73,6 +73,12 @@ public class FuncRound extends Function2Args
                                                                                                           + "fn:round() is empty.", srcLocator);
           }
           
+          if ("INF".equals(strValueOfArg0) || "-INF".equals(strValueOfArg0)) {
+        	  throw new javax.xml.transform.TransformerException("FOAR0001 : An XPath function 'round''s call has an argument to be "
+        	  		                                                                                      + "rounded as INF, or -INF, which was probably "
+        	  		                                                                                      + "evaluated as result of division by zero.", srcLocator); 
+          }
+          
           if (m_arg1 == null) {
              try {
                 result = new XNumber(Math.round(Double.valueOf(strValueOfArg0)));

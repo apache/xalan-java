@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-07T11:36:40Z" fail="70" name="mode" pass="71" run="141" skipped="28" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:41Z" fail="70" name="mode" pass="71" run="141" skipped="28" statusUnknown="0">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
@@ -42,10 +42,7 @@
    <testResult status="pass" testName="mode-1101"/>
    <testResult status="fail" testName="mode-1102">
       <outResult>
-         <errTrace>Illegal value: b X  c  used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value:  a used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value: a  used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value:  X  used for QNAME attribute: mode</errTrace>
+         <errTrace>Illegal value: b X  c used for QNAME attribute: mode</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="mode-1103"/>
@@ -171,12 +168,8 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult feature="streaming" status="skipped" testName="mode-1428"/>
    <testResult status="fail" testName="mode-1429">
       <outResult>
-         <errTrace>Illegal value:  Q{}s  used for QNAME attribute: name</errTrace>
-         <errTrace>Illegal value:  s  used for QNAME attribute: mode</errTrace>
-         <errTrace>XTSE0740 : An XSL template's name attribute doesn't have a URI reference</errTrace>
-         <errTrace>Illegal value:  #current  used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value:  s  used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value:  Q{}s  used for QNAME attribute: mode</errTrace>
+         <errTrace>XTSE0740 : An XSL mode's name attribute doesn't have a URI reference</errTrace>
+         <errTrace>XTSE0740 : An XSL apply-templates's name attribute doesn't have a URI reference</errTrace>
          <errTrace>XTTE0505 : An XSL mode instruction's attribute "on-no-match" has disallowed value ' text-only-copy '.</errTrace>
       </outResult>
    </testResult>
@@ -188,9 +181,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    </testResult>
    <testResult status="fail" testName="mode-1434"/>
    <testResult status="fail" testName="mode-1435">
-      <outResult>
-         <errTrace>Illegal value:  a:mode  used for QNAME attribute: default-mode</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1436"/>
    <testResult feature="streaming" status="skipped" testName="mode-1437"/>
@@ -269,10 +260,6 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    </testResult>
    <testResult status="fail" testName="mode-1441">
       <outResult>
-         <errTrace>Illegal value:  s  used for QNAME attribute: name</errTrace>
-         <errTrace>Illegal value:  s  used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value: s  used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value:  #current  used for QNAME attribute: mode</errTrace>
          <errTrace>XTTE0505 : An XSL mode instruction's attribute "on-no-match" has disallowed value ' text-only-copy '.</errTrace>
       </outResult>
    </testResult>
@@ -281,10 +268,6 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    </testResult>
    <testResult status="fail" testName="mode-1443">
       <outResult>
-         <errTrace>Illegal value:  s  used for QNAME attribute: name</errTrace>
-         <errTrace>Illegal value:  s  used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value: s  used for QNAME attribute: mode</errTrace>
-         <errTrace>Illegal value:  #current  used for QNAME attribute: mode</errTrace>
          <errTrace>XTTE0505 : An XSL mode instruction's attribute "on-no-match" has disallowed value ' text-only-copy '.</errTrace>
       </outResult>
    </testResult>
@@ -421,7 +404,6 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="fail" testName="mode-1702">
       <outResult>
          <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
-         <errTrace>XTDE0045 : An XSL stylesheet, initial mode must be 'public' within XSL stylesheet 'package' element.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1702a">

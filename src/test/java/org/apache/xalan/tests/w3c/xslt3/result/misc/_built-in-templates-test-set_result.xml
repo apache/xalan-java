@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:27Z" fail="2" name="built-in-templates" pass="3" run="5" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:40Z" fail="2" name="built-in-templates" pass="3" run="5" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="built-in-templates-0101"/>
    <testResult status="pass" testName="built-in-templates-0102"/>
    <testResult status="fail" testName="built-in-templates-0201"/>

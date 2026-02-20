@@ -118,6 +118,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	private static final String FILE_ATTR = "file";
 	
 	private static final String TRUE = "true";
+	
+	private static final String FALSE = "false";
     
     private static final String EXPECTED_NODE_KIND_ASSERT_ALL_OF = "all-of";
     
@@ -943,6 +945,49 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			}    				
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName)) {
+    			NodeList nList1 = ((Element)nodeExpected).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT);
+    			int length1 = nList1.getLength();    			    		
+    			if (length1 > 0) {
+    				Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
+    				boolean testCasePass = true;    				
+    				for (int idx = 0; idx < length1; idx++) {
+    					Node node = nList1.item(idx);
+    					String xpathExprStr = node.getTextContent();
+    					xpathExprStr = "if (" + xpathExprStr + ") then " + "true() else exists(" + xpathExprStr + ")";
+    					xpathExprStr = xpathExprStr.replace('\'', '"');
+    					String xslStylesheetStr = "<?xml version=\"1.0\"?>" +
+					    						  "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"3.0\">" +
+					    						  "  <xsl:output method=\"text\"/>" +
+					    						  "  <xsl:template match=\"/\">" +
+					    						  "     <xsl:value-of select='" + xpathExprStr + "'/>" +
+					    						  "  </xsl:template>" +
+					    						  "</xsl:stylesheet>";
+    					Document xslDocument = m_xmlDocumentBuilder.parse(new InputSource(new StringReader(xslStylesheetStr)));
+
+    					System.setProperty(XSLTestConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLTestConstants.XSLT_TRANSFORMER_FACTORY_VALUE);
+
+    					TransformerFactory trfFactory2 = TransformerFactory.newInstance();                	
+    					Transformer transformer2 = trfFactory2.newTransformer(new DOMSource(xslDocument));
+
+    					StringWriter strWriter2 = new StringWriter();
+    					transformer2.transform(new DOMSource(xmlInpDoc1), new StreamResult(strWriter2));                	                	
+    					if (FALSE.equals(strWriter2.toString())) {
+    						testCasePass = false;
+
+    						break;
+    					}
+    			    }
+    				
+    				if (testCasePass) {
+    	    		    elemTestResult.setAttribute("status", "pass");
+    	    		}
+    	    		else {
+    	    			elemTestResult.setAttribute("status", "false");
+    	    		}
+    				
+    				return;
+    			}    			
+    			    			
     			NodeList nodeList1 = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
     			int nodeListLength1 = nodeList1.getLength();
     			

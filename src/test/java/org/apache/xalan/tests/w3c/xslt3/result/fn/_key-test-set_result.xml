@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-05T17:52:43Z" fail="36" name="key" pass="60" run="96" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:22Z" fail="33" name="key" pass="63" run="96" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="key-001"/>
    <testResult status="fail" testName="key-002">
       <outResult>
@@ -132,7 +132,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>XTSE0010 : xsl:variable is not allowed in this position in the stylesheet</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="key-075"/>
+   <testResult status="pass" testName="key-075"/>
    <testResult status="pass" testName="key-076"/>
    <testResult status="pass" testName="key-077"/>
    <testResult status="fail" testName="key-078"/>
@@ -189,6 +189,6 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult status="pass" testName="key-096"/>
    <testResult status="pass" testName="key-097"/>
-   <testResult status="fail" testName="key-098"/>
-   <testResult status="fail" testName="key-099"/>
+   <testResult status="pass" testName="key-098"/>
+   <testResult status="pass" testName="key-099"/>
 </testrun>

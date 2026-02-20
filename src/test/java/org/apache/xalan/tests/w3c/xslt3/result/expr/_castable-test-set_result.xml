@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:17Z" fail="3" name="castable" pass="6" run="9" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:50Z" fail="0" name="castable" pass="9" run="9" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="castable-001"/>
    <testResult status="pass" testName="castable-002"/>
    <testResult status="pass" testName="castable-003"/>
    <testResult status="pass" testName="castable-004"/>
    <testResult status="pass" testName="castable-005"/>
    <testResult status="pass" testName="castable-006"/>
-   <testResult status="fail" testName="castable-007"/>
-   <testResult status="fail" testName="castable-008"/>
-   <testResult status="fail" testName="castable-009"/>
+   <testResult status="pass" testName="castable-007"/>
+   <testResult status="pass" testName="castable-008"/>
+   <testResult status="pass" testName="castable-009"/>
 </testrun>

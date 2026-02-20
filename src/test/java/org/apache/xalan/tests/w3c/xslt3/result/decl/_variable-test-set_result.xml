@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-05T17:52:26Z" fail="16" name="variable" pass="87" run="103" skipped="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:32:15Z" fail="15" name="variable" pass="88" run="103" skipped="5" statusUnknown="0">
    <testResult status="pass" testName="variable-0101"/>
    <testResult status="pass" testName="variable-0102"/>
    <testResult status="pass" testName="variable-0103"/>
@@ -20,7 +20,6 @@
    <testResult status="fail" testName="variable-0119">
       <outResult>
          <errTrace>XTSE0740 : An XSL with-param's name attribute doesn't have a URI reference</errTrace>
-         <errTrace>XTSE0740 : An XSL param's name attribute doesn't have a URI reference</errTrace>
          <errTrace>XTSE0740 : An XSL with-param's name attribute doesn't have a URI reference</errTrace>
          <errTrace>java.lang.IllegalArgumentException: Argument 'localName' is null</errTrace>
       </outResult>
@@ -99,7 +98,7 @@
    <testResult status="fail" testName="variable-3301"/>
    <testResult status="pass" testName="variable-3401"/>
    <testResult status="pass" testName="variable-3501"/>
-   <testResult status="fail" testName="variable-3601"/>
+   <testResult status="pass" testName="variable-3601"/>
    <testResult status="pass" testName="variable-3701"/>
    <testResult status="pass" testName="variable-3801"/>
    <testResult status="fail" testName="variable-3802"/>

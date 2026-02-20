@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:15Z" fail="28" name="function" pass="59" run="87" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:31Z" fail="26" name="function" pass="61" run="87" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="function-0001"/>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -36,12 +36,7 @@
    <testResult status="pass" testName="function-0302b"/>
    <testResult status="pass" testName="function-0303"/>
    <testResult status="pass" testName="function-0401"/>
-   <testResult status="fail" testName="function-0501">
-      <outResult>
-         <errTrace>XPST0003 : An XPath expression /out/section[1]/actor[1][@name="User"][children/child="Administrator"][empty(parents/node())] has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-0501"/>
    <testResult status="pass" testName="function-0601"/>
    <testResult status="pass" testName="function-0602"/>
    <testResult status="fail" testName="function-0701">
@@ -113,17 +108,14 @@
    <testResult status="pass" testName="function-1031"/>
    <testResult status="pass" testName="function-1032"/>
    <testResult status="fail" testName="function-1033">
-      <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
-         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="function-1034">
       <outResult>
          <errTrace>XPST0081 : An XML namespace binding for prefix '' is not available.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="function-1035"/>
+   <testResult status="pass" testName="function-1035"/>
    <testResult status="fail" testName="function-1101"/>
    <testResult status="fail" testName="function-1201">
       <outResult>

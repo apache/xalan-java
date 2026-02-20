@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:25Z" fail="11" name="xsl-document" pass="14" run="25" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:37Z" fail="8" name="xsl-document" pass="17" run="25" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="xsl-document-0101"/>
-   <testResult status="fail" testName="xsl-document-0102"/>
+   <testResult status="pass" testName="xsl-document-0102"/>
    <testResult status="pass" testName="xsl-document-0103"/>
    <testResult status="pass" testName="xsl-document-0104"/>
    <testResult status="pass" testName="xsl-document-0105"/>
@@ -9,7 +9,7 @@
    <testResult status="pass" testName="xsl-document-0201"/>
    <testResult status="pass" testName="xsl-document-0202"/>
    <testResult status="pass" testName="xsl-document-0203"/>
-   <testResult status="fail" testName="xsl-document-0301"/>
+   <testResult status="pass" testName="xsl-document-0301"/>
    <testResult status="pass" testName="xsl-document-0302"/>
    <testResult status="fail" testName="xsl-document-0401"/>
    <testResult status="fail" testName="xsl-document-0402"/>
@@ -28,7 +28,7 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="xsl-document-0602"/>
-   <testResult status="fail" testName="xsl-document-0603"/>
+   <testResult status="pass" testName="xsl-document-0603"/>
    <testResult status="pass" testName="xsl-document-0604"/>
    <testResult status="pass" testName="xsl-document-0605"/>
    <testResult status="fail" testName="xsl-document-0606"/>

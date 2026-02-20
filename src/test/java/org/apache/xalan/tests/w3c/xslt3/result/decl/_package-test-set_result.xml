@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-07T11:36:43Z" fail="31" name="package" pass="23" run="54" skipped="18" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:52Z" fail="31" name="package" pass="23" run="54" skipped="18" statusUnknown="0">
    <testResult status="pass" testName="package-001"/>
    <testResult status="pass" testName="package-001a"/>
    <testResult status="pass" testName="package-001b"/>
@@ -46,22 +46,30 @@
    <testResult status="fail" testName="package-021"/>
    <testResult status="fail" testName="package-021err">
       <outResult>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
          <errTrace>javax.xml.transform.TransformerException: javax.xml.transform.TransformerException: Instance method call to method function1 requires an Object instance as first argument</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="package-022"/>
    <testResult status="fail" testName="package-022err">
       <outResult>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
          <errTrace>javax.xml.transform.TransformerException: javax.xml.transform.TransformerException: Instance method call to method function1 requires an Object instance as first argument</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="package-100">
       <outResult>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
          <errTrace>java.lang.NoSuchMethodException: For extension function, could not find method java.lang.String.parse([ExpressionContext,] ).</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="package-101">
       <outResult>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
+         <errTrace>XTSE0010 : xsl:override is not allowed in this position in the stylesheet</errTrace>
          <errTrace>java.lang.NoSuchMethodException: For extension function, could not find method java.lang.String.parse([ExpressionContext,] ).</errTrace>
       </outResult>
    </testResult>
@@ -123,26 +131,24 @@
    <testResult status="pass" testName="package-911"/>
    <testResult status="fail" testName="package-912">
       <outResult>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
          <errTrace>Variable $var accessed before it is bound!</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="package-913">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-    &#13;
-    test&#13;
-</outResult>
+      <outResult>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="package-913a">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-    &#13;
-    test&#13;
-</outResult>
+      <outResult>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="package-913b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-    &#13;
-    test&#13;
-</outResult>
+      <outResult>
+         <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="package-914a">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
@@ -171,9 +177,8 @@
    </testResult>
    <testResult status="fail" testName="package-200">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: ElemTemplateElement error: test:main
-javax.xml.transform.TransformerException: ElemTemplateElement error: test:main</errTrace>
-         <errTrace>Could not find template named: test:main</errTrace>
+         <errTrace>Illegal value: '1.0.0' used for NMTOKEN attribute: package-version </errTrace>
+         <errTrace>XPST0008 : An XSL named template declaration test:main not found.</errTrace>
       </outResult>
    </testResult>
 </testrun>

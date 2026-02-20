@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:19Z" fail="11" name="attribute" pass="11" run="23" skipped="7" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:00Z" fail="11" name="attribute" pass="11" run="23" skipped="7" statusUnknown="1">
    <testResult status="pass" testName="attribute-0001"/>
    <testResult status="pass" testName="attribute-0002"/>
    <testResult status="pass" testName="attribute-0003"/>
@@ -14,7 +14,6 @@
    <testResult status="fail" testName="attribute-0601">
       <outResult>
          <errTrace>Attempting to generate a namespace prefix with a null URI</errTrace>
-         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
       </outResult>
    </testResult>
    <testResult testName="attribute-0701"/>

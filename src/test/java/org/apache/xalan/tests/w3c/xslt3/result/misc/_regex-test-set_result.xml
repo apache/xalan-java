@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-20T11:12:24Z" fail="25" name="regex" pass="39" run="64" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:28Z" fail="22" name="regex" pass="42" run="64" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="regex-001"/>
    <testResult status="fail" testName="regex-002"/>
    <testResult status="pass" testName="regex-003"/>
    <testResult status="pass" testName="regex-004"/>
    <testResult status="pass" testName="regex-005"/>
    <testResult status="pass" testName="regex-009"/>
-   <testResult status="fail" testName="regex-010"/>
-   <testResult status="fail" testName="regex-011"/>
+   <testResult status="pass" testName="regex-010"/>
+   <testResult status="pass" testName="regex-011"/>
    <testResult status="pass" testName="regex-013"/>
-   <testResult status="fail" testName="regex-014"/>
+   <testResult status="pass" testName="regex-014"/>
    <testResult status="pass" testName="regex-015"/>
    <testResult status="pass" testName="regex-016"/>
    <testResult status="pass" testName="regex-017"/>
@@ -29,12 +29,12 @@
    <testResult status="pass" testName="regex-032"/>
    <testResult status="fail" testName="regex-038">
       <outResult>
-         <errTrace>java.lang.IllegalArgumentException: Illegal group reference</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Illegal group reference</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-039">
       <outResult>
-         <errTrace>java.lang.IllegalArgumentException: Illegal group reference: group index is missing</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: Illegal group reference: group index is missing</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-040">
@@ -42,7 +42,7 @@
    </testResult>
    <testResult status="fail" testName="regex-041">
       <outResult>
-         <errTrace>java.lang.IllegalArgumentException: character to be escaped is missing</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: character to be escaped is missing</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="regex-043"/>

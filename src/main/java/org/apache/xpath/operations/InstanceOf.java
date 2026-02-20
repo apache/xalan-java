@@ -152,7 +152,18 @@ public class InstanceOf extends Operation
       
       int xsBuiltInSeqType = seqTypedData.getBuiltInSequenceType();      
       SequenceTypeKindTest sequenceTypeKindTest = seqTypedData.getSequenceTypeKindTest();
-      int seqTypeOccurenceIndicator = seqTypedData.getItemTypeOccurrenceIndicator();      
+      int seqTypeOccurenceIndicator = seqTypedData.getItemTypeOccurrenceIndicator();
+      
+      int xsBuiltInType = seqTypedData.getBuiltInSequenceType();
+      if (xsBuiltInType == SequenceTypeSupport.XS_INTEGER) {
+    	  if (left instanceof XNumber) {
+    		  XNumber xNumber = (XNumber)left;
+    		  double dbl = xNumber.num();
+    		  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
+    			  return XBoolean.S_TRUE; 
+    		  }
+    	  }
+      }
       
       if (left instanceof ElemFunctionItem) {
     	  /**

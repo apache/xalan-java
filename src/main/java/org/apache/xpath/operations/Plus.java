@@ -160,8 +160,20 @@ public class Plus extends XPathArithmeticOp
 		  }
 		  else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
 			  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
-			  
-			  result = arithmeticOpOnXNumberValues(leftXNumber, (XNumber)right, OP_SYMBOL_PLUS, elemTemplateElement);
+			  double lDbl = leftXNumber.num();
+			  double rDbl = ((XNumber)right).num(); 
+			  if ((lDbl == Double.NEGATIVE_INFINITY) && ((rDbl != Double.NEGATIVE_INFINITY) || (rDbl != Double.POSITIVE_INFINITY) || (rDbl != Double.NaN))) {
+				 result = new XSDouble(Double.NEGATIVE_INFINITY); 
+			  }
+			  else if ((lDbl == Double.POSITIVE_INFINITY) && ((rDbl != Double.NEGATIVE_INFINITY) || (rDbl != Double.POSITIVE_INFINITY) || (rDbl != Double.NaN))) {
+				 result = new XSDouble(Double.POSITIVE_INFINITY); 
+			  }
+			  else if ((Double.valueOf(lDbl)).isNaN() && ((rDbl != Double.NEGATIVE_INFINITY) || (rDbl != Double.POSITIVE_INFINITY) || (rDbl != Double.NaN))) {
+				 result = new XSDouble(Double.NaN); 
+			  }
+			  else {
+			     result = arithmeticOpOnXNumberValues(leftXNumber, (XNumber)right, OP_SYMBOL_PLUS, elemTemplateElement);
+			  }
 		  }      
 		  else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) { 
 			  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);

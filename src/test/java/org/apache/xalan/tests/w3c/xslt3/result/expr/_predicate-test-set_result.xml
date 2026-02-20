@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:19Z" fail="4" name="predicate" pass="48" run="52" skipped="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:58Z" fail="4" name="predicate" pass="48" run="52" skipped="5" statusUnknown="0">
    <testResult feature="backwards_compatibility" status="skipped" testName="predicate-001"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="predicate-002"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="predicate-003"/>

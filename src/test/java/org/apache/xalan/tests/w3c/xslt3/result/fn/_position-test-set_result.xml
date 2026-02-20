@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-13T11:49:50Z" fail="18" name="position" pass="192" run="210" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:38Z" fail="17" name="position" pass="192" run="210" skipped="1" statusUnknown="1">
    <testResult status="pass" testName="position-0101"/>
    <testResult status="fail" testName="position-0102"/>
-   <testResult status="fail" testName="position-0103"/>
+   <testResult status="false" testName="position-0103"/>
    <testResult status="pass" testName="position-0201"/>
    <testResult status="pass" testName="position-0202"/>
    <testResult status="pass" testName="position-0301"/>

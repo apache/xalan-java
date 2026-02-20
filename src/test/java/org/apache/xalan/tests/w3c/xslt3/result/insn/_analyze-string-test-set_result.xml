@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:24Z" fail="14" name="analyze-string" pass="39" run="53" skipped="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:19Z" fail="8" name="analyze-string" pass="45" run="53" skipped="5" statusUnknown="0">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -33,7 +33,7 @@
    <testResult status="pass" testName="analyze-string-073"/>
    <testResult status="pass" testName="analyze-string-074"/>
    <testResult status="pass" testName="analyze-string-075"/>
-   <testResult status="fail" testName="analyze-string-076"/>
+   <testResult status="pass" testName="analyze-string-076"/>
    <testResult status="fail" testName="analyze-string-077"/>
    <testResult status="fail" testName="analyze-string-078"/>
    <testResult status="pass" testName="analyze-string-079"/>
@@ -52,15 +52,10 @@
 &lt;/ales&gt;</outResult>
    </testResult>
    <testResult status="skipped" testName="analyze-string-090a" xsltVersion="XSLT 2.0/1.0 only test case"/>
-   <testResult status="fail" testName="analyze-string-090b"/>
+   <testResult status="pass" testName="analyze-string-090b"/>
    <testResult status="skipped" testName="analyze-string-091a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="analyze-string-091b"/>
-   <testResult status="fail" testName="analyze-string-092">
-      <outResult>
-         <errTrace>Expected ), but found: "s "</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="analyze-string-092"/>
    <testResult status="pass" testName="analyze-string-093"/>
    <testResult status="pass" testName="analyze-string-094"/>
    <testResult status="pass" testName="analyze-string-095"/>
@@ -75,7 +70,7 @@
          <errTrace>XTTE1540 : An error occured while evaluating an XSL stylesheet copy-of instruction.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="analyze-string-098"/>
-   <testResult status="fail" testName="analyze-string-099"/>
-   <testResult status="fail" testName="analyze-string-100"/>
+   <testResult status="pass" testName="analyze-string-098"/>
+   <testResult status="pass" testName="analyze-string-099"/>
+   <testResult status="pass" testName="analyze-string-100"/>
 </testrun>

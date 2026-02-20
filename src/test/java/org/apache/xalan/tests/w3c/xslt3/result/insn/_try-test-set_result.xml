@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:41:12Z" fail="7" name="try" pass="27" run="34" skipped="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:17Z" fail="7" name="try" pass="26" run="34" skipped="8" statusUnknown="1">
    <testResult status="pass" testName="try-001"/>
    <testResult status="pass" testName="try-002"/>
    <testResult status="pass" testName="try-003"/>
@@ -20,16 +20,12 @@
    <testResult status="pass" testName="try-019"/>
    <testResult status="pass" testName="try-020"/>
    <testResult status="pass" testName="try-021"/>
-   <testResult status="fail" testName="try-022"/>
+   <testResult status="false" testName="try-022"/>
    <testResult status="fail" testName="try-023">
       <outResult/>
    </testResult>
    <testResult status="fail" testName="try-024">
-      <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix '' is not available.</errTrace>
-         <errTrace>XPST0003 : An XPath expression                                    /output/output/note = "secondary document written"                   /output/output/*:error/@code[contains(.,"FOAR0001")]                   contains(/output/output/*:error/message, "zero")                                 has syntax error. Unknown op code : 21.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="skipped" testName="try-025" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="skipped" testName="try-026" xsltVersion="XSLT 2.0/1.0 only test case"/>
@@ -42,7 +38,9 @@
       </outResult>
    </testResult>
    <testResult status="pass" testName="try-029"/>
-   <testResult status="pass" testName="try-030"/>
+   <testResult status="fail" testName="try-030">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;output xmlns:err="http://www.w3.org/2005/xqt-errors"&gt;&lt;out&gt;INF&lt;/out&gt;&lt;out&gt;22&lt;/out&gt;&lt;out&gt;11&lt;/out&gt;&lt;out&gt;7.333333333333333333&lt;/out&gt;&lt;out&gt;5.5&lt;/out&gt;&lt;out&gt;4.4&lt;/out&gt;&lt;out&gt;3.666666666666666667&lt;/out&gt;&lt;out&gt;3.142857142857142857&lt;/out&gt;&lt;out&gt;2.75&lt;/out&gt;&lt;out&gt;2.444444444444444444&lt;/out&gt;&lt;/output&gt;</outResult>
+   </testResult>
    <testResult status="fail" testName="try-031">
       <outResult>
          <errTrace>java.lang.RuntimeException: XPTY0004 : One or both of the operands of XPath operator -, are not numeric values.</errTrace>

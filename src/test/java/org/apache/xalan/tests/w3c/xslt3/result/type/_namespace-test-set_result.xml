@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-19T17:09:21Z" fail="83" name="namespace" pass="138" run="221" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:08Z" fail="74" name="namespace" pass="143" run="221" skipped="3" statusUnknown="4">
    <testResult status="fail" testName="namespace-0101">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;a/&gt;&lt;/out&gt;</outResult>
    </testResult>
@@ -7,7 +7,7 @@
    <testResult status="fail" testName="namespace-0301"/>
    <testResult status="pass" testName="namespace-0401"/>
    <testResult status="pass" testName="namespace-0402"/>
-   <testResult status="fail" testName="namespace-0501"/>
+   <testResult status="false" testName="namespace-0501"/>
    <testResult status="fail" testName="namespace-0601"/>
    <testResult status="fail" testName="namespace-0602"/>
    <testResult status="pass" testName="namespace-0603"/>
@@ -26,9 +26,7 @@
    <testResult status="fail" testName="namespace-0910"/>
    <testResult status="pass" testName="namespace-0911"/>
    <testResult status="fail" testName="namespace-0912"/>
-   <testResult status="fail" testName="namespace-0913">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="namespace-0913"/>
    <testResult status="fail" testName="namespace-0914">
       <outResult/>
    </testResult>
@@ -56,8 +54,8 @@
       <outResult/>
    </testResult>
    <testResult status="pass" testName="namespace-2201"/>
-   <testResult status="fail" testName="namespace-2301"/>
-   <testResult status="fail" testName="namespace-2302"/>
+   <testResult status="false" testName="namespace-2301"/>
+   <testResult status="false" testName="namespace-2302"/>
    <testResult status="fail" testName="namespace-2401"/>
    <testResult status="fail" testName="namespace-2402"/>
    <testResult status="pass" testName="namespace-2501"/>
@@ -87,14 +85,7 @@
    <testResult status="fail" testName="namespace-2610">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="namespace-2611">
-      <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix 'xs' is not available.</errTrace>
-         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Expected ], but found: </errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="namespace-2611"/>
    <testResult status="fail" testName="namespace-2612"/>
    <testResult status="fail" testName="namespace-2614"/>
    <testResult status="fail" testName="namespace-2615"/>
@@ -129,15 +120,9 @@
    <testResult status="fail" testName="namespace-2627">
       <outResult>&lt;?xml version="1.1" encoding="UTF-8"?&gt;&lt;n:a xmlns:n="http://n/" xmlns="http://d/"&gt;&lt;n:b xmlns:n="http://n2/"/&gt;&lt;c xmlns="http://n3/"/&gt;&lt;/n:a&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="namespace-2628">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="namespace-2629">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="namespace-2630">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="namespace-2628"/>
+   <testResult status="pass" testName="namespace-2629"/>
+   <testResult status="pass" testName="namespace-2630"/>
    <testResult status="fail" testName="namespace-2631">
       <outResult/>
    </testResult>
@@ -288,7 +273,7 @@
    <testResult status="pass" testName="namespace-4009"/>
    <testResult status="fail" testName="namespace-4101"/>
    <testResult status="pass" testName="namespace-4301"/>
-   <testResult status="fail" testName="namespace-4302"/>
+   <testResult status="false" testName="namespace-4302"/>
    <testResult status="pass" testName="namespace-4401"/>
    <testResult status="fail" testName="namespace-4501"/>
    <testResult status="fail" testName="namespace-4601"/>
