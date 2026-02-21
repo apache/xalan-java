@@ -100,6 +100,7 @@ import org.apache.xalan.tests.xslt3.XslIncludeTests;
 import org.apache.xalan.tests.xslt3.XslInitialTemplateTests;
 import org.apache.xalan.tests.xslt3.XslIterateTests;
 import org.apache.xalan.tests.xslt3.XslJsonValidationTests;
+import org.apache.xalan.tests.xslt3.XslLinearRegressionTests;
 import org.apache.xalan.tests.xslt3.XslMergeTests;
 import org.apache.xalan.tests.xslt3.XslMessageTests;
 import org.apache.xalan.tests.xslt3.XslMethodOutputJsonTests;
@@ -161,7 +162,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathTextAndNodePattern.class, XPathLiteralSequenceTests.class, XslModeTests.class, XslTemplatePriorityTests.class,
                 XslDisableOutputEscapingAttrTests.class, XslMessageTests.class, FnAdjustDatetimeToTimezoneTests.class,
                 FnAdjustDateToTimezoneTests.class, FnAdjustTimeToTimezoneTests.class, FnFormatIntegerTests.class, XslPerformSortTests.class,
-                XslPackageTests.class, XslUseWhenTests.class } )
+                XslPackageTests.class, XslUseWhenTests.class, XslLinearRegressionTests.class } )
 public class XalanXsl3TestSuite2 {
 
 }
