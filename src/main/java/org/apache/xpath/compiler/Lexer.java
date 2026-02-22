@@ -93,6 +93,8 @@ class Lexer
   private boolean m_nsBound = false;
   
   private SourceLocator m_sourceLocator = null;
+  
+  private boolean m_is_match_pattern = false;
 
   /**
    * Create a Lexer object.
@@ -284,6 +286,22 @@ class Lexer
       case '?' :
       case '/' :
       case '*' :
+    	  if ((i == 0) && (nChars > 2) && m_is_match_pattern) {
+    		  String str1 = pat.substring(i + 1, i + 2);
+    		  String str2 = pat.substring(i + 2);
+    		  if (str1.equals(":") && !str2.contains(":") && !str2.contains(" ")) {
+    			  /**
+    			   * The complete token queue represents, a
+    			   * string like *:local_name, i.e an XML local 
+    			   * name bound with any namespace name even null.
+    			   */    			  
+    			  addToTokenQueue("*");
+    			  addToTokenQueue(str1);
+    			  addToTokenQueue(str2);
+    			  i = (nChars - 1);    			  
+    			  break;    			      			  
+    		  }
+    	  }
       case '+' :
       case '=' :
     	if ((pat.length() > (i + 1)) && (pat.charAt(i + 1) == '>')) {
@@ -1014,6 +1032,10 @@ class Lexer
 
   public void setSourceLocator(SourceLocator sourceLocator) {
 	  this.m_sourceLocator = sourceLocator; 
+  }
+
+  public void setIsMatchPattern(boolean isMatchPattern) {
+	  this.m_is_match_pattern = isMatchPattern; 	
   }
   
 }

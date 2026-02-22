@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.patterns;
 
 import org.apache.xml.dtm.DTM;
@@ -115,8 +112,7 @@ public class NodeTest extends Expression
   }
 
   /**
-   * The local name to be tested for.
-   *   
+   * The local name to be tested for. 
    */
   protected String m_name;
 
@@ -275,7 +271,6 @@ public class NodeTest extends Expression
    * Initialize this node test by setting the whatToShow property and the
    * namespace and local name, and
    * calculating the score that this test will return if a test succeeds.
-   *
    *
    * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    * @param namespace The namespace to be tested.

@@ -50,7 +50,6 @@ public class TemplateList implements java.io.Serializable
   /**
    * Construct a TemplateList object. Needs to be public so it can
    * be invoked from the CompilingStylesheetHandler.
- * @param xPathContext 
    */
   public TemplateList()
   {
@@ -426,7 +425,7 @@ public class TemplateList implements java.io.Serializable
   private void insertPatternInTable(StepPattern pattern, ElemTemplate template)
   {
 
-    String target = pattern.getTargetString();
+    String target = pattern.getTargetString();    
 
     if (null != target)
     {
@@ -769,6 +768,20 @@ public class TemplateList implements java.io.Serializable
     			  }
     		  }
           }
+    	  
+    	  StepPattern stepPattern = head.m_stepPattern;
+    	  String stepPatternTargetStr = stepPattern.getTargetString();
+    	  String stepPatternNs = stepPattern.getNamespace();
+
+    	  String nodeLocalName = dtm.getLocalName(targetNode);
+    	  if (stepPatternTargetStr.equals(nodeLocalName) && "*".equals(stepPatternNs) && (dtm.getNodeType(targetNode) == DTM.ELEMENT_NODE)) {
+    		  if (quietConflictWarnings) {
+    			  checkConflicts(head, xctxt, targetNode, mode, dtm, expTypeID, 
+    					                                                   xslOnMultipleMatchStr, xslWarningOnMultipleMatch);
+    		  }
+    		  
+    		  return template; 
+    	  }
     	  
     	  if ((head.m_stepPattern.execute(xctxt, targetNode, dtm, expTypeID) != NodeTest.SCORE_NONE)
     			  																					&& head.matchMode(mode)) {

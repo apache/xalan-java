@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:48Z" fail="10" name="strip-space" pass="16" run="27" skipped="3" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-22T17:40:04Z" fail="10" name="strip-space" pass="17" run="27" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="strip-space-001"/>
    <testResult status="fail" testName="strip-space-002">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;TEST xmlns:xs="http://www.w3.org/2001/XMLSchema"/&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="strip-space-003"/>
-   <testResult status="false" testName="strip-space-004"/>
+   <testResult status="pass" testName="strip-space-004"/>
    <testResult status="pass" testName="strip-space-005"/>
    <testResult status="fail" testName="strip-space-006"/>
    <testResult feature="schema_aware" status="skipped" testName="strip-space-007"/>

@@ -553,6 +553,8 @@ public class XPathParser
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
     lexer.setSourceLocator(m_sourceLocator);
+    
+    lexer.setIsMatchPattern(true);
 
     lexer.tokenize(expression);
 
@@ -612,6 +614,8 @@ public class XPathParser
 
 	  Lexer lexer = new Lexer(compiler, namespaceContext, this);
 	  lexer.setSourceLocator(m_sourceLocator);
+	  
+	  lexer.setIsMatchPattern(true);
 
 	  lexer.tokenize(expression);
 
