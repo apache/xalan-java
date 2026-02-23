@@ -17,17 +17,21 @@
  */
 package org.apache.xalan.processor;
 
+import org.apache.xalan.templates.ElemGlobalContextItem;
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.ElemVariable;
 
 /**
- * This class processes parse events for an xsl:variable element.
- * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
- * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+ * This class processes parse events for an xsl:global-context-item 
+ * instruction.
+ *
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
  */
-class ProcessorGlobalVariableDecl extends ProcessorTemplateElem
+public class ProcessorGlobalContextItemDecl extends ProcessorTemplateElem
 {
-    static final long serialVersionUID = -5954332402269819582L;
+    
+   private static final long serialVersionUID = -7859018545629928282L;
 
   /**
    * Append the current template element to the current
@@ -45,8 +49,7 @@ class ProcessorGlobalVariableDecl extends ProcessorTemplateElem
             throws org.xml.sax.SAXException
   {
 
-    // Just push, but don't append.
-    handler.pushElemTemplateElement(elem);
+	  handler.pushElemTemplateElement(elem);
   }
 
   /**
@@ -65,10 +68,10 @@ class ProcessorGlobalVariableDecl extends ProcessorTemplateElem
             throws org.xml.sax.SAXException
   {
 
-    ElemVariable v = (ElemVariable) handler.getElemTemplateElement();
+	  ElemGlobalContextItem elemGlobalContextItem = (ElemGlobalContextItem)(handler.getElemTemplateElement());
 
-    handler.getStylesheet().appendChild(v);
-    handler.getStylesheet().setVariable(v);
-    super.endElement(handler, uri, localName, rawName);
+	  handler.getStylesheet().appendChild(elemGlobalContextItem);
+	  handler.getStylesheet().setGlobalContextItem(elemGlobalContextItem);
+	  super.endElement(handler, uri, localName, rawName);
   }
 }

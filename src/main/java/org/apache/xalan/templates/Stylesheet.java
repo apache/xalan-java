@@ -969,6 +969,24 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 
 		m_topLevelVariables.addElement(v);
 	}
+	
+	/**
+	 * This class field, refers to XSL stylesheet's xsl:global-context-item 
+	 * instruction.
+	 */
+	private Vector m_globalContextItemList;
+	
+	public Vector getGlobalContextItemList() {		
+		return m_globalContextItemList; 
+	}
+	
+	public void setGlobalContextItem(ElemGlobalContextItem elemGlobalContexItem) {
+	   if (m_globalContextItemList == null) {
+		  m_globalContextItemList = new Vector(); 
+	   }
+	   
+	   m_globalContextItemList.add(elemGlobalContexItem);
+	}
 
 	/**
 	 * Get an "xsl:variable" or "xsl:param" property.

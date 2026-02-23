@@ -71,6 +71,7 @@ import org.apache.xalan.templates.ElemElement;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemGlobalContextItem;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
@@ -814,6 +815,8 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 	updateXPathDefaultNamespace(m_stylesheetRoot, m_stylesheetRoot.getXpathDefaultNamespace());
 	
 	updateExpandTextAttrValue(m_stylesheetRoot, m_stylesheetRoot.getExpandText());
+	
+	validateXslGlobalContextItemInstr();
 
     try
     {               
@@ -1079,6 +1082,33 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 
       reset();
     }
+  }
+
+  /**
+   * Method definition, to do few static validations for 
+   * xsl:global-context-item instruction.
+   * 
+   * @throws TransformerException
+   */
+  private void validateXslGlobalContextItemInstr() throws TransformerException {
+	
+	  ElemTemplateElement elemTemplateElement = m_stylesheetRoot.getFirstChildElem();
+
+	  while (elemTemplateElement != null) {
+		  if (elemTemplateElement instanceof ElemGlobalContextItem) {
+			  ElemGlobalContextItem elemGlobalContextItem = (ElemGlobalContextItem)elemTemplateElement;			  			  			  			  
+			  try {
+				  elemGlobalContextItem.execute(this);
+			  }
+			  catch (TransformerException ex) {
+				  throw new TransformerException(ex.getMessage(), elemGlobalContextItem);    
+			  }
+
+			  break;
+		  }
+
+		  elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+	  }
   }
 
   private void fatalError(Throwable throwable) throws TransformerException

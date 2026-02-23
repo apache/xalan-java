@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:41Z" fail="70" name="mode" pass="71" run="141" skipped="28" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-23T16:14:48Z" fail="69" name="mode" pass="72" run="141" skipped="28" statusUnknown="0">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
@@ -120,11 +120,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="mode-1108">
-      <outResult>
-         <errTrace>XTSE0010 : xsl:apply-templates is not allowed in this position in the stylesheet</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="mode-1108"/>
    <testResult status="pass" testName="mode-1201"/>
    <testResult status="pass" testName="mode-1202"/>
    <testResult status="pass" testName="mode-1203"/>

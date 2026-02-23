@@ -1148,7 +1148,8 @@ public class XPathParser
    private SequenceTypeKindTest constructSequenceTypeKindTestForXDMNodes(XPathSequenceTypeExpr 
                                                                                      xpathSequenceTypeExpr, 
                                                                                      int nodeType, 
-                                                                                     boolean isInlineFunction) throws TransformerException {
+                                                                                     boolean isInlineFunction,
+                                                                                     boolean isSubExpr) throws TransformerException {
 
        SequenceTypeKindTest sequenceTypeKindTest = new SequenceTypeKindTest();
 
@@ -1173,7 +1174,7 @@ public class XPathParser
                }
                else if (lookahead(null, 2)) {
                    nextToken();
-                   if (!(m_isXPathPredicateParsingActive && tokenIs(']'))) {
+                   if (!(m_isXPathPredicateParsingActive && tokenIs(']')) && !isSubExpr) {
                       setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);
                    }                   
                }
@@ -6720,12 +6721,14 @@ public class XPathParser
        }      
        else if (tokenIs("element")) {
            sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
-                                                                                         SequenceTypeSupport.ELEMENT_KIND, isXPathInlineFunctionParse);          
+                                                                                         SequenceTypeSupport.ELEMENT_KIND, 
+                                                                                         isXPathInlineFunctionParse, false);          
            xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);          
        }
        else if (tokenIs("attribute")) {
            sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
-                                                                                         SequenceTypeSupport.ATTRIBUTE_KIND, isXPathInlineFunctionParse);          
+                                                                                         SequenceTypeSupport.ATTRIBUTE_KIND, 
+                                                                                         isXPathInlineFunctionParse, false);          
            xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
        }
        else if (tokenIs("processing-instruction")) {
@@ -6861,8 +6864,25 @@ public class XPathParser
     	   sequenceTypeKindTest = new SequenceTypeKindTest();
            sequenceTypeKindTest.setKindVal(SequenceTypeSupport.DOCUMENT_KIND);          
            nextToken();
-           consumeExpected('(');
+           consumeExpected('(');           
+           
+           if (tokenIs("element")) {
+        	   XPathSequenceTypeExpr xpathSequenceTypeExpr2 = new XPathSequenceTypeExpr();
+        	   SequenceTypeKindTest sequenceTypeKindTest2 = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr2, 
+                       														                         SequenceTypeSupport.ELEMENT_KIND, 
+                       														                         isXPathInlineFunctionParse, true);
+        	   sequenceTypeKindTest.setSeqTypeSubKindTest(sequenceTypeKindTest2);        	   
+           }
+           else if (tokenIs("schema-element")) {
+        	   XPathSequenceTypeExpr xpathSequenceTypeExpr2 = new XPathSequenceTypeExpr();
+        	   SequenceTypeKindTest sequenceTypeKindTest2 = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr2, 
+                       														                         SequenceTypeSupport.SCHEMA_ELEMENT_KIND, 
+                       														                         isXPathInlineFunctionParse, true);
+        	   sequenceTypeKindTest.setSeqTypeSubKindTest(sequenceTypeKindTest2);  
+           }
+           
            consumeExpected(')');
+           
            xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
            if (m_token != null) {
               setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse);  

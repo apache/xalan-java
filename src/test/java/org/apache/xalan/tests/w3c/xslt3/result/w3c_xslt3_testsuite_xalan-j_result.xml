@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-02-22T17:40:21Z" desc="W3C XSLT 3.0 test suite results" fail="1277" pass="3418" run="4736" skipped="598" success="72.17%" xslt_processor="Apache Xalan XSLT 3.0 development code">
+<testResult dateTime="2026-02-23T16:15:18Z" desc="W3C XSLT 3.0 test suite results" fail="1291" pass="3449" run="4781" skipped="598" success="72.14%" xslt_processor="Apache Xalan XSLT 3.0 development code">
   <attr>
     <as fail="21" pass="89" run="111" skipped="93" success="80.18%"/>
     <avt fail="1" pass="33" run="34" skipped="1" success="97.06%"/>
     <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
     <expand-text fail="7" pass="52" run="59" skipped="3" success="88.14%"/>
     <match fail="81" pass="101" run="182" skipped="112" success="55.49%"/>
-    <mode fail="70" pass="71" run="141" skipped="28" success="50.35%"/>
+    <mode fail="69" pass="72" run="141" skipped="28" success="51.06%"/>
     <select fail="26" pass="105" run="132" skipped="26" success="79.55%"/>
     <tunnel fail="40" pass="18" run="58" skipped="0" success="31.03%"/>
     <xpath-default-namespace fail="10" pass="12" run="22" skipped="4" success="54.55%"/>
   </attr>
   <decl>
     <attribute-set fail="7" pass="42" run="49" skipped="1" success="85.71%"/>
-    <character-map fail="14" pass="13" run="28" skipped="1" success="46.43%"/>
-    <function fail="26" pass="61" run="87" skipped="23" success="70.11%"/>
+    <character-map fail="13" pass="14" run="28" skipped="1" success="50.0%"/>
+    <context-item fail="13" pass="18" run="31" skipped="0" success="58.06%"/>
+    <function fail="25" pass="62" run="87" skipped="23" success="71.26%"/>
+    <global-context-item fail="4" pass="10" run="14" skipped="0" success="71.43%"/>
     <package fail="31" pass="23" run="54" skipped="18" success="42.59%"/>
     <param fail="17" pass="13" run="30" skipped="1" success="43.33%"/>
     <strip-space fail="10" pass="17" run="27" skipped="3" success="62.96%"/>

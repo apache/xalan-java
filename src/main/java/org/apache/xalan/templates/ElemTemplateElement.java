@@ -49,6 +49,7 @@ import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.WhitespaceStrippingElementMatcher;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.compiler.XPathParser;
@@ -2543,7 +2544,7 @@ public class ElemTemplateElement extends UnImplNode
 	   else if (expr1 instanceof Function) {
 		   result = isXPathFuncCallStatic(expr1);
 	   }
-	   else if (expr1 instanceof SelfIteratorNoPredicate) {
+	   else if (expr1 instanceof LocPathIterator) {
 		   result = false;
 	   }
 
@@ -2596,6 +2597,9 @@ public class ElemTemplateElement extends UnImplNode
 		  else if (arg0 instanceof Function) {
 			  result = isXPathFuncCallStatic(arg0);
 		  }
+		  else if (arg0 instanceof LocPathIterator) {
+			  result = false; 
+		  }
 
 		  if (result) {
 			  if (arg1 instanceof Variable) {
@@ -2618,6 +2622,9 @@ public class ElemTemplateElement extends UnImplNode
 			  }
 			  else if (arg1 instanceof Function) {
 				  result = isXPathFuncCallStatic(arg1);
+			  }
+			  else if (arg1 instanceof LocPathIterator) {
+				  result = false; 
 			  }
 		  }
 
@@ -2642,6 +2649,9 @@ public class ElemTemplateElement extends UnImplNode
 			  }
 			  else if (arg2 instanceof Function) {
 				  result = isXPathFuncCallStatic(arg2);
+			  }
+			  else if (arg2 instanceof LocPathIterator) {
+				  result = false; 
 			  }
 		  }
 
@@ -2669,6 +2679,9 @@ public class ElemTemplateElement extends UnImplNode
 				  }
 				  else if (expr instanceof Function) {
 					  result = isXPathFuncCallStatic(expr);
+				  }
+				  else if (expr instanceof LocPathIterator) {
+					  result = false; 
 				  }
 			  }
 		  }
@@ -2701,6 +2714,9 @@ public class ElemTemplateElement extends UnImplNode
 		  else if (arg0 instanceof Function) {
 			  result = isXPathFuncCallStatic(arg0);
 		  }
+		  else if (arg0 instanceof LocPathIterator) {
+			  result = false; 
+		  }
 
 		  if (result) {
 			  if (arg1 instanceof Variable) {
@@ -2723,6 +2739,9 @@ public class ElemTemplateElement extends UnImplNode
 			  }
 			  else if (arg1 instanceof Function) {
 				  result = isXPathFuncCallStatic(arg1);
+			  }
+			  else if (arg1 instanceof LocPathIterator) {
+				  result = false; 
 			  }
 		  }
 
@@ -2747,6 +2766,9 @@ public class ElemTemplateElement extends UnImplNode
 			  }
 			  else if (arg2 instanceof Function) {
 				  result = isXPathFuncCallStatic(arg2);
+			  }
+			  else if (arg2 instanceof LocPathIterator) {
+				  result = false; 
 			  }
 		  }
 	  }
@@ -2777,6 +2799,9 @@ public class ElemTemplateElement extends UnImplNode
 		  else if (arg0 instanceof Function) {
 			  result = isXPathFuncCallStatic(arg0);
 		  }
+		  else if (arg0 instanceof LocPathIterator) {
+			  result = false; 
+		  }
 
 		  if (result) {
 			  if (arg1 instanceof Variable) {
@@ -2799,6 +2824,9 @@ public class ElemTemplateElement extends UnImplNode
 			  }
 			  else if (arg1 instanceof Function) {
 				  result = isXPathFuncCallStatic(arg1);
+			  }
+			  else if (arg1 instanceof LocPathIterator) {
+				  result = false; 
 			  }
 		  }
 	  }
@@ -2825,6 +2853,9 @@ public class ElemTemplateElement extends UnImplNode
 		  }
 		  else if (arg0 instanceof Function) {
 			  result = isXPathFuncCallStatic(arg0); 
+		  }
+		  else if (arg0 instanceof LocPathIterator) {
+			  result = false; 
 		  }
 	  }
 	  else if ((function instanceof FuncPosition) || (function instanceof FuncLast)) {
@@ -2896,6 +2927,9 @@ public class ElemTemplateElement extends UnImplNode
 	  else if (lOpn instanceof Function) {
 		  result = isXPathFuncCallStatic(lOpn);
 	  }
+	  else if (lOpn instanceof LocPathIterator) {
+		  result = false;
+	  }
 
 	  if (result) {
 		  /**
@@ -2923,7 +2957,10 @@ public class ElemTemplateElement extends UnImplNode
 		  }
 		  else if (rOpn instanceof Function) {
 			  result = isXPathFuncCallStatic(rOpn);
-		  } 
+		  }
+		  else if (rOpn instanceof LocPathIterator) {
+			  result = false;
+		  }
 	  }
 	  
 	  return result;	

@@ -346,7 +346,9 @@ public class Variable extends Expression implements PathComponent
            }
            else if ((m_qname == null) || ((exceptionMesg != null) && (exceptionMesg.startsWith("XTDE0050") || exceptionMesg.startsWith("XPTY") 
         		                                                                                      || exceptionMesg.startsWith("FOUT")
-        		                                                                                      || exceptionMesg.startsWith("XPST0008")))) {
+        		                                                                                      || exceptionMesg.startsWith("XPST0008")
+        		                                                                                      || exceptionMesg.startsWith("XPDY0002")
+        		                                                                                      || exceptionMesg.startsWith("XTTE0590")))) {
               throw ex;   
            }
            else if (XslTransformData.m_xpathNodeCombiningExprRhsStrBuff != null) {

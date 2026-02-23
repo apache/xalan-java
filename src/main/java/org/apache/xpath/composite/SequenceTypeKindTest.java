@@ -31,66 +31,80 @@ public class SequenceTypeKindTest {
 	 * Xalan-J specific valid values for this variable are
 	 * specified in the class SequenceTypeSupport.
 	 */
-    private int kindVal;
+    private int m_kindVal;
     
     /**
      * An XML element or attribute node's local name.
      */
-    private String nodeLocalName;
+    private String m_nodeLocalName;
     
     /**
      * An XML element or attribute node's namespace uri.
      */
-    private String nodeNsUri;
+    private String m_nodeNsUri;
     
     /**
      * Data type's local name.
      */
-    private String dataTypeLocalName;
+    private String m_dataTypeLocalName;
     
     /**
      * Data type's namespace uri.
      */
-    private String dataTypeUri;
+    private String m_dataTypeUri;
+    
+    /**
+     * Sequence type kind test may have, another contained sequence 
+     * type kind test, for e.g document-node(element(elem_name)).
+     */
+    private SequenceTypeKindTest m_seqTypeSubKindTest;
 
     public int getKindVal() {
-        return kindVal;
+        return m_kindVal;
     }
 
     public void setKindVal(int kindVal) {
-        this.kindVal = kindVal;
+        this.m_kindVal = kindVal;
     }
 
     public String getNodeLocalName() {
-        return nodeLocalName;
+        return m_nodeLocalName;
     }
 
     public void setNodeLocalName(String nodeLocalName) {
-        this.nodeLocalName = nodeLocalName;
+        this.m_nodeLocalName = nodeLocalName;
     }
 
     public String getNodeNsUri() {
-        return nodeNsUri;
+        return m_nodeNsUri;
     }
 
     public void setNodeNsUri(String nodeNsUri) {
-        this.nodeNsUri = nodeNsUri;
+        this.m_nodeNsUri = nodeNsUri;
     }
 
     public String getDataTypeLocalName() {
-        return dataTypeLocalName;
+        return m_dataTypeLocalName;
     }
 
     public void setDataTypeLocalName(String dataTypeName) {
-        this.dataTypeLocalName = dataTypeName;
+        this.m_dataTypeLocalName = dataTypeName;
     }
     
     public String getDataTypeUri() {
-        return dataTypeUri;
+        return m_dataTypeUri;
     }
 
     public void setDataTypeUri(String dataTypeUri) {
-        this.dataTypeUri = dataTypeUri;
+        this.m_dataTypeUri = dataTypeUri;
+    }
+    
+    public SequenceTypeKindTest getSeqTypeSubKindTest() {
+    	return m_seqTypeSubKindTest;
+    }
+    
+    public void setSeqTypeSubKindTest(SequenceTypeKindTest seqTypeSubKindTest) {
+    	this.m_seqTypeSubKindTest = seqTypeSubKindTest;
     }
     
     /**
@@ -113,49 +127,49 @@ public class SequenceTypeKindTest {
         String dataTypeLocalName2 = sequenceTypeKindTest2.getDataTypeLocalName();
         String dataTypeUri2 = sequenceTypeKindTest2.getDataTypeUri();
         
-        if (this.kindVal != kindVal2) {
+        if (this.m_kindVal != kindVal2) {
            result = false;
         }
-        else if ((this.nodeLocalName == null) && (nodeLocalName2 == null)) {
+        else if ((this.m_nodeLocalName == null) && (nodeLocalName2 == null)) {
            result = true;
         }
-        else if ((this.nodeLocalName == null) && (nodeLocalName2 != null)) {
+        else if ((this.m_nodeLocalName == null) && (nodeLocalName2 != null)) {
            result = false;
         }
-        else if ((this.nodeLocalName != null) && (nodeLocalName2 == null)) {
+        else if ((this.m_nodeLocalName != null) && (nodeLocalName2 == null)) {
            result = false;
         }
-        else if (!(this.nodeLocalName).equals(nodeLocalName2)) {
+        else if (!(this.m_nodeLocalName).equals(nodeLocalName2)) {
            result = false;
         }
-        else if ((this.nodeNsUri == null) && (nodeNsUri2 != null)) {
+        else if ((this.m_nodeNsUri == null) && (nodeNsUri2 != null)) {
            result = false;
         }
-        else if ((this.nodeNsUri != null) && (nodeNsUri2 == null)) {
+        else if ((this.m_nodeNsUri != null) && (nodeNsUri2 == null)) {
            result = false;
         }
-        else if ((nodeNsUri != null) && !(this.nodeNsUri).equals(nodeNsUri2)) {
+        else if ((m_nodeNsUri != null) && !(this.m_nodeNsUri).equals(nodeNsUri2)) {
            result = false;
         }
-        else if ((this.dataTypeLocalName == null) && (dataTypeLocalName2 == null)) {
+        else if ((this.m_dataTypeLocalName == null) && (dataTypeLocalName2 == null)) {
            result = true;
         }
-        else if ((this.dataTypeLocalName == null) && (dataTypeLocalName2 != null)) {
+        else if ((this.m_dataTypeLocalName == null) && (dataTypeLocalName2 != null)) {
            result = false;
         }
-        else if ((this.dataTypeLocalName != null) && (dataTypeLocalName2 == null)) {
+        else if ((this.m_dataTypeLocalName != null) && (dataTypeLocalName2 == null)) {
            result = false;
         }
-        else if ((dataTypeLocalName != null) && !(this.dataTypeLocalName).equals(dataTypeLocalName2)) {
+        else if ((m_dataTypeLocalName != null) && !(this.m_dataTypeLocalName).equals(dataTypeLocalName2)) {
            result = false;
         }
-        else if ((this.dataTypeUri == null) && (dataTypeUri2 != null)) {
+        else if ((this.m_dataTypeUri == null) && (dataTypeUri2 != null)) {
            result = false;
         }
-        else if ((this.dataTypeUri != null) && (dataTypeUri2 == null)) {
+        else if ((this.m_dataTypeUri != null) && (dataTypeUri2 == null)) {
            result = false;
         }
-        else if ((dataTypeUri != null) && !(this.dataTypeUri).equals(dataTypeUri2)) {
+        else if ((m_dataTypeUri != null) && !(this.m_dataTypeUri).equals(dataTypeUri2)) {
            result = false;
         }
     	

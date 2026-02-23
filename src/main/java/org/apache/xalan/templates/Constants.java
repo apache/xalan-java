@@ -99,9 +99,10 @@ public class Constants extends org.apache.xml.utils.Constants
   ELEMNAME_ASSERT = 117,
   ELEMNAME_PERFORMSORT = 118,
   ELEMNAME_USE_PACKAGE = 119,
-  ELEMNAME_ACCEPT = 120;
+  ELEMNAME_ACCEPT = 120,
+  ELEMNAME_GLOBAL_CONTEXT_ITEM = 121;
   
-  // next available number : 121
+  // next available number : 122
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -210,12 +211,10 @@ public class Constants extends org.apache.xml.utils.Constants
       XS_VALIDATION_UNSPECIFIED_STRING = "unspecified",
       
       ELEMNAME_CONTEXT_ITEM_STRING = "context-item",
-      ELEMNAME_CONTEXT_ITEM_REQUIRED_STRING = "required",
-      ELEMNAME_CONTEXT_ITEM_OPTIONAL_STRING = "optional",
-      ELEMNAME_CONTEXT_ITEM_ABSENT_STRING = "absent",
       ELEMNAME_DOCUMENT_STRING ="document",
       ELEMNAME_NAMESPACE_STRING = "namespace",
-      ELEMNAME_ASSERT_STRING = "assert";
+      ELEMNAME_ASSERT_STRING = "assert",
+      ELEMNAME_GLOBAL_CONTEXT_ITEM_STRING = "global-context-item";
   
   /**
    * Literals for EXSLT function elements.
@@ -504,5 +503,11 @@ public class Constants extends org.apache.xml.utils.Constants
   public static final String ATTRVAL_FINAL = "final";
   
   public static final String ATTRVAL_ABSTRACT = "abstract";
+  
+  public static final String ATTRVAL_REQUIRED = "required";
+  
+  public static final String ATTRVAL_OPTIONAL = "optional";
+  
+  public static final String ATTRVAL_ABSENT = "absent";
   
 }

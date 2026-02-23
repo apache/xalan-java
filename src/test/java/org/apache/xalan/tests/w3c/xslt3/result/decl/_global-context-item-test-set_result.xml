@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-23T16:15:04Z" fail="4" name="global-context-item" pass="10" run="14" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="glob-cxt-item-001"/>
+   <testResult status="pass" testName="glob-cxt-item-002"/>
+   <testResult status="pass" testName="glob-cxt-item-003"/>
+   <testResult status="pass" testName="glob-cxt-item-004"/>
+   <testResult status="pass" testName="glob-cxt-item-005"/>
+   <testResult status="pass" testName="glob-cxt-item-006"/>
+   <testResult status="pass" testName="glob-cxt-item-006err"/>
+   <testResult status="pass" testName="glob-cxt-item-007"/>
+   <testResult status="pass" testName="glob-cxt-item-008"/>
+   <testResult status="fail" testName="glob-cxt-item-009">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="glob-cxt-item-010">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="glob-cxt-item-011"/>
+   <testResult status="fail" testName="glob-cxt-item-012">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="glob-cxt-item-013">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;in/&gt;&lt;/out&gt;</outResult>
+   </testResult>
+</testrun>

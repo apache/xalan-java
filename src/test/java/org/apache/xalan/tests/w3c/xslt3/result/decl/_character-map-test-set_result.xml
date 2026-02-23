@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:35Z" fail="14" name="character-map" pass="13" run="28" skipped="1" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-23T16:13:45Z" fail="13" name="character-map" pass="14" run="28" skipped="1" statusUnknown="1">
    <testResult status="pass" testName="character-map-001"/>
    <testResult status="pass" testName="character-map-002"/>
    <testResult status="pass" testName="character-map-003"/>
@@ -39,9 +39,5 @@
    </testResult>
    <testResult status="pass" testName="character-map-027"/>
    <testResult status="fail" testName="character-map-028"/>
-   <testResult status="fail" testName="character-map-901">
-      <outResult>
-         <errTrace>XTSE0010 : xsl:output-character requires attribute: character</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="character-map-901"/>
 </testrun>

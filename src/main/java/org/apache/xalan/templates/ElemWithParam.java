@@ -133,7 +133,7 @@ public class ElemWithParam extends ElemTemplateElement
   /**
    * The value of the "as" attribute.
    */
-  private String m_asAttr;
+  private String m_asAttr = null;
   
   /**
    * Set the "as" attribute.

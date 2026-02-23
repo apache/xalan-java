@@ -1150,6 +1150,60 @@ public class XPathContext extends XPathStaticContext
       return frag ;
     }   
   }
+  
+  /**
+   * Method definition, to get an xdm node type string
+   * value, using the supplied node type numeric code 
+   * value.
+   * 
+   * @param nodeType         Supplied node type numeric code
+   * @return                 Node type string value
+   */
+  public String getNodeTypeStr(short nodeType) {
+	  
+	  String result = null;
+	  
+	  switch (nodeType) {
+	  case DTM.ATTRIBUTE_NODE:
+		  result = "attribute";
+		  break;
+	  case DTM.CDATA_SECTION_NODE:
+		  result = "cdata section";
+		  break;
+	  case DTM.COMMENT_NODE:
+		  result = "comment";
+		  break;
+	  case DTM.DOCUMENT_FRAGMENT_NODE:
+		  result = "document fragment";
+		  break;
+	  case DTM.DOCUMENT_NODE:
+		  result = "document";
+		  break;
+	  case DTM.ELEMENT_NODE:
+		  result = "element";
+		  break;
+	  case DTM.ENTITY_NODE:
+		  result = "entity";
+		  break;
+	  case DTM.ENTITY_REFERENCE_NODE:
+		  result = "entity reference";
+		  break;
+	  case DTM.NAMESPACE_NODE:
+		  result = "namespace";
+		  break;
+	  case DTM.PROCESSING_INSTRUCTION_NODE:
+		  result = "processing instruction";
+		  break;
+	  case DTM.ROOT_NODE:
+		  result = "root";
+		  break;
+	  case DTM.TEXT_NODE:
+		  result = "text";
+		  break;
+	  }
+	  
+	  return result;
+  }
  
   /**
    * Cleans DTMXRTreeFrag objects by removing references 

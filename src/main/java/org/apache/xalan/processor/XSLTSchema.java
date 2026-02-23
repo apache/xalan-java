@@ -47,6 +47,7 @@ import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemFork;
 import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemGlobalContextItem;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemImportSchema;
 import org.apache.xalan.templates.ElemIterate;
@@ -287,6 +288,10 @@ public class XSLTSchema extends XSLTElementDef
     // xsl:key                                 
     XSLTAttributeDef useAttr = new XSLTAttributeDef(null, "use",
                                  XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
+    
+    // xsl:global-context-item
+    XSLTAttributeDef useAttrOpt = new XSLTAttributeDef(null, "use",
+                                 XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
            
     // xsl:element, xsl:attribute                              
     XSLTAttributeDef namespaceAVTOpt = new XSLTAttributeDef(null,
@@ -595,10 +600,6 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslValidationAttrOpt =
     	      new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "validation",
     	                           XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
-    // Optional
-    // xsl:context-item
-    XSLTAttributeDef useAttrOpt = new XSLTAttributeDef(null, "use",
-                                                      XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
     // Optional
     // xsl:function
@@ -1361,6 +1362,16 @@ public class XSLTSchema extends XSLTElementDef
                                                    selectAttrOpt, asAttrOpt, xslStaticOpt }, 
                                            new ProcessorGlobalVariableDecl(),
                                            ElemVariable.class /* class object */, 20, true),
+                                  new XSLTElementDef(
+                                          this,
+                                          Constants.S_XSLNAMESPACEURL,
+                                          "global-context-item",
+                                          null /*alias */,
+                                          null,
+                                          new XSLTAttributeDef[] 
+                                        		  { asAttrOpt, useAttrOpt }, 
+                                          new ProcessorGlobalContextItemDecl(),
+                                          ElemGlobalContextItem.class /* class object */, 20, true),
                                   new XSLTElementDef(
                                            this,
                                            Constants.S_XSLNAMESPACEURL,

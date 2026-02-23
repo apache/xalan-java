@@ -42,7 +42,7 @@ public class ElemContextItem extends ElemTemplateElement {
 	/**
 	 * The value of the "as" attribute.
 	 */
-	private String m_asAttr;
+	private String m_asAttr = null;
 
 	/**
 	 * Set the "as" attribute.
@@ -63,7 +63,7 @@ public class ElemContextItem extends ElemTemplateElement {
 	/**
 	 * The value of the "use" attribute.
 	 */
-	private String m_useAttr;
+	private String m_useAttr = Constants.ATTRVAL_OPTIONAL;
 	
 	/**
 	 * Set the "use" attribute.
@@ -119,7 +119,7 @@ public class ElemContextItem extends ElemTemplateElement {
 	}
 	
 	/**
-	 * Execute the xsl:context-item transformation.
+	 * Evaluate the xsl:context-item transformation.
 	 *
 	 * @param transformer non-null reference to the the current transform-time state.
 	 *
@@ -162,26 +162,26 @@ public class ElemContextItem extends ElemTemplateElement {
         	 * "use"'s run-time value to 'optional' which is default value of "use" 
         	 * attribute.
         	 */
-        	m_useAttr = Constants.ELEMNAME_CONTEXT_ITEM_OPTIONAL_STRING; 
+        	m_useAttr = Constants.ATTRVAL_OPTIONAL; 
         }
         
-        if (!(m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_REQUIRED_STRING) || 
-        	  m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_OPTIONAL_STRING) || 
-        	  m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_ABSENT_STRING))) {
+        if (!(m_useAttr.equals(Constants.ATTRVAL_REQUIRED) || 
+        	  m_useAttr.equals(Constants.ATTRVAL_OPTIONAL) || 
+        	  m_useAttr.equals(Constants.ATTRVAL_ABSENT))) {
         	throw new TransformerException("XTSE0010 : An XSL context-item instruction's attribute \"use\" can have possible values "
         			                                                              + "'required', 'optional', 'absent'. Value occured in "
         			                                                              + "stylesheet: '" + m_useAttr + "'.", srcLocator);
         }        
-        else if ((enclosingXslTemplateName == null) && (m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_OPTIONAL_STRING) || 
-        	                                         m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_ABSENT_STRING))) {
+        else if ((enclosingXslTemplateName == null) && (m_useAttr.equals(Constants.ATTRVAL_OPTIONAL) || 
+        	                                         m_useAttr.equals(Constants.ATTRVAL_ABSENT))) {
         	throw new TransformerException("XTSE0020 : An XSL context-item instruction appearing within an XSL template declaration "
         			                                    + "with no \"name\" attribute must specify value of \"use\" attribute as 'required'.", srcLocator);
         }        
-        else if (m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_ABSENT_STRING) && (contextNode != DTM.NULL)) {
+        else if (m_useAttr.equals(Constants.ATTRVAL_ABSENT) && (contextNode != DTM.NULL)) {
             throw new TransformerException("XTSE0020 : An XSL context-item instruction has its attribute \"use\" value as 'absent', but "
             		                                                                                                 + "the context item exists.", srcLocator);
         }
-        else if (m_useAttr.equals(Constants.ELEMNAME_CONTEXT_ITEM_REQUIRED_STRING) && (contextNode == DTM.NULL)) {
+        else if (m_useAttr.equals(Constants.ATTRVAL_REQUIRED) && (contextNode == DTM.NULL)) {
             throw new TransformerException("XTSE0020 : An XSL context-item instruction has its attribute \"use\" value as 'required', but "
             		                                                                                                 + "the context item is absent.", srcLocator);
         }

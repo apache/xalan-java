@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-23T16:15:04Z" fail="13" name="context-item" pass="18" run="31" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="context-item-001"/>
+   <testResult status="pass" testName="context-item-002"/>
+   <testResult status="pass" testName="context-item-003"/>
+   <testResult status="pass" testName="context-item-004"/>
+   <testResult status="pass" testName="context-item-005"/>
+   <testResult status="fail" testName="context-item-006">
+      <outResult>
+         <errTrace>XTTE0590 : The required item type of the context item for the template rule is null. The supplied node '#document' doesn't conform.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="context-item-007"/>
+   <testResult status="pass" testName="context-item-008"/>
+   <testResult status="pass" testName="context-item-009"/>
+   <testResult status="fail" testName="context-item-010">
+      <outResult>
+         <errTrace>XTSE0020 : An XSL context-item instruction has its attribute "use" value as 'absent', but the context item exists.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="context-item-011"/>
+   <testResult status="fail" testName="context-item-012">
+      <outResult>
+         <errTrace>XTTE0590 : The required item type of the context item for the template rule is document-node(element(doc)). The supplied node '#document' doesn't conform.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="context-item-013"/>
+   <testResult status="fail" testName="context-item-014">
+      <outResult>
+         <errTrace>XTTE0590 : The required item type of the context item for the template rule is document-node(element(doc)). The supplied node '#document' doesn't conform.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="context-item-015"/>
+   <testResult status="pass" testName="context-item-016"/>
+   <testResult status="fail" testName="context-item-017">
+      <outResult>
+         <errTrace>XTSE0010 : an instruction xsl:next-match is not known to the XSLT processor.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="context-item-018"/>
+   <testResult status="pass" testName="context-item-019"/>
+   <testResult status="fail" testName="context-item-901">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;12345&lt;/out&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="context-item-902">
+      <outResult>
+         <errTrace>XTTE0590 : The required item type of the context item for the template rule is my:percentage. The supplied node '#document' doesn't conform.</errTrace>
+      </outResult>
+      <outResult>
+         <errTrace>XTTE0590 : The required item type of the context item for the template rule is my:percentage. The supplied node '#document' doesn't conform.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="context-item-903">
+      <outResult>
+         <errTrace>XTTE0590 : The required item type of the context item for the template rule is element(*, my:percentage). The supplied node '#document' doesn't conform.</errTrace>
+      </outResult>
+      <outResult>
+         <errTrace>XTTE0590 : The required item type of the context item for the template rule is element(*, my:percentage). The supplied node '#document' doesn't conform.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="context-item-904">
+      <outResult>
+         <errTrace>XTSE0010 : An XSL context-item instruction's attribute "use" can have possible values 'required', 'optional', 'absent'. Value occured in stylesheet: 'no-way'.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="context-item-905"/>
+   <testResult status="pass" testName="context-item-906"/>
+   <testResult status="fail" testName="context-item-907">
+      <outResult>
+         <errTrace>XTSE0020 : An XSL context-item instruction has its attribute "use" value as 'absent', but the context item exists.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="context-item-908"/>
+   <testResult status="fail" testName="context-item-909">
+      <outResult>
+         <errTrace>XTSE0020 : An XSL context-item instruction has its attribute "use" value as 'absent', but the context item exists.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="context-item-910">
+      <outResult>
+         <errTrace>XTTE0590 : The required item type of the context item for the template rule is null. The supplied node '#document' doesn't conform.</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="context-item-911">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="pass" testName="context-item-912"/>
+</testrun>

@@ -247,7 +247,7 @@ public class ElemVariable extends ElemTemplateElement
   /**
    * The value of the "as" attribute.
    */
-  private String m_asAttr;
+  private String m_asAttr = null;
   
   /**
    * The value of this variable 'true' signifies that, an 
@@ -492,7 +492,7 @@ public class ElemVariable extends ElemTemplateElement
     	}
     }
     else {
-       var = getValue(transformer, sourceNode);
+        var = getValue(transformer, sourceNode);
     }
     
     if (var instanceof ResultSequence) {
@@ -705,6 +705,86 @@ public class ElemVariable extends ElemTemplateElement
 																									   + "to cyclic variable dependency.", srcLocator);
 				}
 		    }
+			
+			Stylesheet stylesheet = transformer.getStylesheet();              
+			Vector globalContextItemList = stylesheet.getGlobalContextItemList();
+			Expression xpathSelectExpr = m_selectPattern.getExpression();
+			if ((globalContextItemList != null) && !isXPathExpressionStatic(xpathSelectExpr)) {												
+					ElemGlobalContextItem elemGlobalContextItem = (ElemGlobalContextItem)(globalContextItemList.get(0));
+					String xslGlobalContextItemAsValue = elemGlobalContextItem.getAs();
+					String xslGlobalContextItemUseValue = elemGlobalContextItem.getUse();
+					if (Constants.ATTRVAL_ABSENT.equals(xslGlobalContextItemUseValue)) {
+						throw new TransformerException("XPDY0002 : An XSL top level variable has 'select' expression that requires "
+																									   + "a context item. But XSL 'global-context-item' "
+																									   + "instruction asserts XPath context item to be absent.", srcLocator);
+					}
+
+					if (sourceNode == DTM.NULL) {
+						throw new TransformerException("XPDY0002 : An XSL top level variable has 'select' expression that requires "
+																									   + "a context item but an context item "
+																									   + "is absent.", srcLocator);
+					}
+
+					if (xslGlobalContextItemAsValue != null) {
+						DTM dtm = xctxt.getDTM(sourceNode);
+						short nodeType = dtm.getNodeType(sourceNode);
+						String nodeTypeStr = xctxt.getNodeTypeStr(nodeType);
+						SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(xslGlobalContextItemAsValue, xctxt, srcLocator);
+						SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+						if (seqTypeKindTest != null) {
+							if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+								if (nodeType != DTM.ELEMENT_NODE) {
+									throw new TransformerException("XPDY0002 : An xdm " + nodeTypeStr + " node doesn't match with XSL "
+																									  + "'global-context-item' instruction's "
+																									  + "\"as\" attribute value " + xslGlobalContextItemAsValue + ".", srcLocator);	
+								}
+							}
+							else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+								if (nodeType != DTM.ATTRIBUTE_NODE) {
+									throw new TransformerException("XPDY0002 : An xdm " + nodeTypeStr + " node doesn't match with XSL "
+																									  + "'global-context-item' instruction's "
+																									  + "\"as\" attribute value " + xslGlobalContextItemAsValue + ".", srcLocator);
+								}
+							}
+							else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+								if (nodeType != DTM.DOCUMENT_NODE) {
+									throw new TransformerException("XPDY0002 : An xdm " + nodeTypeStr + " node doesn't match with XSL "
+																									  + "'global-context-item' instruction's "
+																									  + "\"as\" attribute value " + xslGlobalContextItemAsValue + ".", srcLocator);
+								}
+								
+								SequenceTypeKindTest seqTypeSubKindTest = seqTypeKindTest.getSeqTypeSubKindTest();
+								if (seqTypeSubKindTest != null) {
+									if (seqTypeSubKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) {
+										String dataTypeNodeLocalName = seqTypeSubKindTest.getNodeLocalName();
+										String dataTypeNodeNsUri = seqTypeSubKindTest.getNodeNsUri();
+										int childNode = dtm.getFirstChild(sourceNode);
+										short childNodeType = dtm.getNodeType(childNode);
+										String nodeName = dtm.getNodeName(childNode);
+										String nsUri = dtm.getNamespaceURI(childNode);										
+										boolean isNsEqual = false;
+										if ((nsUri == null) && (dataTypeNodeNsUri == null)) {
+										   isNsEqual = true;
+										}
+										else if (nsUri != null) {
+										   isNsEqual = nsUri.equals(dataTypeNodeNsUri); 
+										}
+										else if (dataTypeNodeNsUri != null) {
+										   isNsEqual = dataTypeNodeNsUri.equals(nsUri);	
+										}
+										
+										if (!((childNodeType == DTM.ELEMENT_NODE) && nodeName.equals(dataTypeNodeLocalName) && isNsEqual)) {
+										   throw new TransformerException("XTTE0590 : An XSL global-context-item instruction's required type is not satisfied.", srcLocator);
+										}
+									}
+									else if (seqTypeSubKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ELEMENT_KIND) {
+										// We may try to implement this functionality
+									}
+								}
+							}
+						}
+					}
+			}
 		} 
 		
 		if (m_static && !"private".equals(m_visibility)) {
