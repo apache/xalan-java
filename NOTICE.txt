@@ -4,10 +4,10 @@
    =========================================================================
 
    Apache Xalan (Xalan XSLT processor)
-   Copyright 1999-2024 The Apache Software Foundation
+   Copyright 1999-2026 The Apache Software Foundation
 
    Apache Xalan (Xalan serializer)
-   Copyright 1999-2024 The Apache Software Foundation
+   Copyright 1999-2026 The Apache Software Foundation
    (Ref, https://www.w3.org/TR/xslt-xquery-serialization-31/)
 
    This product includes software developed at
@@ -57,17 +57,18 @@
          - Rhino: JavaScript implementation in Java - see LICENSE.txt         
 
    =========================================================================
-   JSON Java library (redistribution of json-20200518.jar)
+   JSON Java library
    
      - software copyright (c), https://github.com/stleary/JSON-java
    
-   Apache Xalan-J's XSLT 3.0 implementation uses this JSON library, to implement 
-   XPath 3.1 functions on JSON data.
+   Apache Xalan-J's XSLT 3.0 implementation uses the JSON library available 
+   on the link mentioned within this file section, to implement 
+   XPath 3.1 functions that accept and produce JSON documents.
    
    =========================================================================
          
    Apache Xerces Java
-   Copyright 1999-2024 The Apache Software Foundation
+   Copyright 1999-2026 The Apache Software Foundation
 
    This product includes software developed at
    The Apache Software Foundation (http://www.apache.org/).
@@ -88,9 +89,9 @@
    implementation src code.
    
    The src code that Apache Xalan-J's XSLT 3.0 implementation reuses for these implementation dependencies 
-   is located at, https://github.com/xercesj/xalanj_xpath31_types. The src code repos 
-   https://github.com/xercesj is owned by Apache Xerces-J project. Apache 'Xalan-J' and 'Xerces-J' projects
-   are very much functionally related.
+   is located on the link, https://github.com/xercesj/xalanj_xpath31_types. The src code repos 
+   https://github.com/xercesj is maintained by Apache Xerces-J project. Apache Xalan-J, is built upon 
+   Xerces-J project that provides implementations of XML parsers and XML Schema validator.
    
    Ref, LICENSE.EPL_v1.0.html          
 
