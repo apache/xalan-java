@@ -13,10 +13,10 @@
 
 	<xsl:output method="xml" indent="yes"/>
 	
-	<xsl:param name="localBaseUriPrefix" as="xs:string"/>
+	<xsl:param name="base-dir" as="xs:string"/>
 
 	<xsl:template match="/">
-	   <xsl:variable name="fnCollectionResult1" select="collection($localBaseUriPrefix || 'fn_collection/.*[.]csv')" as="xs:string*"/>
+	   <xsl:variable name="fnCollectionResult1" select="collection($base-dir || '.*[.]csv')" as="xs:string*"/>
 	   <xsl:variable name="noOfCsvDocuments" select="count($fnCollectionResult1)"/>
 	   <rows>		       
 		  <xsl:for-each select="1 to $noOfCsvDocuments">

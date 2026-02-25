@@ -21,14 +21,14 @@
          be specified by stylesheet's author.
     -->				
 
-	<xsl:output method="text"/>
+	<xsl:output method="json"/>
 	
-	<xsl:param name="localBaseUriPrefix" as="xs:string"/>
+	<xsl:param name="base-dir" as="xs:string"/>
 
 	<xsl:template match="/">
 	   <xsl:variable name="xmlNodeVar1">
 		   <fn:map>
-			  <xsl:variable name="collectionResult1" select="collection($localBaseUriPrefix || 'fn_collection/file4.*')"/>
+			  <xsl:variable name="collectionResult1" select="collection($base-dir || 'file4.*')"/>
 			  <xsl:for-each select="$collectionResult1">
 				 <xsl:variable name="collectionItem1" select="."/>
 				 <xsl:choose>

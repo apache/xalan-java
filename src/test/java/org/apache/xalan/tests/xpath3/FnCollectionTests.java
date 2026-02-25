@@ -33,11 +33,11 @@ public class FnCollectionTests extends XslTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "fn_collection/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "fn_collection/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "fn_collection/gold/";        
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        // no op
+    public static void setUpBeforeClass() throws Exception {    	
+    	m_xsl_test_dir_base_uri = "file:/" + XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "fn_collection/";
     }
 
     @AfterClass
@@ -45,6 +45,8 @@ public class FnCollectionTests extends XslTransformTestsUtil {
         m_xmlDocumentBuilderFactory = null;
         m_xmlDocumentBuilder = null;
         m_xslTransformerFactory = null;
+        
+        m_xsl_test_dir_base_uri = null;
     }
 
     @Test
@@ -52,11 +54,9 @@ public class FnCollectionTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
         
-        String localBaseUriPrefix = "."; 
-        
-        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
@@ -66,9 +66,7 @@ public class FnCollectionTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";
         
-        String localBaseUriPrefix = "."; 
-        
-        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
@@ -76,11 +74,9 @@ public class FnCollectionTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";
         
-        String localBaseUriPrefix = "."; 
-        
-        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
@@ -88,11 +84,11 @@ public class FnCollectionTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";
         
-        String localBaseUriPrefix = "."; 
+        m_fileComparisonType = XSLTestConstants.JSON;
         
-        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
@@ -100,11 +96,9 @@ public class FnCollectionTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";
         
-        String localBaseUriPrefix = "."; 
-        
-        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
@@ -112,11 +106,11 @@ public class FnCollectionTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";
         
-        String localBaseUriPrefix = "."; 
+        m_fileComparisonType = XSLTestConstants.JSON;
         
-        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
@@ -124,11 +118,11 @@ public class FnCollectionTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";
         
-        String localBaseUriPrefix = "."; 
+        m_fileComparisonType = XSLTestConstants.JSON;
         
-        runXslTransformAndAssertOutputWithXslParamBaseUri(xmlFilePath, xslFilePath, goldFilePath, null, localBaseUriPrefix);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
 
 }

@@ -70,6 +70,28 @@ import junit.framework.Assert;
  * @xsl.usage advanced
  */
 public class XslTransformTestsUtil extends FileComparisonUtil {
+            
+    /**
+     * Class field representing, whether an XSL xsl:evaluate instruction 
+     * processing is enabled for an XSL transformation instance invoked by 
+     * this test suite.
+     */
+    private boolean m_isXslEvaluateEnabled = false;
+    
+    /**
+     * Class field representing, whether XML Schema validation is enabled 
+     * for an XSL transformation instance invoked by this test suite.
+     */
+    private boolean m_isXmlValidationEnabled = false;
+        
+    private static final String BASE_DIR = "base-dir";
+    
+    /**
+     * Class field representing file path prefix, that is used for test cases
+     * related to XSL instructions like xsl:result-document that have 'href' 
+     * attribute.
+     */
+    protected static String m_xslTransformInpPath = null;
     
     /**
      * Class field representing an XSL TransformerFactory object instance 
@@ -83,25 +105,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     
     protected static String m_initModeName = null;
     
-    /**
-     * Class field representing file path prefix, that is used for test cases
-     * related to XSL instructions like xsl:result-document that have 'href' 
-     * attribute.
-     */
-    protected static String m_xslTransformInpPath = null;
-    
-    /**
-     * Class field representing, whether XML Schema validation is enabled 
-     * for an XSL transformation instance invoked by this test suite.
-     */
-    private boolean m_isXmlValidationEnabled = false;
-    
-    /**
-     * Class field representing, whether an XSL xsl:evaluate instruction 
-     * processing is enabled for an XSL transformation instance invoked by 
-     * this test suite.
-     */
-    private boolean m_isXslEvaluateEnabled = false;
+    protected static String m_xsl_test_dir_base_uri = null;
     
     /**
      * Class constructor.
@@ -172,6 +176,10 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
 
            Document doc = docBuilder.newDocument();
            org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
+           
+           if (m_xsl_test_dir_base_uri != null) {
+        	   transformer.setParameter(BASE_DIR, m_xsl_test_dir_base_uri); 
+           }
 
            transformer.transform(xmlInpSrc, new DOMResult(outNode));
            

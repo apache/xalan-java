@@ -11,12 +11,12 @@
          information from various CSV document files into an aggregate JSON 
          result document using XPath function fn:xml-to-json. -->					
 
-	<xsl:output method="text"/>
+	<xsl:output method="json"/>
 	
-	<xsl:param name="localBaseUriPrefix" as="xs:string"/>
+	<xsl:param name="base-dir" as="xs:string"/>
 
 	<xsl:template match="/">
-	   <xsl:variable name="fnCollectionResult1" select="collection($localBaseUriPrefix || 'fn_collection/.*[.]csv')" as="xs:string*"/>
+	   <xsl:variable name="fnCollectionResult1" select="collection($base-dir || '.*[.]csv')" as="xs:string*"/>
 	   <xsl:variable name="noOfCsvDocuments" select="count($fnCollectionResult1)"/>
 	   <xsl:variable name="nodeSet1">
 		   <map xmlns="http://www.w3.org/2005/xpath-functions">		       

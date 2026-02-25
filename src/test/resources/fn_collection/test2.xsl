@@ -24,13 +24,13 @@
 
 	<xsl:output method="xml" indent="yes"/>
 	
-	<xsl:param name="localBaseUriPrefix" as="xs:string"/>
+	<xsl:param name="base-dir" as="xs:string"/>
 	
 	<xsl:variable name="search_word_str" select="'hello'" as="xs:string"/>
 
 	<xsl:template match="/">
 	   <groups>
-	      <xsl:variable name="collectionResult1" select="collection($localBaseUriPrefix || 'fn_collection/differentfile.*[.]xml')"/>
+	      <xsl:variable name="collectionResult1" select="collection($base-dir || 'differentfile.*[.]xml')"/>
 		  <xsl:variable name="nodeSet1">
 		     <xsl:for-each select="$collectionResult1">
 			    <xsl:for-each select="./*/*">

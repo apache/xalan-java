@@ -21,11 +21,11 @@
 
 	<xsl:output method="xml" indent="yes"/>
 	
-	<xsl:param name="localBaseUriPrefix" as="xs:string"/>
+	<xsl:param name="base-dir" as="xs:string"/>
 
 	<xsl:template match="/">
 	   <result>
-	      <xsl:variable name="collectionResult1" select="collection($localBaseUriPrefix || 'fn_collection/.*[.](xml|json|txt)')"/>
+	      <xsl:variable name="collectionResult1" select="collection($base-dir || '.*[.](xml|json|txt)')"/>
 	      <xsl:for-each select="$collectionResult1">
 				<xsl:variable name="collectionResult1" select="."/>
 				<xsl:choose>
