@@ -1845,6 +1845,12 @@ public class SequenceTypeSupport {
             else if (expectedType == XS_ANY_URI) {
                result = new XSAnyURI(srcStrVal);
             }
+            else if (expectedType == XS_NMTOKEN) {
+               result = new XSNmToken(srcStrVal);
+            }
+            else if (expectedType == XS_ID) {
+               result = new XSID(srcStrVal);
+            }
             else {
                String effectiveTypeDefnStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : getDataTypeNameFromIntValue(expectedType);  	               
                throw new TransformerException("XTTE0570 : The supplied value cannot be cast to type " + effectiveTypeDefnStr + "."); 

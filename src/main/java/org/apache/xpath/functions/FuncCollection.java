@@ -39,6 +39,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Pattern;
+import org.apache.xpath.types.XSBase64Binary;
 import org.w3c.dom.Document;
 
 import xml.xpath31.processor.types.XSString;
@@ -72,9 +73,8 @@ public class FuncCollection extends JsonFunction
 	private static final String SLASH_CHAR_STR = "/";
 	
 	/**
-	 * A string array, specifying the allowed file name 
-	 * extensions for Xalan's XPath function fn:collection's 
-	 * implementation.
+	 * A string array, specifying the allowed file name extensions 
+	 * for, Xalan's XPath function fn:collection's implementation.
 	 */
 	private static final String[] ALLOWED_FILE_EXTS = { XML, JSON, TEXT, CSV };
 	
@@ -97,7 +97,35 @@ public class FuncCollection extends JsonFunction
 	{          
 		XObject result = null;
 		
-		XObject arg0XObj = m_arg0.execute(xctxt);
+		SourceLocator srcLocator = xctxt.getSAXLocator();
+		
+		ResultSequence xpathDefCollectionSeq = xctxt.getDefaultCollection();
+		
+		if (m_arg1 != null) {
+		   throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function 'collection' may have "
+		   		                                                                                      + "either zero or one argument.", srcLocator);
+		}
+		
+		XObject arg0XObj = null;
+		
+        if (m_arg0 != null) {
+           arg0XObj = m_arg0.execute(xctxt);
+		}
+        else if (xpathDefCollectionSeq.size() == 0) {
+        	throw new javax.xml.transform.TransformerException("FODC0002 : An XPath default collection has not been defined.", srcLocator);
+        }
+        else {
+        	// We need to use XPath context's default collection, 
+        	// if it's available, which is currently empty.
+        }
+        
+        if ((arg0XObj instanceof ResultSequence) && (((ResultSequence)arg0XObj).size() == 0) && (xpathDefCollectionSeq.size() == 0)) {
+            throw new javax.xml.transform.TransformerException("FODC0002 : An XPath default collection has not been defined.", srcLocator);
+        }
+        else {
+        	// We need to use XPath context's default collection, 
+        	// if it's available, which is currently empty.
+        }
 		
 		String arg0StrValue = XslTransformEvaluationHelper.getStrVal(arg0XObj);
 		
@@ -214,10 +242,20 @@ public class FuncCollection extends JsonFunction
 					}
 				}
 				else {
-					throw new javax.xml.transform.TransformerException("FODC0004 : The XPath function 'collection''s evaluation, only supports file types XML (ext .xml), "
-							                                                                            + "JSON (ext .json), text (ext .txt) and CSV (ext .csv). The supplied "
-							                                                                            + "file name " + (fileSystemDirPathStr + SLASH_CHAR_STR + fileNameStr)
-							                                                                            + " is invalid.", srcLocator);
+					try {
+						File fileObj = new File(fileSystemDirPathStr + SLASH_CHAR_STR + fileNameStr);
+						byte[] byteArr = Files.readAllBytes(Paths.get(fileObj.toURI()));
+						String strValue = new String(byteArr);
+						XSBase64Binary xsBase64Binary = new XSBase64Binary(strValue);
+						resultSeq.add(xsBase64Binary);
+					}
+					catch (Exception ex) {
+						throw new javax.xml.transform.TransformerException("FODC0004 : The XPath function 'collection''s evaluation, only supports file types XML (ext .xml), "
+                                                                                                       + "JSON (ext .json), text (ext .txt), CSV (ext .csv) or binary file "
+                                                                                                       + "data encoded as with XML Schema type base64Binary. The supplied "
+                                                                                                       + "file with name " + (fileSystemDirPathStr + SLASH_CHAR_STR + fileNameStr) 
+                                                                                                       + " is invalid.", srcLocator); 
+					}															
 				}
 			}
 		}

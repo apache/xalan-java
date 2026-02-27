@@ -566,31 +566,42 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     protected boolean isXslt1And2OnlyTestCase(Node testCaseNode) {
     	
-        boolean result = false;
-        
-        NodeList nodeList = testCaseNode.getChildNodes();
-        int nodeListLength = nodeList.getLength();
-        for (int idx = 0; idx < nodeListLength; idx++) {
-        	Node node = nodeList.item(idx);
-        	if (node.getNodeType() == Node.ELEMENT_NODE) {
-        		Element elemNode = (Element)node;
-        		String elemName = elemNode.getLocalName();
-        		if ("dependencies".equals(elemName)) {
-        			NodeList nodeList1 = elemNode.getElementsByTagName("spec");
-        			if (nodeList1.getLength() == 1) {
-        				Element elem1 = (Element)(nodeList1.item(0));
-        				String value = elem1.getAttribute("value");
-        				if ("XSLT20".equals(value) || "XSLT10 XSLT20".equals(value)) {
-        					result = true;
+    	boolean result = false;
 
-        					break; 
-        				}
-        			}
-        		}
-        	}
-        }
-        
-        return result;
+    	NodeList nodeList = testCaseNode.getChildNodes();
+    	int nodeListLength = nodeList.getLength();
+    	for (int idx = 0; idx < nodeListLength; idx++) {
+    		Node node = nodeList.item(idx);
+    		if (node.getNodeType() == Node.ELEMENT_NODE) {
+    			Element elemNode = (Element)node;
+    			String elemName = elemNode.getLocalName();
+    			if ("dependencies".equals(elemName)) {        			        			
+    				Node node1 = elemNode.getFirstChild();
+    				while (node1 != null) {
+    					if (node1.getNodeType() == Node.ELEMENT_NODE) {
+    						Element elem1 = (Element)node1;
+    						if ("spec".equals(node1.getNodeName())) {
+    							String value = elem1.getAttribute("value");
+    							if (("XSLT20".equals(value) || "XSLT10".equals(value) 
+    									                                   || "XSLT10 XSLT20".equals(value))) {
+    								result = true;
+
+    								break; 
+    							}
+    						}
+    					}
+
+    					node1 = node1.getNextSibling();
+    				}
+    			}
+    		}
+
+    		if (result) {
+    			break; 
+    		}
+    	}
+
+    	return result;
     }
     
     /**
@@ -602,31 +613,41 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     protected boolean isBackwardCompatibilityTestCase(Node testCaseNode) {
     	
-        boolean result = false;
-        
-        NodeList nodeList = testCaseNode.getChildNodes();
-        int nodeListLength = nodeList.getLength();
-        for (int idx = 0; idx < nodeListLength; idx++) {
-     	  Node node = nodeList.item(idx);
-     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
-     		 Element elemNode = (Element)node;
-     		 String elemName = elemNode.getLocalName();
-     		 if ("dependencies".equals(elemName)) {
-     			 NodeList nodeList1 = elemNode.getElementsByTagName("feature");
-     			 if (nodeList1.getLength() == 1) {
-     				 Element elem1 = (Element)(nodeList1.item(0));
-     				 String value = elem1.getAttribute("value");
-     				 if ("backwards_compatibility".equals(value)) {
-     					result = true;
-     					
-     					break; 
-     				 }
-     			 }
-     		 }
-     	  }
-        }
-        
-        return result;
+    	boolean result = false;
+
+    	NodeList nodeList = testCaseNode.getChildNodes();
+    	int nodeListLength = nodeList.getLength();
+    	for (int idx = 0; idx < nodeListLength; idx++) {
+    		Node node = nodeList.item(idx);
+    		if (node.getNodeType() == Node.ELEMENT_NODE) {
+    			Element elemNode = (Element)node;
+    			String elemName = elemNode.getLocalName();
+    			if ("dependencies".equals(elemName)) {     			      			 
+    				Node node1 = elemNode.getFirstChild();
+    				while (node1 != null) {
+    					if (node1.getNodeType() == Node.ELEMENT_NODE) {
+    						Element elem1 = (Element)node1;
+    						if ("feature".equals(node1.getNodeName())) {
+    							String value = elem1.getAttribute("value");
+    							if ("backwards_compatibility".equals(value)) {
+    								result = true;
+
+    								break; 
+    							}
+    						}
+    					}
+
+    					node1 = node1.getNextSibling();
+    				}
+    			}
+    		}
+
+    		if (result) {
+    			break; 
+    		}
+    	}
+
+    	return result;
     }
     
     /**
@@ -638,33 +659,41 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     protected boolean isXslSchemaAwareFeatureTestCase(Node testCaseNode) {
     	
-        boolean result = false;
-        
-        NodeList nodeList = testCaseNode.getChildNodes();
-        int nodeListLength = nodeList.getLength();
-        for (int idx = 0; idx < nodeListLength; idx++) {
-     	  Node node = nodeList.item(idx);
-     	  if (node.getNodeType() == Node.ELEMENT_NODE) {
-     		 Element elemNode = (Element)node;
-     		 String elemName = elemNode.getLocalName();
-     		 if ("dependencies".equals(elemName)) {
-     			 NodeList nodeList1 = elemNode.getElementsByTagName("feature");
-     			 if (nodeList1.getLength() == 1) {
-     				 Element elem1 = (Element)(nodeList1.item(0));
-     				 String value = elem1.getAttribute("value");
-     				 String satisfied = elem1.getAttribute("satisfied");
-     				 if ("schema_aware".equals(value) && ("".equals(satisfied) 
-     						                                                || "true".equals(satisfied))) {
-     					result = true;
-     					
-     					break; 
-     				 }
-     			 }
-     		 }
-     	  }
-        }
-        
-        return result;
+    	boolean result = false;
+
+    	NodeList nodeList = testCaseNode.getChildNodes();
+    	int nodeListLength = nodeList.getLength();
+    	for (int idx = 0; idx < nodeListLength; idx++) {
+    		Node node = nodeList.item(idx);
+    		if (node.getNodeType() == Node.ELEMENT_NODE) {
+    			Element elemNode = (Element)node;
+    			String elemName = elemNode.getLocalName();
+    			if ("dependencies".equals(elemName)) {     			      			 
+    				Node node1 = elemNode.getFirstChild();
+    				while (node1 != null) {
+    					if (node1.getNodeType() == Node.ELEMENT_NODE) {
+    						Element elem1 = (Element)node1;
+    						if ("feature".equals(node1.getNodeName())) {
+    							String value = elem1.getAttribute("value");
+    							if ("schema_aware".equals(value)) {
+    								result = true;
+
+    								break; 
+    							}
+    						}
+    					}
+
+    					node1 = node1.getNextSibling();
+    				}
+    			}
+    		}
+
+    		if (result) {
+    			break; 
+    		}
+    	}
+
+    	return result;
     }
     
     /**
@@ -685,23 +714,30 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		if (node.getNodeType() == Node.ELEMENT_NODE) {
     			Element elemNode = (Element)node;
     			String elemName = elemNode.getLocalName();
-    			if ("dependencies".equals(elemName)) {
-    				NodeList nodeList1 = elemNode.getElementsByTagName("feature");
-    				int nodeListLength2 = nodeList1.getLength();     			 
-    				for (int idx2 = 0; idx2 < nodeListLength2; idx2++) {
-    					Element elem1 = (Element)(nodeList1.item(idx2));
-    					String value = elem1.getAttribute("value");
-    					if ("streaming".equals(value)) {
-    						result = true;
+    			if ("dependencies".equals(elemName)) {    				    				
+    				Node node1 = elemNode.getFirstChild();
+    				while (node1 != null) {
+    					if (node1.getNodeType() == Node.ELEMENT_NODE) {
+    						Element elem1 = (Element)node1;
+    						if ("feature".equals(node1.getNodeName())) {
+    							String value = elem1.getAttribute("value");
+    							String satisfied = elem1.getAttribute("satisfied");
+    							if ("streaming".equals(value) && ("".equals(satisfied) 
+    									                                            || "true".equals(satisfied))) {
+    								result = true;
 
-    						break; 
+    								break; 
+    							}
+    						}
     					}
-    				}
 
-    				if (result) {
-    					break; 
+    					node1 = node1.getNextSibling();
     				}
     			}
+    		}
+    		
+    		if (result) {
+    			break; 
     		}
     	}
 

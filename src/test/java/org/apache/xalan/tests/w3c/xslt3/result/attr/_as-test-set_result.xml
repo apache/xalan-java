@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:32:48Z" fail="21" name="as" pass="89" run="111" skipped="93" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-27T00:39:19Z" fail="16" name="as" pass="89" run="106" skipped="98" statusUnknown="1">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
@@ -48,16 +48,16 @@
    <testResult status="pass" testName="as-0139"/>
    <testResult status="pass" testName="as-0140"/>
    <testResult status="pass" testName="as-0141"/>
-   <testResult status="fail" testName="as-0142"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-0142"/>
    <testResult status="pass" testName="as-0143"/>
    <testResult status="pass" testName="as-0144"/>
    <testResult status="pass" testName="as-0144a"/>
    <testResult status="pass" testName="as-0145"/>
-   <testResult status="fail" testName="as-0146"/>
-   <testResult status="fail" testName="as-0147"/>
-   <testResult status="fail" testName="as-0148"/>
-   <testResult status="fail" testName="as-0149"/>
-   <testResult status="pass" testName="as-0150"/>
+   <testResult status="pass" testName="as-0146"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-0147"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-0148"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-0149"/>
+   <testResult feature="schema_aware" status="skipped" testName="as-0150"/>
    <testResult feature="schema_aware" status="skipped" testName="as-0151"/>
    <testResult status="fail" testName="as-0152">
       <outResult>

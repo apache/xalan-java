@@ -529,6 +529,8 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     if (stylesheet.isSecureProcessing())
       xPath.setSecureProcessing(true);
     
+    xPath.setBaseURLOfSource(m_urlOfSource);
+    
     setXPathContext(xPath);
     getXPathContext().setNamespaceContext(stylesheet);    
     m_stackGuard = new StackGuard(this);    
@@ -1131,15 +1133,13 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
   }
 
   /**
-   * Get the base URL of the source.
+   * Set the base URL of the source.
    *
-   *
-   * NEEDSDOC @param base
-   * @return The base URL of the source tree, or null.
+   * @param baseUrl           Represents base URL of the source tree
    */
-  public void setBaseURLOfSource(String base)
+  public void setBaseURLOfSource(String baseUrl)
   {
-    m_urlOfSource = base;
+    m_urlOfSource = baseUrl;
   }
 
   /**

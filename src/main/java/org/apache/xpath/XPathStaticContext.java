@@ -87,6 +87,9 @@ public class XPathStaticContext extends XPathDynamicContext {
 	 * An XPathCollationSupport object instance to support, collations within XPath implementation.
 	 */
 	private XPathCollationSupport m_collationSupport = new XPathCollationSupport(m_default_collation);
+	
+	/** The base URL of the source tree. */
+	private String m_urlOfSource;
 
 	public XPathCollationSupport getXPathCollationSupport() {
 		return m_collationSupport;
@@ -102,6 +105,14 @@ public class XPathStaticContext extends XPathDynamicContext {
 
 	public XSL3FunctionService getXSLFunctionService() {
 		return XSLFunctionBuilder.getXSLFunctionService(); 
+	}
+
+	public String getBaseURLOfSource() {
+		return m_urlOfSource;
+	}
+
+	public void setBaseURLOfSource(String urlOfSource) {
+		this.m_urlOfSource = urlOfSource;
 	}
 
 }

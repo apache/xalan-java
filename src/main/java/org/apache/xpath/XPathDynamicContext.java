@@ -33,6 +33,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSDayTimeDuration;
@@ -117,6 +118,15 @@ public class XPathDynamicContext extends DTMManager {
 	 * context.
 	 */
 	private Map<String, String> m_customDataMap = new HashMap<String, String>();
+	
+	/**
+	 * This data value, represents XPath context's default collection.
+	 * 
+	 * The value of XPath default collection is not defined, for Xalan
+	 * XPath 3.1 implementation, which is implied by this value being
+	 * equal to an xdm empty sequence. 
+	 */
+	private ResultSequence m_default_collection = new ResultSequence();
 	  
 	/**
 	 * Stack of cached "reusable" DTMs for Result Tree Fragments.
@@ -387,6 +397,10 @@ public class XPathDynamicContext extends DTMManager {
 
 	public void setCustomDataMap(Map<String, String> customDataMap) {
 		this.m_customDataMap = customDataMap;
+	}
+	
+	public ResultSequence getDefaultCollection() {
+		return m_default_collection;
 	}
 
 }

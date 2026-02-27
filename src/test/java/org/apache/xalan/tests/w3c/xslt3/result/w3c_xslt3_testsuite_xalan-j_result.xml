@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-02-23T16:15:18Z" desc="W3C XSLT 3.0 test suite results" fail="1291" pass="3449" run="4781" skipped="598" success="72.14%" xslt_processor="Apache Xalan XSLT 3.0 development code">
+<testResult dateTime="2026-02-27T00:41:42Z" desc="W3C XSLT 3.0 test suite results" fail="1284" pass="3446" run="4771" skipped="608" success="72.23%" xslt_processor="Apache Xalan XSLT 3.0 development code">
   <attr>
-    <as fail="21" pass="89" run="111" skipped="93" success="80.18%"/>
+    <as fail="16" pass="89" run="106" skipped="98" success="83.96%"/>
     <avt fail="1" pass="33" run="34" skipped="1" success="97.06%"/>
     <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
     <expand-text fail="7" pass="52" run="59" skipped="3" success="88.14%"/>
@@ -19,13 +19,13 @@
     <global-context-item fail="4" pass="10" run="14" skipped="0" success="71.43%"/>
     <package fail="31" pass="23" run="54" skipped="18" success="42.59%"/>
     <param fail="17" pass="13" run="30" skipped="1" success="43.33%"/>
-    <strip-space fail="10" pass="17" run="27" skipped="3" success="62.96%"/>
+    <strip-space fail="9" pass="17" run="26" skipped="4" success="65.38%"/>
     <template fail="0" pass="6" run="6" skipped="0" success="100.0%"/>
     <variable fail="15" pass="88" run="103" skipped="5" success="85.44%"/>
   </decl>
   <expr>
     <axes fail="8" pass="192" run="200" skipped="2" success="96.0%"/>
-    <castable fail="0" pass="9" run="9" skipped="0" success="100.0%"/>
+    <castable fail="0" pass="7" run="7" skipped="2" success="100.0%"/>
     <expression fail="12" pass="87" run="100" skipped="5" success="87.0%"/>
     <for fail="1" pass="2" run="3" skipped="1" success="66.67%"/>
     <higher-order-functions fail="34" pass="34" run="69" skipped="7" success="49.28%"/>
@@ -37,7 +37,7 @@
   <fn>
     <deep-equal fail="0" pass="2" run="2" skipped="0" success="100.0%"/>
     <format-number fail="32" pass="32" run="64" skipped="10" success="50.0%"/>
-    <json-to-xml fail="7" pass="18" run="25" skipped="35" success="72.0%"/>
+    <json-to-xml fail="6" pass="18" run="24" skipped="36" success="75.0%"/>
     <key fail="33" pass="63" run="96" skipped="3" success="65.62%"/>
     <position fail="17" pass="192" run="210" skipped="1" success="91.43%"/>
     <root fail="3" pass="7" run="10" skipped="0" success="70.0%"/>
@@ -61,7 +61,7 @@
     <xsl-document fail="8" pass="17" run="25" skipped="0" success="68.0%"/>
   </insn>
   <misc>
-    <built-in-templates fail="2" pass="3" run="5" skipped="1" success="60.0%"/>
+    <built-in-templates fail="2" pass="2" run="4" skipped="2" success="50.0%"/>
     <regex-syntax fail="368" pass="618" run="986" skipped="4" success="62.68%"/>
     <regex fail="22" pass="42" run="64" skipped="1" success="65.62%"/>
     <whitespace fail="11" pass="17" run="28" skipped="0" success="60.71%"/>

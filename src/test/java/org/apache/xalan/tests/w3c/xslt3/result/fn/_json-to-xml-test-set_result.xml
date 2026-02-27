@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:40Z" fail="7" name="json-to-xml" pass="18" run="25" skipped="35" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-27T00:41:11Z" fail="6" name="json-to-xml" pass="18" run="24" skipped="36" statusUnknown="0">
    <testResult status="pass" testName="json-to-xml-001"/>
    <testResult status="pass" testName="json-to-xml-002"/>
    <testResult status="pass" testName="json-to-xml-003"/>
@@ -50,11 +50,7 @@
    <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-005"/>
    <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-006"/>
    <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-007"/>
-   <testResult status="fail" testName="json-to-xml-typed-010">
-      <outResult>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' and validate : 'true' are not compatible.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult feature="schema_aware" status="skipped" testName="json-to-xml-typed-010"/>
    <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-001"/>
    <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-002"/>
    <testResult reason="Xalan configured" status="skipped" testName="json-to-xml-error-003"/>

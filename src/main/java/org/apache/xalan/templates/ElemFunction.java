@@ -578,8 +578,27 @@ public class ElemFunction extends ElemTemplate
     		  }                    
     	  }
 
-    	  // Get xsl:function's result, before processing with "as" attribute
-    	  result = getXslFunctionResult(transformer, xctxt);
+          // Evaluate xsl:function's result, before processing with "as" attribute    	  
+    	  ElemTemplateElement elemTemplateElement = getFirstChildElem();
+    	  if ((elemTemplateElement instanceof ElemValueOf) && (elemTemplateElement.getNextSiblingElem() == null)) {
+    		  // An xsl:function has single xsl:value-of child instruction
+    		  ElemValueOf elemValueOf = (ElemValueOf)elemTemplateElement;
+    		  XPath selectAttrXPath = elemValueOf.getSelect();
+    		  String strValue = null;
+    		  if (selectAttrXPath != null) {
+    			  int sourceNode = xctxt.getCurrentNode();
+    			  XObject xObj = selectAttrXPath.execute(xctxt, sourceNode, prefixResolver);
+    			  strValue = XslTransformEvaluationHelper.getStrVal(xObj); 
+    		  }
+    		  else {		  
+    			  strValue = transformer.transformToString(elemTemplateElement);    		     
+    		  }
+
+    		  result = new XSString(strValue);    		      		  
+    	  }
+    	  else {
+    		  result = getXslFunctionResult(transformer, xctxt); 
+    	  }
       }
       catch (TransformerException ex) {
     	  throw ex;
@@ -790,6 +809,9 @@ public class ElemFunction extends ElemTemplate
             	 result = ElemPerformSort.m_namespace_result_seq;            	 
             	 funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);            	 
             	 (ElemPerformSort.m_namespace_result_seq).clear();
+             }
+             else if (result instanceof XSString) {
+            	 funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
              }
              else {
                  funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
