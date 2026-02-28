@@ -140,7 +140,7 @@
 					<includes>
 						<include>**/*.java</include>
 					</includes>
-					<argLine>-Dfile.encoding=utf-8</argLine>
+					<argLine>-Xss2m -Dfile.encoding=utf-8</argLine>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -243,11 +243,11 @@ public class ElemWithParam extends ElemTemplateElement
   public XObject getValue(TransformerImpl transformer, int sourceNode) throws TransformerException
   {
 
-    XObject var;
+    XObject var = null;
     XPathContext xctxt = transformer.getXPathContext();
     
     SourceLocator srcLocator = xctxt.getSAXLocator();
-    
+
     if (m_tunnelAttr != null && !isValidTunnelParamValue(m_tunnelAttr)) {
        throw new TransformerException("XTTE0590 : Allowed values for XSL with-param's tunnel "
        		                                           + "attribute are : yes, true, 1, no, false, 0. The "

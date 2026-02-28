@@ -173,6 +173,10 @@ public class ElemParam extends ElemVariable
     
     SourceLocator srcLocator = xctx.getSAXLocator();
     
+    if (getParentElem() instanceof ElemFunction) {
+       m_required = true;	
+    }
+
     if (m_tunnelAttr != null && !isValidTunnelParamValue(m_tunnelAttr)) {
        throw new TransformerException("XTTE0590 : The allowed values for XSL param's tunnel "
         		                                              + "attribute are : yes, true, 1, no, false, 0. The "

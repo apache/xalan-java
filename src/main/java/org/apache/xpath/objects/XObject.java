@@ -1536,8 +1536,14 @@ public class XObject extends Expression implements Serializable, Cloneable
     else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
       return DateTimeUtil.lessThanOrEqual((XSTime)this, (XSTime)obj2); 
   	}
-
-    return this.num() <= obj2.num();
+    
+    String str1 = XslTransformEvaluationHelper.getStrVal(this);
+    String str2 = XslTransformEvaluationHelper.getStrVal(obj2);
+    
+    Double dbl1 = Double.valueOf(str1);
+    Double dbl2 = Double.valueOf(str2);
+    
+    return dbl1.doubleValue() <= dbl2.doubleValue();  
   }
 
   /**
