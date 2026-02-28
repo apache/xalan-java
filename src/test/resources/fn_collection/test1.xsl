@@ -25,7 +25,7 @@
 
 	<xsl:template match="/">
 	   <result>
-	      <xsl:variable name="collectionResult1" select="collection($base-dir || '.*[.](xml|json|txt)')"/>
+	      <xsl:variable name="collectionResult1" select="collection($base-dir || '.*[\\.](xml|json|txt)')"/>
 	      <xsl:for-each select="$collectionResult1">
 				<xsl:variable name="collectionResult1" select="."/>
 				<xsl:choose>

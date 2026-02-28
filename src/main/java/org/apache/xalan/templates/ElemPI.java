@@ -185,6 +185,10 @@ public class ElemPI extends ElemTemplateElement
 	  m_pi_value = piValue; 
   }
   
+  /**
+   * Class field to refer to the fact that, whether to 
+   * serialize an XML pi node to XSL transform's output.
+   */
   private boolean m_is_serialize = true;
   
   public boolean getIsSerialize() {

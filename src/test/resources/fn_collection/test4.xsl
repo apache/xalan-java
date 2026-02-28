@@ -28,7 +28,7 @@
 	<xsl:template match="/">
 	   <xsl:variable name="xmlNodeVar1">
 		   <fn:map>
-			  <xsl:variable name="collectionResult1" select="collection($base-dir || 'file4.*')"/>
+			  <xsl:variable name="collectionResult1" select="collection($base-dir || 'file4[\\.](xml|json)')"/>
 			  <xsl:for-each select="$collectionResult1">
 				 <xsl:variable name="collectionItem1" select="."/>
 				 <xsl:choose>

@@ -56,21 +56,19 @@ import xml.xpath31.processor.types.XSNumericType;
 /**
  * Implementation of XSLT 3.0 xsl:number instruction. 
  * 
- * <pre>
- * <!ELEMENT xsl:number EMPTY>
- * <!ATTLIST xsl:number
- *    level (single|multiple|any) "single"
- *    count %pattern; #IMPLIED
- *    from %pattern; #IMPLIED
- *    value %expr; #IMPLIED
- *    format %avt; '1'
- *    lang %avt; #IMPLIED
- *    letter-value %avt; #IMPLIED
- *    ordinal %avt; #IMPLIED
- *    grouping-separator %avt; #IMPLIED
- *    grouping-size %avt; #IMPLIED
- * >
- * </pre>
+ * <xsl:number
+ *    value? = expression
+ *    select? = expression
+ *    level? = "single" | "multiple" | "any"
+ *    count? = pattern
+ *    from? = pattern
+ *    format? = { string }
+ *    lang? = { language }
+ *    letter-value? = { "alphabetic" | "traditional" }
+ *    ordinal? = { string }
+ *    start-at? = { string }
+ *    grouping-separator? = { char }
+ *    grouping-size? = { integer } />
  * 
  * @xsl.usage advanced
  */
@@ -616,6 +614,32 @@ public class ElemNumber extends ElemTemplateElement
   public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
   }
+  
+  /**
+   * Class field to refer to the fact that, whether to 
+   * serialize xsl:number instruction's result to XSL 
+   * transform's output.
+   */
+  private boolean m_is_serialize = true;
+  
+  public boolean getIsSerialize() {
+	  return m_is_serialize;
+  }
+  
+  public void setIsSerialize(boolean serialize) {
+	  m_is_serialize = serialize;  
+  }
+  
+  /**
+   * Class field to refer to, xsl:number instruction's
+   * formatted result string. This value, may be null 
+   * as well.
+   */
+  private String m_result_str;
+  
+  public String getFormattedResultStr() {
+	  return m_result_str; 
+  }
 
   /**
    * Table to help in converting decimals to roman numerals.
@@ -722,19 +746,24 @@ public class ElemNumber extends ElemTemplateElement
 	  
 	  String countString = getCountString(transformer, sourceNode, isOrdinal);
 
-	  try
-	  {
-		  transformer.getResultTreeHandler().characters(countString.toCharArray(), 
-				                                                             0, countString.length());
+	  if (m_is_serialize) {
+		  try
+		  {
+			  transformer.getResultTreeHandler().characters(countString.toCharArray(), 
+					                                                              0, countString.length());
+		  }
+		  catch(SAXException se)
+		  {
+			  throw new TransformerException(se);
+		  }
+		  finally
+		  {
+			  if (transformer.getDebug())
+				  transformer.getTraceManager().emitTraceEndEvent(this); 
+		  }
 	  }
-	  catch(SAXException se)
-	  {
-		  throw new TransformerException(se);
-	  }
-	  finally
-	  {
-		  if (transformer.getDebug())
-			  transformer.getTraceManager().emitTraceEndEvent(this); 
+	  else {
+		  m_result_str = countString; 
 	  }
   }
 

@@ -91,7 +91,7 @@ public class ElemAttribute extends ElemElement
     
     /**
      * Class field to refer to the fact that, whether to 
-     * serialize an attribute to XSL transform's output.
+     * serialize an XML attribute node to XSL transform's output.
      */
     private boolean m_is_serialize = true;
     

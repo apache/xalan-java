@@ -30,7 +30,7 @@
 
 	<xsl:template match="/">
 	   <groups>
-	      <xsl:variable name="collectionResult1" select="collection($base-dir || 'differentfile.*[.]xml')"/>
+	      <xsl:variable name="collectionResult1" select="collection($base-dir || 'differentfile.*[\\.]xml')"/>
 		  <xsl:variable name="nodeSet1">
 		     <xsl:for-each select="$collectionResult1">
 			    <xsl:for-each select="./*/*">

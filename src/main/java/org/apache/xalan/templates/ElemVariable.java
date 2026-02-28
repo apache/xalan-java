@@ -1403,6 +1403,15 @@ public class ElemVariable extends ElemTemplateElement
     					 
     					 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
     				 }
+                     else if (elemTemplateElement instanceof ElemNumber) {
+                    	 ElemNumber elemNumber = (ElemNumber)elemTemplateElement;
+                    	 elemNumber.setIsSerialize(false);
+                    	 elemNumber.execute(transformer);
+                    	 String strValue1 = elemNumber.getFormattedResultStr();
+                    	 rSeq.add(new XSString(strValue1));
+                    	 
+                    	 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+                     }
                      else {
                          isSeqConstructOk = false;
                     	 
@@ -1425,6 +1434,9 @@ public class ElemVariable extends ElemTemplateElement
     					   XdmAttributeItem xdmAttributeItem = (XdmAttributeItem)xObj;
     					   String attrStrValue = xdmAttributeItem.getAttrStrValue();
     					   rSeq2.add(new XSString(attrStrValue));
+    					}
+    					else {
+    					   rSeq2.add(xObj);
     					}
     				 }
     				 

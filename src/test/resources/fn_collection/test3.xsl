@@ -26,7 +26,7 @@
 
 	<xsl:template match="/">
 	   <result>
-	      <xsl:variable name="collectionResult1" select="collection($base-dir || 'file4.*')"/>
+	      <xsl:variable name="collectionResult1" select="collection($base-dir || 'file4[\\.].*')"/>
 		  <xsl:for-each select="$collectionResult1">
 		     <xsl:variable name="collectionItem1" select="."/>
 			 <xsl:choose>

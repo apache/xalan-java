@@ -16,7 +16,7 @@
 	<xsl:param name="base-dir" as="xs:string"/>
 
 	<xsl:template match="/">
-	   <xsl:variable name="fnCollectionResult1" select="collection($base-dir || '.*[.]csv')" as="xs:string*"/>
+	   <xsl:variable name="fnCollectionResult1" select="collection($base-dir || '.*[\\.]csv')" as="xs:string*"/>
 	   <xsl:variable name="noOfCsvDocuments" select="count($fnCollectionResult1)"/>
 	   <rows>		       
 		  <xsl:for-each select="1 to $noOfCsvDocuments">

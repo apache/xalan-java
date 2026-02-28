@@ -145,6 +145,10 @@ public class ElemComment extends ElemTemplateElement
 	  m_comment_value = commentValue; 
   }
   
+  /**
+   * Class field to refer to the fact that, whether to 
+   * serialize an XML comment node to XSL transform's output.
+   */
   private boolean m_is_serialize = true;
   
   public boolean getIsSerialize() {
