@@ -88,12 +88,13 @@
    Apache Xalan-J's XSLT 3.0 implementation, reuses WTP XPath 2.0 implementation's XML Schema datatype 
    implementation src code.
    
-   The src code that Apache Xalan-J's XSLT 3.0 implementation reuses for these implementation dependencies 
-   is located on the link, https://github.com/xercesj/xalanj_xpath31_types. The src code repos 
-   https://github.com/xercesj is maintained by Apache Xerces-J project. Apache Xalan-J, is built upon 
-   Xerces-J project that provides implementations of XML parsers and XML Schema validator.
-   
-   Ref, LICENSE.EPL_v1.0.html          
+   The src code that Apache Xalan-J's XSLT 3.0 implementation reuses for these implementation 
+   dependencies is located on the link, https://github.com/xercesj/xalanj_xpath31_types with a 
+   copy of this code available within this code repos branch, to help solve cyclic dependency between 
+   Xalan-J XSLT 3.0 implementation and the code from repos https://github.com/xercesj/xalanj_xpath31_types. 
+   The src code repos https://github.com/xercesj is maintained by Apache Xerces-J project. 
+   Apache Xalan-J, is built upon Xerces-J project that provides implementations of XML parsers and 
+   XML Schema validator.         
 
    =========================================================================   
    Apache xml-commons xml-apis (redistribution of xml-apis.jar)

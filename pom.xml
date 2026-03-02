@@ -37,6 +37,13 @@
         </roles>
       </developer>
     </developers>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>        
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 
 	<dependencies>
 		<dependency>
@@ -48,13 +55,7 @@
 			<groupId>org.apache.xerces</groupId>
 			<artifactId>xml-apis</artifactId>
 			<version>1.4.02</version>
-		</dependency>
-		<dependency>
-			<!-- Code repos url : https://github.com/xercesj/xalanj_xpath31_types -->
-			<groupId>org.apache.xerces</groupId>
-			<artifactId>xalan-java_xpath31_types</artifactId>
-			<version>0.1</version>
-		</dependency>		
+		</dependency>				
 		<!-- Apache Bean Scripting framework dependency. This despatches 
 		     Xalan-J's JavaScript extension calls to Mozilla Rhino 
 		     JavaScript implementation. -->				
