@@ -1,0 +1,16 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title></title>
+</head>
+<body>
+<b>hello world</b>
+<br>
+<b>this is a test file that</b>
+<br>
+<b>we'll transform to, an html document</b>
+<br>
+<b>using xpath 3.1 functions unparsed-text and tokenize.</b>
+<br>
+</body>
+</html>

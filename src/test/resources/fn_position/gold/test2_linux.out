@@ -1,0 +1,22 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title></title>
+</head>
+<body>
+<table>
+<tr>
+<th>Position</th><th>Country</th><th>City List</th><th>Population</th>
+</tr>
+<tr>
+<td>1</td><td>italy</td><td>milan, venice</td><td>6</td>
+</tr>
+<tr>
+<td>2</td><td>france</td><td>paris, lyon</td><td>9</td>
+</tr>
+<tr>
+<td>3</td><td>germany</td><td>munich</td><td>4</td>
+</tr>
+</table>
+</body>
+</html>

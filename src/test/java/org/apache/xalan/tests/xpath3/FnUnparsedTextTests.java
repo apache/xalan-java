@@ -62,7 +62,16 @@ public class FnUnparsedTextTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";
+        //String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";
+        
+        String goldFilePath = null;
+        String osName = System.getProperty("os.name");
+        if (osName.startsWith("Windows")) {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";
+        }
+        else {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2_linux.out";	
+        }
         
         m_fileComparisonType = XSLTestConstants.HTML;
         
@@ -74,7 +83,16 @@ public class FnUnparsedTextTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";
+        //String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";
+        
+        String goldFilePath = null;
+        String osName = System.getProperty("os.name");
+        if (osName.startsWith("Windows")) {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";
+        }
+        else {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3_linux.out";	
+        }
         
         m_fileComparisonType = XSLTestConstants.HTML;
         

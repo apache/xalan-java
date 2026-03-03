@@ -1,0 +1,16 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>XSL transformation result</title>
+</head>
+<body>
+<br>
+<h3>Hello world, this text file is used for testing purpose</h3>
+<h1> Thanks for reading this</h1>
+<h3>Many thanks</h3>
+<h2> Thank you</h2>
+<h1> Your's sincerely</h1>
+<h3>--</h3>
+<h3>Apache Xalan</h3>
+</body>
+</html>

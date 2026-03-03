@@ -52,7 +52,16 @@ public class XslAnalyzeStringTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
+        //String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
+        
+        String goldFilePath = null;
+        String osName = System.getProperty("os.name");
+        if (osName.startsWith("Windows")) {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
+        }
+        else {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1_linux.out";	
+        }
         
         m_fileComparisonType = XSLTestConstants.HTML;
         

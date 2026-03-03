@@ -177,7 +177,16 @@ public class XalanJiraIssueTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "sample2.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "document-node-test2.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
+        // String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
+        
+        String goldFilePath = null;
+        String osName = System.getProperty("os.name");
+        if (osName.startsWith("Windows")) {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
+        }
+        else {
+           goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13_linux.out";	
+        }
         
         m_fileComparisonType = XSLTestConstants.TEXT;
         

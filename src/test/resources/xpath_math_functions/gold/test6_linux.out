@@ -1,0 +1,1108 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<style>
+				table, th, td {
+				  border: 1px solid black;
+				  border-collapse: collapse;
+				  margin: 10px;
+				  padding: 10px;
+				}
+
+				table.center {
+				  margin-left: auto; 
+				  margin-right: auto;
+				}
+			</style>
+<title>math:sin, math:cos, math:tan values</title>
+</head>
+<body>
+<br>
+<table class="center">
+<tr>
+<td style="text-align: center;"><b>Angle (deg)</b></td><td style="text-align: center;"><b>math:sin</b></td><td style="text-align: center;"><b>math:cos</b></td><td style="text-align: center;"><b>math:tan</b></td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td><td style="text-align: center;">0.0174524064</td><td style="text-align: center;">0.9998476952</td><td style="text-align: center;">0.0174550649</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td><td style="text-align: center;">0.0348994967</td><td style="text-align: center;">0.999390827</td><td style="text-align: center;">0.0349207695</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td><td style="text-align: center;">0.0523359562</td><td style="text-align: center;">0.9986295348</td><td style="text-align: center;">0.0524077793</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td><td style="text-align: center;">0.0697564737</td><td style="text-align: center;">0.9975640503</td><td style="text-align: center;">0.0699268119</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td><td style="text-align: center;">0.0871557427</td><td style="text-align: center;">0.9961946981</td><td style="text-align: center;">0.0874886635</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td><td style="text-align: center;">0.1045284633</td><td style="text-align: center;">0.9945218954</td><td style="text-align: center;">0.1051042353</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td><td style="text-align: center;">0.1218693434</td><td style="text-align: center;">0.9925461516</td><td style="text-align: center;">0.1227845609</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td><td style="text-align: center;">0.139173101</td><td style="text-align: center;">0.9902680687</td><td style="text-align: center;">0.1405408347</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td><td style="text-align: center;">0.156434465</td><td style="text-align: center;">0.9876883406</td><td style="text-align: center;">0.1583844403</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td><td style="text-align: center;">0.1736481777</td><td style="text-align: center;">0.984807753</td><td style="text-align: center;">0.1763269807</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td><td style="text-align: center;">0.1908089954</td><td style="text-align: center;">0.9816271834</td><td style="text-align: center;">0.1943803091</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td><td style="text-align: center;">0.2079116908</td><td style="text-align: center;">0.9781476007</td><td style="text-align: center;">0.2125565617</td>
+</tr>
+<tr>
+<td style="text-align: center;">13</td><td style="text-align: center;">0.2249510543</td><td style="text-align: center;">0.9743700648</td><td style="text-align: center;">0.2308681911</td>
+</tr>
+<tr>
+<td style="text-align: center;">14</td><td style="text-align: center;">0.2419218956</td><td style="text-align: center;">0.9702957263</td><td style="text-align: center;">0.2493280028</td>
+</tr>
+<tr>
+<td style="text-align: center;">15</td><td style="text-align: center;">0.2588190451</td><td style="text-align: center;">0.9659258263</td><td style="text-align: center;">0.2679491924</td>
+</tr>
+<tr>
+<td style="text-align: center;">16</td><td style="text-align: center;">0.2756373558</td><td style="text-align: center;">0.9612616959</td><td style="text-align: center;">0.2867453858</td>
+</tr>
+<tr>
+<td style="text-align: center;">17</td><td style="text-align: center;">0.2923717047</td><td style="text-align: center;">0.956304756</td><td style="text-align: center;">0.3057306815</td>
+</tr>
+<tr>
+<td style="text-align: center;">18</td><td style="text-align: center;">0.3090169944</td><td style="text-align: center;">0.9510565163</td><td style="text-align: center;">0.3249196962</td>
+</tr>
+<tr>
+<td style="text-align: center;">19</td><td style="text-align: center;">0.3255681545</td><td style="text-align: center;">0.9455185756</td><td style="text-align: center;">0.3443276133</td>
+</tr>
+<tr>
+<td style="text-align: center;">20</td><td style="text-align: center;">0.3420201433</td><td style="text-align: center;">0.9396926208</td><td style="text-align: center;">0.3639702343</td>
+</tr>
+<tr>
+<td style="text-align: center;">21</td><td style="text-align: center;">0.3583679495</td><td style="text-align: center;">0.9335804265</td><td style="text-align: center;">0.383864035</td>
+</tr>
+<tr>
+<td style="text-align: center;">22</td><td style="text-align: center;">0.3746065934</td><td style="text-align: center;">0.9271838546</td><td style="text-align: center;">0.4040262258</td>
+</tr>
+<tr>
+<td style="text-align: center;">23</td><td style="text-align: center;">0.3907311285</td><td style="text-align: center;">0.9205048535</td><td style="text-align: center;">0.4244748162</td>
+</tr>
+<tr>
+<td style="text-align: center;">24</td><td style="text-align: center;">0.4067366431</td><td style="text-align: center;">0.9135454576</td><td style="text-align: center;">0.4452286853</td>
+</tr>
+<tr>
+<td style="text-align: center;">25</td><td style="text-align: center;">0.4226182617</td><td style="text-align: center;">0.906307787</td><td style="text-align: center;">0.4663076582</td>
+</tr>
+<tr>
+<td style="text-align: center;">26</td><td style="text-align: center;">0.4383711468</td><td style="text-align: center;">0.8987940463</td><td style="text-align: center;">0.4877325886</td>
+</tr>
+<tr>
+<td style="text-align: center;">27</td><td style="text-align: center;">0.4539904997</td><td style="text-align: center;">0.8910065242</td><td style="text-align: center;">0.5095254495</td>
+</tr>
+<tr>
+<td style="text-align: center;">28</td><td style="text-align: center;">0.4694715628</td><td style="text-align: center;">0.8829475929</td><td style="text-align: center;">0.5317094317</td>
+</tr>
+<tr>
+<td style="text-align: center;">29</td><td style="text-align: center;">0.4848096202</td><td style="text-align: center;">0.8746197071</td><td style="text-align: center;">0.5543090515</td>
+</tr>
+<tr>
+<td style="text-align: center;">30</td><td style="text-align: center;">0.5</td><td style="text-align: center;">0.8660254038</td><td style="text-align: center;">0.5773502692</td>
+</tr>
+<tr>
+<td style="text-align: center;">31</td><td style="text-align: center;">0.5150380749</td><td style="text-align: center;">0.8571673007</td><td style="text-align: center;">0.600860619</td>
+</tr>
+<tr>
+<td style="text-align: center;">32</td><td style="text-align: center;">0.5299192642</td><td style="text-align: center;">0.8480480962</td><td style="text-align: center;">0.6248693519</td>
+</tr>
+<tr>
+<td style="text-align: center;">33</td><td style="text-align: center;">0.544639035</td><td style="text-align: center;">0.8386705679</td><td style="text-align: center;">0.6494075932</td>
+</tr>
+<tr>
+<td style="text-align: center;">34</td><td style="text-align: center;">0.5591929035</td><td style="text-align: center;">0.8290375726</td><td style="text-align: center;">0.6745085168</td>
+</tr>
+<tr>
+<td style="text-align: center;">35</td><td style="text-align: center;">0.5735764364</td><td style="text-align: center;">0.8191520443</td><td style="text-align: center;">0.7002075382</td>
+</tr>
+<tr>
+<td style="text-align: center;">36</td><td style="text-align: center;">0.5877852523</td><td style="text-align: center;">0.8090169944</td><td style="text-align: center;">0.726542528</td>
+</tr>
+<tr>
+<td style="text-align: center;">37</td><td style="text-align: center;">0.6018150232</td><td style="text-align: center;">0.79863551</td><td style="text-align: center;">0.7535540501</td>
+</tr>
+<tr>
+<td style="text-align: center;">38</td><td style="text-align: center;">0.6156614753</td><td style="text-align: center;">0.7880107536</td><td style="text-align: center;">0.7812856265</td>
+</tr>
+<tr>
+<td style="text-align: center;">39</td><td style="text-align: center;">0.629320391</td><td style="text-align: center;">0.7771459615</td><td style="text-align: center;">0.8097840332</td>
+</tr>
+<tr>
+<td style="text-align: center;">40</td><td style="text-align: center;">0.6427876097</td><td style="text-align: center;">0.7660444431</td><td style="text-align: center;">0.8390996312</td>
+</tr>
+<tr>
+<td style="text-align: center;">41</td><td style="text-align: center;">0.656059029</td><td style="text-align: center;">0.7547095802</td><td style="text-align: center;">0.8692867378</td>
+</tr>
+<tr>
+<td style="text-align: center;">42</td><td style="text-align: center;">0.6691306064</td><td style="text-align: center;">0.7431448255</td><td style="text-align: center;">0.9004040443</td>
+</tr>
+<tr>
+<td style="text-align: center;">43</td><td style="text-align: center;">0.6819983601</td><td style="text-align: center;">0.7313537016</td><td style="text-align: center;">0.9325150861</td>
+</tr>
+<tr>
+<td style="text-align: center;">44</td><td style="text-align: center;">0.6946583705</td><td style="text-align: center;">0.7193398003</td><td style="text-align: center;">0.9656887748</td>
+</tr>
+<tr>
+<td style="text-align: center;">45</td><td style="text-align: center;">0.7071067812</td><td style="text-align: center;">0.7071067812</td><td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">46</td><td style="text-align: center;">0.7193398003</td><td style="text-align: center;">0.6946583705</td><td style="text-align: center;">1.0355303138</td>
+</tr>
+<tr>
+<td style="text-align: center;">47</td><td style="text-align: center;">0.7313537016</td><td style="text-align: center;">0.6819983601</td><td style="text-align: center;">1.07236871</td>
+</tr>
+<tr>
+<td style="text-align: center;">48</td><td style="text-align: center;">0.7431448255</td><td style="text-align: center;">0.6691306064</td><td style="text-align: center;">1.1106125148</td>
+</tr>
+<tr>
+<td style="text-align: center;">49</td><td style="text-align: center;">0.7547095802</td><td style="text-align: center;">0.656059029</td><td style="text-align: center;">1.1503684072</td>
+</tr>
+<tr>
+<td style="text-align: center;">50</td><td style="text-align: center;">0.7660444431</td><td style="text-align: center;">0.6427876097</td><td style="text-align: center;">1.1917535926</td>
+</tr>
+<tr>
+<td style="text-align: center;">51</td><td style="text-align: center;">0.7771459615</td><td style="text-align: center;">0.629320391</td><td style="text-align: center;">1.2348971565</td>
+</tr>
+<tr>
+<td style="text-align: center;">52</td><td style="text-align: center;">0.7880107536</td><td style="text-align: center;">0.6156614753</td><td style="text-align: center;">1.2799416322</td>
+</tr>
+<tr>
+<td style="text-align: center;">53</td><td style="text-align: center;">0.79863551</td><td style="text-align: center;">0.6018150232</td><td style="text-align: center;">1.3270448216</td>
+</tr>
+<tr>
+<td style="text-align: center;">54</td><td style="text-align: center;">0.8090169944</td><td style="text-align: center;">0.5877852523</td><td style="text-align: center;">1.3763819205</td>
+</tr>
+<tr>
+<td style="text-align: center;">55</td><td style="text-align: center;">0.8191520443</td><td style="text-align: center;">0.5735764364</td><td style="text-align: center;">1.4281480067</td>
+</tr>
+<tr>
+<td style="text-align: center;">56</td><td style="text-align: center;">0.8290375726</td><td style="text-align: center;">0.5591929035</td><td style="text-align: center;">1.4825609685</td>
+</tr>
+<tr>
+<td style="text-align: center;">57</td><td style="text-align: center;">0.8386705679</td><td style="text-align: center;">0.544639035</td><td style="text-align: center;">1.5398649638</td>
+</tr>
+<tr>
+<td style="text-align: center;">58</td><td style="text-align: center;">0.8480480962</td><td style="text-align: center;">0.5299192642</td><td style="text-align: center;">1.600334529</td>
+</tr>
+<tr>
+<td style="text-align: center;">59</td><td style="text-align: center;">0.8571673007</td><td style="text-align: center;">0.5150380749</td><td style="text-align: center;">1.6642794824</td>
+</tr>
+<tr>
+<td style="text-align: center;">60</td><td style="text-align: center;">0.8660254038</td><td style="text-align: center;">0.5</td><td style="text-align: center;">1.7320508076</td>
+</tr>
+<tr>
+<td style="text-align: center;">61</td><td style="text-align: center;">0.8746197071</td><td style="text-align: center;">0.4848096202</td><td style="text-align: center;">1.8040477553</td>
+</tr>
+<tr>
+<td style="text-align: center;">62</td><td style="text-align: center;">0.8829475929</td><td style="text-align: center;">0.4694715628</td><td style="text-align: center;">1.8807264653</td>
+</tr>
+<tr>
+<td style="text-align: center;">63</td><td style="text-align: center;">0.8910065242</td><td style="text-align: center;">0.4539904997</td><td style="text-align: center;">1.9626105055</td>
+</tr>
+<tr>
+<td style="text-align: center;">64</td><td style="text-align: center;">0.8987940463</td><td style="text-align: center;">0.4383711468</td><td style="text-align: center;">2.0503038416</td>
+</tr>
+<tr>
+<td style="text-align: center;">65</td><td style="text-align: center;">0.906307787</td><td style="text-align: center;">0.4226182617</td><td style="text-align: center;">2.1445069205</td>
+</tr>
+<tr>
+<td style="text-align: center;">66</td><td style="text-align: center;">0.9135454576</td><td style="text-align: center;">0.4067366431</td><td style="text-align: center;">2.2460367739</td>
+</tr>
+<tr>
+<td style="text-align: center;">67</td><td style="text-align: center;">0.9205048535</td><td style="text-align: center;">0.3907311285</td><td style="text-align: center;">2.3558523658</td>
+</tr>
+<tr>
+<td style="text-align: center;">68</td><td style="text-align: center;">0.9271838546</td><td style="text-align: center;">0.3746065934</td><td style="text-align: center;">2.4750868534</td>
+</tr>
+<tr>
+<td style="text-align: center;">69</td><td style="text-align: center;">0.9335804265</td><td style="text-align: center;">0.3583679495</td><td style="text-align: center;">2.6050890647</td>
+</tr>
+<tr>
+<td style="text-align: center;">70</td><td style="text-align: center;">0.9396926208</td><td style="text-align: center;">0.3420201433</td><td style="text-align: center;">2.7474774195</td>
+</tr>
+<tr>
+<td style="text-align: center;">71</td><td style="text-align: center;">0.9455185756</td><td style="text-align: center;">0.3255681545</td><td style="text-align: center;">2.9042108777</td>
+</tr>
+<tr>
+<td style="text-align: center;">72</td><td style="text-align: center;">0.9510565163</td><td style="text-align: center;">0.3090169944</td><td style="text-align: center;">3.0776835372</td>
+</tr>
+<tr>
+<td style="text-align: center;">73</td><td style="text-align: center;">0.956304756</td><td style="text-align: center;">0.2923717047</td><td style="text-align: center;">3.2708526185</td>
+</tr>
+<tr>
+<td style="text-align: center;">74</td><td style="text-align: center;">0.9612616959</td><td style="text-align: center;">0.2756373558</td><td style="text-align: center;">3.4874144438</td>
+</tr>
+<tr>
+<td style="text-align: center;">75</td><td style="text-align: center;">0.9659258263</td><td style="text-align: center;">0.2588190451</td><td style="text-align: center;">3.7320508076</td>
+</tr>
+<tr>
+<td style="text-align: center;">76</td><td style="text-align: center;">0.9702957263</td><td style="text-align: center;">0.2419218956</td><td style="text-align: center;">4.0107809335</td>
+</tr>
+<tr>
+<td style="text-align: center;">77</td><td style="text-align: center;">0.9743700648</td><td style="text-align: center;">0.2249510543</td><td style="text-align: center;">4.3314758743</td>
+</tr>
+<tr>
+<td style="text-align: center;">78</td><td style="text-align: center;">0.9781476007</td><td style="text-align: center;">0.2079116908</td><td style="text-align: center;">4.7046301095</td>
+</tr>
+<tr>
+<td style="text-align: center;">79</td><td style="text-align: center;">0.9816271834</td><td style="text-align: center;">0.1908089954</td><td style="text-align: center;">5.144554016</td>
+</tr>
+<tr>
+<td style="text-align: center;">80</td><td style="text-align: center;">0.984807753</td><td style="text-align: center;">0.1736481777</td><td style="text-align: center;">5.6712818196</td>
+</tr>
+<tr>
+<td style="text-align: center;">81</td><td style="text-align: center;">0.9876883406</td><td style="text-align: center;">0.156434465</td><td style="text-align: center;">6.3137515147</td>
+</tr>
+<tr>
+<td style="text-align: center;">82</td><td style="text-align: center;">0.9902680687</td><td style="text-align: center;">0.139173101</td><td style="text-align: center;">7.1153697224</td>
+</tr>
+<tr>
+<td style="text-align: center;">83</td><td style="text-align: center;">0.9925461516</td><td style="text-align: center;">0.1218693434</td><td style="text-align: center;">8.144346428</td>
+</tr>
+<tr>
+<td style="text-align: center;">84</td><td style="text-align: center;">0.9945218954</td><td style="text-align: center;">0.1045284633</td><td style="text-align: center;">9.5143644542</td>
+</tr>
+<tr>
+<td style="text-align: center;">85</td><td style="text-align: center;">0.9961946981</td><td style="text-align: center;">0.0871557427</td><td style="text-align: center;">11.4300523028</td>
+</tr>
+<tr>
+<td style="text-align: center;">86</td><td style="text-align: center;">0.9975640503</td><td style="text-align: center;">0.0697564737</td><td style="text-align: center;">14.3006662567</td>
+</tr>
+<tr>
+<td style="text-align: center;">87</td><td style="text-align: center;">0.9986295348</td><td style="text-align: center;">0.0523359562</td><td style="text-align: center;">19.0811366877</td>
+</tr>
+<tr>
+<td style="text-align: center;">88</td><td style="text-align: center;">0.999390827</td><td style="text-align: center;">0.0348994967</td><td style="text-align: center;">28.6362532829</td>
+</tr>
+<tr>
+<td style="text-align: center;">89</td><td style="text-align: center;">0.9998476952</td><td style="text-align: center;">0.0174524064</td><td style="text-align: center;">57.2899616308</td>
+</tr>
+<tr>
+<td style="text-align: center;">90</td><td style="text-align: center;">1</td><td style="text-align: center;">0</td><td style="text-align: center;">16331239353195370</td>
+</tr>
+<tr>
+<td style="text-align: center;">91</td><td style="text-align: center;">0.9998476952</td><td style="text-align: center;">-0.0174524064</td><td style="text-align: center;">-57.2899616308</td>
+</tr>
+<tr>
+<td style="text-align: center;">92</td><td style="text-align: center;">0.999390827</td><td style="text-align: center;">-0.0348994967</td><td style="text-align: center;">-28.6362532829</td>
+</tr>
+<tr>
+<td style="text-align: center;">93</td><td style="text-align: center;">0.9986295348</td><td style="text-align: center;">-0.0523359562</td><td style="text-align: center;">-19.0811366877</td>
+</tr>
+<tr>
+<td style="text-align: center;">94</td><td style="text-align: center;">0.9975640503</td><td style="text-align: center;">-0.0697564737</td><td style="text-align: center;">-14.3006662567</td>
+</tr>
+<tr>
+<td style="text-align: center;">95</td><td style="text-align: center;">0.9961946981</td><td style="text-align: center;">-0.0871557427</td><td style="text-align: center;">-11.4300523028</td>
+</tr>
+<tr>
+<td style="text-align: center;">96</td><td style="text-align: center;">0.9945218954</td><td style="text-align: center;">-0.1045284633</td><td style="text-align: center;">-9.5143644542</td>
+</tr>
+<tr>
+<td style="text-align: center;">97</td><td style="text-align: center;">0.9925461516</td><td style="text-align: center;">-0.1218693434</td><td style="text-align: center;">-8.144346428</td>
+</tr>
+<tr>
+<td style="text-align: center;">98</td><td style="text-align: center;">0.9902680687</td><td style="text-align: center;">-0.139173101</td><td style="text-align: center;">-7.1153697224</td>
+</tr>
+<tr>
+<td style="text-align: center;">99</td><td style="text-align: center;">0.9876883406</td><td style="text-align: center;">-0.156434465</td><td style="text-align: center;">-6.3137515147</td>
+</tr>
+<tr>
+<td style="text-align: center;">100</td><td style="text-align: center;">0.984807753</td><td style="text-align: center;">-0.1736481777</td><td style="text-align: center;">-5.6712818196</td>
+</tr>
+<tr>
+<td style="text-align: center;">101</td><td style="text-align: center;">0.9816271834</td><td style="text-align: center;">-0.1908089954</td><td style="text-align: center;">-5.144554016</td>
+</tr>
+<tr>
+<td style="text-align: center;">102</td><td style="text-align: center;">0.9781476007</td><td style="text-align: center;">-0.2079116908</td><td style="text-align: center;">-4.7046301095</td>
+</tr>
+<tr>
+<td style="text-align: center;">103</td><td style="text-align: center;">0.9743700648</td><td style="text-align: center;">-0.2249510543</td><td style="text-align: center;">-4.3314758743</td>
+</tr>
+<tr>
+<td style="text-align: center;">104</td><td style="text-align: center;">0.9702957263</td><td style="text-align: center;">-0.2419218956</td><td style="text-align: center;">-4.0107809335</td>
+</tr>
+<tr>
+<td style="text-align: center;">105</td><td style="text-align: center;">0.9659258263</td><td style="text-align: center;">-0.2588190451</td><td style="text-align: center;">-3.7320508076</td>
+</tr>
+<tr>
+<td style="text-align: center;">106</td><td style="text-align: center;">0.9612616959</td><td style="text-align: center;">-0.2756373558</td><td style="text-align: center;">-3.4874144438</td>
+</tr>
+<tr>
+<td style="text-align: center;">107</td><td style="text-align: center;">0.956304756</td><td style="text-align: center;">-0.2923717047</td><td style="text-align: center;">-3.2708526185</td>
+</tr>
+<tr>
+<td style="text-align: center;">108</td><td style="text-align: center;">0.9510565163</td><td style="text-align: center;">-0.3090169944</td><td style="text-align: center;">-3.0776835372</td>
+</tr>
+<tr>
+<td style="text-align: center;">109</td><td style="text-align: center;">0.9455185756</td><td style="text-align: center;">-0.3255681545</td><td style="text-align: center;">-2.9042108777</td>
+</tr>
+<tr>
+<td style="text-align: center;">110</td><td style="text-align: center;">0.9396926208</td><td style="text-align: center;">-0.3420201433</td><td style="text-align: center;">-2.7474774195</td>
+</tr>
+<tr>
+<td style="text-align: center;">111</td><td style="text-align: center;">0.9335804265</td><td style="text-align: center;">-0.3583679495</td><td style="text-align: center;">-2.6050890647</td>
+</tr>
+<tr>
+<td style="text-align: center;">112</td><td style="text-align: center;">0.9271838546</td><td style="text-align: center;">-0.3746065934</td><td style="text-align: center;">-2.4750868534</td>
+</tr>
+<tr>
+<td style="text-align: center;">113</td><td style="text-align: center;">0.9205048535</td><td style="text-align: center;">-0.3907311285</td><td style="text-align: center;">-2.3558523658</td>
+</tr>
+<tr>
+<td style="text-align: center;">114</td><td style="text-align: center;">0.9135454576</td><td style="text-align: center;">-0.4067366431</td><td style="text-align: center;">-2.2460367739</td>
+</tr>
+<tr>
+<td style="text-align: center;">115</td><td style="text-align: center;">0.906307787</td><td style="text-align: center;">-0.4226182617</td><td style="text-align: center;">-2.1445069205</td>
+</tr>
+<tr>
+<td style="text-align: center;">116</td><td style="text-align: center;">0.8987940463</td><td style="text-align: center;">-0.4383711468</td><td style="text-align: center;">-2.0503038416</td>
+</tr>
+<tr>
+<td style="text-align: center;">117</td><td style="text-align: center;">0.8910065242</td><td style="text-align: center;">-0.4539904997</td><td style="text-align: center;">-1.9626105055</td>
+</tr>
+<tr>
+<td style="text-align: center;">118</td><td style="text-align: center;">0.8829475929</td><td style="text-align: center;">-0.4694715628</td><td style="text-align: center;">-1.8807264653</td>
+</tr>
+<tr>
+<td style="text-align: center;">119</td><td style="text-align: center;">0.8746197071</td><td style="text-align: center;">-0.4848096202</td><td style="text-align: center;">-1.8040477553</td>
+</tr>
+<tr>
+<td style="text-align: center;">120</td><td style="text-align: center;">0.8660254038</td><td style="text-align: center;">-0.5</td><td style="text-align: center;">-1.7320508076</td>
+</tr>
+<tr>
+<td style="text-align: center;">121</td><td style="text-align: center;">0.8571673007</td><td style="text-align: center;">-0.5150380749</td><td style="text-align: center;">-1.6642794824</td>
+</tr>
+<tr>
+<td style="text-align: center;">122</td><td style="text-align: center;">0.8480480962</td><td style="text-align: center;">-0.5299192642</td><td style="text-align: center;">-1.600334529</td>
+</tr>
+<tr>
+<td style="text-align: center;">123</td><td style="text-align: center;">0.8386705679</td><td style="text-align: center;">-0.544639035</td><td style="text-align: center;">-1.5398649638</td>
+</tr>
+<tr>
+<td style="text-align: center;">124</td><td style="text-align: center;">0.8290375726</td><td style="text-align: center;">-0.5591929035</td><td style="text-align: center;">-1.4825609685</td>
+</tr>
+<tr>
+<td style="text-align: center;">125</td><td style="text-align: center;">0.8191520443</td><td style="text-align: center;">-0.5735764364</td><td style="text-align: center;">-1.4281480067</td>
+</tr>
+<tr>
+<td style="text-align: center;">126</td><td style="text-align: center;">0.8090169944</td><td style="text-align: center;">-0.5877852523</td><td style="text-align: center;">-1.3763819205</td>
+</tr>
+<tr>
+<td style="text-align: center;">127</td><td style="text-align: center;">0.79863551</td><td style="text-align: center;">-0.6018150232</td><td style="text-align: center;">-1.3270448216</td>
+</tr>
+<tr>
+<td style="text-align: center;">128</td><td style="text-align: center;">0.7880107536</td><td style="text-align: center;">-0.6156614753</td><td style="text-align: center;">-1.2799416322</td>
+</tr>
+<tr>
+<td style="text-align: center;">129</td><td style="text-align: center;">0.7771459615</td><td style="text-align: center;">-0.629320391</td><td style="text-align: center;">-1.2348971565</td>
+</tr>
+<tr>
+<td style="text-align: center;">130</td><td style="text-align: center;">0.7660444431</td><td style="text-align: center;">-0.6427876097</td><td style="text-align: center;">-1.1917535926</td>
+</tr>
+<tr>
+<td style="text-align: center;">131</td><td style="text-align: center;">0.7547095802</td><td style="text-align: center;">-0.656059029</td><td style="text-align: center;">-1.1503684072</td>
+</tr>
+<tr>
+<td style="text-align: center;">132</td><td style="text-align: center;">0.7431448255</td><td style="text-align: center;">-0.6691306064</td><td style="text-align: center;">-1.1106125148</td>
+</tr>
+<tr>
+<td style="text-align: center;">133</td><td style="text-align: center;">0.7313537016</td><td style="text-align: center;">-0.6819983601</td><td style="text-align: center;">-1.07236871</td>
+</tr>
+<tr>
+<td style="text-align: center;">134</td><td style="text-align: center;">0.7193398003</td><td style="text-align: center;">-0.6946583705</td><td style="text-align: center;">-1.0355303138</td>
+</tr>
+<tr>
+<td style="text-align: center;">135</td><td style="text-align: center;">0.7071067812</td><td style="text-align: center;">-0.7071067812</td><td style="text-align: center;">-1</td>
+</tr>
+<tr>
+<td style="text-align: center;">136</td><td style="text-align: center;">0.6946583705</td><td style="text-align: center;">-0.7193398003</td><td style="text-align: center;">-0.9656887748</td>
+</tr>
+<tr>
+<td style="text-align: center;">137</td><td style="text-align: center;">0.6819983601</td><td style="text-align: center;">-0.7313537016</td><td style="text-align: center;">-0.9325150861</td>
+</tr>
+<tr>
+<td style="text-align: center;">138</td><td style="text-align: center;">0.6691306064</td><td style="text-align: center;">-0.7431448255</td><td style="text-align: center;">-0.9004040443</td>
+</tr>
+<tr>
+<td style="text-align: center;">139</td><td style="text-align: center;">0.656059029</td><td style="text-align: center;">-0.7547095802</td><td style="text-align: center;">-0.8692867378</td>
+</tr>
+<tr>
+<td style="text-align: center;">140</td><td style="text-align: center;">0.6427876097</td><td style="text-align: center;">-0.7660444431</td><td style="text-align: center;">-0.8390996312</td>
+</tr>
+<tr>
+<td style="text-align: center;">141</td><td style="text-align: center;">0.629320391</td><td style="text-align: center;">-0.7771459615</td><td style="text-align: center;">-0.8097840332</td>
+</tr>
+<tr>
+<td style="text-align: center;">142</td><td style="text-align: center;">0.6156614753</td><td style="text-align: center;">-0.7880107536</td><td style="text-align: center;">-0.7812856265</td>
+</tr>
+<tr>
+<td style="text-align: center;">143</td><td style="text-align: center;">0.6018150232</td><td style="text-align: center;">-0.79863551</td><td style="text-align: center;">-0.7535540501</td>
+</tr>
+<tr>
+<td style="text-align: center;">144</td><td style="text-align: center;">0.5877852523</td><td style="text-align: center;">-0.8090169944</td><td style="text-align: center;">-0.726542528</td>
+</tr>
+<tr>
+<td style="text-align: center;">145</td><td style="text-align: center;">0.5735764364</td><td style="text-align: center;">-0.8191520443</td><td style="text-align: center;">-0.7002075382</td>
+</tr>
+<tr>
+<td style="text-align: center;">146</td><td style="text-align: center;">0.5591929035</td><td style="text-align: center;">-0.8290375726</td><td style="text-align: center;">-0.6745085168</td>
+</tr>
+<tr>
+<td style="text-align: center;">147</td><td style="text-align: center;">0.544639035</td><td style="text-align: center;">-0.8386705679</td><td style="text-align: center;">-0.6494075932</td>
+</tr>
+<tr>
+<td style="text-align: center;">148</td><td style="text-align: center;">0.5299192642</td><td style="text-align: center;">-0.8480480962</td><td style="text-align: center;">-0.6248693519</td>
+</tr>
+<tr>
+<td style="text-align: center;">149</td><td style="text-align: center;">0.5150380749</td><td style="text-align: center;">-0.8571673007</td><td style="text-align: center;">-0.600860619</td>
+</tr>
+<tr>
+<td style="text-align: center;">150</td><td style="text-align: center;">0.5</td><td style="text-align: center;">-0.8660254038</td><td style="text-align: center;">-0.5773502692</td>
+</tr>
+<tr>
+<td style="text-align: center;">151</td><td style="text-align: center;">0.4848096202</td><td style="text-align: center;">-0.8746197071</td><td style="text-align: center;">-0.5543090515</td>
+</tr>
+<tr>
+<td style="text-align: center;">152</td><td style="text-align: center;">0.4694715628</td><td style="text-align: center;">-0.8829475929</td><td style="text-align: center;">-0.5317094317</td>
+</tr>
+<tr>
+<td style="text-align: center;">153</td><td style="text-align: center;">0.4539904997</td><td style="text-align: center;">-0.8910065242</td><td style="text-align: center;">-0.5095254495</td>
+</tr>
+<tr>
+<td style="text-align: center;">154</td><td style="text-align: center;">0.4383711468</td><td style="text-align: center;">-0.8987940463</td><td style="text-align: center;">-0.4877325886</td>
+</tr>
+<tr>
+<td style="text-align: center;">155</td><td style="text-align: center;">0.4226182617</td><td style="text-align: center;">-0.906307787</td><td style="text-align: center;">-0.4663076582</td>
+</tr>
+<tr>
+<td style="text-align: center;">156</td><td style="text-align: center;">0.4067366431</td><td style="text-align: center;">-0.9135454576</td><td style="text-align: center;">-0.4452286853</td>
+</tr>
+<tr>
+<td style="text-align: center;">157</td><td style="text-align: center;">0.3907311285</td><td style="text-align: center;">-0.9205048535</td><td style="text-align: center;">-0.4244748162</td>
+</tr>
+<tr>
+<td style="text-align: center;">158</td><td style="text-align: center;">0.3746065934</td><td style="text-align: center;">-0.9271838546</td><td style="text-align: center;">-0.4040262258</td>
+</tr>
+<tr>
+<td style="text-align: center;">159</td><td style="text-align: center;">0.3583679495</td><td style="text-align: center;">-0.9335804265</td><td style="text-align: center;">-0.383864035</td>
+</tr>
+<tr>
+<td style="text-align: center;">160</td><td style="text-align: center;">0.3420201433</td><td style="text-align: center;">-0.9396926208</td><td style="text-align: center;">-0.3639702343</td>
+</tr>
+<tr>
+<td style="text-align: center;">161</td><td style="text-align: center;">0.3255681545</td><td style="text-align: center;">-0.9455185756</td><td style="text-align: center;">-0.3443276133</td>
+</tr>
+<tr>
+<td style="text-align: center;">162</td><td style="text-align: center;">0.3090169944</td><td style="text-align: center;">-0.9510565163</td><td style="text-align: center;">-0.3249196962</td>
+</tr>
+<tr>
+<td style="text-align: center;">163</td><td style="text-align: center;">0.2923717047</td><td style="text-align: center;">-0.956304756</td><td style="text-align: center;">-0.3057306815</td>
+</tr>
+<tr>
+<td style="text-align: center;">164</td><td style="text-align: center;">0.2756373558</td><td style="text-align: center;">-0.9612616959</td><td style="text-align: center;">-0.2867453858</td>
+</tr>
+<tr>
+<td style="text-align: center;">165</td><td style="text-align: center;">0.2588190451</td><td style="text-align: center;">-0.9659258263</td><td style="text-align: center;">-0.2679491924</td>
+</tr>
+<tr>
+<td style="text-align: center;">166</td><td style="text-align: center;">0.2419218956</td><td style="text-align: center;">-0.9702957263</td><td style="text-align: center;">-0.2493280028</td>
+</tr>
+<tr>
+<td style="text-align: center;">167</td><td style="text-align: center;">0.2249510543</td><td style="text-align: center;">-0.9743700648</td><td style="text-align: center;">-0.2308681911</td>
+</tr>
+<tr>
+<td style="text-align: center;">168</td><td style="text-align: center;">0.2079116908</td><td style="text-align: center;">-0.9781476007</td><td style="text-align: center;">-0.2125565617</td>
+</tr>
+<tr>
+<td style="text-align: center;">169</td><td style="text-align: center;">0.1908089954</td><td style="text-align: center;">-0.9816271834</td><td style="text-align: center;">-0.1943803091</td>
+</tr>
+<tr>
+<td style="text-align: center;">170</td><td style="text-align: center;">0.1736481777</td><td style="text-align: center;">-0.984807753</td><td style="text-align: center;">-0.1763269807</td>
+</tr>
+<tr>
+<td style="text-align: center;">171</td><td style="text-align: center;">0.156434465</td><td style="text-align: center;">-0.9876883406</td><td style="text-align: center;">-0.1583844403</td>
+</tr>
+<tr>
+<td style="text-align: center;">172</td><td style="text-align: center;">0.139173101</td><td style="text-align: center;">-0.9902680687</td><td style="text-align: center;">-0.1405408347</td>
+</tr>
+<tr>
+<td style="text-align: center;">173</td><td style="text-align: center;">0.1218693434</td><td style="text-align: center;">-0.9925461516</td><td style="text-align: center;">-0.1227845609</td>
+</tr>
+<tr>
+<td style="text-align: center;">174</td><td style="text-align: center;">0.1045284633</td><td style="text-align: center;">-0.9945218954</td><td style="text-align: center;">-0.1051042353</td>
+</tr>
+<tr>
+<td style="text-align: center;">175</td><td style="text-align: center;">0.0871557427</td><td style="text-align: center;">-0.9961946981</td><td style="text-align: center;">-0.0874886635</td>
+</tr>
+<tr>
+<td style="text-align: center;">176</td><td style="text-align: center;">0.0697564737</td><td style="text-align: center;">-0.9975640503</td><td style="text-align: center;">-0.0699268119</td>
+</tr>
+<tr>
+<td style="text-align: center;">177</td><td style="text-align: center;">0.0523359562</td><td style="text-align: center;">-0.9986295348</td><td style="text-align: center;">-0.0524077793</td>
+</tr>
+<tr>
+<td style="text-align: center;">178</td><td style="text-align: center;">0.0348994967</td><td style="text-align: center;">-0.999390827</td><td style="text-align: center;">-0.0349207695</td>
+</tr>
+<tr>
+<td style="text-align: center;">179</td><td style="text-align: center;">0.0174524064</td><td style="text-align: center;">-0.9998476952</td><td style="text-align: center;">-0.0174550649</td>
+</tr>
+<tr>
+<td style="text-align: center;">180</td><td style="text-align: center;">0</td><td style="text-align: center;">-1</td><td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">181</td><td style="text-align: center;">-0.0174524064</td><td style="text-align: center;">-0.9998476952</td><td style="text-align: center;">0.0174550649</td>
+</tr>
+<tr>
+<td style="text-align: center;">182</td><td style="text-align: center;">-0.0348994967</td><td style="text-align: center;">-0.999390827</td><td style="text-align: center;">0.0349207695</td>
+</tr>
+<tr>
+<td style="text-align: center;">183</td><td style="text-align: center;">-0.0523359562</td><td style="text-align: center;">-0.9986295348</td><td style="text-align: center;">0.0524077793</td>
+</tr>
+<tr>
+<td style="text-align: center;">184</td><td style="text-align: center;">-0.0697564737</td><td style="text-align: center;">-0.9975640503</td><td style="text-align: center;">0.0699268119</td>
+</tr>
+<tr>
+<td style="text-align: center;">185</td><td style="text-align: center;">-0.0871557427</td><td style="text-align: center;">-0.9961946981</td><td style="text-align: center;">0.0874886635</td>
+</tr>
+<tr>
+<td style="text-align: center;">186</td><td style="text-align: center;">-0.1045284633</td><td style="text-align: center;">-0.9945218954</td><td style="text-align: center;">0.1051042353</td>
+</tr>
+<tr>
+<td style="text-align: center;">187</td><td style="text-align: center;">-0.1218693434</td><td style="text-align: center;">-0.9925461516</td><td style="text-align: center;">0.1227845609</td>
+</tr>
+<tr>
+<td style="text-align: center;">188</td><td style="text-align: center;">-0.139173101</td><td style="text-align: center;">-0.9902680687</td><td style="text-align: center;">0.1405408347</td>
+</tr>
+<tr>
+<td style="text-align: center;">189</td><td style="text-align: center;">-0.156434465</td><td style="text-align: center;">-0.9876883406</td><td style="text-align: center;">0.1583844403</td>
+</tr>
+<tr>
+<td style="text-align: center;">190</td><td style="text-align: center;">-0.1736481777</td><td style="text-align: center;">-0.984807753</td><td style="text-align: center;">0.1763269807</td>
+</tr>
+<tr>
+<td style="text-align: center;">191</td><td style="text-align: center;">-0.1908089954</td><td style="text-align: center;">-0.9816271834</td><td style="text-align: center;">0.1943803091</td>
+</tr>
+<tr>
+<td style="text-align: center;">192</td><td style="text-align: center;">-0.2079116908</td><td style="text-align: center;">-0.9781476007</td><td style="text-align: center;">0.2125565617</td>
+</tr>
+<tr>
+<td style="text-align: center;">193</td><td style="text-align: center;">-0.2249510543</td><td style="text-align: center;">-0.9743700648</td><td style="text-align: center;">0.2308681911</td>
+</tr>
+<tr>
+<td style="text-align: center;">194</td><td style="text-align: center;">-0.2419218956</td><td style="text-align: center;">-0.9702957263</td><td style="text-align: center;">0.2493280028</td>
+</tr>
+<tr>
+<td style="text-align: center;">195</td><td style="text-align: center;">-0.2588190451</td><td style="text-align: center;">-0.9659258263</td><td style="text-align: center;">0.2679491924</td>
+</tr>
+<tr>
+<td style="text-align: center;">196</td><td style="text-align: center;">-0.2756373558</td><td style="text-align: center;">-0.9612616959</td><td style="text-align: center;">0.2867453858</td>
+</tr>
+<tr>
+<td style="text-align: center;">197</td><td style="text-align: center;">-0.2923717047</td><td style="text-align: center;">-0.956304756</td><td style="text-align: center;">0.3057306815</td>
+</tr>
+<tr>
+<td style="text-align: center;">198</td><td style="text-align: center;">-0.3090169944</td><td style="text-align: center;">-0.9510565163</td><td style="text-align: center;">0.3249196962</td>
+</tr>
+<tr>
+<td style="text-align: center;">199</td><td style="text-align: center;">-0.3255681545</td><td style="text-align: center;">-0.9455185756</td><td style="text-align: center;">0.3443276133</td>
+</tr>
+<tr>
+<td style="text-align: center;">200</td><td style="text-align: center;">-0.3420201433</td><td style="text-align: center;">-0.9396926208</td><td style="text-align: center;">0.3639702343</td>
+</tr>
+<tr>
+<td style="text-align: center;">201</td><td style="text-align: center;">-0.3583679495</td><td style="text-align: center;">-0.9335804265</td><td style="text-align: center;">0.383864035</td>
+</tr>
+<tr>
+<td style="text-align: center;">202</td><td style="text-align: center;">-0.3746065934</td><td style="text-align: center;">-0.9271838546</td><td style="text-align: center;">0.4040262258</td>
+</tr>
+<tr>
+<td style="text-align: center;">203</td><td style="text-align: center;">-0.3907311285</td><td style="text-align: center;">-0.9205048535</td><td style="text-align: center;">0.4244748162</td>
+</tr>
+<tr>
+<td style="text-align: center;">204</td><td style="text-align: center;">-0.4067366431</td><td style="text-align: center;">-0.9135454576</td><td style="text-align: center;">0.4452286853</td>
+</tr>
+<tr>
+<td style="text-align: center;">205</td><td style="text-align: center;">-0.4226182617</td><td style="text-align: center;">-0.906307787</td><td style="text-align: center;">0.4663076582</td>
+</tr>
+<tr>
+<td style="text-align: center;">206</td><td style="text-align: center;">-0.4383711468</td><td style="text-align: center;">-0.8987940463</td><td style="text-align: center;">0.4877325886</td>
+</tr>
+<tr>
+<td style="text-align: center;">207</td><td style="text-align: center;">-0.4539904997</td><td style="text-align: center;">-0.8910065242</td><td style="text-align: center;">0.5095254495</td>
+</tr>
+<tr>
+<td style="text-align: center;">208</td><td style="text-align: center;">-0.4694715628</td><td style="text-align: center;">-0.8829475929</td><td style="text-align: center;">0.5317094317</td>
+</tr>
+<tr>
+<td style="text-align: center;">209</td><td style="text-align: center;">-0.4848096202</td><td style="text-align: center;">-0.8746197071</td><td style="text-align: center;">0.5543090515</td>
+</tr>
+<tr>
+<td style="text-align: center;">210</td><td style="text-align: center;">-0.5</td><td style="text-align: center;">-0.8660254038</td><td style="text-align: center;">0.5773502692</td>
+</tr>
+<tr>
+<td style="text-align: center;">211</td><td style="text-align: center;">-0.5150380749</td><td style="text-align: center;">-0.8571673007</td><td style="text-align: center;">0.600860619</td>
+</tr>
+<tr>
+<td style="text-align: center;">212</td><td style="text-align: center;">-0.5299192642</td><td style="text-align: center;">-0.8480480962</td><td style="text-align: center;">0.6248693519</td>
+</tr>
+<tr>
+<td style="text-align: center;">213</td><td style="text-align: center;">-0.544639035</td><td style="text-align: center;">-0.8386705679</td><td style="text-align: center;">0.6494075932</td>
+</tr>
+<tr>
+<td style="text-align: center;">214</td><td style="text-align: center;">-0.5591929035</td><td style="text-align: center;">-0.8290375726</td><td style="text-align: center;">0.6745085168</td>
+</tr>
+<tr>
+<td style="text-align: center;">215</td><td style="text-align: center;">-0.5735764364</td><td style="text-align: center;">-0.8191520443</td><td style="text-align: center;">0.7002075382</td>
+</tr>
+<tr>
+<td style="text-align: center;">216</td><td style="text-align: center;">-0.5877852523</td><td style="text-align: center;">-0.8090169944</td><td style="text-align: center;">0.726542528</td>
+</tr>
+<tr>
+<td style="text-align: center;">217</td><td style="text-align: center;">-0.6018150232</td><td style="text-align: center;">-0.79863551</td><td style="text-align: center;">0.7535540501</td>
+</tr>
+<tr>
+<td style="text-align: center;">218</td><td style="text-align: center;">-0.6156614753</td><td style="text-align: center;">-0.7880107536</td><td style="text-align: center;">0.7812856265</td>
+</tr>
+<tr>
+<td style="text-align: center;">219</td><td style="text-align: center;">-0.629320391</td><td style="text-align: center;">-0.7771459615</td><td style="text-align: center;">0.8097840332</td>
+</tr>
+<tr>
+<td style="text-align: center;">220</td><td style="text-align: center;">-0.6427876097</td><td style="text-align: center;">-0.7660444431</td><td style="text-align: center;">0.8390996312</td>
+</tr>
+<tr>
+<td style="text-align: center;">221</td><td style="text-align: center;">-0.656059029</td><td style="text-align: center;">-0.7547095802</td><td style="text-align: center;">0.8692867378</td>
+</tr>
+<tr>
+<td style="text-align: center;">222</td><td style="text-align: center;">-0.6691306064</td><td style="text-align: center;">-0.7431448255</td><td style="text-align: center;">0.9004040443</td>
+</tr>
+<tr>
+<td style="text-align: center;">223</td><td style="text-align: center;">-0.6819983601</td><td style="text-align: center;">-0.7313537016</td><td style="text-align: center;">0.9325150861</td>
+</tr>
+<tr>
+<td style="text-align: center;">224</td><td style="text-align: center;">-0.6946583705</td><td style="text-align: center;">-0.7193398003</td><td style="text-align: center;">0.9656887748</td>
+</tr>
+<tr>
+<td style="text-align: center;">225</td><td style="text-align: center;">-0.7071067812</td><td style="text-align: center;">-0.7071067812</td><td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">226</td><td style="text-align: center;">-0.7193398003</td><td style="text-align: center;">-0.6946583705</td><td style="text-align: center;">1.0355303138</td>
+</tr>
+<tr>
+<td style="text-align: center;">227</td><td style="text-align: center;">-0.7313537016</td><td style="text-align: center;">-0.6819983601</td><td style="text-align: center;">1.07236871</td>
+</tr>
+<tr>
+<td style="text-align: center;">228</td><td style="text-align: center;">-0.7431448255</td><td style="text-align: center;">-0.6691306064</td><td style="text-align: center;">1.1106125148</td>
+</tr>
+<tr>
+<td style="text-align: center;">229</td><td style="text-align: center;">-0.7547095802</td><td style="text-align: center;">-0.656059029</td><td style="text-align: center;">1.1503684072</td>
+</tr>
+<tr>
+<td style="text-align: center;">230</td><td style="text-align: center;">-0.7660444431</td><td style="text-align: center;">-0.6427876097</td><td style="text-align: center;">1.1917535926</td>
+</tr>
+<tr>
+<td style="text-align: center;">231</td><td style="text-align: center;">-0.7771459615</td><td style="text-align: center;">-0.629320391</td><td style="text-align: center;">1.2348971565</td>
+</tr>
+<tr>
+<td style="text-align: center;">232</td><td style="text-align: center;">-0.7880107536</td><td style="text-align: center;">-0.6156614753</td><td style="text-align: center;">1.2799416322</td>
+</tr>
+<tr>
+<td style="text-align: center;">233</td><td style="text-align: center;">-0.79863551</td><td style="text-align: center;">-0.6018150232</td><td style="text-align: center;">1.3270448216</td>
+</tr>
+<tr>
+<td style="text-align: center;">234</td><td style="text-align: center;">-0.8090169944</td><td style="text-align: center;">-0.5877852523</td><td style="text-align: center;">1.3763819205</td>
+</tr>
+<tr>
+<td style="text-align: center;">235</td><td style="text-align: center;">-0.8191520443</td><td style="text-align: center;">-0.5735764364</td><td style="text-align: center;">1.4281480067</td>
+</tr>
+<tr>
+<td style="text-align: center;">236</td><td style="text-align: center;">-0.8290375726</td><td style="text-align: center;">-0.5591929035</td><td style="text-align: center;">1.4825609685</td>
+</tr>
+<tr>
+<td style="text-align: center;">237</td><td style="text-align: center;">-0.8386705679</td><td style="text-align: center;">-0.544639035</td><td style="text-align: center;">1.5398649638</td>
+</tr>
+<tr>
+<td style="text-align: center;">238</td><td style="text-align: center;">-0.8480480962</td><td style="text-align: center;">-0.5299192642</td><td style="text-align: center;">1.600334529</td>
+</tr>
+<tr>
+<td style="text-align: center;">239</td><td style="text-align: center;">-0.8571673007</td><td style="text-align: center;">-0.5150380749</td><td style="text-align: center;">1.6642794824</td>
+</tr>
+<tr>
+<td style="text-align: center;">240</td><td style="text-align: center;">-0.8660254038</td><td style="text-align: center;">-0.5</td><td style="text-align: center;">1.7320508076</td>
+</tr>
+<tr>
+<td style="text-align: center;">241</td><td style="text-align: center;">-0.8746197071</td><td style="text-align: center;">-0.4848096202</td><td style="text-align: center;">1.8040477553</td>
+</tr>
+<tr>
+<td style="text-align: center;">242</td><td style="text-align: center;">-0.8829475929</td><td style="text-align: center;">-0.4694715628</td><td style="text-align: center;">1.8807264653</td>
+</tr>
+<tr>
+<td style="text-align: center;">243</td><td style="text-align: center;">-0.8910065242</td><td style="text-align: center;">-0.4539904997</td><td style="text-align: center;">1.9626105055</td>
+</tr>
+<tr>
+<td style="text-align: center;">244</td><td style="text-align: center;">-0.8987940463</td><td style="text-align: center;">-0.4383711468</td><td style="text-align: center;">2.0503038416</td>
+</tr>
+<tr>
+<td style="text-align: center;">245</td><td style="text-align: center;">-0.906307787</td><td style="text-align: center;">-0.4226182617</td><td style="text-align: center;">2.1445069205</td>
+</tr>
+<tr>
+<td style="text-align: center;">246</td><td style="text-align: center;">-0.9135454576</td><td style="text-align: center;">-0.4067366431</td><td style="text-align: center;">2.2460367739</td>
+</tr>
+<tr>
+<td style="text-align: center;">247</td><td style="text-align: center;">-0.9205048535</td><td style="text-align: center;">-0.3907311285</td><td style="text-align: center;">2.3558523658</td>
+</tr>
+<tr>
+<td style="text-align: center;">248</td><td style="text-align: center;">-0.9271838546</td><td style="text-align: center;">-0.3746065934</td><td style="text-align: center;">2.4750868534</td>
+</tr>
+<tr>
+<td style="text-align: center;">249</td><td style="text-align: center;">-0.9335804265</td><td style="text-align: center;">-0.3583679495</td><td style="text-align: center;">2.6050890647</td>
+</tr>
+<tr>
+<td style="text-align: center;">250</td><td style="text-align: center;">-0.9396926208</td><td style="text-align: center;">-0.3420201433</td><td style="text-align: center;">2.7474774195</td>
+</tr>
+<tr>
+<td style="text-align: center;">251</td><td style="text-align: center;">-0.9455185756</td><td style="text-align: center;">-0.3255681545</td><td style="text-align: center;">2.9042108777</td>
+</tr>
+<tr>
+<td style="text-align: center;">252</td><td style="text-align: center;">-0.9510565163</td><td style="text-align: center;">-0.3090169944</td><td style="text-align: center;">3.0776835372</td>
+</tr>
+<tr>
+<td style="text-align: center;">253</td><td style="text-align: center;">-0.956304756</td><td style="text-align: center;">-0.2923717047</td><td style="text-align: center;">3.2708526185</td>
+</tr>
+<tr>
+<td style="text-align: center;">254</td><td style="text-align: center;">-0.9612616959</td><td style="text-align: center;">-0.2756373558</td><td style="text-align: center;">3.4874144438</td>
+</tr>
+<tr>
+<td style="text-align: center;">255</td><td style="text-align: center;">-0.9659258263</td><td style="text-align: center;">-0.2588190451</td><td style="text-align: center;">3.7320508076</td>
+</tr>
+<tr>
+<td style="text-align: center;">256</td><td style="text-align: center;">-0.9702957263</td><td style="text-align: center;">-0.2419218956</td><td style="text-align: center;">4.0107809335</td>
+</tr>
+<tr>
+<td style="text-align: center;">257</td><td style="text-align: center;">-0.9743700648</td><td style="text-align: center;">-0.2249510543</td><td style="text-align: center;">4.3314758743</td>
+</tr>
+<tr>
+<td style="text-align: center;">258</td><td style="text-align: center;">-0.9781476007</td><td style="text-align: center;">-0.2079116908</td><td style="text-align: center;">4.7046301095</td>
+</tr>
+<tr>
+<td style="text-align: center;">259</td><td style="text-align: center;">-0.9816271834</td><td style="text-align: center;">-0.1908089954</td><td style="text-align: center;">5.144554016</td>
+</tr>
+<tr>
+<td style="text-align: center;">260</td><td style="text-align: center;">-0.984807753</td><td style="text-align: center;">-0.1736481777</td><td style="text-align: center;">5.6712818196</td>
+</tr>
+<tr>
+<td style="text-align: center;">261</td><td style="text-align: center;">-0.9876883406</td><td style="text-align: center;">-0.156434465</td><td style="text-align: center;">6.3137515147</td>
+</tr>
+<tr>
+<td style="text-align: center;">262</td><td style="text-align: center;">-0.9902680687</td><td style="text-align: center;">-0.139173101</td><td style="text-align: center;">7.1153697224</td>
+</tr>
+<tr>
+<td style="text-align: center;">263</td><td style="text-align: center;">-0.9925461516</td><td style="text-align: center;">-0.1218693434</td><td style="text-align: center;">8.144346428</td>
+</tr>
+<tr>
+<td style="text-align: center;">264</td><td style="text-align: center;">-0.9945218954</td><td style="text-align: center;">-0.1045284633</td><td style="text-align: center;">9.5143644542</td>
+</tr>
+<tr>
+<td style="text-align: center;">265</td><td style="text-align: center;">-0.9961946981</td><td style="text-align: center;">-0.0871557427</td><td style="text-align: center;">11.4300523028</td>
+</tr>
+<tr>
+<td style="text-align: center;">266</td><td style="text-align: center;">-0.9975640503</td><td style="text-align: center;">-0.0697564737</td><td style="text-align: center;">14.3006662567</td>
+</tr>
+<tr>
+<td style="text-align: center;">267</td><td style="text-align: center;">-0.9986295348</td><td style="text-align: center;">-0.0523359562</td><td style="text-align: center;">19.0811366877</td>
+</tr>
+<tr>
+<td style="text-align: center;">268</td><td style="text-align: center;">-0.999390827</td><td style="text-align: center;">-0.0348994967</td><td style="text-align: center;">28.6362532829</td>
+</tr>
+<tr>
+<td style="text-align: center;">269</td><td style="text-align: center;">-0.9998476952</td><td style="text-align: center;">-0.0174524064</td><td style="text-align: center;">57.2899616308</td>
+</tr>
+<tr>
+<td style="text-align: center;">270</td><td style="text-align: center;">-1</td><td style="text-align: center;">0</td><td style="text-align: center;">5443746451065123</td>
+</tr>
+<tr>
+<td style="text-align: center;">271</td><td style="text-align: center;">-0.9998476952</td><td style="text-align: center;">0.0174524064</td><td style="text-align: center;">-57.2899616308</td>
+</tr>
+<tr>
+<td style="text-align: center;">272</td><td style="text-align: center;">-0.999390827</td><td style="text-align: center;">0.0348994967</td><td style="text-align: center;">-28.6362532829</td>
+</tr>
+<tr>
+<td style="text-align: center;">273</td><td style="text-align: center;">-0.9986295348</td><td style="text-align: center;">0.0523359562</td><td style="text-align: center;">-19.0811366877</td>
+</tr>
+<tr>
+<td style="text-align: center;">274</td><td style="text-align: center;">-0.9975640503</td><td style="text-align: center;">0.0697564737</td><td style="text-align: center;">-14.3006662567</td>
+</tr>
+<tr>
+<td style="text-align: center;">275</td><td style="text-align: center;">-0.9961946981</td><td style="text-align: center;">0.0871557427</td><td style="text-align: center;">-11.4300523028</td>
+</tr>
+<tr>
+<td style="text-align: center;">276</td><td style="text-align: center;">-0.9945218954</td><td style="text-align: center;">0.1045284633</td><td style="text-align: center;">-9.5143644542</td>
+</tr>
+<tr>
+<td style="text-align: center;">277</td><td style="text-align: center;">-0.9925461516</td><td style="text-align: center;">0.1218693434</td><td style="text-align: center;">-8.144346428</td>
+</tr>
+<tr>
+<td style="text-align: center;">278</td><td style="text-align: center;">-0.9902680687</td><td style="text-align: center;">0.139173101</td><td style="text-align: center;">-7.1153697224</td>
+</tr>
+<tr>
+<td style="text-align: center;">279</td><td style="text-align: center;">-0.9876883406</td><td style="text-align: center;">0.156434465</td><td style="text-align: center;">-6.3137515147</td>
+</tr>
+<tr>
+<td style="text-align: center;">280</td><td style="text-align: center;">-0.984807753</td><td style="text-align: center;">0.1736481777</td><td style="text-align: center;">-5.6712818196</td>
+</tr>
+<tr>
+<td style="text-align: center;">281</td><td style="text-align: center;">-0.9816271834</td><td style="text-align: center;">0.1908089954</td><td style="text-align: center;">-5.144554016</td>
+</tr>
+<tr>
+<td style="text-align: center;">282</td><td style="text-align: center;">-0.9781476007</td><td style="text-align: center;">0.2079116908</td><td style="text-align: center;">-4.7046301095</td>
+</tr>
+<tr>
+<td style="text-align: center;">283</td><td style="text-align: center;">-0.9743700648</td><td style="text-align: center;">0.2249510543</td><td style="text-align: center;">-4.3314758743</td>
+</tr>
+<tr>
+<td style="text-align: center;">284</td><td style="text-align: center;">-0.9702957263</td><td style="text-align: center;">0.2419218956</td><td style="text-align: center;">-4.0107809335</td>
+</tr>
+<tr>
+<td style="text-align: center;">285</td><td style="text-align: center;">-0.9659258263</td><td style="text-align: center;">0.2588190451</td><td style="text-align: center;">-3.7320508076</td>
+</tr>
+<tr>
+<td style="text-align: center;">286</td><td style="text-align: center;">-0.9612616959</td><td style="text-align: center;">0.2756373558</td><td style="text-align: center;">-3.4874144438</td>
+</tr>
+<tr>
+<td style="text-align: center;">287</td><td style="text-align: center;">-0.956304756</td><td style="text-align: center;">0.2923717047</td><td style="text-align: center;">-3.2708526185</td>
+</tr>
+<tr>
+<td style="text-align: center;">288</td><td style="text-align: center;">-0.9510565163</td><td style="text-align: center;">0.3090169944</td><td style="text-align: center;">-3.0776835372</td>
+</tr>
+<tr>
+<td style="text-align: center;">289</td><td style="text-align: center;">-0.9455185756</td><td style="text-align: center;">0.3255681545</td><td style="text-align: center;">-2.9042108777</td>
+</tr>
+<tr>
+<td style="text-align: center;">290</td><td style="text-align: center;">-0.9396926208</td><td style="text-align: center;">0.3420201433</td><td style="text-align: center;">-2.7474774195</td>
+</tr>
+<tr>
+<td style="text-align: center;">291</td><td style="text-align: center;">-0.9335804265</td><td style="text-align: center;">0.3583679495</td><td style="text-align: center;">-2.6050890647</td>
+</tr>
+<tr>
+<td style="text-align: center;">292</td><td style="text-align: center;">-0.9271838546</td><td style="text-align: center;">0.3746065934</td><td style="text-align: center;">-2.4750868534</td>
+</tr>
+<tr>
+<td style="text-align: center;">293</td><td style="text-align: center;">-0.9205048535</td><td style="text-align: center;">0.3907311285</td><td style="text-align: center;">-2.3558523658</td>
+</tr>
+<tr>
+<td style="text-align: center;">294</td><td style="text-align: center;">-0.9135454576</td><td style="text-align: center;">0.4067366431</td><td style="text-align: center;">-2.2460367739</td>
+</tr>
+<tr>
+<td style="text-align: center;">295</td><td style="text-align: center;">-0.906307787</td><td style="text-align: center;">0.4226182617</td><td style="text-align: center;">-2.1445069205</td>
+</tr>
+<tr>
+<td style="text-align: center;">296</td><td style="text-align: center;">-0.8987940463</td><td style="text-align: center;">0.4383711468</td><td style="text-align: center;">-2.0503038416</td>
+</tr>
+<tr>
+<td style="text-align: center;">297</td><td style="text-align: center;">-0.8910065242</td><td style="text-align: center;">0.4539904997</td><td style="text-align: center;">-1.9626105055</td>
+</tr>
+<tr>
+<td style="text-align: center;">298</td><td style="text-align: center;">-0.8829475929</td><td style="text-align: center;">0.4694715628</td><td style="text-align: center;">-1.8807264653</td>
+</tr>
+<tr>
+<td style="text-align: center;">299</td><td style="text-align: center;">-0.8746197071</td><td style="text-align: center;">0.4848096202</td><td style="text-align: center;">-1.8040477553</td>
+</tr>
+<tr>
+<td style="text-align: center;">300</td><td style="text-align: center;">-0.8660254038</td><td style="text-align: center;">0.5</td><td style="text-align: center;">-1.7320508076</td>
+</tr>
+<tr>
+<td style="text-align: center;">301</td><td style="text-align: center;">-0.8571673007</td><td style="text-align: center;">0.5150380749</td><td style="text-align: center;">-1.6642794824</td>
+</tr>
+<tr>
+<td style="text-align: center;">302</td><td style="text-align: center;">-0.8480480962</td><td style="text-align: center;">0.5299192642</td><td style="text-align: center;">-1.600334529</td>
+</tr>
+<tr>
+<td style="text-align: center;">303</td><td style="text-align: center;">-0.8386705679</td><td style="text-align: center;">0.544639035</td><td style="text-align: center;">-1.5398649638</td>
+</tr>
+<tr>
+<td style="text-align: center;">304</td><td style="text-align: center;">-0.8290375726</td><td style="text-align: center;">0.5591929035</td><td style="text-align: center;">-1.4825609685</td>
+</tr>
+<tr>
+<td style="text-align: center;">305</td><td style="text-align: center;">-0.8191520443</td><td style="text-align: center;">0.5735764364</td><td style="text-align: center;">-1.4281480067</td>
+</tr>
+<tr>
+<td style="text-align: center;">306</td><td style="text-align: center;">-0.8090169944</td><td style="text-align: center;">0.5877852523</td><td style="text-align: center;">-1.3763819205</td>
+</tr>
+<tr>
+<td style="text-align: center;">307</td><td style="text-align: center;">-0.79863551</td><td style="text-align: center;">0.6018150232</td><td style="text-align: center;">-1.3270448216</td>
+</tr>
+<tr>
+<td style="text-align: center;">308</td><td style="text-align: center;">-0.7880107536</td><td style="text-align: center;">0.6156614753</td><td style="text-align: center;">-1.2799416322</td>
+</tr>
+<tr>
+<td style="text-align: center;">309</td><td style="text-align: center;">-0.7771459615</td><td style="text-align: center;">0.629320391</td><td style="text-align: center;">-1.2348971565</td>
+</tr>
+<tr>
+<td style="text-align: center;">310</td><td style="text-align: center;">-0.7660444431</td><td style="text-align: center;">0.6427876097</td><td style="text-align: center;">-1.1917535926</td>
+</tr>
+<tr>
+<td style="text-align: center;">311</td><td style="text-align: center;">-0.7547095802</td><td style="text-align: center;">0.656059029</td><td style="text-align: center;">-1.1503684072</td>
+</tr>
+<tr>
+<td style="text-align: center;">312</td><td style="text-align: center;">-0.7431448255</td><td style="text-align: center;">0.6691306064</td><td style="text-align: center;">-1.1106125148</td>
+</tr>
+<tr>
+<td style="text-align: center;">313</td><td style="text-align: center;">-0.7313537016</td><td style="text-align: center;">0.6819983601</td><td style="text-align: center;">-1.07236871</td>
+</tr>
+<tr>
+<td style="text-align: center;">314</td><td style="text-align: center;">-0.7193398003</td><td style="text-align: center;">0.6946583705</td><td style="text-align: center;">-1.0355303138</td>
+</tr>
+<tr>
+<td style="text-align: center;">315</td><td style="text-align: center;">-0.7071067812</td><td style="text-align: center;">0.7071067812</td><td style="text-align: center;">-1</td>
+</tr>
+<tr>
+<td style="text-align: center;">316</td><td style="text-align: center;">-0.6946583705</td><td style="text-align: center;">0.7193398003</td><td style="text-align: center;">-0.9656887748</td>
+</tr>
+<tr>
+<td style="text-align: center;">317</td><td style="text-align: center;">-0.6819983601</td><td style="text-align: center;">0.7313537016</td><td style="text-align: center;">-0.9325150861</td>
+</tr>
+<tr>
+<td style="text-align: center;">318</td><td style="text-align: center;">-0.6691306064</td><td style="text-align: center;">0.7431448255</td><td style="text-align: center;">-0.9004040443</td>
+</tr>
+<tr>
+<td style="text-align: center;">319</td><td style="text-align: center;">-0.656059029</td><td style="text-align: center;">0.7547095802</td><td style="text-align: center;">-0.8692867378</td>
+</tr>
+<tr>
+<td style="text-align: center;">320</td><td style="text-align: center;">-0.6427876097</td><td style="text-align: center;">0.7660444431</td><td style="text-align: center;">-0.8390996312</td>
+</tr>
+<tr>
+<td style="text-align: center;">321</td><td style="text-align: center;">-0.629320391</td><td style="text-align: center;">0.7771459615</td><td style="text-align: center;">-0.8097840332</td>
+</tr>
+<tr>
+<td style="text-align: center;">322</td><td style="text-align: center;">-0.6156614753</td><td style="text-align: center;">0.7880107536</td><td style="text-align: center;">-0.7812856265</td>
+</tr>
+<tr>
+<td style="text-align: center;">323</td><td style="text-align: center;">-0.6018150232</td><td style="text-align: center;">0.79863551</td><td style="text-align: center;">-0.7535540501</td>
+</tr>
+<tr>
+<td style="text-align: center;">324</td><td style="text-align: center;">-0.5877852523</td><td style="text-align: center;">0.8090169944</td><td style="text-align: center;">-0.726542528</td>
+</tr>
+<tr>
+<td style="text-align: center;">325</td><td style="text-align: center;">-0.5735764364</td><td style="text-align: center;">0.8191520443</td><td style="text-align: center;">-0.7002075382</td>
+</tr>
+<tr>
+<td style="text-align: center;">326</td><td style="text-align: center;">-0.5591929035</td><td style="text-align: center;">0.8290375726</td><td style="text-align: center;">-0.6745085168</td>
+</tr>
+<tr>
+<td style="text-align: center;">327</td><td style="text-align: center;">-0.544639035</td><td style="text-align: center;">0.8386705679</td><td style="text-align: center;">-0.6494075932</td>
+</tr>
+<tr>
+<td style="text-align: center;">328</td><td style="text-align: center;">-0.5299192642</td><td style="text-align: center;">0.8480480962</td><td style="text-align: center;">-0.6248693519</td>
+</tr>
+<tr>
+<td style="text-align: center;">329</td><td style="text-align: center;">-0.5150380749</td><td style="text-align: center;">0.8571673007</td><td style="text-align: center;">-0.600860619</td>
+</tr>
+<tr>
+<td style="text-align: center;">330</td><td style="text-align: center;">-0.5</td><td style="text-align: center;">0.8660254038</td><td style="text-align: center;">-0.5773502692</td>
+</tr>
+<tr>
+<td style="text-align: center;">331</td><td style="text-align: center;">-0.4848096202</td><td style="text-align: center;">0.8746197071</td><td style="text-align: center;">-0.5543090515</td>
+</tr>
+<tr>
+<td style="text-align: center;">332</td><td style="text-align: center;">-0.4694715628</td><td style="text-align: center;">0.8829475929</td><td style="text-align: center;">-0.5317094317</td>
+</tr>
+<tr>
+<td style="text-align: center;">333</td><td style="text-align: center;">-0.4539904997</td><td style="text-align: center;">0.8910065242</td><td style="text-align: center;">-0.5095254495</td>
+</tr>
+<tr>
+<td style="text-align: center;">334</td><td style="text-align: center;">-0.4383711468</td><td style="text-align: center;">0.8987940463</td><td style="text-align: center;">-0.4877325886</td>
+</tr>
+<tr>
+<td style="text-align: center;">335</td><td style="text-align: center;">-0.4226182617</td><td style="text-align: center;">0.906307787</td><td style="text-align: center;">-0.4663076582</td>
+</tr>
+<tr>
+<td style="text-align: center;">336</td><td style="text-align: center;">-0.4067366431</td><td style="text-align: center;">0.9135454576</td><td style="text-align: center;">-0.4452286853</td>
+</tr>
+<tr>
+<td style="text-align: center;">337</td><td style="text-align: center;">-0.3907311285</td><td style="text-align: center;">0.9205048535</td><td style="text-align: center;">-0.4244748162</td>
+</tr>
+<tr>
+<td style="text-align: center;">338</td><td style="text-align: center;">-0.3746065934</td><td style="text-align: center;">0.9271838546</td><td style="text-align: center;">-0.4040262258</td>
+</tr>
+<tr>
+<td style="text-align: center;">339</td><td style="text-align: center;">-0.3583679495</td><td style="text-align: center;">0.9335804265</td><td style="text-align: center;">-0.383864035</td>
+</tr>
+<tr>
+<td style="text-align: center;">340</td><td style="text-align: center;">-0.3420201433</td><td style="text-align: center;">0.9396926208</td><td style="text-align: center;">-0.3639702343</td>
+</tr>
+<tr>
+<td style="text-align: center;">341</td><td style="text-align: center;">-0.3255681545</td><td style="text-align: center;">0.9455185756</td><td style="text-align: center;">-0.3443276133</td>
+</tr>
+<tr>
+<td style="text-align: center;">342</td><td style="text-align: center;">-0.3090169944</td><td style="text-align: center;">0.9510565163</td><td style="text-align: center;">-0.3249196962</td>
+</tr>
+<tr>
+<td style="text-align: center;">343</td><td style="text-align: center;">-0.2923717047</td><td style="text-align: center;">0.956304756</td><td style="text-align: center;">-0.3057306815</td>
+</tr>
+<tr>
+<td style="text-align: center;">344</td><td style="text-align: center;">-0.2756373558</td><td style="text-align: center;">0.9612616959</td><td style="text-align: center;">-0.2867453858</td>
+</tr>
+<tr>
+<td style="text-align: center;">345</td><td style="text-align: center;">-0.2588190451</td><td style="text-align: center;">0.9659258263</td><td style="text-align: center;">-0.2679491924</td>
+</tr>
+<tr>
+<td style="text-align: center;">346</td><td style="text-align: center;">-0.2419218956</td><td style="text-align: center;">0.9702957263</td><td style="text-align: center;">-0.2493280028</td>
+</tr>
+<tr>
+<td style="text-align: center;">347</td><td style="text-align: center;">-0.2249510543</td><td style="text-align: center;">0.9743700648</td><td style="text-align: center;">-0.2308681911</td>
+</tr>
+<tr>
+<td style="text-align: center;">348</td><td style="text-align: center;">-0.2079116908</td><td style="text-align: center;">0.9781476007</td><td style="text-align: center;">-0.2125565617</td>
+</tr>
+<tr>
+<td style="text-align: center;">349</td><td style="text-align: center;">-0.1908089954</td><td style="text-align: center;">0.9816271834</td><td style="text-align: center;">-0.1943803091</td>
+</tr>
+<tr>
+<td style="text-align: center;">350</td><td style="text-align: center;">-0.1736481777</td><td style="text-align: center;">0.984807753</td><td style="text-align: center;">-0.1763269807</td>
+</tr>
+<tr>
+<td style="text-align: center;">351</td><td style="text-align: center;">-0.156434465</td><td style="text-align: center;">0.9876883406</td><td style="text-align: center;">-0.1583844403</td>
+</tr>
+<tr>
+<td style="text-align: center;">352</td><td style="text-align: center;">-0.139173101</td><td style="text-align: center;">0.9902680687</td><td style="text-align: center;">-0.1405408347</td>
+</tr>
+<tr>
+<td style="text-align: center;">353</td><td style="text-align: center;">-0.1218693434</td><td style="text-align: center;">0.9925461516</td><td style="text-align: center;">-0.1227845609</td>
+</tr>
+<tr>
+<td style="text-align: center;">354</td><td style="text-align: center;">-0.1045284633</td><td style="text-align: center;">0.9945218954</td><td style="text-align: center;">-0.1051042353</td>
+</tr>
+<tr>
+<td style="text-align: center;">355</td><td style="text-align: center;">-0.0871557427</td><td style="text-align: center;">0.9961946981</td><td style="text-align: center;">-0.0874886635</td>
+</tr>
+<tr>
+<td style="text-align: center;">356</td><td style="text-align: center;">-0.0697564737</td><td style="text-align: center;">0.9975640503</td><td style="text-align: center;">-0.0699268119</td>
+</tr>
+<tr>
+<td style="text-align: center;">357</td><td style="text-align: center;">-0.0523359562</td><td style="text-align: center;">0.9986295348</td><td style="text-align: center;">-0.0524077793</td>
+</tr>
+<tr>
+<td style="text-align: center;">358</td><td style="text-align: center;">-0.0348994967</td><td style="text-align: center;">0.999390827</td><td style="text-align: center;">-0.0349207695</td>
+</tr>
+<tr>
+<td style="text-align: center;">359</td><td style="text-align: center;">-0.0174524064</td><td style="text-align: center;">0.9998476952</td><td style="text-align: center;">-0.0174550649</td>
+</tr>
+<tr>
+<td style="text-align: center;">360</td><td style="text-align: center;">0</td><td style="text-align: center;">1</td><td style="text-align: center;">0</td>
+</tr>
+</table>
+</body>
+</html>
