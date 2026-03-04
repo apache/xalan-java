@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><result>
-  <one resultArrSize="5">a b x y c d</one>
-  <two resultArrSize="5">a b c d x y</two>
-  <three resultArrSize="5">a b x y c d</three>
-</result>

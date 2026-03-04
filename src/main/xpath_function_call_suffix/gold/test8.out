@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><result>
-  <value sqr="4" inp="2"/>
-  <value sqr="16" inp="4"/>
-  <value sqr="36" inp="6"/>
-  <value sqr="64" inp="8"/>
-  <value sqr="100" inp="10"/>
-</result>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><result>
-  <alpha>
-    <a strLen="5">hello</a>
-    <b strLen="5">world</b>
-    <c strLen="4">this</c>
-    <d strLen="2">is</d>
-    <e strLen="22">an xml sample document</e>
-  </alpha>
-</result>

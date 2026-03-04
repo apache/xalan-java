@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><result>
-  <info1>{a} hello world</info1>
-  <info2>*** hello world ***</info2>
-  <info1>{b} hello world</info1>
-  <info2>*** hello world ***</info2>
-  <info1>{c} hello world</info1>
-  <info2>*** hello world ***</info2>
-</result>

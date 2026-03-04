@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><result>
-  <info val="2005-10-12">
-    <lessThanCurrentDate/>
-  </info>
-  <info val="2501-10-12">
-    <currentDateOrAfter/>
-  </info>
-</result>

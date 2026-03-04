@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><groups>
-  <group node-name="p:http://www.w3.org/1999/xhtml">
-    <p xmlns="http://www.w3.org/1999/xhtml">Paragraph 1.</p>
-    <html:p xmlns:html="http://www.w3.org/1999/xhtml">Paragraph 2.</html:p>
-  </group>
-</groups>

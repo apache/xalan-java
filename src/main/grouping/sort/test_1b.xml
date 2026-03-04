@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<cities>  
-  <city name="Paris"      country="France" />
-  <city name="Lyon"       country="France" />
-  <city name="Gurgaon"    country="India" />
-  <city name="Bengaluru"  country="India" />
-  <city name="New Delhi"  country="India" />
-  <city name="Milano"     country="Italia" />
-</cities>

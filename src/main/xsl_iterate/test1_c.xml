@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<transactions>
-  <transaction date="2008-09-01" value="12.00"/>
-  <transaction date="2008-09-01" value="8.00"/>
-  <transaction date="2008-09-02" value="-2.00"/>
-  <transaction date="2008-09-02" value="5.00"/>
-</transactions>

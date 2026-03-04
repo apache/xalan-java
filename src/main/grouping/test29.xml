@@ -1,4 +1,0 @@
-<root>
-  <p xmlns="http://www.w3.org/1999/xhtml">Paragraph 1.</p>
-  <html:p xmlns:html="http://www.w3.org/1999/xhtml">Paragraph 2.</html:p>
-</root>
