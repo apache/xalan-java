@@ -716,7 +716,7 @@ public class XObject extends Expression implements Serializable, Cloneable
       result = str();
       break;
     case CLASS_NUMBER :
-      result = new Double(num());
+      result = Double.valueOf(num());
       break;
     case CLASS_NODESET :
       result = iter();

@@ -323,7 +323,7 @@ public class DTMException extends RuntimeException {
 
         boolean isJdk14OrHigher = false;
         try {
-            Throwable.class.getMethod("getCause",null);
+            Throwable.class.getMethod("getCause", (Class<?>[])null);
             isJdk14OrHigher = true;
         } catch (NoSuchMethodException nsme) {
             // do nothing
@@ -355,14 +355,12 @@ public class DTMException extends RuntimeException {
                 }
     
                 try {
-                    Method meth =
-                        ((Object) exception).getClass().getMethod("getException",
-                            null);
+                    Method meth1 = ((Object) exception).getClass().getMethod("getException", (Class<?>[])null);
     
-                    if (null != meth) {
+                    if (meth1 != null) {
                         Throwable prev = exception;
     
-                        exception = (Throwable) meth.invoke(exception, null);
+                        exception = (Throwable) meth1.invoke(exception, (Object[])null);
     
                         if (prev == exception) {
                             break;

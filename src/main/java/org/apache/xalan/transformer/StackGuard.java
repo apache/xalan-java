@@ -157,7 +157,7 @@ public class StackGuard
     	if (loopCount >= m_recursionLimit)
     	{    		    		
     		String idIs = XSLMessages.createMessage(((null != template.getName()) ? "nameIs" : "matchPatternIs"), null);
-        	Object[] msgArgs = new Object[]{ new Integer(loopCount), idIs, 
+        	Object[] msgArgs = new Object[]{ Integer.valueOf(loopCount), idIs, 
                      ((null != template.getName()) ? template.getName().toString() 
     		   : template.getMatch().getPatternString()) };
         	String msg = XSLMessages.createMessage("recursionTooDeep", msgArgs);

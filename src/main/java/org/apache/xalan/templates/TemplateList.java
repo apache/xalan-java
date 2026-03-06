@@ -1207,10 +1207,10 @@ public class TemplateList implements java.io.Serializable
             return null;
         }
 
-        ct = (ElemTemplate) m_compilerCache.get(new Integer(retValue.getUid()));
+        ct = (ElemTemplate) m_compilerCache.get(Integer.valueOf(retValue.getUid()));
         if (null == ct)
         {
-          m_compilerCache.put(new Integer(retValue.getUid()), retValue);
+          m_compilerCache.put(Integer.valueOf(retValue.getUid()), retValue);
           return retValue;
         }
       }

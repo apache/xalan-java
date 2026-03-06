@@ -193,7 +193,7 @@ public final class XSLTC {
 	_elements       = new Hashtable();
 	_attributes     = new Hashtable();
 	_namespaces     = new Hashtable();
-	_namespaces.put("",new Integer(_nextNSType));
+	_namespaces.put("",Integer.valueOf(_nextNSType));
 	_namesIndex     = new Vector(128);
 	_namespaceIndex = new Vector(32);
 	_namespacePrefixes = new Hashtable();
@@ -641,7 +641,7 @@ public final class XSLTC {
     public int registerAttribute(QName name) {
 	Integer code = (Integer)_attributes.get(name.toString());
 	if (code == null) {
-	    code = new Integer(_nextGType++);
+	    code = Integer.valueOf(_nextGType++);
 	    _attributes.put(name.toString(), code);
 	    final String uri = name.getNamespace();
 	    final String local = "@"+name.getLocalPart();
@@ -664,7 +664,7 @@ public final class XSLTC {
 	// Register element (full QName)
 	Integer code = (Integer)_elements.get(name.toString());
 	if (code == null) {
-	    _elements.put(name.toString(), code = new Integer(_nextGType++));
+	    _elements.put(name.toString(), code = Integer.valueOf(_nextGType++));
 	    _namesIndex.addElement(name.toString());
 	}
 	if (name.getLocalPart().equals("*")) {
@@ -682,7 +682,7 @@ public final class XSLTC {
     
     Integer code = (Integer)_namespacePrefixes.get(name.toString());
     if (code == null) {   
-        code = new Integer(_nextGType++);
+        code = Integer.valueOf(_nextGType++);
         _namespacePrefixes.put(name.toString(), code); 
         final String uri = name.getNamespace();
         if ((uri != null) && (uri.length() != 0)){
@@ -702,7 +702,7 @@ public final class XSLTC {
     public int registerNamespacePrefix(String name) {
         Integer code = (Integer)_namespacePrefixes.get(name);
         if (code == null) {   
-            code = new Integer(_nextGType++);
+            code = Integer.valueOf(_nextGType++);
             _namespacePrefixes.put(name, code);
             _namesIndex.addElement("?"+name);
         }
@@ -716,7 +716,7 @@ public final class XSLTC {
     public int registerNamespace(String namespaceURI) {
 	Integer code = (Integer)_namespaces.get(namespaceURI);
 	if (code == null) {
-	    code = new Integer(_nextNSType++);
+	    code = Integer.valueOf(_nextNSType++);
 	    _namespaces.put(namespaceURI,code);
 	    _namespaceIndex.addElement(namespaceURI);
 	}
@@ -753,11 +753,11 @@ public final class XSLTC {
         }
 
         int currentNodeID = _stylesheetNSAncestorPointers.size();
-        _stylesheetNSAncestorPointers.add(new Integer(ancestorID));
+        _stylesheetNSAncestorPointers.add(Integer.valueOf(ancestorID));
 
         Iterator prefixMapIterator = prefixMap.entrySet().iterator();
         int prefixNSPairStartIdx = _prefixURIPairs.size();
-        _prefixURIPairsIdx.add(new Integer(prefixNSPairStartIdx));
+        _prefixURIPairsIdx.add(Integer.valueOf(prefixNSPairStartIdx));
 
         while (prefixMapIterator.hasNext()) {
             Map.Entry entry = (Map.Entry) prefixMapIterator.next();

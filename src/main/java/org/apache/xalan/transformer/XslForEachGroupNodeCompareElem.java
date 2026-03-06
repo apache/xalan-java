@@ -98,7 +98,7 @@ public class XslForEachGroupNodeCompareElem {
 
 				if (k1.m_treatAsNumbers) {
 					d = r.num();
-					m_key1Value = new Double(d);
+					m_key1Value = Double.valueOf(d);
 				}
 				else {
 					String str1 = XslTransformEvaluationHelper.getStrVal(r);
@@ -120,7 +120,7 @@ public class XslForEachGroupNodeCompareElem {
 
 					if (k2.m_treatAsNumbers) {
 						d = r2.num();
-						m_key2Value = new Double(d);
+						m_key2Value = Double.valueOf(d);
 					} else {
 						String str1 = XslTransformEvaluationHelper.getStrVal(r2);
 						m_key2Value = k2.m_col.getCollationKey(str1);

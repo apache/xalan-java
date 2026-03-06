@@ -1142,11 +1142,11 @@ public class XPathContext extends XPathStaticContext
       m_DTMXRTreeFrags = new HashMap();     
     }
     
-    if (m_DTMXRTreeFrags.containsKey(new Integer(dtmIdentity))){
-       return (DTMXRTreeFrag)m_DTMXRTreeFrags.get(new Integer(dtmIdentity));
+    if (m_DTMXRTreeFrags.containsKey(Integer.valueOf(dtmIdentity))){
+       return (DTMXRTreeFrag)m_DTMXRTreeFrags.get(Integer.valueOf(dtmIdentity));
     }else{
       final DTMXRTreeFrag frag = new DTMXRTreeFrag(dtmIdentity,this);
-      m_DTMXRTreeFrags.put(new Integer(dtmIdentity),frag);
+      m_DTMXRTreeFrags.put(Integer.valueOf(dtmIdentity),frag);
       return frag ;
     }   
   }

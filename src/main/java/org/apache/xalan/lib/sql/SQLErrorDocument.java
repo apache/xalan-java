@@ -119,7 +119,7 @@ public class SQLErrorDocument extends DTMDocument
     int element = DTM.NULL;
 
     element = addElementWithData(
-      new Integer(error.getErrorCode()), 3,
+      Integer.valueOf(error.getErrorCode()), 3,
       m_Code_TypeID, sqlError, element);
 
     element = addElementWithData(
@@ -174,7 +174,7 @@ public class SQLErrorDocument extends DTMDocument
     	int element = DTM.NULL;
 
 	    element = addElementWithData(
-	      new Integer(se.getErrorCode()), 3,
+	      Integer.valueOf(se.getErrorCode()), 3,
 	      m_Code_TypeID, sqlError, element);
 
 	    element = addElementWithData(

@@ -316,8 +316,8 @@ public class XPathDynamicContext extends DTMManager {
 			int zoneHrs = 0;
 			int zoneMinutes = 0;
 			if (zoneOffsetStrParts.length > 1) {
-				zoneHrs = (new Integer(zoneOffsetStrParts[1])).intValue();
-				zoneMinutes = (new Integer(zoneOffsetStrParts[2])).intValue();
+				zoneHrs = Integer.valueOf(zoneOffsetStrParts[1]).intValue();
+				zoneMinutes = Integer.valueOf(zoneOffsetStrParts[2]).intValue();
 			}
 			boolean isNegativeTimezone = !zoneOffsetStr.startsWith("+");
 			

@@ -1521,7 +1521,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public void setIDAttribute(String id, int elem)
   {
-    m_idAttributes.put(id, new Integer(elem));
+    m_idAttributes.put(id, Integer.valueOf(elem));
   }
 
   /**

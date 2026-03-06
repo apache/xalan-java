@@ -170,7 +170,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
   // Synch object to gaurd against setting values from an 
   // XML TrAX interface or reentry while the transform is going on.
 
-  private Boolean m_reentryGuard = new Boolean(true);
+  private Boolean m_reentryGuard = Boolean.TRUE;
 
   /**
    * This is null unless we own the stream.

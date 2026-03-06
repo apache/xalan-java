@@ -195,7 +195,7 @@ final class Mode implements Constants {
 	if (_importLevels == null) {
 	    _importLevels = new Hashtable();
 	}
-	_importLevels.put(new Integer(max), new Integer(min));
+	_importLevels.put(Integer.valueOf(max), Integer.valueOf(min));
 	return _methodName + '_' + max;
     }
 

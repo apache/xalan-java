@@ -1153,7 +1153,7 @@ public class Process
 
 			  if (doDiag)
 			  {
-				  Object[] msgArgs = new Object[]{ inFileName, xslFileName, new Long(millisecondsDuration) };
+				  Object[] msgArgs = new Object[]{ inFileName, xslFileName, Long.valueOf(millisecondsDuration) };
 				  msg = XSLMessages.createMessage("diagTiming", msgArgs);
 				  diagnosticsWriter.println('\n');
 				  diagnosticsWriter.println(msg);

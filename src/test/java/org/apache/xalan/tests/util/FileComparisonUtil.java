@@ -46,7 +46,7 @@ public class FileComparisonUtil {
     protected static DocumentBuilderFactory m_xmlDocumentBuilderFactory = null;
     
     /**
-     * Class field representing an XML DocumentBuilder object instance 
+     * Class field representing, an XML DocumentBuilder object instance 
      * needed by this test suite.
      */
     protected static DocumentBuilder m_xmlDocumentBuilder = null;
@@ -76,8 +76,8 @@ public class FileComparisonUtil {
 	}
 	
 	/**
-	 * Method definition to find whether, contents of two xml documents represented as 
-	 * string values, are equal.
+	 * Method definition, to find whether, contents of two XML documents 
+	 * represented as string values, are equal.
 	 * 
 	 * Instead if directly comparing the supplied XML document string values for equality, 
 	 * we do an XML parse of the supplied string values to produce XML dom nodes, and
@@ -87,10 +87,10 @@ public class FileComparisonUtil {
 	 * the expected XML document results do not affect the XML document string comparison 
 	 * result.
 	 * 
-	 * @param xmlStr1			first supplied xml document string
-	 * @param xmlStr2			second supplied xml document string	
-	 * @return					boolean value indicating the result of
-	 * 							XML document comparison.
+	 * @param xmlStr1			The first supplied XML document string
+	 * @param xmlStr2			The second supplied XML document string	
+	 * @return					Boolean value true, or false indicating the 
+	 *                          result of XML document comparison.
 	 */
 	protected boolean isXMLFileContentsEqual(String xmlStr1, String xmlStr2) throws Exception {
 		
@@ -111,13 +111,13 @@ public class FileComparisonUtil {
 	}
 	
 	/**
-	 * Method definition to find whether, contents of two json 
+	 * Method definition, to find whether, contents of two JSON 
 	 * documents represented as string values, are equal.
 	 * 
-	 * @param jsonStr1			first json document string
-	 * @param jsonStr2			second json document string	
-	 * @return					boolean value indicating the result of
-	 * 							file comparison.
+	 * @param jsonStr1			The first JSON document string
+	 * @param jsonStr2			The second JSON document string	
+	 * @return					Boolean value true, or false, indicating 
+	 *                          the result of file comparison.
 	 */
 	protected boolean isJsonFileContentsEqual(String jsonStr1, String jsonStr2) {
 		

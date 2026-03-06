@@ -615,7 +615,7 @@ public class XSLTAttributeDef
             return null;
 	    }
 
-	    return new Character(value.charAt(0));
+	    return Character.valueOf(value.charAt(0));
 	}
   }
   
@@ -712,7 +712,7 @@ public class XSLTAttributeDef
     }
 
 	if (getSupportsAVT()) return avt;
-	else return new Integer(retVal);	
+	else return Integer.valueOf(retVal);	
 
   }
 
@@ -757,7 +757,7 @@ public class XSLTAttributeDef
     
     if (key != StringToIntTable.INVALID_KEY) 
     {
-        if (objToReturn == null) objToReturn = new Integer(key);
+        if (objToReturn == null) objToReturn = Integer.valueOf(key);
     }
 
     // enum not used.  Validate qname-but-not-ncname.
@@ -1541,7 +1541,7 @@ public class XSLTAttributeDef
 		  return null;
 	  }
 
-	  return new Boolean(("yes".equals(normalizedValueStr) || "true".equals(normalizedValueStr) 
+	  return Boolean.valueOf(("yes".equals(normalizedValueStr) || "true".equals(normalizedValueStr) 
 			                                               || "1".equals(normalizedValueStr)) ? true : false);
   }
 

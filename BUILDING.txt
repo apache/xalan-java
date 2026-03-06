@@ -17,17 +17,17 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-03-03
+Document last modified : 2026-03-06
 
 Authors:
         Gary Gregory <ggregory@apache.org>
         Joseph Kesselman <keshlam@alum.mit.edu>
         Mukul Gandhi <mukulg@apache.org>
 
-This GitHub repos branch has src code configured as Maven (https://maven.apache.org/) build, for 
-Xalan-J's implementation of XSLT 3.0 and XPath 3.1 specifications. XSLT, XPath and XQuery languages
-are collectively named as XSL (Extensible Stylesheet Language). There are various places within Xalan-J's
-source code and documents, where we use the name XSL to refer to XSLT 3.0 and XPath 3.1.
+This, GitHub repos branch has src code configured as Maven (https://maven.apache.org/) build, for 
+Xalan-J's implementation for XSLT 3.0 and XPath 3.1 specifications. XSLT, XPath and XQuery languages
+are collectively named as XSL (Extensible Stylesheet Language). There are various Xalan-J 
+src code and document locations, where the name XSL is been used to refer to XSLT 3.0 and XPath 3.1.
 
 Following are the steps, to run Xalan-J's XSLT 3.0 and XPath 3.1 conformance tests and produce 
 XSLT 3.0 build jar file (containing Xalan-J's XSLT 3.0 and XPath 3.1 run-time processors):  
@@ -105,4 +105,29 @@ Produce Xalan-J code documentation for this dev repos branch : javadoc -d javado
 Javadocs for Xalan-J code documentation for this dev repos branch are located here : https://xalan.apache.org/xalan-j/xsl3/javadoc/   
 
 6) The PDF document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides various other 
-details about Xalan-J's XSLT 3.0 and XPath 3.1 implementations.
+   details about Xalan-J's XSLT 3.0 and XPath 3.1 implementations.
+
+7) Xalan-J XSLT 3.0 implementation development guidelines for Windows & Linux:
+   
+   This section of this document concerns, Xalan-J XSLT 3.0 src distribution. 
+   Various Xalan-J XSL 3 language test cases, need to be maintained considering Windows & Linux producing 
+   different specific behaviors. Windows uses character escape sequence \r\n as trailing characters for each file text line,
+   whereas Linux use character escape sequence \n as trailing character for each file text line.
+   
+   What works and what doesn't work with Xalan-J XSLT 3.0 implementation src code for these concerns:
+   
+   Xalan-J XSLT 3.0 implementation's various XSL 3 test cases, are maintained within this code development repos
+   with two versions of XSL tests expected result files, one for Windows and another for Linux.
+   When any new user who doesn't have Xalan-J XSL 3 src code repos clone on local,
+   > Does git pull for this src code on Windows, the various Linux version test case expected result 
+     file line endings shall get converted to Windows text file line endings (i.e, \r\n shall get converted to \n).
+     This will not be a problem, if the user wishes to continue to do work on Windows. But when, the code gets pulled
+     on Windows and user copies, or moves that code on available Linux file system (for e.g, WSL), various Xalan-J 
+     XSL 3 test cases shall fail.
+   > Does git pull on Linux, not such issues shall occur.
+   
+   These Xalan-J XSL 3 test case maintenance guidelines, specified with this document section (i.e, point 7)), 
+   need not be adhered with if the user wishes to use only the Xalan-J XSL 3 development src code, and doesn't
+   wish to work with Xalan-J XSL 3 supplied test cases.   																
+       
+

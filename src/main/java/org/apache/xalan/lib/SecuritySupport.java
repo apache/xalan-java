@@ -135,7 +135,7 @@ final class SecuritySupport {
     return ((Long)
             AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {
-                    return new Long(f.lastModified());
+                    return Long.valueOf(f.lastModified());
                 }
             })).longValue();
     }

@@ -37,7 +37,7 @@ public class XSDouble extends XSNumericType {
 	 * Class constructor.
 	 */
 	public XSDouble(double val) {
-	    _value = new Double(val);
+	    _value = Double.valueOf(val);
 	}
 
 	/*
@@ -53,11 +53,11 @@ public class XSDouble extends XSNumericType {
 	public XSDouble(String strVal) throws javax.xml.transform.TransformerException {
 		try {
 			if (strVal.equals("-INF")) {
-				_value = new Double(Double.NEGATIVE_INFINITY);
+				_value = Double.valueOf(Double.NEGATIVE_INFINITY);
 			} else if (strVal.equals("INF")) {
-				_value = new Double(Double.POSITIVE_INFINITY);
+				_value = Double.valueOf(Double.POSITIVE_INFINITY);
 			} else {
-				_value = new Double(strVal);
+				_value = Double.valueOf(strVal);
 			}
 		} catch (NumberFormatException ex) {
 			throw new javax.xml.transform.TransformerException("FORG0006 : The string value '" + 
@@ -79,11 +79,11 @@ public class XSDouble extends XSNumericType {
 			Double d1 = null;
 			
 			if (strVal.equals("INF")) {
-				d1 = new Double(Double.POSITIVE_INFINITY);
+				d1 = Double.valueOf(Double.POSITIVE_INFINITY);
 			} else if (strVal.equals("-INF")) {
-				d1 = new Double(Double.NEGATIVE_INFINITY);
+				d1 = Double.valueOf(Double.NEGATIVE_INFINITY);
 			} else {
-				d1 = new Double(strVal);
+				d1 = Double.valueOf(strVal);
 			}
 			
 			return new XSDouble(d1.doubleValue());			

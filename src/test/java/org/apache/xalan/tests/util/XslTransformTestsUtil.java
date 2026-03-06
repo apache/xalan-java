@@ -69,7 +69,7 @@ import junit.framework.Assert;
  * 
  * @xsl.usage advanced
  */
-public class XslTransformTestsUtil extends FileComparisonUtil {
+public class XslTransformTestsUtil extends FileComparisonUtil {	    	
             
     /**
      * Class field representing, whether an XSL xsl:evaluate instruction 
@@ -83,6 +83,10 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      * for an XSL transformation instance invoked by this test suite.
      */
     private boolean m_isXmlValidationEnabled = false;
+    
+    private static final String OS_NAME = "os.name";
+    
+    private static final String WINDOWS = "Windows";
         
     private static final String BASE_DIR = "base-dir";
     
@@ -209,29 +213,26 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            StreamResult streamResult = new StreamResult(resultStrWriter);
            identityTransformer.transform(new DOMSource(outNode), streamResult);
            
+           String actualResultStr1 = (resultStrWriter.toString()).trim();
+           
            byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
+           String expectedResultStr1 = (new String(goldFileBytes)).trim();
 
            if ((XSLTestConstants.XML).equals(m_fileComparisonType)) {
-        	   String expectedResultStr = (new String(goldFileBytes)).trim();
-        	   String actualResultStr = (resultStrWriter.toString()).trim();
-        	   if (!isXMLFileContentsEqual(expectedResultStr, actualResultStr)) {
+        	   if (!isXMLFileContentsEqual(expectedResultStr1, actualResultStr1)) {
         		   Assert.fail(); 
         	   }
            }
            else if ((XSLTestConstants.HTML).equals(m_fileComparisonType)) { 
-        	   String expectedResultStr = (new String(goldFileBytes)).trim();
-        	   String actualResultStr = (resultStrWriter.toString()).trim();
-        	   Assert.assertEquals(expectedResultStr, actualResultStr);
+        	   Assert.assertEquals(expectedResultStr1, actualResultStr1);
            }
            else if ((XSLTestConstants.JSON).equals(m_fileComparisonType)) {
-        	   if (!isJsonFileContentsEqual(new String(goldFileBytes), resultStrWriter.toString())) {
+        	   if (!isJsonFileContentsEqual(expectedResultStr1, actualResultStr1)) {
         		   Assert.fail();
         	   } 
            }
            else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType)) {
-        	   String expectedResultStr = new String(goldFileBytes);
-        	   String actualResultStr = resultStrWriter.toString();
-        	   Assert.assertEquals(expectedResultStr, actualResultStr);
+        	   Assert.assertEquals(expectedResultStr1, actualResultStr1);
            }              
         }
         catch (Exception ex) {
@@ -843,6 +844,43 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         }
         
         return result;
+    }
+    
+    /**
+     * Method definition, to get platform OS specific file path, using
+     * Windows OS's supplied file path string.
+     * 
+     * Few Xalan, XSL 3 test cases, have OS sensitive test file
+     * results due to file system's file different line-ending characters.
+     * 
+     * The, Linux style file system file contents, have been produced
+     * using Linux dos2unix utility (which is one of, various solutions 
+     * to this issue).
+     * 
+     * @param filePathStr1					   The supplied file path string
+     * @return                                 The new file path string
+     */
+    protected String getXslTransformGoldFilePath(String filePathStr1) {
+    	
+    	String result = null;
+
+    	int idx1 = filePathStr1.lastIndexOf('/');
+    	String prefixStr1 = filePathStr1.substring(0, idx1);
+    	String suffixStr1 = filePathStr1.substring(idx1 + 1);
+
+    	int idx2 = suffixStr1.indexOf('.');    	
+
+    	String fileNameNew = suffixStr1.substring(0, idx2) + "_linux." + suffixStr1.substring(idx2 + 1);
+
+    	String osName = System.getProperty(OS_NAME);
+    	if (osName.startsWith(WINDOWS)) {
+    		result = filePathStr1;
+    	}
+    	else {
+    		result = prefixStr1 + "/" + fileNameNew;  	
+    	}
+
+    	return result;
     }
     
     /**

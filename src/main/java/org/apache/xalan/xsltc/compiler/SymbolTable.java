@@ -205,9 +205,9 @@ final class SymbolTable {
 	// Register the namespace URI
 	Integer refcnt = (Integer)_excludedURI.get(uri);
 	if (refcnt == null)
-	    refcnt = new Integer(1);
+	    refcnt = Integer.valueOf(1);
 	else
-	    refcnt = new Integer(refcnt.intValue() + 1);
+	    refcnt = Integer.valueOf(refcnt.intValue() + 1);
 	_excludedURI.put(uri,refcnt);
     }
 
@@ -257,7 +257,7 @@ final class SymbolTable {
 		    uri = lookupNamespace(prefix);
 		Integer refcnt = (Integer)_excludedURI.get(uri);
 		if (refcnt != null)
-		    _excludedURI.put(uri, new Integer(refcnt.intValue() - 1));
+		    _excludedURI.put(uri, Integer.valueOf(refcnt.intValue() - 1));
 	    }
 	}	
     }

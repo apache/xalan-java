@@ -712,7 +712,7 @@ public class MethodResolver
           {
             String str = xobj.str();
             if (str.length() > 0)
-              return new Character(str.charAt(0));
+              return Character.valueOf(str.charAt(0));
             else
               return null; // ??
           }
@@ -887,42 +887,42 @@ public class MethodResolver
     // specify.  See issue-runtime-errors.
     if ((javaClass == Double.TYPE) ||
        (javaClass == java.lang.Double.class))
-      return new Double(num);
+      return Double.valueOf(num);
     else if (javaClass == Float.TYPE)
-      return new Float(num);
+      return Float.valueOf(num+"");
     else if (javaClass == Long.TYPE)
-    {
+    {    	
       // Use standard Java Narrowing Primitive Conversion
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672
-      return new Long((long)num);
+      return Long.valueOf((long)num);
     }
     else if (javaClass == Integer.TYPE)
     {
       // Use standard Java Narrowing Primitive Conversion
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672
-      return new Integer((int)num);
+      return Integer.valueOf((int)num);
     }
     else if (javaClass == Short.TYPE)
     {
       // Use standard Java Narrowing Primitive Conversion
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672
-      return new Short((short)num);
+      return Short.valueOf((short)num);
     }
     else if (javaClass == Character.TYPE)
     {
       // Use standard Java Narrowing Primitive Conversion
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672
-      return new Character((char)num);
+      return Character.valueOf((char)num);
     }
     else if (javaClass == Byte.TYPE)
     {
       // Use standard Java Narrowing Primitive Conversion
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672
-      return new Byte((byte)num);
+      return Byte.valueOf((byte)num);
     }
     else     // Some other type of object
     {
-      return new Double(num);
+      return Double.valueOf(num);
     }
   }
 

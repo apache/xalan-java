@@ -1428,7 +1428,7 @@ public class XSL3FunctionService {
 			Expression funcArg = funcObj.getArg(idx);    						
 			String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
 			Constructor cons = dataType.getConstructor(new Class[] {String.class});
-			Object obj = cons.newInstance(new String[] {argStr});
+			Object obj = cons.newInstance(new Object[] {argStr});
 			argSequence.add((XObject)obj);
 		}
     	

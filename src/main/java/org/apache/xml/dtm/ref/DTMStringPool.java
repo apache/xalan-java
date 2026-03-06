@@ -108,7 +108,7 @@ public class DTMStringPool
       // New value. Add to tables.
       int newIndex=m_intToString.size();
       m_intToString.addElement(s);
-      m_stringToInt.put(s,new Integer(newIndex));
+      m_stringToInt.put(s, Integer.valueOf(newIndex));
 
       return newIndex;
     }

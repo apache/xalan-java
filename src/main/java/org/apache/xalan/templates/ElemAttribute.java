@@ -47,7 +47,7 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xml.internal.dtm.DTM;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Implementation of XSL stylesheet instruction xsl:attribute.

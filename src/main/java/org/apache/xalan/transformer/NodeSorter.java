@@ -455,7 +455,7 @@ public class NodeSorter
     			d = r.num();
 
     			// Can't use NaN for compare. They are never equal. Use zero instead.  
-    			m_key1Value = new Double(d);
+    			m_key1Value = Double.valueOf(d);
     		}
     		else
     		{
@@ -485,7 +485,7 @@ public class NodeSorter
 
     			if (k2.m_treatAsNumbers) {
     				d = r2.num();
-    				m_key2Value = new Double(d);
+    				m_key2Value = Double.valueOf(d);
     			} else {
     				String str2 = XslTransformEvaluationHelper.getStrVal(r2);
     				m_key2Value = k2.m_col.getCollationKey(str2);
@@ -555,7 +555,7 @@ public class NodeSorter
     			}
 
     			// Can't use NaN for compare. They are never equal. Use zero instead.  
-    			m_key1Value = new Double(d);
+    			m_key1Value = Double.valueOf(d);
     		}
     		else if (r instanceof XSAnyAtomicType) {
     		    m_key1Value = r;
@@ -619,7 +619,7 @@ public class NodeSorter
     					throw new javax.xml.transform.TransformerException("XPTY0004 : The sort key value " + str1 + " is not numeric.");
     				}
 
-    				m_key2Value = new Double(d);
+    				m_key2Value = Double.valueOf(d);
     			}
     			else if (r2 instanceof XSAnyAtomicType) {
     				m_key2Value = r2;

@@ -373,12 +373,12 @@ public class ExsltMath extends ExsltBase
      
      if (value != null)
      {
-       int bits = new Double(precision).intValue();
+       int bits = Double.valueOf(precision).intValue();
        
        if (bits <= value.length())
          value = value.substring(0, bits);
          
-       return new Double(value).doubleValue();
+       return Double.valueOf(value).doubleValue();
      }
      else
        return Double.NaN;

@@ -88,7 +88,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
   private static final String propName = "org.apache.xalan.extensions.bsf.BSFManager";
   
   /** Integer Zero */
-  private static final Integer ZEROINT = new Integer(0);
+  private static final Integer ZEROINT = Integer.valueOf(0);
 
   static{
           BSF_MANAGER =  ObjectFactory.lookUpFactoryClassName(propName, null, null);

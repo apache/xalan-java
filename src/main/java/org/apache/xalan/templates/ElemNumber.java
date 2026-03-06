@@ -1872,7 +1872,7 @@ public class ElemNumber extends ElemTemplateElement
       return getZeroString();
     }
     else
-      return (new Character(table.getChar((int)val - 1))).toString();  // index into table is off one, starts at 0
+      return (Character.valueOf(table.getChar((int)val - 1))).toString();  // index into table is off one, starts at 0
   }
 
   /**

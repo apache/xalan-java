@@ -546,7 +546,8 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 		  else if (value instanceof String)
 		  {
 			  // .. or a String object
-			  m_incremental = (new Boolean((String)value)).booleanValue();
+			  
+			  m_incremental = (Boolean.valueOf((String)value)).booleanValue();
 		  }
 		  else
 		  {
@@ -564,7 +565,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 		  else if (value instanceof String)
 		  {
 			  // .. or a String object
-			  m_optimize = (new Boolean((String)value)).booleanValue();
+			  m_optimize = (Boolean.valueOf((String)value)).booleanValue();
 		  }
 		  else
 		  {
@@ -588,7 +589,7 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 		  else if (value instanceof String)
 		  {
 			  // .. or a String object
-			  m_source_location = (new Boolean((String)value)).booleanValue();
+			  m_source_location = (Boolean.valueOf((String)value)).booleanValue();
 		  }
 		  else
 		  {

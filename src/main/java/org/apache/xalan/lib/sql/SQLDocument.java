@@ -549,7 +549,7 @@ public class SQLDocument extends DTMDocument
       try
       {
         addAttributeToNode(
-          new Integer(meta.getColumnDisplaySize(i)),
+          Integer.valueOf(meta.getColumnDisplaySize(i)),
           m_ColAttrib_DISPLAY_SIZE_TypeID, lastColHeaderIdx);
       }
       catch(Exception e)
@@ -562,7 +562,7 @@ public class SQLDocument extends DTMDocument
       try
       {
         addAttributeToNode(
-          new Integer(meta.getColumnType(i)),
+          Integer.valueOf(meta.getColumnType(i)),
           m_ColAttrib_COLUMN_TYPE_TypeID, lastColHeaderIdx);
       }
       catch(Exception e)
@@ -588,7 +588,7 @@ public class SQLDocument extends DTMDocument
       try
       {
         addAttributeToNode(
-          new Integer(meta.getPrecision(i)),
+          Integer.valueOf(meta.getPrecision(i)),
           m_ColAttrib_PRECISION_TypeID, lastColHeaderIdx);
       }
       catch(Exception e)
@@ -600,7 +600,7 @@ public class SQLDocument extends DTMDocument
       try
       {
         addAttributeToNode(
-          new Integer(meta.getScale(i)),
+          Integer.valueOf(meta.getScale(i)),
           m_ColAttrib_SCALE_TypeID, lastColHeaderIdx);
       }
       catch(Exception e)
@@ -844,7 +844,7 @@ public class SQLDocument extends DTMDocument
                 lastColID = addElementWithData(rawobj, 2, m_Col_TypeID, outParamIdx, lastColID);
                 addAttributeToNode(parm.getName(), m_ColAttrib_COLUMN_NAME_TypeID, lastColID);
                 addAttributeToNode(parm.getName(), m_ColAttrib_COLUMN_LABEL_TypeID, lastColID);
-                addAttributeToNode(new Integer(parm.getType()), m_ColAttrib_COLUMN_TYPE_TypeID, lastColID);
+                addAttributeToNode(Integer.valueOf(parm.getType()), m_ColAttrib_COLUMN_TYPE_TypeID, lastColID);
                 addAttributeToNode(parm.getTypeName(), m_ColAttrib_COLUMN_TYPENAME_TypeID, lastColID);
               }
             }

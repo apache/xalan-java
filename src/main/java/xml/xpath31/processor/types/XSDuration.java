@@ -164,7 +164,7 @@ public class XSDuration extends XSCtrType {
 			didSomething = true;
 		}
 		if (seconds != 0) {
-			String doubStr = (new Double(seconds).toString());
+			String doubStr = (Double.valueOf(seconds).toString());
 			if (doubStr.endsWith(".0")) {				
 				tret += doubStr.substring(0, doubStr.indexOf(".0")) + "S";
 			} 

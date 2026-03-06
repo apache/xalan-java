@@ -124,7 +124,7 @@ public final class AttributesImplSerializer extends AttributesImpl
         {
             /* add the key with the format of "prefix:localName" */
             /* we have just added the attibute, its index is the old length */
-            Integer i = new Integer(index);
+            Integer i = Integer.valueOf(index);
             m_indexFromQName.put(qname, i);
             
             /* now add with key of the format "{uri}localName" */
@@ -149,7 +149,7 @@ public final class AttributesImplSerializer extends AttributesImpl
         for (int index = 0; index < numAtts; index++)
         {
             String qName = super.getQName(index);
-            Integer i = new Integer(index);
+            Integer i = Integer.valueOf(index);
             m_indexFromQName.put(qName, i);
             
             // Add quick look-up to find with uri/local name pair

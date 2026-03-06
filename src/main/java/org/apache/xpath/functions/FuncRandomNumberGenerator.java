@@ -35,7 +35,7 @@ import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
 
-import com.sun.org.apache.xml.internal.dtm.DTM;
+import org.apache.xml.dtm.DTM;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDateTime;
