@@ -17,17 +17,29 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-03-06
+Document last modified : 2026-03-10
 
 Authors:
         Gary Gregory <ggregory@apache.org>
         Joseph Kesselman <keshlam@alum.mit.edu>
         Mukul Gandhi <mukulg@apache.org>
+        
+
+Purpose: The objective of this document is, to describe code repos structure, build processes 
+         and software testing, information for Apache Xalan-J's XSLT 3.0 development project.        
 
 This, GitHub repos branch has src code configured as Maven (https://maven.apache.org/) build, for 
 Xalan-J's implementation for XSLT 3.0 and XPath 3.1 specifications. XSLT, XPath and XQuery languages
 are collectively named as XSL (Extensible Stylesheet Language). There are various Xalan-J 
 src code and document locations, where the name XSL is been used to refer to XSLT 3.0 and XPath 3.1.
+
+Xalan-J implementation is primarily dependent, on Xerces-J src code that provides XML parse and XML Schema
+implementation support. Xalan-J XSLT 3.0 implementation is currently in development stage, and 
+Xalan team is trying to release Xalan-J XSLT 3.0 implementation as a formal software alpha release 
+(ref, https://en.wikipedia.org/wiki/Software_release_life_cycle).
+
+Xalan-J XSLT 3.0 development code, currently uses Xerces-J build jar named as xercesImpl-2.12.3_dev1.jar
+that is produced from Xerces-J's latest unreleased code from its 'main' branch. 
 
 Following are the steps, to run Xalan-J's XSLT 3.0 and XPath 3.1 conformance tests and produce 
 XSLT 3.0 build jar file (containing Xalan-J's XSLT 3.0 and XPath 3.1 run-time processors):  
@@ -92,7 +104,7 @@ XSLT 3.0 implementation.
 Xalan-J's XSLT 3.0 implementation's conformance results with W3C XSLT 3.0 test suite are available at following location : 
 https://github.com/apache/xalan-java/blob/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/w3c_xslt3_testsuite_xalan-j_result.xml
 
-5) Generating Xalan-J code base documentation for this dev repos branch, using JDK's javadoc command 
+5) Producing, Xalan-J code base documentation for this dev repos branch, using JDK's javadoc command 
 
 Following are the steps to do this, for Windows environment.
 
@@ -128,6 +140,8 @@ Javadocs for Xalan-J code documentation for this dev repos branch are located he
    
    These Xalan-J XSL 3 test case maintenance guidelines, specified with this document section (i.e, point 7)), 
    need not be adhered with if the user wishes to use only the Xalan-J XSL 3 development src code, and doesn't
-   wish to work with Xalan-J XSL 3 supplied test cases.   																
+   wish to work with Xalan-J XSL 3 supplied test cases.
+   
+      																
        
 
