@@ -34,12 +34,13 @@ are collectively named as XSL (Extensible Stylesheet Language). There are variou
 src code and document locations, where the name XSL is been used to refer to XSLT 3.0 and XPath 3.1.
 
 Xalan-J implementation is primarily dependent, on Xerces-J src code that provides XML parse and XML Schema
-implementation support. Xalan-J XSLT 3.0 implementation is currently in development stage, and 
-Xalan team is trying to release Xalan-J XSLT 3.0 implementation as a formal software alpha release 
+implementation support. Xalan-J XSLT 3.0 implementation is presently in development stage, and 
+Xalan team hopes to release Xalan-J XSLT 3.0 implementation as a formal software alpha release 
 (ref, https://en.wikipedia.org/wiki/Software_release_life_cycle).
 
-Xalan-J XSLT 3.0 development code, currently uses Xerces-J build jar named as xercesImpl-2.12.3_dev1.jar
-that is produced from Xerces-J's latest unreleased code from its 'main' branch. 
+Xalan-J XSLT 3.0 development code, presently uses Xerces-J build jar named as xercesImpl-2.12.3_dev2.jar 
+(the name of this jar file may change in future, and proper alpha, beta or other names for this jar shall 
+be used) that is produced from Xerces-J's latest unreleased code from its 'main' branch. 
 
 Following are the steps, to run Xalan-J's XSLT 3.0 and XPath 3.1 conformance tests and produce 
 XSLT 3.0 build jar file (containing Xalan-J's XSLT 3.0 and XPath 3.1 run-time processors):  

@@ -754,10 +754,18 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	    ElemSort elemSort = (ElemSort)m_sortElems.get(idx);    	    
     	    AVT langAvt = elemSort.getLang();
     	    
-    	    String collation = null;
+    	    String collationValueStr = null;
     	    AVT collationAvt = elemSort.getCollation();
-    	    if (collationAvt != null) {
-    	       collation = collationAvt.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
+    	    
+    	    if ((collationAvt != null) && (langAvt != null)) {    	    	
+    	       String langStr = langAvt.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());    	    	
+    	       collationValueStr = collationAvt.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
+    	       
+    	       if (XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI.equals(collationValueStr) && "en".equals(langStr)) {
+    	          langAvt = null;
+    	       }
+    	       
+    	       collationValueStr = collationAvt.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());    	           	       
     	    }
     	    
     	    if (langAvt != null) {    	    	    	           	       
@@ -765,12 +773,12 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	       if (!"en".equals(langStr)) {
     	    	  bool1 = true;
     	       }
-    	       else if ((collation != null) && XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI.equals(collation)) {
+    	       else if ((collationValueStr != null) && XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI.equals(collationValueStr)) {
     	    	  bool1 = true; 
     	       }
     	    }
     	    
-    	    if (!bool1 && (collation != null)) {
+    	    if (!bool1 && (collationValueStr != null)) {
     	       bool1 = true;
     	    }
     	}
@@ -1050,6 +1058,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 	   
 	   SourceLocator srcLocator = xctxt.getSAXLocator();
 	   
+	   final int sourceNode = xctxt.getCurrentNode();
+	   
 	   if (evalResult instanceof ResultSequence) {
 		   ResultSequence resultSeq = (ResultSequence)evalResult;
 		   xdmItemList = resultSeq.getResultSequenceItems();   
@@ -1123,7 +1133,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   String sortOrderStr = null;
 					   AVT sortOrderAvt = elemSort.getOrder();
 					   if (sortOrderAvt != null) {
-						   sortOrderStr = sortOrderAvt.evaluate(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+						   sortOrderStr = sortOrderAvt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
 					   }
 
 					   // This can be absent, or specified as "upper-first" | "lower-first".
@@ -1131,7 +1141,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   String caseOrderStr = null;		  
 					   AVT caseOrderAvt = elemSort.getCaseOrder();
 					   if (caseOrderAvt != null) {
-						   caseOrderStr = caseOrderAvt.evaluate(xctxt, DTM.NULL, xctxt.getNamespaceContext()); 
+						   caseOrderStr = caseOrderAvt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext()); 
 					   }			   			   			   
 
 					   // This can be absent (which will be default "text"), or specified as 
@@ -1139,13 +1149,13 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   String dataTypeStr = null;          
 					   AVT dataTypeAvt = elemSort.getDataType();
 					   if (dataTypeAvt != null) {
-						   dataTypeStr = dataTypeAvt.evaluate(xctxt, DTM.NULL, xctxt.getNamespaceContext()); 
+						   dataTypeStr = dataTypeAvt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext()); 
 					   }
 
 					   String langStr = null;
 					   AVT langAvt = elemSort.getLang();
 					   if (langAvt != null) {
-						   langStr = langAvt.evaluate(xctxt, DTM.NULL, xctxt.getNamespaceContext());  
+						   langStr = langAvt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());  
 					   }					   
 
 					   if ((dataTypeStr != null) && !("text".equals(dataTypeStr) || "number".equals(dataTypeStr))) {							  
