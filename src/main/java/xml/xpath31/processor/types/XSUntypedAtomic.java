@@ -30,6 +30,10 @@ import org.apache.xpath.objects.XObject;
  * As per XPath 3.1 spec, xs:untypedAtomic is an XML Schema data type 
  * that is used to denote untyped atomic data, such as text that has not 
  * been assigned a more specific type.
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
  */
 public class XSUntypedAtomic extends XSCtrType {
 
@@ -39,10 +43,18 @@ public class XSUntypedAtomic extends XSCtrType {
     
     private String _value;
     
+    /**
+     * Default constructor.
+     */
     public XSUntypedAtomic() {
         this(null);
     }
     
+    /**
+     * Class constructor.
+     * 
+     * @param str			   argument string value
+     */
     public XSUntypedAtomic(String str) {
         _value = str;
     }
