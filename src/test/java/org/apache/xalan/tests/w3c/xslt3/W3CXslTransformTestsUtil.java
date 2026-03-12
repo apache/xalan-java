@@ -988,7 +988,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	    		    elemTestResult.setAttribute(STATUS, PASS);
     	    		}
     	    		else {
-    	    			elemTestResult.setAttribute(STATUS, "false");
+    	    			elemTestResult.setAttribute(STATUS, FAIL);
     	    		}
     				
     				return;

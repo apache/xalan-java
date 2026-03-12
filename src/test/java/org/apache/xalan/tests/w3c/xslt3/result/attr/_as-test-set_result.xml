@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-27T00:39:19Z" fail="16" name="as" pass="89" run="106" skipped="98" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-03-12T11:38:07Z" fail="15" name="as" pass="90" run="105" skipped="99" statusUnknown="0">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
@@ -107,8 +107,8 @@
    <testResult status="pass" testName="as-1207"/>
    <testResult status="pass" testName="as-1208"/>
    <testResult status="pass" testName="as-1209"/>
-   <testResult status="false" testName="as-1210"/>
-   <testResult status="fail" testName="as-1211"/>
+   <testResult reason="Xalan configured" status="skipped" testName="as-1210"/>
+   <testResult status="pass" testName="as-1211"/>
    <testResult status="pass" testName="as-1212"/>
    <testResult status="pass" testName="as-1213"/>
    <testResult status="fail" testName="as-1214"/>

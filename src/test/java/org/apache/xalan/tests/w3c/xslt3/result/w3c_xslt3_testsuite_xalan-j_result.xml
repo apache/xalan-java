@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-03-10T15:30:50Z" desc="W3C XSLT 3.0 test suite results" fail="1281" pass="3449" run="4771" skipped="608" success="72.29%" xslt_processor="Apache Xalan XSLT 3.0 development code">
+<testResult dateTime="2026-03-12T11:40:49Z" desc="W3C XSLT 3.0 test suite results" fail="1314" pass="3450" run="4770" skipped="609" success="72.33%" xslt_processor="Apache Xalan XSLT 3.0 development code">
   <attr>
-    <as fail="16" pass="89" run="106" skipped="98" success="83.96%"/>
+    <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
     <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
     <expand-text fail="7" pass="52" run="59" skipped="3" success="88.14%"/>
@@ -28,8 +28,8 @@
     <castable fail="0" pass="7" run="7" skipped="2" success="100.0%"/>
     <expression fail="12" pass="87" run="100" skipped="5" success="87.0%"/>
     <for fail="1" pass="2" run="3" skipped="1" success="66.67%"/>
-    <higher-order-functions fail="34" pass="34" run="69" skipped="7" success="49.28%"/>
-    <math fail="4" pass="136" run="151" skipped="8" success="90.07%"/>
+    <higher-order-functions fail="35" pass="34" run="69" skipped="7" success="49.28%"/>
+    <math fail="15" pass="136" run="151" skipped="8" success="90.07%"/>
     <nodetest fail="0" pass="3" run="3" skipped="35" success="100.0%"/>
     <path fail="3" pass="7" run="10" skipped="0" success="70.0%"/>
     <predicate fail="4" pass="48" run="52" skipped="5" success="92.31%"/>
@@ -39,7 +39,7 @@
     <format-number fail="32" pass="32" run="64" skipped="10" success="50.0%"/>
     <json-to-xml fail="6" pass="18" run="24" skipped="36" success="75.0%"/>
     <key fail="33" pass="63" run="96" skipped="3" success="65.62%"/>
-    <position fail="17" pass="192" run="210" skipped="1" success="91.43%"/>
+    <position fail="18" pass="192" run="210" skipped="1" success="91.43%"/>
     <root fail="3" pass="7" run="10" skipped="0" success="70.0%"/>
     <xml-to-json fail="35" pass="52" run="88" skipped="65" success="59.09%"/>
   </fn>
@@ -50,14 +50,14 @@
     <call-template fail="6" pass="34" run="40" skipped="2" success="85.0%"/>
     <choose fail="6" pass="48" run="54" skipped="1" success="88.89%"/>
     <construct-node fail="12" pass="22" run="34" skipped="0" success="64.71%"/>
-    <copy fail="31" pass="78" run="125" skipped="23" success="62.4%"/>
+    <copy fail="47" pass="78" run="125" skipped="23" success="62.4%"/>
     <element fail="13" pass="16" run="29" skipped="0" success="55.17%"/>
     <for-each-group fail="8" pass="72" run="80" skipped="5" success="90.0%"/>
     <iterate fail="1" pass="43" run="44" skipped="0" success="97.73%"/>
     <message fail="5" pass="36" run="42" skipped="3" success="85.71%"/>
     <sequence fail="14" pass="70" run="84" skipped="8" success="83.33%"/>
     <sort fail="26" pass="55" run="81" skipped="0" success="67.9%"/>
-    <try fail="7" pass="26" run="34" skipped="8" success="76.47%"/>
+    <try fail="8" pass="26" run="34" skipped="8" success="76.47%"/>
     <xsl-document fail="8" pass="17" run="25" skipped="0" success="68.0%"/>
   </insn>
   <misc>
@@ -69,7 +69,7 @@
   <type>
     <boolean fail="1" pass="104" run="105" skipped="7" success="99.05%"/>
     <date fail="46" pass="88" run="134" skipped="4" success="65.67%"/>
-    <namespace fail="74" pass="143" run="221" skipped="3" success="64.71%"/>
+    <namespace fail="78" pass="143" run="221" skipped="3" success="64.71%"/>
     <node fail="1" pass="31" run="32" skipped="0" success="96.88%"/>
     <string fail="5" pass="129" run="134" skipped="2" success="96.27%"/>
   </type>

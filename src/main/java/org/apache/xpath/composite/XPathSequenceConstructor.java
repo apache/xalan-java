@@ -53,8 +53,8 @@ import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * This class implements and evaluates XPath 3.1 literal 
- * sequence constructor expressions.
+ * Class definition, to help implement evaluating XPath 3.1 
+ * literal sequence constructor expressions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -99,10 +99,6 @@ public class XPathSequenceConstructor extends Expression {
     
     private XSL3FunctionService m_xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
     
-    @Override
-    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-       // no op
-    }
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
@@ -111,7 +107,7 @@ public class XPathSequenceConstructor extends Expression {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        int contextNode = xctxt.getContextNode();
+        final int currentNode = xctxt.getContextNode();
         
         ElemTemplateElement elemTemplateElement = (ElemTemplateElement)(xctxt.getNamespaceContext());
         List<XMLNSDecl> prefixTable = null;
@@ -149,7 +145,7 @@ public class XPathSequenceConstructor extends Expression {
                
                DTMCursorIterator dtmIter = null;                     
                try {
-                   dtmIter = locPathIterator.asIterator(xctxt, contextNode);
+                   dtmIter = locPathIterator.asIterator(xctxt, currentNode);
                }
                catch (ClassCastException ex) {
                    // no op
@@ -263,7 +259,7 @@ public class XPathSequenceConstructor extends Expression {
         		   xpathObj.fixupVariables(m_vars, m_globals_size);
                }
         	   
-               XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, 
+               XObject xPathExprPartResult = xpathObj.execute(xctxt, currentNode, 
                                                                               xctxt.getNamespaceContext());                              
                
                if (xPathExprPartResult instanceof XMLNodeCursorImpl) {
@@ -420,6 +416,11 @@ public class XPathSequenceConstructor extends Expression {
         }
         
         return result;
+    }
+    
+    @Override
+    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
+       // no op
     }
 
     @Override

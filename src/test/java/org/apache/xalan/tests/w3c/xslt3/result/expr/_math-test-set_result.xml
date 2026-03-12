@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:53Z" fail="4" name="math" pass="136" run="151" skipped="8" statusUnknown="11">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-03-12T11:39:26Z" fail="15" name="math" pass="136" run="151" skipped="8" statusUnknown="0">
    <testResult status="pass" testName="math-0101"/>
    <testResult status="pass" testName="math-0102"/>
    <testResult status="pass" testName="math-0103"/>
@@ -122,16 +122,16 @@
    <testResult status="pass" testName="math-3201"/>
    <testResult status="pass" testName="math-3301"/>
    <testResult status="pass" testName="math-3301a"/>
-   <testResult status="false" testName="math-3302"/>
-   <testResult status="false" testName="math-3302a"/>
-   <testResult status="false" testName="math-3303"/>
-   <testResult status="false" testName="math-3303a"/>
-   <testResult status="false" testName="math-3304"/>
-   <testResult status="false" testName="math-3304a"/>
-   <testResult status="false" testName="math-3305"/>
-   <testResult status="false" testName="math-3305a"/>
-   <testResult status="false" testName="math-3306"/>
-   <testResult status="false" testName="math-3306a"/>
+   <testResult status="fail" testName="math-3302"/>
+   <testResult status="fail" testName="math-3302a"/>
+   <testResult status="fail" testName="math-3303"/>
+   <testResult status="fail" testName="math-3303a"/>
+   <testResult status="fail" testName="math-3304"/>
+   <testResult status="fail" testName="math-3304a"/>
+   <testResult status="fail" testName="math-3305"/>
+   <testResult status="fail" testName="math-3305a"/>
+   <testResult status="fail" testName="math-3306"/>
+   <testResult status="fail" testName="math-3306a"/>
    <testResult status="pass" testName="math-3307"/>
    <testResult status="pass" testName="math-3307a"/>
    <testResult status="pass" testName="math-3308"/>
@@ -142,7 +142,7 @@
    <testResult status="pass" testName="math-3310a"/>
    <testResult status="pass" testName="math-3311"/>
    <testResult feature="schema_aware" status="skipped" testName="math-3312"/>
-   <testResult status="false" testName="math-3313"/>
+   <testResult status="fail" testName="math-3313"/>
    <testResult status="pass" testName="math-3314"/>
    <testResult status="pass" testName="math-3315"/>
    <testResult status="pass" testName="math-3316"/>

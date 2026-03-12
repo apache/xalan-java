@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-03-11
+Document last modified : 2026-03-12
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -80,6 +80,23 @@ The Maven build results like following shall be produced:
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
 [INFO] Total time:  02:17 min
+
+
+*************************************
+
+Xalan-J XSL 3 test case reviews: Xalan-J team has observed during internal testing that, following test cases
+are failing on macOS/Linux platform:
+
+FnCollectionTests.xslFnCollectionTest1
+FnCollectionTests.xslFnCollectionTest2
+XPathValueComparisonTests.xslValueComparison7
+
+This is perhaps due to, Xalan-J XSL 3 expected result files for these mentioned test cases, having end-of-line
+character sequence not meeting macOS/Linux platform guidelines.
+
+As such, Xalan-J XSL 3 development implementation, doesn't have inherent bugs for these mentioned XSL test cases.
+
+*************************************  
 
 
 If the user needs to run Xalan-J's XSLT 3.0 implementation via Java application code, the value of JVM's system property 

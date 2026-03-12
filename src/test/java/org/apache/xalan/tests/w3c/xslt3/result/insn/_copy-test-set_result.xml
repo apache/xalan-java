@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:23Z" fail="31" name="copy" pass="78" run="125" skipped="23" statusUnknown="16">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-03-12T11:38:44Z" fail="47" name="copy" pass="78" run="125" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="pass" testName="copy-0103"/>
@@ -24,22 +24,22 @@
    <testResult status="pass" testName="copy-0609"/>
    <testResult status="pass" testName="copy-0610"/>
    <testResult status="pass" testName="copy-0611"/>
-   <testResult status="false" testName="copy-0612"/>
-   <testResult status="false" testName="copy-0613"/>
-   <testResult status="false" testName="copy-0614"/>
-   <testResult status="false" testName="copy-0615"/>
-   <testResult status="false" testName="copy-0616"/>
-   <testResult status="false" testName="copy-0617"/>
-   <testResult status="false" testName="copy-0618"/>
-   <testResult status="false" testName="copy-0619"/>
-   <testResult status="false" testName="copy-0620"/>
-   <testResult status="false" testName="copy-0621"/>
-   <testResult status="false" testName="copy-0622"/>
-   <testResult status="false" testName="copy-0623"/>
-   <testResult status="false" testName="copy-0624"/>
-   <testResult status="false" testName="copy-0625"/>
-   <testResult status="false" testName="copy-0626"/>
-   <testResult status="false" testName="copy-0627"/>
+   <testResult status="fail" testName="copy-0612"/>
+   <testResult status="fail" testName="copy-0613"/>
+   <testResult status="fail" testName="copy-0614"/>
+   <testResult status="fail" testName="copy-0615"/>
+   <testResult status="fail" testName="copy-0616"/>
+   <testResult status="fail" testName="copy-0617"/>
+   <testResult status="fail" testName="copy-0618"/>
+   <testResult status="fail" testName="copy-0619"/>
+   <testResult status="fail" testName="copy-0620"/>
+   <testResult status="fail" testName="copy-0621"/>
+   <testResult status="fail" testName="copy-0622"/>
+   <testResult status="fail" testName="copy-0623"/>
+   <testResult status="fail" testName="copy-0624"/>
+   <testResult status="fail" testName="copy-0625"/>
+   <testResult status="fail" testName="copy-0626"/>
+   <testResult status="fail" testName="copy-0627"/>
    <testResult status="pass" testName="copy-0701"/>
    <testResult status="pass" testName="copy-0801"/>
    <testResult status="pass" testName="copy-0901"/>

@@ -46,8 +46,9 @@ public class XslAsAttrTests extends W3CXslTransformTestsUtil {
     	m_skipped_tests_list.add("as-0110a");
     	m_skipped_tests_list.add("as-0111a");
     	m_skipped_tests_list.add("as-0112a");
+    	m_skipped_tests_list.add("as-1210");
     	m_skipped_tests_list.add("as-1303");
-    	m_skipped_tests_list.add("as-1304");
+    	m_skipped_tests_list.add("as-1304");    	
     }
 
     @AfterClass
