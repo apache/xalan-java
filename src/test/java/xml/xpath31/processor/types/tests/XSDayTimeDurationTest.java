@@ -1,0 +1,337 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package xml.xpath31.processor.types.tests;
+
+import static org.apache.xpath.objects.XObject.CLASS_XS_DAYTIME_DURATION;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import javax.xml.transform.TransformerException;
+
+import org.apache.xpath.objects.ResultSequence;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import xml.xpath31.processor.types.XSDayTimeDuration;
+import xml.xpath31.processor.types.XSDuration;
+import xml.xpath31.processor.types.XSInteger;
+
+/**
+ * Xalan-J XSL 3, XPath 3.1 data type test cases.
+ * 
+ * @author Samael Bates, Xalan-J XSL 3 implementation user via 
+ *                       Xalan dev forum. Initial contribution.
+ *                       
+ * @author Mukul Gandhi <mukulg@apache.org>, Modified this XSL test case, from 
+ *                                           JUnit 5 to JUnit 4.                       
+ * 
+ * @xsl.usage advanced
+ */
+public class XSDayTimeDurationTest {
+
+    private static final int ONE_DAY_SECONDS = 86_400;
+    
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+    	// no op	
+    }
+    
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+		// no op
+	}
+
+    @Test
+    public void constructor() throws TransformerException {
+        final ResultSequence input = new ResultSequence();
+        input.add(new XSDayTimeDuration(86_000));
+
+        final ResultSequence sequence = new XSDayTimeDuration().constructor(input);
+
+        assertNotNull(sequence);
+        assertEquals(1, sequence.size());
+        assertEquals("PT23H53M20S", ((XSDayTimeDuration)sequence.item(0)).stringValue());
+    }
+
+    @Test
+    public void parseDayTimeDuration1() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(0);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT0S");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(0, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration2() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(12);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT12S");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(12, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration3() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(34);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT34S");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(34, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration4() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(51);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT51S");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(51, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration5() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(59);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT59S");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(59, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration6() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(60);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT1M");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(60, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration7() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(90);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT1M30S");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(90, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration8() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(300);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT5M");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(300, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration9() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(500);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT8M20S");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(500, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration10() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(3600);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT1H");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(3600, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration11() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(86_000);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("PT23H53M20S");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(86_000, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration12() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(ONE_DAY_SECONDS);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("P1D");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(ONE_DAY_SECONDS, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration13() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(90_000);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("P1DT1H");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(90_000, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration14() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(93_600);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("P1DT2H");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(93_600, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration15() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(371_280);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("P4DT7H8M");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(371_280, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration16() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(378_500);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("P4DT9H8M20S");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(378_500, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration17() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(500_000);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("P5DT18H53M20S");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(500_000, parsedVal.value(), 0);
+    }
+    
+    @Test
+    public void parseDayTimeDuration18() throws TransformerException {
+        final XSDuration expected = new XSDayTimeDuration(604_800);
+        final XSDuration parsedVal = XSDayTimeDuration.parseDayTimeDuration("P7D");
+
+        assertTrue(expected.equals(parsedVal));
+
+        assertEquals(604_800, parsedVal.value(), 0);
+    }
+
+    @Test
+    public void parseDayTimeDurationUnsupportedFormat() {
+    	try {
+    	    XSDayTimeDuration.parseDayTimeDuration("");
+    	}
+    	catch (TransformerException ex) {
+    		// This test case, passes if this exception occurs
+    		assertTrue(true);
+    	}
+    }
+
+    @Test
+    public void typeName() {
+        assertEquals("dayTimeDuration", new XSDayTimeDuration().typeName());
+    }
+
+    @Test
+    public void stringType() {
+        assertEquals("xs:dayTimeDuration", new XSDayTimeDuration().stringType());
+    }
+    
+    @Test
+    public void stringValue() {
+        assertEquals("PT0S", new XSDayTimeDuration(0).stringValue());
+        assertEquals("PT12S", new XSDayTimeDuration(12).stringValue());
+        assertEquals("PT34S", new XSDayTimeDuration(34).stringValue());
+        assertEquals("PT51S", new XSDayTimeDuration(51).stringValue());
+        assertEquals("PT59S", new XSDayTimeDuration(59).stringValue());
+        assertEquals("PT1M", new XSDayTimeDuration(60).stringValue());
+        assertEquals("PT1M30S", new XSDayTimeDuration(90).stringValue());
+        assertEquals("PT5M", new XSDayTimeDuration(300).stringValue());
+        assertEquals("PT8M20S", new XSDayTimeDuration(500).stringValue());
+        assertEquals("PT1H", new XSDayTimeDuration(3600).stringValue());
+        assertEquals("PT23H53M20S", new XSDayTimeDuration(86_000).stringValue());
+        assertEquals("P1D", new XSDayTimeDuration(ONE_DAY_SECONDS).stringValue());
+        assertEquals("P1DT1H", new XSDayTimeDuration(90_000).stringValue());
+        assertEquals("P1DT2H", new XSDayTimeDuration(93_600).stringValue());
+        assertEquals("P4DT7H8M", new XSDayTimeDuration(371_280).stringValue());
+        assertEquals("P4DT9H8M20S", new XSDayTimeDuration(378_500).stringValue());
+        assertEquals("P5DT18H53M20S", new XSDayTimeDuration(500_000).stringValue());
+        assertEquals("P7D", new XSDayTimeDuration(604_800).stringValue());
+    }
+
+    @Test
+    public void add() {
+        final XSDayTimeDuration oneMinute = new XSDayTimeDuration(60);
+        final XSDayTimeDuration fiveMinute = new XSDayTimeDuration(300);
+
+        assertEquals(360, oneMinute.add(fiveMinute).value(), 0);
+    }
+
+    @Test
+    public void subtract() {
+        final XSDayTimeDuration oneMinute = new XSDayTimeDuration(60);
+        final XSDayTimeDuration fiveMinute = new XSDayTimeDuration(300);
+
+        assertEquals(240.0, fiveMinute.subtract(oneMinute).value(), 0);
+    }
+
+    @Test
+    public void mult() throws TransformerException {
+        final XSDayTimeDuration oneMinute = new XSDayTimeDuration(60);
+
+        assertEquals(120.0, oneMinute.mult(new XSInteger("2")).value(), 0);
+
+        assertEquals(60.0, oneMinute.value(), 0);
+
+        assertEquals(300.0, oneMinute.mult(new XSInteger("5")).value(), 0);
+    }
+
+    @Test
+    public void div() throws TransformerException {
+        final XSDayTimeDuration oneMinute = new XSDayTimeDuration(60);
+
+        assertEquals(30.0, oneMinute.div(new XSInteger("2")).value(), 0);
+
+        assertEquals(60.0, oneMinute.value(), 0);
+
+        assertEquals(20.0, oneMinute.div(new XSInteger("3")).value(), 0);
+    }
+
+    @Test
+    public void getType() {
+        assertEquals(CLASS_XS_DAYTIME_DURATION, new XSDayTimeDuration().getType());
+    }
+}
