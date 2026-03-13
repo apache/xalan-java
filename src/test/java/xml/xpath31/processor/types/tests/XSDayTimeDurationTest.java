@@ -21,6 +21,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.objects.ResultSequence;
@@ -271,25 +274,25 @@ public class XSDayTimeDurationTest {
     }
     
     @Test
-    public void stringValue() {
-        assertEquals("PT0S", new XSDayTimeDuration(0).stringValue());
-        assertEquals("PT12S", new XSDayTimeDuration(12).stringValue());
-        assertEquals("PT34S", new XSDayTimeDuration(34).stringValue());
-        assertEquals("PT51S", new XSDayTimeDuration(51).stringValue());
-        assertEquals("PT59S", new XSDayTimeDuration(59).stringValue());
-        assertEquals("PT1M", new XSDayTimeDuration(60).stringValue());
-        assertEquals("PT1M30S", new XSDayTimeDuration(90).stringValue());
-        assertEquals("PT5M", new XSDayTimeDuration(300).stringValue());
-        assertEquals("PT8M20S", new XSDayTimeDuration(500).stringValue());
-        assertEquals("PT1H", new XSDayTimeDuration(3600).stringValue());
-        assertEquals("PT23H53M20S", new XSDayTimeDuration(86_000).stringValue());
-        assertEquals("P1D", new XSDayTimeDuration(ONE_DAY_SECONDS).stringValue());
-        assertEquals("P1DT1H", new XSDayTimeDuration(90_000).stringValue());
-        assertEquals("P1DT2H", new XSDayTimeDuration(93_600).stringValue());
-        assertEquals("P4DT7H8M", new XSDayTimeDuration(371_280).stringValue());
-        assertEquals("P4DT9H8M20S", new XSDayTimeDuration(378_500).stringValue());
-        assertEquals("P5DT18H53M20S", new XSDayTimeDuration(500_000).stringValue());
-        assertEquals("P7D", new XSDayTimeDuration(604_800).stringValue());
+    public void stringValue() {        
+        strValueAssertHelper("PT0S", 0);                
+        strValueAssertHelper("PT12S", 12);
+        strValueAssertHelper("PT34S", 34);        
+        strValueAssertHelper("PT51S", 51);
+        strValueAssertHelper("PT59S", 59);
+        strValueAssertHelper("PT1M", 60);
+        strValueAssertHelper("PT1M30S", 90);
+        strValueAssertHelper("PT5M", 300);
+        strValueAssertHelper("PT8M20S", 500);
+        strValueAssertHelper("PT1H", 3600);
+        strValueAssertHelper("PT23H53M20S", 86_000);
+        strValueAssertHelper("P1D", ONE_DAY_SECONDS);
+        strValueAssertHelper("P1DT1H", 90_000);
+        strValueAssertHelper("P1DT2H", 93_600);
+        strValueAssertHelper("P4DT7H8M", 371_280);
+        strValueAssertHelper("P4DT9H8M20S", 378_500);
+        strValueAssertHelper("P5DT18H53M20S", 500_000);
+        strValueAssertHelper("P7D", 604_800);
     }
 
     @Test
@@ -333,5 +336,25 @@ public class XSDayTimeDurationTest {
     @Test
     public void getType() {
         assertEquals(CLASS_XS_DAYTIME_DURATION, new XSDayTimeDuration().getType());
+    }
+    
+    /**
+     * Test case helper method to assert 'success' or 'failure'.
+     * 
+     * @param expected								xs:dayTimeDuration string value
+     * @param seconds								Supplied, integer valued 'second'.
+     */
+    private void strValueAssertHelper(String expected, int seconds) {
+    	
+    	assertEquals(expected, new XSDayTimeDuration(seconds).stringValue());
+    	
+    	if (seconds < ONE_DAY_SECONDS) {
+            // Up to the one-day point, XSDayTimeDuration uses the same string format as java.time.Duration
+            assertEquals(
+            		"XSDayTimeDuration should do the same string format as java.time.Duration",
+                    new XSDayTimeDuration(seconds).stringValue(),
+                    Duration.of(seconds, ChronoUnit.SECONDS).toString()                    
+            );
+        }
     }
 }
