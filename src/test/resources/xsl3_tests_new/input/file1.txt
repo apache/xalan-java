@@ -1,0 +1,2 @@
+hello world. this is used
+to test xpath fn:collection function.
