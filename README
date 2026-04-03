@@ -15,7 +15,7 @@
  * limitations under the License.
 -->
 Apache Xalan-Java Build, Test, and Release Notes
-Copyright 1999-2023 The Apache Software Foundation
+Copyright 1999-2026 The Apache Software Foundation
 
 Authors:
    Gary Gregory <ggregory@apache.org>
@@ -202,4 +202,8 @@ need to clean that up at some point.
 2.5) When bugs are reported, tests should be added (at least to the
 jira test set) to demonstrate the problem. When bugs are fixed, those
 tests should be migrated either to the appropriate category or to the
-"contrib" bucket if they don't fit nicely anywhere else. If the bug report was in error, the test demonstrating the (correct but unexpected) behavior may be either discarded, or moved as above if we think it's a useful illustration.
+"contrib" bucket if they don't fit nicely anywhere else. If the bug report was in error, the test demonstrating the 
+(correct but unexpected) behavior may be either discarded, or moved as above if we think it's a useful illustration.
+
+We use JProfiler (https://www.ej-technologies.com/jprofiler) tool for Java software run-time 
+analysis and optimization of Xalan-J software.
