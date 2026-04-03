@@ -159,8 +159,7 @@ Javadocs for Xalan-J code documentation for this dev repos branch are located he
    These Xalan-J XSL 3 test case maintenance guidelines, specified with this document section (i.e, point 7)), 
    need not be adhered with if the user wishes to use only the Xalan-J XSL 3 development src code, and doesn't
    wish to work with Xalan-J XSL 3 supplied test cases.
-   
-      																
+         																
 We use JProfiler (https://www.ej-technologies.com/jprofiler) tool for Java software run-time 
 analysis and optimization of Xalan-J software.       
 
