@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-03-13
+Document last modified : 2026-04-03
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -161,5 +161,6 @@ Javadocs for Xalan-J code documentation for this dev repos branch are located he
    wish to work with Xalan-J XSL 3 supplied test cases.
    
       																
-       
+We use JProfiler (https://www.ej-technologies.com/jprofiler) tool for Java software run-time 
+analysis and optimization of Xalan-J software.       
 
