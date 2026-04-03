@@ -3,8 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <!-- KNOWN ISSUES:
-       "Production" tgz/zip files need to be copied to ant-like build/
-       as temporary xalan-test integration
+       Build should run some or all of xalan-test before that
+       directory gets copied into the Source Release, so output files correctly
+       report current build status. And arguably build should fail if we have
+       new regressions. (Separate task: Rationalize/update regression vs.
+       known-accepted handling in xalan-test.)
 
        Footnote: To get dependency tree from a multi-module project, use the
        command "mvn compile dependency:tree" so everything is in scope.
