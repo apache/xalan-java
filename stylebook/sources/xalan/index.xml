@@ -367,4 +367,14 @@ in the Xalan-Java distribution..</p>
  <p>For the licences that apply to the JARs other than xalan.jar, see the licenses and 
     associated readme files in the root directory of this distribution.</p>
 </s2>
+
+<s2 title="Security">
+<p>Xalan does what the XML specifications require by default. In some cases, this may not be appropriate behavior when working with untrusted input: the <jump href="https://apache.github.io/xalan-c/secureweb.html">XML Security Overview</jump> mentions some potential risks. There are multiple methods for blocking access to external entities and for disallowing DOCTYPE declarations, and it is up to the downstream user of Xalan to block/reject these constructs where appropriate.</p>
+<p>Specific to Xalan Java: some components, such as 'Transformer', will use your system's infrastructure for components such as the 'XMLReader' implementation. This means to use Xalan Java safely with untrusted input, you must also make sure those components are configured securely.</p>
+
+<p>If you think you have found a security issue in Apache Xalan, please follow the <jump href="https://www.apache.org/security/#reporting-a-vulnerability">reporting guidelines</jump></p>
+
+</s2>
+
+
 </s1>
