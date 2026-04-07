@@ -860,7 +860,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      * @param filePathStr1					   The supplied file path string
      * @return                                 The new file path string
      */
-    protected String getXslTransformGoldFilePath(String filePathStr1) {
+    /*protected String getXslTransformGoldFilePath(String filePathStr1) {
     	
     	String result = null;
 
@@ -881,7 +881,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     	}
 
     	return result;
-    }
+    }*/
     
     /**
      * This method is used by, Xalan-J XSL 3 java extension function calls

@@ -67,16 +67,19 @@ public class FuncInsertBefore extends Function3Args {
             
             ResultSequence rsArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
                                                                                           xObject0, xctxt);
-            ResultSequence rsArg2 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
+            ResultSequence rsArg1 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
                                                                                           xObject2, xctxt);
             
-            if (rsArg0.size() == 0) {
-                for (int idx = 0; idx < rsArg2.size(); idx++) {
-                   result.add(rsArg2.item(idx));   
+            int size1 = rsArg0.size();
+            int size2 = rsArg1.size();
+            
+            if (size1 == 0) {
+                for (int idx = 0; idx < size2; idx++) {
+                   result.add(rsArg1.item(idx));   
                 }   
             }
-            else if (rsArg2.size() == 0) {
-                for (int idx = 0; idx < rsArg0.size(); idx++) {
+            else if (size2 == 0) {
+                for (int idx = 0; idx < size1; idx++) {
                    result.add(rsArg0.item(idx));   
                 }
             }
@@ -86,19 +89,19 @@ public class FuncInsertBefore extends Function3Args {
                 if (seqInsertPos < 1) {
                    seqInsertPos = 1; 
                 }
-                else if (seqInsertPos > rsArg0.size()) {
-                   seqInsertPos = rsArg0.size() + 1;  
+                else if (seqInsertPos > size1) {
+                   seqInsertPos = size1 + 1;  
                 }
                 
                 for (int idx = 0; idx < (seqInsertPos - 1); idx++) {
                    result.add(rsArg0.item(idx));  
                 }
                 
-                for (int idx = 0; idx < rsArg2.size(); idx++) {
-                   result.add(rsArg2.item(idx));   
+                for (int idx = 0; idx < size2; idx++) {
+                   result.add(rsArg1.item(idx));   
                 }
                 
-                for (int idx = (seqInsertPos - 1); idx < rsArg0.size(); idx++) {
+                for (int idx = (seqInsertPos - 1); idx < size1; idx++) {
                    result.add(rsArg0.item(idx));  
                 }
             }

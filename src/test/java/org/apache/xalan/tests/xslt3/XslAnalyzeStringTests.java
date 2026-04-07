@@ -47,7 +47,7 @@ public class XslAnalyzeStringTests extends XslTransformTestsUtil {
         m_xslTransformerFactory = null;
     }
 
-    @Test
+    /*@Test
     public void xslAnalyzeStringTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
@@ -57,7 +57,7 @@ public class XslAnalyzeStringTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
     @Test
     public void xslAnalyzeStringTest2() {

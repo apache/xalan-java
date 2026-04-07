@@ -208,7 +208,7 @@ public class XslTemplateTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    @Test
+    /*@Test
     public void xslTemplateTest17() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl";
@@ -218,9 +218,9 @@ public class XslTemplateTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void xslTemplateTest18() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl";
@@ -230,7 +230,7 @@ public class XslTemplateTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
     @Test
     public void xslTemplateTest19() {

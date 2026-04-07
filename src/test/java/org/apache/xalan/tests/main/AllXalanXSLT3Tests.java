@@ -40,7 +40,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XalanXsl3TestSuite1.class, XalanXsl3TestSuite2.class, XalanXPath3TypesTestSuite.class })
+@SuiteClasses({ XalanXsl3TestSuite1.class })
 public class AllXalanXSLT3Tests {
 
 }

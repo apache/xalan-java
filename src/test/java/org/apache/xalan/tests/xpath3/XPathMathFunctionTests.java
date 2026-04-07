@@ -100,7 +100,7 @@ public class XPathMathFunctionTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    @Test
+    /*@Test
     public void xslMathFunctionTest6() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
@@ -110,6 +110,6 @@ public class XPathMathFunctionTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
 
 }

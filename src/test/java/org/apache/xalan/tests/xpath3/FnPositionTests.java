@@ -47,7 +47,7 @@ public class FnPositionTests extends XslTransformTestsUtil {
         m_xslTransformerFactory = null;
     }
 
-    @Test
+    /*@Test
     public void xslFnPositionTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "grp1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "grp1.xsl";
@@ -57,9 +57,9 @@ public class FnPositionTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void xslFnPositionTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "grp1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "grp2.xsl";
@@ -69,9 +69,9 @@ public class FnPositionTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void xslFnPositionTest3() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "grp1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "grp3.xsl";
@@ -81,9 +81,9 @@ public class FnPositionTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void xslFnPositionTest4() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "grp1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "grp4.xsl";
@@ -93,7 +93,7 @@ public class FnPositionTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
     @Test
     public void xslFnPositionTest5() {

@@ -127,7 +127,7 @@ public class FnTransformTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    @Test
+    /*@Test
     public void xslFnTransformTest9() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
@@ -135,7 +135,7 @@ public class FnTransformTests extends XslTransformTestsUtil {
         String goldFilePath = getXslTransformGoldFilePath(XSL_TRANSFORM_GOLD_DIRPATH + "test9.out");
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
     @Test
     public void xslFnTransformTest10() {

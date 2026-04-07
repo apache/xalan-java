@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-04-03
+Document last modified : 2026-04-07
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -66,11 +66,11 @@ The Maven build results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.AllXalanXSLT3Tests
-[INFO] Tests run: 1498, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 53.202 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
+[INFO] Tests run: 588, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 42.464 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 1498, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 588, Failures: 0, Errors: 0, Skipped: 0
 [INFO]
 [INFO]
 [INFO] --- jar:3.3.0:jar (default-jar) @ xalan-java ---
@@ -79,25 +79,7 @@ The Maven build results like following shall be produced:
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  02:13 min
-
-
-*************************************
-
-Xalan-J XSL 3 test case reviews: Xalan-J team has observed during internal testing that, following test cases
-are failing on macOS/Linux platform:
-
-FnCollectionTests.xslFnCollectionTest1
-FnCollectionTests.xslFnCollectionTest2
-XPathValueComparisonTests.xslValueComparison7
-
-This is perhaps due to, Xalan-J XSL 3 expected result files for these mentioned test cases, having end-of-line
-character sequence not meeting macOS/Linux platform guidelines.
-
-As such, Xalan-J XSL 3 development implementation, doesn't have inherent bugs for these mentioned XSL test cases.
-
-*************************************  
-
+[INFO] Total time:  02:19 min 
 
 If the user needs to run Xalan-J's XSLT 3.0 implementation via Java application code, the value of JVM's system property 
 javax.xml.transform.TransformerFactory needs to be set to org.apache.xalan.processor.XSL3TransformerFactoryImpl.

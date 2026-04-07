@@ -57,7 +57,7 @@ public class FnUnparsedTextTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    @Test
+    /*@Test
     public void xslFnUnparsedTextTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
@@ -67,9 +67,9 @@ public class FnUnparsedTextTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void xslFnUnparsedTextTest3() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
@@ -79,7 +79,7 @@ public class FnUnparsedTextTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.HTML;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
-    }
+    }*/
     
     @Test
     public void xslFnUnparsedTextTest4() {

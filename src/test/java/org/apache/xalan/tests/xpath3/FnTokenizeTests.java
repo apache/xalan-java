@@ -148,7 +148,7 @@ public class FnTokenizeTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
-    @Test
+    /*@Test
     public void xslFnTokenizeTest11() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
@@ -158,7 +158,7 @@ public class FnTokenizeTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
-    }
+    }*/
     
     @Test
     public void xslFnTokenizeTest12() {

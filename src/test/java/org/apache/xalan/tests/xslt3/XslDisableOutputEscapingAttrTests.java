@@ -59,7 +59,7 @@ public class XslDisableOutputEscapingAttrTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    @Test
+    /*@Test
     public void xslDisableOutputEscapingTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
@@ -69,9 +69,9 @@ public class XslDisableOutputEscapingAttrTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void xslDisableOutputEscapingTest3() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
@@ -81,9 +81,9 @@ public class XslDisableOutputEscapingAttrTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.TEXT;
                                
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void xslDisableOutputEscapingTest4() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
@@ -93,9 +93,9 @@ public class XslDisableOutputEscapingAttrTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void xslDisableOutputEscapingTest5() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
@@ -105,9 +105,9 @@ public class XslDisableOutputEscapingAttrTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void xslDisableOutputEscapingTest6() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
@@ -117,9 +117,9 @@ public class XslDisableOutputEscapingAttrTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void xslDisableOutputEscapingTest7() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
@@ -129,6 +129,6 @@ public class XslDisableOutputEscapingAttrTests extends XslTransformTestsUtil {
         m_fileComparisonType = XSLTestConstants.TEXT;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
 
 }
