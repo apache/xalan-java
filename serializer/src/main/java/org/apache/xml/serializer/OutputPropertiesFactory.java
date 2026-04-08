@@ -183,7 +183,7 @@ public final class OutputPropertiesFactory
     private static final int S_XALAN_PREFIX_LEN = S_XALAN_PREFIX.length();
 
     /** Synchronization object for lazy initialization of the above tables. */
-    private static Integer m_synch_object = new Integer(1);
+    private static Object m_synch_object = new Object();
 
     /** the directory in which the various method property files are located */
     private static final String PROP_DIR = SerializerBase.PKG_PATH+'/';
