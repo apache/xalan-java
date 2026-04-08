@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-04-07
+Document last modified : 2026-04-08
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -25,123 +25,167 @@ Authors:
         Mukul Gandhi <mukulg@apache.org>
         
 
-Purpose: The objective of this document is, to describe code repos structure, build processes 
-         and software testing, information for Apache Xalan-J's XSLT 3.0 development project.        
+Purpose: The objective of providing this document are following:
+
+         > To describe code repos structure, build processes and testing information for Xalan Java's 
+           XSLT 3.0 development project.
+         > To describe methods to run Xalan Java XSLT 3.0 processor from command line, and from within
+           Java application code.        
 
 This, GitHub repos branch has src code configured as Maven (https://maven.apache.org/) build, for 
-Xalan-J's implementation for XSLT 3.0 and XPath 3.1 specifications. XSLT, XPath and XQuery languages
-are collectively named as XSL (Extensible Stylesheet Language). There are various Xalan-J 
+Xalan Java's implementation for XSLT 3.0 and XPath 3.1 specifications. XSLT, XPath and XQuery languages
+are collectively named as XSL (Extensible Stylesheet Language). There are various Xalan Java 
 src code and document locations, where the name XSL is been used to refer to XSLT 3.0 and XPath 3.1.
 
-Xalan-J implementation is primarily dependent, on Xerces-J src code that provides XML parse and XML Schema
-implementation support. Xalan-J XSLT 3.0 implementation is presently in development stage, and 
-Xalan team hopes to release Xalan-J XSLT 3.0 implementation as a formal software alpha release 
+Xalan Java implementation is primarily dependent, on Xerces-J src code that provides XML parse and XML Schema
+implementation support. Xalan Java XSLT 3.0 implementation is presently in development stage, and 
+Xalan team hopes to release Xalan Java XSLT 3.0 implementation as a formal software alpha release 
 (ref, https://en.wikipedia.org/wiki/Software_release_life_cycle).
 
-Xalan-J XSLT 3.0 development code, presently uses Xerces-J build jar named as xercesImpl-2.12.3_dev2.jar 
+Xalan Java XSLT 3.0 development code, presently uses Xerces-J build jar named as xercesImpl-2.12.3_dev2.jar 
 (the name of this jar file may change in future, and proper alpha, beta or other names for this jar shall 
 be used) that is produced from Xerces-J's latest unreleased code from its 'main' branch. 
 
-Following are the steps, to run Xalan-J's XSLT 3.0 and XPath 3.1 conformance tests and produce 
-XSLT 3.0 build jar file (containing Xalan-J's XSLT 3.0 and XPath 3.1 run-time processors):  
+Following are the steps, to run Xalan Java's XSLT 3.0 and XPath 3.1 conformance tests and produce 
+XSLT 3.0 build jar file (containing Xalan Java's XSLT 3.0 and XPath 3.1 run-time processors):  
 
 1) Set JAVA_HOME environment variable referring to JDK's local installation folder. JDK version 1.8 has been used
-to develop and test Xalan-J's src code available within this code base repos branch. JDK versions greater than 1.8 
-shall also work fine to compile and run Xalan-J's XSLT 3.0 processor built from this code base repos branch.
+to develop and test Xalan Java's src code available within this code base repos branch. JDK versions greater than 1.8 
+shall also work fine to compile and run Xalan Java's XSLT 3.0 processor built from this code base repos branch.
 
-Set the JVM run-time thread stack size to 2 MB (with JVM option -Xss2m), for running Xalan-J XSLT 3.0 implementation. 
-JVM's default thread stack size is 1 megabyte (1MB) on a 64-bit JVM. Increasing JVM's run-time thread stack size, 
+Set the jvm run-time thread stack size to 2 MB (with jvm option -Xss2m), for running Xalan Java XSLT 3.0 implementation. 
+jvm's default thread stack size is 1 megabyte (1MB) on a 64-bit jvm. Increasing jvm's run-time thread stack size, 
 above the default limit, helps with running deep recursive XSL templates and functions. 
 
 2) Java Maven build tool needs to be installed on local workstation, using JDK installation referred by JAVA_HOME 
 environment variable.
 
-3) Run the following Maven build command:
+3) Commands to run Xalan Java XSLT 3.0 test suite
 
-mvn clean install test -Dtest=AllXalanXSLT3Tests
+Xalan Java XSLT 3.0 test suite is provided in two parts, to help reduce test suite's complexity.
 
-The Maven build results like following shall be produced: 
+Run the following commands, to run Xalan Java XSLT 3.0 test suite: 
+
+3.1) To run 'part 1' of Xalan Java XSLT 3.0 test suite
+
+mvn clean package test -Dtest=XalanXsl3TestSuite1
+
+When this Maven build command is run, results like following shall be produced: 
 
 [INFO] -------------------------------------------------------
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
-[INFO] Running org.apache.xalan.tests.main.AllXalanXSLT3Tests
-[INFO] Tests run: 588, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 42.464 s - in org.apache.xalan.tests.main.AllXalanXSLT3Tests
+[INFO] Running org.apache.xalan.tests.main.XalanXsl3TestSuite1
+[INFO] Tests run: 588, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.679 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite1
 [INFO]
 [INFO] Results:
 [INFO]
 [INFO] Tests run: 588, Failures: 0, Errors: 0, Skipped: 0
-[INFO]
-[INFO]
-[INFO] --- jar:3.3.0:jar (default-jar) @ xalan-java ---
-[INFO] Building jar: {folder prefix}\xalan-j_xslt3.0_mvn\target\xalan-java-3.0.1-SNAPSHOT.jar
 
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  02:19 min 
+[INFO] Total time:  35.949 s
+[INFO] ------------------------------------------------------------------------
 
-If the user needs to run Xalan-J's XSLT 3.0 implementation via Java application code, the value of JVM's system property 
-javax.xml.transform.TransformerFactory needs to be set to org.apache.xalan.processor.XSL3TransformerFactoryImpl.
+3.2) To run 'part 2' of Xalan Java XSLT 3.0 test suite
 
-4) This code base repos branch also has Xalan-J's XSLT 3.0 test drivers for W3C XSLT 3.0 test suite (located at, 
+mvn clean package test -Dtest=XalanXsl3TestSuite2
+
+When this Maven build command is run, results like following shall be produced:
+
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.apache.xalan.tests.main.XalanXsl3TestSuite2
+[INFO] Tests run: 515, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.981 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite2
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 515, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  45.827 s
+
+4) This code base repos branch also has Xalan Java's XSLT 3.0 test drivers for W3C XSLT 3.0 test suite (located at, 
 https://github.com/w3c/xslt30-test).
 
 The code repos folder src/test/java/org/apache/xalan/tests/w3c/xslt3 has following Java classes for this purpose:
 
-W3CXSLT3Tests : To run various W3C XSLT 3.0 test sets, to test Xalan-J's XSLT 3.0 implementation.
+W3CXSLT3Tests : To run various W3C XSLT 3.0 test sets, to test Xalan Java's XSLT 3.0 implementation.
 
-[Important] : Running all W3C XSLT 3.0 test sets configured for Xalan-J's XSLT 3.0 implementation is a bit slow,
+[Important] : Running all W3C XSLT 3.0 test sets configured for Xalan Java's XSLT 3.0 implementation is a bit slow,
 due to a W3C XSL test case type\date\date-020.xsl which has a long running xsl:for-each instruction like
 <xsl:for-each select="1 to 1000000"> ... that is intended to test, that current date/time returned by XPath 
 function fn:current-dateTime() doesn't change throughout an XSL transformation. To fasten run-time of this
 W3C XSLT 3.0 test case, we may modify this xsl:for-each instruction for e.g to <xsl:for-each select="1 to 10000">,
 without changing the intent of this test case.
 
-W3CXSLT3TestSuiteXalanResultSummarize : To produce an aggregated W3C XSLT 3.0 test suite results, for Xalan-J's 
+W3CXSLT3TestSuiteXalanResultSummarize : To produce an aggregated W3C XSLT 3.0 test suite results, for Xalan Java's 
 XSLT 3.0 implementation.
 
-Xalan-J's XSLT 3.0 implementation's conformance results with W3C XSLT 3.0 test suite are available at following location : 
-https://github.com/apache/xalan-java/blob/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/w3c_xslt3_testsuite_xalan-j_result.xml
+Xalan Java's XSLT 3.0 implementation's conformance results with W3C XSLT 3.0 test suite are available at following location : 
+https://github.com/apache/Xalan Javaava/blob/Xalan Java_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/w3c_xslt3_testsuite_Xalan Java_result.xml
 
-5) Producing, Xalan-J code base documentation for this dev repos branch, using JDK's javadoc command 
+5) Producing, Xalan Java code base documentation for this dev repos branch, using JDK's javadoc command 
 
 Following are the steps to do this, for Windows environment.
 
-Produce list of Java files within folder xalan-j_xslt3.0_mvn : dir /s /b *.java > file.lst
+Produce list of Java files within folder Xalan Java_xslt3.0_mvn : dir /s /b *.java > file.lst
 
 Filter specific files : java org.apache.xalan.xslt.Process -in file_filter.xsl -xsl file_filter.xsl -out filtered_file_list.txt
 
-Produce Xalan-J code documentation for this dev repos branch : javadoc -d javadoc @filtered_file_list.txt
+Produce Xalan Java code documentation for this dev repos branch : javadoc -d javadoc @filtered_file_list.txt
 
-Javadocs for Xalan-J code documentation for this dev repos branch are located here : https://xalan.apache.org/xalan-j/xsl3/javadoc/   
+Javadocs for Xalan Java code documentation for this dev repos branch are located here : https://xalan.apache.org/Xalan Java/xsl3/javadoc/   
 
-6) The PDF document https://xalan.apache.org/xalan-j/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides various other 
-   details about Xalan-J's XSLT 3.0 and XPath 3.1 implementations.
+6) The PDF document https://xalan.apache.org/Xalan Java/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides various other 
+   details about Xalan Java's XSLT 3.0 and XPath 3.1 implementations.
 
-7) Xalan-J XSLT 3.0 implementation development guidelines for Windows & Linux:
+7) Xalan Java XSLT 3.0 implementation development guidelines for Windows & Linux
    
-   This section of this document concerns, Xalan-J XSLT 3.0 src distribution. 
-   Various Xalan-J XSL 3 language test cases, need to be maintained considering Windows & Linux producing 
+   This section of this document concerns, Xalan Java XSLT 3.0 src distribution. 
+   Various Xalan Java XSL 3 language test cases, need to be maintained considering Windows & Linux producing 
    different specific behaviors. Windows uses character escape sequence \r\n as trailing characters for each file text line,
    whereas Linux use character escape sequence \n as trailing character for each file text line.
    
-   What works and what doesn't work with Xalan-J XSLT 3.0 implementation src code for these concerns:
+   What works and what doesn't work with Xalan Java XSLT 3.0 implementation src code for these concerns:
    
-   Xalan-J XSLT 3.0 implementation's various XSL 3 test cases, are maintained within this code development repos
+   Xalan Java XSLT 3.0 implementation's various XSL 3 test cases, are maintained within this code development repos
    with two versions of XSL tests expected result files, one for Windows and another for Linux.
-   When any new user who doesn't have Xalan-J XSL 3 src code repos clone on local,
+   When any new user who doesn't have Xalan Java XSL 3 src code repos clone on local,
    > Does git pull for this src code on Windows, the various Linux version test case expected result 
      file line endings shall get converted to Windows text file line endings (i.e, \r\n shall get converted to \n).
      This will not be a problem, if the user wishes to continue to do work on Windows. But when, the code gets pulled
-     on Windows and user copies, or moves that code on available Linux file system (for e.g, WSL), various Xalan-J 
+     on Windows and user copies, or moves that code on available Linux file system (for e.g, WSL), various Xalan Java 
      XSL 3 test cases shall fail.
    > Does git pull on Linux, not such issues shall occur.
    
-   These Xalan-J XSL 3 test case maintenance guidelines, specified with this document section (i.e, point 7)), 
-   need not be adhered with if the user wishes to use only the Xalan-J XSL 3 development src code, and doesn't
-   wish to work with Xalan-J XSL 3 supplied test cases.
+   These Xalan Java XSL 3 test case maintenance guidelines, specified with this document section (i.e, point 7)), 
+   need not be adhered with if the user wishes to use only the Xalan Java XSL 3 development src code, and doesn't
+   wish to work with Xalan Java XSL 3 supplied test cases.
+   
+8) Running Xalan Java XSLT 3.0 implementation
+
+   8.1) From within command line
+
+   > Using JDK 1.8
+   
+   java -Djava.endorsed.dirs=lib org.apache.xalan.xslt.Process -in file.xml -xsl file.xsl
+   
+   > Using JDK 25
+
+   java -classpath lib/* org.apache.xalan.xslt.Process -in file.xml -xsl file.xsl
+   
+   8.2) From within Java application code
+   
+   Java application code, should set the value of jvm's system property javax.xml.transform.TransformerFactory to 
+   org.apache.xalan.processor.XSL3TransformerFactoryImpl
+   
+   Note: To run Xalan Java XSLT 1.0 processor (for e.g, with Xalan Java 2.7.3), the value of this jvm system property is org.apache.xalan.processor.TransformerFactoryImpl   
          																
-We use JProfiler (https://www.ej-technologies.com/jprofiler) tool for Java software run-time 
-analysis and optimization of Xalan-J software.       
+
+We use JProfiler (https://www.ej-technologies.com/jprofiler) tool for Java software run-time analysis and optimization of Xalan Java software.       
 

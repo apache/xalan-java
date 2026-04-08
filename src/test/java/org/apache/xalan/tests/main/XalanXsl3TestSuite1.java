@@ -83,7 +83,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * A JUnit 4 test suite for Xalan-J's, XSL 3 specification 
+ * A JUnit 4 test suite (part 1) for Xalan-J's, XSL 3 specification 
  * implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>

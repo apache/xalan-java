@@ -101,7 +101,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * A JUnit 4 test suite for Xalan-J's, XSL 3 specification 
+ * A JUnit 4 test suite (part 2) for Xalan-J's, XSL 3 specification 
  * implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -109,8 +109,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XPathBuiltinFunctionNamespceTests.class,
-                XPathSequenceConstructorTests.class, XPathStringConcatExprTests.class, 
+@SuiteClasses({ XPathBuiltinFunctionNamespceTests.class, XPathSequenceConstructorTests.class, XPathStringConcatExprTests.class, 
                 XsDurationComponentExtractionFunctionTests.class, XPathArithmeticOnDurationValuesTests.class,
                 XPathNodeComparisonTests.class, XPathSimpleMapOperatorTests.class, FnFoldLeftTests.class,
                 FnFoldRightTests.class, FnForEachPairTests.class, FnSortTests.class, FnCodepointsToStringTests.class,
