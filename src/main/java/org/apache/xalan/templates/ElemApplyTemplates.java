@@ -1224,16 +1224,42 @@ public class ElemApplyTemplates extends ElemCallTemplate
 				  // evaluate this XSL stylesheet template's child elements.
 				  for (ElemTemplateElement t = template.m_firstChild; 
 						  											t != null; t = t.m_nextSibling) {
-					  xctxt.setSAXLocator(t);
-
-					  try
-					  {
-						  transformer.pushElemTemplateElement(t);
-						  t.execute(transformer);
+					  try {
+						  if (t instanceof ElemNextMatch) {
+							  double p1 = template.getPriority();
+							  XPath matchXPath = template.getMatch();
+							  String matchPatternStr = matchXPath.getPatternString();
+							  StylesheetRoot stylesheetRoot = transformer.getStylesheet();
+							  TemplateList templateList = stylesheetRoot.getTemplateListComposed();
+							  TemplateSubPatternAssociation association = templateList.getHead(xctxt, child, dtm2);
+							  ElemTemplate desiredTemplate = null;
+							  double pDesired = p1;
+							  while ((association = association.getNext()) != null) {
+								  ElemTemplate elemTemplate = association.getTemplate();
+								  double pr = elemTemplate.getPriority();
+								  if (pr < pDesired) {
+									  String matchPattern2 = (elemTemplate.getMatch()).getPatternString();
+									  if (matchPattern2.equals(matchPatternStr)) {
+										 pDesired = pr;
+										 desiredTemplate = elemTemplate; 
+									  }
+								  }
+							  }
+							  
+							  if (desiredTemplate != null) {
+								  xctxt.setSAXLocator(desiredTemplate);
+								  transformer.pushElemTemplateElement(desiredTemplate);
+								  desiredTemplate.execute(transformer);
+							  }							  
+						  }
+						  else {
+							  xctxt.setSAXLocator(t);
+							  transformer.pushElemTemplateElement(t);
+							  t.execute(transformer);
+						  }
 					  }
-					  finally
-					  {
-						  transformer.popElemTemplateElement();
+					  finally {
+						  transformer.popElemTemplateElement(); 
 					  }
 				  }
 			  }

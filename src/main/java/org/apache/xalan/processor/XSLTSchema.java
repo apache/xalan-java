@@ -63,6 +63,7 @@ import org.apache.xalan.templates.ElemMergeSource;
 import org.apache.xalan.templates.ElemMessage;
 import org.apache.xalan.templates.ElemMode;
 import org.apache.xalan.templates.ElemNamespace;
+import org.apache.xalan.templates.ElemNextMatch;
 import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
@@ -636,13 +637,13 @@ public class XSLTSchema extends XSLTElementDef
                                                           XSLTAttributeDef.T_CDATA, false, false, 
                                                           XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[48];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[49];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[49];
+    XSLTElementDef[] templateElements = new XSLTElementDef[49];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[50];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[50];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[49];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[50];
     
-    XSLTElementDef[] charTemplateElements = new XSLTElementDef[30];
+    XSLTElementDef[] charTemplateElements = new XSLTElementDef[31];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
                                      templateElements /* elements */,
@@ -756,6 +757,13 @@ public class XSLTSchema extends XSLTElementDef
 							                         new XSLTAttributeDef[]{},
 							                         new ProcessorTemplateElem(),
 							                         ElemApplyImport.class /* class object */);
+    
+    XSLTElementDef xslNextMatch =
+		                         new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "next-match",
+		                         null /*alias */, null /* elements */,
+		                         new XSLTAttributeDef[]{},
+		                         new ProcessorTemplateElem(),
+		                         ElemNextMatch.class /* class object */);
     
     XSLTElementDef xslForEach = new XSLTElementDef(this,
                                   Constants.S_XSLNAMESPACEURL, "for-each",
@@ -1124,6 +1132,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslApplyTemplates;
     templateElements[i++] = xslCallTemplate;
     templateElements[i++] = xslApplyImports;
+    templateElements[i++] = xslNextMatch;
     templateElements[i++] = xslForEach;
     templateElements[i++] = xslPerformSort;
     templateElements[i++] = xslForEachGroup;
@@ -1186,6 +1195,7 @@ public class XSLTSchema extends XSLTElementDef
     charTemplateElements[i++] = xslApplyTemplates;
     charTemplateElements[i++] = xslCallTemplate;
     charTemplateElements[i++] = xslApplyImports;
+    charTemplateElements[i++] = xslNextMatch;
     charTemplateElements[i++] = xslForEach;
     charTemplateElements[i++] = xslPerformSort;
     charTemplateElements[i++] = xslForEachGroup;

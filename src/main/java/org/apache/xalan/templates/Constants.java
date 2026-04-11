@@ -100,9 +100,10 @@ public class Constants extends org.apache.xml.utils.Constants
   ELEMNAME_PERFORMSORT = 118,
   ELEMNAME_USE_PACKAGE = 119,
   ELEMNAME_ACCEPT = 120,
-  ELEMNAME_GLOBAL_CONTEXT_ITEM = 121;
+  ELEMNAME_GLOBAL_CONTEXT_ITEM = 121,
+  ELEMNAME_NEXT_MATCH = 122;
   
-  // next available number : 122
+  // next available number : 123
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -112,6 +113,7 @@ public class Constants extends org.apache.xml.utils.Constants
 	  ELEMNAME_ANCHOR_STRING = "anchor",
       ELEMNAME_ANY_STRING = "any",  // pattern-by-example support
       ELEMNAME_APPLY_IMPORTS_STRING = "apply-imports",
+      ELEMNAME_NEXT_MATCH_STRING = "next-match",
       ELEMNAME_APPLY_TEMPLATES_STRING = "apply-templates",
       ELEMNAME_ARG_STRING = "arg",
       ELEMNAME_ATTRIBUTESET_STRING = "attribute-set",
