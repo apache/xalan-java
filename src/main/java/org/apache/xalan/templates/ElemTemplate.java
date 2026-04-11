@@ -414,6 +414,11 @@ public class ElemTemplate extends ElemTemplateElement
   }
   
   /**
+   * An XSL next-match instruction's with-param information.
+   */
+  private List<ElemWithParam> m_xslNextMatchWithParamList = new ArrayList<ElemWithParam>();
+  
+  /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
@@ -509,6 +514,7 @@ public class ElemTemplate extends ElemTemplateElement
 	  }
 
 	  if (m_asAttr == null) {
+		  transformer.setXslNextMatchWithParamList(m_xslNextMatchWithParamList);
 		  transformer.executeChildTemplates(this, true);
 	  }
 	  else {         
@@ -762,6 +768,17 @@ public class ElemTemplate extends ElemTemplateElement
   public void recompose(StylesheetRoot root) throws TransformerException
   {
 	  root.recomposeTemplates(this);
+  }
+  
+  /**
+   * Set xsl:next-match instruction's with-param information, to be
+   * able to set on corresponding xsl:template's xsl:param parameters.
+   * 
+   * @param xslWithParamList				List of ElemWithParam objects, available 
+   *                                        from within xsl:next-match instruction.  
+   */
+  public void setXslNextMatchWithParamList(List<ElemWithParam> xslWithParamList) {
+	  m_xslNextMatchWithParamList = xslWithParamList;	
   }
   
   /**

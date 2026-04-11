@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <aSelected p1="hello" p2="123"/>
+  <aSelected priority="3"/>
+  <bSelected/>
+  <bSelected priority="3"/>
+  <cSelected priority="default"/>
+</result>

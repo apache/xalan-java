@@ -67,5 +67,15 @@ public class XslNextMatchTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
+    
+    @Test
+    public void xslNextMatchTest3() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
 
 }

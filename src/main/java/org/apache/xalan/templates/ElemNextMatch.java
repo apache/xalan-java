@@ -25,7 +25,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 /**
  * Implementation of XSLT 3.0 xsl:next-match instruction.
  * 
- * @see <a href="https://www.w3.org/TR/xslt-30/#element-next-match">next-match in XSLT 3.0 specification</a>
+ * @see <a href="https://www.w3.org/TR/xslt-30/#element-next-match">xsl:next-match XSLT 3.0 specification</a>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -44,7 +44,7 @@ public class ElemNextMatch extends ElemTemplateElement
    */
   public int getXSLToken()
   {
-    return Constants.ELEMNAME_NEXT_MATCH;
+      return Constants.ELEMNAME_NEXT_MATCH;
   }
 
   /**
@@ -54,7 +54,7 @@ public class ElemNextMatch extends ElemTemplateElement
    */
   public String getNodeName()
   {
-    return Constants.ELEMNAME_NEXT_MATCH_STRING;
+      return Constants.ELEMNAME_NEXT_MATCH_STRING;
   }
 
   /**
@@ -64,11 +64,9 @@ public class ElemNextMatch extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer)
-            throws TransformerException
+  public void execute(TransformerImpl transformer) throws TransformerException
   {
-     // no op    
+     // no op
   }
 
   /**
@@ -81,13 +79,16 @@ public class ElemNextMatch extends ElemTemplateElement
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
+	  super.appendChild(newChild);
     
 	  String lineNo = String.valueOf(newChild.getLineNumber());
 	  String columnNo = String.valueOf(newChild.getColumnNumber());
 
-	  error(XSLTErrorResources.ER_CANNOT_ADD,
+	  if (!(newChild instanceof ElemWithParam)) {
+	     error(XSLTErrorResources.ER_CANNOT_ADD,
 										  new Object[]{ newChild.getNodeName(),
 												  this.getNodeName(), lineNo, columnNo });
+	  }
 
 	  return null;
   }

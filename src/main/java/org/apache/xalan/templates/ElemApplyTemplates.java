@@ -1249,6 +1249,16 @@ public class ElemApplyTemplates extends ElemCallTemplate
 							  if (desiredTemplate != null) {
 								  xctxt.setSAXLocator(desiredTemplate);
 								  transformer.pushElemTemplateElement(desiredTemplate);
+								  ElemNextMatch elemNextMatch = (ElemNextMatch)t;
+								  ElemTemplateElement elemTemplateElement = elemNextMatch.getFirstChildElem();
+								  List<ElemWithParam> xslWithParamList = new ArrayList<ElemWithParam>();
+								  while (elemTemplateElement != null) {
+									  ElemWithParam elemWithParam = (ElemWithParam)elemTemplateElement;
+									  xslWithParamList.add(elemWithParam);
+									  elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+								  }
+								  
+								  desiredTemplate.setXslNextMatchWithParamList(xslWithParamList);								  
 								  desiredTemplate.execute(transformer);
 							  }							  
 						  }

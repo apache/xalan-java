@@ -760,7 +760,7 @@ public class XSLTSchema extends XSLTElementDef
     
     XSLTElementDef xslNextMatch =
 		                         new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "next-match",
-		                         null /*alias */, null /* elements */,
+		                         null /*alias */, new XSLTElementDef[] { xslWithParam } /* elements */,
 		                         new XSLTAttributeDef[]{},
 		                         new ProcessorTemplateElem(),
 		                         ElemNextMatch.class /* class object */);
