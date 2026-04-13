@@ -98,16 +98,16 @@ When this Maven build command is run, results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.XalanXsl3TestSuite2
-[INFO] Tests run: 519, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 18.945 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite2
+[INFO] Tests run: 522, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.551 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite2
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 519, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 522, Failures: 0, Errors: 0, Skipped: 0
 
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  56.677 s
+[INFO] Total time:  49.177 s
 
 4) This code base repos branch also has Xalan Java's XSLT 3.0 test drivers for W3C XSLT 3.0 test suite (located at, 
 https://github.com/w3c/xslt30-test).

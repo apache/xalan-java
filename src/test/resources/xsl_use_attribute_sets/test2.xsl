@@ -6,7 +6,7 @@
   
   <!-- use with test1.xml -->
    
-  <!-- An XSLT 3.0 stylesheet test case to, test XSL attribute "use-attribute-sets". -->                 
+  <!-- An XSLT 3.0 stylesheet test case to, test XSL attribute "use-attribute-sets". -->                
 				
   <xsl:output method="html" indent="yes"/>				
   
@@ -15,13 +15,15 @@
 	<xsl:attribute name="id">paragraph1</xsl:attribute>
   </xsl:attribute-set>
   
+  <xsl:attribute-set name="attribute_set1" use-attribute-sets="note-style"/>
+  
   <xsl:template match="/">
      <html>
 	    <head>
 		   <title>Result from test stylesheet</title>
 		</head>
 		<body>
-		   <p xsl:use-attribute-sets="note-style">Hello. This is test information.</p>
+		   <p xsl:use-attribute-sets="attribute_set1">Hello. This is test information.</p>
 		</body>
 	 </html>
    </xsl:template>

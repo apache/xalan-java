@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+  <fo:layout-master-set>
+    <fo:simple-page-master margin-bottom="2cm" margin-left="1.5cm" margin-right="1.5cm" margin-top="1cm" master-name="first" page-height="29.7cm" page-width="21cm">
+      <fo:region-body margin-top="1cm"/>
+      <fo:region-before extent="1cm"/>
+      <fo:region-after extent="1.5cm"/>
+    </fo:simple-page-master>
+  </fo:layout-master-set>
+  <fo:page-sequence master-reference="first">
+    <fo:flow flow-name="xsl-region-body">
+      <fo:block space-after.optimum="15pt" space-before.optimum="3pt">
+        <fo:block font-size="12pt" font-stretch="condensed" font-weight="bold">chapter heading 1</fo:block>
+      </fo:block>
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>
