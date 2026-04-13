@@ -1,0 +1,9 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Result from test stylesheet</title>
+</head>
+<body>
+<p id="paragraph1" style="font-style: italic">Hello. This is test information.</p>
+</body>
+</html>

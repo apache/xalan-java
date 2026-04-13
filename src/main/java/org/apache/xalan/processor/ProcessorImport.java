@@ -15,42 +15,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.processor;
 
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
  * This class processes parse events for an xsl:import element.
- * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
- * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
+ * 
+ * @see <a href="https://www.w3.org/TR/xslt-30/#element-import">import in XSLT 3.0 Specification</a>
+ * 
+ * Description: A stylesheet module may import another stylesheet module using an xsl:import declaration. 
+ *              Importing a stylesheet module is the same as including it except that template rules and 
+ *              other declarations in the importing module take precedence over template rules and 
+ *              declarations in the imported module
  * 
  * @xsl.usage internal
  */
 public class ProcessorImport extends ProcessorInclude
 {
-    static final long serialVersionUID = -8247537698214245237L;
+	static final long serialVersionUID = -8247537698214245237L;
 
-  /**
-   * Get the stylesheet type associated with an imported stylesheet
-   *
-   * @return the type of the stylesheet
-   */
-  protected int getStylesheetType()
-  {
-    return StylesheetHandler.STYPE_IMPORT;
-  }
+	/**
+	 * Get the stylesheet type associated with an imported stylesheet
+	 *
+	 * @return the type of the stylesheet
+	 */
+	protected int getStylesheetType()
+	{
+		return StylesheetHandler.STYPE_IMPORT;
+	}
 
-  /**
-   * Get the error number associated with this type of stylesheet importing itself
-   *
-   * @return the appropriate error number
-   */
-  protected String getStylesheetInclErr()
-  {
-    return XSLTErrorResources.ER_IMPORTING_ITSELF;
-  }
+	/**
+	 * Get the error number associated with this type of stylesheet importing itself
+	 *
+	 * @return the appropriate error number
+	 */
+	protected String getStylesheetInclErr()
+	{
+		return XSLTErrorResources.ER_IMPORTING_ITSELF;
+	}
 
 }

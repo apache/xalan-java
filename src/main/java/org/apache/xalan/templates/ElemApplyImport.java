@@ -36,84 +36,84 @@ import org.apache.xml.dtm.DTM;
  */
 public class ElemApplyImport extends ElemTemplateElement
 {
-    static final long serialVersionUID = 3764728663373024038L;
+	static final long serialVersionUID = 3764728663373024038L;
 
-  /**
-   * Get an int constant identifying the type of element.
-   * @see org.apache.xalan.templates.Constants
-   *
-   * @return Token ID for xsl:apply-imports element types
-   */
-  public int getXSLToken()
-  {
-    return Constants.ELEMNAME_APPLY_IMPORTS;
-  }
+	/**
+	 * Get an int constant identifying the type of element.
+	 * @see org.apache.xalan.templates.Constants
+	 *
+	 * @return Token ID for xsl:apply-imports element types
+	 */
+	public int getXSLToken()
+	{
+		return Constants.ELEMNAME_APPLY_IMPORTS;
+	}
 
-  /**
-   * Return the node name.
-   *
-   * @return Element name
-   */
-  public String getNodeName()
-  {
-    return Constants.ELEMNAME_APPLY_IMPORTS_STRING;
-  }
+	/**
+	 * Return the node name.
+	 *
+	 * @return Element name
+	 */
+	public String getNodeName()
+	{
+		return Constants.ELEMNAME_APPLY_IMPORTS_STRING;
+	}
 
-  /**
-   * Execute the xsl:apply-imports transformation.
-   *
-   * @param transformer non-null reference to the the current transform-time state.
-   *
-   * @throws TransformerException
-   */
-  public void execute(
-          TransformerImpl transformer)
-            throws TransformerException
-  {
+	/**
+	 * Execute the xsl:apply-imports transformation.
+	 *
+	 * @param transformer non-null reference to the the current transform-time state.
+	 *
+	 * @throws TransformerException
+	 */
+	public void execute(
+			TransformerImpl transformer)
+					throws TransformerException
+	{
 
-    if (transformer.currentTemplateRuleIsNull())
-    {
-      transformer.getMsgMgr().error(this,
-        XSLTErrorResources.ER_NO_APPLY_IMPORT_IN_FOR_EACH);  //"xsl:apply-imports not allowed in a xsl:for-each");
-    }
+		if (transformer.currentTemplateRuleIsNull())
+		{
+			transformer.getMsgMgr().error(this,
+					XSLTErrorResources.ER_NO_APPLY_IMPORT_IN_FOR_EACH);  //"xsl:apply-imports not allowed in a xsl:for-each");
+		}
 
-    if (transformer.getDebug())
-      transformer.getTraceManager().emitTraceEvent(this);
+		if (transformer.getDebug())
+			transformer.getTraceManager().emitTraceEvent(this);
 
-    int sourceNode = transformer.getXPathContext().getCurrentNode();
-    if (DTM.NULL != sourceNode)
-    {
-      // supply the current templated (matched, not named)        
-      ElemTemplate matchTemplate = transformer.getMatchedTemplate();
-      transformer.applyTemplateToNode(this, matchTemplate, sourceNode);
-    }
-    else  // if (null == sourceNode)
-    {
-      transformer.getMsgMgr().error(this,
-        XSLTErrorResources.ER_NULL_SOURCENODE_APPLYIMPORTS);  //"sourceNode is null in xsl:apply-imports!");
-    }
-    if (transformer.getDebug())
-      transformer.getTraceManager().emitTraceEndEvent(this);
-  }
+		int sourceNode = transformer.getXPathContext().getCurrentNode();
+		if (DTM.NULL != sourceNode)
+		{
+			// supply the current templated (matched, not named)        
+			ElemTemplate matchTemplate = transformer.getMatchedTemplate();
+			transformer.applyTemplateToNode(this, matchTemplate, sourceNode);
+		}
+		else  // if (null == sourceNode)
+		{
+			transformer.getMsgMgr().error(this,
+					XSLTErrorResources.ER_NULL_SOURCENODE_APPLYIMPORTS);  //"sourceNode is null in xsl:apply-imports!");
+		}
+		if (transformer.getDebug())
+			transformer.getTraceManager().emitTraceEndEvent(this);
+	}
 
-  /**
-   * Add a child to the child list.
-   * <!ELEMENT xsl:apply-imports EMPTY>
-   *
-   * @param newChild New element to append to this element's children list
-   *
-   * @return null, xsl:apply-Imports cannot have children 
-   */
-  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
-  {
-    
-	  String lineNo = String.valueOf(newChild.getLineNumber());
-	  String columnNo = String.valueOf(newChild.getColumnNumber());
+	/**
+	 * Add a child to the child list.
+	 * <!ELEMENT xsl:apply-imports EMPTY>
+	 *
+	 * @param newChild New element to append to this element's children list
+	 *
+	 * @return null, xsl:apply-Imports cannot have children 
+	 */
+	public ElemTemplateElement appendChild(ElemTemplateElement newChild)
+	{
 
-	  error(XSLTErrorResources.ER_CANNOT_ADD,
-										  new Object[]{ newChild.getNodeName(),
-												  this.getNodeName(), lineNo, columnNo });
+		String lineNo = String.valueOf(newChild.getLineNumber());
+		String columnNo = String.valueOf(newChild.getColumnNumber());
 
-	  return null;
-  }
+		error(XSLTErrorResources.ER_CANNOT_ADD,
+				new Object[]{ newChild.getNodeName(),
+						this.getNodeName(), lineNo, columnNo });
+
+		return null;
+	}
 }
