@@ -47,6 +47,8 @@ public class XalanProperties
    */
   public final static String ASSERT_ENABLED = "assert-enabled";
   
+  public final static String INIT_FUNCTION = "init-function";
+  
   /**
    * Constant representing an XSL stylesheet transformation's
    * 'initial context node', enable feature.

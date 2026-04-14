@@ -384,6 +384,8 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
    * An XSL transformation's initial mode name.
    */
   private String m_init_mode_name = null;
+  
+  private QName m_init_function_name = null;
     
   /**
    * This is a compile-time flag to turn off calling
@@ -523,6 +525,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     m_incremental = stylesheet.getIncremental();
     m_source_location = stylesheet.getSource_location();
     m_init_template_name = stylesheet.getInitTemplateName();
+    m_init_function_name = stylesheet.getInitFunctionName();
     m_init_mode_name = stylesheet.getInitModeName();
     setStylesheet(stylesheet);
     XPathContext xPath = new XPathContext(this);
@@ -928,7 +931,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     		  
     		  this.transformNode(dtm.getDocument());
     	  }
-    	  else if ((m_init_template_name != null) || (m_init_mode_name != null)) {
+    	  else if ((m_init_template_name != null) || (m_init_mode_name != null) || (m_init_function_name != null)) {
     		  /**
     		   * An XSL stylesheet 'initial template' or 'mode' name is 
     		   * available, but context node is not available.

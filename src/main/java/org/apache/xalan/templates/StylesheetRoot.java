@@ -138,6 +138,8 @@ public class StylesheetRoot extends StylesheetComposed implements java.io.Serial
 	 * are enabled, otherwise false.
 	 */
 	private boolean m_assert;
+	
+	private QName m_init_function_name;
 
 	/**
 	 * Class field, that represents xsl:stylesheet, xsl:transform elements's
@@ -2070,6 +2072,26 @@ public class StylesheetRoot extends StylesheetComposed implements java.io.Serial
 	 */
 	public void setAssertEnabled(boolean xslAssert) {
 		this.m_assert = xslAssert;
+	}
+	
+	/**
+	 * Get XSL transformation's 'initial function' name.
+	 * 
+	 * @return			                QName value of XSL transformation's 
+	 *                                  'initial function' name.
+	 */
+	public QName getInitFunctionName() {
+		return m_init_function_name;
+	}
+
+	/**
+	 * Set XSL transformation's 'initial function' name.
+	 * 
+	 * @param initFunctionName			An XSL transformation's 'initial function' 
+	 *                                  name. 
+	 */
+	public void setInitFunctionName(QName initFunctionName) {
+		this.m_init_function_name = initFunctionName;
 	}
 
 	public void setInputTypeAnnotations(String inputTypeAnnotations) {

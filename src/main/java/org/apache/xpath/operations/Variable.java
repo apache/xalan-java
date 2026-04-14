@@ -348,7 +348,7 @@ public class Variable extends Expression implements PathComponent
         		                                                                                      || exceptionMesg.startsWith("FOUT")
         		                                                                                      || exceptionMesg.startsWith("XPST0008")
         		                                                                                      || exceptionMesg.startsWith("XPDY0002")
-        		                                                                                      || exceptionMesg.startsWith("XTTE0590")))) {
+        		                                                                                      || exceptionMesg.startsWith("XTTE05")))) {
               throw ex;   
            }
            else if (XslTransformData.m_xpathNodeCombiningExprRhsStrBuff != null) {

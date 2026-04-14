@@ -540,265 +540,9 @@ public class ElemVariable extends ElemTemplateElement
     Expression selectExpression = null;
     
     if (m_isTopLevel) {
-		if (this instanceof ElemParam) {
-			if (((ElemParam)this).getRequired() && ((ElemParam)this).getRequiredDeclared()) {
-				if ((m_selectPattern == null) && (getFirstChildElem() == null)) {
-					throw new TransformerException("XTDE0050 : An XSL stylesheet required top level parameter '" + m_qname.toString() 
-					                                                                                            + "''s value is not provided.", srcLocator);
-									
-				}
-			}
-		} 
-		else if (m_selectPattern != null) {
-			/**
-			 * This is XSL stylesheet top level xsl:variable declaration
-			 * having "select" attribute. We need to check for variable
-			 * cyclic dependencies.
-			 * 
-			 * This has been done to solve, various W3C XSLT 3.0 test cases,
-			 * within following code.
-			 */
-			
-			List <QName> qNameList = new ArrayList<QName>();
-			List<QName> list1 = XslTransformData.m_xsl_variable_qname_list;
-			int size1 = list1.size();
-			for (int idx = 0; idx < size1; idx++) {
-				qNameList.add(list1.get(idx));
-			}
-									
-			String xpathPatternStr1 = m_selectPattern.getPatternString();
-			if (xpathPatternStr1 != null) {
-				List<XMLNSDecl> prefixTable = (List<XMLNSDecl>)this.getPrefixTable();
-				if (prefixTable != null) {
-				   xpathPatternStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathPatternStr1, prefixTable);					
-				}
-				
-				XPath xpathSelect1 = new XPath(xpathPatternStr1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-				
-				if (m_vars != null) {
-					xpathSelect1.fixupVariables(m_vars, m_globals_size);
-				}
-
-				Expression expr1 = xpathSelect1.getExpression();
-				if (expr1 instanceof XPathInlineFunction) {
-					XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)expr1;
-					String xpathInlineFuncBody1 = xpathInlineFunc.getFuncBodyXPathExprStr();
-					if (prefixTable != null) {
-						xpathInlineFuncBody1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathInlineFuncBody1, prefixTable);					
-					}
-
-					xpathSelect1 = new XPath(xpathInlineFuncBody1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-
-					if (m_vars != null) {
-						xpathSelect1.fixupVariables(m_vars, m_globals_size);
-					}
-					
-					expr1 = xpathSelect1.getExpression();
-					if (expr1 instanceof XPathIfExpr) {
-						XPathIfExpr xpathIfExpr = (XPathIfExpr)expr1;
-						String xpathIfCondStr = xpathIfExpr.getIfConditionXPathStr();
-						String xpathIfThenStr = xpathIfExpr.getThenExprXPathStr();
-						String xpathIfElseStr = xpathIfExpr.getElseExprXPathStr();
-						XPath xpathSelect_a = new XPath(xpathIfCondStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-						XPath xpathSelect_b = new XPath(xpathIfThenStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-						XPath xpathSelect_c = new XPath(xpathIfElseStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-						Expression a1 = xpathSelect_a.getExpression();
-						Expression a2 = xpathSelect_b.getExpression();
-						Expression a3 = xpathSelect_c.getExpression();
-						if (a1 instanceof XPathDynamicFunctionCall) {
-							XPathDynamicFunctionCall dfc1 = (XPathDynamicFunctionCall)a1;
-							String dfcName1 = dfc1.getFuncRefVarName();
-							XslTransformData.m_xsl_variable_qname_list.add(new QName(dfcName1));
-							List<String> funcArgList1 = dfc1.getArgList();
-							int funcArgListSize = funcArgList1.size();
-							for (int idx = 0; idx < funcArgListSize; idx++) {
-								String argStr1 = funcArgList1.get(idx);
-								XslTransformData.m_xsl_variable_qname_list.add(new QName(argStr1));
-							}
-						}
-
-						if (a2 instanceof XPathDynamicFunctionCall) {
-							XPathDynamicFunctionCall dfc2 = (XPathDynamicFunctionCall)a2;
-							String dfcName2 = dfc2.getFuncRefVarName();
-							XslTransformData.m_xsl_variable_qname_list.add(new QName(dfcName2));
-							List<String> funcArgList2 = dfc2.getArgList();
-							int funcArgListSize = funcArgList2.size();
-							for (int idx = 0; idx < funcArgListSize; idx++) {
-								String argStr1 = funcArgList2.get(idx);
-								XslTransformData.m_xsl_variable_qname_list.add(new QName(argStr1));
-							}
-						}
-
-						if (a3 instanceof XPathDynamicFunctionCall) {
-							XPathDynamicFunctionCall dfc3 = (XPathDynamicFunctionCall)a3;
-							String dfcName3 = dfc3.getFuncRefVarName();
-							XslTransformData.m_xsl_variable_qname_list.add(new QName(dfcName3));
-							List<String> funcArgList3 = dfc3.getArgList();
-							int funcArgListSize = funcArgList3.size();
-							for (int idx = 0; idx < funcArgListSize; idx++) {
-								String argStr1 = funcArgList3.get(idx);
-								XslTransformData.m_xsl_variable_qname_list.add(new QName(argStr1));
-							}
-						}
-
-						List <QName> qNameList2 = new ArrayList<QName>();
-						List<QName> list3 = XslTransformData.m_xsl_variable_qname_list;
-						int size3 = list3.size();
-						for (int idx = 0; idx < size3; idx++) {
-							qNameList2.add(list3.get(idx));
-						}
-
-						for (int idx = 0; idx < qNameList.size(); idx++) {
-							QName qName1 = qNameList.get(idx);
-							qNameList2.remove(qName1);
-						}
-
-						if (qNameList2.contains(m_qname)) {
-							throw new TransformerException("XPST0008 : An XSL stylesheet top level variable '" + m_qname.toString() 
-																											   + "' cannot be resolved to a value due "
-																											   + "to cyclic variable dependency.", srcLocator);
-						}
-					}
-					else {
-						List <QName> qNameList2 = new ArrayList<QName>();
-						List<QName> list3 = XslTransformData.m_xsl_variable_qname_list;
-						int size3 = list3.size();
-						for (int idx = 0; idx < size3; idx++) {
-							qNameList2.add(list3.get(idx));
-						}
-
-						for (int idx = 0; idx < qNameList.size(); idx++) {
-							QName qName1 = qNameList.get(idx);
-							qNameList2.remove(qName1);
-						}
-
-						if (qNameList2.contains(m_qname)) {
-							throw new TransformerException("XPST0008 : An XSL stylesheet top level variable '" + m_qname.toString() 
-																											   + "' cannot be resolved to a value due "
-																											   + "to cyclic variable dependency.", srcLocator);
-						}
-					}
-				}			
-				else if ((expr1 instanceof Function) || (expr1 instanceof UnaryOperation)) {
-					// no op
-				}
-				else if ((expr1 instanceof XString) || (expr1 instanceof XBoolean) || (expr1 instanceof XBooleanStatic) 
-						                                                           || (expr1 instanceof XNumber) || (expr1 instanceof XSAnyAtomicType)) {
-					// no op
-				}
-				else if ((expr1 instanceof Variable) || (expr1 instanceof XPathMapConstructor)) {
-					// no op
-				}
-				else if ((expr1 instanceof LocPathIterator) || (expr1 instanceof XPathSequenceConstructor) 
-						                                                           || (expr1 instanceof ResultSequence) || (expr1 instanceof Range)) {
-					// no op
-				}
-				else if (expr1 instanceof Operation) {
-					// no op
-				}
-				else if (expr1 instanceof XPathForExpr) {
-					// no op
-				}
-				else if (qNameList.contains(m_qname)) {
-					throw new TransformerException("XPST0008 : An XSL stylesheet top level variable '" + m_qname.toString() 
-																									   + "' cannot be resolved to a value due "
-																									   + "to cyclic variable dependency.", srcLocator);
-				}
-		    }
-			
-			Stylesheet stylesheet = transformer.getStylesheet();              
-			Vector globalContextItemList = stylesheet.getGlobalContextItemList();
-			Expression xpathSelectExpr = m_selectPattern.getExpression();
-			if ((globalContextItemList != null) && !isXPathExpressionStatic(xpathSelectExpr)) {												
-					ElemGlobalContextItem elemGlobalContextItem = (ElemGlobalContextItem)(globalContextItemList.get(0));
-					String xslGlobalContextItemAsValue = elemGlobalContextItem.getAs();
-					String xslGlobalContextItemUseValue = elemGlobalContextItem.getUse();
-					if (Constants.ATTRVAL_ABSENT.equals(xslGlobalContextItemUseValue)) {
-						throw new TransformerException("XPDY0002 : An XSL top level variable has 'select' expression that requires "
-																									   + "a context item. But XSL 'global-context-item' "
-																									   + "instruction asserts XPath context item to be absent.", srcLocator);
-					}
-
-					if (sourceNode == DTM.NULL) {
-						throw new TransformerException("XPDY0002 : An XSL top level variable has 'select' expression that requires "
-																									   + "a context item but an context item "
-																									   + "is absent.", srcLocator);
-					}
-
-					if (xslGlobalContextItemAsValue != null) {
-						DTM dtm = xctxt.getDTM(sourceNode);
-						short nodeType = dtm.getNodeType(sourceNode);
-						String nodeTypeStr = xctxt.getNodeTypeStr(nodeType);
-						SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(xslGlobalContextItemAsValue, xctxt, srcLocator);
-						SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
-						if (seqTypeKindTest != null) {
-							if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
-								if (nodeType != DTM.ELEMENT_NODE) {
-									throw new TransformerException("XPDY0002 : An xdm " + nodeTypeStr + " node doesn't match with XSL "
-																									  + "'global-context-item' instruction's "
-																									  + "\"as\" attribute value " + xslGlobalContextItemAsValue + ".", srcLocator);	
-								}
-							}
-							else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
-								if (nodeType != DTM.ATTRIBUTE_NODE) {
-									throw new TransformerException("XPDY0002 : An xdm " + nodeTypeStr + " node doesn't match with XSL "
-																									  + "'global-context-item' instruction's "
-																									  + "\"as\" attribute value " + xslGlobalContextItemAsValue + ".", srcLocator);
-								}
-							}
-							else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
-								if (nodeType != DTM.DOCUMENT_NODE) {
-									throw new TransformerException("XPDY0002 : An xdm " + nodeTypeStr + " node doesn't match with XSL "
-																									  + "'global-context-item' instruction's "
-																									  + "\"as\" attribute value " + xslGlobalContextItemAsValue + ".", srcLocator);
-								}
-								
-								SequenceTypeKindTest seqTypeSubKindTest = seqTypeKindTest.getSeqTypeSubKindTest();
-								if (seqTypeSubKindTest != null) {
-									if (seqTypeSubKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) {
-										String dataTypeNodeLocalName = seqTypeSubKindTest.getNodeLocalName();
-										String dataTypeNodeNsUri = seqTypeSubKindTest.getNodeNsUri();
-										int childNode = dtm.getFirstChild(sourceNode);
-										short childNodeType = dtm.getNodeType(childNode);
-										String nodeName = dtm.getNodeName(childNode);
-										String nsUri = dtm.getNamespaceURI(childNode);										
-										boolean isNsEqual = false;
-										if ((nsUri == null) && (dataTypeNodeNsUri == null)) {
-										   isNsEqual = true;
-										}
-										else if (nsUri != null) {
-										   isNsEqual = nsUri.equals(dataTypeNodeNsUri); 
-										}
-										else if (dataTypeNodeNsUri != null) {
-										   isNsEqual = dataTypeNodeNsUri.equals(nsUri);	
-										}
-										
-										if (!((childNodeType == DTM.ELEMENT_NODE) && nodeName.equals(dataTypeNodeLocalName) && isNsEqual)) {
-										   throw new TransformerException("XTTE0590 : An XSL global-context-item instruction's required type is not satisfied.", srcLocator);
-										}
-									}
-									else if (seqTypeSubKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ELEMENT_KIND) {
-										// We may try to implement this functionality
-									}
-								}
-							}
-						}
-					}
-			}
-		} 
-		
-		if (m_static && !"private".equals(m_visibility)) {
-			throw new TransformerException("XPST0008 : A top-level static variable " + m_qname.toString() + " is not declared as private.", srcLocator);
-		}
-		
-		if (m_static && (getFirstChildElem() != null)) {
-			throw new TransformerException("XTSE0010 : A top-level xsl:variable/xsl:param " + m_qname.toString() + " declared as static, "
-					                                                                                      + "has non-empty content.", srcLocator);
-		}
-		
-		if (m_static && !(this instanceof ElemParam) && (m_selectPattern == null)) {
-			throw new TransformerException("XTSE0010 : A top-level xsl:variable " + m_qname.toString() + " declared as static doesn't "
-					                                                                                   + "have an attribute \"select\".", srcLocator);
+		var = getXslToplevelVariableValue(transformer, sourceNode, xctxt, srcLocator);		
+		if (var != null) {
+		   return var;	
 		}
     }
     else if (m_static) {
@@ -1552,7 +1296,7 @@ public class ElemVariable extends ElemTemplateElement
     
   }
 
- /**
+  /**
    * This function is called after everything else has been
    * recomposed, and allows the template to set remaining
    * values that may be based on some other property that
@@ -2547,5 +2291,347 @@ public class ElemVariable extends ElemTemplateElement
 
     	return result;
     }
+    
+    /**
+     * Method definition, to get an XSL 3 stylesheet top level xsl:variable's value.
+     * 
+     * @param transformer						Xalan-J XSL transformation run-time object
+     * @param sourceNode                        An XPath context node integer handle
+     * @param xctxt                             An XPath context object
+     * @param srcLocator                        An XSL transformation SourceLocator object 
+     * @return                                  An XSL top level xsl:variable's value
+     * @throws TransformerException
+     */
+    private XObject getXslToplevelVariableValue(TransformerImpl transformer, int sourceNode,
+    		                                    XPathContext xctxt, SourceLocator srcLocator) throws TransformerException {
+    	
+    	XObject result = null;
+    	
+    	if (this instanceof ElemParam) {
+    		if (((ElemParam)this).getRequired() && ((ElemParam)this).getRequiredDeclared()) {
+    			if ((m_selectPattern == null) && (getFirstChildElem() == null)) {
+    				throw new TransformerException("XTDE0050 : An XSL stylesheet required top level parameter '" + m_qname.toString() 
+    				                                                                                            + "''s value is not provided.", srcLocator);
+    								
+    			}
+    		}
+    	} 
+    	else if (m_selectPattern != null) {
+    		/**
+    		 * This is XSL stylesheet top level xsl:variable declaration
+    		 * having "select" attribute. We need to check for variable
+    		 * cyclic dependencies.
+    		 * 
+    		 * This has been done to solve, various W3C XSLT 3.0 test cases,
+    		 * within following code.
+    		 */
+    		
+    		List <QName> qNameList = new ArrayList<QName>();
+    		List<QName> list1 = XslTransformData.m_xsl_variable_qname_list;
+    		int size1 = list1.size();
+    		for (int idx = 0; idx < size1; idx++) {
+    			qNameList.add(list1.get(idx));
+    		}
+    								
+    		String xpathPatternStr1 = m_selectPattern.getPatternString();
+    		if (xpathPatternStr1 != null) {
+    			List<XMLNSDecl> prefixTable = (List<XMLNSDecl>)this.getPrefixTable();
+    			if (prefixTable != null) {
+    			   xpathPatternStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathPatternStr1, prefixTable);					
+    			}
+    			
+    			XPath xpathSelect1 = new XPath(xpathPatternStr1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    			
+    			if (m_vars != null) {
+    				xpathSelect1.fixupVariables(m_vars, m_globals_size);
+    			}
 
+    			Expression expr1 = xpathSelect1.getExpression();
+    			
+    			if ((m_asAttr != null) && !(expr1 instanceof XPathInlineFunction)) {
+    				/**
+    				 * Doing XSL stylesheet global variable value's xdm type checking, in the
+    				 * presence of xsl:variable's "as" attribute. This can find various type errors,
+    				 * and the remaining xsl:variable type check are done further down this method.
+    				 */
+    				try {
+    					SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, this);
+    					SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+    					if (seqTypeKindTest != null) {            			            			
+    						if (expr1 instanceof LocPathIterator) {
+    							LocPathIterator locatioPathIter = (LocPathIterator)expr1;
+    							int nodeHandle = locatioPathIter.asNode(xctxt);
+    							DTM dtm1 = xctxt.getDTM(nodeHandle);
+    							short nodeType = dtm1.getNodeType(nodeHandle);            				
+    							if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND) && (nodeType != DTM.DOCUMENT_NODE)) {
+    								throw new TransformerException("XTTE0570 : The required item type of the value of variable '" + m_qname.toString() 
+    								                                                                             			+ "' is " + m_asAttr + ", which isn't "
+    								                                                                             			+ "true for this type check.", this);
+    							}
+    							else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) && (nodeType != DTM.ELEMENT_NODE)) {
+    								throw new TransformerException("XTTE0570 : The required item type of the value of variable '" + m_qname.toString() 
+    								                                                                             			+ "' is " + m_asAttr + ", which isn't "
+    								                                                                             			+ "true for this type check.", this);                				
+    							}
+    							else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) && (nodeType == DTM.ELEMENT_NODE)) {
+    								XObject xObj1 = xpathSelect1.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    								xObj1 = SequenceTypeSupport.castXdmValueToAnotherType(xObj1, m_asAttr, null, xctxt);
+    								if (xObj1 != null) {
+    									result = xObj1;
+
+    									return result;
+    								}
+    								else {
+    									throw new TransformerException("XTTE0570 : The required item type of the value of variable '" + m_qname.toString() 
+    									                                                                                    + "' is " + m_asAttr + ", which isn't "
+    									                                                                                    + "true for this type check.", this);            				
+    								}
+    							}
+    						}
+    					}
+    					else if (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurrenceIndicator.ABSENT) {
+    						// When an XSLT 3.0 "as" attribute is like xs:integer, xs:double etc without 
+    						// an occurrence indicator.
+    						XObject xObj1 = xpathSelect1.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    						xObj1 = SequenceTypeSupport.castXdmValueToAnotherType(xObj1, seqExpectedTypeData, false);
+    						if (xObj1 != null) {
+    							result = xObj1;
+
+    							return result;
+    						}
+    						else {
+    							throw new TransformerException("XTTE0570 : The required item type of the value of variable '" + m_qname.toString() 
+    							                                                                                              + "' is " + m_asAttr + ", which isn't "
+    							                                                                                              + "true for this type check.", this);            				
+    						}
+    					}
+    				}
+    				catch (TransformerException ex) {
+    					throw new TransformerException(ex.getMessage(), this);
+    				}
+    			}
+    							
+    			if (expr1 instanceof XPathInlineFunction) {
+    				XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)expr1;
+    				String xpathInlineFuncBody1 = xpathInlineFunc.getFuncBodyXPathExprStr();
+    				if (prefixTable != null) {
+    					xpathInlineFuncBody1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathInlineFuncBody1, prefixTable);					
+    				}
+
+    				xpathSelect1 = new XPath(xpathInlineFuncBody1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+    				if (m_vars != null) {
+    					xpathSelect1.fixupVariables(m_vars, m_globals_size);
+    				}
+    				
+    				expr1 = xpathSelect1.getExpression();
+    				if (expr1 instanceof XPathIfExpr) {
+    					XPathIfExpr xpathIfExpr = (XPathIfExpr)expr1;
+    					String xpathIfCondStr = xpathIfExpr.getIfConditionXPathStr();
+    					String xpathIfThenStr = xpathIfExpr.getThenExprXPathStr();
+    					String xpathIfElseStr = xpathIfExpr.getElseExprXPathStr();
+    					XPath xpathSelect_a = new XPath(xpathIfCondStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    					XPath xpathSelect_b = new XPath(xpathIfThenStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    					XPath xpathSelect_c = new XPath(xpathIfElseStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    					Expression a1 = xpathSelect_a.getExpression();
+    					Expression a2 = xpathSelect_b.getExpression();
+    					Expression a3 = xpathSelect_c.getExpression();
+    					if (a1 instanceof XPathDynamicFunctionCall) {
+    						XPathDynamicFunctionCall dfc1 = (XPathDynamicFunctionCall)a1;
+    						String dfcName1 = dfc1.getFuncRefVarName();
+    						XslTransformData.m_xsl_variable_qname_list.add(new QName(dfcName1));
+    						List<String> funcArgList1 = dfc1.getArgList();
+    						int funcArgListSize = funcArgList1.size();
+    						for (int idx = 0; idx < funcArgListSize; idx++) {
+    							String argStr1 = funcArgList1.get(idx);
+    							XslTransformData.m_xsl_variable_qname_list.add(new QName(argStr1));
+    						}
+    					}
+
+    					if (a2 instanceof XPathDynamicFunctionCall) {
+    						XPathDynamicFunctionCall dfc2 = (XPathDynamicFunctionCall)a2;
+    						String dfcName2 = dfc2.getFuncRefVarName();
+    						XslTransformData.m_xsl_variable_qname_list.add(new QName(dfcName2));
+    						List<String> funcArgList2 = dfc2.getArgList();
+    						int funcArgListSize = funcArgList2.size();
+    						for (int idx = 0; idx < funcArgListSize; idx++) {
+    							String argStr1 = funcArgList2.get(idx);
+    							XslTransformData.m_xsl_variable_qname_list.add(new QName(argStr1));
+    						}
+    					}
+
+    					if (a3 instanceof XPathDynamicFunctionCall) {
+    						XPathDynamicFunctionCall dfc3 = (XPathDynamicFunctionCall)a3;
+    						String dfcName3 = dfc3.getFuncRefVarName();
+    						XslTransformData.m_xsl_variable_qname_list.add(new QName(dfcName3));
+    						List<String> funcArgList3 = dfc3.getArgList();
+    						int funcArgListSize = funcArgList3.size();
+    						for (int idx = 0; idx < funcArgListSize; idx++) {
+    							String argStr1 = funcArgList3.get(idx);
+    							XslTransformData.m_xsl_variable_qname_list.add(new QName(argStr1));
+    						}
+    					}
+
+    					List <QName> qNameList2 = new ArrayList<QName>();
+    					List<QName> list3 = XslTransformData.m_xsl_variable_qname_list;
+    					int size3 = list3.size();
+    					for (int idx = 0; idx < size3; idx++) {
+    						qNameList2.add(list3.get(idx));
+    					}
+
+    					for (int idx = 0; idx < qNameList.size(); idx++) {
+    						QName qName1 = qNameList.get(idx);
+    						qNameList2.remove(qName1);
+    					}
+
+    					if (qNameList2.contains(m_qname)) {
+    						throw new TransformerException("XPST0008 : An XSL stylesheet top level variable '" + m_qname.toString() 
+    																										   + "' cannot be resolved to a value due "
+    																										   + "to cyclic variable dependency.", srcLocator);
+    					}
+    				}
+    				else {
+    					List <QName> qNameList2 = new ArrayList<QName>();
+    					List<QName> list3 = XslTransformData.m_xsl_variable_qname_list;
+    					int size3 = list3.size();
+    					for (int idx = 0; idx < size3; idx++) {
+    						qNameList2.add(list3.get(idx));
+    					}
+
+    					for (int idx = 0; idx < qNameList.size(); idx++) {
+    						QName qName1 = qNameList.get(idx);
+    						qNameList2.remove(qName1);
+    					}
+
+    					if (qNameList2.contains(m_qname)) {
+    						throw new TransformerException("XPST0008 : An XSL stylesheet top level variable '" + m_qname.toString() 
+    																										   + "' cannot be resolved to a value due "
+    																										   + "to cyclic variable dependency.", srcLocator);
+    					}
+    				}
+    			}			
+    			else if ((expr1 instanceof Function) || (expr1 instanceof UnaryOperation)) {
+    				// no op
+    			}
+    			else if ((expr1 instanceof XString) || (expr1 instanceof XBoolean) || (expr1 instanceof XBooleanStatic) 
+    					                                                           || (expr1 instanceof XNumber) || (expr1 instanceof XSAnyAtomicType)) {
+    				// no op
+    			}
+    			else if ((expr1 instanceof Variable) || (expr1 instanceof XPathMapConstructor)) {
+    				// no op
+    			}
+    			else if ((expr1 instanceof LocPathIterator) || (expr1 instanceof XPathSequenceConstructor) 
+    					                                                           || (expr1 instanceof ResultSequence) || (expr1 instanceof Range)) {
+    				// no op
+    			}
+    			else if (expr1 instanceof Operation) {
+    				// no op
+    			}
+    			else if (expr1 instanceof XPathForExpr) {
+    				// no op
+    			}
+    			else if (qNameList.contains(m_qname)) {
+    				throw new TransformerException("XPST0008 : An XSL stylesheet top level variable '" + m_qname.toString() 
+    																								   + "' cannot be resolved to a value due "
+    																								   + "to cyclic variable dependency.", srcLocator);
+    			}
+    	    }
+    		
+    		Stylesheet stylesheet = transformer.getStylesheet();              
+    		Vector globalContextItemList = stylesheet.getGlobalContextItemList();
+    		Expression xpathSelectExpr = m_selectPattern.getExpression();
+    		if ((globalContextItemList != null) && !isXPathExpressionStatic(xpathSelectExpr)) {												
+    				ElemGlobalContextItem elemGlobalContextItem = (ElemGlobalContextItem)(globalContextItemList.get(0));
+    				String xslGlobalContextItemAsValue = elemGlobalContextItem.getAs();
+    				String xslGlobalContextItemUseValue = elemGlobalContextItem.getUse();
+    				if (Constants.ATTRVAL_ABSENT.equals(xslGlobalContextItemUseValue)) {
+    					throw new TransformerException("XPDY0002 : An XSL top level variable has 'select' expression that requires "
+    																								   + "a context item. But XSL 'global-context-item' "
+    																								   + "instruction asserts XPath context item to be absent.", srcLocator);
+    				}
+
+    				if (sourceNode == DTM.NULL) {
+    					throw new TransformerException("XPDY0002 : An XSL top level variable has 'select' expression that requires "
+    																								   + "a context item but an context item "
+    																								   + "is absent.", srcLocator);
+    				}
+
+    				if (xslGlobalContextItemAsValue != null) {
+    					DTM dtm = xctxt.getDTM(sourceNode);
+    					short nodeType = dtm.getNodeType(sourceNode);
+    					String nodeTypeStr = xctxt.getNodeTypeStr(nodeType);
+    					SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(xslGlobalContextItemAsValue, xctxt, srcLocator);
+    					SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+    					if (seqTypeKindTest != null) {
+    						if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+    							if (nodeType != DTM.ELEMENT_NODE) {
+    								throw new TransformerException("XPDY0002 : An xdm " + nodeTypeStr + " node doesn't match with XSL "
+    																								  + "'global-context-item' instruction's "
+    																								  + "\"as\" attribute value " + xslGlobalContextItemAsValue + ".", srcLocator);	
+    							}
+    						}
+    						else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+    							if (nodeType != DTM.ATTRIBUTE_NODE) {
+    								throw new TransformerException("XPDY0002 : An xdm " + nodeTypeStr + " node doesn't match with XSL "
+    																								  + "'global-context-item' instruction's "
+    																								  + "\"as\" attribute value " + xslGlobalContextItemAsValue + ".", srcLocator);
+    							}
+    						}
+    						else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+    							if (nodeType != DTM.DOCUMENT_NODE) {
+    								throw new TransformerException("XPDY0002 : An xdm " + nodeTypeStr + " node doesn't match with XSL "
+    																								  + "'global-context-item' instruction's "
+    																								  + "\"as\" attribute value " + xslGlobalContextItemAsValue + ".", srcLocator);
+    							}
+    							
+    							SequenceTypeKindTest seqTypeSubKindTest = seqTypeKindTest.getSeqTypeSubKindTest();
+    							if (seqTypeSubKindTest != null) {
+    								if (seqTypeSubKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) {
+    									String dataTypeNodeLocalName = seqTypeSubKindTest.getNodeLocalName();
+    									String dataTypeNodeNsUri = seqTypeSubKindTest.getNodeNsUri();
+    									int childNode = dtm.getFirstChild(sourceNode);
+    									short childNodeType = dtm.getNodeType(childNode);
+    									String nodeName = dtm.getNodeName(childNode);
+    									String nsUri = dtm.getNamespaceURI(childNode);										
+    									boolean isNsEqual = false;
+    									if ((nsUri == null) && (dataTypeNodeNsUri == null)) {
+    									   isNsEqual = true;
+    									}
+    									else if (nsUri != null) {
+    									   isNsEqual = nsUri.equals(dataTypeNodeNsUri); 
+    									}
+    									else if (dataTypeNodeNsUri != null) {
+    									   isNsEqual = dataTypeNodeNsUri.equals(nsUri);	
+    									}
+    									
+    									if (!((childNodeType == DTM.ELEMENT_NODE) && nodeName.equals(dataTypeNodeLocalName) && isNsEqual)) {
+    									   throw new TransformerException("XTTE0590 : An XSL global-context-item instruction's required type is not satisfied.", srcLocator);
+    									}
+    								}
+    								else if (seqTypeSubKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ELEMENT_KIND) {
+    									// We may try to implement this functionality
+    								}
+    							}
+    						}
+    					}
+    				}
+    		}
+    	} 
+    	
+    	if (m_static && !"private".equals(m_visibility)) {
+    		throw new TransformerException("XPST0008 : A top-level static variable " + m_qname.toString() + " is not declared as private.", srcLocator);
+    	}
+    	
+    	if (m_static && (getFirstChildElem() != null)) {
+    		throw new TransformerException("XTSE0010 : A top-level xsl:variable/xsl:param " + m_qname.toString() + " declared as static, "
+    				                                                                                      + "has non-empty content.", srcLocator);
+    	}
+    	
+    	if (m_static && !(this instanceof ElemParam) && (m_selectPattern == null)) {
+    		throw new TransformerException("XTSE0010 : A top-level xsl:variable " + m_qname.toString() + " declared as static doesn't "
+    				                                                                                   + "have an attribute \"select\".", srcLocator);
+    	}
+    	
+    	return result;    	
+     }
 }

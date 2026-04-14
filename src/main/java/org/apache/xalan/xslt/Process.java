@@ -168,6 +168,7 @@ public class Process
 	  boolean isXslEvaluate = false;
 	  String initialTemplateName = null;
 	  String initialModeName = null;
+	  String initialFuncName = null;
 
 	  /**
 	   * The default java.io.PrintWriter diagnostic writer.
@@ -713,6 +714,13 @@ public class Process
 						 tfactory.setAttribute(XalanProperties.ASSERT_ENABLED, Boolean.TRUE); 
 					  }
 				  }				  				  
+			  }
+			  else if ("-INIT_FUNCTION".equalsIgnoreCase(argv[i])) {
+				  if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-') {
+					  initialFuncName = argv[++i]; 					  
+				  }
+				  
+				  tfactory.setAttribute(XalanProperties.INIT_FUNCTION, initialFuncName);
 			  }
 			  else
 				  System.err.println(

@@ -44,6 +44,7 @@ import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.NamespaceSupport2;
 import org.apache.xml.utils.NodeConsumer;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xpath.XPath;
@@ -94,6 +95,8 @@ public class StylesheetHandler extends DefaultHandler
    * An XSL transformation initial template name.
    */
   private String m_init_template_name = null;
+  
+  private QName m_init_function_name = null;
   
   /**
    * An XSL transformation initial mode name.
@@ -148,6 +151,11 @@ public class StylesheetHandler extends DefaultHandler
     }
     
     m_assert = (Boolean)(processor.getAttribute(XSL3TransformerFactoryImpl.FEATURE_ASSERT));
+    
+    Object initFunction = processor.getAttribute(XSL3TransformerFactoryImpl.FEATURE_INIT_FUNCTION);
+    if (initFunction != null) {
+       m_init_function_name = (QName)(processor.getAttribute(XSL3TransformerFactoryImpl.FEATURE_INIT_FUNCTION));
+    }
     
     m_initial_context_node = (Boolean)(processor.getAttribute(XSL3TransformerFactoryImpl.INIT_CONTEXT_NODE));
     
