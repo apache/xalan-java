@@ -1248,9 +1248,10 @@ public class StylesheetHandler extends DefaultHandler
 	  XslTransformData.m_stylesheetRoot = m_stylesheetRoot;
 	  XslTransformData.m_xslSystemId = getSystemId();
 	  
-	  m_stylesheetRoot.setInitTemplateName(m_init_template_name);
+	  m_stylesheetRoot.setInitTemplateName(m_init_template_name);	  
 	  m_stylesheetRoot.setInitModeName(m_init_mode_name);
 	  m_stylesheetRoot.setAssertEnabled(m_assert);
+	  m_stylesheetRoot.setInitFunctionName(m_init_function_name);
 	  m_stylesheetRoot.setInitialContextNode(m_initial_context_node);
 
 	  return m_stylesheetRoot;

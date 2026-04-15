@@ -79,6 +79,7 @@ import org.apache.xalan.tests.xslt3.XslForkTests;
 import org.apache.xalan.tests.xslt3.XslFunctionMiscTests;
 import org.apache.xalan.tests.xslt3.XslIncludeMiscTests;
 import org.apache.xalan.tests.xslt3.XslIncludeTests;
+import org.apache.xalan.tests.xslt3.XslInitialFunctionTests;
 import org.apache.xalan.tests.xslt3.XslInitialTemplateTests;
 import org.apache.xalan.tests.xslt3.XslJsonValidationTests;
 import org.apache.xalan.tests.xslt3.XslLinearRegressionTests;
@@ -136,7 +137,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XslDisableOutputEscapingAttrTests.class, FnAdjustDatetimeToTimezoneTests.class,
                 FnAdjustDateToTimezoneTests.class, FnAdjustTimeToTimezoneTests.class, FnFormatIntegerTests.class, XslPerformSortTests.class,
                 XslPackageTests.class, XslUseWhenTests.class, XslLinearRegressionTests.class, XslNextMatchTests.class,
-                XslUseAttributeSetsTests.class })
+                XslUseAttributeSetsTests.class, XslInitialFunctionTests.class })
 public class XalanXsl3TestSuite2 {
 
 }

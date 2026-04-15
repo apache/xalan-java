@@ -616,7 +616,17 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 	  }
 	  else if (name.equals(FEATURE_INIT_FUNCTION))
 	  {
-		  m_init_function_name = (QName)value; 
+		  if (value != null) {
+			  String init_func_name = (String)value;
+			  int i1 = init_func_name.indexOf('{');
+			  int i2 = init_func_name.indexOf('}');
+			  int length1 = init_func_name.length(); 
+			  if ((i1 == 0) && (i2 > i1) && (length1 > (i2 + 1))) {
+				  String namespace = init_func_name.substring(i1 + 1, i2);
+				  String localName = init_func_name.substring(i2 + 1);			 
+				  m_init_function_name = new QName(namespace, localName);
+			  }
+		  }
 	  }
 	  else if (name.equals("initial-context-node")) {
 		  m_initial_context_node_available = (Boolean)value; 

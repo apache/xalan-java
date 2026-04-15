@@ -107,7 +107,9 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     
     protected static String m_initTemplateName = null;
     
-    protected static String m_initModeName = null;
+    protected static String m_initFunctionName = null;
+    
+    protected static String m_initModeName = null;        
     
     protected static String m_xsl_test_dir_base_uri = null;
     
@@ -135,6 +137,10 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            
            if (m_initTemplateName != null) {
         	   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName); 
+           }
+           
+           if (m_initFunctionName != null) {
+        	   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_FUNCTION, m_initFunctionName); 
            }
            
            if (m_initModeName != null) {
@@ -244,6 +250,11 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         	if (m_initTemplateName != null) {
         		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, null);
         		m_initTemplateName = null;
+        	}
+        	
+        	if (m_initFunctionName != null) {
+        		m_xslTransformerFactory.setAttribute(XalanProperties.INIT_FUNCTION, null);
+        		m_initFunctionName = null;
         	}
         	
         	if (m_initModeName != null) {

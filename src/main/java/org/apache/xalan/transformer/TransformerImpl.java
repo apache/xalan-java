@@ -933,8 +933,8 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     	  }
     	  else if ((m_init_template_name != null) || (m_init_mode_name != null) || (m_init_function_name != null)) {
     		  /**
-    		   * An XSL stylesheet 'initial template' or 'mode' name is 
-    		   * available, but context node is not available.
+    		   * An XSL stylesheet 'initial template', 'mode' name or 'initial function' is 
+    		   * available, but XSL transformation initial context node is not available.
     		   */
     		  this.transformNode(DTM.NULL);
     	  }
@@ -2541,6 +2541,8 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     
     String initTemplateName = m_stylesheetRoot.getInitTemplateName();
     
+    QName initFunctionName = m_stylesheetRoot.getInitFunctionName();
+    
     isApplyImports = ((xslInstruction == null)
                                 ? false
                                 : xslInstruction.getXSLToken()
@@ -2674,7 +2676,27 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
              else {
             	 throw new TransformerException("XTDE0040 : An XSL template named '" + initTemplateName + "' doesn't exist."); 
              }                          
-          }          
+          }
+          else if (initFunctionName != null) {
+        	 ElemFunction elemFunction = m_stylesheetRoot.getXslFunction(initFunctionName, 0);
+        	 ResultSequence argSequence = new ResultSequence();
+        	 XObject funcResult = elemFunction.evaluateXslFunction(this, argSequence);
+        	 ResultSequence seqForResult = new ResultSequence();
+        	 seqForResult.add(funcResult);
+        	 try {
+				ElemCopyOf.copyOfActionOnResultSequence(seqForResult, this, m_serializationHandler, xctxt, false, template);
+			 } 
+        	 catch (TransformerException ex) {
+                throw ex;
+			 } 
+        	 catch (SAXException ex) {
+                String errMesg = ex.getMessage();
+                SourceLocator srcLocator = xctxt.getSAXLocator();
+                throw new TransformerException(errMesg, srcLocator); 
+			 }
+        	 
+        	 return true;
+          }
           else {
         	  QName mode = null;        	  
         	  if (m_init_mode_name != null) {
