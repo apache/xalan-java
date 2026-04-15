@@ -109,5 +109,73 @@ public class XslInitialFunctionTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslInitialFunctionTest6() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";
+        
+        m_fileComparisonType = XSLTestConstants.TEXT;
+        
+        m_initFunctionName = "{http://fn0}func1";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslInitialFunctionTest7() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";
+        
+        m_fileComparisonType = XSLTestConstants.TEXT;
+        
+        m_initFunctionName = "{http://fn0}func1";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslInitialFunctionTest8() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test8.out";
+        
+        m_fileComparisonType = XSLTestConstants.TEXT;
+        
+        m_initFunctionName = "{http://fn0}func1";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslInitialFunctionTest9() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";
+        
+        m_fileComparisonType = XSLTestConstants.TEXT;
+        
+        m_initFunctionName = "{http://fn0}func1";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslInitialFunctionTest10() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";                
+        
+        m_initFunctionName = "{http://fn0}func1";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

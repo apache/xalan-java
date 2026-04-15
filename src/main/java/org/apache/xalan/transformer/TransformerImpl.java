@@ -474,6 +474,12 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
   private List<String> m_enabledPropertyList = new ArrayList<String>(); 
   
   private List<ElemWithParam> m_xslWithParamList = new ArrayList<ElemWithParam>();
+  
+  /**
+   * Initial context node handle for XSL transformation, when
+   * XSL transformation is initiated via an XSL stylesheet function.
+   */
+  private int m_docNode = DTM.NULL;
 
   /**
    * NEEDSDOC Method setShouldReset 
@@ -899,11 +905,13 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
         }           
       }
       
-      DTM dtm = null;
+      DTM dtm = null;            
       
       if (source != null) {
         dtm = mgr.getDTM(source, false, this, true, true);
         dtm.setDocumentBaseURI(base);
+        
+        m_docNode = dtm.getDocument();
       }
       
       boolean hardDelete = true;  // %REVIEW% I have to think about this. -sb
@@ -2527,7 +2535,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
   public boolean applyTemplateToNode(ElemTemplateElement xslInstruction,  // xsl:apply-templates or xsl:for-each
                                      ElemTemplate template, int child)
                                              throws TransformerException
-  {
+  {	  	  
 
     DTM dtm = m_xcontext.getDTM(child);
     short nodeType = DTM.ROOT_NODE;
@@ -2678,14 +2686,16 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
              }                          
           }
           else if (initFunctionName != null) {
-        	 ElemFunction elemFunction = m_stylesheetRoot.getXslFunction(initFunctionName, 0);
-        	 ResultSequence argSequence = new ResultSequence();
-        	 XObject funcResult = elemFunction.evaluateXslFunction(this, argSequence);
-        	 ResultSequence seqForResult = new ResultSequence();
-        	 seqForResult.add(funcResult);
         	 try {
-				ElemCopyOf.copyOfActionOnResultSequence(seqForResult, this, m_serializationHandler, xctxt, false, template);
-			 } 
+        		 xctxt.pushCurrentNode(m_docNode);
+        		 
+        		 ElemFunction elemFunction = m_stylesheetRoot.getXslFunction(initFunctionName, 0);   // assuming function arity is 0 for now
+        		 ResultSequence argSequence = new ResultSequence();
+        		 XObject funcResult = elemFunction.evaluateXslFunction(this, argSequence);
+        		 ResultSequence seqForResult = new ResultSequence();
+        		 seqForResult.add(funcResult);
+        		 ElemCopyOf.copyOfActionOnResultSequence(seqForResult, this, m_serializationHandler, xctxt, false, template);
+        	 }
         	 catch (TransformerException ex) {
                 throw ex;
 			 } 
@@ -2694,6 +2704,9 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
                 SourceLocator srcLocator = xctxt.getSAXLocator();
                 throw new TransformerException(errMesg, srcLocator); 
 			 }
+        	 finally {
+        		xctxt.popCurrentNode(); 
+        	 }
         	 
         	 return true;
           }

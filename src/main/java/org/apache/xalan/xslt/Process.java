@@ -94,6 +94,7 @@ public class Process
     System.out.println(resbundle.getString("optionINIT_TEMPLATE"));  //" [-INIT_TEMPLATE (Specify an XSL template's name to select an initial template for transformation)]");
     System.out.println(resbundle.getString("optionINIT_MODE"));  //" [-INIT_MODE (Specify an XSL transformation's initial mode name)]");
     System.out.println(resbundle.getString("optionENABLE_ASSERT"));  //" [-ENABLE_ASSERT (Specify whether XSL assert is enabled)]");
+    System.out.println(resbundle.getString("optionINIT_FUNCTION"));  //" [-INIT_FUNCTION (Specify an XSL template's name to select an initial template for transformation)]");
     System.out.println(resbundle.getString("optionENCODING"));  //" [-ENCODING (Specify value of encoding to be used for XML input and stylesheet documents. Use format utf_8 (default), iso_8859_1 etc.)]");
     System.out.println(resbundle.getString("optionOUT"));  //"   [-OUT outputFileName]");
 
