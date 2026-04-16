@@ -574,6 +574,12 @@ public class FunctionTable
   
   /** The 'format-integer()' id. */
   public static final int FUNC_FORMAT_INTEGER = 184;
+  
+  /** The 'environment-variable()' id. */
+  public static final int FUNC_ENVIRONMENT_VARIABLE = 185;
+  
+  /** The 'available-environment-variables()' id. */
+  public static final int FUNC_AVAILABLE_ENVIRONMENT_VARIABLES = 186;
 
   // Proprietary
 
@@ -634,7 +640,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 185;
+  private static final int NUM_BUILT_IN_FUNCS = 187;
 
   /**
    * Number of built-in functions that may be added.
@@ -870,6 +876,9 @@ public class FunctionTable
 	   m_functions[FUNC_ERROR] = org.apache.xpath.functions.FuncError.class;
 	   
 	   m_functions[FUNC_RANDOM_NUMBER_GENERATOR] = org.apache.xpath.functions.FuncRandomNumberGenerator.class;
+	   
+	   m_functions[FUNC_ENVIRONMENT_VARIABLE] = org.apache.xpath.functions.FuncEnvironmentVariable.class;
+	   m_functions[FUNC_AVAILABLE_ENVIRONMENT_VARIABLES] = org.apache.xpath.functions.FuncAvailableEnvironmentVariables.class;
   }
 
   static {
@@ -1090,6 +1099,9 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_ERROR, Integer.valueOf(FunctionTable.FUNC_ERROR));
 	  
 	  m_functionId.put(Keywords.FUNC_RANDOM_NUMBER_GENERATOR, Integer.valueOf(FunctionTable.FUNC_RANDOM_NUMBER_GENERATOR));
+	  
+	  m_functionId.put(Keywords.FUNC_ENVIRONMENT_VARIABLE, Integer.valueOf(FunctionTable.FUNC_ENVIRONMENT_VARIABLE));
+	  m_functionId.put(Keywords.FUNC_AVAILABLE_ENVIRONMENT_VARIABLES, Integer.valueOf(FunctionTable.FUNC_AVAILABLE_ENVIRONMENT_VARIABLES));
   }
   
   /**
