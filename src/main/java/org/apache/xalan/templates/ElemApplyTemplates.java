@@ -382,7 +382,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 				  XObject xObj = resultSeq.item(idx);
 				  if (xObj instanceof XMLNodeCursorImpl) {
 					  sourceNodes = ((XMLNodeCursorImpl)xObj).iterRaw();					  
-					  xslApplyTemplatesToNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator);
+					  applyTemplatesToNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator);
 				  }
 				  else {
 					  ResultSequence rSeq = new ResultSequence();
@@ -474,7 +474,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  }
 
 	  if (sourceNodes != null) {		 
-	     xslApplyTemplatesToNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator);
+	     applyTemplatesToNodes(transformer, xctxt, contextNode, sourceNodes, srcLocator);
 	  }
   }
 
@@ -489,7 +489,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * @param srcLocator                             XPath SourceLocator object instance
    * @throws TransformerException
    */
-  private void xslApplyTemplatesToNodes(TransformerImpl transformer, XPathContext xctxt, int contextNode,
+  private void applyTemplatesToNodes(TransformerImpl transformer, XPathContext xctxt, int contextNode,
 		                                                                        DTMCursorIterator sourceNodes, SourceLocator srcLocator) 
 		                                                                        		                                             throws TransformerException {
 	  
@@ -692,7 +692,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 			  final int exNodeType = dtm.getExpandedTypeID(child);
 
-			  final int nodeType = dtm.getNodeType(child);
+			  final short nodeType = dtm.getNodeType(child);
 			  
 			  String str2 = dtm.getNodeValue(child);			  			  
     		  if ((Constants.XSL_DOCUMENT_INSTRUCTION_MARKER).equals(str2)) {
@@ -708,7 +708,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  if (template == null)
 			  {
 				  String nodeTypeStr = null;
-
+				  
 				  switch (nodeType)
 				  {
 				  case DTM.DOCUMENT_FRAGMENT_NODE :
@@ -717,36 +717,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 					  if (elemMode != null) {						  						  
 						  String nodeNameStr = dtm.getNodeName(child);						  
 						  if (onNoMatchStr != null) {							  
-							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, mode);								  								  								  
-							  }
-							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getDeepCopyRule(elemMode.getName());
-							  }
-							  else if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getShallowCopyRule(elemMode.getName(), nodeType, mode);
-							  }
-							  else if ((Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, mode);
-							  }
-							  else if ((Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, mode);
-							  }							  
-							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
-								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
-								  if (nodeNameStr != null) {
-									  errMesg = (errMesg + " '" + nodeNameStr + "'."); 
-								  }
-								  else {
-									  errMesg = (errMesg + "."); 
-								  }
-
-								  throw new TransformerException(errMesg, srcLocator);
-							  }
-							  else {
-								  throw new TransformerException("XTTE0505 : An XSL mode instruction's attribute \"on-no-match\" has disallowed "
-										  																		+ "value '" + onNoMatchStr + "'.", elemMode);
-							  }
+							  template = getDefaultTemplateRuleForMode(sroot, mode, elemMode, onNoMatchStr, nodeType, nodeTypeStr, 
+									  																							nodeNameStr, srcLocator);
 						  }
 
 						  if (elemMode.isWarningOnNoMatch()) {
@@ -774,36 +746,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 					  if (elemMode != null) {						  						  
 						  String nodeNameStr = dtm.getNodeName(child);
 						  if (onNoMatchStr != null) {
-							  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, mode);								  
-							  }
-							  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getDeepCopyRule(elemMode.getName());
-							  }
-							  else if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
-								  template = sroot.getShallowCopyRule(elemMode.getName(), nodeType, mode);
-							  }
-							  else if ((Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getDeepSkipRule(elemMode.getName(), nodeType, mode);
-							  }
-							  else if ((Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr)) {
-								  template = sroot.getShallowSkipRule(elemMode.getName(), nodeType, mode);
-							  }
-							  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
-								  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
-								  if (nodeNameStr != null) {
-									  errMesg = (errMesg + " '" + nodeNameStr + "'."); 
-								  }
-								  else {
-									  errMesg = (errMesg + "."); 
-								  }
-
-								  throw new TransformerException(errMesg, srcLocator);
-							  }
-							  else {
-								  throw new TransformerException("XTTE0505 : An XSL mode instruction's attribute \"on-no-match\" has disallowed "
-										  																		+ "value '" + onNoMatchStr + "'.", elemMode);
-							  }
+							  template = getDefaultTemplateRuleForMode(sroot, mode, elemMode, onNoMatchStr, nodeType, nodeTypeStr, 
+									  																							nodeNameStr, srcLocator);
 						  }
 
 						  if (elemMode.isWarningOnNoMatch()) {
@@ -1247,6 +1191,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 							  }
 							  
 							  if (desiredTemplate != null) {
+								  // An XSL template with lower priority, is available in the stylesheet document
 								  xctxt.setSAXLocator(desiredTemplate);
 								  transformer.pushElemTemplateElement(desiredTemplate);
 								  ElemNextMatch elemNextMatch = (ElemNextMatch)t;
@@ -1260,7 +1205,62 @@ public class ElemApplyTemplates extends ElemCallTemplate
 								  
 								  desiredTemplate.setXslNextMatchWithParamList(xslWithParamList);								  
 								  desiredTemplate.execute(transformer);
-							  }							  
+							  }
+							  else {
+								  // Get default XSL stylesheet template rule
+								  
+								  String nodeTypeStr = null;
+								  
+								  switch (nodeType)
+								  {
+								  case DTM.DOCUMENT_FRAGMENT_NODE :
+								  case DTM.ELEMENT_NODE :
+									  nodeTypeStr = Constants.ELEMNAME_ELEMENT_STRING;					  
+									  if (elemMode != null) {						  						  
+										  String nodeNameStr = dtm.getNodeName(child);						  
+										  if (onNoMatchStr != null) {							  
+											  desiredTemplate = getDefaultTemplateRuleForMode(sroot, mode, elemMode, onNoMatchStr, nodeType, nodeTypeStr, 
+													                                                                                                   nodeNameStr, srcLocator);
+										  }
+
+										  if (elemMode.isWarningOnNoMatch()) {
+											  /**
+											   * Emit an, XSL stylesheet processing warning, when xsl:mode
+											   * instruction specifies an attribute 'warning-on-no-match' with
+											   * boolean value true.
+											   */							  
+											  emitXslTransformNoRuleMatchWarning(nodeNameStr, nodeTypeStr, xctxt, srcLocator);
+										  }
+
+										  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
+											  serializeXdmStringValueWithDefaultXslTextRule(transformer, rth, sroot, dtm, child, desiredTemplate);
+
+											  continue;
+										  }
+									  }
+									  else {
+										  desiredTemplate = sroot.getDefaultRule();
+									  }
+									  
+									  break;
+								  case DTM.CDATA_SECTION_NODE :
+								  case DTM.TEXT_NODE :
+								  case DTM.ATTRIBUTE_NODE :
+									  desiredTemplate = stylesheetRoot.getDefaultTextRule();
+									  break;
+								  case DTM.DOCUMENT_NODE :
+									  desiredTemplate = stylesheetRoot.getDefaultRootRule();          
+									  break;
+								  default :
+									  // no op
+								  }
+								  
+								  if (desiredTemplate != null) {
+									  xctxt.setSAXLocator(desiredTemplate);
+									  transformer.pushElemTemplateElement(desiredTemplate);
+									  desiredTemplate.execute(transformer);
+								  }
+							  }
 						  }
 						  else {
 							  xctxt.setSAXLocator(t);
@@ -1310,6 +1310,61 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  sourceNodes.detach();
 	  }
   }
+
+  /**
+   * Method definition, to get XSL default template rule object instance, 
+   * when a mode needs to be considered.
+   * 
+   * @param sroot                       An XSL stylesheet StylesheetRoot object
+   * @param mode                        Name of the mode
+   * @param elemMode                    An ElemMode object
+   * @param onNoMatchStr                Value of xsl:mode on-no-match attribute's value
+   * @param nodeType                    Value indicating the node's type
+   * @param nodeTypeStr                 The node's type as string value used for error handling
+   * @param nodeNameStr                 Node's name as string value
+   * @param srcLocator                  An XSL transformation SourceLocator object
+   * @return                            An XSL template rule ElemTemplate object instance
+   * @throws TransformerException
+   */
+  private ElemTemplate getDefaultTemplateRuleForMode(StylesheetRoot sroot, QName mode, ElemMode elemMode, String onNoMatchStr, 
+		                                                                              short nodeType, String nodeTypeStr,
+																					  String nodeNameStr, SourceLocator srcLocator) throws TransformerException {
+	
+	  ElemTemplate result = null;
+
+	  if ((Constants.ATTRVAL_TEXT_ONLY_COPY).equals(onNoMatchStr)) {
+		  result = sroot.getTextOnlyCopyRule(elemMode.getName(), nodeType, mode);								  								  								  
+	  }
+	  else if ((Constants.ATTRVAL_DEEP_COPY).equals(onNoMatchStr)) {
+		  result = sroot.getDeepCopyRule(elemMode.getName());
+	  }
+	  else if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
+		  result = sroot.getShallowCopyRule(elemMode.getName(), nodeType, mode);
+	  }
+	  else if ((Constants.ATTRVAL_DEEP_SKIP).equals(onNoMatchStr)) {
+		  result = sroot.getDeepSkipRule(elemMode.getName(), nodeType, mode);
+	  }
+	  else if ((Constants.ATTRVAL_SHALLOW_SKIP).equals(onNoMatchStr)) {
+		  result = sroot.getShallowSkipRule(elemMode.getName(), nodeType, mode);
+	  }							  
+	  else if ((Constants.ATTRVAL_FAIL).equals(onNoMatchStr)) {
+		  String errMesg = "XTDE0555 : An XSL template declaration could not be found to process an XML " + nodeTypeStr + " node";
+		  if (nodeNameStr != null) {
+			  errMesg = (errMesg + " '" + nodeNameStr + "'."); 
+		  }
+		  else {
+			  errMesg = (errMesg + "."); 
+		  }
+
+		  throw new TransformerException(errMesg, srcLocator);
+	  }
+	  else {
+		  throw new TransformerException("XTTE0505 : An XSL mode instruction's attribute \"on-no-match\" has disallowed value '" + onNoMatchStr + "'.", elemMode);
+	  }
+
+	  return result;
+	
+   }
 
   /**
    * Method definition, to do type checking and required modification of xsl:template's xsl:param

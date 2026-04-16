@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><root>
+   <!--Processing div--><div>
+     <p>p 1</p>
+     <p>p 2</p>
+   </div>
+   <!--Processing div--><div>
+     <p>p 3</p>
+   </div>
+</root>
