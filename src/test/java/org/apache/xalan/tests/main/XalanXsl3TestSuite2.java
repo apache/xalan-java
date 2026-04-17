@@ -74,6 +74,7 @@ import org.apache.xalan.tests.xslt3.XslContextItemTests;
 import org.apache.xalan.tests.xslt3.XslCopyTests;
 import org.apache.xalan.tests.xslt3.XslDisableOutputEscapingAttrTests;
 import org.apache.xalan.tests.xslt3.XslExpandTextTests;
+import org.apache.xalan.tests.xslt3.XslFnCopyofTests;
 import org.apache.xalan.tests.xslt3.XslForEachGroupMiscTests;
 import org.apache.xalan.tests.xslt3.XslForkTests;
 import org.apache.xalan.tests.xslt3.XslFunctionMiscTests;
@@ -137,7 +138,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XslDisableOutputEscapingAttrTests.class, FnAdjustDatetimeToTimezoneTests.class,
                 FnAdjustDateToTimezoneTests.class, FnAdjustTimeToTimezoneTests.class, FnFormatIntegerTests.class, XslPerformSortTests.class,
                 XslPackageTests.class, XslUseWhenTests.class, XslLinearRegressionTests.class, XslNextMatchTests.class,
-                XslUseAttributeSetsTests.class, XslInitialFunctionTests.class })
+                XslUseAttributeSetsTests.class, XslInitialFunctionTests.class, XslFnCopyofTests.class })
 public class XalanXsl3TestSuite2 {
 
 }

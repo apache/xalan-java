@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <a1 isString="true">hello</a1>
+  <a2 isXsDateTime="false">hello</a2>
+  <a3 isXsDateTime="true">2004-10-07T12:30:00</a3>
+  <b seqLength="2">hello,there</b>
+</result>

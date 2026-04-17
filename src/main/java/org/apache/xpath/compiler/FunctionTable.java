@@ -583,6 +583,9 @@ public class FunctionTable
   
   /** The 'unparsed-text-available()' id. */
   public static final int FUNC_UNPARSED_TEXT_AVAILABLE = 187;
+  
+  /** The 'copy-of()' id (XSLT). */
+  public static final int FUNC_COPY_OF = 188;
 
   // Proprietary
 
@@ -643,7 +646,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 188;
+  private static final int NUM_BUILT_IN_FUNCS = 189;
 
   /**
    * Number of built-in functions that may be added.
@@ -884,6 +887,8 @@ public class FunctionTable
 	   m_functions[FUNC_AVAILABLE_ENVIRONMENT_VARIABLES] = org.apache.xpath.functions.FuncAvailableEnvironmentVariables.class;
 	   
 	   m_functions[FUNC_UNPARSED_TEXT_AVAILABLE] = org.apache.xpath.functions.FuncUnparsedTextAvailable.class;
+	   
+	   m_functions[FUNC_COPY_OF] = org.apache.xalan.templates.FuncCopyOf.class;
   }
 
   static {
@@ -1109,6 +1114,8 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_AVAILABLE_ENVIRONMENT_VARIABLES, Integer.valueOf(FunctionTable.FUNC_AVAILABLE_ENVIRONMENT_VARIABLES));
 	  
 	  m_functionId.put(Keywords.FUNC_UNPARSED_TEXT_AVAILABLE, Integer.valueOf(FunctionTable.FUNC_UNPARSED_TEXT_AVAILABLE));
+	  
+	  m_functionId.put(Keywords.FUNC_COPY_OF, Integer.valueOf(FunctionTable.FUNC_COPY_OF));
   }
   
   /**

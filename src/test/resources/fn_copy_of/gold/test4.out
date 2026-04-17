@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <div xmlns="http://ns0">
+     <p>p 1</p>
+     <p>p 2</p>
+   </div>
+    <div xmlns="http://ns0">
+     <p>p 3</p>
+   </div>
+  </one>
+  <two>
+    <div xmlns="http://ns0">
+     <p>p 1</p>
+     <p>p 2</p>
+   </div>
+    <div xmlns="http://ns0">
+     <p>p 3</p>
+   </div>
+  </two>
+  <three>
+    <div xmlns="http://ns0">
+     <p>p 1</p>
+     <p>p 2</p>
+   </div>
+  </three>
+</result>

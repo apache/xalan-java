@@ -790,6 +790,9 @@ public class Keywords
   /** unparsed-text-available function string. */
   public static final String FUNC_UNPARSED_TEXT_AVAILABLE = "unparsed-text-available";
   
+  /** copy-of function string (XSLT). */
+  public static final String FUNC_COPY_OF = "copy-of";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
