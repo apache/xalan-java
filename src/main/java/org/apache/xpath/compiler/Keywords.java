@@ -787,6 +787,9 @@ public class Keywords
   /** available-environment-variables function string. */
   public static final String FUNC_AVAILABLE_ENVIRONMENT_VARIABLES = "available-environment-variables";
   
+  /** unparsed-text-available function string. */
+  public static final String FUNC_UNPARSED_TEXT_AVAILABLE = "unparsed-text-available";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
