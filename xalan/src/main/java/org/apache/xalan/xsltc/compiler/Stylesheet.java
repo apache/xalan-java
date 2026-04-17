@@ -1253,6 +1253,19 @@ public final class Stylesheet extends SyntaxTreeNode {
 	System.out.println("=================================");	
         */
 
+    // Make sure that the vector 'input' is closed
+    for (int i = 0; i < input.size(); i++) {
+        final TopLevelElement vde = (TopLevelElement) input.elementAt(i);
+        final Vector dep  = vde.getDependencies();
+        final int depSize = (dep != null) ? dep.size() : 0;
+        for (int j = 0; j < depSize; j++) {
+            final TopLevelElement vdeVar = (TopLevelElement) dep.elementAt(j);
+            if (!input.contains(vdeVar)) {
+                input.addElement(vdeVar);
+            }
+        }
+    }
+
 	Vector result = new Vector();
 	while (input.size() > 0) {
 	    boolean changed = false;
