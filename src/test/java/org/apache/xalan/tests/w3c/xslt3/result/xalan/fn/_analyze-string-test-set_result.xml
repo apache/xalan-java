@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:50:27Z" fail="0" name="analyze-string" pass="5" run="5" skipped="0" statusUnknown="0">
-   <testResult status="pass" testName="analyze_string-001"/>
-   <testResult status="pass" testName="analyze_string-002"/>
-   <testResult status="pass" testName="analyze_string-003"/>
-   <testResult status="pass" testName="analyze_string-004"/>
-   <testResult status="pass" testName="analyze_string-005"/>
-</testrun>

@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:50:27Z" fail="0" name="adjust-date-to-timezone" pass="1" run="1" skipped="0" statusUnknown="0">
-   <testResult status="pass" testName="adjust_date_to_timezone-001"/>
-</testrun>

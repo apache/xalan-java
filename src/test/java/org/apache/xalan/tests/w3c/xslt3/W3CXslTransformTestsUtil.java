@@ -154,10 +154,6 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     protected static String m_testResultFileName = null;
     
     protected static List<String> m_skipped_tests_list = new ArrayList<String>();
-    
-    protected static Document m_testResultDoc = null;
-    
-    protected static Element m_elemTestResult = null;
 	
 	/**
 	 * Method definition, to run all XSL transformation tests from 
@@ -168,7 +164,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	Document xslTestSetDoc = null;
     	
     	FileOutputStream testResultFos = null;
-    	  	
+    	
+    	Document testResultDoc = null;    	
     	Element elemTestRun = null;
     	
     	try {
@@ -178,12 +175,12 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	   Element xslTestSetDocumentElem = xslTestSetDoc.getDocumentElement();
     	   
 		   String testSetName = xslTestSetDocumentElem.getAttribute(NAME_ATTR);
-		   m_testResultDoc = m_xmlDocumentBuilder.newDocument();
-    	   elemTestRun = m_testResultDoc.createElement("testrun");
+		   testResultDoc = m_xmlDocumentBuilder.newDocument();
+    	   elemTestRun = testResultDoc.createElement("testrun");
     	   String testRunDateStrValue = getDateISOString(new Date());
     	   elemTestRun.setAttribute(NAME_ATTR, testSetName);
     	   elemTestRun.setAttribute("dateTime", testRunDateStrValue);
-    	   m_testResultDoc.appendChild(elemTestRun);    	   
+    	   testResultDoc.appendChild(elemTestRun);    	   
     	   
     	   NodeList nodeList = xslTestSetDoc.getElementsByTagNameNS(W3C_XSLT3_TEST_CATALOG_NS, ELEM_NODE_NAME_TEST_CASE);
     	   int length1 = nodeList.getLength();
@@ -192,7 +189,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   String testCaseName = ((Element)xslTestCaseNode).getAttribute(NAME_ATTR);     		   
     		   if (isXslt1And2OnlyTestCase(xslTestCaseNode)) {
     			  // We skip running XSLT 2.0/1.0 only test cases
-    			  Element elemTestResult = m_testResultDoc.createElement("testResult");
+    			  Element elemTestResult = testResultDoc.createElement("testResult");
     			  elemTestResult.setAttribute("testName", testCaseName);
     			  elemTestResult.setAttribute(STATUS, "skipped");
     			  elemTestResult.setAttribute("xsltVersion", "XSLT 2.0/1.0 only test case");
@@ -202,7 +199,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   }
     		   else if (isBackwardCompatibilityTestCase(xslTestCaseNode)) {
      			  // We skip running XSLT backward compatibility test cases
-     			  Element elemTestResult = m_testResultDoc.createElement("testResult");
+     			  Element elemTestResult = testResultDoc.createElement("testResult");
      			  elemTestResult.setAttribute("testName", testCaseName);
   			      elemTestResult.setAttribute(STATUS, "skipped");
   			      elemTestResult.setAttribute("feature", "backwards_compatibility");
@@ -212,7 +209,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      		   }
     		   else if (isXslSchemaAwareFeatureTestCase(xslTestCaseNode)) {
     			   // We skip running XSLT 3.0 schema aware feature test cases
-    			   Element elemTestResult = m_testResultDoc.createElement("testResult");
+    			   Element elemTestResult = testResultDoc.createElement("testResult");
     			   elemTestResult.setAttribute("testName", testCaseName);
     			   elemTestResult.setAttribute(STATUS, "skipped");
     			   elemTestResult.setAttribute("feature", "schema_aware");
@@ -222,7 +219,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
       		   }
     		   else if (isXslStreamingFeatureTestCase(xslTestCaseNode)) {
      			  // We skip running XSLT 3.0 streaming feature test cases
-       			  Element elemTestResult = m_testResultDoc.createElement("testResult");
+       			  Element elemTestResult = testResultDoc.createElement("testResult");
        			  elemTestResult.setAttribute("testName", testCaseName);
        			  elemTestResult.setAttribute(STATUS, "skipped");
        			  elemTestResult.setAttribute("feature", "streaming");
@@ -236,7 +233,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			    * test suite, that're configured to be skipped within this XSLT test
     			    * suite driver and permitted by respective W3C XSLT 3.0 test case. 
     			    */
-    			   Element elemTestResult = m_testResultDoc.createElement("testResult");
+    			   Element elemTestResult = testResultDoc.createElement("testResult");
     			   elemTestResult.setAttribute("testName", testCaseName);
     			   elemTestResult.setAttribute(STATUS, "skipped");
     			   elemTestResult.setAttribute("reason", "Xalan configured");
@@ -421,7 +418,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   
     		   try {
     		      runW3CXSLTTestSuiteXslTransformAndEmitResult(testCaseName, xmlInpDomSource, xslStreamSrc, xslParamMap, 
-    		    		                                                                                  expectedResultElem, elemTestRun, m_testResultDoc);
+    		    		                                                                                  expectedResultElem, elemTestRun, testResultDoc);
     		   }
     		   catch (Exception ex) {
     			  // no op 
@@ -446,7 +443,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     							   expectedResultStr = elemNode.getTextContent();            		
     						   }
 
-    						   verifyTestCaseAgain(m_testResultDoc, testCaseName, xmlDocInpStr, xslStreamSrc, expectedResultStr);
+    						   verifyTestCaseAgain(testResultDoc, testCaseName, xmlDocInpStr, xslStreamSrc, expectedResultStr);
     					   }
     				   }
     				   catch (Exception ex) {
@@ -461,7 +458,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	}
     	finally {    	   	
     	   try {
-    		   NodeList nodeList = m_testResultDoc.getElementsByTagName("testResult");
+    		   NodeList nodeList = testResultDoc.getElementsByTagName("testResult");
         	   
     		   int testsPassCount = 0;
         	   int testsfailCount = 0;
@@ -495,7 +492,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
         	   elemTestRun.setAttribute("run", String.valueOf(totalTestsRun));
         	   
     		   // Serialize W3C XSLT 3.0 test set results file to file system
-    		   String xslTestResultStr = serializeXmlDomElementNode(m_testResultDoc);
+    		   String xslTestResultStr = serializeXmlDomElementNode(testResultDoc);
         	   
         	   File xslAnalyzeStringTestResultFile = new File(new URI(W3C_XSLT3_TESTS_RESULT_DIR_HOME + m_resultSubFolderName + "/" + m_testResultFileName));
         	   testResultFos = new FileOutputStream(xslAnalyzeStringTestResultFile);
@@ -529,11 +526,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	   
 		   String testSetName = docElem.getAttribute(NAME_ATTR);
 		   testResultDoc = m_xmlDocumentBuilder.newDocument();
-    	   elemTestRun = m_testResultDoc.createElement("testrun");
+    	   elemTestRun = testResultDoc.createElement("testrun");
     	   String testRunDateStrValue = getDateISOString(new Date());
     	   elemTestRun.setAttribute(NAME_ATTR, testSetName);
     	   elemTestRun.setAttribute("dateTime", testRunDateStrValue);
-    	   m_testResultDoc.appendChild(elemTestRun);    	   
+    	   testResultDoc.appendChild(elemTestRun);    	   
     	   
     	   NodeList nodeList = xslTestSetDoc.getElementsByTagNameNS(W3C_XSLT3_TEST_CATALOG_NS, ELEM_NODE_NAME_TEST_CASE);
     	   int length1 = nodeList.getLength();
@@ -542,7 +539,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   String testCaseName = ((Element)node).getAttribute(NAME_ATTR);     		   
     		   if (isXslt1And2OnlyTestCase(node)) {
      			  // We skip running XSLT 2.0/1.0 only test cases
-     			  Element elemTestResult = m_testResultDoc.createElement("testResult");
+     			  Element elemTestResult = testResultDoc.createElement("testResult");
      			  elemTestResult.setAttribute("testName", testCaseName);
      			  elemTestResult.setAttribute(STATUS, "skipped");
      			  elemTestResult.setAttribute("xsltVersion", "XSLT 2.0/1.0 only test case");
@@ -552,7 +549,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      		   }
      		   else if (isXslSchemaAwareFeatureTestCase(node)) {
      			   // We skip running XSLT 3.0 schema aware feature test cases
-     			   Element elemTestResult = m_testResultDoc.createElement("testResult");
+     			   Element elemTestResult = testResultDoc.createElement("testResult");
      			   elemTestResult.setAttribute("testName", testCaseName);
      			   elemTestResult.setAttribute(STATUS, "skipped");
      			   elemTestResult.setAttribute("feature", "schema_aware");
@@ -562,7 +559,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
        		   }
      		   else if (isXslStreamingFeatureTestCase(node)) {
      			   // We skip running XSLT 3.0 streaming feature test cases
-     			   Element elemTestResult = m_testResultDoc.createElement("testResult");
+     			   Element elemTestResult = testResultDoc.createElement("testResult");
      			   elemTestResult.setAttribute("testName", testCaseName);
      			   elemTestResult.setAttribute(STATUS, "skipped");
      			   elemTestResult.setAttribute("feature", "streaming");
@@ -576,7 +573,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      			    * test suite, that're configured to be skipped within this XSLT test
      			    * suite driver and permitted by respective W3C XSLT 3.0 test case. 
      			    */
-     			   Element elemTestResult = m_testResultDoc.createElement("testResult");
+     			   Element elemTestResult = testResultDoc.createElement("testResult");
      			   elemTestResult.setAttribute("testName", testCaseName);
      			   elemTestResult.setAttribute(STATUS, "skipped");
      			   elemTestResult.setAttribute("reason", "Xalan configured");
@@ -701,7 +698,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	}
     	finally {    	   	
     	   try {
-    		   NodeList nodeList = m_testResultDoc.getElementsByTagName("testResult");
+    		   NodeList nodeList = testResultDoc.getElementsByTagName("testResult");
         	   
     		   int testsPassCount = 0;
         	   int testsfailCount = 0;
@@ -757,7 +754,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		                                                  StreamSource xslStreamSrc, Map<String, XObject> xslParamMap, 
     		                                                  Element expectedResultElem, Element elemTestRun, Document testResultDoc) throws Exception {    	    	
 
-    	//Element elemTestResult = m_testResultDoc.createElement("testResult");
+    	Element elemTestResult = testResultDoc.createElement("testResult");
     	
     	XslTestsErrorHandler xslTransformErrHandler = new XslTestsErrorHandler();
 		List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();
@@ -766,7 +763,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		
 		String expErrCodeName = null;
 		
-		m_elemTestResult.setAttribute("testName", testCaseName);
+		elemTestResult.setAttribute("testName", testCaseName);
     	
     	try {
     		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);
@@ -840,16 +837,17 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		    setXslTransformProperties(transformer);
     		}
     		else if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
-    			handleExpectedXslTransformationError(testResultDoc, m_elemTestResult, trfErrorList, trfFatalErrorList, expErrCodeName, resultStrWriter);
+    			handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
+    					                                                                    trfFatalErrorList, expErrCodeName, resultStrWriter);
 
     			return;
     		}
     		else if (!SERIALIZATION_MATCHES.equals(expectedNodeKindName)) {
-    			m_elemTestResult.setAttribute(STATUS, FAIL);
+    			elemTestResult.setAttribute(STATUS, FAIL);
 
-    			Element resultOutElem = m_testResultDoc.createElement("outResult");
+    			Element resultOutElem = testResultDoc.createElement("outResult");
     			resultOutElem.setTextContent(resultStrWriter.toString());
-    			m_elemTestResult.appendChild(resultOutElem);
+    			elemTestResult.appendChild(resultOutElem);
 
     			return;
     		}
@@ -898,14 +896,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
     			if (alsoCorrectResultStr != null) {
     				if (alsoCorrectResultStr.equals(resultStrWriter.toString())) {
-    					m_elemTestResult.setAttribute(STATUS, PASS);
+    					elemTestResult.setAttribute(STATUS, PASS);
     				}
     				else {
-    					m_elemTestResult.setAttribute(STATUS, FAIL);
+    					elemTestResult.setAttribute(STATUS, FAIL);
     				}
     			}
     			else {
-    				testCaseOneSerializationMatchCheck(m_elemTestResult, nodeExpected, resultStrWriter, xslTransformMethod);
+    				testCaseOneSerializationMatchCheck(elemTestResult, nodeExpected, resultStrWriter, xslTransformMethod);
     			}
     		}
     		else if (ASSERT_SERIALIZATION.equals(expectedNodeKindName)) {
@@ -946,10 +944,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			}
 
     			if (xslTransformResultStr.equals(expectedResultStr)) {
-    				m_elemTestResult.setAttribute(STATUS, PASS);
+    				elemTestResult.setAttribute(STATUS, PASS);
     			}
     			else {
-    				m_elemTestResult.setAttribute(STATUS, FAIL);
+    				elemTestResult.setAttribute(STATUS, FAIL);
     			}    				
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ALL_OF.equals(expectedNodeKindName)) {
@@ -987,10 +985,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			    }
     				
     				if (testCasePass) {
-    					m_elemTestResult.setAttribute(STATUS, PASS);
+    	    		    elemTestResult.setAttribute(STATUS, PASS);
     	    		}
     	    		else {
-    	    			m_elemTestResult.setAttribute(STATUS, FAIL);
+    	    			elemTestResult.setAttribute(STATUS, FAIL);
     	    		}
     				
     				return;
@@ -1030,14 +1028,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\\s", "");
     					String actualResultStr = resultStrWriter.toString();
     					if (alsoCorrectResultStr.equals(actualResultStr.replaceAll("\\s", ""))) {
-    						m_elemTestResult.setAttribute(STATUS, PASS);
+    						elemTestResult.setAttribute(STATUS, PASS);
     					}
     					else {
-    						m_elemTestResult.setAttribute(STATUS, FAIL);
+    						elemTestResult.setAttribute(STATUS, FAIL);
     					}
     				}
     				else {
-    					testCaseMultipleSerializationMatchChecks(m_elemTestResult, resultStrWriter, nodeList1, xslTransformMethod);
+    					testCaseMultipleSerializationMatchChecks(elemTestResult, resultStrWriter, nodeList1, xslTransformMethod);
     				}
     			}
     			else if (isXslMessageTest && (nodeListLength2 == 1) && (nodeListLength3 > 0)) {    				
@@ -1068,7 +1066,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
                 	
                 	if (isTestCasePass) {                		
                 		if (!isXslMessageTest) {
-                		   m_elemTestResult.setAttribute(STATUS, PASS);
+                		   elemTestResult.setAttribute(STATUS, PASS);
                 		}
                 		else if (xslMessageResultPrefixStr != null) {
                 		   String[] actualPrefixStrArr1 = xslMessageResultPrefixStr.split("\r?\n");
@@ -1132,22 +1130,22 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
                 		   }
                 		   
                 		   if (passStatus1) {
-                			   m_elemTestResult.setAttribute(STATUS, PASS); 
+                			  elemTestResult.setAttribute(STATUS, PASS); 
                 		   }
                 		   else {
-                			   m_elemTestResult.setAttribute(STATUS, FAIL); 
+                			  elemTestResult.setAttribute(STATUS, FAIL); 
                 		   }
                 		}
                 		else {
-                			m_elemTestResult.setAttribute(STATUS, PASS);
+                		   elemTestResult.setAttribute(STATUS, PASS);
                 		}
                 	}
                 	else {
-                		m_elemTestResult.setAttribute(STATUS, FAIL);
+                		elemTestResult.setAttribute(STATUS, FAIL);
                 	}
     			}
     			else {
-    				testCaseExpectedAssertXPathList(m_elemTestResult, nodeExpected, resultStrWriter, trfWarningList);
+    				testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter, trfWarningList);
     			}
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ANY_OF.equals(expectedNodeKindName)) {
@@ -1159,10 +1157,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 				
 				if (alsoCorrectResultStr != null) {
 					if (alsoCorrectResultStr.equals(resultStrWriter.toString())) {
-						m_elemTestResult.setAttribute(STATUS, PASS);
+						elemTestResult.setAttribute(STATUS, PASS);
 					}
 					else {
-						m_elemTestResult.setAttribute(STATUS, FAIL);
+						elemTestResult.setAttribute(STATUS, FAIL);
 					}
 				}				
 				else {
@@ -1187,7 +1185,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		                	String string2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document2);
 							
 							if (isTwoXmlHtmlStrEqual(string1, string2)) {																								
-								m_elemTestResult.setAttribute(STATUS, PASS);								
+								elemTestResult.setAttribute(STATUS, PASS);								
 								isTestCasePass = true;								
 								
 								break;
@@ -1195,9 +1193,9 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 						}						
 						else if ((childNode instanceof Element) && EXPECTED_NODE_KIND_ERROR.equals(((Element)childNode).getNodeName())) {
 							expErrCodeName = ((Element)childNode).getAttribute("code"); 
-							handleExpectedXslTransformationError(testResultDoc, m_elemTestResult, trfErrorList, 
+							handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
 																 trfFatalErrorList, expErrCodeName, resultStrWriter);							
-							String testResultStatus = m_elemTestResult.getAttribute(STATUS);
+							String testResultStatus = elemTestResult.getAttribute(STATUS);
 							if (PASS.equals(testResultStatus)) {
 							   break;	
 							}							
@@ -1206,8 +1204,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 						childNode = childNode.getNextSibling();
 					}
 
-					if (isAssertXml && !isTestCasePass && !PASS.equals(m_elemTestResult.getAttribute(STATUS))) {
-						m_elemTestResult.setAttribute(STATUS, FAIL);
+					if (isAssertXml && !isTestCasePass && !PASS.equals(elemTestResult.getAttribute(STATUS))) {
+						elemTestResult.setAttribute(STATUS, FAIL);
 					}
 				}
     		}
@@ -1222,28 +1220,6 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	}
             	else {
             		expectedResultStr = elemNode.getTextContent();            		
-            	}
-            	
-            	if ((m_resultSubFolderName == null) && (m_testResultFileName == null)) {
-            		// This if for Xalan-J xslt 3.0 specific test cases, that're failing
-            		// the usual way.
-            		expectedResultStr = expectedResultStr.trim();
-            		String resultStrWriter2 = (resultStrWriter.toString()).trim();
-            		
-            		Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(expectedResultStr.getBytes()));            		
-            		Document xmlInpDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(resultStrWriter2.getBytes()));
-            		
-            		String xmlDocStr1 = serializeXmlDomElementNode(xmlInpDoc1);
-            		String xmlDocStr2 = serializeXmlDomElementNode(xmlInpDoc2);
-            		
-            		if (xmlDocStr1.equals(xmlDocStr2)) {
-            			m_elemTestResult.setAttribute(STATUS, PASS);
-            		}
-            		else {
-            			m_elemTestResult.setAttribute(STATUS, FAIL);
-            		}
-            		
-            		return;
             	}
             	
             	String ignorePrefixesStr = elemNode.getAttribute("ignore-prefixes");
@@ -1294,7 +1270,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             		xmlHtmlStr2 = serializeXmlDomElementNode(xmlInpDoc2);
             	}
             	
-            	// This needs to have, an improved test case verification logic
+            	// This needs to have, an improved test case verification logic.
             	String alsoCorrectResultStr = null;
             	if (m_xslTransformTestSetFilePath.contains("attr/mode/") && "mode-0016".equals(testCaseName)) {
             	   alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out>\r\n"
@@ -1318,17 +1294,17 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	
             	if (alsoCorrectResultStr != null) {            		            		
             		if (alsoCorrectResultStr.equals(xmlHtmlStr1.replaceAll("\\s", ""))) {
-            			m_elemTestResult.setAttribute(STATUS, PASS);
+            			elemTestResult.setAttribute(STATUS, PASS);
             		}
             		else {
-            			m_elemTestResult.setAttribute(STATUS, FAIL);
+            			elemTestResult.setAttribute(STATUS, FAIL);
             		}
             	}
             	else if (isTwoXmlHtmlStrEqual(xmlHtmlStr1, xmlHtmlStr2)) {            		
-            		m_elemTestResult.setAttribute(STATUS, PASS);
+            		elemTestResult.setAttribute(STATUS, PASS);
             	}
             	else {
-            		m_elemTestResult.setAttribute(STATUS, FAIL);
+            		elemTestResult.setAttribute(STATUS, FAIL);
             	}
     		}
             else if (EXPECTED_NODE_KIND_ASSERT.equals(expectedNodeKindName)) {
@@ -1383,13 +1359,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	String str1 = resultStrWriter.toString();
             	
             	if (TRUE.equals(str1)) {            		
-            		m_elemTestResult.setAttribute(STATUS, PASS);
+            		elemTestResult.setAttribute(STATUS, PASS);
             	}
             	else {
-            		m_elemTestResult.setAttribute(STATUS, FAIL);
+            		elemTestResult.setAttribute(STATUS, FAIL);
             	}
-            	
-            	return;
     		}
             else if (EXPECTED_NODE_KIND_ASSERT_STRING_VALUE.equals(expectedNodeKindName)) {
             	String strExpectedValue = (nodeExpected.getTextContent()).trim();
@@ -1407,37 +1381,39 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	   actualResultStr = actualResultStr.substring(actualResultStr.indexOf('>') + 1, actualResultStr.length());
             	   actualResultStr = actualResultStr.trim();
             	   if (strExpectedValue.equals(actualResultStr)) {
-            		   m_elemTestResult.setAttribute(STATUS, PASS);  
+            		  elemTestResult.setAttribute(STATUS, PASS);  
             	   }
             	   else {
-            		   m_elemTestResult.setAttribute(STATUS, FAIL); 
+            		  elemTestResult.setAttribute(STATUS, FAIL); 
             	   }
             	}
             }
             else if (EXPECTED_NODE_KIND_ERROR.equals(expectedNodeKindName)) {
-            	handleExpectedXslTransformationError(testResultDoc, m_elemTestResult, trfErrorList, 
+            	handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
                         							                trfFatalErrorList, expErrCodeName, resultStrWriter);
             }
     	}
     	catch (SAXException ex) {
-    		handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, m_elemTestResult, expErrCodeName);
+    		handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 
+    				                                                                 elemTestResult, expErrCodeName);
     	}
     	catch (Exception ex) {
     		String errMesg = ex.getMessage();
     		if ((errMesg != null) && (expErrCodeName != null)) {
     			if (errMesg.contains(expErrCodeName)) {
-    				m_elemTestResult.setAttribute(STATUS, PASS);
+    			   elemTestResult.setAttribute(STATUS, PASS);
     			}
     			else {
-    				m_elemTestResult.setAttribute(STATUS, FAIL);
+    			   elemTestResult.setAttribute(STATUS, FAIL);
     			}
     		}
     		else {
-               handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, m_elemTestResult, expErrCodeName);
+               handleTestCaseFailException(testResultDoc, trfErrorList, trfFatalErrorList, 
+            		                                                                 elemTestResult, expErrCodeName);
     		}
     	}
     	finally {
-    		elemTestRun.appendChild(m_elemTestResult);    		
+    		elemTestRun.appendChild(elemTestResult);    		
     		trfErrorList.clear();
     		trfFatalErrorList.clear();
     		
@@ -2080,7 +2056,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 			// i.e, this test case has failed.
 			elemTestResult.setAttribute(STATUS, FAIL);
 			
-			Element resultOutElem = m_testResultDoc.createElement("outResult");
+			Element resultOutElem = testResultDoc.createElement("outResult");
 			resultOutElem.setTextContent(resultStrWriter.toString());
 			elemTestResult.appendChild(resultOutElem);
 		}
@@ -2216,7 +2192,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 			                                                                              ParserConfigurationException, 
 			                                                                              TransformerConfigurationException, TransformerException {
 		
-		NodeList nodeList3 = m_testResultDoc.getElementsByTagName("testResult");		
+		NodeList nodeList3 = testResultDoc.getElementsByTagName("testResult");		
 		int length1 = nodeList3.getLength();
 		for (int idx2 = 0; idx2 < length1; idx2++) {
 			Element elem1 = (Element)(nodeList3.item(idx2));

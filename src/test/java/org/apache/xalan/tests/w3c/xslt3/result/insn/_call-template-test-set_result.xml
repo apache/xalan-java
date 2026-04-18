@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-28T09:14:49Z" fail="6" name="call-template" pass="34" run="40" skipped="2" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-18T01:04:25Z" fail="7" name="call-template" pass="33" run="40" skipped="2" statusUnknown="0">
    <testResult status="pass" testName="call-template-0001"/>
    <testResult status="pass" testName="call-template-0101"/>
    <testResult status="fail" testName="call-template-0102"/>
@@ -34,7 +34,11 @@
    <testResult status="pass" testName="call-template-0802"/>
    <testResult status="pass" testName="call-template-0901"/>
    <testResult status="pass" testName="call-template-1001"/>
-   <testResult status="pass" testName="call-template-1002"/>
+   <testResult status="fail" testName="call-template-1002">
+      <outResult>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
    <testResult reason="Xalan configured" status="skipped" testName="call-template-1003"/>
    <testResult status="pass" testName="call-template-1101"/>
    <testResult status="pass" testName="call-template-1102"/>

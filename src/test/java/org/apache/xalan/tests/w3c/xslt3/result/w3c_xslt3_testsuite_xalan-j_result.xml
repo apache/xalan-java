@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-03-12T11:40:49Z" desc="W3C XSLT 3.0 test suite results" fail="1314" pass="3450" run="4770" skipped="609" success="72.33%" xslt_processor="Apache Xalan XSLT 3.0 development code">
+<testResult dateTime="2026-04-18T01:05:02Z" desc="W3C XSLT 3.0 test suite results" fail="1315" pass="3449" run="4770" skipped="609" success="72.31%" xslt_processor="Apache Xalan XSLT 3.0 development code">
   <attr>
-    <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
+    <as fail="16" pass="89" run="105" skipped="99" success="84.76%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
     <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
     <expand-text fail="7" pass="52" run="59" skipped="3" success="88.14%"/>
     <match fail="81" pass="101" run="182" skipped="112" success="55.49%"/>
     <mode fail="69" pass="72" run="141" skipped="28" success="51.06%"/>
     <select fail="26" pass="105" run="132" skipped="26" success="79.55%"/>
-    <tunnel fail="40" pass="18" run="58" skipped="0" success="31.03%"/>
+    <tunnel fail="39" pass="19" run="58" skipped="0" success="32.76%"/>
     <xpath-default-namespace fail="10" pass="12" run="22" skipped="4" success="54.55%"/>
   </attr>
   <decl>
     <attribute-set fail="7" pass="42" run="49" skipped="1" success="85.71%"/>
     <character-map fail="13" pass="14" run="28" skipped="1" success="50.0%"/>
     <context-item fail="13" pass="18" run="31" skipped="0" success="58.06%"/>
-    <function fail="25" pass="62" run="87" skipped="23" success="71.26%"/>
+    <function fail="24" pass="63" run="87" skipped="23" success="72.41%"/>
     <global-context-item fail="4" pass="10" run="14" skipped="0" success="71.43%"/>
     <package fail="31" pass="23" run="54" skipped="18" success="42.59%"/>
     <param fail="17" pass="13" run="30" skipped="1" success="43.33%"/>
@@ -44,10 +44,10 @@
     <xml-to-json fail="35" pass="52" run="88" skipped="65" success="59.09%"/>
   </fn>
   <insn>
-    <analyze-string fail="8" pass="45" run="53" skipped="5" success="84.91%"/>
+    <analyze-string fail="9" pass="44" run="53" skipped="5" success="83.02%"/>
     <apply-templates fail="15" pass="22" run="37" skipped="13" success="59.46%"/>
     <attribute fail="11" pass="11" run="23" skipped="7" success="47.83%"/>
-    <call-template fail="6" pass="34" run="40" skipped="2" success="85.0%"/>
+    <call-template fail="7" pass="33" run="40" skipped="2" success="82.5%"/>
     <choose fail="6" pass="48" run="54" skipped="1" success="88.89%"/>
     <construct-node fail="12" pass="22" run="34" skipped="0" success="64.71%"/>
     <copy fail="47" pass="78" run="125" skipped="23" success="62.4%"/>

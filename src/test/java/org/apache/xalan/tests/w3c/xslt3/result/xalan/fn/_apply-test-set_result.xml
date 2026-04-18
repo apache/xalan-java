@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-01-09T16:50:28Z" fail="0" name="apply" pass="5" run="5" skipped="0" statusUnknown="0">
-   <testResult status="pass" testName="apply-001"/>
-   <testResult status="pass" testName="apply-002"/>
-   <testResult status="pass" testName="apply-003"/>
-   <testResult status="pass" testName="apply-004"/>
-   <testResult status="pass" testName="apply-005"/>
-</testrun>
