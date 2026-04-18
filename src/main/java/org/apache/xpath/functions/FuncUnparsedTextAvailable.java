@@ -22,6 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.transform.SourceLocator;
 
@@ -46,6 +48,18 @@ import xml.xpath31.processor.types.XSBoolean;
 public class FuncUnparsedTextAvailable extends Function2Args {
   
   private static final long serialVersionUID = -1511121613068142606L;
+  
+  /**
+   * The function fn:unparsed-text-available fetches the string value from
+   * url, what the functions fn:unparsed-text and fn:unparsed-text-lines
+   * also have to do. After a successful call to function fn:unparsed-text-available, 
+   * the file content result are cached within memory that can improve performance of 
+   * further calls to functions fn:unparsed-text or/and fn:unparsed-text-lines for the 
+   * same url, within the same XSL stylesheet.
+   * 
+   * XSLT 3.0 specification suggests implementations to possibly do this.
+   */
+  public static Map<String, String> CACHE_RESULT_MAP = null;
 
   /**
    * Class constructor.
@@ -129,7 +143,13 @@ public class FuncUnparsedTextAvailable extends Function2Args {
           }
           
           if (resultStr != null) {
-        	  result = new XSBoolean(true);  
+        	  result = new XSBoolean(true);
+        	  
+        	  if (CACHE_RESULT_MAP == null) {
+        		 CACHE_RESULT_MAP = new HashMap<String, String>(); 
+        	  }
+        	  
+        	  CACHE_RESULT_MAP.put(resolvedArg0Url.toString(), resultStr);
           }
           else {
         	  result = new XSBoolean(false);
@@ -177,6 +197,10 @@ public class FuncUnparsedTextAvailable extends Function2Args {
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
                                               XPATHErrorResources.ER_ONE_OR_TWO, null)); //"1 or 2"
+  }
+  
+  public static String getCachedResult(String resolvedUrlStr) {
+	  return CACHE_RESULT_MAP.get(resolvedUrlStr);
   }
   
 }

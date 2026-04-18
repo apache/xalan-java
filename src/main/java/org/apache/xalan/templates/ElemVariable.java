@@ -541,8 +541,8 @@ public class ElemVariable extends ElemTemplateElement
     
     if (m_isTopLevel) {
 		var = getXslToplevelVariableValue(transformer, sourceNode, xctxt, srcLocator);		
-		if (var != null) {
-		   return var;	
+		if (var != null) {			
+			return var;
 		}
     }
     else if (m_static) {
@@ -2362,29 +2362,31 @@ public class ElemVariable extends ElemTemplateElement
     							LocPathIterator locatioPathIter = (LocPathIterator)expr1;
     							int nodeHandle = locatioPathIter.asNode(xctxt);
     							DTM dtm1 = xctxt.getDTM(nodeHandle);
-    							short nodeType = dtm1.getNodeType(nodeHandle);            				
-    							if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND) && (nodeType != DTM.DOCUMENT_NODE)) {
-    								throw new TransformerException("XTTE0570 : The required item type of the value of variable '" + m_qname.toString() 
-    								                                                                             			+ "' is " + m_asAttr + ", which isn't "
-    								                                                                             			+ "true for this type check.", this);
-    							}
-    							else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) && (nodeType != DTM.ELEMENT_NODE)) {
-    								throw new TransformerException("XTTE0570 : The required item type of the value of variable '" + m_qname.toString() 
-    								                                                                             			+ "' is " + m_asAttr + ", which isn't "
-    								                                                                             			+ "true for this type check.", this);                				
-    							}
-    							else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) && (nodeType == DTM.ELEMENT_NODE)) {
-    								XObject xObj1 = xpathSelect1.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
-    								xObj1 = SequenceTypeSupport.castXdmValueToAnotherType(xObj1, m_asAttr, null, xctxt);
-    								if (xObj1 != null) {
-    									result = xObj1;
-
-    									return result;
-    								}
-    								else {
+    							if (dtm1 != null) {
+    								short nodeType = dtm1.getNodeType(nodeHandle);            				
+    								if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND) && (nodeType != DTM.DOCUMENT_NODE)) {
     									throw new TransformerException("XTTE0570 : The required item type of the value of variable '" + m_qname.toString() 
-    									                                                                                    + "' is " + m_asAttr + ", which isn't "
-    									                                                                                    + "true for this type check.", this);            				
+																						    									+ "' is " + m_asAttr + ", which isn't "
+																						    									+ "true for this type check.", this);
+    								}
+    								else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) && (nodeType != DTM.ELEMENT_NODE)) {
+    									throw new TransformerException("XTTE0570 : The required item type of the value of variable '" + m_qname.toString() 
+																						    									+ "' is " + m_asAttr + ", which isn't "
+																						    									+ "true for this type check.", this);                				
+    								}
+    								else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) && (nodeType == DTM.ELEMENT_NODE)) {
+    									XObject xObj1 = xpathSelect1.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    									xObj1 = SequenceTypeSupport.castXdmValueToAnotherType(xObj1, m_asAttr, null, xctxt);
+    									if (xObj1 != null) {
+    										result = xObj1;
+
+    										return result;
+    									}
+    									else {
+    										throw new TransformerException("XTTE0570 : The required item type of the value of variable '" + m_qname.toString() 
+																					    										+ "' is " + m_asAttr + ", which isn't "
+																					    										+ "true for this type check.", this);            				
+    									}
     								}
     							}
     						}

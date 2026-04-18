@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-04-18T01:05:02Z" desc="W3C XSLT 3.0 test suite results" fail="1315" pass="3449" run="4770" skipped="609" success="72.31%" xslt_processor="Apache Xalan XSLT 3.0 development code">
+<testResult dateTime="2026-04-18T11:39:52Z" desc="W3C XSLT 3.0 test suite results" fail="1316" pass="3458" run="4780" skipped="612" success="72.34%" xslt_processor="Apache Xalan XSLT 3.0 development code">
   <attr>
-    <as fail="16" pass="89" run="105" skipped="99" success="84.76%"/>
+    <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
     <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
     <expand-text fail="7" pass="52" run="59" skipped="3" success="88.14%"/>
@@ -35,6 +35,7 @@
     <predicate fail="4" pass="48" run="52" skipped="5" success="92.31%"/>
   </expr>
   <fn>
+    <copy-of fail="3" pass="7" run="10" skipped="3" success="70.0%"/>
     <deep-equal fail="0" pass="2" run="2" skipped="0" success="100.0%"/>
     <format-number fail="32" pass="32" run="64" skipped="10" success="50.0%"/>
     <json-to-xml fail="6" pass="18" run="24" skipped="36" success="75.0%"/>
@@ -44,7 +45,7 @@
     <xml-to-json fail="35" pass="52" run="88" skipped="65" success="59.09%"/>
   </fn>
   <insn>
-    <analyze-string fail="9" pass="44" run="53" skipped="5" success="83.02%"/>
+    <analyze-string fail="8" pass="45" run="53" skipped="5" success="84.91%"/>
     <apply-templates fail="15" pass="22" run="37" skipped="13" success="59.46%"/>
     <attribute fail="11" pass="11" run="23" skipped="7" success="47.83%"/>
     <call-template fail="7" pass="33" run="40" skipped="2" success="82.5%"/>

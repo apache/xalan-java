@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-18T11:38:33Z" fail="3" name="copy-of" pass="7" run="10" skipped="3" statusUnknown="0">
+   <testResult status="pass" testName="copy-of-001"/>
+   <testResult status="pass" testName="copy-of-002"/>
+   <testResult status="fail" testName="copy-of-003">
+      <outResult>
+         <errTrace>XPST0003 : An XPath expression .//comment() is copy-of(.//comment()) has syntax error. Unknown op code : 0.</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="copy-of-004"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-of-005"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-of-006"/>
+   <testResult status="pass" testName="copy-of-007"/>
+   <testResult status="pass" testName="copy-of-008"/>
+   <testResult feature="schema_aware" status="skipped" testName="copy-of-009"/>
+   <testResult status="pass" testName="copy-of-010"/>
+   <testResult status="pass" testName="copy-of-011"/>
+   <testResult status="pass" testName="copy-of-012"/>
+   <testResult status="fail" testName="copy-of-013">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: XPST0051 : A sequence type occurence indicator 'and', is not recognized.
+javax.xml.transform.TransformerException: XPST0051 : A sequence type occurence indicator 'and', is not recognized.</errTrace>
+      </outResult>
+   </testResult>
+</testrun>

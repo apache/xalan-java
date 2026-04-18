@@ -127,7 +127,7 @@ public class FnTransformTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    /*@Test
+    @Test
     public void xslFnTransformTest9() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
@@ -135,7 +135,7 @@ public class FnTransformTests extends XslTransformTestsUtil {
         String goldFilePath = getXslTransformGoldFilePath(XSL_TRANSFORM_GOLD_DIRPATH + "test9.out");
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }*/
+    }
     
     @Test
     public void xslFnTransformTest10() {
@@ -147,16 +147,14 @@ public class FnTransformTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    // There's an implementation, issue with this test case on
-    // Linux platform. Commenting this test case, for now.
-    /*@Test
+    @Test
     public void xslFnTransformTest11() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
         
         String goldFilePath = null;
         String osName = System.getProperty("os.name");
-        if (osName.startsWith("Windows")) {
+        if (osName.startsWith(XslTransformTestsUtil.WINDOWS)) {
            goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
         }
         else {
@@ -164,18 +162,16 @@ public class FnTransformTests extends XslTransformTestsUtil {
         }
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }*/
+    }
     
-    // There's an implementation, issue with this test case on
-    // Linux platform. Commenting this test case, for now.
-    /*@Test
+    @Test
     public void xslFnTransformTest12() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
         
         String goldFilePath = null;
         String osName = System.getProperty("os.name");
-        if (osName.startsWith("Windows")) {
+        if (osName.startsWith(XslTransformTestsUtil.WINDOWS)) {
            goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
         }
         else {
@@ -183,7 +179,7 @@ public class FnTransformTests extends XslTransformTestsUtil {
         }
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }*/
+    }
     
     @Test
     public void xslFnTransformTest13() {

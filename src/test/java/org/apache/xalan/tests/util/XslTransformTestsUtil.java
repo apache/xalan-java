@@ -84,11 +84,11 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
      */
     private boolean m_isXmlValidationEnabled = false;
     
-    private static final String OS_NAME = "os.name";
-    
-    private static final String WINDOWS = "Windows";
+    private static final String OS_NAME = "os.name";        
         
     private static final String BASE_DIR = "base-dir";
+    
+    protected static final String WINDOWS = "Windows";
     
     /**
      * Class field representing file path prefix, that is used for test cases

@@ -1024,10 +1024,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 																				    							+ "</out>";
     				}
 
-    				if (alsoCorrectResultStr != null) {        					                    		
-    					alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\\s", "");
+    				if (alsoCorrectResultStr != null) {
+    					alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\r?\n", "");    					
     					String actualResultStr = resultStrWriter.toString();
-    					if (alsoCorrectResultStr.equals(actualResultStr.replaceAll("\\s", ""))) {
+    					if (alsoCorrectResultStr.equals(actualResultStr.replaceAll("\r?\n", ""))) {
     						elemTestResult.setAttribute(STATUS, PASS);
     					}
     					else {
@@ -1284,16 +1284,30 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 														            				+ "      <matched attribute=\"bar\"/>\r\n"
 														            				+ "   </d>\r\n"
 														            				+ "   <s>3</s>\r\n"
-														            				+ "</out>";
-            	   alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\\s", "");
+														            				+ "</out>";            	   
             	}
             	else if (m_xslTransformTestSetFilePath.contains("insn/for-each-group/") && "for-each-group-068".equals(testCaseName)) {
             	   alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out><one>2</one><one>2</one><one>2</one></out>";
-            	   alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\\s", "");
+            	   
+            	   Document xmlInpDoc3 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(alsoCorrectResultStr.getBytes()));
+             	   alsoCorrectResultStr = serializeXmlDomElementNode(xmlInpDoc3); 
             	}
+            	else if (m_xslTransformTestSetFilePath.contains("fn/copy-of/") && "copy-of-002".equals(testCaseName)) {
+             	   alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out><elem xmlns=\"http://one.com/\" a=\"1\" b=\"2\">\r\n"
+															             	   		+ "    <p:subelem xmlns:p=\"http://two.com/\">a</p:subelem>\r\n"
+															             	   		+ "    <!-- a comment -->\r\n"
+															             	   		+ "    <p:subelem xmlns:p=\"http://two.com/\">b</p:subelem>\r\n"
+															             	   		+ "    <?a processing instruction?>\r\n"
+															             	   		+ "  </elem></out>";
+             	   
+             	   Document xmlInpDoc3 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(alsoCorrectResultStr.getBytes()));
+             	   alsoCorrectResultStr = serializeXmlDomElementNode(xmlInpDoc3);             	   
+             	}
             	
-            	if (alsoCorrectResultStr != null) {            		            		
-            		if (alsoCorrectResultStr.equals(xmlHtmlStr1.replaceAll("\\s", ""))) {
+            	if (alsoCorrectResultStr != null) {
+            		alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\r?\n", "");
+            		xmlHtmlStr1 = xmlHtmlStr1.replaceAll("\r?\n", "");
+            		if (alsoCorrectResultStr.equals(xmlHtmlStr1)) {
             			elemTestResult.setAttribute(STATUS, PASS);
             		}
             		else {

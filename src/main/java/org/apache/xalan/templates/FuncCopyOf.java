@@ -20,6 +20,7 @@ package org.apache.xalan.templates;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xml.dtm.DTM;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.objects.ResultSequence;
@@ -61,7 +62,7 @@ public class FuncCopyOf extends FunctionMultiArgs {
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
 		if (m_arg1 != null) {
-			throw new javax.xml.transform.TransformerException("FOAP0001 : An XSL function fn:copy-of may be called with only 0 or 1 arguments.", srcLocator); 
+			throw new javax.xml.transform.TransformerException("FOAP0001 : An XSL function copy-of may be called with only 0 or 1 arguments.", srcLocator); 
 		}
 
 		if (m_arg0 != null) {
@@ -74,6 +75,12 @@ public class FuncCopyOf extends FunctionMultiArgs {
 		}
 		else {
 			final int sourceNode = xctxt.getCurrentNode();
+			
+			ExpressionNode exprNode = this.getExpressionOwner();
+			if ((exprNode instanceof ElemTemplateElement) && (((ElemTemplateElement)exprNode).getParentElem() instanceof ElemFunction)) {
+				throw new javax.xml.transform.TransformerException("XPDY0002 : An XSL function copy-of is called with no arguments "
+						                                                                                             + "and context item is absent.", this);
+			}
 
 			if (sourceNode != DTM.NULL) {
                XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(sourceNode, xctxt);

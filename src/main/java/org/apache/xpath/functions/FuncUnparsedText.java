@@ -35,7 +35,7 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Implementation of the unparsed-text() function.
+ * Implementation of XPath 3.1 function fn:unparsed-text.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -112,15 +112,21 @@ public class FuncUnparsedText extends Function2Args {
         		  resolvedArg0Url = new URL(hrefStrVal);
         	  }
           }
-              
-          String urlStrContents = StringUtil.getStringContentFromUrl(resolvedArg0Url);
-
+          
           String resultStr = null;
-          if (encodingStr != null) {
-        	  resultStr = new String(urlStrContents.getBytes(), encodingStr.toUpperCase());              
+          
+          if (FuncUnparsedTextAvailable.CACHE_RESULT_MAP != null) {        	  
+        	 resultStr = FuncUnparsedTextAvailable.getCachedResult(resolvedArg0Url.toString());
           }
           else {
-        	  resultStr = urlStrContents;  
+        	  String urlStrContents = StringUtil.getStringContentFromUrl(resolvedArg0Url);
+        	  
+        	  if (encodingStr != null) {
+        		  resultStr = new String(urlStrContents.getBytes(), encodingStr.toUpperCase());              
+        	  }
+        	  else {
+        		  resultStr = urlStrContents;  
+        	  }
           }
 
           result = new XString(resultStr);

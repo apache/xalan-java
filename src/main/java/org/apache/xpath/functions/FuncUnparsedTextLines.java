@@ -24,8 +24,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * 
- * Implementation of the fn:unparsed-text-lines function.
+ * Implementation of XPath 3.1 function fn:unparsed-text-lines.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

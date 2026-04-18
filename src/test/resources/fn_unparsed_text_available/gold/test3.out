@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <file name="file1.txt">
+    <line>hello world. this file shall be read by</line>
+    <line>xpath 3.1 function fn:unparsed-text-available.</line>
+    <line>Thanks.</line>
+  </file>
+  <file name="file1.txt">
+    <line>hello world. this file shall be read by</line>
+    <line>xpath 3.1 function fn:unparsed-text-available.</line>
+    <line>Thanks.</line>
+  </file>
+  <file name="file1.txt">
+    <line>hello world. this file shall be read by</line>
+    <line>xpath 3.1 function fn:unparsed-text-available.</line>
+    <line>Thanks.</line>
+  </file>
+  <file name="file1.txt">
+    <line>hello world. this file shall be read by</line>
+    <line>xpath 3.1 function fn:unparsed-text-available.</line>
+    <line>Thanks.</line>
+  </file>
+  <file name="file1.txt">
+    <line>hello world. this file shall be read by</line>
+    <line>xpath 3.1 function fn:unparsed-text-available.</line>
+    <line>Thanks.</line>
+  </file>
+</result>
