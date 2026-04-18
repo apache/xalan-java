@@ -184,7 +184,7 @@ public class AVTPartXPath extends AVTPart
     	   XSQName xsQName = (XSQName)xobj;
     	   String prfxStr = xsQName.getPrefix();
     	   String localPart = xsQName.getLocalPart();
-           String str1 = prfxStr + ":" + localPart;           
+           String str1 = (((prfxStr != null) && !"".equals(prfxStr)) ? (prfxStr + ":") : "") + localPart;           
            buf.append(str1);
         }
     	else if (xobj instanceof XSAnyType) {
