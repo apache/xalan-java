@@ -154,6 +154,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     protected static String m_testResultFileName = null;
     
     protected static List<String> m_skipped_tests_list = new ArrayList<String>();
+    
+    protected static String m_collationUri = null;
 	
 	/**
 	 * Method definition, to run all XSL transformation tests from 
@@ -288,6 +290,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     									   URI uri = new URI(m_xslTransformTestSetFilePath);
     									   uri = uri.resolve(fileName);
     									   xslStylesheetUriStr = uri.toString(); 
+    								   }
+    								   
+    								   NodeList nodeList3 = elemNode.getElementsByTagName("collation");
+    								   if (nodeList3.getLength() == 1) {
+    									  Element elemNode3 = (Element)(nodeList3.item(0));
+    									  String collation = elemNode3.getAttribute("uri");
+    									  
+    									  m_collationUri = collation;
     								   }
 
     								   break;
@@ -767,6 +777,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	
     	try {
     		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);
+    		
+    		if (m_collationUri != null) {
+     		   m_xslTransformerFactory.setAttribute(XalanProperties.COLLATION, m_collationUri);
+    		}
     		
     		if (m_initTemplateName != null) {
     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);    		   
@@ -1439,6 +1453,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		if (m_initModeName != null) {
       		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_MODE, null);
       		   m_initModeName = null;
+      		}
+    		
+    		if (m_collationUri != null) {
+      		   m_xslTransformerFactory.setAttribute(XalanProperties.COLLATION, null);
+      		   m_collationUri = null;
       		}
     	}    	    	
     }

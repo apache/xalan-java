@@ -55,4 +55,6 @@ public class XalanProperties
    */
   public final static String INIT_CONTEXT_NODE = "initial-context-node";
   
+  public final static String COLLATION = "collation";
+  
 }

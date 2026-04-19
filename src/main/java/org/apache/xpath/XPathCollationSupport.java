@@ -43,6 +43,8 @@ public class XPathCollationSupport {
     
     public static final String HTML_ASCII_CASE_INSENSITIVE_COLLATION_URI = "http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive";
     
+    public static final String CASE_BLIND_COLLATION_URI = "http://www.w3.org/xslts/collation/caseblind";     // case-insensitive collation
+    
     private final String UCA_KEYWORD_FALLBACK = "fallback";
     
     private final String UCA_FALLBACK_YES = "yes";    
@@ -178,6 +180,9 @@ public class XPathCollationSupport {
                 break;
              }
           }          
+       }
+       else if (CASE_BLIND_COLLATION_URI.equals(collationUri)) {
+    	  comparisonResult = str1.compareToIgnoreCase(str2);
        }
        else {
           throw new javax.xml.transform.TransformerException("FOCH0002 : The requested collation '" + collationUri + "' "

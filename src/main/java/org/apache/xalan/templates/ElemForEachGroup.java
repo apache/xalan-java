@@ -153,6 +153,8 @@ public class ElemForEachGroup extends ElemTemplateElement
    */
   private List<GroupingKeyAndGroupPair> m_sortedGroups = null;
   
+  private String m_collation_uri_from_context = null;
+  
   /**
    * Class constructor.
    */
@@ -503,6 +505,9 @@ public class ElemForEachGroup extends ElemTemplateElement
         	SourceLocator srcLocator = xctxt.getSAXLocator();
         	
         	final int sourceNode = xctxt.getCurrentNode();
+        	
+        	StylesheetRoot stylesheetRoot = transformer.getStylesheet();
+        	m_collation_uri_from_context = stylesheetRoot.getCollationUri();
         	
         	if (m_useWhen != null) {
         		boolean result1 = isXPathExpressionStatic(m_useWhen.getExpression());
@@ -1640,8 +1645,11 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  
 	  final int contextNode = xctxt.getCurrentNode();
 	  
-	  String collation = null;
-	  if (m_collationUri != null) {
+	  String collation = null;	  
+	  if (m_collation_uri_from_context != null) {
+		  collation = m_collation_uri_from_context;  
+	  }
+	  else if (m_collationUri != null) {
 	      collation = m_collationUri.evaluate(xctxt, contextNode, xctxt.getNamespaceContext());
 	  }
       
@@ -1715,16 +1723,34 @@ public class ElemForEachGroup extends ElemTemplateElement
     	  normalizedGroupingKeyValue = groupingKeyValue; 
       }
       else if (groupingKeyValue instanceof ResultSequence) {
-    	  if (m_collationUri == null) {
+    	  if (collation == null) {
     		  collation = XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI;   
     	  }
     	  
-    	  normalizedGroupingKeyValue = new XslForEachGroupCompositeGroupingKey(xctxt, (ResultSequence)groupingKeyValue, 
-    			                                                                                                 collation, m_xpathCollationSupport);
+    	  ResultSequence rSeq = (ResultSequence)groupingKeyValue;
+    	  int rSeqLength = rSeq.size();
+    	  ResultSequence rSeq1 = new ResultSequence();
+    	  for (int i = 0; i < rSeqLength; i++) {
+    		 XObject xObj1 = rSeq.item(i);
+    		 if (xObj1 instanceof XMLNodeCursorImpl) {
+    		    String strValue1 = XslTransformEvaluationHelper.getStrVal(xObj1);
+    		    rSeq1.add(new XSString(strValue1));
+    		 }
+    		 else {
+    			rSeq1.add(xObj1); 
+    		 }
+    	  }
+    	  
+    	  normalizedGroupingKeyValue = new XslForEachGroupCompositeGroupingKey(xctxt, rSeq1, collation, m_xpathCollationSupport);
       }
       else {
-          // Any other data type for grouping key, is treated as string
-          normalizedGroupingKeyValue = XslTransformEvaluationHelper.getStrVal(groupingKeyValue);  
+    	  // Any other data type for grouping key, is treated as string
+    	  if (collation == null) {
+    		  normalizedGroupingKeyValue = XslTransformEvaluationHelper.getStrVal(groupingKeyValue);   
+    	  }
+    	  else {
+    		  normalizedGroupingKeyValue = new StringWithCollation(XslTransformEvaluationHelper.getStrVal(groupingKeyValue), collation, m_xpathCollationSupport);
+    	  } 
       }
       
       return normalizedGroupingKeyValue;      

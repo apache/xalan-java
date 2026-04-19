@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:12Z" fail="8" name="for-each-group" pass="72" run="80" skipped="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-19T10:01:43Z" fail="4" name="for-each-group" pass="74" run="78" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" testName="for-each-group-002a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -25,8 +25,8 @@
    <testResult status="pass" testName="for-each-group-031"/>
    <testResult status="pass" testName="for-each-group-032"/>
    <testResult status="pass" testName="for-each-group-033"/>
-   <testResult status="fail" testName="for-each-group-034"/>
-   <testResult status="fail" testName="for-each-group-035"/>
+   <testResult reason="Xalan configured" status="skipped" testName="for-each-group-034"/>
+   <testResult reason="Xalan configured" status="skipped" testName="for-each-group-035"/>
    <testResult status="pass" testName="for-each-group-036"/>
    <testResult status="pass" testName="for-each-group-037"/>
    <testResult status="pass" testName="for-each-group-038"/>
@@ -89,8 +89,8 @@
    <testResult status="pass" testName="for-each-group-083"/>
    <testResult reason="Xalan configured" status="skipped" testName="for-each-group-084"/>
    <testResult status="pass" testName="for-each-group-085"/>
-   <testResult status="fail" testName="for-each-group-086"/>
-   <testResult status="fail" testName="for-each-group-087"/>
+   <testResult status="pass" testName="for-each-group-086"/>
+   <testResult status="pass" testName="for-each-group-087"/>
    <testResult status="pass" testName="for-each-group-088"/>
    <testResult status="fail" testName="for-each-group-089">
       <outResult>

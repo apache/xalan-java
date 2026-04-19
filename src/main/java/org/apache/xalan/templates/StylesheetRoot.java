@@ -149,6 +149,8 @@ public class StylesheetRoot extends StylesheetComposed implements java.io.Serial
 	private String m_input_type_annotations;
 
 	private boolean m_initial_context_node_available;
+	
+	private String m_collation_uri;
 
 	private ErrorListener m_errorListener;
 
@@ -2108,6 +2110,14 @@ public class StylesheetRoot extends StylesheetComposed implements java.io.Serial
 
 	public boolean isInitContextNodeSet() {
 		return m_initial_context_node_available;
+	}
+	
+	public void setCollationUri(String collationUri) {
+		this.m_collation_uri = collationUri; 
+	}
+
+	public String getCollationUri() {
+		return m_collation_uri;
 	}
 
 }

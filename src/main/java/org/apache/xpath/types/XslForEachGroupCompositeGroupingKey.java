@@ -23,6 +23,10 @@ import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FuncDeepEqual;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
+
+import xml.xpath31.processor.types.XSString;
 
 /**
  * An object instance of this class, represents xsl:for-each-group 
@@ -121,7 +125,31 @@ public class XslForEachGroupCompositeGroupingKey {
 	}
 	
 	public int hashCode() {
-		int result = m_value.hashCode();
+		int result = -100;   // initializing to a likely good value that cannot be a real hashCode value.
+		
+		if ((XPathCollationSupport.CASE_BLIND_COLLATION_URI).equals(m_collationUri)) {
+		   int size1 = m_value.size();
+		   ResultSequence rSeq = new ResultSequence();
+		   for (int i = 0; i < size1; i++) {
+			  XObject xObj1 = m_value.item(i);
+			  if (xObj1 instanceof XString) {
+				 String str1 = (((XString)xObj1).str()).toLowerCase();
+				 rSeq.add(new XString(str1));
+			  }
+			  else if (xObj1 instanceof XSString) {
+				 String str1 = (((XSString)xObj1).stringValue()).toLowerCase();
+				 rSeq.add(new XSString(str1));
+			  }
+			  else {
+				  rSeq.add(xObj1); 
+			  }
+		   }
+		   
+		   result = rSeq.hashCode();
+		}
+		else {
+		   result = m_value.hashCode();
+		}
 		
 		return result;
 	}

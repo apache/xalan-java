@@ -114,6 +114,8 @@ public class StylesheetHandler extends DefaultHandler
    */
   private boolean m_initial_context_node;
   
+  private String m_collation_uri;
+  
   /**
    * Create a StylesheetHandler object, creating a root stylesheet
    * as the target.
@@ -158,6 +160,11 @@ public class StylesheetHandler extends DefaultHandler
     }
     
     m_initial_context_node = (Boolean)(processor.getAttribute(XSL3TransformerFactoryImpl.INIT_CONTEXT_NODE));
+    
+    Object collation = processor.getAttribute(XSL3TransformerFactoryImpl.COLLATION);
+    if (collation != null) {
+       m_collation_uri = (String)(processor.getAttribute(XSL3TransformerFactoryImpl.COLLATION));
+    }
     
     init(processor);
   }
@@ -1253,6 +1260,7 @@ public class StylesheetHandler extends DefaultHandler
 	  m_stylesheetRoot.setAssertEnabled(m_assert);
 	  m_stylesheetRoot.setInitFunctionName(m_init_function_name);
 	  m_stylesheetRoot.setInitialContextNode(m_initial_context_node);
+	  m_stylesheetRoot.setCollationUri(m_collation_uri);
 
 	  return m_stylesheetRoot;
   }

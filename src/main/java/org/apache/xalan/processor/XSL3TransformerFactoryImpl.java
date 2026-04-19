@@ -124,6 +124,9 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   /** Static string to be used for 'init context node' feature */
   public static final String INIT_CONTEXT_NODE =
                              XalanProperties.INIT_CONTEXT_NODE;
+  
+  public static final String COLLATION =
+                             XalanProperties.COLLATION;
 
   public javax.xml.transform.Templates processFromNode(Node node)
           throws TransformerConfigurationException
@@ -519,6 +522,8 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
   
   private boolean m_initial_context_node_available;
   
+  private String m_collation_uri = null;
+  
   /**
    * Flag set by FEATURE_INCREMENTAL.
    * This feature specifies whether to produce output incrementally, rather than
@@ -628,8 +633,11 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 			  }
 		  }
 	  }
-	  else if (name.equals("initial-context-node")) {
+	  else if (name.equals(INIT_CONTEXT_NODE)) {
 		  m_initial_context_node_available = (Boolean)value; 
+	  }
+	  else if (name.equals(COLLATION)) {
+		  m_collation_uri = (String)value; 
 	  }
 	  else
 	  {
@@ -677,8 +685,12 @@ public class XSL3TransformerFactoryImpl extends SAXTransformerFactory
 	  {
 		  return m_init_function_name;
 	  }
-	  else if (name.equals("initial-context-node")) {
+	  else if (name.equals(INIT_CONTEXT_NODE)) {
 		  return m_initial_context_node_available ? Boolean.TRUE : Boolean.FALSE;
+	  }
+	  else if (name.equals(COLLATION))
+	  {
+		  return m_collation_uri;
 	  }
 	  else
 		  throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_RECOGNIZED, new Object[]{name}));
