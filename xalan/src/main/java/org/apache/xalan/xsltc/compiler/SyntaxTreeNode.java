@@ -150,15 +150,14 @@ public abstract class SyntaxTreeNode implements Constants {
      * Set the QName for the SyntaxTreeNode
      * @param uri The element's namespace URI
      * @param prefix The element's namespace prefix
-     * @param local The element's local name
+     * @param localName The element's local name
      */
-    protected void setQName(String uri, String prefix, String localname) {
-	_qname = new QName(uri, prefix, localname);
+    protected void setQName(String uri, String prefix, String localName) {
+	_qname = new QName(uri, prefix, localName);
     }
 
     /**
-     * Set the QName for the SyntaxTreeNode
-     * @param qname The QName for the syntax tree node
+     * Get the QName for the SyntaxTreeNode
      */
     protected QName getQName() {
 	return(_qname);
@@ -916,7 +915,7 @@ public abstract class SyntaxTreeNode implements Constants {
      * @param element The element in which the error occured (normally 'this'
      * but it could also be an expression/pattern/etc.)
      * @param parser The XSLT parser to report the error to.
-     * @param error The error code (from util/ErrorMsg).
+     * @param errorCode The error code (from util/ErrorMsg).
      * @param message Any additional error message.
      */
     protected void reportError(SyntaxTreeNode element, Parser parser,
@@ -930,7 +929,7 @@ public abstract class SyntaxTreeNode implements Constants {
      * @param element The element in which the error occured (normally 'this'
      * but it could also be an expression/pattern/etc.)
      * @param parser The XSLT parser to report the error to.
-     * @param error The error code (from util/ErrorMsg).
+     * @param errorCode The error code (from util/ErrorMsg).
      * @param message Any additional error message.
      */
     protected  void reportWarning(SyntaxTreeNode element, Parser parser,
