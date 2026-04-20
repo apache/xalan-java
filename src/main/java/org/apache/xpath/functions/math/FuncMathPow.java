@@ -29,6 +29,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.patterns.NodeTest;
 
 import xml.xpath31.processor.types.XSDouble;
@@ -78,12 +79,24 @@ public class FuncMathPow extends Function2Args {
      				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
      	   }
         }
+        else if (arg0Expr instanceof XPathInlineFunction) {
+      	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0Expr)) {
+      		   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function pow(), "
+      				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+      	   }
+        }
         
         if (arg1Expr instanceof NodeTest) {
         	if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg1Expr)) {
         		throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second argument of XPath function pow(), "
         				                                                                + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
         	}
+        }
+        else if (arg1Expr instanceof XPathInlineFunction) {
+       	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg1Expr)) {
+       		   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second argument of XPath function pow(), "
+       				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+       	   }
         }
         
         if ((arg0Expr instanceof FuncArgPlaceholder) && (arg1Expr instanceof FuncArgPlaceholder)) {
@@ -145,8 +158,7 @@ public class FuncMathPow extends Function2Args {
         else if (xObject instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObject;
            if (xNodeSet.getLength() != 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : The " + argNumStr + " argument to math:pow "
-                                                                       + "function must be a sequence of length one.", srcLocator);    
+        	  throw new javax.xml.transform.TransformerException("XPTY0004 : The " + argNumStr + "argument to XPath function call pow() must be a sequence of length one.", srcLocator);    
            }
            else {
               String strVal = xNodeSet.str();
@@ -156,9 +168,9 @@ public class FuncMathPow extends Function2Args {
                  arg = (new XSDouble(strVal)).doubleValue();
               }
               catch (Exception ex) {
-                 throw new javax.xml.transform.TransformerException("FORG0001 : Error with the " + argNumStr + " argument of "
-                                                                          + "math:pow. Cannot convert the string \"" + strVal + "\" "
-                                                                                                 + "to a double value.", srcLocator);
+            	 throw new javax.xml.transform.TransformerException("FORG0001 : Error occured during XPath function call pow(). Cannot convert "
+																									                         + "string valued argument \"" + strVal + "\" to "
+																									                         + "a double value.", srcLocator);
               }
                
               result = arg;
@@ -167,8 +179,7 @@ public class FuncMathPow extends Function2Args {
         else if (xObject instanceof ResultSequence) {
             ResultSequence resultSeq = (ResultSequence)xObject;
             if (resultSeq.size() != 1) {
-               throw new javax.xml.transform.TransformerException("XPTY0004 : The " + argNumStr + " argument to math:pow "
-                                                                        + "function must be a sequence of length one.", srcLocator);    
+               throw new javax.xml.transform.TransformerException("XPTY0004 : The " + argNumStr + "argument to XPath function call pow() must be a sequence of length one.", srcLocator);    
             }
             else {
                XObject val = resultSeq.item(0);
@@ -179,17 +190,17 @@ public class FuncMathPow extends Function2Args {
                   arg = (new XSDouble(strVal)).doubleValue();
                }
                catch (Exception ex) {
-                  throw new javax.xml.transform.TransformerException("FORG0001 : Error with the " + argNumStr + " argument of "
-                                                                           + "math:pow. Cannot convert the string \"" + strVal + "\" "
-                                                                                                  + "to a double value.", srcLocator);
+            	   throw new javax.xml.transform.TransformerException("FORG0001 : Error occured during XPath function call pow(). Cannot convert "
+																								                           + "string valued argument \"" + strVal + "\" to "
+																								                           + "a double value.", srcLocator);
                }
                 
                result = arg;
             }
         }
         else {
-           throw new javax.xml.transform.TransformerException("XPTY0004 : The item type of " + argNumStr + " argument to function "
-                                                                                                     + "math:pow is not xs:double.", srcLocator); 
+        	throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm item type of " + argNumStr + " argument to XPath function call pow() is not "
+																														  + "an XML Schema type double.", srcLocator); 
         }
         
         return result; 

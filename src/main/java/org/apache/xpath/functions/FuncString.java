@@ -20,9 +20,14 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.SourceLocator;
+
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.patterns.NodeTest;
 
 import xml.xpath31.processor.types.XSString;
 
@@ -45,14 +50,27 @@ public class FuncString extends FunctionDef1Arg
   /**
    * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * @param xctxt The current execution context
+   * @return A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 	  XObject result = null;
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+	  if (m_arg0 instanceof NodeTest) {
+		 if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+	    	throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath function call string() has an argument of type "
+	    			                                                                                  + "function, whose string value cannot be determined.", srcLocator);  
+	     } 
+	  }
+	  else if (m_arg0 instanceof XPathInlineFunction) {
+		  throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath function call string() has an argument of type "
+                                                                                                      + "function, whose string value cannot be determined.", srcLocator); 
+	  }
 	  
 	  XMLString xmlStr = getArg0AsString(xctxt);
 	  

@@ -23,6 +23,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.patterns.NodeTest;
 
 /** 
@@ -61,6 +62,10 @@ public class FuncFloor extends FunctionDef1Arg
 			  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function floor(), but the "
 					  																  + "supplied type is a function type, which cannot be atomized.", srcLocator); 
 		  }
+	  }
+	  else if (m_arg0 instanceof XPathInlineFunction) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function floor(), but the "
+                                                                                      + "supplied type is a function type, which cannot be atomized.", srcLocator);
 	  }
 
 	  String strValueOfArg = (getArg0AsString(xctxt)).toString();

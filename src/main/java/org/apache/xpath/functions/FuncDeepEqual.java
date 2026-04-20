@@ -32,6 +32,7 @@ import org.apache.xml.utils.Constants;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -115,7 +116,23 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		  
 		  ResultSequence resultSeq0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(arg0Val, xctxt);
 		  
+		  int rSeqLength0 = resultSeq0.size();
+		  for (int i = 0; i < rSeqLength0; i++) {
+			 XObject xObj1 = resultSeq0.item(i);
+			 if (xObj1 instanceof XPathNamedFunctionReference) {
+				 throw new javax.xml.transform.TransformerException("FOTY0015 : An XPath function call deep-equal() has an argument with type function item.", srcLocator);   
+			 }
+		  }
+		  
 		  ResultSequence resultSeq1 = XslTransformEvaluationHelper.getResultSequenceFromXObject(arg1Val, xctxt);
+		  
+		  int rSeqLength1 = resultSeq1.size();
+		  for (int i = 0; i < rSeqLength1; i++) {
+			 XObject xObj1 = resultSeq1.item(i);
+			 if (xObj1 instanceof XPathNamedFunctionReference) {
+				 throw new javax.xml.transform.TransformerException("FOTY0015 : An XPath function call deep-equal() has an argument with type function item.", srcLocator);   
+			 }
+		  }
 		  
 		  boolean isDeepEqual = false;
 		  

@@ -33,6 +33,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -56,8 +57,8 @@ public class FuncRound extends Function2Args
       /**
        * Evaluate the function. The function must return a valid object.
        * 
-       * @param xctxt The current execution context.
-       * @return A valid XObject.
+       * @param xctxt The current execution context
+       * @return A valid XObject
        *
        * @throws javax.xml.transform.TransformerException
        */
@@ -73,16 +74,19 @@ public class FuncRound extends Function2Args
     					  																  + "supplied type is a function type, which cannot be atomized.", srcLocator); 
     		  }
     	  }
+          else if (m_arg0 instanceof XPathInlineFunction) {
+    		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function round(), but the "
+                                                                                          + "supplied type is a function type, which cannot be atomized.", srcLocator);
+    	  }
           
           String strValueOfArg0 = (getArgAsString(m_arg0, xctxt)).toString();
           
           if ((strValueOfArg0 == null) || "".equals(strValueOfArg0.trim())) {
-              throw new javax.xml.transform.TransformerException("FORG0006 : The first argument to function "
-                                                                                                          + "fn:round() is empty.", srcLocator);
+              throw new javax.xml.transform.TransformerException("FORG0006 : The XPath function call round() is provided with an empty first argument.", srcLocator);
           }
           
           if ("INF".equals(strValueOfArg0) || "-INF".equals(strValueOfArg0)) {
-        	  throw new javax.xml.transform.TransformerException("FOAR0001 : An XPath function 'round''s call has an argument to be "
+        	  throw new javax.xml.transform.TransformerException("FOAR0001 : An XPath function call round() has an argument to be "
         	  		                                                                                      + "rounded as INF, or -INF, which was probably "
         	  		                                                                                      + "evaluated as result of division by zero.", srcLocator); 
           }
@@ -95,7 +99,7 @@ public class FuncRound extends Function2Args
              }
              catch (Exception ex) {
                 throw new javax.xml.transform.TransformerException("FORG0006 : An error occured, while evaluating one argument "
-                                                                                                               + "version of function fn:round(). "
+                                                                                                               + "version of XPath function round(). "
                                                                                                                + "Please verify the function call with respect to function signature.", 
                                                                                                                        srcLocator); 
              }
@@ -113,13 +117,13 @@ public class FuncRound extends Function2Args
                   }
                   else {
                      throw new javax.xml.transform.TransformerException("FORG0006 : A negative integer value of second argument to "
-                                                                                                                     + "function fn:round() is not supported.", 
+                                                                                                                     + "XPath function round() is not supported.", 
                                                                                                                      srcLocator); 
                   }
               }
               catch (Exception ex) {
                   throw new javax.xml.transform.TransformerException("FORG0006 : An error occured, while evaluating two argument "
-                                                                                                 + "version of function fn:round(). Please verify the function call "
+                                                                                                 + "version of XPath function round(). Please verify the function call "
                                                                                                  + "with respect to function signature.", srcLocator);
               }
           }

@@ -27,6 +27,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.patterns.NodeTest;
 
 import xml.xpath31.processor.types.XSDouble;
@@ -61,83 +62,87 @@ public class FuncMathLog10 extends FunctionOneArg
      */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
-       XObject result = null;
-       
-       SourceLocator srcLocator = xctxt.getSAXLocator();
-       
-       Expression arg0 = getArg0();
-       
-       if (arg0 instanceof NodeTest) {
-    	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0)) {
-    		   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function log10(), "
-    				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
-    	   }
-       }
-       
-       if (arg0 == null || isArgCountErr()) {
-          ResultSequence resultSeq = new ResultSequence();
-          return resultSeq;
-       }
-          
-       XObject arg0Result = getEffectiveFuncArgValue(arg0, xctxt);
-       
-       if (arg0Result instanceof XNumber) {
-          double resultVal = Math.log10(((XNumber)arg0Result).num());
-          result = new XSDouble(resultVal);
-       }
-       else if (arg0Result instanceof XSNumericType) {
-          String strVal = ((XSNumericType)arg0Result).stringValue();
-          double resultVal = Math.log10((new XSDouble(strVal)).doubleValue());
-          result = new XSDouble(resultVal);
-       }
-       else if (arg0Result instanceof XMLNodeCursorImpl) {
-          XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)arg0Result;
-          if (xNodeSet.getLength() != 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : The argument to math:log10 "
-                                                                     + "function must be a sequence of length one.", srcLocator);    
-          }
-          else {
-             String strVal = xNodeSet.str();
-             
-             double arg = 0.0;             
-             try {
-                arg = (new XSDouble(strVal)).doubleValue();
-             }
-             catch (Exception ex) {
-                throw new javax.xml.transform.TransformerException("FORG0001 : Cannot convert the string \"" + strVal + "\" to "
-                                                                                                       + "a double value.", srcLocator);
-             }
-             
-             result = new XSDouble(Math.log10(arg));
-          }
-       }
-       else if (arg0Result instanceof ResultSequence) {
-           ResultSequence resultSeq = (ResultSequence)arg0Result;
-           if (resultSeq.size() != 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : The argument to math:log10 "
-                                                                      + "function must be a sequence of length one.", srcLocator);    
+    	XObject result = null;
+        
+        SourceLocator srcLocator = xctxt.getSAXLocator();
+        
+        Expression arg0 = getArg0();
+        
+        if (arg0 instanceof NodeTest) {
+     	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0)) {
+     		   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function log10(), "
+     				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+     	   }
+        }
+        else if (arg0 instanceof XPathInlineFunction) {
+      	   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function log10(), but the "
+                     																   + "supplied type is a function type, which cannot be atomized.", srcLocator); 
+        }
+        
+        if (arg0 == null || isArgCountErr()) {
+           ResultSequence resultSeq = new ResultSequence();
+           return resultSeq;
+        }
+           
+        XObject arg0Result = getEffectiveFuncArgValue(arg0, xctxt);
+        
+        if (arg0Result instanceof XNumber) {
+           double resultVal = Math.log10(((XNumber)arg0Result).num());
+           result = new XSDouble(resultVal);
+        }
+        else if (arg0Result instanceof XSNumericType) {
+           String strVal = ((XSNumericType)arg0Result).stringValue();
+           double resultVal = Math.log10((new XSDouble(strVal)).doubleValue());
+           result = new XSDouble(resultVal);
+        }
+        else if (arg0Result instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)arg0Result;
+           if (xNodeSet.getLength() != 1) {
+         	  throw new javax.xml.transform.TransformerException("XPTY0004 : The argument to XPath function call log10() must be a sequence of length one.", srcLocator);    
            }
            else {
-              XObject val = resultSeq.item(0);
-              String strVal = XslTransformEvaluationHelper.getStrVal(val);
+              String strVal = xNodeSet.str();
               
               double arg = 0.0;             
               try {
                  arg = (new XSDouble(strVal)).doubleValue();
               }
               catch (Exception ex) {
-                 throw new javax.xml.transform.TransformerException("FORG0001 : Cannot convert the string \"" + strVal + "\" to "
-                                                                                                        + "a double value.", srcLocator);
+             	 throw new javax.xml.transform.TransformerException("FORG0001 : Error occured during XPath function call log10(). Cannot convert "
+ 																										                         + "string valued argument \"" + strVal + "\" to "
+ 																										                         + "a double value.", srcLocator);
               }
               
               result = new XSDouble(Math.log10(arg));
            }
-       }
-       else {
-           throw new javax.xml.transform.TransformerException("XPTY0004 : The item type of first argument to function math:log10 is not "
-                                                                                                      + "xs:double.", srcLocator); 
-       }
-       
-       return result;
+        }
+        else if (arg0Result instanceof ResultSequence) {
+            ResultSequence resultSeq = (ResultSequence)arg0Result;
+            if (resultSeq.size() != 1) {
+         	   throw new javax.xml.transform.TransformerException("XPTY0004 : The argument to XPath function call log10() must be a sequence of length one.", srcLocator);    
+            }
+            else {
+               XObject val = resultSeq.item(0);
+               String strVal = XslTransformEvaluationHelper.getStrVal(val);
+               
+               double arg = 0.0;             
+               try {
+                  arg = (new XSDouble(strVal)).doubleValue();
+               }
+               catch (Exception ex) {
+             	  throw new javax.xml.transform.TransformerException("FORG0001 : Error occured during XPath function call log10(). Cannot convert "
+ 																										                         + "string valued argument \"" + strVal + "\" to "
+ 																										                         + "a double value.", srcLocator);
+               }
+               
+               result = new XSDouble(Math.log10(arg));
+            }
+        }
+        else {
+     	    throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm item type of first argument to XPath function call log10() is not "
+ 																																+ "an XML Schema type double.", srcLocator); 
+        }
+        
+        return result;
     }
 }

@@ -17,6 +17,7 @@
  */
 package org.apache.xpath.operations;
 
+import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
@@ -45,7 +46,15 @@ public class VcNotEquals extends Operation
    */
   public XObject operate(XObject left, XObject right) throws 
                                                   javax.xml.transform.TransformerException
-  {    
+  {
+	  if (left instanceof ElemFunctionItem) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath operator ne's lhs argument is a function type, which cannot be atomized.");   
+	  }
+
+	  if (right instanceof ElemFunctionItem) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath operator ne's rhs argument is a function type, which cannot be atomized.");   
+	  }
+		  
       return left.vcEquals(right, getExpressionOwner(), null, false) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
   }
 

@@ -21,6 +21,7 @@
 package org.apache.xpath.operations;
 
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
@@ -51,6 +52,14 @@ public class VcLe extends Operation
                                                  throws javax.xml.transform.TransformerException
   {
       XPathContext xctxt = new XPathContext();
+      
+      if (left instanceof ElemFunctionItem) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath operator le's lhs argument is a function type, which cannot be atomized.");   
+	  }
+
+	  if (right instanceof ElemFunctionItem) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath operator le's rhs argument is a function type, which cannot be atomized.");   
+	  }
       
       return left.vcGreaterThan(right, getExpressionOwner(), xctxt.getDefaultCollation(), 
                                                                                 false) ? XBoolean.S_FALSE : XBoolean.S_TRUE;

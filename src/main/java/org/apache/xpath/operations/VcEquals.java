@@ -17,6 +17,7 @@
  */
 package org.apache.xpath.operations;
 
+import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -49,6 +50,14 @@ public class VcEquals extends Operation
                                                   javax.xml.transform.TransformerException
   {  
 	  XObject result = null;
+	  
+	  if (left instanceof ElemFunctionItem) {
+		 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath operator eq's lhs argument is a function type, which cannot be atomized.");   
+	  }
+	  
+	  if (right instanceof ElemFunctionItem) {
+		 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath operator eq's rhs argument is a function type, which cannot be atomized.");   
+	  }
 	  
 	  boolean isLEmpty = false;
 	  if (left instanceof ResultSequence) {

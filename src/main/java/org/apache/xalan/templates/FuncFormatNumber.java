@@ -31,6 +31,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.patterns.NodeTest;
 
@@ -75,6 +76,10 @@ public class FuncFormatNumber extends Function3Args
     			 throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function format-number(), "
     					 																 + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
     		 }
+    	 }
+    	 else if (arg0 instanceof XPathInlineFunction) {
+    		 throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function format-number(), "
+						                                                                 + "but the supplied type is a function type, which cannot be atomized.", srcLocator);
     	 }
 
     	 double num = arg0.execute(xctxt).num();

@@ -37,6 +37,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.patterns.NodeTest;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSString;
@@ -80,11 +81,26 @@ public class FuncData extends FunctionDef1Arg
       
       int contextNode = xctxt.getCurrentNode();
       
+      if (m_arg0 instanceof NodeTest) {
+    	  if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+    		 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath function call 'data' has argument of function type, "
+    		 																													+ "which cannot be atomized.", srcLocator);  
+    	  }
+      }
+      else if (m_arg0 instanceof XPathInlineFunction) {
+    	  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath function call 'data' has argument of function type, "
+    	  																														+ "which cannot be atomized.", srcLocator);
+      }
+      
       if (m_arg0 == null) {
          // The function call fn:data is called with no arguments
          XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
          if (xpath3ContextItem != null) {
-            argObj = xpath3ContextItem;  
+            argObj = xpath3ContextItem;
+            if (argObj instanceof XPathInlineFunction) {
+      		   throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath function call 'data' has an argument from context of function type, "
+      		  																													+ "which cannot be atomized.", srcLocator); 
+      	    }
          }
          else if (contextNode != DTM.NULL) {
             argObj = new XMLNodeCursorImpl(contextNode, xctxt); 
@@ -93,7 +109,19 @@ public class FuncData extends FunctionDef1Arg
       else {
          // An explicit argument was provided, to the fn:data 
          // function call.
-         argObj = m_arg0.execute(xctxt); 
+         argObj = m_arg0.execute(xctxt);
+         
+         if (argObj instanceof ResultSequence) {
+        	ResultSequence rSeq = (ResultSequence)argObj;
+        	int rSeqLength1 = rSeq.size();
+        	for (int i = 0; i < rSeqLength1; i++) {
+        	   XObject xObj1 = rSeq.item(i);
+        	   if (xObj1 instanceof XPathInlineFunction) {
+        		  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath function call 'data' has argument of function type, "
+        		  																													+ "which cannot be atomized.", srcLocator); 
+        	   }
+        	}
+         }
       }
       
       if (argObj instanceof XMLNodeCursorImpl) {
@@ -172,8 +200,8 @@ public class FuncData extends FunctionDef1Arg
                }
             }
             else if ((xdmItem instanceof XPathInlineFunction) || (xdmItem instanceof XPathMap)) {
-               throw new javax.xml.transform.TransformerException("FOTY0013 : An error occured while evaluating the function "
-               		                                                                         + "call fn:data. An XSL function or a map cannot be atomized.", srcLocator);
+               throw new javax.xml.transform.TransformerException("FOTY0013 : An error occured while evaluating XPath function "
+               		                                                                         + "call data(). An XSL function or an xdm map cannot be atomized.", srcLocator);
             }
          }
       }
@@ -182,8 +210,8 @@ public class FuncData extends FunctionDef1Arg
       }
       else if ((m_arg0 instanceof Function) || (argObj instanceof XPathInlineFunction) 
     		                                || (argObj instanceof XPathMap)) {
-    	 throw new javax.xml.transform.TransformerException("FOTY0013 : An error occured while evaluating the function call fn:data. "
-    	  		                                                                            + "An XSL function or a map cannot be atomized.", srcLocator); 
+    	 throw new javax.xml.transform.TransformerException("FOTY0013 : An error occured while evaluating XPath function "
+                                                                                            + "call data(). An XSL function or an xdm map cannot be atomized.", srcLocator); 
       }
       else {
          result.add(argObj); 

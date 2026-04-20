@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-20T01:03:02Z" fail="34" name="higher-order-functions" pass="35" run="69" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-20T09:56:03Z" fail="30" name="higher-order-functions" pass="39" run="69" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -77,18 +77,10 @@
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="higher-order-functions-052">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"/&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="higher-order-functions-053">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;false&lt;/out&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="higher-order-functions-054">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;true&lt;/out&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="higher-order-functions-055">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;false&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="higher-order-functions-052"/>
+   <testResult status="pass" testName="higher-order-functions-053"/>
+   <testResult status="pass" testName="higher-order-functions-054"/>
+   <testResult status="pass" testName="higher-order-functions-055"/>
    <testResult status="pass" testName="higher-order-functions-056"/>
    <testResult status="fail" testName="higher-order-functions-057">
       <outResult>
