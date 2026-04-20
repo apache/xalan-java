@@ -17,9 +17,13 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.SourceLocator;
+
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.patterns.NodeTest;
 
 /**
  * Implementation of an XPath 3.1 function fn:abs.
@@ -43,15 +47,29 @@ public class FuncAbs extends FunctionDef1Arg
 	/**
 	 * Evaluate the function. The function must return a valid object.
 	 * 
-	 * @param xctxt The current execution context.
-	 * @return A valid XObject.
+	 * @param xctxt The current execution context
+	 * @return A valid XObject
 	 *
 	 * @throws javax.xml.transform.TransformerException
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
-		String strValueOfArg = (getArg0AsString(xctxt)).toString();
+		
+		XObject result = null;
 
-		return new XNumber(Math.abs(Double.valueOf(strValueOfArg)));
+		SourceLocator srcLocator = xctxt.getSAXLocator();
+
+		if (m_arg0 instanceof NodeTest) {
+			if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+				throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function abs(), but the "
+						                                                                + "supplied type is a function type, which cannot be atomized.", srcLocator); 
+			}
+		}
+		
+		String strValueOfArg = (getArg0AsString(xctxt)).toString();
+		
+		result = new XNumber(Math.abs(Double.valueOf(strValueOfArg))); 
+
+		return result;
 	}
 }

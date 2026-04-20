@@ -955,6 +955,57 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
+     * Method definition, to check whether the supplied XPath node test 
+     * expression if of XSL function type.
+     * 
+     * @param nodeTest						The supplied XPath node test expression
+     * @return								Boolean value true or false
+     */
+    public static boolean isNodeTestExpressionFuntionType(NodeTest nodeTest) {
+
+    	boolean result = false;
+
+    	try {
+    		String funcNameRef = nodeTest.getLocalName();
+    		String funcNamespace = nodeTest.getNamespace();
+
+    		ExpressionNode expressionNode = nodeTest.getExpressionOwner();
+    		ExpressionNode stylesheetRootNode = null;
+    		while (expressionNode != null) {
+    			stylesheetRootNode = expressionNode;
+    			expressionNode = expressionNode.exprGetParent();                     
+    		}
+
+    		StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+
+    		if (stylesheetRoot != null) {
+    			TemplateList templateList = stylesheetRoot.getTemplateListComposed();  		  
+    			XSL3FunctionService xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();  		  
+    			if (xslFunctionService.isFuncArityWellFormed(funcNameRef)) {        	   
+    				int hashCharIdx = funcNameRef.indexOf('#');
+    				String funcNameRef2 = funcNameRef.substring(0, hashCharIdx);
+    				int funcArity = Integer.valueOf(funcNameRef.substring(hashCharIdx + 1));        		   
+    				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);        		   
+    				if (elemTemplate != null) {
+    					ElemFunction elemFunction = (ElemFunction)elemTemplate;
+    					int xslFuncDefnParamCount = elemFunction.getArity();                      
+    					String str = funcNameRef.substring(hashCharIdx + 1);
+    					int funcRefParamCount = (Integer.valueOf(str)).intValue();
+    					if (funcRefParamCount == xslFuncDefnParamCount) {
+    						result = true; 
+    					}
+    				}
+    			}  		  
+    		}
+    	}
+    	catch (Exception ex) {
+    		// no op
+    	}
+
+    	return result;  	  
+    }
+    
+    /**
      * Method definition, to get numerical sum from xdm sequence items.
      *  
      * @param resultSeq  				An xdm sequence object instance

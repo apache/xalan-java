@@ -37,6 +37,7 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.patterns.NodeTest;
 
 import xml.xpath31.processor.types.XSString;
 
@@ -73,6 +74,14 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
 		Expression arg0 = getArg0();
+		
+		if (arg0 instanceof NodeTest) {
+  		   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0)) {
+  			  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function format-integer(), "
+  			  		                                                                  + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+  		   }
+  	    }
+		
 		Expression arg1 = getArg1();
 		Expression arg2 = getArg2();
 

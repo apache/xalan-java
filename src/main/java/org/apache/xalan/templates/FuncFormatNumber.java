@@ -15,16 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.Expression;
@@ -33,6 +32,7 @@ import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.patterns.NodeTest;
 
 /**
  * Implementation of an XPath 3.1 function fn:format-number.
@@ -50,102 +50,111 @@ public class FuncFormatNumber extends Function3Args
   	   m_defined_arity = new Short[] {2, 3}; 
     }
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
+    /**
+     * Evaluate the function. The function must return a valid object.
+     * 
+     * @param xctxt The current execution context
+     * @return A valid XObject
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
+     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+     {
 
-    // A bit of an ugly hack to get our context.
-    ElemTemplateElement templElem =
-      (ElemTemplateElement) xctxt.getNamespaceContext();
-    StylesheetRoot ss = templElem.getStylesheetRoot();
-    java.text.DecimalFormat formatter = null;
-    java.text.DecimalFormatSymbols dfs = null;
-    double num = getArg0().execute(xctxt).num();
-    String patternStr = getArg1().execute(xctxt).str();
+    	 ElemTemplateElement templElem = (ElemTemplateElement) xctxt.getNamespaceContext();
+    	 StylesheetRoot ss = templElem.getStylesheetRoot();
+    	 java.text.DecimalFormat formatter = null;
+    	 java.text.DecimalFormatSymbols dfs = null;
 
-    // TODO: what should be the behavior here??
-    if (patternStr.indexOf(0x00A4) > 0)
-      ss.error(XSLTErrorResources.ER_CURRENCY_SIGN_ILLEGAL);  // currency sign not allowed
+    	 SourceLocator srcLocator = xctxt.getSAXLocator();
 
-    // this third argument is not a locale name. It is the name of a
-    // decimal-format declared in the stylesheet!(xsl:decimal-format
-    try
-    {
-      Expression arg2Expr = getArg2();
+    	 Expression arg0 = getArg0();
 
-      if (null != arg2Expr)
-      {
-        String dfName = arg2Expr.execute(xctxt).str();
-        QName qname = new QName(dfName, xctxt.getNamespaceContext());
+    	 if (arg0 instanceof NodeTest) {
+    		 if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0)) {
+    			 throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function format-number(), "
+    					 																 + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+    		 }
+    	 }
 
-        dfs = ss.getDecimalFormatComposed(qname);
+    	 double num = arg0.execute(xctxt).num();
 
-        if (null == dfs)
-        {
-          warn(xctxt, XSLTErrorResources.WG_NO_DECIMALFORMAT_DECLARATION,
-               new Object[]{ dfName });  //"not found!!!
+    	 String patternStr = getArg1().execute(xctxt).str();
 
-          //formatter = new java.text.DecimalFormat(patternStr);
-        }
-        else
-        {
+    	 // TODO: what should be the behavior here??
+    	 if (patternStr.indexOf(0x00A4) > 0)
+    		 ss.error(XSLTErrorResources.ER_CURRENCY_SIGN_ILLEGAL);  // currency sign not allowed
 
-          //formatter = new java.text.DecimalFormat(patternStr, dfs);
-          formatter = new java.text.DecimalFormat();
+    	 // this third argument is not a locale name. It is the name of a
+    	 // decimal-format declared in the stylesheet!(xsl:decimal-format
+    	 try
+    	 {
+    		 Expression arg2Expr = getArg2();
 
-          formatter.setDecimalFormatSymbols(dfs);
-          formatter.applyLocalizedPattern(patternStr);
-        }
-      }
+    		 if (null != arg2Expr)
+    		 {
+    			 String dfName = arg2Expr.execute(xctxt).str();
+    			 QName qname = new QName(dfName, xctxt.getNamespaceContext());
 
-      //else
-      if (null == formatter)
-      {
+    			 dfs = ss.getDecimalFormatComposed(qname);
 
-        // look for a possible default decimal-format
-        dfs = ss.getDecimalFormatComposed(new QName(""));
+    			 if (null == dfs)
+    			 {
+    				 warn(xctxt, XSLTErrorResources.WG_NO_DECIMALFORMAT_DECLARATION,
+    						 new Object[]{ dfName });  //"not found!!!
 
-        if (dfs != null)
-        {
-          formatter = new java.text.DecimalFormat();
+    				 //formatter = new java.text.DecimalFormat(patternStr);
+    			 }
+    			 else
+    			 {
 
-          formatter.setDecimalFormatSymbols(dfs);
-          formatter.applyLocalizedPattern(patternStr);
-        }
-        else
-        {
-          dfs = new java.text.DecimalFormatSymbols(java.util.Locale.US);
+    				 //formatter = new java.text.DecimalFormat(patternStr, dfs);
+    				 formatter = new java.text.DecimalFormat();
 
-          dfs.setInfinity(Constants.ATTRVAL_INFINITY);
-          dfs.setNaN(Constants.ATTRVAL_NAN);
+    				 formatter.setDecimalFormatSymbols(dfs);
+    				 formatter.applyLocalizedPattern(patternStr);
+    			 }
+    		 }
 
-          formatter = new java.text.DecimalFormat();
+    		 //else
+    		 if (null == formatter)
+    		 {
 
-          formatter.setDecimalFormatSymbols(dfs);
+    			 // look for a possible default decimal-format
+    			 dfs = ss.getDecimalFormatComposed(new QName(""));
 
-          if (null != patternStr)
-            formatter.applyLocalizedPattern(patternStr);
-        }
-      }
+    			 if (dfs != null)
+    			 {
+    				 formatter = new java.text.DecimalFormat();
 
-      return new XString(formatter.format(num));
-    }
-    catch (Exception iae)
-    {
-      templElem.error(XSLTErrorResources.ER_MALFORMED_FORMAT_STRING,
-                      new Object[]{ patternStr });
+    				 formatter.setDecimalFormatSymbols(dfs);
+    				 formatter.applyLocalizedPattern(patternStr);
+    			 }
+    			 else
+    			 {
+    				 dfs = new java.text.DecimalFormatSymbols(java.util.Locale.US);
 
-      return XString.EMPTYSTRING;
+    				 dfs.setInfinity(Constants.ATTRVAL_INFINITY);
+    				 dfs.setNaN(Constants.ATTRVAL_NAN);
 
-      //throw new XSLProcessorException(iae);
-    }
+    				 formatter = new java.text.DecimalFormat();
+
+    				 formatter.setDecimalFormatSymbols(dfs);
+
+    				 if (null != patternStr)
+    					 formatter.applyLocalizedPattern(patternStr);
+    			 }
+    		 }
+
+    		 return new XString(formatter.format(num));
+    	 }
+    	 catch (Exception iae)
+    	 {
+    		 templElem.error(XSLTErrorResources.ER_MALFORMED_FORMAT_STRING,
+    				 new Object[]{ patternStr });
+
+    		 return XString.EMPTYSTRING;
+    	 }
   }
 
   /**

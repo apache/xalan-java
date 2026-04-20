@@ -19,12 +19,14 @@ package org.apache.xpath.functions.math;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.patterns.NodeTest;
 
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
@@ -47,14 +49,40 @@ public class FuncMathAtan2 extends Function2Args {
 		m_defined_arity = new Short[] { 2 };
 	}
     
+	/**
+     * Evaluate the function. The function must return a valid object.
+     * 
+     * @param xctxt The current execution context
+     * @return A valid XObject
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         XObject result = null;
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        XObject arg0Result = getEffectiveFuncArgValue(getArg0(), xctxt);        
-        XObject arg1Result = getEffectiveFuncArgValue(getArg1(), xctxt);
+        Expression arg0 = getArg0();
+        
+        Expression arg1 = getArg1();
+        
+        if (arg0 instanceof NodeTest) {
+        	if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0)) {
+        		throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function atan2(), "
+        				                                                                + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+        	}
+        }
+
+        if (arg1 instanceof NodeTest) {
+        	if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg1)) {
+        		throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second argument of XPath function atan2(), "
+        				                                                                + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+        	}
+        }
+        
+        XObject arg0Result = getEffectiveFuncArgValue(arg0, xctxt);        
+        XObject arg1Result = getEffectiveFuncArgValue(arg1, xctxt);
         
         double lDouble = getDoubleValue(arg0Result, srcLocator, "first");
         double rDouble = getDoubleValue(arg1Result, srcLocator, "second");

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-03-12T11:38:35Z" fail="35" name="higher-order-functions" pass="34" run="69" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-20T01:03:02Z" fail="34" name="higher-order-functions" pass="35" run="69" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -89,11 +89,11 @@
    <testResult status="fail" testName="higher-order-functions-055">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;false&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="higher-order-functions-056">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;NaN&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="higher-order-functions-056"/>
    <testResult status="fail" testName="higher-order-functions-057">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;4&lt;/out&gt;</outResult>
+      <outResult>
+         <errTrace>javax.xml.transform.TransformerException: XPST0008 : Variable 'f' has not been declared, or its declaration is not in scope.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-058">
       <outResult>

@@ -29,6 +29,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.patterns.NodeTest;
 
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
@@ -51,6 +52,14 @@ public class FuncMathPow extends Function2Args {
 		m_defined_arity = new Short[] { 2 };
 	}
     
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt The current execution context
+	 * @return A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	*/
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         XObject result = null;
@@ -62,6 +71,20 @@ public class FuncMathPow extends Function2Args {
         
         Expression arg0Expr = getArg0();
         Expression arg1Expr = getArg1();
+        
+        if (arg0Expr instanceof NodeTest) {
+     	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0Expr)) {
+     		   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function pow(), "
+     				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+     	   }
+        }
+        
+        if (arg1Expr instanceof NodeTest) {
+        	if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg1Expr)) {
+        		throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second argument of XPath function pow(), "
+        				                                                                + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+        	}
+        }
         
         if ((arg0Expr instanceof FuncArgPlaceholder) && (arg1Expr instanceof FuncArgPlaceholder)) {
         	String xpathInlineFuncExprStr = "function($arg0, $arg1) { math:pow($arg0, $arg1) }";

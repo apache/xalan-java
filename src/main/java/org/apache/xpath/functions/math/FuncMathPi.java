@@ -47,8 +47,8 @@ public class FuncMathPi extends Function
   /**
    * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * @param xctxt The current execution context
+   * @return A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */

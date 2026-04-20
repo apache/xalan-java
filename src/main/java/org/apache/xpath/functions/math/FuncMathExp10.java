@@ -27,6 +27,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.patterns.NodeTest;
 
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
@@ -53,8 +54,8 @@ public class FuncMathExp10 extends FunctionOneArg
     /**
      * Evaluate the function. The function must return a valid object.
      * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
+     * @param xctxt The current execution context
+     * @return A valid XObject
      *
      * @throws javax.xml.transform.TransformerException
      */
@@ -65,6 +66,13 @@ public class FuncMathExp10 extends FunctionOneArg
        SourceLocator srcLocator = xctxt.getSAXLocator();
        
        Expression arg0 = getArg0();
+       
+       if (arg0 instanceof NodeTest) {
+    	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0)) {
+    		   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function exp10(), "
+    				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+    	   }
+       }
        
        if (arg0 == null || isArgCountErr()) {
           ResultSequence resultSeq = new ResultSequence();

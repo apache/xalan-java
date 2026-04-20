@@ -34,6 +34,7 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
@@ -65,6 +66,13 @@ public class FuncRound extends Function2Args
           XObject result = null;
           
           SourceLocator srcLocator = xctxt.getSAXLocator();
+          
+          if (m_arg0 instanceof NodeTest) {
+    		  if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+    			  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function round(), but the "
+    					  																  + "supplied type is a function type, which cannot be atomized.", srcLocator); 
+    		  }
+    	  }
           
           String strValueOfArg0 = (getArgAsString(m_arg0, xctxt)).toString();
           
