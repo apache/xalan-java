@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-21T16:34:42Z" fail="6" name="expand-text" pass="54" run="60" skipped="3" statusUnknown="0">
-   <testResult status="fail" testName="cvt-032">
-      <outResult/>
-   </testResult>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-21T16:54:40Z" fail="5" name="expand-text" pass="54" run="59" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
