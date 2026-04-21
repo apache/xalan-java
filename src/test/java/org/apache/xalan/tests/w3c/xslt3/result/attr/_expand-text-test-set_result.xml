@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:38Z" fail="7" name="expand-text" pass="52" run="59" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-21T16:34:42Z" fail="6" name="expand-text" pass="54" run="60" skipped="3" statusUnknown="0">
+   <testResult status="fail" testName="cvt-032">
+      <outResult/>
+   </testResult>
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
@@ -20,13 +23,8 @@
         &lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="cvt-014"/>
-   <testResult status="fail" testName="cvt-015">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;4 &#13;
-        }&lt;/out&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="cvt-016">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;4}&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="cvt-015"/>
+   <testResult status="pass" testName="cvt-016"/>
    <testResult status="pass" testName="cvt-017"/>
    <testResult status="pass" testName="cvt-018"/>
    <testResult status="pass" testName="cvt-019"/>

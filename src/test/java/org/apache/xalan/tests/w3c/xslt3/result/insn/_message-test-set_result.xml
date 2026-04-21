@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:49Z" fail="5" name="message" pass="36" run="42" skipped="3" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-21T16:34:47Z" fail="4" name="message" pass="37" run="42" skipped="3" statusUnknown="1">
    <testResult status="pass" testName="message-0001"/>
    <testResult status="pass" testName="message-0001a"/>
    <testResult status="pass" testName="message-0002"/>
@@ -45,10 +45,7 @@
       <outResult/>
    </testResult>
    <testResult status="pass" testName="message-0404"/>
-   <testResult status="fail" testName="message-0405">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
-&lt;out/&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="message-0405"/>
    <testResult status="pass" testName="message-0406"/>
    <testResult status="pass" testName="message-0407"/>
    <testResult status="pass" testName="message-0408"/>

@@ -80,14 +80,13 @@ import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * An instance of this class represents an element inside
- * an xsl:template class.  It has a single "execute" method
- * which is expected to perform the given action on the
- * result tree.
- * This class acts like a Element node, and implements the
- * Element interface, but is not a full implementation
- * of that interface... it only implements enough for
- * basic traversal of the tree.
+ * An object instance of this class represents an XSL stylesheet instruction 
+ * within an xsl:template instruction. This class has a method named "execute"
+ * which is expected to perform the given action on an XSL result tree.
+ * This class acts like a XML element node, and implements the document object
+ * model Element interface, but is not a full implementation of that interface. 
+ * This class only implements enough for required traversal of the tree within 
+ * the context of XSL transformation.
  *
  * @see Stylesheet
  * 
@@ -2383,6 +2382,44 @@ public class ElemTemplateElement extends UnImplNode
 	  
 	  int idx1 = strValue.indexOf('{');
 	  int idx2 = strValue.indexOf('}');
+	  
+	  int idx3 = strValue.lastIndexOf('}');
+	  
+	  int strLength = strValue.length();
+	  
+	  if ((idx1 == 0) && ((idx3 + 1) == strLength)) {
+		  String xpathExprStr = strValue.substring(1, strLength - 1);
+		  xpathExprStr = xpathExprStr.trim();
+		  if (xpathExprStr.startsWith("if") || xpathExprStr.startsWith("some") || 
+				                                                 xpathExprStr.startsWith("every") || xpathExprStr.startsWith("let") || 
+				                                                                                                 xpathExprStr.startsWith("for")) {
+			  List<XMLNSDecl> prefixTable = null;
+			  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();            
+			  if (elemTemplateElement != null) {
+				  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+			  }
+
+			  if (prefixTable != null) {
+				  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+			  }
+
+			  ElemTemplateElement elemTemplateElem =  getParentElem();
+
+			  String xpathDefaultNamespace = XPathParser.getXPathDefaultNamespace(elemTemplateElem);
+
+			  XPath xpath2 = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, xpathDefaultNamespace);
+
+			  if (vars != null) {
+				 xpath2.fixupVariables(vars, varsGlobalsSize);
+			  }
+
+			  XObject xObj = xpath2.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+
+			  result = XslTransformEvaluationHelper.getStrVal(xObj);
+			  
+			  return result;
+		  }
+	  }
 	  
 	  if (idx1 < idx2) {
 		  List<XMLNSDecl> prefixTable = null;

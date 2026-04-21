@@ -1204,7 +1204,35 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 								
 								break;
 							}    					
-						}						
+						}
+						else if ((childNode instanceof Element) && EXPECTED_NODE_KIND_ASSERT.equals(((Element)childNode).getNodeName())) {
+							Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
+							String xpathExprStr = childNode.getTextContent();
+	    					xpathExprStr = "if (" + xpathExprStr + ") then " + "true() else exists(" + xpathExprStr + ")";
+	    					xpathExprStr = xpathExprStr.replace('\'', '"');
+	    					String xslStylesheetStr = "<?xml version=\"1.0\"?>" +
+						    						  "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"3.0\">" +
+						    						  "  <xsl:output method=\"text\"/>" +
+						    						  "  <xsl:template match=\"/\">" +
+						    						  "     <xsl:value-of select='" + xpathExprStr + "'/>" +
+						    						  "  </xsl:template>" +
+						    						  "</xsl:stylesheet>";
+	    					Document xslDocument = m_xmlDocumentBuilder.parse(new InputSource(new StringReader(xslStylesheetStr)));
+
+	    					System.setProperty(XSLTestConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLTestConstants.XSLT_TRANSFORMER_FACTORY_VALUE);
+
+	    					TransformerFactory trfFactory2 = TransformerFactory.newInstance();                	
+	    					Transformer transformer2 = trfFactory2.newTransformer(new DOMSource(xslDocument));
+
+	    					StringWriter strWriter2 = new StringWriter();
+	    					transformer2.transform(new DOMSource(xmlInpDoc1), new StreamResult(strWriter2));                	                	
+	    					if (TRUE.equals(strWriter2.toString())) {
+	    						elemTestResult.setAttribute(STATUS, PASS);								
+								isTestCasePass = true;								
+								
+								break;
+	    					}
+						}
 						else if ((childNode instanceof Element) && EXPECTED_NODE_KIND_ERROR.equals(((Element)childNode).getNodeName())) {
 							expErrCodeName = ((Element)childNode).getAttribute("code"); 
 							handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 

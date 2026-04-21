@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:05Z" fail="26" name="select" pass="105" run="132" skipped="26" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-21T16:34:04Z" fail="26" name="select" pass="106" run="132" skipped="26" statusUnknown="0">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -86,7 +86,7 @@ javax.xml.transform.TransformerException: XPST0051 : A sequence type occurence i
    <testResult status="pass" testName="select-2019"/>
    <testResult status="pass" testName="select-2020"/>
    <testResult status="fail" testName="select-2021"/>
-   <testResult testName="select-2022"/>
+   <testResult status="pass" testName="select-2022"/>
    <testResult status="fail" testName="select-2023"/>
    <testResult status="fail" testName="select-2024"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2025"/>
