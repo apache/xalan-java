@@ -564,7 +564,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 			  for (int i = 0; i < nParams; i++) 
 			  {
-				  ElemWithParam ewp = m_paramElems[i];
+				  ElemWithParam ewp = m_withParamElems[i];
 				  if (transformer.getDebug())
 					  transformer.getTraceManager().emitTraceEvent(ewp);
 
@@ -608,7 +608,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  }
 
 			  List<XObject> tunnelParamObjList = parentElem.getTunnelParamObjList();
-			  for (int idx = 0; idx < tunnelParamObjList.size(); idx++) {
+			  int size1 = tunnelParamObjList.size();
+			  for (int idx = 0; idx < size1; idx++) {
 				  XObject var = tunnelParamObjList.get(idx);
 				  vars.setLocalVariable(++maxParamStackFrameIndex, var, argsFrame);
 			  }
@@ -1058,18 +1059,31 @@ public class ElemApplyTemplates extends ElemCallTemplate
 							  int i;
 							  for (i = 0; i < nParams; i++) 
 							  {
-								  ElemWithParam ewp = m_paramElems[i];
+								  ElemWithParam ewp = m_withParamElems[i];
 								  if (ewp.m_qnameID == ep.m_qnameID)                  
 								  {
-									  XObject obj = vars.getLocalVariable(i, argsFrame);									  
+									  String paramTunnelStrValue = ep.getTunnel();    // xsl:param tunnel value
+									  String wpTunnelStrValue = ewp.getTunnel();      // corresponding xsl:with-param tunnel value
+									  XObject xobj1 = null;									  
+									  
+									  if (((paramTunnelStrValue != null) && XslTransformEvaluationHelper.isTunnelAttributeYes(paramTunnelStrValue)) && 
+											                                                          ((wpTunnelStrValue == null) || "no".equals(wpTunnelStrValue))) {
+										 final int currentNode = xctxt.getCurrentNode();
+										 xobj1 = ep.getValue(transformer, currentNode);
+										 vars.setLocalVariable(i, null);
+									  }
+									  else {
+									     xobj1 = vars.getLocalVariable(i, argsFrame);
+									  }
+									  
 									  String paramAsAttrStrVal = ep.getAs();
 									  if (paramAsAttrStrVal != null) {
-										  XObject argConvertedVal = getParamValueAsAttributeProcessing(obj, templateMatchPatternStr, elem.getPrefixTable(), 
+										  XObject argConvertedVal = getParamValueAsAttributeProcessing(xobj1, templateMatchPatternStr, elem.getPrefixTable(), 
 												  																				i, paramAsAttrStrVal, transformer, srcLocator);
 										  if (argConvertedVal != null) {
-											  if ((obj instanceof XMLNodeCursorImpl) && !(argConvertedVal instanceof XSAnyAtomicType)) {
-												  obj = obj.getFresh();
-												  vars.setLocalVariable(paramIndex, obj);
+											  if ((xobj1 instanceof XMLNodeCursorImpl) && !(argConvertedVal instanceof XSAnyAtomicType)) {
+												  xobj1 = xobj1.getFresh();
+												  vars.setLocalVariable(paramIndex, xobj1);
 											  }
 											  else {
 												  vars.setLocalVariable(paramIndex, argConvertedVal); 
@@ -1081,7 +1095,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 										  }
 									  }
 									  else {
-										  vars.setLocalVariable(paramIndex, obj);
+										  vars.setLocalVariable(paramIndex, xobj1);
 									  }
 									  
 									  break;

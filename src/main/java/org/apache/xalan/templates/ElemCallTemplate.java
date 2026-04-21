@@ -317,8 +317,8 @@ public class ElemCallTemplate extends ElemForEach
 		if (m_template != null) {      
 			SourceLocator savedLocator = xctxt.getSAXLocator();
 
-			VariableStack vars = xctxt.getVarStack();
-			int thisframe = vars.getStackFrame();
+			VariableStack varStack = xctxt.getVarStack();
+			int thisframe = varStack.getStackFrame();
 			
 			String nsUri = m_templateName.getNamespace();
 			String localName = m_templateName.getLocalName();
@@ -328,58 +328,49 @@ public class ElemCallTemplate extends ElemForEach
 			}
 
 			try {
-				int nextFrame = vars.link(m_template.m_frameSize);
+				int nextFrame = varStack.link(m_template.m_frameSize);
 
 				// We have to clear the section of the stack frame that has params 
 				// so that the default param evaluation will work correctly.
 				if (m_template.m_inArgsSize > 0)
 				{
-					vars.clearLocalSlots(0, m_template.m_inArgsSize);
+					varStack.clearLocalSlots(0, m_template.m_inArgsSize);
 
-					if (m_paramElems != null)
+					if (m_withParamElems != null)
 					{          
-						vars.setStackFrame(thisframe);
-						int size = m_paramElems.length;
+						varStack.setStackFrame(thisframe);
+						int withParamSize = m_withParamElems.length;
 
 						int maxParamStackFrameIndex = -1;
 
-						for (int i = 0; i < size; i++) 
+						for (int i = 0; i < withParamSize; i++) 
 						{
-							ElemWithParam ewp = m_paramElems[i];
+							ElemWithParam ewp = m_withParamElems[i];
 							if (ewp.m_index >= 0)
 							{
-								if (transformer.getDebug())
-									transformer.getTraceManager().emitTraceEvent(ewp);
-								XObject obj = ewp.getValue(transformer, sourceNode);
-								if (transformer.getDebug())
-									transformer.getTraceManager().emitTraceEndEvent(ewp);                            
-
+								XObject xObj = ewp.getValue(transformer, sourceNode);
+								
 								String tunnelStrVal = ewp.getTunnel();
-								obj.setTunnel(tunnelStrVal);
+								xObj.setTunnel(tunnelStrVal);
 								QName qName = ewp.getName();
-								obj.setQName(qName);
-
-								/**
-								 * Note here that the index for ElemWithParam must have been
-								 * statically made relative to the xsl:template being called,
-								 * Not this xsl:call-element instruction's object.
-								 */
-								vars.setLocalVariable(ewp.m_index, obj, nextFrame);
+								xObj.setQName(qName);
+								
+								varStack.setLocalVariable(ewp.m_index, xObj, nextFrame);
 								maxParamStackFrameIndex = ewp.m_index; 
 							}
 						}
 
-						propagateTunnelParameters(vars, thisframe, nextFrame, maxParamStackFrameIndex);
+						propagateTunnelParameters(varStack, thisframe, nextFrame, maxParamStackFrameIndex);
 
-						vars.setStackFrame(nextFrame);
+						varStack.setStackFrame(nextFrame);
 					}
 					else {
-						vars.setStackFrame(thisframe);            
+						varStack.setStackFrame(thisframe);            
 						int maxParamStackFrameIndex = -1;
 
-						propagateTunnelParameters(vars, thisframe, nextFrame, maxParamStackFrameIndex);             
+						propagateTunnelParameters(varStack, thisframe, nextFrame, maxParamStackFrameIndex);             
 
-						vars.setStackFrame(nextFrame);
+						varStack.setStackFrame(nextFrame);
 					}
 				}
 				
@@ -393,7 +384,7 @@ public class ElemCallTemplate extends ElemForEach
 				transformer.popElemTemplateElement();
 				xctxt.setSAXLocator(savedLocator);
 
-				vars.unlink(thisframe);
+				varStack.unlink(thisframe);
 			}
 		}	
 		else {
@@ -409,7 +400,7 @@ public class ElemCallTemplate extends ElemForEach
 	/**
 	 * Vector of xsl:param elements associated with this element.
 	 */
-	protected ElemWithParam[] m_paramElems = null;
+	protected ElemWithParam[] m_withParamElems = null;
 
 	/**
 	 * Get the count xsl:param elements associated with this element.
@@ -417,7 +408,7 @@ public class ElemCallTemplate extends ElemForEach
 	 */
 	public int getParamElemCount()
 	{
-		return (m_paramElems == null) ? 0 : m_paramElems.length;
+		return (m_withParamElems == null) ? 0 : m_withParamElems.length;
 	}
 
 	/**
@@ -429,7 +420,7 @@ public class ElemCallTemplate extends ElemForEach
 	 */
 	public ElemWithParam getParamElem(int i)
 	{
-		return m_paramElems[i];
+		return m_withParamElems[i];
 	}
 
 	/**
@@ -439,19 +430,19 @@ public class ElemCallTemplate extends ElemForEach
 	 */
 	public void setParamElem(ElemWithParam ParamElem)
 	{
-		if (m_paramElems == null)
+		if (m_withParamElems == null)
 		{
-			m_paramElems = new ElemWithParam[1];
-			m_paramElems[0] = ParamElem;
+			m_withParamElems = new ElemWithParam[1];
+			m_withParamElems[0] = ParamElem;
 		}
 		else
 		{
 			// Expensive 1 at a time growth, but this is done at build time, so 
 			// I think it's OK.
-			int length = m_paramElems.length;
+			int length = m_withParamElems.length;
 			ElemWithParam[] ewp = new ElemWithParam[length + 1];
-			System.arraycopy(m_paramElems, 0, ewp, 0, length);
-			m_paramElems = ewp;
+			System.arraycopy(m_withParamElems, 0, ewp, 0, length);
+			m_withParamElems = ewp;
 			ewp[length] = ParamElem;
 		}
 	}
@@ -501,15 +492,15 @@ public class ElemCallTemplate extends ElemForEach
 	 * context's variable stack from the previous stack frame to next 
 	 * stack frame.
 	 */
-	private void propagateTunnelParameters(VariableStack vars, int thisframe, int nextFrame, 
+	private void propagateTunnelParameters(VariableStack varStack, int thisframe, int nextFrame, 
 			                                                              int maxParamStackFrameIndex) throws TransformerException {
 
-		for (int idx = 0; idx < MAX_PARAM_LIMIT; idx++) {
-			XObject obj = vars.getLocalVariable(idx, thisframe);
-			if (obj != null) {
-				String tunnelValStr = obj.getTunnel();            	
-				if ((obj.getTunnel() != null) && XslTransformEvaluationHelper.isTunnelAttributeYes(tunnelValStr)) {
-					vars.setLocalVariable(++maxParamStackFrameIndex, obj, nextFrame);
+		for (int i = 0; i < MAX_PARAM_LIMIT; i++) {
+			XObject xObj1 = varStack.getLocalVariable(i, thisframe);
+			if (xObj1 != null) {
+				String tunnelValStr = xObj1.getTunnel();            	
+				if ((xObj1.getTunnel() != null) && XslTransformEvaluationHelper.isTunnelAttributeYes(tunnelValStr)) {
+					varStack.setLocalVariable(++maxParamStackFrameIndex, xObj1, nextFrame);
 				}
 			}
 			else {
@@ -525,9 +516,10 @@ public class ElemCallTemplate extends ElemForEach
 
 		List<XObject> tunnelParamObjList = parentElem.getTunnelParamObjList();
 
-		for (int idx = 0; idx < tunnelParamObjList.size(); idx++) {
+		int size1 = tunnelParamObjList.size();
+		for (int idx = 0; idx < size1; idx++) {
 			XObject var = tunnelParamObjList.get(idx);
-			vars.setLocalVariable(++maxParamStackFrameIndex, var, nextFrame);
+			varStack.setLocalVariable(++maxParamStackFrameIndex, var, nextFrame);
 		}
 	}
 	

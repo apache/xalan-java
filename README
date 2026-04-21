@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-04-18
+Document last modified : 2026-04-21
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -108,6 +108,12 @@ When this Maven build command is run, results like following shall be produced:
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
 [INFO] Total time:  01:43 min
+
+
+After verifying that, Xalan Java XSLT 3.0 src code passes all the applicable XSL test cases, user may install Xalan Java
+XSLT 3.0 jar file within the local Maven repos using following command:
+
+mvn clean install -DskipTests
 
 4) This code base repos branch also has Xalan Java's XSLT 3.0 test drivers for W3C XSLT 3.0 test suite (located at, 
 https://github.com/w3c/xslt30-test).

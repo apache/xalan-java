@@ -460,6 +460,12 @@ public class ElemTemplate extends ElemTemplateElement
   private int[] m_argsQNameIDs;
   
   /**
+   * An array of ElemParam objects, representing xsl:param instructions
+   * within xsl:template element. 
+   */
+  private ElemParam[] m_elemParamArr = null;
+  
+  /**
    * This function is called after everything else has been
    * recomposed, and allows the template to set remaining
    * values that may be based on some other property that
@@ -508,10 +514,6 @@ public class ElemTemplate extends ElemTemplateElement
 	  transformer.getStackGuard().checkForInfiniteLoop();
 
 	  xctxt.pushRTFContext();
-
-	  if (transformer.getDebug()) {
-		  transformer.getTraceManager().emitTraceEvent(this);
-	  }
 
 	  if (m_asAttr == null) {
 		  transformer.setXslNextMatchWithParamList(m_xslNextMatchWithParamList);
@@ -562,7 +564,9 @@ public class ElemTemplate extends ElemTemplateElement
 							  }
 
 							  if (isSeqTypeOccurenceIndicatorCheckOk) {
-								  for (int idx = 0; idx < rSeq.size(); idx++) {
+								  
+								  int size1 = rSeq.size();								  
+								  for (int idx = 0; idx < size1; idx++) {
 									  XMLAttribute xmlAttribute = (XMLAttribute)(rSeq.item(idx));
 									  String prefix = xmlAttribute.getPrefix();
 									  String localName = xmlAttribute.getLocalName();                	                  	   
@@ -727,7 +731,8 @@ public class ElemTemplate extends ElemTemplateElement
 		  
 		  ResultSequence rSeq = new ResultSequence();
 		  
-		  for (int idx = 0; idx < xslAttrList.size(); idx++) {
+		  int size1 = xslAttrList.size();
+		  for (int idx = 0; idx < size1; idx++) {
 			 XslAttributeAndNamePair xslAttributeAndNamePair = xslAttrList.get(idx);
 			 QName attrName = xslAttributeAndNamePair.getAttrName();
 			 String localName = attrName.getLocalName();
@@ -868,7 +873,8 @@ public class ElemTemplate extends ElemTemplateElement
 			   List<XMLNSDecl> prefixTable = this.getPrefixTable();
 			   String nsUri = null;
 			   
-               for (int idx = 0; idx < prefixTable.size(); idx++) {
+			   int size1 = prefixTable.size();
+               for (int idx = 0; idx < size1; idx++) {
             	  XMLNSDecl xmlNSDecl = prefixTable.get(idx);            	  
             	  if ((xmlNSDecl.getPrefix()).equals(prefix)) {
             		  nsUri = xmlNSDecl.getURI();
@@ -886,7 +892,8 @@ public class ElemTemplate extends ElemTemplateElement
 			// xsl:attribute deduplication on attribute's name
 			
 			int pos = -1;
-			for (int idx = 0; idx < xslAttrList.size(); idx++) {
+			int size1 = xslAttrList.size();
+			for (int idx = 0; idx < size1; idx++) {
 			   XslAttributeAndNamePair xslAttributeAndNamePair = xslAttrList.get(idx);
 			   QName attrQName2 = xslAttributeAndNamePair.getAttrName();
 			   if (attrQName2.equals(attrQName)) {
@@ -911,6 +918,71 @@ public class ElemTemplate extends ElemTemplateElement
 	  }
 	  
 	  return xslAttrList;
+  }
+  
+  /**
+   * Method definition, to get xsl:template instruction's ElemParam 
+   * information as an array. 
+   * 
+   * @return                  ElemParam object array
+   */
+  public ElemParam[] getElemParamArray() {
+	  return m_elemParamArr;
+  }
+  
+  /**
+   * Method definition, to get xsl:param object at a specified 
+   * index. 
+   * 
+   * @param i                  Value of the supplied index
+   * @return                   An ElemParam object, at the supplied index
+   */
+  public ElemParam getElemParam(int i) {
+	  ElemParam result = null;
+	  
+	  if (m_elemParamArr.length > (i + 1)) {
+		 result = m_elemParamArr[i];  
+	  }
+	  
+	  return result;
+  }
+  
+  /**
+   * Add a child to the child list.
+   *
+   * @param newChild Child to add to child list
+   *
+   * @return Child just added to child list
+   */
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
+  {                
+      ElemTemplateElement childElem = super.appendChild(newChild);
+      
+      if (newChild instanceof ElemParam) {
+    	 if (m_elemParamArr == null) {
+    		m_elemParamArr = new ElemParam[1];
+    		m_elemParamArr[0] = (ElemParam)newChild; 
+    	 }
+    	 else {
+    		int elemParamNewArrSize = m_elemParamArr.length + 1;
+    		ElemParam[] tempArray = new ElemParam[elemParamNewArrSize];
+    		System.arraycopy(m_elemParamArr, 0, tempArray, 0, m_elemParamArr.length);
+    		tempArray[m_elemParamArr.length] = (ElemParam)newChild;
+    		m_elemParamArr = tempArray; 
+    	 }
+      }
+      
+      return childElem;             
+  }
+  
+  /**
+   * Call the children visitors.
+   * 
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  public void callChildVisitors(XSLTVisitor visitor, boolean callAttributes)
+  {      	    
+      super.callChildVisitors(visitor, callAttributes);
   }
 
 }
