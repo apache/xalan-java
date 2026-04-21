@@ -207,6 +207,14 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- bsf is needed as org.apache.bsf.BSFManager is defined as a service provider -->
+    <dependency>
+      <groupId>bsf</groupId>
+      <artifactId>bsf</artifactId>
+      <version>2.4.0</version>
+      <optional>true</optional>
+    </dependency>
+
     <!-- https://github.com/vbmacher/cup-maven-plugin -->
     <dependency>
       <groupId>com.github.vbmacher</groupId>
