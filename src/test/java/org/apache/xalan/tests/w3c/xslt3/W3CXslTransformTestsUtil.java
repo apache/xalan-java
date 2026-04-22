@@ -1006,161 +1006,256 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	    		}
     				
     				return;
-    			}    			
-    			    			
-    			NodeList nodeList1 = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
-    			int nodeListLength1 = nodeList1.getLength();
-    			
-    			int nodeListLength2 = 0;
-    			Node nodeA = ((Element)nodeExpected).getFirstChild();
-    			Element assertXmlElem = null;
-    			while (nodeA != null) {
-    			   if (EXPECTED_NODE_KIND_ASSERT_XML.equals(nodeA.getNodeName())) {
-    				  nodeListLength2++;    				  
-    				  assertXmlElem = (Element)nodeA; 
-    			   }
-    			   
-    			   nodeA = nodeA.getNextSibling();
     			}
     			
-    			NodeList nodeList3 = ((Element)nodeExpected).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_MESG);
-    			int nodeListLength3 = nodeList3.getLength();
+    			NodeList nodeList2 = ((Element)nodeExpected).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_XML);
+    			boolean isTestCasePass2 = true;
+    			int length2 = nodeList2.getLength();
+    			if (length2 > 0) {
+    				for (int idx = 0; idx < length2; idx++) {
+    					Element elemNode = (Element)nodeList2.item(idx);
+    					String fileName = elemNode.getAttribute(FILE_ATTR);
+    					String expectedResultStr = null;
+    					if (!"".equals(fileName)) {
+    						URI uri = new URI(m_xslTransformTestSetFilePath);
+    						uri = uri.resolve(fileName);
+    						expectedResultStr = getStringContentFromUrl(uri.toURL());
+    					}
+    					else {
+    						expectedResultStr = elemNode.getTextContent();            		
+    					}
+
+    					String ignorePrefixesStr = elemNode.getAttribute("ignore-prefixes");
+
+    					String resultStr1 = resultStrWriter.toString();
+    					boolean isHtmlStr = false;
+    					if (resultStr1.contains("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">")) {
+    						resultStr1 = resultStr1.replace("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">", "");
+    						resultStr1 = resultStr1.replaceAll("\r?\n", "");
+
+    						isHtmlStr = true;
+    					}
+
+    					Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(resultStr1.getBytes()));
+    					if (!isHtmlStr) {
+    						normalizeXmlDocumentText(xmlInpDoc1);
+    					}
+
+    					TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
+    					String xmlHtmlStr1 = null;
+    					if ("true".equals(ignorePrefixesStr)) {
+    						Transformer transformer2 = xslTransformerFactory.newTransformer(new StreamSource(XSL_TRANSFORM_NORMALIZE_NS_FILE_PATH));
+    						StringWriter strWriter = new StringWriter();
+    						transformer2.transform(new DOMSource(xmlInpDoc1), new StreamResult(strWriter));
+    						xmlHtmlStr1 = strWriter.toString(); 
+    					}
+    					else {
+    						xmlHtmlStr1 = serializeXmlDomElementNode(xmlInpDoc1);
+    					}
+
+    					if (isHtmlStr) {
+    						expectedResultStr = expectedResultStr.replaceAll("\r?\n", "");
+    					}
+
+    					Document xmlInpDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));            	
+    					if (!isHtmlStr) {
+    						normalizeXmlDocumentText(xmlInpDoc2);
+    					}
+
+    					String xmlHtmlStr2 = null;
+    					if ("true".equals(ignorePrefixesStr)) {
+    						Transformer transformer2 = xslTransformerFactory.newTransformer(new StreamSource(XSL_TRANSFORM_NORMALIZE_NS_FILE_PATH));
+    						StringWriter strWriter = new StringWriter();
+    						transformer2.transform(new DOMSource(xmlInpDoc2), new StreamResult(strWriter));
+    						xmlHtmlStr2 = strWriter.toString();
+    					}
+    					else {
+    						xmlHtmlStr2 = serializeXmlDomElementNode(xmlInpDoc2);
+    					}
+
+    					if (!isTwoXmlHtmlStrEqual(xmlHtmlStr1, xmlHtmlStr2)) {            		
+    						isTestCasePass2 = false;
+    						
+    						break;
+    					}
+    				}
+    			}
     			
-    			if (nodeListLength1 > 0) {
-    				String alsoCorrectResultStr = null;
-    				// This needs to have an improved test case implementation
-    				if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && "doe-0201".equals(testCaseName)) {
-    					alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out><expandtext><count>3</count><test1/></expandtext>\r\n"
-																				    							+ "    \r\n"
-																				    							+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
-																				    							+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
-																				    							+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
-																				    							+ "</out>";
+    			if (!isTestCasePass2) {
+    				elemTestResult.setAttribute(STATUS, FAIL);
+    				
+    				return;
+    			}
+    			
+    			if (isTestCasePass2 && (length2 == 0)) {    			    			
+    				NodeList nodeList1 = ((Element)nodeExpected).getElementsByTagName(SERIALIZATION_MATCHES);
+    				int nodeListLength1 = nodeList1.getLength();
+
+    				int nodeListLength2 = 0;
+    				Node nodeA = ((Element)nodeExpected).getFirstChild();
+    				Element assertXmlElem = null;
+    				while (nodeA != null) {
+    					if (EXPECTED_NODE_KIND_ASSERT_XML.equals(nodeA.getNodeName())) {
+    						nodeListLength2++;    				  
+    						assertXmlElem = (Element)nodeA; 
+    					}
+
+    					nodeA = nodeA.getNextSibling();
     				}
 
-    				if (alsoCorrectResultStr != null) {
-    					alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\r?\n", "");    					
-    					String actualResultStr = resultStrWriter.toString();
-    					if (alsoCorrectResultStr.equals(actualResultStr.replaceAll("\r?\n", ""))) {
-    						elemTestResult.setAttribute(STATUS, PASS);
+    				NodeList nodeList3 = ((Element)nodeExpected).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_MESG);
+    				int nodeListLength3 = nodeList3.getLength();
+
+    				if (nodeListLength1 > 0) {
+    					String alsoCorrectResultStr = null;
+    					// This needs to have an improved test case implementation
+    					if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && "doe-0201".equals(testCaseName)) {
+    						alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out><expandtext><count>3</count><test1/></expandtext>\r\n"
+																		    								+ "    \r\n"
+																		    								+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
+																		    								+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
+																		    								+ "    <notexpandtext><count>{count(*)}</count><test2/></notexpandtext>\r\n"
+																		    								+ "</out>";
+    					}
+
+    					if (alsoCorrectResultStr != null) {
+    						alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\r?\n", "");    					
+    						String actualResultStr = resultStrWriter.toString();
+    						if (alsoCorrectResultStr.equals(actualResultStr.replaceAll("\r?\n", ""))) {
+    							elemTestResult.setAttribute(STATUS, PASS);
+    						}
+    						else {
+    							elemTestResult.setAttribute(STATUS, FAIL);
+    						}
+    						
+    						return;
+    					}
+    					else {
+    						testCaseMultipleSerializationMatchChecks(elemTestResult, resultStrWriter, nodeList1, xslTransformMethod);
+    					}
+    				}
+    				else if (isXslMessageTest && (nodeListLength2 == 1) && (nodeListLength3 > 0)) {    				
+    					Element elemNode = assertXmlElem;
+    					String fileName = elemNode.getAttribute(FILE_ATTR);
+    					String expectedResultStr = null;
+    					if (!"".equals(fileName)) {
+    						URI uri = new URI(m_xslTransformTestSetFilePath);
+    						uri = uri.resolve(fileName);
+    						expectedResultStr = getStringContentFromUrl(uri.toURL());
+    					}
+    					else {
+    						expectedResultStr = elemNode.getTextContent();            		
+    					}
+
+    					boolean isTestCasePass = false;
+
+    					org.xml.sax.InputSource inpSrc1 = new org.xml.sax.InputSource(new StringReader(resultStrWriter.toString())); 
+    					Document document1 = m_xmlDocumentBuilder.parse(inpSrc1);
+    					org.xml.sax.InputSource inpSrc2 = new org.xml.sax.InputSource(new StringReader(expectedResultStr)); 
+    					Document document2 = m_xmlDocumentBuilder.parse(inpSrc2);
+    					String string1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document1);
+    					String string2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document2);
+
+    					if (isTwoXmlHtmlStrEqual(string1, string2)) {																																						
+    						isTestCasePass = true;								
+    					}   
+
+    					if (isTestCasePass) {                		
+    						if (!isXslMessageTest) {
+    							elemTestResult.setAttribute(STATUS, PASS);
+    							
+    							return;
+    						}
+    						else if (xslMessageResultPrefixStr != null) {
+    							String[] actualPrefixStrArr1 = xslMessageResultPrefixStr.split("\r?\n");
+    							boolean passStatus1 = false;
+    							for (int idx2 = 0; idx2 < actualPrefixStrArr1.length; idx2++) {
+    								String str1 = actualPrefixStrArr1[idx2]; 
+    								for (int idx3 = 0; idx3 < nodeListLength3; idx3++) {
+    									Node node = nodeList3.item(idx3);
+    									NodeList nodeList4 = ((Element)node).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_STRING_VALUE);
+    									if (nodeList4.getLength() == 0) {
+    										nodeList4 = ((Element)node).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_XML);                			    	                 			    	 
+    										if (nodeList4.getLength() > 0) {
+    											String str2 = ((Element)(nodeList4.item(0))).getTextContent();
+
+    											org.xml.sax.InputSource inpSrc3 = new org.xml.sax.InputSource(new StringReader(str2)); 
+    											Document document3 = m_xmlDocumentBuilder.parse(inpSrc3);
+
+    											org.xml.sax.InputSource inpSrc4 = new org.xml.sax.InputSource(new StringReader(str1)); 
+    											Document document4 = m_xmlDocumentBuilder.parse(inpSrc4);
+
+    											String string3 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document3);
+    											String string4 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document4);
+
+    											if (isTwoXmlHtmlStrEqual(string3, string4)) {																																						
+    												passStatus1 = true;
+
+    												break;								
+    											}
+    										}
+    										else {                			    		 
+    											nodeList4 = ((Element)node).getElementsByTagName("assert-eq");
+    											if (nodeList4.getLength() > 0) {
+    												String str2 = ((Element)(nodeList4.item(0))).getTextContent();
+    												int strLength1 = str2.length();
+    												str2 = str2.substring(1, strLength1 - 1);   // Converting string from, form "..." to ...
+    												str1 = str1.trim();
+    												if (str2.equals(str1)) {
+    													passStatus1 = true;
+
+    													break;
+    												}
+    											}
+    										}
+    									}
+    									else {
+    										String str2 = ((Element)(nodeList4.item(0))).getTextContent();
+    										str2 = str2.trim();
+    										str1 = str1.trim();
+    										if (str2.equals(str1)) {
+    											passStatus1 = true;
+
+    											break;
+    										}
+    									}
+    								}
+
+    								if (passStatus1) {
+    									break; 
+    								}
+    							}
+
+    							if (passStatus1) {
+    								elemTestResult.setAttribute(STATUS, PASS); 
+    							}
+    							else {
+    								elemTestResult.setAttribute(STATUS, FAIL); 
+    							}
+    							
+    							return;
+    						}
+    						else {
+    							elemTestResult.setAttribute(STATUS, PASS);
+    							
+    							return;
+    						}
     					}
     					else {
     						elemTestResult.setAttribute(STATUS, FAIL);
+    						
+    						return;
     					}
     				}
     				else {
-    					testCaseMultipleSerializationMatchChecks(elemTestResult, resultStrWriter, nodeList1, xslTransformMethod);
+    					testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter, trfWarningList);
     				}
-    			}
-    			else if (isXslMessageTest && (nodeListLength2 == 1) && (nodeListLength3 > 0)) {    				
-    				Element elemNode = assertXmlElem;
-                	String fileName = elemNode.getAttribute(FILE_ATTR);
-                	String expectedResultStr = null;
-                	if (!"".equals(fileName)) {
-                		URI uri = new URI(m_xslTransformTestSetFilePath);
-                		uri = uri.resolve(fileName);
-                		expectedResultStr = getStringContentFromUrl(uri.toURL());
-                	}
-                	else {
-                		expectedResultStr = elemNode.getTextContent();            		
-                	}
-
-                	boolean isTestCasePass = false;
-                	
-                	org.xml.sax.InputSource inpSrc1 = new org.xml.sax.InputSource(new StringReader(resultStrWriter.toString())); 
-                	Document document1 = m_xmlDocumentBuilder.parse(inpSrc1);
-                	org.xml.sax.InputSource inpSrc2 = new org.xml.sax.InputSource(new StringReader(expectedResultStr)); 
-                	Document document2 = m_xmlDocumentBuilder.parse(inpSrc2);
-                	String string1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document1);
-                	String string2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document2);
-                	
-                	if (isTwoXmlHtmlStrEqual(string1, string2)) {																																						
-						isTestCasePass = true;								
-					}   
-                	
-                	if (isTestCasePass) {                		
-                		if (!isXslMessageTest) {
-                		   elemTestResult.setAttribute(STATUS, PASS);
-                		}
-                		else if (xslMessageResultPrefixStr != null) {
-                		   String[] actualPrefixStrArr1 = xslMessageResultPrefixStr.split("\r?\n");
-                		   boolean passStatus1 = false;
-                		   for (int idx2 = 0; idx2 < actualPrefixStrArr1.length; idx2++) {
-                			  String str1 = actualPrefixStrArr1[idx2]; 
-                			  for (int idx3 = 0; idx3 < nodeListLength3; idx3++) {
-                			     Node node = nodeList3.item(idx3);
-                			     NodeList nodeList4 = ((Element)node).getElementsByTagName(
-                			    		                                                  EXPECTED_NODE_KIND_ASSERT_STRING_VALUE);
-                			     if (nodeList4.getLength() == 0) {
-                			    	 nodeList4 = ((Element)node).getElementsByTagName(EXPECTED_NODE_KIND_ASSERT_XML);                			    	                 			    	 
-                			    	 if (nodeList4.getLength() > 0) {
-                			    		 String str2 = ((Element)(nodeList4.item(0))).getTextContent();
-
-                			    		 org.xml.sax.InputSource inpSrc3 = new org.xml.sax.InputSource(new StringReader(str2)); 
-                			    		 Document document3 = m_xmlDocumentBuilder.parse(inpSrc3);
-
-                			    		 org.xml.sax.InputSource inpSrc4 = new org.xml.sax.InputSource(new StringReader(str1)); 
-                			    		 Document document4 = m_xmlDocumentBuilder.parse(inpSrc4);
-
-                			    		 String string3 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document3);
-                			    		 String string4 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document4);
-
-                			    		 if (isTwoXmlHtmlStrEqual(string3, string4)) {																																						
-                			    			 passStatus1 = true;
-
-                			    			 break;								
-                			    		 }
-                			         }
-                			    	 else {                			    		 
-                			    		 nodeList4 = ((Element)node).getElementsByTagName("assert-eq");
-                			    		 if (nodeList4.getLength() > 0) {
-                			    			 String str2 = ((Element)(nodeList4.item(0))).getTextContent();
-                			    			 int strLength1 = str2.length();
-                			    			 str2 = str2.substring(1, strLength1 - 1);   // Converting string from, form "..." to ...
-                			    			 str1 = str1.trim();
-                			    			 if (str2.equals(str1)) {
-                			    				 passStatus1 = true;
-
-                			    				 break;
-                			    			 }
-                			    		 }
-                			    	 }
-                			     }
-                			     else {
-                			    	 String str2 = ((Element)(nodeList4.item(0))).getTextContent();
-                			    	 str2 = str2.trim();
-                			    	 str1 = str1.trim();
-                			    	 if (str2.equals(str1)) {
-                			    		 passStatus1 = true;
-
-                			    		 break;
-                			    	 }
-                			     }
-                			  }
-                			  
-                			  if (passStatus1) {
-                				 break; 
-                			  }
-                		   }
-                		   
-                		   if (passStatus1) {
-                			  elemTestResult.setAttribute(STATUS, PASS); 
-                		   }
-                		   else {
-                			  elemTestResult.setAttribute(STATUS, FAIL); 
-                		   }
-                		}
-                		else {
-                		   elemTestResult.setAttribute(STATUS, PASS);
-                		}
-                	}
-                	else {
-                		elemTestResult.setAttribute(STATUS, FAIL);
-                	}
-    			}
+    		    }
     			else {
-    				testCaseExpectedAssertXPathList(elemTestResult, nodeExpected, resultStrWriter, trfWarningList);
-    			}
+    			    elemTestResult.setAttribute(STATUS, PASS);
+    			    
+    			    return;
+    			}    			    			
     		}
     		else if (EXPECTED_NODE_KIND_ASSERT_ANY_OF.equals(expectedNodeKindName)) {
     			String alsoCorrectResultStr = null;

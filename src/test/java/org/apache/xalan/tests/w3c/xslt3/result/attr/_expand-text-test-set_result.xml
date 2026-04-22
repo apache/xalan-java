@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-21T16:54:40Z" fail="5" name="expand-text" pass="54" run="59" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-22T10:35:15Z" fail="3" name="expand-text" pass="56" run="59" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
@@ -11,13 +11,10 @@
    <testResult status="pass" testName="cvt-010"/>
    <testResult status="pass" testName="cvt-011"/>
    <testResult status="pass" testName="cvt-012"/>
-   <testResult status="fail" testName="cvt-013">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
-            The year was {&lt;bold&gt;$year&lt;/bold&gt;}&#13;
-        &lt;/out&gt;</outResult>
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&#13;
-            The year was {&lt;bold&gt;$year&lt;/bold&gt;}&#13;
-        &lt;/out&gt;</outResult>
+   <testResult status="pass" testName="cvt-013">
+      <outResult>
+         <errTrace>XPST0003 : No XML elements are allowed within a pair of open and closing curly braces while processing string value using XSL 'expand-text' attribute set to true/yes.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="cvt-014"/>
    <testResult status="pass" testName="cvt-015"/>
@@ -41,14 +38,8 @@
    <testResult status="pass" testName="cvt-029"/>
    <testResult status="pass" testName="cvt-030"/>
    <testResult status="pass" testName="cvt-031"/>
-   <testResult status="fail" testName="cvt-032">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="cvt-033">
-      <outResult>
-         <errTrace>Empty expression!</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="cvt-032"/>
+   <testResult status="fail" testName="cvt-033"/>
    <testResult status="pass" testName="cvt-034"/>
    <testResult status="pass" testName="cvt-035a"/>
    <testResult status="pass" testName="cvt-035b"/>

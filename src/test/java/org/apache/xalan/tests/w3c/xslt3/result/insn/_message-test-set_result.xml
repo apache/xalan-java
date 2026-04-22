@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-21T16:34:47Z" fail="4" name="message" pass="37" run="42" skipped="3" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-22T10:35:18Z" fail="3" name="message" pass="38" run="42" skipped="3" statusUnknown="1">
    <testResult status="pass" testName="message-0001"/>
    <testResult status="pass" testName="message-0001a"/>
    <testResult status="pass" testName="message-0002"/>
@@ -21,14 +21,14 @@
    <testResult status="pass" testName="message-0102"/>
    <testResult status="pass" testName="message-0103"/>
    <testResult status="pass" testName="message-0201"/>
-   <testResult status="pass" testName="message-0202"/>
+   <testResult status="fail" testName="message-0202"/>
    <testResult status="pass" testName="message-0301"/>
    <testResult status="pass" testName="message-0302"/>
    <testResult status="pass" testName="message-0303"/>
    <testResult status="pass" testName="message-0304"/>
    <testResult status="pass" testName="message-0305"/>
    <testResult status="pass" testName="message-0306"/>
-   <testResult status="fail" testName="message-0307"/>
+   <testResult status="pass" testName="message-0307"/>
    <testResult reason="Xalan configured" status="skipped" testName="message-0308"/>
    <testResult reason="Xalan configured" status="skipped" testName="message-0309"/>
    <testResult reason="Xalan configured" status="skipped" testName="message-0310"/>
@@ -36,14 +36,12 @@
    <testResult status="pass" testName="message-0312"/>
    <testResult status="pass" testName="message-0313"/>
    <testResult status="pass" testName="message-0314"/>
-   <testResult status="fail" testName="message-0315"/>
+   <testResult status="pass" testName="message-0315"/>
    <testResult status="pass" testName="message-0316"/>
    <testResult status="pass" testName="message-0317"/>
    <testResult status="pass" testName="message-0401"/>
    <testResult status="pass" testName="message-0402"/>
-   <testResult status="fail" testName="message-0403">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="message-0403"/>
    <testResult status="pass" testName="message-0404"/>
    <testResult status="pass" testName="message-0405"/>
    <testResult status="pass" testName="message-0406"/>

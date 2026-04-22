@@ -2393,6 +2393,8 @@ public class ElemTemplateElement extends UnImplNode
 		  if (xpathExprStr.startsWith("if") || xpathExprStr.startsWith("some") || 
 				                                                 xpathExprStr.startsWith("every") || xpathExprStr.startsWith("let") || 
 				                                                                                                 xpathExprStr.startsWith("for")) {
+			  // Evaluating expand-text with stylesheet content like {if ...}, {some ...}, every ...}, {let ...}, {for ...}
+			  
 			  List<XMLNSDecl> prefixTable = null;
 			  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();            
 			  if (elemTemplateElement != null) {
