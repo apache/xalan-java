@@ -49,7 +49,6 @@ public class Lt extends Operation
   /**
    * Apply the operation to two operands, and return the result.
    *
-   *
    * @param left non-null reference to the evaluated left operand.
    * @param right non-null reference to the evaluated right operand.
    *
@@ -304,6 +303,38 @@ public class Lt extends Operation
 		  }
 		  
 		  return XBoolean.S_FALSE;
+	  }
+	  else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
+		  java.lang.String lStr = ((XSNumericType)left).stringValue();
+		  double dbl1 = (Double.valueOf(lStr)).doubleValue();
+		  double dbl2 = ((XNumber)right).num();
+		  
+		  result = ((dbl1 < dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+	  }
+      else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
+    	  java.lang.String rStr = ((XSNumericType)right).stringValue();
+		  double dbl1 = (Double.valueOf(rStr)).doubleValue();
+		  double dbl2 = ((XNumber)left).num();
+		  
+		  result = ((dbl1 < dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
+	  }
+      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
+    	  java.lang.String lStr = ((XSNumericType)left).stringValue();
+		  double dbl1 = (Double.valueOf(lStr)).doubleValue();
+		  java.lang.String rStr = ((XSNumericType)right).stringValue();
+		  double dbl2 = (Double.valueOf(rStr)).doubleValue();
+		  
+		  result = ((dbl1 < dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+      }
+      else if ((left instanceof XNumber) && (right instanceof XNumber)) {
+    	  double dbl1 = ((XNumber)left).num();
+    	  double dbl2 = ((XNumber)right).num();
+    	  
+    	  result = ((dbl1 < dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+      }
+	  
+	  if (result != null) {
+		  return result;
 	  }
 	  
 	  int listSize = strList.size();

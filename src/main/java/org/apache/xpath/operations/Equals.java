@@ -51,7 +51,6 @@ public class Equals extends Operation
   /**
    * Apply the operation to two operands, and return the result.
    *
-   *
    * @param left non-null reference to the evaluated left operand.
    * @param right non-null reference to the evaluated right operand.
    *
@@ -104,6 +103,32 @@ public class Equals extends Operation
 			  java.lang.String nodeStrValue = nodeRef1.str();
 			  strList.add(nodeStrValue);
 		  }
+	  }
+	  else if ((left instanceof XSNumericType) && (right instanceof XMLNodeCursorImpl)) {
+		  rObj = right.getFresh();
+		  
+		  XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)rObj;		  
+		  DTMManager dtmManager = nodeRef.getDTMManager();
+		  DTMCursorIterator iter = nodeRef.iterRaw();
+		  int nextNode = DTM.NULL;
+		  while ((nextNode = iter.nextNode()) != DTM.NULL) {
+			  XMLNodeCursorImpl nodeRef1 = new XMLNodeCursorImpl(nextNode, dtmManager);
+			  java.lang.String nodeStrValue = nodeRef1.str();
+			  strList.add(nodeStrValue);
+		  }		  		  
+		  
+		  double lDbl1 = Double.valueOf(((XSNumericType)left).stringValue());
+		  
+		  int strListSize = strList.size();
+		  for (int idx = 0; idx < strListSize; idx++) {
+			 java.lang.String str1 = strList.get(idx);
+			 double rDbl1 = Double.valueOf(str1);
+			 if (lDbl1 == rDbl1) {
+				return XBoolean.S_TRUE; 
+			 }
+		  }
+		  
+		  return XBoolean.S_FALSE; 
 	  }
 	  
 	  if ((lObj instanceof XMLNodeCursorImpl) && ((rObj instanceof XString) || (rObj instanceof XSString))) {
@@ -332,6 +357,34 @@ public class Equals extends Operation
 					  																							+ "compared to a string value.");  
 		  }
 	  }
+	  else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
+		  java.lang.String lStr = ((XSNumericType)left).stringValue();
+		  double dbl1 = (Double.valueOf(lStr)).doubleValue();
+		  double dbl2 = ((XNumber)right).num();
+		  
+		  result = ((dbl1 == dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+	  }
+      else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
+    	  java.lang.String rStr = ((XSNumericType)right).stringValue();
+		  double dbl1 = (Double.valueOf(rStr)).doubleValue();
+		  double dbl2 = ((XNumber)left).num();
+		  
+		  result = ((dbl1 == dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
+	  }
+      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
+    	  java.lang.String lStr = ((XSNumericType)left).stringValue();
+		  double dbl1 = (Double.valueOf(lStr)).doubleValue();
+		  java.lang.String rStr = ((XSNumericType)right).stringValue();
+		  double dbl2 = (Double.valueOf(rStr)).doubleValue();
+		  
+		  result = ((dbl1 == dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+      }
+      else if ((left instanceof XNumber) && (right instanceof XNumber)) {
+    	  double dbl1 = ((XNumber)left).num();
+    	  double dbl2 = ((XNumber)right).num();
+    	  
+    	  result = ((dbl1 == dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+      }
       else if ((left instanceof XSString) && ((right instanceof XSNumericType) || (right instanceof XNumber))) {
 		 throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be "
 		 		                                                                                                + "compared to a string value."); 
@@ -350,7 +403,7 @@ public class Equals extends Operation
 		  throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be compared to a boolean value."); 
 	  }
 	  else {
-		 result = (left.equals(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  result = (left.equals(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 	  }
 	  
 	  return result;

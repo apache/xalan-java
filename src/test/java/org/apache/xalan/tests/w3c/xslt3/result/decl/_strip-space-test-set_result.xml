@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-27T00:41:17Z" fail="9" name="strip-space" pass="17" run="26" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-23T11:04:44Z" fail="8" name="strip-space" pass="18" run="26" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="strip-space-001"/>
    <testResult status="fail" testName="strip-space-002">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;TEST xmlns:xs="http://www.w3.org/2001/XMLSchema"/&gt;</outResult>
@@ -6,7 +6,7 @@
    <testResult status="pass" testName="strip-space-003"/>
    <testResult status="pass" testName="strip-space-004"/>
    <testResult status="pass" testName="strip-space-005"/>
-   <testResult status="fail" testName="strip-space-006"/>
+   <testResult status="pass" testName="strip-space-006"/>
    <testResult feature="schema_aware" status="skipped" testName="strip-space-007"/>
    <testResult feature="schema_aware" status="skipped" testName="strip-space-008"/>
    <testResult feature="schema_aware" status="skipped" testName="strip-space-009"/>

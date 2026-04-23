@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-03-12T11:39:44Z" fail="78" name="namespace" pass="143" run="221" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-23T11:04:29Z" fail="74" name="namespace" pass="147" run="221" skipped="3" statusUnknown="0">
    <testResult status="fail" testName="namespace-0101">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;a/&gt;&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="namespace-0201"/>
    <testResult status="pass" testName="namespace-0202"/>
-   <testResult status="fail" testName="namespace-0301"/>
+   <testResult status="pass" testName="namespace-0301"/>
    <testResult status="pass" testName="namespace-0401"/>
    <testResult status="pass" testName="namespace-0402"/>
    <testResult status="fail" testName="namespace-0501"/>
@@ -20,7 +20,7 @@
    <testResult status="pass" testName="namespace-0904"/>
    <testResult status="pass" testName="namespace-0905"/>
    <testResult status="pass" testName="namespace-0906"/>
-   <testResult status="fail" testName="namespace-0907"/>
+   <testResult status="pass" testName="namespace-0907"/>
    <testResult status="fail" testName="namespace-0908"/>
    <testResult reason="Xalan configured" status="skipped" testName="namespace-0909"/>
    <testResult status="fail" testName="namespace-0910"/>
@@ -133,7 +133,7 @@
       <outResult>&lt;?xml version="1.1" encoding="UTF-8"?&gt;&lt;a xmlns:n="http://n/"&gt;&lt;b/&gt;&lt;/a&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="namespace-2701"/>
-   <testResult status="pass" testName="namespace-2801"/>
+   <testResult status="fail" testName="namespace-2801"/>
    <testResult status="fail" testName="namespace-2901">
       <outResult>
          <errTrace>java.lang.NullPointerException</errTrace>
@@ -276,16 +276,16 @@
    <testResult status="fail" testName="namespace-4302"/>
    <testResult status="pass" testName="namespace-4401"/>
    <testResult status="fail" testName="namespace-4501"/>
-   <testResult status="fail" testName="namespace-4601"/>
+   <testResult status="pass" testName="namespace-4601"/>
    <testResult status="pass" testName="namespace-4801"/>
    <testResult status="pass" testName="namespace-4901"/>
    <testResult status="pass" testName="namespace-5001"/>
    <testResult status="pass" testName="namespace-5101"/>
    <testResult status="pass" testName="namespace-5201"/>
-   <testResult status="fail" testName="namespace-5301"/>
+   <testResult status="pass" testName="namespace-5301"/>
    <testResult status="pass" testName="namespace-5401"/>
    <testResult status="pass" testName="namespace-5501"/>
-   <testResult status="fail" testName="namespace-5601"/>
+   <testResult status="pass" testName="namespace-5601"/>
    <testResult status="pass" testName="namespace-5602"/>
    <testResult status="pass" testName="namespace-5701"/>
    <testResult status="pass" testName="namespace-5901"/>

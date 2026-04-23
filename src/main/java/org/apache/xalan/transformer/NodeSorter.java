@@ -34,6 +34,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSTime;
 
 /**
@@ -451,8 +452,13 @@ public class NodeSorter
     		double d;
 
     		if (k1.m_treatAsNumbers)
-    		{
-    			d = r.num();
+    		{    			
+    			if (r instanceof XSNumericType) {    				
+    			   d = Double.valueOf(((XSNumericType)r).stringValue());
+    			}
+    			else {
+    			   d = r.num();	
+    			}
 
     			// Can't use NaN for compare. They are never equal. Use zero instead.  
     			m_key1Value = Double.valueOf(d);
@@ -483,8 +489,14 @@ public class NodeSorter
     			XObject r2 = k2.m_selectPat.execute(m_xctxt, node,
     					k2.m_namespaceContext);
 
-    			if (k2.m_treatAsNumbers) {
-    				d = r2.num();
+    			if (k2.m_treatAsNumbers) {    				
+    				if (r2 instanceof XSNumericType) {    				
+    					d = Double.valueOf(((XSNumericType)r2).stringValue());
+    				}
+    				else {
+    					d = r2.num();	
+    				}
+
     				m_key2Value = Double.valueOf(d);
     			} else {
     				String str2 = XslTransformEvaluationHelper.getStrVal(r2);

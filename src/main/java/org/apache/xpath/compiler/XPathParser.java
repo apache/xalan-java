@@ -381,6 +381,20 @@ public class XPathParser
        expression = xslTransformXPathExprStr(expression, idx2);
     }
     
+    // XPath expression strings of type $varName/position(), are transformed
+    // to equivalent XPath 'for' expressions.
+    idx2 = expression.indexOf('/');
+    if (idx2 != -1) {
+       String str1 = expression.substring(0, idx2);
+       if ((str1.length() > 1) && (expression.length() > (idx2 + 1))) {
+    	   String str2 = expression.substring(idx2 + 1);
+    	   if ((str1.startsWith("$") && !str1.contains(" ")) && ("position()".equals(str2.trim()))) {
+    		  String varName = str1.substring(1); 
+    		  expression = "for $i in 1 to count($" + varName + ") return $i";
+    	   }
+       }
+    }
+    
     m_xpathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
     
     m_xpathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs();

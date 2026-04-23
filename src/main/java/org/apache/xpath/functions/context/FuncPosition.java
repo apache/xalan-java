@@ -25,8 +25,9 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SubContextList;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+
+import xml.xpath31.processor.types.XSInteger;
 
 /**
  * Implementation of the XPath 3.1 function fn:position().
@@ -132,17 +133,19 @@ public class FuncPosition extends Function
   /**
    * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * @param xctxt The current execution context
+   * @return A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {    	  
-	  double pos = (xctxt.getPos() > 0) ? xctxt.getPos() : ((double) getPositionInContextNodeList(xctxt));
+	  int pos = (xctxt.getPos() > 0) ? xctxt.getPos() : getPositionInContextNodeList(xctxt);
 	  pos = (pos > 0) ? pos : m_forEachGroupGroupByPos;
-    
-      return new XNumber(pos);
+
+	  String str1 = String.valueOf(pos);
+
+	  return new XSInteger(str1);
   }
   
   /**

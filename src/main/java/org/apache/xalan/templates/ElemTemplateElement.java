@@ -33,6 +33,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.xs.XSElementDeclaration;
@@ -2371,6 +2372,12 @@ public class ElemTemplateElement extends UnImplNode
   public String getStrValueAfterExpandTextProcessing(String strValue, TransformerImpl transformer, 
 		                                                              Vector vars, int varsGlobalsSize) throws TransformerException {
 	 
+	  if (strValue != null) {
+		  if (StringUtil.isStrHasXPathBalancedCommentDelim(strValue)) {    	
+			  strValue = StringUtil.removeXPathComments(strValue);
+		  }  
+	  }
+	  
 	  String result = strValue;	 	 
 
 	  XPathContext xctxt = transformer.getXPathContext();
@@ -2393,7 +2400,7 @@ public class ElemTemplateElement extends UnImplNode
 		  if (xpathExprStr.startsWith("if") || xpathExprStr.startsWith("some") || 
 				                                                 xpathExprStr.startsWith("every") || xpathExprStr.startsWith("let") || 
 				                                                                                                 xpathExprStr.startsWith("for")) {
-			  // Evaluating expand-text with stylesheet content like {if ...}, {some ...}, every ...}, {let ...}, {for ...}
+			  // Evaluating expand-text with stylesheet content like {if ...}, {some ...}, {every ...}, {let ...}, {for ...}
 			  
 			  List<XMLNSDecl> prefixTable = null;
 			  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();            
@@ -2452,6 +2459,14 @@ public class ElemTemplateElement extends UnImplNode
 			  strBuff.append(str1);			   
 		  }
 		  
+		  if ((xpathExprStr == null) || "".equals(xpathExprStr.trim())) {		  
+			  if ((remainingStr != null) && "".equals(remainingStr)) {
+				  result = strBuff.toString();
+
+				  return result;
+			  }
+		  }
+		  
 		  ElemTemplateElement elemTemplateElem =  getParentElem();
 		  
 		  String xpathDefaultNamespace = XPathParser.getXPathDefaultNamespace(elemTemplateElem);
@@ -2459,7 +2474,7 @@ public class ElemTemplateElement extends UnImplNode
 		  // Traverse the string value from left to right, and apply expand-text 
 		  // processing to each substring {...} that is found.
 		  while (idx1 > -1) {
-			  if (xpathExprStr != null) {
+			  if ((xpathExprStr != null) && !"".equals(xpathExprStr.trim())) {
 				  if (prefixTable != null) {
 					  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
 				  }
@@ -2508,31 +2523,33 @@ public class ElemTemplateElement extends UnImplNode
 				  strBuff.append(str2);
 			  }
 
-			  idx1 = remainingStr.indexOf('{');
-			  idx2 = remainingStr.indexOf('}');
-			  
-			  if ((idx1 < idx2) && (idx1 > -1)) {				  
-				  str1 = remainingStr.substring(0, idx1);
-				  if ((remainingStr.charAt(idx1 + 1) == '{') && (remainingStr.charAt(idx2 + 1) == '}')) {
-					 // An XSL expand-text escape sequence
-					 str1 = (str1 + remainingStr.substring(idx1 + 1, idx2 + 1));
-					 remainingStr = remainingStr.substring(idx2 + 2);
+			  if (remainingStr != null) {
+				  idx1 = remainingStr.indexOf('{');
+				  idx2 = remainingStr.indexOf('}');
+
+				  if ((idx1 < idx2) && (idx1 > -1)) {				  
+					  str1 = remainingStr.substring(0, idx1);
+					  if ((remainingStr.charAt(idx1 + 1) == '{') && (remainingStr.charAt(idx2 + 1) == '}')) {
+						  // An XSL expand-text escape sequence
+						  str1 = (str1 + remainingStr.substring(idx1 + 1, idx2 + 1));
+						  remainingStr = remainingStr.substring(idx2 + 2);
+					  }
+					  else {
+						  xpathExprStr = remainingStr.substring(idx1 + 1, idx2);
+						  remainingStr = remainingStr.substring(idx2 + 1);
+					  }
+
+					  strBuff.append(str1);
 				  }
 				  else {
-				     xpathExprStr = remainingStr.substring(idx1 + 1, idx2);
-				     remainingStr = remainingStr.substring(idx2 + 1);
+					  strBuff.append(remainingStr);
 				  }
-				  
-				  strBuff.append(str1);
-			  }
-			  else {
-				  strBuff.append(remainingStr);
-			  }
-		  }
+			  }			  
+		  }   // end, while (idx1 > -1) {
 	  }
 
 	  if (strBuff.length() > 0) {
-		  result = strBuff.toString();
+	     result = strBuff.toString();
 	  }
 
 	  return result;

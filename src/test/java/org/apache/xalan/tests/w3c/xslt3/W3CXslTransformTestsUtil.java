@@ -54,6 +54,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -84,6 +85,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * This class implementation, contains common code for Xalan-J's 
@@ -415,20 +418,27 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   }
     		   }
     		   
-    		   DOMSource xmlInpDomSource = null;
-    		   
+    		   Source source = null;
+
     		   if (xmlDocInpStr != null) {
-    			   byte[] byteArr = xmlDocInpStr.getBytes(StandardCharsets.UTF_8);
-    			   InputStream inpStream = new ByteArrayInputStream(byteArr);    		       		   
-    			   xmlInpDomSource = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
+    			   if (!"axes-200".equals(testCaseName)) {
+    				   StringReader strReader = new StringReader(xmlDocInpStr);
+    				   InputSource inpSrc = new InputSource(strReader);
+    				   XMLReader xmlReader = XMLReaderFactory.createXMLReader();	
+    				   source = new SAXSource(xmlReader, inpSrc);
+    			   }
+    			   else {    				       				   
+    				   byte[] byteArr = xmlDocInpStr.getBytes(StandardCharsets.UTF_8);
+    				   InputStream inpStream = new ByteArrayInputStream(byteArr);    		       		   
+    				   source = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
+    			   }
     		   }
     		   
     		   StreamSource xslStreamSrc = new StreamSource(xslStylesheetUriStr);
     		   xslStreamSrc.setSystemId(xslStylesheetUriStr);
     		   
     		   try {
-    		      runW3CXSLTTestSuiteXslTransformAndEmitResult(testCaseName, xmlInpDomSource, xslStreamSrc, xslParamMap, 
-    		    		                                                                                  expectedResultElem, elemTestRun, testResultDoc);
+    		      runW3CXSLTTestSuiteXslTransformAndEmitResult(testCaseName, source, xslStreamSrc, xslParamMap, expectedResultElem, elemTestRun, testResultDoc);
     		   }
     		   catch (Exception ex) {
     			  // no op 
@@ -671,11 +681,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   childNode = childNode.getNextSibling();
     		   }
     		   
-               DOMSource xmlInpDomSource = null;
+    		   DOMSource xmlInpDomSource = null; 
     		   
     		   if (xslStylesheetEnvInpStr != null) {
     			   byte[] byteArr = xslStylesheetEnvInpStr.getBytes(StandardCharsets.UTF_8);
-    			   InputStream inpStream = new ByteArrayInputStream(byteArr);    		       		   
+    			   InputStream inpStream = new ByteArrayInputStream(byteArr);
     			   xmlInpDomSource = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
 
     			   if (m_initTemplateName == null) {
@@ -760,7 +770,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      * Method definition, to run an particular W3C XSLT 3.0 test 
      * case within a test set.
      */
-    private void runW3CXSLTTestSuiteXslTransformAndEmitResult(String testCaseName, DOMSource xmlInpDomSource, 
+    private void runW3CXSLTTestSuiteXslTransformAndEmitResult(String testCaseName, Source source, 
     		                                                  StreamSource xslStreamSrc, Map<String, XObject> xslParamMap, 
     		                                                  Element expectedResultElem, Element elemTestRun, Document testResultDoc) throws Exception {    	    	
 
@@ -784,7 +794,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		if (m_initTemplateName != null) {
     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);    		   
-    		   if (xmlInpDomSource != null) {
+    		   if (source != null) {
     			  m_xslTransformerFactory.setAttribute(XalanProperties.INIT_CONTEXT_NODE, Boolean.valueOf(true));
     		   }
     		   else {
@@ -804,7 +814,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			  if (attrValue.endsWith("initial-template")) {    				 
     				 m_initTemplateName = attrValue; 
     				 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);    				 
-    				 if (xmlInpDomSource != null) {
+    				 if (source != null) {
     					 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_CONTEXT_NODE, Boolean.valueOf(true));
     				 }
     				 else {
@@ -867,12 +877,12 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		}
     		
     		Source xmlInpSrc = null;
-    		if ((m_initTemplateName != null) && (xmlInpDomSource == null)) {    			
+    		if ((m_initTemplateName != null) && (source == null)) {    			
     			StringReader strReader = new StringReader("<?xml version=\"1.0\"?><unlikely_xml_element/>");
          	    xmlInpSrc = new StreamSource(strReader);
     		}
     		else {
-    			xmlInpSrc = xmlInpDomSource; 
+    			xmlInpSrc = source; 
     		}
     		
     		transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));

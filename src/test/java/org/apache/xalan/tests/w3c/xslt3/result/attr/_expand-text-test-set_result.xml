@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-22T10:35:15Z" fail="3" name="expand-text" pass="56" run="59" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-23T11:04:41Z" fail="2" name="expand-text" pass="57" run="59" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
@@ -32,14 +32,14 @@
    <testResult feature="schema_aware" status="skipped" testName="cvt-027"/>
    <testResult status="fail" testName="cvt-028">
       <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>java.lang.NumberFormatException: empty String</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="cvt-029"/>
    <testResult status="pass" testName="cvt-030"/>
    <testResult status="pass" testName="cvt-031"/>
    <testResult status="pass" testName="cvt-032"/>
-   <testResult status="fail" testName="cvt-033"/>
+   <testResult status="pass" testName="cvt-033"/>
    <testResult status="pass" testName="cvt-034"/>
    <testResult status="pass" testName="cvt-035a"/>
    <testResult status="pass" testName="cvt-035b"/>
