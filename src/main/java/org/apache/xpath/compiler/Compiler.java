@@ -1310,6 +1310,14 @@ private static final boolean DEBUG = false;
                                 getStepLocalName(startOpPos),
                                 Axis.PARENT, Axis.CHILD);
       break;
+    case OpCodes.FROM_SELF :
+      argLen = getArgLengthOfStep(opPos);
+      opPos = getFirstChildPosOfStep(opPos);
+      pattern = new StepPattern(getWhatToShow(startOpPos),
+					            getStepNS(startOpPos),
+					            getStepLocalName(startOpPos),
+					            Axis.SELF, Axis.CHILD);
+      break;
     default :
       error(XPATHErrorResources.ER_UNKNOWN_MATCH_OPERATION, null);  //"unknown match operation!");
 

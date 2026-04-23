@@ -155,6 +155,8 @@ public class ElemForEachGroup extends ElemTemplateElement
   
   private String m_collation_uri_from_context = null;
   
+  private boolean m_isInpSeqAllAtomicValues = true;
+  
   /**
    * Class constructor.
    */
@@ -725,15 +727,13 @@ public class ElemForEachGroup extends ElemTemplateElement
         	selectExprResult = selectExpr.execute(xctxt);
         }
         
-        boolean isInpSeqAllAtomicValues = true;
-        
         if (selectExprResult instanceof ResultSequence) {
         	ResultSequence resultSeq = (ResultSequence)selectExprResult;
         	
         	if (!XslTransformEvaluationHelper.isSequenceContainsAllXdmAtomicValues(resultSeq)) {
         		// We assume here that, an xsl:for-each-group's input sequence has all 
         		// values as nodes.        		
-        		isInpSeqAllAtomicValues = false;
+        		m_isInpSeqAllAtomicValues = false;
         		
         		sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);
         	}
@@ -763,7 +763,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         	}
         }
         else if (selectExprResult instanceof XMLNodeCursorImpl) {
-        	isInpSeqAllAtomicValues = false;
+        	m_isInpSeqAllAtomicValues = false;
         	
         	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)selectExprResult;
             
@@ -796,14 +796,14 @@ public class ElemForEachGroup extends ElemTemplateElement
         }        
         else if (m_groupStartingWithExpression != null) {
         	boolean isReverse = (selectExpr instanceof FuncReverse);
-        	constructGroupsForGroupStartingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith, isInpSeqAllAtomicValues, isReverse);
+        	constructGroupsForGroupStartingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith, m_isInpSeqAllAtomicValues, isReverse);
         }
         else if (m_groupEndingWithExpression != null) {
         	boolean isReverse = (selectExpr instanceof FuncReverse);
-        	constructGroupsForGroupEndingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith, isInpSeqAllAtomicValues, isReverse);
+        	constructGroupsForGroupEndingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith, m_isInpSeqAllAtomicValues, isReverse);
         }
         else if (m_groupAdjacentExpression != null) {
-        	constructGroupsForGroupAdjacent(xctxt, sourceNodes, xslForEachGroupAdjacentList, isInpSeqAllAtomicValues);
+        	constructGroupsForGroupAdjacent(xctxt, sourceNodes, xslForEachGroupAdjacentList, m_isInpSeqAllAtomicValues);
         }
         
         try {
@@ -986,7 +986,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         							                                                            templateElem = templateElem.m_nextSibling) {        					
         						templateElem.setGroupingKey(groupingKey);
         						templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
-        						setIsGroupingXdmAtomicValues(isInpSeqAllAtomicValues);
+        						setIsGroupingXdmAtomicValues(m_isInpSeqAllAtomicValues);
         						xctxt.setSAXLocator(templateElem);
         						transformer.setCurrentElement(templateElem);                   
         						templateElem.execute(transformer);
@@ -1216,7 +1216,9 @@ public class ElemForEachGroup extends ElemTemplateElement
 	  }
 	  else {
 		  int nextNode3;
+		  int count = 0;
 		  while ((nextNode3 = sourceNodes.nextNode()) != DTM.NULL) {
+			  count++;
 			  allNodeHandleList.add(Integer.valueOf(nextNode3));
 			  DTM dtm = xctxt.getDTM(nextNode3);
 			  Node node = dtm.getNode(nextNode3);
@@ -1244,7 +1246,10 @@ public class ElemForEachGroup extends ElemTemplateElement
 				  if (xObjResult.bool()) {
 					 grpStartNodeHandles.add(Integer.valueOf(nextNode3)); 
 				  }
-			  }
+				  else if (count == 1) {
+					 grpStartNodeHandles.add(Integer.valueOf(nextNode3));
+				  }
+			  }			  
 		  }
 	  }
 
@@ -1792,6 +1797,10 @@ public class ElemForEachGroup extends ElemTemplateElement
 
   public void setSortedGroups(List<GroupingKeyAndGroupPair> sortedGroups) {
 	  this.m_sortedGroups = sortedGroups;
+  }
+  
+  public boolean getInpSeqIsAllAtomicValues() {
+	  return m_isInpSeqAllAtomicValues; 
   }
 
 }

@@ -6336,6 +6336,13 @@ public class XPathParser
 
         appendOp(2, axesType);
       }
+      else if (tokenIs("self"))
+      {
+        matchTypePos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+        axesType = OpCodes.FROM_SELF;
+
+        appendOp(2, axesType);
+      }
       else
       {
         axesType = -1;
