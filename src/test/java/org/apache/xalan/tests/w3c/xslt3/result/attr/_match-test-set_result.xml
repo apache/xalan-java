@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-23T16:46:21Z" fail="76" name="match" pass="106" run="182" skipped="112" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-24T10:43:27Z" fail="74" name="match" pass="108" run="182" skipped="112" statusUnknown="0">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -52,15 +52,15 @@
    <testResult status="pass" testName="match-047"/>
    <testResult status="pass" testName="match-048"/>
    <testResult status="pass" testName="match-049"/>
-   <testResult status="fail" testName="match-050"/>
+   <testResult status="fail" testName="match-050">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="match-051">
       <outResult>
-         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: 'x'</errTrace>
-         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: 'y', '/', '/', 'YYY'</errTrace>
-         <errTrace>XTSE0340 : A node test that matches either NCName:* or QName was expected.</errTrace>
-         <errTrace>Extra illegal tokens: 'y'</errTrace>
+         <errTrace>unknown match operation!</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="match-052"/>
@@ -102,8 +102,8 @@
    <testResult status="fail" testName="match-070"/>
    <testResult status="fail" testName="match-071"/>
    <testResult status="fail" testName="match-072"/>
-   <testResult status="fail" testName="match-073"/>
-   <testResult status="fail" testName="match-074"/>
+   <testResult status="pass" testName="match-073"/>
+   <testResult status="pass" testName="match-074"/>
    <testResult status="fail" testName="match-075"/>
    <testResult status="pass" testName="match-076"/>
    <testResult status="fail" testName="match-077">
@@ -179,7 +179,7 @@
          <errTrace>Pattern literal (anotherpi) needs to be quoted!</errTrace>
          <errTrace>Expected ), but found: anotherpi</errTrace>
          <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
-org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+java.lang.Exception: CONTINUE_AFTER_FATAL_ERROR</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="match-102"/>
@@ -202,7 +202,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>Pattern literal (anotherpi) needs to be quoted!</errTrace>
          <errTrace>Expected ), but found: anotherpi</errTrace>
          <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
-org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+java.lang.Exception: CONTINUE_AFTER_FATAL_ERROR</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="match-108"/>
@@ -438,7 +438,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult feature="schema_aware" status="skipped" testName="match-231"/>
    <testResult feature="schema_aware" status="skipped" testName="match-232"/>
    <testResult status="pass" testName="match-233"/>
-   <testResult status="fail" testName="match-234"/>
+   <testResult status="pass" testName="match-234"/>
    <testResult status="fail" testName="match-235"/>
    <testResult status="fail" testName="match-236">
       <outResult>
@@ -463,7 +463,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="fail" testName="match-247">
       <outResult>
          <errTrace>XPST0003 : An XPath expression @* | node()  has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
+         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="match-248"/>
@@ -488,7 +488,11 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    </testResult>
    <testResult feature="schema_aware" status="skipped" testName="match-262"/>
    <testResult feature="schema_aware" status="skipped" testName="match-263"/>
-   <testResult status="pass" testName="match-264"/>
+   <testResult status="fail" testName="match-264">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="match-265"/>
    <testResult status="fail" testName="match-266"/>
    <testResult status="fail" testName="match-267"/>
@@ -517,8 +521,16 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="fail" testName="match-277"/>
    <testResult status="pass" testName="match-278"/>
    <testResult status="pass" testName="match-279"/>
-   <testResult status="fail" testName="match-280"/>
-   <testResult status="fail" testName="match-281"/>
+   <testResult status="fail" testName="match-280">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="match-281">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="match-282"/>
    <testResult status="pass" testName="match-283"/>
    <testResult status="fail" testName="match-284"/>

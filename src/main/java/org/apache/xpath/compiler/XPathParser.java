@@ -332,6 +332,13 @@ public class XPathParser
   private boolean m_op_group_parse = false;
   
   /**
+   * This is used to, replace <xsl:template match="$x/abc"> to equivalent
+   * XSLT template like <xsl:template match="/root/abc">, where there's
+   * a variable declaration like <xsl:variable name="x" select="/root"/>.
+   */
+  private String m_xpath_new_pattern_str = null;
+  
+  /**
    * The parser constructor.
    */
   public XPathParser(ErrorListener errorListener, javax.xml.transform.SourceLocator sourceLocator)
@@ -455,7 +462,7 @@ public class XPathParser
         		   /**
         		    * We check for the token string "," as well, since
         		    * an XPath parse might have finished without completing
-        		    * parse of all sequence items if it was an XPath literal
+        		    * parse of all sequence items if that was an XPath literal
         		    * sequence constructor parse.
         		    */
         		   newExpression = "(" + expression + ")"; 
@@ -472,7 +479,7 @@ public class XPathParser
         	lexer.tokenize(newExpression);
 
         	m_ops.setOp(0,OpCodes.OP_XPATH);
-        	m_ops.setOp(OpMap.MAPINDEX_LENGTH,2);                
+        	m_ops.setOp(OpMap.MAPINDEX_LENGTH, 2);                
 
         	try {
         		nextToken();
@@ -577,6 +584,56 @@ public class XPathParser
 
     nextToken();    
     Pattern();
+    
+    if (m_xpath_new_pattern_str != null) {
+    	(m_ops.m_tokenQueue).removeAllElements();
+    	lexer = new Lexer(compiler, namespaceContext, this);
+    	lexer.setSourceLocator(m_sourceLocator);
+
+    	lexer.setIsMatchPattern(true);
+
+    	lexer.tokenize(m_xpath_new_pattern_str);
+
+    	m_ops.setOp(0, OpCodes.OP_MATCHPATTERN);
+    	m_ops.setOp(OpMap.MAPINDEX_LENGTH, 2);
+
+    	nextToken();    
+    	Pattern();
+    	
+    	if (m_token != null) {    		    		
+    		(m_ops.m_tokenQueue).removeAllElements();
+    		lexer = new Lexer(compiler, namespaceContext, this);
+    		lexer.setSourceLocator(m_sourceLocator);
+
+    		lexer.setIsMatchPattern(true);
+    		
+    		boolean check1 = false;
+            if (m_xpath_new_pattern_str.contains("$")) {
+               check1 = true;
+            }
+            
+    		lexer.tokenize(m_xpath_new_pattern_str);
+    		
+    		m_xpath_new_pattern_str = null;
+
+    		m_ops.setOp(0, OpCodes.OP_MATCHPATTERN);
+    		m_ops.setOp(OpMap.MAPINDEX_LENGTH, 2);
+
+    		nextToken();    
+    		Pattern();
+    		
+    		boolean check2 = false;
+            if (m_xpath_new_pattern_str != null) {
+               check2 = true;
+            }
+            
+            if (check1 && check2) {
+            	throw new TransformerException("XTSE0340 : Within an XSLT pattern, a variable reference is allowed only "
+            			                                                                    + "within the first step of a path. "
+            			                                                                    + "Unable to XPath parse, the pattern " + expression + ".", m_sourceLocator);
+            }
+        }
+    }
 
     if (null != m_token)
     {
@@ -1245,20 +1302,18 @@ public class XPathParser
   void error(String msg, Object[] args) throws TransformerException
   {
 
-    String fmsg = XSLMessages.createXPATHMessage(msg, args);
-    ErrorListener ehandler = this.getErrorListener();
-    
-    TransformerException te = new TransformerException(fmsg, m_sourceLocator);
-    if (null != ehandler)
-    {
-      // TO DO: Need to get stylesheet Locator from here.
-      ehandler.fatalError(te);
-    }
-    else
-    {
-      // System.err.println(fmsg);
-      throw te;
-    }
+	  String fmsg = XSLMessages.createXPATHMessage(msg, args);
+	  ErrorListener ehandler = this.getErrorListener();
+
+	  TransformerException te = new TransformerException(fmsg, m_sourceLocator);
+	  if (ehandler != null)
+	  {
+		  ehandler.fatalError(te);
+	  }
+	  else
+	  {
+		  throw te;
+	  }
   }
 
   /**
@@ -5866,7 +5921,52 @@ public class XPathParser
 	  }
 	  else
 	  {
-		  // Assume name of attribute or element.
+		  if (tokenIs('$')) {
+			 /**
+			  * There's a variable reference within an XPath match pattern. We need 
+			  * to replace the variable reference with the corresponding xsl:variable 
+			  * attribute 'select' string.
+			  */
+			 ObjectVector tokenQueue = m_ops.getTokenQueue();
+			 int size1 = tokenQueue.size();
+			 if (size1 >= (m_queueMark + 1)) {
+				String varName = (String)(tokenQueue.elementAt(m_queueMark));
+				StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
+				if (stylesheetRoot != null) {
+				   ElemTemplateElement elemTemplateElement = stylesheetRoot.getFirstChildElem();
+				   while (elemTemplateElement != null) {
+					  if (elemTemplateElement instanceof ElemVariable) {
+						  ElemVariable elemVariable = (ElemVariable)elemTemplateElement;
+						  if (varName.equals((elemVariable.getName()).toString())) {
+							  String elemVariableXPathStr = (elemVariable.getSelect()).getPatternString();
+							  if (elemVariableXPathStr != null) {
+								  StringBuffer strBuff = new StringBuffer();
+								  for (int idx = 0; idx < m_queueMark - 1; idx++) {
+									  String tokenStr = (String)(tokenQueue.elementAt(idx));
+									  strBuff.append(tokenStr);
+								  }
+
+								  strBuff.append(elemVariableXPathStr);
+
+								  for (int idx = m_queueMark + 1; idx < size1; idx++) {
+									  String tokenStr = (String)(tokenQueue.elementAt(idx));
+									  strBuff.append(tokenStr);
+								  }
+								  
+								  m_xpath_new_pattern_str = strBuff.toString();
+								  
+								  return;
+							  }							  
+						  }
+					  }
+					  
+					  elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+				   }
+				}
+			 }
+		  }
+		  
+		  // Assume name of an XML attribute or element
 		  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.NODENAME);
 		  m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
@@ -5910,7 +6010,7 @@ public class XPathParser
 			  // Minimalist check for an NCName - just check first character
 			  // to distinguish from other possible tokens
 			  if (!Character.isLetter(m_tokenChar) && !tokenIs('_'))
-			  {
+			  {				  
 				  // "Node test that matches either NCName:* or QName was expected."
 				  error(XPATHErrorResources.ER_EXPECTED_NODE_TEST, null);
 			  }
@@ -6123,6 +6223,10 @@ public class XPathParser
     while (true)
     {
       LocationPathPattern();
+      
+      if (m_xpath_new_pattern_str != null) {
+    	 return; 
+      }
 
       if (tokenIs('|'))
       {
@@ -6222,6 +6326,10 @@ public class XPathParser
       if (!tokenIs('|') && (null != m_token))
       {
         RelativePathPattern();
+        
+        if (m_xpath_new_pattern_str != null) {
+           return;	
+        }
       }
       else if (relativePathStatus == RELATIVE_PATH_REQUIRED)
       {
@@ -6264,6 +6372,10 @@ public class XPathParser
     // Caller will have consumed any '/' or '//' preceding the
     // RelativePathPattern, so let StepPattern know it can't begin with a '/' 
     boolean trailingSlashConsumed = StepPattern(false);
+    
+    if (m_xpath_new_pattern_str != null) {
+       return;	
+    }
 
     while (tokenIs('/'))
     {
@@ -6378,6 +6490,10 @@ public class XPathParser
     m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
     NodeTest(axesType);
+    
+    if (m_xpath_new_pattern_str != null) {
+       return true;	
+    }
 
     // Tell how long the step is without the predicate
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1,
@@ -8272,10 +8388,9 @@ public class XPathParser
      *                                             prefix list.
      * @param start2                               Starting token queue index value for token 
      *                                             suffix list.
-     * @param newTokenQueueSize					   New token queue size to be set on the token 
-     *                                             queue object.	
+     * @param sizeDelta					           Length by which token queue needs to be expanded	
      */
-    private void mutateTokenQueue(String[] newTokenArr, int start1, int start2, int newTokenQueueSize) {
+    private void mutateTokenQueue(String[] newTokenArr, int start1, int start2, int sizeDelta) {
     	ObjectVector tokenQueue = m_ops.getTokenQueue();    		      		  
 		List<Object> tokenPrefixList = new ArrayList<Object>();
 		for (int i = start1; i < m_queueMark - 1; i++) {
@@ -8292,19 +8407,21 @@ public class XPathParser
 
 		tokenQueue.removeAllElements();
 
-		for (int j = 0; j < tokenPrefixList.size(); j++) {
+		int size1 = tokenPrefixList.size();
+		for (int j = 0; j < size1; j++) {
 			tokenQueue.addElement(tokenPrefixList.get(j));  
 		}
-
+		
 		for (int i = 0; i < newTokenArr.length; i++) {
 		   tokenQueue.addElement(newTokenArr[i]);
 		}
 
-		for (int j = 0; j < tokenSuffixList.size(); j++) {
+		int size2 = tokenSuffixList.size();
+		for (int j = 0; j < size2; j++) {
 			tokenQueue.addElement(tokenSuffixList.get(j)); 
 		}
 
-		tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + newTokenQueueSize);
+		tokenQueue.setSize(tokenPrefixList.size() + tokenSuffixList.size() + sizeDelta);
     }
     
     /**

@@ -421,7 +421,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   Source source = null;
 
     		   if (xmlDocInpStr != null) {
-    			   if (!"axes-200".equals(testCaseName)) {
+    			   if (!m_xslTransformTestSetFilePath.contains("expr/axes/")) {
     				   StringReader strReader = new StringReader(xmlDocInpStr);
     				   InputSource inpSrc = new InputSource(strReader);
     				   XMLReader xmlReader = XMLReaderFactory.createXMLReader();	

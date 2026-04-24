@@ -1188,7 +1188,11 @@ public class Process
 				  throwable.printStackTrace(dumpWriter);
 			  else
 			  {
-				  DefaultErrorHandler.printLocation(diagnosticsWriter, throwable);
+				  String errMesg = throwable.getMessage();
+				  if ((errMesg != null) && !errMesg.contains("Line# :")) {
+				     DefaultErrorHandler.printLocation(diagnosticsWriter, throwable);
+				  }
+				  
 				  diagnosticsWriter.println(
 						  XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
 						  + " (" + throwable.getClass().getName() + "): "

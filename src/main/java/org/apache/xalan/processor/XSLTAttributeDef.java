@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.stream.IntStream;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
@@ -936,7 +937,17 @@ public class XSLTAttributeDef
     }
     catch (TransformerException te)
     {
-      throw new org.xml.sax.SAXException(te);
+    	String errMessage = te.getMessage();
+    	SourceLocator srcLocator = te.getLocator();
+    	int lineNo;
+    	int colNo;
+    	if (srcLocator != null) {
+    	   lineNo = srcLocator.getLineNumber();
+    	   colNo = srcLocator.getColumnNumber();
+    	   errMessage = "Line# : "+lineNo + ", Column# : " + colNo + " " + errMessage;  
+    	}
+    	
+        throw new org.xml.sax.SAXException(new Exception(errMessage));
     }
   }
 
