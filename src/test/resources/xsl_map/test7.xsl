@@ -22,8 +22,8 @@
 	   </map1>
 	</xsl:template>
 	
-	<!-- An XSL 3 stylesheet function, that retuns an xdm map 
-	     constructed from the supplied xdm node-set sequence. -->
+	<!-- An XSL 3 stylesheet function, that returns sequence of 
+	     xdm maps hard-coded within this function declaration. -->
 	<xsl:function name="fn0:constructMapSeq1" as="map(*)*">
 	   <xsl:map>
 		 <xsl:map-entry key="1" select="'hello 1'"/>

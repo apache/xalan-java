@@ -12,7 +12,7 @@
     <xsl:output method="xml" indent="yes"/>				
 			
     <!-- An XSL stylesheet global variable, referring
-	     to sequence of xdm maps. -->			
+	     to an xdm map. -->			
     <xsl:variable name="week" as="map(xs:string, xs:string)">
 	   <xsl:map>
 		  <xsl:map-entry key="'Mo'" select="'Monday'"/>

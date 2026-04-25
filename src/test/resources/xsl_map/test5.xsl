@@ -22,7 +22,7 @@
 	   </result>
 	</xsl:template>
 	
-	<!-- An XSL stylesheet named template, that retuns an xdm map 
+	<!-- An XSL stylesheet named template, that returns an xdm map 
 	     hard-coded within this template declaration. -->
 	<xsl:template name="CounstructMap1" as="map(xs:string, xs:string)">
 	   <xsl:map>

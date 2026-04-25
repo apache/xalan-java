@@ -11,9 +11,9 @@
 				
     <xsl:output method="xml" indent="yes"/>
 		 
-    <!-- An XSL stylesheet global variable, referring to sequence of xdm maps. 
-         The information contained within the run-time map is hard-coded within 
-         this variable declaration.-->		 
+    <!-- An XSL stylesheet global variable, referring to an xdm map. 
+         The information contained within the run-time map is hard-coded 
+         within this variable declaration.-->		 
     <xsl:variable name="map1" as="map(xs:integer, xs:string)">
 	   <xsl:map>
 	      <xsl:for-each select="1 to 5">

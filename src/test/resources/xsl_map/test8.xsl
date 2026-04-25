@@ -11,8 +11,8 @@
 				
     <xsl:output method="xml" indent="yes"/>
 
-    <!-- An XSL stylesheet global variable, referring
-	     to sequence of xdm maps. -->
+    <!-- An XSL stylesheet global variable, referring to sequence of 
+         xdm maps hard-coded within this variable declaration. -->
     <xsl:variable name="mapSeq1" as="map(*)*">
 	   <xsl:map>
 		 <xsl:map-entry key="1" select="'hello 1'"/>

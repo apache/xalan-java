@@ -21,7 +21,7 @@
 	   </result>
 	</xsl:template>
 	
-	<!-- An XSL 3 stylesheet function, that retuns an xdm map 
+	<!-- An XSL 3 stylesheet function, that returns an xdm map 
 	     hard-coded within this function declaration. -->
 	<xsl:function name="fn0:getMap1" as="map(xs:string, xs:string)">
 	   <xsl:map>

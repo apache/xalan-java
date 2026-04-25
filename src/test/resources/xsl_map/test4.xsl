@@ -13,9 +13,9 @@
 				
     <xsl:output method="xml" indent="yes"/>
 	
-	<!-- An XSL stylesheet global variable, referring to sequence of 
-	     xdm maps. The run-time map information is fetched from an 
-		 XML document provided as an XSL transformation input. -->
+	<!-- An XSL stylesheet global variable, referring to an xdm map. 
+	     The run-time xdm map information is fetched from an XML document 
+	     provided as an XSL transformation input. -->
 	<xsl:variable name="map1" as="map(xs:string, xs:string)">
 	   <xsl:map>
 	      <xsl:for-each select="/items/item">
