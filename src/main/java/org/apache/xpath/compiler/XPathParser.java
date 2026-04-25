@@ -7432,6 +7432,14 @@ public class XPathParser
  				  consumeExpected('(');
 				  consumeExpected(')');
  			  }
+ 			  else if (tokenIs("element")) {
+				  nextToken();
+				  SequenceTypeKindTest sequenceTypeKindTest = new SequenceTypeKindTest();
+				  sequenceTypeKindTest.setKindVal(SequenceTypeSupport.ELEMENT_KIND); 				   				   				  
+				  valueSequenceTypeData.setSequenceTypeKindTest(sequenceTypeKindTest);
+				  consumeExpected('(');
+				  consumeExpected(')');
+			  }
  		  }
  		  
  		  if (isNested) {

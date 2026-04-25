@@ -504,13 +504,15 @@ public class SequenceTypeSupport {
             
             if ((srcValue instanceof ResultSequence) && (sequenceTypeKindTest == null)) {
             	ResultSequence rSeq = (ResultSequence)srcValue;
-            	for (int idx = 0; idx < rSeq.size(); idx++) {
+            	int size1 = rSeq.size();
+            	for (int idx = 0; idx < size1; idx++) {
             		XObject xObj = rSeq.item(idx);
             		if ((xObj instanceof XSGYearMonth) && (expectedType != XS_GYEAR_MONTH)) {
             			String expectedTypeStr = sequenceTypeXPathExprStr; 
             			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
             				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
             			}
+            			
             			throw new TransformerException("XTTE0570 : An item of type xs:gYearMonth cannot be converted to " + expectedTypeStr + " as specified within an XSL stylesheet.");
             		}
             		else if ((xObj instanceof XSGYear) && (expectedType != XS_GYEAR)) {
@@ -518,6 +520,7 @@ public class SequenceTypeSupport {
             			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
             				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
             			}
+            			
             			throw new TransformerException("XTTE0570 : An item of type xs:gYear cannot be converted to " + expectedTypeStr + " as specified within an XSL stylesheet.");
             		}
             		else if ((xObj instanceof XSGMonthDay) && (expectedType != XS_GMONTH_DAY)) {
@@ -525,6 +528,7 @@ public class SequenceTypeSupport {
             			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
             				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
             			}
+            			
             			throw new TransformerException("XTTE0570 : An item of type xs:gMonthDay cannot be converted to " + expectedTypeStr + " as specified within an XSL stylesheet.");
             		}
             		else if ((xObj instanceof XSGDay) && (expectedType != XS_GDAY)) {
@@ -532,6 +536,7 @@ public class SequenceTypeSupport {
             			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
             				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
             			}
+            			
             			throw new TransformerException("XTTE0570 : An item of type xs:gDay cannot be converted to " + expectedTypeStr + " as specified within an XSL stylesheet.");
             		}
             		else if ((xObj instanceof XSGMonth) && (expectedType != XS_GMONTH)) {
@@ -539,6 +544,7 @@ public class SequenceTypeSupport {
             			if (sequenceTypeXPathExprStr.endsWith("?") || sequenceTypeXPathExprStr.endsWith("*") || sequenceTypeXPathExprStr.endsWith("+")) {
             				expectedTypeStr = expectedTypeStr.substring(0, expectedTypeStr.length() - 1);
             			}
+            			
             			throw new TransformerException("XTTE0570 : An item of type xs:gMonth cannot be converted to " + expectedTypeStr + " as specified within an XSL stylesheet.");
             		}
             	}
@@ -633,7 +639,12 @@ public class SequenceTypeSupport {
 	            		  }
 	            		  
 	            		  return result;
-	            	   }	            	   
+	            	   }
+	            	   else {
+	            		  result = srcValue;
+	            		  
+	            		  return result;
+	            	   }
 	            	}
 	            	else if (sequenceTypeKindTest.getKindVal() == ELEMENT_KIND) {
 	            	   if (srcValue instanceof XNodeSetForDOM) {	            		   
@@ -1501,19 +1512,24 @@ public class SequenceTypeSupport {
              			 XObject mapKey = keysIter.next();
              			 XObject mapEntry = nativeMap.get(mapKey);
              			 String keyStrVal = XslTransformEvaluationHelper.getStrVal(mapKey);
+             			 
              			 if (mapKey instanceof ResultSequence) {
              				mapKey = ((ResultSequence)mapKey).item(0);
              			 }
+             			 
              			 if (mapEntry instanceof ResultSequence) {
              				mapEntry = ((ResultSequence)mapEntry).item(0);
              			 }
+             			 
              			 SequenceTypeData keySeqTypeData = sequenceTypeMapTest.getKeySequenceTypeData();
              			 SequenceTypeData valueSeqTypeData = sequenceTypeMapTest.getValueSequenceTypeData();
              			 XObject mapKeyValTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(mapKey, null, keySeqTypeData, xctxt);
+             			 
              			 if (mapKeyValTypeCheckResult == null) {             				
              				throw new TransformerException("XPTY0004 : An XPath map entry with key '" + keyStrVal + "', doesn't have a value of specified XPath sequence type."); 
              			 }
-             			 XObject mapEntryValTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(mapEntry, null, valueSeqTypeData, xctxt);
+             			 
+             			 XObject mapEntryValTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(mapEntry, null, valueSeqTypeData, xctxt);             			 
              			 if (mapEntryValTypeCheckResult == null) {
              				throw new TransformerException("XPTY0004 : An XPath map entry with key '" + keyStrVal + "', doesn't have a value of specified XPath sequence type.");  
              			 }           			 

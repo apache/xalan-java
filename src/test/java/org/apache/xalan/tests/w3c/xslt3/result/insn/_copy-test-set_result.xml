@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-03-12T11:38:44Z" fail="47" name="copy" pass="78" run="125" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-25T15:49:30Z" fail="48" name="copy" pass="77" run="125" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="pass" testName="copy-0103"/>
@@ -55,9 +55,7 @@
    <testResult status="pass" testName="copy-1206"/>
    <testResult status="pass" testName="copy-1207"/>
    <testResult status="fail" testName="copy-1208"/>
-   <testResult status="fail" testName="copy-1209">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="copy-1209"/>
    <testResult status="fail" testName="copy-1210">
       <outResult>
          <errTrace>XTSE0010 : an instruction xsl:on-empty is not known to the XSLT processor.</errTrace>
@@ -178,7 +176,7 @@
    </testResult>
    <testResult status="fail" testName="copy-4303"/>
    <testResult status="fail" testName="copy-4304"/>
-   <testResult status="pass" testName="copy-4305"/>
+   <testResult status="fail" testName="copy-4305"/>
    <testResult status="pass" testName="copy-4306"/>
    <testResult status="fail" testName="copy-4307">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;23</outResult>

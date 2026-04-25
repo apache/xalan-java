@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-04-24T10:44:15Z" desc="W3C XSLT 3.0 test suite results" fail="1280" pass="3495" run="4779" skipped="614" success="73.13%" xslt_processor="Apache Xalan XSLT 3.0 development code">
+<testResult dateTime="2026-04-25T15:50:23Z" desc="W3C XSLT 3.0 test suite results" fail="1283" pass="3492" run="4779" skipped="614" success="73.07%" xslt_processor="Apache Xalan XSLT 3.0 development code">
   <attr>
     <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
@@ -15,7 +15,7 @@
     <attribute-set fail="7" pass="42" run="49" skipped="1" success="85.71%"/>
     <character-map fail="13" pass="14" run="28" skipped="1" success="50.0%"/>
     <context-item fail="13" pass="18" run="31" skipped="0" success="58.06%"/>
-    <function fail="24" pass="63" run="87" skipped="23" success="72.41%"/>
+    <function fail="25" pass="62" run="87" skipped="23" success="71.26%"/>
     <global-context-item fail="4" pass="10" run="14" skipped="0" success="71.43%"/>
     <package fail="31" pass="23" run="54" skipped="18" success="42.59%"/>
     <param fail="17" pass="13" run="30" skipped="1" success="43.33%"/>
@@ -40,7 +40,7 @@
     <format-number fail="32" pass="32" run="64" skipped="10" success="50.0%"/>
     <json-to-xml fail="6" pass="18" run="24" skipped="36" success="75.0%"/>
     <key fail="33" pass="63" run="96" skipped="3" success="65.62%"/>
-    <position fail="14" pass="197" run="211" skipped="1" success="93.36%"/>
+    <position fail="15" pass="196" run="211" skipped="1" success="92.89%"/>
     <root fail="3" pass="7" run="10" skipped="0" success="70.0%"/>
     <xml-to-json fail="35" pass="52" run="88" skipped="65" success="59.09%"/>
   </fn>
@@ -51,7 +51,7 @@
     <call-template fail="6" pass="34" run="40" skipped="2" success="85.0%"/>
     <choose fail="6" pass="48" run="54" skipped="1" success="88.89%"/>
     <construct-node fail="12" pass="22" run="34" skipped="0" success="64.71%"/>
-    <copy fail="47" pass="78" run="125" skipped="23" success="62.4%"/>
+    <copy fail="48" pass="77" run="125" skipped="23" success="61.6%"/>
     <element fail="13" pass="16" run="29" skipped="0" success="55.17%"/>
     <for-each-group fail="4" pass="74" run="78" skipped="7" success="94.87%"/>
     <iterate fail="1" pass="43" run="44" skipped="0" success="97.73%"/>

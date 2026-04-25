@@ -2178,6 +2178,7 @@ public class ElemVariable extends ElemTemplateElement
 		else {
 			try {
 				result = SequenceTypeSupport.castXdmValueToAnotherType(var, asAttrString, null, xctxt);
+				
 				if (result == null) {
 					throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
 																                                      + "result doesn't match the specified "
