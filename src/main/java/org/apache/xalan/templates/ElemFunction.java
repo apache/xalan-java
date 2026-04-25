@@ -46,9 +46,11 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeKindTest;
+import org.apache.xpath.composite.SequenceTypeMapTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.SequenceTypeSupport.OccurrenceIndicator;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
@@ -983,7 +985,7 @@ public class ElemFunction extends ElemTemplate
     	 
     	 int rSeqLength = rSeq.size();
     	 
-    	 if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+    	 if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
     		 boolean isSeqTypeOccrIndicatorOk = false;
     		 if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
     			 isSeqTypeOccrIndicatorOk = true;
@@ -1007,9 +1009,97 @@ public class ElemFunction extends ElemTemplate
     			 return result;
     		 }
     	 }
+    	 
+    	 if (seqExpectedTypeData.getSequenceTypeMapTest() != null) {
+    		 SequenceTypeMapTest sequenceTypeMapTest = seqExpectedTypeData.getSequenceTypeMapTest();
+    		 boolean isSeqTypeOccrIndicatorOk = false;
+    		 if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY) && (rSeqLength > 0)) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (rSeqLength <= 1)) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) && (rSeqLength == 1)) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 
+    		 if (isSeqTypeOccrIndicatorOk) {
+    			 try {
+    				 result = new ResultSequence();    			 
+    				 for (int idx = 0; idx < rSeqLength; idx++) {
+    					 XObject xObj1 = rSeq.item(idx);
+    					 SequenceTypeData seqTypeData = new SequenceTypeData();
+    					 seqTypeData.setSequenceTypeMapTest(sequenceTypeMapTest);
+    					 seqTypeData.setItemTypeOccurrenceIndicator(SequenceTypeSupport.OccurrenceIndicator.ABSENT);    				 
+    					 XObject xObj2 = SequenceTypeSupport.castXdmValueToAnotherType(xObj1, null, seqTypeData, xctxt);
+    					 if (xObj2 != null) {
+    						 result.add(xObj1); 
+    					 }
+    					 else {
+    						 throw new TransformerException("XTTE0780 : The supplied value cannot be cast to an xdm map type, during XSL function " + m_name.toString() + "'s evaluation.", srcLocator);
+    					 }
+    				 }
+    				 
+    				 return result;
+    			 }
+    			 catch (TransformerException ex) {
+    				 throw new TransformerException("XTTE0780 : The supplied value cannot be cast to an xdm map type, during XSL function " + m_name.toString() + "'s evaluation.", srcLocator);
+    			 } 
+    		 }
+    	 }
+    	 
+    	 if (seqExpectedTypeData.getSequenceTypeArrayTest() != null) {
+    		 SequenceTypeArrayTest sequenceTypeArrayTest = seqExpectedTypeData.getSequenceTypeArrayTest();
+    		 boolean isSeqTypeOccrIndicatorOk = false;
+    		 if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY) && (rSeqLength > 0)) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (rSeqLength <= 1)) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) && (rSeqLength == 1)) {
+    			 isSeqTypeOccrIndicatorOk = true;
+    		 }
+    		 
+    		 if (isSeqTypeOccrIndicatorOk) {
+    			 try {
+    				 result = new ResultSequence();    			 
+    				 for (int idx = 0; idx < rSeqLength; idx++) {
+    					 XObject xObj1 = rSeq.item(idx);
+    					 SequenceTypeData seqTypeData = new SequenceTypeData();
+    					 seqTypeData.setSequenceTypeArrayTest(sequenceTypeArrayTest);
+    					 seqTypeData.setItemTypeOccurrenceIndicator(SequenceTypeSupport.OccurrenceIndicator.ABSENT);    				 
+    					 XObject xObj2 = SequenceTypeSupport.castXdmValueToAnotherType(xObj1, null, seqTypeData, xctxt);
+    					 if (xObj2 != null) {
+    						 result.add(xObj1); 
+    					 }
+    					 else {
+    						 throw new TransformerException("XTTE0780 : The supplied value cannot be cast to an xdm array type, during XSL function " + m_name.toString() + "'s evaluation.", srcLocator);
+    					 }
+    				 }
+    				 
+    				 return result;
+    			 }
+    			 catch (TransformerException ex) {
+    				 throw new TransformerException("XTTE0780 : The supplied value cannot be cast to an xdm array type, during XSL function " + m_name.toString() + "'s evaluation.", srcLocator);
+    			 }    			 
+    		 }
+    	 }
      }
      
-     XNodeSetForDOM xNodeSetForDom = (XNodeSetForDOM)xdmValue;
+     XNodeSetForDOM xNodeSetForDom = null;     
+     try {
+        xNodeSetForDom = (XNodeSetForDOM)xdmValue;
+     }
+     catch (ClassCastException ex) {
+    	throw new TransformerException("XTTE0780 : The supplied value cannot be cast to the expected type, during XSL function " + m_name.toString() + "'s evaluation.", srcLocator); 
+     }
      
      DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDom.object());
 
@@ -1385,6 +1475,11 @@ public class ElemFunction extends ElemTemplate
 		  else if (XslTransformData.m_xpathArray != null) {
 			  result = XslTransformData.m_xpathArray;			  
 			  XslTransformData.m_xpathArray = null;
+		  }
+		  else if (ElemMap.m_xpath_map_seq != null) {
+			  result = ElemMap.m_xpath_map_seq;
+			  ElemMap.m_xpath_map_seq = null;
+			  ElemMap.m_xpath_map = null;
 		  }
 
 		  if (result == null) {		  

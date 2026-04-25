@@ -56,10 +56,6 @@ import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathTextAndNodeExpr;
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.Function2Args;
-import org.apache.xpath.functions.Function3Args;
-import org.apache.xpath.functions.FunctionMultiArgs;
-import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
@@ -1278,6 +1274,11 @@ public class ElemVariable extends ElemTemplateElement
     	  else if (XslTransformData.m_xsl_perform_sort_resultSeq != null) {
     		  var = XslTransformData.m_xsl_perform_sort_resultSeq; 
     	  }
+    	  else if (ElemMap.m_xpath_map_seq != null) {
+    		  var = ElemMap.m_xpath_map_seq;
+    		  ElemMap.m_xpath_map_seq = null;
+    		  ElemMap.m_xpath_map = null;
+    	  }
     	  else if (var == null) {
     	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
     	     var = new XNodeSetForDOM(nodeList, xctxt);    	     
@@ -2199,98 +2200,6 @@ public class ElemVariable extends ElemTemplateElement
 		
 		return result;
 	}
-  
-    private boolean xpathExpressionAllowable(Expression xpathExpr, QName inspectableVarName) {
-
-    	boolean result = true;
-
-    	if (xpathExpr != null) {
-    		if (xpathExpr instanceof Operation) {
-    			Operation opn1 = (Operation)xpathExpr;
-    			Expression lOperand = opn1.getLeftOperand();
-    			Expression rOperand = opn1.getRightOperand();
-
-    			if (lOperand instanceof Variable) {
-    				Variable var1 = (Variable)lOperand;
-    				if ((var1.getQName()).equals(inspectableVarName)) {
-    					result = true;    			       			   
-    				}
-    			}
-    			else if (((lOperand instanceof XSAnyAtomicType) || (lOperand instanceof XNumber) 
-                                                                || (lOperand instanceof XString) 
-                                                                || (lOperand instanceof XBooleanStatic) 
-                                                                || (lOperand instanceof XBoolean))) {
-    				result = false;
-                }    			
-
-    			if (rOperand instanceof Variable) {
-    				Variable var1 = (Variable)rOperand;
-    				if ((var1.getQName()).equals(inspectableVarName)) {
-    					result = true;
-    				}
-    			}
-    			else if (((rOperand instanceof XSAnyAtomicType) || (rOperand instanceof XNumber) 
-									                            || (rOperand instanceof XString) 
-									                            || (rOperand instanceof XBooleanStatic) 
-									                            || (rOperand instanceof XBoolean))) {
-    				result = false;
-                }
-    		}
-    		else if (xpathExpr instanceof FunctionOneArg) {
-    			FunctionOneArg function = (FunctionOneArg)xpathExpr;    			
-    			Expression arg0 = function.getArg0();
-
-    			if (arg0 instanceof Variable) {
-    				Variable var1 = (Variable)arg0;
-    				if ((var1.getQName()).equals(inspectableVarName)) {
-    					result = true;
-    				}
-    			}
-    			else if (((arg0 instanceof XSAnyAtomicType) || (arg0 instanceof XNumber) 
-									    					|| (arg0 instanceof XString) 
-									    					|| (arg0 instanceof XBooleanStatic) 
-									    					|| (arg0 instanceof XBoolean))) {
-    				result = false;
-    			}    			
-    		}
-    		else if (xpathExpr instanceof Function2Args) {
-    			Function2Args function = (Function2Args)xpathExpr;
-    			Expression arg0 = function.getArg0();
-    			Expression arg1 = function.getArg1();
-    			
-    			result = xpathExpressionAllowable(arg0, inspectableVarName);
-    			result = xpathExpressionAllowable(arg1, inspectableVarName);
-    		}
-            else if (xpathExpr instanceof Function3Args) {
-            	Function3Args function = (Function3Args)xpathExpr;
-    			Expression arg0 = function.getArg0();
-    			Expression arg1 = function.getArg1();
-    			Expression arg2 = function.getArg2();
-    			
-    			result = xpathExpressionAllowable(arg0, inspectableVarName);
-    			result = xpathExpressionAllowable(arg1, inspectableVarName);
-    			result = xpathExpressionAllowable(arg2, inspectableVarName);
-    		}
-            else if (xpathExpr instanceof FunctionMultiArgs) {
-            	FunctionMultiArgs function = (FunctionMultiArgs)xpathExpr;
-    			Expression arg0 = function.getArg0();
-    			Expression arg1 = function.getArg1();
-    			Expression arg2 = function.getArg2();
-    			Expression[] exprArray = function.getArgs();
-    			
-    			result = xpathExpressionAllowable(arg0, inspectableVarName);
-    			result = xpathExpressionAllowable(arg1, inspectableVarName);
-    			result = xpathExpressionAllowable(arg2, inspectableVarName);
-    		}
-    		else {
-    			Expression xpathParentExpr = (Expression)(xpathExpr.exprGetParent());
-
-    			result = xpathExpressionAllowable(xpathParentExpr, inspectableVarName);
-    		}
-    	}
-
-    	return result;
-    }
     
     /**
      * Method definition, to get an XSL 3 stylesheet top level xsl:variable's value.

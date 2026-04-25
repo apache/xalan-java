@@ -2575,7 +2575,7 @@ public class SequenceTypeSupport {
             
             ResultSequence convertedResultSeq = new ResultSequence();
             
-            for (int idx = 0; idx < srcSeqValue.size(); idx++) {
+            for (int idx = 0; idx < seqLen; idx++) {
                XObject seqItem = (XObject)(srcSeqValue.item(idx));                       
                XObject convertedSeqItem = castXdmValueToAnotherType(seqItem, sequenceTypeNewXPathExprStr, 
                                                                                                          seqExpectedTypeDataInp, xctxt);

@@ -523,6 +523,10 @@ public class ElemTemplate extends ElemTemplateElement
 		  try {                      
 			  XObject xslTemplateEvalResult = getXslTemplateResult(transformer, xctxt);
 			  
+			  if (ElemMap.m_xpath_map_seq != null) {
+				  xslTemplateEvalResult = ElemMap.m_xpath_map_seq;
+	    	  }
+			  
 			  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
 			  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
 			  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;

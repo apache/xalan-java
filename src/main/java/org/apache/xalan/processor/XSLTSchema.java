@@ -55,6 +55,8 @@ import org.apache.xalan.templates.ElemIterateBreak;
 import org.apache.xalan.templates.ElemIterateNextIteration;
 import org.apache.xalan.templates.ElemIterateOnCompletion;
 import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemMap;
+import org.apache.xalan.templates.ElemMapEntry;
 import org.apache.xalan.templates.ElemMatchingSubstring;
 import org.apache.xalan.templates.ElemMerge;
 import org.apache.xalan.templates.ElemMergeAction;
@@ -224,12 +226,11 @@ public class XSLTSchema extends XSLTElementDef
 		XSLTAttributeDef nameAVTRequired = new XSLTAttributeDef(null, "name",
 				XSLTAttributeDef.T_AVT_QNAME, true, true, XSLTAttributeDef.WARNING);
 
-
 		// Required
 		// Support AVT
 		// xsl:processing-instruction                                     
 		XSLTAttributeDef nameAVT_NCNAMERequired = new XSLTAttributeDef(null, "name",
-				XSLTAttributeDef.T_NCNAME, true, true, XSLTAttributeDef.WARNING);
+				XSLTAttributeDef.T_NCNAME, true, true, XSLTAttributeDef.WARNING);		
 
 		// Optional
 		// Static error if invalid
@@ -432,9 +433,15 @@ public class XSLTSchema extends XSLTElementDef
 
 		// Optional                                          
 		// xsl:variable, xsl:value-of, xsl:param, xsl:with-param, xsl:attribute, xsl:break, 
-		// xsl:on-completion, xsl:sequence, xsl:try, xsl:catch, xsl:copy, xsl:perform-sort, xsl:message                                       
+		// xsl:on-completion, xsl:sequence, xsl:try, xsl:catch, xsl:copy, xsl:perform-sort, xsl:message,
+		// xsl:map-entry
 		XSLTAttributeDef selectAttrOpt = new XSLTAttributeDef(null, "select",
 				XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
+		
+		// Required
+		// xsl:map-entry
+		XSLTAttributeDef keyAttr = new XSLTAttributeDef(null, "key",
+				XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
 
 		// Optional
 		// xsl:message
@@ -637,11 +644,11 @@ public class XSLTSchema extends XSLTElementDef
 				XSLTAttributeDef.T_CDATA, false, false, 
 				XSLTAttributeDef.WARNING);
 
-		XSLTElementDef[] templateElements = new XSLTElementDef[49];
-		XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[50];
-		XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[50];
+		XSLTElementDef[] templateElements = new XSLTElementDef[51];
+		XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[52];
+		XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[52];
 		//exslt
-		XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[50];
+		XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[52];
 
 		XSLTElementDef[] charTemplateElements = new XSLTElementDef[31];
 		XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
@@ -693,6 +700,26 @@ public class XSLTSchema extends XSLTElementDef
 						expandTextAttrOpt },
 				new ProcessorTemplateElem(),
 				ElemCopyOf.class /* class object */, 20, true);
+		
+		XSLTElementDef xslMap = new XSLTElementDef(this,
+				Constants.S_XSLNAMESPACEURL, "map",
+				null /*alias */, templateElements /* elements */,
+				new XSLTAttributeDef[] {
+						xpathDefaultNamespaceAttrOpt,
+						expandTextAttrOpt }, 
+				new ProcessorTemplateElem(),
+				ElemMap.class /* class object */, 20, true);
+		
+		XSLTElementDef xslMapEntry = new XSLTElementDef(this,
+				Constants.S_XSLNAMESPACEURL, "map-entry",
+				null /*alias */, templateElements /* elements */,
+				new XSLTAttributeDef[] {
+						keyAttr,
+						selectAttrOpt,
+						xpathDefaultNamespaceAttrOpt,
+						expandTextAttrOpt }, 
+				new ProcessorTemplateElem(),
+				ElemMapEntry.class /* class object */, 20, true);
 
 		XSLTElementDef xslDocument = new XSLTElementDef(this,
 				Constants.S_XSLNAMESPACEURL, "document",
@@ -761,7 +788,8 @@ public class XSLTSchema extends XSLTElementDef
 		XSLTElementDef xslNextMatch =
 				new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "next-match",
 						null /*alias */, new XSLTElementDef[] { xslWithParam } /* elements */,
-						new XSLTAttributeDef[]{},
+						new XSLTAttributeDef[]{ xpathDefaultNamespaceAttrOpt, 
+								                expandTextAttrOpt },
 						new ProcessorTemplateElem(),
 						ElemNextMatch.class /* class object */);
 
@@ -1179,6 +1207,8 @@ public class XSLTSchema extends XSLTElementDef
 		templateElements[i++] = exsltFunction;
 		templateElements[i++] = exsltResult;
 		templateElements[i++] = importSchemaDef;
+		templateElements[i++] = xslMap;
+		templateElements[i++] = xslMapEntry;
 
 		System.arraycopy(templateElements, 0, templateElementsAndParams, 0, i);
 		System.arraycopy(templateElements, 0, templateElementsAndSort, 0, i);

@@ -101,9 +101,11 @@ public class Constants extends org.apache.xml.utils.Constants
   ELEMNAME_USE_PACKAGE = 119,
   ELEMNAME_ACCEPT = 120,
   ELEMNAME_GLOBAL_CONTEXT_ITEM = 121,
-  ELEMNAME_NEXT_MATCH = 122;
+  ELEMNAME_NEXT_MATCH = 122,
+  ELEMNAME_MAP = 123,
+  ELEMNAME_MAP_ENTRY = 124;
   
-  // next available number : 123
+  // next available number : 125
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -216,7 +218,9 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_DOCUMENT_STRING ="document",
       ELEMNAME_NAMESPACE_STRING = "namespace",
       ELEMNAME_ASSERT_STRING = "assert",
-      ELEMNAME_GLOBAL_CONTEXT_ITEM_STRING = "global-context-item";
+      ELEMNAME_GLOBAL_CONTEXT_ITEM_STRING = "global-context-item",
+      ELEMNAME_MAP_STRING ="map",
+      ELEMNAME_MAP_ENTRY_STRING ="map-entry";
   
   /**
    * Literals for EXSLT function elements.

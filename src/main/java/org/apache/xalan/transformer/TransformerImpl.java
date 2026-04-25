@@ -75,9 +75,12 @@ import org.apache.xalan.templates.ElemGlobalContextItem;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemMap;
+import org.apache.xalan.templates.ElemMapEntry;
 import org.apache.xalan.templates.ElemMatchingSubstring;
 import org.apache.xalan.templates.ElemMessage;
 import org.apache.xalan.templates.ElemMode;
+import org.apache.xalan.templates.ElemNextMatch;
 import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
@@ -2753,7 +2756,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
       }
 
       // If that didn't locate a node, fall back to a default template rule.
-      // See http://www.w3.org/TR/xslt#built-in-rule.
+      // See https://www.w3.org/TR/xslt-30/#built-in-rule.
       if (null == template)
       {
         switch (nodeType)
@@ -5231,6 +5234,30 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 						  xpathDefaultNamespace = ((ElemAssert)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
+				  else if (xslElem instanceof ElemNextMatch) {
+					  if (((ElemNextMatch)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemNextMatch)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemNextMatch)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemMap) {
+					  if (((ElemMap)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemMap)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemMap)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemMapEntry) {
+					  if (((ElemMapEntry)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemMapEntry)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemMapEntry)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
 				  
 				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
 				  updateXPathDefaultNamespace(elemTemplateChild, xpathDefaultNamespace);
@@ -5501,7 +5528,31 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 					  else {
 						  expandText = ((ElemAssert)xslElem).getExpandText();  
 					  }
-				  }				  
+				  }
+				  else if (xslElem instanceof ElemNextMatch) {
+					  if (!(((ElemNextMatch)xslElem).getExpandTextDeclared())) {
+						  ((ElemNextMatch)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemNextMatch)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemMap) {
+					  if (!(((ElemMap)xslElem).getExpandTextDeclared())) {
+						  ((ElemMap)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemMap)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemMapEntry) {
+					  if (!(((ElemMapEntry)xslElem).getExpandTextDeclared())) {
+						  ((ElemMapEntry)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemMapEntry)xslElem).getExpandText();  
+					  }
+				  }
 
 				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
 				  updateExpandTextAttrValue(elemTemplateChild, expandText);
