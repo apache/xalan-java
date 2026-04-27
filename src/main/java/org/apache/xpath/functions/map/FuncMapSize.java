@@ -16,6 +16,8 @@
  */
 package org.apache.xpath.functions.map;
 
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
@@ -44,19 +46,40 @@ public class FuncMapSize extends FunctionOneArg {
 		m_defined_arity = new Short[] { 1 };	
 	}
 	
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt The current execution context
+	 * 
+	 * @return A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
 	    XObject result = null;
 	       
 	    Expression arg0 = getArg0();
 	    
+	    SourceLocator srcLocator = xctxt.getSAXLocator();
+	    
 	    if (arg0 instanceof Variable) {
-	       XObject xObject = ((Variable)arg0).execute(xctxt);
+	       XObject xObject = ((Variable)arg0).execute(xctxt);	       
+	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
+	    	  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'size' cannot have its first "
+	    	  		                                                                                               + "argument as an empty sequence.", srcLocator);  
+	       }
+	       
 	       XPathMap xpathMap = getNativeMap(xObject);
 	       result = new XSInteger(String.valueOf(xpathMap.size()));
 	    }
 	    else {
 	       XObject xObject = arg0.execute(xctxt);
+	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
+		      throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'size' cannot have its first "
+		      		                                                                                               + "argument as an empty sequence.", srcLocator);  
+		   }
+	       
 	       XPathMap xpathMap = getNativeMap(xObject);
 		   result = new XSInteger(String.valueOf(xpathMap.size()));
 	    }

@@ -24,13 +24,16 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.NodeList;
@@ -274,6 +277,20 @@ public class ElemMapEntry extends ElemTemplateElement {
 	       keyObj1 = m_keyExpression.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 	    }
 	    
+	    ResultSequence keyrSeq = null;
+	    
+	    if (keyObj1 instanceof ResultSequence) {
+	       keyrSeq = (ResultSequence)keyObj1;
+	    }
+	    else if (keyObj1 instanceof XMLNodeCursorImpl) {
+	       keyrSeq = XslTransformEvaluationHelper.getResultSequenceFromXObject(keyObj1, xctxt);
+	    }
+	    
+	    if ((keyrSeq != null) && (keyrSeq.size() == 0)) {
+	       throw new TransformerException("XPTY0004 : An XSL 'map-entry' instruction cannot evaluate to a key that is "
+	       		                                                                                                  + "an empty sequence.", srcLocator);
+	    }
+	    
 	    XObject valueObj1 = null;
 	    
 	    if (m_selectExpression != null) {
@@ -315,16 +332,36 @@ public class ElemMapEntry extends ElemTemplateElement {
 	    }
 	    
 	    ElemTemplateElement elemTemplateElement = getParentElem();
+	    boolean isXslMapAncestor = false;
 	    while (elemTemplateElement != null) {
 	       if (elemTemplateElement instanceof ElemMap) {
 	    	  ElemMap elemMap = (ElemMap)elemTemplateElement;	    	  
 	    	  elemMap.put(keyObj1, valueObj1);
+	    	  
+	    	  isXslMapAncestor = true;
 	    	  
 	    	  break;
 	       }
 	       
 	       elemTemplateElement = elemTemplateElement.getParentElem();
 	    }
+	    
+	    // An XSL 3 instruction xsl:map-entry, without an ancestor 
+	    // XSL xs:map instruction, constructs an xdm map with a single entry.
+	    
+	    if (!isXslMapAncestor) {
+	    	if (ElemMap.m_xpath_map_seq == null) {
+	    		ElemMap.m_xpath_map_seq = new ResultSequence();	    	
+	    		ElemMap.m_xpath_map = new XPathMap();
+	    		
+	    		ElemMap.m_xpath_map.put(keyObj1, valueObj1);
+	    		ElemMap.m_xpath_map_seq.add(ElemMap.m_xpath_map);
+	    	}
+	    	else {
+	    		ElemMap.m_xpath_map.put(keyObj1, valueObj1);
+	    	}
+	    }
+		
 	}
 	
 	/**

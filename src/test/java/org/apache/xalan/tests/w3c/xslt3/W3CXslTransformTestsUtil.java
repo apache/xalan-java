@@ -371,7 +371,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
    									 String nsPrefix = m_initTemplateName.substring(0, idx3);
    									 String localName = m_initTemplateName.substring(idx3 + 1);
    									 String nsUri = elemNode3.getAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, nsPrefix);
-   									 if (nsUri != null) {
+   									 if ((nsUri != null) && !"".equals(nsUri)) {
    									    m_initTemplateName = "{" + nsUri + "}" + localName;
    									 }
    								  }

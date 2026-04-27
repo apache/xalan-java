@@ -7440,6 +7440,9 @@ public class XPathParser
 				  consumeExpected('(');
 				  consumeExpected(')');
 			  }
+ 			  else {
+ 				  break;
+ 			  }
  		  }
  		  
  		  if (isNested) {

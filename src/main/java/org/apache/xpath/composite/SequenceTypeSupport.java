@@ -623,6 +623,9 @@ public class SequenceTypeSupport {
 	               		  else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (rSeq.size() <= 1)) {
 	               			 result = srcValue; 
 	               		  }
+	               		  else if (rSeq.size() == 1) {
+	               			result = rSeq.item(0); 
+	               		  }
 	               		  
 	               		  return result;
 	               	   }
@@ -637,6 +640,9 @@ public class SequenceTypeSupport {
 	            		  else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (xpathArr.size() <= 1)) {
 	            			 result = srcValue; 
 	            		  }
+	            		  else if (xpathArr.size() == 1) {
+		               		 result = xpathArr.get(0); 
+		               	  }
 	            		  
 	            		  return result;
 	            	   }

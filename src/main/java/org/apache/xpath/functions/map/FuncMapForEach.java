@@ -75,9 +75,9 @@ public class FuncMapForEach extends Function2Args {
 	/**
 	 * Evaluate the function. The function must return a valid object.
 	 * 
-	 * @param xctxt The current execution context.
+	 * @param xctxt The current execution context
 	 * 
-	 * @return A valid XObject.
+	 * @return A valid XObject
 	 *
 	 * @throws javax.xml.transform.TransformerException
 	 */
@@ -90,34 +90,44 @@ public class FuncMapForEach extends Function2Args {
 		Expression arg0 = getArg0();
 		Expression arg1 = getArg1();
 
-		XObject arg0XsObject = null;
+		XObject arg0Obj = null;
 
 		if (m_vars != null) {
 		   arg0.fixupVariables(m_vars, m_globals_size);
 		}
 
 		if (arg0 instanceof XPathMap) {
-		   arg0XsObject = (XPathMap)arg0;              
+		   arg0Obj = (XPathMap)arg0;              
 		}
 		else if (arg0 instanceof Variable) {
-		   arg0XsObject = ((Variable)arg0).execute(xctxt);
-		   if (!(arg0XsObject instanceof XPathMap)) {
-			   throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument to function call map:for-each, "
-                                                                                            + "is not a map.", xctxt.getSAXLocator()); 
+		   arg0Obj = ((Variable)arg0).execute(xctxt);
+		   if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'for-each' cannot have its first "
+						    	  		                                                                                         + "argument as an empty sequence.", srcLocator);  
+		   }
+		   		   
+		   if (!(arg0Obj instanceof XPathMap)) {
+			  throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'for-each' has been called with its first argument "
+                                                                                                                                 + "that is not an xdm map.", srcLocator); 
 		   }
 		}
 		else {
-		   arg0XsObject = arg0.execute(xctxt);
-		   if (!(arg0XsObject instanceof XPathMap)) {
-			   throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument to function call map:for-each, "
-                                                                                            + "is not a map.", xctxt.getSAXLocator()); 
+		   arg0Obj = arg0.execute(xctxt);
+		   if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'for-each' cannot have its first "
+							    	  		                                                                                         + "argument as an empty sequence.", srcLocator);  
+		   }
+		   
+		   if (!(arg0Obj instanceof XPathMap)) {
+			  throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'for-each' has been called with its first argument "
+	                                                                                                                                 + "that is not an xdm map.", srcLocator); 
 		   }
 		}
 
 		if (arg1 instanceof XPathInlineFunction) {
 			XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1;
 			verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
-			result = evaluateFnMapforEach(xctxt, (XPathMap)arg0XsObject, inlineFuncArg); 
+			result = evaluateFnMapforEach(xctxt, (XPathMap)arg0Obj, inlineFuncArg); 
 		}
 		else if (arg1 instanceof Variable) {
 			if (m_vars != null) {
@@ -128,16 +138,16 @@ public class FuncMapForEach extends Function2Args {
 			if (arg1VarValue instanceof XPathInlineFunction) {
 				XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
 				verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
-				result = evaluateFnMapforEach(xctxt, (XPathMap)arg0XsObject, inlineFuncArg);   
+				result = evaluateFnMapforEach(xctxt, (XPathMap)arg0Obj, inlineFuncArg);   
 			}
 			else {
-				throw new javax.xml.transform.TransformerException("FORG0006 : The 2nd argument to function call map:for-each, "
-						                                                               + "is not a function item.", xctxt.getSAXLocator());    
+				throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'for-each' has been called with its second argument "
+                                                                                                                                       + "that is not a function item.", srcLocator);     
 			}
 		}
 		else {
-			throw new javax.xml.transform.TransformerException("FORG0006 : The 2nd argument to function call map:for-each, "
-					                                                                   + "is not a function item.", xctxt.getSAXLocator());               
+			throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'for-each' has been called with its second argument "
+                                                                                                                                       + "that is not a function item.", srcLocator);               
 		}
 
 		return result;

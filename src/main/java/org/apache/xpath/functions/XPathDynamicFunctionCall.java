@@ -49,18 +49,22 @@ import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSString;
 
 /**
  * This class implements an XPath 3.1 dynamic function call, and
- * XDM map & array information lookup using function call syntax and unary 
+ * xdm map & array information lookup using function call syntax and unary 
  * lookup syntax respectively.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -75,16 +79,16 @@ public class XPathDynamicFunctionCall extends Expression {
      * There are following three types of XPath expression evaluations, that 
      * this class implementation solves:
      * 
-     * $funcVar(arg1, ...)   This is a call to an XDM inline function definition, 
+     * $funcVar(arg1, ...)   This is a call to an xdm inline function definition, 
      *                       where variable $funcVar is a function item.
      *                                
-     * $mapVar(key)          This is an XDM map entry's value lookup via function 
+     * $mapVar(key)          This is an xdm map entry's value lookup via function 
      *                       call syntax.         
      * 
-     * $mapVar?key           This is an XDM map entry's value lookup via unary 
+     * $mapVar?key           This is an xdm map entry's value lookup via unary 
      *                       lookup operator.
      *                  
-     * $arrayVar?index       This is an XDM array item lookup for a given array 
+     * $arrayVar?index       This is an xdm array item lookup for a given array 
      *                       variable reference and index value, for e.g $arrayVar?3.                  
      */
     
@@ -216,7 +220,7 @@ public class XPathDynamicFunctionCall extends Expression {
      				   String argXPathStr = m_argList.get(0);
 
      				   if ("*".equals(argXPathStr)) {
-     					   // This is XDM map's wild-card key specifier. To return 
+     					   // This is xdm map's wild-card key specifier. To return 
      					   // all the map entry values as typed sequence.     				  
      					   Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
      					   ResultSequence rSeq = new ResultSequence();
@@ -329,7 +333,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	   else {
     	    		   String argXPathStr = m_argList.get(0);
     	    		   if ("*".equals(argXPathStr)) {
-    	    			   // This is XDM array's wild-card key specifier. To return 
+    	    			   // This is xdm array's wild-card key specifier. To return 
     	    			   // all the array values as typed sequence. 
     	    			   ResultSequence rSeq = new ResultSequence();
     	    			   int arrSize = xpathArr.size();
@@ -637,12 +641,12 @@ public class XPathDynamicFunctionCall extends Expression {
     }
     
 	/**
-	 * Method definition to get an XDM array item value at a specified index.
+	 * Method definition to get an xdm array item value at a specified index.
 	 * 
-	 * @param xpathArr							An XDM array object instance
+	 * @param xpathArr							An xdm array object instance
 	 * @param indexVal							An array index value
 	 * @param xctxt							    An XPath context object
-	 * @return									An XDM value retrieved from the specified array index
+	 * @return									An xdm value retrieved from the specified array index
 	 * @throws TransformerException
 	 */
     private XObject getXPathArrayResultByIndex(XPathArray xpathArr, XObject indexVal, XPathContext xctxt) 
@@ -674,9 +678,9 @@ public class XPathDynamicFunctionCall extends Expression {
 	}
     
     /**
-     * Method definition to lookup an XDM map entry's value for the specified key.
+     * Method definition, to lookup an xdm map entry's value for the specified key.
      * 
-     * @param xpathMap								An XDM map object instance
+     * @param xpathMap								An xdm map object instance
      * @param xpathKeyStr							An XPath expression string for map's key
      * @param prefixTable							List of values from XSL transformation prefix
      *                                              table.
@@ -704,23 +708,22 @@ public class XPathDynamicFunctionCall extends Expression {
 
     	XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
     	
-    	if (argValue instanceof XString) {
-    		argValue = new XSString(((XString)argValue).str());
+    	if ((argValue instanceof XString) || (argValue instanceof XNumber) || (argValue instanceof XBoolean) || (argValue instanceof XBooleanStatic)) {
     		evalResult = xpathMap.get(argValue);     					 
     		if (evalResult == null) {
-    			throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map doesn't have an entry with key name '" + 
-																			    					XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
-																			    					srcLocator); 
+    			throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm map doesn't have an entry with key name '" + 
+																									    					XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
+																									    					srcLocator); 
     		}
     	}
-    	else if (argValue instanceof XSString) {
+    	else if (argValue instanceof XSAnyAtomicType) {
     		evalResult = xpathMap.get(argValue);     					 
     		if (evalResult == null) {
-    			throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map doesn't have an entry with key name '" + 
-																			    					XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
-																			    					srcLocator); 
+    			throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm map doesn't have an entry with key name '" + 
+																									    					XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
+																									    					srcLocator); 
     		} 
-    	}
+    	}   	
     	else if (argValue instanceof ResultSequence) {
     		ResultSequence argSeq = (ResultSequence)argValue;
     		ResultSequence evalResultSeq = new ResultSequence();
@@ -753,10 +756,9 @@ public class XPathDynamicFunctionCall extends Expression {
         		   evalResult = evalResultSeq;
         		}
     		}
-    	}    	
+    	}
     	else {
-    		throw new javax.xml.transform.TransformerException("XPTY0004 : An XDM map lookup is not done via a "
-    				                                                                              + "string valued key.",  srcLocator);
+    		throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm map doesn't have an entry with the specified key value.", srcLocator); 
     	}
 
     	return evalResult;		  

@@ -51,6 +51,15 @@ public class FuncMapRemove extends Function2Args {
 		m_defined_arity = new Short[] { 2 };	
 	}
 
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt The current execution context
+	 * 
+	 * @return A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 		
 		XObject result = null;
@@ -64,22 +73,32 @@ public class FuncMapRemove extends Function2Args {
 	    
 	    if (arg0 instanceof Variable) {
 	       XObject arg0Obj = ((Variable)arg0).execute(xctxt);
+	       if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'remove' cannot have its first "
+					    	  		                                                                                           + "argument as an empty sequence.", srcLocator);  
+		   }	       
+	       
 	       if (arg0Obj instanceof XPathMap) {
 	    	  arg0Map = (XPathMap)arg0Obj;   
 	       }
 	       else {
-	    	  throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st argument provided to function call "
-                                                                        + "map:remove is not an xdm map, or cannot be cast to an xdm map.", srcLocator);  
+	    	  throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'remove' has been called with an argument "
+                                                                                                                              + "that is not an xdm map.", srcLocator);  
 	       }
 	    }
 	    else {
 	       XObject arg0Obj = arg0.execute(xctxt);
+	       if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'remove' cannot have its first "
+						    	  		                                                                                        + "argument as an empty sequence.", srcLocator);  
+		   }
+	       
 	       if (arg0Obj instanceof XPathMap) {
 		      arg0Map = (XPathMap)arg0Obj;   
 		   }
 		   else {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st argument provided to function call "
-                                                                        + "map:remove is not an xdm map, or cannot be cast to an xdm map.", srcLocator);   
+			  throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'remove' has been called with an argument "
+                                                                                                                                + "that is not an xdm map.", srcLocator);    
 		   }
 	    }	    	    
 	    	    

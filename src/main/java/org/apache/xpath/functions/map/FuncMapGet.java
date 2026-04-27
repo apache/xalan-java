@@ -49,6 +49,15 @@ public class FuncMapGet extends Function2Args {
 		m_defined_arity = new Short[] { 2 };	
 	}
 
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt The current execution context
+	 * 
+	 * @return A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 		
 		XObject result = null;
@@ -67,13 +76,18 @@ public class FuncMapGet extends Function2Args {
 	       arg0Obj = arg0.execute(xctxt);
 	    }
 	    
+	    if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
+		   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'get' cannot have its first "
+			    	  		                                                                                             + "argument as an empty sequence.", srcLocator);  
+		}
+	    
 	    Map<XObject, XObject> nativeMap = null;
 	    if ((arg0Obj != null) && (arg0Obj instanceof XPathMap)) {
 	       nativeMap = ((XPathMap)arg0Obj).getNativeMap();
 	    }
 	    else {
-	       throw new javax.xml.transform.TransformerException("FORG0006: The 1st argument provided to function call "
-	       		                                                            + "map:get, is not an xdm map.", srcLocator);
+	       throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'get' has been called with an argument "
+	       		                                                                                                         + "that is not an xdm map.", srcLocator);
 	    }
 	    
 	    Expression arg1 = getArg1();

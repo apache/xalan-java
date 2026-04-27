@@ -179,6 +179,11 @@ public class ElemMap extends ElemTemplateElement {
 		
 		XPathContext xctxt = transformer.getXPathContext();
 		
+		ElemTemplateElement elemTemplateParentElem = getParentElem();		
+		if ((elemTemplateParentElem instanceof ElemLiteralResult) || (elemTemplateParentElem instanceof ElemElement)) {
+		   throw new TransformerException("XTDE0450 : An xdm map cannot be added as child of an XML constructed element.", this); 
+		}
+		
 		if (m_xpath_map_seq == null) {
 		   m_xpath_map_seq = new ResultSequence();
 		}
@@ -187,6 +192,31 @@ public class ElemMap extends ElemTemplateElement {
 	    
 	    for (ElemTemplateElement t = this.m_firstChild; t != null; t = t.m_nextSibling)
 	    {
+	    	boolean xslStylesheetError = false;	    	
+	    	if (!(t instanceof ElemMapEntry)) {
+	    		xslStylesheetError = true;
+	    		ElemTemplateElement elem1 = t.getFirstChildElem();
+	    		while (elem1 != null) {	    		  
+	    			if (elem1 instanceof ElemMapEntry) {
+	    				xslStylesheetError = false;
+
+	    				break; 
+	    			}
+
+	    			ElemTemplateElement elem2 = elem1.getNextSiblingElem();	    		  
+	    			if (elem2 == null) {
+	    				elem1 = elem1.getFirstChildElem();  
+	    			}
+	    			else {	    			  
+	    				elem1 = elem2;
+	    			}
+	    		}
+	    	}
+	    	
+	    	if (xslStylesheetError) {
+	    	   throw new TransformerException("XTTE3375 : An XSL 'map' instruction doesn't have an XSL 'map-entry' descendant instruction.", this);
+	    	}
+	    	
 	    	xctxt.setSAXLocator(t);
 	    	transformer.setCurrentElement(t);
 	    	t.execute(transformer);

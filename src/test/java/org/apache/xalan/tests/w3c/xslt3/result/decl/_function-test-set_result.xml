@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-25T15:49:33Z" fail="25" name="function" pass="62" run="87" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-27T00:49:58Z" fail="24" name="function" pass="63" run="87" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="function-0001"/>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -149,9 +149,7 @@
          <errTrace>javax.xml.transform.TransformerException: XPST0017 : An XSL function {http://example.com/namespace}pi call's argument count is not equal to number of function's param declarations.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="function-2107">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;abc&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="function-2107"/>
    <testResult status="fail" testName="function-2108">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;abc&lt;/out&gt;</outResult>
    </testResult>

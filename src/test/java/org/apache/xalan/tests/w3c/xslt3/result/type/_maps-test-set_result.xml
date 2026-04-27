@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-27T00:50:36Z" fail="22" name="maps" pass="15" run="37" skipped="13" statusUnknown="0">
+   <testResult status="fail" testName="maps-001">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}.()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-002">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}.()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="maps-003"/>
+   <testResult status="pass" testName="maps-004"/>
+   <testResult status="pass" testName="maps-005"/>
+   <testResult status="pass" testName="maps-006"/>
+   <testResult status="pass" testName="maps-007"/>
+   <testResult status="pass" testName="maps-008"/>
+   <testResult status="pass" testName="maps-009"/>
+   <testResult status="pass" testName="maps-010"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-011"/>
+   <testResult status="pass" testName="maps-012"/>
+   <testResult status="pass" testName="maps-013"/>
+   <testResult status="pass" testName="maps-014"/>
+   <testResult status="pass" testName="maps-015"/>
+   <testResult status="pass" testName="maps-016"/>
+   <testResult status="fail" testName="maps-017">
+      <outResult>
+         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}serialize()</errTrace>
+         <errTrace>function token not found.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-018">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-019">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-020">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-901a">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-901b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-901c">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-901d">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-901e">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-902a">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-902b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-903a">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-903b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-903c">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-904a">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-904b">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-904c">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-904d">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult status="fail" testName="maps-905a">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
+   </testResult>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906a"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906b"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906c"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906d"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906e"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906f"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906g"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906h"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906i"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906j"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906k"/>
+   <testResult reason="Xalan configured" status="skipped" testName="maps-906l"/>
+   <testResult status="pass" testName="maps-907"/>
+   <testResult status="fail" testName="maps-908">
+      <outResult>
+         <errTrace>java.lang.RuntimeException: Prefix must resolve to a namespace: *</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="pass" testName="maps-909"/>
+</testrun>

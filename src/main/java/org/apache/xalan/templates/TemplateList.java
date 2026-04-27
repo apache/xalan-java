@@ -32,14 +32,15 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.PsuedoNames;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.patterns.UnionPattern;
 
 /**
- * Encapsulates a template list, and helps locate individual 
- * templates and functions.
+ * Encapsulates XSL template and function list, and helps locate the 
+ * individual templates and functions.
  * 
  * @xsl.usage advanced
  */
@@ -144,6 +145,16 @@ public class TemplateList implements java.io.Serializable
     		ElemFunction newFunc = (ElemFunction)template;
     		
     		QName funcName = newFunc.getName();
+    		
+    		String prefix = funcName.getPrefix();
+    		String namespace = funcName.getNamespace();
+    		if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace) || 
+    				                                                                      (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
+    				                                                                      (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace)) {
+    			throw new TransformerException("XTSE0080 : An XSL user-defined function " + funcName.toString() + " has a namespace prefix '" + prefix + "' "
+					    					                                                                                                 + "within its name, that refers to "
+					    					                                                                                                 + "an XSL reserved namespace.");
+    		}
     		
     		int funcLineNo = newFunc.getLineNumber();
     		int funcColNo = newFunc.getColumnNumber();

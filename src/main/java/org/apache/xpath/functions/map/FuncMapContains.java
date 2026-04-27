@@ -18,9 +18,12 @@ package org.apache.xpath.functions.map;
 
 import java.util.Map;
 
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
@@ -47,19 +50,40 @@ public class FuncMapContains extends Function2Args {
 		m_defined_arity = new Short[] { 2 };	
 	}
 
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt The current execution context
+	 * 
+	 * @return A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
 		XObject result = null;
+		
+		SourceLocator srcLocator = xctxt.getSAXLocator();
 	       
 	    Expression arg0 = getArg0();
 	    XPathMap xpathMap = null;
 	    
 	    if (arg0 instanceof Variable) {
 	       XObject xObject = ((Variable)arg0).execute(xctxt);
+	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'contains' cannot have its first "
+			    	  		                                                                                                 + "argument as an empty sequence.", srcLocator);  
+		   }
+	       
 	       xpathMap = (XPathMap)xObject;
 	    }
 	    else {
 	       XObject xObject = arg0.execute(xctxt);
+	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
+			   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'contains' cannot have its first "
+			    	  		                                                                                                  + "argument as an empty sequence.", srcLocator);  
+		   }
+	       
 		   xpathMap = (XPathMap)xObject;
 	    }
 	    
