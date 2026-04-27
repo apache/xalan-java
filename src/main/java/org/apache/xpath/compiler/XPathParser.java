@@ -84,7 +84,6 @@ import org.apache.xml.utils.ObjectVector;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
-import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.LetExprVarBinding;
@@ -631,9 +630,9 @@ public class XPathParser
             }
             
             if (check1 && check2) {
-            	throw new TransformerException("XTSE0340 : Within an XSLT pattern, a variable reference is allowed only "
-            			                                                                    + "within the first step of a path. "
-            			                                                                    + "Unable to XPath parse, the pattern " + expression + ".", m_sourceLocator);
+            	throw new javax.xml.transform.TransformerException("XTSE0340 : Within an XSLT pattern, a variable reference is allowed only "
+            			                                                                                                   + "within the first step of a path. "
+            			                                                                                                   + "Unable to XPath parse, the pattern " + expression + ".", m_sourceLocator);
             }
         }
     }
@@ -932,20 +931,19 @@ public class XPathParser
           throws javax.xml.transform.TransformerException
   {
 
-    if (tokenIs(expected))
-    {
-      nextToken();
-    }
-    else
-    {
-      error(XPATHErrorResources.ER_EXPECTED_BUT_FOUND, new Object[]{ expected,
-                                                                     m_token });  //"Expected "+expected+", but found: "+m_token);
+	  if (tokenIs(expected))
+	  {
+		  nextToken();
+	  }
+	  else
+	  {      
+		  throw new javax.xml.transform.TransformerException("XPST0003: Expected " + expected + ", but found: " + m_token, m_sourceLocator);
 
-	  // Patch for Christina's gripe. She wants her errorHandler to return from
-	  // this error and continue trying to parse, rather than throwing an exception.
-	  // Without the patch, that put us into an endless loop.
-		throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);
-	}
+		  // Patch for Christina's gripe. She wants her errorHandler to return from
+		  // this error and continue trying to parse, rather than throwing an exception.
+		  // Without the patch, that put us into an endless loop.
+		  // throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);
+	  }
   }
 
   /**
@@ -960,21 +958,19 @@ public class XPathParser
           throws javax.xml.transform.TransformerException
   {
 
-    if (tokenIs(expected))
-    {
-      nextToken();
-    }
-    else
-    {
-      error(XPATHErrorResources.ER_EXPECTED_BUT_FOUND,
-            new Object[]{ String.valueOf(expected),
-                          m_token });  //"Expected "+expected+", but found: "+m_token);
+	  if (tokenIs(expected))
+	  {
+		  nextToken();
+	  }
+	  else
+	  {      
+		  throw new javax.xml.transform.TransformerException("XPST0003: Expected " + expected + ", but found: " + m_token, m_sourceLocator);
 
-	  // Patch for Christina's gripe. She wants her errorHandler to return from
-	  // this error and continue trying to parse, rather than throwing an exception.
-	  // Without the patch, that put us into an endless loop.
-		throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);
-    }
+		  // Patch for Christina's gripe. She wants her errorHandler to return from
+		  // this error and continue trying to parse, rather than throwing an exception.
+		  // Without the patch, that put us into an endless loop.
+		  // throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);
+	  }
   }
 
   /**
@@ -5443,11 +5439,9 @@ public class XPathParser
     if (m_token != null)
     {
       if (!RelativeLocationPath() && !seenSlash)
-      {
-        // Neither a '/' nor a RelativeLocationPath - i.e., matched nothing
-        // "Location path expected, but found "+m_token+" was encountered."
-        error(XPATHErrorResources.ER_EXPECTED_LOC_PATH, 
-              new Object [] {m_token});
+      {                
+         throw new javax.xml.transform.TransformerException("XPST0003 : A location path was expected, but the following token was encountered " 
+                                                                                                                      + m_token + ".", m_sourceLocator);
       }
     }
 
@@ -7008,7 +7002,7 @@ public class XPathParser
 			   }
 		   }
 		   catch (Exception ex) {
-			   throw new TransformerException(ex.getMessage(), m_sourceLocator);
+			   throw new javax.xml.transform.TransformerException(ex.getMessage(), m_sourceLocator);
 		   }
        }
    }

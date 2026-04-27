@@ -1279,6 +1279,11 @@ public class ElemVariable extends ElemTemplateElement
     		  ElemMap.m_xpath_map_seq = null;
     		  ElemMap.m_xpath_map = null;
     	  }
+    	  else if (ElemTemplateElement.m_xpath_map_seq != null) {
+    		  var = ElemTemplateElement.m_xpath_map_seq;
+    		  ElemTemplateElement.m_xpath_map_seq = null;
+    		  ElemTemplateElement.m_xpath_map = null;
+    	  }
     	  else if (var == null) {
     	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
     	     var = new XNodeSetForDOM(nodeList, xctxt);    	     

@@ -516,4 +516,8 @@ public class Constants extends org.apache.xml.utils.Constants
   
   public static final String ATTRVAL_ABSENT = "absent";
   
+  public static final String XSL_SER_NAMESACE = "http://www.w3.org/2010/xslt-xquery-serialization";
+  
+  public static final String XSL_SER_PARAMS = "serialization-parameters";
+  
 }

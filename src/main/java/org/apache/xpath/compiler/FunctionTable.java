@@ -586,6 +586,9 @@ public class FunctionTable
   
   /** The 'copy-of()' id (XSLT). */
   public static final int FUNC_COPY_OF = 188;
+  
+  /** The 'serialize()' id. */
+  public static final int FUNC_SERIALIZE = 189;
 
   // Proprietary
 
@@ -646,7 +649,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 189;
+  private static final int NUM_BUILT_IN_FUNCS = 190;
 
   /**
    * Number of built-in functions that may be added.
@@ -793,6 +796,7 @@ public class FunctionTable
 
 	   m_functions[FUNC_PARSE_XML] = org.apache.xpath.functions.FuncParseXml.class;
 	   m_functions[FUNC_PARSE_XML_FRAGMENT] = org.apache.xpath.functions.FuncParseXmlFragment.class;
+	   m_functions[FUNC_SERIALIZE] = org.apache.xpath.functions.FuncSerialize.class;
 
 	   m_functions[FUNC_AVG] = org.apache.xpath.functions.FuncAvg.class;
 	   m_functions[FUNC_MAX] = org.apache.xpath.functions.FuncMax.class;
@@ -1011,6 +1015,7 @@ public class FunctionTable
 
 	  m_functionId.put(Keywords.FUNC_PARSE_XML, Integer.valueOf(FunctionTable.FUNC_PARSE_XML));
 	  m_functionId.put(Keywords.FUNC_PARSE_XML_FRAGMENT, Integer.valueOf(FunctionTable.FUNC_PARSE_XML_FRAGMENT));
+	  m_functionId.put(Keywords.FUNC_SERIALIZE, Integer.valueOf(FunctionTable.FUNC_SERIALIZE));
 
 	  m_functionId.put(Keywords.FUNC_AVG, Integer.valueOf(FunctionTable.FUNC_AVG));
 	  m_functionId.put(Keywords.FUNC_MAX, Integer.valueOf(FunctionTable.FUNC_MAX));

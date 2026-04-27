@@ -247,7 +247,7 @@ public class ElemMapEntry extends ElemTemplateElement {
 	    
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	    
-	    final int sourceNode = xctxt.getCurrentNode();
+	    final int sourceNode = xctxt.getCurrentNode();	    	    
 	    
 	    if (m_xpath_default_namespace != null) {    		
 	    	m_keyExpression = new XPath(m_keyExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -331,11 +331,29 @@ public class ElemMapEntry extends ElemTemplateElement {
 	    	}
 	    }
 	    
-	    ElemTemplateElement elemTemplateElement = getParentElem();
+	    ElemTemplateElement elemTemplateParentElem = getParentElem();
+	    
+	    if (elemTemplateParentElem instanceof ElemTemplate) {
+	    	if (ElemTemplateElement.m_xpath_map_seq != null) {	    	  
+	    	   (ElemTemplateElement.m_xpath_map).put(keyObj1, valueObj1);
+	    	}
+	    	else {
+	    	   ElemTemplateElement.m_xpath_map_seq = new ResultSequence();
+	    	   ElemTemplateElement.m_xpath_map = new XPathMap();
+	    	   
+	    	   (ElemTemplateElement.m_xpath_map).put(keyObj1, valueObj1);
+	    	   
+	    	   (ElemTemplateElement.m_xpath_map_seq).add(ElemTemplateElement.m_xpath_map);
+	    	}
+	    	
+	    	return;
+	    }
+	    
+	    
 	    boolean isXslMapAncestor = false;
-	    while (elemTemplateElement != null) {
-	       if (elemTemplateElement instanceof ElemMap) {
-	    	  ElemMap elemMap = (ElemMap)elemTemplateElement;	    	  
+	    while (elemTemplateParentElem != null) {
+	       if (elemTemplateParentElem instanceof ElemMap) {
+	    	  ElemMap elemMap = (ElemMap)elemTemplateParentElem;	    	  
 	    	  elemMap.put(keyObj1, valueObj1);
 	    	  
 	    	  isXslMapAncestor = true;
@@ -343,7 +361,7 @@ public class ElemMapEntry extends ElemTemplateElement {
 	    	  break;
 	       }
 	       
-	       elemTemplateElement = elemTemplateElement.getParentElem();
+	       elemTemplateParentElem = elemTemplateParentElem.getParentElem();
 	    }
 	    
 	    // An XSL 3 instruction xsl:map-entry, without an ancestor 
@@ -354,11 +372,11 @@ public class ElemMapEntry extends ElemTemplateElement {
 	    		ElemMap.m_xpath_map_seq = new ResultSequence();	    	
 	    		ElemMap.m_xpath_map = new XPathMap();
 	    		
-	    		ElemMap.m_xpath_map.put(keyObj1, valueObj1);
-	    		ElemMap.m_xpath_map_seq.add(ElemMap.m_xpath_map);
+	    		(ElemMap.m_xpath_map).put(keyObj1, valueObj1);
+	    		(ElemMap.m_xpath_map_seq).add(ElemMap.m_xpath_map);
 	    	}
 	    	else {
-	    		ElemMap.m_xpath_map.put(keyObj1, valueObj1);
+	    		(ElemMap.m_xpath_map).put(keyObj1, valueObj1);
 	    	}
 	    }
 		

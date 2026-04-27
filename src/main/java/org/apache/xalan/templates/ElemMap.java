@@ -184,6 +184,38 @@ public class ElemMap extends ElemTemplateElement {
 		   throw new TransformerException("XTDE0450 : An xdm map cannot be added as child of an XML constructed element.", this); 
 		}
 		
+		if ((elemTemplateParentElem instanceof ElemTemplate) && !(elemTemplateParentElem instanceof ElemFunction)) {
+			ElemTemplate elemTemplate = (ElemTemplate)elemTemplateParentElem;
+			if (elemTemplate.getName() == null) {
+				// Trying to evaluate, <xsl:template match="..."> having xsl:map child element
+				if (ElemTemplateElement.m_xpath_map_seq == null) {
+					ElemTemplateElement.m_xpath_map_seq = new ResultSequence();
+					ElemTemplateElement.m_xpath_map = new XPathMap();
+				}				
+
+				ElemTemplateElement t = getFirstChildElem();
+
+				if (t instanceof ElemApplyTemplates) {
+					// There's a possibility of constructing an xdm map
+					// successfully for this case.				
+					xctxt.setSAXLocator(t);
+					transformer.setCurrentElement(t);
+					t.execute(transformer);
+
+					(ElemTemplateElement.m_xpath_map_seq).add(ElemTemplateElement.m_xpath_map);
+
+					return;
+				}
+				else {
+					// XSL transformation behavior is undefined for this case
+					ElemTemplateElement.m_xpath_map_seq = null;
+					ElemTemplateElement.m_xpath_map = null;
+
+					return;
+				}
+			}
+		}
+		
 		if (m_xpath_map_seq == null) {
 		   m_xpath_map_seq = new ResultSequence();
 		}

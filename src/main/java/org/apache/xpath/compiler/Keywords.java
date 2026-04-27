@@ -793,6 +793,9 @@ public class Keywords
   /** copy-of function string (XSLT). */
   public static final String FUNC_COPY_OF = "copy-of";
   
+  /** serialize function string. */
+  public static final String FUNC_SERIALIZE = "serialize";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

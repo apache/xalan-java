@@ -40,6 +40,7 @@ import org.apache.xalan.tests.xpath3.FnParseXmlFragmentTests;
 import org.apache.xalan.tests.xpath3.FnParseXmlTests;
 import org.apache.xalan.tests.xpath3.FnRoundHalfToEvenTests;
 import org.apache.xalan.tests.xpath3.FnRoundTests;
+import org.apache.xalan.tests.xpath3.FnSerializeTests;
 import org.apache.xalan.tests.xpath3.FnSortTests;
 import org.apache.xalan.tests.xpath3.FnStartsWithEndsWithTests;
 import org.apache.xalan.tests.xpath3.FnStringToCodepointsTests;
@@ -141,7 +142,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnAdjustDateToTimezoneTests.class, FnAdjustTimeToTimezoneTests.class, FnFormatIntegerTests.class, XslPerformSortTests.class,
                 XslPackageTests.class, XslUseWhenTests.class, XslLinearRegressionTests.class, XslNextMatchTests.class,
                 XslUseAttributeSetsTests.class, XslInitialFunctionTests.class, XslFnCopyofTests.class, FnUnparsedTextAvailableTests.class,
-                XslMapTests.class })
+                XslMapTests.class, FnSerializeTests.class })
 public class XalanXsl3TestSuite2 {
 
 }

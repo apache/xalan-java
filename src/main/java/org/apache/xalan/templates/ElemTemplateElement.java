@@ -142,6 +142,18 @@ public class ElemTemplateElement extends UnImplNode
     */
    private List<XObject> m_tunnelParamObjList = new ArrayList<XObject>();
    
+   /**
+    * Class field, that stores a sequence of xdm maps. Evaluation result
+    * of sibling xsl:map instructions are stored within this class field.
+    */
+   public static ResultSequence m_xpath_map_seq = null;
+
+   /**
+    * Class field, that stores an xdm map, that is the result of evaluation
+    * of an xsl:map instruction.
+    */
+   public static XPathMap m_xpath_map = null;
+   
 
   /**
    * Construct a template element instance.
@@ -155,7 +167,20 @@ public class ElemTemplateElement extends UnImplNode
    */
   public boolean isCompiledTemplate()
   {
-    return false;
+	  return false;
+  }
+
+  /**
+   * Method definition, to add key, value pair to an xdm map.
+   * 
+   *  This method is called by, ElemMapEntry class implementation
+   *  which is an implementation of xsl:map-entry instruction.
+   * 
+   * @param key				  Value of map entry's key
+   * @param value             Value of map entry's value
+   */
+  public void put(XObject key, XObject value) {
+	  m_xpath_map.put(key, value);  
   }
 
   /**

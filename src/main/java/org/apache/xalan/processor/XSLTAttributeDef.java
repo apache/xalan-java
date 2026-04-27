@@ -822,33 +822,35 @@ public class XSLTAttributeDef
             throws org.xml.sax.SAXException
   {
 
-    try
-    {
-      XPath expr = null;
-      
-      String normalizedStrValue = null;
-      if ((owner instanceof ElemForEachGroup) && ((Constants.ATTRNAME_GROUPBY).equals(name) || 
-    		                                      (Constants.ATTRNAME_GROUP_ADJACENT).equals(name))) {
-    	 if (value != null) {
-    		normalizedStrValue = getForEachGroupAttrNormalizedStrValue(value);    		
-    		if (normalizedStrValue != null) {
-    		   expr = handler.createXPath(normalizedStrValue, owner);
-    		   
-    		   return expr;
-    		}
-    	 }
-      }
-                  
-      value = processUriQualifiedName(handler, value);
-      
-      expr = handler.createXPath(value, owner);  
+	  try
+	  {
+		  XPath expr = null;
 
-      return expr;
-    }
-    catch (TransformerException te)
-    {
-       throw new org.xml.sax.SAXException(te);
-    }
+		  String normalizedStrValue = null;
+		  if ((owner instanceof ElemForEachGroup) && ((Constants.ATTRNAME_GROUPBY).equals(name) || 
+				  																			(Constants.ATTRNAME_GROUP_ADJACENT).equals(name))) {
+			  if (value != null) {
+				  normalizedStrValue = getForEachGroupAttrNormalizedStrValue(value);    		
+				  if (normalizedStrValue != null) {
+					  expr = handler.createXPath(normalizedStrValue, owner);
+
+					  return expr;
+				  }
+			  }
+		  }
+
+		  value = processUriQualifiedName(handler, value);
+
+		  expr = handler.createXPath(value, owner);  
+
+		  return expr;
+	  }
+	  catch (TransformerException te)
+	  {
+		  String errMessage = getErrorMessageStrUsingLocator(te);
+
+		  throw new org.xml.sax.SAXException(new Exception(errMessage));
+	  }
   }
 
   /**
@@ -917,38 +919,30 @@ public class XSLTAttributeDef
             throws org.xml.sax.SAXException
   {
 
-    try
-    {
-      if (value.contains("current-group()")) {
-    	 throw new TransformerException("XTSE1060 : A current-group() function cannot be used within a pattern. "
-    	 		                                                             + "An erroneous pattern string used within the stylesheet is " + value + ".");   
-      }
-      
-      if (value.contains("current-grouping-key()")) {
-     	 throw new TransformerException("XTSE1070 : A current-grouping-key() function cannot be used within a pattern. "
-     	 		                                                             + "An erroneous pattern string used within the stylesheet is " + value + ".");   
-      }
-      
-      value = processUriQualifiedName(handler, value);
-      
-      XPath pattern = handler.createMatchPatternXPath(value, owner);
+	  try
+	  {
+		  if (value.contains("current-group()")) {
+			  throw new TransformerException("XTSE1060 : A current-group() function cannot be used within a pattern. "
+					  																					+ "An erroneous pattern string used within the stylesheet is " + value + ".");   
+		  }
 
-      return pattern;
-    }
-    catch (TransformerException te)
-    {
-    	String errMessage = te.getMessage();
-    	SourceLocator srcLocator = te.getLocator();
-    	int lineNo;
-    	int colNo;
-    	if (srcLocator != null) {
-    	   lineNo = srcLocator.getLineNumber();
-    	   colNo = srcLocator.getColumnNumber();
-    	   errMessage = "Line# : "+lineNo + ", Column# : " + colNo + " " + errMessage;  
-    	}
-    	
-        throw new org.xml.sax.SAXException(new Exception(errMessage));
-    }
+		  if (value.contains("current-grouping-key()")) {
+			  throw new TransformerException("XTSE1070 : A current-grouping-key() function cannot be used within a pattern. "
+					  																				    + "An erroneous pattern string used within the stylesheet is " + value + ".");   
+		  }
+
+		  value = processUriQualifiedName(handler, value);
+
+		  XPath pattern = handler.createMatchPatternXPath(value, owner);
+
+		  return pattern;
+	  }
+	  catch (TransformerException te)
+	  {
+		  String errMessage = getErrorMessageStrUsingLocator(te);
+
+		  throw new org.xml.sax.SAXException(new Exception(errMessage));
+	  }
   }
 
   /**
@@ -1952,6 +1946,30 @@ public class XSLTAttributeDef
 	  }
 	  
 	  return result;
+  }
+  
+  /**
+   * Method definition, to get an error message string that has error
+   * location information if available within the supplied TransformerException
+   * object. 
+   * 
+   * @param te								XSL transformation TransformerException 
+   *                                        object instance.
+   * @return                                Error message string
+   */
+  private String getErrorMessageStrUsingLocator(TransformerException te) {
+	  
+	  String errMessage = te.getMessage();
+	  SourceLocator srcLocator = te.getLocator();
+	  int lineNo;
+	  int colNo;
+	  if (srcLocator != null) {
+		  lineNo = srcLocator.getLineNumber();
+		  colNo = srcLocator.getColumnNumber();
+		  errMessage = "Line# : "+lineNo + ", Column# : " + colNo + " " + errMessage;  
+	  }
+	  
+	  return errMessage;
   }
   
 }
