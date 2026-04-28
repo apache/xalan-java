@@ -325,7 +325,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ATTRNAME_USE_CHARACTER_MAPS = "use-character-maps",
       ATTRNAME_XPATH_DEFAULT_NAMESPACE = "xpath-default-namespace",
       ATTRNAME_EXPAND_TEXT = "expand-text",
-      ATTRNAME_INPUT_TYPE_ANNOTATIONS = "input-type-annotations";
+      ATTRNAME_INPUT_TYPE_ANNOTATIONS = "input-type-annotations",
+      ATTRNAME_ERRORS = "errors";
 
   /** IDs for XSL attribute types. These are associated
    * with the string literals in the TransformerImpl class.
@@ -408,6 +409,8 @@ public class Constants extends org.apache.xml.utils.Constants
   
   /** For indent-result          */
   public static final boolean ATTRVAL_YES = true, ATTRVAL_NO = false;
+  
+  public static final String ATTRVAL_LITERAL_YES = "yes", ATTRVAL_LITERAL_NO = "no";
 
   
   /** For letter-value attribute (part of conversion attributes).          */

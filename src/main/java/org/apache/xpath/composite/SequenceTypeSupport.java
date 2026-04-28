@@ -2162,7 +2162,7 @@ public class SequenceTypeSupport {
         
         final int contextNode = xctxt.getCurrentNode();         
                 
-        int attrCount = SerializerUtils.m_xdmAttrList.size();
+        int attrCount = (SerializerUtils.m_xdmAttrList).size();
         if ((nodeSetLen == 0) && (attrCount > 0)) {        	        	            
             if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (seqExpectedTypeDataInp == null)) {
             	XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            

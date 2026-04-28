@@ -32,6 +32,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemApplyTemplates;
+import org.apache.xalan.templates.ElemCatch;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplate;
@@ -1216,19 +1217,20 @@ public class XSLTAttributeDef
    * namespace.  (See section 2.4 of XSLT 1.0.)
    *
    * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
-   * @param uri The Namespace URI, or an empty string.
-   * @param name The local name (without prefix), or empty string if not namespace processing.
-   * @param rawName The qualified name (with prefix).
-   * @param value A whitespace delimited list of qualified names.
+   * @param uri The Namespace URI, or an empty string
+   * @param name The local name (without prefix), or empty string if not namespace processing
+   * @param rawName The qualified name (with prefix)
+   * @param value A whitespace delimited list of qualified names
+   * @param owner The context XSL stylesheet element reference
    *
-   * @return a Vector of QName objects.
+   * @return a Vector of QName objects
    *
    * @throws org.xml.sax.SAXException if the one of the qualified name strings
    * contains a prefix that can not be
    * resolved, or a qualified name contains syntax that is invalid for a qualified name.
    */
   Vector processQNAMES(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
+          StylesheetHandler handler, String uri, String name, String rawName, String value, ElemTemplateElement owner)
             throws org.xml.sax.SAXException
   {
 
@@ -1241,7 +1243,13 @@ public class XSLTAttributeDef
     for (int i = 0; i < nQNames; i++)
     {
       // Fix from Alexander Rudnev
-      qnames.addElement(new QName(tokenizer.nextToken(), handler));
+      String str1 = tokenizer.nextToken();
+      if (!((Constants.ATTRNAME_ERRORS).equals(name) && (owner instanceof ElemCatch))) {
+    	 qnames.addElement(new QName(str1, handler));
+      }
+      else {
+    	 qnames.addElement(new QName(str1, handler, owner)); 
+      }
     }
 
     return qnames;
@@ -1605,7 +1613,7 @@ public class XSLTAttributeDef
       processedValue = processQNAME(handler, uri, name, rawName, value, owner);
       break;
     case T_QNAMES :
-      processedValue = processQNAMES(handler, uri, name, rawName, value);
+      processedValue = processQNAMES(handler, uri, name, rawName, value, owner);
       break;
 	case T_QNAMES_RESOLVE_NULL:
       processedValue = processQNAMESRNU(handler, uri, name, rawName, value);

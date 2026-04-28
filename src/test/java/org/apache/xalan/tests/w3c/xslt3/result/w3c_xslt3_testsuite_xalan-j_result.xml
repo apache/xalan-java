@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-04-27T16:40:43Z" desc="W3C XSLT 3.0 test suite results" fail="1305" pass="3507" run="4816" skipped="627" success="72.82%" xslt_processor="Apache Xalan XSLT 3.0 development code">
+<testResult dateTime="2026-04-28T10:38:22Z" desc="W3C XSLT 3.0 test suite results" fail="1302" pass="3510" run="4816" skipped="627" success="72.88%" xslt_processor="Apache Xalan XSLT 3.0 development code">
   <attr>
     <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
@@ -48,7 +48,7 @@
     <analyze-string fail="8" pass="45" run="53" skipped="5" success="84.91%"/>
     <apply-templates fail="15" pass="22" run="37" skipped="13" success="59.46%"/>
     <attribute fail="11" pass="11" run="23" skipped="7" success="47.83%"/>
-    <call-template fail="7" pass="33" run="40" skipped="2" success="82.5%"/>
+    <call-template fail="5" pass="35" run="40" skipped="2" success="87.5%"/>
     <choose fail="6" pass="48" run="54" skipped="1" success="88.89%"/>
     <construct-node fail="12" pass="22" run="34" skipped="0" success="64.71%"/>
     <copy fail="48" pass="77" run="125" skipped="23" success="61.6%"/>
@@ -70,7 +70,7 @@
   <type>
     <boolean fail="1" pass="104" run="105" skipped="7" success="99.05%"/>
     <date fail="46" pass="88" run="134" skipped="4" success="65.67%"/>
-    <maps fail="22" pass="15" run="37" skipped="13" success="40.54%"/>
+    <maps fail="21" pass="16" run="37" skipped="13" success="43.24%"/>
     <namespace fail="74" pass="147" run="221" skipped="3" success="66.52%"/>
     <node fail="1" pass="31" run="32" skipped="0" success="96.88%"/>
     <string fail="5" pass="129" run="134" skipped="2" success="96.27%"/>

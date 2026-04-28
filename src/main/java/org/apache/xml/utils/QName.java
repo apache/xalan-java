@@ -15,14 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xml.utils;
 
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+import org.apache.xalan.templates.ElemCatch;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.w3c.dom.Element;
@@ -412,6 +411,20 @@ public class QName implements java.io.Serializable
   {
     this(qname, resolver, false);
   }
+  
+  /**
+   * Construct a QName from a string, resolving the prefix
+   * using the given namespace stack. The default namespace is
+   * not resolved.
+   *
+   * @param qname Qualified name to resolve
+   * @param resolver Prefix resolver for this context
+   * @param owner The context XSL stylesheet element reference
+   */
+  public QName(String qname, PrefixResolver resolver, ElemTemplateElement owner)
+  {
+    this(qname, resolver, false, owner);
+  }
 
   /**
    * Construct a QName from a string, resolving the prefix
@@ -478,6 +491,79 @@ public class QName implements java.io.Serializable
     m_hashCode = toString().hashCode();
     _prefix = prefix;
   }
+  
+  /**
+   * Construct a QName from a string, resolving the prefix
+   * using the given namespace stack. The default namespace is
+   * not resolved.
+   *
+   * @param qname Qualified name to resolve
+   * @param resolver Prefix resolver for this context
+   * @param validate If true the new QName will be validated and an IllegalArgumentException will
+   *                 be thrown if it is invalid.
+   * @param owner The context XSL stylesheet element reference                 
+   */
+  public QName(String qname, PrefixResolver resolver, boolean validate, ElemTemplateElement owner)
+  {
+
+	String prefix = null;
+    _namespaceURI = null;
+
+    int indexOfNSSep = qname.indexOf(':');
+
+    if (indexOfNSSep > 0)
+    {
+      prefix = qname.substring(0, indexOfNSSep);
+
+      if (prefix.equals("xml"))
+      {
+        _namespaceURI = S_XMLNAMESPACEURI;
+      }
+      else
+      {
+    	 if ((owner instanceof ElemCatch) && "*".equals(prefix)) {
+    	   _namespaceURI = org.apache.xalan.templates.Constants.XSL_ERROR_NAMESACE; 
+    	 }
+    	 else {
+           _namespaceURI = resolver.getNamespaceForPrefix(prefix);
+    	 }
+      }
+
+      if (null == _namespaceURI)
+      {
+        throw new RuntimeException(
+          XMLMessages.createXMLMessage(
+            XMLErrorResources.ER_PREFIX_MUST_RESOLVE,
+            new Object[]{ prefix }));  //"Prefix must resolve to a namespace: "+prefix);
+      }
+      _localName = qname.substring(indexOfNSSep + 1);
+    }
+    else if (indexOfNSSep == 0) 
+    {
+      throw new RuntimeException(
+         XMLMessages.createXMLMessage(
+           XMLErrorResources.ER_NAME_CANT_START_WITH_COLON,
+           null));
+    }
+    else
+    {
+      _localName = qname;
+    }   
+                 
+    if (validate)
+    {
+        if ((_localName == null) || (!XML11Char.isXML11ValidNCName(_localName))) 
+        {
+           throw new IllegalArgumentException(XMLMessages.createXMLMessage(
+            XMLErrorResources.ER_ARG_LOCALNAME_INVALID,null )); //"Argument 'localName' not a valid NCName");
+        }
+    }                 
+
+              
+    m_hashCode = toString().hashCode();
+    _prefix = prefix;
+  }
+  
 
   /**
    * Returns the namespace URI. Returns null if the namespace URI

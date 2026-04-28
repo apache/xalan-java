@@ -36,7 +36,7 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 
 /**
- * Implementation of the parse-xml-fragment() function.
+ * Implementation of an XPath 3.1 function fn:parse-xml-fragment.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -56,8 +56,8 @@ public class FuncParseXmlFragment extends FunctionOneArg {
     /**
      * Evaluate the function. The function must return a valid object.
      * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
+     * @param xctxt The current execution context
+     * @return A valid XObject
      *
      * @throws javax.xml.transform.TransformerException
      */
@@ -82,11 +82,16 @@ public class FuncParseXmlFragment extends FunctionOneArg {
     }
     
     /**
-     * Get an xdm nodeset corresponding to an XML fragment string value.
+     * Method definition, to get an xdm nodeset using the supplied string value. 
+     * 
+     * @param strVal									 The supplied string value
+     * @param xctxt                                      An XPath context object
+     * @return                                           An xdm node object
+     * @throws javax.xml.transform.TransformerException
      */
     private XMLNodeCursorImpl getNodeSetFromStr(String strVal, XPathContext xctxt) throws 
                                                           javax.xml.transform.TransformerException {
-        XMLNodeCursorImpl nodeSet = null;
+        XMLNodeCursorImpl result = null;
         
         try {
         	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
@@ -116,15 +121,14 @@ public class FuncParseXmlFragment extends FunctionOneArg {
             DTM dtm = xctxt.getDTM(new DOMSource(xmlDocFragment), true, null, false, false);            
             int documentNodeHandleVal = dtm.getDocument();
             
-            nodeSet = new XMLNodeCursorImpl(documentNodeHandleVal, xctxt.getDTMManager());
+            result = new XMLNodeCursorImpl(documentNodeHandleVal, xctxt.getDTMManager());
         }
         catch (Exception ex) {
-           throw new javax.xml.transform.TransformerException("FODC0002 : The string value supplied as an argument to function "
-                                                                                         + "fn:parse-xml-fragment(), cannot be successfully "
-                                                                                         + "parsed as an XML document fragment."); 
+        	throw new javax.xml.transform.TransformerException("FODC0002 : An XPath 3.1 function 'parse-xml-fragment' invocation, cannot parse "
+                       																									+ "the supplied string value to an XML node.");
         }
         
-        return nodeSet;
+        return result;
     }
 
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-27T16:39:38Z" fail="7" name="call-template" pass="33" run="40" skipped="2" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-28T10:37:26Z" fail="5" name="call-template" pass="35" run="40" skipped="2" statusUnknown="0">
    <testResult status="pass" testName="call-template-0001"/>
    <testResult status="pass" testName="call-template-0101"/>
    <testResult status="fail" testName="call-template-0102"/>
@@ -9,11 +9,7 @@
    <testResult status="pass" testName="call-template-0107"/>
    <testResult status="pass" testName="call-template-0108"/>
    <testResult status="pass" testName="call-template-0109"/>
-   <testResult status="fail" testName="call-template-0110">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: Prefix must resolve to a namespace: *</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="call-template-0110"/>
    <testResult status="fail" testName="call-template-0111">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;x x x x x&lt;/out&gt;</outResult>
    </testResult>
@@ -34,11 +30,7 @@
    <testResult status="pass" testName="call-template-0802"/>
    <testResult status="pass" testName="call-template-0901"/>
    <testResult status="pass" testName="call-template-1001"/>
-   <testResult status="fail" testName="call-template-1002">
-      <outResult>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="call-template-1002"/>
    <testResult reason="Xalan configured" status="skipped" testName="call-template-1003"/>
    <testResult status="pass" testName="call-template-1101"/>
    <testResult status="pass" testName="call-template-1102"/>

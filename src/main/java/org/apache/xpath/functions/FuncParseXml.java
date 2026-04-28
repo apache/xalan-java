@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 
 /**
- * Implementation of the parse-xml() function.
+ * Implementation of an XPath 3.1 function fn:parse-xml.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -55,8 +55,8 @@ public class FuncParseXml extends FunctionOneArg {
     /**
      * Evaluate the function. The function must return a valid object.
      * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
+     * @param xctxt The current execution context
+     * @return A valid XObject
      *
      * @throws javax.xml.transform.TransformerException
      */
@@ -74,19 +74,25 @@ public class FuncParseXml extends FunctionOneArg {
            result = getNodeSetFromStr(argStrVal, xctxt, null);
         } 
         catch (Exception ex) {
-           throw new javax.xml.transform.TransformerException("FODC0002 : The string value supplied as an "
-                                                                                  + "argument to function fn:parse-xml(), cannot be "
-                                                                                  + "successfully parsed as an XML document.", srcLocator);
+           throw new javax.xml.transform.TransformerException("FODC0002 : An XPath 3.1 function 'parse-xml' invocation, cannot parse "
+           		                                                                                          + "the supplied string value to an XML node.", srcLocator);
         }
         
         return result;
     }
     
     /**
-     * Get an xdm nodeset corresponding to an XML string value.
+     * Method definition, to get an xdm nodeset using the supplied XML string value. 
+     * 
+     * @param strVal								The supplied string value.
+     * @param xctxt                                 An XPath context object
+     * @param errorHandler                          An XML error handler object
+     * @return                                      An xdm node object
+     * @throws Exception
      */
     public static XMLNodeCursorImpl getNodeSetFromStr(String strVal, XPathContext xctxt, ErrorHandler errorHandler) throws Exception {
-        XMLNodeCursorImpl nodeSet = null;
+        
+    	XMLNodeCursorImpl result = null;
 
         System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
         
@@ -104,9 +110,9 @@ public class FuncParseXml extends FunctionOneArg {
         DTM dtm = xctxt.getDTM(new DOMSource(document), true, null, false, false);            
         int documentNodeHandleVal = dtm.getDocument();
             
-        nodeSet = new XMLNodeCursorImpl(documentNodeHandleVal, xctxt.getDTMManager());
+        result = new XMLNodeCursorImpl(documentNodeHandleVal, xctxt.getDTMManager());
         
-        return nodeSet;
+        return result;
     }
 
 }

@@ -8,7 +8,8 @@
                 
    <!-- Author: mukulg@apache.org -->
     
-   <!-- An XSL stylesheet, miscellaneous test case -->                  
+   <!-- An XSL 3 stylesheet test case, to test a simple 
+        stylesheet function call. -->                  
 				
    <xsl:output method="xml" indent="yes"/>				
    

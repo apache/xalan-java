@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-27T00:50:36Z" fail="22" name="maps" pass="15" run="37" skipped="13" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-28T10:37:59Z" fail="21" name="maps" pass="16" run="37" skipped="13" statusUnknown="0">
    <testResult status="fail" testName="maps-001">
       <outResult>
          <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}.()</errTrace>
@@ -28,11 +28,7 @@
    <testResult status="pass" testName="maps-015"/>
    <testResult status="pass" testName="maps-016"/>
    <testResult status="fail" testName="maps-017">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}serialize()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="maps-018">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
@@ -101,10 +97,6 @@
    <testResult reason="Xalan configured" status="skipped" testName="maps-906k"/>
    <testResult reason="Xalan configured" status="skipped" testName="maps-906l"/>
    <testResult status="pass" testName="maps-907"/>
-   <testResult status="fail" testName="maps-908">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: Prefix must resolve to a namespace: *</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="maps-908"/>
    <testResult status="pass" testName="maps-909"/>
 </testrun>
