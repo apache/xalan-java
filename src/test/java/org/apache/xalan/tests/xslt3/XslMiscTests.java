@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT 3.0 stylesheet miscellaneous test cases.
+ * XSL 3 stylesheet, miscellaneous test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -170,6 +170,74 @@ public class XslMiscTests extends XslTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslMiscTest13() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "collection_001.xsl";    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "collection_001.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslMiscTest14() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "collection_002.xsl";    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "collection_002.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test14.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslMiscTest15() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "json_to_xml1.xsl";    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "json_to_xml1.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test15.out";
+        
+        m_initTemplateName = "Template1";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslMiscTest16() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "xpath_bool_1.xsl";    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "xpath_bool_1.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test16.out";
+        
+        m_initTemplateName = "Template1";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslMiscTest17() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "xpath_bool_2.xsl";    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "xpath_bool_2.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test17.out";
+        
+        m_initTemplateName = "Template1";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslMiscTest18() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "xpath_bool_3.xsl";    	
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "xpath_bool_3.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test18.out";
+        
+        m_initTemplateName = "Template1";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

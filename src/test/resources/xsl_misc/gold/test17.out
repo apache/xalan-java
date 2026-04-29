@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <or>
+    <a>false</a>
+    <b>true</b>
+    <c>true</c>
+    <d>true</d>
+  </or>
+  <and>
+    <a>false</a>
+    <b>false</b>
+    <c>false</c>
+    <d>true</d>
+  </and>
+  <not>
+    <a>true</a>
+    <b>false</b>
+  </not>
+</result>

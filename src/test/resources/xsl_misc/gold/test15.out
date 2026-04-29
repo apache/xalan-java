@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <map xmlns="http://www.w3.org/2005/xpath-functions">
+      <number key="a">1</number>
+      <number key="b">2</number>
+      <number key="c">3</number>
+    </map>
+  </one>
+  <two>
+    <map xmlns="http://www.w3.org/2005/xpath-functions">
+      <number key="a">1</number>
+      <number key="b">2</number>
+      <number key="c">3</number>
+    </map>
+  </two>
+</result>

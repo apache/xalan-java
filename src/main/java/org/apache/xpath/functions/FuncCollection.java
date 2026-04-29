@@ -32,6 +32,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.Constants;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.json.JsonFunction;
 import org.apache.xpath.functions.json.XSLJsonConstants;
@@ -48,8 +49,8 @@ import xml.xpath31.processor.types.XSString;
  * Implementation of XPath 3.1 function fn:collection.
  * 
  * This implementation supports XPath function fn:collection
- * argument that are local file system uri strings beginning 
- * with file:///, or file:/.
+ * to read and merge information from XML, JSON, TXT files from
+ * local file system.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -102,43 +103,73 @@ public class FuncCollection extends JsonFunction
 		ResultSequence xpathDefCollectionSeq = xctxt.getDefaultCollection();
 		
 		if (m_arg1 != null) {
-		   throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function 'collection' may have "
+		   throw new javax.xml.transform.TransformerException("XPST0017 : An XPath 3.1 function 'collection' may have "
 		   		                                                                                      + "either zero or one argument.", srcLocator);
 		}
 		
 		XObject arg0XObj = null;
 		
         if (m_arg0 != null) {
-           arg0XObj = m_arg0.execute(xctxt);
+           arg0XObj = m_arg0.execute(xctxt);           
+           if (arg0XObj != null) {
+        	  String uriStr1 = XslTransformEvaluationHelper.getStrVal(arg0XObj);
+        	  
+        	  if (uriStr1.startsWith("https://") || uriStr1.startsWith("http://")) {
+        		 throw new javax.xml.transform.TransformerException("XPST0017 : An XPath 3.1 function 'collection' doesn't support http:// "
+        		 		                                                                                                         + "and https:// uri arguments.", srcLocator); 
+        	  }
+        	  else if (uriStr1.startsWith("file:///")) {
+        		  String fileSystemPathStr = uriStr1.substring(8);
+        		  
+        		  result = getResultSequenceFromFileSystemPathStr(fileSystemPathStr, xctxt);
+        	  }
+              else if (uriStr1.startsWith("file:/")) {
+            	  String fileSystemPathStr = uriStr1.substring(6);
+            	  
+            	  result = getResultSequenceFromFileSystemPathStr(fileSystemPathStr, xctxt);
+        	  }
+              else {
+            	  // An input uri argument, is a relative uri            	  
+            	  String stylesheetSystemId = null;            	  
+            	  if (srcLocator != null) {
+            		  stylesheetSystemId = srcLocator.getSystemId();
+            	  }
+            	  else {
+            		  ExpressionNode expressionNode = getExpressionOwner();
+            		  stylesheetSystemId = expressionNode.getSystemId(); 
+            	  }
+            	  
+            	  if (stylesheetSystemId != null) {
+            		  int idx = stylesheetSystemId.lastIndexOf('/');
+            		  String str1 = stylesheetSystemId.substring(0, idx);            		  
+            		  if (str1.startsWith("file:///")) {
+            			  String fileSystemPathStr = str1.substring(8);
+            			  fileSystemPathStr = fileSystemPathStr + uriStr1; 
+            			  
+            			  result = getResultSequenceFromFileSystemPathStr(fileSystemPathStr, xctxt);
+            		  }
+            		  else if (str1.startsWith("file:/")) {
+            			  String fileSystemPathStr = str1.substring(6);
+            			  fileSystemPathStr = fileSystemPathStr + uriStr1;
+            			  
+            			  result = getResultSequenceFromFileSystemPathStr(fileSystemPathStr, xctxt);
+            		  }
+            	  }
+            	  else {
+            		  throw new javax.xml.transform.TransformerException("XPST0017 : The call to an XPath 3.1 function 'collection' doesn't have a valid "
+            		  		                                                                                                     + "uri representation as it's first argument. "
+            		  		                                                                                                     + "An XSL stylesheet doesn't have a systemid.", srcLocator);  
+            	  }            	  
+              }
+           }
 		}
         else if (xpathDefCollectionSeq.size() == 0) {
-        	throw new javax.xml.transform.TransformerException("FODC0002 : An XPath default collection has not been defined.", srcLocator);
-        }
-        else {
-        	// We need to use XPath context's default collection, 
-        	// if it's available, which is currently empty.
-        }
+        	throw new javax.xml.transform.TransformerException("FODC0002 : An XPath 3.1 default collection has not been defined.", srcLocator);
+        }        
         
         if ((arg0XObj instanceof ResultSequence) && (((ResultSequence)arg0XObj).size() == 0) && (xpathDefCollectionSeq.size() == 0)) {
-            throw new javax.xml.transform.TransformerException("FODC0002 : An XPath default collection has not been defined.", srcLocator);
-        }
-        else {
-        	// We need to use XPath context's default collection, 
-        	// if it's available, which is currently empty.
-        }
-		
-		String arg0StrValue = XslTransformEvaluationHelper.getStrVal(arg0XObj);
-		
-		String fileSystemPathStr = null;
-		
-		if (arg0StrValue.startsWith("file:///")) {
-			fileSystemPathStr = arg0StrValue.substring(8);
-		}
-		else if (arg0StrValue.startsWith("file:/")) {
-			fileSystemPathStr = arg0StrValue.substring(6);			
-		}
-		
-		result = getResultSequenceFromFileSystemPathStr(fileSystemPathStr, xctxt);
+            throw new javax.xml.transform.TransformerException("FODC0002 : An XPath 3.1 default collection has not been defined.", srcLocator);
+        }        
 
 		return result;
 	}
@@ -168,7 +199,7 @@ public class FuncCollection extends JsonFunction
 	private ResultSequence getResultSequenceFromFileSystemPathStr(String fileSystemPathStr, 
 			                                                      XPathContext xctxt) throws javax.xml.transform.TransformerException {
 		
-		ResultSequence resultSeq = new ResultSequence();
+		ResultSequence result = new ResultSequence();
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
@@ -203,7 +234,7 @@ public class FuncCollection extends JsonFunction
 						DTM dtm = dtmMgr.getDTM(new DOMSource(document), true, null, false, false);
 						int docNodeDtmHandle = dtm.getDocument();							
 						XMLNodeCursorImpl xNodeSet = new XMLNodeCursorImpl(docNodeDtmHandle, dtmMgr);
-						resultSeq.add(xNodeSet);
+						result.add(xNodeSet);
 					}
 					catch (Exception ex) {
 						throw new javax.xml.transform.TransformerException("FODC0004 : An XPath dynamic error occured while "
@@ -218,7 +249,7 @@ public class FuncCollection extends JsonFunction
 						byte[] byteArr = Files.readAllBytes(Paths.get(fileObj.toURI()));
 						String strValue = new String(byteArr);							
 						XObject xObj = getJsonXdmValueFromStr(strValue, false, XSLJsonConstants.DUPLICATES_USE_FIRST);							
-						resultSeq.add(xObj);
+						result.add(xObj);
 					}
 					catch (Exception ex) {
 						throw new javax.xml.transform.TransformerException("FODC0004 : An XPath dynamic error occured while "
@@ -232,7 +263,7 @@ public class FuncCollection extends JsonFunction
 						File fileObj = new File(fileSystemDirPathStr + SLASH_CHAR_STR + fileNameStr);
 						byte[] byteArr = Files.readAllBytes(Paths.get(fileObj.toURI()));
 						String strValue = new String(byteArr);
-						resultSeq.add(new XSString(strValue));
+						result.add(new XSString(strValue));
 					}
 					catch (Exception ex) {
 						throw new javax.xml.transform.TransformerException("FODC0004 : An XPath dynamic error occured while "
@@ -247,7 +278,7 @@ public class FuncCollection extends JsonFunction
 						byte[] byteArr = Files.readAllBytes(Paths.get(fileObj.toURI()));
 						String strValue = new String(byteArr);
 						XSBase64Binary xsBase64Binary = new XSBase64Binary(strValue);
-						resultSeq.add(xsBase64Binary);
+						result.add(xsBase64Binary);
 					}
 					catch (Exception ex) {
 						throw new javax.xml.transform.TransformerException("FODC0004 : The XPath function 'collection''s evaluation, only supports file types XML (ext .xml), "
@@ -260,7 +291,7 @@ public class FuncCollection extends JsonFunction
 			}
 		}
 		
-		return resultSeq;
+		return result;
 	}
 	
 	/**

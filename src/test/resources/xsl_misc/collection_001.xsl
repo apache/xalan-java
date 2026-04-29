@@ -6,17 +6,21 @@
 				exclude-result-prefixes="xs map array"
 				version="3.0">
 				
-    <!-- Author: mukulg@apache.org -->							
+    <!-- Author: mukulg@apache.org -->
+    
+    <!-- An XSL 3 stylesheet test case, to test XPath 3.1 fn:collection 
+         function. Using fn:collection function to merge information from
+         various XML, JSON, TXT documents from local file system. -->							
 
 	<xsl:output method="xml" indent="yes"/>
 	
-	<xsl:param name="base-dir" select="'file:/d:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0_mvn/src/test/resources/xsl3_tests/input/'" as="xs:string"/>
+	<xsl:param name="base-dir_str" select="'./input/'" as="xs:string"/>
 
 	<xsl:template match="/">
 	   <result>
-	      <xsl:variable name="collectionResult1" select="collection($base-dir || '.*[\\.](xml)')"/>
-	      <xsl:variable name="collectionResult2" select="collection($base-dir || '.*[\\.](json)')"/>
-	      <xsl:variable name="collectionResult3" select="collection($base-dir || '.*[\\.](txt)')"/>
+	      <xsl:variable name="collectionResult1" select="collection($base-dir_str || '.*[\\.](xml)')"/>
+	      <xsl:variable name="collectionResult2" select="collection($base-dir_str || '.*[\\.](json)')"/>
+	      <xsl:variable name="collectionResult3" select="collection($base-dir_str || '.*[\\.](txt)')"/>
 	      
 	      <xsl:variable name="seq1" select="insert-before($collectionResult3, 0, $collectionResult1)"/>
 	      <xsl:variable name="seq2" select="insert-before($collectionResult2, 0, $seq1)"/>
@@ -42,7 +46,7 @@
 					  </array>
 				   </xsl:when>
 				   <xsl:when test="$collectionResult1 instance of xs:string">
-				      <!-- Process a file text document. -->
+				      <!-- Process a file text document -->
 					  <txtContents><xsl:value-of select="$collectionResult1"/></txtContents>
 				   </xsl:when>
 				   <xsl:otherwise>
@@ -54,5 +58,23 @@
 		  </xsl:for-each>
 	   </result>
 	</xsl:template>
+	
+	<!--
+      * Licensed to the Apache Software Foundation (ASF) under one
+      * or more contributor license agreements. See the NOTICE file
+      * distributed with this work for additional information
+      * regarding copyright ownership. The ASF licenses this file
+      * to you under the Apache License, Version 2.0 (the "License");
+      * you may not use this file except in compliance with the License.
+      * You may obtain a copy of the License at
+      *
+      *     http://www.apache.org/licenses/LICENSE-2.0
+      *
+      * Unless required by applicable law or agreed to in writing, software
+      * distributed under the License is distributed on an "AS IS" BASIS,
+      * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      * See the License for the specific language governing permissions and
+      * limitations under the License.
+    -->
 
 </xsl:stylesheet>

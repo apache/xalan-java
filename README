@@ -76,16 +76,16 @@ When this Maven build command is run, results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.XalanXsl3TestSuite1
-[INFO] Tests run: 589, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 14.851 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite1
+[INFO] Tests run: 595, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.869 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite1
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 589, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 595, Failures: 0, Errors: 0, Skipped: 0
 
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  38.987 s
+[INFO] Total time:  38.353 s
 [INFO] ------------------------------------------------------------------------
 
 3.2) To run 'part 2' of Xalan Java XSLT 3.0 test suite
