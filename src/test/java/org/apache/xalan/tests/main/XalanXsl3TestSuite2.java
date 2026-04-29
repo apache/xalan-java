@@ -107,6 +107,17 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import xml.xpath31.processor.types.tests.XPath3DecimalFormatTest;
+import xml.xpath31.processor.types.tests.XSAnyURITest;
+import xml.xpath31.processor.types.tests.XSDateTest;
+import xml.xpath31.processor.types.tests.XSDateTimeTest;
+import xml.xpath31.processor.types.tests.XSDayTimeDurationTest;
+import xml.xpath31.processor.types.tests.XSDecimalTest;
+import xml.xpath31.processor.types.tests.XSDoubleTest;
+import xml.xpath31.processor.types.tests.XSDurationTest;
+import xml.xpath31.processor.types.tests.XSNumericTypeTest;
+import xml.xpath31.processor.types.tests.XSTimeTest;
+
 /**
  * A JUnit 4 test suite (part 2) for Xalan-J's, XSL 3 specification 
  * implementation.
@@ -142,7 +153,9 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnAdjustDateToTimezoneTests.class, FnAdjustTimeToTimezoneTests.class, FnFormatIntegerTests.class, XslPerformSortTests.class,
                 XslPackageTests.class, XslUseWhenTests.class, XslLinearRegressionTests.class, XslNextMatchTests.class,
                 XslUseAttributeSetsTests.class, XslInitialFunctionTests.class, XslFnCopyofTests.class, FnUnparsedTextAvailableTests.class,
-                XslMapTests.class, FnSerializeTests.class })
+                XslMapTests.class, FnSerializeTests.class, XPath3DecimalFormatTest.class, XSAnyURITest.class, XSDateTest.class,
+                XSDateTimeTest.class, XSDayTimeDurationTest.class, XSDecimalTest.class, XSDoubleTest.class, XSDurationTest.class,
+                XSNumericTypeTest.class, XSTimeTest.class })
 public class XalanXsl3TestSuite2 {
 
 }

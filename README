@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-04-28
+Document last modified : 2026-04-29
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -98,16 +98,16 @@ When this Maven build command is run, results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.XalanXsl3TestSuite2
-[INFO] Tests run: 561, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.218 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite2
+[INFO] Tests run: 652, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 20.699 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite2
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 561, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 652, Failures: 0, Errors: 0, Skipped: 0
 
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  45.228 s
+[INFO] Total time:  50.266 s
 
 
 After verifying that, Xalan Java XSLT 3.0 src code passes all the applicable XSL test cases, user may install Xalan Java

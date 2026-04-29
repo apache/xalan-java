@@ -16,13 +16,14 @@ import org.junit.Test;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Xalan-J XSL 3, XPath 3.1 data type test cases.
+ * Xalan-J XPath 3.1 test cases for XSNumericType class.
  * 
- * @author Samael Bates, Xalan-J XSL 3 implementation user via 
- *                       Xalan dev forum. Initial contribution.
+ * Contributed via Xalan Java mailing list.
+ * 
+ * @author Samael Bate                       
  *                       
- * @author Mukul Gandhi <mukulg@apache.org>, Modified this XSL test case, from 
- *                                           JUnit 5 to JUnit 4.                           
+ * @author Mukul Gandhi <mukulg@apache.org>, Modified this XSL test case, to 
+ *                                           migrate from JUnit 5 to JUnit 4.                       
  * 
  * @xsl.usage advanced
  */
