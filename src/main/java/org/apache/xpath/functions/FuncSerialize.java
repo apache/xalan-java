@@ -135,41 +135,93 @@ public class FuncSerialize extends FunctionMultiArgs {
 					
 					XPathMap xpathMap = (XPathMap)arg1Obj;				 
 
-					XObject fnSerMethodXObj = xpathMap.get(new XSString(Constants.ATTRNAME_OUTPUT_METHOD));
+					XObject xMethodObj1 = xpathMap.get(new XSString(Constants.ATTRNAME_OUTPUT_METHOD));
 					String methodName = null;				 
 
-					XObject fnSerIndentXObj = xpathMap.get(new XSString(Constants.ATTRNAME_OUTPUT_INDENT));
+					XObject xObj1 = xpathMap.get(new XSString(Constants.ATTRNAME_OUTPUT_INDENT));
 					String indentStrValue = null;
-					if (fnSerIndentXObj != null) {
-						if ((fnSerIndentXObj instanceof XSBoolean) || (fnSerIndentXObj instanceof XBoolean) || (fnSerIndentXObj instanceof XBooleanStatic)) {
-							indentStrValue = (fnSerIndentXObj.bool()) ? Constants.ATTRVAL_LITERAL_YES : Constants.ATTRVAL_LITERAL_NO;
+					if (xObj1 != null) {
+						if ((xObj1 instanceof XSBoolean) || (xObj1 instanceof XBoolean) || (xObj1 instanceof XBooleanStatic)) {
+							indentStrValue = (xObj1.bool()) ? Constants.ATTRVAL_LITERAL_YES : Constants.ATTRVAL_LITERAL_NO;
+						}
+						else if ((xObj1 instanceof XSString) || (xObj1 instanceof XString)) {
+							String str1 = XslTransformEvaluationHelper.getStrVal(xObj1);
+							if ((Constants.ATTRVAL_LITERAL_YES.equals(str1)) || (Constants.ATTRVAL_LITERAL_NO.equals(str1))) {
+							   indentStrValue = str1; 
+							}
+							else {
+							   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'serialize' is called with parameter "
+										                                                                                            + "'indent' with value " + str1 + " which is not "
+										                                                                                            + "a valid representation of parameter 'indent'.", srcLocator);
+							}
+						}
+						else if ((xObj1 instanceof XSNumericType) || (xObj1 instanceof XNumber)) {
+							String str1 = XslTransformEvaluationHelper.getStrVal(xObj1);
+							Double dbl = Double.valueOf(str1);
+							if (dbl.doubleValue() == 1) {
+							   indentStrValue = Constants.ATTRVAL_LITERAL_YES; 
+							}
+							else if (dbl.doubleValue() == 0) {
+							   indentStrValue = Constants.ATTRVAL_LITERAL_NO;	
+							}
+							else {
+							   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'serialize' is called with parameter "
+																							                                        + "'indent' with value " + str1 + " which is not "
+																							                                        + "a valid representation of parameter 'indent'.", srcLocator);
+							}
 						}
 						else {
 							throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'serialize' is called with parameter "
-																																	+ "'indent' not of the type boolean.", srcLocator);
+																																	+ "'indent' not having correct value.", srcLocator);
 						}
 					}
 					else {
 						indentStrValue = Constants.ATTRVAL_LITERAL_NO; 
 					}
 
-					XObject fnSerOmitXmlDeclXObj = xpathMap.get(new XSString(Constants.ATTRNAME_OUTPUT_OMITXMLDECL));
+					XObject xObj2 = xpathMap.get(new XSString(Constants.ATTRNAME_OUTPUT_OMITXMLDECL));
 					String omitXmlDeclStrValue = null;
-					if (fnSerOmitXmlDeclXObj != null) {
-						if ((fnSerOmitXmlDeclXObj instanceof XSBoolean) || (fnSerOmitXmlDeclXObj instanceof XBoolean) || (fnSerOmitXmlDeclXObj instanceof XBooleanStatic)) {
-							omitXmlDeclStrValue = (fnSerOmitXmlDeclXObj.bool()) ? Constants.ATTRVAL_LITERAL_YES : Constants.ATTRVAL_LITERAL_NO;
+					if (xObj2 != null) {
+						if ((xObj2 instanceof XSBoolean) || (xObj2 instanceof XBoolean) || (xObj2 instanceof XBooleanStatic)) {
+							indentStrValue = (xObj2.bool()) ? Constants.ATTRVAL_LITERAL_YES : Constants.ATTRVAL_LITERAL_NO;
+						}
+						else if ((xObj2 instanceof XSString) || (xObj2 instanceof XString)) {
+							String str1 = XslTransformEvaluationHelper.getStrVal(xObj2);
+							if ((Constants.ATTRVAL_LITERAL_YES.equals(str1)) || (Constants.ATTRVAL_LITERAL_NO.equals(str1))) {
+							   indentStrValue = str1; 
+							}
+							else {
+							   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'serialize' is called with parameter "
+										                                                                                            + "'omit-xml-declaration' with value " + str1 + " which is not "
+										                                                                                            + "a valid representation of parameter 'omit-xml-declaration'.", srcLocator);
+							}
+						}
+						else if ((xObj2 instanceof XSNumericType) || (xObj2 instanceof XNumber)) {
+							String str1 = XslTransformEvaluationHelper.getStrVal(xObj2);
+							Double dbl = Double.valueOf(str1);
+							if (dbl.doubleValue() == 1) {
+							   indentStrValue = Constants.ATTRVAL_LITERAL_YES; 
+							}
+							else if (dbl.doubleValue() == 0) {
+							   indentStrValue = Constants.ATTRVAL_LITERAL_NO;	
+							}
+							else {
+							   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'serialize' is called with parameter "
+																							                                        + "'omit-xml-declaration' with value " + str1 + " which is not "
+																							                                        + "a valid representation of parameter 'omit-xml-declaration'.", srcLocator);
+							}
 						}
 						else {
 							throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'serialize' is called with parameter "
-																																	+ "'omit-xml-declaration' not of the type boolean.", srcLocator);
+																																	+ "'omit-xml-declaration' not having correct value.", srcLocator);
 						}
 					}
 					else {
 						omitXmlDeclStrValue = Constants.ATTRVAL_LITERAL_NO; 
 					}
 
-					if (fnSerMethodXObj != null) {
-						methodName = XslTransformEvaluationHelper.getStrVal(fnSerMethodXObj);
+					if (xMethodObj1 != null) {
+						methodName = XslTransformEvaluationHelper.getStrVal(xMethodObj1);
 						
 						result = getFnSerializeResult(arg0XObj, methodName, indentStrValue, omitXmlDeclStrValue, xctxt, srcLocator, transformer);
 					}
@@ -317,14 +369,36 @@ public class FuncSerialize extends FunctionMultiArgs {
 							    	  methodName = serParamValueLstInstance.get(idx);   
 							       }
 							       else if (paramName.equals(OutputKeys.INDENT)) {
-							    	  indentStrValue = serParamValueLstInstance.get(idx);   
+							    	  indentStrValue = serParamValueLstInstance.get(idx);
+							    	  if ((Constants.ATTRVAL_LITERAL_YES).equals(indentStrValue) || "true".equals(indentStrValue) || "1".equals(indentStrValue)) {
+							    		 indentStrValue = Constants.ATTRVAL_LITERAL_YES;  
+							    	  }
+							    	  else if ((Constants.ATTRVAL_LITERAL_NO).equals(indentStrValue) || "false".equals(indentStrValue) || "0".equals(indentStrValue)) {
+							    		 indentStrValue = Constants.ATTRVAL_LITERAL_NO; 
+							    	  }
+							    	  else {
+							    		 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'serialize' is called with parameter "
+																						                                         + "'indent' with value " + indentStrValue + " which is not "
+																						                                         + "a valid representation of parameter 'indent'.", srcLocator); 
+							    	  }
 								   }
 							       else if (paramName.equals(OutputKeys.OMIT_XML_DECLARATION)) {
-							    	  omitXmlDeclStrValue = serParamValueLstInstance.get(idx);   
+							    	  omitXmlDeclStrValue = serParamValueLstInstance.get(idx);
+							    	  if ((Constants.ATTRVAL_LITERAL_YES).equals(omitXmlDeclStrValue) || "true".equals(omitXmlDeclStrValue) || "1".equals(omitXmlDeclStrValue)) {
+							    		 omitXmlDeclStrValue = Constants.ATTRVAL_LITERAL_YES;  
+							    	  }
+							    	  else if ((Constants.ATTRVAL_LITERAL_NO).equals(omitXmlDeclStrValue) || "false".equals(omitXmlDeclStrValue) || "0".equals(omitXmlDeclStrValue)) {
+							    		 omitXmlDeclStrValue = Constants.ATTRVAL_LITERAL_NO; 
+							    	  }
+							    	  else {
+							    		 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'serialize' is called with parameter "
+																											    				+ "'omit-xml-declaration' with value " + omitXmlDeclStrValue + " which is not "
+																											    				+ "a valid representation of parameter 'omit-xml-declaration'.", srcLocator); 
+							    	  }
 								   }
 							    }
 							    else {
-							    	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'serialize' has a "
+							       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'serialize' has a "
 																																+ "second argument, but its not of type "
 																																+ "element(output:serialization-parameters)? or map(*).", srcLocator);	
 							    }
