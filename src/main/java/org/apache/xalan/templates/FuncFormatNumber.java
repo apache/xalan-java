@@ -35,6 +35,8 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.patterns.NodeTest;
 
+import xml.xpath31.processor.types.XSString;
+
 /**
  * Implementation of an XPath 3.1 function fn:format-number.
  * 
@@ -43,6 +45,12 @@ import org.apache.xpath.patterns.NodeTest;
 public class FuncFormatNumber extends Function3Args
 {
     static final long serialVersionUID = -8869935264870858636L;
+    
+    /**
+     * This class field represents whether, the function fn:format-number 
+     * is called from function call fn:serialize.
+     */
+    private boolean m_fn_serialize_call = false;
     
     /**
      * Class constructor.
@@ -81,77 +89,90 @@ public class FuncFormatNumber extends Function3Args
     		 throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function format-number(), "
 						                                                                 + "but the supplied type is a function type, which cannot be atomized.", srcLocator);
     	 }
-
-    	 double num = arg0.execute(xctxt).num();
-
-    	 String patternStr = getArg1().execute(xctxt).str();
+    	 
+    	 XObject xObjArg0 = arg0.execute(xctxt);
+    	 String str1 = XslTransformEvaluationHelper.getStrVal(xObjArg0);
+    	 double num = Double.valueOf(str1);
+    	 
+    	 XObject xObjArg1 = (getArg1()).execute(xctxt);    	 
+    	 String patternStr = XslTransformEvaluationHelper.getStrVal(xObjArg1);
+    	 
+    	 boolean isSmallCaseExponentSymbol = false;
+    	 if (patternStr.contains("e")) {
+    	    isSmallCaseExponentSymbol = true;
+    	    patternStr = patternStr.replace('e', 'E');
+    	 }    	     	 
 
     	 // TODO: what should be the behavior here??
     	 if (patternStr.indexOf(0x00A4) > 0)
     		 ss.error(XSLTErrorResources.ER_CURRENCY_SIGN_ILLEGAL);  // currency sign not allowed
 
-    	 // this third argument is not a locale name. It is the name of a
-    	 // decimal-format declared in the stylesheet!(xsl:decimal-format
+    	 // An XPath function fn:format-number third argument is not a locale name.
+    	 // This is name of decimal-format declared within an XSL stylesheet (i.e, xsl:decimal-format).    	 
     	 try
     	 {
     		 Expression arg2Expr = getArg2();
 
-    		 if (null != arg2Expr)
+    		 if (arg2Expr != null)
     		 {
     			 String dfName = arg2Expr.execute(xctxt).str();
     			 QName qname = new QName(dfName, xctxt.getNamespaceContext());
 
     			 dfs = ss.getDecimalFormatComposed(qname);
 
-    			 if (null == dfs)
+    			 if (dfs == null)
     			 {
     				 warn(xctxt, XSLTErrorResources.WG_NO_DECIMALFORMAT_DECLARATION,
-    						 new Object[]{ dfName });  //"not found!!!
-
-    				 //formatter = new java.text.DecimalFormat(patternStr);
+    						 new Object[]{ dfName });
     			 }
     			 else
     			 {
-
-    				 //formatter = new java.text.DecimalFormat(patternStr, dfs);
     				 formatter = new java.text.DecimalFormat();
 
     				 formatter.setDecimalFormatSymbols(dfs);
     				 formatter.applyLocalizedPattern(patternStr);
     			 }
     		 }
+    		 
+    		 if (formatter == null)
+    		 {    			    			     			 
+    			 if (!m_fn_serialize_call) {
+    				 // look for a possible default decimal-format
+    				 dfs = ss.getDecimalFormatComposed(new QName(""));
 
-    		 //else
-    		 if (null == formatter)
-    		 {
+    				 if (dfs != null)
+    				 {
+    					 formatter = new java.text.DecimalFormat();
 
-    			 // look for a possible default decimal-format
-    			 dfs = ss.getDecimalFormatComposed(new QName(""));
-
-    			 if (dfs != null)
-    			 {
-    				 formatter = new java.text.DecimalFormat();
-
-    				 formatter.setDecimalFormatSymbols(dfs);
-    				 formatter.applyLocalizedPattern(patternStr);
-    			 }
-    			 else
-    			 {
-    				 dfs = new java.text.DecimalFormatSymbols(java.util.Locale.US);
-
-    				 dfs.setInfinity(Constants.ATTRVAL_INFINITY);
-    				 dfs.setNaN(Constants.ATTRVAL_NAN);
-
-    				 formatter = new java.text.DecimalFormat();
-
-    				 formatter.setDecimalFormatSymbols(dfs);
-
-    				 if (null != patternStr)
+    					 formatter.setDecimalFormatSymbols(dfs);
     					 formatter.applyLocalizedPattern(patternStr);
+    				 }
+    				 else
+    				 {
+    					 dfs = new java.text.DecimalFormatSymbols(java.util.Locale.US);
+
+    					 dfs.setInfinity(Constants.ATTRVAL_INFINITY);
+    					 dfs.setNaN(Constants.ATTRVAL_NAN);
+
+    					 formatter = new java.text.DecimalFormat();
+
+    					 formatter.setDecimalFormatSymbols(dfs);
+
+    					 if (patternStr != null)
+    						 formatter.applyLocalizedPattern(patternStr);
+    				 }
+    			 }
+    			 else {
+    				 formatter = new java.text.DecimalFormat(patternStr);
     			 }
     		 }
+    		 
+    		 String formattedStr = formatter.format(num);
+    		 if (isSmallCaseExponentSymbol) {
+    		     formattedStr = formattedStr.replace('E', 'e'); 
+    		 }
 
-    		 return new XString(formatter.format(num));
+    		 return new XSString(formattedStr);
     	 }
     	 catch (Exception iae)
     	 {
@@ -185,8 +206,7 @@ public class FuncFormatNumber extends Function3Args
   }
 
   /**
-   * Overide the superclass method to allow one or two arguments. 
-   *
+   * Override the superclass method to allow one or two arguments. 
    *
    * @param argNum Number of arguments passed in
    *
@@ -194,8 +214,16 @@ public class FuncFormatNumber extends Function3Args
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-    if ((argNum > 3) || (argNum < 2))
-      reportWrongNumberArgs();
+	  if ((argNum > 3) || (argNum < 2))
+		  reportWrongNumberArgs();
+  }
+
+  public boolean isCalledFromFnSerialize() {
+	  return m_fn_serialize_call;
+  }
+  
+  public void setIsCalledFromFnSerialize(boolean bool) {
+	  m_fn_serialize_call = bool;
   }
 
   /**
@@ -207,4 +235,5 @@ public class FuncFormatNumber extends Function3Args
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createMessage(XSLTErrorResources.ER_TWO_OR_THREE, null)); //"2 or 3");
   }
+  
 }

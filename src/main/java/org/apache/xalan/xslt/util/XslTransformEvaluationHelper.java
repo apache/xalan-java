@@ -159,20 +159,22 @@ public class XslTransformEvaluationHelper {
      * context. 
      */
     public static String getPrefixFromNsUri(String nsUri, List<XMLNSDecl> nsPrefixTable) {    	
-    	String xmlSchemaNsPrefix = null;
+    	
+    	String prefix = null;
 
     	if (nsUri != null) {
     		int size1 = nsPrefixTable.size();
     		for (int idx = 0; idx < size1; idx++) {
     			XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
     			if (nsUri.equals(xmlNSDecl.getURI())) {
-    				xmlSchemaNsPrefix = xmlNSDecl.getPrefix();
+    				prefix = xmlNSDecl.getPrefix();
+    				
     				break;
     			}
     		}
     	}
 
-    	return xmlSchemaNsPrefix; 
+    	return prefix; 
     }
     
     /**

@@ -77,6 +77,11 @@ public final class Method
 	 * The output method type for text documents: <tt>json</tt>.
 	 */
 	public static final String JSON = "json";
+	
+	/**
+	 * The output method type <tt>adaptive</tt>.
+	 */
+	public static final String ADAPTIVE = "adaptive";
 
 	/**
 	 * The "internal" method, just used when no method is 

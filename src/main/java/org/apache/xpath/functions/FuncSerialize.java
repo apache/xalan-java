@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -31,15 +32,23 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemCopyOf;
+import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.FuncFormatNumber;
 import org.apache.xalan.templates.OutputProperties;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.serializer.Method;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.QName;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -47,15 +56,24 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.patterns.NodeTest;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Implementation of an XPath 3.1 function fn:serialize.
@@ -217,13 +235,13 @@ public class FuncSerialize extends FunctionMultiArgs {
 						}
 					}
 					else {
-						omitXmlDeclStrValue = Constants.ATTRVAL_LITERAL_NO; 
+						omitXmlDeclStrValue = Constants.ATTRVAL_LITERAL_YES; 
 					}
 
 					if (xMethodObj1 != null) {
 						methodName = XslTransformEvaluationHelper.getStrVal(xMethodObj1);
 						
-						result = getFnSerializeResult(arg0XObj, methodName, indentStrValue, omitXmlDeclStrValue, xctxt, srcLocator, transformer);
+						result = getFnSerializeResult(arg0XObj, m_arg0, methodName, indentStrValue, omitXmlDeclStrValue, xctxt, srcLocator, transformer);
 					}
 					else {
 						// The default XPath 3.1 function fn:serialize method is "xml"
@@ -354,7 +372,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 					   
 					   String methodName = Method.XML;
 					   String indentStrValue = Constants.ATTRVAL_LITERAL_NO;
-					   String omitXmlDeclStrValue = Constants.ATTRVAL_LITERAL_NO;
+					   String omitXmlDeclStrValue = Constants.ATTRVAL_LITERAL_YES;
 					   
 					   int size1 = serParamNameLstInstance.size();
 					   int size2 = serParamValueLstInstance.size();
@@ -416,7 +434,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 																																+ "element(output:serialization-parameters)? or map(*).", srcLocator); 
 					   }
 					   
-					   result = getFnSerializeResult(arg0XObj, methodName, indentStrValue, omitXmlDeclStrValue, xctxt, srcLocator, transformer);					   
+					   result = getFnSerializeResult(arg0XObj, m_arg0, methodName, indentStrValue, omitXmlDeclStrValue, xctxt, srcLocator, transformer);					   
 					}
 					else {
 						throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'serialize' has a "
@@ -443,6 +461,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 	 * Method definition, to XSL serialize the supplied xdm sequence.
 	 * 
 	 * @param arg0XObj											The supplied xdm sequence object
+	 * @param arg0Expr                                          Function's first argument expression object
 	 * @param methodName                                        XSL serialization parameter method name
 	 * @param indentStrValue                                    XSL serialization parameter indent value
 	 * @param omitXmlDeclStrValue                               XSL serialization parameter omit-xml-declaration 
@@ -453,7 +472,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 	 * @return                                                  An XSL serialization result as xs:string value
 	 * @throws TransformerException
 	 */
-	private XObject getFnSerializeResult(XObject arg0XObj, String methodName, String indentStrValue, 
+	private XObject getFnSerializeResult(XObject arg0XObj, Expression arg0Expr, String methodName, String indentStrValue, 
 			                             String omitXmlDeclStrValue, XPathContext xctxt, SourceLocator srcLocator, 
 			                                                                                         TransformerImpl transformer) throws TransformerException {
 		
@@ -544,9 +563,230 @@ public class FuncSerialize extends FunctionMultiArgs {
 				result = xslSerializeXdmSequence(rSeq, strWriter, rhandler, xctxt, srcLocator, transformer);
 			}
 		}
+		else if ((Method.ADAPTIVE).equals(methodName)) {
+			ResultSequence rSeq = XslTransformEvaluationHelper.getResultSequenceFromXObject(arg0XObj, xctxt);
+			int size1 = rSeq.size();
+			
+			ResultSequence rSeqResult = new ResultSequence();
+			
+			for (int idx = 0; idx < size1; idx++) {
+				XObject xObj1 = rSeq.item(idx);
+				if (xObj1 instanceof XMLNodeCursorImpl) {
+				   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj1;
+				   int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+				   DTM dtm = xctxt.getDTM(nodeHandle);
+				   int nodeType = dtm.getNodeType(nodeHandle);
+				   if ((nodeType == DTM.DOCUMENT_NODE) || (nodeType == DTM.ELEMENT_NODE) || 
+						                                      (nodeType == DTM.TEXT_NODE) || (nodeType == DTM.COMMENT_NODE) || 
+						                                                                     (nodeType == DTM.PROCESSING_INSTRUCTION_NODE)) {
+					   StringWriter strWriter = new StringWriter();
+					   StreamResult streamResult = new StreamResult(strWriter);
+					   
+					   ResultSequence rSeq2 = new ResultSequence();
+					   rSeq2.add(xObj1);
+
+					   SerializationHandler rhandler = getXslSerializationHandler(Method.XML, indentStrValue, omitXmlDeclStrValue, transformer, streamResult);
+					   XObject result1 = xslSerializeXdmSequence(rSeq2, strWriter, rhandler, xctxt, srcLocator, transformer);
+					   rSeqResult.add(result1);
+				   }
+				   else if (nodeType == DTM.ATTRIBUTE_NODE) {					   
+					   String localName = dtm.getLocalName(nodeHandle);
+					   String nsUri = dtm.getNamespaceURI(nodeHandle);
+					   String serializedForm = localName; 
+					   if (nsUri != null) {
+						  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
+						  List<XMLNSDecl> prefixTable = (List<XMLNSDecl>)(elemTemplateElement.getPrefixTable());
+						  String prefix = XslTransformEvaluationHelper.getPrefixFromNsUri(nsUri, prefixTable);
+						  serializedForm = prefix + ":" + serializedForm;
+					   }
+					   
+					   String attrValue = dtm.getNodeValue(nodeHandle);					   
+					   serializedForm = (serializedForm + "=\"" + attrValue + "\"");
+					   
+					   rSeqResult.add(new XSString(serializedForm));
+				   }
+				   else if (nodeType == DTM.NAMESPACE_NODE) {					   					   
+					   String nodeName = dtm.getNodeName(nodeHandle);
+					   String nodeValue = dtm.getNodeValue(nodeHandle);
+					   
+					   String serializedForm = (nodeName + "=\"" + nodeValue + "\"");
+					   
+					   rSeqResult.add(new XSString(serializedForm));
+				   }				   
+				}
+				else if ((xObj1 instanceof XSBoolean) || (xObj1 instanceof XBoolean) || (xObj1 instanceof XBooleanStatic)) {
+				   boolean bool = xObj1.bool();				   
+				   String serializedForm = bool ? "true()" : "false()";
+				   
+				   rSeqResult.add(new XSString(serializedForm));				   
+				}
+				else if ((xObj1 instanceof XSString) || (xObj1 instanceof XString) || (xObj1 instanceof XSUntypedAtomic) || (xObj1 instanceof XSAnyURI)) {
+				   String str1 = XslTransformEvaluationHelper.getStrVal(xObj1);
+				   
+				   str1 = str1.replace("\"", "\"\"");
+				   str1 = "\"" + str1 + "\"";
+				   
+				   StringWriter strWriter = new StringWriter();
+				   StreamResult streamResult = new StreamResult(strWriter);
+				   
+				   ResultSequence rSeq2 = new ResultSequence();
+				   rSeq2.add(new XSString(str1));
+
+				   SerializationHandler rhandler = getXslSerializationHandler(Method.TEXT, indentStrValue, omitXmlDeclStrValue, transformer, streamResult);
+				   XObject result1 = xslSerializeXdmSequence(rSeq2, strWriter, rhandler, xctxt, srcLocator, transformer);
+				   rSeqResult.add(result1);
+				}
+				else if ((xObj1 instanceof XSInteger) || (xObj1 instanceof XSDecimal)) {
+				   String str1 = XslTransformEvaluationHelper.getStrVal(xObj1);
+				   
+				   rSeqResult.add(new XSString(str1));
+				}
+				else if (xObj1 instanceof XSDouble) {
+					FuncFormatNumber funcFormatNumber = new FuncFormatNumber();					
+					
+					funcFormatNumber.setIsCalledFromFnSerialize(true);
+					
+					XObject arg0 = xObj1; 
+					XObject arg1 = new XSString("0.0##########################e0");
+					funcFormatNumber.setArg0(arg0);
+					try {
+					   funcFormatNumber.setArg(arg1, 1);
+					} 
+					catch (WrongNumberArgsException ex) {
+						// no op
+					}
+					
+					XObject xObj2 = funcFormatNumber.execute(xctxt);
+					String str1 = XslTransformEvaluationHelper.getStrVal(xObj2);
+					
+					str1 = str1.replace('E', 'e');
+					
+					rSeqResult.add(new XSString(str1));
+				}
+				else if (xObj1 instanceof XNumber) {
+					XNumber xNumber = (XNumber)xObj1;
+					XSDouble xsDouble = new XSDouble(xNumber.num());
+					
+                    FuncFormatNumber funcFormatNumber = new FuncFormatNumber();					
+					
+					funcFormatNumber.setIsCalledFromFnSerialize(true);
+					
+					XObject arg0 = xsDouble; 
+					XObject arg1 = new XSString("0.0##########################e0");
+					funcFormatNumber.setArg0(arg0);
+					try {
+					   funcFormatNumber.setArg(arg1, 1);
+					} 
+					catch (WrongNumberArgsException ex) {
+						// no op
+					}
+					
+					XObject xObj2 = funcFormatNumber.execute(xctxt);
+					String str1 = XslTransformEvaluationHelper.getStrVal(xObj2);
+					
+					str1 = str1.replace('E', 'e');
+					
+					rSeqResult.add(new XSString(str1));					
+				}
+				else if (xObj1 instanceof XSQName) {
+					XSQName xObj2 = (XSQName)xObj1;
+					String localPart = xObj2.getLocalPart();
+					String nsUri = xObj2.getNamespaceUri();
+					
+					String str1 = null;
+					if ((nsUri == null) || "".equals(nsUri)) {
+					   str1 = "Q{}" + localPart;
+					}
+					else {
+					   str1 = "Q{" + nsUri + "}" + localPart;	
+					}
+					
+					rSeqResult.add(new XSString(str1));
+				}
+				else if (xObj1 instanceof XSAnyAtomicType) {										
+					String typeName = ((XSAnyAtomicType)xObj1).stringType();
+					String value1 = XslTransformEvaluationHelper.getStrVal(xObj1);
+					
+					String str1 = (typeName + "(\"" + value1 + "\")");
+					
+					rSeqResult.add(new XSString(str1));
+				}				
+				else if (xObj1 instanceof XPathArray) {
+					JSONArray jsonArray = getJSONArrayFromXdmArray((XPathArray)xObj1);
+					String str1 = jsonArray.toString();
+					
+					rSeqResult.add(new XSString(str1));
+				}
+				else if (xObj1 instanceof XPathMap) {
+					JSONObject jsonObj = getJSONObjectFromXdmMap((XPathMap)xObj1);
+					String str1 = jsonObj.toString();
+					
+					str1 = str1.replace("{", "map{");
+					
+					rSeqResult.add(new XSString(str1));
+				}				
+				else if (xObj1 instanceof XPathInlineFunction) {
+					XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)xObj1;
+					List<InlineFunctionParameter> paramList = xpathInlineFunction.getFuncParamList();
+					int arity = paramList.size();
+					
+					String str1 = "(anonymous-function)#" + arity;
+					
+					rSeqResult.add(new XSString(str1));
+				}
+				else if (arg0Expr instanceof XPathNamedFunctionReference) {
+					XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)arg0Expr;
+					String funcName = xpathNamedFunctionReference.getFuncName();
+					String nsUri = xpathNamedFunctionReference.getFuncNamespace();
+					String str1 = "";
+					if (nsUri != null) {
+						ElemTemplateElement elemTemplateElement = (ElemTemplateElement)(getExpressionOwner());
+						List<XMLNSDecl> prefixTable = elemTemplateElement.getPrefixTable();
+						String prefix = XslTransformEvaluationHelper.getPrefixFromNsUri(nsUri, prefixTable);
+						if ((prefix != null) && !"".equals(prefix)) {
+							str1 = prefix + ":";
+						}
+						else if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri)) {
+							str1 = "fn:";
+						}
+						else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(nsUri)) {    	       	   
+							str1 = "math:";
+						}
+						else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {    	       	   
+							str1 = "map:";
+						}
+						else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {     	   
+							str1 = "array:";
+						}
+						else if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(nsUri)) {
+							str1 = "xs:";
+						}
+					}					
+					
+					short arity = xpathNamedFunctionReference.getArity();
+					str1 = (str1 + funcName + "#"+ arity);
+					rSeqResult.add(new XSString(str1));
+				}
+			}
+			
+			if ((size1 == 0) && (arg0Expr instanceof NodeTest)) {
+				ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)arg0Expr, transformer, srcLocator);
+                if (elemFunction != null) {				
+                	QName fQName = elemFunction.getName();
+                	String localPart = fQName.getLocalPart();
+                	String nsUri = fQName.getNamespace();
+                	short arity = elemFunction.getArity();
+                	String str1 = "Q{" + nsUri + "}" + localPart + "#"+ arity;
+                	
+                	rSeqResult.add(new XSString(str1));
+                }
+			}
+			
+			result = rSeqResult; 
+		}
 		else {
 			throw new javax.xml.transform.TransformerException("SEPM0016 : This implementation supports XPath 3.1 function 'serialize', "
-																											+ "serialization methods : xml, html, xhtml, text, json. "
+																											+ "serialization methods : xml, html, xhtml, text, json, adaptive. "
 																											+ "The supplied XSL serialization method is " + methodName + ".", srcLocator);
 		}
 
@@ -675,6 +915,62 @@ public class FuncSerialize extends FunctionMultiArgs {
 
 				result.put(keyStr1, jsonArr);
 			}
+			else if (value instanceof ResultSequence) {				
+                JSONArray jsonArr = new JSONArray();
+                
+                jsonArr.setIsXdmSequence(true);
+				
+                ResultSequence rSeq = (ResultSequence)value;								
+				int size1 = rSeq.size(); 
+				
+				for (int idx = 0; idx < size1; idx++) {
+					XObject xObj1 = rSeq.item(idx);					
+					if ((xObj1 instanceof XString) || (xObj1 instanceof XSString)) {
+					    jsonArr.put(XslTransformEvaluationHelper.getStrVal(xObj1));
+					}
+					else if (xObj1 instanceof XSNumericType) {
+						String valueStr1 = XslTransformEvaluationHelper.getStrVal(xObj1);
+						jsonArr.put(Double.valueOf(valueStr1));
+					}
+					else if (xObj1 instanceof XNumber) {
+						String valueStr1 = XslTransformEvaluationHelper.getStrVal(xObj1);
+						jsonArr.put(Double.valueOf(valueStr1));
+					}
+					else if (xObj1 instanceof XSBoolean) {
+						boolean bool1 = xObj1.bool();
+						jsonArr.put(bool1);
+					}
+					else if ((xObj1 instanceof XBoolean) || (xObj1 instanceof XBooleanStatic)) {
+						boolean bool1 = xObj1.bool();
+						jsonArr.put(bool1);
+					}
+					else if (xObj1 instanceof XPathMap) {
+						JSONObject jsonObj = getJSONObjectFromXdmMap((XPathMap)xObj1);
+						jsonArr.put(jsonObj);
+					}
+					else if (xObj1 instanceof XPathArray) {
+						JSONArray jsonArr2 = getJSONArrayFromXdmArray((XPathArray)xObj1);
+						jsonArr.put(jsonArr2);
+					}
+					else if (xObj1 instanceof ResultSequence) {
+						XPathArray xpathArr = new XPathArray();
+						
+						ResultSequence rSeq2 = (ResultSequence)xObj1;						
+						int size2 = rSeq2.size();
+						for (int idx2 = 0; idx2 < size2; idx2++) {
+						   XObject xObj2 = rSeq2.item(idx2);
+						   xpathArr.add(xObj2);
+						}
+						
+						JSONArray jsonArr2 = getJSONArrayFromXdmArray(xpathArr);						
+						jsonArr2.setIsXdmSequence(true);						
+						
+						jsonArr.put(jsonArr2);
+					}
+				}
+
+				result.put(keyStr1, jsonArr);
+			}
 		}
 
 		return result;
@@ -721,6 +1017,21 @@ public class FuncSerialize extends FunctionMultiArgs {
 			}
 			else if (arrItem instanceof XPathArray) {
 				JSONArray jsonArr2 = getJSONArrayFromXdmArray((XPathArray)arrItem);
+				result.put(jsonArr2);
+			}
+			else if (arrItem instanceof ResultSequence) {
+				XPathArray xpathArr2 = new XPathArray();
+
+				ResultSequence rSeq2 = (ResultSequence)arrItem;						
+				int size2 = rSeq2.size();
+				for (int idx2 = 0; idx2 < size2; idx2++) {
+					XObject xObj2 = rSeq2.item(idx2);
+					xpathArr2.add(xObj2);
+				}
+
+				JSONArray jsonArr2 = getJSONArrayFromXdmArray(xpathArr2);						
+				jsonArr2.setIsXdmSequence(true);
+
 				result.put(jsonArr2);
 			}
 		}

@@ -299,7 +299,7 @@ public class XPathMapConstructor extends Expression {
                   }
                }               
             }
-            else if (xPathExprPartResult instanceof ResultSequence) {
+            /*else if (xPathExprPartResult instanceof ResultSequence) {
                ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult;
                XPathArray mapEntryValue = new XPathArray();
                for (int idx1 = 0; idx1 < inpResultSeq.size(); idx1++) {
@@ -318,6 +318,21 @@ public class XPathMapConstructor extends Expression {
                }
                
                return mapEntryValue;
+            }*/
+            else if (xPathExprPartResult instanceof ResultSequence) {
+               ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult;
+               if (KEY.equals(mapComponentName)) {
+            	  if (inpResultSeq.size() > 1) {
+            		 throw new javax.xml.transform.TransformerException("XPTY0004 : Key of a map cannot be a sequence of size greater than one.", srcLocator); 
+            	  }
+            	  else if (inpResultSeq.size() == 1) {
+            		 result = inpResultSeq.item(0);
+            		 
+            		 return result;
+            	  }
+               }
+               
+               return inpResultSeq;
             }
             else {
                return xPathExprPartResult;               

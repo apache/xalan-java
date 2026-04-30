@@ -1873,15 +1873,17 @@ public class XPathParser
      		  
      		  String mapEntryValueXPathExprStr = null;
      		  if (tokenIs("map")) {
-     			  // There's likely an XPath map constructor here, 
-     			  // within this map. 	        		
+     			  // There's likely an XPath map constructor here, within this map 	        		
      			  mapEntryValueXPathExprStr = getXPathMapConstructorStrValue();
      		  }
      		  else if (tokenIs('[')) {
-     			  // There's likely an XPath square array constructor here, 
-     			  // within this map. 	        		
+     			  // There's likely an XPath square array constructor here, within this map 	        		
      			  mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(true); 
      		  }
+     		  else if (tokenIs('(')) {
+    			  // There's likely an XPath literal sequence here, within this map 	        		
+    			  mapEntryValueXPathExprStr = getXPathSequenceConstructorStrValue();
+    		  }
      		  else if (tokenIs("array") && lookahead('{', 1)) {
      			  // There's likely an XPath curly array constructor here, 
      			  // within this map. 	        		
@@ -2522,26 +2524,26 @@ public class XPathParser
    *  Get XPath map constructor's string value.
    */
   private String getXPathMapConstructorStrValue() throws TransformerException {
-	 StringBuffer mapStrBuf = new StringBuffer();
 	 
-	 mapStrBuf.append(m_token);
+	 StringBuffer resultStrBuff = new StringBuffer();
+	 
+	 resultStrBuff.append(m_token);
 	 
 	 consumeExpected("map");
 	 
 	 while (m_token != null) {
 		if (tokenIs('}')) {
-		   mapStrBuf.append(m_token);
+		   resultStrBuff.append(m_token);
 		   consumeExpected('}');
-		   if (getCharCount(mapStrBuf.toString(), '{') == 
-				                 					getCharCount(mapStrBuf.toString(), '}')) {
+		   if (getCharCount(resultStrBuff.toString(), '{') == getCharCount(resultStrBuff.toString(), '}')) {
 			   break; 
 		   }
 		   else {
 			   if (tokenIs(':')) {
-				   mapStrBuf.append(" " + m_token + " "); 
+				   resultStrBuff.append(" " + m_token + " "); 
 			   }
 			   else {
-				   mapStrBuf.append(m_token);   
+				   resultStrBuff.append(m_token);   
 			   }
 			   
 			   nextToken(); 
@@ -2549,46 +2551,47 @@ public class XPathParser
 		}
 		else {
 		   if (tokenIs(':')) {
-			  mapStrBuf.append(" " + m_token + " "); 
+			  resultStrBuff.append(" " + m_token + " "); 
 		   }
 		   else {
-			  mapStrBuf.append(m_token);   
+			  resultStrBuff.append(m_token);   
 		   }
 		   
 		   nextToken();
 		}			 
      }
 	 
-	 return mapStrBuf.toString(); 
+	 return resultStrBuff.toString(); 
   }
   
   /**
    *  Get XPath array constructor's string value.
    */
   private String getXPathArrayConstructorStrValue(boolean isSquareArrayCons) throws TransformerException {
-	 StringBuffer arrayStrBuf = new StringBuffer();
+	  
+	 StringBuffer resultStrBuff = new StringBuffer();
 	 
-	 arrayStrBuf.append(m_token);
+	 resultStrBuff.append(m_token);
 	 
 	 if (isSquareArrayCons) {
 	    consumeExpected('[');
 	 }
 	 else {		 
 		consumeExpected("array");
-		arrayStrBuf.append(m_token);
+		resultStrBuff.append(m_token);
 		consumeExpected('{');
 	 }
 	 
 	 while (m_token != null) {
 		if (tokenIs("map")) {
 			String mapStrVal = getXPathMapConstructorStrValue();
-			arrayStrBuf.append(mapStrVal);
-			arrayStrBuf.append(m_token);
+			resultStrBuff.append(mapStrVal);
+			resultStrBuff.append(m_token);
 			nextToken();
 		}
 		else if (isSquareArrayCons && tokenIs(']')) {
-		   arrayStrBuf.append(m_token);
-		   if (getCharCount(arrayStrBuf.toString(), '[') == getCharCount(arrayStrBuf.toString(), ']')) {
+		   resultStrBuff.append(m_token);
+		   if (getCharCount(resultStrBuff.toString(), '[') == getCharCount(resultStrBuff.toString(), ']')) {
 		      break;
 		   }
 		   else {
@@ -2596,25 +2599,79 @@ public class XPathParser
 		   }
 		}
 		else if (isSquareArrayCons && tokenIs(',')) {
-		   if (getCharCount(arrayStrBuf.toString(), '[') == getCharCount(arrayStrBuf.toString(), ']')) {
+		   if (getCharCount(resultStrBuff.toString(), '[') == getCharCount(resultStrBuff.toString(), ']')) {
 			  break;
 		   }
 		   else {
-			  arrayStrBuf.append(m_token);
+			  resultStrBuff.append(m_token);
 			  nextToken();
 		   }
 		}
 		else if (!isSquareArrayCons && tokenIs('}')) {
-		   arrayStrBuf.append(m_token);
+		   resultStrBuff.append(m_token);
 		   break;
 		}		
 		else {
-		   arrayStrBuf.append(m_token);
+		   resultStrBuff.append(m_token);
 		   nextToken();
 		}			 
      }
 	 
-	 return arrayStrBuf.toString(); 
+	 return resultStrBuff.toString(); 
+  }
+  
+  /**
+   *  Get XPath literal sequence constructor's string value.
+   */
+  private String getXPathSequenceConstructorStrValue() throws TransformerException {
+	  
+	 StringBuffer resultStrBuff = new StringBuffer();
+	 
+	 resultStrBuff.append(m_token);
+	 
+	 consumeExpected('(');
+	 
+	 while (m_token != null) {
+		if (tokenIs("map")) {
+			String mapStrVal = getXPathMapConstructorStrValue();
+			resultStrBuff.append(mapStrVal);
+			resultStrBuff.append(m_token);
+			nextToken();
+		}
+		else if (tokenIs(')')) {
+		   resultStrBuff.append(m_token);
+		   if (getCharCount(resultStrBuff.toString(), '(') == getCharCount(resultStrBuff.toString(), ')')) {
+			  consumeExpected(')');
+			  
+		      break;
+		   }
+		   else {
+			  nextToken(); 
+		   }
+		}
+		else if (tokenIs(',')) {
+		   if (getCharCount(resultStrBuff.toString(), '(') == getCharCount(resultStrBuff.toString(), ')')) {
+			  break;
+		   }
+		   else {
+			  resultStrBuff.append(m_token);
+			  nextToken();
+		   }
+		}
+		else if (tokenIs("to")) {
+		   resultStrBuff.append(" ");
+		   resultStrBuff.append(m_token);
+		   resultStrBuff.append(" ");
+		   
+		   nextToken();
+		}
+		else {
+		   resultStrBuff.append(m_token);
+		   nextToken();
+		}			 
+     }
+	 
+	 return resultStrBuff.toString(); 
   }
   
   /**

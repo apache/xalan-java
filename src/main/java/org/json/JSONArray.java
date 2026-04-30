@@ -66,6 +66,14 @@ public class JSONArray implements Iterable<Object> {
      * The arrayList where the JSONArray's properties are kept.
      */
     private final ArrayList<Object> myArrayList;
+    
+    /**
+     * This value is true, when this object instance represents an
+     * xdm sequence.
+     * 
+     * Added to help support Xalan Java XSLT 3.0 implementation.
+     */
+    private boolean isXdmSequence = false;
 
     /**
      * Construct an empty JSONArray.
@@ -1796,7 +1804,13 @@ public class JSONArray implements Iterable<Object> {
         try {
             boolean needsComma = false;
             int length = this.length();
-            writer.write('[');
+            
+            if (!isXdmSequence) {
+               writer.write('[');
+            }
+            else {
+               writer.write('(');	
+            }
 
             if (length == 1) {
                 try {
@@ -1829,7 +1843,14 @@ public class JSONArray implements Iterable<Object> {
                 }
                 JSONObject.indent(writer, indent);
             }
-            writer.write(']');
+            
+            if (!isXdmSequence) {
+               writer.write(']');
+            }
+            else {
+               writer.write(')');	
+            }
+            
             return writer;
         } catch (IOException e) {
             throw new JSONException(e);
@@ -2022,5 +2043,13 @@ public class JSONArray implements Iterable<Object> {
                 "JSONArray[" + idx + "] is not a " + valueType + " (" + value.getClass() + " : " + value + ")."
                 , cause);
     }
+    
+    public boolean isXdmSequence() {
+    	return isXdmSequence;
+    }
+
+	public void setIsXdmSequence(boolean bool1) {
+	   isXdmSequence = bool1;		
+	}
 
 }
