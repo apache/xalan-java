@@ -420,6 +420,8 @@ public class XPathParser
        error(XPATHErrorResources.ER_UNCLOSED_XPATH_COMMENT, new Object[]{});
     }
 
+    expression = normalizeMapKeyValueSeparator(expression);
+
     lexer.tokenize(expression);
     
     if (lexer.isNsBindingRequired() && !lexer.isNsBound()) {
@@ -1962,7 +1964,6 @@ public class XPathParser
      	  
      	  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
      			                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
-    	  
       }
       else if (lookahead(':', 1)) {    	  
     	 // XPath parse of named function reference, for XPath built-in 
@@ -8903,6 +8904,87 @@ public class XPathParser
   			  nextToken();   
   		  }
   	   }
+    }
+    
+    /**
+     * Method definition, to normalize XPath expression string,
+     * containing one or more, map expression literals (i.e, map {...}).
+     * 
+     * This method, replaces map expression substrings like a:b to a : b.
+     * 
+     * @param expression				The supplied XPath expression string
+     * @return                          The modified XPath expression string
+     */
+    private String normalizeMapKeyValueSeparator(String expression) {
+  	  
+    	String result = null;
+
+    	String str1 = expression;
+
+    	java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("map\\s*\\{.*\\}");
+    	java.util.regex.Matcher regexMatcher = pattern.matcher(str1);
+
+    	List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();
+
+    	while (regexMatcher.find()) {
+    		int a = regexMatcher.start();
+    		int b = regexMatcher.end();
+    		RegexMatchInfo regexMatchInfo = new RegexMatchInfo();
+    		regexMatchInfo.setStartIdx(a);
+    		regexMatchInfo.setEndIdx(b);
+    		regexMatchInfoList.add(regexMatchInfo);
+    	}
+
+    	regexMatcher.reset();
+
+    	int size1 = regexMatchInfoList.size();
+    	for (int idx = 0; idx < size1; idx++) {
+    		RegexMatchInfo regexMatchInfo = regexMatchInfoList.get(idx);
+    		int m = regexMatchInfo.getStartIdx();
+    		int n = regexMatchInfo.getEndIdx();
+    		String prefixStr = str1.substring(0, m);
+    		String suffixStr = str1.substring(n);
+    		String mapExprStr = str1.substring(m, n);
+    		mapExprStr = mapExprStr.replace(":", " : ");
+    		str1 = (prefixStr + mapExprStr + suffixStr);
+    	}
+
+    	result = str1;
+
+    	return result;
+    }
+    
+    /**
+     * Class definition, used to represent regex processing 
+     * information, used within this class.
+     */
+    class RegexMatchInfo {    	
+    	private int startIdx;
+    	
+    	private int endIdx;
+    	
+    	/**
+    	 * Class constructor.
+    	 */
+    	public RegexMatchInfo() {
+    	    // no op
+    	}
+
+		public int getStartIdx() {
+			return startIdx;
+		}
+
+		public void setStartIdx(int startIdx) {
+			this.startIdx = startIdx;
+		}
+
+		public int getEndIdx() {
+			return endIdx;
+		}
+
+		public void setEndIdx(int endIdx) {
+			this.endIdx = endIdx;
+		}
     }
   
 }

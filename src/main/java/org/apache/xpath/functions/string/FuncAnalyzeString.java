@@ -45,7 +45,7 @@ import org.w3c.dom.Text;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of the fn:analyze-string function.
+ * Implementation of XPath 3.1 function fn:analyze-string.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

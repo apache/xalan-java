@@ -100,6 +100,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 	// This fn:format-number picture string is specified by,
 	// 'XSLT and XQuery Serialization 3.1' specification.
 	private static final String FORMAT_NUMBER_PIC_STRING = "0.0##########################e0";
+	
 
 	/**
 	 * Class constructor.
@@ -858,6 +859,12 @@ public class FuncSerialize extends FunctionMultiArgs {
 				else if (xObj1 instanceof XPathMap) {
 					JSONObject jsonObj = getJSONObjectFromXdmMap((XPathMap)xObj1);
 					String str1 = jsonObj.toString();
+					int length1 = str1.length();
+					str1 = str1.replace("\"Numeric##", "");
+					int length2 = str1.length();
+					if (length1 != length2) {
+					   str1 = str1.replace("\":", ":");
+					}
 					
 					str1 = str1.replace("{", "map{");
 					
@@ -1041,7 +1048,10 @@ public class FuncSerialize extends FunctionMultiArgs {
 			XObject key = iter1.next();
 			XObject value = nativeMap.get(key);
 			
-			String keyStr1 = XslTransformEvaluationHelper.getStrVal(key);			
+			boolean isKeyNumeric = (((key instanceof XSNumericType) || (key instanceof XNumber)) ? true : false);
+			
+			String keyStr1 = XslTransformEvaluationHelper.getStrVal(key);
+			keyStr1 = (isKeyNumeric ? "Numeric##" + keyStr1 : keyStr1);
 
 			if ((value instanceof XString) || (value instanceof XSString)) {
 				String valueStr1 = XslTransformEvaluationHelper.getStrVal(value);
