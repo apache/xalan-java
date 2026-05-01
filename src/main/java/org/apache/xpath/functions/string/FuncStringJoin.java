@@ -84,7 +84,11 @@ public class FuncStringJoin extends Function2Args {
 	        XObject evalResult = m_arg0.execute(xctxt);
 	        if (evalResult instanceof ResultSequence) {
 	           arg0ResultSeq = (ResultSequence)evalResult;   
-	        }	        
+	        }
+	        else {
+	           arg0ResultSeq = new ResultSequence();
+	           arg0ResultSeq.add(evalResult);
+	        }
 	    }    
 	    else if (m_arg0 instanceof LocPathIterator) {
 	        arg0ResultSeq = new ResultSequence();
@@ -126,6 +130,10 @@ public class FuncStringJoin extends Function2Args {
 	    		for (int idx = 0; idx < resultSeq.size(); idx++) {
 	    			arg0ResultSeq.add(resultSeq.item(idx));  
 	    		}
+	    	}
+	    	else {
+	    		arg0ResultSeq = new ResultSequence();
+	    		arg0ResultSeq.add(evalResult);
 	    	}
 	    }
 	    

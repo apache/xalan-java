@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>[1,2,3]</one>
+  <two>map{"a1":1,"a2":2}</two>
+  <three>map{"a1":1,"a2":[1,2,3],"a3":map{"b1":5}}</three>
+  <four>(anonymous-function)#1</four>
+  <five>
+    <a>fn:exists#1</a>
+    <b>fn:exists#1</b>
+    <c>math:pi#0</c>
+    <d>Q{http://fn0}func1#1</d>
+  </five>
+</result>

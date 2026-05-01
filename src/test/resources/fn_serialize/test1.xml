@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <a id="123" xmlns:ns0="http://ns0">hello</a>
+   <!-- comment 1 -->
+   <?abc x="1" y="2"?>
+   <b>abcde</b>
+</root>

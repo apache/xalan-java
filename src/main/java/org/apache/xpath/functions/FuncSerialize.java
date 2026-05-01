@@ -86,7 +86,20 @@ public class FuncSerialize extends FunctionMultiArgs {
 
 	private static final long serialVersionUID = -2074055550828065958L;
 	
-	private static final int SER_PARAM_COUNT_SUPPORTED = 3;
+	/**
+	 * Class fields, defining few constant values used by this class
+	 * implementation.
+	 */
+	
+	// The number of fn:serialize parameters supported by this implementation.
+	// These are : method, indent, encoding, omit-xml-declaration, item-separator
+	private static final int SER_PARAM_COUNT_SUPPORTED = 5;
+	
+	private static final String UTF_8 = "UTF-8";
+	
+	// This fn:format-number picture string is specified by,
+	// 'XSLT and XQuery Serialization 3.1' specification.
+	private static final String FORMAT_NUMBER_PIC_STRING = "0.0##########################e0";
 
 	/**
 	 * Class constructor.
@@ -122,6 +135,10 @@ public class FuncSerialize extends FunctionMultiArgs {
 		
 		if (m_arg0 != null) {
 			XObject arg0XObj = m_arg0.execute(xctxt);
+			
+			String itemSeparatorStr = null;
+			
+			String encodingStr = null;
 
 			if (m_arg1 == null) {
 				// An XPath 3.1 function call fn:serialize is called with only one argument
@@ -136,8 +153,10 @@ public class FuncSerialize extends FunctionMultiArgs {
 
 				StringWriter strWriter = new StringWriter();
 				StreamResult streamResult = new StreamResult(strWriter);
+				
+				encodingStr = UTF_8;
 
-				SerializationHandler rhandler = getXslSerializationHandler(Method.XML, Constants.ATTRVAL_LITERAL_NO, Constants.ATTRVAL_LITERAL_NO, 
+				SerializationHandler rhandler = getXslSerializationHandler(Method.XML, Constants.ATTRVAL_LITERAL_NO, encodingStr, Constants.ATTRVAL_LITERAL_NO, 
 						 																														transformer, streamResult); 			  
 				
 				result = xslSerializeXdmSequence(rSeq, strWriter, rhandler, xctxt, srcLocator, transformer);			  
@@ -151,7 +170,12 @@ public class FuncSerialize extends FunctionMultiArgs {
 					// XPath 3.1 function fn:serialization parameters are specified using an 
 					// xdm map.
 					
-					XPathMap xpathMap = (XPathMap)arg1Obj;				 
+					XPathMap xpathMap = (XPathMap)arg1Obj;
+					
+					XObject xObjItemSeparator = xpathMap.get(new XSString(Constants.ATTRNAME_ITEM_SEPARATOR));
+					if (xObjItemSeparator != null) {
+					   itemSeparatorStr = XslTransformEvaluationHelper.getStrVal(xObjItemSeparator); 
+					}
 
 					XObject xMethodObj1 = xpathMap.get(new XSString(Constants.ATTRNAME_OUTPUT_METHOD));
 					String methodName = null;				 
@@ -195,7 +219,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 					}
 					else {
 						indentStrValue = Constants.ATTRVAL_LITERAL_NO; 
-					}
+					}					
 
 					XObject xObj2 = xpathMap.get(new XSString(Constants.ATTRNAME_OUTPUT_OMITXMLDECL));
 					String omitXmlDeclStrValue = null;
@@ -237,11 +261,17 @@ public class FuncSerialize extends FunctionMultiArgs {
 					else {
 						omitXmlDeclStrValue = Constants.ATTRVAL_LITERAL_YES; 
 					}
-
+					
+					XObject xObj3 = xpathMap.get(new XSString(Constants.ATTRNAME_OUTPUT_ENCODING));
+					if (xObj3 != null) {
+					   encodingStr = XslTransformEvaluationHelper.getStrVal(xObj3);
+					}
+					
 					if (xMethodObj1 != null) {
 						methodName = XslTransformEvaluationHelper.getStrVal(xMethodObj1);
 						
-						result = getFnSerializeResult(arg0XObj, m_arg0, methodName, indentStrValue, omitXmlDeclStrValue, xctxt, srcLocator, transformer);
+						result = getFnSerializeResult(arg0XObj, m_arg0, methodName, indentStrValue, encodingStr, omitXmlDeclStrValue, 
+								                                                               xctxt, srcLocator, transformer, itemSeparatorStr);
 					}
 					else {
 						// The default XPath 3.1 function fn:serialize method is "xml"
@@ -257,7 +287,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 						StringWriter strWriter = new StringWriter();
 						StreamResult streamResult = new StreamResult(strWriter);
 
-						SerializationHandler rhandler = getXslSerializationHandler(Method.XML, indentStrValue, omitXmlDeclStrValue, transformer, streamResult);
+						SerializationHandler rhandler = getXslSerializationHandler(Method.XML, indentStrValue, encodingStr, omitXmlDeclStrValue, transformer, streamResult);
 
 						result = xslSerializeXdmSequence(rSeq, strWriter, rhandler, xctxt, srcLocator, transformer);
 					}
@@ -277,6 +307,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 					   serParamNameLstDefn.add(OutputKeys.METHOD);
 					   serParamNameLstDefn.add(OutputKeys.INDENT);
 					   serParamNameLstDefn.add(OutputKeys.OMIT_XML_DECLARATION);
+					   serParamNameLstDefn.add(Constants.ATTRNAME_ITEM_SEPARATOR);
 					   
 					   List<String> serParamNameLstInstance = new ArrayList<String>();
 					   List<String> serParamValueLstInstance = new ArrayList<String>();
@@ -290,6 +321,16 @@ public class FuncSerialize extends FunctionMultiArgs {
 					   int child3 = DTM.NULL;					   
 					   if (child2 != DTM.NULL) {
 						   child3 = dtm.getNextSibling(child2); 
+					   }
+					   
+					   int child4 = DTM.NULL;					   
+					   if (child3 != DTM.NULL) {
+						   child4 = dtm.getNextSibling(child3); 
+					   }
+					   
+					   int child5 = DTM.NULL;					   
+					   if (child4 != DTM.NULL) {
+						   child5 = dtm.getNextSibling(child4); 
 					   }
 					   
 					   if (child1 != DTM.NULL) {
@@ -370,6 +411,58 @@ public class FuncSerialize extends FunctionMultiArgs {
 						   }
 					   }
 					   
+					   if (child4 != DTM.NULL) {
+						   short nodeType1 = dtm.getNodeType(child4);
+						   if (nodeType1 == DTM.ELEMENT_NODE) {
+							   String nsUri1 = dtm.getNamespaceURI(child4);
+							   if ((Constants.XSL_SER_NAMESACE).equals(nsUri1)) {
+								   String nodeLocalName1 = dtm.getLocalName(child4);
+								   serParamNameLstInstance.add(nodeLocalName1);
+								   int attrNode1 = dtm.getAttributeNode(child4, null, Constants.ATTRNAME_VALUE);
+								   String value1 = dtm.getNodeValue(attrNode1);
+								   if (value1 != null) {
+								      serParamValueLstInstance.add(value1); 
+								   }
+							   }
+							   else {
+								   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'serialize' has a "
+																															  + "second argument, but its not of type "
+																															  + "element(output:serialization-parameters)? or map(*).", srcLocator);
+							   }
+						   }
+						   else {
+							   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'serialize' has a "
+																														      + "second argument, but its not of type "
+																															  + "element(output:serialization-parameters)? or map(*).", srcLocator);
+						   }
+					   }
+					   
+					   if (child5 != DTM.NULL) {
+						   short nodeType1 = dtm.getNodeType(child5);
+						   if (nodeType1 == DTM.ELEMENT_NODE) {
+							   String nsUri1 = dtm.getNamespaceURI(child5);
+							   if ((Constants.XSL_SER_NAMESACE).equals(nsUri1)) {
+								   String nodeLocalName1 = dtm.getLocalName(child5);
+								   serParamNameLstInstance.add(nodeLocalName1);
+								   int attrNode1 = dtm.getAttributeNode(child5, null, Constants.ATTRNAME_VALUE);
+								   String value1 = dtm.getNodeValue(attrNode1);
+								   if (value1 != null) {
+								      serParamValueLstInstance.add(value1); 
+								   }
+							   }
+							   else {
+								   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'serialize' has a "
+																															  + "second argument, but its not of type "
+																															  + "element(output:serialization-parameters)? or map(*).", srcLocator);
+							   }
+						   }
+						   else {
+							   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'serialize' has a "
+																														      + "second argument, but its not of type "
+																															  + "element(output:serialization-parameters)? or map(*).", srcLocator);
+						   }
+					   }
+					   
 					   String methodName = Method.XML;
 					   String indentStrValue = Constants.ATTRVAL_LITERAL_NO;
 					   String omitXmlDeclStrValue = Constants.ATTRVAL_LITERAL_YES;
@@ -414,6 +507,12 @@ public class FuncSerialize extends FunctionMultiArgs {
 																											    				+ "a valid representation of parameter 'omit-xml-declaration'.", srcLocator); 
 							    	  }
 								   }
+							       else if (paramName.equals(Constants.ATTRNAME_ITEM_SEPARATOR)) {
+							    	  itemSeparatorStr = serParamValueLstInstance.get(idx);  
+							       }
+							       else if (paramName.equals(Constants.ATTRNAME_OUTPUT_ENCODING)) {
+								      encodingStr = serParamValueLstInstance.get(idx);  
+								   }
 							    }
 							    else {
 							       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'serialize' has a "
@@ -434,7 +533,8 @@ public class FuncSerialize extends FunctionMultiArgs {
 																																+ "element(output:serialization-parameters)? or map(*).", srcLocator); 
 					   }
 					   
-					   result = getFnSerializeResult(arg0XObj, m_arg0, methodName, indentStrValue, omitXmlDeclStrValue, xctxt, srcLocator, transformer);					   
+					   result = getFnSerializeResult(arg0XObj, m_arg0, methodName, indentStrValue, encodingStr, omitXmlDeclStrValue, 
+							                                                                  xctxt, srcLocator, transformer, itemSeparatorStr);					   
 					}
 					else {
 						throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'serialize' has a "
@@ -461,20 +561,26 @@ public class FuncSerialize extends FunctionMultiArgs {
 	 * Method definition, to XSL serialize the supplied xdm sequence.
 	 * 
 	 * @param arg0XObj											The supplied xdm sequence object
-	 * @param arg0Expr                                          Function's first argument expression object
+	 * @param arg0Expr                                          The function fn:serialize first argument 
+	 *                                                          expression object.
 	 * @param methodName                                        XSL serialization parameter method name
 	 * @param indentStrValue                                    XSL serialization parameter indent value
-	 * @param omitXmlDeclStrValue                               XSL serialization parameter omit-xml-declaration 
+	 * @param encodingStr                                       XSL serialization parameter encoding name 
+	 *                                                          string.
+	 * @param omitXmlDeclStr                                    XSL serialization parameter omit-xml-declaration 
 	 *                                                          value, when serialization method is "xml".
 	 * @param xctxt                                             An XPath context object
 	 * @param srcLocator                                        An XSL transformation SourceLocator object 
 	 * @param transformer                                       An XSL transformation TransformerImpl object
+	 * @param itemSeparatorStr                                  The function fn:serializer parameter "item-separator" 
+	 *                                                          string value.
 	 * @return                                                  An XSL serialization result as xs:string value
 	 * @throws TransformerException
 	 */
-	private XObject getFnSerializeResult(XObject arg0XObj, Expression arg0Expr, String methodName, String indentStrValue, 
-			                             String omitXmlDeclStrValue, XPathContext xctxt, SourceLocator srcLocator, 
-			                                                                                         TransformerImpl transformer) throws TransformerException {
+	private XObject getFnSerializeResult(XObject arg0XObj, Expression arg0Expr, String methodName, String indentStrValue, String encodingStr, 
+			                             String omitXmlDeclStr, XPathContext xctxt, SourceLocator srcLocator, 
+			                                                                                         TransformerImpl transformer,
+			                                                                                         String itemSeparatorStr) throws TransformerException {
 		
 		XObject result = null;
 
@@ -490,7 +596,11 @@ public class FuncSerialize extends FunctionMultiArgs {
 			StringWriter strWriter = new StringWriter();
 			StreamResult streamResult = new StreamResult(strWriter);
 
-			SerializationHandler rhandler = getXslSerializationHandler(Method.XML, indentStrValue, omitXmlDeclStrValue, transformer, streamResult);
+			SerializationHandler rhandler = getXslSerializationHandler(Method.XML, indentStrValue, encodingStr, omitXmlDeclStr, transformer, streamResult);
+			
+			if (itemSeparatorStr != null) {
+			   rSeq = addXdmItemSeparator(rSeq, itemSeparatorStr);
+			}
 
 			result = xslSerializeXdmSequence(rSeq, strWriter, rhandler, xctxt, srcLocator, transformer);
 		}
@@ -506,7 +616,11 @@ public class FuncSerialize extends FunctionMultiArgs {
 			StringWriter strWriter = new StringWriter();
 			StreamResult streamResult = new StreamResult(strWriter);
 
-			SerializationHandler rhandler = getXslSerializationHandler(Method.HTML, indentStrValue, null, transformer, streamResult);
+			SerializationHandler rhandler = getXslSerializationHandler(Method.HTML, indentStrValue, encodingStr, null, transformer, streamResult);
+			
+			if (itemSeparatorStr != null) {
+				rSeq = addXdmItemSeparator(rSeq, itemSeparatorStr);
+			}
 
 			result = xslSerializeXdmSequence(rSeq, strWriter, rhandler, xctxt, srcLocator, transformer);
 		}
@@ -522,7 +636,11 @@ public class FuncSerialize extends FunctionMultiArgs {
 			StringWriter strWriter = new StringWriter();
 			StreamResult streamResult = new StreamResult(strWriter);
 
-			SerializationHandler rhandler = getXslSerializationHandler(Method.XHTML, indentStrValue, null, transformer, streamResult);
+			SerializationHandler rhandler = getXslSerializationHandler(Method.XHTML, indentStrValue, encodingStr, null, transformer, streamResult);
+			
+			if (itemSeparatorStr != null) {
+				rSeq = addXdmItemSeparator(rSeq, itemSeparatorStr);
+			}
 
 			result = xslSerializeXdmSequence(rSeq, strWriter, rhandler, xctxt, srcLocator, transformer);
 		}
@@ -538,7 +656,13 @@ public class FuncSerialize extends FunctionMultiArgs {
 			StringWriter strWriter = new StringWriter();
 			StreamResult streamResult = new StreamResult(strWriter);
 
-			SerializationHandler rhandler = getXslSerializationHandler(Method.TEXT, indentStrValue, null, transformer, streamResult);
+			SerializationHandler rhandler = getXslSerializationHandler(Method.TEXT, indentStrValue, encodingStr, null, transformer, streamResult);
+			
+			if (itemSeparatorStr == null) {
+			   itemSeparatorStr = " ";
+			}
+			
+			rSeq = addXdmItemSeparator(rSeq, itemSeparatorStr);
 
 			result = xslSerializeXdmSequence(rSeq, strWriter, rhandler, xctxt, srcLocator, transformer);
 		}
@@ -558,12 +682,22 @@ public class FuncSerialize extends FunctionMultiArgs {
 				StringWriter strWriter = new StringWriter();
 				StreamResult streamResult = new StreamResult(strWriter);
 
-				SerializationHandler rhandler = getXslSerializationHandler(Method.JSON, indentStrValue, null, transformer, streamResult);
+				SerializationHandler rhandler = getXslSerializationHandler(Method.JSON, indentStrValue, encodingStr, null, transformer, streamResult);
+				
+				// The item-separator serialization parameter is not applicable to the JSON output method
 
 				result = xslSerializeXdmSequence(rSeq, strWriter, rhandler, xctxt, srcLocator, transformer);
-			}
+			}			
 		}
 		else if ((Method.ADAPTIVE).equals(methodName)) {
+			/**
+			 * XPath 3.1 function fn:serialize parameter "method" with
+			 * value 'adaptive', is useful to emit xdm sequence information
+			 * with human readable form that is useful for debugging.
+			 * 
+			 * Ref : https://www.w3.org/TR/xslt-xquery-serialization-31/#adaptive-output
+			 */
+			
 			ResultSequence rSeq = XslTransformEvaluationHelper.getResultSequenceFromXObject(arg0XObj, xctxt);
 			int size1 = rSeq.size();
 			
@@ -585,7 +719,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 					   ResultSequence rSeq2 = new ResultSequence();
 					   rSeq2.add(xObj1);
 
-					   SerializationHandler rhandler = getXslSerializationHandler(Method.XML, indentStrValue, omitXmlDeclStrValue, transformer, streamResult);
+					   SerializationHandler rhandler = getXslSerializationHandler(Method.XML, indentStrValue, encodingStr, omitXmlDeclStr, transformer, streamResult);
 					   XObject result1 = xslSerializeXdmSequence(rSeq2, strWriter, rhandler, xctxt, srcLocator, transformer);
 					   rSeqResult.add(result1);
 				   }
@@ -632,7 +766,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 				   ResultSequence rSeq2 = new ResultSequence();
 				   rSeq2.add(new XSString(str1));
 
-				   SerializationHandler rhandler = getXslSerializationHandler(Method.TEXT, indentStrValue, omitXmlDeclStrValue, transformer, streamResult);
+				   SerializationHandler rhandler = getXslSerializationHandler(Method.TEXT, indentStrValue, encodingStr, omitXmlDeclStr, transformer, streamResult);
 				   XObject result1 = xslSerializeXdmSequence(rSeq2, strWriter, rhandler, xctxt, srcLocator, transformer);
 				   rSeqResult.add(result1);
 				}
@@ -646,8 +780,10 @@ public class FuncSerialize extends FunctionMultiArgs {
 					
 					funcFormatNumber.setIsCalledFromFnSerialize(true);
 					
-					XObject arg0 = xObj1; 
-					XObject arg1 = new XSString("0.0##########################e0");
+					XObject arg0 = xObj1;
+										
+					XObject arg1 = new XSString(FORMAT_NUMBER_PIC_STRING);
+					
 					funcFormatNumber.setArg0(arg0);
 					try {
 					   funcFormatNumber.setArg(arg1, 1);
@@ -671,8 +807,10 @@ public class FuncSerialize extends FunctionMultiArgs {
 					
 					funcFormatNumber.setIsCalledFromFnSerialize(true);
 					
-					XObject arg0 = xsDouble; 
-					XObject arg1 = new XSString("0.0##########################e0");
+					XObject arg0 = xsDouble;
+					
+					XObject arg1 = new XSString(FORMAT_NUMBER_PIC_STRING);
+					
 					funcFormatNumber.setArg0(arg0);
 					try {
 					   funcFormatNumber.setArg(arg1, 1);
@@ -782,15 +920,68 @@ public class FuncSerialize extends FunctionMultiArgs {
                 }
 			}
 			
-			result = rSeqResult; 
+			if (itemSeparatorStr == null) {
+			   itemSeparatorStr = "\n";
+			}
+			
+			int size2 = rSeqResult.size();
+			if (size2 > 1) {
+				ResultSequence rSeq2 = new ResultSequence();
+				for (int idx = 0; idx < size2; idx++) {
+					XSString xObj = (XSString)(rSeqResult.item(idx)); 
+					if (idx < (size2 - 1)) {
+					   rSeq2.add(xObj);
+					   rSeq2.add(new XSString(itemSeparatorStr));
+					}
+					else {
+					   rSeq2.add(xObj);
+					}
+				}
+				
+				result = rSeq2; 
+			}
+			else {
+				result = rSeqResult;
+			}
 		}
 		else {
 			throw new javax.xml.transform.TransformerException("SEPM0016 : This implementation supports XPath 3.1 function 'serialize', "
 																											+ "serialization methods : xml, html, xhtml, text, json, adaptive. "
 																											+ "The supplied XSL serialization method is " + methodName + ".", srcLocator);
-		}
+		}						
 
 		return result;
+	}
+
+	/**
+	 * Method definition, to add an item separator string value 
+	 * between the items within the supplied sequence.
+	 * 
+	 * @param rSeq							The supplied xdm sequence
+	 * @param itemSeparatorStr              The item separator string value
+	 */
+	private ResultSequence addXdmItemSeparator(ResultSequence rSeq, String itemSeparatorStr) {		
+		
+		ResultSequence resultSeq = new ResultSequence();
+		
+		int size2 = rSeq.size();		
+		if (size2 > 1) {
+			for (int idx = 0; idx < size2; idx++) {
+				XObject xObj = rSeq.item(idx); 
+				if (idx < (size2 - 1)) {
+					resultSeq.add(xObj);
+					resultSeq.add(new XSString(itemSeparatorStr));
+				}
+				else {
+					resultSeq.add(xObj);
+				}
+			} 
+		}
+		else {
+			resultSeq = rSeq; 
+		}
+		
+		return resultSeq;
 	}
 
 	/**
@@ -1043,8 +1234,9 @@ public class FuncSerialize extends FunctionMultiArgs {
      * Method definition, to get XSL SerializationHandler object, using the supplied
      * XSL serialization parameter values. 
      * 
-     * @param methodName								An XSL serialization method name
+     * @param methodName								An XSL serialization method name value
      * @param indentStrValue							An XSL serialization indent value
+     * @param encodingStr                               An XSL serialization encoding name string
      * @param omitXmlDeclStrValue                       An XSL serialization omit-xml-declaration 
      *                                                  parameter value, when methodName is "xml". 
      * @param transformerImpl                           An XSL transformation TransformerImpl object
@@ -1054,7 +1246,7 @@ public class FuncSerialize extends FunctionMultiArgs {
      * @return                                          An XSL SerializationHandler constructed object
      * @throws TransformerException
      */
-    private SerializationHandler getXslSerializationHandler(String methodName, String indentStrValue, 
+    private SerializationHandler getXslSerializationHandler(String methodName, String indentStrValue, String encodingStr, 
     		                                                String omitXmlDeclStrValue, TransformerImpl transformerImpl,
     		                                                StreamResult streamResult) throws TransformerException {    	
     	
@@ -1064,30 +1256,60 @@ public class FuncSerialize extends FunctionMultiArgs {
     	   OutputProperties outputProperties = new OutputProperties(methodName);
     	   outputProperties.setProperty(OutputKeys.INDENT, indentStrValue);
     	   outputProperties.setProperty(OutputKeys.OMIT_XML_DECLARATION, omitXmlDeclStrValue);
+    	   if (encodingStr != null) {
+    		  outputProperties.setProperty(OutputKeys.ENCODING, encodingStr);  
+    	   }
+    	   else {
+    		  outputProperties.setProperty(OutputKeys.ENCODING, UTF_8); 
+    	   }
     	   
     	   result = transformerImpl.createSerializationHandler(streamResult, outputProperties);
     	}
     	else if ((Method.HTML).equals(methodName)) {
     	   OutputProperties outputProperties = new OutputProperties(methodName);
     	   outputProperties.setProperty(OutputKeys.INDENT, indentStrValue);
+    	   if (encodingStr != null) {
+     		  outputProperties.setProperty(OutputKeys.ENCODING, encodingStr);  
+     	   }
+     	   else {
+     		  outputProperties.setProperty(OutputKeys.ENCODING, UTF_8); 
+     	   }
     	   
     	   result = transformerImpl.createSerializationHandler(streamResult, outputProperties);
     	}
         else if ((Method.XHTML).equals(methodName)) {
            OutputProperties outputProperties = new OutputProperties(methodName);
            outputProperties.setProperty(OutputKeys.INDENT, indentStrValue);
+           if (encodingStr != null) {
+     		  outputProperties.setProperty(OutputKeys.ENCODING, encodingStr);  
+     	   }
+     	   else {
+     		  outputProperties.setProperty(OutputKeys.ENCODING, UTF_8); 
+     	   }
            
            result = transformerImpl.createSerializationHandler(streamResult, outputProperties);
     	}
         else if ((Method.TEXT).equals(methodName)) {
            OutputProperties outputProperties = new OutputProperties(methodName);
            outputProperties.setProperty(OutputKeys.INDENT, indentStrValue);
+           if (encodingStr != null) {
+     		  outputProperties.setProperty(OutputKeys.ENCODING, encodingStr);  
+     	   }
+     	   else {
+     		  outputProperties.setProperty(OutputKeys.ENCODING, UTF_8); 
+     	   }
            
            result = transformerImpl.createSerializationHandler(streamResult, outputProperties);
     	}
         else if ((Method.JSON).equals(methodName)) {
            OutputProperties outputProperties = new OutputProperties(methodName);
            outputProperties.setProperty(OutputKeys.INDENT, indentStrValue);
+           if (encodingStr != null) {
+     		  outputProperties.setProperty(OutputKeys.ENCODING, encodingStr);  
+     	   }
+     	   else {
+     		  outputProperties.setProperty(OutputKeys.ENCODING, UTF_8); 
+     	   }
            
            result = transformerImpl.createSerializationHandler(streamResult, outputProperties);
     	}

@@ -326,7 +326,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ATTRNAME_XPATH_DEFAULT_NAMESPACE = "xpath-default-namespace",
       ATTRNAME_EXPAND_TEXT = "expand-text",
       ATTRNAME_INPUT_TYPE_ANNOTATIONS = "input-type-annotations",
-      ATTRNAME_ERRORS = "errors";
+      ATTRNAME_ERRORS = "errors",
+      ATTRNAME_ITEM_SEPARATOR = "item-separator";
 
   /** IDs for XSL attribute types. These are associated
    * with the string literals in the TransformerImpl class.

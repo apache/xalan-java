@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>true() 
+ false()</one>
+  <two>"abc" 
+ "123" 
+ "m""no"</two>
+  <three>12 
+ 13 
+ 14</three>
+  <four>12.2 
+ 13.5 
+ 14.76</four>
+  <five>1.22e1 
+ 1.35e1 
+ 1.476e1</five>
+  <six>Q{}name1 
+ Q{}name2 
+ Q{}name3</six>
+  <seven>Q{http://ns0}name1 
+ Q{http://ns0}name2 
+ Q{http://ns0}name3</seven>
+  <eight>xs:date("2015-07-17") 
+ xs:dateTime("2005-02-10T10:00:00Z")</eight>
+</result>
