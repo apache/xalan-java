@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-23T16:14:48Z" fail="69" name="mode" pass="72" run="141" skipped="28" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-01T17:12:12Z" fail="67" name="mode" pass="74" run="141" skipped="28" statusUnknown="0">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
@@ -175,7 +175,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="fail" testName="mode-1433">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="mode-1434"/>
+   <testResult status="pass" testName="mode-1434"/>
    <testResult status="fail" testName="mode-1435">
       <outResult/>
    </testResult>
@@ -187,7 +187,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;book&gt;&#13;
  &lt;bktlong&gt;The First Book of Moses, Called GENESIS.&lt;/bktlong&gt;&#13;
  &lt;bktshort&gt;Genesis&lt;/bktshort&gt;&#13;
- &lt;chapter length="4097" nr="1"&gt;&#13;
+ &lt;chapter nr="1" length="4097"&gt;&#13;
     &lt;chtitle&gt;Chapter 1&lt;/chtitle&gt;&#13;
     &lt;v&gt;In the beginning &lt;deity&gt;God&lt;/deity&gt; created the heaven and the earth.&lt;/v&gt;&#13;
     &lt;v&gt;And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of &lt;deity&gt;God&lt;/deity&gt; moved upon the face of the waters.&lt;/v&gt;&#13;
@@ -221,7 +221,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
     &lt;v&gt;And to every beast of the earth, and to every fowl of the air, and to every thing that creepeth upon the earth, wherein there is life, I have given every green herb for meat: and it was so.&lt;/v&gt;&#13;
     &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; saw every thing that he had made, and, behold, it was very good. And the evening and the morning were the sixth day.&lt;/v&gt;&#13;
  &lt;/chapter&gt;&#13;
- &lt;chapter length="3105" nr="2"&gt;&#13;
+ &lt;chapter nr="2" length="3105"&gt;&#13;
     &lt;chtitle&gt;Chapter 2&lt;/chtitle&gt;&#13;
     &lt;v&gt;Thus the heavens and the earth were finished, and all the host of them.&lt;/v&gt;&#13;
     &lt;v&gt;And on the seventh day &lt;deity&gt;God&lt;/deity&gt; ended his work which he had made; and he rested on the seventh day from all his work which he had made.&lt;/v&gt;&#13;
@@ -274,7 +274,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;book&gt;&#13;
  &lt;bktlong&gt;The First Book of Moses, Called GENESIS.&lt;/bktlong&gt;&#13;
  &lt;bktshort&gt;Genesis&lt;/bktshort&gt;&#13;
- &lt;chapter length="4097" nr="1"&gt;&#13;
+ &lt;chapter nr="1" length="4097"&gt;&#13;
     &lt;chtitle&gt;Chapter 1&lt;/chtitle&gt;&#13;
     &lt;v&gt;In the beginning &lt;deity&gt;God&lt;/deity&gt; created the heaven and the earth.&lt;/v&gt;&#13;
     &lt;v&gt;And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of &lt;deity&gt;God&lt;/deity&gt; moved upon the face of the waters.&lt;/v&gt;&#13;
@@ -308,7 +308,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
     &lt;v&gt;And to every beast of the earth, and to every fowl of the air, and to every thing that creepeth upon the earth, wherein there is life, I have given every green herb for meat: and it was so.&lt;/v&gt;&#13;
     &lt;v&gt;And &lt;deity&gt;God&lt;/deity&gt; saw every thing that he had made, and, behold, it was very good. And the evening and the morning were the sixth day.&lt;/v&gt;&#13;
  &lt;/chapter&gt;&#13;
- &lt;chapter length="3105" nr="2"&gt;&#13;
+ &lt;chapter nr="2" length="3105"&gt;&#13;
     &lt;chtitle&gt;Chapter 2&lt;/chtitle&gt;&#13;
     &lt;v&gt;Thus the heavens and the earth were finished, and all the host of them.&lt;/v&gt;&#13;
     &lt;v&gt;And on the seventh day &lt;deity&gt;God&lt;/deity&gt; ended his work which he had made; and he rested on the seventh day from all his work which he had made.&lt;/v&gt;&#13;
@@ -390,7 +390,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="fail" testName="mode-1612"/>
    <testResult status="pass" testName="mode-1613"/>
    <testResult status="fail" testName="mode-1614"/>
-   <testResult status="fail" testName="mode-1615"/>
+   <testResult status="pass" testName="mode-1615"/>
    <testResult status="fail" testName="mode-1616"/>
    <testResult status="fail" testName="mode-1617"/>
    <testResult status="fail" testName="mode-1618"/>
@@ -398,9 +398,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="pass" testName="mode-1701"/>
    <testResult status="pass" testName="mode-1701a"/>
    <testResult status="fail" testName="mode-1702">
-      <outResult>
-         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1702a">
       <outResult>
@@ -416,21 +414,16 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1705">
-      <outResult>
-         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1705a">
       <outResult>
-         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
          <errTrace>XTDE0045 : An XSL stylesheet, initial mode must be 'public' within XSL stylesheet 'package' element.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="mode-1705b"/>
    <testResult status="fail" testName="mode-1706">
-      <outResult>
-         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1707">
       <outResult>
@@ -440,15 +433,11 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="pass" testName="mode-1708"/>
    <testResult status="fail" testName="mode-1709"/>
    <testResult status="fail" testName="mode-1710">
-      <outResult>
-         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1711"/>
    <testResult status="fail" testName="mode-1712">
-      <outResult>
-         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="mode-1713"/>
    <testResult status="pass" testName="mode-1714err"/>
@@ -460,7 +449,6 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    </testResult>
    <testResult status="fail" testName="mode-1803">
       <outResult>
-         <errTrace>Illegal value: #unnamed used for QNAME attribute: mode</errTrace>
          <errTrace>XTDE0045 : An XSL stylesheet, initial mode must be 'public' within XSL stylesheet 'package' element.</errTrace>
       </outResult>
    </testResult>

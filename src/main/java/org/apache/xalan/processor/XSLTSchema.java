@@ -203,7 +203,7 @@ public class XSLTSchema extends XSLTElementDef
 		XSLTAttributeDef mediaTypeAttr = new XSLTAttributeDef(null, "media-type",
 				XSLTAttributeDef.T_CDATA, false, false, XSLTAttributeDef.ERROR);
 
-		// xsl:stylesheet, xsl:transform
+		// xsl:stylesheet, xsl:transform, xsl:package
 		XSLTAttributeDef defaultModeAttr = new XSLTAttributeDef(null, "default-mode",
 				XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
 
