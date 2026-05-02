@@ -1960,10 +1960,22 @@ public class XPathParser
      		  }
      	  }
 
-     	  m_xpathMapConstructor.setNativeMap(nativeMapObj);
+     	  m_xpathMapConstructor.setNativeMap(nativeMapObj);     	       	  
+
+     	  if (tokenIs("=>")) {
+     		  consumeExpected("=>");
+
+     		  StringBuffer strBuff = new StringBuffer();
+     		  while (m_token != null) {
+     			  strBuff.append(m_token);     			
+     			  nextToken();
+     		  }
+
+     		  m_xpathMapConstructor.setSuffixFuncStr(strBuff.toString());
+     	  }
      	  
      	  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
-     			                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
+                  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
       }
       else if (lookahead(':', 1)) {    	  
     	 // XPath parse of named function reference, for XPath built-in 

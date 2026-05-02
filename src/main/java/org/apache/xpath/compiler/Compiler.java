@@ -307,6 +307,8 @@ public class Compiler extends OpMap
     
     return expr;
   }
+  
+  public static boolean m_verify_func_arg_count = true;
 
   /**
    * Bottle-neck compilation of an operation with left and right operands.
@@ -1485,11 +1487,13 @@ private static final boolean DEBUG = false;
       }
       catch (WrongNumberArgsException wnae)
       {
-        java.lang.String name = m_functionTable.getFunctionName(funcID);
+    	if (org.apache.xpath.compiler.Compiler.m_verify_func_arg_count) {
+    		java.lang.String name = m_functionTable.getFunctionName(funcID);
 
-        m_errorHandler.fatalError( new TransformerException(
-                                             XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
-                                             new Object[]{name, wnae.getMessage()}), m_locator));
+    		m_errorHandler.fatalError( new TransformerException(
+    				XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
+    						new Object[]{name, wnae.getMessage()}), m_locator));
+    	}
       }
 
       return func;

@@ -39,6 +39,11 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.functions.FunctionOneArg;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
@@ -80,12 +85,16 @@ public class XPathMapConstructor extends Expression {
 	 * as performed within object of this class.  
 	 */
 	private int m_globals_size;
+	
+	// An XPath function call expression string, like mapExpr => funcCall(...), 
+	// if available.
+	private String m_suffixFuncStr = null;
     
 	// Constant denoting key of an XDM map entry
     private static final String KEY = "key";
     
     // Constant denoting value of an XDM map entry
-    private static final String VALUE = "value";
+    private static final String VALUE = "value";        
     
     @Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
@@ -94,7 +103,10 @@ public class XPathMapConstructor extends Expression {
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {        
-    	XPathMap xpathResultMap = new XPathMap();                                
+    	
+    	XPathMap xpathResultMap = new XPathMap();
+    	
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
         
         ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
         List<XMLNSDecl> prefixTable = null;
@@ -129,6 +141,10 @@ public class XPathMapConstructor extends Expression {
            
            XObject mapEntryValue = evaluateXPathExpression(xpathValueStr, xctxt, VALUE);           
            xpathResultMap.put(mapEntryKey, mapEntryValue);
+        }
+        
+        if (m_suffixFuncStr != null) {        	
+        	return getResultAfterArrowOp(m_suffixFuncStr, xctxt, xpathResultMap, srcLocator, prefixTable);
         }
         
         return xpathResultMap;
@@ -298,27 +314,7 @@ public class XPathMapConstructor extends Expression {
           	    	 return result; 
                   }
                }               
-            }
-            /*else if (xPathExprPartResult instanceof ResultSequence) {
-               ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult;
-               XPathArray mapEntryValue = new XPathArray();
-               for (int idx1 = 0; idx1 < inpResultSeq.size(); idx1++) {
-            	  if (KEY.equals(mapComponentName)) {
-            		 if (idx1 > 0) {
-            	        throw new javax.xml.transform.TransformerException("XPTY0004 : Key of a map cannot be a sequence of size "
-            	     		                                                                        + "greater than one.", srcLocator);
-            		 }
-            		 else {
-            			result = inpResultSeq.item(idx1);
-            			return result;
-            		 }
-            	  }
-                  XObject xObj = inpResultSeq.item(idx1);
-                  mapEntryValue.add(xObj);                 
-               }
-               
-               return mapEntryValue;
-            }*/
+            }            
             else if (xPathExprPartResult instanceof ResultSequence) {
                ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult;
                if (KEY.equals(mapComponentName)) {
@@ -340,6 +336,110 @@ public class XPathMapConstructor extends Expression {
         }
     	
     	return result;
+    }
+
+	public String getSuffixFuncStr() {
+		return m_suffixFuncStr;
+	}
+
+	public void setSuffixFuncStr(String suffixFuncStr) {
+		this.m_suffixFuncStr = suffixFuncStr;
+	}
+	
+	/**
+	 * Method definition, to apply a function compiled from the supplied XPath 
+	 * expression string, using the supplied xdm map object as function's first argument.
+	 * 
+	 * @param xpathFuncExprString                       An XPath expression string, that is
+	 *                                                  expected to compile to a function item.
+	 * @param xctxt                                     An XPath context object
+	 * @param xdmMap                                    The supplied xdm map object
+	 * @param srcLocator                                An XSL transformation SourceLocator object 
+	 * @param prefixTable                               An XML namespace binding prefix table list,
+	 *                                                  for an XSL stylesheet.
+	 * @return                                          Result of the function call.
+	 * @throws TransformerException
+	 */
+	private XObject getResultAfterArrowOp(String xpathFuncExprString, XPathContext xctxt, XPathMap xdmMap, SourceLocator srcLocator,
+                                                                                               List<XMLNSDecl> prefixTable) throws TransformerException {
+
+		XObject result = null;
+
+		xpathFuncExprString = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathFuncExprString, prefixTable);
+
+		org.apache.xpath.compiler.Compiler.m_verify_func_arg_count = false;        	
+		XPath xpathObj = new XPath(xpathFuncExprString, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);        	
+		org.apache.xpath.compiler.Compiler.m_verify_func_arg_count = true;
+
+		if (m_vars != null) {
+			xpathObj.fixupVariables(m_vars, m_globals_size);
+		}
+
+		Function function = (Function)(xpathObj.getExpression());		
+
+		if (function instanceof Function3Args) {
+			Function3Args funcThreeArgs = (Function3Args)function;
+			Expression arg0 = funcThreeArgs.getArg0();
+			Expression arg1 = funcThreeArgs.getArg1();
+			funcThreeArgs.setArg0(xdmMap);
+
+			try {
+				if (arg0 != null) {
+					funcThreeArgs.setArg(arg0, 1);
+				}
+				if (arg1 != null) {
+					funcThreeArgs.setArg(arg1, 2);
+				}
+			}
+			catch (WrongNumberArgsException ex) {
+				throw new javax.xml.transform.TransformerException("FORX0003 : An error occured, during evaluation for XPath operator =>.", srcLocator);
+			}
+
+			result = funcThreeArgs.execute(xctxt);
+		}
+		else if (function instanceof Function2Args) {
+			Function2Args funcTwoArgs = (Function2Args)function;
+			Expression arg1 = funcTwoArgs.getArg1();
+
+			if (arg1 != null) {
+				throw new javax.xml.transform.TransformerException("FORX0003 : The function's second argument cannot be provided "
+																													+ "lexically for an XPath function of arity two with evaluation using "
+																													+ "XPath operator =>.", srcLocator); 
+			}
+			else {     		
+				Expression arg0 = funcTwoArgs.getArg0();
+				funcTwoArgs.setArg0(xdmMap);
+				try {     		   
+					funcTwoArgs.setArg(arg0, 1);
+				} 
+				catch (WrongNumberArgsException ex) {
+					throw new javax.xml.transform.TransformerException("FORX0003 : An error occured, during evaluation for XPath operator =>.", srcLocator);
+				}
+
+				result = funcTwoArgs.execute(xctxt);
+			}
+		}
+		else if (function instanceof FunctionOneArg) {
+			FunctionOneArg funcOneArg = (FunctionOneArg)function;
+			Expression arg0 = funcOneArg.getArg0();
+
+			if (arg0 != null) {
+				throw new javax.xml.transform.TransformerException("FORX0003 : The function's 1st argument cannot be provided lexically "
+																												+ "for an XPath function of arity 1 with evaluation using "
+																												+ "operator =>.", srcLocator); 
+			}
+			else {
+				funcOneArg.setArg0(xdmMap);
+
+				result = funcOneArg.execute(xctxt);
+			}
+		}
+
+		if (result == null) {
+			result = new ResultSequence();	
+		}
+
+		return result;
     }
 
 }

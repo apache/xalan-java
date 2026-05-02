@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>map{"a":1}</one>
+  <two>
+    <a>true</a>
+    <b>false</b>
+    <c>a b c</c>
+    <d>a b c</d>
+  </two>
+</result>
