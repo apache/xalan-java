@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-05-01
+Document last modified : 2026-05-02
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -190,8 +190,32 @@ Javadocs for Xalan Java code documentation for this dev repos branch are located
    Java application code, should set the value of jvm's system property javax.xml.transform.TransformerFactory to 
    org.apache.xalan.processor.XSL3TransformerFactoryImpl
    
-   Note: To run Xalan Java XSLT 1.0 processor (for e.g, with Xalan Java 2.7.3), the value of this jvm system property is org.apache.xalan.processor.TransformerFactoryImpl   
-         																
+   Note: To run Xalan Java XSLT 1.0 processor (for e.g, with Xalan Java 2.7.3), the value of this jvm system property is org.apache.xalan.processor.TransformerFactoryImpl
+   
 
-We use JProfiler (https://www.ej-technologies.com/jprofiler) tool for Java software run-time analysis and optimization of Xalan Java software.       
+   XSLT 1.0 support within this code repos branch
+   ----------------------------------------------    
+
+   The Xalan Java implementation available within the code repos branch xalan-j_xslt3.0_mvn, retains an XSLT 1.0 compliant processor using Xalan Java XSLTC
+   compiler and run-time technology that was available within Xalan Java version 2.7.3.
+       
+   Xalan Java XSLT 1.0 processor using XSLTC, may be run with few possible ways, as follows:
+       
+   a) The command-line
+       
+      java org.apache.xalan.xslt.Process -in file.xml -xsl file.xsl -XSLTC
+       
+   b) 
+      b.1) Creating a translet from an XSL stylesheet
+         
+           java org.apache.xalan.xsltc.cmdline.Compile abc.xsl
+              
+           This produces a set of class files such as abc.class, abc$0.class, abc$1.class.
+              
+      b.2) Running translet from command-line
+         
+           java org.apache.xalan.xsltc.cmdline.Transform file.xml abc
+                                                															
+
+Notes: Xalan Java project uses JProfiler (https://www.ej-technologies.com/jprofiler) tool for software run-time analysis and optimization.       
 
