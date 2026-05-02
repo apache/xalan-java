@@ -47,6 +47,26 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.bcel</groupId>
+			<artifactId>bcel</artifactId>
+			<version>6.7.0</version>
+		</dependency>
+        <dependency>
+			<groupId>edu.princeton.cs</groupId>
+			<artifactId>java_cup</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.princeton.cs</groupId>
+			<artifactId>cup_runtime</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>Jlex</groupId>
+			<artifactId>Jlex</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
 			<version>2.12.3_alpha</version>
@@ -55,7 +75,7 @@
 			<groupId>org.apache.xerces</groupId>
 			<artifactId>xml-apis</artifactId>
 			<version>1.4.02</version>
-		</dependency>				
+		</dependency>						        
 		<!-- Apache Bean Scripting framework dependency. This despatches 
 		     Xalan-J's JavaScript extension calls to Mozilla Rhino 
 		     JavaScript implementation. -->				
@@ -64,18 +84,18 @@
 		    <artifactId>bsf</artifactId>
 		    <version>2.4.0</version>
         </dependency>
-        <!-- Mozilla JavaScript library dependency, licensed with 
-             the Mozilla Public License Version 2.0 -->
-        <dependency>
-			<groupId>org.mozilla</groupId>
-			<artifactId>rhino</artifactId>
-			<version>1.7.15.1</version>
-		</dependency>
 		<!-- Apache Commons Logging framework dependency -->	
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.2</version>
+		</dependency>
+		<!-- Mozilla JavaScript library dependency, licensed with 
+             the Mozilla Public License Version 2.0 -->
+        <dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino</artifactId>
+			<version>1.7.15.1</version>
 		</dependency>
         <dependency>
             <groupId>junit</groupId>

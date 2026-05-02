@@ -27,7 +27,6 @@ import java.util.stream.IntStream;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.extensions.ExtensionNamespaceContext;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.AVT;
@@ -1061,22 +1060,22 @@ public class XSLTAttributeDef
     		  if ((Constants.ATTRVAL_DEFAULT_PREFIX).equals(value)) {
     			  // We use, an XML non-standard namespace for this QName object 
     			  // instance, because string #default is not a valid QName string.
-    			  qname = new QName(ExtensionNamespaceContext.JAVA_EXT_URI, "default", true);
+    			  qname = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_DEFAULT, true);
     		  }
     		  else if ((Constants.ATTRVAL_UNNAMED_PREFIX).equals(value)) {
     			  // We use, an XML non-standard namespace for this QName object 
     			  // instance, because string #unnamed is not a valid QName string.
-    			  qname = new QName(ExtensionNamespaceContext.JAVA_EXT_URI, "unnamed", true);   
+    			  qname = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_UNNAMED, true);   
     		  }
     		  else if ((Constants.ATTRVAL_CURRENT_PREFIX).equals(value)) {
     			  // We use, an XML non-standard namespace for this QName object 
     			  // instance, because string #current is not a valid QName string.
-    			  qname = new QName(ExtensionNamespaceContext.JAVA_EXT_URI, "current", true);    
+    			  qname = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_CURRENT, true);    
     		  }
     		  else if ((Constants.ATTRVAL_ALL_PREFIX).equals(value)) {
     			  // We use, an XML non-standard namespace for this QName object 
     			  // instance, because string #all is not a valid QName string.
-    			  qname = new QName(ExtensionNamespaceContext.JAVA_EXT_URI, "all", true);   
+    			  qname = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_ALL, true);   
     		  }
     		  else {
     			  qname = new QName(value, handler, true);

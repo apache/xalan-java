@@ -493,6 +493,14 @@ public class Constants extends org.apache.xml.utils.Constants
   public static final String ATTRVAL_FAIL = "fail".intern();
   public static final String ATTRVAL_USE_LAST = "use-last".intern();
   
+  public static final String ATTRVAL_DEFAULT = "default";
+  
+  public static final String ATTRVAL_UNNAMED = "unnamed";
+  
+  public static final String ATTRVAL_CURRENT = "current";
+  
+  public static final String ATTRVAL_ALL = "all";
+  
   // This is Xalan-J XSLT 3.0 string constant internal value, for an 
   // implementation of XPath 3.1 function fn:random-number-generator.
   public static final String FN_XALAN_RNG_PERMUTE = "'FnXalanPermute'";

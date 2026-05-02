@@ -57,7 +57,6 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
-import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.utils.DefaultErrorHandler;
@@ -855,14 +854,17 @@ public class Process
 
 				  Transformer transformer = flavor.equals("th") ? null : stylesheet.newTransformer();
 				  
-				  if (null != xslFileName) {
-					  File file = new File(xslFileName);
-					  URI uri = file.toURI();
-					  ((TransformerImpl)transformer).setUriStrOfXslStylesheet(uri.toString());
-				  }
+				  if (!useXSLTC) {
+					  if (null != xslFileName) {
+						  File file = new File(xslFileName);
+						  URI uri = file.toURI();
+						  ((org.apache.xalan.transformer.TransformerImpl)transformer).setUriStrOfXslStylesheet(uri.toString());
+					  }
 
-				  if (isXslEvaluate) {
-					  ((TransformerImpl)transformer).setProperty(TransformerImpl.XSL_EVALUATE_PROPERTY, Boolean.TRUE);
+					  if (isXslEvaluate) {
+						  ((org.apache.xalan.transformer.TransformerImpl)transformer).setProperty(org.apache.xalan.transformer.TransformerImpl.
+								                                                                                                         XSL_EVALUATE_PROPERTY, Boolean.TRUE);
+					  }
 				  }
 
 				  transformer.setErrorListener(new DefaultErrorHandler(true));

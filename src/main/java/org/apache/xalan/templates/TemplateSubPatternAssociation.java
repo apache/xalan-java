@@ -140,8 +140,8 @@ public class TemplateSubPatternAssociation implements Serializable, Cloneable
   {
 	 boolean result = false;
 	 
-	 QName defaultMode = new QName("http://xml.apache.org/xalan/java", "default", true);
-	 QName modeAll = new QName("http://xml.apache.org/xalan/java", "all", true);
+	 QName defaultMode = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_DEFAULT, true);
+	 QName modeAll = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_ALL, true);
 	 
 	 if (modeAll.equals(m2)) {
 	    result = true; 

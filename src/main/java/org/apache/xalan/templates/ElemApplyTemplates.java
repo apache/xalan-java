@@ -626,8 +626,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 		  QName mode = transformer.getMode();
 
-		  QName qnameCurrent = new QName("http://xml.apache.org/xalan/java", "current", true);
-		  QName qnameUnnamed = new QName("http://xml.apache.org/xalan/java", "unnamed", true);
+		  QName qnameCurrent = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_CURRENT, true);
+		  QName qnameUnnamed = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_UNNAMED, true);
 		  if (qnameCurrent.equals(mode)) {
 			  mode = transformer.getCurrentMode();  
 		  }
