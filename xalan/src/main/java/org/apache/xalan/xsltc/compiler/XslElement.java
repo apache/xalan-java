@@ -47,6 +47,7 @@ final class XslElement extends Instruction {
     private String  _prefix;
     private boolean _ignore = false;
     private boolean _isLiteralName = true;
+    private boolean _isLiteralNamespace = false;
     private AttributeValueTemplate _name; 
     private AttributeValueTemplate _namespace;
 
@@ -81,8 +82,7 @@ final class XslElement extends Instruction {
 	    return;
 	}
 
-	// Get namespace attribute
-	String namespace = getAttribute("namespace");
+        String namespace = getAttribute("namespace");
 
 	// Optimize compilation when name is known at compile time
         _isLiteralName = Util.isLiteral(name);
@@ -141,6 +141,11 @@ final class XslElement extends Instruction {
             // name attribute contains variable parts.  If there is no namespace
             // attribute, the generated code needs to be prepared to look up
             // any prefix in the stylesheet at run-time.
+            // if the namespace is literal, we can avoid generating a new
+            // prefix every time though
+            if (Util.isLiteral(namespace)) {
+                _isLiteralNamespace = true;
+            }
             _namespace = (namespace == EMPTYSTRING) ? null :
 			 new AttributeValueTemplate(namespace, parser, this);
 	}
@@ -245,13 +250,42 @@ final class XslElement extends Instruction {
             // Push handler for call to endElement()
             il.append(methodGen.loadHandler());         
             
-            // load name value again
-            nameValue.setEnd(il.append(new ALOAD(nameValue.getIndex())));
-                    
-	    if (_namespace != null) {
-		_namespace.translate(classGen, methodGen);
-	    }
-	    else {
+            if (_namespace != null) {
+                // If the namespace is a literal, we'll want to avoid creating a new
+                // prefix for it
+                if(_isLiteralNamespace){
+                    // we want to call to BasisLibrary.addPrefix(String qname, String namespace, Map prefixMap);
+                    // So store the namespace in a var
+                    LocalVariableGen namespaceValue = methodGen.addLocalVariable2(
+                        "namespaceValue", Util.getJCRefType(STRING_SIG), null);
+                    _namespace.translate(classGen, methodGen);
+                    namespaceValue.setStart(il.append(new ASTORE(namespaceValue.getIndex())));
+
+                    String transletClassName = getXSLTC().getClassName();
+                    // load name value again
+                    nameValue.setEnd(il.append(new ALOAD(nameValue.getIndex())));
+
+                    il.append(new ALOAD(namespaceValue.getIndex()));
+                    il.append(new GETSTATIC(cpg.addFieldref(
+                                transletClassName,
+                                STATIC_NS_MAP_FIELD,
+                                MAP_SIG)));
+                    il.append(
+                        new INVOKESTATIC(
+                            cpg.addMethodref(BASIS_LIBRARY_CLASS,
+                                    ADD_NAMESPACE_PREFIX_REF,
+                                    ADD_NAMESPACE_PREFIX_SIG)));
+                    namespaceValue.setEnd(il.append(new ALOAD(namespaceValue.getIndex())));
+                }
+                else{
+                    // load name value again
+                    nameValue.setEnd(il.append(new ALOAD(nameValue.getIndex())));
+                    _namespace.translate(classGen, methodGen);
+                }
+            }
+            else {
+                // load name value again
+                nameValue.setEnd(il.append(new ALOAD(nameValue.getIndex())));
                 // If name is an AVT and namespace is not specified, need to
                 // look up any prefix in the stylesheet by calling
                 //   BasisLibrary.lookupStylesheetQNameNamespace(

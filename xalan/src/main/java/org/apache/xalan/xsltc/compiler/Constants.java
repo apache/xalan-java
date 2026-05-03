@@ -174,6 +174,10 @@ public interface Constants extends InstructionConstants {
 	= "org.apache.xalan.xsltc.dom.SingletonIterator";
     public static final String MATCHING_ITERATOR 
 	= "org.apache.xalan.xsltc.dom.MatchingIterator";
+    public static final String HASHMAP_CLASS = "java.util.HashMap";
+    public static final String HASHMAP_SIG = "Ljava/util/HashMap;";
+    public static final String MAP_SIG = "Ljava/util/Map;";
+
     public static final String NODE_SIG           
 	= "I";
     public static final String GET_PARENT         
@@ -409,6 +413,13 @@ public interface Constants extends InstructionConstants {
               + PREFIX_URIS_IDX_SIG
               + PREFIX_URIS_ARRAY_SIG
               + "Z)" + STRING_SIG;
+    public static final String ADD_NAMESPACE_PREFIX_REF
+    = "addPrefix";
+    public static final String ADD_NAMESPACE_PREFIX_SIG
+    = "(" + STRING_SIG
+        + STRING_SIG
+        + "Ljava/util/Map;"+
+        ")" + STRING_SIG;
 
     public static final String DOM_FIELD
 	= "_dom";
@@ -430,6 +441,7 @@ public interface Constants extends InstructionConstants {
         = "_scharData";
     public static final String STATIC_CHAR_DATA_FIELD_SIG
         = "[C";
+    public static final String STATIC_NS_MAP_FIELD = "_sNamespaceMap";
     public static final String FORMAT_SYMBOLS_FIELD	 
 	= "format_symbols";
 
