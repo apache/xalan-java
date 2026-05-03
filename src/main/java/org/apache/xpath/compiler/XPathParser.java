@@ -3756,7 +3756,15 @@ public class XPathParser
 
           insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_ARROW);
           
-          FunctionCall();
+          if ((m_tokenChar == '$') && (lookahead('(', 2))) {
+        	  // XPath parse of dynamic function call, and map &
+        	  // array information lookup using function call syntax.
+
+        	  xpathParseDfcSyntax(opPos);              
+          }
+          else {
+        	  FunctionCall();
+          }
           
           if (m_token != null) {
         	 m_arrowOpRemainingXPathExprStr = "";  
@@ -4453,116 +4461,7 @@ public class XPathParser
        // XPath parse of dynamic function call, and map &
        // array information lookup using function call syntax.
                      
-       appendOp(2, OpCodes.XPath3OpCodes.OP_DYNAMIC_FUNCTION_CALL);
-       
-       nextToken();  // consume '$'
-       
-       String funcRefVarName = m_token;       
-       nextToken();
-       consumeExpected('(');
-       
-       // XPath parse of dynamic function call argument information          
-       
-       XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();       
-       xpathDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
-       
-       if (!tokenIs(')')) {
-    	   // Function call argument list is not empty
-    	   
-    	   TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
-    	   
-    	   StringBuffer strBuff = new StringBuffer();
-    	   while (m_token != null) {
-    		   strBuff.append(m_token);    		   
-    		   nextToken();
-    	   }
-    	   
-    	   /**
-    	    * XPath parse of chained access of consecutive specification
-    	    * (with chaining of two or more XPath expressions) of XPath
-    	    * dynamic function call, map and array information lookup
-    	    * syntax.
-    	    */
-    	   
-    	   boolean isDynamicFuncCallChainedAccess = false;
-    	   
-    	   String strValue = strBuff.toString();
-    	   String[] xpathExprStrArr = strValue.split("\\)\\(");    	   
-    	   if (xpathExprStrArr.length > 1) {
-    		  String arrLastItemStr = xpathExprStrArr[xpathExprStrArr.length - 1];
-    		  int arrLastItemStrLength = arrLastItemStr.length();
-    		  // Removing ')' if present, from string value of array's last item
-    		  if ((arrLastItemStrLength > 1) && (arrLastItemStr.charAt(arrLastItemStrLength - 1) == ')')) {    			  
-    			  String lastArgStr = arrLastItemStr.substring(0, arrLastItemStrLength - 1);
-    			  xpathExprStrArr[xpathExprStrArr.length - 1] = lastArgStr; 
-    		  }
-    		  
-    		  for (int idx = 0; idx < xpathExprStrArr.length; idx++) {
-    			  String str1 = xpathExprStrArr[idx];
-    			  if (str1.contains("(") || str1.contains(")")) {
-    				 break; 
-    			  }
-    			  else if (idx == (xpathExprStrArr.length - 1)) {
-    				 isDynamicFuncCallChainedAccess = true; 
-    			  }
-    		  }
-    	   }    	   
-    	       	   
-    	   if (isDynamicFuncCallChainedAccess) {
-    		   xpathDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
-        	   xpathDynamicFunctionCall.setChainedArgXPathStrArray(xpathExprStrArr); 
-    	   }
-    	   else {
-    		   List<String> argList = new ArrayList<>();
-    		   
-    		   restoreTokenQueueScanPosition(prevTokQueueScanPosition);
-    		   
-    		   List<String> argDetailsStrPartsList = new ArrayList<String>();
-
-    		   // We specify here a temporary function call argument delimiter 
-    		   // string, for this processing.       
-    		   String delim = "t0_" + (UUID.randomUUID()).toString();
-
-    		   while (m_token != null && isXPathDynamicFuncCallParseAhead(argDetailsStrPartsList, delim)) {
-    			   // no op
-    		   }
-
-    		   m_dynamicFunctionCallArgumentMarker = false;
-
-    		   int startIdx = 0;
-    		   int idxDelim;       
-    		   while (argDetailsStrPartsList.contains(delim) && 
-    				   (idxDelim = argDetailsStrPartsList.indexOf(delim)) != -1) {
-    			   List<String> lst1 = argDetailsStrPartsList.subList(startIdx, idxDelim);
-
-    			   String xpathStr = getXPathStrFromComponentParts(lst1);
-
-    			   argList.add(xpathStr);
-
-    			   List<String> lst2 = argDetailsStrPartsList.subList(idxDelim + 1, argDetailsStrPartsList.size());
-
-    			   argDetailsStrPartsList = lst2; 
-    		   }
-
-    		   if (argDetailsStrPartsList.size() > 0) {
-    			   String xpathStr = getXPathStrFromComponentParts(argDetailsStrPartsList);
-    			   argList.add(xpathStr);
-    		   }
-    		   
-        	   xpathDynamicFunctionCall.setArgList(argList);
-
-        	   if (argList.size() > 0) {
-        		   mutateXPathDynamicFuncCallReference(xpathDynamicFunctionCall, argList);
-        	   }
-        	   
-        	   consumeExpected(')');
-    	   }    	       	   
-       }
-    
-       m_xpathDynamicFunctionCallList.add(xpathDynamicFunctionCall);
-       
-       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+       xpathParseDfcSyntax(opPos);
        
        matchFound = true;
     }
@@ -8997,6 +8896,126 @@ public class XPathParser
 		public void setEndIdx(int endIdx) {
 			this.endIdx = endIdx;
 		}
+    }
+    
+    /**
+     * XPath 3.1 parse of dynamic function call syntax.
+     * 
+     * @param opPos                     An integer value, that contributes 
+     *                                  to index within XPath compile op map.
+     * @throws TransformerException
+     */
+    private void xpathParseDfcSyntax(int opPos) throws TransformerException {
+    	
+    	appendOp(2, OpCodes.XPath3OpCodes.OP_DYNAMIC_FUNCTION_CALL);
+
+    	nextToken();  // consume '$'
+
+    	String funcRefVarName = m_token;       
+    	nextToken();
+    	consumeExpected('(');
+
+    	// XPath parse of dynamic function call argument information          
+
+    	XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();       
+    	xpathDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
+
+    	if (!tokenIs(')')) {
+    		// Function call argument list is not empty
+
+    		TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+
+    		StringBuffer strBuff = new StringBuffer();
+    		while (m_token != null) {
+    			strBuff.append(m_token);    		   
+    			nextToken();
+    		}
+
+    		/**
+    		 * XPath parse of chained access of consecutive specification
+    		 * (with chaining of two or more XPath expressions) of XPath
+    		 * dynamic function call, map and array information lookup
+    		 * syntax.
+    		 */
+
+    		boolean isDynamicFuncCallChainedAccess = false;
+
+    		String strValue = strBuff.toString();
+    		String[] xpathExprStrArr = strValue.split("\\)\\(");    	   
+    		if (xpathExprStrArr.length > 1) {
+    			String arrLastItemStr = xpathExprStrArr[xpathExprStrArr.length - 1];
+    			int arrLastItemStrLength = arrLastItemStr.length();
+    			// Removing ')' if present, from string value of array's last item
+    			if ((arrLastItemStrLength > 1) && (arrLastItemStr.charAt(arrLastItemStrLength - 1) == ')')) {    			  
+    				String lastArgStr = arrLastItemStr.substring(0, arrLastItemStrLength - 1);
+    				xpathExprStrArr[xpathExprStrArr.length - 1] = lastArgStr; 
+    			}
+
+    			for (int idx = 0; idx < xpathExprStrArr.length; idx++) {
+    				String str1 = xpathExprStrArr[idx];
+    				if (str1.contains("(") || str1.contains(")")) {
+    					break; 
+    				}
+    				else if (idx == (xpathExprStrArr.length - 1)) {
+    					isDynamicFuncCallChainedAccess = true; 
+    				}
+    			}
+    		}    	   
+
+    		if (isDynamicFuncCallChainedAccess) {
+    			xpathDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
+    			xpathDynamicFunctionCall.setChainedArgXPathStrArray(xpathExprStrArr); 
+    		}
+    		else {
+    			List<String> argList = new ArrayList<>();
+
+    			restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+
+    			List<String> argDetailsStrPartsList = new ArrayList<String>();
+
+    			// We specify here a temporary function call argument delimiter 
+    			// string, for this processing.       
+    			String delim = "t0_" + (UUID.randomUUID()).toString();
+
+    			while (m_token != null && isXPathDynamicFuncCallParseAhead(argDetailsStrPartsList, delim)) {
+    				// no op
+    			}
+
+    			m_dynamicFunctionCallArgumentMarker = false;
+
+    			int startIdx = 0;
+    			int idxDelim;       
+    			while (argDetailsStrPartsList.contains(delim) && (idxDelim = argDetailsStrPartsList.indexOf(delim)) != -1) {
+    				List<String> lst1 = argDetailsStrPartsList.subList(startIdx, idxDelim);
+
+    				String xpathStr = getXPathStrFromComponentParts(lst1);
+
+    				argList.add(xpathStr);
+
+    				List<String> lst2 = argDetailsStrPartsList.subList(idxDelim + 1, argDetailsStrPartsList.size());
+
+    				argDetailsStrPartsList = lst2; 
+    			}
+
+    			if (argDetailsStrPartsList.size() > 0) {
+    				String xpathStr = getXPathStrFromComponentParts(argDetailsStrPartsList);
+    				argList.add(xpathStr);
+    			}
+
+    			xpathDynamicFunctionCall.setArgList(argList);
+
+    			if (argList.size() > 0) {
+    				mutateXPathDynamicFuncCallReference(xpathDynamicFunctionCall, argList);
+    			}
+
+    			consumeExpected(')');
+    		}    	       	   
+    	}
+
+    	m_xpathDynamicFunctionCallList.add(xpathDynamicFunctionCall);
+
+    	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+    			m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
     }
   
 }

@@ -103,6 +103,13 @@ public class XPathDynamicFunctionCall extends Expression {
     private String[] m_xpathChainedArgListArr;
     
     /**
+     * Function argument run-time value, that is lhs operand of
+     * XPath operator "=>" whose rhs operand is this dfc compiled
+     * object.
+     */
+    private XObject m_lArgObj;
+    
+    /**
      * The class fields m_vars & m_globals_size declared below are used during 
      * XPath.fixupVariables(..) action as performed within object of this class.
      */
@@ -172,7 +179,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	    		m_argList = new ArrayList<String>(); 
     	    	}
 
-    	    	evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)functionRef, m_argList, 
+    	    	evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)functionRef, m_argList, m_lArgObj, 
 																					    	    			xctxt, prefixTable, m_vars, m_globals_size, 
 																					    	    			m_xpathVarList, m_funcRefVarName);               
 	           if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
@@ -267,7 +274,7 @@ public class XPathDynamicFunctionCall extends Expression {
      							   }
      						   }
      						   else if ((evalResult instanceof XPathInlineFunction) && (m_trailingArgList != null)) {
-     							   evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)evalResult, m_trailingArgList, 
+     							   evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)evalResult, m_trailingArgList, null, 
 																					     									   xctxt, prefixTable, m_vars, m_globals_size, 
 																					     									   m_xpathVarList, m_funcRefVarName);
      						   }
@@ -615,7 +622,7 @@ public class XPathDynamicFunctionCall extends Expression {
       }
        
       if ((evalResult instanceof XPathInlineFunction) && (m_trailingArgList != null)) {
-    	 evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)evalResult, m_trailingArgList, 
+    	 evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)evalResult, m_trailingArgList, null, 
     			                                                        xctxt, prefixTable, m_vars, m_globals_size, 
     			                                                        m_xpathVarList, m_funcRefVarName); 
       }
@@ -823,6 +830,14 @@ public class XPathDynamicFunctionCall extends Expression {
 	
 	public String[] getChainedArgXPathStrArray() {
 		return m_xpathChainedArgListArr;
+	}
+
+	public XObject getArg0() {
+		return m_lArgObj;
+	}
+	
+	public void setArg0(XObject lArgObj) {
+		m_lArgObj = lArgObj; 		
 	}
 
 }

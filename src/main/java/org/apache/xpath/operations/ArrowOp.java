@@ -17,6 +17,8 @@
  */
 package org.apache.xpath.operations;
 
+import java.util.Vector;
+
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -29,12 +31,12 @@ import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
 
 /**
  * Implementation of XPath 3.1 arrow operator, "=>". 
- * 
- * Ref : https://www.w3.org/TR/xpath-31/#id-arrow-operator
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -63,68 +65,89 @@ public class ArrowOp extends Operation
       
       SourceLocator srcLocator = xctxt.getSAXLocator();
       
-      Function function = (Function)m_right;
-      
-      if (function instanceof Function3Args) {
-     	 Function3Args funcThreeArgs = (Function3Args)function;
-     	 Expression arg0 = funcThreeArgs.getArg0();
-     	 Expression arg1 = funcThreeArgs.getArg1();
-     	 funcThreeArgs.setArg0(m_left);
-     	 
-     	 try {
-     		if (arg0 != null) {
-     	       funcThreeArgs.setArg(arg0, 1);
-     		}
-     		if (arg1 != null) {
-     	       funcThreeArgs.setArg(arg1, 2);
-     		}
-     	 }
-     	 catch (WrongNumberArgsException ex) {
-  		    throw new javax.xml.transform.TransformerException("FORX0003 : An error occured, during evaluation for "
-  		    		                                                                      + "operator =>.", srcLocator);
-	     }
-     	 
-     	 result = funcThreeArgs.execute(xctxt);
-      }
-      else if (function instanceof Function2Args) {
-    	 Function2Args funcTwoArgs = (Function2Args)function;
-    	 Expression arg1 = funcTwoArgs.getArg1();
+      if (m_right instanceof XPathDynamicFunctionCall) {
+    	 XPathDynamicFunctionCall dfc = (XPathDynamicFunctionCall)m_right;    	     	 
     	 
-    	 if (arg1 != null) {
-     	    throw new javax.xml.transform.TransformerException("FORX0003 : The function's 2nd argument cannot be provided "
-     	    		                                                   + "lexically for an XPath function of arity 2 with evaluation using "
-     	    		                                                   + "operator =>.", srcLocator); 
-     	 }
-     	 else {     		
-     		Expression arg0 = funcTwoArgs.getArg0();
-     		funcTwoArgs.setArg0(m_left);
-     		try {     		   
-			   funcTwoArgs.setArg(arg0, 1);
-			} 
-     		catch (WrongNumberArgsException ex) {
-     		   throw new javax.xml.transform.TransformerException("FORX0003 : An error occured, during evaluation for "
-     		   		                                                      + "operator =>.", srcLocator);
-			}
-     		result = funcTwoArgs.execute(xctxt);
-     	 }
+    	 Expression lArg = m_left;
+    	 XObject lArgObj = lArg.execute(xctxt);
+    	 dfc.setArg0(lArgObj);
+    	 
+    	 result = dfc.execute(xctxt);
       }
-      else if (function instanceof FunctionOneArg) {
-     	 FunctionOneArg funcOneArg = (FunctionOneArg)function;
-     	 Expression arg0 = funcOneArg.getArg0();
-     	 
-     	 if (arg0 != null) {
-     	    throw new javax.xml.transform.TransformerException("FORX0003 : The function's 1st argument cannot be provided lexically "
-     	    		                                                   + "for an XPath function of arity 1 with evaluation using "
-     	    		                                                   + "operator =>.", srcLocator); 
-     	 }
-     	 else {
-     		funcOneArg.setArg0(m_left);
-     		result = funcOneArg.execute(xctxt);
-     	 }
+      else if (m_right instanceof XSL3ConstructorOrExtensionFunction) {
+    	 XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)m_right;
+    	 Vector argVector = xsl3ConstructorOrExtensionFunction.getArgVector();
+    	 
+    	 Expression lArg = m_left;
+    	 XObject lArgObj = lArg.execute(xctxt);
+    	 argVector.add(0, lArgObj);
+    	 
+    	 result = xsl3ConstructorOrExtensionFunction.execute(xctxt);
       }
-      
-      if (fArrowOpRemainingXPathExprStr != null) {         
-         result = getFinalResult(result, fArrowOpRemainingXPathExprStr, xctxt);
+      else {
+    	  Function function = (Function)m_right;
+
+    	  if (function instanceof Function3Args) {
+    		  Function3Args funcThreeArgs = (Function3Args)function;
+    		  Expression arg0 = funcThreeArgs.getArg0();
+    		  Expression arg1 = funcThreeArgs.getArg1();
+    		  funcThreeArgs.setArg0(m_left);
+
+    		  try {
+    			  if (arg0 != null) {
+    				  funcThreeArgs.setArg(arg0, 1);
+    			  }
+    			  if (arg1 != null) {
+    				  funcThreeArgs.setArg(arg1, 2);
+    			  }
+    		  }
+    		  catch (WrongNumberArgsException ex) {
+    			  throw new javax.xml.transform.TransformerException("FORX0003 : An error occured, during evaluation for "
+    					  + "operator =>.", srcLocator);
+    		  }
+
+    		  result = funcThreeArgs.execute(xctxt);
+    	  }
+    	  else if (function instanceof Function2Args) {
+    		  Function2Args funcTwoArgs = (Function2Args)function;
+    		  Expression arg1 = funcTwoArgs.getArg1();
+
+    		  if (arg1 != null) {
+    			  throw new javax.xml.transform.TransformerException("FORX0003 : The function's 2nd argument cannot be provided "
+    					  + "lexically for an XPath function of arity 2 with evaluation using "
+    					  + "operator =>.", srcLocator); 
+    		  }
+    		  else {     		
+    			  Expression arg0 = funcTwoArgs.getArg0();
+    			  funcTwoArgs.setArg0(m_left);
+    			  try {     		   
+    				  funcTwoArgs.setArg(arg0, 1);
+    			  } 
+    			  catch (WrongNumberArgsException ex) {
+    				  throw new javax.xml.transform.TransformerException("FORX0003 : An error occured, during evaluation for "
+    						  + "operator =>.", srcLocator);
+    			  }
+    			  result = funcTwoArgs.execute(xctxt);
+    		  }
+    	  }
+    	  else if (function instanceof FunctionOneArg) {
+    		  FunctionOneArg funcOneArg = (FunctionOneArg)function;
+    		  Expression arg0 = funcOneArg.getArg0();
+
+    		  if (arg0 != null) {
+    			  throw new javax.xml.transform.TransformerException("FORX0003 : The function's 1st argument cannot be provided lexically "
+    					  + "for an XPath function of arity 1 with evaluation using "
+    					  + "operator =>.", srcLocator); 
+    		  }
+    		  else {
+    			  funcOneArg.setArg0(m_left);
+    			  result = funcOneArg.execute(xctxt);
+    		  }
+    	  }
+
+    	  if (fArrowOpRemainingXPathExprStr != null) {         
+    		  result = getFinalResult(result, fArrowOpRemainingXPathExprStr, xctxt);
+    	  }
       }
       
       return result;
