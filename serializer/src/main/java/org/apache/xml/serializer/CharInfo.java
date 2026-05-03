@@ -363,7 +363,7 @@ final class CharInfo
      */
     private boolean defineEntity(String name, char value)
     {
-        StringBuffer sb = new StringBuffer("&");
+        StringBuilder sb = new StringBuilder("&");
         sb.append(name);
         sb.append(';');
         String entityString = sb.toString();

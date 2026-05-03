@@ -842,7 +842,7 @@ public abstract class DTMDefaultBase implements DTM
           break;
         }
 
-      StringBuffer sb=new StringBuffer();
+      StringBuilder sb=new StringBuilder();
 	  sb.append("["+nodeHandle+": "+typestring+
 				"(0x"+Integer.toHexString(getExpandedTypeID(nodeHandle))+") "+
 				getNodeNameX(nodeHandle)+" {"+getNamespaceURI(nodeHandle)+"}"+

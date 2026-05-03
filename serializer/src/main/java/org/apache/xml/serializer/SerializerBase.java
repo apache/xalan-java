@@ -75,7 +75,7 @@ public abstract class SerializerBase
             PKG_NAME = fullyQualifiedName.substring(0, lastDot);
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < PKG_NAME.length(); i++) {
             char ch = PKG_NAME.charAt(i);
             if (ch == '.')
@@ -1365,7 +1365,7 @@ public abstract class SerializerBase
             // true if we found a URI but haven't yet processed the local name 
             boolean foundURI = false;
 
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             String uri = null;
             String localName = null;
 

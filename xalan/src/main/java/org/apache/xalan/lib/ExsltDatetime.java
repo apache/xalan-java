@@ -1108,7 +1108,7 @@ public class ExsltDatetime
     private static String strip(String symbols, String pattern)
     {
         int i = 0;
-        StringBuffer result = new StringBuffer(pattern.length());
+        StringBuilder result = new StringBuilder(pattern.length());
 
         while (i < pattern.length())
         {

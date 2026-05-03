@@ -193,7 +193,7 @@ final class AttributeSet extends TopLevelElement {
     }
 
     public String toString() {
-	StringBuffer buf = new StringBuffer("attribute-set: ");
+	StringBuilder buf = new StringBuilder("attribute-set: ");
 	// Translate all local attributes
 	final Enumeration attributes = elements();
 	while (attributes.hasMoreElements()) {

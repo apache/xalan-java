@@ -1219,7 +1219,7 @@ public class ElemNumber extends ElemTemplateElement
           // then append the formatToken.
           else if (formatTokenizer.isLetterOrDigitAhead())
           {
-            final StringBuffer formatTokenStringBuffer = new StringBuffer(formatToken);
+            final StringBuilder formatTokenStringBuffer = new StringBuilder(formatToken);
 
             // Append the formatToken string...
             // For instance [2][1][5] with a format value of "1--1. "
@@ -1949,7 +1949,7 @@ public class ElemNumber extends ElemTemplateElement
 
     if (val <= 3999L)
     {
-      StringBuffer romanBuffer = new StringBuffer();
+      StringBuilder romanBuffer = new StringBuilder();
       do
       {
         while (val >= m_romanConvertTable[place].m_postValue)

@@ -716,7 +716,7 @@ public final class TransformerImpl extends Transformer
 	// Return a 'null' string if no CDATA section elements were specified
 	if (cdata == null) return null;
 
-	StringBuffer result = new StringBuffer();
+	StringBuilder result = new StringBuilder();
 
 	// Get an enumeration of all the elements in the hashtable
 	Enumeration elements = cdata.keys();

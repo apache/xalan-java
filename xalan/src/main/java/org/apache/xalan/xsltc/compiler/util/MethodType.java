@@ -68,7 +68,7 @@ public final class MethodType extends Type {
     }
 
     public String toString() {
-	StringBuffer result = new StringBuffer("method{");
+	StringBuilder result = new StringBuilder("method{");
 	if (_argsType != null) {
 	    final int count = _argsType.size();
 	    for (int i=0; i<count; i++) {
@@ -92,7 +92,7 @@ public final class MethodType extends Type {
      * <code>lastArgSig</code> to the end of the argument list.
      */
     public String toSignature(String lastArgSig) {
-	final StringBuffer buffer = new StringBuffer();
+	final StringBuilder buffer = new StringBuilder();
 	buffer.append('(');
 	if (_argsType != null) {
 	    final int n = _argsType.size();

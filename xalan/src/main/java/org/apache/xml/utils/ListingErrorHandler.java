@@ -384,7 +384,7 @@ public class ListingErrorHandler implements ErrorHandler, ErrorListener
             int line = locator.getLineNumber();
             int column = locator.getColumnNumber();
             pw.println("line: " + getSourceLine(url, line));
-            StringBuffer buf = new StringBuffer("line: ");
+            StringBuilder buf = new StringBuilder("line: ");
             for (int i = 1; i < column; i++)
             {
                 buf.append(' ');

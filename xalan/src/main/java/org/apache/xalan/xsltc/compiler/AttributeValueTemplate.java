@@ -82,7 +82,7 @@ final class AttributeValueTemplate extends AttributeValue {
           */
         String t = null;
         String lookahead = null;
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         int state = OUT_EXPR;
         
         while (tokenizer.hasMoreTokens()) {            
@@ -216,7 +216,7 @@ final class AttributeValueTemplate extends AttributeValue {
     }
 
     public String toString() {
-	final StringBuffer buffer = new StringBuffer("AVT:[");
+	final StringBuilder buffer = new StringBuilder("AVT:[");
 	final int count = elementCount();
 	for (int i = 0; i < count; i++) {
 	    buffer.append(elementAt(i).toString());

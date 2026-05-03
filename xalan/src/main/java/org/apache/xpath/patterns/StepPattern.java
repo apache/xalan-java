@@ -787,7 +787,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   public String toString()
   {
 
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
 
     for (StepPattern pat = this; pat != null; pat = pat.m_relativePathPattern)
     {

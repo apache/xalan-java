@@ -137,7 +137,7 @@ final class CallTemplate extends Instruction {
 	il.append(methodGen.loadCurrentNode());
         
         // Initialize prefix of method signature
-	StringBuffer methodSig = new StringBuffer("(" + DOM_INTF_SIG 
+	StringBuilder methodSig = new StringBuilder("(" + DOM_INTF_SIG
             + NODE_ITERATOR_SIG + TRANSLET_OUTPUT_SIG + NODE_SIG);
 	
         // If calling a simply named template, push actual arguments

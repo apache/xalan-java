@@ -82,7 +82,7 @@ public final class Util {
      */
     public static String toJavaName(String name) {
 	if (name.length() > 0) {
-	    final StringBuffer result = new StringBuffer();
+	    final StringBuilder result = new StringBuilder();
 
 	    char ch = name.charAt(0);
 	    result.append(Character.isJavaIdentifierStart(ch) ? ch : '_');
@@ -135,7 +135,7 @@ public final class Util {
 
     public static String replace(String base, String delim, String[] str) {
 	final int len = base.length();
-	final StringBuffer result = new StringBuffer();
+	final StringBuilder result = new StringBuilder();
 
 	for (int i = 0; i < len; i++) {
 	    final char ch = base.charAt(i);

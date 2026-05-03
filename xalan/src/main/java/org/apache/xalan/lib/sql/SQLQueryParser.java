@@ -301,7 +301,7 @@ public class SQLQueryParser
   {
     QueryParameter  curParm = null;
     int	            state = 0;
-    StringBuffer    tok = new StringBuffer();
+    StringBuilder tok = new StringBuilder();
     boolean         firstword = true;
 
     if (m_Parameters == null) m_Parameters = new Vector();
@@ -351,7 +351,7 @@ public class SQLQueryParser
               }
             }
             firstword = false;
-            tok = new StringBuffer();
+            tok = new StringBuilder();
             if ( ch == '\'' ) state = 1;
             else if ( ch == '?' ) state = 4;
             else state = 0;
@@ -379,7 +379,7 @@ public class SQLQueryParser
             curParm.setTypeName(tok.toString());
 //            curParm.type = map_type(curParm.typeName);
             m_Parameters.addElement(curParm);
-            tok = new StringBuffer();
+            tok = new StringBuilder();
             if ( ch == '=' ) state = 7;
             else state = 6;
           }
@@ -394,7 +394,7 @@ public class SQLQueryParser
           else if ( tok.length() > 0 )
           {
             curParm.setName(tok.toString());
-            tok = new StringBuffer();
+            tok = new StringBuilder();
             if ( ch == ']' )
             {
               //param_output.addElement(new Boolean(false));
@@ -418,7 +418,7 @@ public class SQLQueryParser
               m_hasOutput = true;
             }
 
-            tok = new StringBuffer();
+            tok = new StringBuilder();
             if ( ch == ']' )
             {
               state = 0;

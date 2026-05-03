@@ -99,7 +99,7 @@ final class TestSeq {
      */
     public String toString() {
 	final int count = _patterns.size();
-	final StringBuffer result = new StringBuffer();
+	final StringBuilder result = new StringBuilder();
 
 	for (int i = 0; i < count; i++) {
 	    final LocationPathPattern pattern =

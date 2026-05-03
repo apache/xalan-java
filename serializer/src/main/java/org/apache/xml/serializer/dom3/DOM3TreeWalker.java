@@ -512,7 +512,7 @@ final class DOM3TreeWalker {
                     // DOCTYPE internal subset via an event call, so we write it
                     // out here.
                     Writer writer = fSerializer.getWriter();
-                    StringBuffer dtd = new StringBuffer();
+                    StringBuilder dtd = new StringBuilder();
 
                     dtd.append("<!DOCTYPE ");
                     dtd.append(docTypeName);

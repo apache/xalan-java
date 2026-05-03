@@ -1463,7 +1463,7 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
         if (origPath != null && origPath.length() != 0 && origPath.indexOf('%') != -1) {
             // Locate the escape characters
             StringTokenizer tokenizer = new StringTokenizer(origPath, "%");
-            StringBuffer result = new StringBuffer(origPath.length());
+            StringBuilder result = new StringBuilder(origPath.length());
             int size = tokenizer.countTokens();
             result.append(tokenizer.nextToken());
             for(int i = 1; i < size; ++i) {

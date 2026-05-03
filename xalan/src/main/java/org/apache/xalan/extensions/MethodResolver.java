@@ -294,7 +294,7 @@ public class MethodResolver
   private static String replaceDash(String name)
   {
     char dash = '-';
-    StringBuffer buff = new StringBuffer("");
+    StringBuilder buff = new StringBuilder("");
     for (int i=0; i<name.length(); i++)
     {
       if (name.charAt(i) == dash)
@@ -978,7 +978,7 @@ public class MethodResolver
 
   private static String errArgs(Object[] xsltArgs, int startingArg)
   {
-    StringBuffer returnArgs = new StringBuffer();
+    StringBuilder returnArgs = new StringBuilder();
     for (int i = startingArg; i < xsltArgs.length; i++)
     {
       if (i != startingArg)

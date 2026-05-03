@@ -396,7 +396,7 @@ public class XSLTProcessorApplet extends Applet
    */
   public String escapeString(String s)
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     int length = s.length();
 
     for (int i = 0; i < length; i++)

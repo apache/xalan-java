@@ -787,7 +787,7 @@ class FunctionCall extends Expression {
                         il.append(arg.getType().LOAD(paramTemp[i].getIndex())));
             }
 
-	    final StringBuffer buffer = new StringBuffer();
+	    final StringBuilder buffer = new StringBuilder();
 	    buffer.append('(');
 	    for (int i = 0; i < paramTypes.length; i++) {
 		buffer.append(getSignature(paramTypes[i]));
@@ -826,7 +826,7 @@ class FunctionCall extends Expression {
 		exp.getType().translateTo(classGen, methodGen, paramTypes[i]);
 	    }
 
-	    final StringBuffer buffer = new StringBuffer();
+	    final StringBuilder buffer = new StringBuilder();
 	    buffer.append('(');
 	    for (int i = 0; i < paramTypes.length; i++) {
 		buffer.append(getSignature(paramTypes[i]));
@@ -967,7 +967,7 @@ class FunctionCall extends Expression {
      */
     static final String getSignature(Class clazz) {
 	if (clazz.isArray()) {
-	    final StringBuffer sb = new StringBuffer();
+	    final StringBuilder sb = new StringBuilder();
 	    Class cl = clazz;
 	    while (cl.isArray()) {
 		sb.append("[");
@@ -1019,7 +1019,7 @@ class FunctionCall extends Expression {
      * Compute the JVM method descriptor for the method.
      */
     static final String getSignature(Method meth) {
-	final StringBuffer sb = new StringBuffer();
+	final StringBuilder sb = new StringBuilder();
 	sb.append('(');
 	final Class[] params = meth.getParameterTypes(); // avoid clone
 	for (int j = 0; j < params.length; j++) {
@@ -1033,7 +1033,7 @@ class FunctionCall extends Expression {
      * Compute the JVM constructor descriptor for the constructor.
      */
     static final String getSignature(Constructor cons) {
-	final StringBuffer sb = new StringBuffer();
+	final StringBuilder sb = new StringBuilder();
 	sb.append('(');
 	final Class[] params = cons.getParameterTypes(); // avoid clone
 	for (int j = 0; j < params.length; j++) {
@@ -1046,7 +1046,7 @@ class FunctionCall extends Expression {
      * Return the signature of the current method
      */
     private String getMethodSignature(Vector argsType) {
- 	final StringBuffer buf = new StringBuffer(_className);
+ 	final StringBuilder buf = new StringBuilder(_className);
         buf.append('.').append(_fname.getLocalPart()).append('(');
 	  
 	int nArgs = argsType.size();	    
@@ -1068,7 +1068,7 @@ class FunctionCall extends Expression {
     protected static String replaceDash(String name)
     {
         char dash = '-';
-        StringBuffer buff = new StringBuffer("");
+        StringBuilder buff = new StringBuilder("");
         for (int i = 0; i < name.length(); i++) {
         if (i > 0 && name.charAt(i-1) == dash)
             buff.append(Character.toUpperCase(name.charAt(i)));

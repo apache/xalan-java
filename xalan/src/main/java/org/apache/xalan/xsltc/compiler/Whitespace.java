@@ -144,7 +144,7 @@ final class Whitespace extends TopLevelElement {
 
         final SymbolTable stable = parser.getSymbolTable();
         StringTokenizer list = new StringTokenizer(_elementList);
-        StringBuffer elements = new StringBuffer(Constants.EMPTYSTRING);
+        StringBuilder elements = new StringBuilder(Constants.EMPTYSTRING);
 
         while (list.hasMoreElements()) {
             String token = list.nextToken();
