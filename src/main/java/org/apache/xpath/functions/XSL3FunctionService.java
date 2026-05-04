@@ -918,8 +918,7 @@ public class XSL3FunctionService {
     	}
 
     	if (funcIdObj != null) {
-    		// Evaluate an XPath built-in function reference
-    		
+    		// Evaluate an XPath built-in function reference    		
     		String funcIdStr = funcIdObj.toString();
     		Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
     		function.setLocalName(funcLocalName);
@@ -968,8 +967,7 @@ public class XSL3FunctionService {
     		evalResult = function.execute(xctxt);
     	}
     	else if (xpathNamedFuncRef.getXslStylesheetFunction() != null) {
-    		// Evaluate an XSL stylesheet function reference
-    		
+    		// Evaluate an XSL stylesheet function reference    		
     		ElemFunction elemFunction = xpathNamedFuncRef.getXslStylesheetFunction();
 
     		ResultSequence argSequence = new ResultSequence();
@@ -1012,8 +1010,7 @@ public class XSL3FunctionService {
     		}
     	}
     	else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {
-    		// Evaluate an XPath schema type constructor function call reference
-    		
+    		// Evaluate an XPath schema type constructor function call reference    		
     		XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
     		funcObj.setDefinedArity(new Short[] { (short)funcArity });
 

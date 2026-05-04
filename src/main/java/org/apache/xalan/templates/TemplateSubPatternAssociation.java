@@ -21,6 +21,9 @@
 package org.apache.xalan.templates;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
@@ -131,32 +134,37 @@ public class TemplateSubPatternAssociation implements Serializable, Cloneable
   /**
    * Tell if two modes match according to the rules of XSLT.
    *
-   * @param m1 First mode to match
-   * @param m2 Second mode to match
+   * @param m1 The first mode to match
+   * @param m2 An array of modes to match
    *
    * @return True if the two given modes match
    */
-  private boolean matchModes(QName m1, QName m2)
+  private boolean matchModes(QName m1, QName[] m2)
   {
 	 boolean result = false;
 	 
 	 QName defaultMode = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_DEFAULT, true);
 	 QName modeAll = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_ALL, true);
 	 
-	 if (modeAll.equals(m2)) {
+	 List<QName> m2List = new ArrayList<QName>();
+	 if (m2 != null) {
+	    m2List = Arrays.asList(m2);
+	 }
+	 
+	 if (m2List.contains(modeAll)) {
 	    result = true; 
 	 }
 	 else if ((m1 == null) && (m2 == null)) {
     	result = true; 
      }
-     else if ((m1 == null) && defaultMode.equals(m2)) {
+     else if ((m1 == null) && m2List.contains(defaultMode)) {
     	result = true; 
      }
      else if ((m2 == null) && defaultMode.equals(m1)) {
      	result = true; 
      }
      else if (m1 != null) {
-    	result = m1.equals(m2);  
+    	result = m2List.contains(m1);  
      }
 	 
      return result;

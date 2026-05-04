@@ -17,6 +17,7 @@
  */
 package org.apache.xpath.functions.context;
 
+import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
@@ -107,15 +108,21 @@ public class FuncLast extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-	  XSInteger xsInteger = null;
+	  
+	  XObject result = null;
+	  
+	  if (ElemForEachGroup.m_group_adjacent_size != -1) {
+		  result = new XSInteger(ElemForEachGroup.m_group_adjacent_size + "");    
+	  }
+	  else {
+		  int pos = (xctxt.getLast() > 0) ? xctxt.getLast() : getCountOfContextNodeList(xctxt);
 
-	  int pos = (xctxt.getLast() > 0) ? xctxt.getLast() : getCountOfContextNodeList(xctxt);
+		  String str1 = String.valueOf(pos);
 
-	  String str1 = String.valueOf(pos);
+		  result = new XSInteger(str1);
+	  }
 
-	  xsInteger = new XSInteger(str1);
-
-	  return xsInteger;
+	  return result;
   }
   
   /**

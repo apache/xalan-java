@@ -18,6 +18,7 @@
 package org.apache.xalan.templates;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -848,7 +849,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
 							  }
 							  else if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
 								  template = new ElemTemplate();
-								  template.setMode(elemMode.getName());
+								  Vector vMode = new Vector();
+								  vMode.add(elemMode.getName());
+								  template.setMode(vMode);
 								  template.setStylesheet(sroot);
 								  ErrorListener errListener = xctxt.getErrorListener();
 								  XPath xpathMatch = new XPath("processing-instruction()", sroot, sroot, XPath.MATCH, errListener);
@@ -908,7 +911,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
 							  }
 							  else if ((Constants.ATTRVAL_SHALLOW_COPY).equals(onNoMatchStr)) {
 								  template = new ElemTemplate();
-								  template.setMode(elemMode.getName());
+								  Vector vMode = new Vector();
+								  vMode.add(elemMode.getName());
+								  template.setMode(vMode);
 								  template.setStylesheet(sroot);
 								  ErrorListener errListener = xctxt.getErrorListener();
 								  XPath xpathMatch = new XPath("comment()", sroot, sroot, XPath.MATCH, errListener);
@@ -1559,18 +1564,23 @@ public class ElemApplyTemplates extends ElemCallTemplate
 			  Object hashTableKeyObj = hashTableEntry.getKey();
 			  TemplateSubPatternAssociation hashTableValueObj = (TemplateSubPatternAssociation)(hashTableEntry.getValue());		
 			  elemTemplate = hashTableValueObj.getTemplate();
+			  
+			  QName[] qNameArray = elemTemplate.getMode();
+			  
+			  List<QName> qNameList = new ArrayList<QName>();
+			  if (qNameArray != null) {
+				 qNameList = Arrays.asList(qNameArray);  
+			  }		  		   		   
 
-			  QName templateDefnMode = elemTemplate.getMode();		  		   		   
-
-			  if ((xslTemplateInvokeMode != null) && (templateDefnMode != null)) {
-				  if (xslTemplateInvokeMode.equals(templateDefnMode)) {			  
+			  if ((xslTemplateInvokeMode != null) && (qNameArray != null)) {
+				  if (qNameList.contains(xslTemplateInvokeMode)) {			  
 					  templateSelectedWithoutPriority = true;
 				  }
 			  }
-			  else if ((xslTemplateInvokeMode != null) && (templateDefnMode == null)) {
+			  else if ((xslTemplateInvokeMode != null) && (qNameArray == null)) {
 				  templateSelectedWithoutPriority = false; 
 			  }
-			  else if ((xslTemplateInvokeMode == null) && (templateDefnMode != null)) {
+			  else if ((xslTemplateInvokeMode == null) && (qNameArray != null)) {
 				  templateSelectedWithoutPriority = false; 
 			  }
 			  else {
@@ -1622,18 +1632,22 @@ public class ElemApplyTemplates extends ElemCallTemplate
 				  Object hashTableKeyObj = hashTableEntry.getKey();
 				  TemplateSubPatternAssociation hashTableValueObj = (TemplateSubPatternAssociation)(hashTableEntry.getValue());		
 				  elemTemplate = hashTableValueObj.getTemplate();
+				  
+				  QName[] qNameArray = elemTemplate.getMode();
+                  List<QName> qNameList = new ArrayList<QName>();                  
+                  if (qNameArray != null) {
+                	 qNameList = Arrays.asList(qNameArray);  
+                  }
 
-				  QName templateDefnMode = elemTemplate.getMode();		  		   		   
-
-				  if ((xslTemplateInvokeMode != null) && (templateDefnMode != null)) {
-					  if (xslTemplateInvokeMode.equals(templateDefnMode)) {			  
+				  if ((xslTemplateInvokeMode != null) && (qNameArray != null)) {
+					  if (qNameList.contains(xslTemplateInvokeMode)) {			  
 						  templateSelectedWithoutPriority = true;
 					  }
 				  }
-				  else if ((xslTemplateInvokeMode != null) && (templateDefnMode == null)) {
+				  else if ((xslTemplateInvokeMode != null) && (qNameArray == null)) {
 					  templateSelectedWithoutPriority = false; 
 				  }
-				  else if ((xslTemplateInvokeMode == null) && (templateDefnMode != null)) {
+				  else if ((xslTemplateInvokeMode == null) && (qNameArray != null)) {
 					  templateSelectedWithoutPriority = false; 
 				  }
 				  else {

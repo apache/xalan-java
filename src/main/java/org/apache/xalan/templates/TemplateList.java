@@ -481,15 +481,22 @@ public class TemplateList implements java.io.Serializable
 	  
 	  String patternTableKeyStr = pattern; 
 
-	  QName templateModeQname = template.getMode();
+	  QName[] qNameArray = template.getMode();
 	  
-	  String templateModeStr = null;
-	  if (templateModeQname != null) {
-		  templateModeStr = templateModeQname.toString();   
+	  StringBuffer strBuff = new StringBuffer();
+	  if (qNameArray != null) {
+		 for (int i = 0; i < qNameArray.length; i++) {
+			if (i < (qNameArray.length - 1)) {
+			   strBuff.append(qNameArray[i] + "##");
+			}
+			else {
+			   strBuff.append(qNameArray[i]);
+			}
+		 }
 	  }
 	  
-	  if (templateModeStr != null) {
-		  patternTableKeyStr = (patternTableKeyStr + Constants.XSL_PATTERN_TABLE_DELIM + templateModeStr);  
+	  if (qNameArray != null) {
+		  patternTableKeyStr = (patternTableKeyStr + Constants.XSL_PATTERN_TABLE_DELIM + strBuff.toString());  
 	  }
 	  else {
 		  patternTableKeyStr = (patternTableKeyStr + Constants.XSL_PATTERN_TABLE_DELIM + "mode_unspecified");		  

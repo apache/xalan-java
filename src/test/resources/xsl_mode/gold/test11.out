@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><items>
+  <mode-test name="m1">
+   <item info="Item 1"/>
+   <item info="Item 2"/>
+   <item info="Item 3"/>
+   <item info="Item 4"/>
+   <item info="Item 5"/>
+</mode-test>
+  <mode-test name="m2">
+   <item info="Item 1"/>
+   <item info="Item 2"/>
+   <item info="Item 3"/>
+   <item info="Item 4"/>
+   <item info="Item 5"/>
+</mode-test>
+</items>

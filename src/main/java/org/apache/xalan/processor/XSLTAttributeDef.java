@@ -1234,25 +1234,55 @@ public class XSLTAttributeDef
             throws org.xml.sax.SAXException
   {
 
-    StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
-    int nQNames = tokenizer.countTokens();
-    Vector qnames = new Vector(nQNames);
-    
-    Node node = handler.getOriginatingNode();
+	  StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
+	  int nQNames = tokenizer.countTokens();
+	  
+	  Vector qnames = new Vector(nQNames);
 
-    for (int i = 0; i < nQNames; i++)
-    {
-      // Fix from Alexander Rudnev
-      String str1 = tokenizer.nextToken();
-      if (!((Constants.ATTRNAME_ERRORS).equals(name) && (owner instanceof ElemCatch))) {
-    	 qnames.addElement(new QName(str1, handler));
-      }
-      else {
-    	 qnames.addElement(new QName(str1, handler, owner)); 
-      }
-    }
+	  Node node = handler.getOriginatingNode();
 
-    return qnames;
+	  for (int i = 0; i < nQNames; i++)
+	  {
+		  // Fix from Alexander Rudnev
+		  String str1 = tokenizer.nextToken();
+
+		  if ((Constants.ATTRNAME_MODE).equals(name)) {
+			  QName qname = null;    	  
+			  if ((Constants.ATTRVAL_DEFAULT_PREFIX).equals(value)) {
+				  // We use, an XML non-standard namespace for this QName object 
+				  // instance, because string #default is not a valid QName string.
+				  qname = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_DEFAULT, true);
+			  }
+			  else if ((Constants.ATTRVAL_UNNAMED_PREFIX).equals(value)) {
+				  // We use, an XML non-standard namespace for this QName object 
+				  // instance, because string #unnamed is not a valid QName string.
+				  qname = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_UNNAMED, true);   
+			  }
+			  else if ((Constants.ATTRVAL_CURRENT_PREFIX).equals(value)) {
+				  // We use, an XML non-standard namespace for this QName object 
+				  // instance, because string #current is not a valid QName string.
+				  qname = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_CURRENT, true);    
+			  }
+			  else if ((Constants.ATTRVAL_ALL_PREFIX).equals(value)) {
+				  // We use, an XML non-standard namespace for this QName object 
+				  // instance, because string #all is not a valid QName string.
+				  qname = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_ALL, true);   
+			  }
+			  else {
+				  qname = new QName(str1, handler, true);
+			  }
+
+			  qnames.addElement(qname);
+		  }      
+		  else if (!((Constants.ATTRNAME_ERRORS).equals(name) && (owner instanceof ElemCatch))) {
+			  qnames.addElement(new QName(str1, handler));
+		  }
+		  else {
+			  qnames.addElement(new QName(str1, handler, owner)); 
+		  }		  
+	  }
+
+	  return qnames;
   }
 
  /**

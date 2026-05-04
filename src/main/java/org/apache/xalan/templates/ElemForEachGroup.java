@@ -158,6 +158,20 @@ public class ElemForEachGroup extends ElemTemplateElement
   private boolean m_isInpSeqAllAtomicValues = true;
   
   /**
+   * This class field, stores result of function fn:position
+   * when referring to group position, when groups are formed by 
+   * xsl:for-each-group/@group-adjacent.
+   */
+  public static int m_group_adjacent_pos = -1;
+  
+  /**
+   * This class field, stores result of function fn:last
+   * when referring to total number of groups formed, when 
+   * groups are formed by xsl:for-each-group/@group-adjacent.
+   */
+  public static int m_group_adjacent_size = -1;
+  
+  /**
    * Class constructor.
    */
   public ElemForEachGroup() {}
@@ -1451,6 +1465,8 @@ public class ElemForEachGroup extends ElemTemplateElement
 	 int idx = 0;
 	 int nextNode;
 	 
+	 int nodeSetLength = sourceNodes.getLength();
+	 
 	 while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
 		 DTM dtm = xctxt.getDTM(nextNode);
 		 XSString xsStr1 = null;
@@ -1494,11 +1510,18 @@ public class ElemForEachGroup extends ElemTemplateElement
 			}						
 		 }
 		 else {
+			m_group_adjacent_pos = (idx + 1);
+			m_group_adjacent_size = nodeSetLength;
+			
 	        xpathEvalResult = m_groupAdjacentExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());
-	        if ((xpathEvalResult instanceof ResultSequence) && (((ResultSequence)xpathEvalResult).size() == 0)) {
+	        
+	        m_group_adjacent_pos = -1;	        
+	        m_group_adjacent_size = -1;
+	        
+	        if ((xpathEvalResult instanceof ResultSequence) && (((ResultSequence)xpathEvalResult).size() == 0)) {	        			        
 	        	throw new TransformerException("XTTE1100 : An XSL for-each-group instruction attribute "
 	        			                                                                               + "'group-adjacent''s value is an empty sequence.", srcLocator);
-	        }
+	        }	        	        
 		 }
 	     
 	     Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);

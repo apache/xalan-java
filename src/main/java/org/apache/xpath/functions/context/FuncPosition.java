@@ -19,6 +19,7 @@ package org.apache.xpath.functions.context;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
@@ -139,13 +140,23 @@ public class FuncPosition extends Function
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {    	  
-	  int pos = (xctxt.getPos() > 0) ? xctxt.getPos() : getPositionInContextNodeList(xctxt);
-	  pos = (pos > 0) ? pos : m_forEachGroupGroupByPos;
+  { 
+	  
+	  XObject result = null;
+	  
+	  if (ElemForEachGroup.m_group_adjacent_pos != -1) {
+		 result = new XSInteger(ElemForEachGroup.m_group_adjacent_pos + "");    
+	  }
+	  else {
+		  int pos = (xctxt.getPos() > 0) ? xctxt.getPos() : getPositionInContextNodeList(xctxt);
+		  pos = (pos > 0) ? pos : m_forEachGroupGroupByPos;
 
-	  String str1 = String.valueOf(pos);
+		  String str1 = String.valueOf(pos);
+		  
+		  result = new XSInteger(str1);
+	  }
 
-	  return new XSInteger(str1);
+	  return result;
   }
   
   /**

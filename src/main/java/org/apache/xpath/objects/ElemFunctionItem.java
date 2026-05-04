@@ -31,6 +31,10 @@ public class ElemFunctionItem extends XObject {
 	
 	private static final long serialVersionUID = 1324050607867572996L;
 	
+	/**
+	 * An encapsulated ElemFunction object (run-time representation of 
+	 * xsl:function declaration).
+	 */
 	private ElemFunction m_elemFunction = null;
 	
 	/**

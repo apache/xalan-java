@@ -19,6 +19,7 @@ package org.apache.xalan.templates;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
@@ -223,7 +224,7 @@ public class ElemTemplate extends ElemTemplateElement
    * Modes allow an element to be processed multiple times,
    * each time producing a different result.
    */
-  private QName m_mode;
+  private QName m_modeNames[] = null;
 
   /**
    * Set the "mode" attribute.
@@ -233,9 +234,16 @@ public class ElemTemplate extends ElemTemplateElement
    *
    * @param v Value to set the "mode" attribute
    */
-  public void setMode(QName v)
+  public void setMode(Vector v)
   {
-	  m_mode = v;
+	  int n = v.size();
+
+	  m_modeNames = new QName[n];
+
+	  for (int i = 0; i < n; i++)
+	  {
+		  m_modeNames[i] = (QName) v.elementAt(i);
+	  }
   }
 
   /**
@@ -246,9 +254,9 @@ public class ElemTemplate extends ElemTemplateElement
    *
    * @return Value of the "mode" attribute
    */
-  public QName getMode()
+  public QName[] getMode()
   {
-	  return m_mode;
+	  return m_modeNames;
   }
 
   /**

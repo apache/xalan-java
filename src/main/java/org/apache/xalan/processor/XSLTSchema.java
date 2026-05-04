@@ -479,9 +479,13 @@ public class XSLTSchema extends XSLTElementDef
 		XSLTAttributeDef priorityAttr = new XSLTAttributeDef(null, "priority",
 				XSLTAttributeDef.T_NUMBER, false, false, XSLTAttributeDef.ERROR);
 
-		// xsl:template, xsl:apply-templates                                 
+		// xsl:apply-templates                                 
 		XSLTAttributeDef modeAttr = new XSLTAttributeDef(null, "mode",
 				XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
+		
+		// xsl:template
+		XSLTAttributeDef xslTemplateModeAttr = new XSLTAttributeDef(null, "mode",
+				XSLTAttributeDef.T_QNAMES, false, false, XSLTAttributeDef.ERROR);
 
 		XSLTAttributeDef spaceAttr = new XSLTAttributeDef(Constants.S_XMLNAMESPACEURI, "space", false, false, 
 				false, XSLTAttributeDef.WARNING,
@@ -1450,7 +1454,7 @@ public class XSLTSchema extends XSLTElementDef
 										matchAttrOpt,
 										nameAttrOpt_ERROR,                                                   
 										priorityAttr,
-										modeAttr,
+										xslTemplateModeAttr,
 										asAttrOpt,
 										visibilityAttrOpt,
 										xpathDefaultNamespaceAttrOpt,
