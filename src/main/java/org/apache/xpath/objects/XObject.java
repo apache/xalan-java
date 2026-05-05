@@ -120,6 +120,14 @@ public class XObject extends Expression implements Serializable, Cloneable
    * Currently used for, xsl:message instruction processing.
    */
   private boolean m_useStrict_value;
+  
+  /**
+   * This class field, stores the fact that whether source of data
+   * within this object instance is a sequence and gets its data
+   * via a literal sequence constructor, comprising of node constructors
+   * and for clauses.
+   */
+  private boolean m_homogeneous_source = false;
 
   /**
    * Create an XObject.
@@ -2427,6 +2435,14 @@ public class XObject extends Expression implements Serializable, Cloneable
 
   public void setUseStrictValue(boolean useStrictValue) {
 	  this.m_useStrict_value = useStrictValue;
+  }
+
+  public boolean isHomogeneousSource() {
+	  return m_homogeneous_source;
+  }
+
+  public void setHomogeneousSource(boolean homogeneousSource) {
+	  this.m_homogeneous_source = homogeneousSource;
   }
 
 }

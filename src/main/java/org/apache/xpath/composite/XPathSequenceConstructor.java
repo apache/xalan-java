@@ -124,6 +124,10 @@ public class XPathSequenceConstructor extends Expression {
         ResultSequence resultSeq = new ResultSequence();
         
         int seqCstrPartsSize = m_sequenceConstructorXPathParts.size();
+        
+        boolean isSourceKind1 = false;
+        boolean isSourceKind2 = false;
+        
         for (int idx = 0; idx < seqCstrPartsSize; idx++) {
            String xpathExprStr = m_sequenceConstructorXPathParts.get(idx);
            
@@ -141,6 +145,7 @@ public class XPathSequenceConstructor extends Expression {
            Expression xpathExpr = xpathObj.getExpression();
            
            if (xpathExpr instanceof LocPathIterator) {
+        	   isSourceKind1 = true;
                LocPathIterator locPathIterator = (LocPathIterator)xpathExpr;
                
                DTMCursorIterator dtmIter = null;                     
@@ -258,6 +263,10 @@ public class XPathSequenceConstructor extends Expression {
         	   if (m_vars != null) {
         		   xpathObj.fixupVariables(m_vars, m_globals_size);
                }
+        	   
+        	   if (xpathExpr instanceof XPathForExpr) {
+        		   isSourceKind2 = true; 
+        	   }
         	   
                XObject xPathExprPartResult = xpathObj.execute(xctxt, currentNode, 
                                                                               xctxt.getNamespaceContext());                              
@@ -413,6 +422,10 @@ public class XPathSequenceConstructor extends Expression {
         	}
         	
         	result = rSeq; 
+        }
+        
+        if (isSourceKind1 && isSourceKind2) {
+           result.setHomogeneousSource(true);
         }
         
         return result;

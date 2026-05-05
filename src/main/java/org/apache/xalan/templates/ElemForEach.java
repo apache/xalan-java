@@ -1060,6 +1060,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 	   
 	   final int sourceNode = xctxt.getCurrentNode();
 	   
+	   boolean isHomogeneousSource = evalResult.isHomogeneousSource();
+	   
 	   if (evalResult instanceof ResultSequence) {
 		   ResultSequence resultSeq = (ResultSequence)evalResult;
 		   xdmItemList = resultSeq.getResultSequenceItems();   
@@ -1327,7 +1329,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   resultSeqItem = ((XMLNodeCursorImpl)resultSeqItem).getFresh(); 
 				   }
 
-				   setXPathContextForXslSequenceProcessing(sortableItemList.size(), idx, resultSeqItem, xctxt);
+				   setXPathContextForXslSequenceProcessing(sortableItemCount, idx, resultSeqItem, xctxt);
 
 				   for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
 						   elemTemplateElem = elemTemplateElem.m_nextSibling) {
@@ -1347,7 +1349,14 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					  resultSeqItem = resultSeqItem.getFresh();
 				   }
 				   
-				   setXPathContextForXslSequenceProcessing(xdmItemList.size(), idx, resultSeqItem, xctxt);
+				   if (isHomogeneousSource) {
+					  xctxt.setXPath3ContextSize(xdmItemList.size());
+				      xctxt.setXPath3ContextItem(resultSeqItem);
+				      xctxt.setXPath3ContextPosition(idx + 1); 
+				   }
+				   else {
+				      setXPathContextForXslSequenceProcessing(inpSeqSize, idx, resultSeqItem, xctxt);
+				   }
 
 				   int count = 0;
 				   for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
@@ -1380,7 +1389,14 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					  }
 				   }
 
-				   resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);
+				   if (isHomogeneousSource) {
+					  xctxt.setXPath3ContextSize(-1);
+				      xctxt.setXPath3ContextItem(null);
+				      xctxt.setXPath3ContextPosition(-1); 
+				   }
+				   else {
+				      resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);
+				   }
 			   }
 		   }
         }		   
