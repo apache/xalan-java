@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-05T01:20:24Z" fail="13" name="sequence" pass="71" run="84" skipped="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-05T11:09:10Z" fail="12" name="sequence" pass="72" run="84" skipped="8" statusUnknown="0">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="pass" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -94,7 +94,7 @@ java.lang.Exception: Line# : 22, Column# : 41 XPST0003: Expected ), but found: ,
    <testResult status="pass" testName="sequence-2001"/>
    <testResult status="pass" testName="sequence-2002"/>
    <testResult status="pass" testName="sequence-2101"/>
-   <testResult status="fail" testName="sequence-2301"/>
+   <testResult status="pass" testName="sequence-2301"/>
    <testResult status="skipped" testName="sequence-2401a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="sequence-2401b"/>
    <testResult status="skipped" testName="sequence-2402a" xsltVersion="XSLT 2.0/1.0 only test case"/>

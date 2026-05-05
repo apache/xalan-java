@@ -582,7 +582,7 @@ public class ElemVariable extends ElemTemplateElement
             	String funcNamespace = ((XSL3ConstructorOrExtensionFunction)selectExpression).getNamespace();
             	
             	String evalResultStrValue = XslTransformEvaluationHelper.getStrVal(evalResult);
-            	if (m_asAttr != null && !(XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
+            	if ((m_asAttr != null) && !(XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
                    evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {                	  
                 	  throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation result, doesn't "
@@ -590,7 +590,7 @@ public class ElemVariable extends ElemTemplateElement
                 			                                                                            + m_asAttr + ".", srcLocator); 
                    }
                 }
-            	else if (m_asAttr != null && (XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	else if ((m_asAttr != null) && (XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
             	   PrefixResolver prefixResolver = xctxt.getNamespaceContext();
             	   QName asAttrQName = new QName(m_asAttr, prefixResolver);
             	   String typeName = asAttrQName.getLocalName();
@@ -605,7 +605,7 @@ public class ElemVariable extends ElemTemplateElement
 																		                                + m_asAttr + ".", srcLocator); 
             	   }
             	}
-            	else if (m_asAttr == null && (XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	else if ((m_asAttr == null) && (XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
             	   XObject valToBeValidated = (((XSL3ConstructorOrExtensionFunction)selectExpression).getArg(0)).execute(xctxt);
           	       evalResult = valToBeValidated; 	
             	}
@@ -886,9 +886,9 @@ public class ElemVariable extends ElemTemplateElement
     					}
     					
     					if (elemFunction != null) {
-    	    				ElemFunctionItem elemFunctionObject = new ElemFunctionItem(elemFunction);
+    	    				ElemFunctionItem elemFuncObj = new ElemFunctionItem(elemFunction);
 
-    	    				return elemFunctionObject; 
+    	    				return elemFuncObj; 
     	    			}
     				}
     			}
@@ -942,8 +942,65 @@ public class ElemVariable extends ElemTemplateElement
       else {
     	  int rootNodeHandleOfRtf = DTM.NULL;
     	  
+    	  if (getFirstChildElem() instanceof ElemSequence) {
+    		  // An xsl:variable instruction has a single xsl:sequence 
+    		  // child instruction with a "select" attribute.
+    		  
+    		  ElemSequence elemSequence = (ElemSequence)(getFirstChildElem());
+    		  if ((elemSequence.getSelect() != null) && (elemSequence.getNextSiblingElem() == null)) {
+    			  XPath xpath1 = elemSequence.getSelect();
+    			  var = xpath1.execute(xctxt, sourceNode, xctxt.getNamespaceContext());    			  
+    		  }
+    		  
+    		  if (var != null) {
+    			  if (m_asAttr != null) {    				  
+    				  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
+    				  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());            
+    				  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;    				      				  
+    				  int occIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();    				      				      				  
+    				  SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+    				  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+    					 boolean occurenceCheckOk = false;
+    					 if (var instanceof ResultSequence) {
+    						int seqSize = ((ResultSequence)var).size();
+    						if (seqSize == 0) {
+    							if ((occIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+    								(occIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
+    							   occurenceCheckOk = true;	
+    							}
+    						}
+    						else if (seqSize == 1) {
+        					    occurenceCheckOk = true;	
+    						}
+    						else if ((occIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+    								 (occIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
+    							occurenceCheckOk = true;	
+    						}
+    					 }
+    					 else {
+    						 occurenceCheckOk = true; 
+    					 }
+    					 
+    					 if (occurenceCheckOk) {
+    						return var; 
+    					 }
+    					 else {
+    						throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
+																		                                      + "result doesn't match the specified "
+																		                                      + "xdm sequence type " + m_asAttr + ".", srcLocator); 
+    					 }
+    				  }    				  
+    			  }
+    			      			  
+    			  var = null;
+    			  
+    			  // We'll again evaluate variable's value, and check it with 
+    			  // the type if applicable, further below within this method.
+    		  }
+    	  }
+    	  
     	  if (m_parentNode instanceof Stylesheet) {
-    		  // Global variable
+    		  // Global variable    		     		      		  
     		  rootNodeHandleOfRtf = transformer.transformToGlobalRTF(this);
 
     		  int attrCount = (SerializerUtils.m_xdmAttrList).size();
@@ -1232,6 +1289,19 @@ public class ElemVariable extends ElemTemplateElement
     			     }
     			  }    			      			  
 			  }
+    		  else if (getFirstChildElem() instanceof ElemSequence) {
+    			  // An xsl:variable instruction has a single xsl:sequence 
+    			  // child instruction with a "select" attribute.
+    			  
+    			  ElemSequence elemSequence = (ElemSequence)(getFirstChildElem());
+    			  if ((elemSequence.getSelect() != null) && (elemSequence.getNextSiblingElem() == null)) {
+    				  XPath xpath1 = elemSequence.getSelect();
+    				  var = xpath1.execute(xctxt, sourceNode, xctxt.getNamespaceContext());    				  
+    			  }
+    			  else {
+    				  rootNodeHandleOfRtf = transformer.transformToRTF(this); 
+    			  }
+    		  }
     		  else {
     		      rootNodeHandleOfRtf = transformer.transformToRTF(this);
     		  }
