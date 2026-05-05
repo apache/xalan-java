@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-05-04
+Document last modified : 2026-05-05
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -53,9 +53,10 @@ XSLT 3.0 build jar file (containing Xalan Java's XSLT 3.0 and XPath 3.1 run-time
 to develop and test Xalan Java's src code available within this code base repos branch. JDK versions greater than 1.8 
 shall also work fine to compile and run Xalan Java's XSLT 3.0 processor built from this code base repos branch.
 
-Set the jvm run-time thread stack size to 2 MB (with jvm option -Xss2m), for running Xalan Java XSLT 3.0 implementation. 
-jvm's default thread stack size is 1 megabyte (1MB) on a 64-bit jvm. Increasing jvm's run-time thread stack size, 
-above the default limit, helps with running deep recursive XSL templates and functions. 
+Set the JVM thread stack run-time size to 8 MB (with JVM run-time option -Xss8m), for running Xalan Java XSLT 3.0 implementation. 
+JVM's default thread stack size is 1 megabyte (1MB) on a 64-bit jvm. Increasing JVM's thread stack run-time size, 
+more than the default limit, helps with running deep recursive XSL templates and functions. This is an optional Xalan Java JVM
+run-time optimization, but should be done while running Xalan Java XSLT 3.0 test suite. 
 
 2) Java Maven build tool needs to be installed on local workstation, using JDK installation referred by JAVA_HOME 
 environment variable.
