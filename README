@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-05-05
+Document last modified : 2026-05-06
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -54,7 +54,7 @@ to develop and test Xalan Java's src code available within this code base repos 
 shall also work fine to compile and run Xalan Java's XSLT 3.0 processor built from this code base repos branch.
 
 Set the JVM thread stack run-time size to 8 MB (with JVM run-time option -Xss8m), for running Xalan Java XSLT 3.0 implementation. 
-JVM's default thread stack size is 1 megabyte (1MB) on a 64-bit jvm. Increasing JVM's thread stack run-time size, 
+JVM default thread stack size is 1 megabyte (1MB) on a 64-bit JVM. Increasing JVM thread stack run-time size, 
 more than the default limit, helps with running deep recursive XSL templates and functions. This is an optional Xalan Java JVM
 run-time optimization, but should be done while running Xalan Java XSLT 3.0 test suite. 
 
@@ -99,16 +99,16 @@ When this Maven build command is run, results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.XalanXsl3TestSuite2
-[INFO] Tests run: 658, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 21.458 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite2
+[INFO] Tests run: 659, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.334 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite2
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 658, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 659, Failures: 0, Errors: 0, Skipped: 0
 
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  52.885 s
+[INFO] Total time:  49.417 s
 
 
 After verifying that, Xalan Java XSLT 3.0 src code passes all the applicable XSL test cases, user may install Xalan Java
@@ -188,10 +188,10 @@ Javadocs for Xalan Java code documentation for this dev repos branch are located
    
    8.2) From within Java application code
    
-   Java application code, should set the value of jvm's system property javax.xml.transform.TransformerFactory to 
+   Java application code, should set the value of JVM system property javax.xml.transform.TransformerFactory to 
    org.apache.xalan.processor.XSL3TransformerFactoryImpl
    
-   Note: To run Xalan Java XSLT 1.0 processor (for e.g, with Xalan Java 2.7.3), the value of this jvm system property is org.apache.xalan.processor.TransformerFactoryImpl
+   Note: To run Xalan Java XSLT 1.0 processor (for e.g, with Xalan Java 2.7.3), the value of this JVM system property is org.apache.xalan.processor.TransformerFactoryImpl
    
 
    XSLT 1.0 support within this code repos branch

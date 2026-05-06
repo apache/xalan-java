@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <value type="integer">1</value>
+  <value type="decimal">1.52</value>
+  <value type="double">1.52</value>
+  <value type="untypedAtomic">2.5E1</value>
+  <value type="untypedAtomic">2</value>
+  <value type="integer">3</value>
+  <value type="integer">4</value>
+  <value type="elemNode">
+    <integer>5</integer>
+  </value>
+  <value type="map">map{"a":1,"b":[5,6,7],"c":3}</value>
+  <value type="array">[5,6,7]</value>
+</result>

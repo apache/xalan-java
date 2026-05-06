@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+  <integer>5</integer>
+  <decimal>5.5</decimal>
+  <double>2E-1</double>
+  <string>foo</string>
+</info>
