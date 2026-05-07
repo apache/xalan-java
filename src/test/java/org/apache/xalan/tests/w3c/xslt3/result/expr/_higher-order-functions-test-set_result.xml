@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-20T09:56:03Z" fail="30" name="higher-order-functions" pass="39" run="69" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-07T12:58:05Z" fail="28" name="higher-order-functions" pass="41" run="69" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -37,8 +37,8 @@
    <testResult status="fail" testName="higher-order-functions-036"/>
    <testResult status="fail" testName="higher-order-functions-037">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 12, Column# : 68 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 12, Column# : 68 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-038"/>
@@ -118,7 +118,7 @@
    </testResult>
    <testResult status="fail" testName="higher-order-functions-066">
       <outResult>
-         <errTrace>javax.xml.transform.TransformerException: Expected ), but found: </errTrace>
+         <errTrace>javax.xml.transform.TransformerException: XPST0003: Expected ), but found: null</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="higher-order-functions-067"/>
@@ -127,20 +127,8 @@
    <testResult status="pass" testName="higher-order-functions-070"/>
    <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-071"/>
    <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-072"/>
-   <testResult status="fail" testName="higher-order-functions-073">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-date()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="higher-order-functions-074">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-date()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="higher-order-functions-073"/>
+   <testResult status="pass" testName="higher-order-functions-074"/>
    <testResult reason="Xalan configured" status="skipped" testName="higher-order-functions-075"/>
    <testResult status="fail" testName="higher-order-functions-076">
       <outResult>

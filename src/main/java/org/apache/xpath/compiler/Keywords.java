@@ -796,6 +796,9 @@ public class Keywords
   /** serialize function string. */
   public static final String FUNC_SERIALIZE = "serialize";
   
+  /** format-date function string. */
+  public static final String FUNC_FORMAT_DATE = "format-date";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
