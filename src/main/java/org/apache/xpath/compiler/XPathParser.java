@@ -74,6 +74,8 @@ import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.ElemWhen;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.xslt.util.RegexMatchInfo;
+import org.apache.xalan.xslt.util.RegexUtil;
 import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xerces.dom.DOMInputImpl;
@@ -8830,23 +8832,9 @@ public class XPathParser
   	  
     	String result = null;
 
-    	String str1 = expression;
-
-    	java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("map\\s*\\{.*\\}");
-    	java.util.regex.Matcher regexMatcher = pattern.matcher(str1);
-
-    	List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();
-
-    	while (regexMatcher.find()) {
-    		int a = regexMatcher.start();
-    		int b = regexMatcher.end();
-    		RegexMatchInfo regexMatchInfo = new RegexMatchInfo();
-    		regexMatchInfo.setStartIdx(a);
-    		regexMatchInfo.setEndIdx(b);
-    		regexMatchInfoList.add(regexMatchInfo);
-    	}
-
-    	regexMatcher.reset();
+    	String str1 = expression;    	
+    	
+    	List<RegexMatchInfo> regexMatchInfoList = RegexUtil.getRegexMatchInfoList("map\\s*\\{.*\\}", str1);
 
     	int size1 = regexMatchInfoList.size();
     	for (int idx = 0; idx < size1; idx++) {
@@ -8863,39 +8851,6 @@ public class XPathParser
     	result = str1;
 
     	return result;
-    }
-    
-    /**
-     * Class definition, used to represent regex processing 
-     * information, used within this class.
-     */
-    class RegexMatchInfo {    	
-    	private int startIdx;
-    	
-    	private int endIdx;
-    	
-    	/**
-    	 * Class constructor.
-    	 */
-    	public RegexMatchInfo() {
-    	    // no op
-    	}
-
-		public int getStartIdx() {
-			return startIdx;
-		}
-
-		public void setStartIdx(int startIdx) {
-			this.startIdx = startIdx;
-		}
-
-		public int getEndIdx() {
-			return endIdx;
-		}
-
-		public void setEndIdx(int endIdx) {
-			this.endIdx = endIdx;
-		}
     }
     
     /**

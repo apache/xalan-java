@@ -17,13 +17,14 @@
  */
 package org.apache.xalan.templates;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.RegexMatchInfo;
+import org.apache.xalan.xslt.util.RegexUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -411,20 +412,9 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
     		   errMesg = (mesg1 != null) ? (errMesg + " " + mesg1) : errMesg;  
 
     		   throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
-       	   }
-
-    	   List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();
-
-    	   while (regexMatcher.find()) {
-    		   int idx1 = regexMatcher.start();
-    		   int idx2 = regexMatcher.end();
-    		   RegexMatchInfo regexMatchInfo = new RegexMatchInfo();
-    		   regexMatchInfo.setStartIdx(idx1);
-    		   regexMatchInfo.setEndIdx(idx2);
-    		   regexMatchInfoList.add(regexMatchInfo);
-    	   }
-
-    	   regexMatcher.reset();
+       	   }    	   
+    	   
+    	   List<RegexMatchInfo> regexMatchInfoList = RegexUtil.getRegexMatchInfoList(regexMatcher);
     	   
     	   ElemMatchingSubstring matchingXslElem = null;
 		   if ((templateElem1 != null) && (templateElem1 instanceof ElemMatchingSubstring)) {
@@ -676,41 +666,6 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   public void setExpression(Expression exp) {
       exp.exprSetParent(this);
       m_selectExpression = exp;
-  }
-  
-  /**
-   * A class representing, a pair of string index values,
-   * for a substring that matched with xsl:analyze-string element's 
-   * regex attribute.
-   */
-  class RegexMatchInfo {
-	  
-	  private int startIdx;
-
-	  private int endIdx;
-
-	  /**
-	   * Class constructor.
-	   */
-	  public RegexMatchInfo() {
-		  // no op
-	  }
-
-	  public int getStartIdx() {
-		  return startIdx;
-	  }
-
-	  public void setStartIdx(int startIdx) {
-		  this.startIdx = startIdx;
-	  }
-
-	  public int getEndIdx() {
-		  return endIdx;
-	  }
-
-	  public void setEndIdx(int endIdx) {
-		  this.endIdx = endIdx;
-	  }
   }
   
   /**

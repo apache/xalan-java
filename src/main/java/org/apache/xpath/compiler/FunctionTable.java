@@ -590,8 +590,14 @@ public class FunctionTable
   /** The 'serialize()' id. */
   public static final int FUNC_SERIALIZE = 189;
   
+  /** The 'format-dateTime()' id. */
+  public static final int FUNC_FORMAT_DATETIME = 190;
+  
   /** The 'format-date()' id. */
-  public static final int FUNC_FORMAT_DATE = 190;
+  public static final int FUNC_FORMAT_DATE = 191;
+  
+  /** The 'format-time()' id. */
+  public static final int FUNC_FORMAT_TIME = 192;
 
   // Proprietary
 
@@ -652,7 +658,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 191;
+  private static final int NUM_BUILT_IN_FUNCS = 193;
 
   /**
    * Number of built-in functions that may be added.
@@ -832,7 +838,9 @@ public class FunctionTable
 	   m_functions[FUNC_ADJUST_DATE_TO_TIMEZONE] = org.apache.xpath.functions.datetime.FuncAdjustDateToTimezone.class;
 	   m_functions[FUNC_ADJUST_TIME_TO_TIMEZONE] = org.apache.xpath.functions.datetime.FuncAdjustTimeToTimezone.class;
 	   
+	   m_functions[FUNC_FORMAT_DATETIME] = org.apache.xpath.functions.datetime.FuncFormatDateTime.class;
 	   m_functions[FUNC_FORMAT_DATE] = org.apache.xpath.functions.datetime.FuncFormatDate.class;
+	   m_functions[FUNC_FORMAT_TIME] = org.apache.xpath.functions.datetime.FuncFormatTime.class;
 	   
 	   m_functions[FUNC_FORMAT_INTEGER] = org.apache.xpath.functions.FuncFormatInteger.class;
 
@@ -1053,7 +1061,9 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_ADJUST_DATE_TO_TIMEZONE, Integer.valueOf(FunctionTable.FUNC_ADJUST_DATE_TO_TIMEZONE));
 	  m_functionId.put(Keywords.FUNC_ADJUST_TIME_TO_TIMEZONE, Integer.valueOf(FunctionTable.FUNC_ADJUST_TIME_TO_TIMEZONE));
 	  
+	  m_functionId.put(Keywords.FUNC_FORMAT_DATETIME, Integer.valueOf(FunctionTable.FUNC_FORMAT_DATETIME));
 	  m_functionId.put(Keywords.FUNC_FORMAT_DATE, Integer.valueOf(FunctionTable.FUNC_FORMAT_DATE));
+	  m_functionId.put(Keywords.FUNC_FORMAT_TIME, Integer.valueOf(FunctionTable.FUNC_FORMAT_TIME));
 	  
 	  m_functionId.put(Keywords.FUNC_FORMAT_INTEGER, Integer.valueOf(FunctionTable.FUNC_FORMAT_INTEGER));
 

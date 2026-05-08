@@ -26,6 +26,8 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.res.XPATHErrorResources;
 
+import xml.xpath31.processor.types.XSDuration;
+
 /**
  * Base class for functions that accept an undetermined number of multiple
  * arguments.
@@ -33,7 +35,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class FunctionMultiArgs extends Function3Args
 {
-    static final long serialVersionUID = 7117257746138417181L;
+  static final long serialVersionUID = 7117257746138417181L;
 
   /** 
    * Argument expressions that are at index 3 or greater.
@@ -233,5 +235,67 @@ public class FunctionMultiArgs extends Function3Args
       }
 
       return true;
+    }
+    
+    /**
+     * Method definition, to get timezone offset string value
+     * using the supplied XSDuration timezone object instance.
+     * 
+     * @param timezone           The supplied XSDuration timezone object instance 
+     * @return                   The timezone offset string value
+     */
+	 protected String getTimezoneOffset(XSDuration timezone) {
+		
+		 String result = "";
+		 
+		 int tzHrs = timezone.hours();
+		 if (tzHrs < 10) {
+			 result = "0" + tzHrs; 	
+		 }
+		 else {
+			 result = "" + tzHrs;
+		 }
+
+		 int tzMins = timezone.minutes();
+		 if (tzMins < 10) {
+			 result = result + ":0" + tzMins; 	
+		 }
+		 else {
+			 result = result+ ":" + tzMins;
+		 }
+
+		 boolean isTzNegative = timezone.negative();
+		 if (isTzNegative) {
+			 result = "-" + result;
+		 }
+		 else {
+			 result = "+" + result;
+		 }
+
+		 return result;
+	 }
+    
+    /**
+     * Method definition, to get timezone display string using
+     * the supplied timezone numeric offset and timezone picture 
+     * format string. 
+     * 
+     * @param numericOffset               The supplied timezone numeric offset
+     * @param picFormat                   The supplied timezone picture format 
+     *                                    string.
+     * @return                            The result timezone display string
+     */
+    protected String getTimeZoneDisplayStr(String numericOffset, String picFormat) {
+   	
+    	String result = null;
+
+    	if ("z".equals(picFormat)) {
+    		result = "GMT" + numericOffset;
+    	}    	
+    	else {
+    		result = numericOffset;
+    	}
+
+    	return result;
     }
 }

@@ -796,8 +796,14 @@ public class Keywords
   /** serialize function string. */
   public static final String FUNC_SERIALIZE = "serialize";
   
+  /** format-dateTime function string. */
+  public static final String FUNC_FORMAT_DATETIME = "format-dateTime";
+  
   /** format-date function string. */
   public static final String FUNC_FORMAT_DATE = "format-date";
+  
+  /** format-time function string. */
+  public static final String FUNC_FORMAT_TIME = "format-time";
   
   // Proprietary, built in functions
 

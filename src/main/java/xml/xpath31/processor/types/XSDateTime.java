@@ -26,6 +26,8 @@ public class XSDateTime extends XSCalendarType {
     
     private Calendar _calendar;
     
+    private static String am_pm_marker = null;
+    
     private boolean _timezoned;
     
     private XSDuration _tz;
@@ -470,6 +472,13 @@ public class XSDateTime extends XSCalendarType {
                 throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
                                                                                               + "cannot be parsed to a xs:dateTime value.");
             }
+            
+            if (((int)t[0]) < 12) {
+            	am_pm_marker = "a.m.";	
+            }
+            else {
+            	am_pm_marker = "p.m.";
+            }
     
             if (!setItem(gregorianCalObj1, Calendar.MINUTE, (int) t[1])) {
                 throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
@@ -582,6 +591,23 @@ public class XSDateTime extends XSCalendarType {
     
     public int second() {
         return _calendar.get(Calendar.SECOND);       
+    }
+    
+    /**
+     * Method definition, to get the string value of AM/PM
+     * marker of the time component for this xs:dateTime 
+     * value.
+     * 
+     * @return             The AM/PM marker string value
+     */
+    public String getAmPmMarkerInfo() {
+       String result = "undefined";
+       
+       if (am_pm_marker != null) {
+    	  result = am_pm_marker;   
+       }
+       
+       return result;
     }
     
     /**
