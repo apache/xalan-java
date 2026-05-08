@@ -805,6 +805,9 @@ public class Keywords
   /** format-time function string. */
   public static final String FUNC_FORMAT_TIME = "format-time";
   
+  /** parse-ietf-date function string. */
+  public static final String FUNC_PARSE_IETF_DATE = "parse-ietf-date";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

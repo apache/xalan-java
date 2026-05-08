@@ -598,6 +598,9 @@ public class FunctionTable
   
   /** The 'format-time()' id. */
   public static final int FUNC_FORMAT_TIME = 192;
+  
+  /** The 'parse-ietf-date()' id. */
+  public static final int FUNC_PARSE_IETF_DATE = 193;
 
   // Proprietary
 
@@ -658,7 +661,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 193;
+  private static final int NUM_BUILT_IN_FUNCS = 194;
 
   /**
    * Number of built-in functions that may be added.
@@ -841,6 +844,8 @@ public class FunctionTable
 	   m_functions[FUNC_FORMAT_DATETIME] = org.apache.xpath.functions.datetime.FuncFormatDateTime.class;
 	   m_functions[FUNC_FORMAT_DATE] = org.apache.xpath.functions.datetime.FuncFormatDate.class;
 	   m_functions[FUNC_FORMAT_TIME] = org.apache.xpath.functions.datetime.FuncFormatTime.class;
+	   
+	   m_functions[FUNC_PARSE_IETF_DATE] = org.apache.xpath.functions.datetime.FuncParseIetfDate.class;
 	   
 	   m_functions[FUNC_FORMAT_INTEGER] = org.apache.xpath.functions.FuncFormatInteger.class;
 
@@ -1064,6 +1069,8 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_FORMAT_DATETIME, Integer.valueOf(FunctionTable.FUNC_FORMAT_DATETIME));
 	  m_functionId.put(Keywords.FUNC_FORMAT_DATE, Integer.valueOf(FunctionTable.FUNC_FORMAT_DATE));
 	  m_functionId.put(Keywords.FUNC_FORMAT_TIME, Integer.valueOf(FunctionTable.FUNC_FORMAT_TIME));
+	  
+	  m_functionId.put(Keywords.FUNC_PARSE_IETF_DATE, Integer.valueOf(FunctionTable.FUNC_PARSE_IETF_DATE));
 	  
 	  m_functionId.put(Keywords.FUNC_FORMAT_INTEGER, Integer.valueOf(FunctionTable.FUNC_FORMAT_INTEGER));
 
