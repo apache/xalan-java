@@ -11,13 +11,15 @@
 				
    <xsl:output method="xml" indent="yes"/>
 
-   <xsl:variable name="str1" select="xs:string('Tue, 15 Nov 1994 08:12:31 GMT')" as="xs:string"/>
-   <xsl:variable name="str2" select="xs:string('Wed, 16 Nov 1994 10:15:20 GMT')" as="xs:string"/>      
+   <xsl:variable name="str1" select="'Tue, 15 Nov 1994 08:12:31 GMT'" as="xs:string"/>
+   <xsl:variable name="str2" select="'Wed, 16 Nov 1994 10:15:20 GMT'" as="xs:string"/>
+   <xsl:variable name="str3" select="'Tue, 15 Nov 94 08:12:31 GMT'" as="xs:string"/>   
 
    <xsl:template match="/">
 	  <result>
 		 <one><xsl:value-of select="parse-ietf-date($str1)"/></one>
-		 <two><xsl:value-of select="parse-ietf-date($str2)"/></two>		 
+		 <two><xsl:value-of select="parse-ietf-date($str2)"/></two>
+		 <three><xsl:value-of select="parse-ietf-date($str3)"/></three>
 	  </result>
    </xsl:template>
    

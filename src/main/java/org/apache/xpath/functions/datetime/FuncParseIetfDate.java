@@ -20,6 +20,10 @@ package org.apache.xpath.functions.datetime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
+import java.util.Locale;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
@@ -71,8 +75,8 @@ public class FuncParseIetfDate extends FunctionOneArg {
 		}
 
 		String arg0Str = XslTransformEvaluationHelper.getStrVal(xObj0);
-
-		ZonedDateTime zdt = ZonedDateTime.parse(arg0Str, DateTimeFormatter.RFC_1123_DATE_TIME);		
+				
+		ZonedDateTime zdt = getZonedDateTime(arg0Str);
 
 		int day = zdt.getDayOfMonth();
 		String dayStr = (day < 10) ? ("0" + day + "") : (day + "");
@@ -95,6 +99,42 @@ public class FuncParseIetfDate extends FunctionOneArg {
 		
 		result = XSDateTime.parseDateTime(str1);
 
+		return result;
+	}
+
+	/**
+	 * Method definition, to get ZonedDateTime parsed 
+	 * value for the supplied IETF formatted date string.
+	 * 
+	 * The ZonedDateTime object components may be extracted,
+	 * to construct xs:dateTime typed value.
+	 * 
+	 * @param ietfDateStr                  The supplied IETF formatted date string
+	 * @return                             An ZonedDateTime parsed object instance 
+	 */
+	private ZonedDateTime getZonedDateTime(String ietfDateStr) {
+		
+		ZonedDateTime result = null;
+		
+		DateTimeFormatter dtf = null;
+        boolean isDateValueParseErr = false;
+		
+		try {
+		   result = ZonedDateTime.parse(ietfDateStr, DateTimeFormatter.RFC_1123_DATE_TIME);
+		}
+		catch (DateTimeParseException ex) {
+			isDateValueParseErr = true;
+		}
+		
+		if (isDateValueParseErr) {
+			dtf = (new DateTimeFormatterBuilder())
+                                             .appendPattern("EEE, d MMM ")
+                                             .appendValueReduced(ChronoField.YEAR, 2, 2, 1950)
+                                             .appendPattern(" HH:mm:ss z")
+					                         .toFormatter(Locale.ENGLISH);
+			result = ZonedDateTime.parse(ietfDateStr, dtf);
+		}
+		
 		return result;
 	}
 	
