@@ -879,8 +879,15 @@ public class FuncSerialize extends FunctionMultiArgs {
 					
 					rSeqResult.add(new XSString(str1));
 				}
-				else if (arg0Expr instanceof XPathNamedFunctionReference) {
-					XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)arg0Expr;
+				else if ((arg0Expr instanceof XPathNamedFunctionReference) || (xObj1 instanceof XPathNamedFunctionReference)) {
+					XPathNamedFunctionReference xpathNamedFunctionReference = null;
+					if (arg0Expr instanceof XPathNamedFunctionReference) {
+					   xpathNamedFunctionReference = (XPathNamedFunctionReference)arg0Expr; 
+					}
+					else {					
+					   xpathNamedFunctionReference = (XPathNamedFunctionReference)xObj1;
+					}
+					
 					String funcName = xpathNamedFunctionReference.getFuncName();
 					String nsUri = xpathNamedFunctionReference.getFuncNamespace();
 					String str1 = "";

@@ -1993,6 +1993,11 @@ public class XPathParser
 	     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 	     
 	     handleXPathParseNamedFuncRefWithoutNSQual(opPos);
+	     
+	     if (tokenIs('+') || tokenIs('-') || tokenIs('*') || 
+	    		                                         tokenIs("div") || tokenIs("idiv") || tokenIs("mod")) {
+	    	error(XPATHErrorResources.ER_CANNOT_APPLY_FUNC, new Object[]{ m_token, "first" });
+	     }
 	  }
 	  else if (m_isXPathExprBeginParse && tokenIs('.') && lookahead('[', 1)) {		 
          int opPos1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH);     	  
@@ -3960,8 +3965,12 @@ public class XPathParser
     if (null != m_token)
     {
       if (tokenIs('+'))
-      {
-        nextToken();
+      {    	  
+    	nextToken();
+                                
+        if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
+           error(XPATHErrorResources.ER_CANNOT_APPLY_FUNC, new Object[]{ "+", "second" });	
+        }                
         
         insertOp(addPos, 2, OpCodes.OP_PLUS);
         
@@ -3981,6 +3990,10 @@ public class XPathParser
       else if (tokenIs('-'))
       {
         nextToken();
+        
+        if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
+           error(XPATHErrorResources.ER_CANNOT_APPLY_FUNC, new Object[]{ "-", "second" });	
+        }
         
         insertOp(addPos, 2, OpCodes.OP_MINUS);
         
@@ -4036,6 +4049,10 @@ public class XPathParser
       {
         nextToken();
         
+        if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
+           error(XPATHErrorResources.ER_CANNOT_APPLY_FUNC, new Object[]{ "*", "second" });
+        }
+        
         insertOp(addPos, 2, OpCodes.OP_MULT);
         
         if (tokenIs('(')) {
@@ -4053,6 +4070,10 @@ public class XPathParser
       else if (tokenIs("div"))
       {
         nextToken();
+        
+        if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
+           error(XPATHErrorResources.ER_CANNOT_APPLY_FUNC, new Object[]{ "div", "second" });
+        }
         
         insertOp(addPos, 2, OpCodes.OP_DIV);
         
@@ -4072,6 +4093,10 @@ public class XPathParser
       {
         nextToken();
         
+        if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
+           error(XPATHErrorResources.ER_CANNOT_APPLY_FUNC, new Object[]{ "idiv", "second" });
+        }
+        
         insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_IDIV);
 
         if (tokenIs('(')) {
@@ -4089,6 +4114,10 @@ public class XPathParser
       else if (tokenIs("mod"))
       {
         nextToken();
+        
+        if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
+           error(XPATHErrorResources.ER_CANNOT_APPLY_FUNC, new Object[]{ "mod", "second" });
+        }
         
         insertOp(addPos, 2, OpCodes.OP_MOD);
 
@@ -6555,7 +6584,7 @@ public class XPathParser
  				  nextToken();
  				  if (tokenIs(rParen)) {
  					  if (StringUtil.isStrHasBalancedParentheses(lParen + xpathExpr + rParen, lParen, rParen) 
- 							                                                    									&& !lookahead(rParen, 1)) {
+ 							                                                                                 && !lookahead(rParen, 1)) {
  						  xpathExpr = (lParen + xpathExpr + m_token); 
  						  nextToken();
  						  fl1 = false;

@@ -138,6 +138,7 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_UNCLOSED_XPATH_COMMENT ="ER_UNCLOSED_XPATH_COMMENT";
   public static final String ER_NS_BINDING = "ER_NS_BINDING";
   public static final String ER_EXPECTED_CLOSING_SQUARE_BRACKET = "ER_EXPECTED_CLOSING_SQUARE_BRACKET";
+  public static final String ER_CANNOT_APPLY_FUNC = "ER_CANNOT_APPLY_FUNC";
   public static final String ER_IF_EXPR ="ER_IF_EXPR";
   public static final String ER_EXPECTED_DOUBLE_QUOTE = 
 	 "ER_EXPECTED_DOUBLE_QUOTE";
@@ -488,6 +489,9 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_EXPECTED_CLOSING_SQUARE_BRACKET,
      "Could not find token ]"},
+  
+  { ER_CANNOT_APPLY_FUNC,
+     "FOTY0013 : An XPath operator ''{0}'' cannot have function type as its {1} operand."},
   
   { ER_IF_EXPR,
      "\"if\" keyword expected followed by \"(\" expr \")\"." },

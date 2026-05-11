@@ -36,6 +36,8 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
 
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
@@ -72,6 +74,30 @@ public class Mod extends XPathArithmeticOp
 	  
 	  Object lObj = left.object();
 	  Object rObj = right.object();
+	  
+	  if (left instanceof XPathMap) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first operand of 'mod', but "
+																												  + "the supplied type is a map "
+																												  + "type which cannot be atomized."); 
+	  }
+
+	  if (right instanceof XPathMap) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second operand of 'mod', but "
+																												  + "the supplied type is a map "
+																												  + "type which cannot be atomized."); 
+	  }
+	  
+	  if (left instanceof XPathInlineFunction) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first operand of 'mod', but "
+																												  + "the supplied type is a function "
+																												  + "type which cannot be atomized."); 
+	  }
+
+	  if (right instanceof XPathInlineFunction) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second operand of 'mod', but "
+																												  + "the supplied type is a function "
+																												  + "type which cannot be atomized."); 
+	  }
 
 	  XPathContext xctxt = new XPathContext(true);
 	  

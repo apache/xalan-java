@@ -41,6 +41,8 @@ import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
 import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSDecimal;
@@ -75,6 +77,30 @@ public class IDiv extends XPathArithmeticOp
 	  
 	  Object lObj = left.object();
 	  Object rObj = right.object();
+	  
+	  if (left instanceof XPathMap) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first operand of 'idiv', but "
+																												  + "the supplied type is a map "
+																												  + "type which cannot be atomized."); 
+	  }
+
+	  if (right instanceof XPathMap) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second operand of 'idiv', but "
+																												  + "the supplied type is a map "
+																												  + "type which cannot be atomized."); 
+	  }
+	  
+	  if (left instanceof XPathInlineFunction) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first operand of 'idiv', but "
+																												  + "the supplied type is a function "
+																												  + "type which cannot be atomized."); 
+	  }
+
+	  if (right instanceof XPathInlineFunction) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second operand of 'idiv', but "
+																												  + "the supplied type is a function "
+																												  + "type which cannot be atomized."); 
+	  }
 
 	  XPathContext xctxt2 = new XPathContext(true); 
 
