@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.string;
 
 import java.math.BigInteger;
@@ -49,15 +46,14 @@ public class FuncStringToCodepoints extends FunctionDef1Arg
 	  m_defined_arity = new Short[] { 1 };
    }
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
+   /**
+    * Evaluate the function. The function must return a valid object.
+    * 
+    * @param xctxt 							The current execution context
+    * @return 								A valid XObject
+    *
+    * @throws javax.xml.transform.TransformerException
+    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
      

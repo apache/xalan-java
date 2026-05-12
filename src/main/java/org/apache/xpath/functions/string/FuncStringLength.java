@@ -15,24 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.string;
 
+import javax.xml.transform.TransformerException;
+
+import org.apache.xml.utils.XMLString;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionDef1Arg;
-import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSInteger;
+
 /**
- * Implementation of string-length() function.
+ * Implementation of XPath 3.1 function fn:string-length.
  * 
  * @xsl.usage advanced
  */
 public class FuncStringLength extends FunctionDef1Arg
 {
-   static final long serialVersionUID = -159616417996519839L;
+  static final long serialVersionUID = -159616417996519839L;
    
   /**
    * Class constructor.
@@ -44,13 +46,30 @@ public class FuncStringLength extends FunctionDef1Arg
   /**
    * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * @param xctxt 							The current execution context
+   * @return 								A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return new XNumber(getArg0AsString(xctxt).length());
-  }
+	  
+	  XObject result = null;
+
+	  try {
+		  XMLString xmlStr1 = getArg0AsString(xctxt);
+		  String inpStr = xmlStr1.toString();
+
+		  XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+
+		  int[] codePointsArr = xPathCollationSupport.getCodepointsFromString(inpStr);
+
+		  result = new XSInteger(codePointsArr.length + "");
+	  }
+	  catch (TransformerException ex) {
+		  throw ex; 
+	  }
+
+	  return result;
+   }
 }

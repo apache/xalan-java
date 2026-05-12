@@ -1,13 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:22Z" fail="33" name="key" pass="63" run="96" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-12T06:52:58Z" fail="34" name="key" pass="62" run="96" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="key-001"/>
-   <testResult status="fail" testName="key-002">
-      <outResult>
-         <errTrace>org.apache.xalan.templates.FuncKey only allows 2 arguments</errTrace>
-         <errTrace>A location path was expected, but the following token was encountered:  =</errTrace>
-         <errTrace>A location path was expected, but the following token was encountered:  ]</errTrace>
-         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="key-002"/>
    <testResult status="pass" testName="key-003"/>
    <testResult status="fail" testName="key-004"/>
    <testResult status="pass" testName="key-005"/>
@@ -93,9 +86,8 @@
    <testResult status="pass" testName="key-059"/>
    <testResult status="fail" testName="key-060">
       <outResult>
-         <errTrace>Expected ,, but found: </errTrace>
-         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
-org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 14, Column# : 15 XPST0003: Expected ,, but found: null
+java.lang.Exception: Line# : 14, Column# : 15 XPST0003: Expected ,, but found: null</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="key-061"/>
@@ -116,8 +108,8 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="fail" testName="key-071"/>
    <testResult status="fail" testName="key-072">
       <outResult>
-         <errTrace>Expected ,, but found: key</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 21, Column# : 54 XPST0003: Expected ,, but found: key
+java.lang.Exception: Line# : 21, Column# : 54 XPST0003: Expected ,, but found: key</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="key-073">
@@ -153,7 +145,7 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>XTSE0010 : xsl:apply-templates is not allowed in this position in the stylesheet</errTrace>
       </outResult>
    </testResult>
-   <testResult status="pass" testName="key-083"/>
+   <testResult status="fail" testName="key-083"/>
    <testResult status="pass" testName="key-084"/>
    <testResult reason="Xalan configured" status="skipped" testName="key-085a"/>
    <testResult reason="Xalan configured" status="skipped" testName="key-085b"/>
@@ -171,9 +163,8 @@ org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
    <testResult status="fail" testName="key-093">
       <outResult>
          <errTrace>compositeattribute is not allowed on the xsl:key element!</errTrace>
-         <errTrace>Expected ), but found: ,</errTrace>
-         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
-org.apache.xpath.XPathProcessorException: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 18, Column# : 126 XPST0003: Expected ), but found: ,
+java.lang.Exception: Line# : 18, Column# : 126 XPST0003: Expected ), but found: ,</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="key-094">
