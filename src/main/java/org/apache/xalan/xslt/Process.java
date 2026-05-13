@@ -59,9 +59,11 @@ import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xerces.parsers.DOMParser;
 import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.SystemIDResolver;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
@@ -847,8 +849,27 @@ public class Process
 			  if (null != stylesheet)
 			  {
 				  if (isSchemaValidation) {       	  
-					  if (null != inFileName) {        		  
-						  ((StylesheetRoot)stylesheet).validateXmlInputDoc(inFileName);
+					  if (null != inFileName) {
+						  DOMParser domParser = new DOMParser();
+						  
+						  InputSource inpSrc = new InputSource(inFileName);
+						  if (encoding != null) {
+							  inpSrc.setEncoding(encoding); 
+						  }
+						  
+						  domParser.parse(inpSrc);
+						  
+						  Document document = domParser.getDocument();
+						  Element elem = document.getDocumentElement();
+						  String attrValue = elem.getAttributeNS("http://www.w3.org/2001/XMLSchema-instance","noNamespaceSchemaLocation");
+						  if (attrValue.equals("")) {
+							 /**
+							  * Validate an XML input document, with schema information
+							  * available from xsl:import-schema instruction within
+							  * the stylesheet.
+							  */
+						     ((StylesheetRoot)stylesheet).validateXmlInputDoc(inFileName);
+						  }
 					  }
 				  }
 
@@ -938,8 +959,22 @@ public class Process
 					  if (encoding != null) {
 						  inpSrc.setEncoding(encoding); 
 					  }
-
-					  Node xmlDoc = docBuilder.parse(inpSrc);						  
+					  
+					  Node xmlDoc = null;					  
+					  if (isSchemaValidation) {
+						  DOMParser parser = new DOMParser();
+						  parser.setFeature("http://xml.org/sax/features/validation", true);
+						  parser.setFeature("http://apache.org/xml/features/validation/schema", true);
+						  parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+						  
+						  parser.setProperty("http://apache.org/xml/properties/dom/document-class-name", 
+								                                                                     "org.apache.xerces.dom.PSVIDocumentImpl");
+						  parser.parse(inpSrc);
+						  xmlDoc = parser.getDocument();						  
+					  }
+					  else {
+					      xmlDoc = docBuilder.parse(inpSrc);
+					  }
 
 					  Document doc = docBuilder.newDocument();
 					  org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();						  						  

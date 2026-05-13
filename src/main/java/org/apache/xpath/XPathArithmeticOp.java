@@ -19,6 +19,8 @@ package org.apache.xpath;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
@@ -361,6 +363,30 @@ public class XPathArithmeticOp extends Operation {
 			catch (ArithmeticException ex) {				  
 				error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}, elemTemplateElement);
 			}
+		}
+
+		return result;
+	}
+	
+	/**
+	 * Method definition, to check whether an XML Schema 1.0, 
+	 * supplied built-in type name is numeric.
+	 * 
+	 * @param typeName					  The supplied XML Schema type 
+	 *                                    name string.
+	 * @return                            Boolean value true or false
+	 */
+	protected boolean isXsBuiltInTypeNumeric(java.lang.String typeName) {
+
+		boolean result = false;
+
+		java.lang.String[] built_in_xs1_numeric_type_arr = new java.lang.String[] { "decimal", "double", "float", "integer", "long", 
+																					"int", "short", "byte", "nonNegativeInteger", "unsignedLong",
+																					"unsignedInt", "unsignedShort", "unsignedByte", "positiveInteger",
+																					"nonPositiveInteger", "negativeInteger"};
+		List<java.lang.String> strList = Arrays.asList(built_in_xs1_numeric_type_arr);
+		if (strList.contains(typeName)) {
+			result = true; 
 		}
 
 		return result;

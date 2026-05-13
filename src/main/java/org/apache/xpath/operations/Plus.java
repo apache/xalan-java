@@ -18,12 +18,24 @@
 package org.apache.xpath.operations;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.xerces.xs.AttributePSVI;
+import org.apache.xerces.xs.ElementPSVI;
+import org.apache.xerces.xs.XSComplexTypeDefinition;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathArithmeticOp;
@@ -31,17 +43,23 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
+import org.w3c.dom.Node;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSTime;
@@ -102,11 +120,266 @@ public class Plus extends XPathArithmeticOp
 																										  + "type which cannot be atomized."); 
 	  }
 	  
-      ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();	  
-	  StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(
-			                                                                                      elemTemplateElement);
+	  StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
 	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-	  XPathContext xctxt = transformerImpl.getXPathContext(); 
+	  XPathContext xctxt = transformerImpl.getXPathContext();
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();	  	  
+	  
+	  java.lang.String lNodeStr = null;
+	  java.lang.String rNodeStr = null;
+	  
+	  java.lang.String typeName1 = null;
+	  java.lang.String typeNs1 = null;
+	  
+	  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
+	  
+	  if ((left instanceof XNumber) && (right instanceof XNumber)) {		  
+		 double dbl1 = ((XNumber)left).num();
+		 double dbl2 = ((XNumber)right).num();
+		 
+		 if (!(Double.isInfinite(dbl1) || Double.isInfinite(dbl2) 
+				                                              || Double.isNaN(dbl1) || Double.isNaN(dbl2))) {
+		    result = arithmeticOpOnXNumberValues((XNumber)left, (XNumber)right, OP_SYMBOL_PLUS, elemTemplateElement);
+		    
+		    return result;
+		 }		 
+	  }
+	  
+	  if ((left instanceof XSInteger) && (right instanceof XNumber)) {
+		  XNumber xNumber = (XNumber)right;
+		  if (((int)xNumber.num()) == xNumber.num()) {
+			  java.lang.String str1 = ((XSInteger)left).stringValue(); 			 			
+			  BigInteger bigInt1 = new BigInteger(str1);
+
+			  BigInteger bigInt2 = new BigInteger(((int)xNumber.num()) + "");
+
+			  BigInteger bigIntResult = bigInt1.add(bigInt2);
+
+			  result = new XSInteger(bigIntResult);
+
+			  return result;
+		  }
+	  }
+	  
+	  if ((right instanceof XSInteger) && (left instanceof XNumber)) {
+		  XNumber xNumber = (XNumber)left;
+		  if (((int)xNumber.num()) == xNumber.num()) {
+			  java.lang.String str1 = ((XSInteger)right).stringValue(); 			 			
+			  BigInteger bigInt1 = new BigInteger(str1);
+
+			  BigInteger bigInt2 = new BigInteger(((int)xNumber.num()) + "");
+
+			  BigInteger bigIntResult = bigInt1.add(bigInt2);
+
+			  result = new XSInteger(bigIntResult);
+
+			  return result;
+		  }
+	  }
+	  
+	  if (left instanceof XMLNodeCursorImpl) {
+		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
+		  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+		  if (nodeHandle != DTM.NULL) {
+			  DTM dtm = xctxt.getDTM(nodeHandle);
+			  Node node = dtm.getNode(nodeHandle);
+			  if (node instanceof ElementPSVI) {
+				  ElementPSVI elementPsvi = (ElementPSVI)node;
+				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
+				  if (typeDefn instanceof XSComplexTypeDefinition) {
+					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' operand, cannot be a "
+							  + "node validated with schema complex type.");				  
+				  }
+				  else {
+					  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
+					  typeName1 = xsSimpleTypeDecl.getTypeName();
+					  typeNs1 = xsSimpleTypeDecl.getTypeNamespace();
+				  }
+			  }
+			  else if (node instanceof AttributePSVI) {
+				  AttributePSVI attrPsvi = (AttributePSVI)node;
+				  XSTypeDefinition typeDefn = attrPsvi.getTypeDefinition();
+				  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
+
+				  typeName1 = xsSimpleTypeDecl.getTypeName();
+				  typeNs1 = xsSimpleTypeDecl.getTypeNamespace();			  			  
+			  }
+
+			  XMLString xmlStr1 = dtm.getStringValue(nodeHandle);
+			  lNodeStr = xmlStr1.toString();
+		  }
+	  }
+	  else if (left instanceof XSAnyAtomicType) {
+		  XSAnyAtomicType xsAnyAtomicType = (XSAnyAtomicType)left;
+		  typeName1 = xsAnyAtomicType.stringType();
+
+		  int colonIdx = typeName1.indexOf(':');
+		  typeName1 = typeName1.substring(colonIdx + 1);
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }
+	  else if (left instanceof XNumber) {
+		  double dbl = ((XNumber)left).num();
+		  left = new XSDouble(dbl);
+		  
+		  typeName1 = "double";
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }	  
+	  else if ((left instanceof XBoolean) || (left instanceof XBooleanStatic)) {
+		  left = new XSBoolean(left.bool());
+		  
+		  typeName1 = "boolean";
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }
+	  
+	  java.lang.String typeName2 = null;
+	  java.lang.String typeNs2 = null;
+	  
+	  if (right instanceof XMLNodeCursorImpl) {
+		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
+		  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+		  if (nodeHandle != DTM.NULL) {
+			  DTM dtm = xctxt.getDTM(nodeHandle);
+			  Node node = dtm.getNode(nodeHandle);
+			  if (node instanceof ElementPSVI) {
+				  ElementPSVI elementPsvi = (ElementPSVI)node;
+				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
+				  if (typeDefn instanceof XSComplexTypeDefinition) {
+					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' operand, cannot be a "
+							  + "node validated with schema complex type.");
+				  }
+				  else {
+					  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
+					  typeName2 = xsSimpleTypeDecl.getTypeName();
+					  typeNs2 = xsSimpleTypeDecl.getTypeNamespace();
+				  }
+			  }
+			  else if (node instanceof AttributePSVI) {
+				  AttributePSVI attrPsvi = (AttributePSVI)node;
+				  XSTypeDefinition typeDefn = attrPsvi.getTypeDefinition();
+				  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
+
+				  typeName2 = xsSimpleTypeDecl.getTypeName();
+				  typeNs2 = xsSimpleTypeDecl.getTypeNamespace();
+			  }
+
+			  XMLString xmlStr2 = dtm.getStringValue(nodeHandle);
+			  rNodeStr = xmlStr2.toString();
+		  }
+	  }
+	  else if (right instanceof XSAnyAtomicType) {
+		  XSAnyAtomicType xsAnyAtomicType = (XSAnyAtomicType)right;
+		  typeName1 = xsAnyAtomicType.stringType();
+
+		  int colonIdx = typeName1.indexOf(':');
+		  typeName1 = typeName1.substring(colonIdx + 1);
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }
+	  else if (right instanceof XNumber) {
+		  double dbl = ((XNumber)right).num();
+		  right = new XSDouble(dbl);
+		  
+		  typeName2 = "double";
+		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }
+	  else if ((right instanceof XBoolean) || (right instanceof XBooleanStatic)) {
+		  right = new XSBoolean(right.bool());
+		  
+		  typeName2 = "boolean";
+		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }
+	  
+	  if (left instanceof XSFloat) {
+		 float fl1 = ((XSFloat)left).floatValue();
+		 left = new XSDouble(fl1);
+		 
+		 typeName1 = "double";
+		 typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }
+	  
+	  if (right instanceof XSFloat) {
+		 float fl2 = ((XSFloat)right).floatValue();
+		 right = new XSDouble(fl2);
+		 
+		 typeName2 = "double";
+		 typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }
+	  
+	  if ((left instanceof XSDouble) && (right instanceof XSDouble)) {
+		 XSDouble xsDouble1 = (XSDouble)left;
+		 XSDouble xsDouble2 = (XSDouble)right;
+		 
+		 Double dbl1 = xsDouble1.doubleValue();
+		 Double dbl2 = xsDouble2.doubleValue();
+		 if ((dbl1 == Double.POSITIVE_INFINITY) || (dbl2 == Double.POSITIVE_INFINITY)) {
+			result = new XSDouble(Double.POSITIVE_INFINITY);
+			
+			return result;
+		 }
+		 
+         if ((dbl1 == Double.NEGATIVE_INFINITY) || (dbl2 == Double.NEGATIVE_INFINITY)) {
+        	result = new XSDouble(Double.NEGATIVE_INFINITY);
+ 			
+ 			return result; 
+		 }
+         
+         if (dbl1.isNaN() || dbl2.isNaN()) {
+        	result = new XSDouble(Double.NaN);
+ 			
+ 			return result; 
+		 }
+	  }
+	  
+	  // Validating an XPath 3.1 operator '+', operands compatibility for addition	  
+	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
+		 if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
+			 (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
+			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+                                                                                                                     + "types " + typeName1 + " and " + typeName2 + ".");
+		 }
+		 else if ("date".equals(typeName1) && !("yearMonthDuration".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
+			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+		 }		 
+		 else if ("date".equals(typeName2) && !("yearMonthDuration".equals(typeName1) || "dayTimeDuration".equals(typeName1))) {
+			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+		 }
+		 else if (("time".equals(typeName1) && !"dayTimeDuration".equals(typeName2)) ||
+				  ("dayTimeDuration".equals(typeName1) && !"time".equals(typeName2))) {
+			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+                                                                                                                     + "types " + typeName1 + " and " + typeName2 + ".");
+		 }		 
+		 else if ("dateTime".equals(typeName1) && !("yearMonthDuration".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
+			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+		 }
+		 else if ("dateTime".equals(typeName2) && !("yearMonthDuration".equals(typeName1) || "dayTimeDuration".equals(typeName1))) {
+			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+		 }
+		 else if (("yearMonthDuration".equals(typeName1) && !"yearMonthDuration".equals(typeName2)) ||
+				  ("dayTimeDuration".equals(typeName1) && !"dayTimeDuration".equals(typeName2))) {
+			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+                                                                                                                     + "types " + typeName1 + " and " + typeName2 + ".");
+		 }
+		 
+		 List<XMLNSDecl> nsPrefixTable = stylesheetRoot.getPrefixTable();
+		 
+		 if (lNodeStr != null) {
+			java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");
+			xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+			XPath xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			left = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+		 }
+		 
+         if (rNodeStr != null) {
+        	java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName2 + "('" + rNodeStr + "')");
+        	xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+        	XPath xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			right = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+		 }
+	  }	  	       	  
 
 	  if ((lObj instanceof FuncArgPlaceholder) && (rObj instanceof FuncArgPlaceholder)) {
 		  java.lang.String xpathInlineFuncExprStr = "function($arg0, $arg1) { $arg0 + $arg1 }";
@@ -246,7 +519,7 @@ public class Plus extends XPathArithmeticOp
 			  }
 			  else {
 				  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
-				  BigDecimal rBigDecimal = new BigDecimal(rNodeSet.str());				  
+				  BigDecimal rBigDecimal = new BigDecimal(rNodeStr);				  
 				  
 				  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
 				  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
@@ -262,8 +535,8 @@ public class Plus extends XPathArithmeticOp
 			  if (lNodeSet.getLength() > 1) {
 				  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_PLUS}, elemTemplateElement);  
 			  }
-			  else {        	  
-				  BigDecimal lBigDecimal = new BigDecimal(lNodeSet.str());				  
+			  else {				  				  
+				  BigDecimal lBigDecimal = new BigDecimal(lNodeStr);				  
 				  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
 				  
 				  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
@@ -285,8 +558,9 @@ public class Plus extends XPathArithmeticOp
 			  if (rNodeSet.getLength() > 1) {
 				  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_PLUS}, elemTemplateElement);  
 			  }
-			  BigDecimal lBigDecimal = new BigDecimal(lNodeSet.str());			  
-			  BigDecimal rBigDecimal = new BigDecimal(rNodeSet.str());
+			  
+			  BigDecimal lBigDecimal = new BigDecimal(lNodeStr);			  
+			  BigDecimal rBigDecimal = new BigDecimal(rNodeStr);
 			  
 			  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
 			  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
@@ -464,7 +738,7 @@ public class Plus extends XPathArithmeticOp
 				  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_PLUS}, elemTemplateElement); 
 			  }
 
-			  BigDecimal lBigDecimal = new BigDecimal(lNodeSet.str());
+			  BigDecimal lBigDecimal = new BigDecimal(lNodeStr);
 			  BigDecimal rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(right));			  
 
 			  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
@@ -484,12 +758,12 @@ public class Plus extends XPathArithmeticOp
 	  }
 	  catch (NumberFormatException ex) {
 		  java.lang.String lStrValue = null;
-		  if (left instanceof XMLNodeCursorImpl) {
-			  lStrValue = ((XMLNodeCursorImpl)left).str(); 
+		  if (left instanceof XMLNodeCursorImpl) {			  			  
+			  lStrValue = lNodeStr; 
 		  }
 		  java.lang.String rStrValue = null;
-		  if (right instanceof XMLNodeCursorImpl) {
-			  rStrValue = ((XMLNodeCursorImpl)right).str(); 
+		  if (right instanceof XMLNodeCursorImpl) {			  
+			  rStrValue = rNodeStr; 
 		  }
 		  
 		  if ("".equals(lStrValue) || "".equals(rStrValue)) {
@@ -506,7 +780,7 @@ public class Plus extends XPathArithmeticOp
       return result;
   }
 
-  /**
+/**
    * Evaluate this operation directly to a double.
    *
    * @param xctxt The runtime execution context.
@@ -520,54 +794,6 @@ public class Plus extends XPathArithmeticOp
   {
 
     return (m_right.num(xctxt) + m_left.num(xctxt));
-  }
-  
-  /**
-   * Add a value of type XSNumericType, to another value of type 
-   * XSNumericType. 
-   */
-  private XObject addXSNumericTypeToXsNumericType(XSNumericType leftVal, XSNumericType rightVal) {
-
-	  XObject result = null;
-
-	  if ((leftVal instanceof XSDecimal) || (rightVal instanceof XSDecimal)) {
-		  BigDecimal lBigDecimal = new BigDecimal(leftVal.stringValue());
-		  BigDecimal rBigDecimal = new BigDecimal(rightVal.stringValue());
-
-		  result = new XSDecimal((lBigDecimal.add(rBigDecimal)).toString());
-	  }
-	  else {
-		  Double lDouble = Double.valueOf(leftVal.stringValue());
-		  Double rDouble = Double.valueOf(rightVal.stringValue());
-
-		  result = new XSDouble(lDouble.doubleValue() + rDouble.doubleValue());  
-	  }
-	  
-	  return result;
-  }
-
-  /**
-   * Add XNumber value to an XSNumericType value.
-   */
-  private XObject addXNumberToXsNumericType(XNumber leftVal, XSNumericType rightVal) {
-	  
-      XObject result = null;
-	  
-	  if (rightVal instanceof XSDecimal) {
-	      java.lang.String rStrVal = rightVal.stringValue();		  		  
-	      java.math.BigDecimal rBigDecimal = new java.math.BigDecimal(rStrVal);
-	      double lDouble = leftVal.num();
-		  java.math.BigDecimal resultVal = rBigDecimal.add(new java.math.BigDecimal(lDouble));
-		  result = new XSDecimal(resultVal);
-	  }	      	  
-	  else {
-		  double lDouble = leftVal.num();
-		  java.lang.String rStrVal = rightVal.stringValue();
-		  double rDouble = (Double.valueOf(rStrVal)).doubleValue();		  
-		  result = new XSDouble(lDouble + rDouble);
-	  }
-	  
-	  return result;
   }
 
 }

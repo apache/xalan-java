@@ -145,8 +145,11 @@ public class InstanceOf extends Operation
   {            
             
       XObject result = null;
-      
-	  XPathContext xctxt = null;      
+	  
+	  StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
+	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+	  XPathContext xctxt = transformerImpl.getXPathContext(); 
+	  PrefixResolver prefixResolver = xctxt.getNamespaceContext();	  	  
       
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
@@ -204,11 +207,7 @@ public class InstanceOf extends Operation
     	  }
     	  
     	  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + " { 'no_op' }";
-    	  
-    	  StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
-    	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-    	  xctxt = transformerImpl.getXPathContext(); 
-    	  PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+    	      	  
     	  XPath xpathObj = new XPath(xpathInlineFuncDefnStr, this, prefixResolver, XPath.SELECT, null);
     	  
     	  left = xpathObj.execute(xctxt, DTM.NULL, prefixResolver);
@@ -278,9 +277,6 @@ public class InstanceOf extends Operation
          }
     	 else if (left instanceof XNodeSetForDOM) {
     		XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)left;
-    		StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
-      	    TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-      	    xctxt = transformerImpl.getXPathContext();
     		int nodeHandle = xNodeSetForDOM.asNode(xctxt);
     		DTM dtm = xctxt.getDTM(nodeHandle);
     		Node node = dtm.getNode(nodeHandle);

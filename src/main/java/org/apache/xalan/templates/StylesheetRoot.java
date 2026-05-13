@@ -1928,10 +1928,21 @@ public class StylesheetRoot extends StylesheetComposed implements java.io.Serial
 		}
 	}
 
+	/**
+	 * Get the compiled object tree corresponding 
+	 * to an XML Schema document.
+	 * 
+	 * @return                An XSModel object instance     
+	 */
 	public XSModel getXsModel() {
 		return m_xsModel;
 	}
 
+	/**
+	 * Set the XSModel object instance. 
+	 * 
+	 * @param xsModel              XSModel object instance
+	 */
 	public void setXsModel(XSModel xsModel) {
 		this.m_xsModel = xsModel;
 	}

@@ -26,6 +26,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.patterns.NodeTest;
 
+import xml.xpath31.processor.types.XSNumericType;
+
 /**
  * Implementation of an XPath 3.1 function fn:number.
  * 
@@ -66,8 +68,18 @@ public class FuncNumber extends FunctionDef1Arg
     	  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function number(), but the "
                    																     + "supplied type is a function type, which cannot be atomized.", srcLocator); 
       }
-            
-	  result = new XNumber(getArg0AsNumber(xctxt));
+      
+      if (m_arg0 != null) {
+    	 XObject xObj1 = m_arg0.execute(xctxt);
+    	 if (xObj1 instanceof XSNumericType) {
+    		String str1 = ((XSNumericType)xObj1).stringValue();
+    		result = new XNumber(Double.valueOf(str1));
+    	 }
+      }
+           
+      if (result == null) {
+	     result = new XNumber(getArg0AsNumber(xctxt));
+      }
 	  
 	  return result;
   }

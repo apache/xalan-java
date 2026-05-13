@@ -1,5 +1,7 @@
 <?xml version="1.0"?> 
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                 
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+                exclude-result-prefixes="xs"                 
 				version="3.0">
 				
   <!-- Author: mukulg@apache.org -->
@@ -18,8 +20,8 @@
      </result>
   </xsl:template>
 
-  <xsl:function name="Q{http://ns0/}incr">
-    <xsl:param name="x"/>
+  <xsl:function name="Q{http://ns0/}incr" as="xs:double">
+    <xsl:param name="x" as="xs:double"/>
     <xsl:sequence select="$x + 4"/>
   </xsl:function>
   
