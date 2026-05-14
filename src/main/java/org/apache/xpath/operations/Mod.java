@@ -15,19 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.xerces.xs.AttributePSVI;
+import org.apache.xerces.xs.ElementPSVI;
+import org.apache.xerces.xs.XSComplexTypeDefinition;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.XPathArithmeticOp;
+import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPathArithmeticOp;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -38,6 +48,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
+import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
@@ -75,33 +86,222 @@ public class Mod extends XPathArithmeticOp
 	  Object lObj = left.object();
 	  Object rObj = right.object();
 	  
+	  StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
+	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+	  XPathContext xctxt = transformerImpl.getXPathContext();
+
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
 	  if (left instanceof XPathMap) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first operand of 'mod', but "
 																												  + "the supplied type is a map "
-																												  + "type which cannot be atomized."); 
+																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 
 	  if (right instanceof XPathMap) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second operand of 'mod', but "
 																												  + "the supplied type is a map "
-																												  + "type which cannot be atomized."); 
+																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 	  
 	  if (left instanceof XPathInlineFunction) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first operand of 'mod', but "
 																												  + "the supplied type is a function "
-																												  + "type which cannot be atomized."); 
+																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 
 	  if (right instanceof XPathInlineFunction) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second operand of 'mod', but "
 																												  + "the supplied type is a function "
-																												  + "type which cannot be atomized."); 
+																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 
-	  XPathContext xctxt = new XPathContext(true);
-	  
+	  java.lang.String lNodeStr = null;
+	  java.lang.String rNodeStr = null;
+
+	  java.lang.String typeName1 = null;
+	  java.lang.String typeNs1 = null;
+
 	  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
+	  
+	  if (left instanceof XMLNodeCursorImpl) {
+		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
+		  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+		  if (nodeHandle != DTM.NULL) {
+			  DTM dtm = xctxt.getDTM(nodeHandle);
+			  Node node = dtm.getNode(nodeHandle);
+			  if (node instanceof ElementPSVI) {
+				  ElementPSVI elementPsvi = (ElementPSVI)node;
+				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
+				  if (typeDefn instanceof XSComplexTypeDefinition) {
+					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'mod' operand, cannot be a "
+							                                                                                             + "node validated with schema complex type.");				  
+				  }
+				  else {
+					  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
+					  typeName1 = xsSimpleTypeDecl.getTypeName();
+					  typeNs1 = xsSimpleTypeDecl.getTypeNamespace();
+
+					  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+					  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
+						  if (typeNs1 == null) {
+							  XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
+							  typeName1 = xsTypeDefn.getName();
+							  typeNs1 = xsTypeDefn.getNamespace();
+						  }						 
+					  }
+					  else if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_UNION) {
+						  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(elementPsvi.getMemberTypeDefinition());
+						  typeName1 = xsSimpleTypeDeclMemberType.getTypeName();
+						  typeNs1 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+						  if (typeNs1 == null) {
+							  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
+							  typeName1 = xsTypeDefn.getName();
+							  typeNs1 = xsTypeDefn.getNamespace();
+						  }
+					  }
+					  
+					  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
+				  }
+			  }
+			  else if (node instanceof AttributePSVI) {
+				  AttributePSVI attrPsvi = (AttributePSVI)node;
+				  XSTypeDefinition typeDefn = attrPsvi.getTypeDefinition();
+				  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
+
+				  typeName1 = xsSimpleTypeDecl.getTypeName();
+				  typeNs1 = xsSimpleTypeDecl.getTypeNamespace();
+
+				  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+				  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
+					  if (typeNs1 == null) {
+						  XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
+						  typeName1 = xsTypeDefn.getName();
+						  typeNs1 = xsTypeDefn.getNamespace();
+					  }						 
+				  }
+				  else if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_UNION) {
+					  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(attrPsvi.getMemberTypeDefinition());
+					  typeName1 = xsSimpleTypeDeclMemberType.getTypeName();
+					  typeNs1 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+					  if (typeNs1 == null) {
+						  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
+						  typeName1 = xsTypeDefn.getName();
+						  typeNs1 = xsTypeDefn.getNamespace();
+					  }
+				  }
+				  
+				  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
+			  }
+
+			  XMLString xmlStr1 = dtm.getStringValue(nodeHandle);
+			  lNodeStr = xmlStr1.toString();
+		  }
+	  }
+	  
+	  java.lang.String typeName2 = null;
+	  java.lang.String typeNs2 = null;
+	  
+	  if (right instanceof XMLNodeCursorImpl) {
+		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
+		  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+		  if (nodeHandle != DTM.NULL) {
+			  DTM dtm = xctxt.getDTM(nodeHandle);
+			  Node node = dtm.getNode(nodeHandle);
+			  if (node instanceof ElementPSVI) {
+				  ElementPSVI elementPsvi = (ElementPSVI)node;
+				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
+				  if (typeDefn instanceof XSComplexTypeDefinition) {
+					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'mod' operand, cannot be a "
+							  																							+ "node validated with schema complex type.");
+				  }
+				  else {
+					  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
+					  typeName2 = xsSimpleTypeDecl.getTypeName();
+					  typeNs2 = xsSimpleTypeDecl.getTypeNamespace();
+
+					  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+					  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
+						  if (typeNs2 == null) {
+							  XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
+							  typeName2 = xsTypeDefn.getName();
+							  typeNs2 = xsTypeDefn.getNamespace();
+						  }						 
+					  }
+					  else if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_UNION) {
+						  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(elementPsvi.getMemberTypeDefinition());
+						  typeName2 = xsSimpleTypeDeclMemberType.getTypeName();
+						  typeNs2 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+						  if (typeNs2 == null) {
+							  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
+							  typeName2 = xsTypeDefn.getName();
+							  typeNs2 = xsTypeDefn.getNamespace();
+						  }
+					  }
+					  
+					  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
+				  }
+			  }
+			  else if (node instanceof AttributePSVI) {
+				  AttributePSVI attrPsvi = (AttributePSVI)node;
+				  XSTypeDefinition typeDefn = attrPsvi.getTypeDefinition();
+				  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
+
+				  typeName2 = xsSimpleTypeDecl.getTypeName();
+				  typeNs2 = xsSimpleTypeDecl.getTypeNamespace();
+
+				  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+				  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
+					  if (typeNs2 == null) {
+						  XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
+						  typeName2 = xsTypeDefn.getName();
+						  typeNs2 = xsTypeDefn.getNamespace();
+					  }						 
+				  }
+				  else if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_UNION) {
+					  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(attrPsvi.getMemberTypeDefinition());
+					  typeName2 = xsSimpleTypeDeclMemberType.getTypeName();
+					  typeNs2 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+					  if (typeNs2 == null) {
+						  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
+						  typeName2 = xsTypeDefn.getName();
+						  typeNs2 = xsTypeDefn.getNamespace();
+					  }
+				  }
+				  
+				  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
+			  }
+
+			  XMLString xmlStr2 = dtm.getStringValue(nodeHandle);
+			  rNodeStr = xmlStr2.toString();
+		  }
+	  }
+	  
+	  // Validating an XPath 3.1 operator 'mod', operands compatibility for mod
+	  // Ref : XPath 3.1 operator mapping, https://www.w3.org/TR/xpath-31/#mapping
+	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
+		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
+				                                                                   (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
+			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'mod' cannot add values of schema "
+					                                                                                                        + "types " + typeName1 + " and " + typeName2 + ".");
+		  }			 
+
+		  List<XMLNSDecl> nsPrefixTable = stylesheetRoot.getPrefixTable();
+
+		  if (lNodeStr != null) {
+			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");
+			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+			  XPath xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  left = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+		  }
+
+		  if (rNodeStr != null) {
+			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName2 + "('" + rNodeStr + "')");
+			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+			  XPath xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  right = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+		  }
+	  }
 
 	  if ((lObj instanceof FuncArgPlaceholder) && (rObj instanceof FuncArgPlaceholder)) {
 		  java.lang.String xpathInlineFuncExprStr = "function($arg0, $arg1) { $arg0 mod $arg1 }";
@@ -199,8 +399,7 @@ public class Mod extends XPathArithmeticOp
 			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);
 		  }
 		  else {
-			  java.lang.String rStrVal = rNodeSet.str();
-			  double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+			  double rDouble = Double.valueOf(rNodeStr);
 
 			  result = new XSDecimal(BigDecimal.valueOf(lDouble % rDouble));
 		  }
@@ -213,8 +412,7 @@ public class Mod extends XPathArithmeticOp
 			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 		  else {
-			  java.lang.String lStrVal = lNodeSet.str();
-			  double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+			  double lDouble = Double.valueOf(lNodeStr);
 
 			  result = new XSDecimal(BigDecimal.valueOf(lDouble % rDouble));
 		  }
@@ -228,8 +426,7 @@ public class Mod extends XPathArithmeticOp
 			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 		  else {
-			  java.lang.String rStrVal = rNodeSet.str();
-			  double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+			  double rDouble = Double.valueOf(rNodeStr);
 
 			  result = new XSDecimal(BigDecimal.valueOf(lDouble % rDouble));
 		  }
@@ -243,8 +440,7 @@ public class Mod extends XPathArithmeticOp
 			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement); 
 		  }
 		  else {
-			  java.lang.String lStrVal = lNodeSet.str();
-			  double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+			  double lDouble = Double.valueOf(lNodeStr);
 
 			  result = new XSDecimal(BigDecimal.valueOf(lDouble % rDouble));
 		  }
@@ -258,8 +454,7 @@ public class Mod extends XPathArithmeticOp
 			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement);  
 		  }
 		  else {
-			  java.lang.String lStrVal = lNodeSet.str();
-			  lDouble = (Double.valueOf(lStrVal)).doubleValue();
+			  lDouble = Double.valueOf(lNodeStr);
 		  }
 
 		  XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
@@ -267,8 +462,7 @@ public class Mod extends XPathArithmeticOp
 			  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MOD}, elemTemplateElement); 
 		  }
 		  else {
-			  java.lang.String rStrVal = rNodeSet.str();
-			  rDouble = (Double.valueOf(rStrVal)).doubleValue();
+			  rDouble = Double.valueOf(rNodeStr);
 		  }
 
 		  result = new XSDecimal(BigDecimal.valueOf(lDouble % rDouble));
@@ -373,6 +567,15 @@ public class Mod extends XPathArithmeticOp
 			  error(DIV_BY_ZERO_ERR_MESG, new java.lang.String[] {"FOAR0001"}, elemTemplateElement);
 		  }
 	  }
+	  else if (left instanceof XSYearMonthDuration) {
+		  try {
+			  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
+			  result = ((XSYearMonthDuration)left).div(new XSDouble(rStrVal));
+		  }
+		  catch (XPathException ex) {
+			  throw new javax.xml.transform.TransformerException(ex.getMessage());  
+		  }
+	  }
 	  else if (left instanceof XMLNodeCursorImpl) {
 		  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
 		  if (lNodeSet.getLength() > 1) {
@@ -383,10 +586,11 @@ public class Mod extends XPathArithmeticOp
 		  BigDecimal rBigDecimal = null;
 
 		  try {
-			  java.lang.String lStrVal = lNodeSet.str();
 			  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
-			  lBigDecimal = new BigDecimal(lStrVal); 
+			  
+			  lBigDecimal = new BigDecimal(lNodeStr); 
 			  rBigDecimal = new BigDecimal(rStrVal);
+			  
 			  result = new XSDecimal(lBigDecimal.remainder(rBigDecimal));
 		  }
 		  catch (NumberFormatException ex) {
@@ -395,16 +599,7 @@ public class Mod extends XPathArithmeticOp
 		  catch (ArithmeticException ex) {
 			  error(DIV_BY_ZERO_ERR_MESG, new java.lang.String[] {"FOAR0001"}, elemTemplateElement);
 		  }         
-	  }
-	  else if (left instanceof XSYearMonthDuration) {
-		  try {
-			  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
-			  result = ((XSYearMonthDuration)left).div(new XSDouble(rStrVal));
-		  }
-		  catch (XPathException ex) {
-			  throw new javax.xml.transform.TransformerException(ex.getMessage());  
-		  }
-	  }     
+	  }	       
 	  else {
 		  try {
 			  java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);

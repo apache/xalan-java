@@ -860,11 +860,12 @@ public class Process
 						  domParser.parse(inpSrc);
 						  
 						  Document document = domParser.getDocument();
-						  Element elem = document.getDocumentElement();
-						  String attrValue = elem.getAttributeNS("http://www.w3.org/2001/XMLSchema-instance","noNamespaceSchemaLocation");
-						  if (attrValue.equals("")) {
+						  Element elem = document.getDocumentElement();						  
+						  String attrValue1 = elem.getAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "noNamespaceSchemaLocation");
+						  String attrValue2 = elem.getAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation");
+						  if (attrValue1.equals("") && attrValue2.equals("")) {
 							 /**
-							  * Validate an XML input document, with schema information
+							  * Validate an XML input document, with schema information 
 							  * available from xsl:import-schema instruction within
 							  * the stylesheet.
 							  */

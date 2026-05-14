@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-05T11:09:10Z" fail="12" name="sequence" pass="72" run="84" skipped="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-14T09:54:06Z" fail="13" name="sequence" pass="71" run="84" skipped="8" statusUnknown="0">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="pass" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -36,7 +36,11 @@
    <testResult status="pass" testName="sequence-0135"/>
    <testResult status="pass" testName="sequence-0136"/>
    <testResult status="skipped" testName="sequence-0137" xsltVersion="XSLT 2.0/1.0 only test case"/>
-   <testResult status="pass" testName="sequence-0137a"/>
+   <testResult status="fail" testName="sequence-0137a">
+      <outResult>
+         <errTrace>XPTY0004 : XSL variable q's value doesn't conform to variable's type declaration xs:integer *.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="sequence-0138"/>
    <testResult status="pass" testName="sequence-0139"/>
    <testResult status="pass" testName="sequence-0201"/>
