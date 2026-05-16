@@ -41,6 +41,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.types.DateTimeUtil;
@@ -128,6 +129,17 @@ public class XObject extends Expression implements Serializable, Cloneable
    * and for clauses.
    */
   private boolean m_homogeneous_source = false;
+  
+  /**
+   * An XPath 3.1 sequence type information, telling the
+   * type of this XPath object (when not equals to null), if 
+   * this object instance is a result of XPath 3.1 "cast as" 
+   * expression.
+   * 
+   * This helps to, correctly infer the type of this XPath object
+   * within XPath 3.1 expressions like "instance of".
+   */
+  private SequenceTypeData m_cast_as_type = null;
 
   /**
    * Create an XObject.
@@ -2443,6 +2455,14 @@ public class XObject extends Expression implements Serializable, Cloneable
 
   public void setHomogeneousSource(boolean homogeneousSource) {
 	  this.m_homogeneous_source = homogeneousSource;
+  }
+  
+  public SequenceTypeData getCastAsType() {
+	  return m_cast_as_type;
+  }
+
+  public void setCastAsType(SequenceTypeData seqTypedData) {
+	  this.m_cast_as_type = seqTypedData;	
   }
 
 }

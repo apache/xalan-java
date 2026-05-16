@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -49,10 +46,10 @@ public class CastAs extends Operation
   /**
    * Apply the operation to two operands, and return the result.
    *
-   * @param left non-null reference to the evaluated left operand.
-   * @param right non-null reference to the evaluated right operand.
+   * @param left non-null reference to the evaluated left operand
+   * @param right non-null reference to the evaluated right operand
    *
-   * @return non-null reference to the XObject that represents the result of the operation.
+   * @return non-null reference to the XObject that represents the result of the operation
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -109,13 +106,15 @@ public class CastAs extends Operation
     	  }
       }
       finally {
-    	  // Reset the value of variable XslTransformSharedDatastore.xpathCallingOpCode 
+    	  // Reset the value of variable XslTransformData.m_xpathCallingOpCode 
     	  XslTransformData.m_xpathCallingOpCode = Integer.MIN_VALUE;
       }
       
-      // Evaluate XPath "cast as" expression, when XPath "idiv" expression 
-      // evaluation was not requested within original XPath input expression.
+      // Evaluate an XPath 3.1 "cast as" expression, when XPath "idiv" expression 
+      // evaluation has not been requested within original XPath expression input.
       result = SequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, xpathContext);
+      
+      result.setCastAsType(seqTypedData);
       
       return result;
   }

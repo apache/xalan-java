@@ -961,26 +961,26 @@ public class Process
 						  inpSrc.setEncoding(encoding); 
 					  }
 					  
-					  Node xmlDoc = null;					  
+					  Node node = null;					  
 					  if (isSchemaValidation) {
 						  DOMParser parser = new DOMParser();
-						  parser.setFeature("http://xml.org/sax/features/validation", true);
-						  parser.setFeature("http://apache.org/xml/features/validation/schema", true);
-						  parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
-						  
-						  parser.setProperty("http://apache.org/xml/properties/dom/document-class-name", 
-								                                                                     "org.apache.xerces.dom.PSVIDocumentImpl");
+						  parser.setFeature(Constants.XML_VALIDATION_FEATURE, true);
+				    	  parser.setFeature(Constants.XML_SCHEMA_VALIDATION_FEATURE, true);
+				    	  parser.setFeature(Constants.XML_SCHEMA_FULL_CHECKING_FEATURE, true);
+
+				    	  parser.setProperty(Constants.XML_DOM_DOCUMENT_CLASS_NAME, Constants.XERCES_PSVI_DOCUMENT_IMPL);
+				    		
 						  parser.parse(inpSrc);
-						  xmlDoc = parser.getDocument();						  
+						  node = parser.getDocument();						  
 					  }
 					  else {
-					      xmlDoc = docBuilder.parse(inpSrc);
+					      node = docBuilder.parse(inpSrc);
 					  }
 
 					  Document doc = docBuilder.newDocument();
 					  org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();						  						  
 
-					  transformer.transform(new DOMSource(xmlDoc, inFileName), new DOMResult(outNode));
+					  transformer.transform(new DOMSource(node, inFileName), new DOMResult(outNode));
 
 					  // Now serialize output to disk with identity transformer
 					  Transformer identityTransformer = stf.newTransformer();
@@ -1017,7 +1017,7 @@ public class Process
 
 					  // Using an XMLReader to construct SAXSource for an XML input
 					  // document, enables correct XML namespace processing. 
-					  XMLReader xmlReader = XMLReaderFactory.createXMLReader();						  						  
+					  XMLReader xmlReader = XMLReaderFactory.createXMLReader();						  
 
 					  transformer.transform(new SAXSource(xmlReader, inpSrc), new DOMResult(outNode));
 

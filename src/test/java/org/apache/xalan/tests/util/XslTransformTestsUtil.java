@@ -147,9 +147,9 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         	   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_MODE, m_initModeName); 
            }
            
-           StreamSource xsltStreamSrc = new StreamSource(xslDocumentUriStr);
+           StreamSource xslStreamSrc = new StreamSource(xslDocumentUriStr);
        
-           Transformer transformer = m_xslTransformerFactory.newTransformer(xsltStreamSrc);
+           Transformer transformer = m_xslTransformerFactory.newTransformer(xslStreamSrc);
            
            setXslTransformProperties(transformer);
            

@@ -51,6 +51,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
+import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
@@ -61,6 +62,7 @@ import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
@@ -272,6 +274,24 @@ public class Mult extends XPathArithmeticOp
 		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 	  }
 	  
+	  if (((left instanceof XSString) || (left instanceof XString)) && 
+			                                                        (right instanceof XSDayTimeDuration)) {
+		  // Written to solve use cases like, W3C XSLT 3.0 test suite, test case type\date\date-055
+		  
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+		  
+		  try {
+		     Double dbl = Double.valueOf(str1);
+		     left = new XSDouble(dbl);
+		     
+		     typeName1 = "double";
+			 typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+		  }
+		  catch (NumberFormatException ex) {
+			 // no op 
+		  }
+	  }
+	  
 	  java.lang.String typeName2 = null;
 	  java.lang.String typeNs2 = null;
 	  
@@ -351,11 +371,11 @@ public class Mult extends XPathArithmeticOp
 	  }
 	  else if (right instanceof XSAnyAtomicType) {
 		  XSAnyAtomicType xsAnyAtomicType = (XSAnyAtomicType)right;
-		  typeName1 = xsAnyAtomicType.stringType();
+		  typeName2 = xsAnyAtomicType.stringType();
 
-		  int colonIdx = typeName1.indexOf(':');
-		  typeName1 = typeName1.substring(colonIdx + 1);
-		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+		  int colonIdx = typeName2.indexOf(':');
+		  typeName2 = typeName2.substring(colonIdx + 1);
+		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 	  }
 	  else if (right instanceof XNumber) {
 		  double dbl = ((XNumber)right).num();
@@ -369,6 +389,24 @@ public class Mult extends XPathArithmeticOp
 		  
 		  typeName2 = "boolean";
 		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }
+	  
+	  if (((right instanceof XSString) || (right instanceof XString)) && 
+			                                                           (left instanceof XSDayTimeDuration)) {
+		  // Written to solve use cases like, W3C XSLT 3.0 test suite, test case type\date\date-055
+		  
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
+		  
+		  try {
+			  Double dbl = Double.valueOf(str1);
+			  right = new XSDouble(dbl);
+
+			  typeName2 = "double";
+			  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+		  }
+		  catch (NumberFormatException ex) {
+			  // no op 
+		  }
 	  }
 	  
 	  if (left instanceof XSFloat) {
@@ -412,24 +450,69 @@ public class Mult extends XPathArithmeticOp
 		  }
 	  }
 	  
+	  if (left instanceof XSNumericType) {
+		 if ((right instanceof XSString) || (right instanceof XString)) {
+			java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
+			
+			try {
+			   double dbl2 = Double.valueOf(str2);
+			   right = new XSDouble(dbl2);
+			   
+			   typeName2 = "double";
+			   typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+			}
+			catch (NumberFormatException ex) {
+			   // no op	
+			}
+		 }
+	  }
+	  
+	  if (right instanceof XSNumericType) {
+		  if ((left instanceof XSString) || (left instanceof XString)) {
+			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+			  
+			  try {
+				  double dbl1 = Double.valueOf(str1);
+				  left = new XSDouble(dbl1);
+
+				  typeName1 = "double";
+				  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+			  }
+			  catch (NumberFormatException ex) {
+				  // no op	
+			  }
+		  }
+	  }
+	  
+	  if ((right instanceof XSUntypedAtomic) || (right instanceof XSUntyped)) {
+		  if ((left instanceof XSNumericType) || (left instanceof XNumber)) {
+			  java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
+
+			  try {
+				  double dbl2 = Double.valueOf(str2);
+				  right = new XSDouble(dbl2);
+
+				  typeName2 = "double";
+				  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+			  }
+			  catch (NumberFormatException ex) {
+				  // no op	
+			  }
+		  }
+	  }
+	  
 	  // Validating an XPath 3.1 operator '*', operands compatibility for multiplication
 	  // Ref : XPath 3.1 operator mapping, https://www.w3.org/TR/xpath-31/#mapping
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
-		  if (("yearMonthDuration".equals(typeName1) || isXsBuiltInTypeNumeric(typeName1)) && !isXsBuiltInTypeNumeric(typeName2)) {
+		  if (isXsBuiltInTypeNumeric(typeName1) && !(isXsBuiltInTypeNumeric(typeName2) || 
+				                                     "yearMonthDuration".equals(typeName2) || 
+				                                     "dayTimeDuration".equals(typeName2))) {
 			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '*' cannot multiply schema "
-					                                                                                               + "type " + typeName1 + " value with " + typeName2 + ".");
+					                                                                                                + "type " + typeName1 + " value with " + typeName2 + ".");
 		  }
-		  else if (isXsBuiltInTypeNumeric(typeName1) && !("yearMonthDuration".equals(typeName2) || isXsBuiltInTypeNumeric(typeName2))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '*' cannot multiply schema "
-					                                                                                               + "type " + typeName1 + " value with " + typeName2 + ".");
-		  }
-		  else if (("dayTimeDuration".equals(typeName1) || isXsBuiltInTypeNumeric(typeName1)) && !isXsBuiltInTypeNumeric(typeName2)) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '*' cannot multiply schema "
-					  																							   + "type " + typeName1 + " value with " + typeName2 + ".");
-		  }
-		  else if (isXsBuiltInTypeNumeric(typeName1) && !("dayTimeDuration".equals(typeName2) || isXsBuiltInTypeNumeric(typeName2))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '*' cannot multiply schema "
-					  																							   + "type " + typeName1 + " value with " + typeName2 + ".");
+		  else if (("yearMonthDuration".equals(typeName1) || "dayTimeDuration".equals(typeName1)) && !isXsBuiltInTypeNumeric(typeName2)) {
+			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '-' cannot subtract schema "
+					                                                                                               + "type " + typeName1 + " value from " + typeName2 + ".");
 		  }
 
 		  List<XMLNSDecl> nsPrefixTable = stylesheetRoot.getPrefixTable();

@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xml.utils;
 
 /**
@@ -110,6 +107,16 @@ public class Constants
    * The minimum version of XSLT supported by this processor.
    */
   public static final double XSLTVERSUPPORTED = 1.0;
+  
+  public static final String XML_VALIDATION_FEATURE = "http://xml.org/sax/features/validation";
+  
+  public static final String XML_SCHEMA_VALIDATION_FEATURE = "http://apache.org/xml/features/validation/schema";
+  
+  public static final String XML_SCHEMA_FULL_CHECKING_FEATURE = "http://apache.org/xml/features/validation/schema-full-checking";
+  
+  public static final String XML_DOM_DOCUMENT_CLASS_NAME = "http://apache.org/xml/properties/dom/document-class-name";
+  
+  public static final String XERCES_PSVI_DOCUMENT_IMPL = "org.apache.xerces.dom.PSVIDocumentImpl";
   
   /**
    * Xalan's XSLT 3.0 JAXP factory object information.

@@ -48,11 +48,13 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
+import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
@@ -277,12 +279,46 @@ public class Mod extends XPathArithmeticOp
 		  }
 	  }
 	  
-	  // Validating an XPath 3.1 operator 'mod', operands compatibility for mod
+	  if (left instanceof XSNumericType) {
+		  if ((right instanceof XSString) || (right instanceof XString)) {
+			  java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
+			  
+			  try {
+				  double dbl2 = Double.valueOf(str2);
+				  right = new XSDouble(dbl2);
+
+				  typeName2 = "double";
+				  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+			  }
+			  catch (NumberFormatException ex) {
+				  // no op	
+			  }
+		  }
+	  }
+
+	  if (right instanceof XSNumericType) {
+		  if ((left instanceof XSString) || (left instanceof XString)) {
+			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+			  
+			  try {
+				  double dbl1 = Double.valueOf(str1);
+				  left = new XSDouble(dbl1);
+
+				  typeName2 = "double";
+				  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+			  }
+			  catch (NumberFormatException ex) {
+				  // no op	
+			  }
+		  }
+	  }
+	  
+	  // Validating an XPath 3.1 operator 'mod', operands compatibility for computing modulus
 	  // Ref : XPath 3.1 operator mapping, https://www.w3.org/TR/xpath-31/#mapping
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                                   (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'mod' cannot add values of schema "
+			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'mod' cannot apply values of schema "
 					                                                                                                        + "types " + typeName1 + " and " + typeName2 + ".");
 		  }			 
 

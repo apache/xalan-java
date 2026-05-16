@@ -133,10 +133,10 @@ public class InstanceOf extends Operation
    /**
    * Apply the operation to two operands, and return the result.
    *
-   * @param left non-null reference to the evaluated left operand.
-   * @param right non-null reference to the evaluated right operand.
+   * @param left non-null reference to the evaluated left operand
+   * @param right non-null reference to the evaluated right operand
    *
-   * @return non-null reference to the XObject that represents the result of the operation.
+   * @return non-null reference to the XObject that represents the result of the operation
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -145,13 +145,29 @@ public class InstanceOf extends Operation
   {            
             
       XObject result = null;
-	  
-	  StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
+      
+      SequenceTypeData seqTypedData = null;
+      
+      SequenceTypeData castAsType = left.getCastAsType();
+      
+      StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
 	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
 	  XPathContext xctxt = transformerImpl.getXPathContext(); 
-	  PrefixResolver prefixResolver = xctxt.getNamespaceContext();	  	  
+	  PrefixResolver prefixResolver = xctxt.getNamespaceContext();
       
-      SequenceTypeData seqTypedData = (SequenceTypeData)right;
+      if (castAsType != null) {    	  
+    	  if (castAsType.equal((SequenceTypeData)right)) {
+    		 result = XBoolean.S_TRUE; 
+    	  }
+    	  else {
+    		 result = XBoolean.S_FALSE; 
+    	  }
+    	  
+    	  return result;
+      }
+      else {    	  	  	  
+    	  seqTypedData = (SequenceTypeData)right;  
+      }
       
       int xsBuiltInSeqType = seqTypedData.getBuiltInSequenceType();      
       SequenceTypeKindTest sequenceTypeKindTest = seqTypedData.getSequenceTypeKindTest();
@@ -162,6 +178,30 @@ public class InstanceOf extends Operation
     	  if (left instanceof XNumber) {
     		  XNumber xNumber = (XNumber)left;
     		  double dbl = xNumber.num();
+    		  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
+    			  return XBoolean.S_TRUE; 
+    		  }
+    	  }
+    	  
+    	  if (left instanceof XSDouble) {
+    		  XSDouble xsDouble = (XSDouble)left;
+    		  double dbl = xsDouble.doubleValue();
+    		  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
+    			  return XBoolean.S_TRUE; 
+    		  }
+    	  }
+    	  
+    	  if (left instanceof XSFloat) {
+    		  XSFloat xsFloat = (XSFloat)left;
+    		  double fl1 = xsFloat.floatValue();
+    		  if ((fl1 == (int)fl1) || (fl1 == (long)fl1)) {
+    			  return XBoolean.S_TRUE; 
+    		  }
+    	  }
+    	  
+    	  if (left instanceof XSDecimal) {
+    		  XSDecimal xsDecimal = (XSDecimal)left;
+    		  double dbl = xsDecimal.doubleValue();
     		  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
     			  return XBoolean.S_TRUE; 
     		  }
