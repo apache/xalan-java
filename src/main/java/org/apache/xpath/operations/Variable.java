@@ -310,7 +310,7 @@ public class Variable extends Expression implements PathComponent
            ElemTemplateElement elemTemplateElement = (ElemTemplateElement)(getExpressionOwner());                      
            if ((elemVariable == null) && (elemTemplateElement instanceof ElemIterateOnCompletion)) {
         	   throw new javax.xml.transform.TransformerException("XPST0008 : Variable $" + m_qname.toString() + " "
-             			                                                                  + "accessed before it is bound!", srcLocator); 
+             			                                                                  + "accessed before it is bound.", srcLocator); 
            }
            else {
                /**
@@ -333,7 +333,7 @@ public class Variable extends Expression implements PathComponent
         	   if (elemCatch != null) {
         		  if ((elemVariable != null) && !isXslVariableDeclAvailableXslCatch((ElemTemplateElement)elemCatch)) {        			  
         			  throw new javax.xml.transform.TransformerException("XPST0008 : Variable $" + m_qname.toString() + "accessed before "
-        			  		                                                                                                   + "it is bound!", srcLocator); 
+        			  		                                                                                                   + "it is bound.", srcLocator); 
         		  }
         	   }
            }
@@ -370,7 +370,7 @@ public class Variable extends Expression implements PathComponent
         	  }
         	  catch (TransformerException ex1) {
                   throw new javax.xml.transform.TransformerException("Variable $" + m_qname.toString() + " "
-                                                                                                  			+ "accessed before it is bound!", srcLocator);
+                                                                                                  			+ "accessed before it is bound.", srcLocator);
         	  }
            }
         }

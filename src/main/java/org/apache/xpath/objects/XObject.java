@@ -69,6 +69,7 @@ import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSYearMonthDuration;
@@ -1752,7 +1753,13 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  catch (TransformerException ex) {
 			  return false;
 		  }    
-	  }	  
+	  }
+	  else if ((this instanceof XSQName) && (obj2 instanceof XSQName)) {
+		  result = ((XSQName)this).equals((XSQName)obj2);		      
+	  }
+	  else if ((this instanceof XSQName) && (obj2 instanceof ResultSequence)) {
+		  result = ((XSQName)this).equals((ResultSequence)obj2);		      
+	  }
 	  else if (obj2.getType() == XObject.CLASS_NODESET) {
 		  result = obj2.equals(this);
 	  }	

@@ -157,7 +157,7 @@ public class ResultSequence extends XObject
     }
     
     public boolean equals(Object obj) {
-    	boolean isEquals = true;
+    	boolean result = true;
     	
     	if (!(obj instanceof ResultSequence)) {
     	   return false;	
@@ -166,9 +166,26 @@ public class ResultSequence extends XObject
     	String strVal1 = str();
     	String strVal2 = ((ResultSequence)obj).str();
     	
-    	isEquals = strVal1.equals(strVal2);
+    	result = strVal1.equals(strVal2);
     	
-    	return isEquals;
+    	return result;
+    }
+    
+    public boolean equals(XObject xObj) {
+        
+    	boolean result = false;
+        
+        int size1 = this.size();
+        for (int idx = 0; idx < size1; idx++) {
+           XObject xObj1 = (XObject)(this.item(idx));
+           if (xObj1.equals(xObj)) {
+        	  result = true;
+        	  
+        	  break;
+           }
+        }
+        
+        return result;
     }
     
     public int hashCode() {

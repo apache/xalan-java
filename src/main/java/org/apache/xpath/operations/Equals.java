@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import java.util.ArrayList;
@@ -42,7 +39,7 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * The '=' operation expression executer.
+ * An XPath 3.1 operator '=' evaluator.
  */
 public class Equals extends Operation
 {
@@ -51,10 +48,10 @@ public class Equals extends Operation
   /**
    * Apply the operation to two operands, and return the result.
    *
-   * @param left non-null reference to the evaluated left operand.
-   * @param right non-null reference to the evaluated right operand.
+   * @param left non-null reference to the evaluated left operand
+   * @param right non-null reference to the evaluated right operand
    *
-   * @return non-null reference to the XObject that represents the result of the operation.
+   * @return non-null reference to the XObject that represents the result of the operation
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -413,23 +410,26 @@ public class Equals extends Operation
    * Execute a binary operation by calling execute on each of the operands,
    * and then calling the operate method on the derived class.
    *
+   * @param xctxt The runtime execution context
    *
-   * @param xctxt The runtime execution context.
-   *
-   * @return The XObject result of the operation.
+   * @return The XObject result of the operation
    *
    * @throws javax.xml.transform.TransformerException
    */
   public boolean bool(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
-    XObject left = m_left.execute(xctxt, true);
-    XObject right = m_right.execute(xctxt, true);
+	  boolean result = false;
+	  
+	  XObject left = m_left.execute(xctxt, true);
+	  XObject right = m_right.execute(xctxt, true);
 
-    boolean result = left.equals(right) ? true : false;
-	left.detach();
-	right.detach();
-    return result;
+	  result = left.equals(right) ? true : false;
+
+	  left.detach();
+	  right.detach();
+
+	  return result;
   }
 
 }

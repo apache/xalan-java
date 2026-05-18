@@ -7,6 +7,7 @@ package xml.xpath31.processor.types;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
 
 /**
  * An XML Schema data type representation, of the xs:QName datatype.
@@ -122,37 +123,68 @@ public class XSQName extends XSCtrType {
 	
 	@Override
     public boolean equals(Object obj) {
-		boolean isQNameEqual = false;
+		
+		boolean result = false;
 		
 		if (obj instanceof XSQName) {
-		   isQNameEqual = this.equals((XSQName)obj);
+		   result = this.equals((XSQName)obj);
 		}
 		
-		return isQNameEqual; 
+		return result; 
 	}
 	
 	/*
-	 * Check whether, two xs:QName values are equal. 
+	 * Method definition, to check whether, two xs:QName 
+	 * values are equal. 
 	 */
 	public boolean equals(XSQName xsQName) {
-		boolean isQNameEqual = true;
+		
+		boolean result = true;
 		
 		if (!localPart.equals(xsQName.getLocalPart())) {
-			isQNameEqual = false;	
+			result = false;	
 		}
-		else if (((namespaceUri == null) && (xsQName.getNamespaceUri() != null)) ||				
-			      !namespaceUri.equals(xsQName.getNamespaceUri())) {
-			isQNameEqual = false;
+		else if ((namespaceUri == null) && (xsQName.getNamespaceUri() != null)) {
+			result = false;
 		}
 		else if ((namespaceUri != null) && (xsQName.getNamespaceUri() == null)) {
-			isQNameEqual = false;	
+			result = false;	
 		}
 		else if ((namespaceUri != null) && (xsQName.getNamespaceUri() != null) && 
 				 (!namespaceUri.equals(xsQName.getNamespaceUri()))) {
-			isQNameEqual = false;
+			result = false;
 		}
 				
-		return isQNameEqual;
+		return result;
+	}
+	
+	/*
+	 * Method definition, to check whether, a xs:QName
+	 * value is equals to a ResultSequence object instance.
+	 */
+	public boolean equals(ResultSequence rSeq) {
+		
+		boolean result = false;
+		
+		int size1 = rSeq.size();
+		for (int idx = 0; idx < size1; idx++) {
+		   XObject xObj = rSeq.item(idx);
+		   boolean bool1 = false;
+		   if (xObj instanceof XSQName) {
+			  bool1 = (this).equals((XSQName)xObj); 
+		   }
+		   else {
+			  bool1 = ((XObject)this).equals(xObj); 
+		   }
+		   
+		   if (bool1) {
+			  result = true;
+			  
+			  break;
+		   }
+		}
+				
+		return result;
 	}
 	
 

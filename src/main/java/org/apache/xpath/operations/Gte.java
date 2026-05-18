@@ -36,7 +36,7 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * The '>=' operation expression executer.
+ * An XPath 3.1 operator '>=' evaluator.
  */
 public class Gte extends Operation
 {
@@ -45,10 +45,10 @@ public class Gte extends Operation
   /**
    * Apply the operation to two operands, and return the result.
    *
-   * @param left non-null reference to the evaluated left operand.
-   * @param right non-null reference to the evaluated right operand.
+   * @param left non-null reference to the evaluated left operand
+   * @param right non-null reference to the evaluated right operand
    *
-   * @return non-null reference to the XObject that represents the result of the operation.
+   * @return non-null reference to the XObject that represents the result of the operation
    *
    * @throws javax.xml.transform.TransformerException
    */

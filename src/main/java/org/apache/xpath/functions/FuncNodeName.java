@@ -71,8 +71,7 @@ public class FuncNodeName extends FunctionDef1Arg {
 				nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
 			 }
 			 else {
-				throw new TransformerException("XPTY0004 : While evaluating XPath function node-name without an argument, XPath context "
-						                                                                                     + "item didn't evaluate to a valid node.");
+				throw new TransformerException("XPTY0004 : An XPath 3.1 function node-name's argument is not a node.", srcLocator);
 			 }
 		  }
 		  else {
@@ -81,10 +80,40 @@ public class FuncNodeName extends FunctionDef1Arg {
 	  }
 	  else {
 		  try {
-		     nodeHandle = m_arg0.asNode(xctxt);
+			 XObject xObj = m_arg0.execute(xctxt);			 
+			 
+			 if (xObj instanceof XMLNodeCursorImpl) {
+				XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;				
+				nodeHandle = xmlNodeCursorImpl.asNode(xctxt); 
+			 }
+			 else if ((xObj instanceof ResultSequence) && (((ResultSequence)xObj).size() == 1)) {
+				xObj = ((ResultSequence)xObj).item(0);
+				if (xObj instanceof XMLNodeCursorImpl) {
+					XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;				
+					nodeHandle = xmlNodeCursorImpl.asNode(xctxt); 
+				}
+				else {
+					throw new TransformerException("XPTY0004 : An XPath 3.1 function node-name's argument is not a node.", srcLocator);
+				}
+			 }
+			 else if ((xObj instanceof ResultSequence) && (((ResultSequence)xObj).size() > 1)) {
+				throw new TransformerException("XPTY0004 : An XPath 3.1 function node-name's argument cannot be a sequence with size greater than one.", srcLocator); 
+			 }
+			 else if ((xObj instanceof ResultSequence) && (((ResultSequence)xObj).size() == 0)) {
+				result = new ResultSequence(); 
+		     }
+			 else {
+				throw new TransformerException("XPTY0004 : An XPath 3.1 function node-name's argument is not a node.", srcLocator); 
+			 }
 		  }
 		  catch (TransformerException ex) {
-			 throw new TransformerException("XPDY0002 : While evaluating XPath function node-name, function's argument didn't evaluate to a valid node."); 
+			 String errMesg = ex.getMessage();
+			 if (errMesg != null) {
+			    throw new TransformerException("XPTY0004 : " + errMesg, srcLocator);
+			 }
+			 else {
+				throw new TransformerException("XPTY0004 : An XPath 3.1 function node-name's evaluation result in a run-time error.", srcLocator);
+			 }
 		  }
 	  }
 	  

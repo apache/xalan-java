@@ -29,7 +29,7 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSQName;
 
 /**
- * Implementation of the fn:QName() function.
+ * Implementation of XPath 3.1 function fn:QName.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -50,8 +50,8 @@ public class FuncQName extends Function2Args
 	/**
       * Evaluate the function. The function must return a valid object.
       * 
-      * @param xctxt The current execution context.
-      * @return A valid XObject.
+      * @param xctxt The current execution context
+      * @return A valid XObject
       *
       * @throws javax.xml.transform.TransformerException
       */
@@ -78,9 +78,9 @@ public class FuncQName extends Function2Args
     	   // The string value 'arg1Str' is an XML valid name, according to XML 1.0 specification
     	   if (arg1Str.contains(":")) {
     		  if (isXMLNullNamespace(arg0, xctxt)) {
-    			 throw new javax.xml.transform.TransformerException("FOCA0002 : The string value of second argument of function "
-    			 		                                                   + "call fn:QName contains the character ':', and therefore the "
-    			 		                                                   + "first argument cannot represent an XML 'no namespace.'", srcLocator);  
+    			 throw new javax.xml.transform.TransformerException("FOCA0002 : The string value of second argument of XPath 3.1 function "
+    			 		                                                   + "call 'QName' contains the character ':', and therefore the "
+    			 		                                                   + "first argument cannot represent an XML null namespace.", srcLocator);  
     		  }
 			  nsPrefix = arg1Str.substring(0, arg1Str.indexOf(':'));                	
 			  localPart = arg1Str.substring(arg1Str.indexOf(':') + 1);  
@@ -90,8 +90,8 @@ public class FuncQName extends Function2Args
 		   }
     	}
     	else {
-    	   throw new javax.xml.transform.TransformerException("FOCA0002 : The string value of second argument of function call "
-                                                                     + "fn:QName, is not a valid lexical value of a QName.", srcLocator);
+    	   throw new javax.xml.transform.TransformerException("FOCA0002 : The string value of second argument of XPath 3.1 function call "
+                                                                     + "'QName', is not a valid lexical value of a QName.", srcLocator);
     	}
     	
     	result = new XSQName(nsPrefix, localPart, nsUri);

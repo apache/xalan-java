@@ -694,7 +694,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
        "3 or 4"},
 
   { ER_VARIABLE_ACCESSED_BEFORE_BIND,
-       "Variable accessed before it is bound!"},
+       "Variable accessed before it is bound."},
 
   { ER_FSB_CANNOT_TAKE_STRING,
        "XStringForFSB can not take a string for an argument!"},

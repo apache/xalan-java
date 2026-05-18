@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import javax.xml.XMLConstants;
@@ -44,7 +41,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.patterns.NodeTest;
 
 /**
- * A class definition, implementing XPath binary operators. 
+ * A class definition, providing common implementation features 
+ * for XPath 3.1 binary operators. 
  */
 public class Operation extends Expression implements ExpressionOwner
 {
@@ -115,12 +113,13 @@ public class Operation extends Expression implements ExpressionOwner
   }
 
   /**
-   * Execute a binary operation by calling execute on each of the operands,
-   * and then calling the operate method on the derived class.
+   * Evaluate an XPath 3.1 binary operation by calling execute 
+   * method on each of the operands, and then calling the operate 
+   * method on the derived implementation class.
    *
-   * @param xctxt The runtime execution context.
+   * @param xctxt The runtime execution context
    *
-   * @return The XObject result of the operation.
+   * @return The XObject result of the operation
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -234,10 +233,10 @@ public class Operation extends Expression implements ExpressionOwner
   /**
    * Apply the operation to two operands, and return the result.
    *
-   * @param left non-null reference to the evaluated left operand.
-   * @param right non-null reference to the evaluated right operand.
+   * @param left non-null reference to the evaluated left operand
+   * @param right non-null reference to the evaluated right operand
    *
-   * @return non-null reference to the XObject that represents the result of the operation.
+   * @return non-null reference to the XObject that represents the result of the operation
    *
    * @throws javax.xml.transform.TransformerException
    */
