@@ -138,4 +138,7 @@ public class Constants
       
   public static final String XML_SCHEMA_FACTORY_VALUE = "org.apache.xerces.jaxp.validation.XMLSchemaFactory";
   
+  
+  public static final String XS_VALID_TRUE = "XS_VALID_TRUE";
+  
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-24T10:43:27Z" fail="74" name="match" pass="108" run="182" skipped="112" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-19T11:30:48Z" fail="72" name="match" pass="110" run="182" skipped="112" statusUnknown="0">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -43,7 +43,7 @@
          <errTrace>XPST0017 : An XSL stylesheet function call {http://f.com/}special referred within an XPath expression, doesn't have a corresponding XSL function definition within the stylesheet.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="match-041"/>
+   <testResult status="pass" testName="match-041"/>
    <testResult status="pass" testName="match-042"/>
    <testResult status="pass" testName="match-043"/>
    <testResult status="pass" testName="match-044"/>
@@ -177,9 +177,8 @@
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
          <errTrace>Pattern literal (anotherpi) needs to be quoted!</errTrace>
-         <errTrace>Expected ), but found: anotherpi</errTrace>
-         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
-java.lang.Exception: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 50, Column# : 70 XPST0003: Expected ), but found: anotherpi
+java.lang.Exception: Line# : 50, Column# : 70 XPST0003: Expected ), but found: anotherpi</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="match-102"/>
@@ -200,9 +199,8 @@ java.lang.Exception: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
          <errTrace>Pattern literal (anotherpi) needs to be quoted!</errTrace>
-         <errTrace>Expected ), but found: anotherpi</errTrace>
-         <errTrace>org.xml.sax.SAXException: CONTINUE_AFTER_FATAL_ERROR
-java.lang.Exception: CONTINUE_AFTER_FATAL_ERROR</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 47, Column# : 77 XPST0003: Expected ), but found: anotherpi
+java.lang.Exception: Line# : 47, Column# : 77 XPST0003: Expected ), but found: anotherpi</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="match-108"/>
@@ -329,12 +327,7 @@ java.lang.Exception: CONTINUE_AFTER_FATAL_ERROR</errTrace>
          <errTrace>XPST0051 : A sequence type occurence indicator ']', is not recognized.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="match-130">
-      <outResult>
-         <errTrace>A location path was expected, but the following token was encountered:  +</errTrace>
-         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-130"/>
    <testResult status="fail" testName="match-131"/>
    <testResult status="fail" testName="match-132"/>
    <testResult reason="Xalan configured" status="skipped" testName="match-133"/>
@@ -515,7 +508,7 @@ java.lang.Exception: CONTINUE_AFTER_FATAL_ERROR</errTrace>
       <outResult>
          <errTrace>Extra illegal tokens: 'except', '@', 'q', 'except', '@', 'http://www.w3.org/XML/1998/namespace', ':', 'id'</errTrace>
          <errTrace>Extra illegal tokens: 'except', '(', '@', 'xxx', '|', '@', 'yyy', ')'</errTrace>
-         <errTrace>java.lang.RuntimeException: This NodeSetDTM can not iterate to a previous node!</errTrace>
+         <errTrace>XPTY0004 : One or both of the operands of operator + are not numeric.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="match-277"/>

@@ -159,8 +159,6 @@ public class XSL3FunctionService {
 	public static final String UTF_16 = "UTF-16";
 	
 	public static final String XML_DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
-	
-	public static final String XS_VALID_TRUE = "XS_VALID_TRUE";
     
 	/**
 	 * Method definition, to evaluate a function call referred within an 
@@ -721,7 +719,7 @@ public class XSL3FunctionService {
     									XObject xsSimpleTypeInpObj = (funcObj.getArg(0)).execute(xctxt);
     									String argStrVal = XslTransformEvaluationHelper.getStrVal(xsSimpleTypeInpObj);
     									xsSimpleTypeDecl.validate(argStrVal, null, null);
-    									evalResult = new XSString(XS_VALID_TRUE);
+    									evalResult = new XSString(Constants.XS_VALID_TRUE);
     									evalResult.setObject(argStrVal);
     									evalResult.setXsTypeDefinition(xsTypeDefinition);    								}
     								else {
@@ -790,7 +788,7 @@ public class XSL3FunctionService {
     										XObject xsSimpleTypeInpObj = (funcObj.getArg(0)).execute(xctxt);
     										String argStrVal = XslTransformEvaluationHelper.getStrVal(xsSimpleTypeInpObj);
     										xsSimpleTypeDecl.validate(argStrVal, null, null);
-    										evalResult = new XSString(XS_VALID_TRUE);
+    										evalResult = new XSString(Constants.XS_VALID_TRUE);
     										evalResult.setObject(argStrVal);
     										evalResult.setXsTypeDefinition(xsTypeDefinition);
     									}

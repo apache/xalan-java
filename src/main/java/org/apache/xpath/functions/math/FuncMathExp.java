@@ -70,12 +70,12 @@ public class FuncMathExp extends FunctionOneArg
        
        if (arg0 instanceof NodeTest) {
     	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0)) {
-    		   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function exp(), "
+    		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function exp(), "
     				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
     	   }
        }
        else if (arg0 instanceof XPathInlineFunction) {
-     	   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function exp(), but the "
+     	   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function exp(), but the "
                     																   + "supplied type is a function type, which cannot be atomized.", srcLocator); 
        }
        

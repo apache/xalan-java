@@ -72,11 +72,12 @@ import org.apache.xpath.operations.NotEquals;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Or;
 import org.apache.xpath.operations.Plus;
+import org.apache.xpath.operations.Pos;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.TreatAs;
-import org.apache.xpath.operations.UnaryOperation;
+import org.apache.xpath.operations.XPath3UnaryOperation;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
 import org.apache.xpath.operations.VcGe;
@@ -239,8 +240,10 @@ public class Compiler extends OpMap
       expr = idiv(opPos); break;      
     case OpCodes.OP_MOD :
       expr = mod(opPos); break;
+    case OpCodes.XPath3OpCodes.OP_POS :
+        expr = pos(opPos); break;
     case OpCodes.OP_NEG :
-      expr = neg(opPos); break;
+      expr = neg(opPos); break;          
     case OpCodes.OP_STRING :
       expr = string(opPos); break;
     case OpCodes.OP_BOOL :
@@ -342,7 +345,7 @@ public class Compiler extends OpMap
    *
    * @throws TransformerException if syntax or other error occurs.
    */
-  private Expression compileUnary(UnaryOperation unary, int opPos)
+  private Expression compileUnary(XPath3UnaryOperation unary, int opPos)
           throws TransformerException
   {
 
@@ -820,6 +823,20 @@ public class Compiler extends OpMap
   protected Expression neg(int opPos) throws TransformerException
   {
     return compileUnary(new Neg(), opPos);
+  }
+  
+  /**
+   * Compile a unary '+' operation.
+   * 
+   * @param opPos The current position in the m_opMap array
+   *
+   * @return reference to {@link org.apache.xpath.operations.Neg} instance.
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
+  protected Expression pos(int opPos) throws TransformerException
+  {
+    return compileUnary(new Pos(), opPos);
   }
 
   /**

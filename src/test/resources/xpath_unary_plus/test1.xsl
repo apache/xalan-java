@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="3.0">
                 
-    <!-- Author: mukulg@apache.org -->                 
-
-    <!-- An XSL stylesheet test case to test, xsl:for-each-group instruction to 
-	     group atomic values using 'group-by' attribute. -->				
-	
-	<xsl:output method="xml" indent="yes"/>
+    <!-- Author: mukulg@apache.org -->
+  
+    <!-- An XSL stylesheet test case, to test XPath 3.1 unary plus operator --> 
+    
+    <xsl:output method="xml" indent="yes"/>               
 
     <xsl:template match="/">
-       <result>	     
-	      <xsl:for-each-group select="(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)" group-by="number(.) lt 5">
-		     <group key="{if (current-grouping-key() eq true()) then 'less_than_five' else 'greater_equal_to_five'}">			   
-			   <xsl:for-each select="current-group()">
-			     <item>
-				   <xsl:value-of select="."/>
-				 </item>
-			   </xsl:for-each>
-			 </group>
-		  </xsl:for-each-group>
+       <result>
+          <xsl:variable name="x" select="5"/>	   
+		  <one><xsl:value-of select="+5"/></one>
+		  <two><xsl:value-of select="-2 to +5"/></two>
+	      <three><xsl:value-of select="-2 to +$x"/></three>		  
 	   </result>
     </xsl:template>
     
@@ -40,5 +34,5 @@
       * See the License for the specific language governing permissions and
       * limitations under the License.
     -->
-    
+
 </xsl:stylesheet>

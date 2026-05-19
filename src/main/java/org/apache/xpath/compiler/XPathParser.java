@@ -4160,6 +4160,7 @@ public class XPathParser
    *
    * UnaryExpr  ::=  NodeCombiningExpr
    * | '-' UnaryExpr
+   * | '+' UnaryExpr
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -4167,19 +4168,26 @@ public class XPathParser
   {
 
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
-    boolean isNeg = false;
-
+    boolean isUnary = false;
+    
     if (m_tokenChar == '-')
     {
       nextToken();
       appendOp(2, OpCodes.OP_NEG);
 
-      isNeg = true;
+      isUnary = true;
+    }
+    else if (m_tokenChar == '+')
+    {
+      nextToken();
+      appendOp(2, OpCodes.XPath3OpCodes.OP_POS);
+
+      isUnary = true;
     }
 
     NodeCombiningExpr();
 
-    if (isNeg)
+    if (isUnary)
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
         m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }

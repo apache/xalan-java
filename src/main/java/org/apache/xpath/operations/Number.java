@@ -27,7 +27,7 @@ import org.apache.xpath.objects.XObject;
 /**
  * The 'number()' operation expression executer.
  */
-public class Number extends UnaryOperation
+public class Number extends XPath3UnaryOperation
 {
     static final long serialVersionUID = 7196954482871619765L;
 

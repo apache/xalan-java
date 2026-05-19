@@ -24,52 +24,55 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * An XPath 3.1 unary minus operator expression evaluator.
+ * An XPath 3.1 unary plus operator expression evaluator.
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
  */
-public class Neg extends XPath3UnaryOperation
+public class Pos extends XPath3UnaryOperation
 {
-  
-  private static final long serialVersionUID = -6280607702375702291L;
+
+  private static final long serialVersionUID = 7884742480397069969L;
 
   /**
    * Apply XPath unary operator to an operand, and return the result.
    *
-   * @param right non-null reference to the evaluated right operand.
+   * @param right non-null reference to the evaluated right operand
    *
-   * @return non-null reference to the XObject that represents the result of the operation.
+   * @return non-null reference to the XObject that represents the result of the operation
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject operate(XObject right) throws javax.xml.transform.TransformerException
   {
-    XObject result = null;
-    
-    if (right instanceof XSNumericType) {
-       java.lang.String strValue = ((XSNumericType)right).stringValue();
-       
-       result = new XNumber(-1 * (Double.valueOf(strValue))); 
-    }
-    else {
-       result = new XNumber(-right.num());  
-    }
-    
-    return result;
+	  XObject result = null;
+
+	  if (right instanceof XSNumericType) {
+		  java.lang.String strValue = ((XSNumericType)right).stringValue();
+
+		  result = new XNumber(Double.valueOf(strValue)); 
+	  }
+	  else {
+		  result = new XNumber(right.num());  
+	  }
+
+	  return result;
   }
   
   /**
    * Evaluate this operation directly to a double.
    *
-   * @param xctxt The runtime execution context.
+   * @param xctxt The runtime execution context
    *
-   * @return The result of the operation as a double.
+   * @return The result of the operation as a double
    *
    * @throws javax.xml.transform.TransformerException
    */
   public double num(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
-
-    return -(m_right.num(xctxt));
+     return m_right.num(xctxt);
   }
 
 }

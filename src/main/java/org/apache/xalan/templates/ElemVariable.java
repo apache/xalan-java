@@ -82,7 +82,7 @@ import org.apache.xpath.operations.ArrowOp;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
-import org.apache.xpath.operations.UnaryOperation;
+import org.apache.xpath.operations.XPath3UnaryOperation;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.NodeList;
@@ -582,7 +582,7 @@ public class ElemVariable extends ElemTemplateElement
             	String funcNamespace = ((XSL3ConstructorOrExtensionFunction)selectExpression).getNamespace();
             	
             	String evalResultStrValue = XslTransformEvaluationHelper.getStrVal(evalResult);
-            	if ((m_asAttr != null) && !(XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
+            	if ((m_asAttr != null) && !(Constants.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
                    evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {                	  
                 	  throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation result, doesn't "
@@ -590,7 +590,7 @@ public class ElemVariable extends ElemTemplateElement
                 			                                                                            + m_asAttr + ".", srcLocator); 
                    }
                 }
-            	else if ((m_asAttr != null) && (XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	else if ((m_asAttr != null) && (Constants.XS_VALID_TRUE).equals(evalResultStrValue)) {
             	   PrefixResolver prefixResolver = xctxt.getNamespaceContext();
             	   QName asAttrQName = new QName(m_asAttr, prefixResolver);
             	   String typeName = asAttrQName.getLocalName();
@@ -605,7 +605,7 @@ public class ElemVariable extends ElemTemplateElement
 																		                                + m_asAttr + ".", srcLocator); 
             	   }
             	}
-            	else if ((m_asAttr == null) && (XSL3FunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	else if ((m_asAttr == null) && (Constants.XS_VALID_TRUE).equals(evalResultStrValue)) {
             	   XObject valToBeValidated = (((XSL3ConstructorOrExtensionFunction)selectExpression).getArg(0)).execute(xctxt);
           	       evalResult = valToBeValidated; 	
             	}
@@ -2497,7 +2497,7 @@ public class ElemVariable extends ElemTemplateElement
     					}
     				}
     			}			
-    			else if ((expr1 instanceof Function) || (expr1 instanceof UnaryOperation)) {
+    			else if ((expr1 instanceof Function) || (expr1 instanceof XPath3UnaryOperation)) {
     				// no op
     			}
     			else if ((expr1 instanceof XString) || (expr1 instanceof XBoolean) || (expr1 instanceof XBooleanStatic) 

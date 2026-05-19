@@ -68,6 +68,7 @@ import org.apache.xalan.tests.xpath3.XPathSequenceFunctionTests;
 import org.apache.xalan.tests.xpath3.XPathSimpleMapOperatorTests;
 import org.apache.xalan.tests.xpath3.XPathStringConcatExprTests;
 import org.apache.xalan.tests.xpath3.XPathTextAndNodePattern;
+import org.apache.xalan.tests.xpath3.XPathUnaryPlusTests;
 import org.apache.xalan.tests.xpath3.XPathUriQualifiedNameTests;
 import org.apache.xalan.tests.xpath3.XsDurationComponentExtractionFunctionTests;
 import org.apache.xalan.tests.xpath3.XsGregorianTypeTests;
@@ -141,7 +142,7 @@ import xml.xpath31.processor.types.tests.XSTimeTest;
                 FnRoundTests.class, XslSequenceInstTests.class, XPathNodeSequenceCombinationTests.class,
                 FnDocAvailableTests.class, FnUnparsedTextLinesTests.class, XslMethodOutputJsonTests.class,
                 XsGregorianTypeTests.class, XslMergeTests.class, XslSourceDocumentTests.class,
-                XslForkTests.class, XslResultDocumentTests.class, XPathIdivTests.class,
+                XslForkTests.class, XslResultDocumentTests.class, XPathIdivTests.class, XPathUnaryPlusTests.class,
                 FnTransformTests.class, FnStartsWithEndsWithTests.class, FnContainsTests.class,
                 FnSubstringBeforeAndAfterTests.class, XslTryCatchTests.class, XslCharacterMapTests.class,
                 XslInitialTemplateTests.class, XslContextItemTests.class, XPathOpLiteralSequenceTests.class,

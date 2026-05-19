@@ -27,7 +27,7 @@ import org.apache.xpath.objects.XObject;
 /**
  * The 'boolean()' operation expression executer.
  */
-public class Bool extends UnaryOperation
+public class Bool extends XPath3UnaryOperation
 {
     static final long serialVersionUID = 44705375321914635L;
 

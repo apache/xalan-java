@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import org.apache.xpath.Expression;
@@ -26,15 +23,16 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 
-/**
- * The unary operation base class.
+/** 
+ * An XPath 3.1 unary operator base class.
  */
-public abstract class UnaryOperation extends Expression implements ExpressionOwner
+public abstract class XPath3UnaryOperation extends Expression implements ExpressionOwner
 {
-    static final long serialVersionUID = 6536083808424286166L;
+  static final long serialVersionUID = 6536083808424286166L;
 
-  /** The operand for the operation.
-   *   */
+  /**
+   * An XPath Expression object for unary operator's operand.
+   */
   protected Expression m_right;
   
   /**
@@ -49,7 +47,7 @@ public abstract class UnaryOperation extends Expression implements ExpressionOwn
    */
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
-    m_right.fixupVariables(vars, globalsSize);
+	  m_right.fixupVariables(vars, globalsSize);
   }
   
   /**
@@ -60,31 +58,28 @@ public abstract class UnaryOperation extends Expression implements ExpressionOwn
    */
   public boolean canTraverseOutsideSubtree()
   {
+	  if (null != m_right && m_right.canTraverseOutsideSubtree())
+		  return true;
 
-    if (null != m_right && m_right.canTraverseOutsideSubtree())
-      return true;
-
-    return false;
+	  return false;
   }
 
   /**
    * Set the expression operand for the operation.
-   *
    *
    * @param r The expression operand to which the unary operation will be 
    *          applied.
    */
   public void setRight(Expression r)
   {
-    m_right = r;
-    r.exprSetParent(this);
+	  m_right = r;
+	  r.exprSetParent(this);
   }
 
   /**
-   * Execute the operand and apply the unary operation to the result.
+   * Method definition, to evaluate XPath 3.1 unary operator.
    *
-   *
-   * @param xctxt The runtime execution context.
+   * @param xctxt				  An XPath context object
    *
    * @return An XObject that represents the result of applying the unary 
    *         operation to the evaluated operand.
@@ -93,47 +88,47 @@ public abstract class UnaryOperation extends Expression implements ExpressionOwn
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-
-    return operate(m_right.execute(xctxt));
+	  return operate(m_right.execute(xctxt));
   }
 
   /**
-   * Apply the operation to two operands, and return the result.
+   * Apply an XPath operator to two operands, and return the result.
    *
+   * @param right non-null reference to the evaluated right operand
    *
-   * @param right non-null reference to the evaluated right operand.
-   *
-   * @return non-null reference to the XObject that represents the result of the operation.
+   * @return non-null reference to the XObject that represents the result of the operation
    *
    * @throws javax.xml.transform.TransformerException
    */
   public abstract XObject operate(XObject right)
-    throws javax.xml.transform.TransformerException;
+		  throws javax.xml.transform.TransformerException;
 
-  /** @return the operand of unary operation, as an Expression.
+  /**
+   * Method definition, to return XPath 3.1 unary operator's operand.
+   * 
+   * @return				 An XPath Expression object instance
    */
   public Expression getOperand(){
-    return m_right;
+	  return m_right;
   }
-  
+
   /**
    * @see org.apache.xpath.XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {
-  	if (visitor.visitUnaryOperation(owner, this))
-  	{
-  		m_right.callVisitors(this, visitor);
-  	}
+	  if (visitor.visitUnaryOperation(owner, this))
+	  {
+		  m_right.callVisitors(this, visitor);
+	  }
   }
-
 
   /**
    * @see ExpressionOwner#getExpression()
    */
   public Expression getExpression()
   {
-    return m_right;
+	  return m_right;
   }
 
   /**
@@ -141,23 +136,22 @@ public abstract class UnaryOperation extends Expression implements ExpressionOwn
    */
   public void setExpression(Expression exp)
   {
-  	exp.exprSetParent(this);
-  	m_right = exp;
+	  exp.exprSetParent(this);
+	  m_right = exp;
   }
-  
+
   /**
    * @see Expression#deepEquals(Expression)
    */
   public boolean deepEquals(Expression expr)
   {
-  	if (!isSameClass(expr))
-  		return false;
-  		
-  	if (!m_right.deepEquals(((UnaryOperation)expr).m_right))
-  		return false;
-  		
-  	return true;
-  }
+	  if (!isSameClass(expr))
+		  return false;
 
+	  if (!m_right.deepEquals(((XPath3UnaryOperation)expr).m_right))
+		  return false;
+
+	  return true;
+  }
 
 }

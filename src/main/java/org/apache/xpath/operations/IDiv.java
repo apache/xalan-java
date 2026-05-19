@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
@@ -86,32 +87,46 @@ public class IDiv extends XPathArithmeticOp
 	  Object lObj = left.object();
 	  Object rObj = right.object();
 	  
-	  StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
-	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-	  XPathContext xctxt = transformerImpl.getXPathContext();
+	  XPathContext xctxt = null;
+      SourceLocator srcLocator = null;
+      
+      StylesheetRoot stylesheetRoot = null;
 	  
-	  SourceLocator srcLocator = xctxt.getSAXLocator();
+      if (XslTransformData.m_stylesheetRoot != null) {
+    	  stylesheetRoot = XslTransformData.m_stylesheetRoot; 
+    	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+    	  xctxt = transformerImpl.getXPathContext();
+    	  
+    	  srcLocator = xctxt.getSAXLocator(); 
+      }
+      else {
+    	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
+    	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+    	  xctxt = transformerImpl.getXPathContext();
+    	  
+    	  srcLocator = xctxt.getSAXLocator();  
+      }
 	  
 	  if (left instanceof XPathMap) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first operand of 'idiv', but "
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'idiv', but "
 																												  + "the supplied type is a map "
 																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 
 	  if (right instanceof XPathMap) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second operand of 'idiv', but "
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'idiv', but "
 																												  + "the supplied type is a map "
 																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 	  
 	  if (left instanceof XPathInlineFunction) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first operand of 'idiv', but "
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'idiv', but "
 																												  + "the supplied type is a function "
 																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 
 	  if (right instanceof XPathInlineFunction) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second operand of 'idiv', but "
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'idiv', but "
 																												  + "the supplied type is a function "
 																												  + "type which cannot be atomized.", srcLocator); 
 	  }
@@ -311,8 +326,7 @@ public class IDiv extends XPathArithmeticOp
 		  }
 	  }
 	  
-	  // Validating an XPath 3.1 operator 'idiv', operands compatibility for integer division
-	  // Ref : XPath 3.1 operator mapping, https://www.w3.org/TR/xpath-31/#mapping
+	  // Validating an XPath 3.1 operator 'idiv' operands compatibility for integer division	  
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                                   (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
@@ -325,14 +339,34 @@ public class IDiv extends XPathArithmeticOp
 		  if (lNodeStr != null) {
 			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");
 			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
-			  XPath xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  XPath xpathObj = null;
+			  try {
+			     xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  }
+			  catch (TransformerException ex) {
+				 java.lang.String errMesg = ex.getMessage();
+				 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
+					xpathObj = new XPath("'" + lNodeStr + "'", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);   
+				 }
+			  }
+			  
 			  left = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
 		  }
 
 		  if (rNodeStr != null) {
 			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName2 + "('" + rNodeStr + "')");
 			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
-			  XPath xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  XPath xpathObj = null;
+			  try {
+			     xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  }
+			  catch (TransformerException ex) {
+				 java.lang.String errMesg = ex.getMessage();
+				 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
+					xpathObj = new XPath("'" + rNodeStr + "'", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);   
+				 }
+			  }
+			  
 			  right = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
 		  }
 	  }

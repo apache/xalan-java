@@ -22,11 +22,13 @@ import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.xs.AttributePSVI;
@@ -90,32 +92,46 @@ public class Div extends XPathArithmeticOp
      Object lObj = left.object();
 	 Object rObj = right.object();
 	 
-	 StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
-	 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-	 XPathContext xctxt = transformerImpl.getXPathContext();
+	 XPathContext xctxt = null;
+     SourceLocator srcLocator = null;
+     
+     StylesheetRoot stylesheetRoot = null;
+	  
+     if (XslTransformData.m_stylesheetRoot != null) {
+    	 stylesheetRoot = XslTransformData.m_stylesheetRoot; 
+    	 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+    	 xctxt = transformerImpl.getXPathContext();
 
-	 SourceLocator srcLocator = xctxt.getSAXLocator();
+    	 srcLocator = xctxt.getSAXLocator(); 
+     }
+     else {
+    	 stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
+    	 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+    	 xctxt = transformerImpl.getXPathContext();
+
+    	 srcLocator = xctxt.getSAXLocator();  
+     }
      
      if (left instanceof XPathMap) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first operand of 'div', but "
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'div', but "
 																												  + "the supplied type is a map "
 																												  + "type which cannot be atomized.", srcLocator); 
 	 }
 
 	 if (right instanceof XPathMap) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second operand of 'div', but "
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'div', but "
 																												  + "the supplied type is a map "
 																												  + "type which cannot be atomized.", srcLocator); 
 	 }
 	 
 	 if (left instanceof XPathInlineFunction) {
-		 throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first operand of 'div', but "
+		 throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'div', but "
 																												   + "the supplied type is a function "
 																												   + "type which cannot be atomized.", srcLocator); 
 	 }
 
 	 if (right instanceof XPathInlineFunction) {
-		 throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second operand of 'div', but "
+		 throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'div', but "
 																												   + "the supplied type is a function "
 																												   + "type which cannot be atomized.", srcLocator); 
 	 }
@@ -315,8 +331,7 @@ public class Div extends XPathArithmeticOp
 		  }
 	  }
 	 
-	  // Validating an XPath 3.1 operator 'div', operands compatibility for division
-	  // Ref : XPath 3.1 operator mapping, https://www.w3.org/TR/xpath-31/#mapping
+	  // Validating an XPath 3.1 operator 'div' operands compatibility for division	  
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		 if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                                   (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
@@ -335,18 +350,38 @@ public class Div extends XPathArithmeticOp
 		 List<XMLNSDecl> nsPrefixTable = stylesheetRoot.getPrefixTable();
 
 		 if (lNodeStr != null) {
-			 java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");
-			 xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
-			 XPath xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-			 left = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
-		 }
+			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");
+			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+			  XPath xpathObj = null;
+			  try {
+			     xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  }
+			  catch (TransformerException ex) {
+				 java.lang.String errMesg = ex.getMessage();
+				 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
+					xpathObj = new XPath("'" + lNodeStr + "'", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);   
+				 }
+			  }
+			  
+			  left = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+		  }
 
-		 if (rNodeStr != null) {
-			 java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName2 + "('" + rNodeStr + "')");
-			 xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
-			 XPath xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-			 right = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
-		 }
+		  if (rNodeStr != null) {
+			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName2 + "('" + rNodeStr + "')");
+			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+			  XPath xpathObj = null;
+			  try {
+			     xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  }
+			  catch (TransformerException ex) {
+				 java.lang.String errMesg = ex.getMessage();
+				 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
+					xpathObj = new XPath("'" + rNodeStr + "'", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);   
+				 }
+			  }
+			  
+			  right = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+		  }
 	 }
      
      try { 

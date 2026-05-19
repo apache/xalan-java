@@ -785,8 +785,19 @@ public class OpCodes
 
 	  public static final int OP_FUNCTION2 = 138;
 	  
+	  /**
+	   * [OP_POS]
+	   * [length]
+	   *  {number expression}
+	   *
+	   * returns:
+	   *  XNumber
+	   * @xsl.usage advanced
+	   */
+	  public static final int OP_POS = 139;
+	  
 	  /** XPath op code's next free id. Please keep this up to date. */
-	  private static final int NEXT_FREE_ID = 139;
+	  private static final int NEXT_FREE_ID = 140;
   }
 
   /** XPath op code's next free id. Please keep this up to date. */

@@ -75,26 +75,26 @@ public class FuncMathPow extends Function2Args {
         
         if (arg0Expr instanceof NodeTest) {
      	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0Expr)) {
-     		   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function pow(), "
+     		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function pow(), "
      				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
      	   }
         }
         else if (arg0Expr instanceof XPathInlineFunction) {
       	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0Expr)) {
-      		   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the first argument of XPath function pow(), "
+      		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function pow(), "
       				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
       	   }
         }
         
         if (arg1Expr instanceof NodeTest) {
         	if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg1Expr)) {
-        		throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second argument of XPath function pow(), "
+        		throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second argument of XPath function pow(), "
         				                                                                + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
         	}
         }
         else if (arg1Expr instanceof XPathInlineFunction) {
        	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg1Expr)) {
-       		   throw new javax.xml.transform.TransformerException("FOTY0013 : An atomic value is required for the second argument of XPath function pow(), "
+       		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second argument of XPath function pow(), "
        				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
        	   }
         }

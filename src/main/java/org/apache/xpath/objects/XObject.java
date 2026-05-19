@@ -826,12 +826,12 @@ public class XObject extends Expression implements Serializable, Cloneable
  	  
  	  if ((xsObj1Type != null) || (xsObj2Type != null)) { 		   		  
  		  String strVal1 = XslTransformEvaluationHelper.getStrVal(this);
- 		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal1)) {
+ 		  if ((org.apache.xml.utils.Constants.XS_VALID_TRUE).equals(strVal1)) {
  			  strVal1 = str(); 
  		  }
  		  
  		  String strVal2 = XslTransformEvaluationHelper.getStrVal(obj2);
- 		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal2)) {
+ 		  if ((org.apache.xml.utils.Constants.XS_VALID_TRUE).equals(strVal2)) {
  			  strVal2 = obj2.str(); 
  		  }
  		  
@@ -1186,12 +1186,12 @@ public class XObject extends Expression implements Serializable, Cloneable
   	  
   	  if ((xsObj1Type != null) || (xsObj2Type != null)) {  		  
   		  String strVal1 = XslTransformEvaluationHelper.getStrVal(this);
-  		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal1)) {
+  		  if ((org.apache.xml.utils.Constants.XS_VALID_TRUE).equals(strVal1)) {
   			  strVal1 = str(); 
   		  }
   		  
   		  String strVal2 = XslTransformEvaluationHelper.getStrVal(obj2);
-  		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal2)) {
+  		  if ((org.apache.xml.utils.Constants.XS_VALID_TRUE).equals(strVal2)) {
   			  strVal2 = obj2.str(); 
   		  }
   		  
@@ -1881,12 +1881,12 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  
 	  if ((xsObj1Type != null) || (xsObj2Type != null)) {
 		  String strVal1 = XslTransformEvaluationHelper.getStrVal(this);
-		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal1)) {
+		  if ((org.apache.xml.utils.Constants.XS_VALID_TRUE).equals(strVal1)) {
 			  strVal1 = str(); 
 		  }
 		  
 		  String strVal2 = XslTransformEvaluationHelper.getStrVal(obj2);
-		  if ((XSL3FunctionService.XS_VALID_TRUE).equals(strVal2)) {
+		  if ((org.apache.xml.utils.Constants.XS_VALID_TRUE).equals(strVal2)) {
 			  strVal2 = obj2.str(); 
 		  }
 		  
