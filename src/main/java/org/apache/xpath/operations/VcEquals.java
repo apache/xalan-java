@@ -46,6 +46,8 @@ import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
 
@@ -102,14 +104,28 @@ public class VcEquals extends XPathRelationalOp
     	  srcLocator = xctxt.getSAXLocator();  
       }
 	  
-	  if (left instanceof ElemFunctionItem) {
-		 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath operator eq's first argument is a function type, "
-		 		                                                                                                          + "which cannot be atomized.", srcLocator);   
+      if (left instanceof XPathMap) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'eq', but "
+																												  + "the supplied type is a map "
+																												  + "type which cannot be atomized.", srcLocator); 
+	  }
+
+	  if (right instanceof XPathMap) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'eq', but "
+																												  + "the supplied type is a map "
+																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 	  
-	  if (right instanceof ElemFunctionItem) {
-		 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath operator eq's second argument is a function type, "
-		 		                                                                                                          + "which cannot be atomized.", srcLocator);   
+	  if ((left instanceof XPathInlineFunction) || (left instanceof ElemFunctionItem)) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'eq', but "
+																												  + "the supplied type is a function "
+																												  + "type which cannot be atomized.", srcLocator); 
+	  }
+
+	  if ((right instanceof XPathInlineFunction) || (right instanceof ElemFunctionItem)) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'eq', but "
+																												  + "the supplied type is a function "
+																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 	  
 	  boolean isLEmpty = false;

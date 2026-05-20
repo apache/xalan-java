@@ -1,26 +1,27 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
-                
-    <!-- Author: mukulg@apache.org -->
+				version="3.0">
+				
+    <!-- Author: mukulg@apache.org --> 
     
-    <!-- use with test1_a.xml -->
-    
-    <!-- An XSLT stylesheet test case, to test XPath 3.1 
-         fn:deep-equal function.
-    -->                 
-
-    <xsl:output method="xml" indent="yes"/>
-
+    <!-- An XSL 3 stylesheet test case, to test XPath expressions
+         like .(arg), where an XPath context item is a function item. -->				
+				
+    <xsl:output method="xml" indent="yes"/>				
+				
+    <xsl:variable name="funcSeq1" as="function(*)*" select='
+									function($a) { $a + 1},
+									function($a) { $a + 2},
+									function($a) { $a + 3},
+									function($a) { $a + 4},
+									function($a) { $a + 5}'/>				
+				
     <xsl:template match="/">
-       <out>
-          <true>
-              <xsl:value-of select="deep-equal(//comment()[1], //comment()[2])" />
-          </true>
-          <false>
-              <xsl:value-of select="deep-equal(//comment()[1], //comment()[3])" />
-          </false>
-       </out>
+       <result>
+	      <xsl:for-each select="$funcSeq1">
+			 <value><xsl:value-of select=".(2)"/></value>
+		  </xsl:for-each>
+	   </result>
     </xsl:template>
     
     <!--
@@ -39,6 +40,6 @@
       * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
       * See the License for the specific language governing permissions and
       * limitations under the License.
-    -->
-    
-</xsl:stylesheet>
+    -->	
+	
+</xsl:stylesheet>	

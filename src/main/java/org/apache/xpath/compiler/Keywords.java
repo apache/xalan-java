@@ -87,7 +87,7 @@ public class Keywords
   static final String FROM_NAMESPACE_STRING = "namespace";
 
   /** self axes abreviated string. */
-  private static final String FROM_SELF_ABBREVIATED_STRING = ".";
+  static final String FROM_SELF_ABBREVIATED_STRING = ".";
 
   /** comment node test string. */
   private static final String NODETYPE_COMMENT_STRING = "comment";

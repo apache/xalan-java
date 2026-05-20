@@ -44,6 +44,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FuncArgPlaceholder;
+import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
@@ -122,13 +123,13 @@ public class Mod extends XPathArithmeticOp
 																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 	  
-	  if (left instanceof XPathInlineFunction) {
+	  if ((left instanceof XPathInlineFunction) || (left instanceof ElemFunctionItem)) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'mod', but "
 																												  + "the supplied type is a function "
 																												  + "type which cannot be atomized.", srcLocator); 
 	  }
 
-	  if (right instanceof XPathInlineFunction) {
+	  if ((right instanceof XPathInlineFunction) || (right instanceof ElemFunctionItem)) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'mod', but "
 																												  + "the supplied type is a function "
 																												  + "type which cannot be atomized.", srcLocator); 

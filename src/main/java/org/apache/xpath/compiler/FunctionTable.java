@@ -601,6 +601,9 @@ public class FunctionTable
   
   /** The 'parse-ietf-date()' id. */
   public static final int FUNC_PARSE_IETF_DATE = 193;
+  
+  /** The '.()' id. */
+  public static final int FUNC_PERIOD = 194;
 
   // Proprietary
 
@@ -661,7 +664,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 194;
+  private static final int NUM_BUILT_IN_FUNCS = 195;
 
   /**
    * Number of built-in functions that may be added.
@@ -911,6 +914,8 @@ public class FunctionTable
 	   m_functions[FUNC_UNPARSED_TEXT_AVAILABLE] = org.apache.xpath.functions.FuncUnparsedTextAvailable.class;
 	   
 	   m_functions[FUNC_COPY_OF] = org.apache.xalan.templates.FuncCopyOf.class;
+	   
+	   m_functions[FUNC_PERIOD] = org.apache.xpath.functions.FuncPeriod.class;
   }
 
   static {
@@ -1145,6 +1150,8 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_UNPARSED_TEXT_AVAILABLE, Integer.valueOf(FunctionTable.FUNC_UNPARSED_TEXT_AVAILABLE));
 	  
 	  m_functionId.put(Keywords.FUNC_COPY_OF, Integer.valueOf(FunctionTable.FUNC_COPY_OF));
+	  
+	  m_functionId.put(Keywords.FROM_SELF_ABBREVIATED_STRING, Integer.valueOf(FunctionTable.FUNC_PERIOD));
   }
   
   /**

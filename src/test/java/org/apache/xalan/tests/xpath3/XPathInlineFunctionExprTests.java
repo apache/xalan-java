@@ -107,20 +107,8 @@ public class XPathInlineFunctionExprTests extends XslTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    // This test case is moved to XslMiscTests, due to dependency issues
-    // between few test cases.
-    /*@Test
-    public void xslInlineFunctionExprTest7() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }*/
-    
     @Test
-    public void xslInlineFunctionExprTest8() {
+    public void xslInlineFunctionExprTest7() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
         
@@ -130,7 +118,7 @@ public class XPathInlineFunctionExprTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslInlineFunctionExprTest9() {
+    public void xslInlineFunctionExprTest8() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
         
@@ -140,7 +128,7 @@ public class XPathInlineFunctionExprTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslInlineFunctionExprTest10() {
+    public void xslInlineFunctionExprTest9() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
         
@@ -150,7 +138,7 @@ public class XPathInlineFunctionExprTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslInlineFunctionExprTest11() {
+    public void xslInlineFunctionExprTest10() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_e.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
         
@@ -160,7 +148,7 @@ public class XPathInlineFunctionExprTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslInlineFunctionExprTest12() {
+    public void xslInlineFunctionExprTest11() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_e.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
         
@@ -170,7 +158,7 @@ public class XPathInlineFunctionExprTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslInlineFunctionExprTest13() {
+    public void xslInlineFunctionExprTest12() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
         
@@ -180,7 +168,7 @@ public class XPathInlineFunctionExprTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslInlineFunctionExprTest14() {
+    public void xslInlineFunctionExprTest13() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
         
@@ -190,7 +178,7 @@ public class XPathInlineFunctionExprTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslInlineFunctionExprTest15() {
+    public void xslInlineFunctionExprTest14() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
         
@@ -200,7 +188,7 @@ public class XPathInlineFunctionExprTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslInlineFunctionExprTest16() {
+    public void xslInlineFunctionExprTest15() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl";
         
@@ -210,11 +198,21 @@ public class XPathInlineFunctionExprTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslInlineFunctionExprTest17() {
+    public void xslInlineFunctionExprTest16() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test17.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslInlineFunctionExprTest17() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test18.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

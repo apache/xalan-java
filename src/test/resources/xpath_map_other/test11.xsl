@@ -1,29 +1,30 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
-                
-    <!-- Author: mukulg@apache.org -->
+				version="3.0">
+				
+    <!-- Author: mukulg@apache.org --> 
     
-    <!-- use with test1_a.xml -->
-    
-    <!-- An XSLT stylesheet test case, to test XPath 3.1 
-         fn:deep-equal function.
-    -->              
-
-    <xsl:output method="xml" indent="yes"/>
-
+    <!-- An XSL 3 stylesheet test case, to test an xdm map entry 
+         lookup by key using an XPath expression like .(key),
+         where an XPath context item is an xdm map. --> 				
+				
+    <xsl:output method="xml" indent="yes"/>				
+				
+    <xsl:variable name="mapSeq1" as="map(*)*" select='
+								map{ "id" : 1, "value" : "abc" },
+								map{ "id" : 2, "value" : "abc" },
+								map{ "id" : 3, "value" : "mno" },
+								map{ "id" : 4, "value" : "pqr" }'/>				
+				
     <xsl:template match="/">
-       <out>
-          <true>
-             <xsl:value-of select="deep-equal(//a[1]/@a, //a[2]/@a)"/>
-          </true>
-          <false>
-             <xsl:value-of select="deep-equal(//a[1]/@a, //b[1]/@a)" />
-          </false>
-          <false>
-             <xsl:value-of select="deep-equal(//a[1]/@a, //c[1]/@c)" />
-          </false>
-       </out>
+       <result>
+	      <xsl:for-each select="$mapSeq1">
+			 <map>
+			    <key name="id"><xsl:value-of select=".('id')"/></key>
+				<value><xsl:value-of select=".('value')"/></value>
+			 </map>
+		  </xsl:for-each>
+	   </result>
     </xsl:template>
     
     <!--
@@ -42,6 +43,6 @@
       * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
       * See the License for the specific language governing permissions and
       * limitations under the License.
-    -->
-    
-</xsl:stylesheet>
+    -->	
+	
+</xsl:stylesheet>	
