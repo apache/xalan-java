@@ -58,6 +58,7 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
@@ -195,10 +196,13 @@ public class XSL3FunctionService {
     			 * extension function calls (prefix:functionName). The implementation
     			 * here need not run when an XSL stylesheet specifies Xalan-J XPath
     			 * extension function call.
-    			 */    			
+    			 */
     			
-    			StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(
-    					                                                                                   (ElemTemplateElement)xpathExpr.getExpressionOwner());
+    			StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;    			
+    			if (stylesheetRoot == null) {
+    			   stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(
+    					                                                                        (ElemTemplateElement)xpathExpr.getExpressionOwner());
+    			}
 
     			if (stylesheetRoot != null) {
     				if (transformerImpl == null) {

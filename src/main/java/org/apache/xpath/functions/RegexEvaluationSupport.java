@@ -90,7 +90,7 @@ public class RegexEvaluationSupport {
 		
 		Pattern pattern = null;
 		
-		if (regexFlags != null) {			
+		if ((regexFlags != null) && !"".equals(regexFlags)) {			
 			if (regexFlags.indexOf("s") >= 0) {
 				flag = flag | Pattern.DOTALL;
 			}

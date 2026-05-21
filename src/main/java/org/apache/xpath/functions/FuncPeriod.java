@@ -17,6 +17,7 @@
  */
 package org.apache.xpath.functions;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,8 +30,11 @@ import javax.xml.transform.TransformerException;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
+import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -162,6 +166,69 @@ public class FuncPeriod extends FunctionMultiArgs {
 			    		inlineFunctionVarMap.remove(key);
 			    	}
 			    }
+			}
+			else if (xpath3CtxtItem instanceof XPathNamedFunctionReference) {
+				XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xpath3CtxtItem;    					   
+				String localName = xpathNamedFunctionReference.getFuncName();
+				String namespace = xpathNamedFunctionReference.getFuncNamespace();
+				Short arity = xpathNamedFunctionReference.getArity();
+				int argCount = getFunctionArgumentCount();				
+				if ((int)arity == argCount) {
+					if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) || (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
+							                                                                   (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || 
+							                                                                   (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
+						FunctionTable funcTable = xctxt.getFunctionTable();
+						Object funcId = funcTable.getFunctionId(localName);
+						if (funcId != null) {
+							Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
+							List<Short> funcDefinedArity = Arrays.asList(function.getDefinedArity());
+							if (funcDefinedArity.contains(arity)) {
+								for (int idx = 0; idx < argCount; idx++) {									 									
+									XObject argValue = getFuncCallArgumentValue(idx, xctxt);
+									try {
+										function.setArg(argValue, idx);
+									} 
+									catch (WrongNumberArgsException ex) {
+										// no op
+									}
+								}
+
+								result = function.execute(xctxt);
+							}
+							else {
+								throw new TransformerException("XPTY0004 : The function arity value specified in an XPath named "
+												    												+ "function reference is " + arity + ", but the corresponding "
+												    												+ "XPath function {" + namespace + "}" + localName + " doesn't "
+												    												+ "allow this arity.", srcLocator);  
+							}
+						}
+						else {
+							throw new TransformerException("XPTY0004 : The function {" + namespace + "}" + localName + " referred "
+																									+ "within an XPath expression is not found.", srcLocator); 
+						}
+					}
+					else if (namespace != null) {
+						// This may handle, XSL stylesheet function call, and XPath 3.1 constructor function call
+						XSL3ConstructorOrExtensionFunction xsl3ConsExtFuncObj = new XSL3ConstructorOrExtensionFunction(namespace, localName, null);
+						for (int idx = 0; idx < argCount; idx++) {
+							XObject argValue = getFuncCallArgumentValue(idx, xctxt);
+							try {
+								xsl3ConsExtFuncObj.setArg(argValue, idx);
+							} 
+							catch (WrongNumberArgsException ex) {
+								// no op
+							}						
+						}
+						
+						result = xsl3ConsExtFuncObj.execute(xctxt);
+					}
+				}
+				else {
+					throw new TransformerException("XPTY0004 : The number of arguments provided during an XPath function call {" + namespace + "}" + localName 
+															    									+ " is " + argCount + ", but the corresponding XPath named function "
+															    									+ "reference specifies the function arity value as " + arity + ".", 
+															    									srcLocator); 
+				}				
 			}
 		}
 		else {

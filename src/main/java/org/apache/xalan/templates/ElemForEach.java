@@ -48,6 +48,7 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathForExpr;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
@@ -544,7 +545,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     else if (m_selectExpression instanceof Variable) {
         XObject evalResult = ((Variable)m_selectExpression).execute(xctxt);                
         
-        if (evalResult instanceof XSAnyAtomicType) {
+        if ((evalResult instanceof XSAnyAtomicType) || (evalResult instanceof XPathNamedFunctionReference)) {
         	ResultSequence resultSequence = new ResultSequence();
         	resultSequence.add(evalResult);
         	
@@ -570,7 +571,15 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         	
         	return;
         }
-    }    
+    }
+    else if (m_selectExpression instanceof XPathNamedFunctionReference) {
+    	ResultSequence resultSequence = new ResultSequence();
+    	resultSequence.add((XPathNamedFunctionReference)m_selectExpression);
+    	
+    	processSequenceOrArray(transformer, xctxt, resultSequence);
+    	
+        return;
+    }
     else if (m_selectExpression instanceof Operation) {
         XObject  evalResult = m_selectExpression.execute(xctxt);
         

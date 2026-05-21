@@ -82,8 +82,8 @@ import org.apache.xpath.operations.ArrowOp;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
-import org.apache.xpath.operations.XPath3UnaryOperation;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.operations.XPath3UnaryOperation;
 import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.NodeList;
 
@@ -536,8 +536,21 @@ public class ElemVariable extends ElemTemplateElement
     Expression selectExpression = null;
     
     if (m_isTopLevel) {
-		var = getXslToplevelVariableValue(transformer, sourceNode, xctxt, srcLocator);		
+		var = getXslToplevelVariableValue(transformer, sourceNode, xctxt, srcLocator);
+		
 		if (var != null) {			
+			if (m_asAttr != null) {
+			   SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, srcLocator);
+			   var = SequenceTypeSupport.castXdmValueToAnotherType(var, seqExpectedTypeData, false);
+			   if (var != null) {
+				  return var; 
+			   }
+			   else {
+				  throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation result, doesn't "
+                                                                                                    + "conform to xdm sequence type " + m_asAttr + ".", srcLocator); 
+			   }
+			}
+			
 			return var;
 		}
     }
@@ -2333,7 +2346,7 @@ public class ElemVariable extends ElemTemplateElement
 
     			Expression expr1 = xpathSelect1.getExpression();
     			
-    			if ((m_asAttr != null) && !(expr1 instanceof XPathInlineFunction)) {
+    			if ((m_asAttr != null) && !((expr1 instanceof XPathInlineFunction) || (expr1 instanceof XPathNamedFunctionReference))) {
     				/**
     				 * Doing XSL stylesheet global variable value's xdm type checking, in the
     				 * presence of xsl:variable's "as" attribute. This can find various type errors,
@@ -2496,7 +2509,10 @@ public class ElemVariable extends ElemTemplateElement
     																										   + "to cyclic variable dependency.", srcLocator);
     					}
     				}
-    			}			
+    			}
+    			else if (expr1 instanceof XPathNamedFunctionReference) {
+    				return (XObject)expr1;
+    			}
     			else if ((expr1 instanceof Function) || (expr1 instanceof XPath3UnaryOperation)) {
     				// no op
     			}

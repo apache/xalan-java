@@ -68,6 +68,22 @@ public class Equals extends Operation
 		 right = ((XPathArray)right).atomize(); 
 	  }
 	  
+	  if ((left instanceof XSString || left instanceof XString) && 
+			                                            (right instanceof XSNumericType || right instanceof XNumber)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+		  if (str1.startsWith("0")) { 
+		     throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
+		  }
+	  }
+	  
+	  if ((right instanceof XSString || right instanceof XString) && 
+			                                            (left instanceof XSNumericType || left instanceof XNumber)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
+		  if (str1.startsWith("0")) { 
+			 throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
+		  }
+	  }
+	  
 	  XObject lObj = null;
 	  XObject rObj = null;
 	  
@@ -312,47 +328,35 @@ public class Equals extends Operation
 	  }
 	  else if ((left instanceof XString) && ((right instanceof XSNumericType) || (right instanceof XNumber))) {
 		  XString lStr = (XString)left;
-		  if (lStr.isXrTreeFragSelectWrapperResult()) {
-			  java.lang.String strVal1 = lStr.str();
-			  double dbl1 = 0;
-			  try {
-				  dbl1 = (Double.valueOf(strVal1)).doubleValue();
-			  }
-			  catch (NumberFormatException ex) {
-				  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath numeric comparison with = operator, has LHS operand value as non-numeric.");
-			  }
-			  
-			  java.lang.String strVal2 = XslTransformEvaluationHelper.getStrVal(right);
-			  double dbl2 = (Double.valueOf(strVal2)).doubleValue();
-			  
-			  result = ((dbl1 == dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);  
+		  java.lang.String strVal1 = lStr.str();
+		  double dbl1 = 0;
+		  try {
+			  dbl1 = (Double.valueOf(strVal1)).doubleValue();
 		  }
-		  else {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be "
-					  																							+ "compared to a string value.");  
+		  catch (NumberFormatException ex) {
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath numeric comparison with = operator, has LHS operand value as non-numeric.");
 		  }
+
+		  java.lang.String strVal2 = XslTransformEvaluationHelper.getStrVal(right);
+		  double dbl2 = (Double.valueOf(strVal2)).doubleValue();
+
+		  result = ((dbl1 == dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);  		  
 	  }
 	  else if (((left instanceof XSNumericType) || (left instanceof XNumber)) && (right instanceof XString)) {
-		  XString rStr = (XString)right;
-		  if (rStr.isXrTreeFragSelectWrapperResult()) {			  			  			  
-			  java.lang.String strVal1 = rStr.str();
-			  double dbl1 = 0;
-			  try {
-				  dbl1 = (Double.valueOf(strVal1)).doubleValue();
-			  }
-			  catch (NumberFormatException ex) {
-				  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath numeric comparison with = operator, has RHS operand value as non-numeric.");
-			  }
-			  
-			  java.lang.String strVal2 = XslTransformEvaluationHelper.getStrVal(left);
-			  double dbl2 = (Double.valueOf(strVal2)).doubleValue();
-			  
-			  result = ((dbl1 == dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  XString rStr = (XString)right;		  			  			  
+		  java.lang.String strVal1 = rStr.str();
+		  double dbl1 = 0;
+		  try {
+			  dbl1 = (Double.valueOf(strVal1)).doubleValue();
 		  }
-		  else {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be "
-					  																							+ "compared to a string value.");  
+		  catch (NumberFormatException ex) {
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath numeric comparison with = operator, has RHS operand value as non-numeric.");
 		  }
+
+		  java.lang.String strVal2 = XslTransformEvaluationHelper.getStrVal(left);
+		  double dbl2 = (Double.valueOf(strVal2)).doubleValue();
+
+		  result = ((dbl1 == dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);		  
 	  }
 	  else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
 		  java.lang.String lStr = ((XSNumericType)left).stringValue();

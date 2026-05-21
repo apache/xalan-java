@@ -67,6 +67,22 @@ public class Gt extends Operation
 		  right = ((XPathArray)right).atomize(); 
 	  }
 	  
+	  if ((left instanceof XSString || left instanceof XString) && 
+			  													(right instanceof XSNumericType || right instanceof XNumber)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+		  if (str1.startsWith("0")) { 
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
+		  }
+	  }
+
+	  if ((right instanceof XSString || right instanceof XString) && 
+			  													(left instanceof XSNumericType || left instanceof XNumber)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
+		  if (str1.startsWith("0")) { 
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
+		  }
+	  }
+	  
 	  XObject lObj = null;
 	  XObject rObj = null;
 	  
