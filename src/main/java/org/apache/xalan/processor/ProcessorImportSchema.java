@@ -18,6 +18,8 @@
 package org.apache.xalan.processor;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -28,8 +30,18 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemVariable;
+import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.TreeWalker;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -38,7 +50,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * This class represents XSLT 3.0 implementation of xsl:import-schema 
- * stylesheet element. An instance of this class is also XalanJ's 
+ * stylesheet element. An instance of this class is also Xalan-J 
  * TransformerFactory class for xsl:import-schema markup.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -98,7 +110,69 @@ public class ProcessorImportSchema extends XSLTElementProcessor
   public void startElement(StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
                                           throws org.xml.sax.SAXException {
 
-    setPropertiesFromAttributes(handler, rawName, attributes, this);
+	  if (attributes != null) {
+		  String useWhenAttrXPathStr = attributes.getValue(Constants.S_XSLNAMESPACEURL, Constants.ATTRNAME_USE_WHEN);        	
+		  if (useWhenAttrXPathStr != null) {
+			  XslTransformData.m_use_when = true;
+			  XPathContext xctxt = new XPathContext();
+			  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
+			  Vector vars = new Vector();
+			  ElemTemplateElement elemTemplateElement = stylesheetRoot.getFirstChildElem();
+			  while (elemTemplateElement != null) {
+				 if (elemTemplateElement instanceof ElemVariable) {
+					ElemVariable elemVar = (ElemVariable)elemTemplateElement;
+					if (elemVar.getStatic()) {
+						// Only static variables may be referred, within 
+						// XSL attribute use-when's XPath expression.
+						vars.add(elemVar);	
+					}	 
+				 }
+				 
+				 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+			  }
+			  
+			  int idx = vars.size();						  
+			  Map<QName, XObject> varMap = xctxt.getXPathVarMap();						  
+			  while (--idx >= 0) {
+				  ElemVariable elemVariable = (ElemVariable)(vars.elementAt(idx));					  
+				  QName varName = elemVariable.getName();					  
+				  XPath xpathObj = elemVariable.getSelect();
+				  XObject xObj = null;
+				  try {
+					 xObj = xpathObj.execute(xctxt, DTM.NULL, null);
+				  } 
+				  catch (TransformerException ex) {
+                     throw new org.xml.sax.SAXException(ex.getMessage());
+				  }
+				  
+				  varMap.put(varName, xObj);
+			  }	
+			  
+			  XPath useWhenXPath = null;
+			  try { 
+				  useWhenXPath = new XPath(useWhenAttrXPathStr, null, handler, XPath.SELECT, null);							  
+				  XObject xObj = useWhenXPath.execute(xctxt, DTM.NULL, handler);
+				  if (!xObj.bool()) {
+					  // An xsl:import-schema instruction attribute 'use-when' 
+					  // requires xsl:import-schema element to be filtered.
+					  
+					  return; 
+				  }
+			  }
+			  catch (TransformerException ex) {
+				  String xpathExprStr = useWhenXPath.getPatternString();
+				  throw new org.xml.sax.SAXException("XPST0003 : An XPath evaluation error occured, while evaluating XSL attribute 'use-when' " + 
+				                                                                                 xpathExprStr + ". Any variable references within "
+				                                                                                 + "XPath 'use-when' expression must be static."); 
+			  }
+			  finally {
+				  XslTransformData.m_use_when = false;
+				  varMap.clear();
+			  }
+		  }
+	  }
+	  
+	setPropertiesFromAttributes(handler, rawName, attributes, this);
 
     try
     {

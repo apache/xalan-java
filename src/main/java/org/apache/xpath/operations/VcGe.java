@@ -95,14 +95,26 @@ public class VcGe extends XPathRelationalOp
       if (XslTransformData.m_stylesheetRoot != null) {
     	  stylesheetRoot = XslTransformData.m_stylesheetRoot; 
     	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-    	  xctxt = transformerImpl.getXPathContext();
+    	  if (!XslTransformData.m_use_when) {
+    	     xctxt = transformerImpl.getXPathContext();
+    	  }
+    	  else {
+    		 xctxt = new XPathContext();
+    		 srcLocator = xctxt.getSAXLocator();
+    	  }
     	  
     	  srcLocator = xctxt.getSAXLocator(); 
       }
       else {
     	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
     	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-    	  xctxt = transformerImpl.getXPathContext();
+    	  if (!XslTransformData.m_use_when) {
+     	     xctxt = transformerImpl.getXPathContext();
+     	  }
+     	  else {
+     		 xctxt = new XPathContext();
+     		 srcLocator = xctxt.getSAXLocator();
+     	  }
     	  
     	  srcLocator = xctxt.getSAXLocator();  
       }

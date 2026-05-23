@@ -337,7 +337,7 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * An XPath expression for 'use-when' attribute. 
+   * An XPath expression for XSL attribute "use-when". 
    */
   private XPath m_useWhen = null;
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>hello</one>
+  <two>there</two>
+  <three>
+    <a/>
+  </three>
+</result>

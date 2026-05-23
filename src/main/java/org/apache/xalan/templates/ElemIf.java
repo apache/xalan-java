@@ -141,7 +141,7 @@ public class ElemIf extends ElemTemplateElement
   }
   
   /**
-   * An XPath expression for 'use-when' attribute. 
+   * An XPath expression for XSL attribute "use-when". 
    */
   private XPath m_useWhen = null;
 

@@ -22,6 +22,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
 /**
@@ -37,9 +38,36 @@ public class ElemMergeAction extends ElemTemplateElement
   private static final long serialVersionUID = -2829604543551683903L;
   
   /**
+   * An XPath expression for XSL attribute "use-when". 
+   */
+  private XPath m_useWhen = null;
+  
+  /**
    * The class constructor.
    */
   public ElemMergeAction() {}
+  
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			     XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
+  }
   
   /**
    * This function is called after everything else has been

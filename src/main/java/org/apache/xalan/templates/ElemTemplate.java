@@ -395,7 +395,7 @@ public class ElemTemplate extends ElemTemplateElement
   }
   
   /**
-   * An XPath expression for 'use-when' attribute. 
+   * An XPath expression for XSL attribute "use-when". 
    */
   private XPath m_useWhen = null;
 
@@ -414,7 +414,7 @@ public class ElemTemplate extends ElemTemplateElement
    * Method definition, to get the value of XSL attribute 
    * "use-when".
    * 
-   * @return			XPath expression for attribute "use-when"
+   * @return			     XPath expression for attribute "use-when"
    */
   public XPath getUseWhen()
   {

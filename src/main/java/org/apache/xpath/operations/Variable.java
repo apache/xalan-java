@@ -27,6 +27,7 @@ import org.apache.xalan.templates.ElemCatch;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemIterateOnCompletion;
 import org.apache.xalan.templates.ElemParam;
+import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.Stylesheet;
@@ -258,7 +259,10 @@ public class Variable extends Expression implements PathComponent
 				Stylesheet stylesheet = (Stylesheet)stylesheetRootNode;
 
 				stylesheetRoot = stylesheet.getStylesheetRoot();    				
-			}    			
+			}
+			else if (stylesheetRootNode instanceof ElemTemplate) {
+				stylesheetRoot = XslTransformData.m_stylesheetRoot;
+			}
 			else {
 				stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
 			}

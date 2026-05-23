@@ -95,6 +95,33 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 	{
 		return m_selectExpression;
 	}
+	
+	/**
+	 * An XPath expression for XSL attribute "use-when". 
+	 */
+	private XPath m_useWhen = null;
+
+	/**
+	 * Method definition, to set the value of XSL attribute 
+	 * "use-when".
+	 * 
+	 * @param xpath            XPath expression for attribute "use-when"
+	 */
+	public void setUseWhen(XPath xpath)
+	{
+		m_useWhen = xpath;  
+	}
+
+	/**
+	 * Method definition, to get the value of XSL attribute 
+	 * "use-when".
+	 * 
+	 * @return			        XPath expression for attribute "use-when"
+	 */
+	public XPath getUseWhen()
+	{
+		return m_useWhen;
+	}
 
 	/**
 	 * This function is called after everything else has been recomposed, 

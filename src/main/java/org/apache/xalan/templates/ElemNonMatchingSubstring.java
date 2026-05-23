@@ -113,7 +113,7 @@ public class ElemNonMatchingSubstring extends ElemTemplateElement implements Exp
   }
   
   /**
-   * An XPath expression for 'use-when' attribute. 
+   * An XPath expression for XSL attribute "use-when". 
    */
   private XPath m_useWhen = null;
 
@@ -132,7 +132,7 @@ public class ElemNonMatchingSubstring extends ElemTemplateElement implements Exp
    * Method definition, to get the value of XSL attribute 
    * "use-when".
    * 
-   * @return			XPath expression for attribute "use-when"
+   * @return			     XPath expression for attribute "use-when"
    */
   public XPath getUseWhen()
   {

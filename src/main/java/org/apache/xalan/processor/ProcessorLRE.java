@@ -21,6 +21,8 @@
 package org.apache.xalan.processor;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -32,12 +34,17 @@ import org.apache.xalan.templates.ElemExtensionCall;
 import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
@@ -55,7 +62,8 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class ProcessorLRE extends ProcessorTemplateElem
 {
-    static final long serialVersionUID = -1490218021772101404L;
+  static final long serialVersionUID = -1490218021772101404L;
+  
   /**
    * Receive notification of the start of an element.
    *
@@ -70,251 +78,296 @@ public class ProcessorLRE extends ProcessorTemplateElem
             throws org.xml.sax.SAXException
   {
 
-    try
-    {
-      ElemTemplateElement p = handler.getElemTemplateElement();
-      boolean excludeXSLDecl = false;
-      boolean isLREAsStyleSheet = false;
+	  try
+	  {
+		  ElemTemplateElement p = handler.getElemTemplateElement();
+		  boolean excludeXSLDecl = false;
+		  boolean isLREAsStyleSheet = false;
 
-      if (null == p)
-      {
+		  if (null == p)
+		  {
+			  // Literal Result Template as stylesheet
+			  XSLTElementProcessor lreProcessor = handler.popProcessor();
+			  XSLTElementProcessor stylesheetProcessor =
+													  handler.getProcessorFor(Constants.S_XSLNAMESPACEURL, "stylesheet",
+															  "xsl:stylesheet");
 
-        // Literal Result Template as stylesheet.
-        XSLTElementProcessor lreProcessor = handler.popProcessor();
-        XSLTElementProcessor stylesheetProcessor =
-                                                  handler.getProcessorFor(Constants.S_XSLNAMESPACEURL, "stylesheet",
-                                                                          "xsl:stylesheet");
+			  handler.pushProcessor(lreProcessor);
 
-        handler.pushProcessor(lreProcessor);
+			  Stylesheet stylesheet;
+			  try
+			  {
+				  stylesheet = getStylesheetRoot(handler);
+			  }
+			  catch(TransformerConfigurationException tfe)
+			  {
+				  throw new TransformerException(tfe);
+			  }
 
-        Stylesheet stylesheet;
-        try
-        {
-          stylesheet = getStylesheetRoot(handler);
-        }
-        catch(TransformerConfigurationException tfe)
-        {
-          throw new TransformerException(tfe);
-        }
+			  // stylesheet.setDOMBackPointer(handler.getOriginatingNode());
+			  // ***** Note that we're assigning an empty locator. Is this necessary?
+			  SAXSourceLocator slocator = new SAXSourceLocator();
+			  Locator locator = handler.getLocator();
+			  if (null != locator)
+			  {
+				  slocator.setLineNumber(locator.getLineNumber());
+				  slocator.setColumnNumber(locator.getColumnNumber());
+				  slocator.setPublicId(locator.getPublicId());
+				  slocator.setSystemId(locator.getSystemId());
+			  }
+			  stylesheet.setLocaterInfo(slocator);
+			  stylesheet.setPrefixes(handler.getNamespaceSupport());
+			  handler.pushStylesheet(stylesheet);
 
-        // stylesheet.setDOMBackPointer(handler.getOriginatingNode());
-        // ***** Note that we're assigning an empty locator. Is this necessary?
-        SAXSourceLocator slocator = new SAXSourceLocator();
-        Locator locator = handler.getLocator();
-        if (null != locator)
-        {
-          slocator.setLineNumber(locator.getLineNumber());
-          slocator.setColumnNumber(locator.getColumnNumber());
-          slocator.setPublicId(locator.getPublicId());
-          slocator.setSystemId(locator.getSystemId());
-        }
-        stylesheet.setLocaterInfo(slocator);
-        stylesheet.setPrefixes(handler.getNamespaceSupport());
-        handler.pushStylesheet(stylesheet);
+			  isLREAsStyleSheet = true;
 
-        isLREAsStyleSheet = true;
+			  AttributesImpl stylesheetAttrs = new AttributesImpl();
+			  AttributesImpl lreAttrs = new AttributesImpl();
+			  int n = attributes.getLength();
 
-        AttributesImpl stylesheetAttrs = new AttributesImpl();
-        AttributesImpl lreAttrs = new AttributesImpl();
-        int n = attributes.getLength();
+			  for (int i = 0; i < n; i++)
+			  {
+				  String attrLocalName = attributes.getLocalName(i);
+				  String attrUri = attributes.getURI(i);
+				  String value = attributes.getValue(i);
 
-        for (int i = 0; i < n; i++)
-        {
-          String attrLocalName = attributes.getLocalName(i);
-          String attrUri = attributes.getURI(i);
-          String value = attributes.getValue(i);
+				  if ((null != attrUri) && attrUri.equals(Constants.S_XSLNAMESPACEURL))
+				  {
+					  stylesheetAttrs.addAttribute(null, attrLocalName, attrLocalName,
+																				  attributes.getType(i),
+																				  attributes.getValue(i));
+				  }
+				  else if ((attrLocalName.startsWith("xmlns:") || attrLocalName.equals(
+						  														  "xmlns")) && value.equals(Constants.S_XSLNAMESPACEURL))
+				  {
 
-          if ((null != attrUri) && attrUri.equals(Constants.S_XSLNAMESPACEURL))
-          {
-            stylesheetAttrs.addAttribute(null, attrLocalName, attrLocalName,
-                                         attributes.getType(i),
-                                         attributes.getValue(i));
-          }
-          else if ((attrLocalName.startsWith("xmlns:") || attrLocalName.equals(
-                                                                               "xmlns")) && value.equals(Constants.S_XSLNAMESPACEURL))
-          {
+					  // ignore
+				  }
+				  else
+				  {
+					  lreAttrs.addAttribute(attrUri, attrLocalName,
+															  attributes.getQName(i),
+															  attributes.getType(i),
+															  attributes.getValue(i));
+				  }
+			  }
 
-            // ignore
-          }
-          else
-          {
-            lreAttrs.addAttribute(attrUri, attrLocalName,
-                                  attributes.getQName(i),
-                                  attributes.getType(i),
-                                  attributes.getValue(i));
-          }
-        }
+			  attributes = lreAttrs;
 
-        attributes = lreAttrs;
+			  // Set properties from the attributes, but don't throw 
+			  // an error if there is an attribute defined that is not 
+			  // allowed on a stylesheet.
+			  try{
+				  stylesheetProcessor.setPropertiesFromAttributes(handler, "stylesheet",
+						  															stylesheetAttrs, stylesheet);
+			  }
+			  catch (Exception e)
+			  {
+				  // This is pretty ugly, but it will have to do for now. 
+				  // This is just trying to append some text specifying that
+				  // this error came from a missing or invalid XSLT namespace
+				  // declaration.
+				  // If someone comes up with a better solution, please feel 
+				  // free to contribute it. -mm
 
-        // Set properties from the attributes, but don't throw 
-        // an error if there is an attribute defined that is not 
-        // allowed on a stylesheet.
-				try{
-        stylesheetProcessor.setPropertiesFromAttributes(handler, "stylesheet",
-                                                        stylesheetAttrs, stylesheet);
-				}
-				catch (Exception e)
-				{
-					// This is pretty ugly, but it will have to do for now. 
-					// This is just trying to append some text specifying that
-					// this error came from a missing or invalid XSLT namespace
-					// declaration.
-					// If someone comes up with a better solution, please feel 
-					// free to contribute it. -mm
-         
-					if (stylesheet.getDeclaredPrefixes() == null || 
-						!declaredXSLNS(stylesheet))
-					{
-						throw new org.xml.sax.SAXException(XSLMessages.createWarning(XSLTErrorResources.WG_OLD_XSLT_NS, null));
-					}
-					else
-                    {
-						throw new org.xml.sax.SAXException(e);
-                    }
-				}
-        handler.pushElemTemplateElement(stylesheet);
+				  if (stylesheet.getDeclaredPrefixes() == null || !declaredXSLNS(stylesheet))
+				  {
+					  throw new org.xml.sax.SAXException(XSLMessages.createWarning(XSLTErrorResources.WG_OLD_XSLT_NS, null));
+				  }
+				  else
+				  {
+					  throw new org.xml.sax.SAXException(e);
+				  }
+			  }
 
-        ElemTemplate template = new ElemTemplate();
-        if (slocator != null)
-            template.setLocaterInfo(slocator);
+			  handler.pushElemTemplateElement(stylesheet);
 
-        appendAndPush(handler, template);
+			  ElemTemplate template = new ElemTemplate();
+			  if (slocator != null)
+				  template.setLocaterInfo(slocator);                
 
-        XPath rootMatch = new XPath("/", stylesheet, stylesheet, XPath.MATCH, 
-             handler.getStylesheetProcessor().getErrorListener());
+			  appendAndPush(handler, template);
 
-        template.setMatch(rootMatch);
+			  XPath rootMatch = new XPath("/", stylesheet, stylesheet, XPath.MATCH, 
+					  													handler.getStylesheetProcessor().getErrorListener());
 
-        // template.setDOMBackPointer(handler.getOriginatingNode());
-        stylesheet.setTemplate(template);
+			  template.setMatch(rootMatch);
 
-        p = handler.getElemTemplateElement();
-        excludeXSLDecl = true;
-      }
+			  stylesheet.setTemplate(template);
 
-      XSLTElementDef def = getElemDef();
-      Class classObject = def.getClassObject();
-      boolean isExtension = false;
-      boolean isComponentDecl = false;
-      boolean isUnknownTopLevel = false;
+			  p = handler.getElemTemplateElement();
+			  excludeXSLDecl = true;
+		  }
 
-      while (null != p)
-      {
+		  XSLTElementDef def = getElemDef();
+		  Class classObject = def.getClassObject();
+		  boolean isExtension = false;
+		  boolean isComponentDecl = false;
+		  boolean isUnknownTopLevel = false;
 
-        // System.out.println("Checking: "+p);
-        if (p instanceof ElemLiteralResult)
-        {
-          ElemLiteralResult parentElem = (ElemLiteralResult) p;
+		  while (null != p)
+		  {
+			  if (p instanceof ElemLiteralResult)
+			  {
+				  ElemLiteralResult parentElem = (ElemLiteralResult)p;
 
-          isExtension = parentElem.containsExtensionElementURI(uri);
-        }
-        else if (p instanceof Stylesheet)
-        {
-          Stylesheet parentElem = (Stylesheet) p;
+				  isExtension = parentElem.containsExtensionElementURI(uri);
 
-          isExtension = parentElem.containsExtensionElementURI(uri);
+				  if (attributes != null) {
+					  String useWhenAttrXPathStr = attributes.getValue(Constants.S_XSLNAMESPACEURL, Constants.ATTRNAME_USE_WHEN);        	
+					  if (useWhenAttrXPathStr != null) {
+						  XslTransformData.m_use_when = true;
+						  XPathContext xctxt = new XPathContext();
+						  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
+						  Vector vars = new Vector();
+						  ElemTemplateElement elemTemplateElement = stylesheetRoot.getFirstChildElem();
+						  while (elemTemplateElement != null) {
+							 if (elemTemplateElement instanceof ElemVariable) {
+								ElemVariable elemVar = (ElemVariable)elemTemplateElement;
+								if (elemVar.getStatic()) {
+									// Only static variables may be referred, within 
+									// XSL attribute use-when's XPath expression.
+									vars.add(elemVar);	
+								}	 
+							 }
+							 
+							 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+						  }
+						  
+						  int idx = vars.size();						  
+						  Map<QName, XObject> varMap = xctxt.getXPathVarMap();						  
+						  while (--idx >= 0) {
+							  ElemVariable elemVariable = (ElemVariable)(vars.elementAt(idx));					  
+							  QName varName = elemVariable.getName();					  
+							  XPath xpathObj = elemVariable.getSelect();
+							  
+							  XObject xObj = xpathObj.execute(xctxt, DTM.NULL, null);
+							  
+							  varMap.put(varName, xObj);
+						  }	
+						  
+						  XPath useWhenXPath = null;
+						  try { 
+							  useWhenXPath = new XPath(useWhenAttrXPathStr, null, handler, XPath.SELECT, null);							  
+							  XObject xObj = useWhenXPath.execute(xctxt, DTM.NULL, handler);
+							  if (!xObj.bool()) {
+								  m_isUseWhenExclude = true; 
+							  }
+						  }
+						  catch (TransformerException ex) {
+							  String xpathExprStr = useWhenXPath.getPatternString();
+							  throw new org.xml.sax.SAXException("XPST0003 : An XPath evaluation error occured, while evaluating XSL attribute 'use-when' " + 
+							                                                                                 xpathExprStr + ". Any variable references within "
+							                                                                                 + "XPath 'use-when' expression must be static."); 
+						  }
+						  finally {
+							  XslTransformData.m_use_when = false;
+							  varMap.clear();
+						  }
+					  }
+				  }
+			  }
+			  else if (p instanceof Stylesheet)
+			  {
+				  Stylesheet parentElem = (Stylesheet) p;
 
-          if ((false == isExtension) && (null != uri)
-              && (uri.equals(Constants.S_BUILTIN_EXTENSIONS_URL)
-                  || uri.equals(Constants.S_BUILTIN_OLD_EXTENSIONS_URL)))
-          {
-            isComponentDecl = true;
-          }
-          else
-          {
-            isUnknownTopLevel = true;
-          }
-        }
+				  isExtension = parentElem.containsExtensionElementURI(uri);
 
-        if (isExtension)
-          break;
+				  if ((false == isExtension) && (null != uri)
+						  && (uri.equals(Constants.S_BUILTIN_EXTENSIONS_URL)
+								  || uri.equals(Constants.S_BUILTIN_OLD_EXTENSIONS_URL)))
+				  {
+					  isComponentDecl = true;
+				  }
+				  else
+				  {
+					  isUnknownTopLevel = true;
+				  }
+			  }
 
-        p = p.getParentElem();
-      }
+			  if (isExtension)
+				  break;
 
-      ElemTemplateElement elem = null;
+			  p = p.getParentElem();
+		  }
 
-      try
-      {
-        if (isExtension)
-        {
+		  ElemTemplateElement elem = null;
 
-          // System.out.println("Creating extension(1): "+uri);
-          elem = new ElemExtensionCall();
-        }
-        else if (isComponentDecl)
-        {
-          elem = (ElemTemplateElement) classObject.newInstance();
-        }
-        else if (isUnknownTopLevel)
-        {
+		  try
+		  {
+			  if (isExtension)
+			  {
+				  elem = new ElemExtensionCall();
+			  }
+			  else if (isComponentDecl)
+			  {
+				  elem = (ElemTemplateElement) classObject.newInstance();
+			  }
+			  else if (isUnknownTopLevel)
+			  {
+				  // TBD: Investigate, not sure about this.  -sb
+				  elem = (ElemTemplateElement) classObject.newInstance();
+			  }
+			  else
+			  {
+				  elem = (ElemTemplateElement) classObject.newInstance();
+			  }
 
-          // TBD: Investigate, not sure about this.  -sb
-          elem = (ElemTemplateElement) classObject.newInstance();
-        }
-        else
-        {
-          elem = (ElemTemplateElement) classObject.newInstance();
-        }
+			  elem.setDOMBackPointer(handler.getOriginatingNode());
+			  elem.setLocaterInfo(handler.getLocator());
+			  elem.setPrefixes(handler.getNamespaceSupport(), excludeXSLDecl);
 
-        elem.setDOMBackPointer(handler.getOriginatingNode());
-        elem.setLocaterInfo(handler.getLocator());
-        elem.setPrefixes(handler.getNamespaceSupport(), excludeXSLDecl);
+			  if (elem instanceof ElemLiteralResult)
+			  {
+				  ((ElemLiteralResult) elem).setNamespace(uri);
+				  ((ElemLiteralResult) elem).setLocalName(localName);
+				  ((ElemLiteralResult) elem).setRawName(rawName);
+				  ((ElemLiteralResult) elem).setIsLiteralResultAsStylesheet(
+						  isLREAsStyleSheet);
+			  }
+		  }
+		  catch (InstantiationException ie)
+		  {
+			  handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMLITRSLT, null, ie);//"Failed creating ElemLiteralResult instance!", ie);
+		  }
+		  catch (IllegalAccessException iae)
+		  {
+			  handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMLITRSLT, null, iae);//"Failed creating ElemLiteralResult instance!", iae);
+		  }
 
-        if (elem instanceof ElemLiteralResult)
-        {
-          ((ElemLiteralResult) elem).setNamespace(uri);
-          ((ElemLiteralResult) elem).setLocalName(localName);
-          ((ElemLiteralResult) elem).setRawName(rawName);
-          ((ElemLiteralResult) elem).setIsLiteralResultAsStylesheet(
-                                                                    isLREAsStyleSheet);
-        }
-      }
-      catch (InstantiationException ie)
-      {
-        handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMLITRSLT, null, ie);//"Failed creating ElemLiteralResult instance!", ie);
-      }
-      catch (IllegalAccessException iae)
-      {
-        handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMLITRSLT, null, iae);//"Failed creating ElemLiteralResult instance!", iae);
-      }
+		  setPropertiesFromAttributes(handler, rawName, attributes, elem);
 
-      setPropertiesFromAttributes(handler, rawName, attributes, elem);
+		  // bit of a hack here...
+		  if (!isExtension && (elem instanceof ElemLiteralResult))
+		  {
+			  isExtension =
+					  ((ElemLiteralResult) elem).containsExtensionElementURI(uri);
 
-      // bit of a hack here...
-      if (!isExtension && (elem instanceof ElemLiteralResult))
-      {
-        isExtension =
-                     ((ElemLiteralResult) elem).containsExtensionElementURI(uri);
+			  if (isExtension)
+			  {
+				  elem = new ElemExtensionCall();
 
-        if (isExtension)
-        {
+				  elem.setLocaterInfo(handler.getLocator());
+				  elem.setPrefixes(handler.getNamespaceSupport());
+				  ((ElemLiteralResult) elem).setNamespace(uri);
+				  ((ElemLiteralResult) elem).setLocalName(localName);
+				  ((ElemLiteralResult) elem).setRawName(rawName);
+				  setPropertiesFromAttributes(handler, rawName, attributes, elem);
+			  }
+		  }
 
-          // System.out.println("Creating extension(2): "+uri);
-          elem = new ElemExtensionCall();
+		  if (elem instanceof ElemLiteralResult) {
+			  // Store any available literal result element attributes 
+			  // xsl:type and xsl:validation.
+			  storeXslTypeValidationValue((ElemLiteralResult)elem, attributes);    	      	  
+		  }
 
-          elem.setLocaterInfo(handler.getLocator());
-          elem.setPrefixes(handler.getNamespaceSupport());
-          ((ElemLiteralResult) elem).setNamespace(uri);
-          ((ElemLiteralResult) elem).setLocalName(localName);
-          ((ElemLiteralResult) elem).setRawName(rawName);
-          setPropertiesFromAttributes(handler, rawName, attributes, elem);
-        }
-      }
-      
-      if (elem instanceof ElemLiteralResult) {
-    	  // Store any available literal result element attributes 
-    	  // xsl:type and xsl:validation.
-    	  storeXslTypeValidationValue((ElemLiteralResult)elem, attributes);    	      	  
-      }
-
-      appendAndPush(handler, elem);
-    }
-    catch(TransformerException te)
-    {
-      throw new org.xml.sax.SAXException(te);
-    }
+		  appendAndPush(handler, elem);
+	  }
+	  catch(TransformerException te)
+	  {
+		  throw new org.xml.sax.SAXException(te);
+	  }
   }
 
   /**

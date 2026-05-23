@@ -20,6 +20,7 @@
  */
 package org.apache.xalan.templates;
 
+import org.apache.xpath.XPath;
 
 /**
  * Implement xsl:otherwise.
@@ -97,6 +98,33 @@ public class ElemOtherwise extends ElemTemplateElement
     */
    public boolean getExpandTextDeclared() {
 	  return m_expand_text_declared;
+   }
+   
+   /**
+    * An XPath expression for XSL attribute "use-when". 
+    */
+   private XPath m_useWhen = null;
+
+   /**
+    * Method definition, to set the value of XSL attribute 
+    * "use-when".
+    * 
+    * @param xpath               XPath expression for attribute "use-when"
+    */
+   public void setUseWhen(XPath xpath)
+   {
+ 	  m_useWhen = xpath;  
+   }
+
+   /**
+    * Method definition, to get the value of XSL attribute 
+    * "use-when".
+    * 
+    * @return			        XPath expression for attribute "use-when"
+    */
+   public XPath getUseWhen()
+   {
+ 	  return m_useWhen;
    }
 
   /**

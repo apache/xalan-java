@@ -238,13 +238,16 @@ public class XSL3FunctionService {
     						xslFuncArgCount++;
     					}
     				}
-
-    				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcName), xslFuncArgCount);
     				
-    				if (elemTemplate == null) { 
-    					elemTemplate = getXslFunctionDeclUsingXslPackage(transformerImpl, funcNamespace, 
-    							                                                                      funcName, xslFuncArgCount);
-    			    }
+    				ElemTemplate elemTemplate = null;
+
+    				if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) { 
+    					elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcName), xslFuncArgCount);
+
+    					if (elemTemplate == null) { 
+    						elemTemplate = getXslFunctionDeclUsingXslPackage(transformerImpl, funcNamespace, funcName, xslFuncArgCount);
+    					}
+    				}
 
     				if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
     					// Evaluate an XSL stylesheet function call

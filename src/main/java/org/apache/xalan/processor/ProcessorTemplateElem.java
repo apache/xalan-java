@@ -17,11 +17,22 @@
  */
 package org.apache.xalan.processor;
 
+import java.util.Map;
+import java.util.Vector;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemVariable;
+import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.QName;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
 import org.xml.sax.Attributes;
 
 /**
@@ -31,7 +42,13 @@ import org.xml.sax.Attributes;
  */
 public class ProcessorTemplateElem extends XSLTElementProcessor
 {
-    static final long serialVersionUID = 8344994001943407235L;
+  static final long serialVersionUID = 8344994001943407235L;
+  
+  /**
+   * Class field, to support XSL transformation of stylesheet 
+   * attribute "use-when".
+   */
+  protected boolean m_isUseWhenExclude = false;
 
   /**
    * Receive notification of the start of an element.
@@ -46,40 +63,95 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
+	  
+	  super.startElement(handler, uri, localName, rawName, attributes);
+	  try
+	  {
+		  XSLTElementDef def = getElemDef();
+		  Class classObject = def.getClassObject();
+		  ElemTemplateElement elem = null;
 
-    super.startElement(handler, uri, localName, rawName, attributes);
-    try
-    {
-      XSLTElementDef def = getElemDef();
-      Class classObject = def.getClassObject();
-      ElemTemplateElement elem = null;
+		  try
+		  {
+			  elem = (ElemTemplateElement) classObject.newInstance();
 
-      try
-      {
-        elem = (ElemTemplateElement) classObject.newInstance();
+			  elem.setDOMBackPointer(handler.getOriginatingNode());
+			  elem.setLocaterInfo(handler.getLocator());
+			  elem.setPrefixes(handler.getNamespaceSupport());
 
-        elem.setDOMBackPointer(handler.getOriginatingNode());
-        elem.setLocaterInfo(handler.getLocator());
-        elem.setPrefixes(handler.getNamespaceSupport());
-        
-        verifyXSLAllowedAttributes(localName, attributes, elem, handler);
-      }
-      catch (InstantiationException ie)
-      {
-        handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMTMPL, null, ie);//"Failed creating ElemTemplateElement instance!", ie);
-      }
-      catch (IllegalAccessException iae)
-      {
-        handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMTMPL, null, iae);//"Failed creating ElemTemplateElement instance!", iae);
-      }
+			  verifyXSLAllowedAttributes(localName, attributes, elem, handler);
+		  }
+		  catch (InstantiationException ie)
+		  {
+			  handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMTMPL, null, ie);//"Failed creating ElemTemplateElement instance!", ie);
+		  }
+		  catch (IllegalAccessException iae)
+		  {
+			  handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMTMPL, null, iae);//"Failed creating ElemTemplateElement instance!", iae);
+		  }
 
-      setPropertiesFromAttributes(handler, rawName, attributes, elem);
-      appendAndPush(handler, elem);
-    }
-    catch(TransformerException te)
-    {
-      throw new org.xml.sax.SAXException(te);
-    }
+		  setPropertiesFromAttributes(handler, rawName, attributes, elem);
+		   
+		  if ((Constants.S_XSLNAMESPACEURL).equals(uri) && (attributes != null)) {
+			  String useWhenAttrXPathStr = attributes.getValue("", Constants.ATTRNAME_USE_WHEN);
+			  if (useWhenAttrXPathStr != null) {				  
+				  XslTransformData.m_use_when = true;
+				  XPathContext xctxt = new XPathContext();
+				  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
+				  Vector vars = new Vector();
+				  ElemTemplateElement elemTemplateElement = stylesheetRoot.getFirstChildElem();
+				  while (elemTemplateElement != null) {
+					 if (elemTemplateElement instanceof ElemVariable) {
+						ElemVariable elemVar = (ElemVariable)elemTemplateElement;						
+						if (elemVar.getStatic()) {
+						   // Only static variables may be referred, within 
+						   // XSL attribute use-when's XPath expression.
+						   vars.add(elemVar);	
+						}						 
+					 }
+					 
+					 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+				  }
+				  
+				  int idx = vars.size();				  
+				  Map<QName, XObject> varMap = xctxt.getXPathVarMap();				  
+				  while (--idx >= 0) {
+					  ElemVariable elemVariable = (ElemVariable)(vars.elementAt(idx));					  
+					  QName varName = elemVariable.getName();					  
+					  XPath xpathObj = elemVariable.getSelect();
+					  
+					  XObject xObj = xpathObj.execute(xctxt, DTM.NULL, null);
+					  
+					  varMap.put(varName, xObj);
+				  }				  				  
+				  
+				  XPath useWhenXPath = null;
+				  try {					  
+					  useWhenXPath = new XPath(useWhenAttrXPathStr, null, handler, XPath.SELECT, null);					  
+					  XObject xObj = useWhenXPath.execute(xctxt, DTM.NULL, handler);
+					  if (!xObj.bool()) {
+						  m_isUseWhenExclude = true; 
+					  }
+				  }
+				  catch (TransformerException ex) {
+					  String xpathExprStr = useWhenXPath.getPatternString();
+					  throw new org.xml.sax.SAXException("XPST0003 : An XPath evaluation error occured, while evaluating XSL attribute 'use-when' " + 
+																								                              xpathExprStr + ". Any variable references within "
+																								                              + "XPath 'use-when' expression must be static.");
+				  }
+				  finally {
+					  XslTransformData.m_use_when = false;
+					  varMap.clear();
+				  }
+			  }
+		  }
+
+		  appendAndPush(handler, elem);
+	  }
+	  catch(TransformerException te)
+	  {
+		  throw new org.xml.sax.SAXException(te);
+	  }
   }
 
   /**
@@ -98,12 +170,20 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
             throws org.xml.sax.SAXException
   {
 
-    ElemTemplateElement parent = handler.getElemTemplateElement();
-    if (null != parent)  // defensive, for better multiple error reporting. -sb
-    {
-      parent.appendChild(elem);
-      handler.pushElemTemplateElement(elem);
-    }
+	  ElemTemplateElement parent = handler.getElemTemplateElement();
+	  if (null != parent)  // defensive, for better multiple error reporting. -sb
+	  {
+		  try {
+			  if (!m_isUseWhenExclude) {
+				  parent.appendChild(elem);
+			  }
+		  }
+		  finally {
+			  m_isUseWhenExclude = false;
+		  }
+
+		  handler.pushElemTemplateElement(elem);
+	  }
   }
 
   /**
@@ -118,8 +198,8 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName)
             throws org.xml.sax.SAXException
   {
-    super.endElement(handler, uri, localName, rawName);
-    handler.popElemTemplateElement().setEndLocaterInfo(handler.getLocator());
+	  super.endElement(handler, uri, localName, rawName);
+	  handler.popElemTemplateElement().setEndLocaterInfo(handler.getLocator());
   }
   
   /**

@@ -25,6 +25,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
+import org.apache.xpath.XPath;
 
 /**
  * Implement xsl:apply-imports.
@@ -37,6 +38,33 @@ import org.apache.xml.dtm.DTM;
 public class ElemApplyImport extends ElemTemplateElement
 {
 	static final long serialVersionUID = 3764728663373024038L;
+	
+	/**
+	 * An XPath expression for XSL attribute "use-when". 
+	 */
+	private XPath m_useWhen = null;
+
+	/**
+	 * Method definition, to set the value of XSL attribute 
+	 * "use-when".
+	 * 
+	 * @param xpath            XPath expression for attribute "use-when"
+	 */
+	public void setUseWhen(XPath xpath)
+	{
+		m_useWhen = xpath;  
+	}
+
+	/**
+	 * Method definition, to get the value of XSL attribute 
+	 * "use-when".
+	 * 
+	 * @return			     XPath expression for attribute "use-when"
+	 */
+	public XPath getUseWhen()
+	{
+		return m_useWhen;
+	}
 
 	/**
 	 * Get an int constant identifying the type of element.

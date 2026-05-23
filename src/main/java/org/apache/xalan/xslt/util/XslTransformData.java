@@ -128,6 +128,12 @@ public class XslTransformData {
     public static List<QName> m_xsl_variable_qname_list = new ArrayList<QName>();
     
     /**
+     * Class field, to support XSL transformation of stylesheet 
+     * attribute "use-when".
+     */
+    public static boolean m_use_when = false;
+    
+    /**
 	 * Method definition, to reset the class field values specified 
 	 * within this class.
 	 */

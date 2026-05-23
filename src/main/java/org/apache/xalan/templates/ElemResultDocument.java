@@ -45,6 +45,7 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FuncTransform;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -108,6 +109,11 @@ public class ElemResultDocument extends ElemTemplateElement
   public static String m_fnTransformDeliveryFormat = null;
   
   /**
+   * An XPath expression for XSL attribute "use-when". 
+   */
+  private XPath m_useWhen = null;
+  
+  /**
    * The class constructor.
    */
   public ElemResultDocument() {}
@@ -166,6 +172,28 @@ public class ElemResultDocument extends ElemTemplateElement
    */
   public void setOmitXmlDeclaration(boolean omitXmlDeclaration) {
 	  this.m_omitXmlDeclaration = omitXmlDeclaration;
+  }
+  
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			     XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
   }
 
   /**

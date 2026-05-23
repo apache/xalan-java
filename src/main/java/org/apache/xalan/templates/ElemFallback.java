@@ -20,6 +20,7 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xpath.XPath;
 
 /**
  * Implementation of XSLT 3.0 xsl:fallback instruction.
@@ -29,6 +30,33 @@ import org.apache.xalan.transformer.TransformerImpl;
 public class ElemFallback extends ElemTemplateElement
 {
   static final long serialVersionUID = 1782962139867340703L;
+  
+  /**
+   * An XPath expression for XSL attribute "use-when". 
+   */
+  private XPath m_useWhen = null;
+
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath                XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			         XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
+  }
 
   /**
    * Get an int constant identifying the type of element.

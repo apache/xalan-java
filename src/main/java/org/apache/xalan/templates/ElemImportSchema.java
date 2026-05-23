@@ -15,14 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xpath.XPath;
 
 /**
  *  Implementation of the XSLT 3.0 xsl:import-schema instruction.
@@ -34,27 +32,54 @@ import org.apache.xalan.transformer.TransformerImpl;
 public class ElemImportSchema extends ElemTemplateElement
 {
    static final long serialVersionUID = -3070117361903102033L;
+   
+   /**
+    * An XPath expression for XSL attribute "use-when". 
+    */
+   private XPath m_useWhen = null;
 
-  /**
-   * Get an int constant identifying the type of element.
-   * @see org.apache.xalan.templates.Constants
-   *
-   * @return           The token id for this element
-   */
-  public int getXSLToken()
-  {
-    return Constants.ELEMNAME_IMPORT_SCHEMA;
-  }
+   /**
+    * Method definition, to set the value of XSL attribute 
+    * "use-when".
+    * 
+    * @param xpath                XPath expression for attribute "use-when"
+    */
+   public void setUseWhen(XPath xpath)
+   {
+	   m_useWhen = xpath;  
+   }
 
-  /**
-   * Return the node name.
-   *
-   * @return The element's name
-   */
-  public String getNodeName()
-  {
-    return Constants.ELEMNAME_IMPORT_SCHEMA_STRING;
-  }
+   /**
+    * Method definition, to get the value of XSL attribute 
+    * "use-when".
+    * 
+    * @return			         XPath expression for attribute "use-when"
+    */
+   public XPath getUseWhen()
+   {
+	   return m_useWhen;
+   }
+
+   /**
+    * Get an int constant identifying the type of element.
+    * @see org.apache.xalan.templates.Constants
+    *
+    * @return           The token id for this element
+    */
+   public int getXSLToken()
+   {
+	   return Constants.ELEMNAME_IMPORT_SCHEMA;
+   }
+
+   /**
+    * Return the node name.
+    *
+    * @return The element's name
+    */
+   public String getNodeName()
+   {
+	   return Constants.ELEMNAME_IMPORT_SCHEMA_STRING;
+   }
 
   /**
    * Constructor ElemImportSchema
@@ -62,7 +87,7 @@ public class ElemImportSchema extends ElemTemplateElement
   public ElemImportSchema(){}
 
   /**
-   * Execute the xsl:import-schema transformation.
+   * Evaluate the xsl:import-schema transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -79,7 +104,7 @@ public class ElemImportSchema extends ElemTemplateElement
    */
   public boolean canAcceptVariables()
   {
-  	return false;
+  	  return false;
   }
   
   public void compose(StylesheetRoot sroot) throws TransformerException
@@ -94,17 +119,17 @@ public class ElemImportSchema extends ElemTemplateElement
   
   public void setParentElem(ElemTemplateElement p)
   {
-    super.setParentElem(p);
+	  super.setParentElem(p);
   }
-  
+
   protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
   {
-    super.callChildVisitors(visitor, callAttrs);
+	  super.callChildVisitors(visitor, callAttrs);
   }
-  
+
   public ElemTemplateElement appendChild(ElemTemplateElement elem)
   {
-    return super.appendChild(elem);
+	  return super.appendChild(elem);
   }
 
 }

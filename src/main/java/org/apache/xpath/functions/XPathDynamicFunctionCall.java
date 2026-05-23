@@ -18,6 +18,8 @@ package org.apache.xpath.functions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.extensions.ExpressionContext;
+import org.apache.xalan.processor.StylesheetHandler;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -37,6 +40,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
@@ -167,11 +171,23 @@ public class XPathDynamicFunctionCall extends Expression {
        List<XMLNSDecl> prefixTable = null;
        
        if (functionRef != null) {
-    	    ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-            
-            if (elemTemplateElement != null) {
-               prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-            }
+    	    PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+    	    if (prefixResolver instanceof ElemTemplateElement) {
+    	    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)prefixResolver; 
+    	    	prefixTable = (List<XMLNSDecl>)(elemTemplateElement.getPrefixTable());
+    	    }
+    	    else if (prefixResolver instanceof StylesheetHandler) {
+    	    	StylesheetHandler stysheetHandler = (StylesheetHandler)prefixResolver;
+    	    	Hashtable hashTable = stysheetHandler.getNamespaceUriTable();
+    	    	Enumeration keysEnum = hashTable.keys();
+    	    	prefixTable = new ArrayList<XMLNSDecl>();
+    	    	while (keysEnum.hasMoreElements()) {
+    	    	   String uri = (String)(keysEnum.nextElement());
+    	    	   String prefix = (String)(hashTable.get(uri));
+    	    	   XMLNSDecl xmlNSDecl = new XMLNSDecl(prefix, uri, false);
+    	    	   prefixTable.add(xmlNSDecl);
+    	    	}
+    	    }
                 	    
     	    if (functionRef instanceof XPathInlineFunction) {
     	    	if (m_argList == null) {

@@ -63,9 +63,36 @@ public class ElemMergeSource extends ElemTemplateElement
   private Vector m_mergeKeyElems = null;
   
   /**
+   * An XPath expression for XSL attribute "use-when". 
+   */
+  private XPath m_useWhen = null;
+  
+  /**
    * The class constructor.
    */
   public ElemMergeSource() {}
+
+  /**
+   * Method definition, to set the value of XSL attribute 
+   * "use-when".
+   * 
+   * @param xpath            XPath expression for attribute "use-when"
+   */
+  public void setUseWhen(XPath xpath)
+  {
+	  m_useWhen = xpath;  
+  }
+
+  /**
+   * Method definition, to get the value of XSL attribute 
+   * "use-when".
+   * 
+   * @return			     XPath expression for attribute "use-when"
+   */
+  public XPath getUseWhen()
+  {
+	  return m_useWhen;
+  }
   
   /**
    * Get the count of xsl:merge-key elements associated with this element.
