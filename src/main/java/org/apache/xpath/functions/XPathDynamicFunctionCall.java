@@ -111,7 +111,7 @@ public class XPathDynamicFunctionCall extends Expression {
      * XPath operator "=>" whose rhs operand is this dfc compiled
      * object.
      */
-    private XObject m_lArgObj;
+    private XObject m_ArrowOpArgObj;
     
     /**
      * The class fields m_vars & m_globals_size declared below are used during 
@@ -138,7 +138,7 @@ public class XPathDynamicFunctionCall extends Expression {
        
        Map<QName, XObject> xpathVariableMap = xctxt.getXPathVarMap();
                     
-       // Try finding an XPath function reference object
+       // Try find an XPath function reference object
        XObject functionRef = xpathVariableMap.get(new QName(m_funcRefVarName));
        
        if (functionRef == null) {
@@ -194,7 +194,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	    		m_argList = new ArrayList<String>(); 
     	    	}
 
-    	    	evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)functionRef, m_argList, m_lArgObj, 
+    	    	evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)functionRef, m_argList, m_ArrowOpArgObj, 
 																					    	    			xctxt, prefixTable, m_vars, m_globals_size, 
 																					    	    			m_xpathVarList, m_funcRefVarName);               
 	           if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
@@ -449,11 +449,11 @@ public class XPathDynamicFunctionCall extends Expression {
 	}
 
 	public XObject getArg0() {
-		return m_lArgObj;
+		return m_ArrowOpArgObj;
 	}
 	
 	public void setArg0(XObject lArgObj) {
-		m_lArgObj = lArgObj; 		
+		m_ArrowOpArgObj = lArgObj; 		
 	}
 	
 	/**
@@ -575,10 +575,10 @@ public class XPathDynamicFunctionCall extends Expression {
 					}
 				}
 			}
-			else if (m_lArgObj != null) {
+			else if (m_ArrowOpArgObj != null) {
 				Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
 
-				result = nativeMap.get(m_lArgObj); 
+				result = nativeMap.get(m_ArrowOpArgObj); 
 			}
 		}
 
@@ -693,8 +693,8 @@ public class XPathDynamicFunctionCall extends Expression {
 					}
 				}
 			}
-			else if (m_lArgObj != null) {
-				String str1 = XslTransformEvaluationHelper.getStrVal(m_lArgObj);
+			else if (m_ArrowOpArgObj != null) {
+				String str1 = XslTransformEvaluationHelper.getStrVal(m_ArrowOpArgObj);
 				int i1 = Integer.valueOf(str1);
 				result = xpathArr.get(i1 - 1); 
 			}
@@ -860,8 +860,18 @@ public class XPathDynamicFunctionCall extends Expression {
 				isRuntimeArityOk = true; 
 			}
 		}
-		else { 	    			 
-			short runTimeArityValue = (short)(m_argList.size());
+		else {
+			short runTimeArityValue = 0;
+			if (m_argList != null) {
+				runTimeArityValue = (short)(m_argList.size());
+				if (m_ArrowOpArgObj != null) {
+					runTimeArityValue++;
+				}
+			}
+			else if (m_ArrowOpArgObj != null) {
+				runTimeArityValue++;
+			}
+			
 			expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + runTimeArityValue;
 			Short[] funcDefinedArity = funcObj.getDefinedArity();
 			List<Short> arityList = Arrays.asList(funcDefinedArity);
@@ -884,23 +894,46 @@ public class XPathDynamicFunctionCall extends Expression {
 			}
 		}
 
-		int argListSize = m_argList.size();
+		int argListSize = 0;		
+		if (m_argList != null) {
+		   argListSize = m_argList.size();
+		}
 
 		if (isRuntimeArityOk) {    	    		 
-			try {    	    			     	    			 
-				for (int idx = 0; idx < argListSize; idx++) {
-					String argXPathStr = m_argList.get(idx);
-					if (prefixTable != null) {
-						argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
-					}
+			try {
+				if (m_ArrowOpArgObj != null) {
+					funcObj.setArg(m_ArrowOpArgObj, 0);
+					
+					for (int idx = 0; idx < argListSize; idx++) {
+						String argXPathStr = m_argList.get(idx);
+						if (prefixTable != null) {
+							argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+						}
 
-					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-					if (m_vars != null) {
-						argXPath.fixupVariables(m_vars, m_globals_size);
-					}
+						XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+						if (m_vars != null) {
+							argXPath.fixupVariables(m_vars, m_globals_size);
+						}
 
-					XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-					funcObj.setArg(argValue, idx);
+						XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+						funcObj.setArg(argValue, idx + 1);
+					}
+				}
+				else {
+					for (int idx = 0; idx < argListSize; idx++) {
+						String argXPathStr = m_argList.get(idx);
+						if (prefixTable != null) {
+							argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+						}
+
+						XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+						if (m_vars != null) {
+							argXPath.fixupVariables(m_vars, m_globals_size);
+						}
+
+						XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+						funcObj.setArg(argValue, idx);
+					}
 				}
 			}
 			catch (WrongNumberArgsException ex) {

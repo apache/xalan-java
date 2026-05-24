@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.objects;
 
 import org.apache.xpath.ExpressionOwner;
@@ -61,29 +58,29 @@ public class XNumber extends XObject
   private XSDouble m_XsDouble;
 
   /**
-   * Construct a XNodeSet object.
+   * Class constructor.
    *
    * @param d Value of the object
    */
   public XNumber(double d)
   {
-    super();
+	  super();
 
-    m_val = d;
+	  m_val = d;
   }
   
   /**
-   * Construct a XNodeSet object.
+   * Class constructor.
    *
    * @param num Value of the object
    */
   public XNumber(Number num)
   {
 
-    super();
+	  super();
 
-    m_val = num.doubleValue();
-    setObject(num);
+	  m_val = num.doubleValue();
+	  setObject(num);
   }
 
   /**

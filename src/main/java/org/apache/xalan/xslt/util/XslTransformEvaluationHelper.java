@@ -482,7 +482,10 @@ public class XslTransformEvaluationHelper {
            xdmSequenceSize = seqCtrEvalResult.size();
         }
         else if (expr instanceof Expression) {
-            if (expr instanceof Range) {
+        	if (expr instanceof ResultSequence) {
+        	   xdmSequenceSize = ((ResultSequence)expr).size();
+        	}
+        	else if (expr instanceof Range) {
                 ResultSequence resultSeq = (ResultSequence)(((Range)expr).execute(xctxt));
                 xdmSequenceSize = resultSeq.size();
             }

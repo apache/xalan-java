@@ -718,7 +718,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
        "Can not call setShouldCacheNodes after nextNode has been called!"},
 
   { ER_ONLY_ALLOWS,
-       "{0} only allows {1} arguments"},
+       "XPST0017 : An XPath function ''{0}'' only allows {1} arguments."},
 
   { ER_UNKNOWN_STEP,
        "Programmer''s assertion in getNextStepPos: unknown stepType: {0}"},

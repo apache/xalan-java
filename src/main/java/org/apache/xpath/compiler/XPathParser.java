@@ -3769,6 +3769,15 @@ public class XPathParser
 
         	  xpathParseDfcSyntax(opPos);              
           }
+          else if ((m_tokenChar == '(') && (lookahead('$', 1)) && (lookahead(')', 3))) {
+        	  // XPath parse of dynamic function call, and map &
+        	  // array information lookup using function call syntax.
+        	  
+        	  // An XPath dynamic function call like, ($funcName)(..),
+        	  // which is equivalent to $funcName(..)
+
+        	  xpathParseDfcSyntax(opPos);              
+          }
           else {
         	  FunctionCall();
           }
@@ -8900,12 +8909,22 @@ public class XPathParser
     private void xpathParseDfcSyntax(int opPos) throws TransformerException {
     	
     	appendOp(2, OpCodes.XPath3OpCodes.OP_DYNAMIC_FUNCTION_CALL);
-
-    	nextToken();  // consume '$'
-
-    	String funcRefVarName = m_token;       
-    	nextToken();
-    	consumeExpected('(');
+    	    	
+    	String funcRefVarName = null;    	
+    	if ((m_tokenChar == '(') && (lookahead('$', 1)) && (lookahead(')', 3))) {
+    	   consumeExpected('(');    	   
+    	   nextToken();  // consume '$'
+    	   funcRefVarName = m_token;
+    	   nextToken();
+    	   consumeExpected(')');
+    	   consumeExpected('(');
+    	}
+    	else {
+    	   nextToken();  // consume '$'
+    	   funcRefVarName = m_token;
+    	   nextToken();
+       	   consumeExpected('(');
+    	}
 
     	// XPath parse of dynamic function call argument information          
 

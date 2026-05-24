@@ -23,7 +23,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of the head() function.
+ * An XPath 3.1 function fn:head implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -43,8 +43,8 @@ public class FuncHead extends FunctionOneArg {
     /**
      * Evaluate the function. The function must return a valid object.
      * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
+     * @param xctxt				    An XPath context object
+     * @return                      A valid XObject
      *
      * @throws javax.xml.transform.TransformerException
      */
@@ -53,15 +53,15 @@ public class FuncHead extends FunctionOneArg {
         
         XObject result = null;
         
-        XObject xObject0 = m_arg0.execute(xctxt);
+        XObject xObj0 = m_arg0.execute(xctxt);
         
-        if (xObject0 instanceof XMLNodeCursorImpl) {
-           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject0;
+        if (xObj0 instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObj0;
            DTMCursorIterator dtmIter = nodeSet.iterRaw();
            result = new XMLNodeCursorImpl(dtmIter.nextNode(), xctxt);
         }
-        else if (xObject0 instanceof ResultSequence) {
-           ResultSequence resultSeq = (ResultSequence)xObject0;
+        else if (xObj0 instanceof ResultSequence) {
+           ResultSequence resultSeq = (ResultSequence)xObj0;
            if (resultSeq.size() > 0) {
               result = resultSeq.item(0);
            }
@@ -70,7 +70,7 @@ public class FuncHead extends FunctionOneArg {
            }
         }
         else {
-           result = xObject0; 
+           result = xObj0; 
         }
         
         return result;

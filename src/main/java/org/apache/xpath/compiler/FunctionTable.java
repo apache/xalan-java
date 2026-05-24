@@ -20,6 +20,8 @@ package org.apache.xpath.compiler;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.transform.TransformerException;
 
@@ -648,7 +650,7 @@ public class FunctionTable
   private static Class m_functions[];
 
   /** Table of function name to function ID associations. */
-  private static HashMap m_functionId = new HashMap();
+  private static Map<String, Integer> m_functionId = new HashMap<String, Integer>();
     
   /**
    * The function table contains customized functions
@@ -658,7 +660,7 @@ public class FunctionTable
   /**
    * Table of function name to function ID associations for customized functions
    */
-  private HashMap m_functionId_customer = new HashMap();
+  private Map<String, Integer> m_functionId_customer = new HashMap<String, Integer>();
   
   /**
    * Number of built in functions. Please update this, as
@@ -1162,12 +1164,28 @@ public class FunctionTable
   }
   
   /**
-   * Return the name of the a function in the static table. Needed to avoid
+   * Return an XPath function's name in the static table. Needed to avoid
    * making the table publicly available.
    */
   String getFunctionName(int funcID) {
-      if (funcID < NUM_BUILT_IN_FUNCS) return m_functions[funcID].getName();
-      else return m_functions_customer[funcID - NUM_BUILT_IN_FUNCS].getName();
+	  
+	  String result = null;
+
+	  if (funcID < NUM_BUILT_IN_FUNCS) {
+		  for (Map.Entry<String, Integer> entry : m_functionId.entrySet()) {
+			  if (Objects.equals(entry.getValue(), Integer.valueOf(funcID))) {
+				  result = entry.getKey();
+
+				  break;
+			  }
+		  }
+	  }
+
+	  if (result == null) {
+		  result = (m_functions_customer[funcID - NUM_BUILT_IN_FUNCS]).getName();  
+	  }
+
+	  return result;
   }
 
   /**
@@ -1185,23 +1203,24 @@ public class FunctionTable
   public Function getFunction(int which)
           throws javax.xml.transform.TransformerException
   {
-          try{
-              if (which < NUM_BUILT_IN_FUNCS) {
-            	  if (which == FunctionTable.FUNC_DOC) {
-            		 return new FuncDoc(); 
-            	  }
-            	  else {
-                     return (Function) m_functions[which].newInstance();
-            	  }
-              }
-              else 
-                  return (Function) m_functions_customer[
-                      which-NUM_BUILT_IN_FUNCS].newInstance();                  
-          }catch (IllegalAccessException ex){
-                  throw new TransformerException(ex.getMessage());
-          }catch (InstantiationException ex){
-                  throw new TransformerException(ex.getMessage());
-          }
+	  try {
+		  if (which < NUM_BUILT_IN_FUNCS) {
+			  if (which == FunctionTable.FUNC_DOC) {
+				  return new FuncDoc(); 
+			  }
+			  else {
+				  return (Function) m_functions[which].newInstance();
+			  }
+		  }
+		  else 
+			  return (Function) m_functions_customer[which-NUM_BUILT_IN_FUNCS].newInstance();                  
+	  } 
+	  catch (IllegalAccessException ex){
+		  throw new TransformerException(ex.getMessage());
+	  } 
+	  catch (InstantiationException ex){
+		  throw new TransformerException(ex.getMessage());
+	  }
   }
   
   /**
@@ -1453,29 +1472,29 @@ public class FunctionTable
   public int installFunction(String name, Class func)
   {
 
-    int funcIndex;
-    Object funcIndexObj = getFunctionId(name);
+	  int funcIndex;
+	  Object funcIndexObj = getFunctionId(name);
 
-    if (null != funcIndexObj)
-    {
-      funcIndex = ((Integer) funcIndexObj).intValue();
-      
-      if (funcIndex < NUM_BUILT_IN_FUNCS){
-              funcIndex = m_funcNextFreeIndex++;
-              m_functionId_customer.put(name, Integer.valueOf(funcIndex)); 
-      }
-      m_functions_customer[funcIndex - NUM_BUILT_IN_FUNCS] = func;          
-    }
-    else
-    {
-            funcIndex = m_funcNextFreeIndex++;
-                          
-            m_functions_customer[funcIndex-NUM_BUILT_IN_FUNCS] = func;
-                    
-            m_functionId_customer.put(name, Integer.valueOf(funcIndex));   
-    }
-    
-    return funcIndex;
+	  if (null != funcIndexObj)
+	  {
+		  funcIndex = ((Integer) funcIndexObj).intValue();
+
+		  if (funcIndex < NUM_BUILT_IN_FUNCS){
+			  funcIndex = m_funcNextFreeIndex++;
+			  m_functionId_customer.put(name, Integer.valueOf(funcIndex)); 
+		  }
+		  m_functions_customer[funcIndex - NUM_BUILT_IN_FUNCS] = func;          
+	  }
+	  else
+	  {
+		  funcIndex = m_funcNextFreeIndex++;
+
+		  m_functions_customer[funcIndex-NUM_BUILT_IN_FUNCS] = func;
+
+		  m_functionId_customer.put(name, Integer.valueOf(funcIndex));   
+	  }
+
+	  return funcIndex;
   }
 
   /**
@@ -1487,12 +1506,12 @@ public class FunctionTable
    */
   public boolean functionAvailable(String methName)
   {
-      Object tblEntry = m_functionId.get(methName);
-      if (null != tblEntry) return true;
-      else{
-              tblEntry = m_functionId_customer.get(methName);
-              return (null != tblEntry)? true : false;
-      }
+	  Object tblEntry = m_functionId.get(methName);
+	  if (null != tblEntry) return true;
+	  else{
+		  tblEntry = m_functionId_customer.get(methName);
+		  return (null != tblEntry)? true : false;
+	  }
   }
   
 }
