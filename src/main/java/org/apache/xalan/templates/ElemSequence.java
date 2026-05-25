@@ -765,16 +765,11 @@ public class ElemSequence extends ElemTemplateElement
 
 					  String xpathExprStr = m_selectPattern.getPatternString();
 
-					  if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && xpathExprStr.endsWith("]")) {
-						  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-						  List<XMLNSDecl> prefixTable = null;
-						  if (elemTemplateElement != null) {
-							  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-						  }                                      
+					  if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && xpathExprStr.endsWith("]")) {						   
+						  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);                                      
 
 						  String varRefXPathExprStr = "$" + xpathExprStr.substring(1, xpathExprStr.indexOf('['));
-						  String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, 
-								  xpathExprStr.indexOf(']'));
+						  String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, xpathExprStr.indexOf(']'));
 
 						  // Evaluate the, variable reference XPath expression
 						  if (prefixTable != null) {

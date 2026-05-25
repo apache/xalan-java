@@ -2436,11 +2436,7 @@ public class ElemTemplateElement extends UnImplNode
 				                                                                                                 xpathExprStr.startsWith("for")) {
 			  // Evaluating expand-text with stylesheet content like {if ...}, {some ...}, {every ...}, {let ...}, {for ...}
 			  
-			  List<XMLNSDecl> prefixTable = null;
-			  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();            
-			  if (elemTemplateElement != null) {
-				  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-			  }
+			  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt); 
 
 			  if (prefixTable != null) {
 				  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);

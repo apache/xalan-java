@@ -19,6 +19,8 @@ package org.apache.xalan.xslt.util;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +33,11 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
+import org.apache.xalan.processor.StylesheetHandler;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
@@ -43,6 +47,8 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.serializer.CharacterMapConfig;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
@@ -1008,6 +1014,40 @@ public class XslTransformEvaluationHelper {
     	}
 
     	return result;  	  
+    }
+    
+    /**
+     * Method definition, to get an XML namespace prefix table.
+     * 
+     * @param xctxt                   An XPath context objec
+     * @return                        An XML namespace prefix table
+     */
+    public static List<XMLNSDecl> getXSLNsPrefixTable(XPathContext xctxt) {
+
+    	List<XMLNSDecl> result = null;
+
+    	PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+    	if (prefixResolver instanceof ElemTemplateElement) {
+    		ElemTemplateElement elemTemplateElement = (ElemTemplateElement)prefixResolver; 
+    		result = (List<XMLNSDecl>)(elemTemplateElement.getPrefixTable());
+    	}
+    	else if (prefixResolver instanceof StylesheetHandler) {
+    		StylesheetHandler stysheetHandler = (StylesheetHandler)prefixResolver;
+    		Hashtable hashTable = stysheetHandler.getNamespaceUriTable();
+    		Enumeration keysEnum = hashTable.keys();
+    		result = new ArrayList<XMLNSDecl>();
+    		while (keysEnum.hasMoreElements()) {
+    			String uri = (String)(keysEnum.nextElement());
+    			String prefix = (String)(hashTable.get(uri));
+    			XMLNSDecl xmlNSDecl = new XMLNSDecl(prefix, uri, false);
+    			result.add(xmlNSDecl);
+    		}
+    	}
+    	else if (prefixResolver instanceof PrefixResolverDefault) {
+    		result = ((PrefixResolverDefault)prefixResolver).getPrefixTable(); 
+    	}
+
+    	return result;
     }
     
     /**

@@ -34,7 +34,6 @@ import org.apache.xalan.processor.StylesheetHandler;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemCopyOf;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformData;
@@ -1142,11 +1141,8 @@ public class XPath implements Serializable, ExpressionOwner
     	 */
     	String varRefXPathExprStr = "$" + xpathPatternStr.substring(1, xpathPatternStr.indexOf('['));
     	String xpathIndexExprStr = xpathPatternStr.substring(xpathPatternStr.indexOf('[') + 1, xpathPatternStr.indexOf(']'));
-    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-    	List<XMLNSDecl> prefixTable = null;
-    	if (elemTemplateElement != null) {
-    		prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-    	}
+    	    	
+    	List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
     	// Evaluate the, variable reference XPath expression
     	if (prefixTable != null) {

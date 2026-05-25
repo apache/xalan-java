@@ -743,7 +743,7 @@ public class XPathContext extends XPathStaticContext
   }
 
   /**
-   * Get the current namespace context for the xpath.
+   * Set namespace context for the xpath.
    *
    * @param pr the prefix resolver to be used for resolving prefixes to 
    *         namespace URLs.

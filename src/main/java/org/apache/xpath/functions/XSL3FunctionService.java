@@ -347,12 +347,7 @@ public class XSL3FunctionService {
     							xpathInlineFuncArgList.add(xpathExprStr);    							
     						}
 
-    						List<XMLNSDecl> prefixTable = null;
-    						ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-
-    						if (elemTemplateElement != null) {
-    							prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-    						}
+    						List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
     						evalResult = evaluateXPathInlineFunction(xpathInlineFunction, xpathInlineFuncArgList, null, 
     								                                                      xctxt, prefixTable, null, 0, 
@@ -593,12 +588,7 @@ public class XSL3FunctionService {
     							}
 
     							if (prefix != null) {
-    								List<XMLNSDecl> prefixTable = null;
-    								ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-
-    								if (elemTemplateElement != null) {
-    									prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-    								}
+    								List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
     								if (prefixTable != null) {
     									int prefixTableSize = prefixTable.size();
@@ -620,12 +610,7 @@ public class XSL3FunctionService {
     							String prefix = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(0), xctxt);
     							String localName = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(1), xctxt);
 
-    							List<XMLNSDecl> prefixTable = null;
-    							ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-
-    							if (elemTemplateElement != null) {
-    								prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-    							}
+    							List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
     							String namespaceUri = null;
     							if (prefixTable != null) {

@@ -26,15 +26,14 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemFunction;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
@@ -45,7 +44,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An implementation of XPath 3.1 'let' expression.
+ * An XPath 3.1 'let' expression implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -76,13 +75,9 @@ public class XPathLetExpr extends Expression {
         
        SourceLocator srcLocator = xctxt.getSAXLocator();
         
-       int contextNode = xctxt.getContextNode();              
+       int contextNode = xctxt.getContextNode();
        
-       ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-       List<XMLNSDecl> prefixTable = null;
-       if (elemTemplateElement != null) {
-          prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-       }              
+       List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
        
        Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
        

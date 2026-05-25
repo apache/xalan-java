@@ -78,11 +78,7 @@ public class XPathForExpr extends Expression {
 
     	SourceLocator srcLocator = xctxt.getSAXLocator();
 
-    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-    	List<XMLNSDecl> prefixTable = null;
-    	if (elemTemplateElement != null) {
-    		prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-    	}
+    	List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
     	if (prefixTable != null) {
     		m_returnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_returnExprXPathStr, 

@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.templates.ElemFunction;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -127,11 +126,7 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
         		String funcItemFirstArgName = (funcParamList.get(0)).getParamName();
         		String funcItemSecondArgName = (funcParamList.get(1)).getParamName();
 
-        		ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-        		List<XMLNSDecl> prefixTable = null;
-        		if (elemTemplateElement != null) {
-        			prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-        		}
+        		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
         		if (prefixTable != null) {
         			inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(

@@ -23,15 +23,14 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemFunction;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
@@ -208,11 +207,7 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
             String funcItemFirstArgName = (funcParamList.get(0)).getParamName();
             String funcItemSecondArgName = (funcParamList.get(1)).getParamName();
             
-            ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-            List<XMLNSDecl> prefixTable = null;
-            if (elemTemplateElement != null) {
-                prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-            }
+            List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
             
             if (prefixTable != null) {
                inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(

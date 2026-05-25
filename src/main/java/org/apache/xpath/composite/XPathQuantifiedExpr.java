@@ -34,10 +34,9 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -110,11 +109,7 @@ public class XPathQuantifiedExpr extends Expression {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-        List<XMLNSDecl> prefixTable = null;
-        if (elemTemplateElement != null) {
-            prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-        }
+        List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
         if (prefixTable != null) {
             m_xpathQuantifierTestStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(

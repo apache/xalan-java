@@ -669,13 +669,9 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                      
                String varRefXPathExprStr = "$" + xpathPatternStr.substring(1, xpathPatternStr.indexOf('['));
                String xpathIndexExprStr = xpathPatternStr.substring(xpathPatternStr.indexOf('[') + 1, 
-                                                                                            xpathPatternStr.indexOf(']'));
-               
-               ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-               List<XMLNSDecl> prefixTable = null;
-               if (elemTemplateElement != null) {
-                  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-               }
+                                                                                            xpathPatternStr.indexOf(']'));               
+
+               List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
                     
                // Evaluate the, variable reference XPath expression
                if (prefixTable != null) {

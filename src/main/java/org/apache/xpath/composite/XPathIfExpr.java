@@ -22,7 +22,6 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
@@ -85,11 +84,7 @@ public class XPathIfExpr extends Expression {
        
        final int currentNode = xctxt.getContextNode();
        
-       ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-       List<XMLNSDecl> prefixTable = null;
-       if (elemTemplateElement != null) {
-          prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-       }
+       List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
        
        if (prefixTable != null) {
           m_ifConditionXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(

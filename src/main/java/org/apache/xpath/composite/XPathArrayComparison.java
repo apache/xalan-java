@@ -23,7 +23,6 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
@@ -85,11 +84,7 @@ public class XPathArrayComparison extends Expression {
         
         int contextNode = xctxt.getContextNode();
         
-        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-        List<XMLNSDecl> prefixTable = null;
-        if (elemTemplateElement != null) {
-            prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-        }
+        List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
         ResultSequence resultSeqLhs = new ResultSequence(); 
         for (int idx = 0; idx < m_arrayConstructorXPathLhs.size(); idx++) {

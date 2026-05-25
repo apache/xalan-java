@@ -35,8 +35,8 @@ import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
@@ -125,11 +125,7 @@ public class FuncSort extends FunctionMultiArgs
            
            Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
            
-           ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-           List<XMLNSDecl> prefixTable = null;
-           if (elemTemplateElement != null) {
-               prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-           }
+           List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
            int nextNode;         
            

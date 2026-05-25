@@ -26,7 +26,6 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
@@ -122,11 +121,7 @@ public class FuncArraySort extends FunctionMultiArgs
            
            Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
            
-           ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-           List<XMLNSDecl> prefixTable = null;
-           if (elemTemplateElement != null) {
-               prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-           }
+           List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
            
            for (int idx = 0; idx < arg0Arr.size(); idx++) {
               XObject inpArrItem = arg0Arr.get(idx);

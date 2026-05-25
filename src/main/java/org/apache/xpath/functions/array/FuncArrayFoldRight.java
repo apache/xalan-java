@@ -21,7 +21,6 @@ import java.util.Map;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
@@ -127,11 +126,7 @@ public class FuncArrayFoldRight extends Function3Args {
            String funcItemParam1Name = (funcParamList.get(0)).getParamName();
            String funcItemParam2Name = (funcParamList.get(1)).getParamName();
               
-           ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-           List<XMLNSDecl> prefixTable = null;
-           if (elemTemplateElement != null) {
-              prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-           }
+           List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
               
            if (prefixTable != null) {
               inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(

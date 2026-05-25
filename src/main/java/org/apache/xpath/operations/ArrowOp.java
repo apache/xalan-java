@@ -23,12 +23,9 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
-import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function;
@@ -204,7 +201,7 @@ public class ArrowOp extends Operation
        java.lang.String str1 = arrowOpNextStr.substring(0, idx2 + 1) + "''";
        java.lang.String a1 = arrowOpNextStr.substring(idx2 + 1);
        if (a1.startsWith(")")) {
-    	   str1 = str1 + ")";
+    	  str1 = str1 + ")";
        }
        else {
     	  str1 = str1 + "," + arrowOpNextStr.substring(idx2 + 1);
@@ -212,17 +209,11 @@ public class ArrowOp extends Operation
        
        arrowOpNextStr = str1;
        
-       List<XMLNSDecl> prefixTable = null;       
-       if (XslTransformData.m_stylesheetRoot != null) {
-    	   prefixTable = (XslTransformData.m_stylesheetRoot).getPrefixTable();  
-       }
-       else {
-    	   ExpressionNode exprNode = getExpressionOwner();
-    	   ElemTemplateElement elemTemplateElement = (ElemTemplateElement)exprNode;
-    	   prefixTable = elemTemplateElement.getPrefixTable(); 
-       }
+       List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
        
-       arrowOpNextStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(arrowOpNextStr, prefixTable);
+       if (prefixTable != null) {
+          arrowOpNextStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(arrowOpNextStr, prefixTable);
+       }
        
        XPath xpathObj = new XPath(arrowOpNextStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
        Expression expr1 = xpathObj.getExpression();

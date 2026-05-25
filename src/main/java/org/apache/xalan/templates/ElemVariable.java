@@ -18,6 +18,8 @@
 package org.apache.xalan.templates;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -25,6 +27,7 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.processor.StylesheetHandler;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -33,6 +36,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
@@ -772,13 +776,8 @@ public class ElemVariable extends ElemTemplateElement
                 
                String xpathExprStr = m_selectPattern.getPatternString();
                
-               if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && 
-                                                                       xpathExprStr.endsWith("]")) {
-                   ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-                   List<XMLNSDecl> prefixTable = null;
-                   if (elemTemplateElement != null) {
-                       prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-                   }                                      
+               if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && xpathExprStr.endsWith("]")) {
+            	   List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);                                     
                    
                    String varRefXPathExprStr = "$" + xpathExprStr.substring(1, xpathExprStr.indexOf('['));
                    String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, 
@@ -2332,8 +2331,30 @@ public class ElemVariable extends ElemTemplateElement
     		}
     								
     		String xpathPatternStr1 = m_selectPattern.getPatternString();
-    		if (xpathPatternStr1 != null) {
-    			List<XMLNSDecl> prefixTable = (List<XMLNSDecl>)this.getPrefixTable();
+    		if (xpathPatternStr1 != null) {    			
+    			List<XMLNSDecl> prefixTable = null;
+
+                PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+                if (prefixResolver instanceof ElemTemplateElement) {
+             	   ElemTemplateElement elemTemplateElement = (ElemTemplateElement)prefixResolver; 
+             	   prefixTable = (List<XMLNSDecl>)(elemTemplateElement.getPrefixTable());
+                }
+                else if (prefixResolver instanceof StylesheetHandler) {
+             	   StylesheetHandler stysheetHandler = (StylesheetHandler)prefixResolver;
+             	   Hashtable hashTable = stysheetHandler.getNamespaceUriTable();
+             	   Enumeration keysEnum = hashTable.keys();
+             	   prefixTable = new ArrayList<XMLNSDecl>();
+             	   while (keysEnum.hasMoreElements()) {
+             		   String uri = (String)(keysEnum.nextElement());
+             		   String prefix = (String)(hashTable.get(uri));
+             		   XMLNSDecl xmlNSDecl = new XMLNSDecl(prefix, uri, false);
+             		   prefixTable.add(xmlNSDecl);
+             	   }
+                }
+                else if (prefixResolver instanceof PrefixResolverDefault) {
+             	   prefixTable = ((PrefixResolverDefault)prefixResolver).getPrefixTable(); 
+                }    			
+    			
     			if (prefixTable != null) {
     			   xpathPatternStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathPatternStr1, prefixTable);					
     			}

@@ -27,15 +27,14 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.ElemFunction;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathArrayConstructor;
@@ -296,12 +295,7 @@ public class FuncApply extends Function2Args {
 		  else {
 			  final int contextNode = xctxt.getCurrentNode();
 
-			  List<XMLNSDecl> prefixTable = null;
-			  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-
-			  if (elemTemplateElement != null) {
-				  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-			  }
+			  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
 			  ResultSequence argSequence = new ResultSequence();
 			  for (int idx = 0; idx < xslFunctionParamCount; idx++) {

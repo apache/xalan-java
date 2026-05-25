@@ -26,13 +26,11 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.ElemFunction;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
-import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -231,19 +229,13 @@ public class FuncFilter extends Function2Args {
            return resultSeq;
         }                
         
-        PrefixResolver prefixResolver = xctxt.getNamespaceContext();
-        List<XMLNSDecl> prefixTable = null;
-        if (prefixResolver instanceof ElemTemplateElement) {
-           ElemTemplateElement elemTemplateElement = (ElemTemplateElement)prefixResolver;
-           prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-           if (prefixTable != null) {
-        	  funcBodyXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-        			                                                                            funcBodyXPathExprStr, 
-                                                                                                prefixTable);
-           }
+        List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
+
+        if (prefixTable != null) {
+        	funcBodyXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(funcBodyXPathExprStr, prefixTable);
         }
         
-        XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, prefixResolver, XPath.SELECT, null);
+        XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         
         if (xsObject instanceof ResultSequence) {
            XPathContext xpathContextNew = new XPathContext(false);
