@@ -277,11 +277,7 @@ public class FuncSort extends FunctionMultiArgs
            
            Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
            
-           ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-           List<XMLNSDecl> prefixTable = null;
-           if (elemTemplateElement != null) {
-               prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-           }
+           List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
            
            for (int idx = 0; idx < arg0ResultSeq.size(); idx++) {
               XObject inputSeqItem = arg0ResultSeq.item(idx);

@@ -24,11 +24,11 @@ import java.util.Date;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.tests.w3c.xpath3.W3CXPath3TestsUtil;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.FuncDeepEqual;
 import org.apache.xpath.objects.XObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -40,20 +40,21 @@ import org.w3c.dom.NodeList;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 operator arrow postfix.
+ * for XPath abbreviated axes.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil { 
+public class XPath3AxisStepAbbrTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {    	    	
-    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "prod/ArrowPostfix.xml";
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "prod/AxisStep.abbr.xml";
+    	
         m_resultSubFolderName = "prod";
     	
-    	m_testResultFileName = "arrow_postfix_result.xml";
+    	m_testResultFileName = "axis_step_abbr_result.xml";
     }
 
     @AfterClass
@@ -65,17 +66,23 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslArrowPostfixTests() {
+    public void runXslAbbrAxisTests() {
     	
-    	Document document = null;    	
+    	Document document = null;
+    	Document xslTestCatalogDocument = null;
+    	
     	try {
     		document = m_xmlDocumentBuilder.parse(m_xslTransformTestSetFilePath);
+    		
+    		xslTestCatalogDocument = m_xmlDocumentBuilder.parse(W3C_XPATH3_TESTS_CATALOG_FILE_PATH);
     	} 
     	catch (Exception ex) {
             // no op
     	}
     	
-		Element elem1 = document.getDocumentElement();	    	
+		Element elem1 = document.getDocumentElement();
+		
+		Element catalogDocElem1 = xslTestCatalogDocument.getDocumentElement();    	
     	String testSetName = elem1.getAttribute("name");
     	
     	Document testResultDoc = m_xmlDocumentBuilder.newDocument();
@@ -85,18 +92,21 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
 		elemTestRun.setAttribute("name", testSetName);
 		elemTestRun.setAttribute("dateTime", testRunDateStrValue);
 		testResultDoc.appendChild(elemTestRun);
+    	
+		Element docElem1 = document.getDocumentElement();
 		
 		Node node = elem1.getFirstChild();		
 		while (node != null) {
-			Element elemTestResult = null;			
-			try {												
+			Element elemTestResult = null;	
+			try {    		
 				if (node.getNodeType() == Node.ELEMENT_NODE) {
 					Element testCaseElem = (Element)node;
 					String nodeName = testCaseElem.getNodeName();
 					String expectedErrCode = null;
 					String runTimeErrCode = null;
-					if ("test-case".equals(nodeName)) {
+					if ("test-case".equals(nodeName)) {   					
 						String testCaseNameStr = testCaseElem.getAttribute("name");
+						NodeList envNodeList = testCaseElem.getElementsByTagName("environment");						
 						
 						NodeList nodeList = testCaseElem.getElementsByTagName("dependency");
 						int size1 = nodeList.getLength();
@@ -110,6 +120,49 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
 						
 						PrefixResolver xmlNsPrefixResolver = getXMLNsPrefixResolver();
 						xctxt.setNamespaceContext(xmlNsPrefixResolver);
+						
+						if (envNodeList.getLength() > 0) {
+							Element elem = (Element)(envNodeList.item(0));
+							String envName = elem.getAttribute("ref");
+							if ((envName != null) && !"".equals(envName)) {
+								Node child = catalogDocElem1.getFirstChild();
+								while (child != null) {
+									String envName2 = null;
+									Element elem2 = null;
+									if (child.getNodeType() == Node.ELEMENT_NODE) {
+										elem2 = (Element)child;
+										String nodeName2 = elem2.getNodeName();
+										if ("environment".equals(nodeName2)) {
+											envName2 = elem2.getAttribute("name"); 
+										}
+										else {
+											child = child.getNextSibling();
+
+											continue;
+										}
+									}
+									else {
+										child = child.getNextSibling();
+
+										continue;
+									}
+
+									if (envName.equals(envName2)) {
+										Element elem3 = (Element)((elem2.getElementsByTagName("source")).item(0));
+										String srcFileName = elem3.getAttribute("file");									 
+
+										constructXalanDtmFromXMLFile(srcFileName, xctxt, true);
+
+										break;
+									}
+									else {
+										child = child.getNextSibling();
+
+										continue;
+									}
+								}
+							}
+						}
 
 						boolean unRecoverableException = false;
 						boolean isXslTestXPathAndXQuery = false;
@@ -138,8 +191,9 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
 								xpathExprStr = getXPathNormalizedStr(xpathExprStr);
 
 								try {
+									final int sourceNode = xctxt.getCurrentNode();
 									XPath xpathObj = new XPath(xpathExprStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
-									xpathResultObj = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+									xpathResultObj = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 								}
 								catch (TransformerException ex) {
 									String errMeg = ex.getMessage();
@@ -175,69 +229,47 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
 								String expectedResultStr = resultElem1.getTextContent();
 
 								XObject xpathExpectedObj = null;
-								if (!("assert-true".equals(nodeName2) || "assert-false".equals(nodeName2) || 
-		                                                                 "error".equals(nodeName2)) && (expectedResultStr != null) && !"".equals(expectedResultStr)) {
+								if (!"error".equals(nodeName2) && (expectedResultStr != null) && !"".equals(expectedResultStr)) {
 									if (expectedResultStr.startsWith("\"") && expectedResultStr.endsWith("\"")) {
 										int size2 = expectedResultStr.length();
 										expectedResultStr = expectedResultStr.substring(1, size2 - 1);
 										expectedResultStr = "'" + expectedResultStr + "'"; 
-									}                            	                              	  
+									} 
+									else {
+										expectedResultStr = "'" + expectedResultStr + "'"; 
+									}
 
 									XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
 									xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
 								}								
-
-								if ("assert-deep-eq".equals(nodeName2)) {
-									if (xpathResultObj != null) {
-										FuncDeepEqual funcDeepEqual = new FuncDeepEqual();
-										funcDeepEqual.setArg(xpathResultObj, 0);
-										funcDeepEqual.setArg(xpathExpectedObj, 1);
-
-										XObject xObj = funcDeepEqual.execute(xctxt);
-										if (xObj.bool()) {
-											elemTestResult.setAttribute("status", "pass");
+								
+								if ("assert-string-value".equals(nodeName2)) {																		
+									if (xpathResultObj != null) {                                	   
+										String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
+										String resultStr1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+										
+										String normalizeSpace = resultElem1.getAttribute("normalize-space");
+										if ("true".equals(normalizeSpace)) {
+											XPath xpathObj = new XPath("normalize-space('" + resultStr1 + "')", null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+											XObject xObj1 = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+											resultStr1 = XslTransformEvaluationHelper.getStrVal(xObj1);
+										}
+										
+										if (expectedStr1.equals(resultStr1)) {
+											elemTestResult.setAttribute("status", "pass"); 
 										}
 										else {
 											elemTestResult.setAttribute("status", "fail");
 										}
 									}
 									else {
-										elemTestResult.setAttribute("status", "fail");
+
 									}
-								}
-								else if ("assert-true".equals(nodeName2)) {
-									if ((xpathResultObj != null) && xpathResultObj.bool()) {
-										elemTestResult.setAttribute("status", "pass");
-									}
-									else {
-										elemTestResult.setAttribute("status", "fail");
-									}
-								}
-								else if ("assert-false".equals(nodeName2)) {
-									if ((xpathResultObj != null) && !xpathResultObj.bool()) {
-										elemTestResult.setAttribute("status", "pass");
-									}
-									else {
-										elemTestResult.setAttribute("status", "fail");
-									} 
-								}
-								else if ("assert-eq".equals(nodeName2)) {
-									if ((xpathResultObj != null) && xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
-										elemTestResult.setAttribute("status", "pass");
-									}
-									else {
-										elemTestResult.setAttribute("status", "fail");
-									}
-								}
-								else if ("assert-permutation".equals(nodeName2)) {                                    
-									// Skipping these XSL test cases, for now 									
-                                    m_skipped_tests_list.add(testCaseNameStr);
-                                    elemTestResult.setAttribute("status", "skipped");
-								}
+								}								
 								else if ("error".equals(nodeName2)) {
 									expectedErrCode = resultElem1.getAttribute("code");
 									if ((runTimeErrCode != null) && runTimeErrCode.equals(expectedErrCode)) {
-										elemTestResult.setAttribute("status", "pass");
+									   elemTestResult.setAttribute("status", "pass");  
 									}
 									else {
 										elemTestResult.setAttribute("status", "fail");
@@ -257,9 +289,9 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
 			catch (Exception ex) {
 				node = node.getNextSibling();
 				if (elemTestResult != null) {
-				   elemTestResult.setAttribute("status", "fail");
+					elemTestResult.setAttribute("status", "fail");
 				}
-			}						
+			}
         }
 		
 		NodeList nodeList = testResultDoc.getElementsByTagName("testResult");
@@ -308,6 +340,7 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
 		catch (Exception ex) {
 			// no op
 		}
+		
     }
 
 }

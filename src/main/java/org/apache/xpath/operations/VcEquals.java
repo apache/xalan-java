@@ -35,6 +35,8 @@ import org.apache.xerces.xs.XSComplexTypeDefinition;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.Constants;
+import org.apache.xml.utils.PrefixResolverDefault;
+import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -97,23 +99,25 @@ public class VcEquals extends XPathRelationalOp
     	  }
     	  else {
     		 xctxt = new XPathContext();
-    		 srcLocator = xctxt.getSAXLocator();
     	  }
     	  
     	  srcLocator = xctxt.getSAXLocator(); 
       }
       else {
-    	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
-    	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-    	  if (!XslTransformData.m_use_when) {
+    	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
+    	  if ((stylesheetRoot != null) && !XslTransformData.m_use_when) {
+    		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
      	     xctxt = transformerImpl.getXPathContext();
      	  }
      	  else {
      		 xctxt = new XPathContext();
-     		 srcLocator = xctxt.getSAXLocator();
      	  }
     	  
     	  srcLocator = xctxt.getSAXLocator();  
+      }
+      
+      if (srcLocator == null) {
+    	  srcLocator = new SAXSourceLocator();
       }
 	  
       if (left instanceof XPathMap) {
@@ -536,7 +540,14 @@ public class VcEquals extends XPathRelationalOp
 		  }
 	  }
 	  
-	  List<XMLNSDecl> nsPrefixTable = stylesheetRoot.getPrefixTable();
+	  List<XMLNSDecl> nsPrefixTable = null;	  
+	  if (stylesheetRoot != null) {
+		  nsPrefixTable = stylesheetRoot.getPrefixTable();
+	  }
+	  else {
+		  PrefixResolverDefault xmlNsPrefixResolver = (PrefixResolverDefault)(getXMLNsPrefixResolver());
+		  nsPrefixTable = xmlNsPrefixResolver.getPrefixTable();
+	  }
 
 	  if (lNodeStr != null) {
 		  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");

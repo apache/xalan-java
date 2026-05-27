@@ -82,7 +82,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * Apache Xalan XSL 3 test driver entry point, to run W3C 
+ * Apache Xalan-J XSL 3 test driver entry point, to run W3C 
  * XSLT 3.0 transformation tests.
  *
  * @author Mukul Gandhi <mukulg@apache.org>

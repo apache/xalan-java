@@ -729,8 +729,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 					   String nsUri = dtm.getNamespaceURI(nodeHandle);
 					   String serializedForm = localName; 
 					   if (nsUri != null) {
-						  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
-						  List<XMLNSDecl> prefixTable = (List<XMLNSDecl>)(elemTemplateElement.getPrefixTable());
+						  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 						  String prefix = XslTransformEvaluationHelper.getPrefixFromNsUri(nsUri, prefixTable);
 						  serializedForm = prefix + ":" + serializedForm;
 					   }
@@ -892,8 +891,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 					String nsUri = xpathNamedFunctionReference.getFuncNamespace();
 					String str1 = "";
 					if (nsUri != null) {
-						ElemTemplateElement elemTemplateElement = (ElemTemplateElement)(getExpressionOwner());
-						List<XMLNSDecl> prefixTable = elemTemplateElement.getPrefixTable();
+						List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 						String prefix = XslTransformEvaluationHelper.getPrefixFromNsUri(nsUri, prefixTable);
 						if ((prefix != null) && !"".equals(prefix)) {
 							str1 = prefix + ":";

@@ -934,7 +934,12 @@ public class XslTransformEvaluationHelper {
     		result = stylesheet.getStylesheetRoot();    				
     	}    			
     	else {
-    		result = (StylesheetRoot)stylesheetRootExprNode;
+    		try {
+    		   result = (StylesheetRoot)stylesheetRootExprNode;
+    		}
+    		catch (Exception ex) {
+    		   // no op	
+    		}
     	}
 
     	return result;

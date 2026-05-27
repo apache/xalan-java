@@ -25,7 +25,6 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
@@ -88,7 +87,7 @@ public class XPathForExpr extends Expression {
     	XPath returnExprXPath = new XPath(m_returnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
     	ResultSequence resultSeq = getForExpressionEvalResult(m_forExprVarBindingList.listIterator(), 
-    			                                                                                  returnExprXPath, xctxt);       
+    			                                                                                  returnExprXPath, xctxt, prefixTable);       
     	
     	/**
     	 * An xdm sequence object 'resultSeq', may have items that are themselves sequence
@@ -110,13 +109,14 @@ public class XPathForExpr extends Expression {
      * @param returnExprXPath                            An XPath object, for XPath 'for' expression's
      *                                                   return expression.
      * @param xctxt                                      An XPathContext object
+     * @param prefixTable                                XML namespace prefix table object instance
      * @return                                           ResultSequence object, representing XPath 'for' 
      *                                                   expression's result.
      * @throws TransformerException
      */
     private ResultSequence getForExpressionEvalResult(ListIterator listIter, 
                                                                      XPath returnExprXPath, 
-                                                                     XPathContext xctxt) throws TransformerException {
+                                                                     XPathContext xctxt, List<XMLNSDecl> prefixTable) throws TransformerException {
         ResultSequence result = new ResultSequence();
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
@@ -131,12 +131,6 @@ public class XPathForExpr extends Expression {
            
            String varName = forExprVarBinding.getVarName();
            String varBindingXPathStr = forExprVarBinding.getXPathExprStr();
-           
-           ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-           List<XMLNSDecl> prefixTable = null;
-           if (elemTemplateElement != null) {
-              prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-           }
            
            if (prefixTable != null) {
               varBindingXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
@@ -286,7 +280,7 @@ public class XPathForExpr extends Expression {
                              
                forExprVarBindingMap.put(new QName(varName), xdmItem);
                
-               ResultSequence rSeq = getForExpressionEvalResult(listIter, returnExprXPath, xctxt);
+               ResultSequence rSeq = getForExpressionEvalResult(listIter, returnExprXPath, xctxt, prefixTable);
                
                // Append xdm items of sequence 'rSeq', to the final 
                // sequence object 'resultSeq'.

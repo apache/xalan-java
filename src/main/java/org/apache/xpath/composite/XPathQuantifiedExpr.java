@@ -25,7 +25,6 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
@@ -209,11 +208,7 @@ public class XPathQuantifiedExpr extends Expression {
         
         int contextNode = xctxt.getContextNode();
         
-        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-        List<XMLNSDecl> prefixTable = null;
-        if (elemTemplateElement != null) {
-            prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-        }
+        List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
         if (listIter.hasNext()) {           
            ForQuantifiedExprVarBinding quantifiedExprVarBinding = (ForQuantifiedExprVarBinding)listIter.next();            

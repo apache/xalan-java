@@ -37,6 +37,8 @@ import org.apache.xerces.xs.ElementPSVI;
 import org.apache.xerces.xs.XSComplexTypeDefinition;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.PrefixResolverDefault;
+import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -114,11 +116,20 @@ public class Plus extends XPathArithmeticOp
     	  srcLocator = xctxt.getSAXLocator(); 
       }
       else {
-    	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
-    	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-    	  xctxt = transformerImpl.getXPathContext();
+    	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
+    	  if (stylesheetRoot != null) {
+    		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+     	     xctxt = transformerImpl.getXPathContext();
+     	  }
+     	  else {
+     		 xctxt = new XPathContext();
+     	  }
     	  
     	  srcLocator = xctxt.getSAXLocator();  
+      }
+      
+      if (srcLocator == null) {
+     	  srcLocator = new SAXSourceLocator();
       }
 	  
 	  if (left instanceof XPathMap) {
@@ -523,7 +534,14 @@ public class Plus extends XPathArithmeticOp
                                                                                                                      + "types " + typeName1 + " and " + typeName2 + ".");
 		 }
 		 
-		 List<XMLNSDecl> nsPrefixTable = stylesheetRoot.getPrefixTable();
+		 List<XMLNSDecl> nsPrefixTable = null;	  
+		 if (stylesheetRoot != null) {
+			 nsPrefixTable = stylesheetRoot.getPrefixTable();
+		 }
+		 else {
+			 PrefixResolverDefault xmlNsPrefixResolver = (PrefixResolverDefault)(getXMLNsPrefixResolver());
+			 nsPrefixTable = xmlNsPrefixResolver.getPrefixTable();
+		 }
 		 
 		 if (lNodeStr != null) {
 			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");

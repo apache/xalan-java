@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-19T11:30:48Z" fail="72" name="match" pass="110" run="182" skipped="112" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-27T12:26:14Z" fail="73" name="match" pass="109" run="182" skipped="112" statusUnknown="0">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -170,7 +170,11 @@
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="pass" testName="match-099"/>
+   <testResult status="fail" testName="match-099">
+      <outResult>
+         <errTrace>java.lang.ClassCastException: org.apache.xml.utils.SAXSourceLocator cannot be cast to org.apache.xpath.ExpressionNode</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="match-100"/>
    <testResult status="fail" testName="match-101">
       <outResult>

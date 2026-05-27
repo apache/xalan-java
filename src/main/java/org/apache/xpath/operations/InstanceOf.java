@@ -146,14 +146,21 @@ public class InstanceOf extends Operation
             
       XObject result = null;
       
-      SequenceTypeData seqTypedData = null;
-      
-      SequenceTypeData castAsType = left.getCastAsType();
+      XPathContext xctxt = null;
       
       StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
-	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-	  XPathContext xctxt = transformerImpl.getXPathContext(); 
-	  PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+      if (stylesheetRoot != null) {
+ 		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+  	     xctxt = transformerImpl.getXPathContext();
+  	  }
+  	  else {
+  		 xctxt = new XPathContext();
+  	  }
+	  	  
+	  PrefixResolver xmlNsPrefixResolver = xctxt.getNamespaceContext();
+	  
+      SequenceTypeData seqTypedData = null;      
+      SequenceTypeData castAsType = left.getCastAsType();
       
       if (castAsType != null) {    	  
     	  if (castAsType.equal((SequenceTypeData)right)) {
@@ -248,9 +255,9 @@ public class InstanceOf extends Operation
     	  
     	  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + " { 'no_op' }";
     	      	  
-    	  XPath xpathObj = new XPath(xpathInlineFuncDefnStr, this, prefixResolver, XPath.SELECT, null);
+    	  XPath xpathObj = new XPath(xpathInlineFuncDefnStr, this, xmlNsPrefixResolver, XPath.SELECT, null);
     	  
-    	  left = xpathObj.execute(xctxt, DTM.NULL, prefixResolver);
+    	  left = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
       }
       else if (left instanceof XdmAttributeItem) {
     	  if ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) ||

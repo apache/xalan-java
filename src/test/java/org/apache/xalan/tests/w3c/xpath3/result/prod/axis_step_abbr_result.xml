@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-27T12:31:52Z" fail="0" name="prod-AxisStep.abbr" pass="13" run="15" skipped="0" statusUnknown="2">
+   <testResult status="pass" testName="abbreviatedSyntax-2"/>
+   <testResult status="pass" testName="abbreviatedSyntax-3"/>
+   <testResult status="pass" testName="abbreviatedSyntax-5"/>
+   <testResult status="pass" testName="abbreviatedSyntax-6"/>
+   <testResult status="pass" testName="abbreviatedSyntax-8"/>
+   <testResult status="pass" testName="abbreviatedSyntax-14"/>
+   <testResult status="pass" testName="abbreviatedSyntax-16"/>
+   <testResult status="pass" testName="abbreviatedSyntax-17"/>
+   <testResult status="pass" testName="abbreviatedSyntax-18"/>
+   <testResult status="pass" testName="abbreviatedSyntax-19"/>
+   <testResult status="pass" testName="abbreviatedSyntax-20"/>
+   <testResult status="pass" testName="abbreviatedSyntax-21"/>
+   <testResult testName="abbreviatedSyntax-22"/>
+   <testResult testName="abbreviatedSyntax-24"/>
+   <testResult status="pass" testName="abbreviatedSyntax-25"/>
+</testrun>
