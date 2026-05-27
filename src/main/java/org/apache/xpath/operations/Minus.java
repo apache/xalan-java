@@ -22,7 +22,6 @@ import java.math.BigInteger;
 import java.util.List;
 
 import javax.xml.XMLConstants;
-import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -38,7 +37,6 @@ import org.apache.xerces.xs.XSComplexTypeDefinition;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -105,7 +103,6 @@ public class Minus extends XPathArithmeticOp
 	  Object rObj = right.object();
 	  
 	  XPathContext xctxt = null;
-      SourceLocator srcLocator = null;
       
       StylesheetRoot stylesheetRoot = null;
 	  
@@ -113,8 +110,6 @@ public class Minus extends XPathArithmeticOp
     	  stylesheetRoot = XslTransformData.m_stylesheetRoot; 
     	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
     	  xctxt = transformerImpl.getXPathContext();
-    	  
-    	  srcLocator = xctxt.getSAXLocator(); 
       }
       else {
     	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
@@ -124,37 +119,31 @@ public class Minus extends XPathArithmeticOp
      	  }
      	  else {
      		 xctxt = new XPathContext();
-     	  }
-    	  
-    	  srcLocator = xctxt.getSAXLocator();  
-      }
-      
-      if (srcLocator == null) {
-     	  srcLocator = new SAXSourceLocator();
+     	  } 
       }
 	  
 	  if (left instanceof XPathMap) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of '-', but "
 																												  + "the supplied type is a map "
-																												  + "type which cannot be atomized.", srcLocator); 
+																												  + "type which cannot be atomized.", this); 
 	  }
 
 	  if (right instanceof XPathMap) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of '-', but "
 																												  + "the supplied type is a map "
-																												  + "type which cannot be atomized.", srcLocator); 
+																												  + "type which cannot be atomized.", this); 
 	  }
 	  
 	  if ((left instanceof XPathInlineFunction) || (left instanceof ElemFunctionItem)) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of '-', but "
 																												  + "the supplied type is a function "
-																												  + "type which cannot be atomized.", srcLocator); 
+																												  + "type which cannot be atomized.", this); 
 	  }
 
 	  if ((right instanceof XPathInlineFunction) || (right instanceof ElemFunctionItem)) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of '-', but "
 																												  + "the supplied type is a function "
-																												  + "type which cannot be atomized.", srcLocator); 
+																												  + "type which cannot be atomized.", this); 
 	  }	  	  	  
 	  
 	  java.lang.String lNodeStr = null;
@@ -497,12 +486,12 @@ public class Minus extends XPathArithmeticOp
 			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
 			  XPath xpathObj = null;
 			  try {
-			     xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			     xpathObj = new XPath(xpathStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null);
 			  }
 			  catch (TransformerException ex) {
 				 java.lang.String errMesg = ex.getMessage();
 				 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
-					xpathObj = new XPath("'" + lNodeStr + "'", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);   
+					xpathObj = new XPath("'" + lNodeStr + "'", this, xctxt.getNamespaceContext(), XPath.SELECT, null);   
 				 }
 			  }
 			  
@@ -514,12 +503,12 @@ public class Minus extends XPathArithmeticOp
 			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
 			  XPath xpathObj = null;
 			  try {
-			     xpathObj = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			     xpathObj = new XPath(xpathStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null);
 			  }
 			  catch (TransformerException ex) {
 				 java.lang.String errMesg = ex.getMessage();
 				 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
-					xpathObj = new XPath("'" + rNodeStr + "'", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);   
+					xpathObj = new XPath("'" + rNodeStr + "'", this, xctxt.getNamespaceContext(), XPath.SELECT, null);   
 				 }
 			  }
 			  
