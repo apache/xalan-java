@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T11:33:14Z" fail="61" name="prod-InstanceofExpr" pass="210" run="271" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T16:06:43Z" fail="62" name="prod-InstanceofExpr" pass="210" run="272" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="instanceof1"/>
    <testResult status="pass" testName="instanceof2"/>
    <testResult status="pass" testName="instanceof3"/>
@@ -270,4 +270,5 @@
    <testResult status="pass" testName="K2-SeqExprInstanceOf-95"/>
    <testResult status="pass" testName="K2-SeqExprInstanceOf-96"/>
    <testResult status="pass" testName="K2-SeqExprInstanceOf-97"/>
+   <testResult status="fail" testName="cbcl-instance-of-001"/>
 </testrun>

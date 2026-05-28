@@ -61,7 +61,6 @@ import xml.xpath31.processor.types.XSString;
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
- * 
  */
 public class XPath3IfExprTests extends W3CXPath3TestsUtil { 
 
@@ -84,15 +83,21 @@ public class XPath3IfExprTests extends W3CXPath3TestsUtil {
     @Test
     public void runXslIfExprTests() {
     	
-    	Document document = null;    	
+    	Document document = null;
+    	Document xslTestCatalogDocument = null;
+    	
     	try {
     		document = m_xmlDocumentBuilder.parse(m_xslTransformTestSetFilePath);
+    		
+    		xslTestCatalogDocument = m_xmlDocumentBuilder.parse(W3C_XPATH3_TESTS_CATALOG_FILE_PATH);
     	} 
     	catch (Exception ex) {
             // no op
     	}
     	
-    	Element elem1 = document.getDocumentElement();	    	
+		Element elem1 = document.getDocumentElement();
+		
+		Element catalogDocElem1 = xslTestCatalogDocument.getDocumentElement();    	
     	String testSetName = elem1.getAttribute("name");
     	
     	Document testResultDoc = m_xmlDocumentBuilder.newDocument();
@@ -127,48 +132,90 @@ public class XPath3IfExprTests extends W3CXPath3TestsUtil {
 						PrefixResolver xmlNsPrefixResolver = getXMLNsPrefixResolver();
 						xctxt.setNamespaceContext(xmlNsPrefixResolver);
 						
-						String envName = null;
+                        String envName = null;
 						
 						if (envNodeList.getLength() > 0) {
 							Element elem = (Element)(envNodeList.item(0));
 							envName = elem.getAttribute("ref");
-							if ((envName != null) && !"".equals(envName) && !"empty".equals(envName)) {							   
-							   Node child = docElem1.getFirstChild();
-							   while (child != null) {
-								  String envName2 = null;
-								  Element elem2 = null;
-								  if (child.getNodeType() == Node.ELEMENT_NODE) {
-									 elem2 = (Element)child;
-									 String nodeName2 = elem2.getNodeName();
-									 if ("environment".equals(nodeName2)) {
-										 envName2 = elem2.getAttribute("name"); 
-									 }
-									 else {
-										 child = child.getNextSibling();
-										 
-										 continue;
-									 }
-								  }
-								  else {
-									 child = child.getNextSibling();
-									 
-									 continue;
-								  }
+							if ((envName != null) && !"".equals(envName) && !"empty".equals(envName)) {																	
+								Node child = docElem1.getFirstChild();
+								boolean isEnvNodeResolved = false;
+								while (child != null) {
+									String envName2 = null;
+									Element elem2 = null;
+									if (child.getNodeType() == Node.ELEMENT_NODE) {
+										elem2 = (Element)child;
+										String nodeName2 = elem2.getNodeName();
+										if ("environment".equals(nodeName2)) {
+											envName2 = elem2.getAttribute("name"); 
+										}
+										else {
+											child = child.getNextSibling();
 
-								  if (envName.equals(envName2)) {
-									  Element elem3 = (Element)((elem2.getElementsByTagName("source")).item(0));
-									  String srcFileName = elem3.getAttribute("file");									 
-									  
-									  constructXalanDtmFromXMLFile(srcFileName, xctxt, false);
+											continue;
+										}
+									}
+									else {
+										child = child.getNextSibling();
 
-									  break;
-								  }								  
-								  else {
-									  child = child.getNextSibling();
-									  
-									  continue;
-								  }
-							   }
+										continue;
+									}
+
+									if (envName.equals(envName2)) {
+										Element elem3 = (Element)((elem2.getElementsByTagName("source")).item(0));
+										String srcFileName = elem3.getAttribute("file");									 
+
+										constructXalanDtmFromXMLFile(srcFileName, xctxt, false);
+										
+										isEnvNodeResolved = true;
+
+										break;
+									}								  
+									else {
+										child = child.getNextSibling();
+
+										continue;
+									}
+								}
+								
+								if (!isEnvNodeResolved) {
+									child = catalogDocElem1.getFirstChild();
+									while (child != null) {
+										String envName2 = null;
+										Element elem2 = null;
+										if (child.getNodeType() == Node.ELEMENT_NODE) {
+											elem2 = (Element)child;
+											String nodeName2 = elem2.getNodeName();
+											if ("environment".equals(nodeName2)) {
+												envName2 = elem2.getAttribute("name"); 
+											}
+											else {
+												child = child.getNextSibling();
+	
+												continue;
+											}
+										}
+										else {
+											child = child.getNextSibling();
+	
+											continue;
+										}
+	
+										if (envName.equals(envName2)) {
+											Element elem3 = (Element)((elem2.getElementsByTagName("source")).item(0));
+											String srcFileName = elem3.getAttribute("file");									 
+	
+											constructXalanDtmFromXMLFile(srcFileName, xctxt, true);
+	
+											break;
+										}
+										else {
+											child = child.getNextSibling();
+	
+											continue;
+										}
+									}
+							    }
 							}
 						}
 						

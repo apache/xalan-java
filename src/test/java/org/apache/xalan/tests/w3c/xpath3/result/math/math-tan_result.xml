@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T16:08:25Z" fail="1" name="math-tan" pass="10" run="11" skipped="0" statusUnknown="0">
+   <testResult status="fail" testName="math-tan-001"/>
+   <testResult status="pass" testName="math-tan-002"/>
+   <testResult status="pass" testName="math-tan-003"/>
+   <testResult status="pass" testName="math-tan-004"/>
+   <testResult status="pass" testName="math-tan-005"/>
+   <testResult status="pass" testName="math-tan-006"/>
+   <testResult status="pass" testName="math-tan-007"/>
+   <testResult status="pass" testName="math-tan-008"/>
+   <testResult status="pass" testName="math-tan-009"/>
+   <testResult status="pass" testName="math-tan-010"/>
+   <testResult status="pass" testName="math-tan-011"/>
+</testrun>

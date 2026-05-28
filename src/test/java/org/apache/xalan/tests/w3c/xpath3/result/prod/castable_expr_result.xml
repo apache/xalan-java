@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T11:33:12Z" fail="136" name="prod-CastableExpr" pass="676" run="812" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T16:06:41Z" fail="144" name="prod-CastableExpr" pass="693" run="837" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="CastableAs001"/>
    <testResult status="pass" testName="CastableAs002"/>
    <testResult status="pass" testName="CastableAs003"/>
@@ -404,7 +404,9 @@
    <testResult status="pass" testName="CastableAs403"/>
    <testResult status="pass" testName="CastableAs404"/>
    <testResult status="pass" testName="CastableAs405"/>
+   <testResult status="pass" testName="CastableAs406"/>
    <testResult status="pass" testName="CastableAs407"/>
+   <testResult status="pass" testName="CastableAs408"/>
    <testResult status="pass" testName="CastableAs409"/>
    <testResult status="pass" testName="CastableAs410"/>
    <testResult status="pass" testName="CastableAs411"/>
@@ -415,13 +417,17 @@
    <testResult status="pass" testName="CastableAs416"/>
    <testResult status="pass" testName="CastableAs417"/>
    <testResult status="pass" testName="CastableAs418"/>
+   <testResult status="pass" testName="CastableAs419"/>
    <testResult status="pass" testName="CastableAs420"/>
    <testResult status="fail" testName="CastableAs421"/>
    <testResult status="fail" testName="CastableAs422"/>
+   <testResult status="fail" testName="CastableAs423"/>
    <testResult status="fail" testName="CastableAs424"/>
    <testResult status="fail" testName="CastableAs425"/>
+   <testResult status="fail" testName="CastableAs426"/>
    <testResult status="fail" testName="CastableAs427"/>
    <testResult status="fail" testName="CastableAs428"/>
+   <testResult status="fail" testName="CastableAs429"/>
    <testResult status="fail" testName="CastableAs430"/>
    <testResult status="pass" testName="CastableAs431"/>
    <testResult status="pass" testName="CastableAs432"/>
@@ -652,11 +658,15 @@
    <testResult status="fail" testName="K-SeqExprCastable-9"/>
    <testResult status="fail" testName="K-SeqExprCastable-10"/>
    <testResult status="fail" testName="K-SeqExprCastable-11"/>
+   <testResult status="fail" testName="K-SeqExprCastable-14"/>
+   <testResult status="fail" testName="K-SeqExprCastable-15"/>
+   <testResult status="fail" testName="K-SeqExprCastable-16"/>
    <testResult status="fail" testName="K-SeqExprCastable-17"/>
    <testResult status="pass" testName="K-SeqExprCastable-18"/>
    <testResult status="fail" testName="K-SeqExprCastable-19"/>
    <testResult status="fail" testName="K-SeqExprCastable-20"/>
    <testResult status="fail" testName="K-SeqExprCastable-21"/>
+   <testResult status="fail" testName="K-SeqExprCastable-22"/>
    <testResult status="fail" testName="K-SeqExprCastable-23"/>
    <testResult status="pass" testName="K-SeqExprCastable-24"/>
    <testResult status="pass" testName="K-SeqExprCastable-25"/>
@@ -675,8 +685,10 @@
    <testResult status="fail" testName="K-SeqExprCastable-38"/>
    <testResult status="fail" testName="K2-SeqExprCastable-1"/>
    <testResult status="fail" testName="K2-SeqExprCastable-2"/>
+   <testResult status="fail" testName="K2-SeqExprCastable-3"/>
    <testResult status="pass" testName="K2-SeqExprCastable-4"/>
    <testResult status="pass" testName="K2-SeqExprCastable-5"/>
+   <testResult status="pass" testName="K2-SeqExprCastable-8"/>
    <testResult status="pass" testName="cbcl-castable-byte-001"/>
    <testResult status="pass" testName="cbcl-castable-byte-002"/>
    <testResult status="pass" testName="cbcl-castable-byte-003"/>
@@ -685,22 +697,34 @@
    <testResult status="pass" testName="cbcl-castable-date-002"/>
    <testResult status="pass" testName="cbcl-castable-dateTime-001"/>
    <testResult status="pass" testName="cbcl-castable-dateTime-002"/>
+   <testResult status="pass" testName="cbcl-castable-dayTimeDuration-001"/>
+   <testResult status="pass" testName="cbcl-castable-dayTimeDuration-002"/>
    <testResult status="fail" testName="cbcl-castable-decimal-001"/>
    <testResult status="fail" testName="cbcl-castable-decimal-002"/>
    <testResult status="fail" testName="cbcl-castable-decimal-003"/>
    <testResult status="pass" testName="cbcl-castable-decimal-004"/>
    <testResult status="pass" testName="cbcl-castable-decimal-005"/>
    <testResult status="pass" testName="cbcl-castable-decimal-006"/>
+   <testResult status="pass" testName="cbcl-castable-decimal-007"/>
+   <testResult status="pass" testName="cbcl-castable-decimal-008"/>
+   <testResult status="pass" testName="cbcl-castable-decimal-009"/>
+   <testResult status="pass" testName="cbcl-castable-decimal-010"/>
    <testResult status="pass" testName="cbcl-castable-duration-001"/>
    <testResult status="pass" testName="cbcl-castable-duration-002"/>
    <testResult status="pass" testName="cbcl-castable-int-001"/>
    <testResult status="pass" testName="cbcl-castable-int-002"/>
    <testResult status="fail" testName="cbcl-castable-int-003"/>
    <testResult status="fail" testName="cbcl-castable-int-004"/>
+   <testResult status="pass" testName="cbcl-castable-integer-001"/>
+   <testResult status="pass" testName="cbcl-castable-integer-002"/>
+   <testResult status="pass" testName="cbcl-castable-integer-003"/>
+   <testResult status="pass" testName="cbcl-castable-integer-004"/>
    <testResult status="fail" testName="cbcl-castable-language-001"/>
    <testResult status="pass" testName="cbcl-castable-language-002"/>
    <testResult status="pass" testName="cbcl-castable-language-003"/>
    <testResult status="pass" testName="cbcl-castable-language-004"/>
+   <testResult status="pass" testName="cbcl-castable-long-001"/>
+   <testResult status="pass" testName="cbcl-castable-long-002"/>
    <testResult status="fail" testName="cbcl-castable-long-003"/>
    <testResult status="fail" testName="cbcl-castable-long-004"/>
    <testResult status="fail" testName="cbcl-castable-name-001"/>
@@ -733,6 +757,7 @@
    <testResult status="pass" testName="cbcl-castable-unsignedInt-002"/>
    <testResult status="pass" testName="cbcl-castable-unsignedInt-003"/>
    <testResult status="pass" testName="cbcl-castable-unsignedInt-004"/>
+   <testResult status="pass" testName="cbcl-castable-unsignedLong-001"/>
    <testResult status="pass" testName="cbcl-castable-unsignedLong-002"/>
    <testResult status="pass" testName="cbcl-castable-unsignedLong-003"/>
    <testResult status="pass" testName="cbcl-castable-unsignedLong-004"/>

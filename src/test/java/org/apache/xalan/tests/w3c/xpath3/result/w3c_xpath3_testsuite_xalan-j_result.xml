@@ -1,22 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-05-28T11:35:04Z" desc="W3C XPath 3.1 test suite results" fail="502" pass="1480" run="1982" skipped="15" success="74.67%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-05-28T16:08:39Z" desc="W3C XPath 3.1 test suite results" fail="627" pass="1758" run="2385" skipped="15" success="73.71%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <fn>
     <fn-abs fail="75" pass="100" run="175" skipped="0" success="57.14%"/>
-    <fn-adjust-date-to-timezone fail="16" pass="15" run="31" skipped="0" success="48.39%"/>
-    <fn-adjust-dateTime-to-timezone fail="12" pass="19" run="31" skipped="0" success="61.29%"/>
-    <fn-adjust-time-to-timezone fail="12" pass="16" run="28" skipped="0" success="57.14%"/>
-    <fn-boolean fail="30" pass="108" run="138" skipped="0" success="78.26%"/>
+    <fn-adjust-date-to-timezone fail="18" pass="23" run="41" skipped="0" success="56.1%"/>
+    <fn-adjust-dateTime-to-timezone fail="17" pass="31" run="48" skipped="0" success="64.58%"/>
+    <fn-adjust-time-to-timezone fail="16" pass="26" run="42" skipped="0" success="61.9%"/>
+    <fn-boolean fail="29" pass="109" run="138" skipped="0" success="78.99%"/>
     <fn-ceiling fail="2" pass="34" run="36" skipped="0" success="94.44%"/>
     <fn-codepoint-equal fail="12" pass="18" run="30" skipped="0" success="60.0%"/>
   </fn>
+  <math>
+    <math-acos fail="1" pass="8" run="9" skipped="0" success="88.89%"/>
+    <math-asin fail="1" pass="8" run="9" skipped="0" success="88.89%"/>
+    <math-atan2 fail="0" pass="10" run="10" skipped="0" success="100.0%"/>
+    <math-atan fail="1" pass="8" run="9" skipped="0" success="88.89%"/>
+    <math-cos fail="1" pass="8" run="9" skipped="0" success="88.89%"/>
+    <math-exp10 fail="2" pass="6" run="8" skipped="0" success="75.0%"/>
+    <math-exp fail="3" pass="6" run="9" skipped="0" success="66.67%"/>
+    <math-log10 fail="2" pass="6" run="8" skipped="0" success="75.0%"/>
+    <math-log fail="2" pass="6" run="8" skipped="0" success="75.0%"/>
+    <math-pi fail="0" pass="3" run="3" skipped="0" success="100.0%"/>
+    <math-pow fail="12" pass="20" run="32" skipped="0" success="62.5%"/>
+    <math-sin fail="1" pass="8" run="9" skipped="0" success="88.89%"/>
+    <math-sqrt fail="2" pass="7" run="9" skipped="0" success="77.78%"/>
+    <math-tan fail="1" pass="10" run="11" skipped="0" success="90.91%"/>
+  </math>
   <prod>
-    <prod-ArrowPostfix fail="16" pass="14" run="30" skipped="4" success="46.67%"/>
+    <prod-ArrowPostfix fail="23" pass="7" run="30" skipped="4" success="23.33%"/>
     <prod-AxisStep.abbr fail="2" pass="13" run="15" skipped="0" success="86.67%"/>
-    <prod-AxisStep fail="57" pass="178" run="235" skipped="1" success="75.74%"/>
-    <prod-CastableExpr fail="136" pass="676" run="812" skipped="0" success="83.25%"/>
+    <prod-AxisStep fail="53" pass="180" run="233" skipped="1" success="77.25%"/>
+    <prod-CastableExpr fail="144" pass="693" run="837" skipped="0" success="82.8%"/>
     <prod-IfExpr fail="12" pass="7" run="19" skipped="10" success="36.84%"/>
     <prod-InlineFunctionExpr fail="18" pass="10" run="28" skipped="0" success="35.71%"/>
-    <prod-InstanceofExpr fail="61" pass="210" run="271" skipped="0" success="77.49%"/>
-    <prod-Literal fail="41" pass="62" run="103" skipped="0" success="60.19%"/>
+    <prod-InstanceofExpr fail="62" pass="210" run="272" skipped="0" success="77.21%"/>
+    <prod-LetClause fail="11" pass="12" run="23" skipped="0" success="52.17%"/>
+    <prod-Literal fail="46" pass="68" run="114" skipped="0" success="59.65%"/>
+    <prod-QuantifiedExpr fail="58" pass="103" run="161" skipped="0" success="63.98%"/>
   </prod>
 </testResult>

@@ -23,6 +23,7 @@ import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAdjustTimeToTimezoneTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnBooleanTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnCeilingTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnCodepointEqualTests;
+import org.apache.xalan.tests.w3c.xpath3.math.XPath3FunctionMathTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3ArrowPostfixTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisStepAbbrTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisStepTests;
@@ -30,7 +31,9 @@ import org.apache.xalan.tests.w3c.xpath3.prod.XPath3CastableExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3IfExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InlineFunctionExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InstanceOfExprTests;
+import org.apache.xalan.tests.w3c.xpath3.prod.XPath3LetClauseTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3LiteralTests;
+import org.apache.xalan.tests.w3c.xpath3.prod.XPath3QuantifiedExprTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -47,7 +50,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3AxisStepTests.class, XPath3AxisStepAbbrTests.class,
 	            XPath3FnAbsTests.class, XPath3FnAdjustDateToTimezoneTests.class, XPath3FnAdjustDateTimeToTimezoneTests.class,
 	            XPath3FnAdjustTimeToTimezoneTests.class, XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class,
-	            XPath3InlineFunctionExprTests.class, XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3IfExprTests.class })
+	            XPath3InlineFunctionExprTests.class, XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3IfExprTests.class,
+	            XPath3FunctionMathTests.class, XPath3QuantifiedExprTests.class, XPath3LetClauseTests.class })
 public class W3CXPath3Tests {
 
 }

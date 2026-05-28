@@ -24,12 +24,15 @@ import java.util.Date;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.tests.w3c.xpath3.W3CXPath3TestsUtil;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FuncDeepEqual;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,6 +40,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
@@ -67,15 +73,21 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
     @Test
     public void runXslArrowPostfixTests() {
     	
-    	Document document = null;    	
+    	Document document = null;
+    	Document xslTestCatalogDocument = null;
+    	
     	try {
     		document = m_xmlDocumentBuilder.parse(m_xslTransformTestSetFilePath);
+    		
+    		xslTestCatalogDocument = m_xmlDocumentBuilder.parse(W3C_XPATH3_TESTS_CATALOG_FILE_PATH);
     	} 
     	catch (Exception ex) {
             // no op
     	}
     	
-		Element elem1 = document.getDocumentElement();	    	
+		Element elem1 = document.getDocumentElement();
+		
+		Element catalogDocElem1 = xslTestCatalogDocument.getDocumentElement();    	
     	String testSetName = elem1.getAttribute("name");
     	
     	Document testResultDoc = m_xmlDocumentBuilder.newDocument();
@@ -97,6 +109,7 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
 					String runTimeErrCode = null;
 					if ("test-case".equals(nodeName)) {
 						String testCaseNameStr = testCaseElem.getAttribute("name");
+						NodeList envNodeList = testCaseElem.getElementsByTagName("environment");
 						
 						NodeList nodeList = testCaseElem.getElementsByTagName("dependency");
 						int size1 = nodeList.getLength();
@@ -181,7 +194,10 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
 										int size2 = expectedResultStr.length();
 										expectedResultStr = expectedResultStr.substring(1, size2 - 1);
 										expectedResultStr = "'" + expectedResultStr + "'"; 
-									}                            	                              	  
+									}
+									else if (!expectedResultStr.startsWith("\'") && !expectedResultStr.endsWith("\'")) {
+										expectedResultStr = "'" + expectedResultStr + "'";
+									}
 
 									XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
 									xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
@@ -222,11 +238,36 @@ public class XPath3ArrowPostfixTests extends W3CXPath3TestsUtil {
 									} 
 								}
 								else if ("assert-eq".equals(nodeName2)) {
-									if ((xpathResultObj != null) && xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
-										elemTestResult.setAttribute("status", "pass");
+									boolean isStatusFinal = false;
+									if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+										if (xpathExpectedObj instanceof XSString || xpathExpectedObj instanceof XString) {
+											try {
+												String strExpected1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);										   
+												String strResult1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+												double dbl1 = Double.valueOf(strExpected1);
+												double dbl2 = Double.valueOf(strResult1);
+												if (dbl1 == dbl2) {
+													elemTestResult.setAttribute("status", "pass");
+												}
+												else {
+													elemTestResult.setAttribute("status", "fail");
+												}
+											}
+											catch (NumberFormatException ex) {
+												elemTestResult.setAttribute("status", "fail");
+											}
+
+											isStatusFinal = true;
+										}
 									}
-									else {
-										elemTestResult.setAttribute("status", "fail");
+
+									if (!isStatusFinal) {
+										if ((xpathResultObj != null) && xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
+											elemTestResult.setAttribute("status", "pass");
+										}
+										else {
+											elemTestResult.setAttribute("status", "fail");
+										}
 									}
 								}
 								else if ("assert-permutation".equals(nodeName2)) {                                    

@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T11:33:14Z" fail="41" name="prod-Literal" pass="62" run="103" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T16:06:43Z" fail="46" name="prod-Literal" pass="68" run="114" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="Literals001"/>
+   <testResult status="pass" testName="Literals002"/>
+   <testResult status="pass" testName="Literals003"/>
+   <testResult status="pass" testName="Literals004"/>
    <testResult status="fail" testName="Literals006"/>
    <testResult status="fail" testName="Literals007"/>
    <testResult status="fail" testName="Literals008"/>
@@ -9,8 +13,8 @@
    <testResult status="pass" testName="Literals013"/>
    <testResult status="pass" testName="Literals014"/>
    <testResult status="pass" testName="Literals015"/>
-   <testResult status="pass" testName="Literals016"/>
-   <testResult status="pass" testName="Literals017"/>
+   <testResult status="fail" testName="Literals016"/>
+   <testResult status="fail" testName="Literals017"/>
    <testResult status="pass" testName="Literals018"/>
    <testResult status="pass" testName="Literals019"/>
    <testResult status="pass" testName="Literals020"/>
@@ -18,10 +22,10 @@
    <testResult status="pass" testName="Literals022"/>
    <testResult status="pass" testName="Literals023"/>
    <testResult status="pass" testName="Literals024"/>
-   <testResult status="pass" testName="Literals025"/>
+   <testResult status="fail" testName="Literals025"/>
    <testResult status="pass" testName="Literals026"/>
-   <testResult status="pass" testName="Literals027"/>
-   <testResult status="pass" testName="Literals028"/>
+   <testResult status="fail" testName="Literals027"/>
+   <testResult status="fail" testName="Literals028"/>
    <testResult status="pass" testName="Literals029"/>
    <testResult status="pass" testName="Literals030"/>
    <testResult status="pass" testName="Literals031"/>
@@ -49,6 +53,12 @@
    <testResult status="fail" testName="Literals053"/>
    <testResult status="fail" testName="Literals054"/>
    <testResult status="fail" testName="Literals055"/>
+   <testResult status="pass" testName="Literals056a"/>
+   <testResult status="pass" testName="Literals057a"/>
+   <testResult status="pass" testName="Literals058a"/>
+   <testResult status="pass" testName="Literals059a"/>
+   <testResult status="pass" testName="Literals060a"/>
+   <testResult status="pass" testName="Literals061a"/>
    <testResult status="pass" testName="K-Literals-1"/>
    <testResult status="pass" testName="K-Literals-2"/>
    <testResult status="fail" testName="K-Literals-3"/>
@@ -79,6 +89,7 @@
    <testResult status="pass" testName="K-Literals-28"/>
    <testResult status="fail" testName="K-Literals-29"/>
    <testResult status="pass" testName="K-Literals-30"/>
+   <testResult status="pass" testName="K-Literals-31a"/>
    <testResult status="pass" testName="K-Literals-37"/>
    <testResult status="pass" testName="K-Literals-47a"/>
    <testResult status="fail" testName="K-Literals-50"/>

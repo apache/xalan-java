@@ -124,8 +124,9 @@ public class XPath3AxisStepAbbrTests extends W3CXPath3TestsUtil {
 						if (envNodeList.getLength() > 0) {
 							Element elem = (Element)(envNodeList.item(0));
 							String envName = elem.getAttribute("ref");
-							if ((envName != null) && !"".equals(envName)) {
-								Node child = catalogDocElem1.getFirstChild();
+							if ((envName != null) && !"".equals(envName) && !"empty".equals(envName)) {																	
+								Node child = docElem1.getFirstChild();
+								boolean isEnvNodeResolved = false;
 								while (child != null) {
 									String envName2 = null;
 									Element elem2 = null;
@@ -151,16 +152,57 @@ public class XPath3AxisStepAbbrTests extends W3CXPath3TestsUtil {
 										Element elem3 = (Element)((elem2.getElementsByTagName("source")).item(0));
 										String srcFileName = elem3.getAttribute("file");									 
 
-										constructXalanDtmFromXMLFile(srcFileName, xctxt, true);
+										constructXalanDtmFromXMLFile(srcFileName, xctxt, false);
+										
+										isEnvNodeResolved = true;
 
 										break;
-									}
+									}								  
 									else {
 										child = child.getNextSibling();
 
 										continue;
 									}
 								}
+								
+								if (!isEnvNodeResolved) {
+									child = catalogDocElem1.getFirstChild();
+									while (child != null) {
+										String envName2 = null;
+										Element elem2 = null;
+										if (child.getNodeType() == Node.ELEMENT_NODE) {
+											elem2 = (Element)child;
+											String nodeName2 = elem2.getNodeName();
+											if ("environment".equals(nodeName2)) {
+												envName2 = elem2.getAttribute("name"); 
+											}
+											else {
+												child = child.getNextSibling();
+	
+												continue;
+											}
+										}
+										else {
+											child = child.getNextSibling();
+	
+											continue;
+										}
+	
+										if (envName.equals(envName2)) {
+											Element elem3 = (Element)((elem2.getElementsByTagName("source")).item(0));
+											String srcFileName = elem3.getAttribute("file");									 
+	
+											constructXalanDtmFromXMLFile(srcFileName, xctxt, true);
+	
+											break;
+										}
+										else {
+											child = child.getNextSibling();
+	
+											continue;
+										}
+									}
+							    }
 							}
 						}
 

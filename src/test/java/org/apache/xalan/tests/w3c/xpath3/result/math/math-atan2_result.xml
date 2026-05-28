@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T16:08:23Z" fail="0" name="math-atan2" pass="10" run="10" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="math-atan2-001"/>
+   <testResult status="pass" testName="math-atan2-002"/>
+   <testResult status="pass" testName="math-atan2-003"/>
+   <testResult status="pass" testName="math-atan2-004"/>
+   <testResult status="pass" testName="math-atan2-005"/>
+   <testResult status="pass" testName="math-atan2-006"/>
+   <testResult status="pass" testName="math-atan2-007"/>
+   <testResult status="pass" testName="math-atan2-008"/>
+   <testResult status="pass" testName="math-atan2-009"/>
+   <testResult status="pass" testName="math-atan2-010"/>
+</testrun>

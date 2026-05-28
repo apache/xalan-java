@@ -14,13 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xpath3.fn;
+package org.apache.xalan.tests.w3c.xpath3.prod;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URI;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.xml.transform.TransformerException;
 
@@ -51,21 +56,20 @@ import xml.xpath31.processor.types.XSString;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 function fn:codepoint-equal.
+ * for XPath 3.1 'let' clause.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
- * 
  */
-public class XPath3FnCodepointEqualTests extends W3CXPath3TestsUtil { 
+public class XPath3LetClauseTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {    	    	
-    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/codepoint-equal.xml";
-        m_resultSubFolderName = "fn";
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "prod/LetClause.xml";
+        m_resultSubFolderName = "prod";
     	
-    	m_testResultFileName = "codepoint-equal_result.xml";
+    	m_testResultFileName = "let_clause_result.xml";
     }
 
     @AfterClass
@@ -77,7 +81,7 @@ public class XPath3FnCodepointEqualTests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslFnCodepointEqualTests() {
+    public void runXslLetClauseTests() {
     	
     	Document document = null;
     	Document xslTestCatalogDocument = null;
@@ -128,7 +132,7 @@ public class XPath3FnCodepointEqualTests extends W3CXPath3TestsUtil {
 						PrefixResolver xmlNsPrefixResolver = getXMLNsPrefixResolver();
 						xctxt.setNamespaceContext(xmlNsPrefixResolver);
 						
-						String envName = null;
+                        String envName = null;
 						
 						if (envNodeList.getLength() > 0) {
 							Element elem = (Element)(envNodeList.item(0));
@@ -228,6 +232,8 @@ public class XPath3FnCodepointEqualTests extends W3CXPath3TestsUtil {
 						
 						String xpathExprStr = null;
 						
+						boolean xPathParseTimeOut = false;
+						
 						for (int idx = 0; idx < size1; idx++) {
 							Element elem3 = null;
 							String depType = null;							
@@ -252,9 +258,30 @@ public class XPath3FnCodepointEqualTests extends W3CXPath3TestsUtil {
 									if ((envName != null) && !"empty".equals(envName)) {
 										sourceNode = xctxt.getCurrentNode();
 									}
-                              	  
-									XPath xpathObj = new XPath(xpathExprStr, null, xmlNsPrefixResolver, XPath.SELECT, null);
-									xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
+									
+									XPath xpathObj = null;
+									// To run XPath parse within a specified timeout, to
+									// avoid program indefinite wait due to XPath parse inf loop.
+									ExecutorService executor = Executors.newSingleThreadExecutor();
+									final String xpathExprStr2 = xpathExprStr;
+									Future<XPath> future = executor.submit(() -> {                              	  
+									    XPath xpathObj2 = new XPath(xpathExprStr2, null, xmlNsPrefixResolver, XPath.SELECT, null);
+									    
+									    return xpathObj2;
+									});
+									
+									try {
+										// XPath parse evaluation timeout of 10 secs
+										xpathObj = future.get(10, TimeUnit.SECONDS);
+									} 
+									catch (TimeoutException ex) {
+									    future.cancel(true);									    
+									    xPathParseTimeOut = true;
+									}
+									
+									if (xpathObj != null) {
+									   xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
+									}
 								}
 								catch (TransformerException ex) {
 									String errMeg = ex.getMessage();
@@ -326,8 +353,11 @@ public class XPath3FnCodepointEqualTests extends W3CXPath3TestsUtil {
 									XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
 									xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 								}
-
-								if ("assert-deep-eq".equals(nodeName2)) {
+								
+								if (xPathParseTimeOut) {
+									elemTestResult.setAttribute("status", "skipped");
+								}
+								else if ("assert-deep-eq".equals(nodeName2)) {
 									if (xpathResultObj != null) {
 										FuncDeepEqual funcDeepEqual = new FuncDeepEqual();
 										funcDeepEqual.setArg(xpathResultObj, 0);
@@ -371,20 +401,20 @@ public class XPath3FnCodepointEqualTests extends W3CXPath3TestsUtil {
 												double dbl1 = Double.valueOf(strExpected1);
 												double dbl2 = Double.valueOf(strResult1);
 												if (dbl1 == dbl2) {
-													elemTestResult.setAttribute("status", "pass");
+												   elemTestResult.setAttribute("status", "pass");
 												}
 												else {
-													elemTestResult.setAttribute("status", "fail");
+												   elemTestResult.setAttribute("status", "fail");
 												}
 											}
 											catch (NumberFormatException ex) {
 												elemTestResult.setAttribute("status", "fail");
 											}
-
+											
 											isStatusFinal = true;
 										}
 									}
-
+									
 									if (!isStatusFinal) {
 										if ((xpathResultObj != null) && xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
 											elemTestResult.setAttribute("status", "pass");

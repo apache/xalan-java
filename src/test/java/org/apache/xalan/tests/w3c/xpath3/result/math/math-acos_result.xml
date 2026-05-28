@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T16:08:23Z" fail="1" name="math-acos" pass="8" run="9" skipped="0" statusUnknown="0">
+   <testResult status="fail" testName="math-acos-001"/>
+   <testResult status="pass" testName="math-acos-002"/>
+   <testResult status="pass" testName="math-acos-003"/>
+   <testResult status="pass" testName="math-acos-004"/>
+   <testResult status="pass" testName="math-acos-005"/>
+   <testResult status="pass" testName="math-acos-006"/>
+   <testResult status="pass" testName="math-acos-007"/>
+   <testResult status="pass" testName="math-acos-008"/>
+   <testResult status="pass" testName="math-acos-009"/>
+</testrun>

@@ -1,11 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T11:33:13Z" fail="12" name="fn-adjust-time-to-timezone" pass="16" run="28" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T16:06:42Z" fail="16" name="fn-adjust-time-to-timezone" pass="26" run="42" skipped="0" statusUnknown="0">
+   <testResult status="fail" testName="fn-adjust-time-to-timezone1args-1"/>
+   <testResult status="fail" testName="fn-adjust-time-to-timezone1args-2"/>
+   <testResult status="fail" testName="fn-adjust-time-to-timezone1args-3"/>
+   <testResult status="pass" testName="fn-adjust-time-to-timezone-1"/>
+   <testResult status="pass" testName="fn-adjust-time-to-timezone-2"/>
+   <testResult status="pass" testName="fn-adjust-time-to-timezone-3"/>
+   <testResult status="pass" testName="fn-adjust-time-to-timezone-4"/>
+   <testResult status="pass" testName="fn-adjust-time-to-timezone-5"/>
+   <testResult status="pass" testName="fn-adjust-time-to-timezone-6"/>
+   <testResult status="pass" testName="fn-adjust-time-to-timezone-7"/>
    <testResult status="pass" testName="fn-adjust-time-to-timezone-8"/>
+   <testResult status="pass" testName="fn-adjust-time-to-timezone-9"/>
+   <testResult status="pass" testName="fn-adjust-time-to-timezone-10"/>
+   <testResult status="pass" testName="fn-adjust-time-to-timezone-11"/>
    <testResult status="pass" testName="fn-adjust-time-to-timezone-12"/>
    <testResult status="pass" testName="fn-adjust-time-to-timezone-13"/>
    <testResult status="fail" testName="fn-adjust-time-to-timezone-14"/>
    <testResult status="fail" testName="fn-adjust-time-to-timezone-15"/>
    <testResult status="fail" testName="fn-adjust-time-to-timezone-16"/>
    <testResult status="fail" testName="fn-adjust-time-to-timezone-17"/>
+   <testResult status="fail" testName="fn-adjust-time-to-timezone-18"/>
    <testResult status="fail" testName="fn-adjust-time-to-timezone-19"/>
    <testResult status="pass" testName="fn-adjust-time-to-timezone-20"/>
    <testResult status="fail" testName="fn-adjust-time-to-timezone-21"/>

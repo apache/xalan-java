@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T16:08:24Z" fail="1" name="math-sin" pass="8" run="9" skipped="0" statusUnknown="0">
+   <testResult status="fail" testName="math-sin-001"/>
+   <testResult status="pass" testName="math-sin-002"/>
+   <testResult status="pass" testName="math-sin-003"/>
+   <testResult status="pass" testName="math-sin-004"/>
+   <testResult status="pass" testName="math-sin-005"/>
+   <testResult status="pass" testName="math-sin-006"/>
+   <testResult status="pass" testName="math-sin-007"/>
+   <testResult status="pass" testName="math-sin-008"/>
+   <testResult status="pass" testName="math-sin-009"/>
+</testrun>

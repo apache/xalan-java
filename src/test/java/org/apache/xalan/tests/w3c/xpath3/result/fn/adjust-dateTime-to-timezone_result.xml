@@ -1,10 +1,26 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T11:33:13Z" fail="12" name="fn-adjust-dateTime-to-timezone" pass="19" run="31" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T16:06:42Z" fail="17" name="fn-adjust-dateTime-to-timezone" pass="31" run="48" skipped="0" statusUnknown="0">
+   <testResult status="fail" testName="fn-adjust-dateTime-to-timezone1args-1"/>
+   <testResult status="fail" testName="fn-adjust-dateTime-to-timezone1args-2"/>
+   <testResult status="fail" testName="fn-adjust-dateTime-to-timezone1args-3"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-1"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-2"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-3"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-4"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-5"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-6"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-7"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-8"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-9"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-10"/>
+   <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-11"/>
    <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-12"/>
    <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-13"/>
    <testResult status="fail" testName="fn-adjust-dateTime-to-timezone-14"/>
    <testResult status="fail" testName="fn-adjust-dateTime-to-timezone-15"/>
    <testResult status="fail" testName="fn-adjust-dateTime-to-timezone-16"/>
    <testResult status="fail" testName="fn-adjust-dateTime-to-timezone-17"/>
+   <testResult status="fail" testName="fn-adjust-dateTime-to-timezone-18"/>
+   <testResult status="fail" testName="fn-adjust-dateTime-to-timezone-19"/>
    <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-20"/>
    <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-21"/>
    <testResult status="pass" testName="fn-adjust-dateTime-to-timezone-22"/>
@@ -26,6 +42,7 @@
    <testResult status="pass" testName="K-AdjDateTimeToTimezoneFunc-14"/>
    <testResult status="pass" testName="K-AdjDateTimeToTimezoneFunc-15"/>
    <testResult status="pass" testName="K-AdjDateTimeToTimezoneFunc-16"/>
+   <testResult status="pass" testName="K2-AdjDateTimeToTimezoneFunc-1"/>
    <testResult status="pass" testName="cbcl-adjust-dateTime-to-timezone-001"/>
    <testResult status="fail" testName="cbcl-adjust-dateTime-to-timezone-002"/>
    <testResult status="fail" testName="cbcl-adjust-dateTime-to-timezone-003"/>
