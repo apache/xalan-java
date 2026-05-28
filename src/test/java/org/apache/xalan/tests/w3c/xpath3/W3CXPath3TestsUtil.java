@@ -188,36 +188,38 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     protected void constructXalanDtmFromXMLFile(String xmlFile, XPathContext xctxt, boolean resolveWithCatalog) 
     		                                                                                                throws URISyntaxException, MalformedURLException, 
     																										                    SAXException, IOException {
-    	URI uri = new URI(xmlFile);
-    	URL resolvedUrl = null;
-    	if (uri.isAbsolute()) {
-    		resolvedUrl = new URL(xmlFile); 
-    	}
-    	else {
-    		URI uri2 = null;
-    		if (resolveWithCatalog) {
-    		   uri2 = (new URI(W3C_XPATH3_TESTS_CATALOG_FILE_PATH)).resolve(xmlFile);
+    	if (xmlFile != null) {
+    		URI uri = new URI(xmlFile);
+    		URL resolvedUrl = null;
+    		if (uri.isAbsolute()) {
+    			resolvedUrl = new URL(xmlFile); 
     		}
     		else {
-    		   uri2 = (new URI(m_xslTransformTestSetFilePath)).resolve(xmlFile);
+    			URI uri2 = null;
+    			if (resolveWithCatalog) {
+    				uri2 = (new URI(W3C_XPATH3_TESTS_CATALOG_FILE_PATH)).resolve(xmlFile);
+    			}
+    			else {
+    				uri2 = (new URI(m_xslTransformTestSetFilePath)).resolve(xmlFile);
+    			}
+
+    			resolvedUrl = uri2.toURL();
     		}
-    		
-    		resolvedUrl = uri2.toURL();
+
+    		String sourceDocUrlStr = resolvedUrl.toString();									 									 
+    		Document document2 = m_xmlDocumentBuilder.parse(sourceDocUrlStr);
+
+    		DOMSource domSource = new DOMSource(document2);
+    		Source source = (Source)domSource;
+    		source.setSystemId(sourceDocUrlStr);
+
+    		DTMManager dtmManager = xctxt.getDTMManager();
+    		DTM dtm = dtmManager.getDTM((Source)domSource, true, null, false, false);
+    		dtm.setDocumentBaseURI(sourceDocUrlStr);
+
+    		int docNodeHandle = dtm.getDocument();
+    		xctxt.pushCurrentNode(docNodeHandle);
     	}
-
-    	String sourceDocUrlStr = resolvedUrl.toString();									 									 
-    	Document document2 = m_xmlDocumentBuilder.parse(sourceDocUrlStr);
-
-    	DOMSource domSource = new DOMSource(document2);
-    	Source source = (Source)domSource;
-    	source.setSystemId(sourceDocUrlStr);
-
-    	DTMManager dtmManager = xctxt.getDTMManager();
-    	DTM dtm = dtmManager.getDTM((Source)domSource, true, null, false, false);
-    	dtm.setDocumentBaseURI(sourceDocUrlStr);
-
-    	int docNodeHandle = dtm.getDocument();
-    	xctxt.pushCurrentNode(docNodeHandle);
     }
     
     /**

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xpath3.prod;
+package org.apache.xalan.tests.w3c.xpath3.fn;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,20 +47,21 @@ import org.w3c.dom.NodeList;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 axis step.
+ * for XPath 3.1 function fn:ceiling.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
+ * 
  */
-public class XPath3AxisStepTests extends W3CXPath3TestsUtil { 
+public class XPath3FnCeilingTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {    	    	
-    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "prod/AxisStep.xml";
-        m_resultSubFolderName = "prod";
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/ceiling.xml";
+        m_resultSubFolderName = "fn";
     	
-    	m_testResultFileName = "axis_step_result.xml";
+    	m_testResultFileName = "ceiling_result.xml";
     }
 
     @AfterClass
@@ -72,7 +73,7 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslAxisStepTests() {
+    public void runXslFnCeilingTests() {
     	
     	Document document = null;    	
     	try {
@@ -117,10 +118,12 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 						PrefixResolver xmlNsPrefixResolver = getXMLNsPrefixResolver();
 						xctxt.setNamespaceContext(xmlNsPrefixResolver);
 						
+						String envName = null;
+						
 						if (envNodeList.getLength() > 0) {
 							Element elem = (Element)(envNodeList.item(0));
-							String envName = elem.getAttribute("ref");
-							if ((envName != null) && !"".equals(envName)) {							   
+							envName = elem.getAttribute("ref");
+							if ((envName != null) && !"".equals(envName) && !"empty".equals(envName)) {							   
 							   Node child = docElem1.getFirstChild();
 							   while (child != null) {
 								  String envName2 = null;
@@ -150,7 +153,7 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 									  constructXalanDtmFromXMLFile(srcFileName, xctxt, false);
 
 									  break;
-								  }
+								  }								  
 								  else {
 									  child = child.getNextSibling();
 									  
@@ -193,7 +196,11 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 								xpathExprStr = getXPathNormalizedStr(xpathExprStr);
 
 								try {
-									final int sourceNode = xctxt.getCurrentNode();
+									int sourceNode = DTM.NULL;
+									if ((envName != null) && !"empty".equals(envName)) {
+										sourceNode = xctxt.getCurrentNode();
+									}
+                              	  
 									XPath xpathObj = new XPath(xpathExprStr, null, xmlNsPrefixResolver, XPath.SELECT, null);
 									xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
 								}
@@ -208,7 +215,11 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 									}
 								}    							
 								catch (Exception ex) {
-									unRecoverableException = true;    								
+									unRecoverableException = true;									
+									elemTestResult.setAttribute("status", "fail");
+									
+									elemTestRun.appendChild(elemTestResult);
+									
 									node = node.getNextSibling();
 
 									break;
@@ -352,7 +363,11 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
                                 	}
 								}
                                 else if ("assert-type".equals(nodeName2)) {
-                                	final int sourceNode = xctxt.getCurrentNode();
+                                	int sourceNode = DTM.NULL;
+                                	if ((envName != null) && !"empty".equals(envName)) {
+                                		sourceNode = xctxt.getCurrentNode();
+                                	}
+                              	  
                                 	XPath xpathObj = new XPath("(" + xpathExprStr + ") instance of " + expectedResultStr, null, xctxt.getNamespaceContext(), 
                                 																												XPath.SELECT, null);
                                 	XObject xObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
@@ -425,7 +440,11 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
           									  }
                                 		  }
                                           else if ("assert-type".equals(nodeName3)) {
-                                        	  final int sourceNode = xctxt.getCurrentNode();
+                                        	  int sourceNode = DTM.NULL;
+                                        	  if ((envName != null) && !"empty".equals(envName)) {
+                                        	     sourceNode = xctxt.getCurrentNode();
+                                        	  }
+                                        	  
                                         	  XPath xpathObj = new XPath("(" + xpathExprStr + ") instance of " + expectedResultStr2, null, xctxt.getNamespaceContext(), 
                                         			                                                                                                          XPath.SELECT, null);
                                         	  XObject xObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
@@ -590,7 +609,11 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
           									  }
                                 		  }
                                           else if ("assert-type".equals(nodeName3)) {
-                                        	  final int sourceNode = xctxt.getCurrentNode();
+                                        	  int sourceNode = DTM.NULL;
+                                        	  if ((envName != null) && !"empty".equals(envName)) {
+                                        	     sourceNode = xctxt.getCurrentNode();
+                                        	  }
+                                        	  
                                         	  XPath xpathObj = new XPath("(" + xpathExprStr + ") instance of " + expectedResultStr2, null, xctxt.getNamespaceContext(), 
                                         			                                                                                                          XPath.SELECT, null);
                                         	  XObject xObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xslt3;
+package org.apache.xalan.tests.w3c.xpath3;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -37,29 +37,22 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Class implementation to produce W3C XSLT 3.0 test suite's summarized 
+ * Class implementation to produce W3C XPath 3.1 test suite's summarized 
  * XML result document for Xalan-J XSLT 3.0 development implementation.
- * 
- * Steps to use this class in the sequence mentioned:
- * 
- * 1) Run W3C XSLT 3.0 test suite for Xalan-J implementation using class 
- *    org.apache.xalan.tests.w3c.xslt3.W3CXSLT3Tests.
- * 2) Run this class to produce final aggregated results for W3C XSLT 3.0 
- *    test suite for Xalan-J. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class W3CXSLT3TestSuiteXalanResultSummarize {
+public class W3CXPath3TestSuiteXalanResultSummarize {
 	
 	/**
 	 * The value of this class field, need to conform to the local host 
 	 * where this class shall run.
 	 */
-	private static final String XALAN_W3C_XSLT3_TESTSUITE_RESULT_FOLDER_ROOT = "d:\\eclipseWorkspaces\\xalanj\\xalan-j_xslt3.0_mvn\\src\\test\\java\\org\\apache\\xalan\\tests\\w3c\\xslt3\\result";
+	private static final String XALAN_W3C_XPATH3_TESTSUITE_RESULT_FOLDER_ROOT = "d:\\eclipseWorkspaces\\xalanj\\xalan-j_xslt3.0_mvn\\src\\test\\java\\org\\apache\\xalan\\tests\\w3c\\xpath3\\result";
 	
-	private static final String RESULT_FILE_NAME = "w3c_xslt3_testsuite_xalan-j_result.xml";
+	private static final String RESULT_FILE_NAME = "w3c_xpath3_testsuite_xalan-j_result.xml";
 	
 	private static final String XSL_SERIALIZATION_INDENT_YES = "yes";
 	
@@ -74,14 +67,14 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 	 */
 	public static void main(String[] args) {
 		
-		W3CXSLT3TestSuiteXalanResultSummarize applnObj = new W3CXSLT3TestSuiteXalanResultSummarize();
+		W3CXPath3TestSuiteXalanResultSummarize applnObj = new W3CXPath3TestSuiteXalanResultSummarize();
 		
-		File folderRoot = new File(XALAN_W3C_XSLT3_TESTSUITE_RESULT_FOLDER_ROOT);		
+		File folderRoot = new File(XALAN_W3C_XPATH3_TESTSUITE_RESULT_FOLDER_ROOT);		
 		applnObj.summarizeTestSuiteResult(folderRoot);
 	}
 	
 	/**
-	 * Method definition, to implement W3C XSLT 3.0 test suite result 
+	 * Method definition, to implement W3C XPath 3.1 test suite result 
 	 * aggregation for Xalan-J implementation's conformance.
 	 */
 	private void summarizeTestSuiteResult(File folderRoot) {
@@ -98,8 +91,8 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 			DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 			Document document = docBuilder.newDocument();
 			Element testResultElem = document.createElement("testResult");
-			testResultElem.setAttribute("desc", "W3C XSLT 3.0 test suite results");
-			testResultElem.setAttribute("xslt_processor", "Apache Xalan XSLT 3.0 development code");
+			testResultElem.setAttribute("desc", "W3C XPath 3.1 test suite results");
+			testResultElem.setAttribute("xslt_processor", "Apache Xalan-J XSLT 3.0 development code");
 			String testRunDateStrValue = getDateISOString(new Date());
 			testResultElem.setAttribute("dateTime", testRunDateStrValue);
 
@@ -112,7 +105,7 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 				String testSetKindName = strArray[idx];	                       // e.g, decl, expr etc				
 				pathStr = folderRoot + File.separator + testSetKindName;
 				
-				if (pathStr.contains("xslt3" + File.separator + "result" + File.separator + "xalan")) {
+				if (pathStr.contains("xpath3" + File.separator + "result" + File.separator + "xalan")) {
 				   continue;	
 				}
 				
@@ -170,7 +163,7 @@ public class W3CXSLT3TestSuiteXalanResultSummarize {
 			transformer.setOutputProperty(XSL_SERIALIZATION_INDENT_KEY, String.valueOf(XSL_SERIALIZATION_INDENT_VALUE));
 			
 			DOMSource domSource = new DOMSource(document);
-			FileWriter fileWriter = new FileWriter(new File(XALAN_W3C_XSLT3_TESTSUITE_RESULT_FOLDER_ROOT + File.separator + RESULT_FILE_NAME));
+			FileWriter fileWriter = new FileWriter(new File(XALAN_W3C_XPATH3_TESTSUITE_RESULT_FOLDER_ROOT + File.separator + RESULT_FILE_NAME));
 			StreamResult streamResult = new StreamResult(fileWriter);
 			
 			transformer.transform(domSource, streamResult);

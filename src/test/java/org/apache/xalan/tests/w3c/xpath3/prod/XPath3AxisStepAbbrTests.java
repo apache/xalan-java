@@ -40,7 +40,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath abbreviated axes.
+ * for XPath 3.1 abbreviated axes.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -263,7 +263,7 @@ public class XPath3AxisStepAbbrTests extends W3CXPath3TestsUtil {
 										}
 									}
 									else {
-
+										elemTestResult.setAttribute("status", "fail");
 									}
 								}								
 								else if ("error".equals(nodeName2)) {

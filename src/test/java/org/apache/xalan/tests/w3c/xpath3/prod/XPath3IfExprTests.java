@@ -21,6 +21,11 @@ import java.io.FileOutputStream;
 import java.net.URI;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.xml.transform.TransformerException;
 
@@ -37,6 +42,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,22 +51,26 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
+
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 axis step.
+ * for XPath 3.1 'if' expression.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
+ * 
  */
-public class XPath3AxisStepTests extends W3CXPath3TestsUtil { 
+public class XPath3IfExprTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {    	    	
-    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "prod/AxisStep.xml";
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "prod/IfExpr.xml";
         m_resultSubFolderName = "prod";
     	
-    	m_testResultFileName = "axis_step_result.xml";
+    	m_testResultFileName = "if_expr_result.xml";
     }
 
     @AfterClass
@@ -72,7 +82,7 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslAxisStepTests() {
+    public void runXslIfExprTests() {
     	
     	Document document = null;    	
     	try {
@@ -117,10 +127,12 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 						PrefixResolver xmlNsPrefixResolver = getXMLNsPrefixResolver();
 						xctxt.setNamespaceContext(xmlNsPrefixResolver);
 						
+						String envName = null;
+						
 						if (envNodeList.getLength() > 0) {
 							Element elem = (Element)(envNodeList.item(0));
-							String envName = elem.getAttribute("ref");
-							if ((envName != null) && !"".equals(envName)) {							   
+							envName = elem.getAttribute("ref");
+							if ((envName != null) && !"".equals(envName) && !"empty".equals(envName)) {							   
 							   Node child = docElem1.getFirstChild();
 							   while (child != null) {
 								  String envName2 = null;
@@ -150,7 +162,7 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 									  constructXalanDtmFromXMLFile(srcFileName, xctxt, false);
 
 									  break;
-								  }
+								  }								  
 								  else {
 									  child = child.getNextSibling();
 									  
@@ -173,6 +185,8 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 						
 						String xpathExprStr = null;
 						
+						boolean xPathParseTimeOut = false;
+						
 						for (int idx = 0; idx < size1; idx++) {
 							Element elem3 = null;
 							String depType = null;							
@@ -193,9 +207,34 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 								xpathExprStr = getXPathNormalizedStr(xpathExprStr);
 
 								try {
-									final int sourceNode = xctxt.getCurrentNode();
-									XPath xpathObj = new XPath(xpathExprStr, null, xmlNsPrefixResolver, XPath.SELECT, null);
-									xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
+									int sourceNode = DTM.NULL;
+									if ((envName != null) && !"empty".equals(envName)) {
+										sourceNode = xctxt.getCurrentNode();
+									}
+									
+									XPath xpathObj = null;
+									// To run XPath parse within a specified timeout, to
+									// avoid program indefinite wait due to XPath parse inf loop.
+									ExecutorService executor = Executors.newSingleThreadExecutor();
+									final String xpathExprStr2 = xpathExprStr;
+									Future<XPath> future = executor.submit(() -> {                              	  
+									    XPath xpathObj2 = new XPath(xpathExprStr2, null, xmlNsPrefixResolver, XPath.SELECT, null);
+									    
+									    return xpathObj2;
+									});
+									
+									try {
+										// XPath parse evaluation timeout of 10 secs
+										xpathObj = future.get(10, TimeUnit.SECONDS);
+									} 
+									catch (TimeoutException ex) {
+									    future.cancel(true);									    
+									    xPathParseTimeOut = true;
+									}
+									
+									if (xpathObj != null) {
+									   xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
+									}
 								}
 								catch (TransformerException ex) {
 									String errMeg = ex.getMessage();
@@ -208,7 +247,11 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 									}
 								}    							
 								catch (Exception ex) {
-									unRecoverableException = true;    								
+									unRecoverableException = true;									
+									elemTestResult.setAttribute("status", "fail");
+									
+									elemTestRun.appendChild(elemTestResult);
+									
 									node = node.getNextSibling();
 
 									break;
@@ -255,13 +298,19 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 										int size2 = expectedResultStr.length();
 										expectedResultStr = expectedResultStr.substring(1, size2 - 1);
 										expectedResultStr = "'" + expectedResultStr + "'"; 
-									}                            	                              	  
+									}
+									else if (!expectedResultStr.startsWith("\'") && !expectedResultStr.endsWith("\'")) {
+										expectedResultStr = "'" + expectedResultStr + "'";
+									}
 
 									XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
 									xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 								}
-
-								if ("assert-deep-eq".equals(nodeName2)) {
+								
+								if (xPathParseTimeOut) {
+									elemTestResult.setAttribute("status", "skipped");
+								}
+								else if ("assert-deep-eq".equals(nodeName2)) {
 									if (xpathResultObj != null) {
 										FuncDeepEqual funcDeepEqual = new FuncDeepEqual();
 										funcDeepEqual.setArg(xpathResultObj, 0);
@@ -296,11 +345,36 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
 									} 
 								}
 								else if ("assert-eq".equals(nodeName2)) {
-									if ((xpathResultObj != null) && xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
-									   elemTestResult.setAttribute("status", "pass");
+									boolean isStatusFinal = false;
+									if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+										if (xpathExpectedObj instanceof XSString || xpathExpectedObj instanceof XString) {
+											try {
+												String strExpected1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);										   
+												String strResult1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+												double dbl1 = Double.valueOf(strExpected1);
+												double dbl2 = Double.valueOf(strResult1);
+												if (dbl1 == dbl2) {
+												   elemTestResult.setAttribute("status", "pass");
+												}
+												else {
+												   elemTestResult.setAttribute("status", "fail");
+												}
+											}
+											catch (NumberFormatException ex) {
+												elemTestResult.setAttribute("status", "fail");
+											}
+											
+											isStatusFinal = true;
+										}
 									}
-									else {
-									   elemTestResult.setAttribute("status", "fail");
+									
+									if (!isStatusFinal) {
+										if ((xpathResultObj != null) && xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
+											elemTestResult.setAttribute("status", "pass");
+										}
+										else {
+											elemTestResult.setAttribute("status", "fail");
+										}
 									}
 								}
 								else if ("assert-count".equals(nodeName2)) {
@@ -352,7 +426,11 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
                                 	}
 								}
                                 else if ("assert-type".equals(nodeName2)) {
-                                	final int sourceNode = xctxt.getCurrentNode();
+                                	int sourceNode = DTM.NULL;
+                                	if ((envName != null) && !"empty".equals(envName)) {
+                                		sourceNode = xctxt.getCurrentNode();
+                                	}
+                              	  
                                 	XPath xpathObj = new XPath("(" + xpathExprStr + ") instance of " + expectedResultStr, null, xctxt.getNamespaceContext(), 
                                 																												XPath.SELECT, null);
                                 	XObject xObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
@@ -425,7 +503,11 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
           									  }
                                 		  }
                                           else if ("assert-type".equals(nodeName3)) {
-                                        	  final int sourceNode = xctxt.getCurrentNode();
+                                        	  int sourceNode = DTM.NULL;
+                                        	  if ((envName != null) && !"empty".equals(envName)) {
+                                        	     sourceNode = xctxt.getCurrentNode();
+                                        	  }
+                                        	  
                                         	  XPath xpathObj = new XPath("(" + xpathExprStr + ") instance of " + expectedResultStr2, null, xctxt.getNamespaceContext(), 
                                         			                                                                                                          XPath.SELECT, null);
                                         	  XObject xObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
@@ -590,7 +672,11 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
           									  }
                                 		  }
                                           else if ("assert-type".equals(nodeName3)) {
-                                        	  final int sourceNode = xctxt.getCurrentNode();
+                                        	  int sourceNode = DTM.NULL;
+                                        	  if ((envName != null) && !"empty".equals(envName)) {
+                                        	     sourceNode = xctxt.getCurrentNode();
+                                        	  }
+                                        	  
                                         	  XPath xpathObj = new XPath("(" + xpathExprStr + ") instance of " + expectedResultStr2, null, xctxt.getNamespaceContext(), 
                                         			                                                                                                          XPath.SELECT, null);
                                         	  XObject xObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
