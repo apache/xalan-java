@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-28T16:06:41Z" fail="144" name="prod-CastableExpr" pass="693" run="837" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-29T11:13:08Z" fail="144" name="prod-CastableExpr" pass="693" run="837" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="CastableAs001"/>
    <testResult status="pass" testName="CastableAs002"/>
    <testResult status="pass" testName="CastableAs003"/>
@@ -648,6 +648,7 @@
    <testResult status="fail" testName="CastableAs647"/>
    <testResult status="fail" testName="CastableAs648a"/>
    <testResult status="pass" testName="CastableAs649"/>
+   <testResult status="skipped" testName="CastableAs650"/>
    <testResult status="pass" testName="CastableAs663"/>
    <testResult status="fail" testName="CastableAs664"/>
    <testResult status="fail" testName="K-SeqExprCastable-1"/>

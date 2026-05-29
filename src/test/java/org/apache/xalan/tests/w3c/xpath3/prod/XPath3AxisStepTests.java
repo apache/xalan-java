@@ -413,7 +413,7 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
                                 else if ("assert-string-value".equals(nodeName2)) {
                                 	if (xpathResultObj != null) {                                	   
                                 	   String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-                                	   String resultStr1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+                                	   String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
                                 	   if (expectedStr1.equals(resultStr1)) {
                                 		  elemTestResult.setAttribute("status", "pass");
                                 	   }
@@ -539,10 +539,31 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
                                         		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 
-                                        		  if (!xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
+                                        		  if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+                                        			  if (xpathExpectedObj instanceof XSString || xpathExpectedObj instanceof XString) {
+                                        				  try {
+                                        					  String strExpected1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);										   
+                                        					  String strResult1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+                                        					  double dbl1 = Double.valueOf(strExpected1);
+                                        					  double dbl2 = Double.valueOf(strResult1);
+                                        					  if (dbl1 != dbl2) {
+                                        						  isXslTestPass = false;
+
+                                        						  break;
+                                        					  }          												
+                                        				  }
+                                        				  catch (NumberFormatException ex) {
+                                        					  isXslTestPass = false;
+
+                                    						  break;
+                                        				  }
+                                        			  }
+                                        		  }
+
+                                        		  if ((xpathResultObj != null) && !xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
                                         			  isXslTestPass = false;
 
-                                        			  break;
+                            						  break;
                                         		  }
                                         	  }
                                 		  }
@@ -576,7 +597,7 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
                                         		  
                                         		  String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-                                        		  String resultStr1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+                                        		  String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
                                         		  if (!expectedStr1.equals(resultStr1)) {
                                         			  isXslTestPass = false;
 
@@ -704,10 +725,29 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
                                         		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 
-                                        		  if (xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
+                                        		  if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+                                        			  if (xpathExpectedObj instanceof XSString || xpathExpectedObj instanceof XString) {
+                                        				  try {
+                                        					  String strExpected1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);										   
+                                        					  String strResult1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+                                        					  double dbl1 = Double.valueOf(strExpected1);
+                                        					  double dbl2 = Double.valueOf(strResult1);
+                                        					  if (dbl1 == dbl2) {
+                                        						  isXslTestPass = true;
+
+                                        						  break;
+                                        					  }          												
+                                        				  }
+                                        				  catch (NumberFormatException ex) {
+                                        					  // no op
+                                        				  }
+                                        			  }
+                                        		  }
+
+                                        		  if ((xpathResultObj != null) && xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
                                         			  isXslTestPass = true;
 
-                                        			  break;
+                            						  break;
                                         		  }
                                         	  }
                                 		  }
@@ -741,7 +781,7 @@ public class XPath3AxisStepTests extends W3CXPath3TestsUtil {
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
                                         		  
                                         		  String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-                                        		  String resultStr1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+                                        		  String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
                                         		  if (expectedStr1.equals(resultStr1)) {
                                         			  isXslTestPass = true;
 

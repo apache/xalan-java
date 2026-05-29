@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-29T11:15:14Z" fail="0" name="op-anyURI-greater-than" pass="10" run="10" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="K2-AnyURILeGe-1"/>
+   <testResult status="pass" testName="K2-AnyURILeGe-2"/>
+   <testResult status="pass" testName="K2-AnyURILeGe-3"/>
+   <testResult status="pass" testName="K2-AnyURILeGe-4"/>
+   <testResult status="pass" testName="K2-AnyURILeGe-5"/>
+   <testResult status="pass" testName="K2-AnyURILeGe-6"/>
+   <testResult status="pass" testName="K2-AnyURILeGe-7"/>
+   <testResult status="pass" testName="K2-AnyURILeGe-8"/>
+   <testResult status="pass" testName="K2-AnyURILeGe-9"/>
+   <testResult status="pass" testName="K2-AnyURILeGe-10"/>
+</testrun>

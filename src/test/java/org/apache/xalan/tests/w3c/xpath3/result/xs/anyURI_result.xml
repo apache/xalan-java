@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-29T11:15:10Z" fail="1" name="xs-anyURI" pass="8" run="9" skipped="0" statusUnknown="0">
+   <testResult status="fail" testName="cbcl-anyURI-001"/>
+   <testResult status="pass" testName="cbcl-anyURI-002"/>
+   <testResult status="pass" testName="cbcl-anyURI-003"/>
+   <testResult status="pass" testName="cbcl-anyURI-005"/>
+   <testResult status="pass" testName="cbcl-anyURI-007"/>
+   <testResult status="pass" testName="cbcl-anyURI-008"/>
+   <testResult status="pass" testName="cbcl-anyURI-010"/>
+   <testResult status="pass" testName="cbcl-anyURI-011"/>
+   <testResult status="pass" testName="cbcl-anyURI-013"/>
+</testrun>

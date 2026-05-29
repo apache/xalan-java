@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-29T11:15:12Z" fail="8" name="op-add-dayTimeDuration-to-time" pass="16" run="24" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time2args-1"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time2args-2"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time2args-3"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time2args-4"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time2args-5"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time-1"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time-2"/>
+   <testResult status="fail" testName="op-add-dayTimeDuration-to-time-3"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time-4"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time-5"/>
+   <testResult status="fail" testName="op-add-dayTimeDuration-to-time-6"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time-7"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time-8"/>
+   <testResult status="fail" testName="op-add-dayTimeDuration-to-time-9"/>
+   <testResult status="fail" testName="op-add-dayTimeDuration-to-time-10"/>
+   <testResult status="fail" testName="op-add-dayTimeDuration-to-timealt-12"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time-13"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time-14"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time-15"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-time-16"/>
+   <testResult status="fail" testName="op-add-dayTimeDuration-to-time-17"/>
+   <testResult status="pass" testName="K-TimeAddDTD-1"/>
+   <testResult status="fail" testName="K-TimeAddDTD-2"/>
+   <testResult status="fail" testName="K2-TimeAddDTD-1"/>
+</testrun>

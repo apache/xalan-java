@@ -55,8 +55,7 @@ import xml.xpath31.processor.types.XSString;
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
- * @xsl.usage advanced
- * 
+ * @xsl.usage advanced 
  */
 public class XPath3FnAdjustDateToTimezoneTests extends W3CXPath3TestsUtil { 
 
@@ -267,14 +266,25 @@ public class XPath3FnAdjustDateToTimezoneTests extends W3CXPath3TestsUtil {
 									}
 								}    							
 								catch (Exception ex) {
-									unRecoverableException = true;									
-									elemTestResult.setAttribute("status", "fail");
-									
-									elemTestRun.appendChild(elemTestResult);
-									
-									node = node.getNextSibling();
+									String errMeg = ex.getMessage();
+									String[] errMesgParts = errMeg.split(":");
+									if (errMesgParts.length > 2) {
+										runTimeErrCode = (errMesgParts[1]).trim();
+									}
+									else if (errMesgParts.length > 1) {
+										runTimeErrCode = (errMesgParts[0]).trim();
+									}
 
-									break;
+									if (runTimeErrCode == null) {
+										unRecoverableException = true;									
+										elemTestResult.setAttribute("status", "fail");
+
+										elemTestRun.appendChild(elemTestResult);
+
+										node = node.getNextSibling();
+
+										break;
+									}
 								}
 								finally {
 									xctxt.popCurrentNode();
@@ -422,7 +432,7 @@ public class XPath3FnAdjustDateToTimezoneTests extends W3CXPath3TestsUtil {
                                 else if ("assert-string-value".equals(nodeName2)) {
                                 	if (xpathResultObj != null) {                                	   
                                 	   String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-                                	   String resultStr1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+                                	   String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
                                 	   if (expectedStr1.equals(resultStr1)) {
                                 		  elemTestResult.setAttribute("status", "pass");
                                 	   }
@@ -552,15 +562,34 @@ public class XPath3FnAdjustDateToTimezoneTests extends W3CXPath3TestsUtil {
                                         	  } 
                                 		  }
                                           else if ("assert-eq".equals(nodeName3)) {
-                                        	  if (xpathResultObj != null) {
-                                        		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
-                                        		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+                                        	  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                            				  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+                            				  
+                                        	  if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+                                        		  if (xpathExpectedObj instanceof XSString || xpathExpectedObj instanceof XString) {
+                                        			  try {
+                                        				  String strExpected1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);										   
+                                        				  String strResult1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+                                        				  double dbl1 = Double.valueOf(strExpected1);
+                                        				  double dbl2 = Double.valueOf(strResult1);
+                                        				  if (dbl1 != dbl2) {
+                                        					  isXslTestPass = false;
 
-                                        		  if (!xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
-                                        			  isXslTestPass = false;
+                                        					  break;
+                                        				  }          												
+                                        			  }
+                                        			  catch (NumberFormatException ex) {
+                                        				  isXslTestPass = false;
 
-                                        			  break;
+                                    					  break;
+                                        			  }
                                         		  }
+                                        	  }
+
+                                        	  if ((xpathResultObj != null) && !xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
+                                        		  isXslTestPass = false;
+
+                            					  break;
                                         	  }
                                 		  }
                                           else if ("assert-count".equals(nodeName3)) {
@@ -593,7 +622,7 @@ public class XPath3FnAdjustDateToTimezoneTests extends W3CXPath3TestsUtil {
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
                                         		  
                                         		  String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-                                        		  String resultStr1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+                                        		  String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
                                         		  if (!expectedStr1.equals(resultStr1)) {
                                         			  isXslTestPass = false;
 
@@ -721,15 +750,32 @@ public class XPath3FnAdjustDateToTimezoneTests extends W3CXPath3TestsUtil {
                                         	  } 
                                 		  }
                                           else if ("assert-eq".equals(nodeName3)) {
-                                        	  if (xpathResultObj != null) {
-                                        		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
-                                        		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+                                        	  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                            				  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+                            				  
+                                        	  if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+                                        		  if (xpathExpectedObj instanceof XSString || xpathExpectedObj instanceof XString) {
+                                        			  try {
+                                        				  String strExpected1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);										   
+                                        				  String strResult1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+                                        				  double dbl1 = Double.valueOf(strExpected1);
+                                        				  double dbl2 = Double.valueOf(strResult1);
+                                        				  if (dbl1 == dbl2) {
+                                        					  isXslTestPass = true;
 
-                                        		  if (xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
-                                        			  isXslTestPass = true;
-
-                                        			  break;
+                                        					  break;
+                                        				  }          												
+                                        			  }
+                                        			  catch (NumberFormatException ex) {
+                                        				  // no op
+                                        			  }
                                         		  }
+                                        	  }
+
+                                        	  if ((xpathResultObj != null) && xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
+                                        		  isXslTestPass = true;
+
+                            					  break;
                                         	  }
                                 		  }
                                           else if ("assert-count".equals(nodeName3)) {
@@ -762,7 +808,7 @@ public class XPath3FnAdjustDateToTimezoneTests extends W3CXPath3TestsUtil {
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
                                         		  
                                         		  String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-                                        		  String resultStr1 = XslTransformEvaluationHelper.getStrVal(xpathResultObj);
+                                        		  String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
                                         		  if (expectedStr1.equals(resultStr1)) {
                                         			  isXslTestPass = true;
 

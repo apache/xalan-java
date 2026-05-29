@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-29T11:15:10Z" fail="3" name="map-for-each" pass="9" run="12" skipped="0" statusUnknown="0">
+   <testResult status="fail" testName="map-for-each-001"/>
+   <testResult status="pass" testName="map-for-each-002"/>
+   <testResult status="pass" testName="map-for-each-005"/>
+   <testResult status="pass" testName="map-for-each-006"/>
+   <testResult status="fail" testName="map-for-each-007"/>
+   <testResult status="pass" testName="map-for-each-010"/>
+   <testResult status="pass" testName="map-for-each-011"/>
+   <testResult status="fail" testName="map-for-each-012"/>
+   <testResult status="pass" testName="map-for-each-013"/>
+   <testResult status="pass" testName="map-for-each-014"/>
+   <testResult status="pass" testName="map-for-each-015"/>
+   <testResult status="pass" testName="map-for-each-016"/>
+</testrun>

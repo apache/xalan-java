@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-29T11:15:23Z" fail="16" name="op-divide-dayTimeDuration-by-dayTimeDuration" pass="9" run="25" skipped="0" statusUnknown="0">
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dayTimeDuration2args-1"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dayTimeDuration2args-2"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dayTimeDuration2args-3"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-by-dayTimeDuration2args-4"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-by-dayTimeDuration2args-5"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dTD-1"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dTD-2"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dTD-3"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-by-dTD-4"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-by-dTD-5"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-by-dTD-6"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-by-dTD-7"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dTD-8"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dTD-9"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dTD-10"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dTD-11"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dTD-12"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-by-dTD-13"/>
+   <testResult status="fail" testName="op-divide-dayTimeDuration-by-dTD-14"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-by-dTD-15"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-by-dTD-16"/>
+   <testResult status="fail" testName="K-DayTimeDurationDivideDTD-1"/>
+   <testResult status="fail" testName="cbcl-divide-dayTimeDuration-by-dayTimeDuration-001"/>
+   <testResult status="fail" testName="cbcl-divide-dayTimeDuration-by-dayTimeDuration-002"/>
+   <testResult status="fail" testName="cbcl-divide-dayTimeDuration-by-dayTimeDuration-003"/>
+</testrun>
