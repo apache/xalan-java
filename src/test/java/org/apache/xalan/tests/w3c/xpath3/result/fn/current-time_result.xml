@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T16:50:56Z" fail="5" name="fn-current-time" pass="19" run="24" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="fn-current-time-1"/>
+   <testResult status="pass" testName="fn-current-time-2"/>
+   <testResult status="pass" testName="fn-current-time-3"/>
+   <testResult status="pass" testName="fn-current-time-4"/>
+   <testResult status="pass" testName="fn-current-time-5"/>
+   <testResult status="pass" testName="fn-current-time-6"/>
+   <testResult status="pass" testName="fn-current-time-7"/>
+   <testResult status="pass" testName="fn-current-time-8"/>
+   <testResult status="pass" testName="fn-current-time-9"/>
+   <testResult status="pass" testName="fn-current-time-10"/>
+   <testResult status="pass" testName="fn-current-time-11"/>
+   <testResult status="pass" testName="fn-current-time-12"/>
+   <testResult status="pass" testName="fn-current-time-13"/>
+   <testResult status="pass" testName="fn-current-time-14"/>
+   <testResult status="pass" testName="fn-current-time-15"/>
+   <testResult status="fail" testName="fn-current-time-16"/>
+   <testResult status="fail" testName="fn-current-time-17"/>
+   <testResult status="fail" testName="fn-current-time-18"/>
+   <testResult status="fail" testName="fn-current-time-19"/>
+   <testResult status="pass" testName="fn-current-time-20"/>
+   <testResult status="pass" testName="fn-current-time-21"/>
+   <testResult status="fail" testName="fn-current-time-22"/>
+   <testResult status="pass" testName="K-ContextCurrentTimeFunc-1"/>
+   <testResult status="pass" testName="K-ContextCurrentTimeFunc-2"/>
+</testrun>

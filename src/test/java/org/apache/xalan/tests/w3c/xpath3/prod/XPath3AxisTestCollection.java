@@ -55,7 +55,7 @@ public class XPath3AxisTestCollection extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslOpTests() {
+    public void runXslAxisTests() {
     	runXPathTestSetCollectionAndProduceResult();		
     }
 

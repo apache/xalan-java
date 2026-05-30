@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-05-24
+Document last modified : 2026-05-30
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -27,47 +27,47 @@ Authors:
 
 Purpose: The objective of providing this document are following:
 
-         > To describe code repos structure, build processes and testing information for Xalan Java's 
+         > To describe code repos structure, build processes and testing information for Xalan-J 
            XSLT 3.0 development project.
-         > To describe methods to run Xalan Java XSLT 3.0 processor from command line, and from within
+         > To describe methods to run Xalan-J XSLT 3.0 processor from command line, and from within
            Java application code.        
 
 This, GitHub repos branch has src code configured as Maven (https://maven.apache.org/) build, for 
-Xalan Java's implementation for XSLT 3.0 and XPath 3.1 specifications. XSLT, XPath and XQuery languages
-are collectively named as XSL (Extensible Stylesheet Language). There are various Xalan Java 
+Xalan-J implementation for XSLT 3.0 and XPath 3.1 specifications. XSLT, XPath and XQuery languages
+are collectively named as XSL (Extensible Stylesheet Language). There are various Xalan-J 
 src code and document locations, where the name XSL is been used to refer to XSLT 3.0 and XPath 3.1.
 
-Xalan Java implementation is primarily dependent, on Xerces-J src code that provides XML parse and XML Schema
-implementation support. Xalan Java XSLT 3.0 implementation is presently in development stage, and 
-Xalan team hopes to release Xalan Java XSLT 3.0 implementation as a formal software alpha release 
+Xalan-J implementation is primarily dependent, on Xerces-J src code that provides XML parse and XML Schema
+implementation support. Xalan-J XSLT 3.0 implementation is presently in development stage, and 
+Xalan team hopes to release Xalan-J XSLT 3.0 implementation as a formal software alpha release 
 (ref, https://en.wikipedia.org/wiki/Software_release_life_cycle).
 
-Xalan Java XSLT 3.0 development code, presently uses Xerces-J build jar named as xercesImpl-2.12.3_dev2.jar 
+Xalan-J XSLT 3.0 development code, presently uses Xerces-J build jar named as xercesImpl-2.12.3_dev2.jar 
 (the name of this jar file may change in future, and proper alpha, beta or other names for this jar shall 
 be used) that is produced from Xerces-J's latest unreleased code from its 'main' branch. 
 
-Following are the steps, to run Xalan Java's XSLT 3.0 and XPath 3.1 conformance tests and produce 
-XSLT 3.0 build jar file (containing Xalan Java's XSLT 3.0 and XPath 3.1 run-time processors):  
+Following are the steps, to run Xalan-J XSLT 3.0 and XPath 3.1 conformance tests and produce 
+XSLT 3.0 build jar file (containing Xalan-J XSLT 3.0 and XPath 3.1 run-time processors):  
 
 1) Set JAVA_HOME environment variable referring to JDK's local installation folder. JDK version 1.8 has been used
-to develop and test Xalan Java's src code available within this code base repos branch. JDK versions greater than 1.8 
-shall also work fine to compile and run Xalan Java's XSLT 3.0 processor built from this code base repos branch.
+to develop and test Xalan-J src code available within this code base repos branch. JDK versions greater than 1.8 
+shall also work fine to compile and run Xalan-J XSLT 3.0 processor built from this code base repos branch.
 
-Set the JVM thread stack run-time size to 8 MB (with JVM run-time option -Xss8m), for running Xalan Java XSLT 3.0 implementation. 
+Set the JVM thread stack run-time size to 8 MB (with JVM run-time option -Xss8m), for running Xalan-J XSLT 3.0 implementation. 
 JVM default thread stack size is 1 megabyte (1MB) on a 64-bit JVM. Increasing JVM thread stack run-time size, 
-more than the default limit, helps with running deep recursive XSL templates and functions. This is an optional Xalan Java JVM
-run-time optimization, but should be done while running Xalan Java XSLT 3.0 test suite. 
+more than the default limit, helps with running deep recursive XSL templates and functions. This is an optional Xalan-J JVM
+run-time optimization, but should be done while running Xalan-J XSLT 3.0 test suite. 
 
 2) Java Maven build tool needs to be installed on local workstation, using JDK installation referred by JAVA_HOME 
 environment variable.
 
-3) Commands to run Xalan Java XSLT 3.0 test suite
+3) Commands to run Xalan-J XSLT 3.0 test suite
 
-Xalan Java XSLT 3.0 test suite is provided in two parts, to help reduce test suite's complexity.
+Xalan-J XSLT 3.0 test suite is provided in two parts, to help reduce test suite's complexity.
 
-Run the following commands, to run Xalan Java XSLT 3.0 test suite: 
+Run the following commands, to run Xalan-J XSLT 3.0 test suite: 
 
-3.1) To run 'part 1' of Xalan Java XSLT 3.0 test suite
+3.1) To run 'part 1' of Xalan-J XSLT 3.0 test suite
 
 mvn clean package test -Dtest=XalanXsl3TestSuite1
 
@@ -89,7 +89,7 @@ When this Maven build command is run, results like following shall be produced:
 [INFO] Total time:  53.529 s
 [INFO] ------------------------------------------------------------------------
 
-3.2) To run 'part 2' of Xalan Java XSLT 3.0 test suite
+3.2) To run 'part 2' of Xalan-J XSLT 3.0 test suite
 
 mvn clean package test -Dtest=XalanXsl3TestSuite2
 
@@ -111,70 +111,78 @@ When this Maven build command is run, results like following shall be produced:
 [INFO] Total time:  51.614 s
 
 
-After verifying that, Xalan Java XSLT 3.0 src code passes all the applicable XSL test cases, user may install Xalan Java
+After verifying that, Xalan-J XSLT 3.0 src code passes all the applicable XSL test cases, user may install Xalan-J
 XSLT 3.0 jar file within the local Maven repos using following command:
 
 mvn clean install -DskipTests
 
-4) This code base repos branch also has Xalan Java's XSLT 3.0 test drivers for W3C XSLT 3.0 test suite (located at, 
-https://github.com/w3c/xslt30-test).
+4) Xalan-J XSL 3 implementation, compliance with W3C XSLT 3.0 and XPath 3.1 test suites
+
+4.1) This code base repos branch also has Xalan-J XSLT 3.0 test drivers for, W3C XSLT 3.0 test suite (located at, https://github.com/w3c/xslt30-test).
 
 The code repos folder src/test/java/org/apache/xalan/tests/w3c/xslt3 has following Java classes for this purpose:
 
-W3CXSLT3Tests : To run various W3C XSLT 3.0 test sets, to test Xalan Java's XSLT 3.0 implementation.
+W3CXSLT3Tests : To run various W3C XSLT 3.0 test sets, to test Xalan-J XSLT 3.0 implementation.
 
-[Important] : Running all W3C XSLT 3.0 test sets configured for Xalan Java's XSLT 3.0 implementation is a bit slow,
+[Important] : Running all W3C XSLT 3.0 test sets configured for Xalan-J XSLT 3.0 implementation is a bit slow,
 due to a W3C XSL test case type\date\date-020.xsl which has a long running xsl:for-each instruction like
 <xsl:for-each select="1 to 1000000"> ... that is intended to test, that current date/time returned by XPath 
 function fn:current-dateTime() doesn't change throughout an XSL transformation. To fasten run-time of this
 W3C XSLT 3.0 test case, we may modify this xsl:for-each instruction for e.g to <xsl:for-each select="1 to 10000">,
 without changing the intent of this test case.
 
-W3CXSLT3TestSuiteXalanResultSummarize : To produce an aggregated W3C XSLT 3.0 test suite results, for Xalan Java's 
+W3CXSLT3TestSuiteXalanResultSummarize : To produce an aggregated W3C XSLT 3.0 test suite results, for Xalan-J
 XSLT 3.0 implementation.
 
-Xalan Java's XSLT 3.0 implementation's conformance results with W3C XSLT 3.0 test suite are available at following location : 
-https://github.com/apache/Xalan Javaava/blob/Xalan Java_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/w3c_xslt3_testsuite_Xalan Java_result.xml
+Xalan-J XSLT 3.0 implementation's conformance results with W3C XSLT 3.0 test suite are available at location : 
+https://github.com/apache/xalan-java/blob/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xslt3/result/w3c_xslt3_testsuite_xalan-j_result.xml
 
-5) Producing, Xalan Java code base documentation for this dev repos branch, using JDK's javadoc command 
+4.2) This code base repos branch also has Xalan-J XPath 3.1 test drivers for, W3C XPath 3.1 test suite (located at, https://github.com/w3c/qt3tests).
+
+The code repos folder src/test/java/org/apache/xalan/tests/w3c/xpath3 has Xalan-J W3C XPath 3.1 test suite's driver classes.
+
+Xalan-J XSLT 3.0 implementation's conformance results with W3C XPath 3.1 test suite are available at location : 
+https://github.com/apache/xalan-java/blob/xalan-j_xslt3.0_mvn/src/test/java/org/apache/xalan/tests/w3c/xpath3/result/w3c_xpath3_testsuite_xalan-j_result.xml 
+
+5) Producing, Xalan-J code base documentation for this dev repos branch, using JDK's javadoc command 
 
 Following are the steps to do this, for Windows environment.
 
-Produce list of Java files within folder Xalan Java_xslt3.0_mvn : dir /s /b *.java > file.lst
+Produce list of Java files within folder Xalan-J_xslt3.0_mvn : dir /s /b *.java > file.lst
 
 Filter specific files : java org.apache.xalan.xslt.Process -in file_filter.xsl -xsl file_filter.xsl -out filtered_file_list.txt
 
-Produce Xalan Java code documentation for this dev repos branch : javadoc -d javadoc @filtered_file_list.txt
+Produce Xalan-J code documentation for this dev repos branch : javadoc -d javadoc @filtered_file_list.txt
 
-Javadocs for Xalan Java code documentation for this dev repos branch are located here : https://xalan.apache.org/Xalan Java/xsl3/javadoc/   
+Javadocs for Xalan-J code documentation for this dev repos branch are located here : https://xalan.apache.org/Xalan-J/xsl3/javadoc/   
 
-6) The PDF document https://xalan.apache.org/Xalan Java/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides various other 
-   details about Xalan Java's XSLT 3.0 and XPath 3.1 implementations.
+6) The document https://xalan.apache.org/Xalan-J/xsl3/xalanj_xslt3.0_implementation_status.pdf, provides various other 
+   details about Xalan-J XSLT 3.0 and XPath 3.1 implementations.
 
-7) Xalan Java XSLT 3.0 implementation development guidelines for Windows & Linux
+7) Xalan-J XSLT 3.0 implementation development guidelines for Windows & Linux
    
-   This section of this document concerns, Xalan Java XSLT 3.0 src distribution. 
-   Various Xalan Java XSL 3 language test cases, need to be maintained considering Windows & Linux producing 
+   This section of this document concerns, Xalan-J XSLT 3.0 src distribution. 
+   Various Xalan-J XSL 3 language test cases, need to be maintained considering Windows & Linux producing 
    different specific behaviors. Windows uses character escape sequence \r\n as trailing characters for each file text line,
    whereas Linux use character escape sequence \n as trailing character for each file text line.
    
-   What works and what doesn't work with Xalan Java XSLT 3.0 implementation src code for these concerns:
+   What works and what doesn't work with Xalan-J XSLT 3.0 implementation src code for these concerns:
    
-   Xalan Java XSLT 3.0 implementation's various XSL 3 test cases, are maintained within this code development repos
+   Xalan-J XSLT 3.0 implementation's various XSL 3 test cases, are maintained within this code development repos
    with two versions of XSL tests expected result files, one for Windows and another for Linux.
-   When any new user who doesn't have Xalan Java XSL 3 src code repos clone on local,
+   When any new user who doesn't have Xalan-J XSL 3 src code repos clone on local,
    > Does git pull for this src code on Windows, the various Linux version test case expected result 
      file line endings shall get converted to Windows text file line endings (i.e, \r\n shall get converted to \n).
      This will not be a problem, if the user wishes to continue to do work on Windows. But when, the code gets pulled
-     on Windows and user copies, or moves that code on available Linux file system (for e.g, WSL), various Xalan Java 
+     on Windows and user copies, or moves that code on available Linux file system (for e.g, WSL), various Xalan-J 
      XSL 3 test cases shall fail.
    > Does git pull on Linux, not such issues shall occur.
    
-   These Xalan Java XSL 3 test case maintenance guidelines, specified with this document section (i.e, point 7)), 
-   need not be adhered with if the user wishes to use only the Xalan Java XSL 3 development src code, and doesn't
-   wish to work with Xalan Java XSL 3 supplied test cases.
+   These Xalan-J XSL 3 test case maintenance guidelines, specified with this document section (i.e, point 7)), 
+   need not be adhered with if the user wishes to use only the Xalan-J XSL 3 development src code, and doesn't
+   wish to work with Xalan-J XSL 3 supplied test cases.
    
-8) Running Xalan Java XSLT 3.0 implementation
+8) Running Xalan-J XSLT 3.0 implementation
 
    8.1) From within command line
 
@@ -191,16 +199,16 @@ Javadocs for Xalan Java code documentation for this dev repos branch are located
    Java application code, should set the value of JVM system property javax.xml.transform.TransformerFactory to 
    org.apache.xalan.processor.XSL3TransformerFactoryImpl
    
-   Note: To run Xalan Java XSLT 1.0 processor (for e.g, with Xalan Java 2.7.3), the value of this JVM system property is org.apache.xalan.processor.TransformerFactoryImpl
+   Note: To run Xalan-J XSLT 1.0 processor (for e.g, with Xalan-J 2.7.3), the value of this JVM system property is org.apache.xalan.processor.TransformerFactoryImpl
    
 
    XSLT 1.0 support within this code repos branch
    ----------------------------------------------    
 
-   The Xalan Java implementation available within the code repos branch xalan-j_xslt3.0_mvn, retains an XSLT 1.0 compliant processor using Xalan Java XSLTC
-   compiler and run-time technology that was available within Xalan Java version 2.7.3.
+   The Xalan-J implementation available within the code repos branch xalan-j_xslt3.0_mvn, retains an XSLT 1.0 compliant processor using Xalan-J XSLTC
+   compiler and run-time technology that was available within Xalan-J version 2.7.3.
        
-   Xalan Java XSLT 1.0 processor using XSLTC, may be run with few possible ways, as follows:
+   Xalan-J XSLT 1.0 processor using XSLTC, may be run with few possible ways, as follows:
        
    a) The command-line
        
@@ -218,5 +226,5 @@ Javadocs for Xalan Java code documentation for this dev repos branch are located
            java org.apache.xalan.xsltc.cmdline.Transform file.xml abc
                                                 															
 
-Notes: Xalan Java project uses JProfiler (https://www.ej-technologies.com/jprofiler) tool for software run-time analysis and optimization.       
+Notes: Xalan-J project uses JProfiler (https://www.ej-technologies.com/jprofiler) tool for software run-time analysis and optimization.       
 

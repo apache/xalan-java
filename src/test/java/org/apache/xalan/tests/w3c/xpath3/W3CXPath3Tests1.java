@@ -16,7 +16,6 @@
  */
 package org.apache.xalan.tests.w3c.xpath3;
 
-import org.apache.xalan.tests.w3c.xpath3.array.XPath3ArrayTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAbsTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAdjustDateTimeToTimezoneTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAdjustDateToTimezoneTests;
@@ -24,33 +23,20 @@ import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAdjustTimeToTimezoneTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnBooleanTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnCeilingTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnCodepointEqualTests;
-import org.apache.xalan.tests.w3c.xpath3.map.XPath3MapTests;
-import org.apache.xalan.tests.w3c.xpath3.math.XPath3FunctionMathTests;
-import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsFive;
-import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsFour;
-import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsOne;
-import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsSeven;
-import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsSix;
-import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsThree;
-import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsTwo;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3ArrowPostfixTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisStepAbbrTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisTestCollection;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3CastableExprTests;
-import org.apache.xalan.tests.w3c.xpath3.prod.XPath3IfExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InlineFunctionExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InstanceOfExprTests;
-import org.apache.xalan.tests.w3c.xpath3.prod.XPath3LetClauseTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3LiteralTests;
-import org.apache.xalan.tests.w3c.xpath3.prod.XPath3QuantifiedExprTests;
-import org.apache.xalan.tests.w3c.xpath3.xs.XPath3XsTypeTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Xalan-J XSL 3 test driver entry point, to run W3C 
- * XPath 3.1 test cases.
+ * XPath 3.1 test cases (the first set of XPath 3.1 test cases).
  *
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -60,9 +46,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3FnAbsTests.class, XPath3FnAdjustDateToTimezoneTests.class,
 	            XPath3AxisStepAbbrTests.class, XPath3AxisTestCollection.class, XPath3FnAdjustDateTimeToTimezoneTests.class, XPath3FnAdjustTimeToTimezoneTests.class, 
 	            XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3InlineFunctionExprTests.class, 
-	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3IfExprTests.class, XPath3FunctionMathTests.class, XPath3QuantifiedExprTests.class, 
-	            XPath3LetClauseTests.class, XPath3MapTests.class, XPath3ArrayTests.class, XPath3XsTypeTests.class, XPath3OpTestsOne.class, XPath3OpTestsTwo.class, 
-	            XPath3OpTestsThree.class, XPath3OpTestsFour.class, XPath3OpTestsFive.class, XPath3OpTestsSix.class, XPath3OpTestsSeven.class })
-public class W3CXPath3Tests {
+	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class })
+public class W3CXPath3Tests1 {
 
 }

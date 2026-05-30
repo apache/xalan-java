@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T16:50:57Z" fail="0" name="fn-default-collation" pass="7" run="7" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="fn-default-collation-1"/>
+   <testResult status="pass" testName="fn-default-collation-2"/>
+   <testResult status="pass" testName="K-ContextDefaultCollationFunc-1"/>
+   <testResult status="pass" testName="K-ContextDefaultCollationFunc-2"/>
+   <testResult status="pass" testName="K-ContextDefaultCollationFunc-3"/>
+   <testResult status="pass" testName="cbcl-default-collation-001"/>
+   <testResult status="pass" testName="cbcl-default-collation-002"/>
+</testrun>
