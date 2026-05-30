@@ -1,4 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-29T11:13:22Z" fail="2" name="fn-ceiling" pass="34" run="36" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T09:30:12Z" fail="8" name="fn-ceiling" pass="73" run="81" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="fn-ceilingint1args-1"/>
+   <testResult status="pass" testName="fn-ceilingint1args-2"/>
+   <testResult status="pass" testName="fn-ceilingint1args-3"/>
+   <testResult status="pass" testName="fn-ceilingintg1args-1"/>
+   <testResult status="pass" testName="fn-ceilingintg1args-2"/>
+   <testResult status="pass" testName="fn-ceilingintg1args-3"/>
+   <testResult status="pass" testName="fn-ceilingdec1args-1"/>
+   <testResult status="pass" testName="fn-ceilingdec1args-2"/>
+   <testResult status="pass" testName="fn-ceilingdec1args-3"/>
+   <testResult status="fail" testName="fn-ceilingdbl1args-1"/>
+   <testResult status="pass" testName="fn-ceilingdbl1args-2"/>
+   <testResult status="fail" testName="fn-ceilingdbl1args-3"/>
+   <testResult status="fail" testName="fn-ceilingflt1args-1"/>
+   <testResult status="pass" testName="fn-ceilingflt1args-2"/>
+   <testResult status="fail" testName="fn-ceilingflt1args-3"/>
+   <testResult status="pass" testName="fn-ceilinglng1args-1"/>
+   <testResult status="pass" testName="fn-ceilinglng1args-2"/>
+   <testResult status="pass" testName="fn-ceilinglng1args-3"/>
+   <testResult status="pass" testName="fn-ceilingusht1args-1"/>
+   <testResult status="pass" testName="fn-ceilingusht1args-2"/>
+   <testResult status="pass" testName="fn-ceilingusht1args-3"/>
+   <testResult status="pass" testName="fn-ceilingnint1args-1"/>
+   <testResult status="pass" testName="fn-ceilingnint1args-2"/>
+   <testResult status="pass" testName="fn-ceilingnint1args-3"/>
+   <testResult status="pass" testName="fn-ceilingpint1args-1"/>
+   <testResult status="pass" testName="fn-ceilingpint1args-2"/>
+   <testResult status="pass" testName="fn-ceilingpint1args-3"/>
+   <testResult status="pass" testName="fn-ceilingulng1args-1"/>
+   <testResult status="pass" testName="fn-ceilingulng1args-2"/>
+   <testResult status="pass" testName="fn-ceilingulng1args-3"/>
+   <testResult status="pass" testName="fn-ceilingnpi1args-1"/>
+   <testResult status="pass" testName="fn-ceilingnpi1args-2"/>
+   <testResult status="pass" testName="fn-ceilingnpi1args-3"/>
+   <testResult status="pass" testName="fn-ceilingnni1args-1"/>
+   <testResult status="pass" testName="fn-ceilingnni1args-2"/>
+   <testResult status="pass" testName="fn-ceilingnni1args-3"/>
+   <testResult status="pass" testName="fn-ceilingsht1args-1"/>
+   <testResult status="pass" testName="fn-ceilingsht1args-2"/>
+   <testResult status="pass" testName="fn-ceilingsht1args-3"/>
+   <testResult status="fail" testName="K-CeilingFunc-1"/>
+   <testResult status="pass" testName="K-CeilingFunc-2"/>
+   <testResult status="fail" testName="K-CeilingFunc-3"/>
+   <testResult status="pass" testName="K-CeilingFunc-4"/>
+   <testResult status="pass" testName="K-CeilingFunc-5"/>
+   <testResult status="pass" testName="K-CeilingFunc-6"/>
    <testResult status="pass" testName="K2-CeilingFunc-1"/>
    <testResult status="pass" testName="K2-CeilingFunc-2"/>
    <testResult status="pass" testName="K2-CeilingFunc-3"/>

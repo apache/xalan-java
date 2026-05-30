@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T09:38:37Z" fail="2" name="op-string-less-than" pass="8" run="10" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="K-StringLT-1"/>
+   <testResult status="pass" testName="K-StringLT-2"/>
+   <testResult status="pass" testName="K-StringLT-3"/>
+   <testResult status="pass" testName="K-StringLT-4"/>
+   <testResult status="pass" testName="K-StringLT-5"/>
+   <testResult status="pass" testName="K2-StringLT-1"/>
+   <testResult status="pass" testName="cbcl-string-less-than-001"/>
+   <testResult status="pass" testName="cbcl-string-less-than-002"/>
+   <testResult status="fail" testName="cbcl-string-less-than-003"/>
+   <testResult status="fail" testName="cbcl-string-less-than-004"/>
+</testrun>

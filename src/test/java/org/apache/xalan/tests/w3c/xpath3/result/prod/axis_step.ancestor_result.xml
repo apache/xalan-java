@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T09:30:12Z" fail="9" name="prod-AxisStep.ancestor" pass="11" run="21" skipped="0" statusUnknown="1">
+   <testResult status="fail" testName="ancestor-1"/>
+   <testResult status="pass" testName="ancestor-2"/>
+   <testResult status="fail" testName="ancestor-3"/>
+   <testResult status="fail" testName="ancestor-4"/>
+   <testResult status="fail" testName="ancestor-5"/>
+   <testResult status="fail" testName="ancestor-6"/>
+   <testResult status="fail" testName="ancestor-7"/>
+   <testResult status="fail" testName="ancestor-8"/>
+   <testResult status="fail" testName="ancestor-9"/>
+   <testResult status="fail" testName="ancestor-10"/>
+   <testResult status="pass" testName="ancestor-11"/>
+   <testResult status="pass" testName="ancestor-12"/>
+   <testResult status="pass" testName="ancestor-13"/>
+   <testResult status="pass" testName="ancestor-14"/>
+   <testResult status="pass" testName="ancestor-15"/>
+   <testResult status="pass" testName="ancestor-16"/>
+   <testResult status="pass" testName="ancestor-17"/>
+   <testResult status="pass" testName="ancestor-18"/>
+   <testResult status="pass" testName="ancestor-19"/>
+   <testResult status="pass" testName="ancestor-20"/>
+   <testResult testName="unabbreviatedSyntax-10"/>
+</testrun>

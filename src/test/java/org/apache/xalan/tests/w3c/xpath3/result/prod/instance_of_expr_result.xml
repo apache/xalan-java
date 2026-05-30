@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-29T11:13:22Z" fail="62" name="prod-InstanceofExpr" pass="210" run="272" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T09:30:13Z" fail="60" name="prod-InstanceofExpr" pass="213" run="273" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="instanceof1"/>
    <testResult status="pass" testName="instanceof2"/>
    <testResult status="pass" testName="instanceof3"/>
@@ -109,7 +109,7 @@
    <testResult status="pass" testName="instanceof108"/>
    <testResult status="pass" testName="instanceof109"/>
    <testResult status="pass" testName="instanceof110"/>
-   <testResult status="fail" testName="instanceof111"/>
+   <testResult status="pass" testName="instanceof111"/>
    <testResult status="fail" testName="instanceof121"/>
    <testResult status="fail" testName="instanceof122"/>
    <testResult status="fail" testName="instanceof123"/>
@@ -123,6 +123,7 @@
    <testResult status="fail" testName="instanceof131"/>
    <testResult status="fail" testName="instanceof132"/>
    <testResult status="fail" testName="instanceof133"/>
+   <testResult status="fail" testName="instanceof134"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-1"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-2"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-3"/>
@@ -172,8 +173,8 @@
    <testResult status="pass" testName="K-SeqExprInstanceOf-47"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-48"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-49"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-50"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-51"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-50"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-51"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-52"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-53"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-54"/>

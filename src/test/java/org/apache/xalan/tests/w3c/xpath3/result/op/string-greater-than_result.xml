@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T09:38:37Z" fail="2" name="op-string-greater-than" pass="7" run="9" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="K-StringGT-1"/>
+   <testResult status="pass" testName="K-StringGT-2"/>
+   <testResult status="pass" testName="K-StringGT-3"/>
+   <testResult status="pass" testName="K-StringGT-4"/>
+   <testResult status="pass" testName="K-StringGT-5"/>
+   <testResult status="pass" testName="cbcl-string-greater-than-001"/>
+   <testResult status="pass" testName="cbcl-string-greater-than-002"/>
+   <testResult status="fail" testName="cbcl-string-greater-than-003"/>
+   <testResult status="fail" testName="cbcl-string-greater-than-004"/>
+</testrun>

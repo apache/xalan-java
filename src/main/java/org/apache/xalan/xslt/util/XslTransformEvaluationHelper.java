@@ -110,13 +110,11 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
  */
 public class XslTransformEvaluationHelper {
     
-    /**
-     * Given an xdm input sequence, expand that sequence to produce a new sequence
-     * none of whose items are sequence or array with cardinality greater than one.
-     * 
-     * The caller of this method, needs to supply an xdm sequence to be expanded
-     * as an argument, and another argument reference to get the result from this 
-     * method.
+    
+	/**
+     * Method definition, to do, given an xdm input sequence, expand the 
+     * sequence to produce a new sequence none of whose items are sequence 
+     * or array with cardinality greater than one.
      */
     public static void expandResultSequence(ResultSequence seqToBeExpanded, 
                                                                   ResultSequence result) {               
@@ -141,9 +139,10 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Given an XPath expression string, replace XML namespace uri references within it,
-     * with the corresponding declared XML namespace prefixes, using information from
-     * the list object 'nsPrefixTable' passed to this method.
+     * Method definition, to do, given an XPath expression string, replace 
+     * XML namespace uri references within XPath expression string, with 
+     * the corresponding declared XML namespace prefixes, using information 
+     * from the supplied XML namespace prefix table.
      */
     public static String replaceNsUrisWithPrefixesOnXPathStr(String xpathExprStr, 
                                                                           List<XMLNSDecl> nsPrefixTable) {
@@ -161,8 +160,8 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Get prefix from XML namespace uri, declared within XSL transformation 
-     * context. 
+     * Method definition, to get XML namespace prefix from uri, declared 
+     * within XSL transformation context. 
      */
     public static String getPrefixFromNsUri(String nsUri, List<XMLNSDecl> nsPrefixTable) {    	
     	
@@ -206,7 +205,8 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Method definition, to get string value of XPath 3.1 xdm object. 
+     * Method definition, to get string value of XPath 3.1 
+     * xdm item. 
      */
     public static String getStrVal(XObject xObj) {       
        
@@ -244,8 +244,10 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Add an xdm input item to result sequence, if that already doesn't exist within
-     * the result sequence. 
+     * Method definition, to add the supplied xdm item to result 
+     * sequence, if the supplied xdm item already doesn't exist 
+     * within the result sequence.
+     *  
      * @throws TransformerException 
      */
     public static void addItemToResultSequence(ResultSequence resultSeq, XObject inpItem, 
@@ -264,8 +266,10 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Add an xdm input item to result sequence, if that already doesn't exist within
-     * the result sequence. 
+     * Method definition, to add the supplied xdm item to result 
+     * sequence, if the supplied xdm item already doesn't exist 
+     * within the result sequence.
+     *  
      * @throws TransformerException 
      */
     public static void addItemToResultSequence(ResultSequence resultSeq, XObject inpItem, 
@@ -287,7 +291,8 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Given an XObject object instance, get its contents as a ResultSequence object.  
+     * Method definition, to do, given an XObject object instance, 
+     * get XObject contents as a ResultSequence object.  
      */
     public static ResultSequence getResultSequenceFromXObject(XObject xObject, XPathContext xctxt) {        
         
@@ -366,9 +371,9 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Given a compiled XPath expression and an XPath context object, find
-     * the sum of values of xdm items represented by the provided compiled 
-     * XPath expression object. 
+     * Method definition, to do, given a compiled XPath expression and an 
+     * XPath context object, find the sum of values of xdm items represented 
+     * by the provided compiled XPath expression object. 
      */
     public static XNumber getSumOfValues(Expression expr, XPathContext xctxt) throws 
                                                                   javax.xml.transform.TransformerException {        
@@ -447,9 +452,9 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Given a compiled XPath expression object and an XPath context object, find
-     * the count of xdm items represented by the provided compiled XPath expression 
-     * object.  
+     * Method definition, to do, given a compiled XPath expression object 
+     * and an XPath context object, find the count of xdm items represented by the 
+     * provided compiled XPath expression object.  
      */
     public static XNumber getSequenceItemCount(Expression expr, XPathContext xctxt) throws 
                                                                                   javax.xml.transform.TransformerException {
@@ -567,107 +572,114 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Check whether a 'ResultSequence' object, contains a specific xdm item.
+     * Method definition, to check whether a 'ResultSequence' object, 
+     * contains a specified xdm item.
      */
     public static boolean contains(ResultSequence resultSeq, XObject srch, String collationUri,
     		                                                                   XPathCollationSupport xpathCollationSupport) 
     		                                                                		               throws TransformerException {
        
-       boolean isSeqContains = false;
-       
-       int size1 = resultSeq.size();
-       for (int idx = 0; idx < size1; idx++) {
-          XObject resultSeqItem = resultSeq.item(idx);
-          if ((resultSeqItem instanceof XSUntyped) && (srch instanceof XSUntyped)) {
-             if (((XSUntyped)resultSeqItem).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
-                 isSeqContains = true;
-                 break;    
-             }
-          }
-          else if ((resultSeqItem instanceof XSUntypedAtomic) && (srch instanceof XSUntypedAtomic)) {
-              if (((XSUntypedAtomic)resultSeqItem).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
-                 isSeqContains = true;
-                 break;    
-              } 
-          }
-          else if ((resultSeqItem instanceof XSUntyped) && (srch instanceof XSUntypedAtomic)) {
-              if (((XSUntyped)resultSeqItem).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
-                 isSeqContains = true;
-                 break;    
-              } 
-          }
-          else if ((resultSeqItem instanceof XSUntypedAtomic) && (srch instanceof XSUntyped)) {
-              if (((XSUntypedAtomic)resultSeqItem).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
-                 isSeqContains = true;
-                 break;    
-              }
-          }
-          else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XSNumericType)) {
-        	  // When comparing numeric values, collationUri is not used
-        	  String lStr = ((XSNumericType)resultSeqItem).stringValue();
-         	  XSDouble lDouble = new XSDouble(lStr);
-         	  
-         	  String rStr = ((XSNumericType)srch).stringValue();
-        	  XSDouble rDouble = new XSDouble(rStr);
-        	  
-        	  if (lDouble.equals(rDouble)) {
-        		 isSeqContains = true;
-                 break;  
-        	  }
-          }
-          else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XNumber)) {
-        	  // When comparing numeric values, collationUri is not used
-        	  String lStr = ((XSNumericType)resultSeqItem).stringValue();
-         	  XSDouble lDouble = new XSDouble(lStr);
-         	  
-         	  double rdbl = ((XNumber)srch).num();
-         	  XSDouble rDouble = new XSDouble(rdbl);
-         	  
-         	 if (lDouble.equals(rDouble)) {
-        		isSeqContains = true;
-                break;  
-        	 }
-          }
-          else if ((resultSeqItem instanceof XNumber) && (srch instanceof XSNumericType)) {
-        	 // When comparing numeric values, collationUri is not used
-        	 double ldbl = ((XNumber)resultSeqItem).num();
-          	 XSDouble lDouble = new XSDouble(ldbl);
-          	  
-          	 String rStr = ((XSNumericType)srch).stringValue();
-         	 XSDouble rDouble = new XSDouble(rStr);
-          	  
-         	 if (lDouble.equals(rDouble)) {
-          		isSeqContains = true;
-                break;  
-          	 } 
-         }
-         else if ((resultSeqItem instanceof XNumber) && (srch instanceof XNumber)) {
-        	 // When comparing numeric values, collationUri is not used
-        	 double num1 = ((XNumber)resultSeqItem).num();
-        	 double num2 = ((XNumber)srch).num();
+    	boolean result = false;
 
-        	 if ((num1 == num2) || (Double.isNaN(num1) && Double.isNaN(num2))) {
-        		isSeqContains = true;
-        		break; 
-        	 }
-         }
-         else if ((resultSeqItem instanceof XSAnyType) && (srch instanceof XSAnyType)) {
-             if (((XSAnyType)resultSeqItem).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
-                isSeqContains = true;
-                break;    
-             }   
-         }
-         else if (resultSeqItem.equals(srch, collationUri, xpathCollationSupport)) {
-             isSeqContains = true;
-             break;    
-         }
-      }
-       
-      return isSeqContains;       
-   }
+    	int size1 = resultSeq.size();
+    	for (int idx = 0; idx < size1; idx++) {
+    		XObject resultSeqItem = resultSeq.item(idx);
+    		if ((resultSeqItem instanceof XSUntyped) && (srch instanceof XSUntyped)) {
+    			if (((XSUntyped)resultSeqItem).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
+    				result = true;
+    				break;    
+    			}
+    		}
+    		else if ((resultSeqItem instanceof XSUntypedAtomic) && (srch instanceof XSUntypedAtomic)) {
+    			if (((XSUntypedAtomic)resultSeqItem).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
+    				result = true;
+    				break;    
+    			} 
+    		}
+    		else if ((resultSeqItem instanceof XSUntyped) && (srch instanceof XSUntypedAtomic)) {
+    			if (((XSUntyped)resultSeqItem).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
+    				result = true;
+    				break;    
+    			} 
+    		}
+    		else if ((resultSeqItem instanceof XSUntypedAtomic) && (srch instanceof XSUntyped)) {
+    			if (((XSUntypedAtomic)resultSeqItem).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
+    				result = true;
+    				break;    
+    			}
+    		}
+    		else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XSNumericType)) {
+    			// When comparing numeric values, collationUri is not used
+    			String lStr = ((XSNumericType)resultSeqItem).stringValue();
+    			XSDouble lDouble = new XSDouble(lStr);
+
+    			String rStr = ((XSNumericType)srch).stringValue();
+    			XSDouble rDouble = new XSDouble(rStr);
+
+    			if (lDouble.equals(rDouble)) {
+    				result = true;
+    				break;  
+    			}
+    		}
+    		else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XNumber)) {
+    			// When comparing numeric values, collationUri is not used
+    			String lStr = ((XSNumericType)resultSeqItem).stringValue();
+    			XSDouble lDouble = new XSDouble(lStr);
+
+    			double rdbl = ((XNumber)srch).num();
+    			XSDouble rDouble = new XSDouble(rdbl);
+
+    			if (lDouble.equals(rDouble)) {
+    				result = true;
+    				break;  
+    			}
+    		}
+    		else if ((resultSeqItem instanceof XNumber) && (srch instanceof XSNumericType)) {
+    			// When comparing numeric values, collationUri is not used
+    			double ldbl = ((XNumber)resultSeqItem).num();
+    			XSDouble lDouble = new XSDouble(ldbl);
+
+    			String rStr = ((XSNumericType)srch).stringValue();
+    			XSDouble rDouble = new XSDouble(rStr);
+
+    			if (lDouble.equals(rDouble)) {
+    				result = true;
+    				break;  
+    			} 
+    		}
+    		else if ((resultSeqItem instanceof XNumber) && (srch instanceof XNumber)) {
+    			// When comparing numeric values, collationUri is not used
+    			double num1 = ((XNumber)resultSeqItem).num();
+    			double num2 = ((XNumber)srch).num();
+
+    			if ((num1 == num2) || (Double.isNaN(num1) && Double.isNaN(num2))) {
+    				result = true;
+    				break; 
+    			}
+    		}
+    		else if ((resultSeqItem instanceof XSAnyType) && (srch instanceof XSAnyType)) {
+    			if (((XSAnyType)resultSeqItem).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
+    				result = true;
+    				break;    
+    			}   
+    		}
+    		else if (resultSeqItem.equals(srch, collationUri, xpathCollationSupport)) {
+    			result = true;
+    			break;    
+    		}
+    	}
+
+    	return result;       
+     }
     
-    /*
-     * Serialize an XML DOM element node, to XML string value.
+
+    /**
+     * Method definition, to serialize an XML DOM node, to XML 
+     * string value.
+     *  
+     * @param node                         The supplied XML node object
+     * @return                             An XML string value
+     * @throws Exception
      */
     public static String serializeXmlDomElementNode(Node node) throws Exception {
     	String resultStr = null;
@@ -684,7 +696,7 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * This method checks whether, an XSL xsl:with-param/xsl:param 
+     * Method definition, to check whether an XSL xsl:with-param/xsl:param 
      * tunnel attribute's value is true (i.e, having string 
      * values "yes", "true", or "1").
      */
@@ -699,7 +711,7 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Method definition to check whether, all the values of the 
+     * Method definition, to check whether all the values of the 
      * supplied input sequence are XPath atomic values.
      * 
      * @param resultSeq				The supplied XPath sequence object
@@ -725,7 +737,7 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Method definition to check whether, all the values of the 
+     * Method definition, to check whether all the values of the 
      * supplied input sequence are XPath node references.
      * 
      * @param resultSeq				The supplied XPath sequence object
@@ -749,7 +761,7 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * This method definition does the xsl:character-map transformation
+     * Method definition, to do xsl:character-map transformation
      * on the supplied string value, using a CharacterMapConfig 
      * run-time object. 
      * 
@@ -788,7 +800,7 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Function definition to get xsl:function's compiled ElemFunction object, 
+     * Method definition, to get xsl:function's compiled ElemFunction object, 
      * given a NodeTest expression.  
      * 
      * @param nodeTest							   A NodeTest object instance constructed from XPath 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-29T11:15:08Z" fail="11" name="prod-LetClause" pass="12" run="23" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T09:31:58Z" fail="9" name="prod-LetClause" pass="14" run="23" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="LetExpr001"/>
    <testResult status="pass" testName="LetExpr002"/>
    <testResult status="pass" testName="LetExpr003"/>
@@ -15,8 +15,8 @@
    <testResult status="fail" testName="LetExpr020a"/>
    <testResult status="fail" testName="LetExpr021"/>
    <testResult status="fail" testName="K-LetExprWithout-1"/>
-   <testResult status="fail" testName="K-LetExprWithout-2"/>
-   <testResult status="fail" testName="K-LetExprWithout-3"/>
+   <testResult status="pass" testName="K-LetExprWithout-2"/>
+   <testResult status="pass" testName="K-LetExprWithout-3"/>
    <testResult status="fail" testName="K2-LetExprWithout-8"/>
    <testResult status="pass" testName="K2-LetExprWithout-19"/>
    <testResult status="fail" testName="K2-LetExprWithout-25"/>

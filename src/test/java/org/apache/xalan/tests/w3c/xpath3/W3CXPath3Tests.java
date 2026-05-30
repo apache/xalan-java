@@ -26,12 +26,16 @@ import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnCeilingTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnCodepointEqualTests;
 import org.apache.xalan.tests.w3c.xpath3.map.XPath3MapTests;
 import org.apache.xalan.tests.w3c.xpath3.math.XPath3FunctionMathTests;
+import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsFive;
+import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsFour;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsOne;
+import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsSeven;
+import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsSix;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsThree;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsTwo;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3ArrowPostfixTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisStepAbbrTests;
-import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisStepTests;
+import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisTestCollection;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3CastableExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3IfExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InlineFunctionExprTests;
@@ -53,12 +57,12 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3AxisStepTests.class, XPath3AxisStepAbbrTests.class,
-	            XPath3FnAbsTests.class, XPath3FnAdjustDateToTimezoneTests.class, XPath3FnAdjustDateTimeToTimezoneTests.class,
-	            XPath3FnAdjustTimeToTimezoneTests.class, XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class,
-	            XPath3InlineFunctionExprTests.class, XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3IfExprTests.class,
-	            XPath3FunctionMathTests.class, XPath3QuantifiedExprTests.class, XPath3LetClauseTests.class, XPath3MapTests.class,
-	            XPath3ArrayTests.class, XPath3XsTypeTests.class, XPath3OpTestsOne.class, XPath3OpTestsTwo.class, XPath3OpTestsThree.class })
+@SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3FnAbsTests.class, XPath3FnAdjustDateToTimezoneTests.class,
+	            XPath3AxisStepAbbrTests.class, XPath3AxisTestCollection.class, XPath3FnAdjustDateTimeToTimezoneTests.class, XPath3FnAdjustTimeToTimezoneTests.class, 
+	            XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3InlineFunctionExprTests.class, 
+	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3IfExprTests.class, XPath3FunctionMathTests.class, XPath3QuantifiedExprTests.class, 
+	            XPath3LetClauseTests.class, XPath3MapTests.class, XPath3ArrayTests.class, XPath3XsTypeTests.class, XPath3OpTestsOne.class, XPath3OpTestsTwo.class, 
+	            XPath3OpTestsThree.class, XPath3OpTestsFour.class, XPath3OpTestsFive.class, XPath3OpTestsSix.class, XPath3OpTestsSeven.class })
 public class W3CXPath3Tests {
 
 }

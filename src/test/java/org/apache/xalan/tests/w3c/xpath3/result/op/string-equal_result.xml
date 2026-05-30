@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T09:38:37Z" fail="2" name="op-string-equal" pass="7" run="9" skipped="0" statusUnknown="0">
+   <testResult status="pass" testName="K-StringEqual-1"/>
+   <testResult status="pass" testName="K-StringEqual-2"/>
+   <testResult status="pass" testName="K-StringEqual-3"/>
+   <testResult status="pass" testName="K-StringEqual-4"/>
+   <testResult status="pass" testName="K-StringEqual-5"/>
+   <testResult status="pass" testName="cbcl-string-equal-001"/>
+   <testResult status="pass" testName="cbcl-string-equal-002"/>
+   <testResult status="fail" testName="cbcl-string-equal-003"/>
+   <testResult status="fail" testName="cbcl-string-equal-004"/>
+</testrun>
