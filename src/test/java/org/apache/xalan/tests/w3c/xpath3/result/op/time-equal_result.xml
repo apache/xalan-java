@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T16:50:30Z" fail="13" name="op-time-equal" pass="39" run="52" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-02T10:07:05Z" fail="13" name="op-time-equal" pass="39" run="52" statusUnknown="0">
    <testResult status="pass" testName="op-time-equal2args-1"/>
    <testResult status="pass" testName="op-time-equal2args-2"/>
    <testResult status="pass" testName="op-time-equal2args-3"/>

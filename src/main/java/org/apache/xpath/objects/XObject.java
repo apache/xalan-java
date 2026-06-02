@@ -2204,6 +2204,30 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
    	      emitXsAnyAtomicTypeError(obj2, expressionOwner);   
       }
+	  else if (this instanceof ResultSequence) {
+		  ResultSequence rSeq = (ResultSequence)this;
+		  XObject lXObj = null;		  
+		  if (rSeq.size() == 1) {
+			 lXObj = rSeq.item(0);
+			 result = lXObj.vcEquals(obj2, expressionOwner, collationUri, isEqTest); 
+		  }
+		  else {
+			 // Revisit
+			 result = false; 
+		  }
+	  }
+	  else if (obj2 instanceof ResultSequence) {
+		  ResultSequence rSeq = (ResultSequence)obj2;
+		  XObject rXObj = null;		  
+		  if (rSeq.size() == 1) {
+			 rXObj = rSeq.item(0);
+			 result = this.vcEquals(rXObj, expressionOwner, collationUri, isEqTest); 
+		  }
+		  else {
+			 // Revisit
+			 result = false; 
+		  }
+	  }
 	  else if (this.getType() == XObject.CLASS_NODESET) {
 		  if ((((XMLNodeCursorImpl)this).getLength() > 1)) {
 			  error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 

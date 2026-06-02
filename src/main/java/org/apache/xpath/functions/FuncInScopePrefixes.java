@@ -36,7 +36,7 @@ import org.w3c.dom.Node;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XPath 3.1 fn:in-scope-prefixes() function.
+ * Implementation of XPath 3.1 function fn:in-scope-prefixes.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 
@@ -72,6 +72,7 @@ public class FuncInScopePrefixes extends FunctionOneArg {
 	  Expression arg0 = getArg0();
 
 	  XObject nodeArg = arg0.execute(xctxt);
+	  
 	  if (nodeArg instanceof XMLNodeCursorImpl) {
 		 XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)nodeArg;
 		 DTMCursorIterator dtmIter = nodeSet.iterRaw();
@@ -89,13 +90,13 @@ public class FuncInScopePrefixes extends FunctionOneArg {
 			 result = resultSequence;
 		 }
 		 else {
-			throw new javax.xml.transform.TransformerException("XPTY0004: The argument of fn:in-scope-prefixes function "
-					                                                         + "is not an element node", srcLocator);	 
+			throw new javax.xml.transform.TransformerException("XPTY0004: The argument of XPath function 'in-scope-prefixes' "
+					                                                                                                  + "is not an element node", srcLocator);	 
 		 }
       }
 	  else {
-		 throw new javax.xml.transform.TransformerException("XPTY0004: The argument of fn:in-scope-prefixes function is not "
-		 		                                                         + "an element.", srcLocator);  
+		 throw new javax.xml.transform.TransformerException("XPTY0004: The argument of XPath function 'in-scope-prefixes' "
+                                                                                                                     + "is not an element node", srcLocator); 
 	  }
 
       return result;

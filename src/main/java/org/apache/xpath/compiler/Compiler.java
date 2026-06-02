@@ -77,7 +77,6 @@ import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.TreatAs;
-import org.apache.xpath.operations.XPath3UnaryOperation;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
 import org.apache.xpath.operations.VcGe;
@@ -85,6 +84,7 @@ import org.apache.xpath.operations.VcGt;
 import org.apache.xpath.operations.VcLe;
 import org.apache.xpath.operations.VcLt;
 import org.apache.xpath.operations.VcNotEquals;
+import org.apache.xpath.operations.XPath3UnaryOperation;
 import org.apache.xpath.patterns.FunctionPattern;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
@@ -299,7 +299,9 @@ public class Compiler extends OpMap
     case OpCodes.XPath3OpCodes.OP_FUNC_ARG_PLACEHOLDER :
       expr = funcArgumentPlaceholder(opPos); break;
     case OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR:
-      expr = xpathTextAndNodeExpr(opPos); break;	
+      expr = xpathTextAndNodeExpr(opPos); break;
+    case OpCodes.XPath3OpCodes.OP_SEQ_BINARY_OP:
+      expr = seqBinaryOp(opPos); break;
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });
       break;        	
@@ -1784,6 +1786,15 @@ private static final boolean DEBUG = false;
    */
   Expression xpathTextAndNodeExpr(int opPos) throws TransformerException {
 	  return XPathParser.m_xpathTextAndNodeExpr;
+  }
+  
+  /**
+   * Compile XPath binary operator expressions like:
+   *   (if ...) + (if ...) , 
+   *   2 + (if ...)
+   */
+  Expression seqBinaryOp(int opPos) throws TransformerException {
+	  return XPathParser.m_sequenceBinaryOp;
   }
 
   // The current id for extension functions.

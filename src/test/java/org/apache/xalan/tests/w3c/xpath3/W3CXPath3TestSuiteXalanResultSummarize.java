@@ -97,11 +97,11 @@ public class W3CXPath3TestSuiteXalanResultSummarize {
 		try {
 			DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 			Document document = docBuilder.newDocument();
-			Element testResultElem = document.createElement("testResult");
-			testResultElem.setAttribute("desc", "W3C XPath 3.1 test suite results");
-			testResultElem.setAttribute("xslt_processor", "Apache Xalan-J XSLT 3.0 development code");
+			Element testResultElem = document.createElement(W3CXPath3TestsUtil.TESTRESULT);
+			testResultElem.setAttribute(W3CXPath3TestsUtil.DESC, W3CXPath3TestsUtil.W3C_XPATH3_TEST_SUITE_RESULTS);
+			testResultElem.setAttribute(W3CXPath3TestsUtil.XSLT_PROCESSOR, W3CXPath3TestsUtil.XSLT_PROC_NAME);
 			String testRunDateStrValue = getDateISOString(new Date());
-			testResultElem.setAttribute("dateTime", testRunDateStrValue);
+			testResultElem.setAttribute(W3CXPath3TestsUtil.DATETIME, testRunDateStrValue);
 
 			String[] strArray = folderRoot.list();
 			int totalCount = 0;
@@ -127,23 +127,33 @@ public class W3CXPath3TestSuiteXalanResultSummarize {
 						uri1 = file1.toURI();						
 						Document testSetResultDoc = docBuilder.parse(uri1.toString());
 						Element docElem = testSetResultDoc.getDocumentElement();
-						String testSetName = docElem.getAttribute("name");
-						int run = Integer.valueOf(docElem.getAttribute("run"));
+						String testSetName = docElem.getAttribute(W3CXPath3TestsUtil.NAME);
+						int run = Integer.valueOf(docElem.getAttribute(W3CXPath3TestsUtil.RUN));
 						totalCount += run; 
-						int pass = Integer.valueOf(docElem.getAttribute("pass"));
+						int pass = Integer.valueOf(docElem.getAttribute(W3CXPath3TestsUtil.PASS));
 						totalPass += pass;
-						int fail = Integer.valueOf(docElem.getAttribute("fail"));
+						int fail = Integer.valueOf(docElem.getAttribute(W3CXPath3TestsUtil.FAIL));
 						totalFail += fail;
-						int skipped = Integer.valueOf(docElem.getAttribute("skipped"));
-						totalSkipped += skipped;
+						
+						int skipped = 0;
+						String skippedStr = docElem.getAttribute(W3CXPath3TestsUtil.SKIPPED);
+						if ((skippedStr != null) && !"".equals(skippedStr)) {
+							skipped = Integer.valueOf(skippedStr);
+						    totalSkipped += skipped;
+						}
+						
 						double successPer = ((pass / (double)run)) * 100;
 						double successPerDbl = (Double.valueOf(decimalFormat.format(Double.valueOf(String.valueOf(successPer))))).doubleValue();
 						Element testSetElem = document.createElement(testSetName);
-						testSetElem.setAttribute("run", String.valueOf(run));
-						testSetElem.setAttribute("pass", String.valueOf(pass));
-						testSetElem.setAttribute("fail", String.valueOf(fail));
-						testSetElem.setAttribute("skipped", String.valueOf(skipped));
-						testSetElem.setAttribute("success", String.valueOf(successPerDbl) + "%");
+						testSetElem.setAttribute(W3CXPath3TestsUtil.RUN, String.valueOf(run));
+						testSetElem.setAttribute(W3CXPath3TestsUtil.PASS, String.valueOf(pass));
+						testSetElem.setAttribute(W3CXPath3TestsUtil.FAIL, String.valueOf(fail));
+						
+						if (skipped > 0) {
+						   testSetElem.setAttribute(W3CXPath3TestsUtil.SKIPPED, String.valueOf(skipped));
+						}
+						
+						testSetElem.setAttribute(W3CXPath3TestsUtil.SUCCESS, String.valueOf(successPerDbl) + "%");
 						testSetKindElem.appendChild(testSetElem);
 					}
 					
@@ -153,11 +163,15 @@ public class W3CXPath3TestSuiteXalanResultSummarize {
 			
 			double totalSuccessPer = ((totalPass / (double)totalCount)) * 100;
 			double totalSuccessPerDbl = (Double.valueOf(decimalFormat.format(Double.valueOf(String.valueOf(totalSuccessPer))))).doubleValue();
-			testResultElem.setAttribute("run", String.valueOf(totalCount));
-			testResultElem.setAttribute("pass", String.valueOf(totalPass));
-			testResultElem.setAttribute("fail", String.valueOf(totalFail));
-			testResultElem.setAttribute("skipped", String.valueOf(totalSkipped));
-			testResultElem.setAttribute("success", String.valueOf(totalSuccessPerDbl) + "%");
+			testResultElem.setAttribute(W3CXPath3TestsUtil.RUN, String.valueOf(totalCount));
+			testResultElem.setAttribute(W3CXPath3TestsUtil.PASS, String.valueOf(totalPass));
+			testResultElem.setAttribute(W3CXPath3TestsUtil.FAIL, String.valueOf(totalFail));
+			
+			if (totalSkipped > 0) {
+			   testResultElem.setAttribute(W3CXPath3TestsUtil.SKIPPED, String.valueOf(totalSkipped));
+			}
+			
+			testResultElem.setAttribute(W3CXPath3TestsUtil.SUCCESS, String.valueOf(totalSuccessPerDbl) + "%");
 			
 			document.appendChild(testResultElem);
 			

@@ -157,33 +157,35 @@ public class Operation extends Expression implements ExpressionOwner
     	try {            	
 			StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(
                                                                                                            (ElemTemplateElement)m_left.getExpressionOwner());
-			NodeTest nodeTest = (NodeTest)m_left; 
-			java.lang.String funcLocalNameRef = nodeTest.getLocalName();
-			java.lang.String funcNamespace = nodeTest.getNamespace();			    			  
-			TemplateList templateList = stylesheetRoot.getTemplateListComposed();
-			XSL3FunctionService m_xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
+			if (stylesheetRoot != null) {
+				NodeTest nodeTest = (NodeTest)m_left; 
+				java.lang.String funcLocalNameRef = nodeTest.getLocalName();
+				java.lang.String funcNamespace = nodeTest.getNamespace();			    			  
+				TemplateList templateList = stylesheetRoot.getTemplateListComposed();
+				XSL3FunctionService m_xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
 
-			if (!"".equals(funcLocalNameRef) && m_xslFunctionService.isFuncArityWellFormed(funcLocalNameRef)) {        	   
-				int hashCharIdx = funcLocalNameRef.indexOf('#');
-				java.lang.String funcNameRef2 = funcLocalNameRef.substring(0, hashCharIdx);
-				int funcArity = Integer.valueOf(funcLocalNameRef.substring(hashCharIdx + 1));        		   
-				ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);
-				ElemFunction elemFunction = null;
-				if (elemTemplate != null) {
-					elemFunction = (ElemFunction)elemTemplate;
-					int xslFuncDefnParamCount = elemFunction.getArity();                      
-					java.lang.String str = funcLocalNameRef.substring(hashCharIdx + 1);
-					int funcRefParamCount = (Integer.valueOf(str)).intValue();
-					if (funcRefParamCount != xslFuncDefnParamCount) {
-						throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcLocalNameRef + 
-																																		" cannot resolve to a function "
-																																		+ "definition.", this); 
-					}
+				if (!"".equals(funcLocalNameRef) && m_xslFunctionService.isFuncArityWellFormed(funcLocalNameRef)) {        	   
+					int hashCharIdx = funcLocalNameRef.indexOf('#');
+					java.lang.String funcNameRef2 = funcLocalNameRef.substring(0, hashCharIdx);
+					int funcArity = Integer.valueOf(funcLocalNameRef.substring(hashCharIdx + 1));        		   
+					ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);
+					ElemFunction elemFunction = null;
+					if (elemTemplate != null) {
+						elemFunction = (ElemFunction)elemTemplate;
+						int xslFuncDefnParamCount = elemFunction.getArity();                      
+						java.lang.String str = funcLocalNameRef.substring(hashCharIdx + 1);
+						int funcRefParamCount = (Integer.valueOf(str)).intValue();
+						if (funcRefParamCount != xslFuncDefnParamCount) {
+							throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcLocalNameRef + 
+																															" cannot resolve to a function "
+																															+ "definition.", this); 
+						}
 
-					if (elemFunction != null) {
-						ElemFunctionItem elemFunctionObject = new ElemFunctionItem(elemFunction);
-						
-						left = elemFunctionObject; 
+						if (elemFunction != null) {
+							ElemFunctionItem elemFunctionObject = new ElemFunctionItem(elemFunction);
+
+							left = elemFunctionObject; 
+						}
 					}
 				}
 			}
@@ -217,6 +219,51 @@ public class Operation extends Expression implements ExpressionOwner
     	else {
     		right = m_right.execute(xctxt, true);   
     	}
+    }
+    else if (m_right instanceof NodeTest) {       	        	    	
+    	try {            	
+			StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(
+                                                                                                           (ElemTemplateElement)m_right.getExpressionOwner());
+			if (stylesheetRoot != null) {
+				NodeTest nodeTest = (NodeTest)m_right; 
+				java.lang.String funcLocalNameRef = nodeTest.getLocalName();
+				java.lang.String funcNamespace = nodeTest.getNamespace();			    			  
+				TemplateList templateList = stylesheetRoot.getTemplateListComposed();
+				XSL3FunctionService m_xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
+
+				if (!"".equals(funcLocalNameRef) && m_xslFunctionService.isFuncArityWellFormed(funcLocalNameRef)) {        	   
+					int hashCharIdx = funcLocalNameRef.indexOf('#');
+					java.lang.String funcNameRef2 = funcLocalNameRef.substring(0, hashCharIdx);
+					int funcArity = Integer.valueOf(funcLocalNameRef.substring(hashCharIdx + 1));        		   
+					ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);
+					ElemFunction elemFunction = null;
+					if (elemTemplate != null) {
+						elemFunction = (ElemFunction)elemTemplate;
+						int xslFuncDefnParamCount = elemFunction.getArity();                      
+						java.lang.String str = funcLocalNameRef.substring(hashCharIdx + 1);
+						int funcRefParamCount = (Integer.valueOf(str)).intValue();
+						if (funcRefParamCount != xslFuncDefnParamCount) {
+							throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcLocalNameRef + 
+																															" cannot resolve to a function "
+																															+ "definition.", this); 
+						}
+
+						if (elemFunction != null) {
+							ElemFunctionItem elemFunctionObject = new ElemFunctionItem(elemFunction);
+
+							right = elemFunctionObject; 
+						}
+					}
+				}
+			}
+			
+			if (right == null) {
+				right = m_right.execute(xctxt, true);
+			}
+		}
+		catch (Exception ex) {
+			right = m_right.execute(xctxt, true);
+		}
     }
     else {
     	right = m_right.execute(xctxt, true); 

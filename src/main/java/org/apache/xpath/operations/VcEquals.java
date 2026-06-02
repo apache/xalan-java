@@ -143,7 +143,7 @@ public class VcEquals extends XPathRelationalOp
 			  		                                                                                                      + "sequence of size greater than one.", this); 
 		  }
 	  }
-	  else if (left instanceof XMLNodeCursorImpl) {
+	  else if (left instanceof XMLNodeCursorImpl) {		  
 		  XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)left;
 		  if (nodeRef1.getLength() == 0) {
 			  isLEmpty = true;

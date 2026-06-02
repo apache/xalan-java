@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URI;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -140,7 +141,7 @@ public class XPath3XsTypeTests extends W3CXPath3TestsUtil {
     						xctxt.setSource_location(false);
     						(xctxt.getDTMManager()).setSource_location(false);
 
-    						PrefixResolver xmlNsPrefixResolver = getXMLNsPrefixResolver();
+    						PrefixResolver xmlNsPrefixResolver = getXMLNsPrefixResolver(new HashMap<String, String>());
     						xctxt.setNamespaceContext(xmlNsPrefixResolver);
 
     						String envName = null;

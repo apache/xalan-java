@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T16:51:03Z" fail="3" name="fn-in-scope-prefixes" pass="2" run="5" skipped="4" statusUnknown="0">
-   <testResult status="fail" testName="fn-in-scope-prefixes-2"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-02T10:07:09Z" fail="1" name="fn-in-scope-prefixes" pass="4" run="5" skipped="3" statusUnknown="0">
+   <testResult status="pass" testName="fn-in-scope-prefixes-2"/>
    <testResult status="skipped" testName="fn-in-scope-prefixes-21"/>
    <testResult status="skipped" testName="fn-in-scope-prefixes-22"/>
-   <testResult status="fail" testName="fn-in-scope-prefixes-23"/>
-   <testResult status="skipped" testName="fn-in-scope-prefixes-24"/>
+   <testResult status="pass" testName="fn-in-scope-prefixes-23"/>
    <testResult status="skipped" testName="fn-in-scope-prefixes-25"/>
    <testResult status="fail" testName="fn-in-scope-prefixes-26"/>
    <testResult status="pass" testName="K-InScopePrefixesFunc-1"/>

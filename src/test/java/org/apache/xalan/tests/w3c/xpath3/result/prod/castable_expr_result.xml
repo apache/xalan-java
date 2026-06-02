@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-30T16:37:28Z" fail="147" name="prod-CastableExpr" pass="694" run="841" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-02T10:05:12Z" fail="148" name="prod-CastableExpr" pass="694" run="842" statusUnknown="0">
    <testResult status="pass" testName="CastableAs001"/>
    <testResult status="pass" testName="CastableAs002"/>
    <testResult status="pass" testName="CastableAs003"/>
@@ -648,7 +648,7 @@
    <testResult status="fail" testName="CastableAs647"/>
    <testResult status="fail" testName="CastableAs648a"/>
    <testResult status="pass" testName="CastableAs649"/>
-   <testResult status="skipped" testName="CastableAs650"/>
+   <testResult status="fail" testName="CastableAs650"/>
    <testResult status="pass" testName="CastableAs663"/>
    <testResult status="fail" testName="CastableAs664"/>
    <testResult status="fail" testName="CastableAs665"/>

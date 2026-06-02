@@ -123,10 +123,15 @@ public class FuncMapForEach extends Function2Args {
 	                                                                                                                                 + "that is not an xdm map.", srcLocator); 
 		   }
 		}
-
-		if (arg1 instanceof XPathInlineFunction) {
+		
+		XPathMap xpathMap1 = (XPathMap)arg0Obj;
+		if (xpathMap1.size() == 0) {
+		   result = new ResultSequence();
+		}
+		else if (arg1 instanceof XPathInlineFunction) {
 			XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1;
 			verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+			
 			result = evaluateFnMapforEach(xctxt, (XPathMap)arg0Obj, inlineFuncArg); 
 		}
 		else if (arg1 instanceof Variable) {
@@ -138,6 +143,7 @@ public class FuncMapForEach extends Function2Args {
 			if (arg1VarValue instanceof XPathInlineFunction) {
 				XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
 				verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+				
 				result = evaluateFnMapforEach(xctxt, (XPathMap)arg0Obj, inlineFuncArg);   
 			}
 			else {

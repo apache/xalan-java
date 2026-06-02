@@ -29,8 +29,12 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -79,80 +83,94 @@ import xml.xpath31.processor.types.XSString;
  * @xsl.usage advanced
  */
 public class W3CXPath3TestsUtil extends XslTransformTestsUtil { 	
+                    
+    public static final String TESTRUN = "testrun";
     
-    private Document m_xslTestCatalogDocument = null;
+    public static final String NAME = "name";
     
-    private static final String NAME = "name";
+    public static final String DATETIME = "dateTime";
     
-    private static final String TESTRUN = "testrun";
+    public static final String TESTCASE = "test-case";
     
-    private static final String DATETIME = "dateTime";
+    public static final String ENVIRONMENT = "environment";
     
-    private static final String TESTCASE = "test-case";
+    public static final String REF = "ref";
     
-    private static final String ENVIRONMENT = "environment";
+    public static final String EMPTY = "empty";
     
-    private static final String REF = "ref";
+    public static final String SOURCE = "source";
     
-    private static final String EMPTY = "empty";
+    public static final String FILE = "file";
     
-    private static final String SOURCE = "source";
+    public static final String DEPENDENCY = "dependency";
     
-    private static final String FILE = "file";
+    public static final String TYPE = "type";
     
-    private static final String DEPENDENCY = "dependency";
+    public static final String SPEC = "spec";
     
-    private static final String TYPE = "type";
+    public static final String VALUE = "value";
     
-    private static final String SPEC = "spec";
+    public static final String TESTRESULT = "testResult";
     
-    private static final String VALUE = "value";
+    public static final String TESTNAME = "testName";
     
-    private static final String TESTRESULT = "testResult";
+    public static final String TEST = "test";
     
-    private static final String TESTNAME = "testName";
+    public static final String STATUS = "status";
     
-    private static final String TEST = "test";
+    public static final String PASS = "pass";
     
-    private static final String STATUS = "status";
+    public static final String FAIL = "fail";
     
-    private static final String PASS = "pass";
+    public static final String ASSERT_TRUE = "assert-true";
     
-    private static final String FAIL = "fail";
+    public static final String ASSERT_FALSE = "assert-false";
     
-    private static final String ASSERT_TRUE = "assert-true";
+    public static final String ASSERT_TYPE = "assert-type";
     
-    private static final String ASSERT_FALSE = "assert-false";
+    public static final String ALL_OF = "all-of";
     
-    private static final String ASSERT_TYPE = "assert-type";
+    public static final String ANY_OF = "any-of";
     
-    private static final String ALL_OF = "all-of";
+    public static final String ERROR = "error";
     
-    private static final String ANY_OF = "any-of";
+    public static final String SKIPPED = "skipped";
     
-    private static final String ERROR = "error";
+    public static final String ASSERT_DEEP_EQ = "assert-deep-eq";
     
-    private static final String SKIPPED = "skipped";
+    public static final String ASSERT_EQ = "assert-eq";
     
-    private static final String ASSERT_DEEP_EQ = "assert-deep-eq";
+    public static final String ASSERT = "assert";
     
-    private static final String ASSERT_EQ = "assert-eq";
+    public static final String ASSERT_COUNT = "assert-count";
     
-    private static final String ASSERT = "assert";
+    public static final String ASSERT_STRING_VALUE = "assert-string-value";
     
-    private static final String ASSERT_COUNT = "assert-count";
+    public static final String ASSERT_EMPTY = "assert-empty";
     
-    private static final String ASSERT_STRING_VALUE = "assert-string-value";
+    public static final String ASSERT_PERMUTATION = "assert-permutation";
     
-    private static final String ASSERT_EMPTY = "assert-empty";
+    public static final String ASSERT_XML = "assert-xml";
     
-    private static final String ASSERT_PERMUTATION = "assert-permutation";
+    public static final String STATUS_UNKNOWN = "statusUnknown";
     
-    private static final String ASSERT_XML = "assert-xml";
+    public static final String RUN = "run";
     
-    private static final String STATUS_UNKNOWN = "statusUnknown";
+    public static final String NAMESPACE = "namespace";
     
-    private static final String RUN = "run";
+    public static final String PREFIX = "prefix";
+    
+    public static final String URI = "uri";
+    
+    public static final String SUCCESS = "success";
+    
+    public static final String DESC = "desc";
+    
+    public static final String XSLT_PROCESSOR = "xslt_processor";
+    
+    public static final String W3C_XPATH3_TEST_SUITE_RESULTS = "W3C XPath 3.1 test suite results";
+    
+    public static final String XSLT_PROC_NAME = "Apache Xalan-J XSLT 3.0 development code";
     
     protected static final String W3C_XPATH3_TESTS_META_DATA_DIR_HOME = "file:/d:/qt3tests-master/";
 	
@@ -188,8 +206,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 	protected static String[] m_test_set_result_fileArr = null;
 	
 	protected static List<String> m_skipped_tests_list = new ArrayList<String>();
+	
+	private Document m_xslTestCatalogDocument = null;
     
-    
+	
     /**
      * Class constructor.
      */
@@ -257,10 +277,9 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 						xctxt.setSource_location(false);
 						(xctxt.getDTMManager()).setSource_location(false);
 						
-						PrefixResolver xmlNsPrefixResolver = getXMLNsPrefixResolver();
-						xctxt.setNamespaceContext(xmlNsPrefixResolver);
-						
-                        String envName = null;
+						PrefixResolver xmlNsPrefixResolver = null;						
+                        String envName = null;                        
+                        boolean isxmlNsContextConfigured = false;
 						
 						if (envNodeList.getLength() > 0) {
 							Element elem = (Element)(envNodeList.item(0));
@@ -295,7 +314,27 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											Element elem3 = (Element)(nodeList1.item(0));
 											String srcFileName = elem3.getAttribute(FILE);									 
                                             if ((srcFileName != null) && !"".equals(srcFileName)) {
-											   constructXalanDtmFromXMLFile(srcFileName, xctxt, false);
+                                            	Node node1 = elem2.getFirstChild();
+                                            	Map<String, String> nsMap = new HashMap<String, String>();
+                                            	while (node1 != null) {
+                                            		if (node1.getNodeType() == Node.ELEMENT_NODE) {
+                                            			Element el1 = (Element)node1;
+                                            			if (NAMESPACE.equals(el1.getNodeName())) {
+                                            				String prefix = el1.getAttribute(PREFIX);
+                                            				String uri = el1.getAttribute(URI);
+                                            				nsMap.put(prefix, uri);
+                                            			}
+                                            		}
+
+                                            		node1 = node1.getNextSibling();
+                                            	}
+
+                                            	xmlNsPrefixResolver = getXMLNsPrefixResolver(nsMap);
+                                            	xctxt.setNamespaceContext(xmlNsPrefixResolver);
+                                            	
+                                            	isxmlNsContextConfigured = true;
+
+                                            	constructXalanDtmFromXMLFile(srcFileName, xctxt, false);
                                             }
 										}
 										
@@ -339,7 +378,27 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 												Element elem3 = (Element)(nodeList1.item(0));
 												String srcFileName = elem3.getAttribute(FILE);									 
 	                                            if ((srcFileName != null) && !"".equals(srcFileName)) {
-												   constructXalanDtmFromXMLFile(srcFileName, xctxt, true);
+	                                            	Node node1 = elem2.getFirstChild();
+	                                            	Map<String, String> nsMap = new HashMap<String, String>();
+	                                            	while (node1 != null) {
+	                                            		if (node1.getNodeType() == Node.ELEMENT_NODE) {
+	                                            			Element el1 = (Element)node1;
+	                                            			if (NAMESPACE.equals(el1.getNodeName())) {
+	                                            				String prefix = el1.getAttribute(PREFIX);
+	                                            				String uri = el1.getAttribute(URI);
+	                                            				nsMap.put(prefix, uri);
+	                                            			}
+	                                            		}
+
+	                                            		node1 = node1.getNextSibling();
+	                                            	}
+
+	                                            	xmlNsPrefixResolver = getXMLNsPrefixResolver(nsMap);
+	                                            	xctxt.setNamespaceContext(xmlNsPrefixResolver);
+	                                            	
+	                                            	isxmlNsContextConfigured = true;
+
+	                                            	constructXalanDtmFromXMLFile(srcFileName, xctxt, true);
 	                                            }
 											}
 	
@@ -353,6 +412,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									}
 							    }
 							}
+						}
+						
+						if (!isxmlNsContextConfigured) {
+						   xmlNsPrefixResolver = getXMLNsPrefixResolver(new HashMap<String, String>());
+						   xctxt.setNamespaceContext(xmlNsPrefixResolver);
 						}
 						
 						NodeList depNodeList = testCaseElem.getElementsByTagName(DEPENDENCY);
@@ -400,8 +464,9 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									// avoid program indefinite wait due to XPath parse inf loop.
 									ExecutorService executor = Executors.newSingleThreadExecutor();
 									final String xpathExprStr2 = xpathExprStr;
+									PrefixResolver xmlNsPrefixResolver2 = xmlNsPrefixResolver; 
 									Future<XPath> future = executor.submit(() -> {                              	  
-									    XPath xpathObj2 = new XPath(xpathExprStr2, null, xmlNsPrefixResolver, XPath.SELECT, null);
+									    XPath xpathObj2 = new XPath(xpathExprStr2, null, xmlNsPrefixResolver2, XPath.SELECT, null);
 									    
 									    return xpathObj2;
 									});
@@ -1216,7 +1281,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 		elemTestRun.setAttribute(PASS, String.valueOf(testsPassCount));
 		elemTestRun.setAttribute(FAIL, String.valueOf(testsfailCount));
-		elemTestRun.setAttribute(SKIPPED, String.valueOf(testsSkippedCount));
+		
+		if (testsSkippedCount > 0) {
+		   elemTestRun.setAttribute(SKIPPED, String.valueOf(testsSkippedCount));
+		}
+		
 		elemTestRun.setAttribute(STATUS_UNKNOWN, String.valueOf(testStatusUnknownCount));
 		elemTestRun.setAttribute(RUN, String.valueOf(totalTestsRun));
 
@@ -1300,11 +1369,15 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     
     /**
      * Method definition, to construct XML namespace PrefixResolver
-     * object for XPath expression evaluation. 
+     * object for XPath expression evaluation.
      * 
-     * @return                      PrefixResolver object instance
+     * @param nsMap					       java.util.Map object, having XML namespace 
+     *                                     prefix and uri mappings. This map object may be
+     *                                     empty.
+     * 
+     * @return                             PrefixResolver object instance
      */
-    protected PrefixResolver getXMLNsPrefixResolver() {
+    protected PrefixResolver getXMLNsPrefixResolver(Map<String, String> nsMap) {
     	
     	PrefixResolver result = null;
     	
@@ -1315,6 +1388,18 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:map", "http://www.w3.org/2005/xpath-functions/map");
     	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:array", "http://www.w3.org/2005/xpath-functions/array");
     	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xs", "http://www.w3.org/2001/XMLSchema");
+    	
+    	if (nsMap.size() > 0) {
+    	   Set<Entry<String, String>> mapEntrySet1 = nsMap.entrySet();
+    	   Iterator<Entry<String, String>> iter1 = mapEntrySet1.iterator();
+    	   while (iter1.hasNext()) {
+    		  Entry<String, String> mapEntry1 = iter1.next();
+    		  String prefix = mapEntry1.getKey();
+    		  String uri = mapEntry1.getValue();
+    		  
+    		  elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + prefix, uri);
+    	   }
+    	}
     	
     	document.appendChild(elem);
     	

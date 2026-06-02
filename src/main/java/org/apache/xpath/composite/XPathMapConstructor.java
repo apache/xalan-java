@@ -104,7 +104,7 @@ public class XPathMapConstructor extends Expression {
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {        
     	
-    	XPathMap xpathResultMap = new XPathMap();
+    	XPathMap result = new XPathMap();
     	
     	SourceLocator srcLocator = xctxt.getSAXLocator();
         
@@ -130,20 +130,27 @@ public class XPathMapConstructor extends Expression {
         	  mapEntryKey = new XSDouble(((XNumber)mapEntryKey).num());  
            }
            
+           if (result.get(mapEntryKey) != null) {
+        	  String key1 = XslTransformEvaluationHelper.getStrVal(mapEntryKey);        	  
+        	  throw new TransformerException("XQDY0137 : An xdm map cannot have a duplicate key. More than one "
+        	  		                                                            + "map entry with key '" + key1 + "' is "
+        	  		                                                            + "attempted to be added to an xdm map.", srcLocator);  
+           }
+           
            if (prefixTable != null) {
         	  xpathValueStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathValueStr, 
                                                                                                        prefixTable);        	  
            }
            
            XObject mapEntryValue = evaluateXPathExpression(xpathValueStr, xctxt, VALUE);           
-           xpathResultMap.put(mapEntryKey, mapEntryValue);
+           result.put(mapEntryKey, mapEntryValue);
         }
         
         if (m_suffixFuncStr != null) {        	
-        	return getResultAfterArrowOp(m_suffixFuncStr, xctxt, xpathResultMap, srcLocator, prefixTable);
+        	return getResultAfterArrowOp(m_suffixFuncStr, xctxt, result, srcLocator, prefixTable);
         }
         
-        return xpathResultMap;
+        return result;
     }
 
     @Override
