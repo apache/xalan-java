@@ -37,8 +37,8 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
@@ -630,7 +630,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 			XPath seqTypeXPath = new XPath(m_asAttrVal, srcLocator, xctxt.getNamespaceContext(), 
 																						XPath.SELECT, null, true);
 			XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-			SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+			XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
 			if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {              	   
 				resultWithAsAttribute = XslTransformData.m_xpathInlineFunction;
 				XslTransformData.m_xpathInlineFunction = null;
@@ -655,12 +655,12 @@ public class ElemEvaluate extends ElemTemplateElement {
 				resultWithAsAttribute = variableConvertedVal;    
 			}
 			else {
-				resultWithAsAttribute = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttrVal, null, xctxt); 
+				resultWithAsAttribute = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttrVal, null, xctxt); 
 			}
 		}
 		else if (var instanceof XPathMap) {
 			try {
-				resultWithAsAttribute = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttrVal, null, xctxt);
+				resultWithAsAttribute = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttrVal, null, xctxt);
 			}
 			catch (TransformerException ex) {
 				String errMesg = ex.getMessage();
@@ -677,7 +677,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 		}
 		else if (var instanceof XPathArray) {
 			try {
-				resultWithAsAttribute = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttrVal, null, xctxt);
+				resultWithAsAttribute = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttrVal, null, xctxt);
 			}
 			catch (TransformerException ex) {
 				String errMesg = ex.getMessage();
@@ -694,7 +694,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 		}
 		else {
 			try {
-				resultWithAsAttribute = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttrVal, null, xctxt);
+				resultWithAsAttribute = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttrVal, null, xctxt);
 			}
 			catch (TransformerException ex) {
 				throw ex; 
@@ -719,7 +719,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 			XPath seqTypeXPath = new XPath(withParamAsAttrVal, srcLocator, xctxt.getNamespaceContext(), 
 																									XPath.SELECT, null, true);
 			XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-			SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+			XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
 			if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {              	   
 				result = XslTransformData.m_xpathInlineFunction;
 				XslTransformData.m_xpathInlineFunction = null;
@@ -744,12 +744,12 @@ public class ElemEvaluate extends ElemTemplateElement {
 				result = objConvertedVal;    
 			}
 			else {
-				result = SequenceTypeSupport.castXdmValueToAnotherType(withParamVal, withParamAsAttrVal, null, xctxt); 
+				result = XPathSequenceTypeSupport.castXdmValueToAnotherType(withParamVal, withParamAsAttrVal, null, xctxt); 
 			}
 		}
 		else if (withParamVal instanceof XPathMap) {
 			try {
-				result = SequenceTypeSupport.castXdmValueToAnotherType(withParamVal, withParamAsAttrVal, null, xctxt);
+				result = XPathSequenceTypeSupport.castXdmValueToAnotherType(withParamVal, withParamAsAttrVal, null, xctxt);
 			}
 			catch (TransformerException ex) {
 				String errMesg = ex.getMessage();
@@ -766,7 +766,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 		}
 		else if (withParamVal instanceof XPathArray) {
 			try {
-				result = SequenceTypeSupport.castXdmValueToAnotherType(withParamVal, withParamAsAttrVal, null, xctxt);
+				result = XPathSequenceTypeSupport.castXdmValueToAnotherType(withParamVal, withParamAsAttrVal, null, xctxt);
 			}
 			catch (TransformerException ex) {
 				String errMesg = ex.getMessage();
@@ -783,7 +783,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 		}
 		else {
 			try {
-				result = SequenceTypeSupport.castXdmValueToAnotherType(withParamVal, withParamAsAttrVal, null, xctxt);
+				result = XPathSequenceTypeSupport.castXdmValueToAnotherType(withParamVal, withParamAsAttrVal, null, xctxt);
 			}
 			catch (TransformerException ex) {
 				throw ex; 

@@ -25,7 +25,7 @@ package org.apache.xpath.composite;
  * 
  * @xsl.usage advanced
  */
-public class SequenceTypeKindTest {
+public class XPathSequenceTypeKindTest {
     
 	/**
 	 * Xalan-J specific valid values for this variable are
@@ -57,7 +57,7 @@ public class SequenceTypeKindTest {
      * Sequence type kind test may have, another contained sequence 
      * type kind test, for e.g document-node(element(elem_name)).
      */
-    private SequenceTypeKindTest m_seqTypeSubKindTest;
+    private XPathSequenceTypeKindTest m_seqTypeSubKindTest;
 
     public int getKindVal() {
         return m_kindVal;
@@ -99,11 +99,11 @@ public class SequenceTypeKindTest {
         this.m_dataTypeUri = dataTypeUri;
     }
     
-    public SequenceTypeKindTest getSeqTypeSubKindTest() {
+    public XPathSequenceTypeKindTest getSeqTypeSubKindTest() {
     	return m_seqTypeSubKindTest;
     }
     
-    public void setSeqTypeSubKindTest(SequenceTypeKindTest seqTypeSubKindTest) {
+    public void setSeqTypeSubKindTest(XPathSequenceTypeKindTest seqTypeSubKindTest) {
     	this.m_seqTypeSubKindTest = seqTypeSubKindTest;
     }
     
@@ -116,7 +116,7 @@ public class SequenceTypeKindTest {
      *                                                 SequenceTypeKindTest object instance.
      * @return										   Boolean value true or false
      */
-    public boolean equal(SequenceTypeKindTest sequenceTypeKindTest2) {
+    public boolean equal(XPathSequenceTypeKindTest sequenceTypeKindTest2) {
     	
     	boolean result = true;
     	

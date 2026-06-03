@@ -37,14 +37,14 @@ import org.apache.xpath.objects.XObject;
  * This class definition, provides implementation of XPath general 
  * comparison operators (i.e, =, !=, <, <=, >, >=) for XPath ExprSingle 
  * expression (one of the XPath expressions 'for', 'let', 'some', 
- * 'every', 'if') as LHS operand and another appropriate XPath operand 
- * as RHS.
+ * 'every', 'if') as lhs operand and another appropriate XPath operand 
+ * as rhs.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3ExprSingleComparison extends Expression {
+public class XPathExprSingleComparison extends Expression {
 
 	private static final long serialVersionUID = 5684685034365152001L;
 	

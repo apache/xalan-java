@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-02T10:07:08Z" fail="5" name="fn-day-from-dateTime" pass="22" run="27" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-03T10:42:51Z" fail="5" name="fn-day-from-dateTime" pass="22" run="27" statusUnknown="0">
    <testResult status="pass" testName="fn-day-from-dateTime1args-1"/>
    <testResult status="pass" testName="fn-day-from-dateTime1args-2"/>
    <testResult status="pass" testName="fn-day-from-dateTime1args-3"/>

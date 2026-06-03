@@ -40,7 +40,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -518,7 +518,7 @@ public class ElemCopy extends ElemUse
 			  xmlStrValue = xmlStrValue + xmlStr.substring(xmlStr.indexOf("?>") + 2);
 			  xmlStrValue += "</" + nodeLocalName + ">";
 			  xmlStrValue = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + xmlStrValue;
-			  if (SequenceTypeSupport.isXmlStrValid(xmlStrValue, null, xsTypeDefn)) {
+			  if (XPathSequenceTypeSupport.isXmlStrValid(xmlStrValue, null, xsTypeDefn)) {
 				  transformer.executeChildTemplates(this, true); 
 			  }									  
 		  } 
@@ -556,7 +556,7 @@ public class ElemCopy extends ElemUse
 			  xmlStrValue = xmlStrValue + xmlStr.substring(xmlStr.indexOf("?>") + 2);
 			  xmlStrValue += "</" + nodeLocalName + ">";
 			  xmlStrValue = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + xmlStrValue;
-			  if (SequenceTypeSupport.isXmlStrValid(xmlStrValue, schemaElemDecl, null)) {
+			  if (XPathSequenceTypeSupport.isXmlStrValid(xmlStrValue, schemaElemDecl, null)) {
 				  transformer.executeChildTemplates(this, true); 
 			  }									  
 		  } 

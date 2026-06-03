@@ -54,7 +54,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.compiler.XPathParser;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.Function3Args;
@@ -2081,7 +2081,7 @@ public class ElemTemplateElement extends UnImplNode
 		   boolean isXmlStrValid;
 		   String errMesg = null;
 		   try {
-			   isXmlStrValid = SequenceTypeSupport.isXmlStrValid(xmlStr, null, typeDefn);
+			   isXmlStrValid = XPathSequenceTypeSupport.isXmlStrValid(xmlStr, null, typeDefn);
 		   }
 		   catch (Exception ex) {
 			   isXmlStrValid = false;
@@ -2169,7 +2169,7 @@ public class ElemTemplateElement extends UnImplNode
   		boolean isXmlStrValid;
   		String errMesg = null;
   		try {
-  			isXmlStrValid = SequenceTypeSupport.isXmlStrValid(xmlStr, (XSElementDecl)elemDecl, null);
+  			isXmlStrValid = XPathSequenceTypeSupport.isXmlStrValid(xmlStr, (XSElementDecl)elemDecl, null);
   		}
   		catch (Exception ex) {
   			isXmlStrValid = false;

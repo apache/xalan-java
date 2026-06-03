@@ -17,36 +17,34 @@
 package org.apache.xpath.composite;
 
 /**
- * An object of this class, is used to store information about
- * XPath 3.1 "let" expression's single variable binding (i.e, 
- * run-time information details related to the grammar fragment 
- * "$" VarName ":=" ExprSingle for a particular XPath "let" 
- * expression that's currently been evaluated). 
- *  
+ * An object of this class stores, an XSLT transformation run-time
+ * information for an occurrence of a XPath 3.1 sequence type 
+ * ArrayTest.
+ * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class LetExprVarBinding {
-    
-    private String m_varName = null;
-    
-    private String m_xpathExprStr = null;
+public class XPathSequenceTypeArrayTest {
 
-    public String getVarName() {
-        return m_varName;
-    }
+    private boolean fIsAnyArrayTest;
 
-    public void setVarName(String varName) {
-        this.m_varName = varName;
-    }
+    private XPathSequenceTypeData arrayItemTypeInfo;
 
-    public String getXPathExprStr() {
-        return m_xpathExprStr;
-    }
+	public boolean isAnyArrayTest() {
+		return fIsAnyArrayTest;
+	}
 
-    public void setXPathExprStr(String xpathExprStr) {
-        this.m_xpathExprStr = xpathExprStr;
-    }
+	public void setIsAnyArrayTest(boolean isAnyArrayTest) {
+		this.fIsAnyArrayTest = isAnyArrayTest;
+	}
+
+	public XPathSequenceTypeData getArrayItemTypeInfo() {
+		return arrayItemTypeInfo;
+	}
+
+	public void setArrayItemTypeInfo(XPathSequenceTypeData arrayItemTypeInfo) {
+		this.arrayItemTypeInfo = arrayItemTypeInfo;
+	}
 
 }

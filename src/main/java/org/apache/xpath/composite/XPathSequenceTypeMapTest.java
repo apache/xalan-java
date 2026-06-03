@@ -16,47 +16,45 @@
  */
 package org.apache.xpath.composite;
 
-import java.util.List;
-
 /**
  * An object of this class stores, an XSLT transformation run-time
  * information for an occurrence of a XPath 3.1 sequence type 
- * FunctionTest.
+ * MapTest.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class SequenceTypeFunctionTest {
+public class XPathSequenceTypeMapTest {
 
-    private boolean m_isAnyFunctionTest;
+    private boolean fIsAnyMapTest;
 
-    private List<String> m_typedFunctionTestParamSpecList;
+    private XPathSequenceTypeData keySequenceTypeData;
     
-    private String m_typedFunctionTestReturnType;
+    private XPathSequenceTypeData valueSequenceTypeData;
 
-	public boolean isAnyFunctionTest() {
-		return m_isAnyFunctionTest;
+	public boolean isAnyMapTest() {
+		return fIsAnyMapTest;
+	}
+	
+	public void setIsAnyMapTest(boolean isAnyMapTest) {
+		this.fIsAnyMapTest = isAnyMapTest;
 	}
 
-	public void setIsAnyFunctionTest(boolean isAnyFunctionTest) {
-		this.m_isAnyFunctionTest = isAnyFunctionTest;
+	public XPathSequenceTypeData getKeySequenceTypeData() {
+		return keySequenceTypeData;
 	}
 
-	public List<String> getTypedFunctionTestParamSpecList() {
-		return m_typedFunctionTestParamSpecList;
+	public void setKeySequenceTypeData(XPathSequenceTypeData keySequenceTypeData) {
+		this.keySequenceTypeData = keySequenceTypeData;
 	}
 
-	public void setTypedFunctionTestParamSpecList(List<String> typedFunctionTestPrefix) {
-		this.m_typedFunctionTestParamSpecList = typedFunctionTestPrefix;
+	public XPathSequenceTypeData getValueSequenceTypeData() {
+		return valueSequenceTypeData;
 	}
 
-	public String getTypedFunctionTestReturnType() {
-		return m_typedFunctionTestReturnType;
+	public void setValueSequenceTypeData(XPathSequenceTypeData valueSequenceTypeData) {
+		this.valueSequenceTypeData = valueSequenceTypeData;
 	}
-
-	public void setTypedFunctionTestReturnType(String typedFunctionTestReturnType) {
-		this.m_typedFunctionTestReturnType = typedFunctionTestReturnType;
-	} 
 
 }

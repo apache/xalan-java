@@ -72,7 +72,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.Pattern;
@@ -2340,7 +2340,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		XObject xObj = paramXPathObj.execute(xctxt, DTM.NULL, nsPrefixResolver);
 
 		if (!"".equals(paramAsStr)) {
-			xObj = SequenceTypeSupport.castXdmValueToAnotherType(xObj, paramAsStr, null, xctxt); 
+			xObj = XPathSequenceTypeSupport.castXdmValueToAnotherType(xObj, paramAsStr, null, xctxt); 
 		}
 
 		result = xObj; 

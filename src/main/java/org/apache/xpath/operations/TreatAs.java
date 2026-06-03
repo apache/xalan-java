@@ -20,8 +20,8 @@
  */
 package org.apache.xpath.operations;
 
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -34,7 +34,7 @@ import org.apache.xpath.objects.XObject;
 public class TreatAs extends Operation
 {
 
-   private static final long serialVersionUID = 8897640092248117520L;
+  private static final long serialVersionUID = 8897640092248117520L;
 
   /**
    * Apply the operation to two operands, and return the result.
@@ -50,9 +50,9 @@ public class TreatAs extends Operation
   {
 	  XObject result = null;
       
-      SequenceTypeData seqTypedData = (SequenceTypeData)right;
+      XPathSequenceTypeData seqTypedData = (XPathSequenceTypeData)right;
       
-      result = SequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData, true);
+      result = XPathSequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData, true);
       
       return result;
   }

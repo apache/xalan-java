@@ -26,8 +26,8 @@ import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.xs.XSTypeDefinition;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
@@ -65,56 +65,56 @@ public class CastableAs extends Operation
   {
 	  XObject result = null;
       
-      SequenceTypeData seqTypedData = (SequenceTypeData)right;
+      XPathSequenceTypeData seqTypedData = (XPathSequenceTypeData)right;
       
       try {    	  
-    	 if ((left instanceof XSAnyAtomicType) && ((seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) || 
-    			                                   (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC))) {
+    	 if ((left instanceof XSAnyAtomicType) && ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) || 
+    			                                   (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNTYPED_ATOMIC))) {
     		result = new XSBoolean(true);
     		
     		return result;
     	 }
-    	 else if ((left instanceof XSBoolean) && ((seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_FLOAT) || 
-    			                                  (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DOUBLE) ||
-    			                                  (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DECIMAL) ||
-    			                                  (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INTEGER))) {
+    	 else if ((left instanceof XSBoolean) && ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_FLOAT) || 
+    			                                  (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DOUBLE) ||
+    			                                  (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL) ||
+    			                                  (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER))) {
     		result = new XSBoolean(true);
      		
      		return result; 
     	 }
-    	 else if ((left instanceof XSFloat) && (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DECIMAL)) {
+    	 else if ((left instanceof XSFloat) && (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL)) {
             result = new XSBoolean(true);
 
             return result; 
          }
     	 else if (((left instanceof XSDecimal) || (left instanceof XSFloat) || (left instanceof XSDouble)) && 
-    			                                                                     (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INTEGER)) {
+    			                                                                     (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER)) {
              result = new XSBoolean(true);
 
              return result; 
          }
-    	 else if ((left instanceof XSDuration) && ((seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DAYTIME_DURATION) || 
-                                                   (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_YEARMONTH_DURATION))) {
+    	 else if ((left instanceof XSDuration) && ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DAYTIME_DURATION) || 
+                                                   (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_YEARMONTH_DURATION))) {
     		 result = new XSBoolean(true);
     		 
              return result; 
     	 }
     	 else if (((left instanceof XSUntypedAtomic) && (Constants.ATTRNAME_NAN).equals(((XSUntypedAtomic)left).stringValue())) && 
-    			                                                                          ((seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_FLOAT) || 
-    			                                                                          (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DOUBLE))) {
+    			                                                                          ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_FLOAT) || 
+    			                                                                          (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DOUBLE))) {
              result = new XSBoolean(true);
 
              return result; 
          }
     	 else if (((left instanceof XSUntypedAtomic) && (Constants.ATTRNAME_NAN).equals(((XSUntypedAtomic)left).stringValue())) && 
-    			                                                                          ((seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DECIMAL) || 
-    					                                                                  (seqTypedData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INTEGER))) {
+    			                                                                          ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL) || 
+    					                                                                  (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER))) {
     		 result = new XSBoolean(false);
 
     		 return result; 
     	 }
     	 else { 
-            result = SequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData, true);
+            result = XPathSequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData, true);
     	 }
          
          if (result != null) {

@@ -55,8 +55,8 @@ public class XPathForExpr extends Expression {
     
     private static final long serialVersionUID = -7289739978026057248L;
 
-    private List<ForQuantifiedExprVarBinding> m_forExprVarBindingList = new 
-                                                    ArrayList<ForQuantifiedExprVarBinding>();
+    private List<XPathForAndQuantifiedExprVarBinding> m_forExprVarBindingList = new 
+                                                    ArrayList<XPathForAndQuantifiedExprVarBinding>();
     
     private String m_returnExprXPathStr = null;
     
@@ -124,7 +124,7 @@ public class XPathForExpr extends Expression {
         final int contextNode = xctxt.getContextNode();
         
         if (listIter.hasNext()) {           
-           ForQuantifiedExprVarBinding forExprVarBinding = (ForQuantifiedExprVarBinding)listIter.next();            
+           XPathForAndQuantifiedExprVarBinding forExprVarBinding = (XPathForAndQuantifiedExprVarBinding)listIter.next();            
             
            // Evaluate the XPath 'for' expression's, variable binding 
            // XPath expression.
@@ -361,11 +361,11 @@ public class XPathForExpr extends Expression {
     	return false;
     }
 
-    public List<ForQuantifiedExprVarBinding> getForExprVarBindingList() {
+    public List<XPathForAndQuantifiedExprVarBinding> getForExprVarBindingList() {
     	return m_forExprVarBindingList;
     }
 
-    public void setForExprVarBindingList(List<ForQuantifiedExprVarBinding> forExprVarBindingList) {
+    public void setForExprVarBindingList(List<XPathForAndQuantifiedExprVarBinding> forExprVarBindingList) {
     	this.m_forExprVarBindingList = forExprVarBindingList;
     }
 

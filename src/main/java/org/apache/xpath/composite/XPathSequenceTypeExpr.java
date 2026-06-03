@@ -45,17 +45,17 @@ public class XPathSequenceTypeExpr extends Expression {
     
     private int itemTypeOccurrenceIndicator;
     
-    private SequenceTypeKindTest sequenceTypeKindTest;
+    private XPathSequenceTypeKindTest sequenceTypeKindTest;
     
-    private SequenceTypeFunctionTest sequenceTypeFunctionTest;
+    private XPathSequenceTypeFunctionTest sequenceTypeFunctionTest;
     
-    private SequenceTypeMapTest sequenceTypeMapTest;
+    private XPathSequenceTypeMapTest sequenceTypeMapTest;
     
-    private SequenceTypeArrayTest sequenceTypeArrayTest;
+    private XPathSequenceTypeArrayTest sequenceTypeArrayTest;
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
-       SequenceTypeData sequenceTypeData = new SequenceTypeData();
+       XPathSequenceTypeData sequenceTypeData = new XPathSequenceTypeData();
        
        sequenceTypeData.setBuiltInSequenceType(builtInSequenceType);
        sequenceTypeData.setXsTypeDefinition(xsTypeDefinition);
@@ -103,35 +103,35 @@ public class XPathSequenceTypeExpr extends Expression {
         this.itemTypeOccurrenceIndicator = itemTypeOccurrenceIndicator;
     }
     
-    public SequenceTypeKindTest getSequenceTypeKindTest() {
+    public XPathSequenceTypeKindTest getSequenceTypeKindTest() {
         return sequenceTypeKindTest;
     }
 
-    public void setSequenceTypeKindTest(SequenceTypeKindTest sequenceTypeKindTest) {
+    public void setSequenceTypeKindTest(XPathSequenceTypeKindTest sequenceTypeKindTest) {
         this.sequenceTypeKindTest = sequenceTypeKindTest;
     }
 
-    public SequenceTypeFunctionTest getSequenceTypeFunctionTest() {
+    public XPathSequenceTypeFunctionTest getSequenceTypeFunctionTest() {
 		return sequenceTypeFunctionTest;
 	}
 
-	public void setSequenceTypeFunctionTest(SequenceTypeFunctionTest sequenceTypeFunctionTest) {
+	public void setSequenceTypeFunctionTest(XPathSequenceTypeFunctionTest sequenceTypeFunctionTest) {
 		this.sequenceTypeFunctionTest = sequenceTypeFunctionTest;
 	}
 	
-    public SequenceTypeMapTest getSequenceTypeMapTest() {
+    public XPathSequenceTypeMapTest getSequenceTypeMapTest() {
 		return sequenceTypeMapTest;
 	}
 
-	public void setSequenceTypeMapTest(SequenceTypeMapTest sequenceTypeMapTest) {
+	public void setSequenceTypeMapTest(XPathSequenceTypeMapTest sequenceTypeMapTest) {
 		this.sequenceTypeMapTest = sequenceTypeMapTest;
 	}
 	
-    public SequenceTypeArrayTest getSequenceTypeArrayTest() {
+    public XPathSequenceTypeArrayTest getSequenceTypeArrayTest() {
 		return sequenceTypeArrayTest;
 	}
 
-	public void setSequenceTypeArrayTest(SequenceTypeArrayTest sequenceTypeArrayTest) {
+	public void setSequenceTypeArrayTest(XPathSequenceTypeArrayTest sequenceTypeArrayTest) {
 		this.sequenceTypeArrayTest = sequenceTypeArrayTest;
 	}
 

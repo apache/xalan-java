@@ -18,36 +18,35 @@ package org.apache.xpath.composite;
 
 /**
  * An object of this class, is used to store information about
- * XPath 3.1 "for" expression or "quantified expression" 
- * (i.e, 'some', 'every')'s single variable binding (i.e, 
+ * XPath 3.1 "let" expression's single variable binding (i.e, 
  * run-time information details related to the grammar fragment 
- * "$" VarName "in" ExprSingle for a particular XPath "for" or 
- * "quantified expression" that's currently been evaluated). 
+ * "$" VarName ":=" ExprSingle for a particular XPath "let" 
+ * expression that's currently been evaluated). 
  *  
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class ForQuantifiedExprVarBinding {
+public class XPathLetExprVarBinding {
     
-    private String fVarName = null;
+    private String m_varName = null;
     
-    private String fXPathExprStr = null;
+    private String m_xpathExprStr = null;
 
     public String getVarName() {
-        return fVarName;
+        return m_varName;
     }
 
     public void setVarName(String varName) {
-        this.fVarName = varName;
+        this.m_varName = varName;
     }
 
     public String getXPathExprStr() {
-        return fXPathExprStr;
+        return m_xpathExprStr;
     }
 
     public void setXPathExprStr(String xpathExprStr) {
-        this.fXPathExprStr = xpathExprStr;
+        this.m_xpathExprStr = xpathExprStr;
     }
 
 }

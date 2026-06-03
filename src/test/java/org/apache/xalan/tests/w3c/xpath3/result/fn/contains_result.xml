@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-02T10:07:08Z" fail="19" name="fn-contains" pass="48" run="67" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-03T10:42:50Z" fail="13" name="fn-contains" pass="54" run="67" statusUnknown="0">
    <testResult status="pass" testName="fn-contains2args-1"/>
    <testResult status="pass" testName="fn-contains2args-2"/>
    <testResult status="pass" testName="fn-contains2args-3"/>
@@ -53,12 +53,12 @@
    <testResult status="pass" testName="K-ContainsFunc-9"/>
    <testResult status="pass" testName="K-ContainsFunc-10"/>
    <testResult status="pass" testName="K-ContainsFunc-11"/>
-   <testResult status="fail" testName="K2-ContainsFunc-1"/>
-   <testResult status="fail" testName="K2-ContainsFunc-2"/>
-   <testResult status="fail" testName="K2-ContainsFunc-3"/>
-   <testResult status="fail" testName="K2-ContainsFunc-4"/>
-   <testResult status="fail" testName="K2-ContainsFunc-5"/>
-   <testResult status="fail" testName="K2-ContainsFunc-6"/>
+   <testResult status="pass" testName="K2-ContainsFunc-1"/>
+   <testResult status="pass" testName="K2-ContainsFunc-2"/>
+   <testResult status="pass" testName="K2-ContainsFunc-3"/>
+   <testResult status="pass" testName="K2-ContainsFunc-4"/>
+   <testResult status="pass" testName="K2-ContainsFunc-5"/>
+   <testResult status="pass" testName="K2-ContainsFunc-6"/>
    <testResult status="fail" testName="cbcl-contains-001"/>
    <testResult status="pass" testName="cbcl-contains-002"/>
    <testResult status="fail" testName="cbcl-contains-003"/>

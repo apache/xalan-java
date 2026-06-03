@@ -16,35 +16,47 @@
  */
 package org.apache.xpath.composite;
 
+import java.util.List;
+
 /**
  * An object of this class stores, an XSLT transformation run-time
  * information for an occurrence of a XPath 3.1 sequence type 
- * ArrayTest.
+ * FunctionTest.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class SequenceTypeArrayTest {
+public class XPathSequenceTypeFunctionTest {
 
-    private boolean fIsAnyArrayTest;
+    private boolean m_isAnyFunctionTest;
 
-    private SequenceTypeData arrayItemTypeInfo;
+    private List<String> m_typedFunctionTestParamSpecList;
+    
+    private String m_typedFunctionTestReturnType;
 
-	public boolean isAnyArrayTest() {
-		return fIsAnyArrayTest;
+	public boolean isAnyFunctionTest() {
+		return m_isAnyFunctionTest;
 	}
 
-	public void setIsAnyArrayTest(boolean isAnyArrayTest) {
-		this.fIsAnyArrayTest = isAnyArrayTest;
+	public void setIsAnyFunctionTest(boolean isAnyFunctionTest) {
+		this.m_isAnyFunctionTest = isAnyFunctionTest;
 	}
 
-	public SequenceTypeData getArrayItemTypeInfo() {
-		return arrayItemTypeInfo;
+	public List<String> getTypedFunctionTestParamSpecList() {
+		return m_typedFunctionTestParamSpecList;
 	}
 
-	public void setArrayItemTypeInfo(SequenceTypeData arrayItemTypeInfo) {
-		this.arrayItemTypeInfo = arrayItemTypeInfo;
+	public void setTypedFunctionTestParamSpecList(List<String> typedFunctionTestPrefix) {
+		this.m_typedFunctionTestParamSpecList = typedFunctionTestPrefix;
 	}
+
+	public String getTypedFunctionTestReturnType() {
+		return m_typedFunctionTestReturnType;
+	}
+
+	public void setTypedFunctionTestReturnType(String typedFunctionTestReturnType) {
+		this.m_typedFunctionTestReturnType = typedFunctionTestReturnType;
+	} 
 
 }

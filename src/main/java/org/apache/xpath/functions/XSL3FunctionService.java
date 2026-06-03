@@ -76,8 +76,8 @@ import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathExprFuncCallExtendedArg;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.string.FuncConcat;
@@ -1323,11 +1323,11 @@ public class XSL3FunctionService {
     		}
 
     		String funcParamName = funcParam.getParamName();
-    		SequenceTypeData paramType = funcParam.getParamType();
+    		XPathSequenceTypeData paramType = funcParam.getParamType();
 
     		if (paramType != null) {
     			try {
-    				argValue = SequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
+    				argValue = XPathSequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
     				if (argValue == null) {
     					if (xslDynFuncCallVarName != null) {
     					    throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
@@ -1371,10 +1371,10 @@ public class XSL3FunctionService {
 
     	evalResult = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
-    	SequenceTypeData funcReturnType = xpathInlineFunction.getReturnType();
+    	XPathSequenceTypeData funcReturnType = xpathInlineFunction.getReturnType();
     	if (funcReturnType != null) {
     		try {
-    			evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, null, funcReturnType, null);
+    			evalResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(evalResult, null, funcReturnType, null);
     			if (evalResult == null) {
     				if (xslDynFuncCallVarName != null) {
     				    throw new TransformerException("XTTE0505 : An item type of result of dynamic function call $"+ xslDynFuncCallVarName + ", "

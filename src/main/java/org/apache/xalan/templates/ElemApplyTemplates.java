@@ -45,8 +45,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
@@ -1163,7 +1163,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 					  NodeList nodeList2 = (new XRTreeFrag(dtmNodeHandle, xctxt, template)).convertToNodeset();             
 					  XObject templateEvalResultForAsAttr = new XNodeSetForDOM(nodeList2, xctxt);
 
-					  templateEvalResultForAsAttr = SequenceTypeSupport.castXdmValueToAnotherType(templateEvalResultForAsAttr, templateAsAttrVal, 
+					  templateEvalResultForAsAttr = XPathSequenceTypeSupport.castXdmValueToAnotherType(templateEvalResultForAsAttr, templateAsAttrVal, 
 							  																													null, xctxt);
 					  if (templateEvalResultForAsAttr != null) {
 						  SerializationHandler handler = transformer.getSerializationHandler();        
@@ -1442,9 +1442,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  try {
 		  XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
 		  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-		  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+		  XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
 
-		  XMLNodeCursorImpl nodeSet = SequenceTypeSupport.getNodeReference(srcValue);
+		  XMLNodeCursorImpl nodeSet = XPathSequenceTypeSupport.getNodeReference(srcValue);
 		  if (nodeSet != null) {
 			  XSTypeDefinition typeDef = nodeSet.getXsTypeDefinition();                    	                      	                      	  
 			  if (typeDef != null) {                    		  
@@ -1483,7 +1483,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  }
 
 		  if (argConvertedVal == null) {
-			  argConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(srcValue, paramAsAttrStrVal, null, xctxt, prefixTable);
+			  argConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(srcValue, paramAsAttrStrVal, null, xctxt, prefixTable);
 		  }
 
 		  if (argConvertedVal == null) {
@@ -1493,7 +1493,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 		  }
 	  }
 	  catch (TransformerException ex) {
-		  if ((SequenceTypeSupport.INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR).equals(ex.getMessage())) {
+		  if ((XPathSequenceTypeSupport.INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR).equals(ex.getMessage())) {
 			  throw new TransformerException("XTTE0590 : The number of XPath inline function parameters, is not equal to "
 					  																			  + "the number of expected type specifications for them.", srcLocator);   
 		  }

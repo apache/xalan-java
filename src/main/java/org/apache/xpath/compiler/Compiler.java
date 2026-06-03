@@ -300,8 +300,10 @@ public class Compiler extends OpMap
       expr = funcArgumentPlaceholder(opPos); break;
     case OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR:
       expr = xpathTextAndNodeExpr(opPos); break;
-    case OpCodes.XPath3OpCodes.OP_SEQ_BINARY_OP:
-      expr = seqBinaryOp(opPos); break;
+    case OpCodes.XPath3OpCodes.OP_SEQ_BINARY_EXPR:
+      expr = seqBinaryExpr(opPos); break;
+    case OpCodes.XPath3OpCodes.OP_SEQ_INDEX_BINARY_EXPR:
+      expr = seqIndexBinaryExpr(opPos); break;
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });
       break;        	
@@ -1793,8 +1795,17 @@ private static final boolean DEBUG = false;
    *   (if ...) + (if ...) , 
    *   2 + (if ...)
    */
-  Expression seqBinaryOp(int opPos) throws TransformerException {
+  Expression seqBinaryExpr(int opPos) throws TransformerException {
 	  return XPathParser.m_sequenceBinaryOp;
+  }
+  
+  /**
+   * Compile XPath binary operator expressions like:
+   *   (1,2,3)[1] ,
+   *   (1, 2, 3)[1] treat as xs:integer
+   */
+  Expression seqIndexBinaryExpr(int opPos) throws TransformerException {
+	  return XPathParser.m_sequenceIndexBinaryOp;
   }
 
   // The current id for extension functions.

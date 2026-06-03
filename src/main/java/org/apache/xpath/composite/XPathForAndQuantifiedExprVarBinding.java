@@ -17,44 +17,37 @@
 package org.apache.xpath.composite;
 
 /**
- * An object of this class stores, an XSLT transformation run-time
- * information for an occurrence of a XPath 3.1 sequence type 
- * MapTest.
- * 
+ * An object of this class, is used to store information about
+ * XPath 3.1 "for" expression or "quantified expression" 
+ * (i.e, 'some', 'every')'s single variable binding (i.e, 
+ * run-time information details related to the grammar fragment 
+ * "$" VarName "in" ExprSingle for a particular XPath "for" or 
+ * "quantified expression" that's currently been evaluated). 
+ *  
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class SequenceTypeMapTest {
-
-    private boolean fIsAnyMapTest;
-
-    private SequenceTypeData keySequenceTypeData;
+public class XPathForAndQuantifiedExprVarBinding {
     
-    private SequenceTypeData valueSequenceTypeData;
+    private String fVarName = null;
+    
+    private String fXPathExprStr = null;
 
-	public boolean isAnyMapTest() {
-		return fIsAnyMapTest;
-	}
-	
-	public void setIsAnyMapTest(boolean isAnyMapTest) {
-		this.fIsAnyMapTest = isAnyMapTest;
-	}
+    public String getVarName() {
+        return fVarName;
+    }
 
-	public SequenceTypeData getKeySequenceTypeData() {
-		return keySequenceTypeData;
-	}
+    public void setVarName(String varName) {
+        this.fVarName = varName;
+    }
 
-	public void setKeySequenceTypeData(SequenceTypeData keySequenceTypeData) {
-		this.keySequenceTypeData = keySequenceTypeData;
-	}
+    public String getXPathExprStr() {
+        return fXPathExprStr;
+    }
 
-	public SequenceTypeData getValueSequenceTypeData() {
-		return valueSequenceTypeData;
-	}
-
-	public void setValueSequenceTypeData(SequenceTypeData valueSequenceTypeData) {
-		this.valueSequenceTypeData = valueSequenceTypeData;
-	}
+    public void setXPathExprStr(String xpathExprStr) {
+        this.fXPathExprStr = xpathExprStr;
+    }
 
 }

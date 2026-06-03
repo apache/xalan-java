@@ -16,7 +16,7 @@
  */
 package org.apache.xpath.objects;
 
-import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeData;
 
 /**
  * An object of this class, represents one parameter 
@@ -30,7 +30,7 @@ public class InlineFunctionParameter {
     
     private String paramName;
     
-    private SequenceTypeData paramType;
+    private XPathSequenceTypeData paramType;
 
     public String getParamName() {
         return paramName;
@@ -40,11 +40,11 @@ public class InlineFunctionParameter {
         this.paramName = paramName;
     }
 
-    public SequenceTypeData getParamType() {
+    public XPathSequenceTypeData getParamType() {
         return paramType;
     }
 
-    public void setParamType(SequenceTypeData paramType) {
+    public void setParamType(XPathSequenceTypeData paramType) {
         this.paramType = paramType;
     }
 

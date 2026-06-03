@@ -131,7 +131,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * 
  * @xsl.usage advanced
  */
-public class SequenceTypeSupport {
+public class XPathSequenceTypeSupport {
     
     /** 
      * Following are various constant int values, denoting XPath 3.1 and 
@@ -378,7 +378,7 @@ public class SequenceTypeSupport {
      * @throws TransformerException
      */
     public static XObject castXdmValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
-                                                    SequenceTypeData seqExpectedTypeDataInp,  
+                                                    XPathSequenceTypeData seqExpectedTypeDataInp,  
                                                     XPathContext xctxt, List prefixTable) throws TransformerException {
     	XObject result = null;
     	
@@ -397,7 +397,7 @@ public class SequenceTypeSupport {
      * This method, supports XPath implementation of "cast as", "castable as" and 
      * "treat as" expressions. 
      */
-    public static XObject castXdmValueToAnotherType(XObject srcValue, SequenceTypeData expectedSeqTypeData, boolean isTreatAs) 
+    public static XObject castXdmValueToAnotherType(XObject srcValue, XPathSequenceTypeData expectedSeqTypeData, boolean isTreatAs) 
     		                                                                                throws TransformerException {
         XObject result = null;
         
@@ -431,7 +431,7 @@ public class SequenceTypeSupport {
      * @throws TransformerException 
      */
     public static XObject castXdmValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
-                                                    SequenceTypeData expectedSeqTypeData, XPathContext xctxt) 
+                                                    XPathSequenceTypeData expectedSeqTypeData, XPathContext xctxt) 
                                                     		                                          throws TransformerException {
         XObject result = null;
         
@@ -459,21 +459,21 @@ public class SequenceTypeSupport {
             	ResultSequence rSeq = (ResultSequence)srcValue;
             	int seqSize = rSeq.size();
                 if ((seqSize > 1) && (seqTypeBuiltInType > 0) && 
-                	((itemTypeOccIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) || 
-                			                                                     (itemTypeOccIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+                	((itemTypeOccIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) || 
+                			                                                     (itemTypeOccIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
                 	throw new TransformerException("XPTY0004 : An XPath sequence with size " + seqSize + ", does'nt match with an xdm atomic type.", srcLocator);
                 }
             }
         	
             XPath seqTypeXPath = null;
             XObject seqTypeExpressionEvalResult = null;
-            SequenceTypeData seqExpectedTypeData = null;
+            XPathSequenceTypeData seqExpectedTypeData = null;
             
             if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (expectedSeqTypeData == null)) {
             	seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
             			                                                                          XPath.SELECT, null, true);            
             	seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
-            	seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+            	seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
             }
             else {
             	seqExpectedTypeData = expectedSeqTypeData; 
@@ -481,11 +481,11 @@ public class SequenceTypeSupport {
 
             int expectedType = seqExpectedTypeData.getBuiltInSequenceType();            
             int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
-            SequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+            XPathSequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
             
             if (srcValue instanceof XPathNamedFunctionReference) {
             	XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)srcValue; 
-            	SequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
+            	XPathSequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
             	if (seqTypeFunctionTest != null) {
             		if (seqTypeFunctionTest.isAnyFunctionTest()) {
             			return srcValue;
@@ -576,14 +576,14 @@ public class SequenceTypeSupport {
 	            }
             }
             else if ((nodeSet != null) && ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == 
-            		                                                                             SequenceTypeSupport.SCHEMA_ELEMENT_KIND))) {            	
+            		                                                                             XPathSequenceTypeSupport.SCHEMA_ELEMENT_KIND))) {            	
             	DTMCursorIterator dtmIter = nodeSet.iterRaw();
             	int nodeDtmHandle = dtmIter.nextNode();
             	DTM dtm = dtmIter.getDTM(nodeDtmHandle);
             	java.lang.String nodeName = dtm.getNodeName(nodeDtmHandle);
             	java.lang.String nodeNsUri = dtm.getNamespaceURI(nodeDtmHandle);
             	dtmIter.reset();
-            	if ((nodeName.equals(sequenceTypeKindTest.getNodeLocalName())) && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
+            	if ((nodeName.equals(sequenceTypeKindTest.getNodeLocalName())) && (XPathSequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
             																						sequenceTypeKindTest.getNodeNsUri()))) {
             		StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
             		XSModel xsModel = stylesheetRoot.getXsModel();
@@ -951,7 +951,7 @@ public class SequenceTypeSupport {
 	            	   }
 	            	}	            	
             	}
-            	else if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE) {
+            	else if (seqExpectedTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE) {
             		if (srcValue instanceof ResultSequence) {
             			ResultSequence rSeq = (ResultSequence)srcValue;
             			if ((rSeq.size() == 1) && ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) || 
@@ -1408,7 +1408,7 @@ public class SequenceTypeSupport {
             		   if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (expectedSeqTypeData == null)) {
             			   XPath seqTypeXPath2 = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
             			   XObject seqTypeExpressionEvalResult2 = seqTypeXPath2.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
-            			   SequenceTypeData seqExpectedTypeData2 = (SequenceTypeData)seqTypeExpressionEvalResult2;            			   
+            			   XPathSequenceTypeData seqExpectedTypeData2 = (XPathSequenceTypeData)seqTypeExpressionEvalResult2;            			   
             			   int builtInTypeId = seqExpectedTypeData2.getBuiltInSequenceType();
             			   if (builtInTypeId == STRING) {
             				   result = null;
@@ -1444,7 +1444,7 @@ public class SequenceTypeSupport {
                }
             }
             else if (srcValue instanceof XPathInlineFunction) {
-               SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();               
+               XPathSequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();               
                if (sequenceTypeFunctionTest != null) {
             	  XPathInlineFunction xpathInlineFuncExpr = (XPathInlineFunction)srcValue;
             	  if (sequenceTypeFunctionTest.isAnyFunctionTest()) {
@@ -1467,8 +1467,8 @@ public class SequenceTypeSupport {
             		    		                                                    xctxt.getNamespaceContext(), XPath.SELECT, 
             		    		                                                    null, true);
             		       XObject evalResult = expectedParamTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-            		       SequenceTypeData sequenceTypeData1 = (SequenceTypeData)evalResult;
-            		       SequenceTypeData sequenceTypeData2 = (inlineFuncParameterList.get(idx)).getParamType();
+            		       XPathSequenceTypeData sequenceTypeData1 = (XPathSequenceTypeData)evalResult;
+            		       XPathSequenceTypeData sequenceTypeData2 = (inlineFuncParameterList.get(idx)).getParamType();
             		       if (!sequenceTypeData1.equal(sequenceTypeData2)) {
             		    	  throw new TransformerException("XPTY0004 : An xdm value doesn't match with the provided XPath sequence type.");  
             		       }
@@ -1478,7 +1478,7 @@ public class SequenceTypeSupport {
             			throw new TransformerException(INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR); 
             		 }
             		 
-            		 SequenceTypeData funcReturnType = xpathInlineFuncExpr.getReturnType();
+            		 XPathSequenceTypeData funcReturnType = xpathInlineFuncExpr.getReturnType();
             		 String functionReturnTypeStr = sequenceTypeFunctionTest.getTypedFunctionTestReturnType();
             		 
             		 if (m_PrefixTable != null) {
@@ -1490,19 +1490,19 @@ public class SequenceTypeSupport {
                                                                                 xctxt.getNamespaceContext(), XPath.SELECT, 
                                                                                 null, true);
                      XObject evalResult = functionReturnTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-                     if (!funcReturnType.equal((SequenceTypeData)evalResult)) {
+                     if (!funcReturnType.equal((XPathSequenceTypeData)evalResult)) {
        		    	    throw new TransformerException("XPTY0004 : An xdm value doesn't match with the provided XPath sequence type.");  
        		         }
                      
             		 result = srcValue;
             	  }
                }
-               else if (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+               else if (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND) {
             	  result = srcValue; 
                }
             }
             else if (srcValue instanceof XPathMap) {
-            	SequenceTypeMapTest sequenceTypeMapTest = seqExpectedTypeData.getSequenceTypeMapTest();
+            	XPathSequenceTypeMapTest sequenceTypeMapTest = seqExpectedTypeData.getSequenceTypeMapTest();
                 if (sequenceTypeMapTest != null) {
              	   if (sequenceTypeMapTest.isAnyMapTest()) {
              		  result = srcValue; 
@@ -1527,15 +1527,15 @@ public class SequenceTypeSupport {
              				mapEntry = ((ResultSequence)mapEntry).item(0);
              			 }
              			 
-             			 SequenceTypeData keySeqTypeData = sequenceTypeMapTest.getKeySequenceTypeData();
-             			 SequenceTypeData valueSeqTypeData = sequenceTypeMapTest.getValueSequenceTypeData();
-             			 XObject mapKeyValTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(mapKey, null, keySeqTypeData, xctxt);
+             			 XPathSequenceTypeData keySeqTypeData = sequenceTypeMapTest.getKeySequenceTypeData();
+             			 XPathSequenceTypeData valueSeqTypeData = sequenceTypeMapTest.getValueSequenceTypeData();
+             			 XObject mapKeyValTypeCheckResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(mapKey, null, keySeqTypeData, xctxt);
              			 
              			 if (mapKeyValTypeCheckResult == null) {             				
              				throw new TransformerException("XPTY0004 : An XPath map entry with key '" + keyStrVal + "', doesn't have a value of specified XPath sequence type."); 
              			 }
              			 
-             			 XObject mapEntryValTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(mapEntry, null, valueSeqTypeData, xctxt);             			 
+             			 XObject mapEntryValTypeCheckResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(mapEntry, null, valueSeqTypeData, xctxt);             			 
              			 if (mapEntryValTypeCheckResult == null) {
              				throw new TransformerException("XPTY0004 : An XPath map entry with key '" + keyStrVal + "', doesn't have a value of specified XPath sequence type.");  
              			 }           			 
@@ -1544,12 +1544,12 @@ public class SequenceTypeSupport {
              		  result = srcValue; 
              	   }
                 }
-                else if (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+                else if (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND) {
               	   result = srcValue; 
                 }
             }
             else if (srcValue instanceof XPathArray) {
-            	SequenceTypeArrayTest sequenceTypeArrayTest = seqExpectedTypeData.getSequenceTypeArrayTest();
+            	XPathSequenceTypeArrayTest sequenceTypeArrayTest = seqExpectedTypeData.getSequenceTypeArrayTest();
                 if (sequenceTypeArrayTest != null) {
              	   if (sequenceTypeArrayTest.isAnyArrayTest()) {
              		  result = srcValue; 
@@ -1561,8 +1561,8 @@ public class SequenceTypeSupport {
              		  // We check below each of array items, with an expected type 
              		  while (arrIter.hasNext()) {
              			 XObject arrItem = arrIter.next();
-             			 SequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
-             			 XObject arrayItemTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(arrItem, null, arrayItemTypeInfo, xctxt);
+             			 XPathSequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
+             			 XObject arrayItemTypeCheckResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(arrItem, null, arrayItemTypeInfo, xctxt);
              			 if (arrayItemTypeCheckResult == null) {             				
              				throw new TransformerException("XPTY0004 : One or more, of XPath array's item doesn't conform to array item's expected type."); 
              			 }           			 
@@ -1571,7 +1571,7 @@ public class SequenceTypeSupport {
              		  result = srcValue;  
              	   }
                 }
-                else if (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+                else if (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND) {
               	   result = srcValue; 
                 }
             }
@@ -1718,14 +1718,14 @@ public class SequenceTypeSupport {
 	 * @return                                  SequenceTypeData object
 	 * @throws TransformerException
 	 */
-    public static SequenceTypeData getSequenceTypeDataFromSeqTypeStr(String seqTypeStr, XPathContext xctxt, 
+    public static XPathSequenceTypeData getSequenceTypeDataFromSeqTypeStr(String seqTypeStr, XPathContext xctxt, 
                                                                      SourceLocator srcLocator) throws TransformerException {
-    	SequenceTypeData seqTypeData = null;
+    	XPathSequenceTypeData seqTypeData = null;
 
     	XPath seqTypeXPath = new XPath(seqTypeStr, srcLocator, xctxt.getNamespaceContext(), 
     			                                                                       XPath.SELECT, null, true);
     	XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-    	seqTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+    	seqTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
 
     	return seqTypeData;
     }
@@ -2111,7 +2111,7 @@ public class SequenceTypeSupport {
      * Given an XObject object instance representing an atomic data value, check whether
      * a sequence type item() type annotation is applicable to the atomic data value.
      */
-    private static XObject performXdmItemTypeNormalizationOnAtomicType(SequenceTypeKindTest sequenceTypeKindTest, 
+    private static XObject performXdmItemTypeNormalizationOnAtomicType(XPathSequenceTypeKindTest sequenceTypeKindTest, 
                                                                                      XObject srcValue, String srcStrVal, 
                                                                                      String srcDataTypeName, 
                                                                                      String sequenceTypeXPathExprStr) throws TransformerException {
@@ -2142,9 +2142,9 @@ public class SequenceTypeSupport {
      */
     private static XObject castXNodeSetForDomInstance(XObject srcValue,
                                                                   String sequenceTypeXPathExprStr,
-                                                                  SequenceTypeData seqExpectedTypeDataInp, XPathContext xctxt,
+                                                                  XPathSequenceTypeData seqExpectedTypeDataInp, XPathContext xctxt,
                                                                   SourceLocator srcLocator, int itemTypeOccurenceIndicator,
-                                                                  SequenceTypeKindTest sequenceTypeKindTest)
+                                                                  XPathSequenceTypeKindTest sequenceTypeKindTest)
                                                                                                           throws TransformerException {
         XObject result = null;
 
@@ -2167,22 +2167,22 @@ public class SequenceTypeSupport {
             if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (seqExpectedTypeDataInp == null)) {
             	XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
             	XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
-            	SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;            	
-            	SequenceTypeKindTest sequenceTypeKindTest2 = seqExpectedTypeData.getSequenceTypeKindTest();
+            	XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;            	
+            	XPathSequenceTypeKindTest sequenceTypeKindTest2 = seqExpectedTypeData.getSequenceTypeKindTest();
             	boolean isXdmValueMatchesType = false;
-            	if ((sequenceTypeKindTest2 != null) && (sequenceTypeKindTest2.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) ||
-            			                               (sequenceTypeKindTest2.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+            	if ((sequenceTypeKindTest2 != null) && (sequenceTypeKindTest2.getKindVal() == XPathSequenceTypeSupport.ATTRIBUTE_KIND) ||
+            			                               (sequenceTypeKindTest2.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
             		int seqTypeOccrIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
-            		if ((attrCount == 1) && (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT)) {
+            		if ((attrCount == 1) && (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT)) {
             			isXdmValueMatchesType = true;
             		}
-            		else if ((attrCount >= 1) && (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
+            		else if ((attrCount >= 1) && (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
             			isXdmValueMatchesType = true;
             		}
-                    else if ((attrCount >= 0) && (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
+                    else if ((attrCount >= 0) && (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
                     	isXdmValueMatchesType = true;
             		}
-                    else if (((attrCount == 0) || (attrCount == 1)) && (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
+                    else if (((attrCount == 0) || (attrCount == 1)) && (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
                     	isXdmValueMatchesType = true;
             		}
             	}
@@ -2342,10 +2342,10 @@ public class SequenceTypeSupport {
      */
     private static XObject castXNodeSetInstance(XObject srcValue,
                                                               String sequenceTypeXPathExprStr,
-                                                              SequenceTypeData seqExpectedTypeDataInp, XPathContext xctxt,
+                                                              XPathSequenceTypeData seqExpectedTypeDataInp, XPathContext xctxt,
                                                               SourceLocator srcLocator,
                                                               int itemTypeOccurenceIndicator,
-                                                              SequenceTypeKindTest sequenceTypeKindTest)
+                                                              XPathSequenceTypeKindTest sequenceTypeKindTest)
                                                                                                      throws TransformerException {
         XObject result = null;
         
@@ -2566,7 +2566,7 @@ public class SequenceTypeSupport {
      * specified by a sequence type expression.
      */
     private static XObject castResultSequenceInstance(ResultSequence srcSeqValue, String sequenceTypeXPathExprStr,
-                                                      SequenceTypeData seqExpectedTypeDataInp, XPathContext xctxt,
+                                                      XPathSequenceTypeData seqExpectedTypeDataInp, XPathContext xctxt,
                                                       SourceLocator srcLocator, int expectedType, int itemTypeOccurenceIndicator) 
                                                     		                                                     throws TransformerException {
         
@@ -2617,10 +2617,10 @@ public class SequenceTypeSupport {
     private static boolean isSequenceTypeExprNodeKind(int seqTypekindVal) {		
     	boolean result = false;
 		
-		result = ((seqTypekindVal == SequenceTypeSupport.ELEMENT_KIND) || 
-										                      (seqTypekindVal == SequenceTypeSupport.ATTRIBUTE_KIND) || 
-										                      (seqTypekindVal == SequenceTypeSupport.NAMESPACE_NODE_KIND) || 
-										                      (seqTypekindVal == SequenceTypeSupport.NODE_KIND));
+		result = ((seqTypekindVal == XPathSequenceTypeSupport.ELEMENT_KIND) || 
+										                      (seqTypekindVal == XPathSequenceTypeSupport.ATTRIBUTE_KIND) || 
+										                      (seqTypekindVal == XPathSequenceTypeSupport.NAMESPACE_NODE_KIND) || 
+										                      (seqTypekindVal == XPathSequenceTypeSupport.NODE_KIND));
 		
 		return result; 
 	}

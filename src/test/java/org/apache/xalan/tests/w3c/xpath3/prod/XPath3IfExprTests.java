@@ -46,13 +46,6 @@ public class XPath3IfExprTests extends W3CXPath3TestsUtil {
         
         m_skipped_tests_list.clear();
     }
-    
-    /**
-     * This set of XSL test cases, take little long to run,
-     * due to few Xalan-J XPath 3.1 'if' expression parse
-     * going into inf loop. An XPath parse timeout of 10 secs
-     * is configured for the test case for a single XPath expression. 
-     */
 
     @Test
     public void runXslIfExprTests() {    	

@@ -139,8 +139,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.SharedLexerState;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -3072,8 +3072,8 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     			String sequenceTypeXPathExprStr = elemWithParam.getAs();    			 
     			XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
   			    XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-  			    SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
-    			XObject convertedObjValue = SequenceTypeSupport.castXdmValueToAnotherType(withParamValue, sequenceTypeXPathExprStr, seqExpectedTypeData, xctxt);
+  			    XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
+    			XObject convertedObjValue = XPathSequenceTypeSupport.castXdmValueToAnotherType(withParamValue, sequenceTypeXPathExprStr, seqExpectedTypeData, xctxt);
     			if (convertedObjValue == null) {
     			   throw new TransformerException("An XSL template parameter argument " + (elemWithParam.getName()).toString() + " "
     			   		                                                                + "is not valid with the specified sequence type " 

@@ -22,8 +22,8 @@ import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.OpCodes;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSDecimal;
@@ -58,7 +58,7 @@ public class CastAs extends Operation
   {
 	  XObject result = null;
       
-      SequenceTypeData seqTypedData = (SequenceTypeData)right;
+      XPathSequenceTypeData seqTypedData = (XPathSequenceTypeData)right;
       
       ExpressionNode exprNode = getExpressionOwner();
       XPathContext xpathContext = null;
@@ -112,7 +112,7 @@ public class CastAs extends Operation
       
       // Evaluate an XPath 3.1 "cast as" expression, when XPath "idiv" expression 
       // evaluation has not been requested within original XPath expression input.
-      result = SequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, xpathContext);
+      result = XPathSequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, xpathContext);
       
       result.setCastAsType(seqTypedData);
       

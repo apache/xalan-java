@@ -29,7 +29,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
@@ -265,7 +265,7 @@ public class ElemParam extends ElemVariable
     	if (asAttrVal != null) {
     		try {
     			XObject var = transformer.getXPathContext().getVarStack().getLocalVariable(xctx, m_index);
-    			var = SequenceTypeSupport.castXdmValueToAnotherType(var, asAttrVal, null, transformer.getXPathContext());
+    			var = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, asAttrVal, null, transformer.getXPathContext());
     			if (var == null) {
     				throw new TransformerException("XTTE0590 : The required item type of the value of parameter " + 
     						                                     m_qname.toString() + " is " + asAttrVal + ". The supplied value "

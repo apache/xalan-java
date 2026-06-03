@@ -45,8 +45,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.Keywords;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
@@ -1168,7 +1168,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					   if ((dataTypeStr != null) && !("text".equals(dataTypeStr) || "number".equals(dataTypeStr))) {							  
 						   XPath seqTypeXPath = new XPath(dataTypeStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
 						   XObject seqTypeObj = seqTypeXPath.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());            
-						   SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeObj;
+						   XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeObj;
 						   InstanceOf instanceOf = new InstanceOf();
 						   XObject xObj = instanceOf.operate(resultSeqItem, seqExpectedTypeData);
 						   if (!xObj.bool()) {
@@ -1178,7 +1178,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 																													   + "data-type attribute.", srcLocator);  
 						   }
 
-						   if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) {
+						   if (seqExpectedTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) {
 							   dataTypeStr = "text"; 
 						   }
 					   }						  

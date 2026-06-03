@@ -54,8 +54,8 @@ public class XPathLetExpr extends Expression {
 
     private static final long serialVersionUID = 3063682088023616108L;
 
-    private List<LetExprVarBinding> m_letExprVarBindingList = 
-                                                   new ArrayList<LetExprVarBinding>();
+    private List<XPathLetExprVarBinding> m_letExprVarBindingList = 
+                                                   new ArrayList<XPathLetExprVarBinding>();
     
     private String m_returnExprXPathStr = null;
     
@@ -85,7 +85,7 @@ public class XPathLetExpr extends Expression {
        
        try {    	       	   
     	   for (int idx = 0; idx < m_letExprVarBindingList.size(); idx++) {          
-    		   LetExprVarBinding letExprVarBinding = m_letExprVarBindingList.get(idx);
+    		   XPathLetExprVarBinding letExprVarBinding = m_letExprVarBindingList.get(idx);
     		   String varName = letExprVarBinding.getVarName();
     		   String varResultXPathExprStr = letExprVarBinding.getXPathExprStr();
 
@@ -246,11 +246,11 @@ public class XPathLetExpr extends Expression {
        return false;
     }
 
-    public List<LetExprVarBinding> getLetExprVarBindingList() {
+    public List<XPathLetExprVarBinding> getLetExprVarBindingList() {
         return m_letExprVarBindingList;
     }
 
-    public void setLetExprVarBindingList(List<LetExprVarBinding> letExprVarBindingList) {
+    public void setLetExprVarBindingList(List<XPathLetExprVarBinding> letExprVarBindingList) {
         this.m_letExprVarBindingList = letExprVarBindingList;
     }
 

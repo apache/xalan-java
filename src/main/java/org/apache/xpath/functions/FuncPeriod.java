@@ -32,8 +32,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
@@ -118,13 +118,13 @@ public class FuncPeriod extends FunctionMultiArgs {
 					for (int idx = 0; idx < funcParamCount; idx++) {
 						InlineFunctionParameter funcParam = funcParamList.get(idx);
 						String funcParamName = funcParam.getParamName();
-						SequenceTypeData paramType = funcParam.getParamType();
+						XPathSequenceTypeData paramType = funcParam.getParamType();
 						
 						XObject argValue = getFuncCallArgumentValue(idx, xctxt);
 
 						if (paramType != null) {
 							try {
-								argValue = SequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
+								argValue = XPathSequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
 								if (argValue == null) {
 									throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of an XPath "
 																									+ "function call, doesn't match an expected type.", srcLocator);
@@ -144,10 +144,10 @@ public class FuncPeriod extends FunctionMultiArgs {
 
 					result = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
-					SequenceTypeData funcReturnType = xpathInlineFunc.getReturnType();
+					XPathSequenceTypeData funcReturnType = xpathInlineFunc.getReturnType();
 					if (funcReturnType != null) {
 						try {
-							result = SequenceTypeSupport.castXdmValueToAnotherType(result, null, funcReturnType, null);
+							result = XPathSequenceTypeSupport.castXdmValueToAnotherType(result, null, funcReturnType, null);
 							if (result == null) {		    				
 								throw new TransformerException("XTTE0505 : An item type of result of an XPath function call, doesn't match "
 																														+ "an expected type.", srcLocator);

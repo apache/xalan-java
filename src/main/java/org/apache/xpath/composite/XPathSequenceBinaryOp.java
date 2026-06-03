@@ -46,13 +46,14 @@ import org.apache.xpath.operations.VcNotEquals;
 
 /**
  * A class definition, to implement XPath 3.1 binary operator
- * expressions like (if ...) + (if ...) , 2 + (if ...)
+ * expressions like (if ...) + (if ...) , 
+ *                  2 + (if ...)
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class SequenceBinaryOp extends Expression {
+public class XPathSequenceBinaryOp extends Expression {
 
 	private static final long serialVersionUID = -4920578903670425812L;
 	
@@ -65,11 +66,6 @@ public class SequenceBinaryOp extends Expression {
     private Vector m_vars;
     
     private int m_globals_size;
-
-	@Override
-	public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-		// no op
-	}
 
 	@Override
 	public XObject execute(XPathContext xctxt) throws TransformerException {
@@ -199,6 +195,11 @@ public class SequenceBinaryOp extends Expression {
 
 	public void setOpStr(String opStr) {
 		this.m_opStr = opStr;
+	}
+	
+	@Override
+	public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
+		// no op
 	}
 
 }

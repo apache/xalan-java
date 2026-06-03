@@ -498,7 +498,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
      "XQDY0137 : An xdm map cannot have a duplicate key. More than one map entry with key {0} is attempted to be added to an xdm map."},
   
   { ER_IF_EXPR,
-     "\"if\" keyword expected followed by \"(\" expr \")\"." },
+     "XPST0003 : An XPath 3.1 ''if'' keyword is not followed by ''(''...'')''." },
 
   { ER_EXPECTED_DOUBLE_QUOTE,
       "misquoted literal... expected double quote!"},

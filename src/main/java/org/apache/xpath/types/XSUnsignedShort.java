@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xpath.composite.SequenceTypeSupport.XmlSchemaBuiltinNumericType;
+import org.apache.xpath.composite.XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 

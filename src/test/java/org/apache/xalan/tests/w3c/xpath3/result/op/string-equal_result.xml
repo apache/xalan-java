@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-02T10:07:07Z" fail="2" name="op-string-equal" pass="7" run="9" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-03T10:42:50Z" fail="2" name="op-string-equal" pass="7" run="9" statusUnknown="0">
    <testResult status="pass" testName="K-StringEqual-1"/>
    <testResult status="pass" testName="K-StringEqual-2"/>
    <testResult status="pass" testName="K-StringEqual-3"/>

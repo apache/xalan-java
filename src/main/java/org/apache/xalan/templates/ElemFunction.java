@@ -46,13 +46,13 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
-import org.apache.xpath.composite.SequenceTypeArrayTest;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeFunctionTest;
-import org.apache.xpath.composite.SequenceTypeKindTest;
-import org.apache.xpath.composite.SequenceTypeMapTest;
-import org.apache.xpath.composite.SequenceTypeSupport;
-import org.apache.xpath.composite.SequenceTypeSupport.OccurrenceIndicator;
+import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
+import org.apache.xpath.composite.XPathSequenceTypeKindTest;
+import org.apache.xpath.composite.XPathSequenceTypeMapTest;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeSupport.OccurrenceIndicator;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XslFunctionMemoization;
@@ -621,9 +621,9 @@ public class ElemFunction extends ElemTemplate
       
       if (funcAsAttrStrVal != null) {    	  
     	  try {
-    		SequenceTypeData seqExpectedTypeData = SequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
+    		XPathSequenceTypeData seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
     		
-    		SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+    		XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
     		int seqTypeItemOccrIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
     		
     	    if (isOnlyElemTextLiteral) {    	    	
@@ -645,7 +645,7 @@ public class ElemFunction extends ElemTemplate
     	    }    	          	         	 
         	 
              if (funcResultConvertedVal instanceof XPathInlineFunction) {
-            	if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+            	if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
             		if (m_cache) {
          		       XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
          		       (funcMemoization.func_result_cache).add(funcMemoization);
@@ -677,7 +677,7 @@ public class ElemFunction extends ElemTemplate
             	}
              }
              else if ((funcResultConvertedVal instanceof XPathMap) || (funcResultConvertedVal instanceof XPathArray)) {
-            	 if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+            	 if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
             		 if (m_cache) {
             			 XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
             			 (funcMemoization.func_result_cache).add(funcMemoization);
@@ -691,7 +691,7 @@ public class ElemFunction extends ElemTemplate
             	 }
             	 
             	 try {
-            		 funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(funcResultConvertedVal, funcAsAttrStrVal, null, xctxt);
+            		 funcResultConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(funcResultConvertedVal, funcAsAttrStrVal, null, xctxt);
             		 
             		 if (m_cache) {
             			 XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
@@ -713,22 +713,22 @@ public class ElemFunction extends ElemTemplate
              else if (((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) && !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {            
             	int funcItemSeqSize = (XslTransformData.m_xpathNamedFunctionRefSequence).size();
         		
-        		SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();        		
+        		XPathSequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();        		
         		boolean isSeqCardinalityOk = false;
-        		if ((funcItemSeqSize == 0) && ((seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-        				                       (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+        		if ((funcItemSeqSize == 0) && ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+        				                       (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
         		   isSeqCardinalityOk = true;
         		}
-        		else if ((funcItemSeqSize == 1) && ((seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) || 
-        				                            (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-        				                            (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) ||
-        				                            (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+        		else if ((funcItemSeqSize == 1) && ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) || 
+        				                            (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+        				                            (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) ||
+        				                            (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
         		   // An XPath sequence type occurrence indicator with value absent, or any 
         		   // other occurrence indicator is ok.
         		   isSeqCardinalityOk = true;
         		}
-        		else if ((seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
-        				 (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
+        		else if ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
+        				 (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
         		   // here, funcItemSeqSize > 1
         		   isSeqCardinalityOk = true;
         		}
@@ -813,17 +813,17 @@ public class ElemFunction extends ElemTemplate
             	 (ElemPerformSort.m_namespace_result_seq).clear();
              }
              else if (result instanceof XSString) {
-            	 funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
+            	 funcResultConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
              }
              else {
                  funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
              }
             
              if (funcResultConvertedVal == null) {
-                funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);                                
+                funcResultConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);                                
                 if (funcResultConvertedVal == null) {
-                   if ((seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-                	   (seqTypeItemOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
+                   if ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+                	   (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
                 	   funcResultConvertedVal = new ResultSequence();
                    }
                    else {
@@ -927,13 +927,13 @@ public class ElemFunction extends ElemTemplate
      XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
      XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
-     SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;     
-     SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+     XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;     
+     XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
      
      int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
      
      if (xdmValue instanceof XPathNamedFunctionReference) {
-    	 SequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
+    	 XPathSequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
     	 if (seqTypeFunctionTest != null) {
     		 XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xdmValue;    		 
     		 if (seqTypeFunctionTest.isAnyFunctionTest()) {
@@ -961,7 +961,7 @@ public class ElemFunction extends ElemTemplate
     	 String localName = xmlAttribute.getLocalName();
     	 String nsUri = xmlAttribute.getNamespaceUri();
     	 QName attrQName = new QName(nsUri, localName);
-    	 if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) {
+    	 if (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ATTRIBUTE_KIND) {
     		 String expectedLocalName = seqTypeKindTest.getNodeLocalName();    		 
     		 if ((expectedLocalName != null) && !"".equals(expectedLocalName)) {
     			 String expectedNsUri = seqTypeKindTest.getNodeNsUri();
@@ -985,7 +985,7 @@ public class ElemFunction extends ElemTemplate
     	 
     	 int rSeqLength = rSeq.size();
     	 
-    	 if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+    	 if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
     		 boolean isSeqTypeOccrIndicatorOk = false;
     		 if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
     			 isSeqTypeOccrIndicatorOk = true;
@@ -1011,7 +1011,7 @@ public class ElemFunction extends ElemTemplate
     	 }
     	 
     	 if (seqExpectedTypeData.getSequenceTypeMapTest() != null) {
-    		 SequenceTypeMapTest sequenceTypeMapTest = seqExpectedTypeData.getSequenceTypeMapTest();
+    		 XPathSequenceTypeMapTest sequenceTypeMapTest = seqExpectedTypeData.getSequenceTypeMapTest();
     		 boolean isSeqTypeOccrIndicatorOk = false;
     		 if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
     			 isSeqTypeOccrIndicatorOk = true;
@@ -1031,10 +1031,10 @@ public class ElemFunction extends ElemTemplate
     				 result = new ResultSequence();    			 
     				 for (int idx = 0; idx < rSeqLength; idx++) {
     					 XObject xObj1 = rSeq.item(idx);
-    					 SequenceTypeData seqTypeData = new SequenceTypeData();
+    					 XPathSequenceTypeData seqTypeData = new XPathSequenceTypeData();
     					 seqTypeData.setSequenceTypeMapTest(sequenceTypeMapTest);
-    					 seqTypeData.setItemTypeOccurrenceIndicator(SequenceTypeSupport.OccurrenceIndicator.ABSENT);    				 
-    					 XObject xObj2 = SequenceTypeSupport.castXdmValueToAnotherType(xObj1, null, seqTypeData, xctxt);
+    					 seqTypeData.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT);    				 
+    					 XObject xObj2 = XPathSequenceTypeSupport.castXdmValueToAnotherType(xObj1, null, seqTypeData, xctxt);
     					 if (xObj2 != null) {
     						 result.add(xObj1); 
     					 }
@@ -1052,7 +1052,7 @@ public class ElemFunction extends ElemTemplate
     	 }
     	 
     	 if (seqExpectedTypeData.getSequenceTypeArrayTest() != null) {
-    		 SequenceTypeArrayTest sequenceTypeArrayTest = seqExpectedTypeData.getSequenceTypeArrayTest();
+    		 XPathSequenceTypeArrayTest sequenceTypeArrayTest = seqExpectedTypeData.getSequenceTypeArrayTest();
     		 boolean isSeqTypeOccrIndicatorOk = false;
     		 if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
     			 isSeqTypeOccrIndicatorOk = true;
@@ -1072,10 +1072,10 @@ public class ElemFunction extends ElemTemplate
     				 result = new ResultSequence();    			 
     				 for (int idx = 0; idx < rSeqLength; idx++) {
     					 XObject xObj1 = rSeq.item(idx);
-    					 SequenceTypeData seqTypeData = new SequenceTypeData();
+    					 XPathSequenceTypeData seqTypeData = new XPathSequenceTypeData();
     					 seqTypeData.setSequenceTypeArrayTest(sequenceTypeArrayTest);
-    					 seqTypeData.setItemTypeOccurrenceIndicator(SequenceTypeSupport.OccurrenceIndicator.ABSENT);    				 
-    					 XObject xObj2 = SequenceTypeSupport.castXdmValueToAnotherType(xObj1, null, seqTypeData, xctxt);
+    					 seqTypeData.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT);    				 
+    					 XObject xObj2 = XPathSequenceTypeSupport.castXdmValueToAnotherType(xObj1, null, seqTypeData, xctxt);
     					 if (xObj2 != null) {
     						 result.add(xObj1); 
     					 }
@@ -1195,7 +1195,7 @@ public class ElemFunction extends ElemTemplate
                    }
                 }
              }
-             else if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+             else if (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND) {
             	 if (strVal.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
             		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_SUFFIX);
             		 for (int idx = 0; idx < strParts.length; idx++) {
@@ -1289,7 +1289,7 @@ public class ElemFunction extends ElemTemplate
      if ((nodeSetLen == 1) && (seqTypeKindTest != null)) {
     	 Node node = nodeList.item(0);
          short nodeType = node.getNodeType();
-         if ((nodeType == Node.ELEMENT_NODE) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND)) {        	 
+         if ((nodeType == Node.ELEMENT_NODE) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ELEMENT_KIND)) {        	 
         	 String typeNodeLocalName = seqTypeKindTest.getNodeLocalName();
         	 String typeNodeNsUri = seqTypeKindTest.getNodeNsUri();
         	 String typeDataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
@@ -1327,7 +1327,7 @@ public class ElemFunction extends ElemTemplate
          }
      }
      else if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 0) || (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
-                                                                                                               SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
+                                                                                                               XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
     	 if ((result != null) && (result.size() > 1)) {
     		 String errMesg = null;
     		 if (m_name != null) {
@@ -1506,80 +1506,80 @@ public class ElemFunction extends ElemTemplate
       
       XObject result = null;
      
-      if (xsBuiltInTypeId == SequenceTypeSupport.BOOLEAN) {
+      if (xsBuiltInTypeId == XPathSequenceTypeSupport.BOOLEAN) {
          boolean boolVal = ("true".equals(strVal) || "1".equals(strVal)) ? true : false;
          result = new XSBoolean(boolVal);
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.STRING) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.STRING) {
          result = new XSString(strVal);
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_DATE) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_DATE) {
          result = XSDate.parseDate(strVal);
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_DATETIME) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_DATETIME) {
          result = XSDateTime.parseDateTime(strVal);
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_TIME) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_TIME) {
     	 result = XSTime.parseTime(strVal);
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_DURATION) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_DURATION) {
          result = XSDuration.parseDuration(strVal);
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_DAYTIME_DURATION) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_DAYTIME_DURATION) {
          result = XSDayTimeDuration.parseDayTimeDuration(strVal);
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_YEARMONTH_DURATION) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_YEARMONTH_DURATION) {
          result = XSYearMonthDuration.parseYearMonthDuration(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_DECIMAL) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_DECIMAL) {
          result = new XSDecimal(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_INTEGER) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_INTEGER) {
          result = new XSInteger(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_LONG) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_LONG) {
          result = new XSLong(strVal);
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_INT) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_INT) {
          result = new XSInt(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_SHORT) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_SHORT) {
          result = new XSShort(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_BYTE) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_BYTE) {
          result = new XSByte(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_UNSIGNED_LONG) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_UNSIGNED_LONG) {
          result = new XSUnsignedLong(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_UNSIGNED_INT) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_UNSIGNED_INT) {
          result = new XSUnsignedInt(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_UNSIGNED_SHORT) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_UNSIGNED_SHORT) {
          result = new XSUnsignedShort(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_UNSIGNED_BYTE) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_UNSIGNED_BYTE) {
           result = new XSUnsignedByte(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_NON_NEGATIVE_INTEGER) {
          result = new XSNonNegativeInteger(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_POSITIVE_INTEGER) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_POSITIVE_INTEGER) {
          result = new XSPositiveInteger(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_NON_POSITIVE_INTEGER) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_NON_POSITIVE_INTEGER) {
          result = new XSNonPositiveInteger(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_NEGATIVE_INTEGER) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_NEGATIVE_INTEGER) {
          result = new XSNegativeInteger(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_DOUBLE) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_DOUBLE) {
          result = new XSDouble(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_FLOAT) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_FLOAT) {
          result = new XSFloat(strVal); 
       }
-      else if (xsBuiltInTypeId == SequenceTypeSupport.XS_ANY_URI) {
+      else if (xsBuiltInTypeId == XPathSequenceTypeSupport.XS_ANY_URI) {
          result = new XSAnyURI(strVal); 
       }
       else {
@@ -1645,9 +1645,9 @@ public class ElemFunction extends ElemTemplate
 	  try {		  
 		  XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);		  
 		  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-		  SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;          
+		  XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;          
 
-		  XMLNodeCursorImpl nodeSet = SequenceTypeSupport.getNodeReference(srcValue);
+		  XMLNodeCursorImpl nodeSet = XPathSequenceTypeSupport.getNodeReference(srcValue);
 		  
 		  if (nodeSet != null) {
 			  XSTypeDefinition typeDef = nodeSet.getXsTypeDefinition();                    	                      	                      	  
@@ -1684,7 +1684,7 @@ public class ElemFunction extends ElemTemplate
 				  DTM dtm = xctxt.getDTM(nodeHandle);
 				  XMLString xmlStr1 = dtm.getStringValue(nodeHandle);
 				  String str1 = xmlStr1.toString();
-				  XObject xObj = SequenceTypeSupport.castXdmValueToAnotherType(new XSString(str1), seqExpectedTypeData, false);
+				  XObject xObj = XPathSequenceTypeSupport.castXdmValueToAnotherType(new XSString(str1), seqExpectedTypeData, false);
 				  if (xObj != null) {
 					  argConvertedVal = xObj;  
 				  }
@@ -1703,16 +1703,16 @@ public class ElemFunction extends ElemTemplate
 				  int rSeqLength = rSeq.size();
 				  int seqTypeOccrIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
 				  boolean isOccrIndicatorOk = false;
-				  if ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) && (rSeqLength == 1)) {
+				  if ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) && (rSeqLength == 1)) {
 					  isOccrIndicatorOk = true;  
 				  }
-				  else if ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) && (rSeqLength >= 1)) {
+				  else if ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) && (rSeqLength >= 1)) {
 					  isOccrIndicatorOk = true; 
 				  }
-				  else if ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) && (rSeqLength >= 0)) {
+				  else if ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) && (rSeqLength >= 0)) {
 					  isOccrIndicatorOk = true;
 				  }
-				  else if ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) && 
+				  else if ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) && 
 						                                                                                   ((rSeqLength == 0) || (rSeqLength == 1))) {
 					  isOccrIndicatorOk = true;
 				  }
@@ -1747,7 +1747,7 @@ public class ElemFunction extends ElemTemplate
 		  }
 
 		  if (argConvertedVal == null) {
-			  argConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(srcValue, paramAsAttrStrVal, null, xctxt, prefixTable); 
+			  argConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(srcValue, paramAsAttrStrVal, null, xctxt, prefixTable); 
 		  }
 
 		  if (argConvertedVal == null) {
@@ -1757,7 +1757,7 @@ public class ElemFunction extends ElemTemplate
 		  }		  
 	  }
 	  catch (TransformerException ex) {
-		  if ((SequenceTypeSupport.INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR).equals(ex.getMessage())) {
+		  if ((XPathSequenceTypeSupport.INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR).equals(ex.getMessage())) {
 			  throw new TransformerException("XPTY0004 : The number of XPath inline function parameters, is not equal to "
 					  																  + "the number of expected type specifications for them.", srcLocator);   
 		  }
@@ -1781,7 +1781,7 @@ public class ElemFunction extends ElemTemplate
     * @param xctxt					An XPath context object
     * @return						ResultSequence object encapsulating the node
     */
-    private ResultSequence getResultSequenceFromNode(Node node, SequenceTypeKindTest seqTypeKindTest, XPathContext xctxt) {
+    private ResultSequence getResultSequenceFromNode(Node node, XPathSequenceTypeKindTest seqTypeKindTest, XPathContext xctxt) {
 		ResultSequence resultSequence = new ResultSequence();
 		
 		DTMNodeProxy dtmNodeProxy = (DTMNodeProxy)node;

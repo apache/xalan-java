@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-02T10:05:23Z" fail="14" name="prod-IfExpr" pass="12" run="26" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-03T10:40:28Z" fail="9" name="prod-IfExpr" pass="17" run="26" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="CondExpr008"/>
    <testResult status="pass" testName="CondExpr009"/>
    <testResult status="pass" testName="CondExpr010"/>
    <testResult status="pass" testName="CondExpr014"/>
    <testResult status="pass" testName="CondExpr015"/>
    <testResult status="pass" testName="CondExpr018"/>
-   <testResult status="fail" testName="CondExpr019"/>
-   <testResult status="fail" testName="CondExpr20"/>
-   <testResult status="fail" testName="CondExpr21"/>
-   <testResult status="fail" testName="CondExpr022"/>
+   <testResult status="pass" testName="CondExpr019"/>
+   <testResult status="pass" testName="CondExpr20"/>
+   <testResult status="pass" testName="CondExpr21"/>
+   <testResult status="pass" testName="CondExpr022"/>
    <testResult status="pass" testName="K-CondExpr-1"/>
    <testResult status="pass" testName="K-CondExpr-2"/>
-   <testResult status="fail" testName="K-CondExpr-3"/>
+   <testResult status="pass" testName="K-CondExpr-3"/>
    <testResult status="fail" testName="K-CondExpr-4"/>
    <testResult status="fail" testName="K-CondExpr-5"/>
    <testResult status="skipped" testName="K-CondExpr-6"/>

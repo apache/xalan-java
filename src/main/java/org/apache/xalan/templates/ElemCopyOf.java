@@ -45,7 +45,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -908,7 +908,7 @@ public class ElemCopyOf extends ElemTemplateElement
 			  if (xsModel != null) {
 				  String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);        				  
 				  XSTypeDefinition xsTypeDefn = xsModel.getTypeDefinition(type.getLocalName(), type.getNamespace());
-				  if (SequenceTypeSupport.isXmlStrValid(xmlStr, null, xsTypeDefn)) {
+				  if (XPathSequenceTypeSupport.isXmlStrValid(xmlStr, null, xsTypeDefn)) {
 					  tw.traverse(nodeHandle); 
 				  }
 			  }
@@ -929,7 +929,7 @@ public class ElemCopyOf extends ElemTemplateElement
 					  String nodeNamespace = node.getNamespaceURI();
 					  XSElementDecl schemaElemDecl = (XSElementDecl)(xsModel.getElementDeclaration(nodeLocalName, nodeNamespace));
 					  if (schemaElemDecl != null) {
-						  if (SequenceTypeSupport.isXmlStrValid(xmlStr, schemaElemDecl, null)) {
+						  if (XPathSequenceTypeSupport.isXmlStrValid(xmlStr, schemaElemDecl, null)) {
 							  tw.traverse(nodeHandle); 
 						  }
 					  }
@@ -957,7 +957,7 @@ public class ElemCopyOf extends ElemTemplateElement
 					  String nodeNamespace = node.getNamespaceURI();
 					  XSElementDecl schemaElemDecl = (XSElementDecl)(xsModel.getElementDeclaration(nodeLocalName, nodeNamespace));
 					  if (schemaElemDecl != null) {
-						  if (SequenceTypeSupport.isXmlStrValid(xmlStr, schemaElemDecl, null)) {
+						  if (XPathSequenceTypeSupport.isXmlStrValid(xmlStr, schemaElemDecl, null)) {
 							  tw.traverse(nodeHandle); 
 						  }
 					  }            				  

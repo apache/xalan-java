@@ -76,8 +76,8 @@ public class XPathQuantifiedExpr extends Expression {
      * A java.util.List object supporting implementation of XPath quantified 
      * expression. 
      */
-    private List<ForQuantifiedExprVarBinding> m_QuantifiedExprVarBindingList = new 
-                                                        ArrayList<ForQuantifiedExprVarBinding>();
+    private List<XPathForAndQuantifiedExprVarBinding> m_QuantifiedExprVarBindingList = new 
+                                                        ArrayList<XPathForAndQuantifiedExprVarBinding>();
 
     /**
      * This class field represents an XPath expression string, that 
@@ -177,11 +177,11 @@ public class XPathQuantifiedExpr extends Expression {
         this.m_xpathQuantifier = fCurrentXPathQuantifier;
     }
 
-    public List<ForQuantifiedExprVarBinding> getQuantifiedExprVarBindingList() {
+    public List<XPathForAndQuantifiedExprVarBinding> getQuantifiedExprVarBindingList() {
         return m_QuantifiedExprVarBindingList;
     }
 
-    public void setQuantifiedExprVarBindingList(List<ForQuantifiedExprVarBinding> 
+    public void setQuantifiedExprVarBindingList(List<XPathForAndQuantifiedExprVarBinding> 
                                                                       fQuantifiedExprVarBindingList) {
         this.m_QuantifiedExprVarBindingList = fQuantifiedExprVarBindingList;
     }
@@ -211,7 +211,7 @@ public class XPathQuantifiedExpr extends Expression {
         List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
         if (listIter.hasNext()) {           
-           ForQuantifiedExprVarBinding quantifiedExprVarBinding = (ForQuantifiedExprVarBinding)listIter.next();            
+           XPathForAndQuantifiedExprVarBinding quantifiedExprVarBinding = (XPathForAndQuantifiedExprVarBinding)listIter.next();            
             
            // Evaluate the current, variable binding xpath expression
            

@@ -27,9 +27,9 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeKindTest;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeKindTest;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
@@ -164,10 +164,10 @@ public class ElemDocument extends ElemTemplateElement {
 		 if (asAttrValue != null) { 			 
 			 XPath seqTypeXPath = new XPath(asAttrValue, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
 			 XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
-			 SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+			 XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
 			 
-			 SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
-			 if ((seqTypeKindTest != null) && !(seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND)) {
+			 XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+			 if ((seqTypeKindTest != null) && !(seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.DOCUMENT_KIND)) {
 				isCharMarkerToEmit = true;
 			 }
 		 }
@@ -179,12 +179,12 @@ public class ElemDocument extends ElemTemplateElement {
 				                                                                                 && !(elemTemplateElement instanceof ElemFunction)) { 			 
 			 XPath seqTypeXPath = new XPath(asAttrValue, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
 			 XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
-			 SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+			 XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
 			 
-			 SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+			 XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
 			 int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
-			 if ((seqTypeKindTest != null) && !((seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND) || 
-					                            (itemTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT))) {
+			 if ((seqTypeKindTest != null) && !((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.DOCUMENT_KIND) || 
+					                            (itemTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT))) {
 				isCharMarkerToEmit = true;
 			 }
 		 }

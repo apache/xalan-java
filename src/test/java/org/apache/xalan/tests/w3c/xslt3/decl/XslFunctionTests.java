@@ -38,10 +38,11 @@ public class XslFunctionTests extends W3CXslTransformTestsUtil {
     	
     	m_testResultFileName = "_function-test-set_result.xml";
     	
-    	// Xalan-J has bug with following, W3C XSLT 3.0 test case.
-    	// Skipping this XSL test cases for now.
+    	// Xalan-J has bugs with following, W3C XSLT 3.0 test cases.
+    	// Skipping these XSL test cases for now.
     	
     	m_skipped_tests_list.add("function-1014");
+    	//m_skipped_tests_list.add("function-1301");   // Xalan-J XSL 3 code goes to inf loop with this test case
     }
 
     @AfterClass

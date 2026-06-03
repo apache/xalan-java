@@ -50,12 +50,12 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.composite.SequenceTypeArrayTest;
-import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.composite.SequenceTypeKindTest;
-import org.apache.xpath.composite.SequenceTypeMapTest;
-import org.apache.xpath.composite.SequenceTypeSupport;
-import org.apache.xpath.composite.SequenceTypeSupport.OccurrenceIndicator;
+import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeKindTest;
+import org.apache.xpath.composite.XPathSequenceTypeMapTest;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeSupport.OccurrenceIndicator;
 import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -159,11 +159,11 @@ public class InstanceOf extends Operation
 	  	  
 	  PrefixResolver xmlNsPrefixResolver = xctxt.getNamespaceContext();
 	  
-      SequenceTypeData seqTypedData = null;      
-      SequenceTypeData castAsType = left.getCastAsType();
+      XPathSequenceTypeData seqTypedData = null;      
+      XPathSequenceTypeData castAsType = left.getCastAsType();
       
       if (castAsType != null) {    	  
-    	  if (castAsType.equal((SequenceTypeData)right)) {
+    	  if (castAsType.equal((XPathSequenceTypeData)right)) {
     		 result = XBoolean.S_TRUE; 
     	  }
     	  else {
@@ -173,15 +173,15 @@ public class InstanceOf extends Operation
     	  return result;
       }
       else {    	  	  	  
-    	  seqTypedData = (SequenceTypeData)right;  
+    	  seqTypedData = (XPathSequenceTypeData)right;  
       }
       
       int xsBuiltInSeqType = seqTypedData.getBuiltInSequenceType();      
-      SequenceTypeKindTest sequenceTypeKindTest = seqTypedData.getSequenceTypeKindTest();
+      XPathSequenceTypeKindTest sequenceTypeKindTest = seqTypedData.getSequenceTypeKindTest();
       int seqTypeOccurenceIndicator = seqTypedData.getItemTypeOccurrenceIndicator();
       
       int xsBuiltInType = seqTypedData.getBuiltInSequenceType();
-      if (xsBuiltInType == SequenceTypeSupport.XS_INTEGER) {
+      if (xsBuiltInType == XPathSequenceTypeSupport.XS_INTEGER) {
     	  if (left instanceof XNumber) {
     		  XNumber xNumber = (XNumber)left;
     		  double dbl = xNumber.num();
@@ -260,8 +260,8 @@ public class InstanceOf extends Operation
     	  left = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
       }
       else if (left instanceof XdmAttributeItem) {
-    	  if ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) ||
-    			                                (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+    	  if ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ATTRIBUTE_KIND) ||
+    			                                (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
     		  result = XBoolean.S_TRUE;
     	  }
     	  else {
@@ -281,25 +281,25 @@ public class InstanceOf extends Operation
       if (left instanceof ResultSequence) {
     	 int rSeqLength = ((ResultSequence)left).size();    	 
     	 if (rSeqLength == 0) {
-    		 if ((seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
-    				                                                                 (seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
+    		 if ((seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
+    				                                                                 (seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
     			 result = XBoolean.S_TRUE; 
     		 }
-    		 else if (xsBuiltInSeqType == SequenceTypeSupport.EMPTY_SEQUENCE) {
+    		 else if (xsBuiltInSeqType == XPathSequenceTypeSupport.EMPTY_SEQUENCE) {
     			 result = XBoolean.S_TRUE;
     		 }
-    		 else if (seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) {
+    		 else if (seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) {
     			 result = XBoolean.S_FALSE;
     		 }
     		 
     		 return result;
          }
-    	 else if ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+    	 else if ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
     		 if (rSeqLength == 1) {
     			 result = XBoolean.S_TRUE;
     		 }
-    		 else if ((seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
-    				  (seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
+    		 else if ((seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
+    				  (seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
     			 // here, rSeqLength > 1
     			 result = XBoolean.S_TRUE; 
     		 }
@@ -316,7 +316,7 @@ public class InstanceOf extends Operation
       try {    	 
     	 if (left instanceof XPathInlineFunction) {
     		ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();    		
-            XObject xObj = SequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, 
+            XObject xObj = XPathSequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, 
             		                                                                           xctxt, elemTemplateElement.getPrefixTable());
             if (xObj != null) {
                isInstanceOfResult = true;	
@@ -332,14 +332,14 @@ public class InstanceOf extends Operation
     		if ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".equals(xmlStr)) {
     			// XPath 'instance of' operator's LHS is an empty sequence    			
     			boolean isSequenceCardinalityOk = false;    			
-    			if ((seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
-    				                                                                  (seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
+    			if ((seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
+    				                                                                  (seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
     				isSequenceCardinalityOk = true; 
     			}
-    			else if (xsBuiltInSeqType == SequenceTypeSupport.EMPTY_SEQUENCE) {
+    			else if (xsBuiltInSeqType == XPathSequenceTypeSupport.EMPTY_SEQUENCE) {
     				isSequenceCardinalityOk = true;
     			}
-    			else if (seqTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ABSENT) {
+    			else if (seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) {
     				isSequenceCardinalityOk = false;
     			}    			
 
@@ -357,7 +357,7 @@ public class InstanceOf extends Operation
     	 }
          
     	 if (!isInstanceOfResult) {
-    		 if ((left instanceof XMLNodeCursorImpl) && (xsBuiltInSeqType == SequenceTypeSupport.XS_QNAME)) {
+    		 if ((left instanceof XMLNodeCursorImpl) && (xsBuiltInSeqType == XPathSequenceTypeSupport.XS_QNAME)) {
     			 java.lang.String str1 = ((XMLNodeCursorImpl)left).str();
     			 java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\{.{1,}\\}.{1,}");
     			 java.util.regex.Matcher matcher = pattern.matcher(str1);
@@ -393,245 +393,245 @@ public class InstanceOf extends Operation
    * @throws TransformerException
    * @throws Exception
    */
-  private boolean isInstanceOf(XObject xdmValue, SequenceTypeData seqTypeData) 
+  private boolean isInstanceOf(XObject xdmValue, XPathSequenceTypeData seqTypeData) 
 		                                                                    throws ParserConfigurationException, SAXException, 
                                                                                    IOException, TransformerException, Exception {
     
       boolean isInstanceOf = false;
       
-      SequenceTypeKindTest sequenceTypeKindTest = seqTypeData.getSequenceTypeKindTest();
+      XPathSequenceTypeKindTest sequenceTypeKindTest = seqTypeData.getSequenceTypeKindTest();
       
       final int seqTypeOccrIndicator = seqTypeData.getItemTypeOccurrenceIndicator();
       
       boolean isXdmValueString = ((xdmValue instanceof XString) || (xdmValue instanceof XSString));  
       
-      if (isXdmValueString && "".equals(XslTransformEvaluationHelper.getStrVal(xdmValue)) && ((sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND) && 
-    		                                                                                  ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
-    		                                                                                   (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)))) {
+      if (isXdmValueString && "".equals(XslTransformEvaluationHelper.getStrVal(xdmValue)) && ((sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.DOCUMENT_KIND) && 
+    		                                                                                  ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
+    		                                                                                   (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)))) {
     	  isInstanceOf = true;
       }      
-      else if ((xdmValue instanceof XSUntypedAtomic) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC)) {
+      else if ((xdmValue instanceof XSUntypedAtomic) && (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNTYPED_ATOMIC)) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSUntyped) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNTYPED)) {
+      else if ((xdmValue instanceof XSUntyped) && (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNTYPED)) {
           isInstanceOf = true;
       }
-      else if (isXdmValueString && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) || 
-									(seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if (isXdmValueString && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) || 
+									(seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
       else if (((xdmValue instanceof XString) || (xdmValue instanceof XSNormalizedString)) && 
-    		                                                ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) ||
-												             (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) ||
-												             (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+    		                                                ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NORMALIZED_STRING) ||
+												             (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) ||
+												             (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
       else if (((xdmValue instanceof XString) || (xdmValue instanceof XSToken)) && 
-	    		                                           ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_TOKEN) ||
-	    		                                            (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) ||
-	    		                                            (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) ||		 
-	    		                                            (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+	    		                                           ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TOKEN) ||
+	    		                                            (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NORMALIZED_STRING) ||
+	    		                                            (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) ||		 
+	    		                                            (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSAnyURI) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_URI) || 
-    		                                      (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSAnyURI) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_URI) || 
+    		                                      (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSQName) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_QNAME) || 
-                                                 (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSQName) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_QNAME) || 
+                                                 (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if (((xdmValue instanceof XBoolean) || (xdmValue instanceof XSBoolean)) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.BOOLEAN) || 
-    		                                                                           (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if (((xdmValue instanceof XBoolean) || (xdmValue instanceof XSBoolean)) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.BOOLEAN) || 
+    		                                                                           (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
       else if (xdmValue instanceof XNumber) {          
-    	  if (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE) {
+    	  if (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE) {
     		 isInstanceOf = true;
     	  }
-    	  else if ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DECIMAL) ||
-    			   (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DOUBLE)) {
+    	  else if ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL) ||
+    			   (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DOUBLE)) {
              isInstanceOf = true; 
           }
           else {
              double doubleVal = ((XNumber)xdmValue).num();
-             if ((doubleVal == (int)doubleVal) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INTEGER)) {
+             if ((doubleVal == (int)doubleVal) && (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER)) {
             	 isInstanceOf = true; 
              }
-             else if ((doubleVal == (float)doubleVal) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_FLOAT)) {
+             else if ((doubleVal == (float)doubleVal) && (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_FLOAT)) {
             	 isInstanceOf = true; 
              }
           }    	  
       }
-      else if ((xdmValue instanceof XSDouble) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DOUBLE) || 
-    		                                      (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSDouble) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DOUBLE) || 
+    		                                      (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
          isInstanceOf = true; 
       }
-      else if ((xdmValue instanceof XSFloat) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_FLOAT) || 
-    		                                     (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSFloat) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_FLOAT) || 
+    		                                     (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
       else if (((xdmValue instanceof XSInteger) || (xdmValue instanceof XSNonNegativeInteger) || 
 									    		   (xdmValue instanceof XSPositiveInteger) || (xdmValue instanceof XSNonPositiveInteger) || 
 									    		   (xdmValue instanceof XSNegativeInteger) || (xdmValue instanceof XSLong) || 
 									    		   (xdmValue instanceof XSInt) || (xdmValue instanceof XSShort)) && 
-									    		   ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INTEGER) ||                                                   
-									                (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {          
+									    		   ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER) ||                                                   
+									                (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {          
     	  isInstanceOf = true;                    
       }
       else if (((xdmValue instanceof XSLong) || (xdmValue instanceof XSInt) || (xdmValue instanceof XSShort)) && 
-    		                                      ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_LONG) || 
-                                                   (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {          
+    		                                      ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_LONG) || 
+                                                   (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {          
     	  isInstanceOf = true;
       }
       else if (((xdmValue instanceof XSInt) || (xdmValue instanceof XSShort)) && 
-    		                                     ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_INT) || 
-    		                                      (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {    	  
+    		                                     ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INT) || 
+    		                                      (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {    	  
     	  isInstanceOf = true;
       }      
-      else if ((xdmValue instanceof XSShort) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_SHORT) || 
-                                                 (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSShort) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_SHORT) || 
+                                                 (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSByte) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_BYTE) || 
-                                                (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSByte) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_BYTE) || 
+                                                (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSUnsignedLong) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNSIGNED_LONG) || 
-                                                        (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSUnsignedLong) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNSIGNED_LONG) || 
+                                                        (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSUnsignedInt) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNSIGNED_INT) || 
-                                                       (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSUnsignedInt) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNSIGNED_INT) || 
+                                                       (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSUnsignedShort) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNSIGNED_SHORT) || 
-                                                         (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSUnsignedShort) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNSIGNED_SHORT) || 
+                                                         (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSUnsignedByte) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_UNSIGNED_BYTE) || 
-                                                        (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSUnsignedByte) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNSIGNED_BYTE) || 
+                                                        (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
       else if (((xdmValue instanceof XSNonNegativeInteger) || (xdmValue instanceof XSPositiveInteger)) && 
-    		                                                   ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER) || 
-                                                                (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {    	  
+    		                                                   ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NON_NEGATIVE_INTEGER) || 
+                                                                (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {    	  
     	  isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSPositiveInteger) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_POSITIVE_INTEGER) || 
-                                                           (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSPositiveInteger) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_POSITIVE_INTEGER) || 
+                                                           (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
       else if (((xdmValue instanceof XSNonPositiveInteger) || (xdmValue instanceof XSNegativeInteger)) && 
-												    		   ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NON_POSITIVE_INTEGER) || 
-												                (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+												    		   ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NON_POSITIVE_INTEGER) || 
+												                (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSNegativeInteger) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NEGATIVE_INTEGER) || 
-                                                           (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSNegativeInteger) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NEGATIVE_INTEGER) || 
+                                                           (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }      
-      else if ((xdmValue instanceof XSDecimal) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DECIMAL) || 
-    		                                       (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSDecimal) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL) || 
+    		                                       (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSDate) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DATE) || 
-    		                                    (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSDate) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DATE) || 
+    		                                    (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSDateTime) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DATETIME) || 
-    		                                        (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSDateTime) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DATETIME) || 
+    		                                        (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSTime) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_TIME) || 
-    		                                    (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSTime) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TIME) || 
+    		                                    (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSDuration) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DURATION) || 
-    		                                        (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSDuration) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DURATION) || 
+    		                                        (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSDayTimeDuration) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_DAYTIME_DURATION) || 
-    		                                               (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSDayTimeDuration) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DAYTIME_DURATION) || 
+    		                                               (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSYearMonthDuration) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_YEARMONTH_DURATION) || 
-    		                                                 (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSYearMonthDuration) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_YEARMONTH_DURATION) || 
+    		                                                 (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSGYearMonth) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GYEAR_MONTH) ||
-    		                                          (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSGYearMonth) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR_MONTH) ||
+    		                                          (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSGYear) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GYEAR) ||
-    		                                     (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSGYear) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR) ||
+    		                                     (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSGMonthDay) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GMONTH_DAY) ||
-    		                                         (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSGMonthDay) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GMONTH_DAY) ||
+    		                                         (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSGDay) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GDAY) ||
-    		                                    (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSGDay) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GDAY) ||
+    		                                    (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSGMonth) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_GMONTH) ||
-    		                                      (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSGMonth) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GMONTH) ||
+    		                                      (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSBase64Binary) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_BASE64BINARY) ||
-                                                        (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSBase64Binary) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_BASE64BINARY) ||
+                                                        (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSHexBinary) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_HEXBINARY) ||
-                                                     (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSHexBinary) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_HEXBINARY) ||
+                                                     (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSLanguage) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_LANGUAGE) ||
-    		                                        (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) ||
-    		                                        (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) ||
-    		                                        (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_TOKEN) ||
-                                                    (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSLanguage) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_LANGUAGE) ||
+    		                                        (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) ||
+    		                                        (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NORMALIZED_STRING) ||
+    		                                        (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TOKEN) ||
+                                                    (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSName) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NAME) ||
-								                (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) ||
-								                (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) ||
-								                (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_TOKEN) ||
-								                (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSName) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NAME) ||
+								                (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) ||
+								                (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NORMALIZED_STRING) ||
+								                (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TOKEN) ||
+								                (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSNCName) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NCNAME) || 
-    		                                      (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NAME) ||
-                                                  (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) ||
-                                                  (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) ||
-                                                  (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_TOKEN) ||
-                                                  (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSNCName) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NCNAME) || 
+    		                                      (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NAME) ||
+                                                  (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) ||
+                                                  (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NORMALIZED_STRING) ||
+                                                  (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TOKEN) ||
+                                                  (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSNmToken) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NMTOKEN) ||
-									               (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) ||
-									               (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) ||
-									               (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_TOKEN) ||
-									               (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSNmToken) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NMTOKEN) ||
+									               (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) ||
+									               (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NORMALIZED_STRING) ||
+									               (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TOKEN) ||
+									               (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSID) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ID) ||
-								    		  (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NCNAME) || 
-								    		  (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NAME) || 
-								    		  (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) ||
-								              (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) ||
-								              (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_TOKEN) ||
-								              (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSID) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ID) ||
+								    		  (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NCNAME) || 
+								    		  (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NAME) || 
+								    		  (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) ||
+								              (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NORMALIZED_STRING) ||
+								              (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TOKEN) ||
+								              (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
-      else if ((xdmValue instanceof XSIdRef) && ((seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_IDREF) ||
-    		  (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NCNAME) || 
-    		  (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NAME) || 
-    		  (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.STRING) ||
-              (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) ||
-              (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_TOKEN) ||
-              (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if ((xdmValue instanceof XSIdRef) && ((seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_IDREF) ||
+    		  (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NCNAME) || 
+    		  (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NAME) || 
+    		  (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) ||
+              (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NORMALIZED_STRING) ||
+              (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TOKEN) ||
+              (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;  
       }
       else if (xdmValue instanceof XMLNodeCursorImpl) {
@@ -664,7 +664,7 @@ public class InstanceOf extends Operation
     				  xObj = new XSString(nodeStrValue);;  
     			  }
 
-    			  XObject result = SequenceTypeSupport.castXdmValueToAnotherType(xObj, seqTypeData, true);
+    			  XObject result = XPathSequenceTypeSupport.castXdmValueToAnotherType(xObj, seqTypeData, true);
     			  if (result != null) {
     				  isInstanceOf = true; 
     			  }
@@ -688,12 +688,12 @@ public class InstanceOf extends Operation
     	  java.lang.String localName = xmlAttribute.getLocalName();
     	  java.lang.String nsUri = xmlAttribute.getNamespaceUri();
     	  QName attrQName = new QName(nsUri, localName);
-    	  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();
+    	  XPathSequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();
     	  if (seqTypeKindTest != null) {
-    		  if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+    		  if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.NODE_KIND) || (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
     			  isInstanceOf = true; 
     		  }
-    		  else if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) {
+    		  else if (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ATTRIBUTE_KIND) {
     			  java.lang.String expectedLocalName = seqTypeKindTest.getNodeLocalName();    		 
     			  if ((expectedLocalName != null) && !"".equals(expectedLocalName)) {
     				  java.lang.String expectedNsUri = seqTypeKindTest.getNodeNsUri();
@@ -708,19 +708,19 @@ public class InstanceOf extends Operation
     		  }
     	  }
       }
-      else if (sequenceTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND) {
+      else if (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND) {
     	  if (xdmValue instanceof ResultSequence) {
     		 ResultSequence rSeq = (ResultSequence)xdmValue;
     		 int rSeqSize = rSeq.size();
-    		 if ((rSeqSize == 0) && ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-    				                 (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+    		 if ((rSeqSize == 0) && ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+    				                 (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
     			isInstanceOf = true; 
     		 }
     		 else if (rSeqSize == 1) {
     			isInstanceOf = true; 
     		 }
-    		 else if ((seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
-    				  (seqTypeOccrIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
+    		 else if ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
+    				  (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
     			 // here, rSeqSize > 1
     			 isInstanceOf = true; 
     		 }
@@ -748,7 +748,7 @@ public class InstanceOf extends Operation
    * @throws TransformerException
    * @throws Exception
    */
-  private boolean isNodesetInstanceOfType(XMLNodeCursorImpl nodeSet, SequenceTypeData seqTypeData) throws 
+  private boolean isNodesetInstanceOfType(XMLNodeCursorImpl nodeSet, XPathSequenceTypeData seqTypeData) throws 
                                                                          ParserConfigurationException, SAXException, 
                                                                          IOException, TransformerException, Exception {
 	  
@@ -756,19 +756,19 @@ public class InstanceOf extends Operation
           
 	  int nodeSetLen = nodeSet.getLength();
 	  	  	  	  
-	  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();
+	  XPathSequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();
 	  int itemTypeOccurenceIndicator = seqTypeData.getItemTypeOccurrenceIndicator();
 	  
-	  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
-		  if ((nodeSetLen == 0) && ((itemTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-				                                                              (itemTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+	  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
+		  if ((nodeSetLen == 0) && ((itemTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+				                                                              (itemTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
 			  isInstanceOf = true; 
 		  }
 		  else if (nodeSetLen == 1) {
 			  isInstanceOf = true; 
 		  }
-		  else if ((itemTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
-				   (itemTypeOccurenceIndicator == SequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
+		  else if ((itemTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
+				   (itemTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
 			  // here, nodeSetLen > 1
 			  isInstanceOf = true; 
 		  }
@@ -790,7 +790,7 @@ public class InstanceOf extends Operation
 			  short nodeType = dtm.getNodeType(nextNode);
 
 			  if (nodeType == DTM.DOCUMENT_NODE) {				  
-				  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == SequenceTypeSupport.DOCUMENT_KIND)) {
+				  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.DOCUMENT_KIND)) {
 					  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
 				  }
 				  else {
@@ -802,24 +802,24 @@ public class InstanceOf extends Operation
 			  else if (nodeType == DTM.ELEMENT_NODE) {
 				  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());				  
 				  if (seqTypeKindTest != null) {					  
-					  SequenceTypeKindTest seqTypeKindTest2 = xmlNodeCursorImpl.getSeqTypeKindTest();
+					  XPathSequenceTypeKindTest seqTypeKindTest2 = xmlNodeCursorImpl.getSeqTypeKindTest();
 					  if ((nodeSetLen == 1) && (seqTypeKindTest2 != null) && seqTypeKindTest2.equal(seqTypeKindTest)) {
 						 return true; 
 					  }
 					  
 					  java.lang.String elemNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
 					  if (elemNodeKindTestNodeName == null || "".equals(elemNodeKindTestNodeName) || 
-							  																SequenceTypeSupport.STAR.equals(elemNodeKindTestNodeName)) {
+							  																XPathSequenceTypeSupport.STAR.equals(elemNodeKindTestNodeName)) {
 						  elemNodeKindTestNodeName = nodeName;  
 					  }
 
-					  if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
-							                                                       && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
+					  if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
+							                                                       && (XPathSequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
 							                                                    		                                       seqTypeKindTest.getNodeNsUri()))) {
 						  XSTypeDefinition xsTypeDefn = seqTypeData.getXsTypeDefinition();
 						  if (xsTypeDefn != null) {
 							  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());
-							  if (SequenceTypeSupport.isXdmElemNodeValidWithSchemaType(node, m_xctxt, xsTypeDefn)) {
+							  if (XPathSequenceTypeSupport.isXdmElemNodeValidWithSchemaType(node, m_xctxt, xsTypeDefn)) {
 								  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true));
 							  }
 							  else {
@@ -918,8 +918,8 @@ public class InstanceOf extends Operation
 							  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
 						  }
 					  }
-					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
-                              																	&& (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
+					  else if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.SCHEMA_ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
+                              																	&& (XPathSequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
                               																				seqTypeKindTest.getNodeNsUri()))) {
 						  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 						  XSModel xsModel = stylesheetRoot.getXsModel();
@@ -948,8 +948,8 @@ public class InstanceOf extends Operation
 							  break; 
 						  }
 					  }
-					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || 
-							   (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+					  else if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.NODE_KIND) || 
+							   (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
 						  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
 					  }
 				  }
@@ -972,7 +972,7 @@ public class InstanceOf extends Operation
 					  java.util.regex.Matcher matcher = pattern.matcher(nodeName2);
 					  try {
 						  if ((childNode != DTM.NULL) && (childNode2 == DTM.NULL) && matcher.matches()) {
-							  if ((xsBuiltInSeqType == SequenceTypeSupport.XS_ANY_URI) && ((new AnyURIDV()).getActualValue(strValue, null) != null)) {						  
+							  if ((xsBuiltInSeqType == XPathSequenceTypeSupport.XS_ANY_URI) && ((new AnyURIDV()).getActualValue(strValue, null) != null)) {						  
 								  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true));
 							  }
 						  }
@@ -993,12 +993,12 @@ public class InstanceOf extends Operation
 				  if (seqTypeKindTest != null) {
 					  java.lang.String attrNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
 					  if (attrNodeKindTestNodeName == null || "".equals(attrNodeKindTestNodeName) || 
-							  SequenceTypeSupport.STAR.equals(attrNodeKindTestNodeName)) {
+							  XPathSequenceTypeSupport.STAR.equals(attrNodeKindTestNodeName)) {
 						  attrNodeKindTestNodeName = nodeName;  
 					  }
 
-					  if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
-																						  && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
+					  if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
+																						  && (XPathSequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
 																								  nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
 						  XSTypeDefinition xsTypeDefn = seqTypeData.getXsTypeDefinition();
 						  if (xsTypeDefn != null) {
@@ -1049,8 +1049,8 @@ public class InstanceOf extends Operation
 						      nodeSetSequenceTypeResultList.add(Boolean.valueOf(true));
 						  }
 					  }
-					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
-																								  && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
+					  else if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.SCHEMA_ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
+																								  && (XPathSequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
 																										  nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
 						  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 						  XSModel xsModel = stylesheetRoot.getXsModel();
@@ -1079,8 +1079,8 @@ public class InstanceOf extends Operation
 							  break; 
 						  }
 					  }
-					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || 
-							  (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+					  else if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.NODE_KIND) || 
+							  (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
 						  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true));   
 					  }   
 				  }
@@ -1091,12 +1091,12 @@ public class InstanceOf extends Operation
 				  } 
 			  }
 			  else if (nodeType == DTM.TEXT_NODE) {				  
-				  if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.TEXT_KIND) {
+				  if (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.TEXT_KIND) {
 					  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
 				  }
 			  }
 			  else if (nodeType == DTM.NAMESPACE_NODE) {				  
-				  if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.NAMESPACE_NODE_KIND) {
+				  if (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.NAMESPACE_NODE_KIND) {
 					  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
 				  }
 			  }
@@ -1124,7 +1124,7 @@ public class InstanceOf extends Operation
    * @throws TransformerException
    * @throws Exception
    */
-  private boolean isSequenceInstanceOfType(ResultSequence resultSeq, SequenceTypeData seqTypeData) 
+  private boolean isSequenceInstanceOfType(ResultSequence resultSeq, XPathSequenceTypeData seqTypeData) 
 		                                                                            throws ParserConfigurationException, 
                                                                                            SAXException, IOException, 
                                                                                            TransformerException, Exception {
@@ -1136,14 +1136,14 @@ public class InstanceOf extends Operation
 	  if ((seqLen == 0) && (seqTypeData.getItemTypeOccurrenceIndicator() == OccurrenceIndicator.ONE_OR_MANY)) {
 		  result = false;  
 	  }
-	  else if ((seqLen > 0) && (seqTypeData.getBuiltInSequenceType() == SequenceTypeSupport.EMPTY_SEQUENCE)) {
+	  else if ((seqLen > 0) && (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.EMPTY_SEQUENCE)) {
 		  result = false;  
 	  }
 	  else if ((seqLen > 1) && (seqTypeData.getItemTypeOccurrenceIndicator() == OccurrenceIndicator.ZERO_OR_ONE)) {
 		  result = false;
 	  }
 
-	  SequenceTypeData sequenceTypeDataNew = new SequenceTypeData();          
+	  XPathSequenceTypeData sequenceTypeDataNew = new XPathSequenceTypeData();          
 	  if (seqTypeData.getSequenceTypeKindTest() != null) {
 		  sequenceTypeDataNew.setSequenceTypeKindTest(seqTypeData.getSequenceTypeKindTest()); 
 	  }
@@ -1175,10 +1175,10 @@ public class InstanceOf extends Operation
    * @param seqTypeData						An xdm sequence type information
    * @return                                Boolean value true or false
    */
-  private boolean isXdmMapConformsWithSeqType(XPathMap map, SequenceTypeData seqTypeData) {
+  private boolean isXdmMapConformsWithSeqType(XPathMap map, XPathSequenceTypeData seqTypeData) {
 	  boolean isInstanceOf = false;
 	  
-	  SequenceTypeMapTest sequenceTypeMapTest = seqTypeData.getSequenceTypeMapTest();
+	  XPathSequenceTypeMapTest sequenceTypeMapTest = seqTypeData.getSequenceTypeMapTest();
 	  if (sequenceTypeMapTest != null) {
 		 if (sequenceTypeMapTest.isAnyMapTest()) {
 		    isInstanceOf = true;
@@ -1196,11 +1196,11 @@ public class InstanceOf extends Operation
    * @param seqTypeData						An xdm sequence type information
    * @return                                Boolean value true or false
    */
-  private boolean isXdmArrayConformsWithSeqType(XPathArray xpathArr, SequenceTypeData seqTypeData) {
+  private boolean isXdmArrayConformsWithSeqType(XPathArray xpathArr, XPathSequenceTypeData seqTypeData) {
 	  
 	  boolean isInstanceOf = false;
 	  
-	  SequenceTypeArrayTest sequenceTypeArrayTest = seqTypeData.getSequenceTypeArrayTest();
+	  XPathSequenceTypeArrayTest sequenceTypeArrayTest = seqTypeData.getSequenceTypeArrayTest();
 	  if (sequenceTypeArrayTest != null) {
 		  if (sequenceTypeArrayTest.isAnyArrayTest()) {
 			  isInstanceOf = true;
@@ -1215,9 +1215,9 @@ public class InstanceOf extends Operation
 				  if (arrItem instanceof ResultSequence) {
 					  arrItem = ((ResultSequence)arrItem).item(0);
 				  }
-				  SequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
+				  XPathSequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
 				  try {
-					  XObject arrayItemTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(
+					  XObject arrayItemTypeCheckResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(
 							                                                                          arrItem, null, arrayItemTypeInfo, null);
 					  if (arrayItemTypeCheckResult == null) {             				
 						  isInstanceOf = false;

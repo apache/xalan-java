@@ -31,7 +31,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
@@ -324,7 +324,7 @@ public class ElemWithParam extends ElemTemplateElement
     }
     
     if (m_asAttr != null) {
-       var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, 
+       var = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, 
                                                                           transformer.getXPathContext());
        if (var == null) {
           throw new TransformerException("XTTE0590 : The required item type of the value of argument used for XSL with-param " + 

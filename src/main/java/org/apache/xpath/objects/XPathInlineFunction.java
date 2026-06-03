@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeData;
 
 /**
  * An object of this class represents, a run-time representation
@@ -41,7 +41,7 @@ public class XPathInlineFunction extends XObject {
     
     private String m_funcBodyXPathExprStr = null;
     
-    private SequenceTypeData m_returnType = null;
+    private XPathSequenceTypeData m_returnType = null;
 
     public List<InlineFunctionParameter> getFuncParamList() {
         return funcParamList;
@@ -59,11 +59,11 @@ public class XPathInlineFunction extends XObject {
         this.m_funcBodyXPathExprStr = funcBodyXPathExprStr;
     }
     
-    public SequenceTypeData getReturnType() {
+    public XPathSequenceTypeData getReturnType() {
         return m_returnType;
     }
 
-    public void setReturnType(SequenceTypeData returnType) {
+    public void setReturnType(XPathSequenceTypeData returnType) {
         this.m_returnType = returnType;
     }
 

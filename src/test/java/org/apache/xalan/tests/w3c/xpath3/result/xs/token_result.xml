@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-02T10:05:34Z" fail="3" name="xs-token" pass="3" run="6" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-03T10:40:40Z" fail="3" name="xs-token" pass="3" run="6" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="cbcl-token-001"/>
    <testResult status="fail" testName="cbcl-token-002b"/>
    <testResult status="pass" testName="cbcl-token-003"/>
