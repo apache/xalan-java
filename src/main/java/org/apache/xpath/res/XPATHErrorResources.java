@@ -140,7 +140,8 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_EXPECTED_CLOSING_SQUARE_BRACKET = "ER_EXPECTED_CLOSING_SQUARE_BRACKET";
   public static final String ER_CANNOT_APPLY_FUNC = "ER_CANNOT_APPLY_FUNC";
   public static final String ER_MAP_DUPLICATE_KEY = "ER_MAP_DUPLICATE_KEY";
-  public static final String ER_IF_EXPR ="ER_IF_EXPR";
+  public static final String ER_IF_EXPR = "ER_IF_EXPR";
+  public static final String ER_IF_EXPR_WELL_FORMED = "ER_IF_EXPR_WELL_FORMED";
   public static final String ER_EXPECTED_DOUBLE_QUOTE = 
 	 "ER_EXPECTED_DOUBLE_QUOTE";
   public static final String ER_EXPECTED_SINGLE_QUOTE = 
@@ -499,6 +500,9 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_IF_EXPR,
      "XPST0003 : An XPath 3.1 ''if'' keyword is not followed by ''(''...'')''." },
+  
+  { ER_IF_EXPR_WELL_FORMED,
+     "XPST0003 : An XPath 3.1 ''if'' keyword is not followed by a sequence of ''then'' and ''else'' keywords." },
 
   { ER_EXPECTED_DOUBLE_QUOTE,
       "misquoted literal... expected double quote!"},

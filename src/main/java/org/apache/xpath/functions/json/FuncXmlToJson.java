@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.json;
 
 import java.util.Map;
@@ -197,9 +194,9 @@ public class FuncXmlToJson extends JsonFunction
     }
     
     /**
-     * This function converts a given XDM node, to a corresponding JSON object.
+     * This function converts a given xdm node, to a corresponding JSON object.
      * 
-     * @param node                   An XDM node, initially provided as an input to this function.
+     * @param node                   An xdm node, initially provided as an input to this function.
      *                               When this function is initially called, this object has
      *                               reference to the root of an XML document (which is value
      *                               of 1st argument of function fn:xml-to-json).                               

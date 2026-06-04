@@ -71,6 +71,14 @@ public class XPathSequenceIndexBinaryOp extends Expression {
 	 */
 	private String m_predicateExpr = null;
 	
+	/**
+	 * If string value of this class field is not null,
+	 * then this class field fully determines the result
+	 * of evaluation of an XPath expression represented
+	 * by this class.
+	 */
+	private String m_xpath_complete_str = null;
+	
     private Vector m_vars;
     
     private int m_globals_size;
@@ -87,11 +95,28 @@ public class XPathSequenceIndexBinaryOp extends Expression {
 		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
 		if (prefixTable != null) {
-			m_leftStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_leftStr, prefixTable);
+			if (m_leftStr != null) {
+			   m_leftStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_leftStr, prefixTable);
+			}
 			
 			if (m_rightStr != null) {
 			   m_rightStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rightStr, prefixTable);
 			}
+			
+			if (m_xpath_complete_str != null) {
+			   m_xpath_complete_str = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpath_complete_str, prefixTable);
+			}
+		}
+		
+		if (m_xpath_complete_str != null) {
+			XPath xpathObj = new XPath(m_xpath_complete_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			if (m_vars != null) {
+			   xpathObj.fixupVariables(m_vars, m_globals_size);
+			}
+			
+			result = xpathObj.execute(xctxt, currentNode, xctxt.getNamespaceContext());
+			
+			return result;
 		}
 
 		XPath lXPath = new XPath(m_leftStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -204,6 +229,14 @@ public class XPathSequenceIndexBinaryOp extends Expression {
 
 	public void setPredicateExprStr(String predicateExprStr) {
 		this.m_predicateExpr = predicateExprStr;
+	}
+	
+	public String getXPathCompleteStr() {
+	    return m_xpath_complete_str;	
+	}
+	
+	public void setXPathCompleteStr(String str1) {
+		this.m_xpath_complete_str = str1;
 	}
 	
 	@Override

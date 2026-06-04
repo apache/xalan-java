@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:49Z" fail="35" name="xml-to-json" pass="52" run="88" skipped="65" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-04T11:41:57Z" fail="38" name="xml-to-json" pass="49" run="88" skipped="65" statusUnknown="1">
    <testResult status="pass" testName="xml-to-json-A001"/>
    <testResult status="pass" testName="xml-to-json-A002"/>
    <testResult status="pass" testName="xml-to-json-A003"/>
@@ -17,7 +17,7 @@
    <testResult status="pass" testName="xml-to-json-A016"/>
    <testResult status="fail" testName="xml-to-json-A017"/>
    <testResult status="fail" testName="xml-to-json-A018"/>
-   <testResult status="pass" testName="xml-to-json-A019"/>
+   <testResult status="fail" testName="xml-to-json-A019"/>
    <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-001"/>
    <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-002"/>
    <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-003"/>
@@ -36,7 +36,7 @@
    <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-016"/>
    <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-017"/>
    <testResult feature="streaming" status="skipped" testName="xml-to-json-A2-018"/>
-   <testResult status="pass" testName="xml-to-json-A2-019"/>
+   <testResult status="fail" testName="xml-to-json-A2-019"/>
    <testResult status="pass" testName="xml-to-json-B001"/>
    <testResult status="pass" testName="xml-to-json-B002"/>
    <testResult status="pass" testName="xml-to-json-B003"/>
@@ -167,7 +167,7 @@
    </testResult>
    <testResult status="fail" testName="xml-to-json-D505"/>
    <testResult status="fail" testName="xml-to-json-D506"/>
-   <testResult status="pass" testName="xml-to-json-D507"/>
+   <testResult status="fail" testName="xml-to-json-D507"/>
    <testResult testName="xml-to-json-D508"/>
    <testResult status="fail" testName="xml-to-json-D509"/>
    <testResult status="fail" testName="xml-to-json-D510"/>

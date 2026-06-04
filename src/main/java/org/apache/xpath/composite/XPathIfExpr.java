@@ -34,11 +34,15 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSAnyURI;
+import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
@@ -89,30 +93,101 @@ public class XPathIfExpr extends Expression {
        
        List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
        
+       m_ifBranchConditionXPathStr = m_ifBranchConditionXPathStr.trim();
+       m_thenExprXPathStr = m_thenExprXPathStr.trim();
+       m_elseExprXPathStr = m_elseExprXPathStr.trim();
+       
        if (prefixTable != null) {
           m_ifBranchConditionXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                     m_ifBranchConditionXPathStr, prefixTable);
        }
        
-       XPath ifConditionXPath = null;       
+       XPath ifConditionXPath = null;
+       
+       String str1 = null;
+       String str2 = null;
+       
+       boolean x1 = false;
+	   boolean x2 = false;
+       
        try {
+    	  if (m_ifBranchConditionXPathStr.startsWith("(") && m_ifBranchConditionXPathStr.endsWith(")")) {
+    		 String str3 = m_ifBranchConditionXPathStr.substring(1, m_ifBranchConditionXPathStr.length() - 1);
+    		 if (!"".equals(str3.trim())) {
+    		    m_ifBranchConditionXPathStr = str3; 
+    		 }
+    	  }    	      	  
+    	   
           ifConditionXPath = new XPath(m_ifBranchConditionXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                  XPath.SELECT, null);
        }
        catch (Exception ex) {
-    	  throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression branch condition expression " + m_ifBranchConditionXPathStr 
-    			                                                                                                + " has a syntax error.", srcLocator); 
+    	   // There are XPath expressions like (1, 2, 3, a(b()))[...] ,
+    	   // which may be evaluated here within this exception condition
+    	   
+    	   int idx1 = m_ifBranchConditionXPathStr.indexOf('[');    	   
+    	   if (idx1 != -1) {
+    		   x1 = true;
+    		   str1 = m_ifBranchConditionXPathStr.substring(0, idx1);
+    		   str1 = str1.trim();
+    		   str2 = m_ifBranchConditionXPathStr.substring(idx1);
+    		   str2 = str2.trim();
+    		   if (str2.endsWith("]")) {
+    			  x2 = true;
+    			  str2 = str2.substring(1, str2.length() - 1);
+    			  str2 = str2.trim();
+    		   }
+    	   } 
+    	   
+    	   if (!x1 || !x2) {
+    	      throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression branch condition expression " + m_ifBranchConditionXPathStr 
+    			                                                                                                    + " has a syntax error.", srcLocator);
+           }
        }
        
-       if (m_vars != null) {
-          ifConditionXPath.fixupVariables(m_vars, m_globals_size);
-       }
+       XObject ifConditionXPathResult = null;
        
-       XObject ifConditionXPathResult = ifConditionXPath.execute(xctxt, currentNode, xctxt.getNamespaceContext());       
+       if (!x1 && !x2) {
+    	   if (m_vars != null) {
+    		   ifConditionXPath.fixupVariables(m_vars, m_globals_size);
+    	   }
+
+    	   ifConditionXPathResult = ifConditionXPath.execute(xctxt, currentNode, xctxt.getNamespaceContext());
+       }
+       else {
+    	   try {
+    		   int predicateValue = Integer.valueOf(str2);    		  
+    		   ifConditionXPath = new XPath(str1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+    		   if (m_vars != null) {
+    			   ifConditionXPath.fixupVariables(m_vars, m_globals_size);
+    		   }
+
+    		   ifConditionXPathResult = ifConditionXPath.execute(xctxt, currentNode, xctxt.getNamespaceContext());
+    		   
+    		   if (ifConditionXPathResult instanceof ResultSequence) {
+    			  ResultSequence rSeq = (ResultSequence)ifConditionXPathResult;
+    			  if ((predicateValue >= 1) && (predicateValue <= rSeq.size())) {
+    				 ifConditionXPathResult = rSeq.item(predicateValue - 1);   
+    			  }
+    		   }
+    		   else if (predicateValue != 1) {
+    			  ifConditionXPathResult = new ResultSequence(); 
+    		   }
+    	   }
+    	   catch (Exception ex) {
+    		   throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression branch condition expression " + m_ifBranchConditionXPathStr 
+    				                                                                                                 + " has a syntax error.", srcLocator); 
+    	   }    	       	   
+       }
        
        boolean ifConditionEvalResult = false;
        boolean ifConditionEagerCheck = false;
        String strVal = null;
+       
+       boolean ifBranchConditionEmptySeq = ((ifConditionXPathResult instanceof ResultSequence) && 
+    		                                                                          (((ResultSequence)ifConditionXPathResult).size() == 0)) ? 
+    		                                                                        		                                  true : false;  
        
        if ((ifConditionXPathResult instanceof XString) || (ifConditionXPathResult instanceof XSString) 
     		                                           || (ifConditionXPathResult instanceof XSAnyURI) || 
@@ -133,6 +208,17 @@ public class XPathIfExpr extends Expression {
     		  }
     	   }
        }       
+       else if ((ifConditionXPathResult instanceof XSBoolean) || (ifConditionXPathResult instanceof XBoolean) 
+    		                                                                                         || (ifConditionXPathResult instanceof XBooleanStatic)) {
+    	   ifConditionEagerCheck = true;
+    	   if (ifConditionXPathResult.bool()) {
+    		  ifConditionEvalResult = true;  
+    	   }
+       }
+       else if (!ifBranchConditionEmptySeq && !(ifConditionXPathResult instanceof XMLNodeCursorImpl)) {
+    	   throw new TransformerException("FORG0006 : XPath 3.1 effective boolean value is defined only for xdm items with "
+    	   		                                                                                           + "types boolean, string, number, uri and node.", srcLocator);
+       }
        
        if ((ifConditionEagerCheck && ifConditionEvalResult) || (!ifConditionEagerCheck && ifConditionXPathResult.bool())) {
            if (prefixTable != null) {
@@ -147,7 +233,7 @@ public class XPathIfExpr extends Expression {
            }
            catch (Exception ex) {
         	  throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression then clause " + m_thenExprXPathStr 
-                                                                                                      + " has a syntax error.", srcLocator); 
+                                                                                                    + " has a syntax error.", srcLocator); 
            }
            
            
@@ -186,7 +272,7 @@ public class XPathIfExpr extends Expression {
            }
            catch (Exception ex) {
         	  throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression else clause " + m_elseExprXPathStr 
-                                                                                                       + " has a syntax error.", srcLocator); 
+                                                                                                    + " has a syntax error.", srcLocator); 
            }
            
            if (m_vars != null) {

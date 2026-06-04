@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.json;
 
 import java.util.ArrayList;
@@ -37,9 +34,8 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -265,7 +261,7 @@ public class FuncJsonToXml extends JsonFunction
         	   String xmlDocStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(document);
         	   if (isXmlStrValidWithJsonSchema(xmlDocStr)) {
         		   // REVISIT : An XML document node 'document' is validated with a
-        		   // schema, but as required by XPath 3.1 F&O spec the resulting XDM 
+        		   // schema, but as required by XPath 3.1 F&O spec the resulting xdm 
         		   // node after XML Schema validation, doesn't carry type annotations
         		   // on XML element and attribute nodes.
         		   resultNodeDtmHandle = dtmManager.getDTMHandleFromNode(document);  

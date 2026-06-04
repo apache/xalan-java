@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-03T10:45:29Z" desc="W3C XPath 3.1 test suite results" fail="1849" pass="4888" run="6740" skipped="9" success="72.52%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-04T11:48:26Z" desc="W3C XPath 3.1 test suite results" fail="1843" pass="4895" run="6741" skipped="8" success="72.62%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-fold-left fail="1" pass="3" run="4" success="75.0%"/>
     <array-fold-right fail="1" pass="3" run="4" success="75.0%"/>
@@ -94,7 +94,7 @@
     <op-gMonthDay-equal fail="11" pass="34" run="45" success="75.56%"/>
     <op-gYear-equal fail="7" pass="33" run="40" success="82.5%"/>
     <op-gYearMonth-equal fail="7" pass="33" run="40" success="82.5%"/>
-    <op-intersect fail="22" pass="8" run="30" success="26.67%"/>
+    <op-intersect fail="21" pass="9" run="30" success="30.0%"/>
     <op-is-same-node fail="14" pass="8" run="22" success="36.36%"/>
     <op-multiply-dayTimeDuration fail="12" pass="21" run="33" success="63.64%"/>
     <op-multiply-yearMonthDuration fail="17" pass="23" run="40" success="57.5%"/>
@@ -140,8 +140,8 @@
     <prod-AxisStep.preceding-sibling fail="7" pass="10" run="18" success="55.56%"/>
     <prod-AxisStep.preceding fail="7" pass="10" run="17" success="58.82%"/>
     <prod-AxisStep fail="53" pass="180" run="233" skipped="1" success="77.25%"/>
-    <prod-CastableExpr fail="148" pass="694" run="842" success="82.42%"/>
-    <prod-IfExpr fail="9" pass="17" run="26" skipped="1" success="65.38%"/>
+    <prod-CastableExpr fail="147" pass="695" run="842" success="82.54%"/>
+    <prod-IfExpr fail="5" pass="22" run="27" success="81.48%"/>
     <prod-InlineFunctionExpr fail="18" pass="10" run="28" success="35.71%"/>
     <prod-InstanceofExpr fail="60" pass="213" run="273" success="78.02%"/>
     <prod-LetClause fail="9" pass="14" run="23" success="60.87%"/>
