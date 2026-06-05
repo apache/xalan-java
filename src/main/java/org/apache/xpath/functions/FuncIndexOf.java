@@ -38,7 +38,7 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Implementation of an XPath 3.1 fn:index-of function.
+ * Implementation of an XPath 3.1 function fn:index-of.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -58,19 +58,18 @@ public class FuncIndexOf extends FunctionMultiArgs {
   /**
    * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
+   * @param xctxt                     An XPath context object
    * 
-   * @return A valid XObject.
+   * @return A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {      
+	  
+	    XObject result = null;
+                        
         SourceLocator srcLocator = xctxt.getSAXLocator();
-        
-        ResultSequence resultSeq = new ResultSequence();
-        
-        ResultSequence arg0ResultSeq = null;
         
         final int contextNode = xctxt.getCurrentNode();
         
@@ -108,6 +107,8 @@ public class FuncIndexOf extends FunctionMultiArgs {
         
         DTMManager dtmMgr = (DTMManager)xctxt;
         
+        ResultSequence arg0ResultSeq = null;
+        
         if (arg0 instanceof LocPathIterator) {
             arg0ResultSeq = new ResultSequence();
                                 
@@ -137,14 +138,14 @@ public class FuncIndexOf extends FunctionMultiArgs {
         }
         else {
             XObject arg0Obj = arg0.execute(xctxt);
+            
             if (arg0Obj instanceof ResultSequence) {
                arg0ResultSeq = (ResultSequence)arg0Obj;     
+            }           
+            else {
+               arg0ResultSeq = new ResultSequence();
+               arg0ResultSeq.add(arg0Obj);
             }
-        }
-
-        if (arg0ResultSeq == null) {
-           throw new javax.xml.transform.TransformerException("XPTY0004 : The first argument of fn:index-of didn't "
-                                                                                        + "evaluate to a sequence.", srcLocator);     
         }
         
         XObject arg1Obj = arg1.execute(xctxt);
@@ -177,18 +178,24 @@ public class FuncIndexOf extends FunctionMultiArgs {
            }
         }
         
-        for (int idx = 0; idx < arg0ResultSeq.size(); idx++) {
+        int size1 = arg0ResultSeq.size();
+        
+        ResultSequence rSeq = new ResultSequence(); 
+        
+        for (int idx = 0; idx < size1; idx++) {
            ResultSequence resultSeqWithOneItem = new ResultSequence();
            resultSeqWithOneItem.add(arg0ResultSeq.item(idx));
            
            // The following call to 'XslTransformEvaluationHelper.contains' method, checks the
            // equality between XObject instances arg0ResultSeq.item(idx) and arg1Obj.  
            if (XslTransformEvaluationHelper.contains(resultSeqWithOneItem, arg1Obj, collationUri, xpathCollationSupport)) {
-              resultSeq.add(new XSInteger(BigInteger.valueOf(idx + 1)));    
+        	  rSeq.add(new XSInteger(BigInteger.valueOf(idx + 1)));    
            }
         }
+        
+        result = rSeq;
             
-        return resultSeq;
+        return result;
   }
 
 }

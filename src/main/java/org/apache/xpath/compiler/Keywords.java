@@ -808,6 +808,15 @@ public class Keywords
   /** parse-ietf-date function string. */
   public static final String FUNC_PARSE_IETF_DATE = "parse-ietf-date";
   
+  /** zero-or-one function string. */
+  public static final String FUNC_ZERO_OR_ONE = "zero-or-one";
+  
+  /** one-or-more function string. */
+  public static final String FUNC_ONE_OR_MORE = "one-or-more";
+  
+  /** exactly-one function string. */
+  public static final String FUNC_EXACTLY_ONE = "exactly-one";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

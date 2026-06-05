@@ -270,7 +270,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 					String runTimeErrCode = null;
 					if (TESTCASE.equals(nodeName)) {						    					
 						String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);												
+						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);						
 						
 						XPathContext xctxt = new XPathContext(false);
 						xctxt.setIncremental(false);
@@ -561,6 +561,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									}
 
 									XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+									xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+								}
+								else if (ASSERT_STRING_VALUE.equals(nodeName2) && "".equals(expectedResultStr)) {
+									XPath xpathObj = new XPath("''", null, xctxt.getNamespaceContext(), XPath.SELECT, null);
 									xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 								}
 								
@@ -914,6 +918,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 		  }
                                           else if (ASSERT_STRING_VALUE.equals(nodeName3)) {
                                         	  if (xpathResultObj != null) {
+                                        		  if ("".equals(expectedResultStr2)) {
+                                        		     expectedResultStr2 = "''";  
+                                        		  }
+                                        		  
                                         		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
                                         		  
@@ -1152,6 +1160,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 		  }
                                           else if (ASSERT_STRING_VALUE.equals(nodeName3)) {
                                         	  if (xpathResultObj != null) {
+                                        		  if ("".equals(expectedResultStr2)) {
+                                         		     expectedResultStr2 = "''";  
+                                         		  }
+                                        		  
                                         		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
                                         		  

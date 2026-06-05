@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-27T00:49:58Z" fail="24" name="function" pass="63" run="87" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:33:34Z" fail="25" name="function" pass="62" run="87" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="function-0001"/>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -77,27 +77,31 @@
    <testResult status="fail" testName="function-1021">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:x="http://xxx.com/"/&gt;</outResult>
    </testResult>
-   <testResult status="pass" testName="function-1022"/>
+   <testResult status="fail" testName="function-1022">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="skipped" testName="function-1023" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="function-1024"/>
    <testResult status="fail" testName="function-1025">
       <outResult>
-         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
-         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).
+java.lang.Exception: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="function-1026"/>
    <testResult status="fail" testName="function-1027">
       <outResult>
-         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
-         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).
+java.lang.Exception: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="function-1028"/>
    <testResult status="fail" testName="function-1029">
       <outResult>
-         <errTrace>A location path was expected, but the following token was encountered:  )</errTrace>
-         <errTrace>java.lang.RuntimeException: Programmer's assertion in getNextStepPos: unknown stepType: -1</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).
+java.lang.Exception: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="function-1030"/>
@@ -155,8 +159,8 @@
    </testResult>
    <testResult status="fail" testName="function-2109">
       <outResult>
-         <errTrace>Expected ), but found: ,</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 63, Column# : 243 XPST0003: Expected ), but found: ,
+java.lang.Exception: Line# : 63, Column# : 243 XPST0003: Expected ), but found: ,</errTrace>
       </outResult>
    </testResult>
    <testResult feature="streaming" status="skipped" testName="function-5001"/>

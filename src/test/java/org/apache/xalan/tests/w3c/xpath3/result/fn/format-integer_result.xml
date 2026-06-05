@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-03T10:42:51Z" fail="26" name="fn-format-integer" pass="22" run="48" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:21:41Z" fail="26" name="fn-format-integer" pass="22" run="48" statusUnknown="0">
    <testResult status="pass" testName="format-integer-001"/>
    <testResult status="fail" testName="format-integer-002"/>
    <testResult status="fail" testName="format-integer-003"/>

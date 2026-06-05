@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-05T10:48:45Z" desc="W3C XPath 3.1 test suite results" fail="1751" pass="4982" run="6736" skipped="8" success="73.96%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-05T16:25:02Z" desc="W3C XPath 3.1 test suite results" fail="1706" pass="5029" run="6738" skipped="8" success="74.64%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-fold-left fail="1" pass="3" run="4" success="75.0%"/>
     <array-fold-right fail="1" pass="3" run="4" success="75.0%"/>
@@ -36,7 +36,7 @@
     <fn-hours-from-time fail="5" pass="22" run="27" success="81.48%"/>
     <fn-implicit-timezone fail="6" pass="20" run="26" success="76.92%"/>
     <fn-in-scope-prefixes fail="1" pass="4" run="5" skipped="3" success="80.0%"/>
-    <fn-index-of fail="34" pass="17" run="51" success="33.33%"/>
+    <fn-index-of fail="31" pass="22" run="53" success="41.51%"/>
   </fn>
   <map>
     <map-contains fail="12" pass="12" run="24" success="50.0%"/>
@@ -94,7 +94,7 @@
     <op-gMonthDay-equal fail="11" pass="34" run="45" success="75.56%"/>
     <op-gYear-equal fail="7" pass="33" run="40" success="82.5%"/>
     <op-gYearMonth-equal fail="7" pass="33" run="40" success="82.5%"/>
-    <op-intersect fail="21" pass="9" run="30" success="30.0%"/>
+    <op-intersect fail="20" pass="10" run="30" success="33.33%"/>
     <op-is-same-node fail="14" pass="8" run="22" success="36.36%"/>
     <op-multiply-dayTimeDuration fail="12" pass="21" run="33" success="63.64%"/>
     <op-multiply-yearMonthDuration fail="17" pass="23" run="40" success="57.5%"/>
@@ -133,12 +133,12 @@
   <prod>
     <prod-ArrowPostfix fail="30" pass="8" run="38" skipped="4" success="21.05%"/>
     <prod-AxisStep.abbr fail="2" pass="13" run="15" success="86.67%"/>
-    <prod-AxisStep.ancestor-or-self fail="12" pass="9" run="21" success="42.86%"/>
-    <prod-AxisStep.ancestor fail="9" pass="11" run="21" success="52.38%"/>
-    <prod-AxisStep.following-sibling fail="10" pass="10" run="21" success="47.62%"/>
-    <prod-AxisStep.following fail="9" pass="12" run="21" success="57.14%"/>
-    <prod-AxisStep.preceding-sibling fail="7" pass="10" run="18" success="55.56%"/>
-    <prod-AxisStep.preceding fail="7" pass="10" run="17" success="58.82%"/>
+    <prod-AxisStep.ancestor-or-self fail="4" pass="17" run="21" success="80.95%"/>
+    <prod-AxisStep.ancestor fail="1" pass="19" run="21" success="90.48%"/>
+    <prod-AxisStep.following-sibling fail="2" pass="18" run="21" success="85.71%"/>
+    <prod-AxisStep.following fail="2" pass="19" run="21" success="90.48%"/>
+    <prod-AxisStep.preceding-sibling fail="2" pass="15" run="18" success="83.33%"/>
+    <prod-AxisStep.preceding fail="2" pass="15" run="17" success="88.24%"/>
     <prod-AxisStep fail="53" pass="180" run="233" skipped="1" success="77.25%"/>
     <prod-CastableExpr fail="147" pass="695" run="842" success="82.54%"/>
     <prod-IfExpr fail="5" pass="22" run="27" success="81.48%"/>

@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.objects;
 
 import org.apache.xml.dtm.DTMManager;
@@ -33,7 +30,8 @@ import org.w3c.dom.traversal.NodeIterator;
  */
 public class XNodeSetForDOM extends XMLNodeCursorImpl
 {
-    static final long serialVersionUID = -8396190713754624640L;
+  static final long serialVersionUID = -8396190713754624640L;
+  
   Object m_origObj;
 
   public XNodeSetForDOM(Node node, DTMManager dtmMgr)

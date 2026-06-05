@@ -1980,7 +1980,9 @@ public class XPathParser
 		  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 		  
 		  nextToken();
+		  
 	      appendOp(2, OpCodes.OP_GROUP);     
+	      
 	      Expr();
 	      consumeExpected(')');
 	      
@@ -4932,9 +4934,13 @@ public class XPathParser
     else if (m_tokenChar == '(')
     {
       nextToken();
+      
       appendOp(2, OpCodes.OP_GROUP);
+      
       m_op_group_parse = true;
+      
       Expr();      
+      
       if (m_token != null) {
     	 consumeExpected(')');    	 
       }
@@ -5186,7 +5192,11 @@ public class XPathParser
 	      	funcArgUsedSeq.add(Boolean.valueOf(false));
 	        
 	        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-	                                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	
+	                                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+	        
+	        m_isFunctionArgumentParse = false;
+
+	        return;
     	}
     	else {
 	       consumeExpected('(');    		
@@ -5224,9 +5234,11 @@ public class XPathParser
 	    	  
 	    	  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
                                                      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-	    	  return;
+	    	  m_isFunctionArgumentParse = false;
+
+	          return;
 	       }
-	            
+	         
 	       if (seqConstructorXPathParts.size() > 1) {
 	          insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
 	          
@@ -5235,16 +5247,19 @@ public class XPathParser
 	          xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);    	
 	          seqConsList.add(xPathSeqConstructor);
 	      	  List<Boolean> funcArgUsedSeq = m_xpathSequenceConsFuncArgs.getIsFuncArgUsedList();
-	      	  funcArgUsedSeq.add(Boolean.valueOf(false));
-	      	
-	          m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-	                                                 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	          
+	      	  funcArgUsedSeq.add(Boolean.valueOf(false));	      		          
 	       }
 	       else {
 	    	  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
 	    	  
-	          Expr();
+	          Expr();	          	          
 	       }
+	       
+	       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                                  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+           m_isFunctionArgumentParse = false;
+
+           return;
     	}
     }
     else if (tokenIs('[')) {
@@ -5266,7 +5281,11 @@ public class XPathParser
     	funcArgUsedArr.add(Boolean.valueOf(false));
 
     	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-    			                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	       
+    			                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    	
+    	m_isFunctionArgumentParse = false;
+
+        return;
     }
     else if (tokenIs("array") && lookahead('{', 1)) {
     	// XPath literal curly array as, function argument
@@ -5288,7 +5307,11 @@ public class XPathParser
     	funcArgUsedArr.add(Boolean.valueOf(false));
 
     	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-    			                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	       
+    			                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    	
+    	m_isFunctionArgumentParse = false;
+
+        return;
     }
     else if (tokenIs("map")) {
        // XPath literal map expression as, function argument    	

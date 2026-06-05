@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-03T10:40:16Z" fail="7" name="prod-AxisStep.preceding-sibling" pass="10" run="18" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:19:15Z" fail="2" name="prod-AxisStep.preceding-sibling" pass="15" run="18" statusUnknown="1">
    <testResult status="fail" testName="preceding-sibling-1"/>
    <testResult status="pass" testName="preceding-sibling-2"/>
-   <testResult status="fail" testName="preceding-sibling-3"/>
-   <testResult status="fail" testName="preceding-sibling-4"/>
-   <testResult status="fail" testName="preceding-sibling-8"/>
-   <testResult status="fail" testName="preceding-sibling-9"/>
-   <testResult status="fail" testName="preceding-sibling-10"/>
+   <testResult status="pass" testName="preceding-sibling-3"/>
+   <testResult status="pass" testName="preceding-sibling-4"/>
+   <testResult status="pass" testName="preceding-sibling-8"/>
+   <testResult status="pass" testName="preceding-sibling-9"/>
+   <testResult status="pass" testName="preceding-sibling-10"/>
    <testResult status="pass" testName="preceding-sibling-11"/>
    <testResult status="fail" testName="preceding-sibling-12"/>
    <testResult status="pass" testName="preceding-sibling-13"/>

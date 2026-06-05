@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-03T10:42:51Z" fail="2" name="fn-ends-with" pass="36" run="38" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:21:41Z" fail="2" name="fn-ends-with" pass="36" run="38" statusUnknown="0">
    <testResult status="pass" testName="fn-ends-with2args-1"/>
    <testResult status="pass" testName="fn-ends-with2args-2"/>
    <testResult status="pass" testName="fn-ends-with2args-3"/>
