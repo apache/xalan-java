@@ -127,10 +127,10 @@ public class XSFloat extends XSNumericType {
 	}
 
 	/**
-	 * Check whether this float object, represents negative or positive 
-	 * infinity.
+	 * Check whether this XSFloat object, represents negative 
+     * or positive infinity.
 	 * 
-	 * @return    true is this float object represents infinity.
+	 * @return    true is this XSFloat object represents infinity.
 	 *            false otherwise.
 	 */
 	public boolean infinite() {

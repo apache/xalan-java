@@ -6,7 +6,7 @@
    
    <!-- use with test1_a.xml -->
    
-   <!-- test for the XPath 3.1 fn:abs() function -->
+   <!-- An XSL stylesheet test case, for XPath 3.1 function 'abs'. -->
 
    <xsl:output method="xml" indent="yes"/>
 
@@ -22,11 +22,12 @@
          </result1>
          <result2>
 	        <xsl:for-each select="a">
-	           <item><xsl:value-of select="abs()"/></item>
+	           <xsl:variable name="v1" select="."/>
+	           <item><xsl:value-of select="abs($v1)"/></item>
 	        </xsl:for-each>
          </result2>
          <result3>
-            <xsl:for-each select="/elem/a[abs() &gt; 7]">
+            <xsl:for-each select="/elem/a[abs(.) &gt; 7]">
 	           <item><xsl:value-of select="."/></item>
 	        </xsl:for-each>
          </result3>

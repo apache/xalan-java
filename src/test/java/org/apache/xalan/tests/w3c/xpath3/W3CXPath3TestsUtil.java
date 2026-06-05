@@ -65,6 +65,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.VcEquals;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -602,6 +603,17 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 								}
 								else if (ASSERT_EQ.equals(nodeName2)) {
 									boolean isStatusFinal = false;
+									
+									if (xpathResultObj instanceof XSNumericType) {
+										java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
+										if ((pattern.matcher(expectedResultStr)).matches()) {
+											expectedResultStr = "xs:decimal('" + expectedResultStr + "')";
+											
+											XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                                  		    xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+										}
+									}
+									
 									if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
 										if (xpathExpectedObj instanceof XSString || xpathExpectedObj instanceof XString) {
 											try {
@@ -625,7 +637,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									}
 									
 									if (!isStatusFinal) {
-										if ((xpathResultObj != null) && xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
+										VcEquals vcEquals = new VcEquals();																				
+										if ((xpathResultObj != null) && (vcEquals.operate(xpathResultObj, xpathExpectedObj)).bool()) {
 											elemTestResult.setAttribute(STATUS, PASS);
 										}
 										else {
@@ -836,6 +849,13 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 		  }
                                           else if (ASSERT_EQ.equals(nodeName3)) {
                                         	  if (xpathResultObj != null) {
+                                        		  if (xpathResultObj instanceof XSNumericType) {
+                                        			 java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
+                                        			 if ((pattern.matcher(expectedResultStr2)).matches()) {
+                                        				expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')"; 
+                                        			 }
+                                        		  }
+                                        		  
                                         		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 
@@ -859,8 +879,9 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         				  }
                                         			  }
                                         		  }
-
-                                        		  if ((xpathResultObj != null) && !xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
+                                        		  
+                                        		  VcEquals vcEquals = new VcEquals();
+                                        		  if ((xpathResultObj != null) && !((vcEquals.operate(xpathResultObj, xpathExpectedObj)).bool())) {
                                         			  isXslTestPass = false;
 
                                         			  break;
@@ -1068,6 +1089,13 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 		  }
                                           else if (ASSERT_EQ.equals(nodeName3)) {
                                         	  if (xpathResultObj != null) {
+                                        		  if (xpathResultObj instanceof XSNumericType) {
+                                         			 java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
+                                         			 if ((pattern.matcher(expectedResultStr2)).matches()) {
+                                         				expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')"; 
+                                         			 }
+                                         		  }
+                                        		  
                                         		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 
@@ -1090,7 +1118,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         			  }
                                         		  }
 
-                                        		  if ((xpathResultObj != null) && xpathResultObj.vcEquals(xpathExpectedObj, null, null, true)) {
+                                        		  VcEquals vcEquals = new VcEquals();
+                                        		  if ((xpathResultObj != null) && (vcEquals.operate(xpathResultObj, xpathExpectedObj)).bool()) {
                                         			  isXslTestPass = true;
 
                                         			  break;

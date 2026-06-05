@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-03T10:42:48Z" fail="28" name="op-numeric-equal" pass="150" run="178" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T10:48:32Z" fail="6" name="op-numeric-equal" pass="172" run="178" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-equalint2args-1"/>
    <testResult status="pass" testName="op-numeric-equalint2args-2"/>
    <testResult status="pass" testName="op-numeric-equalint2args-3"/>
@@ -145,31 +145,31 @@
    <testResult status="pass" testName="K-NumericEqual-13"/>
    <testResult status="pass" testName="K-NumericEqual-14"/>
    <testResult status="pass" testName="K-NumericEqual-15"/>
-   <testResult status="fail" testName="K-NumericEqual-16"/>
-   <testResult status="fail" testName="K-NumericEqual-17"/>
-   <testResult status="fail" testName="K-NumericEqual-18"/>
-   <testResult status="fail" testName="K-NumericEqual-19"/>
-   <testResult status="fail" testName="K-NumericEqual-20"/>
-   <testResult status="fail" testName="K-NumericEqual-21"/>
-   <testResult status="fail" testName="K-NumericEqual-22"/>
-   <testResult status="fail" testName="K-NumericEqual-23"/>
-   <testResult status="fail" testName="K-NumericEqual-24"/>
-   <testResult status="fail" testName="K-NumericEqual-25"/>
-   <testResult status="fail" testName="K-NumericEqual-26"/>
+   <testResult status="pass" testName="K-NumericEqual-16"/>
+   <testResult status="pass" testName="K-NumericEqual-17"/>
+   <testResult status="pass" testName="K-NumericEqual-18"/>
+   <testResult status="pass" testName="K-NumericEqual-19"/>
+   <testResult status="pass" testName="K-NumericEqual-20"/>
+   <testResult status="pass" testName="K-NumericEqual-21"/>
+   <testResult status="pass" testName="K-NumericEqual-22"/>
+   <testResult status="pass" testName="K-NumericEqual-23"/>
+   <testResult status="pass" testName="K-NumericEqual-24"/>
+   <testResult status="pass" testName="K-NumericEqual-25"/>
+   <testResult status="pass" testName="K-NumericEqual-26"/>
    <testResult status="pass" testName="K-NumericEqual-27"/>
    <testResult status="pass" testName="K-NumericEqual-28"/>
    <testResult status="pass" testName="K-NumericEqual-29"/>
-   <testResult status="fail" testName="K-NumericEqual-30"/>
-   <testResult status="fail" testName="K-NumericEqual-31"/>
-   <testResult status="fail" testName="K-NumericEqual-32"/>
-   <testResult status="fail" testName="K-NumericEqual-33"/>
-   <testResult status="fail" testName="K-NumericEqual-34"/>
-   <testResult status="fail" testName="K-NumericEqual-35"/>
-   <testResult status="fail" testName="K-NumericEqual-36"/>
-   <testResult status="fail" testName="K-NumericEqual-37"/>
-   <testResult status="fail" testName="K-NumericEqual-38"/>
-   <testResult status="fail" testName="K-NumericEqual-39"/>
-   <testResult status="fail" testName="K-NumericEqual-40"/>
+   <testResult status="pass" testName="K-NumericEqual-30"/>
+   <testResult status="pass" testName="K-NumericEqual-31"/>
+   <testResult status="pass" testName="K-NumericEqual-32"/>
+   <testResult status="pass" testName="K-NumericEqual-33"/>
+   <testResult status="pass" testName="K-NumericEqual-34"/>
+   <testResult status="pass" testName="K-NumericEqual-35"/>
+   <testResult status="pass" testName="K-NumericEqual-36"/>
+   <testResult status="pass" testName="K-NumericEqual-37"/>
+   <testResult status="pass" testName="K-NumericEqual-38"/>
+   <testResult status="pass" testName="K-NumericEqual-39"/>
+   <testResult status="pass" testName="K-NumericEqual-40"/>
    <testResult status="fail" testName="K-NumericEqual-41"/>
    <testResult status="fail" testName="K-NumericEqual-42"/>
    <testResult status="pass" testName="K-NumericEqual-43"/>

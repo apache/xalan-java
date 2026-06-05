@@ -42,7 +42,6 @@ import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathSequenceTypeData;
-import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.types.DateTimeUtil;
 import org.apache.xpath.types.XSGDay;
@@ -942,14 +941,26 @@ public class XObject extends Expression implements Serializable, Cloneable
      	  
      	  return lDouble.lt(rDouble);
        }
-       else if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {     	  
-    	  String lStr = ((XSNumericType)this).stringValue();
-      	  XSDouble lDouble = new XSDouble(lStr);
-      	  
-      	  String rStr = ((XSNumericType)obj2).stringValue();
-     	  XSDouble rDouble = new XSDouble(rStr);
-      	  
-      	  return lDouble.lt(rDouble);
+       else if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {     	      	      	  
+    	  double lDbl = 0;
+    	  if (this instanceof XSDouble) {
+    		 lDbl = ((XSDouble)this).doubleValue();  
+    	  }
+    	  else {
+    		 String lStr = ((XSNumericType)this).stringValue();
+    		 lDbl = (new XSDouble(lStr)).doubleValue();
+    	  }
+    	  
+    	  double rDbl = 0;
+    	  if (obj2 instanceof XSDouble) {
+    		 rDbl = ((XSDouble)obj2).doubleValue();  
+    	  }
+    	  else {
+    		 String rStr = ((XSNumericType)obj2).stringValue();
+    		 rDbl = (new XSDouble(rStr)).doubleValue();
+    	  }
+    	  
+    	  return (lDbl < rDbl);      	  
        }
        else if ((this instanceof XString) && (obj2 instanceof XString)) {
           String lStr = (((XString)this)).str();
@@ -1314,13 +1325,25 @@ public class XObject extends Expression implements Serializable, Cloneable
       	  return lDouble.gt(rDouble);
        }
        else if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {     	  
-     	  String lStr = ((XSNumericType)this).stringValue();
-       	  XSDouble lDouble = new XSDouble(lStr);
-       	  
-       	  String rStr = ((XSNumericType)obj2).stringValue();
-      	  XSDouble rDouble = new XSDouble(rStr);
-       	  
-       	  return lDouble.gt(rDouble);
+    	  double lDbl = 0;
+     	  if (this instanceof XSDouble) {
+     		 lDbl = ((XSDouble)this).doubleValue();  
+     	  }
+     	  else {
+     		 String lStr = ((XSNumericType)this).stringValue();
+     		 lDbl = (new XSDouble(lStr)).doubleValue();
+     	  }
+     	  
+     	  double rDbl = 0;
+     	  if (obj2 instanceof XSDouble) {
+     		 rDbl = ((XSDouble)obj2).doubleValue();  
+     	  }
+     	  else {
+     		 String rStr = ((XSNumericType)obj2).stringValue();
+     		 rDbl = (new XSDouble(rStr)).doubleValue();
+     	  }
+     	  
+     	  return (lDbl > rDbl);
        }
        else if ((this instanceof XString) && (obj2 instanceof XString)) {          
           String lStr = (((XString)this)).str();
@@ -1948,13 +1971,25 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  return result;
 	  }
 	  else if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {
-		  String lStr = ((XSNumericType)this).stringValue();
-		  BigDecimal lBigDecimal = new BigDecimal(lStr);		  
-		  String rStr = ((XSNumericType)obj2).stringValue();
-		  BigDecimal rBigDecimal = new BigDecimal(rStr);
-
-		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
-		  result = (isEqTest) ? result : !result;
+		  double lDbl = 0;
+     	  if (this instanceof XSDouble) {
+     		 lDbl = ((XSDouble)this).doubleValue();  
+     	  }
+     	  else {
+     		 String lStr = ((XSNumericType)this).stringValue();
+     		 lDbl = (new XSDouble(lStr)).doubleValue();
+     	  }
+     	  
+     	  double rDbl = 0;
+     	  if (obj2 instanceof XSDouble) {
+     		 rDbl = ((XSDouble)obj2).doubleValue();  
+     	  }
+     	  else {
+     		 String rStr = ((XSNumericType)obj2).stringValue();
+     		 rDbl = (new XSDouble(rStr)).doubleValue();
+     	  }
+     	  
+     	  return (isEqTest) ? (lDbl == rDbl) : (lDbl != rDbl);
 	  }
 	  else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
 		  String lStr = ((XSNumericType)this).stringValue();

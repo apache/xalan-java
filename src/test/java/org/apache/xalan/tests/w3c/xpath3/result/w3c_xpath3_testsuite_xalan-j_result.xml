@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-04T11:48:26Z" desc="W3C XPath 3.1 test suite results" fail="1843" pass="4895" run="6741" skipped="8" success="72.62%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-05T10:48:45Z" desc="W3C XPath 3.1 test suite results" fail="1751" pass="4982" run="6736" skipped="8" success="73.96%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-fold-left fail="1" pass="3" run="4" success="75.0%"/>
     <array-fold-right fail="1" pass="3" run="4" success="75.0%"/>
   </array>
   <fn>
-    <fn-abs fail="75" pass="100" run="175" success="57.14%"/>
+    <fn-abs fail="7" pass="165" run="172" success="95.93%"/>
     <fn-adjust-date-to-timezone fail="18" pass="23" run="41" success="56.1%"/>
     <fn-adjust-dateTime-to-timezone fail="17" pass="31" run="48" success="64.58%"/>
     <fn-adjust-time-to-timezone fail="16" pass="26" run="42" success="61.9%"/>
@@ -102,7 +102,7 @@
     <op-node-before fail="12" pass="14" run="26" success="53.85%"/>
     <op-numeric-add fail="33" pass="98" run="131" success="74.81%"/>
     <op-numeric-divide fail="46" pass="73" run="119" success="61.34%"/>
-    <op-numeric-equal fail="28" pass="150" run="178" success="84.27%"/>
+    <op-numeric-equal fail="6" pass="172" run="178" success="96.63%"/>
     <op-numeric-greater-than fail="7" pass="85" run="92" success="92.39%"/>
     <op-numeric-less-than fail="6" pass="148" run="154" success="96.1%"/>
     <op-numeric-mod fail="54" pass="59" run="113" success="52.21%"/>
@@ -142,7 +142,7 @@
     <prod-AxisStep fail="53" pass="180" run="233" skipped="1" success="77.25%"/>
     <prod-CastableExpr fail="147" pass="695" run="842" success="82.54%"/>
     <prod-IfExpr fail="5" pass="22" run="27" success="81.48%"/>
-    <prod-InlineFunctionExpr fail="18" pass="10" run="28" success="35.71%"/>
+    <prod-InlineFunctionExpr fail="16" pass="10" run="26" success="38.46%"/>
     <prod-InstanceofExpr fail="60" pass="213" run="273" success="78.02%"/>
     <prod-LetClause fail="9" pass="14" run="23" success="60.87%"/>
     <prod-Literal fail="46" pass="68" run="114" success="59.65%"/>

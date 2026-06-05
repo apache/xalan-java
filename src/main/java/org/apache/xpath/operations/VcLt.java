@@ -89,6 +89,32 @@ public class VcLt extends XPathRelationalOp
 	  
       XPathContext xctxt = null;
       
+      if (left instanceof XNumber) {
+    	  XNumber lXNumber = (XNumber)left;
+    	  if (lXNumber.getXsDecimal() != null) {
+    		  left = lXNumber.getXsDecimal();  
+    	  }
+    	  else if (lXNumber.getXsDouble() != null) {
+    		  left = lXNumber.getXsDouble();   
+    	  }
+    	  else if (lXNumber.getXsInteger() != null) {
+    		  left = lXNumber.getXsInteger();   
+    	  }
+      }
+
+      if (right instanceof XNumber) {
+    	  XNumber rXNumber = (XNumber)right;
+    	  if (rXNumber.getXsDecimal() != null) {
+    		  right = rXNumber.getXsDecimal();  
+    	  }
+    	  else if (rXNumber.getXsDouble() != null) {
+    		  right = rXNumber.getXsDouble();   
+    	  }
+    	  else if (rXNumber.getXsInteger() != null) {
+    		  right = rXNumber.getXsInteger();   
+    	  }
+      }
+      
       StylesheetRoot stylesheetRoot = null;
 	  
       if (XslTransformData.m_stylesheetRoot != null) {

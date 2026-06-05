@@ -17,14 +17,32 @@
  */
 package org.apache.xpath.functions;
 
+import java.math.BigDecimal;
+
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.types.XSByte;
+import org.apache.xpath.types.XSNegativeInteger;
+import org.apache.xpath.types.XSNonNegativeInteger;
+import org.apache.xpath.types.XSNonPositiveInteger;
+import org.apache.xpath.types.XSPositiveInteger;
+import org.apache.xpath.types.XSShort;
+
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSInt;
+import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSLong;
 
 /**
  * Implementation of an XPath 3.1 function fn:abs.
@@ -48,8 +66,8 @@ public class FuncAbs extends FunctionDef1Arg
 	/**
 	 * Evaluate the function. The function must return a valid object.
 	 * 
-	 * @param xctxt The current execution context
-	 * @return A valid XObject
+	 * @param xctxt                         An XPath context object
+	 * @return                              A valid XObject
 	 *
 	 * @throws javax.xml.transform.TransformerException
 	 */
@@ -62,18 +80,140 @@ public class FuncAbs extends FunctionDef1Arg
 
 		if (m_arg0 instanceof NodeTest) {
 			if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
-				throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function abs(), but the "
-						                                                                + "supplied type is a function type, which cannot be atomized.", srcLocator); 
+				throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function 'abs', but the "
+						                                                                                                       + "supplied type is a function type, "
+						                                                                                                       + "which cannot be atomized.", srcLocator); 
 			}
 		}
 		else if (m_arg0 instanceof XPathInlineFunction) {
-			throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function abs(), but the "
-                                                                                       + "supplied type is a function type, which cannot be atomized.", srcLocator);
+			throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function 'abs', but the "
+                                                                                                                               + "supplied type is a function type, "
+                                                                                                                               + "which cannot be atomized.", srcLocator);
 		}
 		
-		String strValueOfArg = (getArg0AsString(xctxt)).toString();
+		XObject arg0Obj = null;
 		
-		result = new XNumber(Math.abs(Double.valueOf(strValueOfArg))); 
+		try {
+		   arg0Obj = m_arg0.execute(xctxt);
+		}
+		catch (Exception ex) {		   
+		   throw new TransformerException("FORG0001 : The argument provided to XPath 3.1 function call 'abs' cannot be evaluated to a number.", srcLocator);
+		}
+		
+		if (arg0Obj instanceof XSFloat) {
+		   XSFloat xsFloatArg = (XSFloat)arg0Obj;
+		   if (xsFloatArg.zero() || xsFloatArg.negativeZero()) {
+			  result = new XSFloat(0); 
+		   }
+		   else if (xsFloatArg.infinite()) {
+			  result = new XSFloat(Float.POSITIVE_INFINITY); 
+		   }
+		   else {
+			  float flt1 = xsFloatArg.floatValue();
+			  result = new XSFloat(Math.abs(flt1));
+		   }
+		}
+		else if (arg0Obj instanceof XSDouble) {
+			XSDouble xsDoubleArg = (XSDouble)arg0Obj;
+			if (xsDoubleArg.zero() || xsDoubleArg.negativeZero()) {
+				result = new XSDouble(0); 
+			}
+			else if (xsDoubleArg.infinite()) {
+				result = new XSDouble(Double.POSITIVE_INFINITY); 
+			}
+			else {
+				double dbl1 = xsDoubleArg.doubleValue();
+				result = new XSDouble(Math.abs(dbl1));
+			}
+		}									
+		else if (arg0Obj instanceof XSByte) {
+			XSByte xsByteArg = (XSByte)arg0Obj;
+            BigDecimal bigDecimal1 = xsByteArg.getValue();
+			
+			result = new XSByte((bigDecimal1.abs()).toBigInteger());
+		}
+		else if (arg0Obj instanceof XSShort) {
+			XSShort xsShortArg = (XSShort)arg0Obj;
+            BigDecimal bigDecimal1 = xsShortArg.getValue();
+			
+			result = new XSShort((bigDecimal1.abs()).toBigInteger());
+		}
+		else if (arg0Obj instanceof XSInt) {
+			XSInt xsIntArg = (XSInt)arg0Obj;
+            BigDecimal bigDecimal1 = xsIntArg.getValue();
+			
+			result = new XSInt((bigDecimal1.abs()).toBigInteger());
+		}
+		else if (arg0Obj instanceof XSLong) {
+			XSLong xsLongArg = (XSLong)arg0Obj;
+            BigDecimal bigDecimal1 = xsLongArg.getValue();
+			
+			result = new XSLong((bigDecimal1.abs()).toBigInteger());
+		}
+		else if (arg0Obj instanceof XSNonNegativeInteger) {			
+			result = arg0Obj;
+		}
+		else if (arg0Obj instanceof XSNegativeInteger) {			
+			XSNegativeInteger xsNegativeIntegerArg = (XSNegativeInteger)arg0Obj;
+			BigDecimal bigDecimal1 = xsNegativeIntegerArg.getValue();
+			
+			result = new XSNonNegativeInteger((bigDecimal1.abs()).toBigInteger());
+		}
+		else if (arg0Obj instanceof XSNonPositiveInteger) {			
+			XSNonPositiveInteger xsNonPositiveIntegerArg = (XSNonPositiveInteger)arg0Obj;
+			BigDecimal bigDecimal1 = xsNonPositiveIntegerArg.getValue();
+			
+			result = new XSPositiveInteger((bigDecimal1.abs()).toBigInteger());
+		}		
+		else if (arg0Obj instanceof XSInteger) {
+			XSInteger xsIntegerArg = (XSInteger)arg0Obj;			
+			BigDecimal bigDecimal1 = xsIntegerArg.getValue();
+						
+			result = new XSInteger((bigDecimal1.abs()).toBigInteger());
+		}
+		else if (arg0Obj instanceof XSDecimal) {
+			XSDecimal xsDecimalArg = (XSDecimal)arg0Obj;
+			BigDecimal bigDecimal1 = xsDecimalArg.getValue();
+			
+			result = new XSDecimal(bigDecimal1.abs()); 
+		}
+		else if (arg0Obj instanceof XNumber) {
+			XSDouble xsDoubleArg = new XSDouble(((XNumber)arg0Obj).num());
+			if (xsDoubleArg.zero() || xsDoubleArg.negativeZero()) {
+				result = new XSDouble(0); 
+			}
+			else if (xsDoubleArg.infinite()) {
+				result = new XSDouble(Double.POSITIVE_INFINITY); 
+			}
+			else {
+				double dbl1 = xsDoubleArg.doubleValue();
+				result = new XSDouble(Math.abs(dbl1));
+			}
+		}
+		else if ((arg0Obj instanceof ResultSequence) && ((ResultSequence)arg0Obj).size() == 1) {
+			XObject arg0 = ((ResultSequence)arg0Obj).item(0);
+			
+			FuncAbs funcAbs = new FuncAbs();
+			funcAbs.setArg0(arg0);
+			
+			result = funcAbs.execute(xctxt); 
+		}
+		else if ((arg0Obj instanceof ResultSequence) && ((ResultSequence)arg0Obj).size() == 0) {			
+			result = new ResultSequence(); 
+		}
+		else if ((arg0Obj instanceof XMLNodeCursorImpl) && ((XMLNodeCursorImpl)arg0Obj).getLength() == 0) {			
+			result = new ResultSequence(); 
+		}
+		else {
+			String strValueOfArg = (getArg0AsString(xctxt)).toString();
+			
+			try {
+			   result = new XSDouble(Math.abs(Double.valueOf(strValueOfArg)));
+			}
+			catch (NumberFormatException nfe) {
+			   throw new TransformerException("XPTY0004 : The argument provided to XPath 3.1 function call 'abs' cannot be evaluated to a number.", srcLocator);
+			}
+		}
 
 		return result;
 	}

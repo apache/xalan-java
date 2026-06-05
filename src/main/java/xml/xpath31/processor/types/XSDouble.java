@@ -162,8 +162,11 @@ public class XSDouble extends XSNumericType {
     }
 
     /**
-     * Check whether this XSDouble object represents an 
-     * infinite number.
+     * Check whether this XSDouble object, represents negative 
+     * or positive infinity.
+     * 
+     * @return    true is this XSDouble object represents infinity.
+	 *            false otherwise.
      */
     public boolean infinite() {
         return Double.isInfinite(_value.doubleValue());
