@@ -20,6 +20,7 @@ import org.apache.xalan.tests.w3c.xpath3.array.XPath3ArrayTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction1Tests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction2Tests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction3Tests;
+import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction4Tests;
 import org.apache.xalan.tests.w3c.xpath3.map.XPath3MapTests;
 import org.apache.xalan.tests.w3c.xpath3.math.XPath3FunctionMathTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsFive;
@@ -49,7 +50,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ XPath3IfExprTests.class, XPath3FunctionMathTests.class, XPath3QuantifiedExprTests.class, 
 	            XPath3LetClauseTests.class, XPath3MapTests.class, XPath3ArrayTests.class, XPath3XsTypeTests.class, XPath3OpTestsOne.class, XPath3OpTestsTwo.class, 
 	            XPath3OpTestsThree.class, XPath3OpTestsFour.class, XPath3OpTestsFive.class, XPath3OpTestsSix.class, XPath3OpTestsSeven.class,
-	            XPath3FnFunction1Tests.class, XPath3FnFunction2Tests.class, XPath3FnFunction3Tests.class })
+	            XPath3FnFunction1Tests.class, XPath3FnFunction2Tests.class, XPath3FnFunction3Tests.class, XPath3FnFunction4Tests.class })
 public class W3CXPath3Tests2 {
 
 }

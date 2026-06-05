@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-05T16:25:02Z" desc="W3C XPath 3.1 test suite results" fail="1706" pass="5029" run="6738" skipped="8" success="74.64%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-05T17:14:18Z" desc="W3C XPath 3.1 test suite results" fail="1720" pass="5167" run="6890" skipped="8" success="74.99%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-fold-left fail="1" pass="3" run="4" success="75.0%"/>
     <array-fold-right fail="1" pass="3" run="4" success="75.0%"/>
@@ -26,6 +26,7 @@
     <fn-default-collation fail="0" pass="7" run="7" success="100.0%"/>
     <fn-empty fail="6" pass="46" run="52" success="88.46%"/>
     <fn-ends-with fail="2" pass="36" run="38" success="94.74%"/>
+    <fn-exactly-one fail="5" pass="45" run="50" success="90.0%"/>
     <fn-exists fail="3" pass="53" run="56" success="94.64%"/>
     <fn-false fail="2" pass="23" run="25" success="92.0%"/>
     <fn-floor fail="26" pass="56" run="82" success="68.29%"/>
@@ -37,6 +38,8 @@
     <fn-implicit-timezone fail="6" pass="20" run="26" success="76.92%"/>
     <fn-in-scope-prefixes fail="1" pass="4" run="5" skipped="3" success="80.0%"/>
     <fn-index-of fail="31" pass="22" run="53" success="41.51%"/>
+    <fn-one-or-more fail="6" pass="47" run="53" success="88.68%"/>
+    <fn-zero-or-one fail="3" pass="46" run="49" success="93.88%"/>
   </fn>
   <map>
     <map-contains fail="12" pass="12" run="24" success="50.0%"/>
