@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:21:40Z" fail="13" name="fn-contains" pass="54" run="67" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-06T12:26:01Z" fail="12" name="fn-contains" pass="55" run="67" statusUnknown="0">
    <testResult status="pass" testName="fn-contains2args-1"/>
    <testResult status="pass" testName="fn-contains2args-2"/>
    <testResult status="pass" testName="fn-contains2args-3"/>
@@ -45,7 +45,7 @@
    <testResult status="fail" testName="K-ContainsFunc-1"/>
    <testResult status="fail" testName="K-ContainsFunc-2"/>
    <testResult status="fail" testName="K-ContainsFunc-3"/>
-   <testResult status="fail" testName="K-ContainsFunc-4"/>
+   <testResult status="pass" testName="K-ContainsFunc-4"/>
    <testResult status="pass" testName="K-ContainsFunc-5"/>
    <testResult status="pass" testName="K-ContainsFunc-6"/>
    <testResult status="pass" testName="K-ContainsFunc-7"/>

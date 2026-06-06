@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:21:41Z" fail="31" name="fn-index-of" pass="22" run="53" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-06T12:26:03Z" fail="12" name="fn-index-of" pass="41" run="53" statusUnknown="0">
    <testResult status="pass" testName="fn-indexof-mix-args-001"/>
    <testResult status="pass" testName="fn-indexof-mix-args-002"/>
    <testResult status="pass" testName="fn-indexof-mix-args-003"/>
@@ -6,11 +6,11 @@
    <testResult status="pass" testName="fn-indexof-mix-args-005"/>
    <testResult status="pass" testName="fn-indexof-mix-args-006"/>
    <testResult status="pass" testName="fn-indexof-mix-args-007"/>
-   <testResult status="fail" testName="fn-indexof-mix-args-008"/>
-   <testResult status="fail" testName="fn-indexof-mix-args-009"/>
-   <testResult status="fail" testName="fn-indexof-mix-args-010"/>
-   <testResult status="fail" testName="fn-indexof-mix-args-011"/>
-   <testResult status="fail" testName="fn-indexof-mix-args-012"/>
+   <testResult status="pass" testName="fn-indexof-mix-args-008"/>
+   <testResult status="pass" testName="fn-indexof-mix-args-009"/>
+   <testResult status="pass" testName="fn-indexof-mix-args-010"/>
+   <testResult status="pass" testName="fn-indexof-mix-args-011"/>
+   <testResult status="pass" testName="fn-indexof-mix-args-012"/>
    <testResult status="fail" testName="fn-indexof-mix-args-013"/>
    <testResult status="fail" testName="fn-indexof-mix-args-014"/>
    <testResult status="fail" testName="fn-indexof-mix-args-015"/>
@@ -20,24 +20,24 @@
    <testResult status="fail" testName="fn-indexof-mix-args-019"/>
    <testResult status="pass" testName="fn-indexof-mix-args-020"/>
    <testResult status="pass" testName="fn-indexof-mix-args-021"/>
-   <testResult status="fail" testName="fn-indexof-mix-args-022"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-1"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-2"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-3"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-4"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-5"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-6"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-7"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-8"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-9"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-10"/>
+   <testResult status="pass" testName="fn-indexof-mix-args-022"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-1"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-2"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-3"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-4"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-5"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-6"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-7"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-8"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-9"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-10"/>
    <testResult status="fail" testName="K-SeqIndexOfFunc-11"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-12"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-12"/>
    <testResult status="pass" testName="K-SeqIndexOfFunc-13"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-14"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-14"/>
    <testResult status="pass" testName="K-SeqIndexOfFunc-15"/>
    <testResult status="pass" testName="K-SeqIndexOfFunc-16"/>
-   <testResult status="fail" testName="K-SeqIndexOfFunc-17"/>
+   <testResult status="pass" testName="K-SeqIndexOfFunc-17"/>
    <testResult status="pass" testName="K-SeqIndexOfFunc-18"/>
    <testResult status="pass" testName="K-SeqIndexOfFunc-19"/>
    <testResult status="pass" testName="K-SeqIndexOfFunc-20"/>

@@ -270,7 +270,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 					String runTimeErrCode = null;
 					if (TESTCASE.equals(nodeName)) {						    					
 						String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);						
+						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);												
 						
 						XPathContext xctxt = new XPathContext(false);
 						xctxt.setIncremental(false);
@@ -486,12 +486,18 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									}
 								}
 								catch (TransformerException ex) {
-									String errMeg = ex.getMessage();
-									String[] errMesgParts = errMeg.split(":");
-									if (errMesgParts.length > 2) {
-										runTimeErrCode = (errMesgParts[1]).trim();
+									String errMeg = ex.getMessage();									
+									if (!errMeg.contains("FOCH0002")) {									
+										String[] errMesgParts = errMeg.split(":");
+										if (errMesgParts.length > 2) {
+											runTimeErrCode = (errMesgParts[1]).trim();
+										}
+										else if (errMesgParts.length > 1) {
+											runTimeErrCode = (errMesgParts[0]).trim();
+										}
 									}
-									else if (errMesgParts.length > 1) {
+									else {
+										String[] errMesgParts = errMeg.split(":");										
 										runTimeErrCode = (errMesgParts[0]).trim();
 									}
 								}    							
@@ -533,6 +539,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 								Element resultElem1 = (Element)child;
 								String nodeName2 = resultElem1.getNodeName();
 								String expectedResultStr = resultElem1.getTextContent();
+								
+								boolean expectedResultStrUnquoted = false;
 
 								XObject xpathExpectedObj = null;
 								if ((xpathResultObj != null) && ASSERT.equals(nodeName2)) {
@@ -557,7 +565,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										expectedResultStr = "'" + expectedResultStr + "'"; 
 									}
 									else if (!expectedResultStr.startsWith("\'") && !expectedResultStr.endsWith("\'")) {
-										expectedResultStr = "'" + expectedResultStr + "'";
+										expectedResultStr = "'" + expectedResultStr + "'";										
+										expectedResultStrUnquoted = true;
 									}
 
 									XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -608,7 +617,18 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 								else if (ASSERT_EQ.equals(nodeName2)) {
 									boolean isStatusFinal = false;
 									
-									if (xpathResultObj instanceof XSNumericType) {
+									if (xpathResultObj instanceof ResultSequence) {
+									   ResultSequence rSeq = (ResultSequence)xpathResultObj;
+									   if (rSeq.size() == 1) {
+										  xpathResultObj = rSeq.item(0);  
+									   }
+									}
+									
+									if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+										if (expectedResultStrUnquoted) {
+										   expectedResultStr = expectedResultStr.substring(1, expectedResultStr.length() - 1);
+										}
+										
 										java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
 										if ((pattern.matcher(expectedResultStr)).matches()) {
 											expectedResultStr = "xs:decimal('" + expectedResultStr + "')";
@@ -851,15 +871,36 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         		  }
                                         	  } 
                                 		  }
-                                          else if (ASSERT_EQ.equals(nodeName3)) {
-                                        	  if (xpathResultObj != null) {
-                                        		  if (xpathResultObj instanceof XSNumericType) {
-                                        			 java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
-                                        			 if ((pattern.matcher(expectedResultStr2)).matches()) {
-                                        				expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')"; 
-                                        			 }
+                                          else if (ASSERT_EQ.equals(nodeName3)) {                                        	                                          	  
+                                        	  if (xpathResultObj instanceof ResultSequence) {
+           									     ResultSequence rSeq = (ResultSequence)xpathResultObj;
+           									     if (rSeq.size() == 1) {
+           										    xpathResultObj = rSeq.item(0);  
+           									     }
+           									  }
+                                        	  
+                                        	  if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
+                                        		  int size3 = expectedResultStr2.length();
+                                        		  expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
+                                        		  expectedResultStr2 = "'" + expectedResultStr2 + "'"; 
+                                        	  }
+                                        	  else if (!expectedResultStr2.startsWith("\'") && !expectedResultStr2.endsWith("\'")) {
+                                        		  expectedResultStr2 = "'" + expectedResultStr2 + "'";										
+                                        		  expectedResultStrUnquoted = true;
+                                        	  }
+                                        	  
+                                        	  if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+                                        		  if (expectedResultStrUnquoted) {
+                                        			 expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr2.length() - 1);
                                         		  }
-                                        		  
+
+                                        		  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
+                                        		  if ((pattern.matcher(expectedResultStr2)).matches()) {
+                                        			  expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')";
+                                        		  }
+          									  }
+                                        	  
+                                        	  if (xpathResultObj != null) {                                        		                                          		                                         		  
                                         		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 
@@ -1096,14 +1137,35 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         	  } 
                                 		  }
                                           else if (ASSERT_EQ.equals(nodeName3)) {
-                                        	  if (xpathResultObj != null) {
-                                        		  if (xpathResultObj instanceof XSNumericType) {
-                                         			 java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
-                                         			 if ((pattern.matcher(expectedResultStr2)).matches()) {
-                                         				expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')"; 
-                                         			 }
+                                        	  if (xpathResultObj instanceof ResultSequence) {
+            									     ResultSequence rSeq = (ResultSequence)xpathResultObj;
+            									     if (rSeq.size() == 1) {
+            										    xpathResultObj = rSeq.item(0);  
+            									     }
+            									  }
+                                         	  
+                                         	  if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
+                                         		  int size3 = expectedResultStr2.length();
+                                         		  expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
+                                         		  expectedResultStr2 = "'" + expectedResultStr2 + "'"; 
+                                         	  }
+                                         	  else if (!expectedResultStr2.startsWith("\'") && !expectedResultStr2.endsWith("\'")) {
+                                         		  expectedResultStr2 = "'" + expectedResultStr2 + "'";										
+                                         		  expectedResultStrUnquoted = true;
+                                         	  }
+                                         	  
+                                         	  if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+                                         		  if (expectedResultStrUnquoted) {
+                                         			 expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr2.length() - 1);
                                          		  }
-                                        		  
+
+                                         		  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
+                                         		  if ((pattern.matcher(expectedResultStr2)).matches()) {
+                                         			  expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')";
+                                         		  }
+           									  }
+                                         	  
+                                        	  if (xpathResultObj != null) {                                        		                                          		  
                                         		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
                                         		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 
