@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:19:09Z" fail="30" name="prod-ArrowPostfix" pass="8" run="38" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-08T11:36:59Z" fail="29" name="prod-ArrowPostfix" pass="8" run="37" skipped="4" statusUnknown="0">
    <testResult status="fail" testName="ArrowPostfix-001"/>
    <testResult status="pass" testName="ArrowPostfix-002"/>
    <testResult status="fail" testName="ArrowPostfix-003"/>
@@ -36,7 +36,6 @@
    <testResult status="pass" testName="ArrowPostfix-103"/>
    <testResult status="fail" testName="ArrowPostfix-104"/>
    <testResult status="fail" testName="ArrowPostfix-105"/>
-   <testResult status="fail" testName="ArrowPostfix-106"/>
    <testResult status="fail" testName="ArrowPostfix-107"/>
    <testResult status="fail" testName="ArrowPostfix-108"/>
    <testResult status="fail" testName="ArrowPostfix-109"/>

@@ -1644,10 +1644,14 @@ private static final boolean DEBUG = false;
   Expression sequenceConstructorExpr(int opPos) throws TransformerException
   {	  
       Expression xpathSequenceCons = null;
-	  
+	              
       if (XPathParser.m_xpathSequenceConstructor != null) {
     	  xpathSequenceCons = XPathParser.m_xpathSequenceConstructor;
     	  XPathParser.m_xpathSequenceConstructor = null;
+      }
+      else if (XPathParser.m_xpathSequenceConstructor2 != null) {
+    	  xpathSequenceCons = XPathParser.m_xpathSequenceConstructor2;
+    	  XPathParser.m_xpathSequenceConstructor2 = null;
       }
 	  else {
 		 // We use an implementation here, when XPath built-in function call 

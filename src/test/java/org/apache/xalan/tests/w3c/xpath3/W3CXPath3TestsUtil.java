@@ -49,6 +49,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
@@ -271,8 +272,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 					if (TESTCASE.equals(nodeName)) {						    					
 						String testCaseNameStr = testCaseElem.getAttribute(NAME);												
 						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);												
-						
-						XPathContext xctxt = new XPathContext(false);
+												
+						XPathContext xctxt = new XPathContext(true);
 						xctxt.setIncremental(false);
 					    (xctxt.getDTMManager()).setIncremental(false);
 						xctxt.setSource_location(false);
@@ -281,6 +282,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 						PrefixResolver xmlNsPrefixResolver = null;						
                         String envName = null;                        
                         boolean isxmlNsContextConfigured = false;
+                        
+                        Map<String, String> roleFileNameMap1 = new HashMap<String, String>();
+                        
+                        boolean resolveWithCatalog = false;
 						
 						if (envNodeList.getLength() > 0) {
 							Element elem = (Element)(envNodeList.item(0));
@@ -311,32 +316,41 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 									if (envName.equals(envName2)) {										
 										NodeList nodeList1 = elem2.getElementsByTagName(SOURCE);
-										if (nodeList1.getLength() > 0) {
-											Element elem3 = (Element)(nodeList1.item(0));
-											String srcFileName = elem3.getAttribute(FILE);									 
-                                            if ((srcFileName != null) && !"".equals(srcFileName)) {
-                                            	Node node1 = elem2.getFirstChild();
-                                            	Map<String, String> nsMap = new HashMap<String, String>();
-                                            	while (node1 != null) {
-                                            		if (node1.getNodeType() == Node.ELEMENT_NODE) {
-                                            			Element el1 = (Element)node1;
-                                            			if (NAMESPACE.equals(el1.getNodeName())) {
-                                            				String prefix = el1.getAttribute(PREFIX);
-                                            				String uri = el1.getAttribute(URI);
-                                            				nsMap.put(prefix, uri);
-                                            			}
-                                            		}
+										int size1 = nodeList1.getLength();
+										if (size1 > 0) {
+											for (int idx = 0; idx < size1; idx++) {
+												Element elem3 = (Element)(nodeList1.item(idx)); 
+												String srcFileName = elem3.getAttribute(FILE);									 
+												if (!"".equals(srcFileName)) {
+													Node node1 = elem2.getFirstChild();
+													Map<String, String> nsMap = new HashMap<String, String>();
+													while (node1 != null) {
+														if (node1.getNodeType() == Node.ELEMENT_NODE) {
+															Element el1 = (Element)node1;
+															if (NAMESPACE.equals(el1.getNodeName())) {
+																String prefix = el1.getAttribute(PREFIX);
+																String uri = el1.getAttribute(URI);
+																nsMap.put(prefix, uri);
+															}
+														}
 
-                                            		node1 = node1.getNextSibling();
-                                            	}
+														node1 = node1.getNextSibling();
+													}
 
-                                            	xmlNsPrefixResolver = getXMLNsPrefixResolver(nsMap);
-                                            	xctxt.setNamespaceContext(xmlNsPrefixResolver);
-                                            	
-                                            	isxmlNsContextConfigured = true;
+													xmlNsPrefixResolver = getXMLNsPrefixResolver(nsMap);
+													xctxt.setNamespaceContext(xmlNsPrefixResolver);
 
-                                            	constructXalanDtmFromXMLFile(srcFileName, xctxt, false);
-                                            }
+													isxmlNsContextConfigured = true;
+
+													String envFileRoleNameStr = elem3.getAttribute("role");                                            	
+													if (".".equals(envFileRoleNameStr)) {
+														constructXalanDtmFromXMLFile(srcFileName, xctxt, false);
+													}
+													else {
+														roleFileNameMap1.put(envFileRoleNameStr.substring(1), srcFileName);
+													}
+												}
+										    }
 										}
 										
 										isEnvNodeResolved = true;
@@ -375,32 +389,43 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 	
 										if (envName.equals(envName2)) {
 											NodeList nodeList1 = elem2.getElementsByTagName(SOURCE);
-											if (nodeList1.getLength() > 0) {
-												Element elem3 = (Element)(nodeList1.item(0));
-												String srcFileName = elem3.getAttribute(FILE);									 
-	                                            if ((srcFileName != null) && !"".equals(srcFileName)) {
-	                                            	Node node1 = elem2.getFirstChild();
-	                                            	Map<String, String> nsMap = new HashMap<String, String>();
-	                                            	while (node1 != null) {
-	                                            		if (node1.getNodeType() == Node.ELEMENT_NODE) {
-	                                            			Element el1 = (Element)node1;
-	                                            			if (NAMESPACE.equals(el1.getNodeName())) {
-	                                            				String prefix = el1.getAttribute(PREFIX);
-	                                            				String uri = el1.getAttribute(URI);
-	                                            				nsMap.put(prefix, uri);
-	                                            			}
-	                                            		}
+											int size1 = nodeList1.getLength();
+											if (size1 > 0) {
+												for (int idx = 0; idx < size1; idx++) {
+													Element elem3 = (Element)(nodeList1.item(idx));
+													String srcFileName = elem3.getAttribute(FILE);									 
+													if (!"".equals(srcFileName)) {
+														Node node1 = elem2.getFirstChild();
+														Map<String, String> nsMap = new HashMap<String, String>();
+														while (node1 != null) {
+															if (node1.getNodeType() == Node.ELEMENT_NODE) {
+																Element el1 = (Element)node1;
+																if (NAMESPACE.equals(el1.getNodeName())) {
+																	String prefix = el1.getAttribute(PREFIX);
+																	String uri = el1.getAttribute(URI);
+																	nsMap.put(prefix, uri);
+																}
+															}
 
-	                                            		node1 = node1.getNextSibling();
-	                                            	}
+															node1 = node1.getNextSibling();
+														}
 
-	                                            	xmlNsPrefixResolver = getXMLNsPrefixResolver(nsMap);
-	                                            	xctxt.setNamespaceContext(xmlNsPrefixResolver);
-	                                            	
-	                                            	isxmlNsContextConfigured = true;
+														xmlNsPrefixResolver = getXMLNsPrefixResolver(nsMap);
+														xctxt.setNamespaceContext(xmlNsPrefixResolver);
 
-	                                            	constructXalanDtmFromXMLFile(srcFileName, xctxt, true);
-	                                            }
+														isxmlNsContextConfigured = true;
+
+														String envFileRoleNameStr = elem3.getAttribute("role");														
+														resolveWithCatalog = true;
+														
+														if (".".equals(envFileRoleNameStr)) {
+															constructXalanDtmFromXMLFile(srcFileName, xctxt, true);
+														}
+														else {
+															roleFileNameMap1.put(envFileRoleNameStr.substring(1), srcFileName);
+														}
+													}
+											    }
 											}
 	
 											break;
@@ -413,6 +438,50 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									}
 							    }
 							}
+						}
+						
+						Set<Entry<String, String>> roleFileNameEntrySet1 = roleFileNameMap1.entrySet();
+						Iterator<Entry<String, String>> iter1 = roleFileNameEntrySet1.iterator();
+						
+						Map<QName, XObject> xpathVarMap2 = xctxt.getXPathVarMap();
+						
+						while (iter1.hasNext()) {
+							Entry<String, String> entry1 = iter1.next();
+							String roleName = entry1.getKey();
+							String fileName = entry1.getValue();
+
+							URL resolvedUrl = null;
+							URI uri = new URI(fileName);
+							if (uri.isAbsolute()) {
+								resolvedUrl = new URL(fileName); 
+							}
+							else {
+								URI uri2 = null;
+								if (resolveWithCatalog) {
+									uri2 = (new URI(W3C_XPATH3_TESTS_CATALOG_FILE_PATH)).resolve(fileName);
+								}
+								else {
+									uri2 = (new URI(m_xslTransformTestSetFilePath)).resolve(fileName);
+								}
+
+								resolvedUrl = uri2.toURL();
+							}
+							
+							String sourceDocUrlStr = resolvedUrl.toString();									 									 
+				    		Document document2 = m_xmlDocumentBuilder.parse(sourceDocUrlStr);
+
+				    		DOMSource domSource = new DOMSource(document2);
+				    		Source source = (Source)domSource;
+				    		source.setSystemId(sourceDocUrlStr);
+
+				    		DTMManager dtmManager = xctxt.getDTMManager();
+				    		DTM dtm = dtmManager.getDTM((Source)domSource, true, null, false, false);
+				    		dtm.setDocumentBaseURI(sourceDocUrlStr);
+
+				    		int docNodeHandle = dtm.getDocument();
+				    		XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(docNodeHandle, xctxt);
+				    		
+				    		xpathVarMap2.put(new QName(roleName), xmlNodeCursorImpl);
 						}
 						
 						if (!isxmlNsContextConfigured) {
@@ -477,12 +546,15 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										xpathObj = future.get(10, TimeUnit.SECONDS);
 									} 
 									catch (TimeoutException ex) {
-									    future.cancel(true);									    
-									    xPathParseTimeOut = true;
+										future.cancel(true);									    
+										xPathParseTimeOut = true;
 									}
-									
-									if (xpathObj != null) {
-									   xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
+
+									if (xpathObj != null) {									   
+										xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
+										if (!xpathVarMap2.isEmpty()) {
+										   xpathVarMap2.clear();
+										}
 									}
 								}
 								catch (TransformerException ex) {
@@ -538,7 +610,29 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 							if (child.getNodeType() == Node.ELEMENT_NODE) {
 								Element resultElem1 = (Element)child;
 								String nodeName2 = resultElem1.getNodeName();
-								String expectedResultStr = resultElem1.getTextContent();
+								String expectedResultStr = null;
+								if (ASSERT_XML.equals(nodeName2)) {
+								   String fileName = resultElem1.getAttribute("file");
+								   if (!"".equals(fileName)) {
+									   URI fileUri = new URI(fileName);
+									   URL resolvedUrl = null;
+									   if (fileUri.isAbsolute()) {
+										   resolvedUrl = new URL(fileName); 
+									   }
+									   else {
+										   URI resolvedUri = (new URI(m_xslTransformTestSetFilePath)).resolve(fileName);
+										   resolvedUrl = resolvedUri.toURL();
+									   }
+									   
+									   expectedResultStr = StringUtil.getStringContentFromUrl(resolvedUrl); 
+								   }
+								   else {
+									  expectedResultStr = resultElem1.getTextContent(); 
+								   }
+								}
+								else {
+								   expectedResultStr = resultElem1.getTextContent();
+								}
 								
 								boolean expectedResultStrUnquoted = false;
 
@@ -696,14 +790,49 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									}
 								}
                                 else if (ASSERT_STRING_VALUE.equals(nodeName2)) {
-                                	if (xpathResultObj != null) {                                	   
-                                	   String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-                                	   String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
-                                	   if (expectedStr1.equals(resultStr1)) {
-                                		  elemTestResult.setAttribute(STATUS, PASS);
+                                	if (xpathResultObj != null) {
+                                	   boolean a1 = false;
+                                	   if (m_xslTransformTestSetFilePath.contains("ForClause.xml") && expectedResultStrUnquoted 
+                                			                                                       && (xpathResultObj instanceof ResultSequence)) {
+                                		   a1 = true;
+                                		   
+                                		   ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                		   expectedResultStr = expectedResultStr.substring(1, expectedResultStr.length() - 1);
+                                		   String[] expectedStrArr = expectedResultStr.split("\\s+");
+                                		   if (rSeq.size() == expectedStrArr.length) {
+                                			   boolean isXslTestPass = true;
+                                			   for (int idx = 0; idx < expectedStrArr.length; idx++) {
+                                				   String str1 = expectedStrArr[idx]; 
+                                				   XObject xObj1 = rSeq.item(idx);
+                                				   String str2 = XslTransformEvaluationHelper.getStrVal(xObj1);
+                                				   if (!str1.equals(str2)) {                                					   
+                                					   isXslTestPass = false;
+                                					   
+                                					   break;
+                                				   }
+                                			   }
+                                			   
+                                			   if (isXslTestPass) {
+                                				  elemTestResult.setAttribute(STATUS, PASS); 
+                                			   }
+                                			   else {
+                                				  elemTestResult.setAttribute(STATUS, FAIL); 
+                                			   }
+                                		   }
+                                		   else {
+                                			   elemTestResult.setAttribute(STATUS, FAIL);
+                                		   }
                                 	   }
-                                	   else {
-                                		  elemTestResult.setAttribute(STATUS, FAIL);
+                                	   
+                                	   if (!a1) {
+                                		   String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
+                                		   String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+                                		   if (expectedStr1.equals(resultStr1)) {
+                                			   elemTestResult.setAttribute(STATUS, PASS);
+                                		   }
+                                		   else {
+                                			   elemTestResult.setAttribute(STATUS, FAIL);
+                                		   }
                                 	   }
                                 	}
                                 	else {
@@ -958,21 +1087,49 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         	  }
                                 		  }
                                           else if (ASSERT_STRING_VALUE.equals(nodeName3)) {
-                                        	  if (xpathResultObj != null) {
-                                        		  if ("".equals(expectedResultStr2)) {
-                                        		     expectedResultStr2 = "''";  
-                                        		  }
-                                        		  
-                                        		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
-                                        		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
-                                        		  
-                                        		  String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-                                        		  String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
-                                        		  if (!expectedStr1.equals(resultStr1)) {
-                                        			  isXslTestPass = false;
+                                        	  if (xpathResultObj != null) {                                        		                                          		  
+                                                  if (m_xslTransformTestSetFilePath.contains("ForClause.xml") && expectedResultStrUnquoted 
+                                                		                                                      && (xpathResultObj instanceof ResultSequence)) {
+                                                	  ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                                	  expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr.length() - 1);
+                                                	  String[] expectedStrArr = expectedResultStr2.split("\\s+");
+                                                	  if (rSeq.size() == expectedStrArr.length) {
+                                                		  for (int idx2 = 0; idx2 < expectedStrArr.length; idx2++) {
+                                                			  String str1 = expectedStrArr[idx]; 
+                                                			  XObject xObj1 = rSeq.item(idx);
+                                                			  String str2 = XslTransformEvaluationHelper.getStrVal(xObj1);
+                                                			  if (!str1.equals(str2)) {                                					   
+                                                				  isXslTestPass = false;
 
-                                        			  break; 
+                                                				  break;
+                                                			  }
+                                                		  }
+
+                                                		  if (!isXslTestPass) {
+                                                			  break; 
+                                                		  }
+                                                	  }
+                                                	  else {
+                                                		  isXslTestPass = false;
+
+                                        				  break;
+                                                	  }
                                         		  }
+
+                                                  if ("".equals(expectedResultStr2)) {
+                                                	  expectedResultStr2 = "''";  
+                                                  }                                        		                                          		  
+
+                                                  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                                                  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+
+                                                  String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
+                                                  String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+                                                  if (!expectedStr1.equals(resultStr1)) {
+                                                	  isXslTestPass = false;
+
+                                                	  break; 
+                                                  } 
                                         	  } 
                                 		  }
                                           else if (ASSERT_XML.equals(nodeName3)) {
@@ -1221,21 +1378,47 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         	  }
                                 		  }
                                           else if (ASSERT_STRING_VALUE.equals(nodeName3)) {
-                                        	  if (xpathResultObj != null) {
-                                        		  if ("".equals(expectedResultStr2)) {
-                                         		     expectedResultStr2 = "''";  
-                                         		  }
-                                        		  
-                                        		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
-                                        		  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
-                                        		  
-                                        		  String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-                                        		  String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
-                                        		  if (expectedStr1.equals(resultStr1)) {
-                                        			  isXslTestPass = true;
+                                        	  if (xpathResultObj != null) {                                        		                                          		  
+                                                  if (m_xslTransformTestSetFilePath.contains("ForClause.xml") && expectedResultStrUnquoted 
+                                                		                                                      && (xpathResultObj instanceof ResultSequence)) {
+                                                	  ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                                	  expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr.length() - 1);
+                                                	  String[] expectedStrArr = expectedResultStr2.split("\\s+");
+                                                	  boolean isXslTestPass1 = true;
+                                                	  if (rSeq.size() == expectedStrArr.length) {
+                                                		  for (int idx2 = 0; idx2 < expectedStrArr.length; idx2++) {
+                                                			  String str1 = expectedStrArr[idx]; 
+                                                			  XObject xObj1 = rSeq.item(idx);
+                                                			  String str2 = XslTransformEvaluationHelper.getStrVal(xObj1);
+                                                			  if (!str1.equals(str2)) {                                					   
+                                                				  isXslTestPass1 = false;
 
-                                        			  break; 
+                                                				  break;
+                                                			  }
+                                                		  }
+
+                                                		  if (isXslTestPass1) {
+                                                			  isXslTestPass = true;
+
+                                            				  break; 
+                                                		  }
+                                                	  }                                                	  
                                         		  }
+
+                                                  if ("".equals(expectedResultStr2)) {
+                                                	  expectedResultStr2 = "''";  
+                                                  }                                        		                                          		  
+
+                                                  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                                                  xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+
+                                                  String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
+                                                  String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+                                                  if (expectedStr1.equals(resultStr1)) {
+                                                	  isXslTestPass = true;
+
+                                                	  break; 
+                                                  } 
                                         	  } 
                                 		  }
                                           else if (ASSERT_XML.equals(nodeName3)) {
@@ -1530,6 +1713,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     protected void constructXalanDtmFromXMLFile(String xmlFile, XPathContext xctxt, boolean resolveWithCatalog) 
     		                                                                                                throws URISyntaxException, MalformedURLException, 
     																										                    SAXException, IOException {
+    	
     	if (xmlFile != null) {
     		URI uri = new URI(xmlFile);
     		URL resolvedUrl = null;

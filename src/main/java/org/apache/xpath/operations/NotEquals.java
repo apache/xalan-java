@@ -85,6 +85,12 @@ public class NotEquals extends Operation
 		  }
 	  }
 	  
+	  if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 0)) {
+		  result = XBoolean.S_FALSE;
+
+		  return result;
+	  }
+	  
 	  XObject lObj = null;
 	  XObject rObj = null;
 	  
